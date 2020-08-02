@@ -1,0 +1,207 @@
+package com.github.ahnfelt.firefly.language
+
+import com.github.ahnfelt.firefly.language.Syntax._
+
+import scala.collection.mutable.ArrayBuffer
+
+case class ParseException(at : Location, message : String) extends RuntimeException(message + " " + at.toSuffix)
+
+class Parser(file : String, tokens : ArrayBuffer[Token]) {
+
+    val end = tokens.last
+
+    private var offset = 0
+    private def current =
+        if(offset < tokens.length) tokens(offset) else end
+    private def ahead =
+        if(offset + 1 < tokens.length) tokens(offset + 1) else end
+    private def aheadAhead =
+        if(offset + 2 < tokens.length) tokens(offset + 2) else end
+    private def skip(kind : TokenKind, value : String = null) : Token = {
+        val c = current
+        if(c.kind != kind) throw ParseException(c.at, "Expected " + kind + (if(value == null) "" else " " + value) + ", got " + c.raw)
+        if(value != null && !c.isString(value)) throw ParseException(c.at, "Expected " + value + " got " + c.raw)
+        offset += 1
+        c
+    }
+
+    def parseModule() : Module = {
+        var result = Module(file, List(), List(), List(), List(), List())
+        while(!current.is(LEnd)) {
+            if(current.is(LLower) && ahead.is(LAssign)) {
+                result = result.copy(lets = parseLetDefinition() :: result.lets)
+            } else if(current.is(LScopeType) && ahead.is(LLower) && aheadAhead.is(LAssign)) {
+                val scopeType = Some(skip(LScopeType).raw)
+                result = result.copy(lets = parseLetDefinition(scopeType) :: result.lets)
+            } else if(current.is(LLower) && ahead.is(LBracketLeft)) {
+                result = result.copy(functions = parseFunctionDefinition() :: result.functions)
+            } else if(current.is(LScopeType) && ahead.is(LLower) && aheadAhead.is(LBracketLeft)) {
+                val scopeType = Some(skip(LScopeType).raw)
+                result = result.copy(functions = parseFunctionDefinition(scopeType) :: result.functions)
+            } else if(current.is(LKeyword) && current.isString("trait")) {
+                result = result.copy(traits = parseTraitDefinition() :: result.traits)
+            } else if(current.is(LKeyword) && current.isString("instance")) {
+                result = result.copy(instances = parseInstanceDefinition() :: result.instances)
+            } else if(current.is(LKeyword) && current.isString("type")) {
+                result = result.copy(types = parseTypeDefinition() :: result.types)
+            } else {
+                skip(LEnd)
+            }
+            if(!current.is(LEnd)) skip(LComma)
+        }
+        result
+    }
+
+    def parseLetDefinition(scopeType : Option[String] = None) : DLet = {
+        val nameToken = skip(LLower)
+        val variableType = if(current.is(LColon)) {
+            skip(LColon)
+            parseType()
+        } else Type(nameToken.at, "?", List())
+        skip(LAssign)
+        val value = parseTerm()
+        DLet(nameToken.at, scopeType, nameToken.raw, variableType, value)
+    }
+
+    def parseFunctionDefinition(scopeType : Option[String] = None) : DFunction = {
+        val nameToken = skip(LLower)
+        val (generics, constraints) = if(current.isString("[")) parseTypeParameters() else List() -> List()
+        val parameters = parseFunctionParameters()
+        val returnType = parseOptionalType()
+        val body = parseLambda(parameters.size)
+        DFunction(
+            nameToken.at,
+            scopeType,
+            Signature(nameToken.at, nameToken.raw, generics, constraints, parameters, returnType),
+            body
+        )
+    }
+
+    def parseTraitDefinition() : DTrait = {
+        skip(LKeyword, "trait")
+        ???
+    }
+
+    def parseInstanceDefinition() : DInstance = {
+        skip(LKeyword, "instance")
+        ???
+    }
+
+    def parseTypeDefinition() : DType = {
+        skip(LKeyword, "type")
+        ???
+    }
+
+    def parseTypeParameters() : (List[String], List[Constraint]) = {
+        skip(LBracketLeft, "[")
+        skip(LBracketRight, "]")
+        ???
+    }
+
+    def parseFunctionParameters() : List[Parameter] = {
+        var parameters = List[Parameter]()
+        skip(LBracketLeft, "(")
+        while(!current.is(LBracketRight)) {
+            val parameterNameToken = skip(LLower)
+            val parameterType = parseOptionalType()
+            parameters ::= Parameter(parameterNameToken.at, parameterNameToken.raw, parameterType)
+            if(!current.is(LBracketRight)) skip(LComma)
+        }
+        skip(LBracketRight, ")")
+        parameters.reverse
+    }
+
+    def parseOptionalType() : Type = {
+        val token = current
+        if(token.is(LColon)) {
+            skip(LColon)
+            parseType()
+        } else Type(token.at, "?", List())
+    }
+
+    def parseLambda(defaultParameterCount : Int = 0) : ELambda = {
+        val token = skip(LBracketLeft, "{")
+        val result = if(current.is(LPipe)) {
+            var cases = List[MatchCase]()
+            while(current.is(LPipe)) {
+                cases ::= parseCase()
+            }
+            cases.reverse
+        } else if(current.is(LLower) && ahead.is(LComma, LArrowThick)) {
+            var parameters = List[MatchPattern]()
+            while(!current.is(LArrowThick)) {
+                val parameterToken = skip(LLower)
+                parameters ::= PVariable(parameterToken.at, Some(parameterToken.raw))
+                if(!current.is(LArrowThick)) skip(LComma)
+            }
+            skip(LArrowThick)
+            val term = parseStatements()
+            List(MatchCase(token.at, parameters.reverse, term))
+        } else {
+            val term = parseStatements()
+            List(MatchCase(token.at, 1.to(defaultParameterCount).toList.map(_ => PVariable(token.at, None)), term))
+        }
+        skip(LBracketRight, "}")
+        ELambda(token.at, result)
+    }
+
+    def parseCase() : MatchCase = {
+        val token = skip(LPipe)
+        var patterns = List[MatchPattern]()
+        while(!current.is(LArrowThick)) {
+            patterns ::= parsePattern()
+            if(!current.is(LArrowThick)) skip(LComma)
+        }
+        skip(LArrowThick)
+        val body = parseStatements()
+        MatchCase(token.at, patterns.reverse, body)
+    }
+
+    def parsePattern() : MatchPattern = {
+        if(current.is(LWildcard)) {
+            val token = skip(LWildcard)
+            PVariable(token.at, None)
+        } else if(current.is(LLower)) {
+            val token = skip(LLower)
+            PVariable(token.at, Some(token.raw))
+        } else {
+            val token = skip(LUpper)
+            val patterns = if(!current.isString("(")) List() else {
+                var result = List[MatchPattern]()
+                skip(LBracketLeft, "(")
+                while(!current.is(LBracketRight)) {
+                    result ::= parsePattern()
+                    if(!current.is(LBracketRight)) skip(LComma)
+                }
+                skip(LBracketRight, ")")
+                result.reverse
+            }
+            PVariant(token.at, token.raw, patterns)
+        }
+    }
+
+    def parseStatements() : Term = {
+        while(!current.isString("}")) offset += 1
+        EInt(current.at, "42")
+    }
+
+    def parseTerm() : Term = {
+        ???
+    }
+
+    def parseType() : Type = {
+        val token = skip(LUpper)
+        val arguments = if(!current.isString("[")) List() else {
+            var result = List[Type]()
+            skip(LBracketLeft, "[")
+            while(!current.is(LBracketRight)) {
+                result ::= parseType()
+                if(!current.is(LBracketRight)) skip(LComma)
+            }
+            skip(LBracketRight, "]")
+            result.reverse
+        }
+        Type(token.at, token.raw, arguments)
+    }
+
+}
