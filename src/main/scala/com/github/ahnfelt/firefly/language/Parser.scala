@@ -126,7 +126,10 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                 parameters ::= parameterNameToken.raw
                 while(current.is(LColon)) {
                     skip(LColon)
-                    constraints ::= Constraint(parseType())
+                    val t = parseType()
+                    constraints ::= Constraint(t.copy(generics =
+                        Type(t.at, parameterNameToken.raw, List()) :: t.generics
+                    ))
                 }
             }
             if(!current.is(LBracketRight)) skip(LComma)

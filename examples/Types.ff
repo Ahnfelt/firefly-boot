@@ -9,3 +9,8 @@ type Option[T] {
     None
     Some(value: T)
 }
+
+sum[T: Monoid](list: List[T]) {
+    | Empty => 0
+    | Link(head, tail) => Monoid.add(head, sum(tail))
+}
