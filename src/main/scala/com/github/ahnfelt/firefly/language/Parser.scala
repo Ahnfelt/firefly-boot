@@ -280,10 +280,6 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         EInt(current.at, "42")
     }
 
-    def parseTerm() : Term = {
-        ???
-    }
-
     def parseType() : Type = {
         val token = skip(LUpper)
         val arguments = if(!current.isString("[")) List() else {
@@ -297,6 +293,10 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             result.reverse
         }
         Type(token.at, token.raw, arguments)
+    }
+
+    def parseTerm() : Term = {
+        ???
     }
 
 }
