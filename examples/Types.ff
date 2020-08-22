@@ -11,6 +11,10 @@ type Option[T] {
 }
 
 sum[T: Monoid](list: List[T]) {
-    | Empty => 0
+    | Empty => Monoid.zero()
     | Link(head, tail) => Monoid.add(head, sum(tail))
+}
+
+trait Show[T] {
+    show(value: T): String
 }

@@ -93,7 +93,7 @@ object Tokenizer {
         var i = 0
         while(i < code.length) {
 
-            while(code(i) == ' ' || code(i) == '\t' || code(i) == '\r') i += 1
+            while(i < code.length && (code(i) == ' ' || code(i) == '\t' || code(i) == '\r')) i += 1
 
             val start = i
             startLine = line
@@ -108,12 +108,12 @@ object Tokenizer {
             } else if(code(i) == '/' && code(i + 1) == '/') {
 
                 i += 2
-                while(code(i) != '\n' && i < code.length) i += 1
+                while(i < code.length && code(i) != '\n') i += 1
 
             } else if(code(i) == '/' && code(i + 1) == '*') {
 
                 i += 2
-                while(code(i) != '*' || code(i + 1) != '/') {
+                while(i < code.length && (code(i) != '*' || code(i + 1) != '/')) {
                     if(i >= code.length) {
                         throw new RuntimeException(
                             "Expected end of comment started on line " + startLine + ", got end of file."
@@ -130,7 +130,7 @@ object Tokenizer {
             } else if(code(i) == '"') {
 
                 i += 1
-                while(code(i) != '"') {
+                while(i < code.length && code(i) != '"') {
                     if(code(i) == '\n') {
                         throw new RuntimeException(
                             "Unexpected end of line in string started on line " + startLine + "."
@@ -151,11 +151,11 @@ object Tokenizer {
 
                 val kind = if(code(i) >= 'a') LLower else LUpper
                 i += 1
-                while(
+                while(i < code.length && (
                     (code(i) >= 'a' && code(i) <= 'z') ||
                     (code(i) >= 'A' && code(i) <= 'Z') ||
                     (code(i) >= '0' && code(i) <= '9')
-                ) i += 1
+                )) i += 1
                 if(kind == LUpper && code(i) == '_') {
                     i += 1
                     emitToken(LScopeModule, start, i)
@@ -170,7 +170,7 @@ object Tokenizer {
 
                 var dot = false
                 var exponent = false
-                while(code(i) >= '0' && code(i) <= '9') {
+                while(i < code.length && (code(i) >= '0' && code(i) <= '9')) {
                     i += 1
                     if((code(i) == 'e' || code(i) == 'E') && !exponent) {
                         i += 1
@@ -193,7 +193,7 @@ object Tokenizer {
             } else if(operatorCharacters(code(i))) {
 
                 i += 1
-                while(operatorCharacters(code(i))) i += 1
+                while(i < code.length && operatorCharacters(code(i))) i += 1
                 val o =
                     if(i - start == 1 && code(i - 1) == '.') LDot
                     else if(i - start == 1 && code(i - 1) == ',') LComma

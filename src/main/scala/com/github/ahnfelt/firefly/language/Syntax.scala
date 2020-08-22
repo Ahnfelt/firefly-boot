@@ -40,7 +40,6 @@ object Syntax {
     )
     case class DTrait(
         at : Location,
-        typeVariable : String,
         name : String,
         generics : List[String],
         constraints : List[Constraint],
@@ -50,7 +49,6 @@ object Syntax {
     )
     case class DInstance(
         at : Location,
-        instance : Type,
         name : String,
         generics : List[Type],
         constraints : List[Constraint],
