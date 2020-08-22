@@ -42,7 +42,9 @@ object Syntax {
         name : String,
         generics : List[String],
         constraints : List[Constraint],
-        methods : List[Signature]
+        methods : List[Signature],
+        generatorParameters : List[Parameter],
+        generatorTerms : List[(String, Term)]
     )
     case class DInstance(
         at : Location,
@@ -50,7 +52,8 @@ object Syntax {
         name : String,
         generics : List[Type],
         constraints : List[Constraint],
-        methods : List[DFunction]
+        methods : List[DFunction],
+        generatorArguments : List[Term]
     )
 
     sealed abstract class Term { val at : Location }
