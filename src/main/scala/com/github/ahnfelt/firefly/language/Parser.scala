@@ -119,10 +119,15 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         var parameters = List[String]()
         var constraints = List[Constraint]()
         while(!current.is(LBracketRight)) {
-            val parameterNameToken = skip(LUpper)
-            parameters ::= parameterNameToken.raw
-            while(current.is(LUpper)) {
+            if(ahead.is(LBracketLeft)) {
                 constraints ::= Constraint(parseType())
+            } else {
+                val parameterNameToken = skip(LUpper)
+                parameters ::= parameterNameToken.raw
+                while(current.is(LColon)) {
+                    skip(LColon)
+                    constraints ::= Constraint(parseType())
+                }
             }
             if(!current.is(LBracketRight)) skip(LComma)
         }
