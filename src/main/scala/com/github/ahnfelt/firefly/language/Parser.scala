@@ -98,7 +98,10 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         val methods = if(!current.isString("{")) List() else {
             var signatures = List[Signature]()
             skip(LBracketLeft, "{")
-            signatures ::= parseSignature(Some(nameToken.raw))
+            while(!current.is(LBracketRight)) {
+                signatures ::= parseSignature(Some(nameToken.raw))
+                if(!current.is(LBracketRight)) skip(LComma)
+            }
             skip(LBracketRight, "}")
             signatures
         }
@@ -114,7 +117,10 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         val methods = if(!current.isString("{")) List() else {
             var definitions = List[DFunction]()
             skip(LBracketLeft, "{")
-            definitions ::= parseFunctionDefinition(Some(nameToken.raw))
+            while(!current.is(LBracketRight)) {
+                definitions ::= parseFunctionDefinition(Some(nameToken.raw))
+                if(!current.is(LBracketRight)) skip(LComma)
+            }
             skip(LBracketRight, "}")
             definitions
         }
