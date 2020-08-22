@@ -49,7 +49,14 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             }
             if(!current.is(LEnd)) skip(LComma)
         }
-        result
+        Module(
+            file = file,
+            lets = result.lets.reverse,
+            functions = result.functions.reverse,
+            types = result.types.reverse,
+            traits = result.traits.reverse,
+            instances = result.instances.reverse
+        )
     }
 
     def parseLetDefinition(scopeType : Option[String] = None) : DLet = {
