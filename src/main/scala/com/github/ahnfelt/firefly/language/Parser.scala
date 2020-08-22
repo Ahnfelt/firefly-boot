@@ -94,18 +94,38 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         val nameToken = skip(LUpper)
         val (generics, constraints) = if(!current.isString("[")) List() -> List() else parseTypeParameters()
         val generatorParameters = if(!current.isString("(")) List() else parseFunctionParameters()
-        var generatorTerms = List[(String, Term)]()
-        val methods = if(!current.isString("{")) List() else {
+        var methodGenerators = List[(String, Term)]()
+        var methodDefaults = List[(String, Term)]()
+        val methodSignatures = if(!current.isString("{")) List() else {
             var signatures = List[Signature]()
             skip(LBracketLeft, "{")
             while(!current.is(LBracketRight)) {
-                signatures ::= parseSignature(Some(nameToken.raw))
+                val signature = parseSignature(Some(nameToken.raw))
+                signatures ::= signature
+                if(current.isString("{")) {
+                    val generator = ahead.is(LKeyword) && ahead.isString("generate")
+                    val body = parseLambda(signature.parameters.size, ignoreGenerateKeyword = true)
+                    if(generator) {
+                        methodGenerators ::= signature.name -> body
+                    } else {
+                        methodDefaults ::= signature.name -> body
+                    }
+                }
                 if(!current.is(LBracketRight)) skip(LComma)
             }
             skip(LBracketRight, "}")
             signatures
         }
-        DTrait(nameToken.at, nameToken.raw, generics, constraints, methods, generatorParameters, generatorTerms)
+        DTrait(
+            nameToken.at,
+            nameToken.raw,
+            generics,
+            constraints,
+            generatorParameters,
+            methodSignatures.reverse,
+            methodDefaults.reverse,
+            methodGenerators.reverse
+        )
     }
 
     def parseInstanceDefinition() : DInstance = {
@@ -171,14 +191,14 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         parameters.reverse -> constraints.reverse
     }
 
-    def parseTypeArguments() : List[Type] = {
-        skip(LBracketLeft, "[")
+    def parseTypeArguments(parenthesis : Boolean = false) : List[Type] = {
+        skip(LBracketLeft, if(parenthesis) "(" else "[")
         var types = List[Type]()
         while(!current.is(LBracketRight)) {
             types ::= parseType()
             if(!current.is(LBracketRight)) skip(LComma)
         }
-        skip(LBracketRight, "]")
+        skip(LBracketRight, if(parenthesis) ")" else "]")
         types.reverse
     }
 
@@ -188,7 +208,11 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         while(!current.is(LBracketRight)) {
             val parameterNameToken = skip(LLower)
             val parameterType = parseOptionalType()
-            parameters ::= Parameter(parameterNameToken.at, parameterNameToken.raw, parameterType)
+            val default = if(!current.is(LAssign)) None else Some {
+                skip(LAssign)
+                parseTerm()
+            }
+            parameters ::= Parameter(parameterNameToken.at, parameterNameToken.raw, parameterType, default)
             if(!current.is(LBracketRight)) skip(LComma)
         }
         skip(LBracketRight, ")")
@@ -214,8 +238,9 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         } else Type(token.at, "?", List())
     }
 
-    def parseLambda(defaultParameterCount : Int = 0) : ELambda = {
+    def parseLambda(defaultParameterCount : Int = 0, ignoreGenerateKeyword : Boolean = false) : ELambda = {
         val token = skip(LBracketLeft, "{")
+        if(ignoreGenerateKeyword && current.is(LKeyword) && current.isString("generate")) skip(LKeyword)
         val result = if(current.is(LPipe)) {
             var cases = List[MatchCase]()
             while(current.is(LPipe)) {
@@ -276,18 +301,18 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseType() : Type = {
-        val token = skip(LUpper)
-        val arguments = if(!current.isString("[")) List() else {
-            var result = List[Type]()
-            skip(LBracketLeft, "[")
-            while(!current.is(LBracketRight)) {
-                result ::= parseType()
-                if(!current.is(LBracketRight)) skip(LComma)
-            }
-            skip(LBracketRight, "]")
-            result.reverse
+        val leftTypes = if(current.isString("(")) {
+            parseTypeArguments(parenthesis = true)
+        } else {
+            val token = skip(LUpper)
+            val arguments = if(!current.isString("[")) List() else parseTypeArguments()
+            List(Type(token.at, token.raw, arguments))
         }
-        Type(token.at, token.raw, arguments)
+        if(!current.is(LArrowThick) && leftTypes.size == 1) leftTypes.head else {
+            val arrowToken = skip(LArrowThick)
+            val rightType = parseType()
+            Type(arrowToken.at, "Function" + leftTypes.size, leftTypes ++ List(rightType))
+        }
     }
 
     def parseStatements() : Term = {
@@ -296,7 +321,8 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseTerm() : Term = {
-        ???
+        offset += 1
+        EInt(current.at, "43")
     }
 
 }

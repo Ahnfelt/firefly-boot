@@ -43,9 +43,10 @@ object Syntax {
         name : String,
         generics : List[String],
         constraints : List[Constraint],
-        methods : List[Signature],
         generatorParameters : List[Parameter],
-        generatorTerms : List[(String, Term)]
+        methods : List[Signature],
+        methodDefaults : List[(String, Term)],
+        methodGenerators : List[(String, Term)]
     )
     case class DInstance(
         at : Location,
@@ -89,7 +90,7 @@ object Syntax {
 
     case class Variant(at : Location, name : String, fields : List[Parameter])
 
-    case class Parameter(at : Location, name : String, valueType : Type)
+    case class Parameter(at : Location, name : String, valueType : Type, default : Option[Term])
 
     case class Constraint(representation : Type)
 

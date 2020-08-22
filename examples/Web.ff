@@ -1,9 +1,9 @@
-// trait Component[C, E](customName: Option[String] = None) {
-//     name(): String { generate c, e =>
-//         Generate.string(customName.else { c.typeConstructorName })
-//     }
-//     render(self: C, emit: E => Unit): View
-// }
+trait Component[C, E](customName: Option[String] = None) {
+    name(): String { generate c, e =>
+       Generate.string(customName.else) //{ c.typeConstructorName })
+    }
+    render(self: C, emit: E => Unit): View
+}
 
 
 type Action {
