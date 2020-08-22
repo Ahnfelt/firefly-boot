@@ -1,3 +1,5 @@
+package com.github.ahnfelt.firefly
+
 import com.github.ahnfelt.firefly.language.{Parser, Tokenizer}
 
 import scala.io.Source
