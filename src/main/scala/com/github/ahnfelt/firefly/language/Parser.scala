@@ -275,11 +275,6 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         }
     }
 
-    def parseStatements() : Term = {
-        while(!current.isString("}")) offset += 1
-        EInt(current.at, "42")
-    }
-
     def parseType() : Type = {
         val token = skip(LUpper)
         val arguments = if(!current.isString("[")) List() else {
@@ -293,6 +288,11 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             result.reverse
         }
         Type(token.at, token.raw, arguments)
+    }
+
+    def parseStatements() : Term = {
+        while(!current.isString("}")) offset += 1
+        EInt(current.at, "42")
     }
 
     def parseTerm() : Term = {
