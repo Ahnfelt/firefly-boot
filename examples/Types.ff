@@ -4,3 +4,8 @@ type Bool {
     False
     True
 }
+
+type Option[T] {
+    None
+    Some(value: T)
+}

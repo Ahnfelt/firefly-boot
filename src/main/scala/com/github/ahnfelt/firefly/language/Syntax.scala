@@ -93,7 +93,7 @@ object Syntax {
 
     case class Parameter(at : Location, name : String, valueType : Type)
 
-    case class Constraint(at : Location, name : String, traitName : String, generics : List[Type])
+    case class Constraint(representation : Type)
 
     case class Type(at : Location, name : String, generics : List[Type])
 

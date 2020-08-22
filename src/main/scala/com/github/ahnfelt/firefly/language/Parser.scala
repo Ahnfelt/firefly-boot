@@ -116,8 +116,18 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
 
     def parseTypeParameters() : (List[String], List[Constraint]) = {
         skip(LBracketLeft, "[")
+        var parameters = List[String]()
+        var constraints = List[Constraint]()
+        while(!current.is(LBracketRight)) {
+            val parameterNameToken = skip(LUpper)
+            parameters ::= parameterNameToken.raw
+            while(current.is(LUpper)) {
+                constraints ::= Constraint(parseType())
+            }
+            if(!current.is(LBracketRight)) skip(LComma)
+        }
         skip(LBracketRight, "]")
-        ???
+        parameters.reverse -> constraints.reverse
     }
 
     def parseFunctionParameters() : List[Parameter] = {
