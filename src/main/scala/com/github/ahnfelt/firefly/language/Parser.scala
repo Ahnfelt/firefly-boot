@@ -89,7 +89,22 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
 
     def parseTypeDefinition() : DType = {
         skip(LKeyword, "type")
-        ???
+        val nameToken = skip(LUpper)
+        val (generics, constraints) = if(!current.isString("[")) List() -> List() else parseTypeParameters()
+        val commonFields = if(!current.isString("(")) List() else parseFunctionParameters()
+        val variants = if(!current.isString("{")) List(Variant(nameToken.at, nameToken.raw, List())) else {
+            skip(LBracketLeft, "{")
+            var reverseVariants = List[Variant]()
+            while(!current.is(LBracketRight)) {
+                val variantNameToken = skip(LUpper)
+                val variantFields = if(!current.isString("(")) List() else parseFunctionParameters()
+                reverseVariants ::= Variant(variantNameToken.at, variantNameToken.raw, variantFields)
+                if(!current.is(LBracketRight)) skip(LComma)
+            }
+            skip(LBracketRight, "}")
+            reverseVariants.reverse
+        }
+        DType(nameToken.at, nameToken.raw, generics, constraints, commonFields, variants)
     }
 
     def parseTypeParameters() : (List[String], List[Constraint]) = {

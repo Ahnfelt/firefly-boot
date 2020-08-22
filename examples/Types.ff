@@ -1,0 +1,6 @@
+type Point(x: Int, y: Int)
+
+type Bool {
+    False
+    True
+}

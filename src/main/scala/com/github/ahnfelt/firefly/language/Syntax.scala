@@ -33,6 +33,8 @@ object Syntax {
     case class DType(
         at : Location,
         name : String,
+        generics : List[String],
+        constraints : List[Constraint],
         commonFields : List[Parameter],
         variants : List[Variant]
     )
