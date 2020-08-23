@@ -27,7 +27,7 @@ instance Component[Counter, Action] {
 type App()
 
 instance Component[App, Never] {
-    render(self: Counter, emit: Action => Never) {
+    render(self: App, emit: Action => Never) {
         R_useState(0): value, setValue =>
         R_view: R_of(Counter(0)) {
             | Increment => setValue(value - 1)
