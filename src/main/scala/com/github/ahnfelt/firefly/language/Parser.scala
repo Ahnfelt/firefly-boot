@@ -54,7 +54,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             } else {
                 skip(LEnd)
             }
-            if(!current.is(LEnd)) skipSeparator(LComma)
+            if(!current.is(LEnd)) skipSeparator(LSemicolon)
         }
         Module(
             file = file,
@@ -118,7 +118,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                         methodDefaults ::= signature.name -> body
                     }
                 }
-                if(!current.is(LBracketRight)) skipSeparator(LComma)
+                if(!current.is(LBracketRight)) skipSeparator(LSemicolon)
             }
             skip(LBracketRight, "}")
             signatures
@@ -146,7 +146,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             skip(LBracketLeft, "{")
             while(!current.is(LBracketRight)) {
                 definitions ::= parseFunctionDefinition(Some(nameToken.raw))
-                if(!current.is(LBracketRight)) skipSeparator(LComma)
+                if(!current.is(LBracketRight)) skipSeparator(LSemicolon)
             }
             skip(LBracketRight, "}")
             definitions
@@ -166,7 +166,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                 val variantNameToken = skip(LUpper)
                 val variantFields = if(!current.rawIs("(")) List() else parseFunctionParameters(allowMutable = true)
                 reverseVariants ::= Variant(variantNameToken.at, variantNameToken.raw, variantFields)
-                if(!current.is(LBracketRight)) skipSeparator(LComma)
+                if(!current.is(LBracketRight)) skipSeparator(LSemicolon)
             }
             skip(LBracketRight, "}")
             reverseVariants.reverse
@@ -192,13 +192,13 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                     ))
                 }
             }
-            if(!current.is(LBracketRight)) skipSeparator(LComma)
+            if(!current.is(LBracketRight)) skip(LComma)
         }
         if(current.is(LSemicolon)) {
             skip(LSemicolon)
             while(!current.is(LBracketRight)) {
                 constraints ::= Constraint(parseType())
-                if(!current.is(LBracketRight)) skipSeparator(LComma)
+                if(!current.is(LBracketRight)) skip(LComma)
             }
         }
         skip(LBracketRight, "]")
@@ -210,7 +210,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         var types = List[Type]()
         while(!current.is(LBracketRight)) {
             types ::= parseType()
-            if(!current.is(LBracketRight)) skipSeparator(LComma)
+            if(!current.is(LBracketRight)) skip(LComma)
         }
         skip(LBracketRight, if(parenthesis) ")" else "]")
         types.reverse
@@ -273,7 +273,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             while(!current.is(LArrowThick)) {
                 val parameterToken = skip(LLower)
                 parameters ::= PVariable(parameterToken.at, Some(parameterToken.raw))
-                if(!current.is(LArrowThick)) skipSeparator(LComma)
+                if(!current.is(LArrowThick)) skip(LComma)
             }
             skip(LArrowThick)
             val term = parseStatements()
@@ -291,7 +291,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         var patterns = List[MatchPattern]()
         while(!current.is(LArrowThick)) {
             patterns ::= parsePattern()
-            if(!current.is(LArrowThick)) skipSeparator(LComma)
+            if(!current.is(LArrowThick)) skip(LComma)
         }
         skip(LArrowThick)
         val body = parseStatements()
@@ -312,7 +312,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                 skip(LBracketLeft, "(")
                 while(!current.is(LBracketRight)) {
                     result ::= parsePattern()
-                    if(!current.is(LBracketRight)) skipSeparator(LComma)
+                    if(!current.is(LBracketRight)) skip(LComma)
                 }
                 skip(LBracketRight, ")")
                 result.reverse

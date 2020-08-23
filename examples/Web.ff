@@ -7,8 +7,7 @@ trait Component[C, E](customName: Option[String] = None) {
 
 
 type Action {
-    Increment
-    Decrement
+    Increment;    Decrement
 }
 
 type Counter(value: Int)
