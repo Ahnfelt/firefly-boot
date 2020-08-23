@@ -14,7 +14,7 @@ type Action {
 type Counter(value: Int)
 
 instance Component[Counter, Action] {
-    render(self, emit) {
+    render(self: Counter, emit: Action => Unit) {
         R_view: R_divT(
             R_buttonT(R_click {emit(Decrement)}, R_text("-"))
             R_text(self.value.show)
@@ -27,7 +27,7 @@ instance Component[Counter, Action] {
 type App()
 
 instance Component[App, Never] {
-    render(self, emit) {
+    render(self: Counter, emit: Action => Never) {
         R_useState(0): value, setValue =>
         R_view: R_of(Counter(0)) {
             | Increment => setValue(value - 1)
