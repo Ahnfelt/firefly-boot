@@ -451,7 +451,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         else if(current.is(LNamespace)) {
             val namespaceToken = skip(LNamespace)
             val extraNamespace = if(!current.is(LNamespace)) None else Some(skip(LNamespace).raw)
-            val prefix = namespaceToken.raw + extraNamespace
+            val prefix = namespaceToken.raw + extraNamespace.getOrElse("")
             if(current.is(LLower)) { val token = skip(LLower); EVariable(token.at, prefix + token.raw) } else {
                 val token = skip(LUpper)
                 val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
