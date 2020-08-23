@@ -171,7 +171,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         skip(LBracketLeft, "[")
         var parameters = List[String]()
         var constraints = List[Constraint]()
-        while(!current.is(LBracketRight)) {
+        while(!current.is(LBracketRight) && !current.is(LSemicolon)) {
             if(ahead.is(LBracketLeft)) {
                 constraints ::= Constraint(parseType())
             } else {
@@ -186,6 +186,13 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                 }
             }
             if(!current.is(LBracketRight)) skip(LComma)
+        }
+        if(current.is(LSemicolon)) {
+            skip(LSemicolon)
+            while(!current.is(LBracketRight)) {
+                constraints ::= Constraint(parseType())
+                if(!current.is(LBracketRight)) skip(LComma)
+            }
         }
         skip(LBracketRight, "]")
         parameters.reverse -> constraints.reverse

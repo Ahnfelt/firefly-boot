@@ -28,7 +28,17 @@ type App()
 
 instance Component[App, Never] {
     render(self, emit) {
-        R.useState(0): value, setValue =>
+        R.useState(0): value =>
         R.view: ...
     }
 }
+
+
+getX[A: X[B], B](value : A) : B {}
+
+
+// instance Show[Pair[A: Show, B: Show]]
+
+
+// for Profile, Page, Pair instance ToJson, FromJson
+
