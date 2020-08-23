@@ -1,9 +1,10 @@
 trait Component[C, E](customName: Option[String] = None) {
     name(): String { generate c, e =>
-       Generate.string(customName.else) //{ c.typeConstructorName })
+        Generate.string(customName.else { c.typeConstructorName })
     }
     render(self: C, emit: E => Unit): View
 }
+
 
 type Action {
     Increment
@@ -15,9 +16,9 @@ type Counter(value: Int)
 instance Component[Counter, Action] {
     render(self, emit) {
         R.view: R.divT(
-            R.buttonT(R.click ..., R.text("-"))
+            R.buttonT(R.click {emit(Decrement)}, R.text("-"))
             R.text(self.value.show)
-            R.buttonT(R.click ..., R.text("+"))
+            R.buttonT(R.click {emit(Increment)}, R.text("+"))
         )
     }
 }
@@ -27,17 +28,10 @@ type App()
 
 instance Component[App, Never] {
     render(self, emit) {
-        R.useState(0): value =>
-        R.view: ...
+        R.useState(0): value, setValue =>
+        R.view: R.of(Counter(0)) {
+            | Increment => setValue(value - 1)
+            | Decrement => setValue(value + 1)
+        }
     }
 }
-
-
-getX[A: X[B], B](value : A) : B {}
-
-
-// instance Show[Pair[A: Show, B: Show]]
-
-
-// for Profile, Page, Pair instance ToJson, FromJson
-
