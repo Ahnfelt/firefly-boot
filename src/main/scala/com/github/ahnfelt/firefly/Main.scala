@@ -16,13 +16,18 @@ object Main {
         if(outputFile.exists()) deleteDirectory(outputFile)
         outputFile.mkdir()
 
+        var resultFiles = List[File]()
         for(file <- new File(inputPath).listFiles()) {
             if(file.getName.endsWith(".ff")) {
                 compileFile(file.getAbsolutePath, new File(outputFile, file.getName.dropRight(3) + ".scala"))
+                resultFiles ::= file
             }
         }
+        resultFiles = resultFiles.reverse
 
-        println("Done.")
+        //val process = new ProcessBuilder(("scalac" :: resultFiles.map(_.toString)).toArray[String] : _*).start()
+        //process.waitFor()
+        //println("Exit code of scalac: " + process.exitValue())
 
     }
 
