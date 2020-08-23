@@ -5,14 +5,29 @@ import com.github.ahnfelt.firefly.language.Syntax._
 class Emitter() {
 
     def emitModule(module : Module) : String = {
+        println(module.functions.map(f => f.namespace -> f.signature.name))
+        val namespaces = module.types.map { definition =>
+            val lets = module.lets.filter(_.namespace.contains(definition.name + "_"))
+            val functions = module.functions.filter(_.namespace.contains(definition.name + "_"))
+            if(lets.isEmpty && functions.isEmpty) None
+            else Some(emitTypeMembers(definition.name, lets, functions))
+        }
         val parts = List(
             module.types.map(emitTypeDefinition),
-            module.lets.map(emitLetDefinition(_)),
-            module.functions.map(emitFunctionDefinition),
+            module.lets.filter(_.namespace.isEmpty).map(emitLetDefinition(_)),
+            module.functions.filter(_.namespace.isEmpty).map(emitFunctionDefinition),
             module.traits.map(emitTraitDefinition),
             module.instances.map(emitInstanceDefinition),
+            namespaces.flatten
         )
         parts.map(_.mkString("\n\n")).mkString("\n") + "\n"
+    }
+
+    def emitTypeMembers(name : String, lets : List[DLet], functions : List[DFunction]) = {
+        val strings =
+            lets.map(emitLetDefinition(_)) ++
+            functions.map(emitFunctionDefinition)
+        "object " + name + " {\n\n" + strings.mkString("\n\n") + "\n\n}"
     }
 
     def emitTypeDefinition(definition : DType) : String = {
@@ -44,7 +59,7 @@ class Emitter() {
                 signature + " = {\n" + body + "\n}"
             case _ =>
                 val tuple = "(" + definition.signature.parameters.map(p => p.name).mkString(", ") + ")"
-                val cases = definition.body.cases.map(emitCase)
+                val cases = definition.body.cases.map(emitCase).mkString("\n")
                 signature + " = " + tuple + " match {\n" + cases + "\n}"
         }
     }
@@ -86,7 +101,7 @@ class Emitter() {
 
     def emitType(t : Type) : String = {
         val generics = if(t.generics.isEmpty) "" else "[" + t.generics.map(emitType).mkString(", ") + "]"
-        t.name + generics
+        t.name.replace("_", ".") + generics
     }
 
     def emitStatements(term : Term) : String = term match {
@@ -104,7 +119,7 @@ class Emitter() {
         case EString(at, value) => value
         case EInt(at, value) => value
         case EFloat(at, value) => value
-        case EVariable(at, name) => name
+        case EVariable(at, name) => name.replace("_", ".")
         case EList(at, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
         case EVariant(at, name, arguments) => name + "(" + arguments.map(emitTerm).mkString(", ") + ")"
         case EField(at, record, field) => emitTerm(record) + "." + field
@@ -112,8 +127,8 @@ class Emitter() {
             val parameters = patterns.map(_.asInstanceOf[PVariable].name.getOrElse("_")).mkString(", ")
             "{(" + parameters + ") =>\n" + emitStatements(body) + "\n}"
         case ELambda(at, cases) =>
-            val caseStrings = cases.map(emitCase)
-            "{\n" + caseStrings + "\n}"
+            val casesString = cases.map(emitCase).mkString("\n")
+            "{\n" + casesString + "\n}"
         case ECall(at, function, typeArguments, arguments) =>
             val generics = if(typeArguments.isEmpty) "" else "[" + typeArguments.map(emitType).mkString(", ") + "]"
             emitTerm(function) + generics + "(" + arguments.map(emitTerm).mkString(", ") + ")"
@@ -122,7 +137,7 @@ class Emitter() {
     }
 
     def emitCase(matchCase : MatchCase) = {
-        val patterns = matchCase.patterns.map(emitPattern)
+        val patterns = matchCase.patterns.map(emitPattern).mkString(", ")
         "case " + patterns + " =>\n" + emitStatements(matchCase.body)
     }
 

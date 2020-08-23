@@ -10,11 +10,7 @@ type Option[T] {
     Some(value: T)
 }
 
-// sum[T: Monoid](list: List[T]) {
-//     | Empty => Monoid.zero()
-//     | Link(head, tail) => Monoid.add(head, sum(tail))
-// }
-
-// trait Show[T] {
-//     show(value: T): String
-// }
+Option_default(option: Option[T], value: T): T {
+    | Some(x), _ => x
+    | None, x => x
+}

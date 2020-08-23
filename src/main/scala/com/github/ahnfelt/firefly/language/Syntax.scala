@@ -19,13 +19,13 @@ object Syntax {
 
     case class DFunction(
         at : Location,
-        scopeType : Option[String],
+        namespace : Option[String],
         signature : Signature,
         body : ELambda
     )
     case class DLet(
         at : Location,
-        scopeType : Option[String],
+        namespace : Option[String],
         name : String,
         variableType : Type,
         value : Term
