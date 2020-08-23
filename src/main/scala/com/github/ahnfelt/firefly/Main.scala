@@ -1,6 +1,6 @@
 package com.github.ahnfelt.firefly
 
-import com.github.ahnfelt.firefly.language.{Parser, Tokenizer}
+import com.github.ahnfelt.firefly.language.{Emitter, Parser, Tokenizer}
 
 import scala.io.Source
 
@@ -21,6 +21,11 @@ object Main {
         val module = new Parser(file, tokens).parseModule()
 
         println(module)
+        println()
+
+        val out = new Emitter().emitModule(module)
+
+        println(out)
 
     }
 

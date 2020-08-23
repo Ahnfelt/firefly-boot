@@ -10,11 +10,11 @@ type Option[T] {
     Some(value: T)
 }
 
-sum[T: Monoid](list: List[T]) {
-    | Empty => Monoid.zero()
-    | Link(head, tail) => Monoid.add(head, sum(tail))
-}
+// sum[T: Monoid](list: List[T]) {
+//     | Empty => Monoid.zero()
+//     | Link(head, tail) => Monoid.add(head, sum(tail))
+// }
 
-trait Show[T] {
-    show(value: T): String
-}
+// trait Show[T] {
+//     show(value: T): String
+// }

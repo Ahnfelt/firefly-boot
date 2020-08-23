@@ -38,13 +38,13 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             if(current.is(LLower) && ahead.is(LAssign)) {
                 result = result.copy(lets = parseLetDefinition() :: result.lets)
             } else if(current.is(LNamespace) && ahead.is(LLower) && aheadAhead.is(LAssign)) {
-                val scopeType = Some(skip(LNamespace).raw)
-                result = result.copy(lets = parseLetDefinition(scopeType) :: result.lets)
+                val namespace = Some(skip(LNamespace).raw)
+                result = result.copy(lets = parseLetDefinition(namespace) :: result.lets)
             } else if(current.is(LLower) && ahead.is(LBracketLeft)) {
                 result = result.copy(functions = parseFunctionDefinition() :: result.functions)
             } else if(current.is(LNamespace) && ahead.is(LLower) && aheadAhead.is(LBracketLeft)) {
-                val scopeType = Some(skip(LNamespace).raw)
-                result = result.copy(functions = parseFunctionDefinition(scopeType) :: result.functions)
+                val namespace = Some(skip(LNamespace).raw)
+                result = result.copy(functions = parseFunctionDefinition(namespace) :: result.functions)
             } else if(current.is(LKeyword) && current.rawIs("trait")) {
                 result = result.copy(traits = parseTraitDefinition() :: result.traits)
             } else if(current.is(LKeyword) && current.rawIs("instance")) {
