@@ -68,11 +68,35 @@ class Emitter() {
     }
 
     def emitTraitDefinition(definition : DTrait) : String = {
-        "// TODO: Traits"
+        val generics = emitTypeParameters(definition.generics)
+        val implicits = emitConstraints(definition.constraints)
+        val parameters = if(definition.generatorParameters.isEmpty) ""
+            else "(" + definition.generatorParameters.map(emitParameter).mkString(", ") + ")"
+        val methods = if(definition.methods.isEmpty) "" else " {\n\n" + definition.methods.map { signature =>
+            val body = definition.methodDefaults.find(_._1 == signature.name).map { case (_, e) =>
+                " {\n" + emitStatements(e) + "\n}"
+            }.orElse(definition.methodGenerators.find(_._1 == signature.name).map { case (_, e) =>
+                " {\n// TODO: Generate\n}"
+            }).getOrElse {
+                ""
+            }
+            emitSignature(signature) + body
+        }.mkString("\n\n") + "\n\n}"
+        "abstract class " + definition.name + generics + parameters + implicits + methods
     }
 
     def emitInstanceDefinition(definition : DInstance) : String = {
-        "// TODO: Instances"
+        val signature = emitSignature(Signature(
+            definition.at,
+            definition.name + "_" + definition.hashCode().abs,
+            List(),
+            definition.constraints,
+            List(),
+            Type(definition.at, "?", List())
+        ))
+        val methods = " {\n\n" + definition.methods.map(emitFunctionDefinition).mkString("\n\n") + "\n\n}"
+        val value = "new " + emitType(Type(definition.at, definition.name, definition.generics)) + methods
+        "implicit " + signature + " = " + value
     }
 
     def emitVariantDefinition(typeDefinition : DType, definition : Variant) : String = {
@@ -93,6 +117,11 @@ class Emitter() {
         val mutability = if(parameter.mutable) "var " else ""
         val defaultValue = parameter.default.map(f => " = " + emitTerm(f)).getOrElse("")
         mutability + parameter.name + emitTypeAnnotation(parameter.valueType) + defaultValue
+    }
+
+    def emitConstraints(constraints : List[Constraint]) : String = if(constraints.isEmpty) "" else {
+        val pairs = constraints.map(_.representation).map(emitType).zipWithIndex
+        "(implicit " + pairs.map { case (k, v) => "i_" + v + " : " + k }.mkString(", ") + ")"
     }
 
     def emitTypeParameters(generics : List[String]) = {
@@ -137,6 +166,10 @@ class Emitter() {
         case ELambda(at, cases) =>
             val casesString = cases.map(emitCase).mkString("\n")
             "{\n" + casesString + "\n}"
+        case ECall(at, EVariable(_, operator), List(), List(value)) if !operator.head.isLower =>
+            "(" + operator + emitTerm(value) + ")"
+        case ECall(at, EVariable(_, operator), List(), List(left, right)) if !operator.head.isLower =>
+            "(" + emitTerm(left) + " " + operator + " " + emitTerm(right) + ")"
         case ECall(at, function, typeArguments, arguments) =>
             val generics = if(typeArguments.isEmpty) "" else "[" + typeArguments.map(emitType).mkString(", ") + "]"
             emitTerm(function) + generics + "(" + arguments.map(emitTerm).mkString(", ") + ")"
