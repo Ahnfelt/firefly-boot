@@ -166,9 +166,9 @@ class Emitter() {
         case ELambda(at, cases) =>
             val casesString = cases.map(emitCase).mkString("\n")
             "{\n" + casesString + "\n}"
-        case ECall(at, EVariable(_, operator), List(), List(value)) if !operator.head.isLower =>
+        case ECall(at, EVariable(_, operator), List(), List(value)) if !operator.head.isLetter =>
             "(" + operator + emitTerm(value) + ")"
-        case ECall(at, EVariable(_, operator), List(), List(left, right)) if !operator.head.isLower =>
+        case ECall(at, EVariable(_, operator), List(), List(left, right)) if !operator.head.isLetter =>
             "(" + emitTerm(left) + " " + operator + " " + emitTerm(right) + ")"
         case ECall(at, function, typeArguments, arguments) =>
             val generics = if(typeArguments.isEmpty) "" else "[" + typeArguments.map(emitType).mkString(", ") + "]"
