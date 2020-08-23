@@ -29,12 +29,12 @@ case class Token(
     def is(kind1 : TokenKind, kind2 : TokenKind, kind3 : TokenKind) = {
         kind == kind1 || kind == kind2 || kind == kind3
     }
-    def isString(value : String) = {
+    def rawIs(value : String) = {
         code.regionMatches(startOffset, value, 0, value.length)
     }
 }
 
-sealed abstract class TokenKind(val beforeComma : Boolean, val afterComma : Boolean, val afterKeyword : Boolean)
+sealed abstract class TokenKind(val beforeSeparator : Boolean, val afterSeparator : Boolean, val afterKeyword : Boolean)
 case object LEnd extends TokenKind(false, false, false)
 case object LString extends TokenKind(true, true, true)
 case object LInt extends TokenKind(true, true, true)
@@ -49,6 +49,7 @@ case object LBracketLeft extends TokenKind(false, true, false)
 case object LBracketRight extends TokenKind(true, false, false)
 case object LOperator extends TokenKind(false, false, false)
 case object LComma extends TokenKind(false, false, false)
+case object LSeparator extends TokenKind(false, false, false)
 case object LDot extends TokenKind(false, false, false)
 case object LSemicolon extends TokenKind(false, false, false)
 case object LPipe extends TokenKind(false, false, false)
@@ -79,9 +80,9 @@ object Tokenizer {
                 if(last.stopLine == startLine && last.kind == LLower && kind.afterKeyword) {
                     tokens(tokens.size - 1) = tokens(tokens.size - 1).copy(kind = LKeyword)
                 }
-                if(last.stopLine != startLine && last.kind.beforeComma && kind.afterComma) {
+                if(last.stopLine != startLine && last.kind.beforeSeparator && kind.afterSeparator) {
                     tokens.append(Token(
-                        file, code, LComma, startLine, startLineOffset, startOffset, line, lineOffset, stopOffset
+                        file, code, LSeparator, startLine, startLineOffset, startOffset, line, lineOffset, stopOffset
                     ))
                 }
             }
