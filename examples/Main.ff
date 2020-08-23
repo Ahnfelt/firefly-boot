@@ -17,5 +17,5 @@ uploadFile(net: Network, payload: String): Unit {
 // This function has no access to the network, no access to the file system, etc.
 // In other words, it's a pure function.
 process(bytes: Array[Byte]): String {
-    String.fromUtf8(bytes)
+    String_fromUtf8(bytes)
 }

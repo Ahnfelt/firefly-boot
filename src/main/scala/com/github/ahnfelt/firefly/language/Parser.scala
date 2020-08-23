@@ -379,7 +379,19 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseTerm() : Term = {
-        parseBinary(0)
+        parsePipe()
+    }
+
+    def parsePipe() : Term = {
+        var result = parseBinary(0)
+        if(current.is(LOperator)) {
+            while(current.rawIs("|>")) {
+                val token = skip(LOperator)
+                val right = parseBinary(0)
+                result = ECall(token.at, right, List(), List(result))
+            }
+        }
+        result
     }
 
     val binaryOperators = Array(
