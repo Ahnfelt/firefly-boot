@@ -37,13 +37,13 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         while(!current.is(LEnd)) {
             if(current.is(LLower) && ahead.is(LAssign)) {
                 result = result.copy(lets = parseLetDefinition() :: result.lets)
-            } else if(current.is(LScopeType) && ahead.is(LLower) && aheadAhead.is(LAssign)) {
-                val scopeType = Some(skip(LScopeType).raw)
+            } else if(current.is(LNamespace) && ahead.is(LLower) && aheadAhead.is(LAssign)) {
+                val scopeType = Some(skip(LNamespace).raw)
                 result = result.copy(lets = parseLetDefinition(scopeType) :: result.lets)
             } else if(current.is(LLower) && ahead.is(LBracketLeft)) {
                 result = result.copy(functions = parseFunctionDefinition() :: result.functions)
-            } else if(current.is(LScopeType) && ahead.is(LLower) && aheadAhead.is(LBracketLeft)) {
-                val scopeType = Some(skip(LScopeType).raw)
+            } else if(current.is(LNamespace) && ahead.is(LLower) && aheadAhead.is(LBracketLeft)) {
+                val scopeType = Some(skip(LNamespace).raw)
                 result = result.copy(functions = parseFunctionDefinition(scopeType) :: result.functions)
             } else if(current.is(LKeyword) && current.rawIs("trait")) {
                 result = result.copy(traits = parseTraitDefinition() :: result.traits)
@@ -252,8 +252,13 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         } else Type(token.at, "?", List())
     }
 
-    def parseLambda(defaultParameterCount : Int = 0, ignoreGenerateKeyword : Boolean = false) : ELambda = {
-        val token = skip(LBracketLeft, "{")
+    def parseLambda(
+        defaultParameterCount : Int = 0,
+        ignoreGenerateKeyword : Boolean = false,
+        allowColon : Boolean = false
+    ) : ELambda = {
+        val colon = allowColon && current.is(LColon)
+        val token = if(colon) skip(LColon) else skip(LBracketLeft, "{")
         if(ignoreGenerateKeyword && current.is(LKeyword) && current.rawIs("generate")) skip(LKeyword)
         val result = if(current.is(LPipe)) {
             var cases = List[MatchCase]()
@@ -275,7 +280,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             val term = parseStatements()
             List(MatchCase(token.at, 1.to(defaultParameterCount).toList.map(_ => PVariable(token.at, None)), term))
         }
-        skip(LBracketRight, "}")
+        if(!colon) skip(LBracketRight, "}")
         ELambda(token.at, result)
     }
 
@@ -330,6 +335,15 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseStatements() : Term = {
+        var result = parseStatement()
+        while(currentIsSeparator(LSemicolon)) {
+            val token = skipSeparator(LSemicolon)
+            result = ESequential(token.at, result, parseStatement())
+        }
+        result
+    }
+
+    def parseStatement() : Term = {
         if(current.rawIs("let") || current.rawIs("mutable")) parseLet()
         else if(current.rawIs("function")) parseFunctions()
         else parseTerm()
@@ -365,8 +379,111 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseTerm() : Term = {
-        offset += 1
-        EInt(current.at, "43")
+        parseBinary(0)
+    }
+
+    val binaryOperators = Array(
+        List("||"),
+        List("&&"),
+        List("!=", "=="),
+        List("<=", ">=", "<", ">"),
+        List("++"),
+        List("+", "-"),
+        List("*", "/", "%"),
+        List("^")
+    )
+
+    def parseBinary(level : Int) : Term = if(level >= binaryOperators.length) parseUnary() else {
+        val operators = binaryOperators(level)
+        var result = parseBinary(level + 1)
+        if(current.is(LOperator)) {
+            while(operators.exists(current.rawIs)) {
+                val token = skip(LOperator)
+                val right = parseBinary(level + 1)
+                result = ECall(token.at, EVariable(token.at, token.raw), List(), List(result, right))
+            }
+        }
+        result
+    }
+
+    def parseUnary() : Term = {
+        if(current.is(LOperator)) {
+            val token = skip(LOperator)
+            val term = parseUnary()
+            ECall(token.at, EVariable(token.at, token.raw), List(), List(term))
+        } else {
+            parseFieldsAndCalls()
+        }
+    }
+
+    def parseFieldsAndCalls() : Term = {
+        var result = parseAtom()
+        while(current.is(LBracketLeft) || current.is(LColon) || current.is(LDot)) {
+            if(current.is(LDot)) {
+                skip(LDot)
+                val token = skip(LLower)
+                result = EField(token.at, result, token.raw)
+            } else {
+                val at = current.at
+                val typeArguments = if(!current.rawIs("[")) List() else parseTypeArguments()
+                val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
+                var moreArguments = List[Term]()
+                var lastWasCurly = false
+                while(current.rawIs("{") || current.is(LColon)) {
+                    lastWasCurly = current.rawIs("{")
+                    moreArguments ::= parseLambda(allowColon = true)
+                }
+                result = ECall(at, result, typeArguments, arguments ++ moreArguments.reverse)
+                if(lastWasCurly && current.is(LLower)) {
+                    val token = skip(LLower)
+                    result = EField(token.at, result, token.raw)
+                }
+            }
+        }
+        result
+    }
+
+    def parseAtom() : Term = {
+        if(current.is(LString)) { val token = skip(LString); EString(token.at, token.raw) }
+        else if(current.is(LInt)) { val token = skip(LInt); EInt(token.at, token.raw) }
+        else if(current.is(LFloat)) { val token = skip(LFloat); EFloat(token.at, token.raw) }
+        else if(current.is(LLower)) { val token = skip(LLower); EVariable(token.at, token.raw) }
+        else if(current.is(LNamespace)) {
+            val namespaceToken = skip(LNamespace)
+            val extraNamespace = if(!current.is(LNamespace)) None else Some(skip(LNamespace).raw)
+            val prefix = namespaceToken.raw + extraNamespace
+            if(current.is(LLower)) { val token = skip(LLower); EVariable(token.at, prefix + token.raw) } else {
+                val token = skip(LUpper)
+                val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
+                EVariant(token.at, prefix + token.raw, arguments)
+            }
+        } else if(current.is(LUpper)) {
+            val token = skip(LUpper)
+            val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
+            EVariant(token.at, token.raw, arguments)
+        } else if(current.rawIs("{")) {
+            parseLambda()
+        } else if(current.rawIs("[")) {
+            parseList()
+        } else if(current.rawIs("(")) {
+            skip(LBracketLeft, "(")
+            val result = parseTerm()
+            skip(LBracketRight, ")")
+            result
+        } else {
+            throw ParseException(current.at, "Expected atom, got " + current.raw)
+        }
+    }
+
+    def parseList() : Term = {
+        var items = List[Term]()
+        val at = skip(LBracketLeft, "[").at
+        while(!current.rawIs("]")) {
+            items ::= parseTerm()
+            if(!current.rawIs("]")) skipSeparator(LComma)
+        }
+        skip(LBracketRight, "]")
+        EList(at, items.reverse)
     }
 
 }

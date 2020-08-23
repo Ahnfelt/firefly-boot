@@ -40,8 +40,7 @@ case object LString extends TokenKind(true, true, true)
 case object LInt extends TokenKind(true, true, true)
 case object LFloat extends TokenKind(true, true, true)
 case object LKeyword extends TokenKind(true, true, true)
-case object LScopeModule extends TokenKind(false, true, true)
-case object LScopeType extends TokenKind(false, true, true)
+case object LNamespace extends TokenKind(false, true, true)
 case object LLower extends TokenKind(true, true, true)
 case object LUpper extends TokenKind(true, true, true)
 case object LWildcard extends TokenKind(true, true, true)
@@ -159,10 +158,7 @@ object Tokenizer {
                 )) i += 1
                 if(kind == LUpper && code(i) == '_') {
                     i += 1
-                    emitToken(LScopeModule, start, i)
-                } else if(kind == LUpper && code(i) == '.') {
-                    i += 1
-                    emitToken(LScopeType, start, i)
+                    emitToken(LNamespace, start, i)
                 } else {
                     emitToken(kind, start, i)
                 }

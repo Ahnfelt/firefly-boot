@@ -65,7 +65,7 @@ object Syntax {
     case class ELambda(at : Location, cases : List[MatchCase]) extends Term
     case class EFunctions(at : Location, functions : List[LocalFunction], body : Term) extends Term
     case class ELet(at : Location, mutable : Boolean, name : String, valueType : Type, value : Term, body : Term) extends Term
-    case class ECall(at : Location, function : Term, arguments : Term) extends Term
+    case class ECall(at : Location, function : Term, typeArguments : List[Type], arguments : List[Term]) extends Term
     case class ESequential(at : Location, before : Term, after : Term) extends Term
     case class EList(at : Location, items : List[Term]) extends Term
     case class EVariant(at : Location, name : String, arguments : List[Term]) extends Term
