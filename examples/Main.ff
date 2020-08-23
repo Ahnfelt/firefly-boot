@@ -1,21 +1,21 @@
 main(system: System): Unit {
-  let bytes = loadFile(system.getFileSystem())
-  let processed = process(bytes)
-  uploadFile(system.getNetwork(), processed)
+    let bytes = loadFile(system.getFileSystem())
+    let processed = process(bytes)
+    uploadFile(system.getNetwork(), processed)
 }
 
 // This function can only access the file system, and not e.g. the network.
 loadFile(fs: FileSystem): Array[Byte] {
-  File_readAllBytes(fs, "myfile.txt")
+    File_readAllBytes(fs, "myfile.txt")
 }
 
 // This function can only access the network, and not e.g. the file system.
 uploadFile(net: Network, payload: String): Unit {
-  Http_post(net, "https://www.example.com/upload", payload)
+    Http_post(net, "https://www.example.com/upload", payload)
 }
 
 // This function has no access to the network, no access to the file system, etc.
 // In other words, it's a pure function.
 process(bytes: Array[Byte]): String {
-  String.fromUtf8(bytes)
+    String.fromUtf8(bytes)
 }
