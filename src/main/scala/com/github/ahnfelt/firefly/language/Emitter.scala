@@ -5,7 +5,6 @@ import com.github.ahnfelt.firefly.language.Syntax._
 class Emitter() {
 
     def emitModule(module : Module) : String = {
-        println(module.functions.map(f => f.namespace -> f.signature.name))
         val namespaces = module.types.map { definition =>
             val lets = module.lets.filter(_.namespace.contains(definition.name + "_"))
             val functions = module.functions.filter(_.namespace.contains(definition.name + "_"))
@@ -20,6 +19,10 @@ class Emitter() {
             module.instances.map(emitInstanceDefinition),
             namespaces.flatten
         )
+        val allNamespaces = module.lets.flatMap(_.namespace) ++ module.functions.flatMap(_.namespace)
+        allNamespaces.find(n => !module.types.exists(_.name + "_" == n)).foreach { n =>
+            throw ParseException(Location(module.file, 1, 1), "No such type: " + n)
+        }
         parts.map(_.mkString("\n\n")).mkString("\n") + "\n"
     }
 
