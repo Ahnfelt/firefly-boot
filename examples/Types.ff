@@ -14,3 +14,14 @@ Option_default(option: Option[T], value: T): T {
     | Some(x), _ => x
     | None, x => x
 }
+
+
+type TypeContext(
+    mutable nextTypeVariable: Int
+)
+
+TypeContext_fresh(context: TypeContext): Int {
+    let number = context.nextTypeVariable
+    context.nextTypeVariable += 1
+    number
+}

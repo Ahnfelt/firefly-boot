@@ -65,8 +65,10 @@ object Syntax {
     case class ELambda(at : Location, cases : List[MatchCase]) extends Term
     case class EFunctions(at : Location, functions : List[LocalFunction], body : Term) extends Term
     case class ELet(at : Location, mutable : Boolean, name : String, valueType : Type, value : Term, body : Term) extends Term
-    case class ECall(at : Location, function : Term, typeArguments : List[Type], arguments : List[Term]) extends Term
     case class ESequential(at : Location, before : Term, after : Term) extends Term
+    case class EAssign(at : Location, operator : String, variable : String, value : Term) extends Term
+    case class EAssignField(at : Location, operator : String, field : EField, value : Term) extends Term
+    case class ECall(at : Location, function : Term, typeArguments : List[Type], arguments : List[Term]) extends Term
     case class EList(at : Location, items : List[Term]) extends Term
     case class EVariant(at : Location, name : String, arguments : List[Term]) extends Term
     case class EField(at : Location, record : Term, field : String) extends Term
@@ -90,7 +92,7 @@ object Syntax {
 
     case class Variant(at : Location, name : String, fields : List[Parameter])
 
-    case class Parameter(at : Location, name : String, valueType : Type, default : Option[Term])
+    case class Parameter(at : Location, mutable : Boolean, name : String, valueType : Type, default : Option[Term])
 
     case class Constraint(representation : Type)
 

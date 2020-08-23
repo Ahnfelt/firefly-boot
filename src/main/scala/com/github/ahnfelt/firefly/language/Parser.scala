@@ -35,9 +35,9 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     def parseModule() : Module = {
         var result = Module(file, List(), List(), List(), List(), List())
         while(!current.is(LEnd)) {
-            if(current.is(LLower) && ahead.is(LAssign)) {
+            if(current.is(LLower) && (ahead.is(LAssign) || ahead.is(LColon))) {
                 result = result.copy(lets = parseLetDefinition() :: result.lets)
-            } else if(current.is(LNamespace) && ahead.is(LLower) && aheadAhead.is(LAssign)) {
+            } else if(current.is(LNamespace) && ahead.is(LLower) && (aheadAhead.is(LAssign) || aheadAhead.is(LColon))) {
                 val namespace = Some(skip(LNamespace).raw)
                 result = result.copy(lets = parseLetDefinition(namespace) :: result.lets)
             } else if(current.is(LLower) && ahead.is(LBracketLeft)) {
@@ -158,13 +158,13 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         skip(LKeyword, "type")
         val nameToken = skip(LUpper)
         val (generics, constraints) = if(!current.rawIs("[")) List() -> List() else parseTypeParameters()
-        val commonFields = if(!current.rawIs("(")) List() else parseFunctionParameters()
+        val commonFields = if(!current.rawIs("(")) List() else parseFunctionParameters(allowMutable = true)
         val variants = if(!current.rawIs("{")) List(Variant(nameToken.at, nameToken.raw, List())) else {
             skip(LBracketLeft, "{")
             var reverseVariants = List[Variant]()
             while(!current.is(LBracketRight)) {
                 val variantNameToken = skip(LUpper)
-                val variantFields = if(!current.rawIs("(")) List() else parseFunctionParameters()
+                val variantFields = if(!current.rawIs("(")) List() else parseFunctionParameters(allowMutable = true)
                 reverseVariants ::= Variant(variantNameToken.at, variantNameToken.raw, variantFields)
                 if(!current.is(LBracketRight)) skipSeparator(LComma)
             }
@@ -216,17 +216,19 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         types.reverse
     }
 
-    def parseFunctionParameters() : List[Parameter] = {
+    def parseFunctionParameters(allowMutable : Boolean = false) : List[Parameter] = {
         var parameters = List[Parameter]()
         skip(LBracketLeft, "(")
         while(!current.is(LBracketRight)) {
+            val mutable = allowMutable && current.rawIs("mutable")
+            if(mutable) skip(LKeyword)
             val parameterNameToken = skip(LLower)
             val parameterType = parseOptionalType()
             val default = if(!current.is(LAssign)) None else Some {
                 skip(LAssign)
                 parseTerm()
             }
-            parameters ::= Parameter(parameterNameToken.at, parameterNameToken.raw, parameterType, default)
+            parameters ::= Parameter(parameterNameToken.at, mutable, parameterNameToken.raw, parameterType, default)
             if(!current.is(LBracketRight)) skipSeparator(LComma)
         }
         skip(LBracketRight, ")")
@@ -346,7 +348,21 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     def parseStatement() : Term = {
         if(current.rawIs("let") || current.rawIs("mutable")) parseLet()
         else if(current.rawIs("function")) parseFunctions()
-        else parseTerm()
+        else {
+            val term = parseTerm()
+            if(!current.is(LAssign, LAssignPlus, LAssignMinus)) term else {
+                val token =
+                    if(current.is(LAssignPlus)) skip(LAssignPlus)
+                    else if(current.is(LAssignMinus)) skip(LAssignMinus)
+                    else skip(LAssign)
+                val value = parseTerm()
+                term match {
+                    case EVariable(_, name) => EAssign(token.at, token.raw, name, value)
+                    case e : EField => EAssignField(token.at, token.raw, e, value)
+                    case _ => throw ParseException(token.at, "Only variables and fields are assignable")
+                }
+            }
+        }
     }
 
     def parseLet() : Term = {

@@ -87,8 +87,9 @@ class Emitter() {
     }
 
     def emitParameter(parameter : Parameter) : String = {
+        val mutability = if(parameter.mutable) "var " else ""
         val defaultValue = parameter.default.map(f => " = " + emitTerm(f)).getOrElse("")
-        parameter.name + emitTypeAnnotation(parameter.valueType) + defaultValue
+        mutability + parameter.name + emitTypeAnnotation(parameter.valueType) + defaultValue
     }
 
     def emitTypeParameters(generics : List[String]) = {
@@ -112,6 +113,10 @@ class Emitter() {
             emitLetDefinition(DLet(at, None, name, valueType, value), mutable) + ";\n" + emitStatements(body)
         case ESequential(at, before, after) =>
             emitStatements(before) + ";\n" + emitStatements(after)
+        case EAssign(at, operator, name, value) =>
+            name + " " + operator + " " + emitTerm(value)
+        case EAssignField(at, operator, field, value) =>
+            emitTerm(field) + " " + operator + " " + emitTerm(value)
         case _ => emitTerm(term)
     }
 
@@ -132,7 +137,7 @@ class Emitter() {
         case ECall(at, function, typeArguments, arguments) =>
             val generics = if(typeArguments.isEmpty) "" else "[" + typeArguments.map(emitType).mkString(", ") + "]"
             emitTerm(function) + generics + "(" + arguments.map(emitTerm).mkString(", ") + ")"
-        case _ : EFunctions | _ : ELet | _ : ESequential =>
+        case _ : EFunctions | _ : ELet | _ : ESequential | _ : EAssign | _ : EAssignField =>
             "{\n" + emitStatements(term) + "\n}"
     }
 
