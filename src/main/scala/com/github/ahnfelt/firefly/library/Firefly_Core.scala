@@ -86,4 +86,8 @@ object Firefly_Core {
 
     }
 
+    def each[T](list : List[T], body : T => Unit) : Unit = list.foreach(body)
+    def while_(condition : () => Bool, body : () => Unit) : Unit = while(condition()) body()
+    def if_[T](condition : Bool, body : () => T) : Option[T] = if(condition) scala.Some(body()) else scala.None
+
 }
