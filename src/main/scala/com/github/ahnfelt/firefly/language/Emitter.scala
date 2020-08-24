@@ -12,6 +12,7 @@ class Emitter() {
             else Some(emitTypeMembers(definition.name, lets, functions))
         }
         val parts = List(
+            List("import Firefly_Core._"),
             module.types.map(emitTypeDefinition),
             module.lets.filter(_.namespace.isEmpty).map(emitLetDefinition(_)),
             module.functions.filter(_.namespace.isEmpty).map(emitFunctionDefinition),
