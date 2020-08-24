@@ -1,6 +1,7 @@
 main(system: System): Unit {
-    each(system.files.list(".")): file =>
-    system.writeLine(file)
+    each(system.files.list(".")) { file =>
+        system.writeLine(file)
+    }
 }
 
 each[T](list: List[T], body: T => Unit): Unit {
@@ -9,4 +10,3 @@ each[T](list: List[T], body: T => Unit): Unit {
         body(head)
         each(tail, body)
 }
-
