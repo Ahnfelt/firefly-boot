@@ -5,6 +5,7 @@ import com.github.ahnfelt.firefly.language.Syntax._
 class Emitter() {
 
     def emitModule(module : Module) : String = {
+        val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile(_ != '/').reverse.takeWhile(_ != '.')
         val namespaces = module.types.map { definition =>
             val lets = module.lets.filter(_.namespace.contains(definition.name + "_"))
             val functions = module.functions.filter(_.namespace.contains(definition.name + "_"))
@@ -12,13 +13,20 @@ class Emitter() {
             else Some(emitTypeMembers(definition.name, lets, functions))
         }
         val parts = List(
-            List("import Firefly_Core._"),
+            List(
+                "package firefly",
+                "import firefly.Firefly_Core._",
+                "object " + moduleNamespace + " {"
+            ),
             module.types.map(emitTypeDefinition),
             module.lets.filter(_.namespace.isEmpty).map(emitLetDefinition(_)),
             module.functions.filter(_.namespace.isEmpty).map(emitFunctionDefinition),
             module.traits.map(emitTraitDefinition),
             module.instances.map(emitInstanceDefinition),
-            namespaces.flatten
+            namespaces.flatten,
+            List(
+                "}"
+            ),
         )
         val allNamespaces = module.lets.flatMap(_.namespace) ++ module.functions.flatMap(_.namespace)
         allNamespaces.find(n => !module.types.exists(_.name + "_" == n)).foreach { n =>
@@ -180,7 +188,7 @@ class Emitter() {
 
     def emitCase(matchCase : MatchCase) = {
         val patterns = matchCase.patterns.map(emitPattern).mkString(", ")
-        "case " + patterns + " =>\n" + emitStatements(matchCase.body)
+        "case (" + patterns + ") =>\n" + emitStatements(matchCase.body)
     }
 
     def emitPattern(pattern : MatchPattern) : String = pattern match {

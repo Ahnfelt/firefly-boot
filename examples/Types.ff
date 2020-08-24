@@ -10,7 +10,7 @@ type Option[T] {
     Some(value: T)
 }
 
-Option_default(option: Option[T], value: T): T {
+Option_default[T](option: Option[T], value: T): T {
     | Some(x), _ => x
     | None, x => x
 }
