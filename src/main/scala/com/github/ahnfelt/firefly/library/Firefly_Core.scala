@@ -90,4 +90,11 @@ object Firefly_Core {
     def while_(condition : () => Bool, body : () => Unit) : Unit = while(condition()) body()
     def if_[T](condition : Bool, body : () => T) : Option[T] = if(condition) scala.Some(body()) else scala.None
 
+    implicit class Option_Extras[T](option : Option[T]) {
+        def elseIf(condition : () => Bool, value : () => T) : Option[T] =
+            if(option.nonEmpty) option else if_(condition(), value)
+        def else_(value : () => T) : T =
+            option.getOrElse(value())
+    }
+
 }

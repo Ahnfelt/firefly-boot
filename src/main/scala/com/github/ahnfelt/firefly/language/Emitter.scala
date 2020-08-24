@@ -66,7 +66,7 @@ class Emitter() {
     def emitLetDefinition(definition : DLet, mutable : Boolean = false) : String = {
         val typeAnnotation = emitTypeAnnotation(definition.variableType)
         val mutability = if(mutable) "var" else "val"
-        mutability + " " + definition.name + typeAnnotation + " = " + emitTerm(definition.value)
+        mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + emitTerm(definition.value)
     }
 
     def emitFunctionDefinition(definition : DFunction) : String = {
@@ -77,7 +77,7 @@ class Emitter() {
                 val body = emitStatements(matchCase.body)
                 signature + " = {\n" + body + "\n}"
             case _ =>
-                val tuple = "(" + definition.signature.parameters.map(p => p.name).mkString(", ") + ")"
+                val tuple = "(" + definition.signature.parameters.map(p => escapeKeyword(p.name)).mkString(", ") + ")"
                 val cases = definition.body.cases.map(emitCase).mkString("\n")
                 signature + " = " + tuple + " match {\n" + cases + "\n}"
         }
@@ -126,13 +126,13 @@ class Emitter() {
         val generics = emitTypeParameters(signature.generics)
         val parameters = "(" + signature.parameters.map(emitParameter).mkString(", ") + ")"
         val returnType = emitTypeAnnotation(signature.returnType)
-        "def " + signature.name + generics + parameters + returnType
+        "def " + escapeKeyword(signature.name) + generics + parameters + returnType
     }
 
     def emitParameter(parameter : Parameter) : String = {
         val mutability = if(parameter.mutable) "var " else ""
         val defaultValue = parameter.default.map(f => " = " + emitTerm(f)).getOrElse("")
-        mutability + parameter.name + emitTypeAnnotation(parameter.valueType) + defaultValue
+        mutability + escapeKeyword(parameter.name) + emitTypeAnnotation(parameter.valueType) + defaultValue
     }
 
     def emitConstraints(constraints : List[Constraint]) : String = if(constraints.isEmpty) "" else {
@@ -162,7 +162,7 @@ class Emitter() {
         case ESequential(at, before, after) =>
             emitStatements(before) + ";\n" + emitStatements(after)
         case EAssign(at, operator, name, value) =>
-            name + " " + operator + " " + emitTerm(value)
+            escapeKeyword(name) + " " + operator + " " + emitTerm(value)
         case EAssignField(at, operator, field, value) =>
             emitTerm(field) + " " + operator + " " + emitTerm(value)
         case _ => emitTerm(term)
@@ -172,12 +172,13 @@ class Emitter() {
         case EString(at, value) => value
         case EInt(at, value) => value
         case EFloat(at, value) => value
-        case EVariable(at, name) => name.replace("_", ".")
+        case EVariable(at, name) => escapeKeyword(name.replace("_", "."))
         case EList(at, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
         case EVariant(at, name, arguments) => name + "(" + arguments.map(emitTerm).mkString(", ") + ")"
-        case EField(at, record, field) => emitTerm(record) + "." + field
+        case EField(at, record, field) => emitTerm(record) + "." + escapeKeyword(field)
         case ELambda(at, List(MatchCase(_, patterns, body))) if(patterns.forall(_.isInstanceOf[PVariable])) =>
-            val parameters = patterns.map(_.asInstanceOf[PVariable].name.getOrElse("_")).mkString(", ")
+            val parameters =
+                patterns.map(_.asInstanceOf[PVariable].name.map(escapeKeyword).getOrElse("_")).mkString(", ")
             "{(" + parameters + ") =>\n" + emitStatements(body) + "\n}"
         case ELambda(at, cases) =>
             val casesString = cases.map(emitCase).mkString("\n")
@@ -199,9 +200,53 @@ class Emitter() {
     }
 
     def emitPattern(pattern : MatchPattern) : String = pattern match {
-        case PVariable(at, name) => name.getOrElse("_")
+        case PVariable(at, name) => name.map(escapeKeyword).getOrElse("_")
         case PVariant(at, name, patterns) =>
             name + "(" + patterns.map(emitPattern).mkString(", ") + ")"
     }
+
+    def escapeKeyword(word : String) = if(keywords(word)) word + "_" else word
+
+    val keywords = """
+abstract
+case
+catch
+class
+def
+do
+else
+extends
+false
+final
+finally
+for
+forSome
+if
+implicit
+import
+lazy
+match
+new
+null
+object
+override
+package
+private
+protected
+return
+sealed
+super
+this
+throw
+trait
+true
+try
+type
+val
+var
+while
+with
+yield
+    """.linesIterator.map(_.trim).filter(_.nonEmpty).toSet
 
 }
