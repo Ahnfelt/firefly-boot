@@ -18,6 +18,9 @@ class Emitter() {
                 "import firefly.Firefly_Core._",
                 "object " + moduleNamespace + " {"
             ),
+            if(
+                module.functions.exists(f => f.namespace.isEmpty && f.signature.name == "main")
+            ) List(emitMain()) else List(),
             module.types.map(emitTypeDefinition),
             module.lets.filter(_.namespace.isEmpty).map(emitLetDefinition(_)),
             module.functions.filter(_.namespace.isEmpty).map(emitFunctionDefinition),
@@ -33,6 +36,10 @@ class Emitter() {
             throw ParseException(Location(module.file, 1, 1), "No such type: " + n)
         }
         parts.map(_.mkString("\n\n")).mkString("\n") + "\n"
+    }
+
+    def emitMain() = {
+        """def main(arguments : Array[String]) : Unit = main(new System(arguments))"""
     }
 
     def emitTypeMembers(name : String, lets : List[DLet], functions : List[DFunction]) = {
