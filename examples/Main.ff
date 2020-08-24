@@ -1,3 +1,12 @@
 main(system: System): Unit {
-    system.writeLine("Hello, World!")
+    each(system.files.list(".")): file =>
+    system.writeLine(file)
 }
+
+each[T](list: List[T], body: T => Unit): Unit {
+    | Empty, _ =>
+    | Link(head, tail), _ =>
+        body(head)
+        each(tail, body)
+}
+

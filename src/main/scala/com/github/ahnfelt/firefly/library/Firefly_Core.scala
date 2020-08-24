@@ -5,17 +5,33 @@ object Firefly_Core {
     type Never = scala.Nothing
     type Bool = scala.Boolean
 
+    def Unit() : scala.Unit = {}
+
     def True() : Bool = true
     def False() : Bool = false
 
-    object Some {
-        def apply[T](value : T) : scala.Option[T] = scala.Some(value)
-        def unapply[T](option : scala.Option[T]) : scala.Option[T] = option
+    object Empty {
+        def apply[T](value : T) : scala.List[T] = List()
+        def unapply[T](value : scala.List[T]) : scala.Boolean = value.isEmpty
+    }
+
+    object Link {
+        def apply[T](value : T) : scala.List[T] = List()
+        def unapply[T](value : scala.List[T]) : scala.Option[(T, List[T])] =
+            value match {
+                case head :: tail => scala.Some(head -> tail)
+                case Nil => scala.None
+            }
     }
 
     object None {
         def apply[T]() : scala.Option[T] = scala.None
         def unapply[T](option : scala.Option[T]) : scala.Boolean = option.isEmpty
+    }
+
+    object Some {
+        def apply[T](value : T) : scala.Option[T] = scala.Some(value)
+        def unapply[T](option : scala.Option[T]) : scala.Option[T] = option
     }
 
     case class Pair[A, B](first : A, second : B)

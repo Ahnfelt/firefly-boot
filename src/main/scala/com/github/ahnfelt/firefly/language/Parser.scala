@@ -336,7 +336,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         }
     }
 
-    def parseStatements() : Term = {
+    def parseStatements() : Term = if(current.is(LBracketRight, LPipe)) EVariant(current.at, "Unit", List()) else {
         var result = parseStatement()
         while(currentIsSeparator(LSemicolon)) {
             val token = skipSeparator(LSemicolon)
