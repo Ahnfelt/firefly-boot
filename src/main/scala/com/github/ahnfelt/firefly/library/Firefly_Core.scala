@@ -104,12 +104,21 @@ object Firefly_Core {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
+        def pairs() : List[(Int, T)] = list.zipWithIndex.map(_.swap)
     }
 
     implicit class Firefly_Array[T](list : Array[T]) {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
+        def pairs() : Array[(Int, T)] = list.zipWithIndex.map(_.swap)
+    }
+
+    implicit class Firefly_Pair[A, B](pair : (A, B)) {
+        def first = pair._1
+        def second = pair._2
+        def mapFirst[C](body : A => C) : (C, B) = (body(first), second)
+        def mapSecond[C](body : B => C) : (A, C) = (first, body(second))
     }
 
 }

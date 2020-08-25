@@ -3,10 +3,3 @@ main(system: System): Unit {
         system.writeLine(file)
     }
 }
-
-each[T](list: List[T], body: T => Unit): Unit {
-    | Empty, _ =>
-    | Link(head, tail), _ =>
-        body(head)
-        each(tail, body)
-}
