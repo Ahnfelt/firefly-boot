@@ -90,11 +90,26 @@ object Firefly_Core {
     def while_(condition : () => Bool, body : () => Unit) : Unit = while(condition()) body()
     def if_[T](condition : Bool, body : () => T) : Option[T] = if(condition) scala.Some(body()) else scala.None
 
-    implicit class Option_Extras[T](option : Option[T]) {
+    implicit class Firefly_Option[T](option : Option[T]) {
         def elseIf(condition : () => Bool, value : () => T) : Option[T] =
             if(option.nonEmpty) option else if_(condition(), value)
         def else_(value : () => T) : T =
             option.getOrElse(value())
+        def each(body : T => Unit) : Unit = option.foreach(body)
+        def all(body : T => Bool) : Bool = option.forall(body)
+        def any(body : T => Bool) : Bool = option.exists(body)
+    }
+
+    implicit class Firefly_List[T](list : List[T]) {
+        def each(body : T => Unit) : Unit = list.foreach(body)
+        def all(body : T => Bool) : Bool = list.forall(body)
+        def any(body : T => Bool) : Bool = list.exists(body)
+    }
+
+    implicit class Firefly_Array[T](list : Array[T]) {
+        def each(body : T => Unit) : Unit = list.foreach(body)
+        def all(body : T => Bool) : Bool = list.forall(body)
+        def any(body : T => Bool) : Bool = list.exists(body)
     }
 
 }

@@ -1,5 +1,5 @@
 main(system: System): Unit {
-    each(system.files.list(".")) { file =>
+    system.files.list(".").each { file =>
         system.writeLine(file)
     }
 }
