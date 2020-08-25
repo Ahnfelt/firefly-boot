@@ -119,6 +119,8 @@ object Firefly_Core {
         def second = pair._2
         def mapFirst[C](body : A => C) : (C, B) = (body(first), second)
         def mapSecond[C](body : B => C) : (A, C) = (first, body(second))
+        def withFirst[C](value : C) : (C, B) = (value, second)
+        def withSecond[C](value : C) : (A, C) = (first, value)
     }
 
 }
