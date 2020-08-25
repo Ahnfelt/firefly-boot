@@ -4,11 +4,25 @@ object Firefly_Core {
 
     type Never = scala.Nothing
     type Bool = scala.Boolean
+    type Pair[A, B] = (A, B)
 
-    def Unit() : scala.Unit = {}
 
-    def True() : Bool = true
-    def False() : Bool = false
+    object Unit {
+        def apply() : Unit = {}
+        def unapply(value : Unit) : Bool = true
+    }
+
+
+    object True {
+        def apply() = true
+        def unapply(value : Bool) : Bool = value
+    }
+
+    object False {
+        def apply() = false
+        def unapply(value : Bool) : Bool = !value
+    }
+
 
     object Empty {
         def apply[T](value : T) : scala.List[T] = List()
@@ -24,6 +38,7 @@ object Firefly_Core {
             }
     }
 
+
     object None {
         def apply[T]() : scala.Option[T] = scala.None
         def unapply[T](option : scala.Option[T]) : scala.Boolean = option.isEmpty
@@ -34,7 +49,6 @@ object Firefly_Core {
         def unapply[T](option : scala.Option[T]) : scala.Option[T] = option
     }
 
-    case class Pair[A, B](first : A, second : B)
 
     final class System(val arguments : Array[String]) {
         def write(value : String) : Unit = scala.Predef.print(value)
