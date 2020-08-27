@@ -3,3 +3,20 @@ main(system: System): Unit {
         system.writeLine(file)
     }
 }
+
+
+
+trait Show[T] {
+    show(value: T): String
+}
+
+instance Show[List[T: Show]] {
+    show(value: List[T]) { value.map(Show_show).join(", ") }
+}
+
+//generate Show, Read { List, String }
+
+map[A, B](list: List[A], body: A => B): List[B] {
+    | Empty, _ => Empty
+    | Link(head, tail), _ => Link(body(head), map(tail, body))
+}

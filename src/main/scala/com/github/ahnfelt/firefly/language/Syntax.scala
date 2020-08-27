@@ -46,15 +46,15 @@ object Syntax {
         generatorParameters : List[Parameter],
         methods : List[Signature],
         methodDefaults : List[(String, Term)],
-        methodGenerators : List[(String, Term)]
+        methodGenerators : List[(String, Term)],
     )
     case class DInstance(
         at : Location,
-        name : String,
-        generics : List[Type],
+        generics : List[String],
         constraints : List[Constraint],
+        traitType : Type,
+        generatorArguments : List[Term],
         methods : List[DFunction],
-        generatorArguments : List[Term]
     )
 
     sealed abstract class Term { val at : Location }

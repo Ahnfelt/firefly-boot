@@ -138,8 +138,16 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     def parseInstanceDefinition() : DInstance = {
         skip(LKeyword, "instance")
         val nameToken = skip(LUpper)
-        val generics = if(!current.rawIs("[")) List() else parseTypeArguments()
-        val constraints = List()
+        var typeArguments = List[Type]()
+        skip(LBracketLeft, "[")
+        val token = skip(LUpper)
+        val (typeParameters, constraints) = if(!current.rawIs("[")) List() -> List() else parseTypeParameters()
+        typeArguments ::= Type(token.at, token.raw, typeParameters.map(p => Type(token.at, p, List())))
+        while(current.is(LComma)) {
+            skip(LComma)
+            typeArguments ::= parseType()
+        }
+        skip(LBracketRight, "]")
         val generatorArguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
         val methods = if(!current.rawIs("{")) List() else {
             var definitions = List[DFunction]()
@@ -151,7 +159,8 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             skip(LBracketRight, "}")
             definitions
         }
-        DInstance(nameToken.at, nameToken.raw, generics, constraints, methods, generatorArguments)
+        val traitType = Type(nameToken.at, nameToken.raw, typeArguments.reverse)
+        DInstance(nameToken.at, typeParameters, constraints, traitType, generatorArguments, methods)
     }
 
     def parseTypeDefinition() : DType = {

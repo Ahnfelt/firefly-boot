@@ -121,6 +121,10 @@ object Firefly_Core {
         def pairs() : List[(Int, T)] = list.zipWithIndex.map(_.swap)
     }
 
+    implicit class Firefly_String_List(list : List[String]) {
+        def join(separator : String) : String = list.mkString(separator)
+    }
+
     implicit class Firefly_Array[T](list : Array[T]) {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)

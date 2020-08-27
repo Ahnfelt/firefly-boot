@@ -23,7 +23,7 @@ class Emitter() {
             ) List(emitMain()) else List(),
             module.types.map(emitTypeDefinition),
             module.lets.filter(_.namespace.isEmpty).map(emitLetDefinition(_)),
-            module.functions.filter(_.namespace.isEmpty).map(emitFunctionDefinition),
+            module.functions.filter(_.namespace.isEmpty).map(emitFunctionDefinition(_)),
             module.traits.map(emitTraitDefinition),
             module.instances.map(emitInstanceDefinition),
             namespaces.flatten,
@@ -45,7 +45,7 @@ class Emitter() {
     def emitTypeMembers(name : String, lets : List[DLet], functions : List[DFunction]) = {
         val strings =
             lets.map(emitLetDefinition(_)) ++
-            functions.map(emitFunctionDefinition)
+            functions.map(emitFunctionDefinition(_))
         "object " + name + " {\n\n" + strings.mkString("\n\n") + "\n\n}"
     }
 
@@ -69,8 +69,8 @@ class Emitter() {
         mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + emitTerm(definition.value)
     }
 
-    def emitFunctionDefinition(definition : DFunction) : String = {
-        val signature = emitSignature(definition.signature)
+    def emitFunctionDefinition(definition : DFunction, suffix : String = "") : String = {
+        val signature = emitSignature(definition.signature, suffix)
         definition.body match {
             case ELambda(_, List(matchCase))
                 if matchCase.patterns.forall { case PVariable(_, None) => true; case _ => false } =>
@@ -96,23 +96,32 @@ class Emitter() {
             }).getOrElse {
                 ""
             }
-            emitSignature(signature) + body
+            emitSignature(signature, "_m") + body
         }.mkString("\n\n") + "\n\n}"
-        "abstract class " + definition.name + generics + parameters + implicits + methods
+        val methodWrappers = if(definition.methods.isEmpty) "" else " \n\n" + definition.methods.map { signature =>
+            val t = Type(definition.at, definition.name, definition.generics.map(Type(definition.at, _, List())))
+            emitSignature(signature.copy(
+                generics = definition.generics ++ signature.generics,
+                constraints = Constraint(t) :: definition.constraints ++ signature.constraints
+            )) + " =\n    scala.Predef.implicitly[" + emitType(t) + "]." + escapeKeyword(signature.name) +
+            "_m(" + signature.parameters.map(_.name).map(escapeKeyword).mkString(", ") + ")"
+        }.mkString("\n\n") + "\n\n"
+        "abstract class " + definition.name + generics + parameters + implicits + methods + "\n" +
+        "object " + definition.name + " {" + methodWrappers + "}"
     }
 
     def emitInstanceDefinition(definition : DInstance) : String = {
         val signature = emitSignature(Signature(
             definition.at,
-            definition.name + "_" + definition.hashCode().abs,
-            List(),
+            definition.traitType.name + "_" + definition.hashCode().abs,
+            definition.generics,
             definition.constraints,
             List(),
-            Type(definition.at, "?", List())
+            definition.traitType
         ))
-        val methods = " {\n\n" + definition.methods.map(emitFunctionDefinition).mkString("\n\n") + "\n\n}"
-        val value = "new " + emitType(Type(definition.at, definition.name, definition.generics)) + methods
-        "implicit " + signature + " = " + value
+        val methods = " {\n\n" + definition.methods.map(emitFunctionDefinition(_, "_m")).mkString("\n\n") + "\n\n}"
+        val value = "new " + emitType(definition.traitType) + methods
+        "implicit " + signature + " =\n    " + value
     }
 
     def emitVariantDefinition(typeDefinition : DType, definition : Variant) : String = {
@@ -122,11 +131,16 @@ class Emitter() {
         "case class " + definition.name + generics + fields + " extends " + typeDefinition.name + generics
     }
 
-    def emitSignature(signature : Signature) : String = {
+    def emitSignature(signature : Signature, suffix : String = "") : String = {
         val generics = emitTypeParameters(signature.generics)
         val parameters = "(" + signature.parameters.map(emitParameter).mkString(", ") + ")"
+        val implicits =
+            if(signature.constraints.isEmpty) ""
+            else "(implicit " + signature.constraints.zipWithIndex.map { case (c, i) =>
+                "i_" + i + " : " + emitType(c.representation)
+            }.mkString(", ") + ")"
         val returnType = emitTypeAnnotation(signature.returnType)
-        "def " + escapeKeyword(signature.name) + generics + parameters + returnType
+        "def " + escapeKeyword(signature.name) + suffix + generics + parameters + implicits + returnType
     }
 
     def emitParameter(parameter : Parameter) : String = {
