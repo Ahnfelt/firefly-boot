@@ -25,12 +25,12 @@ object Firefly_Core {
 
 
     object Empty {
-        def apply[T](value : T) : scala.List[T] = List()
+        def apply[T]() : scala.List[T] = List()
         def unapply[T](value : scala.List[T]) : scala.Boolean = value.isEmpty
     }
 
     object Link {
-        def apply[T](value : T) : scala.List[T] = List()
+        def apply[T](head : T, tail : List[T]) : scala.List[T] = head :: tail
         def unapply[T](value : scala.List[T]) : scala.Option[(T, List[T])] =
             value match {
                 case head :: tail => scala.Some(head -> tail)
