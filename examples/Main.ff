@@ -4,6 +4,9 @@ main(system: System): Unit {
     }
 }
 
+type Point(x: Int, y: Int)
+
+Point_sum(point: Point): Int { point.x + point.y }
 
 
 trait Show[T] {
@@ -13,8 +16,6 @@ trait Show[T] {
 instance Show[List[T: Show]] {
     show(value: List[T]) { value.map(Show_show).join(", ") }
 }
-
-//generate Show, Read { List, String }
 
 map[A, B](list: List[A], body: A => B): List[B] {
     | Empty, _ => Empty

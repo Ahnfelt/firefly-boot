@@ -35,6 +35,7 @@ class Emitter() {
         allNamespaces.find(n => !module.types.exists(_.name + "_" == n)).foreach { n =>
             throw ParseException(Location(module.file, 1, 1), "No such type: " + n)
         }
+        // Also, for each X_foo(bar: X, ...) method, generate implicit class X_foo(bar: X) { def foo(...) { ... } }
         parts.map(_.mkString("\n\n")).mkString("\n") + "\n"
     }
 
