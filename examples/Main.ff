@@ -14,7 +14,7 @@ trait Show[T] {
 }
 
 instance Show[List[T: Show]] {
-    show(value: List[T]) { value.map(Show_show).join(", ") }
+    show(value: List[T]) { value.map(show).join(", ") }
 }
 
 map[A, B](list: List[A], body: A => B): List[B] {

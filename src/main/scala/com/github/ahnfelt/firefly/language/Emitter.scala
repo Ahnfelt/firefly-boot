@@ -89,16 +89,17 @@ class Emitter() {
         val implicits = emitConstraints(definition.constraints)
         val parameters = if(definition.generatorParameters.isEmpty) ""
             else "(" + definition.generatorParameters.map(emitParameter).mkString(", ") + ")"
-        val methods = if(definition.methods.isEmpty) "" else " {\n\n" + definition.methods.map { signature =>
-            val body = definition.methodDefaults.find(_._1 == signature.name).map { case (_, e) =>
-                " {\n" + emitStatements(e) + "\n}"
-            }.orElse(definition.methodGenerators.find(_._1 == signature.name).map { case (_, e) =>
-                " {\n// TODO: Generate\n}"
-            }).getOrElse {
-                ""
-            }
-            emitSignature(signature, "_m") + body
-        }.mkString("\n\n") + "\n\n}"
+        val methods = if(definition.methods.isEmpty) "" else " {\n\nimport " + definition.name + "._\n\n" +
+            definition.methods.map { signature =>
+                val body = definition.methodDefaults.find(_._1 == signature.name).map { case (_, e) =>
+                    " {\n" + emitStatements(e) + "\n}"
+                }.orElse(definition.methodGenerators.find(_._1 == signature.name).map { case (_, e) =>
+                    " {\n// TODO: Generate\n}"
+                }).getOrElse {
+                    ""
+                }
+                emitSignature(signature, "_m") + body
+            }.mkString("\n\n") + "\n\n}"
         val methodWrappers = if(definition.methods.isEmpty) "" else " \n\n" + definition.methods.map { signature =>
             val t = Type(definition.at, definition.name, definition.generics.map(Type(definition.at, _, List())))
             emitSignature(signature.copy(
@@ -120,7 +121,8 @@ class Emitter() {
             List(),
             definition.traitType
         ))
-        val methods = " {\n\n" + definition.methods.map(emitFunctionDefinition(_, "_m")).mkString("\n\n") + "\n\n}"
+        val methods = " {\n\nimport " + definition.traitType.name + "._\n\n" +
+            definition.methods.map(emitFunctionDefinition(_, "_m")).mkString("\n\n") + "\n\n}"
         val value = "new " + emitType(definition.traitType) + methods
         "implicit " + signature + " =\n    " + value
     }
