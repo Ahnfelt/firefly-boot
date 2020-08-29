@@ -23,3 +23,13 @@ map[A, B](list: List[A], body: A => B): List[B] {
     | Empty, _ => Empty
     | Link(head, tail), _ => Link(body(head), map(tail, body))
 }
+
+type Stack {
+    EmptyStack
+    PushStack(value: Int, stack: Stack)
+}
+
+Stack_map(list: Stack, body: Int => Int): Stack {
+    | EmptyStack, _ => EmptyStack
+    | PushStack s, _ => PushStack(body(s.value), map(s.stack, body))
+}

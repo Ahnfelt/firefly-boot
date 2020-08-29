@@ -220,6 +220,8 @@ class Emitter() {
         case PVariable(at, name) => name.map(escapeKeyword).getOrElse("_")
         case PVariant(at, name, patterns) =>
             name + "(" + patterns.map(emitPattern).mkString(", ") + ")"
+        case PVariantAs(at, name, variable) =>
+            escapeKeyword(variable) + " : " + name
     }
 
     def escapeKeyword(word : String) = if(keywords(word)) word + "_" else word
@@ -264,6 +266,8 @@ var
 while
 with
 yield
+scala
+java
     """.linesIterator.map(_.trim).filter(_.nonEmpty).toSet
 
 }

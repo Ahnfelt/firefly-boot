@@ -316,17 +316,23 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             PVariable(token.at, Some(token.raw))
         } else {
             val token = skip(LUpper)
-            val patterns = if(!current.rawIs("(")) List() else {
-                var result = List[MatchPattern]()
+            if(current.rawIs("(")) {
+                var patterns = List[MatchPattern]()
                 skip(LBracketLeft, "(")
                 while(!current.is(LBracketRight)) {
-                    result ::= parsePattern()
+                    patterns ::= parsePattern()
                     if(!current.is(LBracketRight)) skip(LComma)
                 }
                 skip(LBracketRight, ")")
-                result.reverse
+                PVariant(token.at, token.raw, patterns.reverse)
+            } else {
+                if(current.is(LLower)) {
+                    val asToken = skip(LLower)
+                    PVariantAs(token.at, token.raw, asToken.raw)
+                } else {
+                    PVariant(token.at, token.raw, List())
+                }
             }
-            PVariant(token.at, token.raw, patterns)
         }
     }
 
