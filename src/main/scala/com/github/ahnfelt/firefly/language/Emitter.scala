@@ -24,6 +24,9 @@ class Emitter() {
             module.types.map(emitTypeDefinition),
             module.lets.filter(_.namespace.isEmpty).map(emitLetDefinition(_)),
             module.functions.filter(_.namespace.isEmpty).map(emitFunctionDefinition(_)),
+            module.functions.filter(f =>
+                f.namespace.exists(f.signature.parameters.headOption.map(_.valueType.name + "_").contains)
+            ).map(emitMethodImplicit),
             module.traits.map(emitTraitDefinition),
             module.instances.map(emitInstanceDefinition),
             namespaces.flatten,
@@ -82,6 +85,22 @@ class Emitter() {
                 val cases = definition.body.cases.map(emitCase).mkString("\n")
                 signature + " = " + tuple + " match {\n" + cases + "\n}"
         }
+    }
+
+    def emitMethodImplicit(definition : DFunction) : String = {
+        val generics = emitTypeParameters(definition.signature.generics)
+        val parameter = definition.signature.parameters.headOption.map(p =>
+            escapeKeyword(p.name) + " : " + emitType(p.valueType)
+        ).get
+        val signature = emitSignature(definition.signature.copy(
+            generics = List(),
+            parameters = definition.signature.parameters.drop(1)
+        ))
+        val method = signature + " = " + definition.namespace.get.replace("_", ".") +
+            escapeKeyword(definition.signature.name) +
+            "(" + definition.signature.parameters.map(_.name).map(escapeKeyword).mkString(", ") + ")"
+        "implicit class " + definition.namespace.get + definition.signature.name + generics +
+        "(" + parameter + ") {\n\n" + method + "\n\n}"
     }
 
     def emitTraitDefinition(definition : DTrait) : String = {

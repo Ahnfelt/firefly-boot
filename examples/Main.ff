@@ -6,7 +6,14 @@ main(system: System): Unit {
 
 type Point(x: Int, y: Int)
 
-Point_sum(point: Point): Int { point.x + point.y }
+Point_sum(point: Point): Int {
+    point.x + point.y
+}
+
+doSum() {
+    let point = Point(5, 7)
+    point.sum()
+}
 
 
 trait Show[T] {
