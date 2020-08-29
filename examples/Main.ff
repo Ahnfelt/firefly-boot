@@ -12,7 +12,7 @@ Point_sum(point: Point): Int {
 
 doSum() {
     let point = Point(5, 7)
-    point.sum()
+    Point(point; y = 8).sum()
 }
 
 
@@ -22,7 +22,7 @@ trait Show[T] {
 
 instance Show[List[T: Show]] {
     show(value: List[T]) {
-        value.map(show).join(", ")
+        value.map { v => show(v) }.join(", ")
     }
 }
 

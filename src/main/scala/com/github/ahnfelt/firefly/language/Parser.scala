@@ -496,14 +496,10 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             val extraNamespace = if(!current.is(LNamespace)) None else Some(skip(LNamespace).raw)
             val prefix = namespaceToken.raw + extraNamespace.getOrElse("")
             if(current.is(LLower)) { val token = skip(LLower); EVariable(token.at, prefix + token.raw) } else {
-                val token = skip(LUpper)
-                val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
-                EVariant(token.at, prefix + token.raw, arguments)
+                parseVariant(prefix)
             }
         } else if(current.is(LUpper)) {
-            val token = skip(LUpper)
-            val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
-            EVariant(token.at, token.raw, arguments)
+            parseVariant("")
         } else if(current.rawIs("{")) {
             parseLambda()
         } else if(current.rawIs("[")) {
@@ -515,6 +511,40 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             result
         } else {
             throw ParseException(current.at, "Expected atom, got " + current.raw)
+        }
+    }
+
+    def parseVariant(prefix : String) : Term = {
+        val token = skip(LUpper)
+        val name = prefix + token.raw
+        if(!current.rawIs("(")) EVariant(token.at, name, List()) else {
+            skip(LBracketLeft, "(")
+            if(current.is(LBracketRight)) {
+                skip(LBracketRight, ")")
+                EVariant(token.at, name, List())
+            } else {
+                val record = parseTerm()
+                if(current.is(LSemicolon)) {
+                    skipSeparator(LSemicolon)
+                    var fields = List[(String, Term)]()
+                    while(!current.is(LBracketRight)) {
+                        val fieldToken = skip(LLower)
+                        skipSeparator(LAssign)
+                        fields ::= fieldToken.raw -> parseTerm()
+                        if((!current.is(LBracketRight))) skipSeparator(LComma)
+                    }
+                    skip(LBracketRight, ")")
+                    ECopy(token.at, name, record, fields.reverse)
+                } else {
+                    var arguments = List[Term](record)
+                    while(!current.is(LBracketRight)) {
+                        skipSeparator(LComma)
+                        arguments ::= parseTerm()
+                    }
+                    skip(LBracketRight, ")")
+                    EVariant(token.at, name, arguments.reverse)
+                }
+            }
         }
     }
 

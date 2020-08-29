@@ -70,6 +70,7 @@ object Syntax {
     case class EAssignField(at : Location, operator : String, field : EField, value : Term) extends Term
     case class ECall(at : Location, function : Term, typeArguments : List[Type], arguments : List[Term]) extends Term
     case class EList(at : Location, items : List[Term]) extends Term
+    case class ECopy(at : Location, name : String, record : Term, arguments : List[(String, Term)]) extends Term
     case class EVariant(at : Location, name : String, arguments : List[Term]) extends Term
     case class EField(at : Location, record : Term, field : String) extends Term
 
