@@ -222,6 +222,8 @@ class Emitter() {
         case ELambda(at, cases) =>
             val casesString = cases.map(emitCase).mkString("\n")
             "{\n" + casesString + "\n}"
+        case EPipe(at, value, function) =>
+            "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
         case ECall(at, EVariable(_, operator), List(), List(value)) if !operator.head.isLetter =>
             "(" + operator + emitTerm(value) + ")"
         case ECall(at, EVariable(_, operator), List(), List(left, right)) if !operator.head.isLetter =>

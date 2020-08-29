@@ -410,19 +410,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseTerm() : Term = {
-        parsePipe()
-    }
-
-    def parsePipe() : Term = {
-        var result = parseBinary(0)
-        if(current.is(LOperator)) {
-            while(current.rawIs("|>")) {
-                val token = skip(LOperator)
-                val right = parseBinary(0)
-                result = ECall(token.at, right, List(), List(result))
-            }
-        }
-        result
+        parseBinary(0)
     }
 
     val binaryOperators = Array(
@@ -464,8 +452,13 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         while(current.is(LBracketLeft) || current.is(LColon) || current.is(LDot)) {
             if(current.is(LDot)) {
                 skip(LDot)
-                val token = skip(LLower)
-                result = EField(token.at, result, token.raw)
+                if(current.rawIs("{") || current.rawIs("(")) {
+                    val term = parseAtom()
+                    result = EPipe(term.at, result, term)
+                } else {
+                    val token = skip(LLower)
+                    result = EField(token.at, result, token.raw)
+                }
             } else {
                 val at = current.at
                 val typeArguments = if(!current.rawIs("[")) List() else parseTypeArguments()

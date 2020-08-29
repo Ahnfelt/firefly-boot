@@ -68,6 +68,7 @@ object Syntax {
     case class ESequential(at : Location, before : Term, after : Term) extends Term
     case class EAssign(at : Location, operator : String, variable : String, value : Term) extends Term
     case class EAssignField(at : Location, operator : String, field : EField, value : Term) extends Term
+    case class EPipe(at : Location, value : Term, function : Term) extends Term
     case class ECall(at : Location, function : Term, typeArguments : List[Type], arguments : List[Term]) extends Term
     case class EList(at : Location, items : List[Term]) extends Term
     case class ECopy(at : Location, name : String, record : Term, arguments : List[(String, Term)]) extends Term

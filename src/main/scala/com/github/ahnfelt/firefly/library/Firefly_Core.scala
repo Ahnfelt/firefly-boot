@@ -2,6 +2,8 @@ package com.github.ahnfelt.firefly.library
 
 object Firefly_Core {
 
+    def pipe_dot[A, B](value : A)(function : A => B) : B = function(value)
+
     type Never = scala.Nothing
     type Bool = scala.Boolean
     type Pair[A, B] = (A, B)
