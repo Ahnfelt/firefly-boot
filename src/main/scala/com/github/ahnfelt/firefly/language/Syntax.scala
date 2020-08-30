@@ -74,6 +74,7 @@ object Syntax {
     case class ECopy(at : Location, name : String, record : Term, arguments : List[(String, Term)]) extends Term
     case class EVariant(at : Location, name : String, arguments : List[Term]) extends Term
     case class EField(at : Location, record : Term, field : String) extends Term
+    case class EWildcard(at : Location, index : Int) extends Term
 
     case class MatchCase(at : Location, patterns : List[MatchPattern], body : Term)
 

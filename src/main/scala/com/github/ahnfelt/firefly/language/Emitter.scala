@@ -231,6 +231,9 @@ class Emitter() {
         case ECall(at, function, typeArguments, arguments) =>
             val generics = if(typeArguments.isEmpty) "" else "[" + typeArguments.map(emitType).mkString(", ") + "]"
             emitTerm(function) + generics + "(" + arguments.map(emitTerm).mkString(", ") + ")"
+        case EWildcard(at, index) =>
+            if(index == 0) throw ParseException(at, "Unbound wildcard")
+            "_w" + index
         case _ : EFunctions | _ : ELet | _ : ESequential | _ : EAssign | _ : EAssignField =>
             "{\n" + emitStatements(term) + "\n}"
     }

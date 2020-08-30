@@ -289,7 +289,14 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             List(MatchCase(token.at, parameters.reverse, term))
         } else {
             val term = parseStatements()
-            List(MatchCase(token.at, 1.to(defaultParameterCount).toList.map(_ => PVariable(token.at, None)), term))
+            val wildcards = new Wildcards()
+            val e = wildcards.fixWildcards(term)
+            val arguments = if(wildcards.seenWildcards != 0) {
+                1.to(wildcards.seenWildcards).toList.map(i => PVariable(token.at, Some("_w" + i)))
+            } else {
+                1.to(defaultParameterCount).toList.map(_ => PVariable(token.at, None))
+            }
+            List(MatchCase(token.at, arguments, e))
         }
         if(!colon) skip(LBracketRight, "}")
         ELambda(token.at, result)
@@ -504,6 +511,9 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             val result = parseTerm()
             skip(LBracketRight, ")")
             result
+        } else if(current.is(LWildcard)) {
+            val token = skip(LWildcard)
+            EWildcard(token.at, 0)
         } else {
             throw ParseException(current.at, "Expected atom, got " + current.raw)
         }
