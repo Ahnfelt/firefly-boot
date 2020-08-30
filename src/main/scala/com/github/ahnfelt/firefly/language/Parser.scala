@@ -452,7 +452,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         while(current.is(LBracketLeft) || current.is(LColon) || current.is(LDot)) {
             if(current.is(LDot)) {
                 skip(LDot)
-                if(current.rawIs("{") || current.rawIs("(")) {
+                if(current.rawIs("{")) {
                     val term = parseAtom()
                     result = EPipe(term.at, result, term)
                 } else {
