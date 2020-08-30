@@ -455,6 +455,8 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                 if(current.rawIs("{")) {
                     val term = parseAtom()
                     result = EPipe(term.at, result, term)
+                } else if(current.is(LUpper, LNamespace)) {
+                    result = parseCopy(result)
                 } else {
                     val token = skip(LLower)
                     result = EField(token.at, result, token.raw)
@@ -510,35 +512,26 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     def parseVariant(prefix : String) : Term = {
         val token = skip(LUpper)
         val name = prefix + token.raw
-        if(!current.rawIs("(")) EVariant(token.at, name, List()) else {
-            skip(LBracketLeft, "(")
-            if(current.is(LBracketRight)) {
-                skip(LBracketRight, ")")
-                EVariant(token.at, name, List())
-            } else {
-                val record = parseTerm()
-                if(current.is(LSemicolon)) {
-                    skipSeparator(LSemicolon)
-                    var fields = List[(String, Term)]()
-                    while(!current.is(LBracketRight)) {
-                        val fieldToken = skip(LLower)
-                        skipSeparator(LAssign)
-                        fields ::= fieldToken.raw -> parseTerm()
-                        if((!current.is(LBracketRight))) skipSeparator(LComma)
-                    }
-                    skip(LBracketRight, ")")
-                    ECopy(token.at, name, record, fields.reverse)
-                } else {
-                    var arguments = List[Term](record)
-                    while(!current.is(LBracketRight)) {
-                        skipSeparator(LComma)
-                        arguments ::= parseTerm()
-                    }
-                    skip(LBracketRight, ")")
-                    EVariant(token.at, name, arguments.reverse)
-                }
-            }
+        val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
+        EVariant(token.at, name, arguments)
+    }
+
+    def parseCopy(record : Term) : Term = {
+        val namespace = if(!current.is(LNamespace)) "" else skip(LNamespace).raw
+        val extraNamespace = if(!current.is(LNamespace)) "" else skip(LNamespace).raw
+        val prefix = namespace + extraNamespace
+        val token = skip(LUpper)
+        val name = prefix + token.raw
+        var fields = List[(String, Term)]()
+        skip(LBracketLeft, "(")
+        while(!current.is(LBracketRight)) {
+            val fieldToken = skip(LLower)
+            skipSeparator(LAssign)
+            fields ::= fieldToken.raw -> parseTerm()
+            if(!current.is(LBracketRight)) skipSeparator(LComma)
         }
+        skip(LBracketRight, ")")
+        ECopy(token.at, name, record, fields.reverse)
     }
 
     def parseList() : Term = {

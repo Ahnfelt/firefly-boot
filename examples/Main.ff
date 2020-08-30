@@ -12,7 +12,7 @@ Point_sum(point: Point): Int {
 
 doSum() {
     let point = Point(5, 7)
-    point.{p => Point(p; y = 8)}.sum()
+    point.Point(y = 8)
 }
 
 
