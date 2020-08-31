@@ -321,6 +321,10 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         } else if(current.is(LLower)) {
             val token = skip(LLower)
             PVariable(token.at, Some(token.raw))
+        } else if(current.rawIs("(")) {
+            val at = current.at
+            val (fields, fieldPatterns) = parseRecordPattern().unzip
+            PVariant(at, "Record_" + fields.mkString("_"), fieldPatterns)
         } else {
             val token = skip(LUpper)
             if(current.rawIs("(")) {
@@ -566,6 +570,19 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         }
         skip(LBracketRight, ")")
         fields.reverse.sortBy(_._1)
+    }
+
+    def parseRecordPattern() : List[(String, MatchPattern)] = {
+        var fields = List[(String, MatchPattern)]()
+        skip(LBracketLeft, "(")
+        while(!current.is(LBracketRight)) {
+            val fieldToken = skip(LLower)
+            skipSeparator(LAssign)
+            fields ::= fieldToken.raw -> parsePattern()
+            if(!current.is(LBracketRight)) skipSeparator(LComma)
+        }
+        skip(LBracketRight, ")")
+        fields.reverse
     }
 
     def parseList() : Term = {
