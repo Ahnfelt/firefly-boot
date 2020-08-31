@@ -344,7 +344,11 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseType() : Type = {
-        val leftTypes = if(current.rawIs("(")) {
+        val leftTypes = if(current.rawIs("(") && ahead.is(LLower) && aheadAhead.is(LColon)) {
+            val at = current.at
+            val (fields, fieldTypes) = parseRecordType().unzip
+            List(Type(at, "Record_" + fields.mkString("_"), fieldTypes))
+        } else if(current.rawIs("(")) {
             parseTypeArguments(parenthesis = true)
         } else {
             val token = skip(LUpper)
@@ -354,7 +358,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         if(!current.is(LArrowThick) && leftTypes.size == 1) leftTypes.head else {
             val arrowToken = skip(LArrowThick)
             val rightType = parseType()
-            Type(arrowToken.at, "Function" + leftTypes.size, leftTypes ++ List(rightType))
+            Type(arrowToken.at, "Function_" + leftTypes.size, leftTypes ++ List(rightType))
         }
     }
 
@@ -545,6 +549,19 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             val fieldToken = skip(LLower)
             skipSeparator(LAssign)
             fields ::= fieldToken.raw -> parseTerm()
+            if(!current.is(LBracketRight)) skipSeparator(LComma)
+        }
+        skip(LBracketRight, ")")
+        fields.reverse
+    }
+
+    def parseRecordType() : List[(String, Type)] = {
+        var fields = List[(String, Type)]()
+        skip(LBracketLeft, "(")
+        while(!current.is(LBracketRight)) {
+            val fieldToken = skip(LLower)
+            skipSeparator(LColon)
+            fields ::= fieldToken.raw -> parseType()
             if(!current.is(LBracketRight)) skipSeparator(LComma)
         }
         skip(LBracketRight, ")")

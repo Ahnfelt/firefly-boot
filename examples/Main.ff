@@ -41,4 +41,8 @@ Stack_map(list: Stack, body: Int => Int): Stack {
     | PushStack s, _ => PushStack(body(s.value), map(s.stack, body))
 }
 
-user = (name = "Joe", email = "jj@example.com")
+user: (name: String, email: String) = (name = "Joe", email = "jj@example.com")
+
+loadEmails(db: DbSession, userId: UserId): List[Email] {
+    Empty
+}

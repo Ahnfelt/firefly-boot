@@ -185,8 +185,16 @@ class Emitter() {
     }
 
     def emitType(t : Type) : String = {
-        val generics = if(t.generics.isEmpty) "" else "[" + t.generics.map(emitType).mkString(", ") + "]"
-        t.name.replace("_", ".") + generics
+        if(t.name.startsWith("Function_")) {
+            emitType(t.copy(name = t.name.replace("_", "")))
+        } else if(t.name.startsWith("Record_")) {
+            "{" + t.name.split("_").drop(1).toList.zip(t.generics).map { case (field, fieldType) =>
+                "val " + escapeKeyword(field) + " : " + emitType(fieldType)
+            }.mkString("; ") + "}"
+        } else {
+            val generics = if(t.generics.isEmpty) "" else "[" + t.generics.map(emitType).mkString(", ") + "]"
+            t.name.replace("_", ".") + generics
+        }
     }
 
     def emitStatements(term : Term) : String = term match {
