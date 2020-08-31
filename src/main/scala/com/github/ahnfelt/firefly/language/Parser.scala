@@ -565,7 +565,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             if(!current.is(LBracketRight)) skipSeparator(LComma)
         }
         skip(LBracketRight, ")")
-        fields.reverse
+        fields.reverse.sortBy(_._1)
     }
 
     def parseList() : Term = {
