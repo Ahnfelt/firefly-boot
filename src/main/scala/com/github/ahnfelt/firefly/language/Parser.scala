@@ -506,6 +506,8 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             parseLambda()
         } else if(current.rawIs("[")) {
             parseList()
+        } else if(current.rawIs("(") && ahead.is(LLower) && aheadAhead.is(LAssign)) {
+            ERecord(current.at, parseRecord())
         } else if(current.rawIs("(")) {
             skip(LBracketLeft, "(")
             val result = parseTerm()
@@ -532,6 +534,11 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         val prefix = namespace + extraNamespace
         val token = skip(LUpper)
         val name = prefix + token.raw
+        val fields = parseRecord()
+        ECopy(token.at, name, record, fields)
+    }
+
+    def parseRecord() : List[(String, Term)] = {
         var fields = List[(String, Term)]()
         skip(LBracketLeft, "(")
         while(!current.is(LBracketRight)) {
@@ -541,7 +548,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             if(!current.is(LBracketRight)) skipSeparator(LComma)
         }
         skip(LBracketRight, ")")
-        ECopy(token.at, name, record, fields.reverse)
+        fields.reverse
     }
 
     def parseList() : Term = {

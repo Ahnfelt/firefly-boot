@@ -40,3 +40,5 @@ Stack_map(list: Stack, body: Int => Int): Stack {
     | EmptyStack, _ => EmptyStack
     | PushStack s, _ => PushStack(body(s.value), map(s.stack, body))
 }
+
+user = (name = "Joe", email = "jj@example.com")

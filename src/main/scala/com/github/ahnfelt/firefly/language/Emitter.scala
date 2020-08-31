@@ -231,6 +231,11 @@ class Emitter() {
         case ECall(at, function, typeArguments, arguments) =>
             val generics = if(typeArguments.isEmpty) "" else "[" + typeArguments.map(emitType).mkString(", ") + "]"
             emitTerm(function) + generics + "(" + arguments.map(emitTerm).mkString(", ") + ")"
+        case ERecord(at, fields) =>
+            if(fields.isEmpty) "{}" else {
+                val list = fields.map { case (field, value) => "val " + escapeKeyword(field) + " = " + emitTerm(value) }
+                "new {\n" + list.mkString(";\n") + ";\n}"
+            }
         case EWildcard(at, index) =>
             if(index == 0) throw ParseException(at, "Unbound wildcard")
             "_w" + index

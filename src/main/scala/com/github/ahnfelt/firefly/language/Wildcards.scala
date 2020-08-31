@@ -20,6 +20,7 @@ class Wildcards() {
                 arguments = e.arguments.map { case (field, e) => field -> fixWildcards(e) }
             )
         case e : EVariant => e.copy(arguments = e.arguments.map(fixWildcards))
+        case e : ERecord => e.copy(fields = e.fields.map { case (field, e) => field -> fixWildcards(e) })
         case e : EField => e.copy(record = fixWildcards(e.record))
         case e : EWildcard =>
             seenWildcards += 1
