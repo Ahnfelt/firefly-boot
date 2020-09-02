@@ -1,0 +1,104 @@
+type Location(file: String, line: Int, column: Int)
+
+Location_show(location: Location) {
+    "in " + location.file + " " +
+    "at line " + location.line +
+    ", column " + location.column
+}
+
+type Module(
+    file: String,
+    types: List[DType],
+    traits: List[DTrait],
+    instances: List[DInstance],
+    lets: List[DLet],
+    functions: List[DFunction],
+)
+
+type DFunction(
+    at: Location,
+    namespace: Option[String],
+    signature: Signature,
+    body: ELambda
+)
+type DLet(
+    at: Location,
+    namespace: Option[String],
+    name: String,
+    variableType: Type,
+    value: Term
+)
+type DType(
+    at: Location,
+    name: String,
+    generics: List[String],
+    constraints: List[Constraint],
+    commonFields: List[Parameter],
+    variants: List[Variant]
+)
+type DTrait(
+    at: Location,
+    name: String,
+    generics: List[String],
+    constraints: List[Constraint],
+    generatorParameters: List[Parameter],
+    methods: List[Signature],
+    methodDefaults: List[Pair[String, Term]],
+    methodGenerators: List[Pair[String, Term]],
+)
+type DInstance(
+    at: Location,
+    generics: List[String],
+    constraints: List[Constraint],
+    traitType: Type,
+    generatorArguments: List[Term],
+    methods: List[DFunction],
+)
+
+type Term(at: Location) {
+    EString(value: String)
+    EInt(value: String)
+    EFloat(value: String)
+    EVariable(name: String)
+    ELambda(cases: List[MatchCase])
+    EFunctions(functions: List[LocalFunction], body: Term)
+    ELet(mutable: Boolean, name: String, valueType: Type, value: Term, body: Term)
+    ESequential(before: Term, after: Term)
+    EAssign(operator: String, variable: String, value: Term)
+    EAssignField(operator: String, field: EField, value: Term)
+    EPipe(value: Term, function: Term)
+    ECall(function: Term, typeArguments: List[Type], arguments: List[Term])
+    EList(items: List[Term])
+    ECopy(name: String, record: Term, arguments: List[Pair[String, Term]])
+    EVariant(name: String, arguments: List[Term])
+    ERecord(fields: List[Pair[String, Term]])
+    EField(record: Term, field: String)
+    EWildcard(index: Int)
+}
+
+type MatchCase(at: Location, patterns: List[MatchPattern], body: Term)
+
+type MatchPattern(at: Location) {
+    PVariable(name: Option[String])
+    PVariant(name: String, patterns: List[MatchPattern])
+    PVariantAs(name: String, variable: String)
+}
+
+type Signature(
+    at: Location,
+    name: String,
+    generics: List[String],
+    constraints: List[Constraint],
+    parameters: List[Parameter],
+    returnType: Type
+)
+
+type LocalFunction(signature: Signature, body: ELambda)
+
+type Variant(at: Location, name: String, fields: List[Parameter])
+
+type Parameter(at: Location, mutable: Boolean, name: String, valueType: Type, default: Option[Term])
+
+type Constraint(representation: Type)
+
+type Type(at: Location, name: String, generics: List[Type])

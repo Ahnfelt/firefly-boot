@@ -229,7 +229,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         var parameters = List[Parameter]()
         skip(LBracketLeft, "(")
         while(!current.is(LBracketRight)) {
-            val mutable = allowMutable && current.rawIs("mutable")
+            val mutable = allowMutable && current.is(LKeyword) && current.rawIs("mutable")
             if(mutable) skip(LKeyword)
             val parameterNameToken = skip(LLower)
             val parameterType = parseOptionalType()
@@ -376,8 +376,8 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseStatement() : Term = {
-        if(current.rawIs("let") || current.rawIs("mutable")) parseLet()
-        else if(current.rawIs("function")) parseFunctions()
+        if(current.is(LKeyword) && (current.rawIs("let") || current.rawIs("mutable"))) parseLet()
+        else if(current.is(LKeyword) && current.rawIs("function")) parseFunctions()
         else {
             val term = parseTerm()
             if(!current.is(LAssign, LAssignPlus, LAssignMinus)) term else {

@@ -22,7 +22,7 @@ trait Show[T] {
 
 instance Show[List[T: Show]] {
     show(value: List[T]) {
-        value.map { v => show(v) }.join(", ")
+        value.map { show(_) }.join(", ")
     }
 }
 
@@ -42,7 +42,3 @@ Stack_map(list: Stack, body: Int => Int): Stack {
 }
 
 user: (name: String, email: String) = (name = "Joe", email = "jj@example.com")
-
-loadEmails(db: DbSession, userId: UserId): List[Email] {
-    Empty
-}

@@ -2,7 +2,7 @@ package com.github.ahnfelt.firefly
 
 import java.io.{File, FileWriter}
 
-import com.github.ahnfelt.firefly.language.{Emitter, Parser, Tokenizer}
+import com.github.ahnfelt.firefly.language.{Emitter, ParseException, Parser, Tokenizer}
 
 import scala.io.Source
 
@@ -61,7 +61,18 @@ object Main {
 
         //println()
 
-        val module = new Parser(input, tokens).parseModule()
+        val module = try {
+            new Parser(input, tokens).parseModule()
+        } catch {
+            case exception : ParseException =>
+                println()
+                println("-----")
+                println(exception.getMessage)
+                println("-----")
+                println()
+                System.exit(1)
+                throw exception
+        }
 
         //println(module)
         //println()
