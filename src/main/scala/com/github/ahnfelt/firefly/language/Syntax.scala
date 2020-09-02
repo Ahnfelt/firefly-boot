@@ -59,6 +59,7 @@ object Syntax {
 
     sealed abstract class Term { val at : Location }
     case class EString(at : Location, value : String) extends Term
+    case class EChar(at : Location, value : String) extends Term
     case class EInt(at : Location, value : String) extends Term
     case class EFloat(at : Location, value : String) extends Term
     case class EVariable(at : Location, name : String) extends Term

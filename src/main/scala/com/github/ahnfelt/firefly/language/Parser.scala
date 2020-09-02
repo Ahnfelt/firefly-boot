@@ -355,9 +355,10 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         } else if(current.rawIs("(")) {
             parseTypeArguments(parenthesis = true)
         } else {
+            val namespace = if(current.is(LNamespace)) skip(LNamespace).raw else ""
             val token = skip(LUpper)
             val arguments = if(!current.rawIs("[")) List() else parseTypeArguments()
-            List(Type(token.at, token.raw, arguments))
+            List(Type(token.at, namespace + token.raw, arguments))
         }
         if(!current.is(LArrowThick) && leftTypes.size == 1) leftTypes.head else {
             val arrowToken = skip(LArrowThick)
@@ -498,6 +499,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
 
     def parseAtom() : Term = {
         if(current.is(LString)) { val token = skip(LString); EString(token.at, token.raw) }
+        else if(current.is(LChar)) { val token = skip(LChar); EChar(token.at, token.raw) }
         else if(current.is(LInt)) { val token = skip(LInt); EInt(token.at, token.raw) }
         else if(current.is(LFloat)) { val token = skip(LFloat); EFloat(token.at, token.raw) }
         else if(current.is(LLower)) { val token = skip(LLower); EVariable(token.at, token.raw) }

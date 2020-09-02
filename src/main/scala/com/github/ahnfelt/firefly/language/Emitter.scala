@@ -214,11 +214,13 @@ class Emitter() {
 
     def emitTerm(term : Term) : String = term match {
         case EString(at, value) => value
+        case EChar(at, value) => value
         case EInt(at, value) => value
         case EFloat(at, value) => value
         case EVariable(at, name) => escapeKeyword(name.replace("_", "."))
         case EList(at, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
-        case EVariant(at, name, arguments) => name + "(" + arguments.map(emitTerm).mkString(", ") + ")"
+        case EVariant(at, name, arguments) =>
+            name.replace("_", ".") + "(" + arguments.map(emitTerm).mkString(", ") + ")"
         case ECopy(at, name, record, fields) =>
             val fieldCode = fields.map { case (l, e) => escapeKeyword(l) + " = " + emitTerm(e) }.mkString(", ")
             emitTerm(record) + ".copy(" + fieldCode + ")"

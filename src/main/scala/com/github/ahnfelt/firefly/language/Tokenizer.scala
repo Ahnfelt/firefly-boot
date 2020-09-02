@@ -37,6 +37,7 @@ case class Token(
 sealed abstract class TokenKind(val beforeSeparator : Boolean, val afterSeparator : Boolean, val afterKeyword : Boolean)
 case object LEnd extends TokenKind(false, false, false)
 case object LString extends TokenKind(true, true, true)
+case object LChar extends TokenKind(true, true, true)
 case object LInt extends TokenKind(true, true, true)
 case object LFloat extends TokenKind(true, true, true)
 case object LKeyword extends TokenKind(true, true, true)
@@ -77,7 +78,7 @@ object Tokenizer {
             if(tokens.nonEmpty) {
                 val last = tokens.last
                 if(last.stopLine == startLine && last.kind == LLower && kind.afterKeyword) {
-                    tokens(tokens.size - 1) = tokens(tokens.size - 1).copy(kind = LKeyword)
+                    tokens.update(tokens.size - 1, tokens(tokens.size - 1).copy(kind = LKeyword))
                 }
                 if(last.stopLine != startLine && last.kind.beforeSeparator && kind.afterSeparator) {
                     tokens.append(Token(
@@ -127,10 +128,12 @@ object Tokenizer {
                 }
                 i += 2
 
-            } else if(code(i) == '"') {
+            } else if(code(i) == '"' || code(i) == '\'') {
+
+                val endSign = code(i)
 
                 i += 1
-                while(i < code.length && code(i) != '"') {
+                while(i < code.length && code(i) != endSign) {
                     if(code(i) == '\n') {
                         throw new RuntimeException(
                             "Unexpected end of line in string started on line " + startLine + "."
@@ -145,7 +148,7 @@ object Tokenizer {
                     i += 1
                 }
                 i += 1
-                emitToken(LString, start, i)
+                emitToken(if(endSign == '"') LString else LChar, start, i)
 
             } else if((code(i) >= 'a' && code(i) <= 'z') || (code(i) >= 'A' && code(i) <= 'Z')) {
 
@@ -175,7 +178,11 @@ object Tokenizer {
                         exponent = true
                         if(code(i) == '+' || code(i) == '-') i += 1
                     }
-                    if(code(i) == '.' && !dot && !exponent) {
+                    if(
+                        i + 1 < code.length && code(i) == '.' &&
+                        code(i + 1) >= '0' && code(i + 1) <= '9' &&
+                        !dot && !exponent
+                    ) {
                         i += 1
                         dot = true
                     }
