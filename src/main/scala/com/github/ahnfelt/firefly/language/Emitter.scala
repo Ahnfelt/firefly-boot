@@ -4,7 +4,7 @@ import com.github.ahnfelt.firefly.language.Syntax._
 
 class Emitter() {
 
-    def emitModule(module : Module) : String = {
+    def emitModule(module : Module, otherModules : List[String]) : String = {
         val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile(_ != '/').reverse.takeWhile(_ != '.')
         val namespaces = module.types.map { definition =>
             val lets = module.lets.filter(_.namespace.contains(definition.name + "_"))
@@ -13,11 +13,9 @@ class Emitter() {
             else Some(emitTypeMembers(definition.name, lets, functions))
         }
         val parts = List(
-            List(
-                "package firefly",
-                "import firefly.Firefly_Core._",
-                "object " + moduleNamespace + " {"
-            ),
+            List("package firefly"),
+            List("import firefly.Firefly_Core._") ++ otherModules.map("import firefly." + _ + "._"),
+            List("object " + moduleNamespace + " {"),
             if(
                 module.functions.exists(f => f.namespace.isEmpty && f.signature.name == "main")
             ) List(emitMain()) else List(),

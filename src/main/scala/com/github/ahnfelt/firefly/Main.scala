@@ -18,17 +18,17 @@ object Main {
         outputFile.mkdir()
 
         var resultFiles = List[File]()
-        val scalaFile = new File(outputPath, "src/main/scala/firefly")
-        scalaFile.mkdirs()
-        for(file <- new File(inputPath).listFiles()) {
-            if(file.getName.endsWith(".ff")) {
-                val _ = compileFile(file.getAbsolutePath, new File(scalaFile, file.getName.dropRight(3) + ".scala"))
-                resultFiles ::= file
-            }
+        val scalaPathFile = new File(outputPath, "src/main/scala/firefly")
+        scalaPathFile.mkdirs()
+        val files = new File(inputPath).listFiles().filter(_.getName.endsWith(".ff")).toList
+        for(file <- files) {
+            val scalaFile = new File(scalaPathFile, file.getName.dropRight(3) + ".scala")
+            val _ = compileFile(file.getAbsolutePath, files.map(_.getName.dropRight(3)), scalaFile)
+            resultFiles ::= file
         }
         resultFiles = resultFiles.reverse
 
-        writeExtraFiles(corePath, outputFile, scalaFile)
+        writeExtraFiles(corePath, outputFile, scalaPathFile)
 
     }
 
@@ -50,7 +50,7 @@ object Main {
         sbtWriter.close()
     }
 
-    def compileFile(input : String, output : File) : String = {
+    def compileFile(input : String, modules : List[String], output : File) : String = {
 
         val source = Source.fromFile(input, "UTF-8")
         val code = source.mkString
@@ -77,7 +77,7 @@ object Main {
         //println(module)
         //println()
 
-        val out = new Emitter().emitModule(module)
+        val out = new Emitter().emitModule(module, modules.filter(_ != module.file.dropRight(3)))
 
         val writer = new FileWriter(output)
         writer.write(out)
