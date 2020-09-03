@@ -128,6 +128,7 @@ object Firefly_Core {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
+        def modify(index : Int, body : T => T) : List[T] = list.updated(index, body(list(index)))
         def pairs() : List[(Int, T)] = list.zipWithIndex.map(_.swap)
     }
 
@@ -135,11 +136,25 @@ object Firefly_Core {
         def join(separator : String) : String = list.mkString(separator)
     }
 
-    implicit class Firefly_Array[T](list : Array[T]) {
+    implicit class Firefly_Array[T : scala.reflect.ClassTag](list : Array[T]) {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
+        def modify(index : Int, body : T => T) : Array[T] = list.updated(index, body(list(index)))
         def pairs() : Array[(Int, T)] = list.zipWithIndex.map(_.swap)
+    }
+
+    implicit class Firefly_ArrayBuilder[T](list : ArrayBuilder[T]) {
+        def each(body : T => Unit) : Unit = list.foreach(body)
+        def all(body : T => Bool) : Bool = list.forall(body)
+        def any(body : T => Bool) : Bool = list.exists(body)
+        def modify(index : Int, body : T => T) : Unit = list.update(index, body(list(index)))
+    }
+
+    implicit class Firefly_SetBuilder[T](list : SetBuilder[T]) {
+        def each(body : T => Unit) : Unit = list.foreach(body)
+        def all(body : T => Bool) : Bool = list.forall(body)
+        def any(body : T => Bool) : Bool = list.exists(body)
     }
 
     implicit class Firefly_Range(list : Range) {
