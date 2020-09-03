@@ -16,6 +16,7 @@ object Firefly_Core {
     def SetBuilder[T](items : T*)(implicit ordering : Ordering[T]) = mutable.SortedSet[T](items : _*)
     def ArrayBuilder[T](items : T*) = mutable.ArrayBuffer[T](items : _*)
 
+
     object Unit {
         def apply() : Unit = {}
         def unapply(value : Unit) : Bool = true
@@ -114,9 +115,9 @@ object Firefly_Core {
     def if_[T](condition : Bool, body : () => T) : Option[T] = if(condition) scala.Some(body()) else scala.None
 
     implicit class Firefly_Option[T](option : Option[T]) {
-        def elseIf(condition : () => Bool, value : () => T) : Option[T] =
+        def elseIf[U >: T](condition : () => Bool, value : () => U) : Option[U] =
             if(option.nonEmpty) option else if_(condition(), value)
-        def else_(value : () => T) : T =
+        def else_[U >: T](value : () => U) : U =
             option.getOrElse(value())
         def each(body : T => Unit) : Unit = option.foreach(body)
         def all(body : T => Bool) : Bool = option.forall(body)
@@ -139,6 +140,12 @@ object Firefly_Core {
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
         def pairs() : Array[(Int, T)] = list.zipWithIndex.map(_.swap)
+    }
+
+    implicit class Firefly_Range(list : Range) {
+        def each(body : Int => Unit) : Unit = list.foreach(body)
+        def all(body : Int => Bool) : Bool = list.forall(body)
+        def any(body : Int => Bool) : Bool = list.exists(body)
     }
 
     implicit class Firefly_Pair[A, B](pair : (A, B)) {

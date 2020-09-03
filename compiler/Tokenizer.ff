@@ -31,7 +31,7 @@ tokenize(file: String, code: String) {
     mutable i = 0
     while { i < code.length } {
 
-        while { i < code.length && (code(i) == ' ' || code(i) == '\t' || code(i) == '\r') } i += 1
+        while { i < code.length && (code(i) == ' ' || code(i) == '\t' || code(i) == '\r') } { i += 1 }
 
         let start = i
         startLine = line
