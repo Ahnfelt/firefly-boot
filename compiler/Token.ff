@@ -22,11 +22,11 @@ Token_is(token: Token, kind1: TokenKind) {
     token.kind == kind1
 }
 
-Token_is(token: Token, kind1: TokenKind, kind2: TokenKind) {
+Token_is2(token: Token, kind1: TokenKind, kind2: TokenKind) {
     token.kind == kind1 || token.kind == kind2
 }
 
-Token_is(token: Token, kind1: TokenKind, kind2: TokenKind, kind3: TokenKind) {
+Token_is3(token: Token, kind1: TokenKind, kind2: TokenKind, kind3: TokenKind) {
     token.kind == kind1 || token.kind == kind2 || token.kind == kind3
 }
 

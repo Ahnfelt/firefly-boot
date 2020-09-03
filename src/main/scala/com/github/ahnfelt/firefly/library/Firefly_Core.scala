@@ -113,6 +113,11 @@ object Firefly_Core {
     def each[T](list : List[T], body : T => Unit) : Unit = list.foreach(body)
     def while_(condition : () => Bool, body : () => Unit) : Unit = while(condition()) body()
     def if_[T](condition : Bool, body : () => T) : Option[T] = if(condition) scala.Some(body()) else scala.None
+    def panic(message : String) : Nothing = {
+        println(message)
+        System.exit(1)
+        throw new RuntimeException(message)
+    }
 
     implicit class Firefly_Option[T](option : Option[T]) {
         def elseIf[U >: T](condition : () => Bool, value : () => U) : Option[U] =
