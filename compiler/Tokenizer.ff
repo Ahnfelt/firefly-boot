@@ -8,7 +8,7 @@ tokenize(file: String, code: String) {
     mutable startLineOffset = lineOffset
 
     let operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;"
-    let operatorCharacters = HashSetBuilder[Char]()
+    let operatorCharacters = SetBuilder[Char]()
     0.until(operatorCharactersString.size).map { j => operatorCharacters.add(operatorCharactersString(j)) }
 
     function emitToken(kind: TokenKind, startOffset: Int, stopOffset: Int): Unit {
@@ -105,14 +105,14 @@ tokenize(file: String, code: String) {
 
         } elseIf { code(i) >= '0' && code(i) <= '9' } {
 
-            mutable dot = false
-            mutable exponent = false
+            mutable dot = False
+            mutable exponent = False
             while { i < code.length && (code(i) >= '0' && code(i) <= '9') } {
                 i += 1
                 if((code(i) == 'e' || code(i) == 'E') && !exponent) {
                     i += 1
-                    dot = true
-                    exponent = true
+                    dot = True
+                    exponent = True
                     if(code(i) == '+' || code(i) == '-') {i += 1}
                 }
                 if(
@@ -121,7 +121,7 @@ tokenize(file: String, code: String) {
                     !dot && !exponent
                 ) {
                     i += 1
-                    dot = true
+                    dot = True
                 }
             }
             emitToken(if(dot || exponent) {LFloat} else {LInt}, start, i)

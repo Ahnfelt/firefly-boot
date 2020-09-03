@@ -367,14 +367,15 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         }
     }
 
-    def parseStatements() : Term = if(current.is(LBracketRight, LPipe)) EVariant(current.at, "Unit", List()) else {
-        var result = parseStatement()
-        while(currentIsSeparator(LSemicolon)) {
-            val token = skipSeparator(LSemicolon)
-            result = ESequential(token.at, result, parseStatement())
+    def parseStatements() : Term =
+        if(current.is(LBracketRight, LPipe)) EVariant(current.at, "Unit", List(), List()) else {
+            var result = parseStatement()
+            while(currentIsSeparator(LSemicolon)) {
+                val token = skipSeparator(LSemicolon)
+                result = ESequential(token.at, result, parseStatement())
+            }
+            result
         }
-        result
-    }
 
     def parseStatement() : Term = {
         if(current.is(LKeyword) && (current.rawIs("let") || current.rawIs("mutable"))) parseLet()
@@ -534,8 +535,9 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     def parseVariant(prefix : String) : Term = {
         val token = skip(LUpper)
         val name = prefix + token.raw
+        val typeArguments = if(!current.rawIs("[")) List() else parseTypeArguments()
         val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
-        EVariant(token.at, name, arguments)
+        EVariant(token.at, name, typeArguments, arguments)
     }
 
     def parseCopy(record : Term) : Term = {

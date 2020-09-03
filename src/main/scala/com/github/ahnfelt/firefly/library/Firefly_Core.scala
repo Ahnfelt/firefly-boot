@@ -1,5 +1,7 @@
 package com.github.ahnfelt.firefly.library
 
+import scala.collection.mutable
+
 object Firefly_Core {
 
     def pipe_dot[A, B](value : A)(function : A => B) : B = function(value)
@@ -8,6 +10,11 @@ object Firefly_Core {
     type Bool = scala.Boolean
     type Pair[A, B] = (A, B)
 
+    type SetBuilder[T] = mutable.SortedSet[T]
+    type ArrayBuilder[T] = mutable.ArrayBuffer[T]
+
+    def SetBuilder[T](items : T*)(implicit ordering : Ordering[T]) = mutable.SortedSet[T](items : _*)
+    def ArrayBuilder[T](items : T*) = mutable.ArrayBuffer[T](items : _*)
 
     object Unit {
         def apply() : Unit = {}
