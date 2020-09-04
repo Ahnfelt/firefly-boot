@@ -363,7 +363,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         if(!current.is(LArrowThick) && leftTypes.size == 1) leftTypes.head else {
             val arrowToken = skip(LArrowThick)
             val rightType = parseType()
-            Type(arrowToken.at, "Function_" + leftTypes.size, leftTypes ++ List(rightType))
+            Type(arrowToken.at, "Function$" + leftTypes.size, leftTypes ++ List(rightType))
         }
     }
 

@@ -183,8 +183,8 @@ class Emitter() {
     }
 
     def emitType(t : Type) : String = {
-        if(t.name.startsWith("Function_")) {
-            emitType(t.copy(name = t.name.replace("_", "")))
+        if(t.name.startsWith("Function$")) {
+            emitType(t.copy(name = t.name.replace("$", "")))
         } else if(t.name.startsWith("Record$")) {
             "{" + t.name.split('$').drop(1).toList.zip(t.generics).map { case (field, fieldType) =>
                 "val " + escapeKeyword(field) + " : " + emitType(fieldType)
