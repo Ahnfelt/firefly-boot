@@ -14,78 +14,79 @@ Parser_of(file: String, tokens: Array[Token]): Parser {
     )
 }
 
-Parser_fail[T](parser: Parser, at: Location, message: String): T {
+Parser_fail[T](self: Parser, at: Location, message: String): T {
     panic(message + " " + at.show)
 }
 
-Parser_current(parser: Parser): Token {
-    if(parser.offset < parser.tokens.length) { parser.tokens(parser.offset) } else { parser.end }
+Parser_current(self: Parser): Token {
+    if(self.offset < self.tokens.length) { self.tokens(self.offset) } else { self.end }
 }
 
-Parser_ahead(parser: Parser): Token {
-    if(parser.offset + 1 < parser.tokens.length) { parser.tokens(parser.offset + 1) } else { parser.end }
+Parser_ahead(self: Parser): Token {
+    if(self.offset + 1 < self.tokens.length) { self.tokens(self.offset + 1) } else { self.end }
 }
 
-Parser_aheadAhead(parser: Parser): Token {
-    if(parser.offset + 2 < parser.tokens.length) { parser.tokens(parser.offset + 2) } else { parser.end }
+Parser_aheadAhead(self: Parser): Token {
+    if(self.offset + 2 < self.tokens.length) { self.tokens(self.offset + 2) } else { self.end }
 }
 
-Parser_skip(parser: Parser, kind: TokenKind): Token {
-    let c = parser.current
+Parser_skip(self: Parser, kind: TokenKind): Token {
+    let c = self.current
     if(c.kind != kind) {
-        parser.fail(c.at, "Expected " + kind + ", got " + c.raw)
+        self.fail(c.at, "Expected " + kind + ", got " + c.raw)
     }
-    parser.offset += 1
+    self.offset += 1
     c
 }
 
-Parser_rawSkip(parser: Parser, kind: TokenKind, value: String): Token {
-    let c = parser.current
+Parser_rawSkip(self: Parser, kind: TokenKind, value: String): Token {
+    let c = self.current
     if(c.kind != kind) {
-        parser.fail(c.at, "Expected " + kind + " " + value + ", got " + c.raw)
+        self.fail(c.at, "Expected " + kind + " " + value + ", got " + c.raw)
     }
     if(!c.rawIs(value)) {
-        parser.fail(c.at, "Expected " + value + " got " + c.raw)
+        self.fail(c.at, "Expected " + value + " got " + c.raw)
     }
-    parser.offset += 1
+    self.offset += 1
     c
 }
 
-Parser_currentIsSeparator(parser: Parser, kind: TokenKind): Bool {
-    parser.current.is(kind) || parser.current.is(LSeparator)
+Parser_currentIsSeparator(self: Parser, kind: TokenKind): Bool {
+    self.current.is(kind) || self.current.is(LSeparator)
 }
 
-Parser_skipSeparator(parser: Parser, kind: TokenKind): Unit {
-    if(parser.current.is(LSeparator)) {
-        parser.skip(LSeparator)
+Parser_skipSeparator(self: Parser, kind: TokenKind): Unit {
+    if(self.current.is(LSeparator)) {
+        self.skip(LSeparator)
     } else {
-        parser.skip(kind)
+        self.skip(kind)
     }
 }
+
 /*
-def parseModule() : Module = {
-    var result = Module(file, List(), List(), List(), List(), List())
-    while(!current.is(LEnd)) {
-        if(current.is(LLower) && (ahead.is(LAssign) || ahead.is(LColon))) {
-            result = result.copy(lets = parseLetDefinition() :: result.lets)
-        } else if(current.is(LNamespace) && ahead.is(LLower) && (aheadAhead.is(LAssign) || aheadAhead.is(LColon))) {
+Parser_parseModule(self: Parser): Module {
+    mutable result = Module(file, List(), List(), List(), List(), List())
+    while {!self.current.is(LEnd)} {
+        if(self.current.is(LLower) && (self.ahead.is(LAssign) || self.ahead.is(LColon))) {
+            result = result.Module(lets = parseLetDefinition() :: result.lets)
+        } elseIf {self.current.is(LNamespace) && self.ahead.is(LLower) && self.aheadAhead.is2(LAssign, LColon)} {
             val namespace = Some(skip(LNamespace).raw)
-            result = result.copy(lets = parseLetDefinition(namespace) :: result.lets)
-        } else if(current.is(LLower) && ahead.is(LBracketLeft)) {
-            result = result.copy(functions = parseFunctionDefinition() :: result.functions)
-        } else if(current.is(LNamespace) && ahead.is(LLower) && aheadAhead.is(LBracketLeft)) {
+            result = result.Module(lets = parseLetDefinition(namespace) :: result.lets)
+        } elseIf {self.current.is(LLower) && self.ahead.is(LBracketLeft)} {
+            result = result.Module(functions = parseFunctionDefinition() :: result.functions)
+        } elseIf {self.current.is(LNamespace) && self.ahead.is(LLower) && self.aheadAhead.is(LBracketLeft)} {
             val namespace = Some(skip(LNamespace).raw)
-            result = result.copy(functions = parseFunctionDefinition(namespace) :: result.functions)
-        } else if(current.is(LKeyword) && current.rawIs("trait")) {
-            result = result.copy(traits = parseTraitDefinition() :: result.traits)
-        } else if(current.is(LKeyword) && current.rawIs("instance")) {
-            result = result.copy(instances = parseInstanceDefinition() :: result.instances)
-        } else if(current.is(LKeyword) && current.rawIs("type")) {
-            result = result.copy(types = parseTypeDefinition() :: result.types)
+            result = result.Module(functions = parseFunctionDefinition(namespace) :: result.functions)
+        } elseIf {self.current.is(LKeyword) && self.current.rawIs("trait")} {
+            result = result.Module(traits = parseTraitDefinition() :: result.traits)
+        } elseIf {self.current.is(LKeyword) && self.current.rawIs("instance")} {
+            result = result.Module(instances = parseInstanceDefinition() :: result.instances)
+        } elseIf {self.current.is(LKeyword) && self.current.rawIs("type")} {
+            result = result.Module(types = parseTypeDefinition() :: result.types)
         } else {
             skip(LEnd)
         }
-        if(!current.is(LEnd)) skipSeparator(LSemicolon)
+        if(!self.current.is(LEnd)) skipSeparator(LSemicolon)
     }
     Module(
         file = file,
@@ -97,9 +98,9 @@ def parseModule() : Module = {
     )
 }
 
-def parseLetDefinition(scopeType : Option[String] = None) : DLet = {
+Parser_parseLetDefinition(scopeType : Option[String] = None) : DLet {
     val nameToken = skip(LLower)
-    val variableType = if(current.is(LColon)) {
+    val variableType = if(self.current.is(LColon)) {
         skip(LColon)
         parseType()
     } else Type(nameToken.at, "?", List())
@@ -108,7 +109,7 @@ def parseLetDefinition(scopeType : Option[String] = None) : DLet = {
     DLet(nameToken.at, scopeType, nameToken.raw, variableType, value)
 }
 
-def parseFunctionDefinition(scopeType : Option[String] = None) : DFunction = {
+Parser_parseFunctionDefinition(scopeType : Option[String] = None) : DFunction {
     val signature = parseSignature(scopeType)
     val body = parseLambda(signature.parameters.size)
     DFunction(
@@ -119,29 +120,29 @@ def parseFunctionDefinition(scopeType : Option[String] = None) : DFunction = {
     )
 }
 
-def parseSignature(scopeType : Option[String] = None) : Signature = {
+Parser_parseSignature(scopeType : Option[String] = None) : Signature {
     val nameToken = skip(LLower)
-    val (generics, constraints) = if(current.rawIs("[")) parseTypeParameters() else List() -> List()
+    val (generics, constraints) = if(self.current.rawIs("[")) parseTypeParameters() else List() -> List()
     val parameters = parseFunctionParameters()
     val returnType = parseOptionalType()
     Signature(nameToken.at, nameToken.raw, generics, constraints, parameters, returnType)
 }
 
-def parseTraitDefinition() : DTrait = {
+Parser_parseTraitDefinition(self: Parser): DTrait {
     skip(LKeyword, "trait")
     val nameToken = skip(LUpper)
-    val (generics, constraints) = if(!current.rawIs("[")) List() -> List() else parseTypeParameters()
-    val generatorParameters = if(!current.rawIs("(")) List() else parseFunctionParameters()
+    val (generics, constraints) = if(!self.current.rawIs("[")) List() -> List() else parseTypeParameters()
+    val generatorParameters = if(!self.current.rawIs("(")) List() else parseFunctionParameters()
     var methodGenerators = List[(String, Term)]()
     var methodDefaults = List[(String, Term)]()
-    val methodSignatures = if(!current.rawIs("{")) List() else {
+    val methodSignatures = if(!self.current.rawIs("{")) List() else {
         var signatures = List[Signature]()
         skip(LBracketLeft, "{")
-        while(!current.is(LBracketRight)) {
+        while {!self.current.is(LBracketRight)} {
             val signature = parseSignature(Some(nameToken.raw))
             signatures ::= signature
-            if(current.rawIs("{")) {
-                val generator = ahead.is(LKeyword) && ahead.rawIs("generate")
+            if(self.current.rawIs("{")) {
+                val generator = self.ahead.is(LKeyword) && self.ahead.rawIs("generate")
                 val body = parseLambda(signature.parameters.size, ignoreGenerateKeyword = true)
                 if(generator) {
                     methodGenerators ::= signature.name -> body
@@ -149,7 +150,7 @@ def parseTraitDefinition() : DTrait = {
                     methodDefaults ::= signature.name -> body
                 }
             }
-            if(!current.is(LBracketRight)) skipSeparator(LSemicolon)
+            if(!self.current.is(LBracketRight)) skipSeparator(LSemicolon)
         }
         skip(LBracketRight, "}")
         signatures
@@ -166,26 +167,26 @@ def parseTraitDefinition() : DTrait = {
     )
 }
 
-def parseInstanceDefinition() : DInstance = {
+Parser_parseInstanceDefinition(self: Parser): DInstance {
     skip(LKeyword, "instance")
     val nameToken = skip(LUpper)
     var typeArguments = List[Type]()
     skip(LBracketLeft, "[")
     val token = skip(LUpper)
-    val (typeParameters, constraints) = if(!current.rawIs("[")) List() -> List() else parseTypeParameters()
+    val (typeParameters, constraints) = if(!self.current.rawIs("[")) List() -> List() else parseTypeParameters()
     typeArguments ::= Type(token.at, token.raw, typeParameters.map(p => Type(token.at, p, List())))
-    while(current.is(LComma)) {
+    while {self.current.is(LComma)} {
         skip(LComma)
         typeArguments ::= parseType()
     }
     skip(LBracketRight, "]")
-    val generatorArguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
-    val methods = if(!current.rawIs("{")) List() else {
+    val generatorArguments = if(!self.current.rawIs("(")) List() else parseFunctionArguments()
+    val methods = if(!self.current.rawIs("{")) List() else {
         var definitions = List[DFunction]()
         skip(LBracketLeft, "{")
-        while(!current.is(LBracketRight)) {
+        while {!self.current.is(LBracketRight)} {
             definitions ::= parseFunctionDefinition(Some(nameToken.raw))
-            if(!current.is(LBracketRight)) skipSeparator(LSemicolon)
+            if(!self.current.is(LBracketRight)) skipSeparator(LSemicolon)
         }
         skip(LBracketRight, "}")
         definitions
@@ -194,19 +195,19 @@ def parseInstanceDefinition() : DInstance = {
     DInstance(nameToken.at, typeParameters, constraints, traitType, generatorArguments, methods)
 }
 
-def parseTypeDefinition() : DType = {
+Parser_parseTypeDefinition(self: Parser): DType {
     skip(LKeyword, "type")
     val nameToken = skip(LUpper)
-    val (generics, constraints) = if(!current.rawIs("[")) List() -> List() else parseTypeParameters()
-    val commonFields = if(!current.rawIs("(")) List() else parseFunctionParameters(allowMutable = true)
-    val variants = if(!current.rawIs("{")) List(Variant(nameToken.at, nameToken.raw, List())) else {
+    val (generics, constraints) = if(!self.current.rawIs("[")) List() -> List() else parseTypeParameters()
+    val commonFields = if(!self.current.rawIs("(")) List() else parseFunctionParameters(allowMutable = true)
+    val variants = if(!self.current.rawIs("{")) List(Variant(nameToken.at, nameToken.raw, List())) else {
         skip(LBracketLeft, "{")
         var reverseVariants = List[Variant]()
-        while(!current.is(LBracketRight)) {
+        while {!self.current.is(LBracketRight)} {
             val variantNameToken = skip(LUpper)
-            val variantFields = if(!current.rawIs("(")) List() else parseFunctionParameters(allowMutable = true)
+            val variantFields = if(!self.current.rawIs("(")) List() else parseFunctionParameters(allowMutable = true)
             reverseVariants ::= Variant(variantNameToken.at, variantNameToken.raw, variantFields)
-            if(!current.is(LBracketRight)) skipSeparator(LSemicolon)
+            if(!self.current.is(LBracketRight)) skipSeparator(LSemicolon)
         }
         skip(LBracketRight, "}")
         reverseVariants.reverse
@@ -214,17 +215,17 @@ def parseTypeDefinition() : DType = {
     DType(nameToken.at, nameToken.raw, generics, constraints, commonFields, variants)
 }
 
-def parseTypeParameters() : (List[String], List[Constraint]) = {
+Parser_parseTypeParameters(self: Parser): (List[String], List[Constraint]) {
     skip(LBracketLeft, "[")
     var parameters = List[String]()
     var constraints = List[Constraint]()
-    while(!current.is(LBracketRight) && !current.is(LSemicolon)) {
-        if(ahead.is(LBracketLeft)) {
+    while {!self.current.is(LBracketRight) && !self.current.is(LSemicolon)} {
+        if(self.ahead.is(LBracketLeft)) {
             constraints ::= Constraint(parseType())
         } else {
             val parameterNameToken = skip(LUpper)
             parameters ::= parameterNameToken.raw
-            while(current.is(LColon)) {
+            while {self.current.is(LColon)} {
                 skip(LColon)
                 val t = parseType()
                 constraints ::= Constraint(t.copy(generics =
@@ -232,61 +233,61 @@ def parseTypeParameters() : (List[String], List[Constraint]) = {
                 ))
             }
         }
-        if(!current.is(LBracketRight)) skip(LComma)
+        if(!self.current.is(LBracketRight)) skip(LComma)
     }
-    if(current.is(LSemicolon)) {
+    if(self.current.is(LSemicolon)) {
         skip(LSemicolon)
-        while(!current.is(LBracketRight)) {
+        while {!self.current.is(LBracketRight)} {
             constraints ::= Constraint(parseType())
-            if(!current.is(LBracketRight)) skip(LComma)
+            if(!self.current.is(LBracketRight)) skip(LComma)
         }
     }
     skip(LBracketRight, "]")
     parameters.reverse -> constraints.reverse
 }
 
-def parseTypeArguments(parenthesis : Boolean = false) : List[Type] = {
+Parser_parseTypeArguments(parenthesis : Boolean = false) : List[Type] {
     skip(LBracketLeft, if(parenthesis) "(" else "[")
     var types = List[Type]()
-    while(!current.is(LBracketRight)) {
+    while {!self.current.is(LBracketRight)} {
         types ::= parseType()
-        if(!current.is(LBracketRight)) skip(LComma)
+        if(!self.current.is(LBracketRight)) skip(LComma)
     }
     skip(LBracketRight, if(parenthesis) ")" else "]")
     types.reverse
 }
 
-def parseFunctionParameters(allowMutable : Boolean = false) : List[Parameter] = {
+Parser_parseFunctionParameters(allowMutable : Boolean = false) : List[Parameter] {
     var parameters = List[Parameter]()
     skip(LBracketLeft, "(")
-    while(!current.is(LBracketRight)) {
-        val mutable = allowMutable && current.is(LKeyword) && current.rawIs("mutable")
+    while {!self.current.is(LBracketRight)} {
+        val mutable = allowMutable && self.current.is(LKeyword) && self.current.rawIs("mutable")
         if(mutable) skip(LKeyword)
         val parameterNameToken = skip(LLower)
         val parameterType = parseOptionalType()
-        val default = if(!current.is(LAssign)) None else Some {
+        val default = if(!self.current.is(LAssign)) None else Some {
             skip(LAssign)
             parseTerm()
         }
         parameters ::= Parameter(parameterNameToken.at, mutable, parameterNameToken.raw, parameterType, default)
-        if(!current.is(LBracketRight)) skipSeparator(LComma)
+        if(!self.current.is(LBracketRight)) skipSeparator(LComma)
     }
     skip(LBracketRight, ")")
     parameters.reverse
 }
 
-def parseFunctionArguments() : List[Term] = {
+Parser_parseFunctionArguments(self: Parser): List[Term] {
     skip(LBracketLeft, "(")
     var arguments = List[Term]()
-    while(!current.is(LBracketRight)) {
+    while {!self.current.is(LBracketRight)} {
         arguments ::= parseTerm()
-        if(!current.is(LBracketRight)) skipSeparator(LComma)
+        if(!self.current.is(LBracketRight)) skipSeparator(LComma)
     }
     skip(LBracketRight, ")")
     arguments.reverse
 }
 
-def parseOptionalType() : Type = {
+Parser_parseOptionalType(self: Parser): Type {
     val token = current
     if(token.is(LColon)) {
         skip(LColon)
@@ -294,26 +295,27 @@ def parseOptionalType() : Type = {
     } else Type(token.at, "?", List())
 }
 
-def parseLambda(
+Parser_parseLambda(
+    self: Parser,
     defaultParameterCount : Int = 0,
     ignoreGenerateKeyword : Boolean = false,
     allowColon : Boolean = false
-) : ELambda = {
-    val colon = allowColon && current.is(LColon)
+) : ELambda {
+    val colon = allowColon && self.current.is(LColon)
     val token = if(colon) skip(LColon) else skip(LBracketLeft, "{")
-    if(ignoreGenerateKeyword && current.is(LKeyword) && current.rawIs("generate")) skip(LKeyword)
-    val result = if(current.is(LPipe)) {
+    if(ignoreGenerateKeyword && self.current.is(LKeyword) && self.current.rawIs("generate")) skip(LKeyword)
+    val result = if(self.current.is(LPipe)) {
         var cases = List[MatchCase]()
-        while(current.is(LPipe)) {
+        while {self.current.is(LPipe)} {
             cases ::= parseCase()
         }
         cases.reverse
-    } else if(current.is(LLower) && ahead.is(LComma, LArrowThick)) {
+    } elseIf {self.current.is(LLower) && self.ahead.is(LComma, LArrowThick)} {
         var parameters = List[MatchPattern]()
-        while(!current.is(LArrowThick)) {
+        while {!self.current.is(LArrowThick)} {
             val parameterToken = skip(LLower)
             parameters ::= PVariable(parameterToken.at, Some(parameterToken.raw))
-            if(!current.is(LArrowThick)) skip(LComma)
+            if(!self.current.is(LArrowThick)) skip(LComma)
         }
         skip(LArrowThick)
         val term = parseStatements()
@@ -333,42 +335,42 @@ def parseLambda(
     ELambda(token.at, result)
 }
 
-def parseCase() : MatchCase = {
+Parser_parseCase(self: Parser): MatchCase {
     val token = skip(LPipe)
     var patterns = List[MatchPattern]()
-    while(!current.is(LArrowThick)) {
+    while {!self.current.is(LArrowThick)} {
         patterns ::= parsePattern()
-        if(!current.is(LArrowThick)) skip(LComma)
+        if(!self.current.is(LArrowThick)) skip(LComma)
     }
     skip(LArrowThick)
     val body = parseStatements()
     MatchCase(token.at, patterns.reverse, body)
 }
 
-def parsePattern() : MatchPattern = {
-    if(current.is(LWildcard)) {
+Parser_parsePattern(self: Parser): MatchPattern {
+    if(self.current.is(LWildcard)) {
         val token = skip(LWildcard)
         PVariable(token.at, None)
-    } else if(current.is(LLower)) {
+    } elseIf {self.current.is(LLower)} {
         val token = skip(LLower)
         PVariable(token.at, Some(token.raw))
-    } else if(current.rawIs("(")) {
-        val at = current.at
+    } elseIf {self.current.rawIs("(")} {
+        val at = self.current.at
         val (fields, fieldPatterns) = parseRecordPattern().unzip
         PVariant(at, "Record_" + fields.mkString("_"), fieldPatterns)
     } else {
         val token = skip(LUpper)
-        if(current.rawIs("(")) {
+        if(self.current.rawIs("(")) {
             var patterns = List[MatchPattern]()
             skip(LBracketLeft, "(")
-            while(!current.is(LBracketRight)) {
+            while {!self.current.is(LBracketRight)} {
                 patterns ::= parsePattern()
-                if(!current.is(LBracketRight)) skip(LComma)
+                if(!self.current.is(LBracketRight)) skip(LComma)
             }
             skip(LBracketRight, ")")
             PVariant(token.at, token.raw, patterns.reverse)
         } else {
-            if(current.is(LLower)) {
+            if(self.current.is(LLower)) {
                 val asToken = skip(LLower)
                 PVariantAs(token.at, token.raw, asToken.raw)
             } else {
@@ -378,61 +380,61 @@ def parsePattern() : MatchPattern = {
     }
 }
 
-def parseType() : Type = {
-    val leftTypes = if(current.rawIs("(") && ahead.is(LLower) && aheadAhead.is(LColon)) {
-        val at = current.at
+Parser_parseType(self: Parser): Type {
+    val leftTypes = if(self.current.rawIs("(") && self.ahead.is(LLower) && self.aheadAhead.is(LColon)) {
+        val at = self.current.at
         val (fields, fieldTypes) = parseRecordType().unzip
         List(Type(at, "Record_" + fields.mkString("_"), fieldTypes))
-    } else if(current.rawIs("(")) {
+    } elseIf {self.current.rawIs("(")} {
         parseTypeArguments(parenthesis = true)
     } else {
-        val namespace = if(current.is(LNamespace)) skip(LNamespace).raw else ""
+        val namespace = if(self.current.is(LNamespace)) skip(LNamespace).raw else ""
         val token = skip(LUpper)
-        val arguments = if(!current.rawIs("[")) List() else parseTypeArguments()
+        val arguments = if(!self.current.rawIs("[")) List() else parseTypeArguments()
         List(Type(token.at, namespace + token.raw, arguments))
     }
-    if(!current.is(LArrowThick) && leftTypes.size == 1) leftTypes.head else {
+    if(!self.current.is(LArrowThick) && leftTypes.size == 1) leftTypes.head else {
         val arrowToken = skip(LArrowThick)
         val rightType = parseType()
         Type(arrowToken.at, "Function_" + leftTypes.size, leftTypes ++ List(rightType))
     }
 }
 
-def parseStatements() : Term =
-    if(current.is(LBracketRight, LPipe)) EVariant(current.at, "Unit", List(), List()) else {
+Parser_parseStatements(self: Parser): Term =
+    if(self.current.is(LBracketRight, LPipe)) EVariant(self.current.at, "Unit", List(), List()) else {
         var result = parseStatement()
-        while(currentIsSeparator(LSemicolon)) {
+        while {currentIsSeparator(LSemicolon)} {
             val token = skipSeparator(LSemicolon)
             result = ESequential(token.at, result, parseStatement())
         }
         result
     }
 
-def parseStatement() : Term = {
-    if(current.is(LKeyword) && (current.rawIs("let") || current.rawIs("mutable"))) parseLet()
-    else if(current.is(LKeyword) && current.rawIs("function")) parseFunctions()
+Parser_parseStatement(self: Parser): Term {
+    if(self.current.is(LKeyword) && (self.current.rawIs("let") || self.current.rawIs("mutable"))) parseLet()
+    else if(self.current.is(LKeyword) && self.current.rawIs("function")) parseFunctions()
     else {
         val term = parseTerm()
-        if(!current.is(LAssign, LAssignPlus, LAssignMinus)) term else {
+        if(!self.current.is(LAssign, LAssignPlus, LAssignMinus)) term else {
             val token =
-                if(current.is(LAssignPlus)) skip(LAssignPlus)
-                else if(current.is(LAssignMinus)) skip(LAssignMinus)
+                if(self.current.is(LAssignPlus)) skip(LAssignPlus)
+                else if(self.current.is(LAssignMinus)) skip(LAssignMinus)
                 else skip(LAssign)
             val value = parseTerm()
             term match {
                 case EVariable(_, name) => EAssign(token.at, token.raw, name, value)
                 case e : EField => EAssignField(token.at, token.raw, e, value)
-                case _ => parser.fail(token.at, "Only variables and fields are assignable")
+                case _ => self.fail(token.at, "Only variables and fields are assignable")
             }
         }
     }
 }
 
-def parseLet() : Term = {
-    val mutable = current.rawIs("mutable")
+Parser_parseLet(self: Parser): Term {
+    val mutable = self.current.rawIs("mutable")
     if(mutable) skip(LKeyword, "mutable") else skip(LKeyword, "let")
     val nameToken = skip(LLower)
-    val valueType = if(!current.is(LColon)) Type(nameToken.at, "?", List()) else {
+    val valueType = if(!self.current.is(LColon)) Type(nameToken.at, "?", List()) else {
         skip(LColon)
         parseType()
     }
@@ -443,10 +445,10 @@ def parseLet() : Term = {
     ELet(nameToken.at, mutable, nameToken.raw, valueType, value, body)
 }
 
-def parseFunctions() : Term = {
-    val at = current.at
+Parser_parseFunctions(self: Parser): Term {
+    val at = self.current.at
     var functions = List[LocalFunction]()
-    while(current.rawIs("function")) {
+    while {self.current.rawIs("function")} {
         skip(LKeyword, "function")
         val signature = parseSignature()
         val body = parseLambda()
@@ -457,7 +459,7 @@ def parseFunctions() : Term = {
     EFunctions(at, functions.reverse, body)
 }
 
-def parseTerm() : Term = {
+Parser_parseTerm(self: Parser): Term {
     parseBinary(0)
 }
 
@@ -472,11 +474,11 @@ val binaryOperators = Array(
     List("^")
 )
 
-def parseBinary(level : Int) : Term = if(level >= binaryOperators.length) parseUnary() else {
+Parser_parseBinary(level : Int) : Term = if(level >= binaryOperators.length) parseUnary() else {
     val operators = binaryOperators(level)
     var result = parseBinary(level + 1)
-    if(current.is(LOperator)) {
-        while(operators.exists(current.rawIs)) {
+    if(self.current.is(LOperator)) {
+        while {operators.exists(self.current.rawIs)} {
             val token = skip(LOperator)
             val right = parseBinary(level + 1)
             result = ECall(token.at, EVariable(token.at, token.raw), List(), List(result, right))
@@ -485,8 +487,8 @@ def parseBinary(level : Int) : Term = if(level >= binaryOperators.length) parseU
     result
 }
 
-def parseUnary() : Term = {
-    if(current.is(LOperator)) {
+Parser_parseUnary(self: Parser): Term {
+    if(self.current.is(LOperator)) {
         val token = skip(LOperator)
         val term = parseUnary()
         ECall(token.at, EVariable(token.at, token.raw), List(), List(term))
@@ -495,32 +497,32 @@ def parseUnary() : Term = {
     }
 }
 
-def parseFieldsAndCalls() : Term = {
+Parser_parseFieldsAndCalls(self: Parser): Term {
     var result = parseAtom()
-    while(current.is(LBracketLeft) || current.is(LColon) || current.is(LDot)) {
-        if(current.is(LDot)) {
+    while {self.current.is(LBracketLeft) || self.current.is(LColon) || self.current.is(LDot)} {
+        if(self.current.is(LDot)) {
             skip(LDot)
-            if(current.rawIs("{")) {
+            if(self.current.rawIs("{")) {
                 val term = parseAtom()
                 result = EPipe(term.at, result, term)
-            } else if(current.is(LUpper, LNamespace)) {
+            } elseIf {self.current.is(LUpper, LNamespace)} {
                 result = parseCopy(result)
             } else {
                 val token = skip(LLower)
                 result = EField(token.at, result, token.raw)
             }
         } else {
-            val at = current.at
-            val typeArguments = if(!current.rawIs("[")) List() else parseTypeArguments()
-            val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
+            val at = self.current.at
+            val typeArguments = if(!self.current.rawIs("[")) List() else parseTypeArguments()
+            val arguments = if(!self.current.rawIs("(")) List() else parseFunctionArguments()
             var moreArguments = List[Term]()
             var lastWasCurly = false
-            while(current.rawIs("{") || current.is(LColon)) {
-                lastWasCurly = current.rawIs("{")
+            while {self.current.rawIs("{") || self.current.is(LColon)} {
+                lastWasCurly = self.current.rawIs("{")
                 moreArguments ::= parseLambda(allowColon = true)
             }
             result = ECall(at, result, typeArguments, arguments ++ moreArguments.reverse)
-            if(lastWasCurly && current.is(LLower)) {
+            if(lastWasCurly && self.current.is(LLower)) {
                 val token = skip(LLower)
                 result = EField(token.at, result, token.raw)
             }
@@ -529,51 +531,61 @@ def parseFieldsAndCalls() : Term = {
     result
 }
 
-def parseAtom() : Term = {
-    if(current.is(LString)) { val token = skip(LString); EString(token.at, token.raw) }
-    else if(current.is(LChar)) { val token = skip(LChar); EChar(token.at, token.raw) }
-    else if(current.is(LInt)) { val token = skip(LInt); EInt(token.at, token.raw) }
-    else if(current.is(LFloat)) { val token = skip(LFloat); EFloat(token.at, token.raw) }
-    else if(current.is(LLower)) { val token = skip(LLower); EVariable(token.at, token.raw) }
-    else if(current.is(LNamespace)) {
+Parser_parseAtom(self: Parser): Term {
+    if(self.current.is(LString)) {
+        val token = skip(LString)
+        EString(token.at, token.raw)
+    } elseIf {self.current.is(LChar)} {
+        val token = skip(LChar)
+        EChar(token.at, token.raw)
+    } elseIf {self.current.is(LInt)} {
+        val token = skip(LInt)
+        EInt(token.at, token.raw)
+    } elseIf {self.current.is(LFloat)} {
+        val token = skip(LFloat)
+        EFloat(token.at, token.raw)
+    } elseIf {self.current.is(LLower)} {
+        val token = skip(LLower)
+        EVariable(token.at, token.raw)
+    } elseIf {self.current.is(LNamespace)} {
         val namespaceToken = skip(LNamespace)
-        val extraNamespace = if(!current.is(LNamespace)) None else Some(skip(LNamespace).raw)
+        val extraNamespace = if(!self.current.is(LNamespace)) None else Some(skip(LNamespace).raw)
         val prefix = namespaceToken.raw + extraNamespace.getOrElse("")
-        if(current.is(LLower)) { val token = skip(LLower); EVariable(token.at, prefix + token.raw) } else {
+        if(self.current.is(LLower)) { val token = skip(LLower); EVariable(token.at, prefix + token.raw) } else {
             parseVariant(prefix)
         }
-    } else if(current.is(LUpper)) {
+    } elseIf {self.current.is(LUpper)} {
         parseVariant("")
-    } else if(current.rawIs("{")) {
+    } elseIf {self.current.rawIs("{")} {
         parseLambda()
-    } else if(current.rawIs("[")) {
+    } elseIf {self.current.rawIs("[")} {
         parseList()
-    } else if(current.rawIs("(") && ahead.is(LLower) && aheadAhead.is(LAssign)) {
-        ERecord(current.at, parseRecord())
-    } else if(current.rawIs("(")) {
+    } elseIf {self.current.rawIs("(") && self.ahead.is(LLower) && self.aheadAhead.is(LAssign)} {
+        ERecord(self.current.at, parseRecord())
+    } elseIf {self.current.rawIs("(")} {
         skip(LBracketLeft, "(")
         val result = parseTerm()
         skip(LBracketRight, ")")
         result
-    } else if(current.is(LWildcard)) {
+    } elseIf {self.current.is(LWildcard)} {
         val token = skip(LWildcard)
         EWildcard(token.at, 0)
     } else {
-        parser.fail(current.at, "Expected atom, got " + current.raw)
+        self.fail(self.current.at, "Expected atom, got " + self.current.raw)
     }
 }
 
-def parseVariant(prefix : String) : Term = {
+Parser_parseVariant(prefix : String) : Term {
     val token = skip(LUpper)
     val name = prefix + token.raw
-    val typeArguments = if(!current.rawIs("[")) List() else parseTypeArguments()
-    val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
+    val typeArguments = if(!self.current.rawIs("[")) List() else parseTypeArguments()
+    val arguments = if(!self.current.rawIs("(")) List() else parseFunctionArguments()
     EVariant(token.at, name, typeArguments, arguments)
 }
 
-def parseCopy(record : Term) : Term = {
-    val namespace = if(!current.is(LNamespace)) "" else skip(LNamespace).raw
-    val extraNamespace = if(!current.is(LNamespace)) "" else skip(LNamespace).raw
+Parser_parseCopy(record : Term) : Term {
+    val namespace = if(!self.current.is(LNamespace)) "" else skip(LNamespace).raw
+    val extraNamespace = if(!self.current.is(LNamespace)) "" else skip(LNamespace).raw
     val prefix = namespace + extraNamespace
     val token = skip(LUpper)
     val name = prefix + token.raw
@@ -581,51 +593,51 @@ def parseCopy(record : Term) : Term = {
     ECopy(token.at, name, record, fields)
 }
 
-def parseRecord() : List[(String, Term)] = {
+Parser_parseRecord(self: Parser): List[(String, Term)] {
     var fields = List[(String, Term)]()
     skip(LBracketLeft, "(")
-    while(!current.is(LBracketRight)) {
+    while {!self.current.is(LBracketRight)} {
         val fieldToken = skip(LLower)
         skipSeparator(LAssign)
         fields ::= fieldToken.raw -> parseTerm()
-        if(!current.is(LBracketRight)) skipSeparator(LComma)
+        if(!self.current.is(LBracketRight)) skipSeparator(LComma)
     }
     skip(LBracketRight, ")")
     fields.reverse
 }
 
-def parseRecordType() : List[(String, Type)] = {
+Parser_parseRecordType(self: Parser): List[(String, Type)] {
     var fields = List[(String, Type)]()
     skip(LBracketLeft, "(")
-    while(!current.is(LBracketRight)) {
+    while {!self.current.is(LBracketRight)} {
         val fieldToken = skip(LLower)
         skipSeparator(LColon)
         fields ::= fieldToken.raw -> parseType()
-        if(!current.is(LBracketRight)) skipSeparator(LComma)
+        if(!self.current.is(LBracketRight)) skipSeparator(LComma)
     }
     skip(LBracketRight, ")")
     fields.reverse.sortBy(_._1)
 }
 
-def parseRecordPattern() : List[(String, MatchPattern)] = {
+Parser_parseRecordPattern(self: Parser): List[(String, MatchPattern)] {
     var fields = List[(String, MatchPattern)]()
     skip(LBracketLeft, "(")
-    while(!current.is(LBracketRight)) {
+    while {!self.current.is(LBracketRight)} {
         val fieldToken = skip(LLower)
         skipSeparator(LAssign)
         fields ::= fieldToken.raw -> parsePattern()
-        if(!current.is(LBracketRight)) skipSeparator(LComma)
+        if(!self.current.is(LBracketRight)) skipSeparator(LComma)
     }
     skip(LBracketRight, ")")
     fields.reverse
 }
 
-def parseList() : Term = {
+Parser_parseList(self: Parser): Term {
     var items = List[Term]()
     val at = skip(LBracketLeft, "[").at
-    while(!current.rawIs("]")) {
+    while {!self.current.rawIs("]")} {
         items ::= parseTerm()
-        if(!current.rawIs("]")) skipSeparator(LComma)
+        if(!self.current.rawIs("]")) skipSeparator(LComma)
     }
     skip(LBracketRight, "]")
     EList(at, items.reverse)
