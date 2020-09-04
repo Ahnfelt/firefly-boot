@@ -324,7 +324,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         } else if(current.rawIs("(")) {
             val at = current.at
             val (fields, fieldPatterns) = parseRecordPattern().unzip
-            PVariant(at, "Record_" + fields.mkString("_"), fieldPatterns)
+            PVariant(at, "Record$" + fields.mkString("$"), fieldPatterns)
         } else {
             val token = skip(LUpper)
             if(current.rawIs("(")) {
@@ -351,7 +351,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         val leftTypes = if(current.rawIs("(") && ahead.is(LLower) && aheadAhead.is(LColon)) {
             val at = current.at
             val (fields, fieldTypes) = parseRecordType().unzip
-            List(Type(at, "Record_" + fields.mkString("_"), fieldTypes))
+            List(Type(at, "Record$" + fields.mkString("$"), fieldTypes))
         } else if(current.rawIs("(")) {
             parseTypeArguments(parenthesis = true)
         } else {

@@ -357,7 +357,7 @@ Parser_parsePattern(self: Parser): MatchPattern {
     } elseIf {self.current.rawIs("(")} {
         val at = self.current.at
         val (fields, fieldPatterns) = parseRecordPattern().unzip
-        PVariant(at, "Record_" + fields.mkString("_"), fieldPatterns)
+        PVariant(at, "Record$" + fields.mkString("$"), fieldPatterns)
     } else {
         val token = skip(LUpper)
         if(self.current.rawIs("(")) {
@@ -384,7 +384,7 @@ Parser_parseType(self: Parser): Type {
     val leftTypes = if(self.current.rawIs("(") && self.ahead.is(LLower) && self.aheadAhead.is(LColon)) {
         val at = self.current.at
         val (fields, fieldTypes) = parseRecordType().unzip
-        List(Type(at, "Record_" + fields.mkString("_"), fieldTypes))
+        List(Type(at, "Record$" + fields.mkString("$"), fieldTypes))
     } elseIf {self.current.rawIs("(")} {
         parseTypeArguments(parenthesis = true)
     } else {
