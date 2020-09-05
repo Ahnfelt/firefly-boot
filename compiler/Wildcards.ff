@@ -21,7 +21,10 @@ Wildcards_fixWildcards(self: Wildcards, term: Term): Term {
             record = self.fixWildcards(e.record),
             arguments = e.arguments.map { a => a.Field(value = self.fixWildcards(a.value)) }
         )
-    | _, EVariant e => e.EVariant(arguments = e.arguments.map {_.map { a => a.Argument(value = self.fixWildcards(a.value)) }})
+    | _, EVariant e =>
+        e.EVariant(arguments = e.arguments.map { _.map { a =>
+            a.Argument(value = self.fixWildcards(a.value))
+        }})
     | _, ERecord e => e.ERecord(fields = e.fields.map { a => a.Field(value = self.fixWildcards(a.value)) })
     | _, EField e => e.EField(record = self.fixWildcards(e.record))
     | _, EWildcard e =>
