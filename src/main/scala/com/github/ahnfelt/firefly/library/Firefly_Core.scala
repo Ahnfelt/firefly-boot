@@ -62,7 +62,7 @@ object Firefly_Core {
 
     object Pair {
         def apply[A, B](first : A, second : B) : (A, B) = (first, second)
-        def unapply[A, B](pair : (A, B)) : (A, B) = pair
+        def unapply[A, B](pair : (A, B)) : scala.Option[(A, B)] = Some(pair)
     }
 
 
