@@ -63,33 +63,32 @@ Parser_skipSeparator(self: Parser, kind: TokenKind): Unit {
     }
 }
 
-/*
 Parser_parseModule(self: Parser): Module {
-    mutable result = Module(file, List(), List(), List(), List(), List())
+    mutable result = Module(self.file, List(), List(), List(), List(), List())
     while {!self.current.is(LEnd)} {
         if(self.current.is(LLower) && (self.ahead.is(LAssign) || self.ahead.is(LColon))) {
-            result = result.Module(lets = parseLetDefinition() :: result.lets)
+            result = result.Module(lets = self.parseLetDefinition() :: result.lets)
         } elseIf {self.current.is(LNamespace) && self.ahead.is(LLower) && self.aheadAhead.is2(LAssign, LColon)} {
-            let namespace = Some(skip(LNamespace).raw)
-            result = result.Module(lets = parseLetDefinition(namespace) :: result.lets)
+            let namespace = Some(self.skip(LNamespace).raw)
+            result = result.Module(lets = self.parseLetDefinition(namespace) :: result.lets)
         } elseIf {self.current.is(LLower) && self.ahead.is(LBracketLeft)} {
-            result = result.Module(functions = parseFunctionDefinition() :: result.functions)
+            result = result.Module(functions = self.parseFunctionDefinition() :: result.functions)
         } elseIf {self.current.is(LNamespace) && self.ahead.is(LLower) && self.aheadAhead.is(LBracketLeft)} {
-            let namespace = Some(skip(LNamespace).raw)
-            result = result.Module(functions = parseFunctionDefinition(namespace) :: result.functions)
+            let namespace = Some(self.skip(LNamespace).raw)
+            result = result.Module(functions = self.parseFunctionDefinition(namespace) :: result.functions)
         } elseIf {self.current.is(LKeyword) && self.current.rawIs("trait")} {
-            result = result.Module(traits = parseTraitDefinition() :: result.traits)
+            result = result.Module(traits = self.parseTraitDefinition() :: result.traits)
         } elseIf {self.current.is(LKeyword) && self.current.rawIs("instance")} {
-            result = result.Module(instances = parseInstanceDefinition() :: result.instances)
+            result = result.Module(instances = self.parseInstanceDefinition() :: result.instances)
         } elseIf {self.current.is(LKeyword) && self.current.rawIs("type")} {
-            result = result.Module(types = parseTypeDefinition() :: result.types)
+            result = result.Module(types = self.parseTypeDefinition() :: result.types)
         } else {
-            skip(LEnd)
+            self.skip(LEnd)
         }
-        if(!self.current.is(LEnd)) { skipSeparator(LSemicolon) }
+        if(!self.current.is(LEnd)) { self.skipSeparator(LSemicolon) }
     }
     Module(
-        file = file,
+        file = self.file,
         lets = result.lets.reverse,
         functions = result.functions.reverse,
         types = result.types.reverse,
@@ -98,6 +97,7 @@ Parser_parseModule(self: Parser): Module {
     )
 }
 
+/*
 Parser_parseLetDefinition(scopeType : Option[String] = None) : DLet {
     let nameToken = skip(LLower)
     let variableType = if(self.current.is(LColon)) {
@@ -276,14 +276,20 @@ Parser_parseFunctionParameters(allowMutable : Boolean = false) : List[Parameter]
     parameters.reverse
 }
 
-Parser_parseFunctionArguments(self: Parser): List[Term] {
-    skip(LBracketLeft, "(")
-    mutable arguments = List[Term]()
+Parser_parseFunctionArguments(self: Parser): List[Argument] {
+    self.skip(LBracketLeft, "(")
+    mutable arguments = List[Argument]()
     while {!self.current.is(LBracketRight)} {
-        arguments ::= parseTerm()
-        if(!self.current.is(LBracketRight)) skipSeparator(LComma)
+        let nameToken = if(self.current.is(LLower) && self.ahead.is(LAssign)) {
+            let token = self.skip(LLower)
+            self.skip(LAssign)
+            Some(token)
+        } else {None}
+        val value = self.parseTerm()
+        arguments ::= Argument(nameToken.map{_.at}.getOrElse(value.at), nameToken.map{_.raw}, value)
+        if(!self.current.is(LBracketRight)) {self.skipSeparator(LComma)}
     }
-    skip(LBracketRight, ")")
+    self.skip(LBracketRight, ")")
     arguments.reverse
 }
 
@@ -476,14 +482,16 @@ val binaryOperators = Array(
     List("^")
 )
 
-Parser_parseBinary(level : Int) : Term = if(level >= binaryOperators.length) parseUnary() else {
+Parser_parseBinary(level : Int) : Term {
+    if(level >= binaryOperators.length) {parseUnary()} else:
     let operators = binaryOperators(level)
     mutable result = parseBinary(level + 1)
     if(self.current.is(LOperator)) {
         while {operators.exists(self.current.rawIs)} {
             let token = skip(LOperator)
             let right = parseBinary(level + 1)
-            result = ECall(token.at, EVariable(token.at, token.raw), List(), List(result, right))
+            let arguments = List(Argument(result.at, None, result), Argument(right.at, None, right))
+            result = ECall(token.at, EVariable(token.at, token.raw), List(), arguments)
         }
     }
     result
@@ -517,11 +525,12 @@ Parser_parseFieldsAndCalls(self: Parser): Term {
             let at = self.current.at
             let typeArguments = if(!self.current.rawIs("[")) List() else parseTypeArguments()
             let arguments = if(!self.current.rawIs("(")) List() else parseFunctionArguments()
-            mutable moreArguments = List[Term]()
+            mutable moreArguments = List[Argument]()
             mutable lastWasCurly = false
             while {self.current.rawIs("{") || self.current.is(LColon)} {
                 lastWasCurly = self.current.rawIs("{")
-                moreArguments ::= parseLambda(allowColon = true)
+                let lambda = self.parseLambda(allowColon = true)
+                moreArguments ::= Argument(lambda.at, None, lambda)
             }
             result = ECall(at, result, typeArguments, arguments ++ moreArguments.reverse)
             if(lastWasCurly && self.current.is(LLower)) {
@@ -596,12 +605,12 @@ Parser_parseCopy(record : Term) : Term {
 }
 
 Parser_parseRecord(self: Parser): List[Pair[String, Term]] {
-    mutable fields = List[Pair[String, Term]]()
+    mutable fields = List[Field]()
     skip(LBracketLeft, "(")
     while {!self.current.is(LBracketRight)} {
         let fieldToken = skip(LLower)
         skip(LAssign)
-        fields ::= fieldToken.raw -> parseTerm()
+        fields ::= Field(fieldToken.at, fieldToken.raw, parseTerm())
         if(!self.current.is(LBracketRight)) skipSeparator(LComma)
     }
     skip(LBracketRight, ")")

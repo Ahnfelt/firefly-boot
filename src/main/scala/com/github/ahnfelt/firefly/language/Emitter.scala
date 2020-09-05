@@ -219,9 +219,9 @@ class Emitter() {
         case EList(at, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
         case EVariant(at, name, typeArguments, arguments) =>
             val generics = if(typeArguments.isEmpty) "" else "[" + typeArguments.map(emitType).mkString(", ") + "]"
-            name.replace("_", ".") + generics + "(" + arguments.toList.flatten.map(emitTerm).mkString(", ") + ")"
+            name.replace("_", ".") + generics + "(" + arguments.toList.flatten.map(emitArgument).mkString(", ") + ")"
         case ECopy(at, name, record, fields) =>
-            val fieldCode = fields.map { case (l, e) => escapeKeyword(l) + " = " + emitTerm(e) }.mkString(", ")
+            val fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }.mkString(", ")
             emitTerm(record) + ".copy(" + fieldCode + ")"
         case EField(at, record, field) => emitTerm(record) + "." + escapeKeyword(field)
         case ELambda(at, List(MatchCase(_, patterns, body))) if(patterns.forall(_.isInstanceOf[PVariable])) =>
@@ -234,15 +234,15 @@ class Emitter() {
         case EPipe(at, value, function) =>
             "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
         case ECall(at, EVariable(_, operator), List(), List(value)) if !operator.head.isLetter =>
-            "(" + operator + emitTerm(value) + ")"
+            "(" + operator + emitArgument(value) + ")"
         case ECall(at, EVariable(_, operator), List(), List(left, right)) if !operator.head.isLetter =>
-            "(" + emitTerm(left) + " " + operator + " " + emitTerm(right) + ")"
+            "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
         case ECall(at, function, typeArguments, arguments) =>
             val generics = if(typeArguments.isEmpty) "" else "[" + typeArguments.map(emitType).mkString(", ") + "]"
-            emitTerm(function) + generics + "(" + arguments.map(emitTerm).mkString(", ") + ")"
+            emitTerm(function) + generics + "(" + arguments.map(emitArgument).mkString(", ") + ")"
         case ERecord(at, fields) =>
             if(fields.isEmpty) "{}" else {
-                val list = fields.map { case (field, value) => "val " + escapeKeyword(field) + " = " + emitTerm(value) }
+                val list = fields.map { f => "val " + escapeKeyword(f.name) + " = " + emitTerm(f.value) }
                 "new {\n" + list.mkString(";\n") + ";\n}"
             }
         case EWildcard(at, index) =>
@@ -250,6 +250,10 @@ class Emitter() {
             "_w" + index
         case _ : EFunctions | _ : ELet | _ : ESequential | _ : EAssign | _ : EAssignField =>
             "{\n" + emitStatements(term) + "\n}"
+    }
+
+    def emitArgument(argument : Argument) = {
+        argument.name.map(_ + " = ").getOrElse("") + emitTerm(argument.value)
     }
 
     def emitCase(matchCase : MatchCase) = {

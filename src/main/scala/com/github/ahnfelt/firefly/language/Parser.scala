@@ -244,11 +244,17 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         parameters.reverse
     }
 
-    def parseFunctionArguments() : List[Term] = {
+    def parseFunctionArguments() : List[Argument] = {
         skip(LBracketLeft, "(")
-        var arguments = List[Term]()
+        var arguments = List[Argument]()
         while(!current.is(LBracketRight)) {
-            arguments ::= parseTerm()
+            val nameToken = if(current.is(LLower) && ahead.is(LAssign)) Some {
+                val token = skip(LLower)
+                skip(LAssign)
+                token
+            } else None
+            val value = parseTerm()
+            arguments ::= Argument(nameToken.map(_.at).getOrElse(value.at), nameToken.map(_.raw), value)
             if(!current.is(LBracketRight)) skipSeparator(LComma)
         }
         skip(LBracketRight, ")")
@@ -450,7 +456,8 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             while(operators.exists(current.rawIs)) {
                 val token = skip(LOperator)
                 val right = parseBinary(level + 1)
-                result = ECall(token.at, EVariable(token.at, token.raw), List(), List(result, right))
+                val arguments = List(Argument(result.at, None, result), Argument(right.at, None, right))
+                result = ECall(token.at, EVariable(token.at, token.raw), List(), arguments)
             }
         }
         result
@@ -460,7 +467,8 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         if(current.is(LOperator)) {
             val token = skip(LOperator)
             val term = parseUnary()
-            ECall(token.at, EVariable(token.at, token.raw), List(), List(term))
+            val arguments = List(Argument(term.at, None, term))
+            ECall(token.at, EVariable(token.at, token.raw), List(), arguments)
         } else {
             parseFieldsAndCalls()
         }
@@ -484,11 +492,12 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                 val at = current.at
                 val typeArguments = if(!current.rawIs("[")) List() else parseTypeArguments()
                 val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
-                var moreArguments = List[Term]()
+                var moreArguments = List[Argument]()
                 var lastWasCurly = false
                 while(current.rawIs("{") || current.is(LColon)) {
                     lastWasCurly = current.rawIs("{")
-                    moreArguments ::= parseLambda(allowColon = true)
+                    val lambda = parseLambda(allowColon = true)
+                    moreArguments ::= Argument(lambda.at, None, lambda)
                 }
                 result = ECall(at, result, typeArguments, arguments ++ moreArguments.reverse)
                 if(lastWasCurly && current.is(LLower)) {
@@ -552,13 +561,13 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         ECopy(token.at, name, record, fields)
     }
 
-    def parseRecord() : List[(String, Term)] = {
-        var fields = List[(String, Term)]()
+    def parseRecord() : List[Field] = {
+        var fields = List[Field]()
         skip(LBracketLeft, "(")
         while(!current.is(LBracketRight)) {
             val fieldToken = skip(LLower)
             skip(LAssign)
-            fields ::= fieldToken.raw -> parseTerm()
+            fields ::= Field(fieldToken.at, fieldToken.raw, parseTerm())
             if(!current.is(LBracketRight)) skipSeparator(LComma)
         }
         skip(LBracketRight, ")")

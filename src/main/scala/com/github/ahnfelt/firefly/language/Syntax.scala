@@ -53,7 +53,7 @@ object Syntax {
         generics : List[String],
         constraints : List[Constraint],
         traitType : Type,
-        generatorArguments : List[Term],
+        generatorArguments : List[Argument],
         methods : List[DFunction],
     )
 
@@ -70,11 +70,11 @@ object Syntax {
     case class EAssign(at : Location, operator : String, variable : String, value : Term) extends Term
     case class EAssignField(at : Location, operator : String, field : EField, value : Term) extends Term
     case class EPipe(at : Location, value : Term, function : Term) extends Term
-    case class ECall(at : Location, function : Term, typeArguments : List[Type], arguments : List[Term]) extends Term
+    case class ECall(at : Location, function : Term, typeArguments : List[Type], arguments : List[Argument]) extends Term
     case class EList(at : Location, items : List[Term]) extends Term
-    case class ECopy(at : Location, name : String, record : Term, arguments : List[(String, Term)]) extends Term
-    case class EVariant(at : Location, name : String, typeArguments : List[Type], arguments : Option[List[Term]]) extends Term
-    case class ERecord(at : Location, fields : List[(String, Term)]) extends Term
+    case class ECopy(at : Location, name : String, record : Term, arguments : List[Field]) extends Term
+    case class EVariant(at : Location, name : String, typeArguments : List[Type], arguments : Option[List[Argument]]) extends Term
+    case class ERecord(at : Location, fields : List[Field]) extends Term
     case class EField(at : Location, record : Term, field : String) extends Term
     case class EWildcard(at : Location, index : Int) extends Term
 
@@ -99,6 +99,10 @@ object Syntax {
     case class Variant(at : Location, name : String, fields : List[Parameter])
 
     case class Parameter(at : Location, mutable : Boolean, name : String, valueType : Type, default : Option[Term])
+
+    case class Argument(at : Location, name : Option[String], value : Term)
+
+    case class Field(at : Location, name : String, value : Term)
 
     case class Constraint(representation : Type)
 
