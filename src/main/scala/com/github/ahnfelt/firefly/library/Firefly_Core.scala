@@ -60,6 +60,12 @@ object Firefly_Core {
     }
 
 
+    object Pair {
+        def apply[A, B](first : A, second : B) : (A, B) = (first, second)
+        def unapply[A, B](pair : (A, B)) : (A, B) = pair
+    }
+
+
     final class System(val arguments : Array[String]) {
         def write(value : String) : Unit = scala.Predef.print(value)
         def writeLine(value : String) : Unit = scala.Predef.println(value)
@@ -118,6 +124,13 @@ object Firefly_Core {
         System.exit(1)
         throw new RuntimeException(message)
     }
+
+    def do_[T](body : () => T) : T = body()
+    def switch[A, R](a : A, body : A => R) : R = body(a)
+    def switch2[A, B, R](a : A, b : B, body : (A, B) => R) : R = body(a, b)
+    def switch3[A, B, C, R](a : A, b : B, c : C, body : (A, B, C) => R) : R = body(a, b, c)
+    def switch4[A, B, C, D, R](a : A, b : B, c : C, d : D, body : (A, B, C, D) => R) : R = body(a, b, c, d)
+    def switch5[A, B, C, D, E, R](a : A, b : B, c : C, d : D, e : E, body : (A, B, C, D, E) => R) : R = body(a, b, c, d, e)
 
     implicit class Firefly_Option[T](option : Option[T]) {
         def elseIf[U >: T](condition : () => Bool, value : () => U) : Option[U] =

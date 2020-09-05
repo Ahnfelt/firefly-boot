@@ -57,6 +57,7 @@ type DInstance(
 
 type Term(at: Location) {
     EString(value: String)
+    EChar(value: String)
     EInt(value: String)
     EFloat(value: String)
     EVariable(name: String)
