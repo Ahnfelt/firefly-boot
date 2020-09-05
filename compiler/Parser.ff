@@ -326,7 +326,7 @@ Parser_parseLambda(
         }
         self.skip(LArrowThick)
         let term = self.parseStatements()
-        List(MatchCase(token.at, parameters.reverse, term))
+        List(MatchCase(token.at, parameters.reverse, None, term))
     } else {
         let term = self.parseStatements()
         let wildcards = Wildcards_of()
@@ -336,7 +336,7 @@ Parser_parseLambda(
         } else {
             1.to(defaultParameterCount).toList.map { i => PVariable(token.at, None) }
         }
-        List(MatchCase(token.at, arguments, e))
+        List(MatchCase(token.at, arguments, None, e))
     }
     if(!colon) {self.rawSkip(LBracketRight, "}")}
     ELambda(token.at, result)
@@ -345,13 +345,19 @@ Parser_parseLambda(
 Parser_parseCase(self: Parser): MatchCase {
     let token = self.skip(LPipe)
     mutable patterns = List[MatchPattern]()
-    while {!self.current.is(LArrowThick)} {
+    while {!self.current.is(LArrowThick) && !self.current.rawIs("{")} {
         patterns ::= self.parsePattern()
-        if(!self.current.is(LArrowThick)) {self.skip(LComma)}
+        if(!self.current.is(LArrowThick) && !self.current.rawIs("{")) {self.skip(LComma)}
+    }
+    let condition = if(!self.current.rawIs("{")) {None} else {
+        self.skip(LBracketLeft)
+        let term = self.parseStatements()
+        self.skip(LBracketRight)
+        Some(term)
     }
     self.skip(LArrowThick)
     let body = self.parseStatements()
-    MatchCase(token.at, patterns.reverse, body)
+    MatchCase(token.at, patterns.reverse, condition, body)
 }
 
 Parser_parsePattern(self: Parser): MatchPattern {
@@ -379,7 +385,10 @@ Parser_parsePattern(self: Parser): MatchPattern {
         } else {
             if(self.current.is(LLower)) {
                 let asToken = self.skip(LLower)
-                PVariantAs(token.at, token.raw, asToken.raw)
+                PVariantAs(token.at, token.raw, Some(asToken.raw))
+            } elseIf { self.current.is(LWildcard) } {
+                self.skip(LWildcard)
+                PVariantAs(token.at, token.raw, None)
             } else {
                 PVariant(token.at, token.raw, List())
             }

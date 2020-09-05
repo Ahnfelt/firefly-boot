@@ -224,7 +224,7 @@ class Emitter() {
             val fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }.mkString(", ")
             emitTerm(record) + ".copy(" + fieldCode + ")"
         case EField(at, record, field) => emitTerm(record) + "." + escapeKeyword(field)
-        case ELambda(at, List(MatchCase(_, patterns, body))) if(patterns.forall(_.isInstanceOf[PVariable])) =>
+        case ELambda(at, List(MatchCase(_, patterns, None, body))) if(patterns.forall(_.isInstanceOf[PVariable])) =>
             val parameters =
                 patterns.map(_.asInstanceOf[PVariable].name.map(escapeKeyword).getOrElse("_")).mkString(", ")
             "{(" + parameters + ") =>\n" + emitStatements(body) + "\n}"
@@ -258,7 +258,8 @@ class Emitter() {
 
     def emitCase(matchCase : MatchCase) = {
         val patterns = matchCase.patterns.map(emitPattern).mkString(", ")
-        "case (" + patterns + ") =>\n" + emitStatements(matchCase.body)
+        val condition = matchCase.condition.map("if " + emitTerm(_) + " ").getOrElse("")
+        "case (" + patterns + ") " + condition + "=>\n" + emitStatements(matchCase.body)
     }
 
     def emitPattern(pattern : MatchPattern) : String = pattern match {
@@ -266,7 +267,7 @@ class Emitter() {
         case PVariant(at, name, patterns) =>
             name + "(" + patterns.map(emitPattern).mkString(", ") + ")"
         case PVariantAs(at, name, variable) =>
-            escapeKeyword(variable) + " : " + name
+            variable.map(escapeKeyword).getOrElse("_") + " : " + name
     }
 
     def escapeKeyword(word : String) = if(keywords(word)) word + "_" else word

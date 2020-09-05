@@ -78,12 +78,12 @@ object Syntax {
     case class EField(at : Location, record : Term, field : String) extends Term
     case class EWildcard(at : Location, index : Int) extends Term
 
-    case class MatchCase(at : Location, patterns : List[MatchPattern], body : Term)
+    case class MatchCase(at : Location, patterns : List[MatchPattern], condition : Option[Term], body : Term)
 
     sealed abstract class MatchPattern { val at : Location }
     case class PVariable(at : Location, name : Option[String]) extends MatchPattern
     case class PVariant(at : Location, name : String, patterns : List[MatchPattern]) extends MatchPattern
-    case class PVariantAs(at : Location, name : String, variable : String) extends MatchPattern
+    case class PVariantAs(at : Location, name : String, variable : Option[String]) extends MatchPattern
 
     case class Signature(
         at : Location,

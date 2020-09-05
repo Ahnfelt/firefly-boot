@@ -292,7 +292,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             }
             skip(LArrowThick)
             val term = parseStatements()
-            List(MatchCase(token.at, parameters.reverse, term))
+            List(MatchCase(token.at, parameters.reverse, None, term))
         } else {
             val term = parseStatements()
             val wildcards = new Wildcards()
@@ -302,7 +302,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             } else {
                 1.to(defaultParameterCount).toList.map(_ => PVariable(token.at, None))
             }
-            List(MatchCase(token.at, arguments, e))
+            List(MatchCase(token.at, arguments, None, e))
         }
         if(!colon) skip(LBracketRight, "}")
         ELambda(token.at, result)
@@ -311,13 +311,19 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     def parseCase() : MatchCase = {
         val token = skip(LPipe)
         var patterns = List[MatchPattern]()
-        while(!current.is(LArrowThick)) {
+        while(!current.is(LArrowThick) && !current.rawIs("{")) {
             patterns ::= parsePattern()
-            if(!current.is(LArrowThick)) skip(LComma)
+            if(!current.is(LArrowThick) && !current.rawIs("{")) skip(LComma)
+        }
+        val condition = if(!current.rawIs("{")) None else {
+            skip(LBracketLeft)
+            val term = parseStatements()
+            skip(LBracketRight)
+            Some(term)
         }
         skip(LArrowThick)
         val body = parseStatements()
-        MatchCase(token.at, patterns.reverse, body)
+        MatchCase(token.at, patterns.reverse, condition, body)
     }
 
     def parsePattern() : MatchPattern = {
@@ -345,7 +351,10 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
             } else {
                 if(current.is(LLower)) {
                     val asToken = skip(LLower)
-                    PVariantAs(token.at, token.raw, asToken.raw)
+                    PVariantAs(token.at, token.raw, Some(asToken.raw))
+                } else if(current.is(LWildcard)) {
+                    skip(LWildcard)
+                    PVariantAs(token.at, token.raw, None)
                 } else {
                     PVariant(token.at, token.raw, List())
                 }
