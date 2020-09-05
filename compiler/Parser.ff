@@ -5,6 +5,8 @@ type Parser(
     mutable offset: Int
 )
 
+type Poly(generics: List[String], constraints: List[Constraint])
+
 Parser_of(file: String, tokens: Array[Token]): Parser {
     Parser(
         file,
@@ -121,21 +123,20 @@ Parser_parseFunctionDefinition(scopeType: Option[String] = None): DFunction {
 
 Parser_parseSignature(scopeType: Option[String] = None): Signature {
     let nameToken = self.skip(LLower)
-    let pair = if(self.current.rawIs("[")) {self.parseTypeParameters()} else {Pair(List(), List())}
+    let poly = if(self.current.rawIs("[")) {self.parseTypeParameters()} else {Poly(List(), List())}
     let parameters = self.parseFunctionParameters()
     let returnType = self.parseOptionalType()
-    Signature(nameToken.at, nameToken.raw, pair.first, pair.second, parameters, returnType)
+    Signature(nameToken.at, nameToken.raw, poly.generics, poly.constraints, parameters, returnType)
 }
 
-/*
 Parser_parseTraitDefinition(self: Parser): DTrait {
     self.skip(LKeyword, "trait")
     let nameToken = self.skip(LUpper)
-    let (generics, constraints) = if(!self.current.rawIs("[")) List() -> List() else self.parseTypeParameters()
-    let generatorParameters = if(!self.current.rawIs("(")) List() else self.parseFunctionParameters()
+    let poly = if(!self.current.rawIs("[")) {Poly(List(), List())} else {self.parseTypeParameters()}
+    let generatorParameters = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionParameters()}
     mutable methodGenerators = List[Pair[String, Term]]()
     mutable methodDefaults = List[Pair[String, Term]]()
-    let methodSignatures = if(!self.current.rawIs("{")) List() else {
+    let methodSignatures = if(!self.current.rawIs("{")) {List()} else {
         mutable signatures = List[Signature]()
         self.skip(LBracketLeft, "{")
         while {!self.current.is(LBracketRight)} {
@@ -145,12 +146,12 @@ Parser_parseTraitDefinition(self: Parser): DTrait {
                 let generator = self.ahead.is(LKeyword) && self.ahead.rawIs("generate")
                 let body = self.parseLambda(signature.parameters.size, ignoreGenerateKeyword = true)
                 if(generator) {
-                    methodGenerators ::= signature.name -> body
+                    methodGenerators ::= Pair(signature.name, body)
                 } else {
-                    methodDefaults ::= signature.name -> body
+                    methodDefaults ::= Pair(signature.name, body)
                 }
             }
-            if(!self.current.is(LBracketRight)) self.skipSeparator(LSemicolon)
+            if(!self.current.is(LBracketRight)) { self.skipSeparator(LSemicolon) }
         }
         self.skip(LBracketRight, "}")
         signatures
@@ -173,20 +174,20 @@ Parser_parseInstanceDefinition(self: Parser): DInstance {
     mutable typeArguments = List[Type]()
     self.skip(LBracketLeft, "[")
     let token = self.skip(LUpper)
-    let (typeParameters, constraints) = if(!self.current.rawIs("[")) List() -> List() else self.parseTypeParameters()
-    typeArguments ::= Type(token.at, token.raw, typeParameters.map(p => Type(token.at, p, List())))
+    let poly = if(!self.current.rawIs("[")) {Poly(List(), List())} else {self.parseTypeParameters()}
+    typeArguments ::= Type(token.at, token.raw, poly.typeParameters.map{Type(token.at, _, List())})
     while {self.current.is(LComma)} {
         self.skip(LComma)
         typeArguments ::= self.parseType()
     }
     self.skip(LBracketRight, "]")
-    let generatorArguments = if(!self.current.rawIs("(")) List() else self.parseFunctionArguments()
-    let methods = if(!self.current.rawIs("{")) List() else {
+    let generatorArguments = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionArguments()}
+    let methods = if(!self.current.rawIs("{")) {List()} else {
         mutable definitions = List[DFunction]()
         self.skip(LBracketLeft, "{")
         while {!self.current.is(LBracketRight)} {
             definitions ::= self.parseFunctionDefinition(Some(nameToken.raw))
-            if(!self.current.is(LBracketRight)) self.skipSeparator(LSemicolon)
+            if(!self.current.is(LBracketRight)) {self.skipSeparator(LSemicolon)}
         }
         self.skip(LBracketRight, "}")
         definitions
@@ -195,6 +196,7 @@ Parser_parseInstanceDefinition(self: Parser): DInstance {
     DInstance(nameToken.at, typeParameters, constraints, traitType, generatorArguments, methods)
 }
 
+/*
 Parser_parseTypeDefinition(self: Parser): DType {
     self.skip(LKeyword, "type")
     let nameToken = self.skip(LUpper)
@@ -215,7 +217,7 @@ Parser_parseTypeDefinition(self: Parser): DType {
     DType(nameToken.at, nameToken.raw, generics, constraints, commonFields, variants)
 }
 
-Parser_parseTypeParameters(self: Parser): (List[String], List[Constraint]) {
+Parser_parseTypeParameters(self: Parser): Poly {
     self.skip(LBracketLeft, "[")
     mutable parameters = List[String]()
     mutable constraints = List[Constraint]()
@@ -233,17 +235,17 @@ Parser_parseTypeParameters(self: Parser): (List[String], List[Constraint]) {
                 ))
             }
         }
-        if(!self.current.is(LBracketRight)) self.skip(LComma)
+        if(!self.current.is(LBracketRight)) { self.skip(LComma) }
     }
     if(self.current.is(LSemicolon)) {
         self.skip(LSemicolon)
         while {!self.current.is(LBracketRight)} {
             constraints ::= Constraint(parseType())
-            if(!self.current.is(LBracketRight)) self.skip(LComma)
+            if(!self.current.is(LBracketRight)) { self.skip(LComma) }
         }
     }
     self.skip(LBracketRight, "]")
-    parameters.reverse -> constraints.reverse
+    Poly(parameters.reverse, constraints.reverse)
 }
 
 Parser_parseTypeArguments(parenthesis: Boolean = false): List[Type] {

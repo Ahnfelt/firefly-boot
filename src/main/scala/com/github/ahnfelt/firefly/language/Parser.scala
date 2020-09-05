@@ -392,6 +392,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
                 val token =
                     if(current.is(LAssignPlus)) skip(LAssignPlus)
                     else if(current.is(LAssignMinus)) skip(LAssignMinus)
+                    else if(current.is(LAssignLink)) skip(LAssignLink)
                     else skip(LAssign)
                 val operator = token.raw.dropRight(1)
                 val value = parseTerm()
