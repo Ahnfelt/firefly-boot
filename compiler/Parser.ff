@@ -407,9 +407,8 @@ Parser_parseType(self: Parser): Type {
     }
 }
 
-/*
-Parser_parseStatements(self: Parser): Term =
-    if(self.current.is(LBracketRight, LPipe)) EVariant(self.current.at, "Unit", List(), List()) else {
+Parser_parseStatements(self: Parser): Term {
+    if(self.current.is(LBracketRight, LPipe)) {EVariant(self.current.at, "Unit", List(), List())} else {
         mutable result = self.parseStatement()
         while {currentIsSeparator(LSemicolon)} {
             let token = self.skipSeparator(LSemicolon)
@@ -417,34 +416,33 @@ Parser_parseStatements(self: Parser): Term =
         }
         result
     }
+}
 
 Parser_parseStatement(self: Parser): Term {
-    if(self.current.is(LKeyword) && (self.current.rawIs("let") || self.current.rawIs("mutable"))) self.parseLet()
-    else if(self.current.is(LKeyword) && self.current.rawIs("function")) self.parseFunctions()
-    else {
-        let term = self.parseTerm()
-        if(!self.current.is(LAssign) && !self.current.is3(LAssignPlus, LAssignMinus, LAssignLink)) term else {
-            let token =
-                if(self.current.is(LAssignPlus)) self.skip(LAssignPlus)
-                else if(self.current.is(LAssignMinus)) self.skip(LAssignMinus)
-                else if(self.current.is(LAssignLink)) self.skip(LAssignLink)
-                else self.skip(LAssign)
-            let operator = token.raw.dropRight(1)
-            let value = self.parseTerm()
-            term match {
-                case EVariable(_, name) => EAssign(token.at, operator, name, value)
-                case e: EField => EAssignField(token.at, operator, e, value)
-                case _ => self.fail(token.at, "Only variables and fields are assignable")
-            }
-        }
+    if(self.current.is(LKeyword) && (self.current.rawIs("let") || self.current.rawIs("mutable"))) {self.parseLet()} else:
+    if(self.current.is(LKeyword) && self.current.rawIs("function")) {self.parseFunctions()} else:
+    let term = self.parseTerm()
+    if(!self.current.is(LAssign) && !self.current.is3(LAssignPlus, LAssignMinus, LAssignLink)) {term} else:
+    let token = do {
+        if(self.current.is(LAssignPlus)) {self.skip(LAssignPlus)} else:
+        if(self.current.is(LAssignMinus)) {self.skip(LAssignMinus)} else:
+        if(self.current.is(LAssignLink)) {self.skip(LAssignLink)} else:
+        self.skip(LAssign)
+    }
+    let operator = token.raw.dropRight(1)
+    let value = self.parseTerm()
+    switch(term) {
+        | EVariable(_, name) => EAssign(token.at, operator, name, value)
+        | EField e => EAssignField(token.at, operator, e, value)
+        | _ => self.fail(token.at, "Only variables and fields are assignable")
     }
 }
 
 Parser_parseLet(self: Parser): Term {
     let mutable = self.current.rawIs("mutable")
-    if(mutable) self.skip(LKeyword, "mutable") else self.skip(LKeyword, "let")
+    if(mutable) {self.skip(LKeyword, "mutable")} else {self.skip(LKeyword, "let")}
     let nameToken = self.skip(LLower)
-    let valueType = if(!self.current.is(LColon)) Type(nameToken.at, "?", List()) else {
+    let valueType = if(!self.current.is(LColon)) {Type(nameToken.at, "?", List())} else {
         self.skip(LColon)
         self.parseType()
     }
@@ -473,7 +471,7 @@ Parser_parseTerm(self: Parser): Term {
     self.parseBinary(0)
 }
 
-val binaryOperators = Array(
+binaryOperators = Array(
     List("||"),
     List("&&"),
     List("!=", "=="),
@@ -525,8 +523,8 @@ Parser_parseFieldsAndCalls(self: Parser): Term {
             }
         } else {
             let at = self.current.at
-            let typeArguments = if(!self.current.rawIs("[")) List() else self.parseTypeArguments()
-            let arguments = if(!self.current.rawIs("(")) List() else self.parseFunctionArguments()
+            let typeArguments = if(!self.current.rawIs("[")) {List()} else {self.parseTypeArguments()}
+            let arguments = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionArguments()}
             mutable moreArguments = List[Argument]()
             mutable lastWasCurly = false
             while {self.current.rawIs("{") || self.current.is(LColon)} {
@@ -562,7 +560,7 @@ Parser_parseAtom(self: Parser): Term {
         EVariable(token.at, token.raw)
     } elseIf {self.current.is(LNamespace)} {
         let namespaceToken = self.skip(LNamespace)
-        let extraNamespace = if(!self.current.is(LNamespace)) None else Some(self.skip(LNamespace).raw)
+        let extraNamespace = if(!self.current.is(LNamespace)) {None} else {Some(self.skip(LNamespace).raw)}
         let prefix = namespaceToken.raw + extraNamespace.getOrElse("")
         if(self.current.is(LLower)) { let token = self.skip(LLower); EVariable(token.at, prefix + token.raw) } else {
             self.parseVariant(prefix)
@@ -591,14 +589,14 @@ Parser_parseAtom(self: Parser): Term {
 Parser_parseVariant(prefix: String): Term {
     let token = self.skip(LUpper)
     let name = prefix + token.raw
-    let typeArguments = if(!self.current.rawIs("[")) List() else self.parseTypeArguments()
-    let arguments = if(!self.current.rawIs("(")) None else Some(parseFunctionArguments())
+    let typeArguments = if(!self.current.rawIs("[")) {List()} else {self.parseTypeArguments()}
+    let arguments = if(!self.current.rawIs("(")) {None} else {Some(parseFunctionArguments())}
     EVariant(token.at, name, typeArguments, arguments)
 }
 
 Parser_parseCopy(record: Term): Term {
-    let namespace = if(!self.current.is(LNamespace)) "" else self.skip(LNamespace).raw
-    let extraNamespace = if(!self.current.is(LNamespace)) "" else self.skip(LNamespace).raw
+    let namespace = if(!self.current.is(LNamespace)) {""} else {self.skip(LNamespace).raw}
+    let extraNamespace = if(!self.current.is(LNamespace)) {""} else {self.skip(LNamespace).raw}
     let prefix = namespace + extraNamespace
     let token = self.skip(LUpper)
     let name = prefix + token.raw
@@ -613,33 +611,33 @@ Parser_parseRecord(self: Parser): List[Pair[String, Term]] {
         let fieldToken = self.skip(LLower)
         self.skip(LAssign)
         fields ::= Field(fieldToken.at, fieldToken.raw, self.parseTerm())
-        if(!self.current.is(LBracketRight)) self.skipSeparator(LComma)
+        if(!self.current.is(LBracketRight)) {self.skipSeparator(LComma)}
     }
     self.skip(LBracketRight, ")")
     fields.reverse
 }
 
-Parser_parseRecordType(self: Parser): List[(String, Type)] {
-    mutable fields = List[(String, Type)]()
+Parser_parseRecordType(self: Parser): List[Field] {
+    mutable fields = List[Field]()
     self.skip(LBracketLeft, "(")
     while {!self.current.is(LBracketRight)} {
         let fieldToken = self.skip(LLower)
         self.skipSeparator(LColon)
-        fields ::= fieldToken.raw -> self.parseType()
-        if(!self.current.is(LBracketRight)) self.skipSeparator(LComma)
+        fields ::= Field(fieldToken.raw, self.parseType())
+        if(!self.current.is(LBracketRight)) {self.skipSeparator(LComma)}
     }
     self.skip(LBracketRight, ")")
-    fields.reverse.sortBy(_._1)
+    fields.reverse.sortBy { _.first }
 }
 
-Parser_parseRecordPattern(self: Parser): List[(String, MatchPattern)] {
-    mutable fields = List[(String, MatchPattern)]()
+Parser_parseRecordPattern(self: Parser): List[Pair[String, MatchPattern]] {
+    mutable fields = List[Pair[String, MatchPattern]]()
     self.skip(LBracketLeft, "(")
     while {!self.current.is(LBracketRight)} {
         let fieldToken = self.skip(LLower)
         self.skip(LAssign)
-        fields ::= fieldToken.raw -> self.parsePattern()
-        if(!self.current.is(LBracketRight)) self.skipSeparator(LComma)
+        fields ::= Pair(fieldToken.raw, self.parsePattern())
+        if(!self.current.is(LBracketRight)) {self.skipSeparator(LComma)}
     }
     self.skip(LBracketRight, ")")
     fields.reverse
@@ -650,9 +648,8 @@ Parser_parseList(self: Parser): Term {
     let at = self.skip(LBracketLeft, "[").at
     while {!self.current.rawIs("]")} {
         items ::= self.parseTerm()
-        if(!self.current.rawIs("]")) self.skipSeparator(LComma)
+        if(!self.current.rawIs("]")) {self.skipSeparator(LComma)}
     }
     self.skip(LBracketRight, "]")
     EList(at, items.reverse)
 }
-*/
