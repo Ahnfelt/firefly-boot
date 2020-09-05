@@ -317,7 +317,7 @@ Parser_parseLambda(
             cases ::= self.parseCase()
         }
         cases.reverse
-    } elseIf {self.current.is(LLower) && self.ahead.is(LComma, LArrowThick)} {
+    } elseIf {self.current.is(LLower) && self.ahead.is2(LComma, LArrowThick)} {
         mutable parameters = List[MatchPattern]()
         while {!self.current.is(LArrowThick)} {
             let parameterToken = self.skip(LLower)
@@ -431,7 +431,7 @@ Parser_parseStatement(self: Parser): Term {
     }
     let operator = token.raw.dropRight(1)
     let value = self.parseTerm()
-    switch(term) {
+    term.{
         | EVariable(_, name) => EAssign(token.at, operator, name, value)
         | EField e => EAssignField(token.at, operator, e, value)
         | _ => self.fail(token.at, "Only variables and fields are assignable")
