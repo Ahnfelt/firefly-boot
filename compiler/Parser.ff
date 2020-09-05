@@ -579,7 +579,7 @@ Parser_parseVariant(prefix : String) : Term {
     val token = skip(LUpper)
     val name = prefix + token.raw
     val typeArguments = if(!self.current.rawIs("[")) List() else parseTypeArguments()
-    val arguments = if(!self.current.rawIs("(")) List() else parseFunctionArguments()
+    val arguments = if(!self.current.rawIs("(")) None else Some(parseFunctionArguments())
     EVariant(token.at, name, typeArguments, arguments)
 }
 

@@ -70,7 +70,7 @@ type Term(at: Location) {
     ECall(function: Term, typeArguments: List[Type], arguments: List[Term])
     EList(items: List[Term])
     ECopy(name: String, record: Term, arguments: List[Pair[String, Term]])
-    EVariant(name: String, typeArguments: List[Type], arguments: List[Term])
+    EVariant(name: String, typeArguments: List[Type], arguments: Option[List[Term]])
     ERecord(fields: List[Pair[String, Term]])
     EField(record: Term, field: String)
     EWildcard(index: Int)

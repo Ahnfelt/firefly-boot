@@ -368,7 +368,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
     }
 
     def parseStatements() : Term =
-        if(current.is(LBracketRight, LPipe)) EVariant(current.at, "Unit", List(), List()) else {
+        if(current.is(LBracketRight, LPipe)) EVariant(current.at, "Unit", List(), None) else {
             var result = parseStatement()
             while(currentIsSeparator(LSemicolon)) {
                 val token = skipSeparator(LSemicolon)
@@ -536,7 +536,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         val token = skip(LUpper)
         val name = prefix + token.raw
         val typeArguments = if(!current.rawIs("[")) List() else parseTypeArguments()
-        val arguments = if(!current.rawIs("(")) List() else parseFunctionArguments()
+        val arguments = if(!current.rawIs("(")) None else Some(parseFunctionArguments())
         EVariant(token.at, name, typeArguments, arguments)
     }
 
