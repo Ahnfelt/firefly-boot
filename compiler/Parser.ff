@@ -196,25 +196,24 @@ Parser_parseInstanceDefinition(self: Parser): DInstance {
     DInstance(nameToken.at, typeParameters, constraints, traitType, generatorArguments, methods)
 }
 
-/*
 Parser_parseTypeDefinition(self: Parser): DType {
     self.skip(LKeyword, "type")
     let nameToken = self.skip(LUpper)
-    let (generics, constraints) = if(!self.current.rawIs("[")) List() -> List() else self.parseTypeParameters()
-    let commonFields = if(!self.current.rawIs("(")) List() else self.parseFunctionParameters(allowMutable = true)
-    let variants = if(!self.current.rawIs("{")) List(Variant(nameToken.at, nameToken.raw, List())) else {
+    let poly = if(!self.current.rawIs("[")) {Poly(List(), List())} else {self.parseTypeParameters()}
+    let commonFields = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionParameters(allowMutable = true)}
+    let variants = if(!self.current.rawIs("{")) {List(Variant(nameToken.at, nameToken.raw, List()))} else {
         self.skip(LBracketLeft, "{")
         mutable reverseVariants = List[Variant]()
         while {!self.current.is(LBracketRight)} {
             let variantNameToken = self.skip(LUpper)
-            let variantFields = if(!self.current.rawIs("(")) List() else self.parseFunctionParameters(allowMutable = true)
+            let variantFields = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionParameters(allowMutable = true)}
             reverseVariants ::= Variant(variantNameToken.at, variantNameToken.raw, variantFields)
-            if(!self.current.is(LBracketRight)) self.skipSeparator(LSemicolon)
+            if(!self.current.is(LBracketRight)) {self.skipSeparator(LSemicolon)}
         }
         self.skip(LBracketRight, "}")
         reverseVariants.reverse
     }
-    DType(nameToken.at, nameToken.raw, generics, constraints, commonFields, variants)
+    DType(nameToken.at, nameToken.raw, poly.generics, poly.constraints, commonFields, variants)
 }
 
 Parser_parseTypeParameters(self: Parser): Poly {
@@ -249,13 +248,13 @@ Parser_parseTypeParameters(self: Parser): Poly {
 }
 
 Parser_parseTypeArguments(parenthesis: Boolean = false): List[Type] {
-    self.skip(LBracketLeft, if(parenthesis) "(" else "[")
+    self.skip(LBracketLeft, if(parenthesis) {"("} else {"["})
     mutable types = List[Type]()
     while {!self.current.is(LBracketRight)} {
         types ::= self.parseType()
-        if(!self.current.is(LBracketRight)) self.skip(LComma)
+        if(!self.current.is(LBracketRight)) {self.skip(LComma)}
     }
-    self.skip(LBracketRight, if(parenthesis) ")" else "]")
+    self.skip(LBracketRight, if(parenthesis) {")"} else {"]"})
     types.reverse
 }
 
@@ -264,15 +263,15 @@ Parser_parseFunctionParameters(allowMutable: Boolean = false): List[Parameter] {
     self.skip(LBracketLeft, "(")
     while {!self.current.is(LBracketRight)} {
         let mutable = allowMutable && self.current.is(LKeyword) && self.current.rawIs("mutable")
-        if(mutable) self.skip(LKeyword)
+        if(mutable) {self.skip(LKeyword)}
         let parameterNameToken = self.skip(LLower)
         let parameterType = self.parseOptionalType()
-        let default = if(!self.current.is(LAssign)) None else Some {
+        let default = if(!self.current.is(LAssign)) {None} else {
             self.skip(LAssign)
-            self.parseTerm()
+            Some(self.parseTerm())
         }
         parameters ::= Parameter(parameterNameToken.at, mutable, parameterNameToken.raw, parameterType, default)
-        if(!self.current.is(LBracketRight)) self.skipSeparator(LComma)
+        if(!self.current.is(LBracketRight)) {self.skipSeparator(LComma)}
     }
     self.skip(LBracketRight, ")")
     parameters.reverse
@@ -287,7 +286,7 @@ Parser_parseFunctionArguments(self: Parser): List[Argument] {
             self.skip(LAssign)
             Some(token)
         } else {None}
-        val value = self.parseTerm()
+        let value = self.parseTerm()
         arguments ::= Argument(nameToken.map{_.at}.getOrElse(value.at), nameToken.map{_.raw}, value)
         if(!self.current.is(LBracketRight)) {self.skipSeparator(LComma)}
     }
@@ -300,7 +299,7 @@ Parser_parseOptionalType(self: Parser): Type {
     if(token.is(LColon)) {
         self.skip(LColon)
         self.parseType()
-    } else Type(token.at, "?", List())
+    } else {Type(token.at, "?", List())}
 }
 
 Parser_parseLambda(
@@ -310,8 +309,8 @@ Parser_parseLambda(
     allowColon: Boolean = false
 ): ELambda {
     let colon = allowColon && self.current.is(LColon)
-    let token = if(colon) self.skip(LColon) else self.skip(LBracketLeft, "{")
-    if(ignoreGenerateKeyword && self.current.is(LKeyword) && self.current.rawIs("generate")) self.skip(LKeyword)
+    let token = if(colon) {self.skip(LColon)} else {self.skip(LBracketLeft, "{")}
+    if(ignoreGenerateKeyword && self.current.is(LKeyword) && self.current.rawIs("generate")) {self.skip(LKeyword)}
     let result = if(self.current.is(LPipe)) {
         mutable cases = List[MatchCase]()
         while {self.current.is(LPipe)} {
@@ -323,23 +322,23 @@ Parser_parseLambda(
         while {!self.current.is(LArrowThick)} {
             let parameterToken = self.skip(LLower)
             parameters ::= PVariable(parameterToken.at, Some(parameterToken.raw))
-            if(!self.current.is(LArrowThick)) self.skip(LComma)
+            if(!self.current.is(LArrowThick)) {self.skip(LComma)}
         }
         self.skip(LArrowThick)
         let term = self.parseStatements()
         List(MatchCase(token.at, parameters.reverse, term))
     } else {
         let term = self.parseStatements()
-        let wildcards = new Wildcards()
+        let wildcards = Wildcards_of()
         let e = wildcards.fixWildcards(term)
         let arguments = if(wildcards.seenWildcards != 0) {
-            1.to(wildcards.seenWildcards).toList.map(i => PVariable(token.at, Some("_w" + i)))
+            1.to(wildcards.seenWildcards).toList.map { i => PVariable(token.at, Some("_w" + i)) }
         } else {
-            1.to(defaultParameterCount).toList.map(_ => PVariable(token.at, None))
+            1.to(defaultParameterCount).toList.map { i => PVariable(token.at, None) }
         }
         List(MatchCase(token.at, arguments, e))
     }
-    if(!colon) self.skip(LBracketRight, "}")
+    if(!colon) {self.skip(LBracketRight, "}")}
     ELambda(token.at, result)
 }
 
@@ -348,7 +347,7 @@ Parser_parseCase(self: Parser): MatchCase {
     mutable patterns = List[MatchPattern]()
     while {!self.current.is(LArrowThick)} {
         patterns ::= self.parsePattern()
-        if(!self.current.is(LArrowThick)) self.skip(LComma)
+        if(!self.current.is(LArrowThick)) {self.skip(LComma)}
     }
     self.skip(LArrowThick)
     let body = self.parseStatements()
@@ -364,8 +363,8 @@ Parser_parsePattern(self: Parser): MatchPattern {
         PVariable(token.at, Some(token.raw))
     } elseIf {self.current.rawIs("(")} {
         let at = self.current.at
-        let (fields, fieldPatterns) = self.parseRecordPattern().unzip
-        PVariant(at, "Record$" + fields.mkString("$"), fieldPatterns)
+        let pair = self.parseRecordPattern().unzip
+        PVariant(at, "Record$" + pair.first.mkString("$"), pair.second)
     } else {
         let token = self.skip(LUpper)
         if(self.current.rawIs("(")) {
@@ -373,7 +372,7 @@ Parser_parsePattern(self: Parser): MatchPattern {
             self.skip(LBracketLeft, "(")
             while {!self.current.is(LBracketRight)} {
                 patterns ::= self.parsePattern()
-                if(!self.current.is(LBracketRight)) self.skip(LComma)
+                if(!self.current.is(LBracketRight)) {self.skip(LComma)}
             }
             self.skip(LBracketRight, ")")
             PVariant(token.at, token.raw, patterns.reverse)
@@ -391,23 +390,24 @@ Parser_parsePattern(self: Parser): MatchPattern {
 Parser_parseType(self: Parser): Type {
     let leftTypes = if(self.current.rawIs("(") && self.ahead.is(LLower) && self.aheadAhead.is(LColon)) {
         let at = self.current.at
-        let (fields, fieldTypes) = self.parseRecordType().unzip
-        List(Type(at, "Record$" + fields.mkString("$"), fieldTypes))
+        let pair = self.parseRecordType().unzip
+        List(Type(at, "Record$" + pair.first.mkString("$"), pair.second))
     } elseIf {self.current.rawIs("(")} {
         self.parseTypeArguments(parenthesis = true)
     } else {
-        let namespace = if(self.current.is(LNamespace)) self.skip(LNamespace).raw else ""
+        let namespace = if(self.current.is(LNamespace)) {self.skip(LNamespace).raw} else {""}
         let token = self.skip(LUpper)
-        let arguments = if(!self.current.rawIs("[")) List() else self.parseTypeArguments()
+        let arguments = if(!self.current.rawIs("[")) {List()} else {self.parseTypeArguments()}
         List(Type(token.at, namespace + token.raw, arguments))
     }
-    if(!self.current.is(LArrowThick) && leftTypes.size == 1) leftTypes.head else {
+    if(!self.current.is(LArrowThick) && leftTypes.size == 1) {leftTypes.head} else {
         let arrowToken = self.skip(LArrowThick)
         let rightType = self.parseType()
         Type(arrowToken.at, "Function$" + leftTypes.size, leftTypes ++ List(rightType))
     }
 }
 
+/*
 Parser_parseStatements(self: Parser): Term =
     if(self.current.is(LBracketRight, LPipe)) EVariant(self.current.at, "Unit", List(), List()) else {
         mutable result = self.parseStatement()
