@@ -382,15 +382,16 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         else if(current.is(LKeyword) && current.rawIs("function")) parseFunctions()
         else {
             val term = parseTerm()
-            if(!current.is(LAssign, LAssignPlus, LAssignMinus)) term else {
+            if(!current.is(LAssign) && !current.is(LAssignPlus, LAssignMinus, LAssignLink)) term else {
                 val token =
                     if(current.is(LAssignPlus)) skip(LAssignPlus)
                     else if(current.is(LAssignMinus)) skip(LAssignMinus)
                     else skip(LAssign)
+                val operator = token.raw.dropRight(1)
                 val value = parseTerm()
                 term match {
-                    case EVariable(_, name) => EAssign(token.at, token.raw, name, value)
-                    case e : EField => EAssignField(token.at, token.raw, e, value)
+                    case EVariable(_, name) => EAssign(token.at, operator, name, value)
+                    case e : EField => EAssignField(token.at, operator, e, value)
                     case _ => throw ParseException(token.at, "Only variables and fields are assignable")
                 }
             }
@@ -435,6 +436,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         List("&&"),
         List("!=", "=="),
         List("<=", ">=", "<", ">"),
+        List("::"),
         List("++"),
         List("+", "-"),
         List("*", "/", "%"),
@@ -555,7 +557,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         skip(LBracketLeft, "(")
         while(!current.is(LBracketRight)) {
             val fieldToken = skip(LLower)
-            skipSeparator(LAssign)
+            skip(LAssign)
             fields ::= fieldToken.raw -> parseTerm()
             if(!current.is(LBracketRight)) skipSeparator(LComma)
         }
@@ -581,7 +583,7 @@ class Parser(file : String, tokens : ArrayBuffer[Token]) {
         skip(LBracketLeft, "(")
         while(!current.is(LBracketRight)) {
             val fieldToken = skip(LLower)
-            skipSeparator(LAssign)
+            skip(LAssign)
             fields ::= fieldToken.raw -> parsePattern()
             if(!current.is(LBracketRight)) skipSeparator(LComma)
         }

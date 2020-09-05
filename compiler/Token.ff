@@ -59,6 +59,7 @@ type TokenKind {
     LAssign
     LAssignPlus
     LAssignMinus
+    LAssignLink
 }
 
 TokenKind_beforeSeparator(kind: TokenKind): Bool {
@@ -86,6 +87,7 @@ TokenKind_beforeSeparator(kind: TokenKind): Bool {
     | LAssign => False
     | LAssignPlus => False
     | LAssignMinus => False
+    | LAssignLink => False
 }
 
 TokenKind_afterSeparator(kind: TokenKind): Bool {
@@ -113,6 +115,7 @@ TokenKind_afterSeparator(kind: TokenKind): Bool {
     | LAssign => False
     | LAssignPlus => False
     | LAssignMinus => False
+    | LAssignLink => False
 }
 
 TokenKind_afterKeyword(kind: TokenKind): Bool {
@@ -140,4 +143,5 @@ TokenKind_afterKeyword(kind: TokenKind): Bool {
     | LAssign => False
     | LAssignPlus => False
     | LAssignMinus => False
+    | LAssignLink => False
 }

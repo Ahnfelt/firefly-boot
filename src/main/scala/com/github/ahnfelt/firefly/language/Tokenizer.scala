@@ -59,6 +59,7 @@ case object LArrowThick extends TokenKind(false, false, false)
 case object LAssign extends TokenKind(false, false, false)
 case object LAssignPlus extends TokenKind(false, false, false)
 case object LAssignMinus extends TokenKind(false, false, false)
+case object LAssignLink extends TokenKind(false, false, false)
 
 object Tokenizer {
 
@@ -209,6 +210,7 @@ object Tokenizer {
                     else if(i - start == 1 && code(i - 1) == '=') LAssign
                     else if(i - start == 2 && code(i - 2) == '+' && code(i - 1) == '=') LAssignPlus
                     else if(i - start == 2 && code(i - 2) == '-' && code(i - 1) == '=') LAssignMinus
+                    else if(i - start == 3 && code(i - 3) == ':' && code(i - 2) == ':' && code(i - 1) == '=') LAssignLink
                     else LOperator
                 emitToken(o, start, i)
 

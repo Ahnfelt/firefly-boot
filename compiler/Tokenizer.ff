@@ -156,6 +156,8 @@ tokenize(file: String, code: String) {
                     LAssignPlus
                 } elseIf {i - start == 2 && code(i - 2) == '-' && code(i - 1) == '='} {
                     LAssignMinus
+                } elseIf {i - start == 3 && code(i - 3) == ':' && code(i - 2) == ':' && code(i - 1) == '='} {
+                    LAssignLink
                 } else {
                     LOperator
                 }

@@ -204,7 +204,7 @@ class Emitter() {
         case ESequential(at, before, after) =>
             emitStatements(before) + ";\n" + emitStatements(after)
         case EAssign(at, operator, name, value) =>
-            escapeKeyword(name) + " " + operator + " " + emitTerm(value)
+            escapeKeyword(name) + " " + operator + "= " + emitTerm(value)
         case EAssignField(at, operator, field, value) =>
             emitTerm(field) + " " + operator + " " + emitTerm(value)
         case _ => emitTerm(term)
