@@ -1,0 +1,325 @@
+type Emitter
+
+Emitter_fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show)
+}
+
+Emitter_emitModule(module: Module, otherModules: List[String]): String {
+    let moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile(_ != '/').reverse.takeWhile(_ != '.')
+    let namespaces = module.types.map { definition =>
+        let lets = module.lets.filter(_.namespace.contains(definition.name + "_"))
+        let functions = module.functions.filter(_.namespace.contains(definition.name + "_"))
+        if(lets.isEmpty && functions.isEmpty) {None}
+        else {Some(emitTypeMembers(definition.name, lets, functions))}
+    }
+    let parts = List(
+        List("package firefly"),
+        List("import firefly.Firefly_Core._") ++ otherModules.map("import firefly." + _ + "._"),
+        List("object " + moduleNamespace + " {"),
+        if(
+            module.functions.exists { f => f.namespace.isEmpty && f.signature.name == "main" }
+        ) {List(emitMain())} else {List()},
+        module.types.map(emitTypeDefinition),
+        module.lets.filter(_.namespace.isEmpty).map(emitLetDefinition(_)),
+        module.functions.filter(_.namespace.isEmpty).map(emitFunctionDefinition(_)),
+        module.functions.filter { f =>
+            f.namespace.exists(f.signature.parameters.headOption.map { _.valueType.name + "_" }.contains)
+        }.map(emitMethodImplicit),
+        module.traits.map(emitTraitDefinition),
+        module.instances.map(emitInstanceDefinition),
+        namespaces.flatten,
+        List(
+            "}"
+        ),
+    )
+    let allNamespaces = module.lets.flatMap(_.namespace) ++ module.functions.flatMap(_.namespace)
+    allNamespaces.find { n => !module.types.exists { _.name + "_" == n } }.foreach { n =>
+        Emitter_fail(Location(module.file, 1, 1), "No such type: " + n)
+    }
+    // Also, for each X_foo(bar: X, ...) method, generate implicit class X_foo(bar: X) { def foo(...) { ... } }
+    parts.map(_.mkString("\n\n")).mkString("\n") + "\n"
+}
+
+Emitter_emitMain() {
+    "def main(arguments : Array[String]) : Unit = main(new System(arguments))"
+}
+
+Emitter_emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]) {
+    let strings =
+        lets.map(emitLetDefinition(_)) ++
+        functions.map(emitFunctionDefinition(_))
+    "object " + name + " {\n\n" + strings.mkString("\n\n") + "\n\n}"
+}
+
+Emitter_emitTypeDefinition(definition: DType): String {
+    let generics = emitTypeParameters(definition.generics)
+    if(definition.variants.size == 1 && definition.variants.head.name == definition.name) {
+        let fields = "(" + definition.commonFields.map(emitParameter).mkString(", ") + ")"
+        "case class " + definition.name + generics + fields
+    } else {
+        let commonFields = if(definition.commonFields.isEmpty) {""} else {
+            " {\n" + definition.commonFields.map(emitParameter).map("    let " + _ + "\n").mkString + "}"
+        }
+        let variants = definition.variants.map { emitVariantDefinition(definition, _) }
+        let head = "sealed abstract class " + definition.name + generics + " extends Product with Serializable"
+        head + commonFields + variants.map("\n" + _).mkString
+    }
+}
+
+Emitter_emitLetDefinition(definition: DLet, mutable: Boolean = false): String {
+    let typeAnnotation = emitTypeAnnotation(definition.variableType)
+    let mutability = if(mutable) {"var"} else {"val"}
+    mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + emitTerm(definition.value)
+}
+
+Emitter_emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
+    let signature = emitSignature(definition.signature, suffix)
+    definition.body.{
+        | ELambda(_, List(matchCase)) {matchCase.patterns.all { | PVariable(_, None) => true | _ => false }} =>
+            let body = emitStatements(matchCase.body)
+            signature + " = {\n" + body + "\n}"
+        | _ =>
+            let tuple = "(" + definition.signature.parameters.map { escapeKeyword(_.name) }.mkString(", ") + ")"
+            let cases = definition.body.cases.map(emitCase).mkString("\n")
+            signature + " = " + tuple + " match {\n" + cases + "\n}"
+    }
+}
+
+Emitter_emitMethodImplicit(definition: DFunction): String {
+    let generics = emitTypeParameters(definition.signature.generics)
+    let parameter = definition.signature.parameters.headOption.map { p =>
+        escapeKeyword(p.name) + " : " + emitType(p.valueType)
+    }.get
+    let signature = emitSignature(definition.signature.copy(
+        generics = List(),
+        parameters = definition.signature.parameters.drop(1)
+    ))
+    let method = signature + " = " + definition.namespace.get.replace("_", ".") +
+        escapeKeyword(definition.signature.name) +
+        "(" + definition.signature.parameters.map(_.name).map(escapeKeyword).mkString(", ") + ")"
+    "implicit class " + definition.namespace.get + definition.signature.name + generics +
+    "(" + parameter + ") {\n\n" + method + "\n\n}"
+}
+
+Emitter_emitTraitDefinition(definition: DTrait): String {
+    let generics = emitTypeParameters(definition.generics)
+    let implicits = emitConstraints(definition.constraints)
+    let parameters = if(definition.generatorParameters.isEmpty) {""} else {
+        "(" + definition.generatorParameters.map(emitParameter).mkString(", ") + ")"
+    }
+    let methods = if(definition.methods.isEmpty) {""} else {
+        " {\n\nimport " + definition.name + "._\n\n" +
+        definition.methods.map { signature =>
+            let body = definition.methodDefaults.find(_._1 == signature.name).map { | Pair(_, e) =>
+                " {\n" + emitStatements(e) + "\n}"
+            }.orElse(definition.methodGenerators.find(_._1 == signature.name).map { | Pair(_, e) =>
+                " {\n// TODO: Generate\n}"
+            }).getOrElse {
+                ""
+            }
+            emitSignature(signature, "_m") + body
+        }.mkString("\n\n") + "\n\n}"
+    }
+    let methodWrappers = if(definition.methods.isEmpty) {""} else {
+        " \n\n" + definition.methods.map { signature =>
+            let t = Type(definition.at, definition.name, definition.generics.map(Type(definition.at, _, List())))
+            emitSignature(signature.copy(
+                generics = definition.generics ++ signature.generics,
+                constraints = Constraint(t) :: definition.constraints ++ signature.constraints
+            )) + " =\n    scala.Predef.implicitly[" + emitType(t) + "]." + escapeKeyword(signature.name) +
+            "_m(" + signature.parameters.map(_.name).map(escapeKeyword).mkString(", ") + ")"
+        }.join("\n\n") + "\n\n"
+    }
+    "abstract class " + definition.name + generics + parameters + implicits + methods + "\n" +
+    "object " + definition.name + " {" + methodWrappers + "}"
+}
+
+Emitter_emitInstanceDefinition(definition: DInstance): String {
+    let signature = emitSignature(Signature(
+        definition.at,
+        definition.traitType.name + "_" + definition.hashCode().abs,
+        definition.generics,
+        definition.constraints,
+        List(),
+        definition.traitType
+    ))
+    let methods = " {\n\nimport " + definition.traitType.name + "._\n\n" +
+        definition.methods.map(emitFunctionDefinition(_, "_m")).mkString("\n\n") + "\n\n}"
+    let value = "new " + emitType(definition.traitType) + methods
+    "implicit " + signature + " =\n    " + value
+}
+
+Emitter_emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
+    let generics = emitTypeParameters(typeDefinition.generics)
+    let allFields = typeDefinition.commonFields ++ definition.fields
+    let fields = "(" + allFields.map(emitParameter).mkString(", ") + ")"
+    "case class " + definition.name + generics + fields + " extends " + typeDefinition.name + generics
+}
+
+Emitter_emitSignature(signature: Signature, suffix: String = ""): String {
+    let generics = emitTypeParameters(signature.generics)
+    let parameters = "(" + signature.parameters.map(emitParameter).mkString(", ") + ")"
+    let implicits = if(signature.constraints.isEmpty) {""} else {
+        "(implicit " + signature.constraints.zipWithIndex.map { | Pair(c, i) =>
+            "i_" + i + " : " + emitType(c.representation)
+        }.mkString(", ") + ")"
+    }
+    let returnType = emitTypeAnnotation(signature.returnType)
+    "def " + escapeKeyword(signature.name) + suffix + generics + parameters + implicits + returnType
+}
+
+Emitter_emitParameter(parameter: Parameter): String {
+    let mutability = if(parameter.mutable) {"var "} else {""}
+    let defaultValue = parameter.default.map { " = " + emitTerm(_) }.getOrElse("")
+    mutability + escapeKeyword(parameter.name) + emitTypeAnnotation(parameter.valueType) + defaultValue
+}
+
+Emitter_emitConstraints(constraints: List[Constraint]): String {
+    if(constraints.isEmpty) {""} else:
+    let pairs = constraints.map(_.representation).map(emitType).zipWithIndex
+    "(implicit " + pairs.map { | Pair(k, v) => "i_" + v + " : " + k }.mkString(", ") + ")"
+}
+
+Emitter_emitTypeParameters(generics: List[String]) {
+    if(generics.isEmpty) {""} else {"[" + generics.mkString(", ") + "]"}
+}
+
+Emitter_emitTypeAnnotation(t: Type): String {
+    if(t.name == "?") {""} else {" : " + emitType(t)}
+}
+
+Emitter_emitType(t: Type): String {
+    if(t.name.startsWith("Function$")) {
+        emitType(t.copy(name = t.name.replace("$", "")))
+    } else if(t.name.startsWith("Record$")) {
+        "{" + t.name.split('$').drop(1).toList.zip(t.generics).map { | Pair(field, fieldType) =>
+            "val " + escapeKeyword(field) + " : " + emitType(fieldType)
+        }.mkString("; ") + "}"
+    } else {
+        let generics = if(t.generics.isEmpty) {""} else {"[" + t.generics.map(emitType).mkString(", ") + "]"}
+        t.name.replace("_", ".") + generics
+    }
+}
+
+Emitter_emitStatements(term: Term): String {
+    | EFunctions(at, functions, body) =>
+        let functionStrings = functions.map(f => emitFunctionDefinition(DFunction(at, None, f.signature, f.body)))
+        functionStrings.mkString("\n") + "\n" + emitStatements(body)
+    | ELet(at, mutable, name, valueType, value, body) =>
+        emitLetDefinition(DLet(at, None, name, valueType, value), mutable) + ";\n" + emitStatements(body)
+    | ESequential(at, before, after) =>
+        emitStatements(before) + ";\n" + emitStatements(after)
+    | EAssign(at, operator, name, value) =>
+        escapeKeyword(name) + " " + operator + "= " + emitTerm(value)
+    | EAssignField(at, operator, field, value) =>
+        emitTerm(field) + " " + operator + "= " + emitTerm(value)
+    | _ => emitTerm(term)
+}
+
+Emitter_emitTerm(term: Term): String {
+    | EString(at, value) => value
+    | EChar(at, value) => value
+    | EInt(at, value) => value
+    | EFloat(at, value) => value
+    | EVariable(at, name) => escapeKeyword(name.replace("_", "."))
+    | EList(at, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
+    | EVariant(at, name, typeArguments, arguments) =>
+        let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
+        name.replace("_", ".") + generics + "(" + arguments.toList.flatten.map(emitArgument).mkString(", ") + ")"
+    | ECopy(at, name, record, fields) =>
+        let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }.mkString(", ")
+        emitTerm(record) + ".copy(" + fieldCode + ")"
+    | EField(at, record, field) => emitTerm(record) + "." + escapeKeyword(field)
+    | ELambda(at, List(MatchCase(_, patterns, body))) {patterns.all { | PVariable _ => True | _ => False }} =>
+        let parameters =
+            patterns.map(_.asInstanceOf[PVariable].name.map(escapeKeyword).getOrElse("_")).mkString(", ")
+        "{(" + parameters + ") =>\n" + emitStatements(body) + "\n}"
+    | ELambda(at, cases) =>
+        let casesString = cases.map(emitCase).mkString("\n")
+        "{\n" + casesString + "\n}"
+    | EPipe(at, value, function) =>
+        "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
+    | ECall(at, EVariable(_, operator), List(), List(value)) {!operator.head.isLetter} =>
+        "(" + operator + emitArgument(value) + ")"
+    | ECall(at, EVariable(_, operator), List(), List(left, right)) {!operator.head.isLetter} =>
+        "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
+    | ECall(at, function, typeArguments, arguments) =>
+        let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
+        emitTerm(function) + generics + "(" + arguments.map(emitArgument).mkString(", ") + ")"
+    | ERecord(at, fields) =>
+        if(fields.isEmpty) {"{}"} else {
+            let list = fields.map { f => "val " + escapeKeyword(f.name) + " = " + emitTerm(f.value) }
+            "new {\n" + list.mkString(";\n") + ";\n}"
+        }
+    | EWildcard(at, index) =>
+        if(index == 0) {Emitter_fail(at, "Unbound wildcard")}
+        "_w" + index
+    | EFunctions _ | ELet _ | ESequential _ | EAssign _ | EAssignField _ =>
+        "{\n" + emitStatements(term) + "\n}"
+}
+
+Emitter_emitArgument(argument: Argument) {
+    argument.name.map(_ + " = ").getOrElse("") + emitTerm(argument.value)
+}
+
+Emitter_emitCase(matchCase: MatchCase) {
+    let patterns = matchCase.patterns.map(emitPattern).mkString(", ")
+    "case (" + patterns + ") =>\n" + emitStatements(matchCase.body)
+}
+
+Emitter_emitPattern(pattern: MatchPattern): String = {
+    | PVariable(at, name) =>
+        name.map(escapeKeyword).getOrElse("_")
+    | PVariant(at, name, patterns) =>
+        name + "(" + patterns.map(emitPattern).mkString(", ") + ")"
+    | PVariantAs(at, name, variable) =>
+        escapeKeyword(variable) + " : " + name
+}
+
+Emitter_escapeKeyword(word: String) {
+    if(keywords(word)) {word + "_"} else {word}
+}
+
+Emitter_keywords = Set(
+    "abstract",
+    "case",
+    "catch",
+    "class",
+    "def",
+    "do",
+    "else",
+    "extends",
+    "false",
+    "final",
+    "finally",
+    "for",
+    "forSome",
+    "if",
+    "implicit",
+    "import",
+    "lazy",
+    "match",
+    "new",
+    "null",
+    "object",
+    "override",
+    "package",
+    "private",
+    "protected",
+    "return",
+    "sealed",
+    "super",
+    "this",
+    "throw",
+    "trait",
+    "true",
+    "try",
+    "type",
+    "val",
+    "var",
+    "while",
+    "with",
+    "yield",
+    "scala",
+    "java",
+)
