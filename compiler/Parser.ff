@@ -485,6 +485,7 @@ binaryOperators = Array(
     List("&&"),
     List("!=", "=="),
     List("<=", ">=", "<", ">"),
+    List("::"),
     List("++"),
     List("+", "-"),
     List("*", "/", "%"),
