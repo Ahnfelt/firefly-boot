@@ -188,6 +188,6 @@ tokenize(file: String, code: String) {
 
     1.to(5).each { i => emitToken(LEnd, i, i) }
 
-    tokens
+    tokens.toArray
 
 }

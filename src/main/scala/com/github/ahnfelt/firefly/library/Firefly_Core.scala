@@ -114,6 +114,26 @@ object Firefly_Core {
             new File(path).delete()
         }
 
+        def getAbsolutePath(path : String) : String = {
+            new File(path).getAbsolutePath
+        }
+
+        def directoryName(path : String) : String = {
+            path.reverse.dropWhile(_ != '/').drop(1).reverse
+        }
+
+        def baseName(path : String) : String = {
+            path.reverse.takeWhile(_ != '/').reverse
+        }
+
+        def prefixName(path : String) : String = {
+            path.reverse.takeWhile(_ != '/').reverse.takeWhile(_ != '.')
+        }
+
+        def suffixName(path : String) : String = {
+            path.reverse.takeWhile(_ != '/').takeWhile(_ != '.').reverse
+        }
+
     }
 
     def each[T](list : List[T], body : T => Unit) : Unit = list.foreach(body)

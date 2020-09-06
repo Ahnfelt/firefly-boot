@@ -1,3 +1,81 @@
 main(system: System): Unit {
-    system.writeLine("Hello!")
+
+    let corePath = system.arguments(0)
+    let inputPath = system.arguments(1)
+    let outputPath = system.arguments(2)
+
+    let fs = system.files
+
+    let outputFile = outputPath
+    if(fs.exists(outputFile)) { deleteDirectory(fs, outputFile) }
+    fs.createDirectory(outputFile)
+
+    mutable resultFiles = List[String]()
+    let scalaPathFile = outputPath + "/src/main/scala/firefly"
+    fs.createDirectories(scalaPathFile)
+    let files = fs.list(inputPath).filter { _.endsWith(".ff") }
+    files.each { file =>
+        let scalaFile = scalaPathFile + "/" + fs.prefixName(file) + ".scala"
+        compileFile(fs, fs.getAbsolutePath(file), files.map { fs.prefixName(_) }, scalaFile)
+        resultFiles ::= file
+    }
+    resultFiles = resultFiles.reverse
+
+    writeExtraFiles(fs, corePath, outputFile, scalaPathFile)
+
+}
+
+writeExtraFiles(fs: FileSystem, corePath: String, outputFile: String, scalaFile: String): Unit {
+    let coreSubPath = "scala/com/github/ahnfelt/firefly/library/Firefly_Core.scala"
+    let core = fs.readText(corePath + "/" + coreSubPath).replaceFirst(
+        "package com.github.ahnfelt.firefly.library",
+        "package firefly"
+    )
+    fs.writeText(scalaFile + "/Firefly_Core.scala", core)
+    fs.writeText(outputFile + "/build.sbt", "scalaVersion := \"2.13.3\"")
+}
+
+compileFile(fs: FileSystem, input: String, modules: List[String], output: String): String {
+
+    let code = fs.readText(input)
+    let tokens = Tokenizer_tokenize(input, code)
+    //for(token <- tokens) println(token.kind)
+
+    //println()
+
+    let module = do {
+        Parser_of(input, tokens).parseModule()
+    } /*catch {
+        case exception: ParseException =>
+            println()
+            println("-----")
+            println(exception.getMessage)
+            println("-----")
+            println()
+            System.exit(1)
+            throw exception
+    }*/
+
+    //println(module)
+    //println()
+
+    let out = Emitter_emitModule(module, modules.filter { _ != module.file.dropRight(3) })
+
+    fs.writeText(output, out)
+
+    //println(out)
+
+    out
+
+}
+
+deleteDirectory(fs: FileSystem, outputFile: String): Unit {
+    fs.list(outputFile).each { file =>
+        if(fs.isDirectory(file)) {
+            deleteDirectory(fs, file)
+        } else {
+            fs.delete(file)
+        }
+    }
+    fs.delete(outputFile)
 }
