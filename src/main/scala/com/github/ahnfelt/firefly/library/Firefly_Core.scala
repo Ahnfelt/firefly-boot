@@ -91,7 +91,7 @@ object Firefly_Core {
         }
 
         def list(path : String) : List[String] = {
-            new File(path).listFiles().map(_.toString).toList
+            new File(path).listFiles().map(_.toString.replace('\\', '/')).toList
         }
 
         def exists(path : String) : Boolean = {
@@ -115,7 +115,7 @@ object Firefly_Core {
         }
 
         def getAbsolutePath(path : String) : String = {
-            new File(path).getAbsolutePath
+            new File(path).getAbsolutePath.replace('\\', '/')
         }
 
         def directoryName(path : String) : String = {
