@@ -2,16 +2,16 @@ main(system: System): Unit {
 
     let corePath = system.arguments(0)
     let inputPath = system.arguments(1)
-    let outputPath = system.arguments(2)
+    let tempPath = system.arguments(2)
+    let outputPath = system.arguments(3)
 
     let fs = system.files
 
-    let outputFile = outputPath
-    if(fs.exists(outputFile)) { deleteDirectory(fs, outputFile) }
-    fs.createDirectory(outputFile)
+    if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
+    fs.createDirectory(tempPath)
 
     mutable resultFiles = List[String]()
-    let scalaPathFile = outputPath + "/src/main/scala/firefly"
+    let scalaPathFile = tempPath + "/src/main/scala/firefly"
     fs.createDirectories(scalaPathFile)
     let files = fs.list(inputPath).filter { _.endsWith(".ff") }
     files.each { file =>
@@ -21,7 +21,10 @@ main(system: System): Unit {
     }
     resultFiles = resultFiles.reverse
 
-    writeExtraFiles(fs, corePath, outputFile, scalaPathFile)
+    writeExtraFiles(fs, corePath, tempPath, scalaPathFile)
+
+    if(fs.exists(outputPath)) { deleteDirectory(fs, outputPath) }
+    fs.rename(tempPath, outputPath)
 
 }
 
