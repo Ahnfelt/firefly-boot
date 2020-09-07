@@ -862,7 +862,7 @@ val value = self.parseTerm();
 pipe_dot(term)({
 case (EVariable(_, name)) =>
 EAssign(token.at, operator, name, value)
-case (e @ _ : EField) =>
+case (e @ (_ : EField)) =>
 EAssignField(token.at, operator, e, value)
 case (_) =>
 self.fail(token.at, "Only variables and fields are assignable")

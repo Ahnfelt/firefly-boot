@@ -276,7 +276,7 @@ Emitter_emitPattern(pattern: MatchPattern): String {
     | PVariantAs(at, name, variable) =>
         variable.map(Emitter_escapeKeyword).getOrElse("_") + " : " + name
     | PAlias(at, p, variable) =>
-        Emitter_escapeKeyword(variable) + " @ " + Emitter_emitPattern(p)
+        Emitter_escapeKeyword(variable) + " @ (" + Emitter_emitPattern(p) + ")"
 }
 
 Emitter_escapeKeyword(word: String) {

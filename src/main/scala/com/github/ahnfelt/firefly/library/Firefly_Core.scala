@@ -111,7 +111,15 @@ object Firefly_Core {
         }
 
         def delete(path : String) : Unit = {
-            new File(path).delete()
+            if(!new File(path).delete()) {
+                throw new java.io.IOException("Could not delete " + path)
+            }
+        }
+
+        def rename(fromPath : String, toPath : String) : Unit = {
+            if(!new File(fromPath).renameTo(new File(toPath))) {
+                throw new java.io.IOException("Could not rename " + fromPath + " to " + toPath)
+            }
         }
 
         def getAbsolutePath(path : String) : String = {
