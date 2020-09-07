@@ -22,15 +22,15 @@ def main(arguments : Array[String]) : Unit = main(new System(arguments))
 def main(system : System) : Unit = {
 val corePath = system.arguments(0);
 val inputPath = system.arguments(1);
-val outputPath = system.arguments(2);
+val tempPath = system.arguments(2);
+val outputPath = system.arguments(3);
 val fs = system.files;
-val outputFile = outputPath;
-if_(fs.exists(outputFile), {() =>
-deleteDirectory(fs, outputFile)
+if_(fs.exists(tempPath), {() =>
+deleteDirectory(fs, tempPath)
 });
-fs.createDirectory(outputFile);
+fs.createDirectory(tempPath);
 var resultFiles = List[String]();
-val scalaPathFile = (outputPath + "/src/main/scala/firefly");
+val scalaPathFile = (tempPath + "/src/main/scala/firefly");
 fs.createDirectories(scalaPathFile);
 val files = fs.list(inputPath).filter({(_w1) =>
 _w1.endsWith(".ff")
@@ -43,7 +43,11 @@ fs.prefixName(_w1)
 resultFiles ::= file
 });
 resultFiles = resultFiles.reverse;
-writeExtraFiles(fs, corePath, outputFile, scalaPathFile)
+writeExtraFiles(fs, corePath, tempPath, scalaPathFile);
+if_(fs.exists(outputPath), {() =>
+deleteDirectory(fs, outputPath)
+});
+fs.rename(tempPath, outputPath)
 }
 
 def writeExtraFiles(fs : FileSystem, corePath : String, outputFile : String, scalaFile : String) : Unit = {
