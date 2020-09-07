@@ -75,7 +75,6 @@ object Firefly_Core {
     final class FileSystem() {
 
         import java.io.{File, FileWriter}
-
         import scala.io.Source
 
         def readText(file : String) : String = {

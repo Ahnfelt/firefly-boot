@@ -1,5 +1,4 @@
 package firefly
-
 import firefly.Firefly_Core._
 
 import firefly.Emitter._
@@ -416,7 +415,7 @@ case (PVariant(at, name, patterns)) =>
 case (PVariantAs(at, name, variable)) =>
 ((variable.map(Emitter.escapeKeyword).getOrElse("_") + " : ") + name)
 case (PAlias(at, p, variable)) =>
-((Emitter.escapeKeyword(variable) + " @ ") + Emitter.emitPattern(p))
+(((Emitter.escapeKeyword(variable) + " @ (") + Emitter.emitPattern(p)) + ")")
 }
 
 def escapeKeyword(word : String) = {

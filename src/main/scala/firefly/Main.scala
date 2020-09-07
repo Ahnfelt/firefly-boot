@@ -1,5 +1,4 @@
 package firefly
-
 import firefly.Firefly_Core._
 
 import firefly.Emitter._
@@ -47,7 +46,7 @@ writeExtraFiles(fs, corePath, tempPath, scalaPathFile);
 if_(fs.exists(outputPath), {() =>
 deleteDirectory(fs, outputPath)
 });
-fs.rename(tempPath, outputPath)
+fs.rename(scalaPathFile, outputPath)
 }
 
 def writeExtraFiles(fs : FileSystem, corePath : String, outputFile : String, scalaFile : String) : Unit = {

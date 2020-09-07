@@ -24,7 +24,7 @@ main(system: System): Unit {
     writeExtraFiles(fs, corePath, tempPath, scalaPathFile)
 
     if(fs.exists(outputPath)) { deleteDirectory(fs, outputPath) }
-    fs.rename(tempPath, outputPath)
+    fs.rename(scalaPathFile, outputPath)
 
 }
 

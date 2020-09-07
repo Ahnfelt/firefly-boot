@@ -1,5 +1,4 @@
 package firefly
-
 import firefly.Firefly_Core._
 
 import firefly.Emitter._
