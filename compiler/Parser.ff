@@ -361,7 +361,7 @@ Parser_parseCase(self: Parser): MatchCase {
 }
 
 Parser_parsePattern(self: Parser): MatchPattern {
-    if(self.current.is(LWildcard)) {
+    let pattern = if(self.current.is(LWildcard)) {
         let token = self.skip(LWildcard)
         PVariable(token.at, None)
     } elseIf {self.current.is(LLower)} {
@@ -394,6 +394,11 @@ Parser_parsePattern(self: Parser): MatchPattern {
             }
         }
     }
+    if(self.current.rawIs("@")) {
+        let atToken = self.skip(LOperator)
+        let asToken = self.skip(LLower)
+        PAlias(atToken.at, pattern, asToken.raw)
+    } else { pattern }
 }
 
 Parser_parseType(self: Parser): Type {
@@ -442,7 +447,7 @@ Parser_parseStatement(self: Parser): Term {
     let value = self.parseTerm()
     term.{
         | EVariable(_, name) => EAssign(token.at, operator, name, value)
-        | EField e => EAssignField(token.at, operator, e, value)
+        | EField @ e => EAssignField(token.at, operator, e, value)
         | _ => self.fail(token.at, "Only variables and fields are assignable")
     }
 }

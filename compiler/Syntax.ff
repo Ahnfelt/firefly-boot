@@ -77,12 +77,18 @@ type Term(at: Location) {
     EWildcard(index: Int)
 }
 
-type MatchCase(at: Location, patterns: List[MatchPattern], condition : Option[Term], body: Term)
+type MatchCase(
+    at: Location,
+    patterns: List[MatchPattern],
+    condition : Option[Term],
+    body: Term
+)
 
 type MatchPattern(at: Location) {
     PVariable(name: Option[String])
     PVariant(name: String, patterns: List[MatchPattern])
     PVariantAs(name: String, variable: Option[String])
+    PAlias(pattern: MatchPattern, variable: String)
 }
 
 type Signature(

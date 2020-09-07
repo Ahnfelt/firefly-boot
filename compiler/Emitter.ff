@@ -75,7 +75,7 @@ Emitter_emitLetDefinition(definition: DLet, mutable: Boolean = False): String {
 Emitter_emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     let signature = emitSignature(definition.signature, suffix)
     definition.body.{
-        | ELambda(_, List(matchCase)) {matchCase.patterns.all { | PVariable(_, None) => True | _ => False }} =>
+        | ELambda(_, List(matchCase)) { matchCase.patterns.all { | PVariable(_, None) => True | _ => False } } =>
             let body = emitStatements(matchCase.body)
             signature + " = {\n" + body + "\n}"
         | _ =>
@@ -275,6 +275,8 @@ Emitter_emitPattern(pattern: MatchPattern): String {
         name + "(" + patterns.map(emitPattern).mkString(", ") + ")"
     | PVariantAs(at, name, variable) =>
         variable.map(Emitter_escapeKeyword).getOrElse("_") + " : " + name
+    | PAlias(at, p, variable) =>
+        Emitter_escapeKeyword(variable) + " @ " + Emitter_emitPattern(p)
 }
 
 Emitter_escapeKeyword(word: String) {
