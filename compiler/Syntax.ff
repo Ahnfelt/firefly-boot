@@ -8,6 +8,7 @@ Location_show(location: Location) {
 
 type Module(
     file: String,
+    imports: List[DImport],
     types: List[DType],
     traits: List[DTrait],
     instances: List[DInstance],
@@ -15,6 +16,13 @@ type Module(
     functions: List[DFunction],
 )
 
+type DImport(
+    at: Location,
+    alias: String,
+    package: Option[Pair[String, String]],
+    directory: List[String],
+    file: String
+)
 type DFunction(
     at: Location,
     namespace: Option[String],

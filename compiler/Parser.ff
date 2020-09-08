@@ -1,3 +1,7 @@
+import Token
+import Wildcards
+import Syntax
+
 type Parser(
     file: String,
     tokens: Array[Token],
@@ -66,7 +70,7 @@ Parser_skipSeparator(self: Parser, kind: TokenKind): Token {
 }
 
 Parser_parseModule(self: Parser): Module {
-    mutable result = Module(self.file, List(), List(), List(), List(), List())
+    mutable result = Module(self.file, List(), List(), List(), List(), List(), List())
     while {!self.current.is(LEnd)} {
         if(self.current.is(LLower) && (self.ahead.is(LAssign) || self.ahead.is(LColon))) {
             result = result.Module(lets = self.parseLetDefinition() :: result.lets)
@@ -84,6 +88,8 @@ Parser_parseModule(self: Parser): Module {
             result = result.Module(instances = self.parseInstanceDefinition() :: result.instances)
         } elseIf {self.current.is(LKeyword) && self.current.rawIs("type")} {
             result = result.Module(types = self.parseTypeDefinition() :: result.types)
+        } elseIf {self.current.is(LKeyword) && self.current.rawIs("import")} {
+            result = result.Module(imports = self.parseImportDefinition() :: result.imports)
         } else {
             self.skip(LEnd)
         }
@@ -91,6 +97,7 @@ Parser_parseModule(self: Parser): Module {
     }
     Module(
         file = self.file,
+        imports = result.imports.reverse,
         lets = result.lets.reverse,
         functions = result.functions.reverse,
         types = result.types.reverse,
@@ -214,6 +221,34 @@ Parser_parseTypeDefinition(self: Parser): DType {
         reverseVariants.reverse
     }
     DType(nameToken.at, nameToken.raw, poly.generics, poly.constraints, commonFields, variants)
+}
+
+Parser_parseImportDefinition(self: Parser): DImport {
+    self.rawSkip(LKeyword, "import")
+    let aliasToken = self.skip(LUpper)
+    if(!self.current.is(LKeyword)) { DImport(aliasToken.at, aliasToken.raw, None, List(), aliasToken.raw) } else:
+    self.rawSkip(LKeyword, "from")
+    let package = if(self.current.is(LLower) && self.ahead.is(LColon)) {
+        let user = self.skip(LLower).raw
+        self.skip(LColon)
+        let name = self.skip(LLower).raw
+        if(self.current.rawIs("/")) { self.skip(LOperator) }
+        Pair(user, name)
+    }
+    mutable path = List[String]()
+    while { self.current.is(LLower) } {
+        mutable part = self.skip(LLower).raw
+        while { self.current.rawIs("-") } {
+            self.skip(LOperator)
+            part = part + "-" + self.skip(LLower).raw
+        }
+        path ::= part
+        if(self.current.rawIs("/") && self.ahead.is2(LLower, LUpper)) { self.skip(LOperator) }
+    }
+    let file = if(self.current.is(LUpper)) {
+        self.skip(LUpper).raw
+    } else { aliasToken.raw }
+    DImport(aliasToken.at, aliasToken.raw, package, path.reverse, file)
 }
 
 Parser_parseTypeParameters(self: Parser): Poly {
