@@ -111,6 +111,12 @@ def parseTypeDefinition() : DType = Parser.parseTypeDefinition(self)
 
 }
 
+implicit class Parser_parseImportDefinition(self : Parser) {
+
+def parseImportDefinition() : DImport = Parser.parseImportDefinition(self)
+
+}
+
 implicit class Parser_parseTypeParameters(self : Parser) {
 
 def parseTypeParameters() : Poly = Parser.parseTypeParameters(self)
@@ -324,7 +330,7 @@ self.skip(kind)
 }
 
 def parseModule(self : Parser) : Module = {
-var result = Module(self.file, List(), List(), List(), List(), List());
+var result = Module(self.file, List(), List(), List(), List(), List(), List());
 while_({() =>
 (!self.current.is(LEnd()))
 }, {() =>
@@ -356,6 +362,10 @@ result = result.copy(instances = (self.parseInstanceDefinition() :: result.insta
 (self.current.is(LKeyword()) && self.current.rawIs("type"))
 }, {() =>
 result = result.copy(types = (self.parseTypeDefinition() :: result.types))
+}).elseIf({() =>
+(self.current.is(LKeyword()) && self.current.rawIs("import"))
+}, {() =>
+result = result.copy(imports = (self.parseImportDefinition() :: result.imports))
 }).else_({() =>
 self.skip(LEnd())
 });
@@ -363,7 +373,7 @@ if_((!self.current.is(LEnd())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
-Module(file = self.file, lets = result.lets.reverse, functions = result.functions.reverse, types = result.types.reverse, traits = result.traits.reverse, instances = result.instances.reverse)
+Module(file = self.file, imports = result.imports.reverse, lets = result.lets.reverse, functions = result.functions.reverse, types = result.types.reverse, traits = result.traits.reverse, instances = result.instances.reverse)
 }
 
 def parseLetDefinition(self : Parser, scopeType : Option[String] = None()) : DLet = {
@@ -523,6 +533,47 @@ self.rawSkip(LBracketRight(), "}");
 reverseVariants.reverse
 });
 DType(nameToken.at, nameToken.raw, poly.generics, poly.constraints, commonFields, variants)
+}
+
+def parseImportDefinition(self : Parser) : DImport = {
+self.rawSkip(LKeyword(), "import");
+val aliasToken = self.skip(LUpper());
+if_((!self.current.is(LKeyword())), {() =>
+DImport(aliasToken.at, aliasToken.raw, None(), List(), aliasToken.raw)
+}).else_({() =>
+self.rawSkip(LKeyword(), "from");
+val package_ = if_((self.current.is(LLower()) && self.ahead.is(LColon())), {() =>
+val user = self.skip(LLower()).raw;
+self.skip(LColon());
+val name = self.skip(LLower()).raw;
+if_(self.current.rawIs("/"), {() =>
+self.skip(LOperator())
+});
+Pair(user, name)
+});
+var path = List[String]();
+while_({() =>
+self.current.is(LLower())
+}, {() =>
+var part = self.skip(LLower()).raw;
+while_({() =>
+self.current.rawIs("-")
+}, {() =>
+self.skip(LOperator());
+part = ((part + "-") + self.skip(LLower()).raw)
+});
+path ::= part;
+if_((self.current.rawIs("/") && self.ahead.is2(LLower(), LUpper())), {() =>
+self.skip(LOperator())
+})
+});
+val file = if_(self.current.is(LUpper()), {() =>
+self.skip(LUpper()).raw
+}).else_({() =>
+aliasToken.raw
+});
+DImport(aliasToken.at, aliasToken.raw, package_, path.reverse, file)
+})
 }
 
 def parseTypeParameters(self : Parser) : Poly = {

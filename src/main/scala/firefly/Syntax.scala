@@ -18,7 +18,9 @@ object Syntax {
 
 case class Location(file : String, line : Int, column : Int)
 
-case class Module(file : String, types : List[DType], traits : List[DTrait], instances : List[DInstance], lets : List[DLet], functions : List[DFunction])
+case class Module(file : String, imports : List[DImport], types : List[DType], traits : List[DTrait], instances : List[DInstance], lets : List[DLet], functions : List[DFunction])
+
+case class DImport(at : Location, alias : String, package_ : Option[Pair[String, String]], directory : List[String], file : String)
 
 case class DFunction(at : Location, namespace : Option[String], signature : Signature, body : ELambda)
 
