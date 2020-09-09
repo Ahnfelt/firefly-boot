@@ -70,7 +70,7 @@ Parser_skipSeparator(self: Parser, kind: TokenKind): Token {
 }
 
 Parser_parseModule(self: Parser): Module {
-    mutable result = Module(self.file, List(), List(), List(), List(), List(), List())
+    mutable result = Module(self.file, List(), List(), List(), List(), List(), List(), List())
     while {!self.current.is(LEnd)} {
         if(self.current.is(LLower) && (self.ahead.is(LAssign) || self.ahead.is(LColon))) {
             result = result.Module(lets = self.parseLetDefinition() :: result.lets)
@@ -90,6 +90,11 @@ Parser_parseModule(self: Parser): Module {
             result = result.Module(types = self.parseTypeDefinition() :: result.types)
         } elseIf {self.current.is(LKeyword) && self.current.rawIs("import")} {
             result = result.Module(imports = self.parseImportDefinition() :: result.imports)
+        } elseIf {
+            self.current.is(LKeyword) &&
+            (self.current.rawIs("safe") || self.current.rawIs("unsafe") || self.current.rawIs("trust"))
+        } {
+            result = result.Module(dependencies = self.parseDependencyDefinition() :: result.dependencies)
         } else {
             self.skip(LEnd)
         }
@@ -97,6 +102,7 @@ Parser_parseModule(self: Parser): Module {
     }
     Module(
         file = self.file,
+        dependencies = result.dependencies.reverse,
         imports = result.imports.reverse,
         lets = result.lets.reverse,
         functions = result.functions.reverse,
@@ -249,6 +255,47 @@ Parser_parseImportDefinition(self: Parser): DImport {
         self.skip(LUpper).raw
     } else { aliasToken.raw }
     DImport(aliasToken.at, aliasToken.raw, package, path.reverse, file)
+}
+
+Parser_parseDependencyDefinition(self: Parser): DDependency {
+    let safety = (
+        if(self.current.rawIs("safe")) { Safe } else:
+        if(self.current.rawIs("unsafe")) { Unsafe } else:
+        Trust
+    )
+    let at = self.skip(LKeyword).at
+    let user = self.skip(LLower).raw
+    self.skip(LColon)
+    let name = self.skip(LLower).raw
+    mutable goodVersions = List[Version]()
+    mutable badVersions = List[Version]()
+    if(self.current.rawIs("(")) {
+        self.skip(LBracketLeft)
+        while { !self.current.is(LBracketRight) } {
+            let bad = self.current.rawIs("!")
+            if(bad) { self.skip(LOperator) }
+            let version = self.parseVersion()
+            if(bad) { badVersions ::= version } else { goodVersions ::= version }
+            if(!self.current.is(LBracketRight)) { self.skip(LComma) }
+        }
+        self.skip(LBracketRight)
+    }
+    DDependency(at, Pair(user, name), safety, goodVersions.reverse, badVersions.reverse)
+}
+
+Parser_parseVersion(self: Parser): Version {
+    if(self.current.is(LFloat)) {
+        let majorMinor = self.skip(LFloat)
+        let parts = majorMinor.raw.split('.')
+        let patch = if(self.current.is(LDot)) {
+             self.skip(LDot)
+             self.skip(LInt).raw.toInt
+        } else { 0 }
+        Version(majorMinor.at, parts(0).toInt, parts(1).toInt, patch)
+    } else {
+        let major = self.skip(LInt)
+        Version(major.at, major.raw.toInt, 0, 0)
+    }
 }
 
 Parser_parseTypeParameters(self: Parser): Poly {

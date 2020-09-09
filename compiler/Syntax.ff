@@ -8,6 +8,7 @@ Location_show(location: Location) {
 
 type Module(
     file: String,
+    dependencies: List[DDependency],
     imports: List[DImport],
     types: List[DType],
     traits: List[DTrait],
@@ -16,6 +17,13 @@ type Module(
     functions: List[DFunction],
 )
 
+type DDependency(
+    at: Location,
+    package: Pair[String, String],
+    safety: Safety,
+    goodVersions: List[Version],
+    badVersions: List[Version]
+)
 type DImport(
     at: Location,
     alias: String,
@@ -121,3 +129,11 @@ type Field(at: Location, name: String, value: Term)
 type Constraint(representation: Type)
 
 type Type(at: Location, name: String, generics: List[Type])
+
+type Safety {
+    Safe
+    Unsafe
+    Trust
+}
+
+type Version(at: Location, major: Int, minor: Int, patch: Int)
