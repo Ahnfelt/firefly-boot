@@ -1,6 +1,6 @@
 import Token
 import Wildcards
-import Syntax from 00a-b2-1
+import Syntax
 
 type Parser(
     file: String,
