@@ -1,6 +1,6 @@
 import Token
 import Wildcards
-import Syntax
+import Syntax from 00a-b2-1
 
 type Parser(
     file: String,
@@ -296,14 +296,25 @@ Parser_parseVersion(self: Parser): Version {
 }
 
 Parser_parseDashedName(self: Parser): String {
-    let token = self.skip(LLower)
-    mutable part = token.raw
+    let at = self.current.at
+    function readPart() {
+        if(self.current.is(LInt)) {
+            let prefix = self.skip(LInt).raw
+            if(self.current.is(LLower)) { prefix + self.skip(LLower).raw } else { prefix }
+        } else {
+            self.skip(LLower).raw
+        }
+    }
+    mutable part = readPart()
     while { self.current.rawIs("-") } {
         self.skip(LOperator)
-        part = part + "-" + self.skip(LLower).raw
+        part = part + "-" + readPart()
     }
     if(part.exists { _.isUpper }) {
-        self.fail(token.at, "Package names and paths must not contain upper case letters: " + part)
+        self.fail(at, "Package names and paths must not contain upper case letters: " + part)
+    }
+    if(part.exists { _ == '_' }) {
+        self.fail(at, "Package names and paths must not contain underscores: " + part)
     }
     part
 }

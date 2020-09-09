@@ -564,8 +564,9 @@ if_((!self.current.is(LKeyword())), {() =>
 DImport(aliasToken.at, aliasToken.raw, None(), List(), aliasToken.raw)
 }).else_({() =>
 self.rawSkip(LKeyword(), "from");
-val package_ = if_((self.current.is(LLower()) && self.ahead.is(LColon())), {() =>
-val user = self.parseDashedName();
+val firstName = self.parseDashedName();
+val package_ = if_(self.current.is(LColon()), {() =>
+val user = firstName;
 self.skip(LColon());
 val name = self.parseDashedName();
 if_(self.current.rawIs("/"), {() =>
@@ -573,7 +574,14 @@ self.skip(LOperator())
 });
 Pair(user, name)
 });
-var path = List[String]();
+var path = if_(package_.isEmpty, {() =>
+List(firstName)
+}).else_({() =>
+List()
+});
+if_((self.current.rawIs("/") && self.ahead.is2(LLower(), LUpper())), {() =>
+self.skip(LOperator())
+});
 while_({() =>
 self.current.is(LLower())
 }, {() =>
@@ -649,18 +657,35 @@ Version(major.at, major.raw.toInt, 0, 0)
 }
 
 def parseDashedName(self : Parser) : String = {
-val token = self.skip(LLower());
-var part = token.raw;
+val at = self.current.at;
+def readPart() = {
+if_(self.current.is(LInt()), {() =>
+val prefix = self.skip(LInt()).raw;
+if_(self.current.is(LLower()), {() =>
+(prefix + self.skip(LLower()).raw)
+}).else_({() =>
+prefix
+})
+}).else_({() =>
+self.skip(LLower()).raw
+})
+}
+var part = readPart();
 while_({() =>
 self.current.rawIs("-")
 }, {() =>
 self.skip(LOperator());
-part = ((part + "-") + self.skip(LLower()).raw)
+part = ((part + "-") + readPart())
 });
 if_(part.exists({(_w1) =>
 _w1.isUpper
 }), {() =>
-self.fail(token.at, ("Package names and paths must not contain upper case letters: " + part))
+self.fail(at, ("Package names and paths must not contain upper case letters: " + part))
+});
+if_(part.exists({(_w1) =>
+(_w1 == '_')
+}), {() =>
+self.fail(at, ("Package names and paths must not contain underscores: " + part))
 });
 part
 }
