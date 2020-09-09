@@ -234,14 +234,16 @@ Parser_parseImportDefinition(self: Parser): DImport {
     let aliasToken = self.skip(LUpper)
     if(!self.current.is(LKeyword)) { DImport(aliasToken.at, aliasToken.raw, None, List(), aliasToken.raw) } else:
     self.rawSkip(LKeyword, "from")
-    let package = if(self.current.is(LLower) && self.ahead.is(LColon)) {
-        let user = self.parseDashedName()
+    let firstName = self.parseDashedName()
+    let package = if(self.current.is(LColon)) {
+        let user = firstName
         self.skip(LColon)
         let name = self.parseDashedName()
         if(self.current.rawIs("/")) { self.skip(LOperator) }
         Pair(user, name)
     }
-    mutable path = List[String]()
+    mutable path = if(package.isEmpty) { List(firstName) } else { List() }
+    if(self.current.rawIs("/") && self.ahead.is2(LLower, LUpper)) { self.skip(LOperator) }
     while { self.current.is(LLower) } {
         path ::= self.parseDashedName()
         if(self.current.rawIs("/") && self.ahead.is2(LLower, LUpper)) { self.skip(LOperator) }
