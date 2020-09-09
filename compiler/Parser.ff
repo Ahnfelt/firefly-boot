@@ -235,20 +235,15 @@ Parser_parseImportDefinition(self: Parser): DImport {
     if(!self.current.is(LKeyword)) { DImport(aliasToken.at, aliasToken.raw, None, List(), aliasToken.raw) } else:
     self.rawSkip(LKeyword, "from")
     let package = if(self.current.is(LLower) && self.ahead.is(LColon)) {
-        let user = self.skip(LLower).raw
+        let user = self.parseDashedName()
         self.skip(LColon)
-        let name = self.skip(LLower).raw
+        let name = self.parseDashedName()
         if(self.current.rawIs("/")) { self.skip(LOperator) }
         Pair(user, name)
     }
     mutable path = List[String]()
     while { self.current.is(LLower) } {
-        mutable part = self.skip(LLower).raw
-        while { self.current.rawIs("-") } {
-            self.skip(LOperator)
-            part = part + "-" + self.skip(LLower).raw
-        }
-        path ::= part
+        path ::= self.parseDashedName()
         if(self.current.rawIs("/") && self.ahead.is2(LLower, LUpper)) { self.skip(LOperator) }
     }
     let file = if(self.current.is(LUpper)) {
@@ -296,6 +291,19 @@ Parser_parseVersion(self: Parser): Version {
         let major = self.skip(LInt)
         Version(major.at, major.raw.toInt, 0, 0)
     }
+}
+
+Parser_parseDashedName(self: Parser): String {
+    let token = self.skip(LLower)
+    mutable part = token.raw
+    while { self.current.rawIs("-") } {
+        self.skip(LOperator)
+        part = part + "-" + self.skip(LLower).raw
+    }
+    if(part.exists { _.isUpper }) {
+        self.fail(token.at, "Package names and paths must not contain upper case letters: " + part)
+    }
+    part
 }
 
 Parser_parseTypeParameters(self: Parser): Poly {

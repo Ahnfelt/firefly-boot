@@ -117,6 +117,24 @@ def parseImportDefinition() : DImport = Parser.parseImportDefinition(self)
 
 }
 
+implicit class Parser_parseDependencyDefinition(self : Parser) {
+
+def parseDependencyDefinition() : DDependency = Parser.parseDependencyDefinition(self)
+
+}
+
+implicit class Parser_parseVersion(self : Parser) {
+
+def parseVersion() : Version = Parser.parseVersion(self)
+
+}
+
+implicit class Parser_parseDashedName(self : Parser) {
+
+def parseDashedName() : String = Parser.parseDashedName(self)
+
+}
+
 implicit class Parser_parseTypeParameters(self : Parser) {
 
 def parseTypeParameters() : Poly = Parser.parseTypeParameters(self)
@@ -330,7 +348,7 @@ self.skip(kind)
 }
 
 def parseModule(self : Parser) : Module = {
-var result = Module(self.file, List(), List(), List(), List(), List(), List());
+var result = Module(self.file, List(), List(), List(), List(), List(), List(), List());
 while_({() =>
 (!self.current.is(LEnd()))
 }, {() =>
@@ -366,6 +384,10 @@ result = result.copy(types = (self.parseTypeDefinition() :: result.types))
 (self.current.is(LKeyword()) && self.current.rawIs("import"))
 }, {() =>
 result = result.copy(imports = (self.parseImportDefinition() :: result.imports))
+}).elseIf({() =>
+(self.current.is(LKeyword()) && ((self.current.rawIs("safe") || self.current.rawIs("unsafe")) || self.current.rawIs("trust")))
+}, {() =>
+result = result.copy(dependencies = (self.parseDependencyDefinition() :: result.dependencies))
 }).else_({() =>
 self.skip(LEnd())
 });
@@ -373,7 +395,7 @@ if_((!self.current.is(LEnd())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
-Module(file = self.file, imports = result.imports.reverse, lets = result.lets.reverse, functions = result.functions.reverse, types = result.types.reverse, traits = result.traits.reverse, instances = result.instances.reverse)
+Module(file = self.file, dependencies = result.dependencies.reverse, imports = result.imports.reverse, lets = result.lets.reverse, functions = result.functions.reverse, types = result.types.reverse, traits = result.traits.reverse, instances = result.instances.reverse)
 }
 
 def parseLetDefinition(self : Parser, scopeType : Option[String] = None()) : DLet = {
@@ -543,9 +565,9 @@ DImport(aliasToken.at, aliasToken.raw, None(), List(), aliasToken.raw)
 }).else_({() =>
 self.rawSkip(LKeyword(), "from");
 val package_ = if_((self.current.is(LLower()) && self.ahead.is(LColon())), {() =>
-val user = self.skip(LLower()).raw;
+val user = self.parseDashedName();
 self.skip(LColon());
-val name = self.skip(LLower()).raw;
+val name = self.parseDashedName();
 if_(self.current.rawIs("/"), {() =>
 self.skip(LOperator())
 });
@@ -555,14 +577,7 @@ var path = List[String]();
 while_({() =>
 self.current.is(LLower())
 }, {() =>
-var part = self.skip(LLower()).raw;
-while_({() =>
-self.current.rawIs("-")
-}, {() =>
-self.skip(LOperator());
-part = ((part + "-") + self.skip(LLower()).raw)
-});
-path ::= part;
+path ::= self.parseDashedName();
 if_((self.current.rawIs("/") && self.ahead.is2(LLower(), LUpper())), {() =>
 self.skip(LOperator())
 })
@@ -574,6 +589,80 @@ aliasToken.raw
 });
 DImport(aliasToken.at, aliasToken.raw, package_, path.reverse, file)
 })
+}
+
+def parseDependencyDefinition(self : Parser) : DDependency = {
+val safety = if_(self.current.rawIs("safe"), {() =>
+Safe()
+}).else_({() =>
+if_(self.current.rawIs("unsafe"), {() =>
+Unsafe()
+}).else_({() =>
+Trust()
+})
+});
+val at = self.skip(LKeyword()).at;
+val user = self.skip(LLower()).raw;
+self.skip(LColon());
+val name = self.skip(LLower()).raw;
+var goodVersions = List[Version]();
+var badVersions = List[Version]();
+if_(self.current.rawIs("("), {() =>
+self.skip(LBracketLeft());
+while_({() =>
+(!self.current.is(LBracketRight()))
+}, {() =>
+val bad = self.current.rawIs("!");
+if_(bad, {() =>
+self.skip(LOperator())
+});
+val version = self.parseVersion();
+if_(bad, {() =>
+badVersions ::= version
+}).else_({() =>
+goodVersions ::= version
+});
+if_((!self.current.is(LBracketRight())), {() =>
+self.skip(LComma())
+})
+});
+self.skip(LBracketRight())
+});
+DDependency(at, Pair(user, name), safety, goodVersions.reverse, badVersions.reverse)
+}
+
+def parseVersion(self : Parser) : Version = {
+if_(self.current.is(LFloat()), {() =>
+val majorMinor = self.skip(LFloat());
+val parts = majorMinor.raw.split('.');
+val patch = if_(self.current.is(LDot()), {() =>
+self.skip(LDot());
+self.skip(LInt()).raw.toInt
+}).else_({() =>
+0
+});
+Version(majorMinor.at, parts(0).toInt, parts(1).toInt, patch)
+}).else_({() =>
+val major = self.skip(LInt());
+Version(major.at, major.raw.toInt, 0, 0)
+})
+}
+
+def parseDashedName(self : Parser) : String = {
+val token = self.skip(LLower());
+var part = token.raw;
+while_({() =>
+self.current.rawIs("-")
+}, {() =>
+self.skip(LOperator());
+part = ((part + "-") + self.skip(LLower()).raw)
+});
+if_(part.exists({(_w1) =>
+_w1.isUpper
+}), {() =>
+self.fail(token.at, ("Package names and paths must not contain upper case letters: " + part))
+});
+part
 }
 
 def parseTypeParameters(self : Parser) : Poly = {

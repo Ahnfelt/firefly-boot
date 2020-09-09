@@ -18,7 +18,9 @@ object Syntax {
 
 case class Location(file : String, line : Int, column : Int)
 
-case class Module(file : String, imports : List[DImport], types : List[DType], traits : List[DTrait], instances : List[DInstance], lets : List[DLet], functions : List[DFunction])
+case class Module(file : String, dependencies : List[DDependency], imports : List[DImport], types : List[DType], traits : List[DTrait], instances : List[DInstance], lets : List[DLet], functions : List[DFunction])
+
+case class DDependency(at : Location, package_ : Pair[String, String], safety : Safety, goodVersions : List[Version], badVersions : List[Version])
 
 case class DImport(at : Location, alias : String, package_ : Option[Pair[String, String]], directory : List[String], file : String)
 
@@ -80,6 +82,13 @@ case class Field(at : Location, name : String, value : Term)
 case class Constraint(representation : Type)
 
 case class Type(at : Location, name : String, generics : List[Type])
+
+sealed abstract class Safety extends Product with Serializable
+case class Safe() extends Safety
+case class Unsafe() extends Safety
+case class Trust() extends Safety
+
+case class Version(at : Location, major : Int, minor : Int, patch : Int)
 
 
 implicit class Location_show(location : Location) {
