@@ -347,8 +347,8 @@ extend self: Parser {
         if(part.exists { _.isUpper }) {
             self.fail(at, "Package names and paths must not contain upper case letters: " + part)
         }
-        if(part.exists { _ == '_' }) {
-            self.fail(at, "Package names and paths must not contain underscores: " + part)
+        if(part.exists { _ == '_' } || part.exists { _ == '.' }) {
+            self.fail(at, "Package names and paths must not contain underscores or dots: " + part)
         }
         part
     }
@@ -465,7 +465,7 @@ extend self: Parser {
             List(MatchCase(token.at, parameters.reverse, None, term))
         } else {
             let term = self.parseStatements()
-            let wildcards = Wildcards_make()
+            let wildcards = Wildcards.make()
             let e = wildcards.fixWildcards(term)
             let arguments = if(wildcards.seenWildcards != 0) {
                 1.to(wildcards.seenWildcards).toList.map { i => PVariable(token.at, Some("_w" + i)) }

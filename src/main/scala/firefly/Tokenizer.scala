@@ -124,7 +124,7 @@ while_({() =>
 }, {() =>
 i += 1
 });
-if_(((kind == LUpper()) && (code(i) == '_')), {() =>
+if_(((kind == LUpper()) && (code(i) == '.')), {() =>
 i += 1;
 emitToken(LNamespace(), start, i)
 }).else_({() =>
@@ -351,7 +351,7 @@ while_({() =>
 }, {() =>
 i += 1
 });
-if_(((kind == LUpper()) && (code(i) == '_')), {() =>
+if_(((kind == LUpper()) && (code(i) == '.')), {() =>
 i += 1;
 emitToken(LNamespace(), start, i)
 }).else_({() =>

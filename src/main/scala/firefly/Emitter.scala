@@ -29,7 +29,7 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
 val namespaces = module.types.map({(definition) =>
-val namespace = (definition.name + "_");
+val namespace = (definition.name + ".");
 val lets = module.lets.filter({(_w1) =>
 _w1.namespace.contains(namespace)
 });
@@ -60,7 +60,7 @@ _w1.namespace.isEmpty
 emitFunctionDefinition(_w1)
 }), module.functions.filter({(f) =>
 f.namespace.exists(f.signature.parameters.headOption.map({(_w1) =>
-(_w1.valueType.name + "_")
+(_w1.valueType.name + ".")
 }).contains)
 }).map(emitMethodImplicit), module.extends_.pairs.map({(pair) =>
 emitExtendImplicit(pair.second, pair.first)
@@ -80,7 +80,7 @@ _w1.namespace
 }));
 allNamespaces.find({(n) =>
 (!module.types.exists({(_w1) =>
-((_w1.name + "_") == n)
+((_w1.name + ".") == n)
 }))
 }).foreach({(n) =>
 fail(Location(module.file, 1, 1), ("No such type: " + n))
@@ -162,7 +162,7 @@ val parameter = definition.signature.parameters.headOption.map({(p) =>
 ((escapeKeyword(p.name) + " : ") + emitType(p.valueType))
 }).get;
 val signature = emitSignature(definition.signature.copy(generics = List(), parameters = definition.signature.parameters.drop(1)));
-val method = ((((((signature + " = ") + definition.namespace.get.replace("_", ".")) + escapeKeyword(definition.signature.name)) + "(") + definition.signature.parameters.map({(_w1) =>
+val method = ((((((signature + " = ") + definition.namespace.get) + escapeKeyword(definition.signature.name)) + "(") + definition.signature.parameters.map({(_w1) =>
 _w1.name
 }).map(escapeKeyword).join(", ")) + ")");
 (((((((("implicit class " + definition.namespace.get) + definition.signature.name) + generics) + "(") + parameter) + ") {\n\n") + method) + "\n\n}")
@@ -313,7 +313,7 @@ val generics = if_(t.generics.isEmpty, {() =>
 }).else_({() =>
 (("[" + t.generics.map(emitType).mkString(", ")) + "]")
 });
-(t.name.replace("_", ".") + generics)
+(t.name + generics)
 })
 }
 
@@ -345,7 +345,7 @@ value
 case (EFloat(at, value)) =>
 value
 case (EVariable(at, name)) =>
-escapeKeyword(name.replace("_", "."))
+escapeKeyword(name)
 case (EList(at, items)) =>
 (("List(" + items.map(emitTerm).mkString(", ")) + ")")
 case (EVariant(at, name, typeArguments, arguments)) =>
@@ -354,7 +354,7 @@ val generics = if_(typeArguments.isEmpty, {() =>
 }).else_({() =>
 (("[" + typeArguments.map(emitType).mkString(", ")) + "]")
 });
-((((name.replace("_", ".") + generics) + "(") + arguments.toList.flatten.map(emitArgument).mkString(", ")) + ")")
+((((name + generics) + "(") + arguments.toList.flatten.map(emitArgument).mkString(", ")) + ")")
 case (ECopy(at, name, record, fields)) =>
 val fieldCode = fields.map({(f) =>
 ((escapeKeyword(f.name) + " = ") + emitTerm(f.value))
@@ -461,7 +461,7 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
 val namespaces = module.types.map({(definition) =>
-val namespace = (definition.name + "_");
+val namespace = (definition.name + ".");
 val lets = module.lets.filter({(_w1) =>
 _w1.namespace.contains(namespace)
 });
@@ -492,7 +492,7 @@ _w1.namespace.isEmpty
 emitFunctionDefinition(_w1)
 }), module.functions.filter({(f) =>
 f.namespace.exists(f.signature.parameters.headOption.map({(_w1) =>
-(_w1.valueType.name + "_")
+(_w1.valueType.name + ".")
 }).contains)
 }).map(emitMethodImplicit), module.extends_.pairs.map({(pair) =>
 emitExtendImplicit(pair.second, pair.first)
@@ -512,7 +512,7 @@ _w1.namespace
 }));
 allNamespaces.find({(n) =>
 (!module.types.exists({(_w1) =>
-((_w1.name + "_") == n)
+((_w1.name + ".") == n)
 }))
 }).foreach({(n) =>
 fail(Location(module.file, 1, 1), ("No such type: " + n))
@@ -594,7 +594,7 @@ val parameter = definition.signature.parameters.headOption.map({(p) =>
 ((escapeKeyword(p.name) + " : ") + emitType(p.valueType))
 }).get;
 val signature = emitSignature(definition.signature.copy(generics = List(), parameters = definition.signature.parameters.drop(1)));
-val method = ((((((signature + " = ") + definition.namespace.get.replace("_", ".")) + escapeKeyword(definition.signature.name)) + "(") + definition.signature.parameters.map({(_w1) =>
+val method = ((((((signature + " = ") + definition.namespace.get) + escapeKeyword(definition.signature.name)) + "(") + definition.signature.parameters.map({(_w1) =>
 _w1.name
 }).map(escapeKeyword).join(", ")) + ")");
 (((((((("implicit class " + definition.namespace.get) + definition.signature.name) + generics) + "(") + parameter) + ") {\n\n") + method) + "\n\n}")
@@ -745,7 +745,7 @@ val generics = if_(t.generics.isEmpty, {() =>
 }).else_({() =>
 (("[" + t.generics.map(emitType).mkString(", ")) + "]")
 });
-(t.name.replace("_", ".") + generics)
+(t.name + generics)
 })
 }
 
@@ -777,7 +777,7 @@ value
 case (EFloat(at, value)) =>
 value
 case (EVariable(at, name)) =>
-escapeKeyword(name.replace("_", "."))
+escapeKeyword(name)
 case (EList(at, items)) =>
 (("List(" + items.map(emitTerm).mkString(", ")) + ")")
 case (EVariant(at, name, typeArguments, arguments)) =>
@@ -786,7 +786,7 @@ val generics = if_(typeArguments.isEmpty, {() =>
 }).else_({() =>
 (("[" + typeArguments.map(emitType).mkString(", ")) + "]")
 });
-((((name.replace("_", ".") + generics) + "(") + arguments.toList.flatten.map(emitArgument).mkString(", ")) + ")")
+((((name + generics) + "(") + arguments.toList.flatten.map(emitArgument).mkString(", ")) + ")")
 case (ECopy(at, name, record, fields)) =>
 val fieldCode = fields.map({(f) =>
 ((escapeKeyword(f.name) + " = ") + emitTerm(f.value))

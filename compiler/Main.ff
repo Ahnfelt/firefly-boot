@@ -41,13 +41,13 @@ writeExtraFiles(fs: FileSystem, corePath: String, outputFile: String, scalaFile:
 compileFile(fs: FileSystem, input: String, modules: List[String], output: String): String {
 
     let code = fs.readText(input)
-    let tokens = Tokenizer_tokenize(input, code)
+    let tokens = Tokenizer.tokenize(input, code)
     //for(token <- tokens) println(token.kind)
 
     //println()
 
     let module = do {
-        Parser_make(input, tokens).parseModule()
+        Parser.make(input, tokens).parseModule()
     } /*catch {
         case exception: ParseException =>
             println()
@@ -62,7 +62,7 @@ compileFile(fs: FileSystem, input: String, modules: List[String], output: String
     //println(module)
     //println()
 
-    let out = Emitter_emitModule(module, modules.filter { _ != module.file.dropRight(3) })
+    let out = Emitter.emitModule(module, modules.filter { _ != module.file.dropRight(3) })
 
     fs.writeText(output, out)
 

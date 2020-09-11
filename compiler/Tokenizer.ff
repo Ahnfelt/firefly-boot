@@ -96,7 +96,7 @@ tokenize(file: String, code: String) {
                 (code(i) >= 'A' && code(i) <= 'Z') ||
                 (code(i) >= '0' && code(i) <= '9')
             )} { i += 1 }
-            if(kind == LUpper && code(i) == '_') {
+            if(kind == LUpper && code(i) == '.') {
                 i += 1
                 emitToken(LNamespace, start, i)
             } else {

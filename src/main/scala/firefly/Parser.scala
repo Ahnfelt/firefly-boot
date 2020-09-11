@@ -457,10 +457,12 @@ _w1.isUpper
 }), {() =>
 self.fail(at, ("Package names and paths must not contain upper case letters: " + part))
 });
-if_(part.exists({(_w1) =>
+if_((part.exists({(_w1) =>
 (_w1 == '_')
-}), {() =>
-self.fail(at, ("Package names and paths must not contain underscores: " + part))
+}) || part.exists({(_w1) =>
+(_w1 == '.')
+})), {() =>
+self.fail(at, ("Package names and paths must not contain underscores or dots: " + part))
 });
 part
 }
