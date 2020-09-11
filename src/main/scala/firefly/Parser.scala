@@ -23,7 +23,6 @@ case class Poly(generics : List[String], constraints : List[Constraint])
 def make(file : String, tokens : Array[Token]) : Parser = {
 Parser(file, tokens, tokens.last, 0)
 }
-
 implicit class Parser_extend0(self : Parser) {
 
 val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
@@ -97,19 +96,9 @@ while_({() =>
 if_((self.current.is(LLower()) && (self.ahead.is(LAssign()) || self.ahead.is(LColon()))), {() =>
 result = result.copy(lets = (self.parseLetDefinition() :: result.lets))
 }).elseIf({() =>
-((self.current.is(LNamespace()) && self.ahead.is(LLower())) && self.aheadAhead.is2(LAssign(), LColon()))
-}, {() =>
-val namespace = Some(self.skip(LNamespace()).raw);
-result = result.copy(lets = (self.parseLetDefinition(namespace) :: result.lets))
-}).elseIf({() =>
 (self.current.is(LLower()) && self.ahead.is(LBracketLeft()))
 }, {() =>
 result = result.copy(functions = (self.parseFunctionDefinition() :: result.functions))
-}).elseIf({() =>
-((self.current.is(LNamespace()) && self.ahead.is(LLower())) && self.aheadAhead.is(LBracketLeft()))
-}, {() =>
-val namespace = Some(self.skip(LNamespace()).raw);
-result = result.copy(functions = (self.parseFunctionDefinition(namespace) :: result.functions))
 }).elseIf({() =>
 (self.current.is(LKeyword()) && self.current.rawIs("extend"))
 }, {() =>
@@ -144,7 +133,7 @@ self.skipSeparator(LSemicolon())
 Module(file = self.file, dependencies = result.dependencies.reverse, imports = result.imports.reverse, lets = result.lets.reverse, functions = result.functions.reverse, extends_ = result.extends_.reverse, types = result.types.reverse, traits = result.traits.reverse, instances = result.instances.reverse)
 }
 
-def parseLetDefinition(scopeType : Option[String] = None()) : DLet = {
+def parseLetDefinition() : DLet = {
 val nameToken = self.skip(LLower());
 val variableType = if_(self.current.is(LColon()), {() =>
 self.skip(LColon());
@@ -154,16 +143,16 @@ Type(nameToken.at, "?", List())
 });
 self.skip(LAssign());
 val value = self.parseTerm();
-DLet(nameToken.at, scopeType, nameToken.raw, variableType, value)
+DLet(nameToken.at, nameToken.raw, variableType, value)
 }
 
-def parseFunctionDefinition(scopeType : Option[String] = None()) : DFunction = {
-val signature = self.parseSignature(scopeType);
+def parseFunctionDefinition() : DFunction = {
+val signature = self.parseSignature();
 val body = self.parseLambda(signature.parameters.size);
-DFunction(signature.at, scopeType, signature, body)
+DFunction(signature.at, signature, body)
 }
 
-def parseSignature(scopeType : Option[String] = None()) : Signature = {
+def parseSignature() : Signature = {
 val nameToken = self.skip(LLower());
 val poly = if_(self.current.rawIs("["), {() =>
 self.parseTypeParameters()
@@ -227,7 +216,7 @@ self.rawSkip(LBracketLeft(), "{");
 while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
-val signature = self.parseSignature(Some(nameToken.raw));
+val signature = self.parseSignature();
 signatures ::= signature;
 if_(self.current.rawIs("{"), {() =>
 val generator = (self.ahead.is(LKeyword()) && self.ahead.rawIs("generate"));
@@ -282,7 +271,7 @@ self.rawSkip(LBracketLeft(), "{");
 while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
-definitions ::= self.parseFunctionDefinition(Some(nameToken.raw));
+definitions ::= self.parseFunctionDefinition();
 if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LSemicolon())
 })
@@ -1109,7 +1098,6 @@ EList(at, items.reverse)
 }
 
 }
-
 
 
 object Parser {

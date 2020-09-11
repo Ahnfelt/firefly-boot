@@ -241,8 +241,6 @@ tokens.toArray
 
 
 
-
-
 object Tokenizer {
 
 def tokenize(file : String, code : String) = {

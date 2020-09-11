@@ -59,9 +59,7 @@ fs.writeText((outputFile + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 def compileFile(fs : FileSystem, input : String, modules : List[String], output : String) : String = {
 val code = fs.readText(input);
 val tokens = Tokenizer.tokenize(input, code);
-val module = do_({() =>
-Parser.make(input, tokens).parseModule()
-});
+val module = Parser.make(input, tokens).parseModule();
 val out = Emitter.emitModule(module, modules.filter({(_w1) =>
 (_w1 != module.file.dropRight(3))
 }));
@@ -79,8 +77,6 @@ fs.delete(file)
 });
 fs.delete(outputFile)
 }
-
-
 
 
 
@@ -127,9 +123,7 @@ fs.writeText((outputFile + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 def compileFile(fs : FileSystem, input : String, modules : List[String], output : String) : String = {
 val code = fs.readText(input);
 val tokens = Tokenizer.tokenize(input, code);
-val module = do_({() =>
-Parser.make(input, tokens).parseModule()
-});
+val module = Parser.make(input, tokens).parseModule();
 val out = Emitter.emitModule(module, modules.filter({(_w1) =>
 (_w1 != module.file.dropRight(3))
 }));

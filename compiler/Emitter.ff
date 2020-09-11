@@ -4,45 +4,28 @@ fail[T](at: Location, message: String): T {
 
 emitModule(module: Module, otherModules: List[String]): String {
     let moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile { _ != '/' }.reverse.takeWhile { _ != '.' }
-    let namespaces = module.types.map { definition =>
-        let namespace = definition.name + "."
-        let lets = module.lets.filter { _.namespace.contains(namespace) }
-        let functions = module.functions.filter { _.namespace.contains(namespace) }
-        if(lets.isEmpty && functions.isEmpty) {None} else {
-            Some(emitTypeMembers(definition.name, lets, functions))
-        }
-    }
     let parts = List(
         List("package firefly")
         List("import firefly.Firefly_Core._") ++ otherModules.map { "import firefly." + _ + "._" }
         List("object " + moduleNamespace + " {")
-        if(
-            module.functions.exists { f => f.namespace.isEmpty && f.signature.name == "main" }
-        ) {List(emitMain())} else {List()}
+        if(module.functions.exists { _.signature.name == "main" }) { List(emitMain()) } else { List() }
         module.types.map(emitTypeDefinition)
-        module.lets.filter { _.namespace.isEmpty }.map { emitLetDefinition(_) }
-        module.functions.filter { _.namespace.isEmpty }.map { emitFunctionDefinition(_) }
-        module.functions.filter { f =>
-            f.namespace.exists(f.signature.parameters.headOption.map { _.valueType.name + "." }.contains)
-        }.map(emitMethodImplicit)
+        module.lets.map { emitLetDefinition(_) }
+        module.functions.map { emitFunctionDefinition(_) }
         module.extends.pairs.map { pair => emitExtendImplicit(pair.second, pair.first) }
         module.traits.map(emitTraitDefinition)
         module.instances.map(emitInstanceDefinition)
-        namespaces.flatten
         List(
-            if(namespaces.all { _.isEmpty }) {
-                emitTypeMembers(
-                    moduleNamespace,
-                    module.lets.filter { _.namespace.isEmpty },
-                    module.functions.filter { _.namespace.isEmpty }
-                )
-            }.toList
-            List("}")
-        ).flatten
+            emitTypeMembers(
+                moduleNamespace,
+                module.lets,
+                module.functions
+            )
+            "}"
+        )
     )
-    let allNamespaces = module.lets.flatMap { _.namespace } ++ module.functions.flatMap { _.namespace }
-    allNamespaces.find { n => !module.types.exists { _.name + "." == n } }.foreach { n =>
-        fail(Location(module.file, 1, 1), "No such type: " + n)
+    module.extends.map { _.type }.find { t => !module.types.exists { _.name == t.name } }.foreach { t =>
+        fail(t.at, "Type not defined in this file: " + t)
     }
     parts.map { _.mkString("\n\n") }.join("\n") + "\n"
 }
@@ -90,22 +73,6 @@ emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
             let cases = definition.body.cases.map(emitCase).mkString("\n")
             signature + " = " + tuple + " match {\n" + cases + "\n}"
     }
-}
-
-emitMethodImplicit(definition: DFunction): String {
-    let generics = emitTypeParameters(definition.signature.generics)
-    let parameter = definition.signature.parameters.headOption.map { p =>
-        escapeKeyword(p.name) + " : " + emitType(p.valueType)
-    }.get
-    let signature = emitSignature(definition.signature.copy(
-        generics = List(),
-        parameters = definition.signature.parameters.drop(1)
-    ))
-    let method = signature + " = " + definition.namespace.get +
-        escapeKeyword(definition.signature.name) +
-        "(" + definition.signature.parameters.map { _.name }.map(escapeKeyword).join(", ") + ")"
-    "implicit class " + definition.namespace.get + definition.signature.name + generics +
-    "(" + parameter + ") {\n\n" + method + "\n\n}"
 }
 
 emitExtendImplicit(definition: DExtend, index: Int): String {
@@ -220,10 +187,10 @@ emitType(t: Type): String {
 
 emitStatements(term: Term): String {
     | EFunctions(at, functions, body) =>
-        let functionStrings = functions.map { f => emitFunctionDefinition(DFunction(at, None, f.signature, f.body)) }
+        let functionStrings = functions.map { f => emitFunctionDefinition(DFunction(at, f.signature, f.body)) }
         functionStrings.mkString("\n") + "\n" + emitStatements(body)
     | ELet(at, mutable, name, valueType, value, body) =>
-        emitLetDefinition(DLet(at, None, name, valueType, value), mutable) + ";\n" + emitStatements(body)
+        emitLetDefinition(DLet(at, name, valueType, value), mutable) + ";\n" + emitStatements(body)
     | ESequential(at, before, after) =>
         emitStatements(before) + ";\n" + emitStatements(after)
     | EAssign(at, operator, name, value) =>

@@ -46,7 +46,6 @@ case class LAssignMinus() extends TokenKind
 case class LAssignLink() extends TokenKind
 
 
-
 implicit class Token_extend0(token : Token) {
 
 
@@ -247,7 +246,6 @@ False()
 }
 
 }
-
 
 
 object Token {

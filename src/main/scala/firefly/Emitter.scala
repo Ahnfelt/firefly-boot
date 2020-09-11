@@ -28,62 +28,29 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 }).reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
-val namespaces = module.types.map({(definition) =>
-val namespace = (definition.name + ".");
-val lets = module.lets.filter({(_w1) =>
-_w1.namespace.contains(namespace)
-});
-val functions = module.functions.filter({(_w1) =>
-_w1.namespace.contains(namespace)
-});
-if_((lets.isEmpty && functions.isEmpty), {() =>
-None()
-}).else_({() =>
-Some(emitTypeMembers(definition.name, lets, functions))
-})
-});
 val parts = List(List("package firefly"), (List("import firefly.Firefly_Core._") ++ otherModules.map({(_w1) =>
 (("import firefly." + _w1) + "._")
-})), List((("object " + moduleNamespace) + " {")), if_(module.functions.exists({(f) =>
-(f.namespace.isEmpty && (f.signature.name == "main"))
+})), List((("object " + moduleNamespace) + " {")), if_(module.functions.exists({(_w1) =>
+(_w1.signature.name == "main")
 }), {() =>
 List(emitMain())
 }).else_({() =>
 List()
-}), module.types.map(emitTypeDefinition), module.lets.filter({(_w1) =>
-_w1.namespace.isEmpty
-}).map({(_w1) =>
+}), module.types.map(emitTypeDefinition), module.lets.map({(_w1) =>
 emitLetDefinition(_w1)
-}), module.functions.filter({(_w1) =>
-_w1.namespace.isEmpty
-}).map({(_w1) =>
+}), module.functions.map({(_w1) =>
 emitFunctionDefinition(_w1)
-}), module.functions.filter({(f) =>
-f.namespace.exists(f.signature.parameters.headOption.map({(_w1) =>
-(_w1.valueType.name + ".")
-}).contains)
-}).map(emitMethodImplicit), module.extends_.pairs.map({(pair) =>
+}), module.extends_.pairs.map({(pair) =>
 emitExtendImplicit(pair.second, pair.first)
-}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), namespaces.flatten, List(if_(namespaces.all({(_w1) =>
-_w1.isEmpty
-}), {() =>
-emitTypeMembers(moduleNamespace, module.lets.filter({(_w1) =>
-_w1.namespace.isEmpty
-}), module.functions.filter({(_w1) =>
-_w1.namespace.isEmpty
-}))
-}).toList, List("}")).flatten);
-val allNamespaces = (module.lets.flatMap({(_w1) =>
-_w1.namespace
-}) ++ module.functions.flatMap({(_w1) =>
-_w1.namespace
-}));
-allNamespaces.find({(n) =>
+}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), List(emitTypeMembers(moduleNamespace, module.lets, module.functions), "}"));
+module.extends_.map({(_w1) =>
+_w1.type_
+}).find({(t) =>
 (!module.types.exists({(_w1) =>
-((_w1.name + ".") == n)
+(_w1.name == t.name)
 }))
-}).foreach({(n) =>
-fail(Location(module.file, 1, 1), ("No such type: " + n))
+}).foreach({(t) =>
+fail(t.at, ("Type not defined in this file: " + t))
 });
 (parts.map({(_w1) =>
 _w1.mkString("\n\n")
@@ -154,18 +121,6 @@ escapeKeyword(_w1.name)
 val cases = definition.body.cases.map(emitCase).mkString("\n");
 (((((signature + " = ") + tuple) + " match {\n") + cases) + "\n}")
 })
-}
-
-def emitMethodImplicit(definition : DFunction) : String = {
-val generics = emitTypeParameters(definition.signature.generics);
-val parameter = definition.signature.parameters.headOption.map({(p) =>
-((escapeKeyword(p.name) + " : ") + emitType(p.valueType))
-}).get;
-val signature = emitSignature(definition.signature.copy(generics = List(), parameters = definition.signature.parameters.drop(1)));
-val method = ((((((signature + " = ") + definition.namespace.get) + escapeKeyword(definition.signature.name)) + "(") + definition.signature.parameters.map({(_w1) =>
-_w1.name
-}).map(escapeKeyword).join(", ")) + ")");
-(((((((("implicit class " + definition.namespace.get) + definition.signature.name) + generics) + "(") + parameter) + ") {\n\n") + method) + "\n\n}")
 }
 
 def emitExtendImplicit(definition : DExtend, index : Int) : String = {
@@ -320,11 +275,11 @@ val generics = if_(t.generics.isEmpty, {() =>
 def emitStatements(term : Term) : String = (term) match {
 case (EFunctions(at, functions, body)) =>
 val functionStrings = functions.map({(f) =>
-emitFunctionDefinition(DFunction(at, None(), f.signature, f.body))
+emitFunctionDefinition(DFunction(at, f.signature, f.body))
 });
 ((functionStrings.mkString("\n") + "\n") + emitStatements(body))
 case (ELet(at, mutable, name, valueType, value, body)) =>
-((emitLetDefinition(DLet(at, None(), name, valueType, value), mutable) + ";\n") + emitStatements(body))
+((emitLetDefinition(DLet(at, name, valueType, value), mutable) + ";\n") + emitStatements(body))
 case (ESequential(at, before, after)) =>
 ((emitStatements(before) + ";\n") + emitStatements(after))
 case (EAssign(at, operator, name, value)) =>
@@ -444,8 +399,6 @@ word
 
 
 
-
-
 object Emitter {
 
 val keywords = Set("abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java")
@@ -460,62 +413,29 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 }).reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
-val namespaces = module.types.map({(definition) =>
-val namespace = (definition.name + ".");
-val lets = module.lets.filter({(_w1) =>
-_w1.namespace.contains(namespace)
-});
-val functions = module.functions.filter({(_w1) =>
-_w1.namespace.contains(namespace)
-});
-if_((lets.isEmpty && functions.isEmpty), {() =>
-None()
-}).else_({() =>
-Some(emitTypeMembers(definition.name, lets, functions))
-})
-});
 val parts = List(List("package firefly"), (List("import firefly.Firefly_Core._") ++ otherModules.map({(_w1) =>
 (("import firefly." + _w1) + "._")
-})), List((("object " + moduleNamespace) + " {")), if_(module.functions.exists({(f) =>
-(f.namespace.isEmpty && (f.signature.name == "main"))
+})), List((("object " + moduleNamespace) + " {")), if_(module.functions.exists({(_w1) =>
+(_w1.signature.name == "main")
 }), {() =>
 List(emitMain())
 }).else_({() =>
 List()
-}), module.types.map(emitTypeDefinition), module.lets.filter({(_w1) =>
-_w1.namespace.isEmpty
-}).map({(_w1) =>
+}), module.types.map(emitTypeDefinition), module.lets.map({(_w1) =>
 emitLetDefinition(_w1)
-}), module.functions.filter({(_w1) =>
-_w1.namespace.isEmpty
-}).map({(_w1) =>
+}), module.functions.map({(_w1) =>
 emitFunctionDefinition(_w1)
-}), module.functions.filter({(f) =>
-f.namespace.exists(f.signature.parameters.headOption.map({(_w1) =>
-(_w1.valueType.name + ".")
-}).contains)
-}).map(emitMethodImplicit), module.extends_.pairs.map({(pair) =>
+}), module.extends_.pairs.map({(pair) =>
 emitExtendImplicit(pair.second, pair.first)
-}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), namespaces.flatten, List(if_(namespaces.all({(_w1) =>
-_w1.isEmpty
-}), {() =>
-emitTypeMembers(moduleNamespace, module.lets.filter({(_w1) =>
-_w1.namespace.isEmpty
-}), module.functions.filter({(_w1) =>
-_w1.namespace.isEmpty
-}))
-}).toList, List("}")).flatten);
-val allNamespaces = (module.lets.flatMap({(_w1) =>
-_w1.namespace
-}) ++ module.functions.flatMap({(_w1) =>
-_w1.namespace
-}));
-allNamespaces.find({(n) =>
+}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), List(emitTypeMembers(moduleNamespace, module.lets, module.functions), "}"));
+module.extends_.map({(_w1) =>
+_w1.type_
+}).find({(t) =>
 (!module.types.exists({(_w1) =>
-((_w1.name + ".") == n)
+(_w1.name == t.name)
 }))
-}).foreach({(n) =>
-fail(Location(module.file, 1, 1), ("No such type: " + n))
+}).foreach({(t) =>
+fail(t.at, ("Type not defined in this file: " + t))
 });
 (parts.map({(_w1) =>
 _w1.mkString("\n\n")
@@ -586,18 +506,6 @@ escapeKeyword(_w1.name)
 val cases = definition.body.cases.map(emitCase).mkString("\n");
 (((((signature + " = ") + tuple) + " match {\n") + cases) + "\n}")
 })
-}
-
-def emitMethodImplicit(definition : DFunction) : String = {
-val generics = emitTypeParameters(definition.signature.generics);
-val parameter = definition.signature.parameters.headOption.map({(p) =>
-((escapeKeyword(p.name) + " : ") + emitType(p.valueType))
-}).get;
-val signature = emitSignature(definition.signature.copy(generics = List(), parameters = definition.signature.parameters.drop(1)));
-val method = ((((((signature + " = ") + definition.namespace.get) + escapeKeyword(definition.signature.name)) + "(") + definition.signature.parameters.map({(_w1) =>
-_w1.name
-}).map(escapeKeyword).join(", ")) + ")");
-(((((((("implicit class " + definition.namespace.get) + definition.signature.name) + generics) + "(") + parameter) + ") {\n\n") + method) + "\n\n}")
 }
 
 def emitExtendImplicit(definition : DExtend, index : Int) : String = {
@@ -752,11 +660,11 @@ val generics = if_(t.generics.isEmpty, {() =>
 def emitStatements(term : Term) : String = (term) match {
 case (EFunctions(at, functions, body)) =>
 val functionStrings = functions.map({(f) =>
-emitFunctionDefinition(DFunction(at, None(), f.signature, f.body))
+emitFunctionDefinition(DFunction(at, f.signature, f.body))
 });
 ((functionStrings.mkString("\n") + "\n") + emitStatements(body))
 case (ELet(at, mutable, name, valueType, value, body)) =>
-((emitLetDefinition(DLet(at, None(), name, valueType, value), mutable) + ";\n") + emitStatements(body))
+((emitLetDefinition(DLet(at, name, valueType, value), mutable) + ";\n") + emitStatements(body))
 case (ESequential(at, before, after)) =>
 ((emitStatements(before) + ";\n") + emitStatements(after))
 case (EAssign(at, operator, name, value)) =>

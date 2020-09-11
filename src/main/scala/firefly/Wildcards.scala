@@ -21,7 +21,6 @@ case class Wildcards(var seenWildcards : Int)
 def make() = {
 Wildcards(0)
 }
-
 implicit class Wildcards_extend0(self : Wildcards) {
 
 
@@ -67,7 +66,6 @@ term
 }
 
 }
-
 
 
 object Wildcards {

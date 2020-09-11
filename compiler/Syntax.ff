@@ -36,13 +36,11 @@ type DImport(
 )
 type DFunction(
     at: Location,
-    namespace: Option[String],
     signature: Signature,
     body: ELambda
 )
 type DLet(
     at: Location,
-    namespace: Option[String],
     name: String,
     variableType: Type,
     value: Term

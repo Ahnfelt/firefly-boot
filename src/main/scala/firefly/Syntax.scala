@@ -24,9 +24,9 @@ case class DDependency(at : Location, package_ : Pair[String, String], safety : 
 
 case class DImport(at : Location, alias : String, package_ : Option[Pair[String, String]], directory : List[String], file : String)
 
-case class DFunction(at : Location, namespace : Option[String], signature : Signature, body : ELambda)
+case class DFunction(at : Location, signature : Signature, body : ELambda)
 
-case class DLet(at : Location, namespace : Option[String], name : String, variableType : Type, value : Term)
+case class DLet(at : Location, name : String, variableType : Type, value : Term)
 
 case class DExtend(at : Location, name : String, generics : List[String], constraints : List[Constraint], type_ : Type, lets : List[DLet], methods : List[DFunction])
 
@@ -93,7 +93,6 @@ case class Trust() extends Safety
 case class Version(at : Location, major : Int, minor : Int, patch : Int)
 
 
-
 implicit class Location_extend0(self : Location) {
 
 
@@ -103,7 +102,6 @@ def show() : String = {
 }
 
 }
-
 
 
 object Syntax {

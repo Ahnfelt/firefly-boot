@@ -76,14 +76,8 @@ extend self: Parser {
         while {!self.current.is(LEnd)} {
             if(self.current.is(LLower) && (self.ahead.is(LAssign) || self.ahead.is(LColon))) {
                 result = result.Module(lets = self.parseLetDefinition() :: result.lets)
-            } elseIf {self.current.is(LNamespace) && self.ahead.is(LLower) && self.aheadAhead.is2(LAssign, LColon)} {
-                let namespace = Some(self.skip(LNamespace).raw)
-                result = result.Module(lets = self.parseLetDefinition(namespace) :: result.lets)
             } elseIf {self.current.is(LLower) && self.ahead.is(LBracketLeft)} {
                 result = result.Module(functions = self.parseFunctionDefinition() :: result.functions)
-            } elseIf {self.current.is(LNamespace) && self.ahead.is(LLower) && self.aheadAhead.is(LBracketLeft)} {
-                let namespace = Some(self.skip(LNamespace).raw)
-                result = result.Module(functions = self.parseFunctionDefinition(namespace) :: result.functions)
             } elseIf {self.current.is(LKeyword) && self.current.rawIs("extend")} {
                 result = result.Module(extends = self.parseExtendDefinition() :: result.extends)
             } elseIf {self.current.is(LKeyword) && self.current.rawIs("trait")} {
@@ -117,7 +111,7 @@ extend self: Parser {
         )
     }
     
-    parseLetDefinition(scopeType: Option[String] = None): DLet {
+    parseLetDefinition(): DLet {
         let nameToken = self.skip(LLower)
         let variableType = if(self.current.is(LColon)) {
             self.skip(LColon)
@@ -125,21 +119,20 @@ extend self: Parser {
         } else {Type(nameToken.at, "?", List())}
         self.skip(LAssign)
         let value = self.parseTerm()
-        DLet(nameToken.at, scopeType, nameToken.raw, variableType, value)
+        DLet(nameToken.at, nameToken.raw, variableType, value)
     }
     
-    parseFunctionDefinition(scopeType: Option[String] = None): DFunction {
-        let signature = self.parseSignature(scopeType)
+    parseFunctionDefinition(): DFunction {
+        let signature = self.parseSignature()
         let body = self.parseLambda(signature.parameters.size)
         DFunction(
             signature.at,
-            scopeType,
             signature,
             body
         )
     }
     
-    parseSignature(scopeType: Option[String] = None): Signature {
+    parseSignature(): Signature {
         let nameToken = self.skip(LLower)
         let poly = if(self.current.rawIs("[")) {self.parseTypeParameters()} else {Poly(List(), List())}
         let parameters = self.parseFunctionParameters()
@@ -187,7 +180,7 @@ extend self: Parser {
             mutable signatures = List[Signature]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current.is(LBracketRight)} {
-                let signature = self.parseSignature(Some(nameToken.raw))
+                let signature = self.parseSignature()
                 signatures ::= signature
                 if(self.current.rawIs("{")) {
                     let generator = self.ahead.is(LKeyword) && self.ahead.rawIs("generate")
@@ -233,7 +226,7 @@ extend self: Parser {
             mutable definitions = List[DFunction]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current.is(LBracketRight)} {
-                definitions ::= self.parseFunctionDefinition(Some(nameToken.raw))
+                definitions ::= self.parseFunctionDefinition()
                 if(!self.current.is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
