@@ -12,8 +12,8 @@ type Token(
 
 extend token: Token {
 
-    at(): Syntax_Location {
-        Syntax_Location(token.file, token.startLine, (token.startOffset - token.startLineOffset) + 1)
+    at(): Location {
+        Location(token.file, token.startLine, (token.startOffset - token.startLineOffset) + 1)
     }
 
     raw(): String {

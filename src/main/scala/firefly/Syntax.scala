@@ -93,19 +93,23 @@ case class Trust() extends Safety
 case class Version(at : Location, major : Int, minor : Int, patch : Int)
 
 
-implicit class Location_show(location : Location) {
 
-def show() = Location.show(location)
-
-}
+implicit class Location_extend0(self : Location) {
 
 
 
-object Location {
-
-def show(location : Location) = {
-(((((("in " + location.file) + " ") + "at line ") + location.line) + ", column ") + location.column)
+def show() : String = {
+(((((("in " + self.file) + " ") + "at line ") + self.line) + ", column ") + self.column)
 }
 
 }
+
+
+
+object Syntax {
+
+
+
+}
+
 }

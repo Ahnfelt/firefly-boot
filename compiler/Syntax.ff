@@ -1,9 +1,11 @@
 type Location(file: String, line: Int, column: Int)
 
-Location_show(location: Location) {
-    "in " + location.file + " " +
-    "at line " + location.line +
-    ", column " + location.column
+extend self: Location {
+    show(): String {
+        "in " + self.file + " " +
+        "at line " + self.line +
+        ", column " + self.column
+    }
 }
 
 type Module(

@@ -51,8 +51,8 @@ implicit class Token_extend0(token : Token) {
 
 
 
-def at() : Syntax.Location = {
-Syntax.Location(token.file, token.startLine, ((token.startOffset - token.startLineOffset) + 1))
+def at() : Location = {
+Location(token.file, token.startLine, ((token.startOffset - token.startLineOffset) + 1))
 }
 
 def raw() : String = {
