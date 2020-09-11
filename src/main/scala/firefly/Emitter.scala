@@ -38,11 +38,12 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
 val namespaces = module.types.map({(definition) =>
+val namespace = (definition.name + "_");
 val lets = module.lets.filter({(_w1) =>
-_w1.namespace.contains((definition.name + "_"))
+_w1.namespace.contains(namespace)
 });
 val functions = module.functions.filter({(_w1) =>
-_w1.namespace.contains((definition.name + "_"))
+_w1.namespace.contains(namespace)
 });
 if_((lets.isEmpty && functions.isEmpty), {() =>
 None()

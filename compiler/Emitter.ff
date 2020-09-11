@@ -7,8 +7,9 @@ Emitter_fail[T](at: Location, message: String): T {
 Emitter_emitModule(module: Module, otherModules: List[String]): String {
     let moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile { _ != '/' }.reverse.takeWhile { _ != '.' }
     let namespaces = module.types.map { definition =>
-        let lets = module.lets.filter { _.namespace.contains(definition.name + "_") }
-        let functions = module.functions.filter { _.namespace.contains(definition.name + "_") }
+        let namespace = definition.name + "_"
+        let lets = module.lets.filter { _.namespace.contains(namespace) }
+        let functions = module.functions.filter { _.namespace.contains(namespace) }
         if(lets.isEmpty && functions.isEmpty) {None} else {
             Some(emitTypeMembers(definition.name, lets, functions))
         }
