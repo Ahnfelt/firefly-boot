@@ -28,7 +28,7 @@ case class DFunction(at : Location, namespace : Option[String], signature : Sign
 
 case class DLet(at : Location, namespace : Option[String], name : String, variableType : Type, value : Term)
 
-case class DExtend(at : Location, name : String, generics : List[String], constraints : List[Constraint], type_ : Type, methods : List[DFunction])
+case class DExtend(at : Location, name : String, generics : List[String], constraints : List[Constraint], type_ : Type, lets : List[DLet], methods : List[DFunction])
 
 case class DType(at : Location, name : String, generics : List[String], constraints : List[Constraint], commonFields : List[Parameter], variants : List[Variant])
 

@@ -10,28 +10,32 @@ type Token(
     stopOffset: Int
 )
 
-Token_at(token: Token): Syntax_Location {
-    Syntax_Location(token.file, token.startLine, (token.startOffset - token.startLineOffset) + 1)
-}
+extend token: Token {
 
-Token_raw(token: Token): String {
-    token.code.slice(token.startOffset, token.stopOffset)
-}
+    at(): Syntax_Location {
+        Syntax_Location(token.file, token.startLine, (token.startOffset - token.startLineOffset) + 1)
+    }
 
-Token_is(token: Token, kind1: TokenKind) {
-    token.kind == kind1
-}
+    raw(): String {
+        token.code.slice(token.startOffset, token.stopOffset)
+    }
 
-Token_is2(token: Token, kind1: TokenKind, kind2: TokenKind) {
-    token.kind == kind1 || token.kind == kind2
-}
+    is(kind1: TokenKind) {
+        token.kind == kind1
+    }
 
-Token_is3(token: Token, kind1: TokenKind, kind2: TokenKind, kind3: TokenKind) {
-    token.kind == kind1 || token.kind == kind2 || token.kind == kind3
-}
+    is2(kind1: TokenKind, kind2: TokenKind) {
+        token.kind == kind1 || token.kind == kind2
+    }
 
-Token_rawIs(token: Token, value: String) {
-    token.code.regionMatches(token.startOffset, value, 0, value.length)
+    is3(kind1: TokenKind, kind2: TokenKind, kind3: TokenKind) {
+        token.kind == kind1 || token.kind == kind2 || token.kind == kind3
+    }
+
+    rawIs(value: String) {
+        token.code.regionMatches(token.startOffset, value, 0, value.length)
+    }
+
 }
 
 type TokenKind {
@@ -62,86 +66,96 @@ type TokenKind {
     LAssignLink
 }
 
-TokenKind_beforeSeparator(kind: TokenKind): Bool {
-    | LEnd => False
-    | LString => True
-    | LChar => True
-    | LInt => True
-    | LFloat => True
-    | LKeyword => True
-    | LNamespace => False
-    | LLower => True
-    | LUpper => True
-    | LWildcard => True
-    | LBracketLeft => False
-    | LBracketRight => True
-    | LOperator => False
-    | LComma => False
-    | LSeparator => False
-    | LDot => False
-    | LSemicolon => False
-    | LPipe => False
-    | LColon => False
-    | LDotDotDot => False
-    | LArrowThick => False
-    | LAssign => False
-    | LAssignPlus => False
-    | LAssignMinus => False
-    | LAssignLink => False
-}
+extend self: TokenKind {
 
-TokenKind_afterSeparator(kind: TokenKind): Bool {
-    | LEnd => False
-    | LString => True
-    | LChar => True
-    | LInt => True
-    | LFloat => True
-    | LKeyword => True
-    | LNamespace => True
-    | LLower => True
-    | LUpper => True
-    | LWildcard => True
-    | LBracketLeft => True
-    | LBracketRight => False
-    | LOperator => False
-    | LComma => False
-    | LSeparator => False
-    | LDot => False
-    | LSemicolon => False
-    | LPipe => False
-    | LColon => False
-    | LDotDotDot => True
-    | LArrowThick => False
-    | LAssign => False
-    | LAssignPlus => False
-    | LAssignMinus => False
-    | LAssignLink => False
-}
+    beforeSeparator(): Bool {
+        self.{
+            | LEnd => False
+            | LString => True
+            | LChar => True
+            | LInt => True
+            | LFloat => True
+            | LKeyword => True
+            | LNamespace => False
+            | LLower => True
+            | LUpper => True
+            | LWildcard => True
+            | LBracketLeft => False
+            | LBracketRight => True
+            | LOperator => False
+            | LComma => False
+            | LSeparator => False
+            | LDot => False
+            | LSemicolon => False
+            | LPipe => False
+            | LColon => False
+            | LDotDotDot => False
+            | LArrowThick => False
+            | LAssign => False
+            | LAssignPlus => False
+            | LAssignMinus => False
+            | LAssignLink => False
+        }
+    }
 
-TokenKind_afterKeyword(kind: TokenKind): Bool {
-    | LEnd => False
-    | LString => True
-    | LChar => True
-    | LInt => True
-    | LFloat => True
-    | LKeyword => True
-    | LNamespace => True
-    | LLower => True
-    | LUpper => True
-    | LWildcard => True
-    | LBracketLeft => False
-    | LBracketRight => False
-    | LOperator => False
-    | LComma => False
-    | LSeparator => False
-    | LDot => False
-    | LSemicolon => False
-    | LPipe => False
-    | LColon => False
-    | LDotDotDot => False
-    | LArrowThick => False
-    | LAssign => False
-    | LAssignPlus => False
-    | LAssignMinus => False
-    | LAssignLink => False
+    afterSeparator(): Bool {
+        self.{
+            | LEnd => False
+            | LString => True
+            | LChar => True
+            | LInt => True
+            | LFloat => True
+            | LKeyword => True
+            | LNamespace => True
+            | LLower => True
+            | LUpper => True
+            | LWildcard => True
+            | LBracketLeft => True
+            | LBracketRight => False
+            | LOperator => False
+            | LComma => False
+            | LSeparator => False
+            | LDot => False
+            | LSemicolon => False
+            | LPipe => False
+            | LColon => False
+            | LDotDotDot => True
+            | LArrowThick => False
+            | LAssign => False
+            | LAssignPlus => False
+            | LAssignMinus => False
+            | LAssignLink => False
+        }
+    }
+
+    afterKeyword(): Bool {
+        self.{
+            | LEnd => False
+            | LString => True
+            | LChar => True
+            | LInt => True
+            | LFloat => True
+            | LKeyword => True
+            | LNamespace => True
+            | LLower => True
+            | LUpper => True
+            | LWildcard => True
+            | LBracketLeft => False
+            | LBracketRight => False
+            | LOperator => False
+            | LComma => False
+            | LSeparator => False
+            | LDot => False
+            | LSemicolon => False
+            | LPipe => False
+            | LColon => False
+            | LDotDotDot => False
+            | LArrowThick => False
+            | LAssign => False
+            | LAssignPlus => False
+            | LAssignMinus => False
+            | LAssignLink => False
+        }
+    }
+
 }

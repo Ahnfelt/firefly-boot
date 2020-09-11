@@ -76,10 +76,10 @@ emitExtendImplicit(pair.second, pair.first)
 }), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), namespaces.flatten, List(if_(namespaces.all({(_w1) =>
 _w1.isEmpty
 }), {() =>
-emitTypeMembers(moduleNamespace, List(), module.functions.filter({(_w1) =>
+emitTypeMembers(moduleNamespace, module.lets.filter({(_w1) =>
 _w1.namespace.isEmpty
-}).map({(_w1) =>
-_w1.copy(namespace = Some((moduleNamespace + "_")))
+}), module.functions.filter({(_w1) =>
+_w1.namespace.isEmpty
 }))
 }).toList, List("}")).flatten);
 val allNamespaces = (module.lets.flatMap({(_w1) =>
@@ -181,10 +181,13 @@ def emitExtendImplicit(definition : DExtend, index : Int) : String = {
 val generics = emitTypeParameters(definition.generics);
 val implicits = emitConstraints(definition.constraints);
 val parameter = ((escapeKeyword(definition.name) + " : ") + emitType(definition.type_));
+val lets = definition.lets.map({(_w1) =>
+Emitter.emitLetDefinition(_w1)
+}).join("\n\n");
 val methods = definition.methods.map({(_w1) =>
 Emitter.emitFunctionDefinition(_w1)
 }).join("\n\n");
-((((((((((("implicit class " + definition.type_.name) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + methods) + "\n\n}")
+((((((((((((("implicit class " + definition.type_.name) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + lets) + "\n\n") + methods) + "\n\n}")
 }
 
 def emitTraitDefinition(definition : DTrait) : String = {
