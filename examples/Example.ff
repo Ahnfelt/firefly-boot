@@ -1,21 +1,3 @@
-main(system: System): Unit {
-    system.files.list(".").each { file =>
-        system.writeLine(file)
-    }
-}
-
-type Point(x: Int, y: Int)
-
-Point_sum(point: Point): Int {
-    point.x + point.y
-}
-
-doSum() {
-    let point = Point(5, 7)
-    point.Point(y = 8)
-}
-
-
 trait Show[T] {
     show(value: T): String
 }

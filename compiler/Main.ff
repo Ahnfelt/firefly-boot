@@ -46,18 +46,7 @@ compileFile(fs: FileSystem, input: String, modules: List[String], output: String
 
     //println()
 
-    let module = do {
-        Parser.make(input, tokens).parseModule()
-    } /*catch {
-        case exception: ParseException =>
-            println()
-            println("-----")
-            println(exception.getMessage)
-            println("-----")
-            println()
-            System.exit(1)
-            throw exception
-    }*/
+    let module = Parser.make(input, tokens).parseModule()
 
     //println(module)
     //println()
