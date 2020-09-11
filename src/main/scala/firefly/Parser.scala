@@ -93,6 +93,12 @@ def parseSignature(scopeType : Option[String] = None()) : Signature = Parser.par
 
 }
 
+implicit class Parser_parseExtendDefinition(self : Parser) {
+
+def parseExtendDefinition() : DExtend = Parser.parseExtendDefinition(self)
+
+}
+
 implicit class Parser_parseTraitDefinition(self : Parser) {
 
 def parseTraitDefinition() : DTrait = Parser.parseTraitDefinition(self)
@@ -280,6 +286,7 @@ def parseList() : Term = Parser.parseList(self)
 }
 
 
+
 object Parser {
 
 def of(file : String, tokens : Array[Token]) : Parser = {
@@ -348,7 +355,7 @@ self.skip(kind)
 }
 
 def parseModule(self : Parser) : Module = {
-var result = Module(self.file, List(), List(), List(), List(), List(), List(), List());
+var result = Module(self.file, List(), List(), List(), List(), List(), List(), List(), List());
 while_({() =>
 (!self.current.is(LEnd()))
 }, {() =>
@@ -368,6 +375,10 @@ result = result.copy(functions = (self.parseFunctionDefinition() :: result.funct
 }, {() =>
 val namespace = Some(self.skip(LNamespace()).raw);
 result = result.copy(functions = (self.parseFunctionDefinition(namespace) :: result.functions))
+}).elseIf({() =>
+(self.current.is(LKeyword()) && self.current.rawIs("extend"))
+}, {() =>
+result = result.copy(extends_ = (self.parseExtendDefinition() :: result.extends_))
 }).elseIf({() =>
 (self.current.is(LKeyword()) && self.current.rawIs("trait"))
 }, {() =>
@@ -395,7 +406,7 @@ if_((!self.current.is(LEnd())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
-Module(file = self.file, dependencies = result.dependencies.reverse, imports = result.imports.reverse, lets = result.lets.reverse, functions = result.functions.reverse, types = result.types.reverse, traits = result.traits.reverse, instances = result.instances.reverse)
+Module(file = self.file, dependencies = result.dependencies.reverse, imports = result.imports.reverse, lets = result.lets.reverse, functions = result.functions.reverse, extends_ = result.extends_.reverse, types = result.types.reverse, traits = result.traits.reverse, instances = result.instances.reverse)
 }
 
 def parseLetDefinition(self : Parser, scopeType : Option[String] = None()) : DLet = {
@@ -427,6 +438,30 @@ Poly(List(), List())
 val parameters = self.parseFunctionParameters();
 val returnType = self.parseOptionalType();
 Signature(nameToken.at, nameToken.raw, poly.generics, poly.constraints, parameters, returnType)
+}
+
+def parseExtendDefinition(self : Parser) : DExtend = {
+self.rawSkip(LKeyword(), "extend");
+val nameToken = self.skip(LLower());
+val poly = if_(self.current.rawIs("["), {() =>
+self.parseTypeParameters()
+}).else_({() =>
+Poly(List(), List())
+});
+self.skip(LColon());
+val type_ = self.parseType();
+self.rawSkip(LBracketLeft(), "{");
+var methods = List[DFunction]();
+while_({() =>
+(!self.current.is(LBracketRight()))
+}, {() =>
+methods ::= self.parseFunctionDefinition();
+if_((!self.current.is(LBracketRight())), {() =>
+self.skipSeparator(LSemicolon())
+})
+});
+self.rawSkip(LBracketRight(), "}");
+DExtend(nameToken.at, nameToken.raw, poly.generics, poly.constraints, type_, methods.reverse)
 }
 
 def parseTraitDefinition(self : Parser) : DTrait = {

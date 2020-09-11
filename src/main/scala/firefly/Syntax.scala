@@ -18,7 +18,7 @@ object Syntax {
 
 case class Location(file : String, line : Int, column : Int)
 
-case class Module(file : String, dependencies : List[DDependency], imports : List[DImport], types : List[DType], traits : List[DTrait], instances : List[DInstance], lets : List[DLet], functions : List[DFunction])
+case class Module(file : String, dependencies : List[DDependency], imports : List[DImport], types : List[DType], traits : List[DTrait], instances : List[DInstance], extends_ : List[DExtend], lets : List[DLet], functions : List[DFunction])
 
 case class DDependency(at : Location, package_ : Pair[String, String], safety : Safety, goodVersions : List[Version], badVersions : List[Version])
 
@@ -27,6 +27,8 @@ case class DImport(at : Location, alias : String, package_ : Option[Pair[String,
 case class DFunction(at : Location, namespace : Option[String], signature : Signature, body : ELambda)
 
 case class DLet(at : Location, namespace : Option[String], name : String, variableType : Type, value : Term)
+
+case class DExtend(at : Location, name : String, generics : List[String], constraints : List[Constraint], type_ : Type, methods : List[DFunction])
 
 case class DType(at : Location, name : String, generics : List[String], constraints : List[Constraint], commonFields : List[Parameter], variants : List[Variant])
 
@@ -96,6 +98,7 @@ implicit class Location_show(location : Location) {
 def show() = Location.show(location)
 
 }
+
 
 
 object Location {

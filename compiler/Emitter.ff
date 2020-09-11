@@ -26,6 +26,7 @@ Emitter_emitModule(module: Module, otherModules: List[String]): String {
         module.functions.filter { f =>
             f.namespace.exists(f.signature.parameters.headOption.map { _.valueType.name + "_" }.contains)
         }.map(emitMethodImplicit),
+        module.extends.pairs.map { pair => emitExtendImplicit(pair.second, pair.first) },
         module.traits.map(emitTraitDefinition),
         module.instances.map(emitInstanceDefinition),
         namespaces.flatten,
@@ -99,6 +100,15 @@ Emitter_emitMethodImplicit(definition: DFunction): String {
         "(" + definition.signature.parameters.map { _.name }.map(escapeKeyword).join(", ") + ")"
     "implicit class " + definition.namespace.get + definition.signature.name + generics +
     "(" + parameter + ") {\n\n" + method + "\n\n}"
+}
+
+Emitter_emitExtendImplicit(definition: DExtend, index: Int): String {
+    let generics = emitTypeParameters(definition.generics)
+    let implicits = emitConstraints(definition.constraints)
+    let parameter = escapeKeyword(definition.name) + " : " + emitType(definition.type)
+    let methods = definition.methods.map { Emitter_emitFunctionDefinition(_) }.join("\n\n")
+    "implicit class " + definition.type.name + "_extend" + index + generics +
+    "(" + parameter + ")" + implicits + " {\n\n" + methods + "\n\n}"
 }
 
 Emitter_emitTraitDefinition(definition: DTrait): String {
@@ -259,7 +269,7 @@ Emitter_emitTerm(term: Term): String {
 }
 
 Emitter_emitArgument(argument: Argument) {
-    argument.name.map { _ + " = " }.getOrElse("") + emitTerm(argument.value)
+    argument.name.map { name => Emitter_escapeKeyword(name) + " = " }.getOrElse("") + emitTerm(argument.value)
 }
 
 Emitter_emitCase(matchCase: MatchCase) {

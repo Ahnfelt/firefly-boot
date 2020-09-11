@@ -22,6 +22,7 @@ case class Emitter()
 
 
 
+
 object Emitter {
 
 val keywords = Set("abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java")
@@ -69,7 +70,9 @@ emitFunctionDefinition(_w1)
 f.namespace.exists(f.signature.parameters.headOption.map({(_w1) =>
 (_w1.valueType.name + "_")
 }).contains)
-}).map(emitMethodImplicit), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), namespaces.flatten, List("}"));
+}).map(emitMethodImplicit), module.extends_.pairs.map({(pair) =>
+emitExtendImplicit(pair.second, pair.first)
+}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), namespaces.flatten, List("}"));
 val allNamespaces = (module.lets.flatMap({(_w1) =>
 _w1.namespace
 }) ++ module.functions.flatMap({(_w1) =>
@@ -163,6 +166,16 @@ val method = ((((((signature + " = ") + definition.namespace.get.replace("_", ".
 _w1.name
 }).map(escapeKeyword).join(", ")) + ")");
 (((((((("implicit class " + definition.namespace.get) + definition.signature.name) + generics) + "(") + parameter) + ") {\n\n") + method) + "\n\n}")
+}
+
+def emitExtendImplicit(definition : DExtend, index : Int) : String = {
+val generics = emitTypeParameters(definition.generics);
+val implicits = emitConstraints(definition.constraints);
+val parameter = ((escapeKeyword(definition.name) + " : ") + emitType(definition.type_));
+val methods = definition.methods.map({(_w1) =>
+Emitter.emitFunctionDefinition(_w1)
+}).join("\n\n");
+((((((((((("implicit class " + definition.type_.name) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + methods) + "\n\n}")
 }
 
 def emitTraitDefinition(definition : DTrait) : String = {
@@ -394,8 +407,8 @@ case (_) =>
 }
 
 def emitArgument(argument : Argument) = {
-(argument.name.map({(_w1) =>
-(_w1 + " = ")
+(argument.name.map({(name) =>
+(Emitter.escapeKeyword(name) + " = ")
 }).getOrElse("") + emitTerm(argument.value))
 }
 

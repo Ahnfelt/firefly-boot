@@ -70,7 +70,7 @@ Parser_skipSeparator(self: Parser, kind: TokenKind): Token {
 }
 
 Parser_parseModule(self: Parser): Module {
-    mutable result = Module(self.file, List(), List(), List(), List(), List(), List(), List())
+    mutable result = Module(self.file, List(), List(), List(), List(), List(), List(), List(), List())
     while {!self.current.is(LEnd)} {
         if(self.current.is(LLower) && (self.ahead.is(LAssign) || self.ahead.is(LColon))) {
             result = result.Module(lets = self.parseLetDefinition() :: result.lets)
@@ -82,6 +82,8 @@ Parser_parseModule(self: Parser): Module {
         } elseIf {self.current.is(LNamespace) && self.ahead.is(LLower) && self.aheadAhead.is(LBracketLeft)} {
             let namespace = Some(self.skip(LNamespace).raw)
             result = result.Module(functions = self.parseFunctionDefinition(namespace) :: result.functions)
+        } elseIf {self.current.is(LKeyword) && self.current.rawIs("extend")} {
+            result = result.Module(extends = self.parseExtendDefinition() :: result.extends)
         } elseIf {self.current.is(LKeyword) && self.current.rawIs("trait")} {
             result = result.Module(traits = self.parseTraitDefinition() :: result.traits)
         } elseIf {self.current.is(LKeyword) && self.current.rawIs("instance")} {
@@ -106,6 +108,7 @@ Parser_parseModule(self: Parser): Module {
         imports = result.imports.reverse,
         lets = result.lets.reverse,
         functions = result.functions.reverse,
+        extends = result.extends.reverse,
         types = result.types.reverse,
         traits = result.traits.reverse,
         instances = result.instances.reverse
@@ -140,6 +143,29 @@ Parser_parseSignature(self: Parser, scopeType: Option[String] = None): Signature
     let parameters = self.parseFunctionParameters()
     let returnType = self.parseOptionalType()
     Signature(nameToken.at, nameToken.raw, poly.generics, poly.constraints, parameters, returnType)
+}
+
+Parser_parseExtendDefinition(self: Parser): DExtend {
+    self.rawSkip(LKeyword, "extend")
+    let nameToken = self.skip(LLower)
+    let poly = if(self.current.rawIs("[")) {self.parseTypeParameters()} else {Poly(List(), List())}
+    self.skip(LColon)
+    let type = self.parseType()
+    self.rawSkip(LBracketLeft, "{")
+    mutable methods = List[DFunction]()
+    while {!self.current.is(LBracketRight)} {
+        methods ::= self.parseFunctionDefinition()
+        if(!self.current.is(LBracketRight)) {self.skipSeparator(LSemicolon)}
+    }
+    self.rawSkip(LBracketRight, "}")
+    DExtend(
+        nameToken.at,
+        nameToken.raw,
+        poly.generics,
+        poly.constraints,
+        type,
+        methods.reverse
+    )
 }
 
 Parser_parseTraitDefinition(self: Parser): DTrait {

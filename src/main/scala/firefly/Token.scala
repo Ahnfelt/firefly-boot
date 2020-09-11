@@ -101,6 +101,7 @@ def afterKeyword() : Bool = TokenKind.afterKeyword(kind)
 }
 
 
+
 object Token {
 
 def at(token : Token) : Syntax.Location = {
