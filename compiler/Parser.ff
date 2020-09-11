@@ -154,9 +154,14 @@ extend self: Parser {
         self.skip(LColon)
         let type = self.parseType()
         self.rawSkip(LBracketLeft, "{")
+        mutable lets = List[DLet]()
         mutable methods = List[DFunction]()
         while {!self.current.is(LBracketRight)} {
-            methods ::= self.parseFunctionDefinition()
+            if(!self.ahead.is(LBracketLeft)) {
+                lets ::= self.parseLetDefinition()
+            } else {
+                methods ::= self.parseFunctionDefinition()
+            }
             if(!self.current.is(LBracketRight)) {self.skipSeparator(LSemicolon)}
         }
         self.rawSkip(LBracketRight, "}")
@@ -166,6 +171,7 @@ extend self: Parser {
             poly.generics,
             poly.constraints,
             type,
+            lets.reverse,
             methods.reverse
         )
     }
@@ -615,7 +621,7 @@ extend self: Parser {
         self.parseBinary(0)
     }
     
-    binaryOperators() { Array(
+    binaryOperators = Array(
         List("||"),
         List("&&"),
         List("!=", "=="),
@@ -625,11 +631,11 @@ extend self: Parser {
         List("+", "-"),
         List("*", "/", "%"),
         List("^")
-    )}
+    )
     
     parseBinary(level: Int): Term {
-        if(level >= binaryOperators().length) {self.parseUnary()} else:
-        let operators = binaryOperators()(level)
+        if(level >= binaryOperators.length) {self.parseUnary()} else:
+        let operators = binaryOperators(level)
         mutable result = self.parseBinary(level + 1)
         if(self.current.is(LOperator)) {
             while {operators.exists(self.current.rawIs)} {

@@ -26,6 +26,8 @@ Parser(file, tokens, tokens.last, 0)
 
 implicit class Parser_extend0(self : Parser) {
 
+val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
+
 def fail[T](at : Location, message : String) : T = {
 panic(((message + " ") + at.show))
 }
@@ -184,17 +186,22 @@ Poly(List(), List())
 self.skip(LColon());
 val type_ = self.parseType();
 self.rawSkip(LBracketLeft(), "{");
+var lets = List[DLet]();
 var methods = List[DFunction]();
 while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
-methods ::= self.parseFunctionDefinition();
+if_((!self.ahead.is(LBracketLeft())), {() =>
+lets ::= self.parseLetDefinition()
+}).else_({() =>
+methods ::= self.parseFunctionDefinition()
+});
 if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
 self.rawSkip(LBracketRight(), "}");
-DExtend(nameToken.at, nameToken.raw, poly.generics, poly.constraints, type_, methods.reverse)
+DExtend(nameToken.at, nameToken.raw, poly.generics, poly.constraints, type_, lets.reverse, methods.reverse)
 }
 
 def parseTraitDefinition() : DTrait = {
@@ -845,15 +852,11 @@ def parseTerm() : Term = {
 self.parseBinary(0)
 }
 
-def binaryOperators() = {
-Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
-}
-
 def parseBinary(level : Int) : Term = {
-if_((level >= binaryOperators().length), {() =>
+if_((level >= binaryOperators.length), {() =>
 self.parseUnary()
 }).else_({() =>
-val operators = binaryOperators()(level);
+val operators = binaryOperators(level);
 var result = self.parseBinary((level + 1));
 if_(self.current.is(LOperator()), {() =>
 while_({() =>

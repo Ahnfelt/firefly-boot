@@ -33,9 +33,11 @@ Emitter_emitModule(module: Module, otherModules: List[String]): String {
         namespaces.flatten
         List(
             if(namespaces.all { _.isEmpty }) {
-                emitTypeMembers(moduleNamespace, List(), module.functions.filter { _.namespace.isEmpty }.map {
-                    _.DFunction(namespace = Some(moduleNamespace + "_"))
-                })
+                emitTypeMembers(
+                    moduleNamespace,
+                    module.lets.filter { _.namespace.isEmpty },
+                    module.functions.filter { _.namespace.isEmpty }
+                )
             }.toList
             List("}")
         ).flatten
@@ -112,9 +114,10 @@ Emitter_emitExtendImplicit(definition: DExtend, index: Int): String {
     let generics = emitTypeParameters(definition.generics)
     let implicits = emitConstraints(definition.constraints)
     let parameter = escapeKeyword(definition.name) + " : " + emitType(definition.type)
+    let lets = definition.lets.map { Emitter_emitLetDefinition(_) }.join("\n\n")
     let methods = definition.methods.map { Emitter_emitFunctionDefinition(_) }.join("\n\n")
     "implicit class " + definition.type.name + "_extend" + index + generics +
-    "(" + parameter + ")" + implicits + " {\n\n" + methods + "\n\n}"
+    "(" + parameter + ")" + implicits + " {\n\n" + lets + "\n\n" + methods + "\n\n}"
 }
 
 Emitter_emitTraitDefinition(definition: DTrait): String {

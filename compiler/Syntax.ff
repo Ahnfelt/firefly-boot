@@ -51,7 +51,8 @@ type DExtend(
     generics: List[String],
     constraints: List[Constraint],
     type: Type,
-    methods: List[DFunction]
+    lets: List[DLet],
+    methods: List[DFunction],
 )
 type DType(
     at: Location,
