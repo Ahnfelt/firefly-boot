@@ -1,6 +1,6 @@
 type Wildcards(mutable seenWildcards : Int)
 
-of() {
+make() {
     Wildcards(0)
 }
 

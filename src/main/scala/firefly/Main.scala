@@ -60,7 +60,7 @@ def compileFile(fs : FileSystem, input : String, modules : List[String], output 
 val code = fs.readText(input);
 val tokens = Tokenizer.tokenize(input, code);
 val module = do_({() =>
-Parser.of(input, tokens).parseModule()
+Parser.make(input, tokens).parseModule()
 });
 val out = Emitter.emitModule(module, modules.filter({(_w1) =>
 (_w1 != module.file.dropRight(3))
@@ -128,7 +128,7 @@ def compileFile(fs : FileSystem, input : String, modules : List[String], output 
 val code = fs.readText(input);
 val tokens = Tokenizer.tokenize(input, code);
 val module = do_({() =>
-Parser.of(input, tokens).parseModule()
+Parser.make(input, tokens).parseModule()
 });
 val out = Emitter.emitModule(module, modules.filter({(_w1) =>
 (_w1 != module.file.dropRight(3))

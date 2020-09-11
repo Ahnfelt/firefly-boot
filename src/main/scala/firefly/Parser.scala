@@ -20,7 +20,7 @@ case class Parser(file : String, tokens : Array[Token], end : Token, var offset 
 
 case class Poly(generics : List[String], constraints : List[Constraint])
 
-def of(file : String, tokens : Array[Token]) : Parser = {
+def make(file : String, tokens : Array[Token]) : Parser = {
 Parser(file, tokens, tokens.last, 0)
 }
 
@@ -627,7 +627,7 @@ val term = self.parseStatements();
 List(MatchCase(token.at, parameters.reverse, None(), term))
 }).else_({() =>
 val term = self.parseStatements();
-val wildcards = Wildcards.of();
+val wildcards = Wildcards.make();
 val e = wildcards.fixWildcards(term);
 val arguments = if_((wildcards.seenWildcards != 0), {() =>
 1.to(wildcards.seenWildcards).toList.map({(i) =>
@@ -1112,7 +1112,7 @@ EList(at, items.reverse)
 
 object Parser {
 
-def of(file : String, tokens : Array[Token]) : Parser = {
+def make(file : String, tokens : Array[Token]) : Parser = {
 Parser(file, tokens, tokens.last, 0)
 }
 

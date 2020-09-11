@@ -18,7 +18,7 @@ object Wildcards {
 
 case class Wildcards(var seenWildcards : Int)
 
-def of() = {
+def make() = {
 Wildcards(0)
 }
 
@@ -72,7 +72,7 @@ term
 
 object Wildcards {
 
-def of() = {
+def make() = {
 Wildcards(0)
 }
 
