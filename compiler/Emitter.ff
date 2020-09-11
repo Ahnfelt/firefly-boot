@@ -15,25 +15,30 @@ Emitter_emitModule(module: Module, otherModules: List[String]): String {
         }
     }
     let parts = List(
-        List("package firefly"),
-        List("import firefly.Firefly_Core._") ++ otherModules.map { "import firefly." + _ + "._" },
-        List("object " + moduleNamespace + " {"),
+        List("package firefly")
+        List("import firefly.Firefly_Core._") ++ otherModules.map { "import firefly." + _ + "._" }
+        List("object " + moduleNamespace + " {")
         if(
             module.functions.exists { f => f.namespace.isEmpty && f.signature.name == "main" }
-        ) {List(emitMain())} else {List()},
-        module.types.map(emitTypeDefinition),
-        module.lets.filter { _.namespace.isEmpty }.map { emitLetDefinition(_) },
-        module.functions.filter { _.namespace.isEmpty }.map { emitFunctionDefinition(_) },
+        ) {List(emitMain())} else {List()}
+        module.types.map(emitTypeDefinition)
+        module.lets.filter { _.namespace.isEmpty }.map { emitLetDefinition(_) }
+        module.functions.filter { _.namespace.isEmpty }.map { emitFunctionDefinition(_) }
         module.functions.filter { f =>
             f.namespace.exists(f.signature.parameters.headOption.map { _.valueType.name + "_" }.contains)
-        }.map(emitMethodImplicit),
-        module.extends.pairs.map { pair => emitExtendImplicit(pair.second, pair.first) },
-        module.traits.map(emitTraitDefinition),
-        module.instances.map(emitInstanceDefinition),
-        namespaces.flatten,
+        }.map(emitMethodImplicit)
+        module.extends.pairs.map { pair => emitExtendImplicit(pair.second, pair.first) }
+        module.traits.map(emitTraitDefinition)
+        module.instances.map(emitInstanceDefinition)
+        namespaces.flatten
         List(
-            "}"
-        ),
+            if(namespaces.all { _.isEmpty }) {
+                emitTypeMembers(moduleNamespace, List(), module.functions.filter { _.namespace.isEmpty }.map {
+                    _.DFunction(namespace = Some(moduleNamespace + "_"))
+                })
+            }.toList
+            List("}")
+        ).flatten
     )
     let allNamespaces = module.lets.flatMap { _.namespace } ++ module.functions.flatMap { _.namespace }
     allNamespaces.find { n => !module.types.exists { _.name + "_" == n } }.foreach { n =>

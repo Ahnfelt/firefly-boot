@@ -1,6 +1,6 @@
 type Wildcards(mutable seenWildcards : Int)
 
-Wildcards_of() {
+of() {
     Wildcards(0)
 }
 
