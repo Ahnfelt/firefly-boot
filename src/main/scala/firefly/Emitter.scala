@@ -73,7 +73,15 @@ f.namespace.exists(f.signature.parameters.headOption.map({(_w1) =>
 }).contains)
 }).map(emitMethodImplicit), module.extends_.pairs.map({(pair) =>
 emitExtendImplicit(pair.second, pair.first)
-}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), namespaces.flatten, List("}"));
+}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), namespaces.flatten, List(if_(namespaces.all({(_w1) =>
+_w1.isEmpty
+}), {() =>
+emitTypeMembers(moduleNamespace, List(), module.functions.filter({(_w1) =>
+_w1.namespace.isEmpty
+}).map({(_w1) =>
+_w1.copy(namespace = Some((moduleNamespace + "_")))
+}))
+}).toList, List("}")).flatten);
 val allNamespaces = (module.lets.flatMap({(_w1) =>
 _w1.namespace
 }) ++ module.functions.flatMap({(_w1) =>

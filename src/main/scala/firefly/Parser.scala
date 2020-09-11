@@ -19,285 +19,18 @@ object Parser {
 case class Parser(file : String, tokens : Array[Token], end : Token, var offset : Int)
 
 case class Poly(generics : List[String], constraints : List[Constraint])
-val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
-
-implicit class Parser_fail[T](self : Parser) {
-
-def fail(at : Location, message : String) : T = Parser.fail(self, at, message)
-
-}
-
-implicit class Parser_current(self : Parser) {
-
-def current() : Token = Parser.current(self)
-
-}
-
-implicit class Parser_ahead(self : Parser) {
-
-def ahead() : Token = Parser.ahead(self)
-
-}
-
-implicit class Parser_aheadAhead(self : Parser) {
-
-def aheadAhead() : Token = Parser.aheadAhead(self)
-
-}
-
-implicit class Parser_skip(self : Parser) {
-
-def skip(kind : TokenKind) : Token = Parser.skip(self, kind)
-
-}
-
-implicit class Parser_rawSkip(self : Parser) {
-
-def rawSkip(kind : TokenKind, value : String) : Token = Parser.rawSkip(self, kind, value)
-
-}
-
-implicit class Parser_currentIsSeparator(self : Parser) {
-
-def currentIsSeparator(kind : TokenKind) : Bool = Parser.currentIsSeparator(self, kind)
-
-}
-
-implicit class Parser_skipSeparator(self : Parser) {
-
-def skipSeparator(kind : TokenKind) : Token = Parser.skipSeparator(self, kind)
-
-}
-
-implicit class Parser_parseModule(self : Parser) {
-
-def parseModule() : Module = Parser.parseModule(self)
-
-}
-
-implicit class Parser_parseLetDefinition(self : Parser) {
-
-def parseLetDefinition(scopeType : Option[String] = None()) : DLet = Parser.parseLetDefinition(self, scopeType)
-
-}
-
-implicit class Parser_parseFunctionDefinition(self : Parser) {
-
-def parseFunctionDefinition(scopeType : Option[String] = None()) : DFunction = Parser.parseFunctionDefinition(self, scopeType)
-
-}
-
-implicit class Parser_parseSignature(self : Parser) {
-
-def parseSignature(scopeType : Option[String] = None()) : Signature = Parser.parseSignature(self, scopeType)
-
-}
-
-implicit class Parser_parseExtendDefinition(self : Parser) {
-
-def parseExtendDefinition() : DExtend = Parser.parseExtendDefinition(self)
-
-}
-
-implicit class Parser_parseTraitDefinition(self : Parser) {
-
-def parseTraitDefinition() : DTrait = Parser.parseTraitDefinition(self)
-
-}
-
-implicit class Parser_parseInstanceDefinition(self : Parser) {
-
-def parseInstanceDefinition() : DInstance = Parser.parseInstanceDefinition(self)
-
-}
-
-implicit class Parser_parseTypeDefinition(self : Parser) {
-
-def parseTypeDefinition() : DType = Parser.parseTypeDefinition(self)
-
-}
-
-implicit class Parser_parseImportDefinition(self : Parser) {
-
-def parseImportDefinition() : DImport = Parser.parseImportDefinition(self)
-
-}
-
-implicit class Parser_parseDependencyDefinition(self : Parser) {
-
-def parseDependencyDefinition() : DDependency = Parser.parseDependencyDefinition(self)
-
-}
-
-implicit class Parser_parseVersion(self : Parser) {
-
-def parseVersion() : Version = Parser.parseVersion(self)
-
-}
-
-implicit class Parser_parseDashedName(self : Parser) {
-
-def parseDashedName() : String = Parser.parseDashedName(self)
-
-}
-
-implicit class Parser_parseTypeParameters(self : Parser) {
-
-def parseTypeParameters() : Poly = Parser.parseTypeParameters(self)
-
-}
-
-implicit class Parser_parseTypeArguments(self : Parser) {
-
-def parseTypeArguments(parenthesis : Boolean = False()) : List[Type] = Parser.parseTypeArguments(self, parenthesis)
-
-}
-
-implicit class Parser_parseFunctionParameters(self : Parser) {
-
-def parseFunctionParameters(allowMutable : Boolean = False()) : List[Parameter] = Parser.parseFunctionParameters(self, allowMutable)
-
-}
-
-implicit class Parser_parseFunctionArguments(self : Parser) {
-
-def parseFunctionArguments() : List[Argument] = Parser.parseFunctionArguments(self)
-
-}
-
-implicit class Parser_parseOptionalType(self : Parser) {
-
-def parseOptionalType() : Type = Parser.parseOptionalType(self)
-
-}
-
-implicit class Parser_parseLambda(self : Parser) {
-
-def parseLambda(defaultParameterCount : Int = 0, ignoreGenerateKeyword : Boolean = False(), allowColon : Boolean = False()) : ELambda = Parser.parseLambda(self, defaultParameterCount, ignoreGenerateKeyword, allowColon)
-
-}
-
-implicit class Parser_parseCase(self : Parser) {
-
-def parseCase() : MatchCase = Parser.parseCase(self)
-
-}
-
-implicit class Parser_parsePattern(self : Parser) {
-
-def parsePattern() : MatchPattern = Parser.parsePattern(self)
-
-}
-
-implicit class Parser_parseType(self : Parser) {
-
-def parseType() : Type = Parser.parseType(self)
-
-}
-
-implicit class Parser_parseStatements(self : Parser) {
-
-def parseStatements() : Term = Parser.parseStatements(self)
-
-}
-
-implicit class Parser_parseStatement(self : Parser) {
-
-def parseStatement() : Term = Parser.parseStatement(self)
-
-}
-
-implicit class Parser_parseLet(self : Parser) {
-
-def parseLet() : Term = Parser.parseLet(self)
-
-}
-
-implicit class Parser_parseFunctions(self : Parser) {
-
-def parseFunctions() : Term = Parser.parseFunctions(self)
-
-}
-
-implicit class Parser_parseTerm(self : Parser) {
-
-def parseTerm() : Term = Parser.parseTerm(self)
-
-}
-
-implicit class Parser_parseBinary(self : Parser) {
-
-def parseBinary(level : Int) : Term = Parser.parseBinary(self, level)
-
-}
-
-implicit class Parser_parseUnary(self : Parser) {
-
-def parseUnary() : Term = Parser.parseUnary(self)
-
-}
-
-implicit class Parser_parseFieldsAndCalls(self : Parser) {
-
-def parseFieldsAndCalls() : Term = Parser.parseFieldsAndCalls(self)
-
-}
-
-implicit class Parser_parseAtom(self : Parser) {
-
-def parseAtom() : Term = Parser.parseAtom(self)
-
-}
-
-implicit class Parser_parseVariant(self : Parser) {
-
-def parseVariant(prefix : String) : Term = Parser.parseVariant(self, prefix)
-
-}
-
-implicit class Parser_parseCopy(self : Parser) {
-
-def parseCopy(record : Term) : Term = Parser.parseCopy(self, record)
-
-}
-
-implicit class Parser_parseRecord(self : Parser) {
-
-def parseRecord() : List[Field] = Parser.parseRecord(self)
-
-}
-
-implicit class Parser_parseRecordType(self : Parser) {
-
-def parseRecordType() : List[Pair[String, Type]] = Parser.parseRecordType(self)
-
-}
-
-implicit class Parser_parseRecordPattern(self : Parser) {
-
-def parseRecordPattern() : List[Pair[String, MatchPattern]] = Parser.parseRecordPattern(self)
-
-}
-
-implicit class Parser_parseList(self : Parser) {
-
-def parseList() : Term = Parser.parseList(self)
-
-}
-
-
-
-object Parser {
 
 def of(file : String, tokens : Array[Token]) : Parser = {
 Parser(file, tokens, tokens.last, 0)
 }
 
-def fail[T](self : Parser, at : Location, message : String) : T = {
+implicit class Parser_extend0(self : Parser) {
+
+def fail[T](at : Location, message : String) : T = {
 panic(((message + " ") + at.show))
 }
 
-def current(self : Parser) : Token = {
+def current() : Token = {
 if_((self.offset < self.tokens.length), {() =>
 self.tokens(self.offset)
 }).else_({() =>
@@ -305,7 +38,7 @@ self.end
 })
 }
 
-def ahead(self : Parser) : Token = {
+def ahead() : Token = {
 if_(((self.offset + 1) < self.tokens.length), {() =>
 self.tokens((self.offset + 1))
 }).else_({() =>
@@ -313,7 +46,7 @@ self.end
 })
 }
 
-def aheadAhead(self : Parser) : Token = {
+def aheadAhead() : Token = {
 if_(((self.offset + 2) < self.tokens.length), {() =>
 self.tokens((self.offset + 2))
 }).else_({() =>
@@ -321,7 +54,7 @@ self.end
 })
 }
 
-def skip(self : Parser, kind : TokenKind) : Token = {
+def skip(kind : TokenKind) : Token = {
 val c = self.current;
 if_((c.kind != kind), {() =>
 self.fail(c.at, ((("Expected " + kind) + ", got ") + c.raw))
@@ -330,7 +63,7 @@ self.offset += 1;
 c
 }
 
-def rawSkip(self : Parser, kind : TokenKind, value : String) : Token = {
+def rawSkip(kind : TokenKind, value : String) : Token = {
 val c = self.current;
 if_((c.kind != kind), {() =>
 self.fail(c.at, ((((("Expected " + kind) + " ") + value) + ", got ") + c.raw))
@@ -342,11 +75,11 @@ self.offset += 1;
 c
 }
 
-def currentIsSeparator(self : Parser, kind : TokenKind) : Bool = {
+def currentIsSeparator(kind : TokenKind) : Bool = {
 (self.current.is(kind) || self.current.is(LSeparator()))
 }
 
-def skipSeparator(self : Parser, kind : TokenKind) : Token = {
+def skipSeparator(kind : TokenKind) : Token = {
 if_(self.current.is(LSeparator()), {() =>
 self.skip(LSeparator())
 }).else_({() =>
@@ -354,7 +87,7 @@ self.skip(kind)
 })
 }
 
-def parseModule(self : Parser) : Module = {
+def parseModule() : Module = {
 var result = Module(self.file, List(), List(), List(), List(), List(), List(), List(), List());
 while_({() =>
 (!self.current.is(LEnd()))
@@ -409,7 +142,7 @@ self.skipSeparator(LSemicolon())
 Module(file = self.file, dependencies = result.dependencies.reverse, imports = result.imports.reverse, lets = result.lets.reverse, functions = result.functions.reverse, extends_ = result.extends_.reverse, types = result.types.reverse, traits = result.traits.reverse, instances = result.instances.reverse)
 }
 
-def parseLetDefinition(self : Parser, scopeType : Option[String] = None()) : DLet = {
+def parseLetDefinition(scopeType : Option[String] = None()) : DLet = {
 val nameToken = self.skip(LLower());
 val variableType = if_(self.current.is(LColon()), {() =>
 self.skip(LColon());
@@ -422,13 +155,13 @@ val value = self.parseTerm();
 DLet(nameToken.at, scopeType, nameToken.raw, variableType, value)
 }
 
-def parseFunctionDefinition(self : Parser, scopeType : Option[String] = None()) : DFunction = {
+def parseFunctionDefinition(scopeType : Option[String] = None()) : DFunction = {
 val signature = self.parseSignature(scopeType);
 val body = self.parseLambda(signature.parameters.size);
 DFunction(signature.at, scopeType, signature, body)
 }
 
-def parseSignature(self : Parser, scopeType : Option[String] = None()) : Signature = {
+def parseSignature(scopeType : Option[String] = None()) : Signature = {
 val nameToken = self.skip(LLower());
 val poly = if_(self.current.rawIs("["), {() =>
 self.parseTypeParameters()
@@ -440,7 +173,7 @@ val returnType = self.parseOptionalType();
 Signature(nameToken.at, nameToken.raw, poly.generics, poly.constraints, parameters, returnType)
 }
 
-def parseExtendDefinition(self : Parser) : DExtend = {
+def parseExtendDefinition() : DExtend = {
 self.rawSkip(LKeyword(), "extend");
 val nameToken = self.skip(LLower());
 val poly = if_(self.current.rawIs("["), {() =>
@@ -464,7 +197,7 @@ self.rawSkip(LBracketRight(), "}");
 DExtend(nameToken.at, nameToken.raw, poly.generics, poly.constraints, type_, methods.reverse)
 }
 
-def parseTraitDefinition(self : Parser) : DTrait = {
+def parseTraitDefinition() : DTrait = {
 self.rawSkip(LKeyword(), "trait");
 val nameToken = self.skip(LUpper());
 val poly = if_((!self.current.rawIs("[")), {() =>
@@ -508,7 +241,7 @@ signatures
 DTrait(nameToken.at, nameToken.raw, poly.generics, poly.constraints, generatorParameters, methodSignatures.reverse, methodDefaults.reverse, methodGenerators.reverse)
 }
 
-def parseInstanceDefinition(self : Parser) : DInstance = {
+def parseInstanceDefinition() : DInstance = {
 self.rawSkip(LKeyword(), "instance");
 val nameToken = self.skip(LUpper());
 var typeArguments = List[Type]();
@@ -554,7 +287,7 @@ val traitType = Type(nameToken.at, nameToken.raw, typeArguments.reverse);
 DInstance(nameToken.at, poly.generics, poly.constraints, traitType, generatorArguments, methods)
 }
 
-def parseTypeDefinition(self : Parser) : DType = {
+def parseTypeDefinition() : DType = {
 self.rawSkip(LKeyword(), "type");
 val nameToken = self.skip(LUpper());
 val poly = if_((!self.current.rawIs("[")), {() =>
@@ -592,7 +325,7 @@ reverseVariants.reverse
 DType(nameToken.at, nameToken.raw, poly.generics, poly.constraints, commonFields, variants)
 }
 
-def parseImportDefinition(self : Parser) : DImport = {
+def parseImportDefinition() : DImport = {
 self.rawSkip(LKeyword(), "import");
 val aliasToken = self.skip(LUpper());
 if_((!self.current.is(LKeyword())), {() =>
@@ -634,7 +367,7 @@ DImport(aliasToken.at, aliasToken.raw, package_, path.reverse, file)
 })
 }
 
-def parseDependencyDefinition(self : Parser) : DDependency = {
+def parseDependencyDefinition() : DDependency = {
 val safety = if_(self.current.rawIs("safe"), {() =>
 Safe()
 }).else_({() =>
@@ -674,7 +407,7 @@ self.skip(LBracketRight())
 DDependency(at, Pair(user, name), safety, goodVersions.reverse, badVersions.reverse)
 }
 
-def parseVersion(self : Parser) : Version = {
+def parseVersion() : Version = {
 if_(self.current.is(LFloat()), {() =>
 val majorMinor = self.skip(LFloat());
 val parts = majorMinor.raw.split('.');
@@ -691,7 +424,7 @@ Version(major.at, major.raw.toInt, 0, 0)
 })
 }
 
-def parseDashedName(self : Parser) : String = {
+def parseDashedName() : String = {
 val at = self.current.at;
 def readPart() = {
 if_(self.current.is(LInt()), {() =>
@@ -725,7 +458,7 @@ self.fail(at, ("Package names and paths must not contain underscores: " + part))
 part
 }
 
-def parseTypeParameters(self : Parser) : Poly = {
+def parseTypeParameters() : Poly = {
 self.rawSkip(LBracketLeft(), "[");
 var parameters = List[String]();
 var constraints = List[Constraint]();
@@ -764,7 +497,7 @@ self.rawSkip(LBracketRight(), "]");
 Poly(parameters.reverse, constraints.reverse)
 }
 
-def parseTypeArguments(self : Parser, parenthesis : Boolean = False()) : List[Type] = {
+def parseTypeArguments(parenthesis : Boolean = False()) : List[Type] = {
 self.rawSkip(LBracketLeft(), if_(parenthesis, {() =>
 "("
 }).else_({() =>
@@ -787,7 +520,7 @@ self.rawSkip(LBracketRight(), if_(parenthesis, {() =>
 types.reverse
 }
 
-def parseFunctionParameters(self : Parser, allowMutable : Boolean = False()) : List[Parameter] = {
+def parseFunctionParameters(allowMutable : Boolean = False()) : List[Parameter] = {
 var parameters = List[Parameter]();
 self.rawSkip(LBracketLeft(), "(");
 while_({() =>
@@ -814,7 +547,7 @@ self.rawSkip(LBracketRight(), ")");
 parameters.reverse
 }
 
-def parseFunctionArguments(self : Parser) : List[Argument] = {
+def parseFunctionArguments() : List[Argument] = {
 self.rawSkip(LBracketLeft(), "(");
 var arguments = List[Argument]();
 while_({() =>
@@ -841,7 +574,7 @@ self.rawSkip(LBracketRight(), ")");
 arguments.reverse
 }
 
-def parseOptionalType(self : Parser) : Type = {
+def parseOptionalType() : Type = {
 val token = self.current;
 if_(token.is(LColon()), {() =>
 self.skip(LColon());
@@ -851,7 +584,7 @@ Type(token.at, "?", List())
 })
 }
 
-def parseLambda(self : Parser, defaultParameterCount : Int = 0, ignoreGenerateKeyword : Boolean = False(), allowColon : Boolean = False()) : ELambda = {
+def parseLambda(defaultParameterCount : Int = 0, ignoreGenerateKeyword : Boolean = False(), allowColon : Boolean = False()) : ELambda = {
 val colon = (allowColon && self.current.is(LColon()));
 val token = if_(colon, {() =>
 self.skip(LColon())
@@ -906,7 +639,7 @@ self.rawSkip(LBracketRight(), "}")
 ELambda(token.at, result)
 }
 
-def parseCase(self : Parser) : MatchCase = {
+def parseCase() : MatchCase = {
 val token = self.skip(LPipe());
 var patterns = List[MatchPattern]();
 while_({() =>
@@ -930,7 +663,7 @@ val body = self.parseStatements();
 MatchCase(token.at, patterns.reverse, condition, body)
 }
 
-def parsePattern(self : Parser) : MatchPattern = {
+def parsePattern() : MatchPattern = {
 val pattern = if_(self.current.is(LWildcard()), {() =>
 val token = self.skip(LWildcard());
 PVariable(token.at, None())
@@ -983,7 +716,7 @@ pattern
 })
 }
 
-def parseType(self : Parser) : Type = {
+def parseType() : Type = {
 val leftTypes = if_(((self.current.rawIs("(") && self.ahead.is(LLower())) && self.aheadAhead.is(LColon())), {() =>
 val at = self.current.at;
 val pair = self.parseRecordType().unzip;
@@ -1015,7 +748,7 @@ Type(arrowToken.at, ("Function$" + leftTypes.size), (leftTypes ++ List(rightType
 })
 }
 
-def parseStatements(self : Parser) : Term = {
+def parseStatements() : Term = {
 if_(self.current.is2(LBracketRight(), LPipe()), {() =>
 EVariant(self.current.at, "Unit", List(), None())
 }).else_({() =>
@@ -1030,7 +763,7 @@ result
 })
 }
 
-def parseStatement(self : Parser) : Term = {
+def parseStatement() : Term = {
 if_((self.current.is(LKeyword()) && (self.current.rawIs("let") || self.current.rawIs("mutable"))), {() =>
 self.parseLet()
 }).else_({() =>
@@ -1071,7 +804,7 @@ self.fail(token.at, "Only variables and fields are assignable")
 })
 }
 
-def parseLet(self : Parser) : Term = {
+def parseLet() : Term = {
 val mutable = self.current.rawIs("mutable");
 if_(mutable, {() =>
 self.rawSkip(LKeyword(), "mutable")
@@ -1092,7 +825,7 @@ val body = self.parseStatements();
 ELet(nameToken.at, mutable, nameToken.raw, valueType, value, body)
 }
 
-def parseFunctions(self : Parser) : Term = {
+def parseFunctions() : Term = {
 val at = self.current.at;
 var functions = List[LocalFunction]();
 while_({() =>
@@ -1108,15 +841,19 @@ val body = self.parseStatements();
 EFunctions(at, functions.reverse, body)
 }
 
-def parseTerm(self : Parser) : Term = {
+def parseTerm() : Term = {
 self.parseBinary(0)
 }
 
-def parseBinary(self : Parser, level : Int) : Term = {
-if_((level >= binaryOperators.length), {() =>
+def binaryOperators() = {
+Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
+}
+
+def parseBinary(level : Int) : Term = {
+if_((level >= binaryOperators().length), {() =>
 self.parseUnary()
 }).else_({() =>
-val operators = binaryOperators(level);
+val operators = binaryOperators()(level);
 var result = self.parseBinary((level + 1));
 if_(self.current.is(LOperator()), {() =>
 while_({() =>
@@ -1132,7 +869,7 @@ result
 })
 }
 
-def parseUnary(self : Parser) : Term = {
+def parseUnary() : Term = {
 if_(self.current.is(LOperator()), {() =>
 val token = self.skip(LOperator());
 val term = self.parseUnary();
@@ -1142,7 +879,7 @@ self.parseFieldsAndCalls()
 })
 }
 
-def parseFieldsAndCalls(self : Parser) : Term = {
+def parseFieldsAndCalls() : Term = {
 var result = self.parseAtom();
 while_({() =>
 ((self.current.is(LBracketLeft()) || self.current.is(LColon())) || self.current.is(LDot()))
@@ -1191,7 +928,7 @@ result = EField(token.at, result, token.raw)
 result
 }
 
-def parseAtom(self : Parser) : Term = {
+def parseAtom() : Term = {
 if_(self.current.is(LString()), {() =>
 val token = self.skip(LString());
 EString(token.at, token.raw)
@@ -1264,7 +1001,7 @@ self.fail(self.current.at, ("Expected atom, got " + self.current.raw))
 })
 }
 
-def parseVariant(self : Parser, prefix : String) : Term = {
+def parseVariant(prefix : String) : Term = {
 val token = self.skip(LUpper());
 val name = (prefix + token.raw);
 val typeArguments = if_((!self.current.rawIs("[")), {() =>
@@ -1280,7 +1017,7 @@ Some(self.parseFunctionArguments())
 EVariant(token.at, name, typeArguments, arguments)
 }
 
-def parseCopy(self : Parser, record : Term) : Term = {
+def parseCopy(record : Term) : Term = {
 val namespace = if_((!self.current.is(LNamespace())), {() =>
 ""
 }).else_({() =>
@@ -1298,7 +1035,7 @@ val fields = self.parseRecord();
 ECopy(token.at, name, record, fields)
 }
 
-def parseRecord(self : Parser) : List[Field] = {
+def parseRecord() : List[Field] = {
 var fields = List[Field]();
 self.rawSkip(LBracketLeft(), "(");
 while_({() =>
@@ -1315,7 +1052,7 @@ self.rawSkip(LBracketRight(), ")");
 fields.reverse
 }
 
-def parseRecordType(self : Parser) : List[Pair[String, Type]] = {
+def parseRecordType() : List[Pair[String, Type]] = {
 var fields = List[Pair[String, Type]]();
 self.rawSkip(LBracketLeft(), "(");
 while_({() =>
@@ -1334,7 +1071,7 @@ _w1.first
 })
 }
 
-def parseRecordPattern(self : Parser) : List[Pair[String, MatchPattern]] = {
+def parseRecordPattern() : List[Pair[String, MatchPattern]] = {
 var fields = List[Pair[String, MatchPattern]]();
 self.rawSkip(LBracketLeft(), "(");
 while_({() =>
@@ -1351,7 +1088,7 @@ self.rawSkip(LBracketRight(), ")");
 fields.reverse
 }
 
-def parseList(self : Parser) : Term = {
+def parseList() : Term = {
 var items = List[Term]();
 val at = self.rawSkip(LBracketLeft(), "[").at;
 while_({() =>
@@ -1367,4 +1104,15 @@ EList(at, items.reverse)
 }
 
 }
+
+
+
+object Parser {
+
+def of(file : String, tokens : Array[Token]) : Parser = {
+Parser(file, tokens, tokens.last, 0)
+}
+
+}
+
 }

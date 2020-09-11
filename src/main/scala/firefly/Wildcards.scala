@@ -18,7 +18,9 @@ object Wildcards {
 
 case class Wildcards(var seenWildcards : Int)
 
-
+def of() = {
+Wildcards(0)
+}
 
 implicit class Wildcards_extend0(self : Wildcards) {
 
@@ -65,6 +67,7 @@ term
 }
 
 
+
 object Wildcards {
 
 def of() = {
@@ -72,4 +75,5 @@ Wildcards(0)
 }
 
 }
+
 }
