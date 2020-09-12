@@ -1,19 +1,5 @@
 package firefly
 import firefly.Firefly_Core._
-
-import firefly.Emitter._
-
-import firefly.Main._
-
-import firefly.Parser._
-
-import firefly.Syntax._
-
-import firefly.Token._
-
-import firefly.Tokenizer._
-
-import firefly.Wildcards._
 object Syntax {
 
 case class Location(file : String, line : Int, column : Int)

@@ -1,19 +1,7 @@
 package firefly
 import firefly.Firefly_Core._
 
-import firefly.Emitter._
-
-import firefly.Main._
-
-import firefly.Parser._
-
 import firefly.Syntax._
-
-import firefly.Token._
-
-import firefly.Tokenizer._
-
-import firefly.Wildcards._
 object Token {
 
 case class Token(file : String, code : String, kind : TokenKind, startLine : Int, startLineOffset : Int, startOffset : Int, stopLine : Int, stopLineOffset : Int, stopOffset : Int)

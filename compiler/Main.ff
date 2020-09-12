@@ -1,3 +1,7 @@
+import Tokenizer
+import Parser
+import Emitter
+
 main(system: System): Unit {
 
     let corePath = system.arguments(0)

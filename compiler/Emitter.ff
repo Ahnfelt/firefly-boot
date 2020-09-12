@@ -1,3 +1,5 @@
+import Syntax
+
 fail[T](at: Location, message: String): T {
     panic(message + " " + at.show)
 }
@@ -6,7 +8,7 @@ emitModule(module: Module, otherModules: List[String]): String {
     let moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile { _ != '/' }.reverse.takeWhile { _ != '.' }
     let parts = List(
         List("package firefly")
-        List("import firefly.Firefly_Core._") ++ otherModules.map { "import firefly." + _ + "._" }
+        List("import firefly.Firefly_Core._") ++ module.imports.map { "import firefly." + _.file + "._" }
         List("object " + moduleNamespace + " {")
         if(module.functions.exists { _.signature.name == "main" }) { List(emitMain()) } else { List() }
         module.types.map(emitTypeDefinition)

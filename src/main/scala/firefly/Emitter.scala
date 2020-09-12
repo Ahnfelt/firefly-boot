@@ -1,19 +1,7 @@
 package firefly
 import firefly.Firefly_Core._
 
-import firefly.Emitter._
-
-import firefly.Main._
-
-import firefly.Parser._
-
 import firefly.Syntax._
-
-import firefly.Token._
-
-import firefly.Tokenizer._
-
-import firefly.Wildcards._
 object Emitter {
 
 
@@ -28,8 +16,8 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 }).reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
-val parts = List(List("package firefly"), (List("import firefly.Firefly_Core._") ++ otherModules.map({(_w1) =>
-(("import firefly." + _w1) + "._")
+val parts = List(List("package firefly"), (List("import firefly.Firefly_Core._") ++ module.imports.map({(_w1) =>
+(("import firefly." + _w1.file) + "._")
 })), List((("object " + moduleNamespace) + " {")), if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")
 }), {() =>
@@ -413,8 +401,8 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 }).reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
-val parts = List(List("package firefly"), (List("import firefly.Firefly_Core._") ++ otherModules.map({(_w1) =>
-(("import firefly." + _w1) + "._")
+val parts = List(List("package firefly"), (List("import firefly.Firefly_Core._") ++ module.imports.map({(_w1) =>
+(("import firefly." + _w1.file) + "._")
 })), List((("object " + moduleNamespace) + " {")), if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")
 }), {() =>

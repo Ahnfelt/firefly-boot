@@ -1,3 +1,5 @@
+import Token
+
 tokenize(file: String, code: String) {
 
     let tokens = ArrayBuilder[Token]()
