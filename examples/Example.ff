@@ -18,9 +18,13 @@ type Stack {
     PushStack(value: Int, stack: Stack)
 }
 
-Stack_map(list: Stack, body: Int => Int): Stack {
-    | EmptyStack, _ => EmptyStack
-    | PushStack s, _ => PushStack(body(s.value), map(s.stack, body))
+extend stack: Stack {
+    map(body: Int => Int): Stack {
+        switch(stack) {
+            | EmptyStack, _ => EmptyStack
+            | PushStack s, _ => PushStack(body(s.value), s.stack.map(body))
+        }
+    }
 }
 
 user: (name: String, email: String) = (name = "Joe", email = "jj@example.com")
