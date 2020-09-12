@@ -21,8 +21,8 @@ type Stack {
 extend stack: Stack {
     map(body: Int => Int): Stack {
         switch(stack) {
-            | EmptyStack, _ => EmptyStack
-            | PushStack s, _ => PushStack(body(s.value), s.stack.map(body))
+            | EmptyStack => EmptyStack
+            | PushStack s => PushStack(body(s.value), s.stack.map(body))
         }
     }
 }
