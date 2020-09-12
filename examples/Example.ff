@@ -33,10 +33,9 @@ load(files: FileSystem, file1: String, file2: String): String {
     try {
         files.readText(file1) ++
         files.readText(file2)
-    } catch[FileException] {
-        | Exception(FileNotFound _) => ""
-        | e => e.throw()
-    }
+    } catch(FileNotFound?) { e =>
+        ""
+    } expect
 }
 
 type FileException(file: String) {
