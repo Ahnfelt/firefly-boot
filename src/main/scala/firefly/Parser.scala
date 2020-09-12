@@ -1,19 +1,11 @@
 package firefly
 import firefly.Firefly_Core._
 
-import firefly.Emitter._
-
-import firefly.Main._
-
-import firefly.Parser._
-
-import firefly.Syntax._
-
 import firefly.Token._
 
-import firefly.Tokenizer._
-
 import firefly.Wildcards._
+
+import firefly.Syntax._
 object Parser {
 
 case class Parser(file : String, tokens : Array[Token], end : Token, var offset : Int)
