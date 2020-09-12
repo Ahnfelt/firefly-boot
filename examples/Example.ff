@@ -24,3 +24,20 @@ Stack_map(list: Stack, body: Int => Int): Stack {
 }
 
 user: (name: String, email: String) = (name = "Joe", email = "jj@example.com")
+
+load(files: FileSystem, file1: String, file2: String): String {
+    try {
+        files.readText(file1) ++
+        files.readText(file2)
+    } catch[FileException] {
+        | Exception(FileNotFound _) => ""
+        | e => throw e
+    }
+}
+
+type FileException(file: String) {
+    FileNotFound
+    AccessDenied
+}
+
+instance Exceptional[FileException]
