@@ -98,6 +98,7 @@ type Term(at: Location) {
     EList(items: List[Term])
     ECopy(name: String, record: Term, arguments: List[Field])
     EVariant(name: String, typeArguments: List[Type], arguments: Option[List[Argument]])
+    EVariantIs(name: String, typeArguments: List[Type])
     ERecord(fields: List[Field])
     EField(record: Term, field: String)
     EWildcard(index: Int)

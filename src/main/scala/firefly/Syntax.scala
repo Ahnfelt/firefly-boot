@@ -41,6 +41,7 @@ case class ECall(at : Location, function : Term, typeArguments : List[Type], arg
 case class EList(at : Location, items : List[Term]) extends Term
 case class ECopy(at : Location, name : String, record : Term, arguments : List[Field]) extends Term
 case class EVariant(at : Location, name : String, typeArguments : List[Type], arguments : Option[List[Argument]]) extends Term
+case class EVariantIs(at : Location, name : String, typeArguments : List[Type]) extends Term
 case class ERecord(at : Location, fields : List[Field]) extends Term
 case class EField(at : Location, record : Term, field : String) extends Term
 case class EWildcard(at : Location, index : Int) extends Term

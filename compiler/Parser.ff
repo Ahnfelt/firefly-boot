@@ -734,6 +734,7 @@ extend self: Parser {
         let token = self.skip(LUpper)
         let name = prefix + token.raw
         let typeArguments = if(!self.current.rawIs("[")) {List()} else {self.parseTypeArguments()}
+        if(self.current.rawIs("?")) { self.skip(LOperator); EVariantIs(token.at, name, typeArguments) } else:
         let arguments = if(!self.current.rawIs("(")) {None} else {Some(self.parseFunctionArguments())}
         EVariant(token.at, name, typeArguments, arguments)
     }

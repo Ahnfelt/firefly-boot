@@ -995,12 +995,17 @@ List()
 }).else_({() =>
 self.parseTypeArguments()
 });
+if_(self.current.rawIs("?"), {() =>
+self.skip(LOperator());
+EVariantIs(token.at, name, typeArguments)
+}).else_({() =>
 val arguments = if_((!self.current.rawIs("(")), {() =>
 None()
 }).else_({() =>
 Some(self.parseFunctionArguments())
 });
 EVariant(token.at, name, typeArguments, arguments)
+})
 }
 
 def parseCopy(record : Term) : Term = {
