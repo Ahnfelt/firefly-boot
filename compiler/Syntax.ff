@@ -1,4 +1,5 @@
 type Location(file: String, line: Int, column: Int)
+type CompileError(at: Location, message: String)
 
 extend self: Location {
     show(): String {

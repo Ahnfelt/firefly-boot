@@ -214,7 +214,7 @@ emitTerm(term: Term): String {
         name + generics + "(" + arguments.toList.flatten.map(emitArgument).mkString(", ") + ")"
     | EVariantIs(at, name, typeArguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
-        "({ case _w : " + name + generics + " => _w }.lift)"
+        "({ case _w : " + name + generics + " => Some(_w); case _ => None() })"
     | ECopy(at, name, record, fields) =>
         let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }.mkString(", ")
         emitTerm(record) + ".copy(" + fieldCode + ")"

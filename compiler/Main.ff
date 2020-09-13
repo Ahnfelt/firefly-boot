@@ -1,6 +1,7 @@
 import Tokenizer
 import Parser
 import Emitter
+import Syntax
 
 main(system: System): Unit {
 

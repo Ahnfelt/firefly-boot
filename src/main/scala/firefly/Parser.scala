@@ -20,7 +20,7 @@ implicit class Parser_extend0(self : Parser) {
 val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
 
 def fail[T](at : Location, message : String) : T = {
-panic(((message + " ") + at.show))
+throw_(CompileError(at, message))
 }
 
 def current() : Token = {

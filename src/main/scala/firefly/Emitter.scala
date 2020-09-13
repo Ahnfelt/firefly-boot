@@ -304,7 +304,7 @@ val generics = if_(typeArguments.isEmpty, {() =>
 }).else_({() =>
 (("[" + typeArguments.map(emitType).mkString(", ")) + "]")
 });
-((("({ case _w : " + name) + generics) + " => _w }.lift)")
+((("({ case _w : " + name) + generics) + " => Some(_w); case _ => None() })")
 case (ECopy(at, name, record, fields)) =>
 val fieldCode = fields.map({(f) =>
 ((escapeKeyword(f.name) + " = ") + emitTerm(f.value))
@@ -696,7 +696,7 @@ val generics = if_(typeArguments.isEmpty, {() =>
 }).else_({() =>
 (("[" + typeArguments.map(emitType).mkString(", ")) + "]")
 });
-((("({ case _w : " + name) + generics) + " => _w }.lift)")
+((("({ case _w : " + name) + generics) + " => Some(_w); case _ => None() })")
 case (ECopy(at, name, record, fields)) =>
 val fieldCode = fields.map({(f) =>
 ((escapeKeyword(f.name) + " = ") + emitTerm(f.value))

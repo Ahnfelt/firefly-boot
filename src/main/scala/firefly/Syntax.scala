@@ -4,6 +4,8 @@ object Syntax {
 
 case class Location(file : String, line : Int, column : Int)
 
+case class CompileError(at : Location, message : String)
+
 case class Module(file : String, dependencies : List[DDependency], imports : List[DImport], types : List[DType], traits : List[DTrait], instances : List[DInstance], extends_ : List[DExtend], lets : List[DLet], functions : List[DFunction])
 
 case class DDependency(at : Location, package_ : Pair[String, String], safety : Safety, goodVersions : List[Version], badVersions : List[Version])

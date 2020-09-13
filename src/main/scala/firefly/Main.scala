@@ -6,6 +6,8 @@ import firefly.Tokenizer._
 import firefly.Parser._
 
 import firefly.Emitter._
+
+import firefly.Syntax._
 object Main {
 def main(arguments : Array[String]) : Unit = main(new System(arguments))
 

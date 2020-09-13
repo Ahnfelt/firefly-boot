@@ -16,6 +16,8 @@ object Firefly_Core {
     def SetBuilder[T](items : T*)(implicit ordering : Ordering[T]) = mutable.SortedSet[T](items : _*)
     def ArrayBuilder[T](items : T*) = mutable.ArrayBuffer[T](items : _*)
 
+    case class FireflyException(value : Any) extends RuntimeException
+
 
     object Unit {
         def apply() : Unit = {}
@@ -153,12 +155,22 @@ object Firefly_Core {
         throw new RuntimeException(message)
     }
 
+    def try_[T](body : () => T) : scala.util.Try[T] = scala.util.Try(body())
+    def throw_[E](error : Any) : Nothing = throw FireflyException(error)
+
     def do_[T](body : () => T) : T = body()
     def switch[A, R](a : A, body : A => R) : R = body(a)
     def switch2[A, B, R](a : A, b : B, body : (A, B) => R) : R = body(a, b)
     def switch3[A, B, C, R](a : A, b : B, c : C, body : (A, B, C) => R) : R = body(a, b, c)
     def switch4[A, B, C, D, R](a : A, b : B, c : C, d : D, body : (A, B, C, D) => R) : R = body(a, b, c, d)
     def switch5[A, B, C, D, E, R](a : A, b : B, c : C, d : D, e : E, body : (A, B, C, D, E) => R) : R = body(a, b, c, d, e)
+
+    implicit class Firefly_Try[T](value : scala.util.Try[T]) {
+        def catch_[E, U >: T](check : E => Option[U]) : U =
+            value.recoverWith {
+                case FireflyException(e : E) => check(e).map(scala.util.Try(_)).getOrElse(value)
+            }.get
+    }
 
     implicit class Firefly_Option[T](option : Option[T]) {
         def elseIf[U >: T](condition : () => Bool, value : () => U) : Option[U] =
