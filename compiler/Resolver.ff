@@ -1,0 +1,68 @@
+import Syntax
+
+type Resolver(
+    variables: Map[String, String]
+    variants: Map[String, String]
+    types: Map[String, String]
+    traits: Map[String, String]
+)
+
+make() {
+    function core(name: String): Pair[String, String] {
+        Pair(name, "ff:core/Core." + name)
+    }
+    Resolver(
+        variables = List(
+            "if", "while", "do", "panic", "try", "log"
+        ).map(core).toMap
+        variants = List(
+            "True", "False", "Some", "None", "Pair",
+            "Array", "ArrayBuilder", "List", "Map", "Set"
+        ).map(core).toMap
+        types = List(
+            "Bool", "Option", "Pair",
+            "Array", "ArrayBuilder", "List", "Map", "Set"
+        ).map(core).toMap
+        traits = Map()
+    )
+}
+
+extend self: Resolver {
+
+    resolveModule(module: Module, otherModules: List[Module]): Module {
+        let moduleNamespace =
+            module.file.replace('\\', '/').reverse.takeWhile { _ != '/' }.reverse.takeWhile { _ != '.' }
+        let selfImports = self.resolveImports(module.imports, otherModules)
+        log.debug(selfImports)
+        module
+    }
+
+    resolveImports(imports: List[DImport], modules: List[Module]): Resolver {
+        mutable resolver = self
+        imports.each { import =>
+            modules.find { _.file.dropRight(3) == import.file }.each: module =>
+            function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
+                let full = module.file.dropRight(3) + "." + name
+                if(unqualified) {
+                    List(Pair(import.alias + "." + name, full), Pair(name, full))
+                } else {
+                    List(Pair(import.alias + "." + name, full))
+                }
+            }
+            let lets = module.lets.flatMap { entry(_.name, False) }.toMap
+            let functions = module.functions.flatMap { entry(_.signature.name, False) }.toMap
+            let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, True) }.toMap
+            let traits = module.traits.flatMap { entry(_.name, True) }.toMap
+            let types = module.types.flatMap { entry(_.name, True) }.toMap
+            let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap
+            resolver = Resolver(
+                variables = resolver.variables ++ lets ++ functions ++ traitMethods
+                variants = resolver.variants ++ variants
+                types = resolver.types ++ types
+                traits = resolver.traits ++ traits
+            )
+        }
+        resolver
+    }
+
+}

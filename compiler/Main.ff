@@ -2,6 +2,7 @@ import Tokenizer
 import Parser
 import Emitter
 import Syntax
+import Resolver
 
 main(system: System): Unit {
 
@@ -53,7 +54,10 @@ compileFile(fs: FileSystem, input: String, modules: List[String], output: String
 
     let module = Parser.make(input, tokens).parseModule()
 
-    //println(module)
+    println()
+
+    let resolved = Resolver.make().resolveModule(module, List())
+    //println(resolved)
     //println()
 
     let out = Emitter.emitModule(module, modules.filter { _ != module.file.dropRight(3) })

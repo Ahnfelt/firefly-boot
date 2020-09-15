@@ -8,6 +8,8 @@ import firefly.Parser._
 import firefly.Emitter._
 
 import firefly.Syntax._
+
+import firefly.Resolver._
 object Main {
 def main(arguments : Array[String]) : Unit = main(new System(arguments))
 
@@ -54,6 +56,8 @@ def compileFile(fs : FileSystem, input : String, modules : List[String], output 
 val code = fs.readText(input);
 val tokens = Tokenizer.tokenize(input, code);
 val module = Parser.make(input, tokens).parseModule();
+println();
+val resolved = Resolver.make().resolveModule(module, List());
 val out = Emitter.emitModule(module, modules.filter({(_w1) =>
 (_w1 != module.file.dropRight(3))
 }));
@@ -118,6 +122,8 @@ def compileFile(fs : FileSystem, input : String, modules : List[String], output 
 val code = fs.readText(input);
 val tokens = Tokenizer.tokenize(input, code);
 val module = Parser.make(input, tokens).parseModule();
+println();
+val resolved = Resolver.make().resolveModule(module, List());
 val out = Emitter.emitModule(module, modules.filter({(_w1) =>
 (_w1 != module.file.dropRight(3))
 }));
