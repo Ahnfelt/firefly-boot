@@ -36,8 +36,6 @@ case class LAssignLink() extends TokenKind
 
 implicit class Token_extend0(token : Token) {
 
-
-
 def at() : Location = {
 Location(token.file, token.startLine, ((token.startOffset - token.startLineOffset) + 1))
 }
@@ -65,8 +63,6 @@ token.code.regionMatches(token.startOffset, value, 0, value.length)
 }
 
 implicit class TokenKind_extend1(self : TokenKind) {
-
-
 
 def beforeSeparator() : Bool = {
 pipe_dot(self)({

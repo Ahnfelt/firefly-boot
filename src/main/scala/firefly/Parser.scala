@@ -11,13 +11,11 @@ object Parser {
 case class Parser(file : String, tokens : Array[Token], end : Token, var offset : Int)
 
 case class Poly(generics : List[String], constraints : List[Constraint])
-
+val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
 def make(file : String, tokens : Array[Token]) : Parser = {
 Parser(file, tokens, tokens.last, 0)
 }
 implicit class Parser_extend0(self : Parser) {
-
-val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
 
 def fail[T](at : Location, message : String) : T = {
 panic(((message + " ") + at.show))
@@ -167,22 +165,17 @@ Poly(List(), List())
 self.skip(LColon());
 val type_ = self.parseType();
 self.rawSkip(LBracketLeft(), "{");
-var lets = List[DLet]();
 var methods = List[DFunction]();
 while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
-if_((!self.ahead.is(LBracketLeft())), {() =>
-lets ::= self.parseLetDefinition()
-}).else_({() =>
-methods ::= self.parseFunctionDefinition()
-});
+methods ::= self.parseFunctionDefinition();
 if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
 self.rawSkip(LBracketRight(), "}");
-DExtend(nameToken.at, nameToken.raw, poly.generics, poly.constraints, type_, lets.reverse, methods.reverse)
+DExtend(nameToken.at, nameToken.raw, poly.generics, poly.constraints, type_, methods.reverse)
 }
 
 def parseTraitDefinition() : DTrait = {
@@ -1098,6 +1091,8 @@ EList(at, items.reverse)
 
 
 object Parser {
+
+val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
 
 def make(file : String, tokens : Array[Token]) : Parser = {
 Parser(file, tokens, tokens.last, 0)

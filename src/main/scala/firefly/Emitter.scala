@@ -115,13 +115,10 @@ def emitExtendImplicit(definition : DExtend, index : Int) : String = {
 val generics = emitTypeParameters(definition.generics);
 val implicits = emitConstraints(definition.constraints);
 val parameter = ((escapeKeyword(definition.name) + " : ") + emitType(definition.type_));
-val lets = definition.lets.map({(_w1) =>
-emitLetDefinition(_w1)
-}).join("\n\n");
 val methods = definition.methods.map({(_w1) =>
 emitFunctionDefinition(_w1)
 }).join("\n\n");
-((((((((((((("implicit class " + definition.type_.name) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + lets) + "\n\n") + methods) + "\n\n}")
+((((((((((("implicit class " + definition.type_.name) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + methods) + "\n\n}")
 }
 
 def emitTraitDefinition(definition : DTrait) : String = {
@@ -507,13 +504,10 @@ def emitExtendImplicit(definition : DExtend, index : Int) : String = {
 val generics = emitTypeParameters(definition.generics);
 val implicits = emitConstraints(definition.constraints);
 val parameter = ((escapeKeyword(definition.name) + " : ") + emitType(definition.type_));
-val lets = definition.lets.map({(_w1) =>
-emitLetDefinition(_w1)
-}).join("\n\n");
 val methods = definition.methods.map({(_w1) =>
 emitFunctionDefinition(_w1)
 }).join("\n\n");
-((((((((((((("implicit class " + definition.type_.name) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + lets) + "\n\n") + methods) + "\n\n}")
+((((((((((("implicit class " + definition.type_.name) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + methods) + "\n\n}")
 }
 
 def emitTraitDefinition(definition : DTrait) : String = {

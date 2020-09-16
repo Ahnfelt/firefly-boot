@@ -43,16 +43,6 @@ fs.writeText((scalaFile + "/Firefly_Core.scala"), core);
 fs.writeText((outputFile + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 }
 
-def compileFile(fs : FileSystem, input : String, output : String) : String = {
-val code = fs.readText(input);
-val tokens = Tokenizer.tokenize(input, code);
-val module = Parser.make(input, tokens).parseModule();
-val resolved = Resolver.make().resolveModule(module, List());
-val out = Emitter.emitModule(module);
-fs.writeText(output, out);
-out
-}
-
 def deleteDirectory(fs : FileSystem, outputFile : String) : Unit = {
 fs.list(outputFile).each({(file) =>
 if_(fs.isDirectory(file), {() =>
@@ -93,16 +83,6 @@ val coreSubPath = "scala/com/github/ahnfelt/firefly/library/Firefly_Core.scala";
 val core = fs.readText(((corePath + "/") + coreSubPath)).replaceFirst("package com.github.ahnfelt.firefly.library", "package firefly");
 fs.writeText((scalaFile + "/Firefly_Core.scala"), core);
 fs.writeText((outputFile + "/build.sbt"), "scalaVersion := \"2.13.3\"")
-}
-
-def compileFile(fs : FileSystem, input : String, output : String) : String = {
-val code = fs.readText(input);
-val tokens = Tokenizer.tokenize(input, code);
-val module = Parser.make(input, tokens).parseModule();
-val resolved = Resolver.make().resolveModule(module, List());
-val out = Emitter.emitModule(module);
-fs.writeText(output, out);
-out
 }
 
 def deleteDirectory(fs : FileSystem, outputFile : String) : Unit = {

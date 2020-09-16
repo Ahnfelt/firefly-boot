@@ -16,7 +16,7 @@ case class DFunction(at : Location, signature : Signature, body : ELambda)
 
 case class DLet(at : Location, name : String, variableType : Type, value : Term)
 
-case class DExtend(at : Location, name : String, generics : List[String], constraints : List[Constraint], type_ : Type, lets : List[DLet], methods : List[DFunction])
+case class DExtend(at : Location, name : String, generics : List[String], constraints : List[Constraint], type_ : Type, methods : List[DFunction])
 
 case class DType(at : Location, name : String, generics : List[String], constraints : List[Constraint], commonFields : List[Parameter], variants : List[Variant])
 
@@ -83,8 +83,6 @@ case class Version(at : Location, major : Int, minor : Int, patch : Int)
 
 
 implicit class Location_extend0(self : Location) {
-
-
 
 def show() : String = {
 (((((("in " + self.file) + " ") + "at line ") + self.line) + ", column ") + self.column)

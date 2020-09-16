@@ -81,10 +81,9 @@ emitExtendImplicit(definition: DExtend, index: Int): String {
     let generics = emitTypeParameters(definition.generics)
     let implicits = emitConstraints(definition.constraints)
     let parameter = escapeKeyword(definition.name) + " : " + emitType(definition.type)
-    let lets = definition.lets.map { emitLetDefinition(_) }.join("\n\n")
     let methods = definition.methods.map { emitFunctionDefinition(_) }.join("\n\n")
     "implicit class " + definition.type.name + "_extend" + index + generics +
-    "(" + parameter + ")" + implicits + " {\n\n" + lets + "\n\n" + methods + "\n\n}"
+    "(" + parameter + ")" + implicits + " {\n\n" + methods + "\n\n}"
 }
 
 emitTraitDefinition(definition: DTrait): String {

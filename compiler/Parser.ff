@@ -143,19 +143,14 @@ extend self: Parser {
     parseExtendDefinition(): DExtend {
         self.rawSkip(LKeyword, "extend")
         let nameToken = self.skip(LLower)
-        let poly = if(self.current.rawIs("[")) {self.parseTypeParameters()} else {Poly(List(), List())}
+        let poly = if(self.current.rawIs("[")) { self.parseTypeParameters() } else { Poly(List(), List()) }
         self.skip(LColon)
         let type = self.parseType()
         self.rawSkip(LBracketLeft, "{")
-        mutable lets = List[DLet]()
         mutable methods = List[DFunction]()
-        while {!self.current.is(LBracketRight)} {
-            if(!self.ahead.is(LBracketLeft)) {
-                lets ::= self.parseLetDefinition()
-            } else {
-                methods ::= self.parseFunctionDefinition()
-            }
-            if(!self.current.is(LBracketRight)) {self.skipSeparator(LSemicolon)}
+        while { !self.current.is(LBracketRight) } {
+            methods ::= self.parseFunctionDefinition()
+            if(!self.current.is(LBracketRight)) { self.skipSeparator(LSemicolon) }
         }
         self.rawSkip(LBracketRight, "}")
         DExtend(
@@ -164,7 +159,6 @@ extend self: Parser {
             poly.generics,
             poly.constraints,
             type,
-            lets.reverse,
             methods.reverse
         )
     }
@@ -614,18 +608,6 @@ extend self: Parser {
         self.parseBinary(0)
     }
     
-    binaryOperators = Array(
-        List("||"),
-        List("&&"),
-        List("!=", "=="),
-        List("<=", ">=", "<", ">"),
-        List("::"),
-        List("++"),
-        List("+", "-"),
-        List("*", "/", "%"),
-        List("^")
-    )
-    
     parseBinary(level: Int): Term {
         if(level >= binaryOperators.length) {self.parseUnary()} else:
         let operators = binaryOperators(level)
@@ -800,3 +782,15 @@ extend self: Parser {
     }
 
 }
+
+binaryOperators = Array(
+    List("||"),
+    List("&&"),
+    List("!=", "=="),
+    List("<=", ">=", "<", ">"),
+    List("::"),
+    List("++"),
+    List("+", "-"),
+    List("*", "/", "%"),
+    List("^")
+)

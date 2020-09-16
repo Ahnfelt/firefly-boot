@@ -19,8 +19,6 @@ Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedMo
 }
 implicit class Compiler_extend0(self : Compiler) {
 
-
-
 def parse(moduleName : String) : Module = {
 self.parsedModules.get(moduleName).else_({() =>
 val file = (((self.inputPath + "/") + moduleName) + ".ff");

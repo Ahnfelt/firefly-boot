@@ -14,8 +14,6 @@ Resolver(variables = List("if", "while", "do", "panic", "try", "log").map(core).
 }
 implicit class Resolver_extend0(self : Resolver) {
 
-
-
 def resolveModule(module : Module, otherModules : List[Module]) : Module = {
 val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '/')

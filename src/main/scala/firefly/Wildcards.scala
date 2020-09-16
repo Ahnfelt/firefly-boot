@@ -11,8 +11,6 @@ Wildcards(0)
 }
 implicit class Wildcards_extend0(self : Wildcards) {
 
-
-
 def fixWildcards(term : Term) : Term = (term) match {
 case (e : ELet) =>
 e.copy(value = self.fixWildcards(e.value), body = self.fixWildcards(e.body))
