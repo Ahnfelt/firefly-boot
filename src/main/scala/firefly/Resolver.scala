@@ -23,7 +23,6 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
 val selfImports = self.resolveImports(module.imports, otherModules);
-log.debug(selfImports);
 module
 }
 

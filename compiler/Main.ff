@@ -3,6 +3,7 @@ import Parser
 import Emitter
 import Syntax
 import Resolver
+import Compiler
 
 main(system: System): Unit {
 
@@ -16,16 +17,10 @@ main(system: System): Unit {
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)
 
-    mutable resultFiles = List[String]()
     let scalaPathFile = tempPath + "/src/main/scala/firefly"
     fs.createDirectories(scalaPathFile)
-    let files = fs.list(inputPath).filter { _.endsWith(".ff") }
-    files.each { file =>
-        let scalaFile = scalaPathFile + "/" + fs.prefixName(file) + ".scala"
-        compileFile(fs, fs.getAbsolutePath(file), files.map { fs.prefixName(_) }, scalaFile)
-        resultFiles ::= file
-    }
-    resultFiles = resultFiles.reverse
+
+    Compiler.make(fs, inputPath, scalaPathFile).emit("Main")
 
     writeExtraFiles(fs, corePath, tempPath, scalaPathFile)
 
@@ -42,32 +37,6 @@ writeExtraFiles(fs: FileSystem, corePath: String, outputFile: String, scalaFile:
     )
     fs.writeText(scalaFile + "/Firefly_Core.scala", core)
     fs.writeText(outputFile + "/build.sbt", "scalaVersion := \"2.13.3\"")
-}
-
-compileFile(fs: FileSystem, input: String, modules: List[String], output: String): String {
-
-    let code = fs.readText(input)
-    let tokens = Tokenizer.tokenize(input, code)
-    //for(token <- tokens) println(token.kind)
-
-    //println()
-
-    let module = Parser.make(input, tokens).parseModule()
-
-    println()
-
-    let resolved = Resolver.make().resolveModule(module, List())
-    //println(resolved)
-    //println()
-
-    let out = Emitter.emitModule(module, modules.filter { _ != module.file.dropRight(3) })
-
-    fs.writeText(output, out)
-
-    //println(out)
-
-    out
-
 }
 
 deleteDirectory(fs: FileSystem, outputFile: String): Unit {

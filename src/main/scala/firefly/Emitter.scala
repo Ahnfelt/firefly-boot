@@ -10,7 +10,7 @@ def fail[T](at : Location, message : String) : T = {
 panic(((message + " ") + at.show))
 }
 
-def emitModule(module : Module, otherModules : List[String]) : String = {
+def emitModule(module : Module) : String = {
 val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '/')
 }).reverse.takeWhile({(_w1) =>
@@ -402,7 +402,7 @@ def fail[T](at : Location, message : String) : T = {
 panic(((message + " ") + at.show))
 }
 
-def emitModule(module : Module, otherModules : List[String]) : String = {
+def emitModule(module : Module) : String = {
 val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '/')
 }).reverse.takeWhile({(_w1) =>

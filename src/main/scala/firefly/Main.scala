@@ -10,6 +10,8 @@ import firefly.Emitter._
 import firefly.Syntax._
 
 import firefly.Resolver._
+
+import firefly.Compiler._
 object Main {
 def main(arguments : Array[String]) : Unit = main(new System(arguments))
 
@@ -24,20 +26,9 @@ if_(fs.exists(tempPath), {() =>
 deleteDirectory(fs, tempPath)
 });
 fs.createDirectory(tempPath);
-var resultFiles = List[String]();
 val scalaPathFile = (tempPath + "/src/main/scala/firefly");
 fs.createDirectories(scalaPathFile);
-val files = fs.list(inputPath).filter({(_w1) =>
-_w1.endsWith(".ff")
-});
-files.each({(file) =>
-val scalaFile = (((scalaPathFile + "/") + fs.prefixName(file)) + ".scala");
-compileFile(fs, fs.getAbsolutePath(file), files.map({(_w1) =>
-fs.prefixName(_w1)
-}), scalaFile);
-resultFiles ::= file
-});
-resultFiles = resultFiles.reverse;
+Compiler.make(fs, inputPath, scalaPathFile).emit("Main");
 writeExtraFiles(fs, corePath, tempPath, scalaPathFile);
 if_(fs.exists(outputPath), {() =>
 deleteDirectory(fs, outputPath)
@@ -52,15 +43,12 @@ fs.writeText((scalaFile + "/Firefly_Core.scala"), core);
 fs.writeText((outputFile + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 }
 
-def compileFile(fs : FileSystem, input : String, modules : List[String], output : String) : String = {
+def compileFile(fs : FileSystem, input : String, output : String) : String = {
 val code = fs.readText(input);
 val tokens = Tokenizer.tokenize(input, code);
 val module = Parser.make(input, tokens).parseModule();
-println();
 val resolved = Resolver.make().resolveModule(module, List());
-val out = Emitter.emitModule(module, modules.filter({(_w1) =>
-(_w1 != module.file.dropRight(3))
-}));
+val out = Emitter.emitModule(module);
 fs.writeText(output, out);
 out
 }
@@ -90,20 +78,9 @@ if_(fs.exists(tempPath), {() =>
 deleteDirectory(fs, tempPath)
 });
 fs.createDirectory(tempPath);
-var resultFiles = List[String]();
 val scalaPathFile = (tempPath + "/src/main/scala/firefly");
 fs.createDirectories(scalaPathFile);
-val files = fs.list(inputPath).filter({(_w1) =>
-_w1.endsWith(".ff")
-});
-files.each({(file) =>
-val scalaFile = (((scalaPathFile + "/") + fs.prefixName(file)) + ".scala");
-compileFile(fs, fs.getAbsolutePath(file), files.map({(_w1) =>
-fs.prefixName(_w1)
-}), scalaFile);
-resultFiles ::= file
-});
-resultFiles = resultFiles.reverse;
+Compiler.make(fs, inputPath, scalaPathFile).emit("Main");
 writeExtraFiles(fs, corePath, tempPath, scalaPathFile);
 if_(fs.exists(outputPath), {() =>
 deleteDirectory(fs, outputPath)
@@ -118,15 +95,12 @@ fs.writeText((scalaFile + "/Firefly_Core.scala"), core);
 fs.writeText((outputFile + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 }
 
-def compileFile(fs : FileSystem, input : String, modules : List[String], output : String) : String = {
+def compileFile(fs : FileSystem, input : String, output : String) : String = {
 val code = fs.readText(input);
 val tokens = Tokenizer.tokenize(input, code);
 val module = Parser.make(input, tokens).parseModule();
-println();
 val resolved = Resolver.make().resolveModule(module, List());
-val out = Emitter.emitModule(module, modules.filter({(_w1) =>
-(_w1 != module.file.dropRight(3))
-}));
+val out = Emitter.emitModule(module);
 fs.writeText(output, out);
 out
 }

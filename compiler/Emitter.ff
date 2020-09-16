@@ -4,7 +4,7 @@ fail[T](at: Location, message: String): T {
     panic(message + " " + at.show)
 }
 
-emitModule(module: Module, otherModules: List[String]): String {
+emitModule(module: Module): String {
     let moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile { _ != '/' }.reverse.takeWhile { _ != '.' }
     let parts = List(
         List("package firefly")

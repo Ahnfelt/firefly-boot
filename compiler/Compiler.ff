@@ -1,0 +1,71 @@
+import Syntax
+import Tokenizer
+import Parser
+import Resolver
+import Emitter
+
+type Compiler(
+    files: FileSystem
+    inputPath: String
+    outputPath: String
+    mutable parsedModules: Map[String, Module]
+    mutable resolvedModules: Map[String, Module]
+    mutable emittedModules: Set[String]
+)
+
+make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
+    Compiler(
+        files = files
+        inputPath = inputPath
+        outputPath = outputPath
+        parsedModules = Map()
+        resolvedModules = Map()
+        emittedModules = Set()
+    )
+}
+
+extend self: Compiler {
+
+    parse(moduleName: String): Module {
+        self.parsedModules.get(moduleName).else:
+
+        let file = self.inputPath + "/" + moduleName + ".ff"
+        let code = self.files.readText(file)
+        let tokens = Tokenizer.tokenize(file, code)
+        let result = Parser.make(file, tokens).parseModule()
+
+        self.parsedModules = self.parsedModules.updated(moduleName, result)
+        result
+    }
+
+    imports(module: Module): List[Module] {
+        module.imports.map { import =>
+            let otherModuleName = import.directory.join("/") + "/" + import.file
+            self.parse(otherModuleName)
+        }
+    }
+
+    resolve(moduleName: String): Module {
+        self.resolvedModules.get(moduleName).else:
+
+        let module = self.parse(moduleName)
+        let otherModules = self.imports(module)
+        let result = Resolver.make().resolveModule(module, otherModules)
+
+        self.resolvedModules = self.resolvedModules.updated(moduleName, result)
+        result
+    }
+
+    emit(moduleName: String): Unit {
+        if(self.emittedModules(moduleName)) {} else:
+        self.emittedModules = self.emittedModules.add(moduleName)
+
+        let module = self.resolve(moduleName)
+        self.imports(module).each { self.emit(self.files.prefixName(_.file)) }
+
+        let emitted = Emitter.emitModule(module)
+        let file = self.outputPath + "/" + moduleName + ".scala"
+        self.files.writeText(file, emitted)
+    }
+
+}

@@ -33,7 +33,6 @@ extend self: Resolver {
         let moduleNamespace =
             module.file.replace('\\', '/').reverse.takeWhile { _ != '/' }.reverse.takeWhile { _ != '.' }
         let selfImports = self.resolveImports(module.imports, otherModules)
-        log.debug(selfImports)
         module
     }
 

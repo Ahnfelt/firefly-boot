@@ -187,6 +187,13 @@ object Firefly_Core {
         def join(separator : String) : String = list.mkString(separator)
     }
 
+    implicit class Firefly_Set[T](set : Set[T]) {
+        def each(body : T => Unit) : Unit = set.foreach(body)
+        def all(body : T => Bool) : Bool = set.forall(body)
+        def any(body : T => Bool) : Bool = set.exists(body)
+        def add(value : T) : Set[T] = set + value
+    }
+
     implicit class Firefly_Array[T : scala.reflect.ClassTag](list : Array[T]) {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
