@@ -27,41 +27,214 @@ make() {
     )
 }
 
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show)
+}
+
 extend self: Resolver {
 
     resolveModule(module: Module, otherModules: List[Module]): Module {
         let moduleNamespace =
             module.file.replace('\\', '/').reverse.takeWhile { _ != '/' }.reverse.takeWhile { _ != '.' }
-        let selfImports = self.resolveImports(module.imports, otherModules)
+        let self2 = self.processImports(module.imports, otherModules)
+        let self3 = self2.processDefinitions(module, None)
+
         module
     }
 
-    resolveImports(imports: List[DImport], modules: List[Module]): Resolver {
+    processImports(imports: List[DImport], modules: List[Module]): Resolver {
         mutable resolver = self
         imports.each { import =>
             modules.find { _.file.dropRight(3) == import.file }.each: module =>
-            function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
-                let full = module.file.dropRight(3) + "." + name
-                if(unqualified) {
-                    List(Pair(import.alias + "." + name, full), Pair(name, full))
-                } else {
-                    List(Pair(import.alias + "." + name, full))
-                }
-            }
-            let lets = module.lets.flatMap { entry(_.name, False) }.toMap
-            let functions = module.functions.flatMap { entry(_.signature.name, False) }.toMap
-            let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, True) }.toMap
-            let traits = module.traits.flatMap { entry(_.name, True) }.toMap
-            let types = module.types.flatMap { entry(_.name, True) }.toMap
-            let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap
-            resolver = Resolver(
-                variables = resolver.variables ++ lets ++ functions ++ traitMethods
-                variants = resolver.variants ++ variants
-                types = resolver.types ++ types
-                traits = resolver.traits ++ traits
-            )
+            resolver = resolver.processDefinitions(module, Some(import.alias))
         }
         resolver
+    }
+
+    processDefinitions(module: Module, importAlias: Option[String]): Resolver {
+        function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
+            let full = module.file.dropRight(3) + "." + name
+            importAlias.{
+                | None => List(Pair(name, name))
+                | Some(alias) { unqualified } => List(Pair(alias + "." + name, full), Pair(name, full))
+                | Some(alias) => List(Pair(alias + "." + name, full))
+            }
+        }
+        let lets = module.lets.flatMap { entry(_.name, False) }.toMap
+        let functions = module.functions.flatMap { entry(_.signature.name, False) }.toMap
+        let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.toMap
+        let traits = module.traits.flatMap { entry(_.name, True) }.toMap
+        let types = module.types.flatMap { entry(_.name, True) }.toMap
+        let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap
+        Resolver(
+            variables = self.variables ++ lets ++ functions ++ traitMethods
+            variants = self.variants ++ variants
+            types = self.types ++ types
+            traits = self.traits ++ traits
+        )
+    }
+
+    resolveTerm(term: Term): Term {
+        | EString _ => term
+        | EChar _ => term
+        | EInt _ => term
+        | EFloat _ => term
+        | EVariable e =>
+            self.variables.get(e.name).map { e.EVariable(name = _) }.else { term }
+        | EList(at, items) =>
+            EList(at, items.map { self.resolveTerm(_) })
+        | EVariant(at, name, typeArguments, arguments) =>
+            EVariant(
+                at = at
+                name = self.variants.getOrElse(name, name)
+                typeArguments = typeArguments.map { self.resolveType(_) }
+                arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value)) }}
+            )
+        | EVariantIs(at, name, typeArguments) =>
+            EVariantIs(
+                at = at
+                name = self.variants.getOrElse(name, name)
+                typeArguments = typeArguments.map { self.resolveType(_) }
+            )
+        | ECopy(at, name, record, arguments) =>
+            ECopy(
+                at = at
+                name = self.variants.getOrElse(name, name)
+                record = self.resolveTerm(record)
+                arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value)) }
+            )
+        | EField e =>
+            e.EField(record = self.resolveTerm(e.record))
+        | ELambda(at, cases) =>
+            ELambda(at, cases.map { self.resolveCase(_) })
+        | EPipe(at, value, function) =>
+            EPipe(
+                at = at
+                value = self.resolveTerm(value)
+                function = self.resolveTerm(function)
+            )
+        | ECall(at, function, typeArguments, arguments) =>
+            ECall(
+                at = at
+                function = self.resolveTerm(function)
+                typeArguments = typeArguments.map { self.resolveType(_) }
+                arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }
+            )
+        | ERecord(at, fields) =>
+            ERecord(
+                at = at
+                fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
+            )
+        | EWildcard e =>
+            if(e.index == 0) { fail(e.at, "Unbound wildcard") }
+            e
+        | EFunctions(at, functions, body) =>
+            let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap
+            let self2 = self.Resolver(variables = self.variables ++ functionMap)
+             EFunctions(
+                at = at,
+                functions = functions.map { self2.resolveFunction(_) },
+                body = self2.resolveTerm(body)
+            )
+        | ELet e =>
+            let self2 = self.Resolver(variables = self.variables + Pair(e.name, e.name))
+            e.ELet(
+                valueType = self.resolveType(e.valueType)
+                value = self.resolveTerm(e.value)
+                body = self2.resolveTerm(e.body)
+            )
+        | ESequential(at, before, after) =>
+            ESequential(
+                at = at
+                before = self.resolveTerm(before)
+                after = self.resolveTerm(after)
+            )
+        | EAssign(at, operator, variable, value) =>
+            EAssign(
+                at = at
+                operator = operator
+                variable = self.variables.get(variable).else { variable }
+                value = self.resolveTerm(value)
+            )
+        | EAssignField(at, operator, field, value) =>
+            EAssignField(
+                at = at
+                operator = operator
+                field = field.Field(record = self.resolveTerm(field.record))
+                value = self.resolveTerm(value)
+            )
+    }
+
+    resolveType(type: Type): Type {
+        type.Type(
+            name = self.types.get(type.name).else { type.name }
+            generics = type.generics.map { self.resolveType(_) }
+        )
+    }
+
+    resolveFunction(function: LocalFunction): LocalFunction {
+        let variableMap = function.signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap
+        let typeMap = function.signature.generics.map { name => Pair(name, name) }.toMap
+        let self2 = self.Resolver(
+            variables = self.variables ++ variableMap
+            types = self.types ++ typeMap
+        )
+        let signature = function.signature.Signature(
+            constraints = function.signature.constraints.map { c =>
+                Constraint(self2.resolveType(c.representation))
+            }
+            parameters = function.signature.parameters.map { p =>
+                p.Parameter(
+                    valueType = self2.resolveType(p.valueType)
+                    default = p.default.map { self2.resolveTerm(_) }
+                )
+            }
+            returnType = self2.resolveType(function.signature.returnType)
+        )
+        self2.resolveTerm(function.body).{
+            | ELambda _ @ body => LocalFunction(signature, body)
+            | e => fail(function.signature.at, "Function body must be a lambda: " + e)
+        }
+    }
+
+    resolveCase(case: MatchCase): MatchCase {
+        function findVariables(pattern: MatchPattern): Map[String, String] {
+            | PVariable(_, Some(name)) =>
+                Map(Pair(name, name))
+            | PVariable(_, None) =>
+                Map()
+            | PVariant(_, _, patterns) =>
+                patterns.map(findVariables).foldLeft(Map[String, String]())({_ ++ _}).toMap
+            | PVariantAs(_, _, variable) =>
+                variable.toList.map { x => Pair(x, x) }.toMap
+            | PAlias(_, pattern, variable) =>
+                Map(Pair(variable, variable)) ++ findVariables(pattern)
+        }
+        let variableMap = case.patterns.map(findVariables).foldLeft(Map[String, String]())({_ ++ _}).toMap
+        let self2 = self.Resolver(
+            variables = self.variables ++ variableMap
+        )
+        MatchCase(
+            at = case.at,
+            patterns = case.patterns.map { self2.resolvePattern(_) },
+            condition = case.condition.map { self2.resolveTerm(_) },
+            body = self2.resolveTerm(case.body)
+        )
+    }
+
+    resolvePattern(pattern: MatchPattern): MatchPattern {
+        | PVariable _ @ p =>
+            p
+        | PVariant(at, name, patterns) =>
+            let newName = self.variants.getOrElse(name, name)
+            let newPatterns = patterns.map { self.resolvePattern(_) }
+            PVariant(at, newName, newPatterns)
+        | PVariantAs(at, name, variable) =>
+            let newName = self.variants.getOrElse(name, name)
+            PVariantAs(at, newName, variable)
+        | PAlias(at, pattern, variable) =>
+            let newPattern = resolvePattern(pattern)
+            PAlias(at, newPattern, variable)
     }
 
 }
