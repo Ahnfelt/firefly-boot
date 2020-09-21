@@ -81,7 +81,27 @@ extend self: Resolver {
     }
 
     resolveTypeDefinition(definition: DType): DType {
-        definition
+        let generics = definition.generics.map { g => Pair(g, g) }.toMap
+        let self2 = self.Resolver(types = self.types ++ generics)
+        definition.DType(
+            constraints = definition.constraints.map { c =>
+                c.Constraint(representation = self2.resolveType(c.representation))
+            },
+            commonFields = definition.commonFields.map { f =>
+                f.Parameter(
+                    valueType = self2.resolveType(f.valueType)
+                    default = f.default.map { self2.resolveTerm(_) }
+                )
+            },
+            variants = definition.variants.map { v =>
+                v.Variant(fields = v.fields.map { f =>
+                    f.Parameter(
+                        valueType = self2.resolveType(f.valueType)
+                        default = f.default.map { self2.resolveTerm(_) }
+                    )
+                })
+            }
+        )
     }
 
     resolveTraitDefinition(definition: DTrait): DTrait {

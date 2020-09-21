@@ -182,7 +182,7 @@ emitType(t: Type): String {
         }.mkString("; ") + "}"
     } else {
         let generics = if(t.generics.isEmpty) {""} else {"[" + t.generics.map(emitType).mkString(", ") + "]"}
-        t.name + generics
+        escapeResolved(t.name) + generics
     }
 }
 
@@ -265,6 +265,10 @@ emitPattern(pattern: MatchPattern): String {
         variable.map(escapeKeyword).getOrElse("_") + " : " + name
     | PAlias(at, p, variable) =>
         escapeKeyword(variable) + " @ (" + emitPattern(p) + ")"
+}
+
+escapeResolved(word: String) {
+    escapeKeyword(word.reverse.takeWhile { _ != '.' }.reverse)
 }
 
 escapeKeyword(word: String) {
