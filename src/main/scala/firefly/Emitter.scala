@@ -253,7 +253,7 @@ val generics = if_(t.generics.isEmpty, {() =>
 }).else_({() =>
 (("[" + t.generics.map(emitType).mkString(", ")) + "]")
 });
-(t.name + generics)
+(escapeResolved(t.name) + generics)
 })
 }
 
@@ -379,6 +379,12 @@ case (PVariantAs(at, name, variable)) =>
 ((variable.map(escapeKeyword).getOrElse("_") + " : ") + name)
 case (PAlias(at, p, variable)) =>
 (((escapeKeyword(variable) + " @ (") + emitPattern(p)) + ")")
+}
+
+def escapeResolved(word : String) = {
+escapeKeyword(word.reverse.takeWhile({(_w1) =>
+(_w1 != '.')
+}).reverse)
 }
 
 def escapeKeyword(word : String) = {
@@ -642,7 +648,7 @@ val generics = if_(t.generics.isEmpty, {() =>
 }).else_({() =>
 (("[" + t.generics.map(emitType).mkString(", ")) + "]")
 });
-(t.name + generics)
+(escapeResolved(t.name) + generics)
 })
 }
 
@@ -768,6 +774,12 @@ case (PVariantAs(at, name, variable)) =>
 ((variable.map(escapeKeyword).getOrElse("_") + " : ") + name)
 case (PAlias(at, p, variable)) =>
 (((escapeKeyword(variable) + " @ (") + emitPattern(p)) + ")")
+}
+
+def escapeResolved(word : String) = {
+escapeKeyword(word.reverse.takeWhile({(_w1) =>
+(_w1 != '.')
+}).reverse)
 }
 
 def escapeKeyword(word : String) = {

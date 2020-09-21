@@ -91,7 +91,23 @@ Resolver(variables = (((self.variables ++ lets) ++ functions) ++ traitMethods), 
 }
 
 def resolveTypeDefinition(definition : DType) : DType = {
-definition
+val generics = definition.generics.map({(g) =>
+Pair(g, g)
+}).toMap;
+val self2 = self.copy(types = (self.types ++ generics));
+definition.copy(constraints = definition.constraints.map({(c) =>
+c.copy(representation = self2.resolveType(c.representation))
+}), commonFields = definition.commonFields.map({(f) =>
+f.copy(valueType = self2.resolveType(f.valueType), default = f.default.map({(_w1) =>
+self2.resolveTerm(_w1)
+}))
+}), variants = definition.variants.map({(v) =>
+v.copy(fields = v.fields.map({(f) =>
+f.copy(valueType = self2.resolveType(f.valueType), default = f.default.map({(_w1) =>
+self2.resolveTerm(_w1)
+}))
+}))
+}))
 }
 
 def resolveTraitDefinition(definition : DTrait) : DTrait = {
