@@ -26,7 +26,19 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 });
 val self2 = self.processImports(module.imports, otherModules);
 val self3 = self2.processDefinitions(module, None());
-module
+module.copy(types = module.types.map({(_w1) =>
+self3.resolveTypeDefinition(_w1)
+}), traits = module.traits.map({(_w1) =>
+self3.resolveTraitDefinition(_w1)
+}), instances = module.instances.map({(_w1) =>
+self3.resolveInstanceDefinition(_w1)
+}), extends_ = module.extends_.map({(_w1) =>
+self3.resolveExtendDefinition(_w1)
+}), lets = module.lets.map({(_w1) =>
+self3.resolveLetDefinition(_w1)
+}), functions = module.functions.map({(_w1) =>
+self3.resolveFunctionDefinition(_w1)
+}))
 }
 
 def processImports(imports : List[DImport], modules : List[Module]) : Resolver = {
@@ -76,6 +88,30 @@ _w1.variants
 entry(_w1.name, True())
 }).toMap;
 Resolver(variables = (((self.variables ++ lets) ++ functions) ++ traitMethods), variants = (self.variants ++ variants), types = (self.types ++ types), traits = (self.traits ++ traits))
+}
+
+def resolveTypeDefinition(definition : DType) : DType = {
+definition
+}
+
+def resolveTraitDefinition(definition : DTrait) : DTrait = {
+definition
+}
+
+def resolveInstanceDefinition(definition : DInstance) : DInstance = {
+definition
+}
+
+def resolveExtendDefinition(definition : DExtend) : DExtend = {
+definition
+}
+
+def resolveLetDefinition(definition : DLet) : DLet = {
+definition
+}
+
+def resolveFunctionDefinition(definition : DFunction) : DFunction = {
+definition
 }
 
 def resolveTerm(term : Term) : Term = (term) match {

@@ -39,14 +39,13 @@ extend self: Resolver {
         let self2 = self.processImports(module.imports, otherModules)
         let self3 = self2.processDefinitions(module, None)
         module.Module(
-            types = module.types.map { self.resolveTypeDefinition(_) }
-            traits = module.traits.map { self.resolveTraitDefinition(_) }
-            instances = module.instances.map { self.resolveInstanceDefinition(_) }
-            extends = module.extends.map { self.resolveExtendDefinition(_) }
-            lets = module.lets.map { self.resolveLetDefinition(_) }
-            functions = module.functions.map { self.resolveFunctionDefinition(_) }
+            types = module.types.map { self3.resolveTypeDefinition(_) }
+            traits = module.traits.map { self3.resolveTraitDefinition(_) }
+            instances = module.instances.map { self3.resolveInstanceDefinition(_) }
+            extends = module.extends.map { self3.resolveExtendDefinition(_) }
+            lets = module.lets.map { self3.resolveLetDefinition(_) }
+            functions = module.functions.map { self3.resolveFunctionDefinition(_) }
         )
-        module
     }
 
     processImports(imports: List[DImport], modules: List[Module]): Resolver {
