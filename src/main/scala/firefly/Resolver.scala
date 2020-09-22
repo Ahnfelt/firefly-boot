@@ -123,10 +123,12 @@ definition
 }
 
 def resolveLetDefinition(definition : DLet) : DLet = {
+val self2 = self.copy(variables = (self.variables + Pair(definition.name, definition.name)));
 definition
 }
 
 def resolveFunctionDefinition(definition : DFunction) : DFunction = {
+val local = resolveFunction(LocalFunction(definition.signature, definition.body));
 definition
 }
 
