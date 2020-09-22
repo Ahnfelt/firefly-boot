@@ -121,7 +121,8 @@ extend self: Resolver {
     }
 
     resolveFunctionDefinition(definition: DFunction): DFunction {
-        definition
+        let local = resolveFunction(LocalFunction(definition.signature, definition.body))
+        definition.DFunction(signature = local.signature, body = local.body)
     }
 
     resolveTerm(term: Term): Term {
