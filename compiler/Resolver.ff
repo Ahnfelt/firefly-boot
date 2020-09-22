@@ -117,12 +117,16 @@ extend self: Resolver {
     }
 
     resolveLetDefinition(definition: DLet): DLet {
-        definition
+        let self2 = self.Resolver(variables = self.variables + Pair(definition.name, definition.name))
+        definition/*.DLet(
+            variableType = self.resolveType(definition.variableType)
+            value = self.resolveTerm(definition.value)
+        )*/
     }
 
     resolveFunctionDefinition(definition: DFunction): DFunction {
         let local = resolveFunction(LocalFunction(definition.signature, definition.body))
-        definition.DFunction(signature = local.signature, body = local.body)
+        definition/*.DFunction(signature = local.signature, body = local.body)*/
     }
 
     resolveTerm(term: Term): Term {
