@@ -12,10 +12,10 @@ import firefly.Resolver._
 import firefly.Emitter._
 object Compiler {
 
-case class Compiler(files : FileSystem, inputPath : String, outputPath : String, var parsedModules : Map[String, Module], var resolvedModules : Map[String, Module], var emittedModules : Set[String])
+case class Compiler(files : FileSystem, inputPath : String, outputPath : String, var parsedModules : Firefly_Core.Map[String, Module], var resolvedModules : Firefly_Core.Map[String, Module], var emittedModules : Firefly_Core.Set[String])
 
 def make(files : FileSystem, inputPath : String, outputPath : String) : Compiler = {
-Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Map(), resolvedModules = Map(), emittedModules = Set())
+Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Firefly_Core.Map(), resolvedModules = Firefly_Core.Map(), emittedModules = Firefly_Core.Set())
 }
 implicit class Compiler_extend0(self : Compiler) {
 
@@ -30,7 +30,7 @@ result
 })
 }
 
-def imports(module : Module) : List[Module] = {
+def imports(module : Module) : Firefly_Core.List[Module] = {
 module.imports.map({(import_) =>
 val otherModuleName = ((import_.directory.join("/") + "/") + import_.file);
 self.parse(otherModuleName)
@@ -48,7 +48,7 @@ result
 }
 
 def emit(moduleName : String) : Unit = {
-if_(self.emittedModules(moduleName), {() =>
+Firefly_Core.if_(self.emittedModules(moduleName), {() =>
 Unit()
 }).else_({() =>
 self.emittedModules = self.emittedModules.add(moduleName);
@@ -68,7 +68,7 @@ self.files.writeText(file, emitted)
 object Compiler {
 
 def make(files : FileSystem, inputPath : String, outputPath : String) : Compiler = {
-Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Map(), resolvedModules = Map(), emittedModules = Set())
+Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Firefly_Core.Map(), resolvedModules = Firefly_Core.Map(), emittedModules = Firefly_Core.Set())
 }
 
 }

@@ -8,21 +8,21 @@ import firefly.Wildcards._
 import firefly.Syntax._
 object Parser {
 
-case class Parser(file : String, tokens : Array[Token], end : Token, var offset : Int)
+case class Parser(file : String, tokens : Firefly_Core.Array[Token], end : Token, var offset : Int)
 
-case class Poly(generics : List[String], constraints : List[Constraint])
-val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
-def make(file : String, tokens : Array[Token]) : Parser = {
+case class Poly(generics : Firefly_Core.List[String], constraints : Firefly_Core.List[Constraint])
+val binaryOperators = Firefly_Core.Array(Firefly_Core.List("||"), Firefly_Core.List("&&"), Firefly_Core.List("!=", "=="), Firefly_Core.List("<=", ">=", "<", ">"), Firefly_Core.List("::"), Firefly_Core.List("++"), Firefly_Core.List("+", "-"), Firefly_Core.List("*", "/", "%"), Firefly_Core.List("^"))
+def make(file : String, tokens : Firefly_Core.Array[Token]) : Parser = {
 Parser(file, tokens, tokens.last, 0)
 }
 implicit class Parser_extend0(self : Parser) {
 
 def fail[T](at : Location, message : String) : T = {
-panic(((message + " ") + at.show))
+Firefly_Core.panic(((message + " ") + at.show))
 }
 
 def current() : Token = {
-if_((self.offset < self.tokens.length), {() =>
+Firefly_Core.if_((self.offset < self.tokens.length), {() =>
 self.tokens(self.offset)
 }).else_({() =>
 self.end
@@ -30,7 +30,7 @@ self.end
 }
 
 def ahead() : Token = {
-if_(((self.offset + 1) < self.tokens.length), {() =>
+Firefly_Core.if_(((self.offset + 1) < self.tokens.length), {() =>
 self.tokens((self.offset + 1))
 }).else_({() =>
 self.end
@@ -38,7 +38,7 @@ self.end
 }
 
 def aheadAhead() : Token = {
-if_(((self.offset + 2) < self.tokens.length), {() =>
+Firefly_Core.if_(((self.offset + 2) < self.tokens.length), {() =>
 self.tokens((self.offset + 2))
 }).else_({() =>
 self.end
@@ -47,7 +47,7 @@ self.end
 
 def skip(kind : TokenKind) : Token = {
 val c = self.current;
-if_((c.kind != kind), {() =>
+Firefly_Core.if_((c.kind != kind), {() =>
 self.fail(c.at, ((("Expected " + kind) + ", got ") + c.raw))
 });
 self.offset += 1;
@@ -56,22 +56,22 @@ c
 
 def rawSkip(kind : TokenKind, value : String) : Token = {
 val c = self.current;
-if_((c.kind != kind), {() =>
+Firefly_Core.if_((c.kind != kind), {() =>
 self.fail(c.at, ((((("Expected " + kind) + " ") + value) + ", got ") + c.raw))
 });
-if_((!c.rawIs(value)), {() =>
+Firefly_Core.if_((!c.rawIs(value)), {() =>
 self.fail(c.at, ((("Expected " + value) + " got ") + c.raw))
 });
 self.offset += 1;
 c
 }
 
-def currentIsSeparator(kind : TokenKind) : Bool = {
+def currentIsSeparator(kind : TokenKind) : Firefly_Core.Bool = {
 (self.current.is(kind) || self.current.is(LSeparator()))
 }
 
 def skipSeparator(kind : TokenKind) : Token = {
-if_(self.current.is(LSeparator()), {() =>
+Firefly_Core.if_(self.current.is(LSeparator()), {() =>
 self.skip(LSeparator())
 }).else_({() =>
 self.skip(kind)
@@ -79,11 +79,11 @@ self.skip(kind)
 }
 
 def parseModule() : Module = {
-var result = Module(self.file, List(), List(), List(), List(), List(), List(), List(), List());
-while_({() =>
+var result = Module(self.file, Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List());
+Firefly_Core.while_({() =>
 (!self.current.is(LEnd()))
 }, {() =>
-if_((self.current.is(LLower()) && (self.ahead.is(LAssign()) || self.ahead.is(LColon()))), {() =>
+Firefly_Core.if_((self.current.is(LLower()) && (self.ahead.is(LAssign()) || self.ahead.is(LColon()))), {() =>
 result = result.copy(lets = (self.parseLetDefinition() :: result.lets))
 }).elseIf({() =>
 (self.current.is(LLower()) && self.ahead.is(LBracketLeft()))
@@ -116,7 +116,7 @@ result = result.copy(dependencies = (self.parseDependencyDefinition() :: result.
 }).else_({() =>
 self.skip(LEnd())
 });
-if_((!self.current.is(LEnd())), {() =>
+Firefly_Core.if_((!self.current.is(LEnd())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
@@ -125,11 +125,11 @@ Module(file = self.file, dependencies = result.dependencies.reverse, imports = r
 
 def parseLetDefinition() : DLet = {
 val nameToken = self.skip(LLower());
-val variableType = if_(self.current.is(LColon()), {() =>
+val variableType = Firefly_Core.if_(self.current.is(LColon()), {() =>
 self.skip(LColon());
 self.parseType()
 }).else_({() =>
-Type(nameToken.at, "?", List())
+Type(nameToken.at, "?", Firefly_Core.List())
 });
 self.skip(LAssign());
 val value = self.parseTerm();
@@ -144,10 +144,10 @@ DFunction(signature.at, signature, body)
 
 def parseSignature() : Signature = {
 val nameToken = self.skip(LLower());
-val poly = if_(self.current.rawIs("["), {() =>
+val poly = Firefly_Core.if_(self.current.rawIs("["), {() =>
 self.parseTypeParameters()
 }).else_({() =>
-Poly(List(), List())
+Poly(Firefly_Core.List(), Firefly_Core.List())
 });
 val parameters = self.parseFunctionParameters();
 val returnType = self.parseOptionalType();
@@ -157,20 +157,20 @@ Signature(nameToken.at, nameToken.raw, poly.generics, poly.constraints, paramete
 def parseExtendDefinition() : DExtend = {
 self.rawSkip(LKeyword(), "extend");
 val nameToken = self.skip(LLower());
-val poly = if_(self.current.rawIs("["), {() =>
+val poly = Firefly_Core.if_(self.current.rawIs("["), {() =>
 self.parseTypeParameters()
 }).else_({() =>
-Poly(List(), List())
+Poly(Firefly_Core.List(), Firefly_Core.List())
 });
 self.skip(LColon());
 val type_ = self.parseType();
 self.rawSkip(LBracketLeft(), "{");
-var methods = List[DFunction]();
-while_({() =>
+var methods = Firefly_Core.List[DFunction]();
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 methods ::= self.parseFunctionDefinition();
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
@@ -181,38 +181,38 @@ DExtend(nameToken.at, nameToken.raw, poly.generics, poly.constraints, type_, met
 def parseTraitDefinition() : DTrait = {
 self.rawSkip(LKeyword(), "trait");
 val nameToken = self.skip(LUpper());
-val poly = if_((!self.current.rawIs("[")), {() =>
-Poly(List(), List())
+val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
+Poly(Firefly_Core.List(), Firefly_Core.List())
 }).else_({() =>
 self.parseTypeParameters()
 });
-val generatorParameters = if_((!self.current.rawIs("(")), {() =>
-List()
+val generatorParameters = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
+Firefly_Core.List()
 }).else_({() =>
 self.parseFunctionParameters()
 });
-var methodGenerators = List[Pair[String, Term]]();
-var methodDefaults = List[Pair[String, Term]]();
-val methodSignatures = if_((!self.current.rawIs("{")), {() =>
-List()
+var methodGenerators = Firefly_Core.List[Firefly_Core.Pair[String, Term]]();
+var methodDefaults = Firefly_Core.List[Firefly_Core.Pair[String, Term]]();
+val methodSignatures = Firefly_Core.if_((!self.current.rawIs("{")), {() =>
+Firefly_Core.List()
 }).else_({() =>
-var signatures = List[Signature]();
+var signatures = Firefly_Core.List[Signature]();
 self.rawSkip(LBracketLeft(), "{");
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 val signature = self.parseSignature();
 signatures ::= signature;
-if_(self.current.rawIs("{"), {() =>
+Firefly_Core.if_(self.current.rawIs("{"), {() =>
 val generator = (self.ahead.is(LKeyword()) && self.ahead.rawIs("generate"));
-val body = self.parseLambda(signature.parameters.size, ignoreGenerateKeyword = True());
-if_(generator, {() =>
-methodGenerators ::= Pair(signature.name, body)
+val body = self.parseLambda(signature.parameters.size, ignoreGenerateKeyword = Firefly_Core.True());
+Firefly_Core.if_(generator, {() =>
+methodGenerators ::= Firefly_Core.Pair(signature.name, body)
 }).else_({() =>
-methodDefaults ::= Pair(signature.name, body)
+methodDefaults ::= Firefly_Core.Pair(signature.name, body)
 })
 });
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
@@ -225,39 +225,39 @@ DTrait(nameToken.at, nameToken.raw, poly.generics, poly.constraints, generatorPa
 def parseInstanceDefinition() : DInstance = {
 self.rawSkip(LKeyword(), "instance");
 val nameToken = self.skip(LUpper());
-var typeArguments = List[Type]();
+var typeArguments = Firefly_Core.List[Type]();
 self.rawSkip(LBracketLeft(), "[");
 val token = self.skip(LUpper());
-val poly = if_((!self.current.rawIs("[")), {() =>
-Poly(List(), List())
+val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
+Poly(Firefly_Core.List(), Firefly_Core.List())
 }).else_({() =>
 self.parseTypeParameters()
 });
 typeArguments ::= Type(token.at, token.raw, poly.generics.map({(_w1) =>
-Type(token.at, _w1, List())
+Type(token.at, _w1, Firefly_Core.List())
 }));
-while_({() =>
+Firefly_Core.while_({() =>
 self.current.is(LComma())
 }, {() =>
 self.skip(LComma());
 typeArguments ::= self.parseType()
 });
 self.rawSkip(LBracketRight(), "]");
-val generatorArguments = if_((!self.current.rawIs("(")), {() =>
-List()
+val generatorArguments = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
+Firefly_Core.List()
 }).else_({() =>
 self.parseFunctionArguments()
 });
-val methods = if_((!self.current.rawIs("{")), {() =>
-List()
+val methods = Firefly_Core.if_((!self.current.rawIs("{")), {() =>
+Firefly_Core.List()
 }).else_({() =>
-var definitions = List[DFunction]();
+var definitions = Firefly_Core.List[DFunction]();
 self.rawSkip(LBracketLeft(), "{");
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 definitions ::= self.parseFunctionDefinition();
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
@@ -271,32 +271,32 @@ DInstance(nameToken.at, poly.generics, poly.constraints, traitType, generatorArg
 def parseTypeDefinition() : DType = {
 self.rawSkip(LKeyword(), "type");
 val nameToken = self.skip(LUpper());
-val poly = if_((!self.current.rawIs("[")), {() =>
-Poly(List(), List())
+val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
+Poly(Firefly_Core.List(), Firefly_Core.List())
 }).else_({() =>
 self.parseTypeParameters()
 });
-val commonFields = if_((!self.current.rawIs("(")), {() =>
-List()
+val commonFields = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
+Firefly_Core.List()
 }).else_({() =>
-self.parseFunctionParameters(allowMutable = True())
+self.parseFunctionParameters(allowMutable = Firefly_Core.True())
 });
-val variants = if_((!self.current.rawIs("{")), {() =>
-List(Variant(nameToken.at, nameToken.raw, List()))
+val variants = Firefly_Core.if_((!self.current.rawIs("{")), {() =>
+Firefly_Core.List(Variant(nameToken.at, nameToken.raw, Firefly_Core.List()))
 }).else_({() =>
 self.rawSkip(LBracketLeft(), "{");
-var reverseVariants = List[Variant]();
-while_({() =>
+var reverseVariants = Firefly_Core.List[Variant]();
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 val variantNameToken = self.skip(LUpper());
-val variantFields = if_((!self.current.rawIs("(")), {() =>
-List()
+val variantFields = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
+Firefly_Core.List()
 }).else_({() =>
-self.parseFunctionParameters(allowMutable = True())
+self.parseFunctionParameters(allowMutable = Firefly_Core.True())
 });
 reverseVariants ::= Variant(variantNameToken.at, variantNameToken.raw, variantFields);
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LSemicolon())
 })
 });
@@ -309,37 +309,37 @@ DType(nameToken.at, nameToken.raw, poly.generics, poly.constraints, commonFields
 def parseImportDefinition() : DImport = {
 self.rawSkip(LKeyword(), "import");
 val aliasToken = self.skip(LUpper());
-if_((!self.current.is(LKeyword())), {() =>
-DImport(aliasToken.at, aliasToken.raw, None(), List(), aliasToken.raw)
+Firefly_Core.if_((!self.current.is(LKeyword())), {() =>
+DImport(aliasToken.at, aliasToken.raw, Firefly_Core.None(), Firefly_Core.List(), aliasToken.raw)
 }).else_({() =>
 self.rawSkip(LKeyword(), "from");
 val firstName = self.parseDashedName();
-val package_ = if_(self.current.is(LColon()), {() =>
+val package_ = Firefly_Core.if_(self.current.is(LColon()), {() =>
 val user = firstName;
 self.skip(LColon());
 val name = self.parseDashedName();
-if_(self.current.rawIs("/"), {() =>
+Firefly_Core.if_(self.current.rawIs("/"), {() =>
 self.skip(LOperator())
 });
-Pair(user, name)
+Firefly_Core.Pair(user, name)
 });
-var path = if_(package_.isEmpty, {() =>
-List(firstName)
+var path = Firefly_Core.if_(package_.isEmpty, {() =>
+Firefly_Core.List(firstName)
 }).else_({() =>
-List()
+Firefly_Core.List()
 });
-if_((self.current.rawIs("/") && self.ahead.is2(LLower(), LUpper())), {() =>
+Firefly_Core.if_((self.current.rawIs("/") && self.ahead.is2(LLower(), LUpper())), {() =>
 self.skip(LOperator())
 });
-while_({() =>
+Firefly_Core.while_({() =>
 self.current.is(LLower())
 }, {() =>
 path ::= self.parseDashedName();
-if_((self.current.rawIs("/") && self.ahead.is2(LLower(), LUpper())), {() =>
+Firefly_Core.if_((self.current.rawIs("/") && self.ahead.is2(LLower(), LUpper())), {() =>
 self.skip(LOperator())
 })
 });
-val file = if_(self.current.is(LUpper()), {() =>
+val file = Firefly_Core.if_(self.current.is(LUpper()), {() =>
 self.skip(LUpper()).raw
 }).else_({() =>
 aliasToken.raw
@@ -349,10 +349,10 @@ DImport(aliasToken.at, aliasToken.raw, package_, path.reverse, file)
 }
 
 def parseDependencyDefinition() : DDependency = {
-val safety = if_(self.current.rawIs("safe"), {() =>
+val safety = Firefly_Core.if_(self.current.rawIs("safe"), {() =>
 Safe()
 }).else_({() =>
-if_(self.current.rawIs("unsafe"), {() =>
+Firefly_Core.if_(self.current.rawIs("unsafe"), {() =>
 Unsafe()
 }).else_({() =>
 Trust()
@@ -362,37 +362,37 @@ val at = self.skip(LKeyword()).at;
 val user = self.skip(LLower()).raw;
 self.skip(LColon());
 val name = self.skip(LLower()).raw;
-var goodVersions = List[Version]();
-var badVersions = List[Version]();
-if_(self.current.rawIs("("), {() =>
+var goodVersions = Firefly_Core.List[Version]();
+var badVersions = Firefly_Core.List[Version]();
+Firefly_Core.if_(self.current.rawIs("("), {() =>
 self.skip(LBracketLeft());
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 val bad = self.current.rawIs("!");
-if_(bad, {() =>
+Firefly_Core.if_(bad, {() =>
 self.skip(LOperator())
 });
 val version = self.parseVersion();
-if_(bad, {() =>
+Firefly_Core.if_(bad, {() =>
 badVersions ::= version
 }).else_({() =>
 goodVersions ::= version
 });
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skip(LComma())
 })
 });
 self.skip(LBracketRight())
 });
-DDependency(at, Pair(user, name), safety, goodVersions.reverse, badVersions.reverse)
+DDependency(at, Firefly_Core.Pair(user, name), safety, goodVersions.reverse, badVersions.reverse)
 }
 
 def parseVersion() : Version = {
-if_(self.current.is(LFloat()), {() =>
+Firefly_Core.if_(self.current.is(LFloat()), {() =>
 val majorMinor = self.skip(LFloat());
 val parts = majorMinor.raw.split('.');
-val patch = if_(self.current.is(LDot()), {() =>
+val patch = Firefly_Core.if_(self.current.is(LDot()), {() =>
 self.skip(LDot());
 self.skip(LInt()).raw.toInt
 }).else_({() =>
@@ -408,9 +408,9 @@ Version(major.at, major.raw.toInt, 0, 0)
 def parseDashedName() : String = {
 val at = self.current.at;
 def readPart() = {
-if_(self.current.is(LInt()), {() =>
+Firefly_Core.if_(self.current.is(LInt()), {() =>
 val prefix = self.skip(LInt()).raw;
-if_(self.current.is(LLower()), {() =>
+Firefly_Core.if_(self.current.is(LLower()), {() =>
 (prefix + self.skip(LLower()).raw)
 }).else_({() =>
 prefix
@@ -420,18 +420,18 @@ self.skip(LLower()).raw
 })
 }
 var part = readPart();
-while_({() =>
+Firefly_Core.while_({() =>
 self.current.rawIs("-")
 }, {() =>
 self.skip(LOperator());
 part = ((part + "-") + readPart())
 });
-if_(part.exists({(_w1) =>
+Firefly_Core.if_(part.exists({(_w1) =>
 _w1.isUpper
 }), {() =>
 self.fail(at, ("Package names and paths must not contain upper case letters: " + part))
 });
-if_((part.exists({(_w1) =>
+Firefly_Core.if_((part.exists({(_w1) =>
 (_w1 == '_')
 }) || part.exists({(_w1) =>
 (_w1 == '.')
@@ -443,35 +443,35 @@ part
 
 def parseTypeParameters() : Poly = {
 self.rawSkip(LBracketLeft(), "[");
-var parameters = List[String]();
-var constraints = List[Constraint]();
-while_({() =>
+var parameters = Firefly_Core.List[String]();
+var constraints = Firefly_Core.List[Constraint]();
+Firefly_Core.while_({() =>
 ((!self.current.is(LBracketRight())) && (!self.current.is(LSemicolon())))
 }, {() =>
-if_(self.ahead.is(LBracketLeft()), {() =>
+Firefly_Core.if_(self.ahead.is(LBracketLeft()), {() =>
 constraints ::= Constraint(self.parseType())
 }).else_({() =>
 val parameterNameToken = self.skip(LUpper());
 parameters ::= parameterNameToken.raw;
-while_({() =>
+Firefly_Core.while_({() =>
 self.current.is(LColon())
 }, {() =>
 self.skip(LColon());
 val t = self.parseType();
-constraints ::= Constraint(t.copy(generics = (Type(t.at, parameterNameToken.raw, List()) :: t.generics)))
+constraints ::= Constraint(t.copy(generics = (Type(t.at, parameterNameToken.raw, Firefly_Core.List()) :: t.generics)))
 })
 });
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skip(LComma())
 })
 });
-if_(self.current.is(LSemicolon()), {() =>
+Firefly_Core.if_(self.current.is(LSemicolon()), {() =>
 self.skip(LSemicolon());
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 constraints ::= Constraint(self.parseType());
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skip(LComma())
 })
 })
@@ -480,22 +480,22 @@ self.rawSkip(LBracketRight(), "]");
 Poly(parameters.reverse, constraints.reverse)
 }
 
-def parseTypeArguments(parenthesis : Boolean = False()) : List[Type] = {
-self.rawSkip(LBracketLeft(), if_(parenthesis, {() =>
+def parseTypeArguments(parenthesis : Boolean = Firefly_Core.False()) : Firefly_Core.List[Type] = {
+self.rawSkip(LBracketLeft(), Firefly_Core.if_(parenthesis, {() =>
 "("
 }).else_({() =>
 "["
 }));
-var types = List[Type]();
-while_({() =>
+var types = Firefly_Core.List[Type]();
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 types ::= self.parseType();
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skip(LComma())
 })
 });
-self.rawSkip(LBracketRight(), if_(parenthesis, {() =>
+self.rawSkip(LBracketRight(), Firefly_Core.if_(parenthesis, {() =>
 ")"
 }).else_({() =>
 "]"
@@ -503,26 +503,26 @@ self.rawSkip(LBracketRight(), if_(parenthesis, {() =>
 types.reverse
 }
 
-def parseFunctionParameters(allowMutable : Boolean = False()) : List[Parameter] = {
-var parameters = List[Parameter]();
+def parseFunctionParameters(allowMutable : Boolean = Firefly_Core.False()) : Firefly_Core.List[Parameter] = {
+var parameters = Firefly_Core.List[Parameter]();
 self.rawSkip(LBracketLeft(), "(");
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 val mutable = ((allowMutable && self.current.is(LKeyword())) && self.current.rawIs("mutable"));
-if_(mutable, {() =>
+Firefly_Core.if_(mutable, {() =>
 self.skip(LKeyword())
 });
 val parameterNameToken = self.skip(LLower());
 val parameterType = self.parseOptionalType();
-val default = if_((!self.current.is(LAssign())), {() =>
-None()
+val default = Firefly_Core.if_((!self.current.is(LAssign())), {() =>
+Firefly_Core.None()
 }).else_({() =>
 self.skip(LAssign());
-Some(self.parseTerm())
+Firefly_Core.Some(self.parseTerm())
 });
 parameters ::= Parameter(parameterNameToken.at, mutable, parameterNameToken.raw, parameterType, default);
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LComma())
 })
 });
@@ -530,18 +530,18 @@ self.rawSkip(LBracketRight(), ")");
 parameters.reverse
 }
 
-def parseFunctionArguments() : List[Argument] = {
+def parseFunctionArguments() : Firefly_Core.List[Argument] = {
 self.rawSkip(LBracketLeft(), "(");
-var arguments = List[Argument]();
-while_({() =>
+var arguments = Firefly_Core.List[Argument]();
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
-val nameToken = if_((self.current.is(LLower()) && self.ahead.is(LAssign())), {() =>
+val nameToken = Firefly_Core.if_((self.current.is(LLower()) && self.ahead.is(LAssign())), {() =>
 val token = self.skip(LLower());
 self.skip(LAssign());
-Some(token)
+Firefly_Core.Some(token)
 }).else_({() =>
-None()
+Firefly_Core.None()
 });
 val value = self.parseTerm();
 arguments ::= Argument(nameToken.map({(_w1) =>
@@ -549,7 +549,7 @@ _w1.at
 }).getOrElse(value.at), nameToken.map({(_w1) =>
 _w1.raw
 }), value);
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LComma())
 })
 });
@@ -559,27 +559,27 @@ arguments.reverse
 
 def parseOptionalType() : Type = {
 val token = self.current;
-if_(token.is(LColon()), {() =>
+Firefly_Core.if_(token.is(LColon()), {() =>
 self.skip(LColon());
 self.parseType()
 }).else_({() =>
-Type(token.at, "?", List())
+Type(token.at, "?", Firefly_Core.List())
 })
 }
 
-def parseLambda(defaultParameterCount : Int = 0, ignoreGenerateKeyword : Boolean = False(), allowColon : Boolean = False()) : ELambda = {
+def parseLambda(defaultParameterCount : Int = 0, ignoreGenerateKeyword : Boolean = Firefly_Core.False(), allowColon : Boolean = Firefly_Core.False()) : ELambda = {
 val colon = (allowColon && self.current.is(LColon()));
-val token = if_(colon, {() =>
+val token = Firefly_Core.if_(colon, {() =>
 self.skip(LColon())
 }).else_({() =>
 self.rawSkip(LBracketLeft(), "{")
 });
-if_(((ignoreGenerateKeyword && self.current.is(LKeyword())) && self.current.rawIs("generate")), {() =>
+Firefly_Core.if_(((ignoreGenerateKeyword && self.current.is(LKeyword())) && self.current.rawIs("generate")), {() =>
 self.skip(LKeyword())
 });
-val result = if_(self.current.is(LPipe()), {() =>
-var cases = List[MatchCase]();
-while_({() =>
+val result = Firefly_Core.if_(self.current.is(LPipe()), {() =>
+var cases = Firefly_Core.List[MatchCase]();
+Firefly_Core.while_({() =>
 self.current.is(LPipe())
 }, {() =>
 cases ::= self.parseCase()
@@ -588,35 +588,35 @@ cases.reverse
 }).elseIf({() =>
 (self.current.is(LLower()) && self.ahead.is2(LComma(), LArrowThick()))
 }, {() =>
-var parameters = List[MatchPattern]();
-while_({() =>
+var parameters = Firefly_Core.List[MatchPattern]();
+Firefly_Core.while_({() =>
 (!self.current.is(LArrowThick()))
 }, {() =>
 val parameterToken = self.skip(LLower());
-parameters ::= PVariable(parameterToken.at, Some(parameterToken.raw));
-if_((!self.current.is(LArrowThick())), {() =>
+parameters ::= PVariable(parameterToken.at, Firefly_Core.Some(parameterToken.raw));
+Firefly_Core.if_((!self.current.is(LArrowThick())), {() =>
 self.skip(LComma())
 })
 });
 self.skip(LArrowThick());
 val term = self.parseStatements();
-List(MatchCase(token.at, parameters.reverse, None(), term))
+Firefly_Core.List(MatchCase(token.at, parameters.reverse, Firefly_Core.None(), term))
 }).else_({() =>
 val term = self.parseStatements();
 val wildcards = Wildcards.make();
 val e = wildcards.fixWildcards(term);
-val arguments = if_((wildcards.seenWildcards != 0), {() =>
+val arguments = Firefly_Core.if_((wildcards.seenWildcards != 0), {() =>
 1.to(wildcards.seenWildcards).toList.map({(i) =>
-PVariable(token.at, Some(("_w" + i)))
+PVariable(token.at, Firefly_Core.Some(("_w" + i)))
 })
 }).else_({() =>
 1.to(defaultParameterCount).toList.map({(i) =>
-PVariable(token.at, None())
+PVariable(token.at, Firefly_Core.None())
 })
 });
-List(MatchCase(token.at, arguments, None(), e))
+Firefly_Core.List(MatchCase(token.at, arguments, Firefly_Core.None(), e))
 });
-if_((!colon), {() =>
+Firefly_Core.if_((!colon), {() =>
 self.rawSkip(LBracketRight(), "}")
 });
 ELambda(token.at, result)
@@ -624,22 +624,22 @@ ELambda(token.at, result)
 
 def parseCase() : MatchCase = {
 val token = self.skip(LPipe());
-var patterns = List[MatchPattern]();
-while_({() =>
+var patterns = Firefly_Core.List[MatchPattern]();
+Firefly_Core.while_({() =>
 ((!self.current.is(LArrowThick())) && (!self.current.rawIs("{")))
 }, {() =>
 patterns ::= self.parsePattern();
-if_(((!self.current.is(LArrowThick())) && (!self.current.rawIs("{"))), {() =>
+Firefly_Core.if_(((!self.current.is(LArrowThick())) && (!self.current.rawIs("{"))), {() =>
 self.skip(LComma())
 })
 });
-val condition = if_((!self.current.rawIs("{")), {() =>
-None()
+val condition = Firefly_Core.if_((!self.current.rawIs("{")), {() =>
+Firefly_Core.None()
 }).else_({() =>
 self.skip(LBracketLeft());
 val term = self.parseStatements();
 self.skip(LBracketRight());
-Some(term)
+Firefly_Core.Some(term)
 });
 self.skip(LArrowThick());
 val body = self.parseStatements();
@@ -647,14 +647,14 @@ MatchCase(token.at, patterns.reverse, condition, body)
 }
 
 def parsePattern() : MatchPattern = {
-val pattern = if_(self.current.is(LWildcard()), {() =>
+val pattern = Firefly_Core.if_(self.current.is(LWildcard()), {() =>
 val token = self.skip(LWildcard());
-PVariable(token.at, None())
+PVariable(token.at, Firefly_Core.None())
 }).elseIf({() =>
 self.current.is(LLower())
 }, {() =>
 val token = self.skip(LLower());
-PVariable(token.at, Some(token.raw))
+PVariable(token.at, Firefly_Core.Some(token.raw))
 }).elseIf({() =>
 self.current.rawIs("(")
 }, {() =>
@@ -663,34 +663,34 @@ val pair = self.parseRecordPattern().unzip;
 PVariant(at, ("Record$" + pair.first.mkString("$")), pair.second)
 }).else_({() =>
 val token = self.skip(LUpper());
-if_(self.current.rawIs("("), {() =>
-var patterns = List[MatchPattern]();
+Firefly_Core.if_(self.current.rawIs("("), {() =>
+var patterns = Firefly_Core.List[MatchPattern]();
 self.rawSkip(LBracketLeft(), "(");
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 patterns ::= self.parsePattern();
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skip(LComma())
 })
 });
 self.rawSkip(LBracketRight(), ")");
 PVariant(token.at, token.raw, patterns.reverse)
 }).else_({() =>
-if_(self.current.is(LLower()), {() =>
+Firefly_Core.if_(self.current.is(LLower()), {() =>
 val asToken = self.skip(LLower());
-PVariantAs(token.at, token.raw, Some(asToken.raw))
+PVariantAs(token.at, token.raw, Firefly_Core.Some(asToken.raw))
 }).elseIf({() =>
 self.current.is(LWildcard())
 }, {() =>
 self.skip(LWildcard());
-PVariantAs(token.at, token.raw, None())
+PVariantAs(token.at, token.raw, Firefly_Core.None())
 }).else_({() =>
-PVariant(token.at, token.raw, List())
+PVariant(token.at, token.raw, Firefly_Core.List())
 })
 })
 });
-if_(self.current.rawIs("@"), {() =>
+Firefly_Core.if_(self.current.rawIs("@"), {() =>
 val atToken = self.skip(LOperator());
 val asToken = self.skip(LLower());
 PAlias(atToken.at, pattern, asToken.raw)
@@ -700,43 +700,43 @@ pattern
 }
 
 def parseType() : Type = {
-val leftTypes = if_(((self.current.rawIs("(") && self.ahead.is(LLower())) && self.aheadAhead.is(LColon())), {() =>
+val leftTypes = Firefly_Core.if_(((self.current.rawIs("(") && self.ahead.is(LLower())) && self.aheadAhead.is(LColon())), {() =>
 val at = self.current.at;
 val pair = self.parseRecordType().unzip;
-List(Type(at, ("Record$" + pair.first.mkString("$")), pair.second))
+Firefly_Core.List(Type(at, ("Record$" + pair.first.mkString("$")), pair.second))
 }).elseIf({() =>
 self.current.rawIs("(")
 }, {() =>
-self.parseTypeArguments(parenthesis = True())
+self.parseTypeArguments(parenthesis = Firefly_Core.True())
 }).else_({() =>
-val namespace = if_(self.current.is(LNamespace()), {() =>
+val namespace = Firefly_Core.if_(self.current.is(LNamespace()), {() =>
 self.skip(LNamespace()).raw
 }).else_({() =>
 ""
 });
 val token = self.skip(LUpper());
-val arguments = if_((!self.current.rawIs("[")), {() =>
-List()
+val arguments = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
+Firefly_Core.List()
 }).else_({() =>
 self.parseTypeArguments()
 });
-List(Type(token.at, (namespace + token.raw), arguments))
+Firefly_Core.List(Type(token.at, (namespace + token.raw), arguments))
 });
-if_(((!self.current.is(LArrowThick())) && (leftTypes.size == 1)), {() =>
+Firefly_Core.if_(((!self.current.is(LArrowThick())) && (leftTypes.size == 1)), {() =>
 leftTypes.head
 }).else_({() =>
 val arrowToken = self.skip(LArrowThick());
 val rightType = self.parseType();
-Type(arrowToken.at, ("Function$" + leftTypes.size), (leftTypes ++ List(rightType)))
+Type(arrowToken.at, ("Function$" + leftTypes.size), (leftTypes ++ Firefly_Core.List(rightType)))
 })
 }
 
 def parseStatements() : Term = {
-if_(self.current.is2(LBracketRight(), LPipe()), {() =>
-EVariant(self.current.at, "Unit", List(), None())
+Firefly_Core.if_(self.current.is2(LBracketRight(), LPipe()), {() =>
+EVariant(self.current.at, "Unit", Firefly_Core.List(), Firefly_Core.None())
 }).else_({() =>
 var result = self.parseStatement();
-while_({() =>
+Firefly_Core.while_({() =>
 self.currentIsSeparator(LSemicolon())
 }, {() =>
 val token = self.skipSeparator(LSemicolon());
@@ -747,24 +747,24 @@ result
 }
 
 def parseStatement() : Term = {
-if_((self.current.is(LKeyword()) && (self.current.rawIs("let") || self.current.rawIs("mutable"))), {() =>
+Firefly_Core.if_((self.current.is(LKeyword()) && (self.current.rawIs("let") || self.current.rawIs("mutable"))), {() =>
 self.parseLet()
 }).else_({() =>
-if_((self.current.is(LKeyword()) && self.current.rawIs("function")), {() =>
+Firefly_Core.if_((self.current.is(LKeyword()) && self.current.rawIs("function")), {() =>
 self.parseFunctions()
 }).else_({() =>
 val term = self.parseTerm();
-if_(((!self.current.is(LAssign())) && (!self.current.is3(LAssignPlus(), LAssignMinus(), LAssignLink()))), {() =>
+Firefly_Core.if_(((!self.current.is(LAssign())) && (!self.current.is3(LAssignPlus(), LAssignMinus(), LAssignLink()))), {() =>
 term
 }).else_({() =>
-val token = do_({() =>
-if_(self.current.is(LAssignPlus()), {() =>
+val token = Firefly_Core.do_({() =>
+Firefly_Core.if_(self.current.is(LAssignPlus()), {() =>
 self.skip(LAssignPlus())
 }).else_({() =>
-if_(self.current.is(LAssignMinus()), {() =>
+Firefly_Core.if_(self.current.is(LAssignMinus()), {() =>
 self.skip(LAssignMinus())
 }).else_({() =>
-if_(self.current.is(LAssignLink()), {() =>
+Firefly_Core.if_(self.current.is(LAssignLink()), {() =>
 self.skip(LAssignLink())
 }).else_({() =>
 self.skip(LAssign())
@@ -789,14 +789,14 @@ self.fail(token.at, "Only variables and fields are assignable")
 
 def parseLet() : Term = {
 val mutable = self.current.rawIs("mutable");
-if_(mutable, {() =>
+Firefly_Core.if_(mutable, {() =>
 self.rawSkip(LKeyword(), "mutable")
 }).else_({() =>
 self.rawSkip(LKeyword(), "let")
 });
 val nameToken = self.skip(LLower());
-val valueType = if_((!self.current.is(LColon())), {() =>
-Type(nameToken.at, "?", List())
+val valueType = Firefly_Core.if_((!self.current.is(LColon())), {() =>
+Type(nameToken.at, "?", Firefly_Core.List())
 }).else_({() =>
 self.skip(LColon());
 self.parseType()
@@ -810,8 +810,8 @@ ELet(nameToken.at, mutable, nameToken.raw, valueType, value, body)
 
 def parseFunctions() : Term = {
 val at = self.current.at;
-var functions = List[LocalFunction]();
-while_({() =>
+var functions = Firefly_Core.List[LocalFunction]();
+Firefly_Core.while_({() =>
 self.current.rawIs("function")
 }, {() =>
 self.rawSkip(LKeyword(), "function");
@@ -829,19 +829,19 @@ self.parseBinary(0)
 }
 
 def parseBinary(level : Int) : Term = {
-if_((level >= binaryOperators.length), {() =>
+Firefly_Core.if_((level >= binaryOperators.length), {() =>
 self.parseUnary()
 }).else_({() =>
 val operators = binaryOperators(level);
 var result = self.parseBinary((level + 1));
-if_(self.current.is(LOperator()), {() =>
-while_({() =>
+Firefly_Core.if_(self.current.is(LOperator()), {() =>
+Firefly_Core.while_({() =>
 operators.exists(self.current.rawIs)
 }, {() =>
 val token = self.skip(LOperator());
 val right = self.parseBinary((level + 1));
-val arguments = List(Argument(result.at, None(), result), Argument(right.at, None(), right));
-result = ECall(token.at, EVariable(token.at, token.raw), List(), arguments)
+val arguments = Firefly_Core.List(Argument(result.at, Firefly_Core.None(), result), Argument(right.at, Firefly_Core.None(), right));
+result = ECall(token.at, EVariable(token.at, token.raw), Firefly_Core.List(), arguments)
 })
 });
 result
@@ -849,10 +849,10 @@ result
 }
 
 def parseUnary() : Term = {
-if_(self.current.is(LOperator()), {() =>
+Firefly_Core.if_(self.current.is(LOperator()), {() =>
 val token = self.skip(LOperator());
 val term = self.parseUnary();
-ECall(token.at, EVariable(token.at, token.raw), List(), List(Argument(term.at, None(), term)))
+ECall(token.at, EVariable(token.at, token.raw), Firefly_Core.List(), Firefly_Core.List(Argument(term.at, Firefly_Core.None(), term)))
 }).else_({() =>
 self.parseFieldsAndCalls()
 })
@@ -860,12 +860,12 @@ self.parseFieldsAndCalls()
 
 def parseFieldsAndCalls() : Term = {
 var result = self.parseAtom();
-while_({() =>
+Firefly_Core.while_({() =>
 ((self.current.is(LBracketLeft()) || self.current.is(LColon())) || self.current.is(LDot()))
 }, {() =>
-if_(self.current.is(LDot()), {() =>
+Firefly_Core.if_(self.current.is(LDot()), {() =>
 self.skip(LDot());
-if_(self.current.rawIs("{"), {() =>
+Firefly_Core.if_(self.current.rawIs("{"), {() =>
 val term = self.parseAtom();
 result = EPipe(term.at, result, term)
 }).elseIf({() =>
@@ -878,27 +878,27 @@ result = EField(token.at, result, token.raw)
 })
 }).else_({() =>
 val at = self.current.at;
-val typeArguments = if_((!self.current.rawIs("[")), {() =>
-List()
+val typeArguments = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
+Firefly_Core.List()
 }).else_({() =>
 self.parseTypeArguments()
 });
-val arguments = if_((!self.current.rawIs("(")), {() =>
-List()
+val arguments = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
+Firefly_Core.List()
 }).else_({() =>
 self.parseFunctionArguments()
 });
-var moreArguments = List[Argument]();
-var lastWasCurly = False();
-while_({() =>
+var moreArguments = Firefly_Core.List[Argument]();
+var lastWasCurly = Firefly_Core.False();
+Firefly_Core.while_({() =>
 (self.current.rawIs("{") || self.current.is(LColon()))
 }, {() =>
 lastWasCurly = self.current.rawIs("{");
-val lambda = self.parseLambda(allowColon = True());
-moreArguments ::= Argument(lambda.at, None(), lambda)
+val lambda = self.parseLambda(allowColon = Firefly_Core.True());
+moreArguments ::= Argument(lambda.at, Firefly_Core.None(), lambda)
 });
 result = ECall(at, result, typeArguments, (arguments ++ moreArguments.reverse));
-if_((lastWasCurly && self.current.is(LLower())), {() =>
+Firefly_Core.if_((lastWasCurly && self.current.is(LLower())), {() =>
 val token = self.skip(LLower());
 result = EField(token.at, result, token.raw)
 })
@@ -908,7 +908,7 @@ result
 }
 
 def parseAtom() : Term = {
-if_(self.current.is(LString()), {() =>
+Firefly_Core.if_(self.current.is(LString()), {() =>
 val token = self.skip(LString());
 EString(token.at, token.raw)
 }).elseIf({() =>
@@ -935,13 +935,13 @@ EVariable(token.at, token.raw)
 self.current.is(LNamespace())
 }, {() =>
 val namespaceToken = self.skip(LNamespace());
-val extraNamespace = if_((!self.current.is(LNamespace())), {() =>
-None()
+val extraNamespace = Firefly_Core.if_((!self.current.is(LNamespace())), {() =>
+Firefly_Core.None()
 }).else_({() =>
-Some(self.skip(LNamespace()).raw)
+Firefly_Core.Some(self.skip(LNamespace()).raw)
 });
 val prefix = (namespaceToken.raw + extraNamespace.getOrElse(""));
-if_(self.current.is(LLower()), {() =>
+Firefly_Core.if_(self.current.is(LLower()), {() =>
 val token = self.skip(LLower());
 EVariable(token.at, (prefix + token.raw))
 }).else_({() =>
@@ -983,31 +983,31 @@ self.fail(self.current.at, ("Expected atom, got " + self.current.raw))
 def parseVariant(prefix : String) : Term = {
 val token = self.skip(LUpper());
 val name = (prefix + token.raw);
-val typeArguments = if_((!self.current.rawIs("[")), {() =>
-List()
+val typeArguments = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
+Firefly_Core.List()
 }).else_({() =>
 self.parseTypeArguments()
 });
-if_(self.current.rawIs("?"), {() =>
+Firefly_Core.if_(self.current.rawIs("?"), {() =>
 self.skip(LOperator());
 EVariantIs(token.at, name, typeArguments)
 }).else_({() =>
-val arguments = if_((!self.current.rawIs("(")), {() =>
-None()
+val arguments = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
+Firefly_Core.None()
 }).else_({() =>
-Some(self.parseFunctionArguments())
+Firefly_Core.Some(self.parseFunctionArguments())
 });
 EVariant(token.at, name, typeArguments, arguments)
 })
 }
 
 def parseCopy(record : Term) : Term = {
-val namespace = if_((!self.current.is(LNamespace())), {() =>
+val namespace = Firefly_Core.if_((!self.current.is(LNamespace())), {() =>
 ""
 }).else_({() =>
 self.skip(LNamespace()).raw
 });
-val extraNamespace = if_((!self.current.is(LNamespace())), {() =>
+val extraNamespace = Firefly_Core.if_((!self.current.is(LNamespace())), {() =>
 ""
 }).else_({() =>
 self.skip(LNamespace()).raw
@@ -1019,16 +1019,16 @@ val fields = self.parseRecord();
 ECopy(token.at, name, record, fields)
 }
 
-def parseRecord() : List[Field] = {
-var fields = List[Field]();
+def parseRecord() : Firefly_Core.List[Field] = {
+var fields = Firefly_Core.List[Field]();
 self.rawSkip(LBracketLeft(), "(");
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 val fieldToken = self.skip(LLower());
 self.skip(LAssign());
 fields ::= Field(fieldToken.at, fieldToken.raw, self.parseTerm());
-if_((!self.current.is(LBracketRight())), {() =>
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LComma())
 })
 });
@@ -1036,16 +1036,16 @@ self.rawSkip(LBracketRight(), ")");
 fields.reverse
 }
 
-def parseRecordType() : List[Pair[String, Type]] = {
-var fields = List[Pair[String, Type]]();
+def parseRecordType() : Firefly_Core.List[Firefly_Core.Pair[String, Type]] = {
+var fields = Firefly_Core.List[Firefly_Core.Pair[String, Type]]();
 self.rawSkip(LBracketLeft(), "(");
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 val fieldToken = self.skip(LLower());
 self.skipSeparator(LColon());
-fields ::= Pair(fieldToken.raw, self.parseType());
-if_((!self.current.is(LBracketRight())), {() =>
+fields ::= Firefly_Core.Pair(fieldToken.raw, self.parseType());
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LComma())
 })
 });
@@ -1055,16 +1055,16 @@ _w1.first
 })
 }
 
-def parseRecordPattern() : List[Pair[String, MatchPattern]] = {
-var fields = List[Pair[String, MatchPattern]]();
+def parseRecordPattern() : Firefly_Core.List[Firefly_Core.Pair[String, MatchPattern]] = {
+var fields = Firefly_Core.List[Firefly_Core.Pair[String, MatchPattern]]();
 self.rawSkip(LBracketLeft(), "(");
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.is(LBracketRight()))
 }, {() =>
 val fieldToken = self.skip(LLower());
 self.skip(LAssign());
-fields ::= Pair(fieldToken.raw, self.parsePattern());
-if_((!self.current.is(LBracketRight())), {() =>
+fields ::= Firefly_Core.Pair(fieldToken.raw, self.parsePattern());
+Firefly_Core.if_((!self.current.is(LBracketRight())), {() =>
 self.skipSeparator(LComma())
 })
 });
@@ -1073,13 +1073,13 @@ fields.reverse
 }
 
 def parseList() : Term = {
-var items = List[Term]();
+var items = Firefly_Core.List[Term]();
 val at = self.rawSkip(LBracketLeft(), "[").at;
-while_({() =>
+Firefly_Core.while_({() =>
 (!self.current.rawIs("]"))
 }, {() =>
 items ::= self.parseTerm();
-if_((!self.current.rawIs("]")), {() =>
+Firefly_Core.if_((!self.current.rawIs("]")), {() =>
 self.skipSeparator(LComma())
 })
 });
@@ -1092,9 +1092,9 @@ EList(at, items.reverse)
 
 object Parser {
 
-val binaryOperators = Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
+val binaryOperators = Firefly_Core.Array(Firefly_Core.List("||"), Firefly_Core.List("&&"), Firefly_Core.List("!=", "=="), Firefly_Core.List("<=", ">=", "<", ">"), Firefly_Core.List("::"), Firefly_Core.List("++"), Firefly_Core.List("+", "-"), Firefly_Core.List("*", "/", "%"), Firefly_Core.List("^"))
 
-def make(file : String, tokens : Array[Token]) : Parser = {
+def make(file : String, tokens : Firefly_Core.Array[Token]) : Parser = {
 Parser(file, tokens, tokens.last, 0)
 }
 

@@ -64,168 +64,168 @@ token.code.regionMatches(token.startOffset, value, 0, value.length)
 
 implicit class TokenKind_extend1(self : TokenKind) {
 
-def beforeSeparator() : Bool = {
+def beforeSeparator() : Firefly_Core.Bool = {
 pipe_dot(self)({
 case (LEnd()) =>
-False()
+Firefly_Core.False()
 case (LString()) =>
-True()
+Firefly_Core.True()
 case (LChar()) =>
-True()
+Firefly_Core.True()
 case (LInt()) =>
-True()
+Firefly_Core.True()
 case (LFloat()) =>
-True()
+Firefly_Core.True()
 case (LKeyword()) =>
-True()
+Firefly_Core.True()
 case (LNamespace()) =>
-False()
+Firefly_Core.False()
 case (LLower()) =>
-True()
+Firefly_Core.True()
 case (LUpper()) =>
-True()
+Firefly_Core.True()
 case (LWildcard()) =>
-True()
+Firefly_Core.True()
 case (LBracketLeft()) =>
-False()
+Firefly_Core.False()
 case (LBracketRight()) =>
-True()
+Firefly_Core.True()
 case (LOperator()) =>
-False()
+Firefly_Core.False()
 case (LComma()) =>
-False()
+Firefly_Core.False()
 case (LSeparator()) =>
-False()
+Firefly_Core.False()
 case (LDot()) =>
-False()
+Firefly_Core.False()
 case (LSemicolon()) =>
-False()
+Firefly_Core.False()
 case (LPipe()) =>
-False()
+Firefly_Core.False()
 case (LColon()) =>
-False()
+Firefly_Core.False()
 case (LDotDotDot()) =>
-False()
+Firefly_Core.False()
 case (LArrowThick()) =>
-False()
+Firefly_Core.False()
 case (LAssign()) =>
-False()
+Firefly_Core.False()
 case (LAssignPlus()) =>
-False()
+Firefly_Core.False()
 case (LAssignMinus()) =>
-False()
+Firefly_Core.False()
 case (LAssignLink()) =>
-False()
+Firefly_Core.False()
 })
 }
 
-def afterSeparator() : Bool = {
+def afterSeparator() : Firefly_Core.Bool = {
 pipe_dot(self)({
 case (LEnd()) =>
-False()
+Firefly_Core.False()
 case (LString()) =>
-True()
+Firefly_Core.True()
 case (LChar()) =>
-True()
+Firefly_Core.True()
 case (LInt()) =>
-True()
+Firefly_Core.True()
 case (LFloat()) =>
-True()
+Firefly_Core.True()
 case (LKeyword()) =>
-True()
+Firefly_Core.True()
 case (LNamespace()) =>
-True()
+Firefly_Core.True()
 case (LLower()) =>
-True()
+Firefly_Core.True()
 case (LUpper()) =>
-True()
+Firefly_Core.True()
 case (LWildcard()) =>
-True()
+Firefly_Core.True()
 case (LBracketLeft()) =>
-True()
+Firefly_Core.True()
 case (LBracketRight()) =>
-False()
+Firefly_Core.False()
 case (LOperator()) =>
-False()
+Firefly_Core.False()
 case (LComma()) =>
-False()
+Firefly_Core.False()
 case (LSeparator()) =>
-False()
+Firefly_Core.False()
 case (LDot()) =>
-False()
+Firefly_Core.False()
 case (LSemicolon()) =>
-False()
+Firefly_Core.False()
 case (LPipe()) =>
-False()
+Firefly_Core.False()
 case (LColon()) =>
-False()
+Firefly_Core.False()
 case (LDotDotDot()) =>
-True()
+Firefly_Core.True()
 case (LArrowThick()) =>
-False()
+Firefly_Core.False()
 case (LAssign()) =>
-False()
+Firefly_Core.False()
 case (LAssignPlus()) =>
-False()
+Firefly_Core.False()
 case (LAssignMinus()) =>
-False()
+Firefly_Core.False()
 case (LAssignLink()) =>
-False()
+Firefly_Core.False()
 })
 }
 
-def afterKeyword() : Bool = {
+def afterKeyword() : Firefly_Core.Bool = {
 pipe_dot(self)({
 case (LEnd()) =>
-False()
+Firefly_Core.False()
 case (LString()) =>
-True()
+Firefly_Core.True()
 case (LChar()) =>
-True()
+Firefly_Core.True()
 case (LInt()) =>
-True()
+Firefly_Core.True()
 case (LFloat()) =>
-True()
+Firefly_Core.True()
 case (LKeyword()) =>
-True()
+Firefly_Core.True()
 case (LNamespace()) =>
-True()
+Firefly_Core.True()
 case (LLower()) =>
-True()
+Firefly_Core.True()
 case (LUpper()) =>
-True()
+Firefly_Core.True()
 case (LWildcard()) =>
-True()
+Firefly_Core.True()
 case (LBracketLeft()) =>
-False()
+Firefly_Core.False()
 case (LBracketRight()) =>
-False()
+Firefly_Core.False()
 case (LOperator()) =>
-False()
+Firefly_Core.False()
 case (LComma()) =>
-False()
+Firefly_Core.False()
 case (LSeparator()) =>
-False()
+Firefly_Core.False()
 case (LDot()) =>
-False()
+Firefly_Core.False()
 case (LSemicolon()) =>
-False()
+Firefly_Core.False()
 case (LPipe()) =>
-False()
+Firefly_Core.False()
 case (LColon()) =>
-False()
+Firefly_Core.False()
 case (LDotDotDot()) =>
-False()
+Firefly_Core.False()
 case (LArrowThick()) =>
-False()
+Firefly_Core.False()
 case (LAssign()) =>
-False()
+Firefly_Core.False()
 case (LAssignPlus()) =>
-False()
+Firefly_Core.False()
 case (LAssignMinus()) =>
-False()
+Firefly_Core.False()
 case (LAssignLink()) =>
-False()
+Firefly_Core.False()
 })
 }
 

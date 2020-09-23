@@ -16,6 +16,22 @@ object Firefly_Core {
     def SetBuilder[T](items : T*)(implicit ordering : Ordering[T]) = mutable.SortedSet[T](items : _*)
     def ArrayBuilder[T](items : T*) = mutable.ArrayBuffer[T](items : _*)
 
+    def Array[T: scala.reflect.ClassTag](items : T*) = scala.Array(items : _*)
+    def List[T](items : T*) = scala.List(items : _*)
+    def Set[T](items : T*) = scala.collection.immutable.Set(items : _*)
+    def Map[K, V](items : (K, V)*) = scala.collection.immutable.Map(items : _*)
+
+    type Option[T] = scala.Option[T]
+    type Array[T] = scala.Array[T]
+    type List[T] = scala.List[T]
+    type Set[T] = scala.collection.immutable.Set[T]
+    type Map[K, V] = scala.collection.immutable.Map[K, V]
+
+    type Int = scala.Int
+    type Char = scala.Char
+    type Float = scala.Double
+    type String = scala.Predef.String
+
     case class FireflyException(value : Any) extends RuntimeException
 
 

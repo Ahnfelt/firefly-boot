@@ -206,18 +206,19 @@ emitTerm(term: Term): String {
     | EChar(at, value) => value
     | EInt(at, value) => value
     | EFloat(at, value) => value
-    | EVariable(at, name) => escapeKeyword(name)
+    | EVariable(at, name) => escapeResolved(name)
     | EList(at, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
     | EVariant(at, name, typeArguments, arguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
-        name + generics + "(" + arguments.toList.flatten.map(emitArgument).mkString(", ") + ")"
+        escapeResolved(name) + generics + "(" + arguments.toList.flatten.map(emitArgument).mkString(", ") + ")"
     | EVariantIs(at, name, typeArguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
-        "({ case _w : " + name + generics + " => Some(_w); case _ => None() })"
+        "({ case _w : " + escapeResolved(name) + generics + " => Some(_w); case _ => None() })"
     | ECopy(at, name, record, fields) =>
         let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }.mkString(", ")
         emitTerm(record) + ".copy(" + fieldCode + ")"
-    | EField(at, record, field) => emitTerm(record) + "." + escapeKeyword(field)
+    | EField(at, record, field) =>
+        emitTerm(record) + "." + escapeKeyword(field)
     | ELambda(at, List(MatchCase(_, patterns, None, body))) {patterns.all { | PVariable _ => True | _ => False }} =>
         let parameters =
             patterns.map { | PVariable p => p.name.map(escapeKeyword).getOrElse("_") | _ => panic("!") }.mkString(", ")
@@ -260,15 +261,16 @@ emitPattern(pattern: MatchPattern): String {
     | PVariable(at, name) =>
         name.map(escapeKeyword).getOrElse("_")
     | PVariant(at, name, patterns) =>
-        name + "(" + patterns.map(emitPattern).mkString(", ") + ")"
+        escapeResolved(name) + "(" + patterns.map(emitPattern).mkString(", ") + ")"
     | PVariantAs(at, name, variable) =>
-        variable.map(escapeKeyword).getOrElse("_") + " : " + name
+        variable.map(escapeKeyword).getOrElse("_") + " : " + escapeResolved(name)
     | PAlias(at, p, variable) =>
         escapeKeyword(variable) + " @ (" + emitPattern(p) + ")"
 }
 
 escapeResolved(word: String) {
-    escapeKeyword(word.reverse.takeWhile { _ != '.' }.reverse)
+    let parts = word.split("[.]").toList.map(escapeKeyword).join(".")
+    parts.replace("ff:core/Core.", "Firefly_Core.")
 }
 
 escapeKeyword(word: String) {

@@ -4,28 +4,28 @@ import firefly.Firefly_Core._
 import firefly.Syntax._
 object Resolver {
 
-case class Resolver(variables : Map[String, String], variants : Map[String, String], types : Map[String, String], traits : Map[String, String])
+case class Resolver(variables : Firefly_Core.Map[String, String], variants : Firefly_Core.Map[String, String], types : Firefly_Core.Map[String, String], traits : Firefly_Core.Map[String, String])
 
 def make() = {
-def core(name : String) : Pair[String, String] = {
-Pair(name, ("ff:core/Core." + name))
+def core(name : String) : Firefly_Core.Pair[String, String] = {
+Firefly_Core.Pair(name, ("ff:core/Core." + name))
 }
-Resolver(variables = List("if", "while", "do", "panic", "try", "log").map(core).toMap, variants = List("True", "False", "Some", "None", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, types = List("Bool", "Option", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, traits = Map())
+Resolver(variables = Firefly_Core.List("if", "while", "do", "panic", "try", "log").map(core).toMap, variants = Firefly_Core.List("True", "False", "Some", "None", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, types = Firefly_Core.List("Bool", "Option", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, traits = Firefly_Core.Map())
 }
 
 def fail[T](at : Location, message : String) : T = {
-panic(((message + " ") + at.show))
+Firefly_Core.panic(((message + " ") + at.show))
 }
 implicit class Resolver_extend0(self : Resolver) {
 
-def resolveModule(module : Module, otherModules : List[Module]) : Module = {
+def resolveModule(module : Module, otherModules : Firefly_Core.List[Module]) : Module = {
 val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '/')
 }).reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
 val self2 = self.processImports(module.imports, otherModules);
-val self3 = self2.processDefinitions(module, None());
+val self3 = self2.processDefinitions(module, Firefly_Core.None());
 module.copy(types = module.types.map({(_w1) =>
 self3.resolveTypeDefinition(_w1)
 }), traits = module.traits.map({(_w1) =>
@@ -41,58 +41,58 @@ self3.resolveFunctionDefinition(_w1)
 }))
 }
 
-def processImports(imports : List[DImport], modules : List[Module]) : Resolver = {
+def processImports(imports : Firefly_Core.List[DImport], modules : Firefly_Core.List[Module]) : Resolver = {
 var resolver = self;
 imports.each({(import_) =>
 modules.find({(_w1) =>
 (_w1.file.dropRight(3) == import_.file)
 }).each({(module) =>
-resolver = resolver.processDefinitions(module, Some(import_.alias))
+resolver = resolver.processDefinitions(module, Firefly_Core.Some(import_.alias))
 })
 });
 resolver
 }
 
-def processDefinitions(module : Module, importAlias : Option[String]) : Resolver = {
-def entry(name : String, unqualified : Bool) : List[Pair[String, String]] = {
+def processDefinitions(module : Module, importAlias : Firefly_Core.Option[String]) : Resolver = {
+def entry(name : String, unqualified : Firefly_Core.Bool) : Firefly_Core.List[Firefly_Core.Pair[String, String]] = {
 val full = ((module.file.dropRight(3) + ".") + name);
 pipe_dot(importAlias)({
-case (None()) =>
-List(Pair(name, name))
-case (Some(alias)) if unqualified =>
-List(Pair(((alias + ".") + name), full), Pair(name, full))
-case (Some(alias)) =>
-List(Pair(((alias + ".") + name), full))
+case (Firefly_Core.None()) =>
+Firefly_Core.List(Firefly_Core.Pair(name, name))
+case (Firefly_Core.Some(alias)) if unqualified =>
+Firefly_Core.List(Firefly_Core.Pair(((alias + ".") + name), full), Firefly_Core.Pair(name, full))
+case (Firefly_Core.Some(alias)) =>
+Firefly_Core.List(Firefly_Core.Pair(((alias + ".") + name), full))
 })
 }
 val lets = module.lets.flatMap({(_w1) =>
-entry(_w1.name, False())
+entry(_w1.name, Firefly_Core.False())
 }).toMap;
 val functions = module.functions.flatMap({(_w1) =>
-entry(_w1.signature.name, False())
+entry(_w1.signature.name, Firefly_Core.False())
 }).toMap;
 val traitMethods = module.traits.flatMap({(_w1) =>
 _w1.methods
 }).flatMap({(_w1) =>
-entry(_w1.name, False())
+entry(_w1.name, Firefly_Core.False())
 }).toMap;
 val traits = module.traits.flatMap({(_w1) =>
-entry(_w1.name, True())
+entry(_w1.name, Firefly_Core.True())
 }).toMap;
 val types = module.types.flatMap({(_w1) =>
-entry(_w1.name, True())
+entry(_w1.name, Firefly_Core.True())
 }).toMap;
 val variants = module.types.flatMap({(_w1) =>
 _w1.variants
 }).flatMap({(_w1) =>
-entry(_w1.name, True())
+entry(_w1.name, Firefly_Core.True())
 }).toMap;
 Resolver(variables = (((self.variables ++ lets) ++ functions) ++ traitMethods), variants = (self.variants ++ variants), types = (self.types ++ types), traits = (self.traits ++ traits))
 }
 
 def resolveTypeDefinition(definition : DType) : DType = {
 val generics = definition.generics.map({(g) =>
-Pair(g, g)
+Firefly_Core.Pair(g, g)
 }).toMap;
 val self2 = self.copy(types = (self.types ++ generics));
 definition.copy(constraints = definition.constraints.map({(c) =>
@@ -120,9 +120,9 @@ definition
 
 def resolveExtendDefinition(definition : DExtend) : DExtend = {
 val generics = definition.generics.map({(g) =>
-Pair(g, g)
+Firefly_Core.Pair(g, g)
 }).toMap;
-val self2 = self.copy(types = (self.types ++ generics), variables = (self.variables + Pair(definition.name, definition.name)));
+val self2 = self.copy(types = (self.types ++ generics), variables = (self.variables + Firefly_Core.Pair(definition.name, definition.name)));
 definition.copy(constraints = definition.constraints.map({(c) =>
 c.copy(representation = self2.resolveType(c.representation))
 }), type_ = self2.resolveType(definition.type_), methods = definition.methods.map({(_w1) =>
@@ -131,13 +131,13 @@ self2.resolveFunctionDefinition(_w1)
 }
 
 def resolveLetDefinition(definition : DLet) : DLet = {
-val self2 = self.copy(variables = (self.variables + Pair(definition.name, definition.name)));
-definition
+val self2 = self.copy(variables = (self.variables + Firefly_Core.Pair(definition.name, definition.name)));
+definition.copy(variableType = self.resolveType(definition.variableType), value = self.resolveTerm(definition.value))
 }
 
 def resolveFunctionDefinition(definition : DFunction) : DFunction = {
 val local = resolveFunction(LocalFunction(definition.signature, definition.body));
-definition
+definition.copy(signature = local.signature, body = local.body)
 }
 
 def resolveTerm(term : Term) : Term = (term) match {
@@ -194,7 +194,7 @@ ERecord(at = at, fields = fields.map({(f) =>
 f.copy(value = self.resolveTerm(f.value))
 }))
 case (e : EWildcard) =>
-if_((e.index == 0), {() =>
+Firefly_Core.if_((e.index == 0), {() =>
 fail(e.at, "Unbound wildcard")
 });
 e
@@ -202,14 +202,14 @@ case (EFunctions(at, functions, body)) =>
 val functionMap = functions.map({(_w1) =>
 _w1.signature.name
 }).map({(name) =>
-Pair(name, name)
+Firefly_Core.Pair(name, name)
 }).toMap;
 val self2 = self.copy(variables = (self.variables ++ functionMap));
 EFunctions(at = at, functions = functions.map({(_w1) =>
 self2.resolveFunction(_w1)
 }), body = self2.resolveTerm(body))
 case (e : ELet) =>
-val self2 = self.copy(variables = (self.variables + Pair(e.name, e.name)));
+val self2 = self.copy(variables = (self.variables + Firefly_Core.Pair(e.name, e.name)));
 e.copy(valueType = self.resolveType(e.valueType), value = self.resolveTerm(e.value), body = self2.resolveTerm(e.body))
 case (ESequential(at, before, after)) =>
 ESequential(at = at, before = self.resolveTerm(before), after = self.resolveTerm(after))
@@ -233,10 +233,10 @@ def resolveFunction(function : LocalFunction) : LocalFunction = {
 val variableMap = function.signature.parameters.map({(_w1) =>
 _w1.name
 }).map({(name) =>
-Pair(name, name)
+Firefly_Core.Pair(name, name)
 }).toMap;
 val typeMap = function.signature.generics.map({(name) =>
-Pair(name, name)
+Firefly_Core.Pair(name, name)
 }).toMap;
 val self2 = self.copy(variables = (self.variables ++ variableMap), types = (self.types ++ typeMap));
 val signature = function.signature.copy(constraints = function.signature.constraints.map({(c) =>
@@ -255,23 +255,23 @@ fail(function.signature.at, ("Function body must be a lambda: " + e))
 }
 
 def resolveCase(case_ : MatchCase) : MatchCase = {
-def findVariables(pattern : MatchPattern) : Map[String, String] = (pattern) match {
-case (PVariable(_, Some(name))) =>
-Map(Pair(name, name))
-case (PVariable(_, None())) =>
-Map()
+def findVariables(pattern : MatchPattern) : Firefly_Core.Map[String, String] = (pattern) match {
+case (PVariable(_, Firefly_Core.Some(name))) =>
+Firefly_Core.Map(Firefly_Core.Pair(name, name))
+case (PVariable(_, Firefly_Core.None())) =>
+Firefly_Core.Map()
 case (PVariant(_, _, patterns)) =>
-patterns.map(findVariables).foldLeft(Map[String, String]())({(_w1, _w2) =>
+patterns.map(findVariables).foldLeft(Firefly_Core.Map[String, String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 }).toMap
 case (PVariantAs(_, _, variable)) =>
 variable.toList.map({(x) =>
-Pair(x, x)
+Firefly_Core.Pair(x, x)
 }).toMap
 case (PAlias(_, pattern, variable)) =>
-(Map(Pair(variable, variable)) ++ findVariables(pattern))
+(Firefly_Core.Map(Firefly_Core.Pair(variable, variable)) ++ findVariables(pattern))
 }
-val variableMap = case_.patterns.map(findVariables).foldLeft(Map[String, String]())({(_w1, _w2) =>
+val variableMap = case_.patterns.map(findVariables).foldLeft(Firefly_Core.Map[String, String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 }).toMap;
 val self2 = self.copy(variables = (self.variables ++ variableMap));
@@ -305,14 +305,14 @@ PAlias(at, newPattern, variable)
 object Resolver {
 
 def make() = {
-def core(name : String) : Pair[String, String] = {
-Pair(name, ("ff:core/Core." + name))
+def core(name : String) : Firefly_Core.Pair[String, String] = {
+Firefly_Core.Pair(name, ("ff:core/Core." + name))
 }
-Resolver(variables = List("if", "while", "do", "panic", "try", "log").map(core).toMap, variants = List("True", "False", "Some", "None", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, types = List("Bool", "Option", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, traits = Map())
+Resolver(variables = Firefly_Core.List("if", "while", "do", "panic", "try", "log").map(core).toMap, variants = Firefly_Core.List("True", "False", "Some", "None", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, types = Firefly_Core.List("Bool", "Option", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, traits = Firefly_Core.Map())
 }
 
 def fail[T](at : Location, message : String) : T = {
-panic(((message + " ") + at.show))
+Firefly_Core.panic(((message + " ") + at.show))
 }
 
 }
