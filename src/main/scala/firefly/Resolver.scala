@@ -119,7 +119,15 @@ definition
 }
 
 def resolveExtendDefinition(definition : DExtend) : DExtend = {
-definition
+val generics = definition.generics.map({(g) =>
+Pair(g, g)
+}).toMap;
+val self2 = self.copy(types = (self.types ++ generics), variables = (self.variables + Pair(definition.name, definition.name)));
+definition.copy(constraints = definition.constraints.map({(c) =>
+c.copy(representation = self2.resolveType(c.representation))
+}), type_ = self2.resolveType(definition.type_), methods = definition.methods.map({(_w1) =>
+self2.resolveFunctionDefinition(_w1)
+}))
 }
 
 def resolveLetDefinition(definition : DLet) : DLet = {

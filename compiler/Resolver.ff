@@ -113,7 +113,18 @@ extend self: Resolver {
     }
 
     resolveExtendDefinition(definition: DExtend): DExtend {
-        definition
+        let generics = definition.generics.map { g => Pair(g, g) }.toMap
+        let self2 = self.Resolver(
+            types = self.types ++ generics
+            variables = self.variables + Pair(definition.name, definition.name)
+        )
+        definition.DExtend(
+            constraints = definition.constraints.map { c =>
+                c.Constraint(representation = self2.resolveType(c.representation))
+            },
+            type = self2.resolveType(definition.type),
+            methods = definition.methods.map { self2.resolveFunctionDefinition(_) }
+        )
     }
 
     resolveLetDefinition(definition: DLet): DLet {
