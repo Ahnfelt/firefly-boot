@@ -94,7 +94,7 @@ val mutability = Firefly_Core.if_(mutable, {() =>
 def emitFunctionDefinition(definition : DFunction, suffix : String = "") : String = {
 val signature = emitSignature(definition.signature, suffix);
 pipe_dot(definition.body)({
-case (ELambda(_, Firefly_Core.List(matchCase))) if matchCase.patterns.all({
+case (ELambda(_, Link(matchCase, Empty()))) if matchCase.patterns.all({
 case (PVariable(_, Firefly_Core.None())) =>
 Firefly_Core.True()
 case (_) =>
@@ -309,7 +309,7 @@ val fieldCode = fields.map({(f) =>
 (((emitTerm(record) + ".copy(") + fieldCode) + ")")
 case (EField(at, record, field)) =>
 ((emitTerm(record) + ".") + escapeKeyword(field))
-case (ELambda(at, Firefly_Core.List(MatchCase(_, patterns, Firefly_Core.None(), body)))) if patterns.all({
+case (ELambda(at, Link(MatchCase(_, patterns, Firefly_Core.None(), body), Empty()))) if patterns.all({
 case (_ : PVariable) =>
 Firefly_Core.True()
 case (_) =>
@@ -327,9 +327,9 @@ val casesString = cases.map(emitCase).mkString("\n");
 (("{\n" + casesString) + "\n}")
 case (EPipe(at, value, function)) =>
 (((("pipe_dot(" + emitTerm(value)) + ")(") + emitTerm(function)) + ")")
-case (ECall(at, EVariable(_, operator), Firefly_Core.List(), Firefly_Core.List(value))) if (!operator.head.isLetter) =>
+case (ECall(at, EVariable(_, operator), Empty(), Link(value, Empty()))) if (!operator.head.isLetter) =>
 ((("(" + operator) + emitArgument(value)) + ")")
-case (ECall(at, EVariable(_, operator), Firefly_Core.List(), Firefly_Core.List(left, right))) if (!operator.head.isLetter) =>
+case (ECall(at, EVariable(_, operator), Empty(), Link(left, Link(right, Empty())))) if (!operator.head.isLetter) =>
 (((((("(" + emitArgument(left)) + " ") + operator) + " ") + emitArgument(right)) + ")")
 case (ECall(at, function, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>
@@ -488,7 +488,7 @@ val mutability = Firefly_Core.if_(mutable, {() =>
 def emitFunctionDefinition(definition : DFunction, suffix : String = "") : String = {
 val signature = emitSignature(definition.signature, suffix);
 pipe_dot(definition.body)({
-case (ELambda(_, Firefly_Core.List(matchCase))) if matchCase.patterns.all({
+case (ELambda(_, Link(matchCase, Empty()))) if matchCase.patterns.all({
 case (PVariable(_, Firefly_Core.None())) =>
 Firefly_Core.True()
 case (_) =>
@@ -703,7 +703,7 @@ val fieldCode = fields.map({(f) =>
 (((emitTerm(record) + ".copy(") + fieldCode) + ")")
 case (EField(at, record, field)) =>
 ((emitTerm(record) + ".") + escapeKeyword(field))
-case (ELambda(at, Firefly_Core.List(MatchCase(_, patterns, Firefly_Core.None(), body)))) if patterns.all({
+case (ELambda(at, Link(MatchCase(_, patterns, Firefly_Core.None(), body), Empty()))) if patterns.all({
 case (_ : PVariable) =>
 Firefly_Core.True()
 case (_) =>
@@ -721,9 +721,9 @@ val casesString = cases.map(emitCase).mkString("\n");
 (("{\n" + casesString) + "\n}")
 case (EPipe(at, value, function)) =>
 (((("pipe_dot(" + emitTerm(value)) + ")(") + emitTerm(function)) + ")")
-case (ECall(at, EVariable(_, operator), Firefly_Core.List(), Firefly_Core.List(value))) if (!operator.head.isLetter) =>
+case (ECall(at, EVariable(_, operator), Empty(), Link(value, Empty()))) if (!operator.head.isLetter) =>
 ((("(" + operator) + emitArgument(value)) + ")")
-case (ECall(at, EVariable(_, operator), Firefly_Core.List(), Firefly_Core.List(left, right))) if (!operator.head.isLetter) =>
+case (ECall(at, EVariable(_, operator), Empty(), Link(left, Link(right, Empty())))) if (!operator.head.isLetter) =>
 (((((("(" + emitArgument(left)) + " ") + operator) + " ") + emitArgument(right)) + ")")
 case (ECall(at, function, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>

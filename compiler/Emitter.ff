@@ -67,7 +67,7 @@ emitLetDefinition(definition: DLet, mutable: Boolean = False): String {
 emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     let signature = emitSignature(definition.signature, suffix)
     definition.body.{
-        | ELambda(_, List(matchCase)) { matchCase.patterns.all { | PVariable(_, None) => True | _ => False } } =>
+        | ELambda(_, Link(matchCase, Empty)) { matchCase.patterns.all { | PVariable(_, None) => True | _ => False } } =>
             let body = emitStatements(matchCase.body)
             signature + " = {\n" + body + "\n}"
         | _ =>
@@ -219,7 +219,9 @@ emitTerm(term: Term): String {
         emitTerm(record) + ".copy(" + fieldCode + ")"
     | EField(at, record, field) =>
         emitTerm(record) + "." + escapeKeyword(field)
-    | ELambda(at, List(MatchCase(_, patterns, None, body))) {patterns.all { | PVariable _ => True | _ => False }} =>
+    | ELambda(at, Link(MatchCase(_, patterns, None, body), Empty)) {
+        patterns.all { | PVariable _ => True | _ => False }
+    } =>
         let parameters =
             patterns.map { | PVariable p => p.name.map(escapeKeyword).getOrElse("_") | _ => panic("!") }.mkString(", ")
         "{(" + parameters + ") =>\n" + emitStatements(body) + "\n}"
@@ -228,9 +230,9 @@ emitTerm(term: Term): String {
         "{\n" + casesString + "\n}"
     | EPipe(at, value, function) =>
         "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
-    | ECall(at, EVariable(_, operator), List(), List(value)) {!operator.head.isLetter} =>
+    | ECall(at, EVariable(_, operator), Empty, Link(value, Empty)) {!operator.head.isLetter} =>
         "(" + operator + emitArgument(value) + ")"
-    | ECall(at, EVariable(_, operator), List(), List(left, right)) {!operator.head.isLetter} =>
+    | ECall(at, EVariable(_, operator), Empty, Link(left, Link(right, Empty))) {!operator.head.isLetter} =>
         "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
     | ECall(at, function, typeArguments, arguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
