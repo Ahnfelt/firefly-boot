@@ -230,7 +230,7 @@ case (Syntax_.ESequential(at, before, after)) =>
 Syntax_.ESequential(at = at, before = self.resolveTerm(before), after = self.resolveTerm(after))
 case (Syntax_.EAssign(at, operator, variable, value)) =>
 Syntax_.EAssign(at = at, operator = operator, variable = self.variables.get(variable).else_({() =>
-variable
+fail(at, ("No such variable: " + variable))
 }), value = self.resolveTerm(value))
 case (Syntax_.EAssignField(at, operator, record, field, value)) =>
 Syntax_.EAssignField(at = at, operator = operator, record = self.resolveTerm(record), field = field, value = self.resolveTerm(value))
