@@ -17,13 +17,20 @@ make() {
         ).map(core).toMap
         variants = List(
             "True", "False", "Some", "None", "Pair",
-            "Array", "ArrayBuilder", "List", "Map", "Set",
-            "Empty", "Link"
+            "Array", "ArrayBuilder",
+            "List", "ListBuilder",
+            "Map", "MapBuilder",
+            "Set", "SetBuilder",
+            "Empty", "Link",
+            "Unit"
         ).map(core).toMap
         types = List(
-            "Bool", "Option", "Pair",
+            "Int", "String", "Char", "Bool",
+            "Option", "Pair",
             "Array", "ArrayBuilder",
-            "List", "Map", "Set"
+            "List", "Map", "Set",
+            "System", "FileSystem",
+            "Unit"
         ).map(core).toMap
         traits = Map()
     )
@@ -57,7 +64,7 @@ extend self: Resolver {
                 | Some(module) =>
                     resolver = resolver.processDefinitions(module, Some(import.alias))
                 | None =>
-                    log.debug("No such module: " + import.file + " in " + modules.map { _.file })
+                    fail(import.at, "No such module: " + import.file)
             }
         }
         resolver
@@ -161,27 +168,27 @@ extend self: Resolver {
         | EVariant(at, name, typeArguments, arguments) =>
             EVariant(
                 at = at
-                name = self.variants.getOrElse(name, name)
+                name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
                 typeArguments = typeArguments.map { self.resolveType(_) }
                 arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value)) }}
             )
         | EVariantIs(at, name, typeArguments) =>
             EVariantIs(
                 at = at
-                name = self.variants.getOrElse(name, name)
+                name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
                 typeArguments = typeArguments.map { self.resolveType(_) }
             )
         | ECopy(at, name, record, arguments) =>
             ECopy(
                 at = at
-                name = self.variants.getOrElse(name, name)
+                name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
                 record = self.resolveTerm(record)
                 arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value)) }
             )
         | EField e =>
             e.EField(record = self.resolveTerm(e.record))
-        | ELambda(at, cases) =>
-            ELambda(at, cases.map { self.resolveCase(_) })
+        | ELambda(at, Lambda(lambdaAt, cases)) =>
+            ELambda(at, Lambda(lambdaAt, cases.map { self.resolveCase(_) }))
         | EPipe(at, value, function) =>
             EPipe(
                 at = at
@@ -206,7 +213,7 @@ extend self: Resolver {
         | EFunctions(at, functions, body) =>
             let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap
             let self2 = self.Resolver(variables = self.variables ++ functionMap)
-             EFunctions(
+            EFunctions(
                 at = at,
                 functions = functions.map { self2.resolveFunction(_) },
                 body = self2.resolveTerm(body)
@@ -231,18 +238,24 @@ extend self: Resolver {
                 variable = self.variables.get(variable).else { variable }
                 value = self.resolveTerm(value)
             )
-        | EAssignField(at, operator, field, value) =>
+        | EAssignField(at, operator, record, field, value) =>
             EAssignField(
                 at = at
                 operator = operator
-                field = field.Field(record = self.resolveTerm(field.record))
+                record = self.resolveTerm(record)
+                field = field
                 value = self.resolveTerm(value)
             )
     }
 
     resolveType(type: Type): Type {
+        let name = if(type.name == "?" || type.name.contains("$")) {
+            type.name
+        } else {
+            self.types.get(type.name).else { fail(type.at, "No such type: " + type.name) }
+        }
         type.Type(
-            name = self.types.get(type.name).else { type.name }
+            name = name
             generics = type.generics.map { self.resolveType(_) }
         )
     }
@@ -266,10 +279,8 @@ extend self: Resolver {
             }
             returnType = self2.resolveType(function.signature.returnType)
         )
-        self2.resolveTerm(function.body).{
-            | ELambda _ @ body => LocalFunction(signature, body)
-            | e => fail(function.signature.at, "Function body must be a lambda: " + e)
-        }
+        let body = function.body.Lambda(cases = function.body.cases.map { self2.resolveCase(_) })
+        LocalFunction(signature, body)
     }
 
     resolveCase(case: MatchCase): MatchCase {
@@ -301,12 +312,11 @@ extend self: Resolver {
         | PVariable _ @ p =>
             p
         | PVariant(at, name, patterns) =>
-            if(self.variants.get(name).isEmpty) { log.debug("No such variant: " + name + at + self.variants) }
-            let newName = self.variants.getOrElse(name, name) //.else { fail(at, "No such variant: " + name) }
+            let newName = self.variants.get(name).else { fail(at, "No such variant: " + name) }
             let newPatterns = patterns.map { self.resolvePattern(_) }
             PVariant(at, newName, newPatterns)
         | PVariantAs(at, name, variable) =>
-            let newName = self.variants.getOrElse(name, name)
+            let newName = self.variants.get(name).else { fail(at, "No such variant: " + name) }
             PVariantAs(at, newName, variable)
         | PAlias(at, pattern, variable) =>
             let newPattern = resolvePattern(pattern)

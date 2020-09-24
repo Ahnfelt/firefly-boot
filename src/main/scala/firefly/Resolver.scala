@@ -4,16 +4,16 @@ import firefly.Firefly_Core._
 import firefly.Syntax_._
 object Resolver_ {
 
-case class Resolver(variables : Firefly_Core.Map[String, String], variants : Firefly_Core.Map[String, String], types : Firefly_Core.Map[String, String], traits : Firefly_Core.Map[String, String])
+case class Resolver(variables : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], variants : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], types : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], traits : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String])
 
 def make() = {
-def core(name : String) : Firefly_Core.Pair[String, String] = {
+def core(name : Firefly_Core.String) : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String] = {
 Firefly_Core.Pair(name, ("ff:core/Core." + name))
 }
-Resolver(variables = Firefly_Core.List("if", "while", "do", "panic", "try", "log").map(core).toMap, variants = Firefly_Core.List("True", "False", "Some", "None", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set", "Empty", "Link").map(core).toMap, types = Firefly_Core.List("Bool", "Option", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set").map(core).toMap, traits = Firefly_Core.Map())
+Resolver(variables = Firefly_Core.List("if", "while", "do", "panic", "try", "log").map(core).toMap, variants = Firefly_Core.List("True", "False", "Some", "None", "Pair", "Array", "ArrayBuilder", "List", "ListBuilder", "Map", "MapBuilder", "Set", "SetBuilder", "Empty", "Link", "Unit").map(core).toMap, types = Firefly_Core.List("Int", "String", "Char", "Bool", "Option", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set", "System", "FileSystem", "Unit").map(core).toMap, traits = Firefly_Core.Map())
 }
 
-def fail[T](at : Syntax_.Location, message : String) : T = {
+def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show))
 }
 implicit class Resolver_extend0(self : Resolver) {
@@ -50,16 +50,14 @@ pipe_dot(modules.find({(_w1) =>
 case (Firefly_Core.Some(module)) =>
 resolver = resolver.processDefinitions(module, Firefly_Core.Some(import_.alias))
 case (Firefly_Core.None()) =>
-Firefly_Core.log.debug(((("No such module: " + import_.file) + " in ") + modules.map({(_w1) =>
-_w1.file
-})))
+fail(import_.at, ("No such module: " + import_.file))
 })
 });
 resolver
 }
 
-def processDefinitions(module : Syntax_.Module, importAlias : Firefly_Core.Option[String]) : Resolver = {
-def entry(name : String, unqualified : Firefly_Core.Bool) : Firefly_Core.List[Firefly_Core.Pair[String, String]] = {
+def processDefinitions(module : Syntax_.Module, importAlias : Firefly_Core.Option[Firefly_Core.String]) : Resolver = {
+def entry(name : Firefly_Core.String, unqualified : Firefly_Core.Bool) : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String]] = {
 val full = ((module.file.dropRight(3) + ".") + name);
 pipe_dot(importAlias)({
 case (Firefly_Core.None()) =>
@@ -165,7 +163,9 @@ Syntax_.EList(at, items.map({(_w1) =>
 self.resolveTerm(_w1)
 }))
 case (Syntax_.EVariant(at, name, typeArguments, arguments)) =>
-Syntax_.EVariant(at = at, name = self.variants.getOrElse(name, name), typeArguments = typeArguments.map({(_w1) =>
+Syntax_.EVariant(at = at, name = self.variants.get(name).else_({() =>
+fail(at, ("No such variant: " + name))
+}), typeArguments = typeArguments.map({(_w1) =>
 self.resolveType(_w1)
 }), arguments = arguments.map({(_w1) =>
 _w1.map({(a) =>
@@ -173,19 +173,23 @@ a.copy(value = self.resolveTerm(a.value))
 })
 }))
 case (Syntax_.EVariantIs(at, name, typeArguments)) =>
-Syntax_.EVariantIs(at = at, name = self.variants.getOrElse(name, name), typeArguments = typeArguments.map({(_w1) =>
+Syntax_.EVariantIs(at = at, name = self.variants.get(name).else_({() =>
+fail(at, ("No such variant: " + name))
+}), typeArguments = typeArguments.map({(_w1) =>
 self.resolveType(_w1)
 }))
 case (Syntax_.ECopy(at, name, record, arguments)) =>
-Syntax_.ECopy(at = at, name = self.variants.getOrElse(name, name), record = self.resolveTerm(record), arguments = arguments.map({(f) =>
+Syntax_.ECopy(at = at, name = self.variants.get(name).else_({() =>
+fail(at, ("No such variant: " + name))
+}), record = self.resolveTerm(record), arguments = arguments.map({(f) =>
 f.copy(value = self.resolveTerm(f.value))
 }))
 case (e : Syntax_.EField) =>
 e.copy(record = self.resolveTerm(e.record))
-case (Syntax_.ELambda(at, cases)) =>
-Syntax_.ELambda(at, cases.map({(_w1) =>
+case (Syntax_.ELambda(at, Syntax_.Lambda(lambdaAt, cases))) =>
+Syntax_.ELambda(at, Syntax_.Lambda(lambdaAt, cases.map({(_w1) =>
 self.resolveCase(_w1)
-}))
+})))
 case (Syntax_.EPipe(at, value, function)) =>
 Syntax_.EPipe(at = at, value = self.resolveTerm(value), function = self.resolveTerm(function))
 case (Syntax_.ECall(at, function, typeArguments, arguments)) =>
@@ -222,14 +226,19 @@ case (Syntax_.EAssign(at, operator, variable, value)) =>
 Syntax_.EAssign(at = at, operator = operator, variable = self.variables.get(variable).else_({() =>
 variable
 }), value = self.resolveTerm(value))
-case (Syntax_.EAssignField(at, operator, field, value)) =>
-Syntax_.EAssignField(at = at, operator = operator, field = field.copy(record = self.resolveTerm(field.record)), value = self.resolveTerm(value))
+case (Syntax_.EAssignField(at, operator, record, field, value)) =>
+Syntax_.EAssignField(at = at, operator = operator, record = self.resolveTerm(record), field = field, value = self.resolveTerm(value))
 }
 
 def resolveType(type_ : Syntax_.Type) : Syntax_.Type = {
-type_.copy(name = self.types.get(type_.name).else_({() =>
+val name = Firefly_Core.if_(((type_.name == "?") || type_.name.contains("$")), {() =>
 type_.name
-}), generics = type_.generics.map({(_w1) =>
+}).else_({() =>
+self.types.get(type_.name).else_({() =>
+fail(type_.at, ("No such type: " + type_.name))
+})
+});
+type_.copy(name = name, generics = type_.generics.map({(_w1) =>
 self.resolveType(_w1)
 }))
 }
@@ -251,22 +260,20 @@ p.copy(valueType = self2.resolveType(p.valueType), default = p.default.map({(_w1
 self2.resolveTerm(_w1)
 }))
 }), returnType = self2.resolveType(function.signature.returnType));
-pipe_dot(self2.resolveTerm(function.body))({
-case (body @ (_ : Syntax_.ELambda)) =>
+val body = function.body.copy(cases = function.body.cases.map({(_w1) =>
+self2.resolveCase(_w1)
+}));
 Syntax_.LocalFunction(signature, body)
-case (e) =>
-fail(function.signature.at, ("Function body must be a lambda: " + e))
-})
 }
 
 def resolveCase(case_ : Syntax_.MatchCase) : Syntax_.MatchCase = {
-def findVariables(pattern : Syntax_.MatchPattern) : Firefly_Core.Map[String, String] = (pattern) match {
+def findVariables(pattern : Syntax_.MatchPattern) : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String] = (pattern) match {
 case (Syntax_.PVariable(_, Firefly_Core.Some(name))) =>
 Firefly_Core.Map(Firefly_Core.Pair(name, name))
 case (Syntax_.PVariable(_, Firefly_Core.None())) =>
 Firefly_Core.Map()
 case (Syntax_.PVariant(_, _, patterns)) =>
-patterns.map(findVariables).foldLeft(Firefly_Core.Map[String, String]())({(_w1, _w2) =>
+patterns.map(findVariables).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 }).toMap
 case (Syntax_.PVariantAs(_, _, variable)) =>
@@ -276,7 +283,7 @@ Firefly_Core.Pair(x, x)
 case (Syntax_.PAlias(_, pattern, variable)) =>
 (Firefly_Core.Map(Firefly_Core.Pair(variable, variable)) ++ findVariables(pattern))
 }
-val variableMap = case_.patterns.map(findVariables).foldLeft(Firefly_Core.Map[String, String]())({(_w1, _w2) =>
+val variableMap = case_.patterns.map(findVariables).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 }).toMap;
 val self2 = self.copy(variables = (self.variables ++ variableMap));
@@ -291,16 +298,17 @@ def resolvePattern(pattern : Syntax_.MatchPattern) : Syntax_.MatchPattern = (pat
 case (p @ (_ : Syntax_.PVariable)) =>
 p
 case (Syntax_.PVariant(at, name, patterns)) =>
-Firefly_Core.if_(self.variants.get(name).isEmpty, {() =>
-Firefly_Core.log.debug(((("No such variant: " + name) + at) + self.variants))
+val newName = self.variants.get(name).else_({() =>
+fail(at, ("No such variant: " + name))
 });
-val newName = self.variants.getOrElse(name, name);
 val newPatterns = patterns.map({(_w1) =>
 self.resolvePattern(_w1)
 });
 Syntax_.PVariant(at, newName, newPatterns)
 case (Syntax_.PVariantAs(at, name, variable)) =>
-val newName = self.variants.getOrElse(name, name);
+val newName = self.variants.get(name).else_({() =>
+fail(at, ("No such variant: " + name))
+});
 Syntax_.PVariantAs(at, newName, variable)
 case (Syntax_.PAlias(at, pattern, variable)) =>
 val newPattern = resolvePattern(pattern);

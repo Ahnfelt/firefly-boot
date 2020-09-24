@@ -51,7 +51,7 @@ emitTypeDefinition(definition: DType): String {
     }
 }
 
-emitLetDefinition(definition: DLet, mutable: Boolean = False): String {
+emitLetDefinition(definition: DLet, mutable: Bool = False): String {
     let typeAnnotation = emitTypeAnnotation(definition.variableType)
     let mutability = if(mutable) {"var"} else {"val"}
     mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + emitTerm(definition.value)
@@ -60,7 +60,9 @@ emitLetDefinition(definition: DLet, mutable: Boolean = False): String {
 emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     let signature = emitSignature(definition.signature, suffix)
     definition.body.{
-        | ELambda(_, Link(matchCase, Empty)) { matchCase.patterns.all { | PVariable(_, None) => True | _ => False } } =>
+        | Lambda(_, Link(matchCase, Empty)) {
+            matchCase.patterns.all { | PVariable(_, None) => True | _ => False }
+        } =>
             let body = emitStatements(matchCase.body)
             signature + " = {\n" + body + "\n}"
         | _ =>
@@ -88,8 +90,8 @@ emitTraitDefinition(definition: DTrait): String {
     let methods = if(definition.methods.isEmpty) {""} else {
         " {\n\nimport " + definition.name + "._\n\n" +
         definition.methods.map { signature =>
-            let body = definition.methodDefaults.find { _.first == signature.name }.map { | Pair(_, e) =>
-                " {\n" + emitStatements(e) + "\n}"
+            let body = definition.methodDefaults.find { _.first == signature.name }.map { | Pair(_, lambda) =>
+                " {\n" + emitStatements(ELambda(lambda.at, lambda)) + "\n}"
             }.orElse(definition.methodGenerators.find { _.first == signature.name }.map { | Pair(_, e) =>
                 " {\n// TODO: Generate\n}"
             }).getOrElse {
@@ -189,8 +191,8 @@ emitStatements(term: Term): String {
         emitStatements(before) + ";\n" + emitStatements(after)
     | EAssign(at, operator, name, value) =>
         escapeKeyword(name) + " " + operator + "= " + emitTerm(value)
-    | EAssignField(at, operator, field, value) =>
-        emitTerm(field) + " " + operator + "= " + emitTerm(value)
+    | EAssignField(at, operator, record, field, value) =>
+        emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + emitTerm(value)
     | _ => emitTerm(term)
 }
 
@@ -212,13 +214,13 @@ emitTerm(term: Term): String {
         emitTerm(record) + ".copy(" + fieldCode + ")"
     | EField(at, record, field) =>
         emitTerm(record) + "." + escapeKeyword(field)
-    | ELambda(at, Link(MatchCase(_, patterns, None, body), Empty)) {
+    | ELambda(at, Lambda(_, Link(MatchCase(_, patterns, None, body), Empty))) {
         patterns.all { | PVariable _ => True | _ => False }
     } =>
         let parameters =
             patterns.map { | PVariable p => p.name.map(escapeKeyword).getOrElse("_") | _ => panic("!") }.mkString(", ")
         "{(" + parameters + ") =>\n" + emitStatements(body) + "\n}"
-    | ELambda(at, cases) =>
+    | ELambda(at, Lambda(_, cases)) =>
         let casesString = cases.map(emitCase).mkString("\n")
         "{\n" + casesString + "\n}"
     | EPipe(at, value, function) =>

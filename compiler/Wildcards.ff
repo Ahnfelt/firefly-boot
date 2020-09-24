@@ -12,7 +12,7 @@ extend self: Wildcards {
         | ELet e => e.ELet(value = self.fixWildcards(e.value), body = self.fixWildcards(e.body))
         | ESequential e => e.ESequential(before = self.fixWildcards(e.before), after = self.fixWildcards(e.after))
         | EAssign e => e.EAssign(value = self.fixWildcards(e.value))
-        | EAssignField e => e.EAssignField(value = self.fixWildcards(e.value))
+        | EAssignField e => e.EAssignField(record = self.fixWildcards(e.record), value = self.fixWildcards(e.value))
         | EPipe e => e.EPipe(value = self.fixWildcards(e.value), function = self.fixWildcards(e.function))
         | ECall e =>
             e.ECall(

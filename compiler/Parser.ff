@@ -168,8 +168,8 @@ extend self: Parser {
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current.rawIs("[")) {Poly(List(), List())} else {self.parseTypeParameters()}
         let generatorParameters = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionParameters()}
-        mutable methodGenerators = List[Pair[String, Term]]()
-        mutable methodDefaults = List[Pair[String, Term]]()
+        mutable methodGenerators = List[Pair[String, Lambda]]()
+        mutable methodDefaults = List[Pair[String, Lambda]]()
         let methodSignatures = if(!self.current.rawIs("{")) {List()} else {
             mutable signatures = List[Signature]()
             self.rawSkip(LBracketLeft, "{")
@@ -371,7 +371,7 @@ extend self: Parser {
         Poly(parameters.reverse, constraints.reverse)
     }
     
-    parseTypeArguments(parenthesis: Boolean = False): List[Type] {
+    parseTypeArguments(parenthesis: Bool = False): List[Type] {
         self.rawSkip(LBracketLeft, if(parenthesis) {"("} else {"["})
         mutable types = List[Type]()
         while {!self.current.is(LBracketRight)} {
@@ -382,7 +382,7 @@ extend self: Parser {
         types.reverse
     }
     
-    parseFunctionParameters(allowMutable: Boolean = False): List[Parameter] {
+    parseFunctionParameters(allowMutable: Bool = False): List[Parameter] {
         mutable parameters = List[Parameter]()
         self.rawSkip(LBracketLeft, "(")
         while {!self.current.is(LBracketRight)} {
@@ -428,9 +428,9 @@ extend self: Parser {
     
     parseLambda(
         defaultParameterCount: Int = 0,
-        ignoreGenerateKeyword: Boolean = False,
-        allowColon: Boolean = False
-    ): ELambda {
+        ignoreGenerateKeyword: Bool = False,
+        allowColon: Bool = False
+    ): Lambda {
         let colon = allowColon && self.current.is(LColon)
         let token = if(colon) {self.skip(LColon)} else {self.rawSkip(LBracketLeft, "{")}
         if(ignoreGenerateKeyword && self.current.is(LKeyword) && self.current.rawIs("generate")) {self.skip(LKeyword)}
@@ -462,7 +462,7 @@ extend self: Parser {
             List(MatchCase(token.at, arguments, None, e))
         }
         if(!colon) {self.rawSkip(LBracketRight, "}")}
-        ELambda(token.at, result)
+        Lambda(token.at, result)
     }
     
     parseCase(): MatchCase {
@@ -570,7 +570,7 @@ extend self: Parser {
         let value = self.parseTerm()
         term.{
             | EVariable(_, name) => EAssign(token.at, operator, name, value)
-            | EField _ @ e => EAssignField(token.at, operator, e, value)
+            | EField e => EAssignField(token.at, operator, e.record, e.field, value)
             | _ => self.fail(token.at, "Only variables and fields are assignable")
         }
     }
@@ -656,7 +656,7 @@ extend self: Parser {
                 while {self.current.rawIs("{") || self.current.is(LColon)} {
                     lastWasCurly = self.current.rawIs("{")
                     let lambda = self.parseLambda(allowColon = True)
-                    moreArguments ::= Argument(lambda.at, None, lambda)
+                    moreArguments ::= Argument(lambda.at, None, ELambda(lambda.at, lambda))
                 }
                 result = ECall(at, result, typeArguments, arguments ++ moreArguments.reverse)
                 if(lastWasCurly && self.current.is(LLower)) {
@@ -694,7 +694,8 @@ extend self: Parser {
         } elseIf {self.current.is(LUpper)} {
             self.parseVariant("")
         } elseIf {self.current.rawIs("{")} {
-            self.parseLambda()
+            let lambda = self.parseLambda()
+            ELambda(lambda.at, lambda)
         } elseIf {self.current.rawIs("[")} {
             self.parseList()
         } elseIf {self.current.rawIs("(") && self.ahead.is(LLower) && self.aheadAhead.is(LAssign)} {

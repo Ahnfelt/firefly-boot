@@ -4,7 +4,7 @@ import firefly.Firefly_Core._
 import firefly.Syntax_._
 object Token_ {
 
-case class Token(file : String, code : String, kind : TokenKind, startLine : Int, startLineOffset : Int, startOffset : Int, stopLine : Int, stopLineOffset : Int, stopOffset : Int)
+case class Token(file : Firefly_Core.String, code : Firefly_Core.String, kind : TokenKind, startLine : Firefly_Core.Int, startLineOffset : Firefly_Core.Int, startOffset : Firefly_Core.Int, stopLine : Firefly_Core.Int, stopLineOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int)
 
 sealed abstract class TokenKind extends Product with Serializable
 case class LEnd() extends TokenKind
@@ -40,7 +40,7 @@ def at() : Syntax_.Location = {
 Syntax_.Location(token.file, token.startLine, ((token.startOffset - token.startLineOffset) + 1))
 }
 
-def raw() : String = {
+def raw() : Firefly_Core.String = {
 token.code.slice(token.startOffset, token.stopOffset)
 }
 
@@ -56,7 +56,7 @@ def is3(kind1 : TokenKind, kind2 : TokenKind, kind3 : TokenKind) = {
 (((token.kind == kind1) || (token.kind == kind2)) || (token.kind == kind3))
 }
 
-def rawIs(value : String) = {
+def rawIs(value : Firefly_Core.String) = {
 token.code.regionMatches(token.startOffset, value, 0, value.length)
 }
 

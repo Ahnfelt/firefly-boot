@@ -31,6 +31,7 @@ object Firefly_Core {
     type Char = scala.Char
     type Float = scala.Double
     type String = scala.Predef.String
+    type Unit = scala.Unit
 
     case class FireflyException(value : Any) extends RuntimeException
 

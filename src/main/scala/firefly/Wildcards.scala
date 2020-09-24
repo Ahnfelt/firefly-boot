@@ -4,7 +4,7 @@ import firefly.Firefly_Core._
 import firefly.Syntax_._
 object Wildcards_ {
 
-case class Wildcards(var seenWildcards : Int)
+case class Wildcards(var seenWildcards : Firefly_Core.Int)
 
 def make() = {
 Wildcards(0)
@@ -19,7 +19,7 @@ e.copy(before = self.fixWildcards(e.before), after = self.fixWildcards(e.after))
 case (e : Syntax_.EAssign) =>
 e.copy(value = self.fixWildcards(e.value))
 case (e : Syntax_.EAssignField) =>
-e.copy(value = self.fixWildcards(e.value))
+e.copy(record = self.fixWildcards(e.record), value = self.fixWildcards(e.value))
 case (e : Syntax_.EPipe) =>
 e.copy(value = self.fixWildcards(e.value), function = self.fixWildcards(e.function))
 case (e : Syntax_.ECall) =>

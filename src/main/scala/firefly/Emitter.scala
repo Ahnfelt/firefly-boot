@@ -6,11 +6,11 @@ object Emitter_ {
 
 
 val keywords = Firefly_Core.Set("abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java")
-def fail[T](at : Syntax_.Location, message : String) : T = {
+def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show))
 }
 
-def emitModule(module : Syntax_.Module) : String = {
+def emitModule(module : Syntax_.Module) : Firefly_Core.String = {
 val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 (_w1 != '/')
 }).reverse.takeWhile({(_w1) =>
@@ -49,7 +49,7 @@ def emitMain() = {
 "def main(arguments : Array[String]) : Unit = main(new System(arguments))"
 }
 
-def emitTypeMembers(name : String, lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction]) = {
+def emitTypeMembers(name : Firefly_Core.String, lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction]) = {
 val strings = (lets.map({(_w1) =>
 emitLetDefinition(_w1)
 }) ++ functions.map({(_w1) =>
@@ -58,7 +58,7 @@ emitFunctionDefinition(_w1)
 (((("object " + name) + " {\n\n") + strings.mkString("\n\n")) + "\n\n}")
 }
 
-def emitTypeDefinition(definition : Syntax_.DType) : String = {
+def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
 val generics = emitTypeParameters(definition.generics);
 Firefly_Core.if_(((definition.variants.size == 1) && (definition.variants.head.name == definition.name)), {() =>
 val fields = (("(" + definition.commonFields.map(emitParameter).mkString(", ")) + ")");
@@ -81,7 +81,7 @@ val head = ((("sealed abstract class " + definition.name) + generics) + " extend
 })
 }
 
-def emitLetDefinition(definition : Syntax_.DLet, mutable : Boolean = Firefly_Core.False()) : String = {
+def emitLetDefinition(definition : Syntax_.DLet, mutable : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.String = {
 val typeAnnotation = emitTypeAnnotation(definition.variableType);
 val mutability = Firefly_Core.if_(mutable, {() =>
 "var"
@@ -91,10 +91,10 @@ val mutability = Firefly_Core.if_(mutable, {() =>
 (((((mutability + " ") + escapeKeyword(definition.name)) + typeAnnotation) + " = ") + emitTerm(definition.value))
 }
 
-def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : String = "") : String = {
+def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
 val signature = emitSignature(definition.signature, suffix);
 pipe_dot(definition.body)({
-case (Syntax_.ELambda(_, Firefly_Core.Link(matchCase, Firefly_Core.Empty()))) if matchCase.patterns.all({
+case (Syntax_.Lambda(_, Firefly_Core.Link(matchCase, Firefly_Core.Empty()))) if matchCase.patterns.all({
 case (Syntax_.PVariable(_, Firefly_Core.None())) =>
 Firefly_Core.True()
 case (_) =>
@@ -111,7 +111,7 @@ val cases = definition.body.cases.map(emitCase).mkString("\n");
 })
 }
 
-def emitExtendImplicit(definition : Syntax_.DExtend, index : Int) : String = {
+def emitExtendImplicit(definition : Syntax_.DExtend, index : Firefly_Core.Int) : Firefly_Core.String = {
 val generics = emitTypeParameters(definition.generics);
 val implicits = emitConstraints(definition.constraints);
 val parameter = ((escapeKeyword(definition.name) + " : ") + emitType(definition.type_));
@@ -121,7 +121,7 @@ emitFunctionDefinition(_w1)
 ((((((((((("implicit class " + definition.type_.name) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + methods) + "\n\n}")
 }
 
-def emitTraitDefinition(definition : Syntax_.DTrait) : String = {
+def emitTraitDefinition(definition : Syntax_.DTrait) : Firefly_Core.String = {
 val generics = emitTypeParameters(definition.generics);
 val implicits = emitConstraints(definition.constraints);
 val parameters = Firefly_Core.if_(definition.generatorParameters.isEmpty, {() =>
@@ -136,8 +136,8 @@ val methods = Firefly_Core.if_(definition.methods.isEmpty, {() =>
 val body = definition.methodDefaults.find({(_w1) =>
 (_w1.first == signature.name)
 }).map({
-case (Firefly_Core.Pair(_, e)) =>
-((" {\n" + emitStatements(e)) + "\n}")
+case (Firefly_Core.Pair(_, lambda)) =>
+((" {\n" + emitStatements(Syntax_.ELambda(lambda.at, lambda))) + "\n}")
 }).orElse(definition.methodGenerators.find({(_w1) =>
 (_w1.first == signature.name)
 }).map({
@@ -164,7 +164,7 @@ _w1.name
 ((((((((((("abstract class " + definition.name) + generics) + parameters) + implicits) + methods) + "\n") + "object ") + definition.name) + " {") + methodWrappers) + "}")
 }
 
-def emitInstanceDefinition(definition : Syntax_.DInstance) : String = {
+def emitInstanceDefinition(definition : Syntax_.DInstance) : Firefly_Core.String = {
 val signature = emitSignature(Syntax_.Signature(definition.at, ((definition.traitType.name + "_") + definition.hashCode().abs), definition.generics, definition.constraints, Firefly_Core.List(), definition.traitType));
 val methods = ((((" {\n\nimport " + definition.traitType.name) + "._\n\n") + definition.methods.map({(_w1) =>
 emitFunctionDefinition(_w1, "_m")
@@ -173,14 +173,14 @@ val value = (("new " + emitType(definition.traitType)) + methods);
 ((("implicit " + signature) + " =\n    ") + value)
 }
 
-def emitVariantDefinition(typeDefinition : Syntax_.DType, definition : Syntax_.Variant) : String = {
+def emitVariantDefinition(typeDefinition : Syntax_.DType, definition : Syntax_.Variant) : Firefly_Core.String = {
 val generics = emitTypeParameters(typeDefinition.generics);
 val allFields = (typeDefinition.commonFields ++ definition.fields);
 val fields = (("(" + allFields.map(emitParameter).mkString(", ")) + ")");
 (((((("case class " + definition.name) + generics) + fields) + " extends ") + typeDefinition.name) + generics)
 }
 
-def emitSignature(signature : Syntax_.Signature, suffix : String = "") : String = {
+def emitSignature(signature : Syntax_.Signature, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
 val generics = emitTypeParameters(signature.generics);
 val parameters = (("(" + signature.parameters.map(emitParameter).mkString(", ")) + ")");
 val implicits = Firefly_Core.if_(signature.constraints.isEmpty, {() =>
@@ -195,7 +195,7 @@ val returnType = emitTypeAnnotation(signature.returnType);
 (((((("def " + escapeKeyword(signature.name)) + suffix) + generics) + parameters) + implicits) + returnType)
 }
 
-def emitParameter(parameter : Syntax_.Parameter) : String = {
+def emitParameter(parameter : Syntax_.Parameter) : Firefly_Core.String = {
 val mutability = Firefly_Core.if_(parameter.mutable, {() =>
 "var "
 }).else_({() =>
@@ -207,7 +207,7 @@ val defaultValue = parameter.default.map({(_w1) =>
 (((mutability + escapeKeyword(parameter.name)) + emitTypeAnnotation(parameter.valueType)) + defaultValue)
 }
 
-def emitConstraints(constraints : Firefly_Core.List[Syntax_.Constraint]) : String = {
+def emitConstraints(constraints : Firefly_Core.List[Syntax_.Constraint]) : Firefly_Core.String = {
 Firefly_Core.if_(constraints.isEmpty, {() =>
 ""
 }).else_({() =>
@@ -221,7 +221,7 @@ case (Firefly_Core.Pair(k, v)) =>
 })
 }
 
-def emitTypeParameters(generics : Firefly_Core.List[String]) = {
+def emitTypeParameters(generics : Firefly_Core.List[Firefly_Core.String]) = {
 Firefly_Core.if_(generics.isEmpty, {() =>
 ""
 }).else_({() =>
@@ -229,7 +229,7 @@ Firefly_Core.if_(generics.isEmpty, {() =>
 })
 }
 
-def emitTypeAnnotation(t : Syntax_.Type) : String = {
+def emitTypeAnnotation(t : Syntax_.Type) : Firefly_Core.String = {
 Firefly_Core.if_((t.name == "?"), {() =>
 ""
 }).else_({() =>
@@ -237,7 +237,7 @@ Firefly_Core.if_((t.name == "?"), {() =>
 })
 }
 
-def emitType(t : Syntax_.Type) : String = {
+def emitType(t : Syntax_.Type) : Firefly_Core.String = {
 Firefly_Core.if_(t.name.startsWith("Function$"), {() =>
 emitType(t.copy(name = t.name.replace("$", "")))
 }).elseIf({() =>
@@ -257,7 +257,7 @@ val generics = Firefly_Core.if_(t.generics.isEmpty, {() =>
 })
 }
 
-def emitStatements(term : Syntax_.Term) : String = (term) match {
+def emitStatements(term : Syntax_.Term) : Firefly_Core.String = (term) match {
 case (Syntax_.EFunctions(at, functions, body)) =>
 val functionStrings = functions.map({(f) =>
 emitFunctionDefinition(Syntax_.DFunction(at, f.signature, f.body))
@@ -269,13 +269,13 @@ case (Syntax_.ESequential(at, before, after)) =>
 ((emitStatements(before) + ";\n") + emitStatements(after))
 case (Syntax_.EAssign(at, operator, name, value)) =>
 ((((escapeKeyword(name) + " ") + operator) + "= ") + emitTerm(value))
-case (Syntax_.EAssignField(at, operator, field, value)) =>
-((((emitTerm(field) + " ") + operator) + "= ") + emitTerm(value))
+case (Syntax_.EAssignField(at, operator, record, field, value)) =>
+((((((emitTerm(record) + ".") + escapeKeyword(field)) + " ") + operator) + "= ") + emitTerm(value))
 case (_) =>
 emitTerm(term)
 }
 
-def emitTerm(term : Syntax_.Term) : String = (term) match {
+def emitTerm(term : Syntax_.Term) : Firefly_Core.String = (term) match {
 case (Syntax_.EString(at, value)) =>
 value
 case (Syntax_.EChar(at, value)) =>
@@ -309,7 +309,7 @@ val fieldCode = fields.map({(f) =>
 (((emitTerm(record) + ".copy(") + fieldCode) + ")")
 case (Syntax_.EField(at, record, field)) =>
 ((emitTerm(record) + ".") + escapeKeyword(field))
-case (Syntax_.ELambda(at, Firefly_Core.Link(Syntax_.MatchCase(_, patterns, Firefly_Core.None(), body), Firefly_Core.Empty()))) if patterns.all({
+case (Syntax_.ELambda(at, Syntax_.Lambda(_, Firefly_Core.Link(Syntax_.MatchCase(_, patterns, Firefly_Core.None(), body), Firefly_Core.Empty())))) if patterns.all({
 case (_ : Syntax_.PVariable) =>
 Firefly_Core.True()
 case (_) =>
@@ -322,7 +322,7 @@ case (_) =>
 Firefly_Core.panic("!")
 }).mkString(", ");
 (((("{(" + parameters) + ") =>\n") + emitStatements(body)) + "\n}")
-case (Syntax_.ELambda(at, cases)) =>
+case (Syntax_.ELambda(at, Syntax_.Lambda(_, cases))) =>
 val casesString = cases.map(emitCase).mkString("\n");
 (("{\n" + casesString) + "\n}")
 case (Syntax_.EPipe(at, value, function)) =>
@@ -370,7 +370,7 @@ val condition = matchCase.condition.map({(_w1) =>
 ((((("case (" + patterns) + ") ") + condition) + "=>\n") + emitStatements(matchCase.body))
 }
 
-def emitPattern(pattern : Syntax_.MatchPattern) : String = (pattern) match {
+def emitPattern(pattern : Syntax_.MatchPattern) : Firefly_Core.String = (pattern) match {
 case (Syntax_.PVariable(at, name)) =>
 name.map(escapeKeyword).getOrElse("_")
 case (Syntax_.PVariant(at, name, patterns)) =>
@@ -381,7 +381,7 @@ case (Syntax_.PAlias(at, p, variable)) =>
 (((escapeKeyword(variable) + " @ (") + emitPattern(p)) + ")")
 }
 
-def escapeResolved(word : String) = {
+def escapeResolved(word : Firefly_Core.String) = {
 val parts = word.split("[.]").toList.map(escapeKeyword).join(".");
 Firefly_Core.if_(parts.startsWith("ff:core/Core."), {() =>
 parts.replace("ff:core/Core.", "Firefly_Core.")
@@ -390,7 +390,7 @@ parts.replace(".", "_.")
 })
 }
 
-def escapeKeyword(word : String) = {
+def escapeKeyword(word : Firefly_Core.String) = {
 Firefly_Core.if_(keywords(word), {() =>
 (word + "_")
 }).else_({() =>

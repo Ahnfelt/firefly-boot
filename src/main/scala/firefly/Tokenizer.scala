@@ -6,18 +6,18 @@ object Tokenizer_ {
 
 
 
-def tokenize(file : String, code : String) = {
+def tokenize(file : Firefly_Core.String, code : Firefly_Core.String) = {
 val tokens = Firefly_Core.ArrayBuilder[Token_.Token]();
 var line = 1;
 var lineOffset = 0;
 var startLine = line;
 var startLineOffset = lineOffset;
 val operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;";
-val operatorCharacters = SetBuilder[Char]();
+val operatorCharacters = Firefly_Core.SetBuilder[Firefly_Core.Char]();
 0.until(operatorCharactersString.size).map({(j) =>
 operatorCharacters.add(operatorCharactersString(j))
 });
-def emitToken(kind : Token_.TokenKind, startOffset : Int, stopOffset : Int) : Unit = {
+def emitToken(kind : Token_.TokenKind, startOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int) : Firefly_Core.Unit = {
 Firefly_Core.if_(tokens.nonEmpty, {() =>
 val last = tokens.last;
 Firefly_Core.if_((((last.stopLine == startLine) && (last.kind == Token_.LLower())) && kind.afterKeyword()), {() =>
