@@ -1,8 +1,8 @@
 package firefly
 import firefly.Firefly_Core._
 
-import firefly.Syntax._
-object Token {
+import firefly.Syntax_._
+object Token_ {
 
 case class Token(file : String, code : String, kind : TokenKind, startLine : Int, startLineOffset : Int, startOffset : Int, stopLine : Int, stopLineOffset : Int, stopOffset : Int)
 
@@ -36,8 +36,8 @@ case class LAssignLink() extends TokenKind
 
 implicit class Token_extend0(token : Token) {
 
-def at() : Location = {
-Location(token.file, token.startLine, ((token.startOffset - token.startLineOffset) + 1))
+def at() : Syntax_.Location = {
+Syntax_.Location(token.file, token.startLine, ((token.startOffset - token.startLineOffset) + 1))
 }
 
 def raw() : String = {
@@ -231,11 +231,5 @@ Firefly_Core.False()
 
 }
 
-
-object Token {
-
-
-
-}
 
 }

@@ -17,11 +17,13 @@ make() {
         ).map(core).toMap
         variants = List(
             "True", "False", "Some", "None", "Pair",
-            "Array", "ArrayBuilder", "List", "Map", "Set"
+            "Array", "ArrayBuilder", "List", "Map", "Set",
+            "Empty", "Link"
         ).map(core).toMap
         types = List(
             "Bool", "Option", "Pair",
-            "Array", "ArrayBuilder", "List", "Map", "Set"
+            "Array", "ArrayBuilder",
+            "List", "Map", "Set"
         ).map(core).toMap
         traits = Map()
     )

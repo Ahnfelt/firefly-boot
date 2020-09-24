@@ -1,6 +1,6 @@
 package firefly
 import firefly.Firefly_Core._
-object Syntax {
+object Syntax_ {
 
 case class Location(file : String, line : Int, column : Int)
 
@@ -90,11 +90,5 @@ def show() : String = {
 
 }
 
-
-object Syntax {
-
-
-
-}
 
 }
