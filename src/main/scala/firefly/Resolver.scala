@@ -44,10 +44,15 @@ self3.resolveFunctionDefinition(_w1)
 def processImports(imports : Firefly_Core.List[DImport], modules : Firefly_Core.List[Module]) : Resolver = {
 var resolver = self;
 imports.each({(import_) =>
-modules.find({(_w1) =>
+pipe_dot(modules.find({(_w1) =>
 (_w1.file.dropRight(3) == import_.file)
-}).each({(module) =>
+}))({
+case (Firefly_Core.Some(module)) =>
 resolver = resolver.processDefinitions(module, Firefly_Core.Some(import_.alias))
+case (Firefly_Core.None()) =>
+Firefly_Core.log.debug(((("No such module: " + import_.file) + " in ") + modules.map({(_w1) =>
+_w1.file
+})))
 })
 });
 resolver
@@ -286,6 +291,9 @@ def resolvePattern(pattern : MatchPattern) : MatchPattern = (pattern) match {
 case (p @ (_ : PVariable)) =>
 p
 case (PVariant(at, name, patterns)) =>
+Firefly_Core.if_(self.variants.get(name).isEmpty, {() =>
+Firefly_Core.log.debug(((("No such variant: " + name) + at) + self.variants))
+});
 val newName = self.variants.getOrElse(name, name);
 val newPatterns = patterns.map({(_w1) =>
 self.resolvePattern(_w1)

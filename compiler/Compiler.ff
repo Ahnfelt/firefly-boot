@@ -40,7 +40,7 @@ extend self: Compiler {
 
     imports(module: Module): List[Module] {
         module.imports.map { import =>
-            let otherModuleName = import.directory.join("/") + "/" + import.file
+            let otherModuleName = import.directory.map { _ + "/" }.join("") + import.file
             self.parse(otherModuleName)
         }
     }

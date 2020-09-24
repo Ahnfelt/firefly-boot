@@ -51,8 +51,12 @@ extend self: Resolver {
     processImports(imports: List[DImport], modules: List[Module]): Resolver {
         mutable resolver = self
         imports.each { import =>
-            modules.find { _.file.dropRight(3) == import.file }.each: module =>
-            resolver = resolver.processDefinitions(module, Some(import.alias))
+            modules.find { _.file.dropRight(3) == import.file }.{
+                | Some(module) =>
+                    resolver = resolver.processDefinitions(module, Some(import.alias))
+                | None =>
+                    log.debug("No such module: " + import.file + " in " + modules.map { _.file })
+            }
         }
         resolver
     }
@@ -295,7 +299,8 @@ extend self: Resolver {
         | PVariable _ @ p =>
             p
         | PVariant(at, name, patterns) =>
-            let newName = self.variants.getOrElse(name, name)
+            if(self.variants.get(name).isEmpty) { log.debug("No such variant: " + name + at + self.variants) }
+            let newName = self.variants.getOrElse(name, name) //.else { fail(at, "No such variant: " + name) }
             let newPatterns = patterns.map { self.resolvePattern(_) }
             PVariant(at, newName, newPatterns)
         | PVariantAs(at, name, variable) =>

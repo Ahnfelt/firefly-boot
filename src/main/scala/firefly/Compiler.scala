@@ -32,7 +32,9 @@ result
 
 def imports(module : Module) : Firefly_Core.List[Module] = {
 module.imports.map({(import_) =>
-val otherModuleName = ((import_.directory.join("/") + "/") + import_.file);
+val otherModuleName = (import_.directory.map({(_w1) =>
+(_w1 + "/")
+}).join("") + import_.file);
 self.parse(otherModuleName)
 })
 }
