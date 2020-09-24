@@ -139,7 +139,7 @@ definition.copy(variableType = self.resolveType(definition.variableType), value 
 }
 
 def resolveFunctionDefinition(definition : Syntax_.DFunction) : Syntax_.DFunction = {
-val local = resolveFunction(Syntax_.LocalFunction(definition.signature, definition.body));
+val local = self.resolveFunction(Syntax_.LocalFunction(definition.signature, definition.body));
 definition.copy(signature = local.signature, body = local.body)
 }
 
@@ -156,7 +156,13 @@ case (e : Syntax_.EVariable) =>
 self.variables.get(e.name).map({(_w1) =>
 e.copy(name = _w1)
 }).else_({() =>
+Firefly_Core.if_(e.name.headOption.any({(_w1) =>
+_w1.isLetter
+}), {() =>
+fail(e.at, ("No such variable: " + e.name))
+}).else_({() =>
 term
+})
 })
 case (Syntax_.EList(at, items)) =>
 Syntax_.EList(at, items.map({(_w1) =>
@@ -311,7 +317,7 @@ fail(at, ("No such variant: " + name))
 });
 Syntax_.PVariantAs(at, newName, variable)
 case (Syntax_.PAlias(at, pattern, variable)) =>
-val newPattern = resolvePattern(pattern);
+val newPattern = self.resolvePattern(pattern);
 Syntax_.PAlias(at, newPattern, variable)
 }
 

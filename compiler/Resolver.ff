@@ -149,7 +149,7 @@ extend self: Resolver {
     }
 
     resolveFunctionDefinition(definition: DFunction): DFunction {
-        let local = resolveFunction(LocalFunction(definition.signature, definition.body))
+        let local = self.resolveFunction(LocalFunction(definition.signature, definition.body))
         definition.DFunction(
             signature = local.signature,
             body = local.body
@@ -162,7 +162,13 @@ extend self: Resolver {
         | EInt _ => term
         | EFloat _ => term
         | EVariable e =>
-            self.variables.get(e.name).map { e.EVariable(name = _) }.else { term }
+            self.variables.get(e.name).map { e.EVariable(name = _) }.else {
+                if(e.name.headOption.any { _.isLetter }) {
+                    fail(e.at, "No such variable: " + e.name)
+                } else {
+                    term
+                }
+            }
         | EList(at, items) =>
             EList(at, items.map { self.resolveTerm(_) })
         | EVariant(at, name, typeArguments, arguments) =>
@@ -319,7 +325,7 @@ extend self: Resolver {
             let newName = self.variants.get(name).else { fail(at, "No such variant: " + name) }
             PVariantAs(at, newName, variable)
         | PAlias(at, pattern, variable) =>
-            let newPattern = resolvePattern(pattern)
+            let newPattern = self.resolvePattern(pattern)
             PAlias(at, newPattern, variable)
     }
 
