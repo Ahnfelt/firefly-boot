@@ -29,8 +29,8 @@ extend self: Compiler {
     parse(moduleName: String): Module {
         self.parsedModules.get(moduleName).else:
 
-        let file = self.inputPath + "/" + moduleName + ".ff"
-        let code = self.files.readText(file)
+        let file = moduleName + ".ff"
+        let code = self.files.readText(self.inputPath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
         let result = Parser.make(file, tokens).parseModule()
 
