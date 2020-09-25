@@ -7,7 +7,7 @@ type Parser(
     tokens: Array[Token],
     end: Token,
     mutable offset: Int,
-    mutable previousTypeVariableIndex: Int
+    mutable nextTypeVariableIndex: Int
 )
 
 type Poly(generics: List[String], constraints: List[Constraint])
@@ -18,7 +18,7 @@ make(file: String, tokens: Array[Token]): Parser {
         tokens,
         tokens.last,
         0,
-        0
+        1
     )
 }
 
@@ -62,8 +62,9 @@ extend self: Parser {
     }
 
     freshTypeVariable(at: Location): Type {
-        self.previousTypeVariableIndex += 1
-        TVariable(at, self.previousTypeVariableIndex)
+        let result = TVariable(at, self.nextTypeVariableIndex)
+        self.nextTypeVariableIndex += 2
+        result
     }
     
     currentIsSeparator(kind: TokenKind): Bool {

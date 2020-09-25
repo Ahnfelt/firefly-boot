@@ -8,12 +8,12 @@ import firefly.Wildcards_._
 import firefly.Syntax_._
 object Parser_ {
 
-case class Parser(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token], end : Token_.Token, var offset : Firefly_Core.Int, var previousTypeVariableIndex : Firefly_Core.Int)
+case class Parser(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token], end : Token_.Token, var offset : Firefly_Core.Int, var nextTypeVariableIndex : Firefly_Core.Int)
 
 case class Poly(generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint])
 val binaryOperators = Firefly_Core.Array(Firefly_Core.List("||"), Firefly_Core.List("&&"), Firefly_Core.List("!=", "=="), Firefly_Core.List("<=", ">=", "<", ">"), Firefly_Core.List("::"), Firefly_Core.List("++"), Firefly_Core.List("+", "-"), Firefly_Core.List("*", "/", "%"), Firefly_Core.List("^"))
 def make(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token]) : Parser = {
-Parser(file, tokens, tokens.last, 0, 0)
+Parser(file, tokens, tokens.last, 0, 1)
 }
 implicit class Parser_extend0(self : Parser) {
 
@@ -67,8 +67,9 @@ c
 }
 
 def freshTypeVariable(at : Syntax_.Location) : Syntax_.Type = {
-self.previousTypeVariableIndex += 1;
-Syntax_.TVariable(at, self.previousTypeVariableIndex)
+val result = Syntax_.TVariable(at, self.nextTypeVariableIndex);
+self.nextTypeVariableIndex += 2;
+result
 }
 
 def currentIsSeparator(kind : Token_.TokenKind) : Firefly_Core.Bool = {
