@@ -141,7 +141,10 @@ type Field(at: Location, name: String, value: Term)
 
 type Constraint(representation: Type)
 
-type Type(at: Location, name: String, generics: List[Type])
+type Type(at: Location) {
+    TConstructor(name: String, generics: List[Type])
+    TVariable(index: Int)
+}
 
 type Safety {
     Safe

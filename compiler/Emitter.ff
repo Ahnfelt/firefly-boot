@@ -19,7 +19,9 @@ emitModule(module: Module): String {
         module.instances.map(emitInstanceDefinition)
         List("}")
     )
-    module.extends.map { _.type }.find { t => !module.types.exists { _.name == t.name } }.foreach { t =>
+    module.extends.map { _.type }.flatMap(TConstructor?).find { t =>
+        !module.types.exists { _.name == t.name }
+    }.foreach { t =>
         fail(t.at, "Type not defined in this file: " + t)
     }
     parts.map { _.mkString("\n\n") }.join("\n") + "\n"
@@ -77,7 +79,7 @@ emitExtendImplicit(definition: DExtend, index: Int): String {
     let implicits = emitConstraints(definition.constraints)
     let parameter = escapeKeyword(definition.name) + " : " + emitType(definition.type)
     let methods = definition.methods.map { emitFunctionDefinition(_) }.join("\n\n")
-    "implicit class " + definition.type.name + "_extend" + index + generics +
+    "implicit class " + extractTypeName(definition.type) + "_extend" + index + generics +
     "(" + parameter + ")" + implicits + " {\n\n" + methods + "\n\n}"
 }
 
@@ -102,7 +104,9 @@ emitTraitDefinition(definition: DTrait): String {
     }
     let methodWrappers = if(definition.methods.isEmpty) {""} else {
         " \n\n" + definition.methods.map { signature =>
-            let t = Type(definition.at, definition.name, definition.generics.map { Type(definition.at, _, List()) })
+            let t = TConstructor(definition.at, definition.name, definition.generics.map {
+                TConstructor(definition.at, _, List())
+            })
             emitSignature(signature.copy(
                 generics = definition.generics ++ signature.generics,
                 constraints = Constraint(t) :: definition.constraints ++ signature.constraints
@@ -117,13 +121,13 @@ emitTraitDefinition(definition: DTrait): String {
 emitInstanceDefinition(definition: DInstance): String {
     let signature = emitSignature(Signature(
         definition.at,
-        definition.traitType.name + "_" + definition.hashCode().abs,
+        extractTypeName(definition.traitType) + "_" + definition.hashCode().abs,
         definition.generics,
         definition.constraints,
         List(),
         definition.traitType
     ))
-    let methods = " {\n\nimport " + definition.traitType.name + "._\n\n" +
+    let methods = " {\n\nimport " + extractTypeName(definition.traitType) + "._\n\n" +
         definition.methods.map { emitFunctionDefinition(_, "_m") }.join("\n\n") + "\n\n}"
     let value = "new " + emitType(definition.traitType) + methods
     "implicit " + signature + " =\n    " + value
@@ -165,20 +169,24 @@ emitTypeParameters(generics: List[String]) {
 }
 
 emitTypeAnnotation(t: Type): String {
-    if(t.name == "?") {""} else {" : " + emitType(t)}
+    | TVariable _ => ""
+    | TConstructor _ => " : " + emitType(t)
 }
 
-emitType(t: Type): String {
-    if(t.name.startsWith("Function$")) {
-        emitType(t.copy(name = t.name.replace("$", "")))
-    } elseIf {t.name.startsWith("Record$")} {
-        "{" + t.name.split('$').drop(1).toList.zip(t.generics).map { | Pair(field, fieldType) =>
-            "val " + escapeKeyword(field) + " : " + emitType(fieldType)
-        }.mkString("; ") + "}"
-    } else {
-        let generics = if(t.generics.isEmpty) {""} else {"[" + t.generics.map(emitType).mkString(", ") + "]"}
-        escapeResolved(t.name) + generics
-    }
+emitType(type: Type): String {
+    | TVariable(_, index) =>
+        "$" + index
+    | TConstructor t =>
+        if(t.name.startsWith("Function$")) {
+            emitType(t.copy(name = t.name.replace("$", "")))
+        } elseIf {t.name.startsWith("Record$")} {
+            "{" + t.name.split('$').drop(1).toList.zip(t.generics).map { | Pair(field, fieldType) =>
+                "val " + escapeKeyword(field) + " : " + emitType(fieldType)
+            }.mkString("; ") + "}"
+        } else {
+            let generics = if(t.generics.isEmpty) {""} else {"[" + t.generics.map(emitType).mkString(", ") + "]"}
+            escapeResolved(t.name) + generics
+        }
 }
 
 emitStatements(term: Term): String {
@@ -263,6 +271,13 @@ emitPattern(pattern: MatchPattern): String {
         variable.map(escapeKeyword).getOrElse("_") + " : " + escapeResolved(name)
     | PAlias(at, p, variable) =>
         escapeKeyword(variable) + " @ (" + emitPattern(p) + ")"
+}
+
+extractTypeName(type: Type): String {
+    | TVariable(at, index) =>
+        fail(at, "Unexpected type variable: $" + index)
+    | TConstructor t =>
+        t.name
 }
 
 escapeResolved(word: String) {

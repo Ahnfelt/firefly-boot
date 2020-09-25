@@ -255,15 +255,18 @@ extend self: Resolver {
     }
 
     resolveType(type: Type): Type {
-        let name = if(type.name == "?" || type.name.contains("$")) {
-            type.name
-        } else {
-            self.types.get(type.name).else { fail(type.at, "No such type: " + type.name) }
-        }
-        type.Type(
-            name = name
-            generics = type.generics.map { self.resolveType(_) }
-        )
+        | TVariable _ =>
+            type
+        | TConstructor constructor =>
+            let name = if(constructor.name.contains("$")) {
+                constructor.name
+            } else {
+                self.types.get(constructor.name).else { fail(constructor.at, "No such type: " + constructor.name) }
+            }
+            constructor.TConstructor(
+                name = name
+                generics = constructor.generics.map { self.resolveType(_) }
+            )
     }
 
     resolveFunction(function: LocalFunction): LocalFunction {

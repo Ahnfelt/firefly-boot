@@ -6,7 +6,8 @@ type Parser(
     file: String,
     tokens: Array[Token],
     end: Token,
-    mutable offset: Int
+    mutable offset: Int,
+    mutable previousTypeVariableIndex: Int
 )
 
 type Poly(generics: List[String], constraints: List[Constraint])
@@ -16,6 +17,7 @@ make(file: String, tokens: Array[Token]): Parser {
         file,
         tokens,
         tokens.last,
+        0,
         0
     )
 }
@@ -57,6 +59,11 @@ extend self: Parser {
         }
         self.offset += 1
         c
+    }
+
+    freshTypeVariable(at: Location): Type {
+        self.previousTypeVariableIndex += 1
+        TVariable(at, self.previousTypeVariableIndex)
     }
     
     currentIsSeparator(kind: TokenKind): Bool {
@@ -116,7 +123,7 @@ extend self: Parser {
         let variableType = if(self.current.is(LColon)) {
             self.skip(LColon)
             self.parseType()
-        } else {Type(nameToken.at, "?", List())}
+        } else { self.freshTypeVariable(nameToken.at) }
         self.skip(LAssign)
         let value = self.parseTerm()
         DLet(nameToken.at, nameToken.raw, variableType, value)
@@ -209,7 +216,7 @@ extend self: Parser {
         self.rawSkip(LBracketLeft, "[")
         let token = self.skip(LUpper)
         let poly = if(!self.current.rawIs("[")) {Poly(List(), List())} else {self.parseTypeParameters()}
-        typeArguments ::= Type(token.at, token.raw, poly.generics.map{Type(token.at, _, List())})
+        typeArguments ::= TConstructor(token.at, token.raw, poly.generics.map { TConstructor(token.at, _, List()) })
         while {self.current.is(LComma)} {
             self.skip(LComma)
             typeArguments ::= self.parseType()
@@ -226,7 +233,7 @@ extend self: Parser {
             self.rawSkip(LBracketRight, "}")
             definitions
         }
-        let traitType = Type(nameToken.at, nameToken.raw, typeArguments.reverse)
+        let traitType = TConstructor(nameToken.at, nameToken.raw, typeArguments.reverse)
         DInstance(nameToken.at, poly.generics, poly.constraints, traitType, generatorArguments, methods)
     }
     
@@ -352,10 +359,13 @@ extend self: Parser {
                 parameters ::= parameterNameToken.raw
                 while {self.current.is(LColon)} {
                     self.skip(LColon)
-                    let t = self.parseType()
-                    constraints ::= Constraint(t.copy(generics =
-                        Type(t.at, parameterNameToken.raw, List()) :: t.generics
-                    ))
+                    self.parseType().{
+                        | TVariable t => self.fail(t.at, "Unexpected type variable: $" + t.index)
+                        | TConstructor t =>
+                            constraints ::= Constraint(t.copy(generics =
+                                TConstructor(t.at, parameterNameToken.raw, List()) :: t.generics
+                            ))
+                    }
                 }
             }
             if(!self.current.is(LBracketRight)) { self.skip(LComma) }
@@ -423,7 +433,7 @@ extend self: Parser {
         if(token.is(LColon)) {
             self.skip(LColon)
             self.parseType()
-        } else {Type(token.at, "?", List())}
+        } else { self.freshTypeVariable(token.at) }
     }
     
     parseLambda(
@@ -528,19 +538,19 @@ extend self: Parser {
         let leftTypes = if(self.current.rawIs("(") && self.ahead.is(LLower) && self.aheadAhead.is(LColon)) {
             let at = self.current.at
             let pair = self.parseRecordType().unzip
-            List(Type(at, "Record$" + pair.first.mkString("$"), pair.second))
+            List(TConstructor(at, "Record$" + pair.first.mkString("$"), pair.second))
         } elseIf {self.current.rawIs("(")} {
             self.parseTypeArguments(parenthesis = True)
         } else {
             let namespace = if(self.current.is(LNamespace)) {self.skip(LNamespace).raw} else {""}
             let token = self.skip(LUpper)
             let arguments = if(!self.current.rawIs("[")) {List()} else {self.parseTypeArguments()}
-            List(Type(token.at, namespace + token.raw, arguments))
+            List(TConstructor(token.at, namespace + token.raw, arguments))
         }
         if(!self.current.is(LArrowThick) && leftTypes.size == 1) {leftTypes.head} else {
             let arrowToken = self.skip(LArrowThick)
             let rightType = self.parseType()
-            Type(arrowToken.at, "Function$" + leftTypes.size, leftTypes ++ List(rightType))
+            TConstructor(arrowToken.at, "Function$" + leftTypes.size, leftTypes ++ List(rightType))
         }
     }
     
@@ -579,7 +589,7 @@ extend self: Parser {
         let mutable = self.current.rawIs("mutable")
         if(mutable) {self.rawSkip(LKeyword, "mutable")} else {self.rawSkip(LKeyword, "let")}
         let nameToken = self.skip(LLower)
-        let valueType = if(!self.current.is(LColon)) {Type(nameToken.at, "?", List())} else {
+        let valueType = if(!self.current.is(LColon)) { self.freshTypeVariable(nameToken.at) } else {
             self.skip(LColon)
             self.parseType()
         }
