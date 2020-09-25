@@ -236,15 +236,18 @@ case (Syntax_.EAssignField(at, operator, record, field, value)) =>
 Syntax_.EAssignField(at = at, operator = operator, record = self.resolveTerm(record), field = field, value = self.resolveTerm(value))
 }
 
-def resolveType(type_ : Syntax_.Type) : Syntax_.Type = {
-val name = Firefly_Core.if_(((type_.name == "?") || type_.name.contains("$")), {() =>
-type_.name
+def resolveType(type_ : Syntax_.Type) : Syntax_.Type = (type_) match {
+case (_ : Syntax_.TVariable) =>
+type_
+case (constructor : Syntax_.TConstructor) =>
+val name = Firefly_Core.if_(constructor.name.contains("$"), {() =>
+constructor.name
 }).else_({() =>
-self.types.get(type_.name).else_({() =>
-fail(type_.at, ("No such type: " + type_.name))
+self.types.get(constructor.name).else_({() =>
+fail(constructor.at, ("No such type: " + constructor.name))
 })
 });
-type_.copy(name = name, generics = type_.generics.map({(_w1) =>
+constructor.copy(name = name, generics = constructor.generics.map({(_w1) =>
 self.resolveType(_w1)
 }))
 }

@@ -74,7 +74,11 @@ case class Field(at : Location, name : Firefly_Core.String, value : Term)
 
 case class Constraint(representation : Type)
 
-case class Type(at : Location, name : Firefly_Core.String, generics : Firefly_Core.List[Type])
+sealed abstract class Type extends Product with Serializable {
+    val at : Location
+}
+case class TConstructor(at : Location, name : Firefly_Core.String, generics : Firefly_Core.List[Type]) extends Type
+case class TVariable(at : Location, index : Firefly_Core.Int) extends Type
 
 sealed abstract class Safety extends Product with Serializable
 case class Safe() extends Safety
