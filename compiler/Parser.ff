@@ -18,7 +18,7 @@ make(file: String, tokens: Array[Token]): Parser {
         tokens,
         tokens.last,
         0,
-        1
+        1 // Odd type variables to avoid collision with the unification
     )
 }
 

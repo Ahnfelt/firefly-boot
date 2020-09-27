@@ -780,3 +780,20 @@ binaryOperators = Array(
     List("*", "/", "%"),
     List("^")
 )
+
+
+
+
+trait Ord[T: Eq]
+
+instance Eq[List[T: Eq]]
+
+instance Ord[List[T: Ord]]
+
+forall T. Ord[T] => Ord[List[T]]
+
+(Ord, List) -> ...
+
+Ord[$1] => Ord[List[$1]]
+
+Ord[$1]
