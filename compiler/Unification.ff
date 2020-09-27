@@ -1,7 +1,11 @@
 type Unification(
+    // Type variable index -> Type
     mutable substitution: Map[Int, Type],
+    // Type variable index -> Trait name -> (Location, Type arguments)
     mutable constraints: Map[Int, Map[String, Pair[Location, List[Type]]]],
+    // Type variable index generation
     mutable nextTypeVariableIndex: Int
+    // (Trait name, type name) -> Instance definition
     instances: Map[Pair[String, String], DInstance]
 )
 
@@ -39,20 +43,20 @@ extend self: Unification {
         | TVariable(_, i) { self.has(i) } =>
             self.constrain(at, self.get(i), constraintName, generics)
         | TVariable(_, i) =>
-            constraints.get(i).{
+            self.constraints.get(i).{
                 | None =>
-                    constraints += Pair(i, Map(Pair(constraintName, Pair(at, generics))))
+                    self.constraints += Pair(i, Map(Pair(constraintName, Pair(at, generics))))
                 | Some(map) =>
                     map.get(constraintName).{
                         | None =>
                             let newMap = map.updated(constraintName, Pair(at, generics)))
-                            constraints = constraints.updated(i, newMap)
+                            self.constraints = self.constraints.updated(i, newMap)
                         | Some(Pair(_, generics2)) =>
                             generics.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
                     }
             }
         | TConstructor(_, name, generics2) =>
-            instance.get(Pair(constraintName, name)).{
+            self.instances.get(Pair(constraintName, name)).{
                 | None =>
                     let g1 = if(generics.isEmpty) { "" } else { "[...]" }
                     let g2 = if(generics2.isEmpty) { "" } else { "[...]" }
