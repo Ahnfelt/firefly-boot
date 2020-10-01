@@ -1,13 +1,13 @@
 type Unification(
-    // Type variable index -> Type
     mutable substitution: Map[Int, Type],
-    // Type variable index -> Trait name -> (Location, Type arguments)
-    mutable constraints: Map[Int, Map[String, Pair[Location, List[Type]]]],
-    // Type variable index generation
+    mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
     mutable nextTypeVariableIndex: Int
-    // (Trait name, type name) -> Instance definition
-    instances: Map[Pair[String, String], DInstance]
+    instances: Map[InstanceKey, InstanceValue]
 )
+
+type ConstraintGenerics(at: Location, generics: List[Type])
+type InstanceKey(traitName: String, typeName: String)
+type InstanceValue(generics: List[String], constraints: List[Constraint], traitType: Type)
 
 make(instances: List[DInstance]): Unification {
     Unification(
@@ -17,7 +17,14 @@ make(instances: List[DInstance]): Unification {
         instances.map { definition =>
             definition.traitType {
                 | TConstructor(at, name, Link(TConstructor(_, typeName, _), _)) =>
-                     Pair(Pair(name, typeName), definition)
+                     Pair(
+                        InstanceKey(name, typeName)
+                        InstanceValue(
+                            generics = definition.generics
+                            constraints = definition.constraints
+                            traitType = definition.traitType
+                        )
+                    )
                 | TConstructor(at, name, _) =>
                     fail(at, "Instance requires type arguments: " + name + "[]")
                 | TVariable(at, i) =>
@@ -38,6 +45,20 @@ extend self: Unification {
         self.nextTypeVariableIndex += 2
         result
     }
+
+    instantiate(instantiation: Map[String, Type], type: Type): Type {
+        | _, TConstructor(at, name, Empty) =>
+            instantiation.get(name) {
+                | Some(t) => t
+                | None => type
+            }
+        | _, TConstructor(at, name, generics) =>
+            TConstructor(at, name, generics.map { self.instantiate(instantiation, _) })
+        | _, TVariable(i) { self.has(i) } =>
+            self.instantiate(instantiation, self.get(i))
+        | _, TVariable(i) =>
+            type
+    }
     
     constrain(at: Location, type: Type, constraintName: String, generics: List[Type]): Unit {
         | TVariable(_, i) { self.has(i) } =>
@@ -45,24 +66,36 @@ extend self: Unification {
         | TVariable(_, i) =>
             self.constraints.get(i).{
                 | None =>
-                    self.constraints += Pair(i, Map(Pair(constraintName, Pair(at, generics))))
+                    self.constraints += Pair(i, Map(Pair(constraintName, ConstraintGenerics(at, generics))))
                 | Some(map) =>
                     map.get(constraintName).{
                         | None =>
-                            let newMap = map.updated(constraintName, Pair(at, generics)))
+                            let newMap = map.updated(constraintName, ConstraintGenerics(at, generics)))
                             self.constraints = self.constraints.updated(i, newMap)
-                        | Some(Pair(_, generics2)) =>
+                        | Some(ConstraintGenerics(_, generics2)) =>
                             generics.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
                     }
             }
         | TConstructor(_, name, generics2) =>
-            self.instances.get(Pair(constraintName, name)).{
+            self.instances.get(InstanceKey(constraintName, name)).{
                 | None =>
                     let g1 = if(generics.isEmpty) { "" } else { "[...]" }
                     let g2 = if(generics2.isEmpty) { "" } else { "[...]" }
                     self.fail(at, "No such instance: " + name + g2 + ": " + constraintName + g1)
                 | Some(definition) =>
-                    panic("Not implemented")
+                    let typeVariables = definition.generics.map { self.freshTypeVariable() }
+                    let instantiation = definition.generics.zip(typeVariables).toMap
+                    let traitType1 = self.instantiate(definition.traitType, instantiation)
+                    let traitType2 = TConstructor(at, constraintName, type :: generics)
+                    self.unify(at, traitType1, traitType2)
+                    definition.constraints.each { constraint =>
+                        self.instantiate(constraint.representation, instantiation).{
+                            | TConstructor(_, newConstraintName, newGenerics) =>
+                                self.constrain(at, type, newConstraintName, newGenerics)
+                            | TVariable(i) =>
+                                self.fail(at, "A constraint can't be a type variable: $" + i)
+                        }
+                    }
             }
     }
 
@@ -105,7 +138,7 @@ extend self: Unification {
         self.substitution += Pair(index, type)
         self.constraints.get(index).each { map =>
             self.constraints -= index
-            map.pairs().each {| Pair(name, Pair(at2, generics)) =>
+            map.pairs().each {| Pair(name, ConstraintGenerics(at2, generics)) =>
                 self.constrain(at2, type, name, generics)
             }
         }
