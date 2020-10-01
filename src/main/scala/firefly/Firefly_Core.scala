@@ -211,6 +211,14 @@ object Firefly_Core {
         def add(value : T) : Set[T] = set + value
     }
 
+    implicit class Firefly_Map[K, V](map : Map[K, V]) {
+        def each(body : Pair[K, V] => Unit) : Unit = map.foreach(body)
+        def all(body : Pair[K, V] => Bool) : Bool = map.forall(body)
+        def any(body : Pair[K, V] => Bool) : Bool = map.exists(body)
+        def add(key : K, value : V) : Map[K, V] = map + (key -> value)
+        def pairs() : List[(K, V)] = map.toList
+    }
+
     implicit class Firefly_Array[T : scala.reflect.ClassTag](list : Array[T]) {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
