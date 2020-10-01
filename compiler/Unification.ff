@@ -93,7 +93,7 @@ extend self: Unification {
                             | TConstructor(_, newConstraintName, newGenerics) =>
                                 self.constrain(at, type, newConstraintName, newGenerics)
                             | TVariable(i) =>
-                                self.fail(at, "A constraint can't be a type variable: $" + i)
+                                self.fail(at, "Constraint can't be a type variable: $" + i)
                         }
                     }
             }
