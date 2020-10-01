@@ -1,3 +1,5 @@
+import Syntax
+
 type Unification(
     mutable substitution: Map[Int, Type],
     mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
@@ -10,12 +12,15 @@ type InstanceKey(traitName: String, typeName: String)
 type InstanceValue(generics: List[String], constraints: List[Constraint], traitType: Type)
 
 make(instances: List[DInstance]): Unification {
+    function fail[T](at: Location, message: String): T {
+        panic(message + " " + at.show)
+    }
     Unification(
         Map()
         Map()
         2 // Even type variables to avoid collision with the parser
         instances.map { definition =>
-            definition.traitType {
+            definition.traitType.{
                 | TConstructor(at, name, Link(TConstructor(_, typeName, _), _)) =>
                      Pair(
                         InstanceKey(name, typeName)
@@ -48,60 +53,62 @@ extend self: Unification {
 
     instantiate(instantiation: Map[String, Type], type: Type): Type {
         | _, TConstructor(at, name, Empty) =>
-            instantiation.get(name) {
+            instantiation.get(name).{
                 | Some(t) => t
                 | None => type
             }
         | _, TConstructor(at, name, generics) =>
             TConstructor(at, name, generics.map { self.instantiate(instantiation, _) })
-        | _, TVariable(i) { self.has(i) } =>
+        | _, TVariable(_, i) { self.has(i) } =>
             self.instantiate(instantiation, self.get(i))
-        | _, TVariable(i) =>
+        | _, TVariable(_, i) =>
             type
     }
     
     constrain(at: Location, type: Type, constraintName: String, generics: List[Type]): Unit {
-        | TVariable(_, i) { self.has(i) } =>
-            self.constrain(at, self.get(i), constraintName, generics)
-        | TVariable(_, i) =>
-            self.constraints.get(i).{
-                | None =>
-                    self.constraints += Pair(i, Map(Pair(constraintName, ConstraintGenerics(at, generics))))
-                | Some(map) =>
-                    map.get(constraintName).{
-                        | None =>
-                            let newMap = map.updated(constraintName, ConstraintGenerics(at, generics)))
-                            self.constraints = self.constraints.updated(i, newMap)
-                        | Some(ConstraintGenerics(_, generics2)) =>
-                            generics.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
-                    }
-            }
-        | TConstructor(_, name, generics2) =>
-            self.instances.get(InstanceKey(constraintName, name)).{
-                | None =>
-                    let g1 = if(generics.isEmpty) { "" } else { "[...]" }
-                    let g2 = if(generics2.isEmpty) { "" } else { "[...]" }
-                    self.fail(at, "No such instance: " + name + g2 + ": " + constraintName + g1)
-                | Some(definition) =>
-                    let typeVariables = definition.generics.map { self.freshTypeVariable() }
-                    let instantiation = definition.generics.zip(typeVariables).toMap
-                    let traitType1 = self.instantiate(definition.traitType, instantiation)
-                    let traitType2 = TConstructor(at, constraintName, type :: generics)
-                    self.unify(at, traitType1, traitType2)
-                    definition.constraints.each { constraint =>
-                        self.instantiate(constraint.representation, instantiation).{
-                            | TConstructor(_, newConstraintName, newGenerics) =>
-                                self.constrain(at, type, newConstraintName, newGenerics)
-                            | TVariable(i) =>
-                                self.fail(at, "Constraint can't be a type variable: $" + i)
+        type.{
+            | TVariable(_, i) { self.has(i) } =>
+                self.constrain(at, self.get(i), constraintName, generics)
+            | TVariable(_, i) =>
+                self.constraints.get(i).{
+                    | None =>
+                        self.constraints += Pair(i, Map(Pair(constraintName, ConstraintGenerics(at, generics))))
+                    | Some(map) =>
+                        map.get(constraintName).{
+                            | None =>
+                                let newMap = map.updated(constraintName, ConstraintGenerics(at, generics))
+                                self.constraints = self.constraints.updated(i, newMap)
+                            | Some(ConstraintGenerics(_, generics2)) =>
+                                generics.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
                         }
-                    }
-            }
+                }
+            | TConstructor(_, name, generics2) =>
+                self.instances.get(InstanceKey(constraintName, name)).{
+                    | None =>
+                        let g1 = if(generics.isEmpty) { "" } else { "[...]" }
+                        let g2 = if(generics2.isEmpty) { "" } else { "[...]" }
+                        self.fail(at, "No such instance: " + name + g2 + ": " + constraintName + g1)
+                    | Some(definition) =>
+                        let typeVariables = definition.generics.map {| _ => self.freshTypeVariable(at) }
+                        let instantiation = definition.generics.zip(typeVariables).toMap
+                        let traitType1 = self.instantiate(instantiation, definition.traitType)
+                        let traitType2 = TConstructor(at, constraintName, type :: generics)
+                        self.unify(at, traitType1, traitType2)
+                        definition.constraints.each { constraint =>
+                            self.instantiate(instantiation, constraint.representation).{
+                                | TConstructor(_, newConstraintName, newGenerics) =>
+                                    self.constrain(at, type, newConstraintName, newGenerics)
+                                | TVariable(_, i) =>
+                                    self.fail(at, "Constraint can't be a type variable: $" + i)
+                            }
+                        }
+                }
+        }
     }
 
     get(index: Int): Type {
-        substitution(index).{
-            | TVariable(i) { self.has(i) } =>
+        self.substitution(index).{
+            | TVariable(_, i) { self.has(i) } =>
                 let t = self.get(i)
                 self.substitution += Pair(index, t)
                 t
@@ -109,22 +116,22 @@ extend self: Unification {
         }
     }
 
-    has(index: Int): Boolean {
+    has(index: Int): Bool {
         self.substitution.contains(index)
     }
 
     substitute(type: Type): Type {
         | TVariable(_, i) => if(self.has(i)) { self.substitute(self.get(i)) } else { type }
-        | TConstructor t => t.TConstructor(generics = generics.map { t => substitute(t) })
+        | TConstructor t => t.TConstructor(generics = t.generics.map { t => self.substitute(t) })
     }
 
     unify(at: Location, t1: Type, t2: Type): Unit {
-        | TVariable(_, i1), TVariable(_, i2) { i1 == i2 } =>
-        | TVariable(_, i), _ { self.has(i) } => self.unify(at, self.get(i), t2)
-        | _, TVariable(_, i) { self.has(i) } => self.unify(at, t1, self.get(i))
-        | TVariable(_, i), _ => self.bind(at, i, t2)
-        | _, TVariable(_, i) => self.bind(at, i, t1)
-        | TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
+        | _, TVariable(_, i1), TVariable(_, i2) { i1 == i2 } =>
+        | _, TVariable(_, i), _ { self.has(i) } => self.unify(at, self.get(i), t2)
+        | _, _, TVariable(_, i) { self.has(i) } => self.unify(at, t1, self.get(i))
+        | _, TVariable(_, i), _ => self.bind(at, i, t2)
+        | _, _, TVariable(_, i) => self.bind(at, i, t1)
+        | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
             if(name1 != name2 || generics1.size != generics2.size) {
                 self.fail(at, "Type mismatch: " + self.substitute(t1) + " vs. " + self.substitute(t2))
             }
@@ -133,7 +140,7 @@ extend self: Unification {
 
     bind(at: Location, index: Int, type: Type): Unit {
         if(self.occursIn(index, type)) {
-            self.fail(at, "Infinite type: $" + index + " = " + self.substitute(type)
+            self.fail(at, "Infinite type: $" + index + " = " + self.substitute(type))
         }
         self.substitution += Pair(index, type)
         self.constraints.get(index).each { map =>
@@ -144,10 +151,10 @@ extend self: Unification {
         }
     }
 
-    occursIn(index: Int, t: Type): Boolean {
-        | _, TVariable(i) { has(i) } => self.occursIn(index, get(i))
-        | _, TVariable(i) => i == index
-        | _, TConstructor(_, generics) => generics.any { t => self.occursIn(index, t) }
+    occursIn(index: Int, t: Type): Bool {
+        | _, TVariable(_, i) { self.has(i) } => self.occursIn(index, self.get(i))
+        | _, TVariable(_, i) => i == index
+        | _, TConstructor(_, _, generics) => generics.any { t => self.occursIn(index, t) }
     }
     
 }

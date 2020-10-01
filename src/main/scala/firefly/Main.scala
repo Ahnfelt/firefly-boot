@@ -12,6 +12,8 @@ import firefly.Syntax_._
 import firefly.Resolver_._
 
 import firefly.Compiler_._
+
+import firefly.Unification_._
 object Main_ {
 def main(arguments : Array[String]) : Unit = main(new System(arguments))
 

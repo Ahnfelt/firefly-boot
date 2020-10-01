@@ -4,6 +4,7 @@ import Emitter
 import Syntax
 import Resolver
 import Compiler
+import Unification
 
 main(system: System): Unit {
 
