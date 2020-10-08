@@ -286,7 +286,7 @@ case (Syntax_.EInt(at, value)) =>
 value
 case (Syntax_.EFloat(at, value)) =>
 value
-case (Syntax_.EVariable(at, name)) =>
+case (Syntax_.EVariable(at, name, _, _)) =>
 escapeResolved(name)
 case (Syntax_.EList(at, items)) =>
 (("List(" + items.map(emitTerm).mkString(", ")) + ")")
@@ -329,9 +329,9 @@ val casesString = cases.map(emitCase).mkString("\n");
 (("{\n" + casesString) + "\n}")
 case (Syntax_.EPipe(at, value, function)) =>
 (((("pipe_dot(" + emitTerm(value)) + ")(") + emitTerm(function)) + ")")
-case (Syntax_.ECall(at, Syntax_.EVariable(_, operator), Firefly_Core.Empty(), Firefly_Core.Link(value, Firefly_Core.Empty()))) if (!operator.head.isLetter) =>
+case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), Firefly_Core.Empty(), Firefly_Core.Link(value, Firefly_Core.Empty()))) if (!operator.head.isLetter) =>
 ((("(" + operator) + emitArgument(value)) + ")")
-case (Syntax_.ECall(at, Syntax_.EVariable(_, operator), Firefly_Core.Empty(), Firefly_Core.Link(left, Firefly_Core.Link(right, Firefly_Core.Empty())))) if (!operator.head.isLetter) =>
+case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), Firefly_Core.Empty(), Firefly_Core.Link(left, Firefly_Core.Link(right, Firefly_Core.Empty())))) if (!operator.head.isLetter) =>
 (((((("(" + emitArgument(left)) + " ") + operator) + " ") + emitArgument(right)) + ")")
 case (Syntax_.ECall(at, function, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>

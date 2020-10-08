@@ -31,7 +31,7 @@ case class EString(at : Location, value : Firefly_Core.String) extends Term
 case class EChar(at : Location, value : Firefly_Core.String) extends Term
 case class EInt(at : Location, value : Firefly_Core.String) extends Term
 case class EFloat(at : Location, value : Firefly_Core.String) extends Term
-case class EVariable(at : Location, name : Firefly_Core.String) extends Term
+case class EVariable(at : Location, name : Firefly_Core.String, generics : Firefly_Core.List[Type], instances : Firefly_Core.List[Instance]) extends Term
 case class ELambda(at : Location, lambda : Lambda) extends Term
 case class EFunctions(at : Location, functions : Firefly_Core.List[LocalFunction], body : Term) extends Term
 case class ELet(at : Location, mutable : Firefly_Core.Bool, name : Firefly_Core.String, valueType : Type, value : Term, body : Term) extends Term
@@ -79,6 +79,13 @@ sealed abstract class Type extends Product with Serializable {
 }
 case class TConstructor(at : Location, name : Firefly_Core.String, generics : Firefly_Core.List[Type]) extends Type
 case class TVariable(at : Location, index : Firefly_Core.Int) extends Type
+
+sealed abstract class Instance extends Product with Serializable {
+    val at : Location
+}
+case class IConstructor(at : Location, name : Firefly_Core.String, arguments : Firefly_Core.List[Instance]) extends Instance
+case class IField(at : Location, instance : Instance, field : Firefly_Core.String) extends Instance
+case class IVariable(at : Location, index : Firefly_Core.Int) extends Instance
 
 sealed abstract class Safety extends Product with Serializable
 case class Safe() extends Safety

@@ -86,7 +86,7 @@ type Term(at: Location) {
     EChar(value: String)
     EInt(value: String)
     EFloat(value: String)
-    EVariable(name: String)
+    EVariable(name: String, generics: List[Type], instances: List[Instance])
     ELambda(lambda: Lambda)
     EFunctions(functions: List[LocalFunction], body: Term)
     ELet(mutable: Bool, name: String, valueType: Type, value: Term, body: Term)
@@ -144,6 +144,12 @@ type Constraint(representation: Type)
 type Type(at: Location) {
     TConstructor(name: String, generics: List[Type])
     TVariable(index: Int)
+}
+
+type Instance(at: Location) {
+    IConstructor(name: String, arguments: List[Instance])
+    IField(instance: Instance, field: String)
+    IVariable(index: Int)
 }
 
 type Safety {

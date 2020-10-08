@@ -580,7 +580,7 @@ extend self: Parser {
         let operator = token.raw.dropRight(1)
         let value = self.parseTerm()
         term.{
-            | EVariable(_, name) => EAssign(token.at, operator, name, value)
+            | EVariable(_, name, _, _) => EAssign(token.at, operator, name, value)
             | EField e => EAssignField(token.at, operator, e.record, e.field, value)
             | _ => self.fail(token.at, "Only variables and fields are assignable")
         }
@@ -628,7 +628,7 @@ extend self: Parser {
                 let token = self.skip(LOperator)
                 let right = self.parseBinary(level + 1)
                 let arguments = List(Argument(result.at, None, result), Argument(right.at, None, right))
-                result = ECall(token.at, EVariable(token.at, token.raw), List(), arguments)
+                result = ECall(token.at, EVariable(token.at, token.raw, List(), List()), List(), arguments)
             }
         }
         result
@@ -638,7 +638,7 @@ extend self: Parser {
         if(self.current.is(LOperator)) {
             let token = self.skip(LOperator)
             let term = self.parseUnary()
-            ECall(token.at, EVariable(token.at, token.raw), List(), List(Argument(term.at, None, term)))
+            ECall(token.at, EVariable(token.at, token.raw, List(), List()), List(), List(Argument(term.at, None, term)))
         } else {
             self.parseFieldsAndCalls()
         }
@@ -694,12 +694,15 @@ extend self: Parser {
             EFloat(token.at, token.raw)
         } elseIf {self.current.is(LLower)} {
             let token = self.skip(LLower)
-            EVariable(token.at, token.raw)
+            EVariable(token.at, token.raw, List(), List())
         } elseIf {self.current.is(LNamespace)} {
             let namespaceToken = self.skip(LNamespace)
             let extraNamespace = if(!self.current.is(LNamespace)) {None} else {Some(self.skip(LNamespace).raw)}
             let prefix = namespaceToken.raw + extraNamespace.getOrElse("")
-            if(self.current.is(LLower)) { let token = self.skip(LLower); EVariable(token.at, prefix + token.raw) } else {
+            if(self.current.is(LLower)) {
+                let token = self.skip(LLower)
+                EVariable(token.at, prefix + token.raw, List(), List())
+            } else {
                 self.parseVariant(prefix)
             }
         } elseIf {self.current.is(LUpper)} {

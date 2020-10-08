@@ -785,7 +785,7 @@ self.skip(Token_.LAssign())
 val operator = token.raw.dropRight(1);
 val value = self.parseTerm();
 pipe_dot(term)({
-case (Syntax_.EVariable(_, name)) =>
+case (Syntax_.EVariable(_, name, _, _)) =>
 Syntax_.EAssign(token.at, operator, name, value)
 case (e : Syntax_.EField) =>
 Syntax_.EAssignField(token.at, operator, e.record, e.field, value)
@@ -851,7 +851,7 @@ operators.exists(self.current.rawIs)
 val token = self.skip(Token_.LOperator());
 val right = self.parseBinary((level + 1));
 val arguments = Firefly_Core.List(Syntax_.Argument(result.at, Firefly_Core.None(), result), Syntax_.Argument(right.at, Firefly_Core.None(), right));
-result = Syntax_.ECall(token.at, Syntax_.EVariable(token.at, token.raw), Firefly_Core.List(), arguments)
+result = Syntax_.ECall(token.at, Syntax_.EVariable(token.at, token.raw, Firefly_Core.List(), Firefly_Core.List()), Firefly_Core.List(), arguments)
 })
 });
 result
@@ -862,7 +862,7 @@ def parseUnary() : Syntax_.Term = {
 Firefly_Core.if_(self.current.is(Token_.LOperator()), {() =>
 val token = self.skip(Token_.LOperator());
 val term = self.parseUnary();
-Syntax_.ECall(token.at, Syntax_.EVariable(token.at, token.raw), Firefly_Core.List(), Firefly_Core.List(Syntax_.Argument(term.at, Firefly_Core.None(), term)))
+Syntax_.ECall(token.at, Syntax_.EVariable(token.at, token.raw, Firefly_Core.List(), Firefly_Core.List()), Firefly_Core.List(), Firefly_Core.List(Syntax_.Argument(term.at, Firefly_Core.None(), term)))
 }).else_({() =>
 self.parseFieldsAndCalls()
 })
@@ -940,7 +940,7 @@ Syntax_.EFloat(token.at, token.raw)
 self.current.is(Token_.LLower())
 }, {() =>
 val token = self.skip(Token_.LLower());
-Syntax_.EVariable(token.at, token.raw)
+Syntax_.EVariable(token.at, token.raw, Firefly_Core.List(), Firefly_Core.List())
 }).elseIf({() =>
 self.current.is(Token_.LNamespace())
 }, {() =>
@@ -953,7 +953,7 @@ Firefly_Core.Some(self.skip(Token_.LNamespace()).raw)
 val prefix = (namespaceToken.raw + extraNamespace.getOrElse(""));
 Firefly_Core.if_(self.current.is(Token_.LLower()), {() =>
 val token = self.skip(Token_.LLower());
-Syntax_.EVariable(token.at, (prefix + token.raw))
+Syntax_.EVariable(token.at, (prefix + token.raw), Firefly_Core.List(), Firefly_Core.List())
 }).else_({() =>
 self.parseVariant(prefix)
 })

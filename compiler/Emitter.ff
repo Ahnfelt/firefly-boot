@@ -209,7 +209,7 @@ emitTerm(term: Term): String {
     | EChar(at, value) => value
     | EInt(at, value) => value
     | EFloat(at, value) => value
-    | EVariable(at, name) => escapeResolved(name)
+    | EVariable(at, name, _, _) => escapeResolved(name)
     | EList(at, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
     | EVariant(at, name, typeArguments, arguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
@@ -233,9 +233,9 @@ emitTerm(term: Term): String {
         "{\n" + casesString + "\n}"
     | EPipe(at, value, function) =>
         "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
-    | ECall(at, EVariable(_, operator), Empty, Link(value, Empty)) {!operator.head.isLetter} =>
+    | ECall(at, EVariable(_, operator, _, _), Empty, Link(value, Empty)) {!operator.head.isLetter} =>
         "(" + operator + emitArgument(value) + ")"
-    | ECall(at, EVariable(_, operator), Empty, Link(left, Link(right, Empty))) {!operator.head.isLetter} =>
+    | ECall(at, EVariable(_, operator, _, _), Empty, Link(left, Link(right, Empty))) {!operator.head.isLetter} =>
         "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
     | ECall(at, function, typeArguments, arguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
