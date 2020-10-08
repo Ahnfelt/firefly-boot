@@ -4,7 +4,7 @@ import firefly.Firefly_Core._
 import firefly.Syntax_._
 object Unification_ {
 
-case class Unification(var substitution : Firefly_Core.Map[Firefly_Core.Int, Syntax_.Type], var constraints : Firefly_Core.Map[Firefly_Core.Int, Firefly_Core.Map[Firefly_Core.String, ConstraintGenerics]], var nextTypeVariableIndex : Firefly_Core.Int, instances : Firefly_Core.Map[InstanceKey, InstanceValue])
+case class Unification(var substitution : Firefly_Core.Map[Firefly_Core.Int, Syntax_.Type], var constraints : Firefly_Core.Map[Firefly_Core.Int, Firefly_Core.Map[Firefly_Core.String, ConstraintGenerics]], var nextTypeVariableIndex : Firefly_Core.Int, var nextInstanceVariableIndex : Firefly_Core.Int, instances : Firefly_Core.Map[InstanceKey, InstanceValue])
 
 case class ConstraintGenerics(at : Syntax_.Location, generics : Firefly_Core.List[Syntax_.Type])
 
@@ -16,7 +16,7 @@ def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Unification = {
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show))
 }
-Unification(Firefly_Core.Map(), Firefly_Core.Map(), 2, instances.map({(definition) =>
+Unification(Firefly_Core.Map(), Firefly_Core.Map(), 2, 1, instances.map({(definition) =>
 pipe_dot(definition.traitType)({
 case (Syntax_.TConstructor(at, name, Firefly_Core.Link(Syntax_.TConstructor(_, typeName, _), _))) =>
 Firefly_Core.Pair(InstanceKey(name, typeName), InstanceValue(generics = definition.generics, constraints = definition.constraints, traitType = definition.traitType))
@@ -36,6 +36,12 @@ Firefly_Core.panic(((message + " ") + at.show))
 def freshTypeVariable(at : Syntax_.Location) : Syntax_.Type = {
 val result = Syntax_.TVariable(at, self.nextTypeVariableIndex);
 self.nextTypeVariableIndex += 2;
+result
+}
+
+def freshInstanceVariable(at : Syntax_.Location) : Syntax_.Instance = {
+val result = Syntax_.IVariable(at, self.nextInstanceVariableIndex);
+self.nextInstanceVariableIndex += 1;
 result
 }
 
