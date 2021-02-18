@@ -2,6 +2,7 @@ import Syntax
 import Tokenizer
 import Parser
 import Resolver
+import Inference
 import Emitter
 
 type Compiler(
@@ -10,6 +11,7 @@ type Compiler(
     outputPath: String
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
+    mutable inferredModules: Map[String, Module]
     mutable emittedModules: Set[String]
 )
 
@@ -20,6 +22,7 @@ make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
         outputPath = outputPath
         parsedModules = Map()
         resolvedModules = Map()
+        inferredModules = Map()
         emittedModules = Set()
     )
 }
@@ -56,11 +59,23 @@ extend self: Compiler {
         result
     }
 
+    infer(moduleName: String): Module {
+        self.inferredModules.get(moduleName).else:
+
+        let module = self.resolve(moduleName)
+        let otherModules = self.imports(module).map { self.resolve(self.files.prefixName(_.file)) }
+        let instances = module.instances ++ otherModules.flatMap { _.instances }
+        let result = Inference.make(instances).inferModule(module, otherModules)
+
+        self.inferredModules = self.inferredModules.updated(moduleName, result)
+        result
+    }
+
     emit(moduleName: String): Unit {
         if(self.emittedModules(moduleName)) {} else:
         self.emittedModules = self.emittedModules.add(moduleName)
 
-        let module = self.resolve(moduleName)
+        let module = self.infer(moduleName)
         self.imports(module).each { self.emit(self.files.prefixName(_.file)) }
 
         let emitted = Emitter.emitModule(module)

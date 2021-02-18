@@ -4,7 +4,6 @@ type Unification(
     mutable substitution: Map[Int, Type],
     mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
     mutable nextTypeVariableIndex: Int
-    mutable nextInstanceVariableIndex: Int
     instances: Map[InstanceKey, InstanceValue]
 )
 
@@ -20,7 +19,6 @@ make(instances: List[DInstance]): Unification {
         Map()
         Map()
         2 // Even type variables to avoid collision with the parser
-        1
         instances.map { definition =>
             definition.traitType.{
                 | TConstructor(at, name, Link(TConstructor(_, typeName, _), _)) =>
@@ -50,12 +48,6 @@ extend self: Unification {
     freshTypeVariable(at: Location): Type {
         let result = TVariable(at, self.nextTypeVariableIndex)
         self.nextTypeVariableIndex += 2
-        result
-    }
-
-    freshInstanceVariable(at: Location): Instance {
-        let result = IVariable(at, self.nextInstanceVariableIndex)
-        self.nextInstanceVariableIndex += 1
         result
     }
 
