@@ -1,0 +1,185 @@
+import Syntax
+import Unification
+
+type Inference(
+    unification: Unification
+)
+
+type Scheme(
+    isVariable: Bool
+    isMutable: Bool
+    signature: Signature
+)
+
+type Environment(
+    symbols: Map[String, Scheme]
+)
+
+make(instances: List[DInstance]): Inference {
+    Inference(
+        unification = Unification.make(instances)
+    )
+}
+
+extend self: Inference {
+
+    inferModule(module: Module, otherModules: List[Module]): Module {
+        // First infer everything, then substitute everything (failing on type variables that can't be substituted)
+
+        let environment = self.createEnvironment(module, otherModules)
+
+        let lets = module.lets.map { self.inferLetDefinition(environment, _) }
+        //let traits = module.traits.map { self.inferTraitDefinition(_) }
+        //let instances = module.instances.map { self.inferInstanceDefinition(_) }
+        //let extends = module.extends.map { self.inferExtendDefinition(_) }
+        //let functions = module.functions.map { self.inferFunctionDefinition(_) }
+        module.Module(
+            //traits = traits,
+            //instances = instances,
+            //extends = extends,
+            lets = lets,
+            //functions = functions,
+        )
+    }
+
+    createEnvironment(module: Module, otherModules: List[Module]): Environment {
+        Environment(
+            self.createModuleEnvironment(module).symbols ++
+            otherModules.map { self.createModuleEnvironment(_).symbols }.fold(Map())({ _ ++ _ })
+        )
+    }
+
+    createModuleEnvironment(module: Module): Environment {
+        function full(module: Module, name: String): String {
+            module.file.dropRight(3) + "." + name
+        }
+        Environment((
+            module.functions.map { d => Pair(
+                full(module, d.signature.name),
+                Scheme(False, False, d.signature)
+            )} ++
+            module.lets.map { d => Pair(
+                full(module, d.name),
+                Scheme(True, False, Signature(d.at, d.name, Empty, Empty, Empty, d.variableType))
+            )}
+        ).toMap)
+    }
+
+    inferLetDefinition(environment: Environment, definition: DLet): DLet {
+        let value = self.inferTerm(environment, definition.variableType, definition.value)
+        definition.DLet(
+            value = value
+        )
+    }
+
+    inferTerm(environment: Environment, expected: Type, term: Term): Term {
+        function core(name: String): String {
+            "ff:core/Core." + name
+        }
+        function literal(coreTypeName: String): Term {
+            self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), Empty))
+            term
+        }
+        term.{
+            | EString _ => literal("String")
+            | EChar _ => literal("Char")
+            | EInt _ => literal("Int")
+            | EFloat _ => literal("Float")
+            | _ => term
+            /*
+            | EVariable e =>
+                self.variables.get(e.name).map { e.EVariable(name = _) }.else {
+                    if(e.name.headOption.any { _.isLetter }) {
+                        fail(e.at, "No such variable: " + e.name)
+                    } else {
+                        term
+                    }
+                }
+            | EList(at, items) =>
+                EList(at, items.map { self.resolveTerm(_) })
+            | EVariant(at, name, typeArguments, arguments) =>
+                EVariant(
+                    at = at
+                    name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
+                    typeArguments = typeArguments.map { self.resolveType(_) }
+                    arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value)) }}
+                )
+            | EVariantIs(at, name, typeArguments) =>
+                EVariantIs(
+                    at = at
+                    name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
+                    typeArguments = typeArguments.map { self.resolveType(_) }
+                )
+            | ECopy(at, name, record, arguments) =>
+                ECopy(
+                    at = at
+                    name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
+                    record = self.resolveTerm(record)
+                    arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value)) }
+                )
+            | EField e =>
+                e.EField(record = self.resolveTerm(e.record))
+            | ELambda(at, Lambda(lambdaAt, cases)) =>
+                ELambda(at, Lambda(lambdaAt, cases.map { self.resolveCase(_) }))
+            | EPipe(at, value, function) =>
+                EPipe(
+                    at = at
+                    value = self.resolveTerm(value)
+                    function = self.resolveTerm(function)
+                )
+            | ECall(at, function, typeArguments, arguments) =>
+                ECall(
+                    at = at
+                    function = self.resolveTerm(function)
+                    typeArguments = typeArguments.map { self.resolveType(_) }
+                    arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }
+                )
+            | ERecord(at, fields) =>
+                ERecord(
+                    at = at
+                    fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
+                )
+            | EWildcard e =>
+                if(e.index == 0) { fail(e.at, "Unbound wildcard") }
+                e
+            | EFunctions(at, functions, body) =>
+                let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap
+                let self2 = self.Resolver(variables = self.variables ++ functionMap)
+                EFunctions(
+                    at = at,
+                    functions = functions.map { self2.resolveFunction(_) },
+                    body = self2.resolveTerm(body)
+                )
+            | ELet e =>
+                let self2 = self.Resolver(variables = self.variables + Pair(e.name, e.name))
+                e.ELet(
+                    valueType = self.resolveType(e.valueType)
+                    value = self.resolveTerm(e.value)
+                    body = self2.resolveTerm(e.body)
+                )
+            | ESequential(at, before, after) =>
+                ESequential(
+                    at = at
+                    before = self.resolveTerm(before)
+                    after = self.resolveTerm(after)
+                )
+            | EAssign(at, operator, variable, value) =>
+                EAssign(
+                    at = at
+                    operator = operator
+                    variable = self.variables.get(variable).else { fail(at, "No such variable: " + variable) }
+                    value = self.resolveTerm(value)
+                )
+            | EAssignField(at, operator, record, field, value) =>
+                EAssignField(
+                    at = at
+                    operator = operator
+                    record = self.resolveTerm(record)
+                    field = field
+                    value = self.resolveTerm(value)
+                )
+            */
+        }
+    }
+
+}
