@@ -21,6 +21,13 @@ make(instances: List[DInstance]): Inference {
     )
 }
 
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show)
+}
+
+//myInt = 42
+//myString: String = myInt
+
 extend self: Inference {
 
     inferModule(module: Module, otherModules: List[Module]): Module {
@@ -44,14 +51,14 @@ extend self: Inference {
 
     createEnvironment(module: Module, otherModules: List[Module]): Environment {
         Environment(
-            self.createModuleEnvironment(module).symbols ++
-            otherModules.map { self.createModuleEnvironment(_).symbols }.fold(Map())({ _ ++ _ })
+            self.createModuleEnvironment(module, True).symbols ++
+            otherModules.map { self.createModuleEnvironment(_, False).symbols }.fold(Map())({ _ ++ _ })
         )
     }
 
-    createModuleEnvironment(module: Module): Environment {
+    createModuleEnvironment(module: Module, isCurrentModule: Bool): Environment {
         function full(module: Module, name: String): String {
-            module.file.dropRight(3) + "." + name
+            if(isCurrentModule) { name } else { module.file.dropRight(3) + "." + name }
         }
         Environment((
             module.functions.map { d => Pair(
@@ -85,6 +92,17 @@ extend self: Inference {
             | EChar _ => literal("Char")
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
+            | EVariable e =>
+                environment.symbols.get(e.name).map { scheme =>
+                    if(scheme.isVariable) {
+                        self.unification.unify(e.at, expected, scheme.signature.returnType)
+                        term
+                    } else {
+                        term
+                    }
+                } else {
+                    fail(e.at, "Symbol not in scope: " + e.name)
+                }
             | _ => term
             /*
             | EVariable e =>
