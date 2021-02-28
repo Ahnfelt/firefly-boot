@@ -159,3 +159,16 @@ type Safety {
 }
 
 type Version(at: Location, major: Int, minor: Int, patch: Int)
+
+extend self: Type {
+    show(): String {
+        self.{
+            | TConstructor(at, name, generics) =>
+                if(generics.isEmpty) { name } else {
+                    name + "[" + generics.map { _.show() }.join(", ") + "]"
+                }
+            | TVariable(at, index) =>
+                "$" + index
+        }
+    }
+}

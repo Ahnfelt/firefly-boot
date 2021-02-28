@@ -103,5 +103,24 @@ def show() : Firefly_Core.String = {
 
 }
 
+implicit class Type_extend1(self : Type) {
+
+def show() : Firefly_Core.String = {
+pipe_dot(self)({
+case (TConstructor(at, name, generics)) =>
+Firefly_Core.if_(generics.isEmpty, {() =>
+name
+}).else_({() =>
+(((name + "[") + generics.map({(_w1) =>
+_w1.show()
+}).join(", ")) + "]")
+})
+case (TVariable(at, index)) =>
+("$" + index)
+})
+}
+
+}
+
 
 }
