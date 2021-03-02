@@ -22,18 +22,24 @@ fail[T](at: Location, message: String): T {
 }
 
 processModule(module: Module, isCurrentModule: Bool): Environment {
+
     function full(module: Module, name: String): String {
         if(isCurrentModule) { name } else { module.file.dropRight(3) + "." + name }
     }
-    Environment((
+
+    let functions =
         module.functions.map { d => Pair(
             full(module, d.signature.name),
             Scheme(False, False, d.signature)
-        )} ++
+        )}
+
+    let lets =
         module.lets.map { d => Pair(
             full(module, d.name),
             Scheme(True, False, Signature(d.at, d.name, Empty, Empty, Empty, d.variableType))
-        )} ++
+        )}
+
+    let extends =
         module.extends.flatMap { d =>
             d.type.{
                 | TVariable t =>
@@ -53,5 +59,6 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                     }
             }
         }
-    ).toMap)
+
+    Environment((functions ++ lets ++ extends).toMap)
 }

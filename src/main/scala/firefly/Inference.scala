@@ -21,7 +21,6 @@ implicit class Inference_extend0(self : Inference) {
 
 def inferModule(module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Syntax_.Module = {
 val environment = Environment_.make(module, otherModules);
-Firefly_Core.log.debug(environment);
 val lets = module.lets.map({(_w1) =>
 self.inferLetDefinition(environment, _w1)
 });
