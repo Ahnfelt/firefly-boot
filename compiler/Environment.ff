@@ -17,6 +17,10 @@ make(module: Module, otherModules: List[Module]): Environment {
     )
 }
 
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show)
+}
+
 processModule(module: Module, isCurrentModule: Bool): Environment {
     function full(module: Module, name: String): String {
         if(isCurrentModule) { name } else { module.file.dropRight(3) + "." + name }
@@ -29,7 +33,34 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
         module.lets.map { d => Pair(
             full(module, d.name),
             Scheme(True, False, Signature(d.at, d.name, Empty, Empty, Empty, d.variableType))
-        )}
+        )} ++
+        module.extends.flatMap { d =>
+            d.type.{
+                | TVariable t =>
+                    fail(t.at, "Unexpected type variable: $" + t.index)
+                | TConstructor t =>
+                    let prefix = t.name + "_"
+                    let selfParameter = Parameter(d.at, False, d.name, d.type, None)
+                    d.methods.map { method =>
+                        Pair(
+                            full(module, prefix + method.signature.name),
+                            Scheme(False, False, method.signature.Signature(
+                                generics = d.generics ++ method.signature.generics
+                                constraints = d.constraints ++ method.signature.constraints
+                                parameters = selfParameter :: method.signature.parameters
+                            ))
+                        )
+                    }
+            }
+        }
     ).toMap)
 }
 
+type DExtend(
+    at: Location,
+    name: String,
+    generics: List[String],
+    constraints: List[Constraint],
+    type: Type,
+    methods: List[DFunction],
+)
