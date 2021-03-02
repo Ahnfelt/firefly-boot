@@ -152,7 +152,7 @@ case (_, _, Syntax_.TVariable(_, i)) =>
 self.bind(at, i, t1)
 case (_, Syntax_.TConstructor(_, name1, generics1), Syntax_.TConstructor(_, name2, generics2)) =>
 Firefly_Core.if_(((name1 != name2) || (generics1.size != generics2.size)), {() =>
-self.fail(at, ((("Type mismatch: " + self.substitute(t1)) + " vs. ") + self.substitute(t2)))
+self.fail(at, ((("Type mismatch: " + self.substitute(t1).show()) + " vs. ") + self.substitute(t2).show()))
 });
 generics1.zip(generics2).each({
 case (Firefly_Core.Pair(t1, t2)) =>
@@ -162,7 +162,7 @@ self.unify(at, t1, t2)
 
 def bind(at : Syntax_.Location, index : Firefly_Core.Int, type_ : Syntax_.Type) : Firefly_Core.Unit = {
 Firefly_Core.if_(self.occursIn(index, type_), {() =>
-self.fail(at, ((("Infinite type: $" + index) + " = ") + self.substitute(type_)))
+self.fail(at, ((("Infinite type: $" + index) + " = ") + self.substitute(type_).show()))
 });
 self.substitution += Firefly_Core.Pair(index, type_);
 self.constraints.get(index).each({(map) =>

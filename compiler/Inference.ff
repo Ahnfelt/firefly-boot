@@ -1,18 +1,9 @@
 import Syntax
 import Unification
+import Environment
 
 type Inference(
     unification: Unification
-)
-
-type Scheme(
-    isVariable: Bool
-    isMutable: Bool
-    signature: Signature
-)
-
-type Environment(
-    symbols: Map[String, Scheme]
 )
 
 make(instances: List[DInstance]): Inference {
@@ -33,7 +24,7 @@ extend self: Inference {
     inferModule(module: Module, otherModules: List[Module]): Module {
         // First infer everything, then substitute everything (failing on type variables that can't be substituted)
 
-        let environment = self.createEnvironment(module, otherModules)
+        let environment = Environment.make(module, otherModules)
 
         let lets = module.lets.map { self.inferLetDefinition(environment, _) }
         //let traits = module.traits.map { self.inferTraitDefinition(_) }
@@ -47,29 +38,6 @@ extend self: Inference {
             lets = lets,
             //functions = functions,
         )
-    }
-
-    createEnvironment(module: Module, otherModules: List[Module]): Environment {
-        Environment(
-            self.createModuleEnvironment(module, True).symbols ++
-            otherModules.map { self.createModuleEnvironment(_, False).symbols }.fold(Map())({ _ ++ _ })
-        )
-    }
-
-    createModuleEnvironment(module: Module, isCurrentModule: Bool): Environment {
-        function full(module: Module, name: String): String {
-            if(isCurrentModule) { name } else { module.file.dropRight(3) + "." + name }
-        }
-        Environment((
-            module.functions.map { d => Pair(
-                full(module, d.signature.name),
-                Scheme(False, False, d.signature)
-            )} ++
-            module.lets.map { d => Pair(
-                full(module, d.name),
-                Scheme(True, False, Signature(d.at, d.name, Empty, Empty, Empty, d.variableType))
-            )}
-        ).toMap)
     }
 
     inferLetDefinition(environment: Environment, definition: DLet): DLet {

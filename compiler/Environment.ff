@@ -1,0 +1,35 @@
+import Syntax
+
+type Environment(
+    symbols: Map[String, Scheme]
+)
+
+type Scheme(
+    isVariable: Bool
+    isMutable: Bool
+    signature: Signature
+)
+
+make(module: Module, otherModules: List[Module]): Environment {
+    Environment(
+        processModule(module, True).symbols ++
+        otherModules.map { processModule(_, False).symbols }.fold(Map())({ _ ++ _ })
+    )
+}
+
+processModule(module: Module, isCurrentModule: Bool): Environment {
+    function full(module: Module, name: String): String {
+        if(isCurrentModule) { name } else { module.file.dropRight(3) + "." + name }
+    }
+    Environment((
+        module.functions.map { d => Pair(
+            full(module, d.signature.name),
+            Scheme(False, False, d.signature)
+        )} ++
+        module.lets.map { d => Pair(
+            full(module, d.name),
+            Scheme(True, False, Signature(d.at, d.name, Empty, Empty, Empty, d.variableType))
+        )}
+    ).toMap)
+}
+
