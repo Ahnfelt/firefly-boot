@@ -55,12 +55,3 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
         }
     ).toMap)
 }
-
-type DExtend(
-    at: Location,
-    name: String,
-    generics: List[String],
-    constraints: List[Constraint],
-    type: Type,
-    methods: List[DFunction],
-)
