@@ -793,7 +793,7 @@ extend self: Parser {
             if(!self.current.rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
-        EList(at, items.reverse)
+        EList(at, self.freshTypeVariable(at), items.reverse)
     }
 
 }

@@ -169,8 +169,8 @@ extend self: Resolver {
                     term
                 }
             }
-        | EList(at, items) =>
-            EList(at, items.map { self.resolveTerm(_) })
+        | EList(at, t, items) =>
+            EList(at, self.resolveType(t), items.map { self.resolveTerm(_) })
         | EVariant(at, name, typeArguments, arguments) =>
             EVariant(
                 at = at

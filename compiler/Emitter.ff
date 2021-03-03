@@ -210,7 +210,7 @@ emitTerm(term: Term): String {
     | EInt(at, value) => value
     | EFloat(at, value) => value
     | EVariable(at, name, _, _) => escapeResolved(name)
-    | EList(at, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
+    | EList(at, _, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
     | EVariant(at, name, typeArguments, arguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
         escapeResolved(name) + generics + "(" + arguments.toList.flatten.map(emitArgument).mkString(", ") + ")"

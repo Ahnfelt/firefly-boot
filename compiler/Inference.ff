@@ -66,23 +66,15 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, scheme.signature.returnType)
                         term
                     } else {
-                        term
+                        fail(e.at, "Functions need to be called: " + e.name)
                     }
                 } else {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }
+            | EList(at, t, items) =>
+                EList(at, t, items.map { self.inferTerm(environment, t, _) })
             | _ => term
             /*
-            | EVariable e =>
-                self.variables.get(e.name).map { e.EVariable(name = _) }.else {
-                    if(e.name.headOption.any { _.isLetter }) {
-                        fail(e.at, "No such variable: " + e.name)
-                    } else {
-                        term
-                    }
-                }
-            | EList(at, items) =>
-                EList(at, items.map { self.resolveTerm(_) })
             | EVariant(at, name, typeArguments, arguments) =>
                 EVariant(
                     at = at

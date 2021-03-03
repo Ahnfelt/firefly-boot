@@ -55,11 +55,15 @@ Firefly_Core.if_(scheme.isVariable, {() =>
 self.unification.unify(e.at, expected, scheme.signature.returnType);
 term
 }).else_({() =>
-term
+fail(e.at, ("Functions need to be called: " + e.name))
 })
 }).else_({() =>
 fail(e.at, ("Symbol not in scope: " + e.name))
 })
+case (Syntax_.EList(at, t, items)) =>
+Syntax_.EList(at, t, items.map({(_w1) =>
+self.inferTerm(environment, t, _w1)
+}))
 case (_) =>
 term
 })
