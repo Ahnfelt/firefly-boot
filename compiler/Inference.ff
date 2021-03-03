@@ -79,6 +79,13 @@ extend self: Inference {
                     before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before)
                     after = self.inferTerm(environment, expected, after)
                 )
+            | ELet e =>
+                let scheme = Scheme(True, False, Signature(e.at, e.name, Empty, Empty, Empty, e.valueType))
+                let environment2 = environment.Environment(symbols = environment.symbols + Pair(e.name, scheme))
+                e.ELet(
+                    value = self.inferTerm(environment, e.valueType, e.value)
+                    body = self.inferTerm(environment2, expected, e.body)
+                )
             | _ => term
             /*
             | EVariant(at, name, typeArguments, arguments) =>
@@ -133,13 +140,6 @@ extend self: Inference {
                     at = at,
                     functions = functions.map { self2.resolveFunction(_) },
                     body = self2.resolveTerm(body)
-                )
-            | ELet e =>
-                let self2 = self.Resolver(variables = self.variables + Pair(e.name, e.name))
-                e.ELet(
-                    valueType = self.resolveType(e.valueType)
-                    value = self.resolveTerm(e.value)
-                    body = self2.resolveTerm(e.body)
                 )
             | EAssign(at, operator, variable, value) =>
                 EAssign(

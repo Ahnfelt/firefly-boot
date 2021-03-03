@@ -66,6 +66,10 @@ self.inferTerm(environment, t, _w1)
 }))
 case (Syntax_.ESequential(at, before, after)) =>
 Syntax_.ESequential(at = at, before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before), after = self.inferTerm(environment, expected, after))
+case (e : Syntax_.ELet) =>
+val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(e.at, e.name, Firefly_Core.Empty(), Firefly_Core.Empty(), Firefly_Core.Empty(), e.valueType));
+val environment2 = environment.copy(symbols = (environment.symbols + Firefly_Core.Pair(e.name, scheme)));
+e.copy(value = self.inferTerm(environment, e.valueType, e.value), body = self.inferTerm(environment2, expected, e.body))
 case (_) =>
 term
 })
