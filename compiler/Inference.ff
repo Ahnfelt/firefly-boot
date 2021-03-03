@@ -18,7 +18,7 @@ fail[T](at: Location, message: String): T {
 
 //myInt = 42
 //myString: String = myInt
-
+//myFunction(x: Int): String { | a, b => x }
 
 extend self: Inference {
 
@@ -63,7 +63,21 @@ extend self: Inference {
     }
 
     inferLambda(environment: Environment, expected: Type, lambda: Lambda): Lambda {
-        lambda
+        lambda.Lambda(
+            cases = lambda.cases.map { self.inferMatchCase(environment, expected, _) }
+        )
+    }
+
+    inferMatchCase(environment: Environment, expected: Type, case: MatchCase): MatchCase {
+        let parameterTypes = case.patterns.map { self.unification.freshTypeVariable(_.at) }
+        let returnType = self.unification.freshTypeVariable(case.at)
+        let functionType = TConstructor(
+            case.at,
+            "Function$" + case.patterns.size,
+            parameterTypes ++ List(returnType)
+        )
+        self.unification.unify(case.at, expected, functionType)
+        case
     }
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {

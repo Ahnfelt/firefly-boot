@@ -48,7 +48,19 @@ definition.copy(body = self.inferLambda(environment2, functionType, definition.b
 }
 
 def inferLambda(environment : Environment_.Environment, expected : Syntax_.Type, lambda : Syntax_.Lambda) : Syntax_.Lambda = {
-lambda
+lambda.copy(cases = lambda.cases.map({(_w1) =>
+self.inferMatchCase(environment, expected, _w1)
+}))
+}
+
+def inferMatchCase(environment : Environment_.Environment, expected : Syntax_.Type, case_ : Syntax_.MatchCase) : Syntax_.MatchCase = {
+val parameterTypes = case_.patterns.map({(_w1) =>
+self.unification.freshTypeVariable(_w1.at)
+});
+val returnType = self.unification.freshTypeVariable(case_.at);
+val functionType = Syntax_.TConstructor(case_.at, ("Function$" + case_.patterns.size), (parameterTypes ++ Firefly_Core.List(returnType)));
+self.unification.unify(case_.at, expected, functionType);
+case_
 }
 
 def inferTerm(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {
