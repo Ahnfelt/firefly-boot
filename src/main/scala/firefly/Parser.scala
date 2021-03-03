@@ -1095,7 +1095,7 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "]");
-Syntax_.EList(at, items.reverse)
+Syntax_.EList(at, self.freshTypeVariable(at), items.reverse)
 }
 
 }

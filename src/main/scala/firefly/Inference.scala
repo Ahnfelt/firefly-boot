@@ -24,12 +24,24 @@ val environment = Environment_.make(module, otherModules);
 val lets = module.lets.map({(_w1) =>
 self.inferLetDefinition(environment, _w1)
 });
-module.copy(lets = lets)
+val functions = module.functions.map({(_w1) =>
+self.inferFunctionDefinition(environment, _w1)
+});
+module.copy(lets = lets, functions = functions)
 }
 
 def inferLetDefinition(environment : Environment_.Environment, definition : Syntax_.DLet) : Syntax_.DLet = {
 val value = self.inferTerm(environment, definition.variableType, definition.value);
 definition.copy(value = value)
+}
+
+def inferFunctionDefinition(environment : Environment_.Environment, definition : Syntax_.DFunction) : Syntax_.DFunction = {
+val parameters = definition.signature.parameters.map({(p) =>
+val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(p.at, p.name, Firefly_Core.Empty(), Firefly_Core.Empty(), Firefly_Core.Empty(), p.valueType));
+Firefly_Core.Pair(p.name, scheme)
+});
+val environment2 = environment.copy(symbols = (environment.symbols ++ parameters));
+definition
 }
 
 def inferTerm(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {

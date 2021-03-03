@@ -164,8 +164,8 @@ fail(e.at, ("No such variable: " + e.name))
 term
 })
 })
-case (Syntax_.EList(at, items)) =>
-Syntax_.EList(at, items.map({(_w1) =>
+case (Syntax_.EList(at, t, items)) =>
+Syntax_.EList(at, self.resolveType(t), items.map({(_w1) =>
 self.resolveTerm(_w1)
 }))
 case (Syntax_.EVariant(at, name, typeArguments, arguments)) =>

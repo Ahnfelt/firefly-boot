@@ -288,7 +288,7 @@ case (Syntax_.EFloat(at, value)) =>
 value
 case (Syntax_.EVariable(at, name, _, _)) =>
 escapeResolved(name)
-case (Syntax_.EList(at, items)) =>
+case (Syntax_.EList(at, _, items)) =>
 (("List(" + items.map(emitTerm).mkString(", ")) + ")")
 case (Syntax_.EVariant(at, name, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>

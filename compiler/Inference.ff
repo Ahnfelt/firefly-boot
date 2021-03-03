@@ -19,6 +19,7 @@ fail[T](at: Location, message: String): T {
 //myInt = 42
 //myString: String = myInt
 
+
 extend self: Inference {
 
     inferModule(module: Module, otherModules: List[Module]): Module {
@@ -27,16 +28,16 @@ extend self: Inference {
         let environment = Environment.make(module, otherModules)
 
         let lets = module.lets.map { self.inferLetDefinition(environment, _) }
+        let functions = module.functions.map { self.inferFunctionDefinition(environment, _) }
+        //let extends = module.extends.map { self.inferExtendDefinition(_) }
         //let traits = module.traits.map { self.inferTraitDefinition(_) }
         //let instances = module.instances.map { self.inferInstanceDefinition(_) }
-        //let extends = module.extends.map { self.inferExtendDefinition(_) }
-        //let functions = module.functions.map { self.inferFunctionDefinition(_) }
         module.Module(
             //traits = traits,
             //instances = instances,
             //extends = extends,
             lets = lets,
-            //functions = functions,
+            functions = functions,
         )
     }
 
@@ -45,6 +46,15 @@ extend self: Inference {
         definition.DLet(
             value = value
         )
+    }
+
+    inferFunctionDefinition(environment: Environment, definition: DFunction): DFunction {
+        let parameters = definition.signature.parameters.map { p =>
+            let scheme = Scheme(True, False, Signature(p.at, p.name, Empty, Empty, Empty, p.valueType))
+            Pair(p.name, scheme)
+        }
+        let environment2 = environment.Environment(symbols = environment.symbols ++ parameters)
+        definition
     }
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
