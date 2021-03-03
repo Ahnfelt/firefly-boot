@@ -41,7 +41,14 @@ val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Synt
 Firefly_Core.Pair(p.name, scheme)
 });
 val environment2 = environment.copy(symbols = (environment.symbols ++ parameters));
-definition
+val functionType = Syntax_.TConstructor(definition.at, ("Function$" + parameters.size), (parameters.map({(_w1) =>
+_w1.second.signature.returnType
+}) ++ Firefly_Core.List(definition.signature.returnType)));
+definition.copy(body = self.inferLambda(environment2, functionType, definition.body))
+}
+
+def inferLambda(environment : Environment_.Environment, expected : Syntax_.Type, lambda : Syntax_.Lambda) : Syntax_.Lambda = {
+lambda
 }
 
 def inferTerm(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {

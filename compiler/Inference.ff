@@ -54,7 +54,16 @@ extend self: Inference {
             Pair(p.name, scheme)
         }
         let environment2 = environment.Environment(symbols = environment.symbols ++ parameters)
-        definition
+        let functionType = TConstructor(
+            definition.at,
+            "Function$" + parameters.size,
+            parameters.map { _.second.signature.returnType } ++ List(definition.signature.returnType)
+        )
+        definition.DFunction(body = self.inferLambda(environment2, functionType, definition.body))
+    }
+
+    inferLambda(environment: Environment, expected: Type, lambda: Lambda): Lambda {
+        lambda
     }
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
