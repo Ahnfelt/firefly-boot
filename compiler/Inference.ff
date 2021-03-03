@@ -73,6 +73,12 @@ extend self: Inference {
                 }
             | EList(at, t, items) =>
                 EList(at, t, items.map { self.inferTerm(environment, t, _) })
+            | ESequential(at, before, after) =>
+                ESequential(
+                    at = at
+                    before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before)
+                    after = self.inferTerm(environment, expected, after)
+                )
             | _ => term
             /*
             | EVariant(at, name, typeArguments, arguments) =>
@@ -134,12 +140,6 @@ extend self: Inference {
                     valueType = self.resolveType(e.valueType)
                     value = self.resolveTerm(e.value)
                     body = self2.resolveTerm(e.body)
-                )
-            | ESequential(at, before, after) =>
-                ESequential(
-                    at = at
-                    before = self.resolveTerm(before)
-                    after = self.resolveTerm(after)
                 )
             | EAssign(at, operator, variable, value) =>
                 EAssign(

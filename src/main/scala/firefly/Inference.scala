@@ -64,6 +64,8 @@ case (Syntax_.EList(at, t, items)) =>
 Syntax_.EList(at, t, items.map({(_w1) =>
 self.inferTerm(environment, t, _w1)
 }))
+case (Syntax_.ESequential(at, before, after)) =>
+Syntax_.ESequential(at = at, before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before), after = self.inferTerm(environment, expected, after))
 case (_) =>
 term
 })

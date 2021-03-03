@@ -40,7 +40,7 @@ case class EAssign(at : Location, operator : Firefly_Core.String, variable : Fir
 case class EAssignField(at : Location, operator : Firefly_Core.String, record : Term, field : Firefly_Core.String, value : Term) extends Term
 case class EPipe(at : Location, value : Term, function : Term) extends Term
 case class ECall(at : Location, function : Term, typeArguments : Firefly_Core.List[Type], arguments : Firefly_Core.List[Argument]) extends Term
-case class EList(at : Location, items : Firefly_Core.List[Term]) extends Term
+case class EList(at : Location, elementType : Type, items : Firefly_Core.List[Term]) extends Term
 case class ECopy(at : Location, name : Firefly_Core.String, record : Term, arguments : Firefly_Core.List[Field]) extends Term
 case class EVariant(at : Location, name : Firefly_Core.String, typeArguments : Firefly_Core.List[Type], arguments : Firefly_Core.Option[Firefly_Core.List[Argument]]) extends Term
 case class EVariantIs(at : Location, name : Firefly_Core.String, typeArguments : Firefly_Core.List[Type]) extends Term
