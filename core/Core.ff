@@ -1,0 +1,56 @@
+if[T](condition: Bool, body: () => T): Option[T] {}
+
+while(condition: () => Bool, body: () => Unit): Unit {}
+
+do(body: () => Unit): Unit {}
+
+panic[T](message: String): T {}
+
+try[T](body: () => T): Try[T] {}
+
+log: Log
+
+type Log
+
+extend self: Log {
+    debug[T](value: T): Unit {}
+}
+
+type Bool {
+    False
+    True
+}
+
+type Option[T] {
+    None
+    Some(value: T)
+}
+
+type Pair[A, B](first: A, second: B)
+
+type Array[T](items: T...)
+
+type ArrayBuilder[T](items: T...)
+
+type List[T] {
+    Empty
+    Link(head: T, tail: List[T])
+}
+
+type ListBuilder[T](items: T...)
+
+type Map[K, V](items: Pair[K, V]...)
+
+type MapBuilder[K, V](items: Pair[K, V]...)
+
+type Set[T](items: T...)
+
+type SetBuilder[T](items: T...)
+
+type Int {}
+type String {}
+type Char {}
+type Bool {}
+type System {}
+type FileSystem {}
+type Unit()

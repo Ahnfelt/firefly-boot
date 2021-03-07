@@ -1,6 +1,7 @@
 package com.github.ahnfelt.firefly.library
 
 import scala.collection.mutable
+import scala.util.Try
 
 object Firefly_Core {
 
@@ -171,8 +172,12 @@ object Firefly_Core {
     def if_[T](condition : Bool, body : () => T) : Option[T] = if(condition) scala.Some(body()) else scala.None
     def panic(message : String) : Nothing = {
         println(message)
-        System.exit(1)
+        //System.exit(1)
         throw new RuntimeException(message)
+    }
+
+    def try_[T](body : () => T): Try[T] = {
+        Try { body() }
     }
 
     def do_[T](body : () => T) : T = body()

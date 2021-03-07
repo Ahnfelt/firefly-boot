@@ -54,7 +54,6 @@ d.variants.map({(variant) =>
 Firefly_Core.Pair(full(module, variant.name), Scheme(Firefly_Core.False(), Firefly_Core.False(), Syntax_.Signature(variant.at, variant.name, generics = d.generics, constraints = d.constraints, parameters = (d.commonFields ++ variant.fields), returnType = returnType)))
 })
 });
-Firefly_Core.log.debug(variants);
 Environment((((functions ++ lets) ++ extends_) ++ variants).toMap)
 }
 

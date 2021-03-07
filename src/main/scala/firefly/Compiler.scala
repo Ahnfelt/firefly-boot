@@ -60,7 +60,10 @@ self.resolve(self.files.prefixName(_w1.file))
 val instances = (module.instances ++ otherModules.flatMap({(_w1) =>
 _w1.instances
 }));
-val result = Inference_.make(instances).inferModule(module, otherModules);
+Firefly_Core.try_({() =>
+Inference_.make(instances).inferModule(module, otherModules)
+});
+val result = module;
 self.inferredModules = self.inferredModules.updated(moduleName, result);
 result
 })
