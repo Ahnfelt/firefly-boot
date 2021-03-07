@@ -77,7 +77,45 @@ extend self: Inference {
             parameterTypes ++ List(returnType)
         )
         self.unification.unify(case.at, expected, functionType)
+        let newEnvironment = (parameterTypes.zip(case.patterns).foldLeft(environment)) {| environment1, Pair(t, c) =>
+            let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
+                Pair(name, Scheme(True, False, Signature(c.at, name, Empty, Empty, Empty, type)))
+            }
+            Environment(environment1.symbols ++ symbols)
+        }
         case
+    }
+
+    inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
+        pattern.{
+            | PVariable(at, None) =>
+                Map()
+            | PVariable(at, Some(name)) =>
+                Map(Pair(name, expected))
+            | PAlias(at, pattern, variable) =>
+                self.inferPattern(environment, expected, pattern) + Pair(variable, expected)
+            | PVariantAs(at, name, None) =>
+                let scheme = environment.symbols.get(name).else {
+                    fail(at, "No such variant: " + name)
+                }
+                Map()
+            | PVariantAs(at, name, Some(variable)) =>
+                let scheme = environment.symbols.get(name).else {
+                    fail(at, "No such variant: " + name)
+                }
+                let parameters = scheme.signature.parameters
+                let recordType =
+                    TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
+                Map(Pair(variable, recordType))
+            | PVariant(at, name, patterns) =>
+                let scheme = environment.symbols.get(name).else {
+                    fail(at, "No such variant: " + name)
+                }
+                let parameters = scheme.signature.parameters
+                (patterns.zip(parameters).map {| Pair(pattern, parameter) =>
+                    self.inferPattern(environment, parameter.valueType, pattern)
+                }.foldLeft(Map[String, Type]())) { _ ++ _ }
+        }
     }
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {

@@ -60,5 +60,27 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             }
         }
 
-    Environment((functions ++ lets ++ extends).toMap)
+    let variants =
+        module.types.flatMap { d =>
+            let returnType = TConstructor(d.at, full(module, d.name), d.generics.map { typeParameter =>
+                TConstructor(d.at, typeParameter, List())
+            })
+            d.variants.map { variant =>
+                Pair(
+                    full(module, variant.name),
+                    Scheme(False, False, Signature(
+                        variant.at,
+                        variant.name,
+                        generics = d.generics,
+                        constraints = d.constraints,
+                        parameters = d.commonFields ++ variant.fields,
+                        returnType = returnType
+                    ))
+                )
+            }
+        }
+
+        log.debug(variants)
+
+    Environment((functions ++ lets ++ extends ++ variants).toMap)
 }

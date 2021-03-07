@@ -60,7 +60,53 @@ self.unification.freshTypeVariable(_w1.at)
 val returnType = self.unification.freshTypeVariable(case_.at);
 val functionType = Syntax_.TConstructor(case_.at, ("Function$" + case_.patterns.size), (parameterTypes ++ Firefly_Core.List(returnType)));
 self.unification.unify(case_.at, expected, functionType);
+val newEnvironment = parameterTypes.zip(case_.patterns).foldLeft(environment)({
+case (environment1, Firefly_Core.Pair(t, c)) =>
+val symbols = self.inferPattern(environment, t, c).map({
+case (Firefly_Core.Pair(name, type_)) =>
+Firefly_Core.Pair(name, Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(c.at, name, Firefly_Core.Empty(), Firefly_Core.Empty(), Firefly_Core.Empty(), type_)))
+});
+Environment_.Environment((environment1.symbols ++ symbols))
+});
 case_
+}
+
+def inferPattern(environment : Environment_.Environment, expected : Syntax_.Type, pattern : Syntax_.MatchPattern) : Firefly_Core.Map[Firefly_Core.String, Syntax_.Type] = {
+pipe_dot(pattern)({
+case (Syntax_.PVariable(at, Firefly_Core.None())) =>
+Firefly_Core.Map()
+case (Syntax_.PVariable(at, Firefly_Core.Some(name))) =>
+Firefly_Core.Map(Firefly_Core.Pair(name, expected))
+case (Syntax_.PAlias(at, pattern, variable)) =>
+(self.inferPattern(environment, expected, pattern) + Firefly_Core.Pair(variable, expected))
+case (Syntax_.PVariantAs(at, name, Firefly_Core.None())) =>
+val scheme = environment.symbols.get(name).else_({() =>
+fail(at, ("No such variant: " + name))
+});
+Firefly_Core.Map()
+case (Syntax_.PVariantAs(at, name, Firefly_Core.Some(variable))) =>
+val scheme = environment.symbols.get(name).else_({() =>
+fail(at, ("No such variant: " + name))
+});
+val parameters = scheme.signature.parameters;
+val recordType = Syntax_.TConstructor(at, ("Record$" + parameters.map({(_w1) =>
+_w1.name
+}).join("$")), parameters.map({(_w1) =>
+_w1.valueType
+}));
+Firefly_Core.Map(Firefly_Core.Pair(variable, recordType))
+case (Syntax_.PVariant(at, name, patterns)) =>
+val scheme = environment.symbols.get(name).else_({() =>
+fail(at, ("No such variant: " + name))
+});
+val parameters = scheme.signature.parameters;
+patterns.zip(parameters).map({
+case (Firefly_Core.Pair(pattern, parameter)) =>
+self.inferPattern(environment, parameter.valueType, pattern)
+}).foldLeft(Firefly_Core.Map[Firefly_Core.String, Syntax_.Type]())({(_w1, _w2) =>
+(_w1 ++ _w2)
+})
+})
 }
 
 def inferTerm(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {
