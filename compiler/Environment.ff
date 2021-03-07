@@ -80,7 +80,5 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             }
         }
 
-        log.debug(variants)
-
     Environment((functions ++ lets ++ extends ++ variants).toMap)
 }
