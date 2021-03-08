@@ -17,7 +17,9 @@ object Compiler_ {
 case class Compiler(files : Firefly_Core.FileSystem, inputPath : Firefly_Core.String, outputPath : Firefly_Core.String, var parsedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var resolvedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var inferredModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var emittedModules : Firefly_Core.Set[Firefly_Core.String])
 
 def make(files : Firefly_Core.FileSystem, inputPath : Firefly_Core.String, outputPath : Firefly_Core.String) : Compiler = {
-Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Firefly_Core.Map(), resolvedModules = Firefly_Core.Map(), inferredModules = Firefly_Core.Map(), emittedModules = Firefly_Core.Set())
+val self = Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Firefly_Core.Map(), resolvedModules = Firefly_Core.Map(), inferredModules = Firefly_Core.Map(), emittedModules = Firefly_Core.Set());
+self.resolve("../core/Core");
+self
 }
 implicit class Compiler_extend0(self : Compiler) {
 

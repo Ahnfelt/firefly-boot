@@ -16,7 +16,7 @@ type Compiler(
 )
 
 make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
-    Compiler(
+    let self = Compiler(
         files = files
         inputPath = inputPath
         outputPath = outputPath
@@ -25,6 +25,8 @@ make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
         inferredModules = Map()
         emittedModules = Set()
     )
+    self.resolve("../core/Core")
+    self
 }
 
 extend self: Compiler {
