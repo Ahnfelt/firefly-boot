@@ -10,10 +10,11 @@ type Scheme(
     signature: Signature
 )
 
-make(module: Module, otherModules: List[Module]): Environment {
+make(coreModule: Module, module: Module, otherModules: List[Module]): Environment {
     Environment(
-        processModule(module, True).symbols ++
-        otherModules.map { processModule(_, False).symbols }.fold(Map())({ _ ++ _ })
+        processModule(coreModule, False, True).symbols ++
+        processModule(module, True, False).symbols ++
+        otherModules.map { processModule(_, False, False).symbols }.fold(Map())({ _ ++ _ })
     )
 }
 
@@ -21,10 +22,10 @@ fail[T](at: Location, message: String): T {
     panic(message + " " + at.show)
 }
 
-processModule(module: Module, isCurrentModule: Bool): Environment {
+processModule(module: Module, isCurrentModule: Bool, isCoreModule: Bool): Environment {
 
     function full(module: Module, name: String): String {
-        if(isCurrentModule) { name } else { module.file.dropRight(3) + "." + name }
+        if(isCurrentModule || isCoreModule) { name } else { module.file.dropRight(3) + "." + name }
     }
 
     let functions =

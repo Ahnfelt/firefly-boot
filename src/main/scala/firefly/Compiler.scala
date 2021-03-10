@@ -17,9 +17,7 @@ object Compiler_ {
 case class Compiler(files : Firefly_Core.FileSystem, inputPath : Firefly_Core.String, outputPath : Firefly_Core.String, var parsedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var resolvedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var inferredModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var emittedModules : Firefly_Core.Set[Firefly_Core.String])
 
 def make(files : Firefly_Core.FileSystem, inputPath : Firefly_Core.String, outputPath : Firefly_Core.String) : Compiler = {
-val self = Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Firefly_Core.Map(), resolvedModules = Firefly_Core.Map(), inferredModules = Firefly_Core.Map(), emittedModules = Firefly_Core.Set());
-self.resolve("../core/Core");
-self
+Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Firefly_Core.Map(), resolvedModules = Firefly_Core.Map(), inferredModules = Firefly_Core.Map(), emittedModules = Firefly_Core.Set())
 }
 implicit class Compiler_extend0(self : Compiler) {
 
@@ -55,15 +53,16 @@ result
 
 def infer(moduleName : Firefly_Core.String) : Syntax_.Module = {
 self.inferredModules.get(moduleName).else_({() =>
+val coreModule = self.resolve("../core/Core");
 val module = self.resolve(moduleName);
 val otherModules = self.imports(module).map({(_w1) =>
 self.resolve(self.files.prefixName(_w1.file))
 });
-val instances = (module.instances ++ otherModules.flatMap({(_w1) =>
+val instances = ((coreModule.instances ++ module.instances) ++ otherModules.flatMap({(_w1) =>
 _w1.instances
 }));
 Firefly_Core.try_({() =>
-Inference_.make(instances).inferModule(module, otherModules)
+Inference_.make(instances).inferModule(coreModule, module, otherModules)
 });
 val result = module;
 self.inferredModules = self.inferredModules.updated(moduleName, result);

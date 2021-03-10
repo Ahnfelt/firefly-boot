@@ -22,10 +22,10 @@ fail[T](at: Location, message: String): T {
 
 extend self: Inference {
 
-    inferModule(module: Module, otherModules: List[Module]): Module {
+    inferModule(coreModule: Module, module: Module, otherModules: List[Module]): Module {
         // First infer everything, then substitute everything (failing on type variables that can't be substituted)
 
-        let environment = Environment.make(module, otherModules)
+        let environment = Environment.make(coreModule, module, otherModules)
 
         let lets = module.lets.map { self.inferLetDefinition(environment, _) }
         let functions = module.functions.map { self.inferFunctionDefinition(environment, _) }

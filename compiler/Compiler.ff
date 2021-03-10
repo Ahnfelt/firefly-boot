@@ -16,7 +16,7 @@ type Compiler(
 )
 
 make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
-    let self = Compiler(
+    Compiler(
         files = files
         inputPath = inputPath
         outputPath = outputPath
@@ -25,8 +25,6 @@ make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
         inferredModules = Map()
         emittedModules = Set()
     )
-    self.resolve("../core/Core")
-    self
 }
 
 extend self: Compiler {
@@ -64,10 +62,11 @@ extend self: Compiler {
     infer(moduleName: String): Module {
         self.inferredModules.get(moduleName).else:
 
+        let coreModule = self.resolve("../core/Core")
         let module = self.resolve(moduleName)
         let otherModules = self.imports(module).map { self.resolve(self.files.prefixName(_.file)) }
-        let instances = module.instances ++ otherModules.flatMap { _.instances }
-        try { Inference.make(instances).inferModule(module, otherModules) }
+        let instances = coreModule.instances ++ module.instances ++ otherModules.flatMap { _.instances }
+        try { Inference.make(instances).inferModule(coreModule, module, otherModules) }
         let result = module // TODO
 
         self.inferredModules = self.inferredModules.updated(moduleName, result)

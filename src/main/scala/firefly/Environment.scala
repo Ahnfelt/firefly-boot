@@ -8,9 +8,9 @@ case class Environment(symbols : Firefly_Core.Map[Firefly_Core.String, Scheme])
 
 case class Scheme(isVariable : Firefly_Core.Bool, isMutable : Firefly_Core.Bool, signature : Syntax_.Signature)
 
-def make(module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Environment = {
-Environment((processModule(module, Firefly_Core.True()).symbols ++ otherModules.map({(_w1) =>
-processModule(_w1, Firefly_Core.False()).symbols
+def make(coreModule : Syntax_.Module, module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Environment = {
+Environment(((processModule(coreModule, Firefly_Core.False(), Firefly_Core.True()).symbols ++ processModule(module, Firefly_Core.True(), Firefly_Core.False()).symbols) ++ otherModules.map({(_w1) =>
+processModule(_w1, Firefly_Core.False(), Firefly_Core.False()).symbols
 }).fold(Firefly_Core.Map())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })))
@@ -20,9 +20,9 @@ def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show))
 }
 
-def processModule(module : Syntax_.Module, isCurrentModule : Firefly_Core.Bool) : Environment = {
+def processModule(module : Syntax_.Module, isCurrentModule : Firefly_Core.Bool, isCoreModule : Firefly_Core.Bool) : Environment = {
 def full(module : Syntax_.Module, name : Firefly_Core.String) : Firefly_Core.String = {
-Firefly_Core.if_(isCurrentModule, {() =>
+Firefly_Core.if_((isCurrentModule || isCoreModule), {() =>
 name
 }).else_({() =>
 ((module.file.dropRight(3) + ".") + name)

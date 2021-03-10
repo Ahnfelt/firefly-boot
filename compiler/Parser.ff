@@ -14,7 +14,7 @@ type Poly(generics: List[String], constraints: List[Constraint])
 
 make(file: String, tokens: Array[Token]): Parser {
     Parser(
-        file,
+        if(file == "../core/Core.ff") { "ff:core/Core.ff" } else { file },
         tokens,
         tokens.last,
         0,
