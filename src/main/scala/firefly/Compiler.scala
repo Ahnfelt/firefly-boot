@@ -43,9 +43,10 @@ self.parse(otherModuleName)
 
 def resolve(moduleName : Firefly_Core.String) : Syntax_.Module = {
 self.resolvedModules.get(moduleName).else_({() =>
+val coreModule = self.parse("../core/Core");
 val module = self.parse(moduleName);
 val otherModules = self.imports(module);
-val result = Resolver_.make().resolveModule(module, otherModules);
+val result = Resolver_.make(coreModule).resolveModule(module, otherModules);
 self.resolvedModules = self.resolvedModules.updated(moduleName, result);
 result
 })

@@ -6,11 +6,21 @@ object Resolver_ {
 
 case class Resolver(variables : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], variants : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], types : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], traits : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String])
 
-def make() = {
+def make(coreModule : Syntax_.Module) = {
 def core(name : Firefly_Core.String) : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String] = {
 Firefly_Core.Pair(name, ("ff:core/Core." + name))
 }
-Resolver(variables = Firefly_Core.List("if", "while", "do", "panic", "try", "log").map(core).toMap, variants = Firefly_Core.List("True", "False", "Some", "None", "Pair", "Array", "ArrayBuilder", "List", "ListBuilder", "Map", "MapBuilder", "Set", "SetBuilder", "Empty", "Link", "Unit").map(core).toMap, types = Firefly_Core.List("Int", "String", "Char", "Bool", "Option", "Pair", "Array", "ArrayBuilder", "List", "Map", "Set", "System", "FileSystem", "Unit").map(core).toMap, traits = Firefly_Core.Map())
+Resolver(variables = (coreModule.lets.map({(_w1) =>
+_w1.name
+}).map(core).toMap ++ coreModule.functions.map({(_w1) =>
+_w1.signature.name
+}).map(core).toMap), variants = coreModule.types.flatMap({(_w1) =>
+_w1.variants
+}).map({(_w1) =>
+_w1.name
+}).map(core).toMap, types = coreModule.types.map({(_w1) =>
+_w1.name
+}).map(core).toMap, traits = Firefly_Core.Map())
 }
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {

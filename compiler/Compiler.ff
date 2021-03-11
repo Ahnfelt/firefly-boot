@@ -51,9 +51,10 @@ extend self: Compiler {
     resolve(moduleName: String): Module {
         self.resolvedModules.get(moduleName).else:
 
+        let coreModule = self.parse("../core/Core")
         let module = self.parse(moduleName)
         let otherModules = self.imports(module)
-        let result = Resolver.make().resolveModule(module, otherModules)
+        let result = Resolver.make(coreModule).resolveModule(module, otherModules)
 
         self.resolvedModules = self.resolvedModules.updated(moduleName, result)
         result

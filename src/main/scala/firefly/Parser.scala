@@ -13,7 +13,11 @@ case class Parser(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_
 case class Poly(generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint])
 val binaryOperators = Firefly_Core.Array(Firefly_Core.List("||"), Firefly_Core.List("&&"), Firefly_Core.List("!=", "=="), Firefly_Core.List("<=", ">=", "<", ">"), Firefly_Core.List("::"), Firefly_Core.List("++"), Firefly_Core.List("+", "-"), Firefly_Core.List("*", "/", "%"), Firefly_Core.List("^"))
 def make(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token]) : Parser = {
-Parser(file, tokens, tokens.last, 0, 1)
+Parser(Firefly_Core.if_((file == "../core/Core.ff"), {() =>
+"ff:core/Core.ff"
+}).else_({() =>
+file
+}), tokens, tokens.last, 0, 1)
 }
 implicit class Parser_extend0(self : Parser) {
 

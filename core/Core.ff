@@ -30,24 +30,28 @@ type Option[T] {
 
 type Pair[A, B](first: A, second: B)
 
-type Array[T] {} // (items: T...)
+type Array[T]() // (items: T...)
 
-type ArrayBuilder[T] {} // (items: T...)
+type ArrayBuilder[T]() // (items: T...)
 
 type List[T] {
     Empty
     Link(head: T, tail: List[T])
 }
 
-type ListBuilder[T] {} // (items: T...)
+type FakeList[T] {
+    List() // (items: T...) // To expose a List(...) constructor
+}
 
-type Map[K, V] {} // (items: Pair[K, V]...)
+type ListBuilder[T]() // (items: T...)
 
-type MapBuilder[K, V] {} // (items: Pair[K, V]...)
+type Map[K, V]() // (items: Pair[K, V]...)
 
-type Set[T] {} // (items: T...)
+type MapBuilder[K, V]() // (items: Pair[K, V]...)
 
-type SetBuilder[T] {} // (items: T...)
+type Set[T]() // (items: T...)
+
+type SetBuilder[T]() // (items: T...)
 
 type Int {}
 type String {}
