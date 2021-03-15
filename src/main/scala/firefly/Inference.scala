@@ -45,9 +45,9 @@ val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Synt
 Firefly_Core.Pair(p.name, scheme)
 });
 val environment2 = environment.copy(symbols = (environment.symbols ++ parameters));
-val functionType = Syntax_.TConstructor(definition.at, ("Function$" + parameters.size), (parameters.map({(_w1) =>
+val functionType = Syntax_.TConstructor(definition.at, ("Function$" + parameters.size), (List(parameters.map({(_w1) =>
 _w1.second.signature.returnType
-}) ++ Firefly_Core.List(definition.signature.returnType)));
+}), List(definition.signature.returnType)).flatten));
 definition.copy(body = self.inferLambda(environment2, functionType, definition.body))
 }
 
@@ -62,7 +62,7 @@ val parameterTypes = case_.patterns.map({(_w1) =>
 self.unification.freshTypeVariable(_w1.at)
 });
 val returnType = self.unification.freshTypeVariable(case_.at);
-val functionType = Syntax_.TConstructor(case_.at, ("Function$" + case_.patterns.size), (parameterTypes ++ Firefly_Core.List(returnType)));
+val functionType = Syntax_.TConstructor(case_.at, ("Function$" + case_.patterns.size), (List(parameterTypes, List(returnType)).flatten));
 self.unification.unify(case_.at, expected, functionType);
 val newEnvironment = parameterTypes.zip(case_.patterns).foldLeft(environment)({
 case (environment1, Firefly_Core.Pair(t, c)) =>
@@ -84,7 +84,7 @@ Firefly_Core.Map(Firefly_Core.Pair(name, expected))
 case (Syntax_.PAlias(at, pattern, variable)) =>
 (self.inferPattern(environment, expected, pattern) + Firefly_Core.Pair(variable, expected))
 case (Syntax_.PList(at, t, items)) =>
-val listType = Syntax_.TConstructor(at, core("List"), Firefly_Core.List(t));
+val listType = Syntax_.TConstructor(at, core("List"), List(t));
 self.unification.unify(at, expected, listType);
 items.map({
 case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
@@ -150,7 +150,7 @@ fail(e.at, ("Functions need to be called: " + e.name))
 fail(e.at, ("Symbol not in scope: " + e.name))
 })
 case (Syntax_.EList(at, t, items)) =>
-val listType = Syntax_.TConstructor(term.at, core("List"), Firefly_Core.List(t));
+val listType = Syntax_.TConstructor(term.at, core("List"), List(t));
 Syntax_.EList(at, t, items.map({
 case (Firefly_Core.Pair(item, spread)) =>
 Firefly_Core.Pair(self.inferTerm(environment, Firefly_Core.if_(spread, {() =>

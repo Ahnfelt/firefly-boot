@@ -154,7 +154,7 @@ val methodWrappers = Firefly_Core.if_(definition.methods.isEmpty, {() =>
 }).else_({() =>
 ((" \n\n" + definition.methods.map({(signature) =>
 val t = Syntax_.TConstructor(definition.at, definition.name, definition.generics.map({(_w1) =>
-Syntax_.TConstructor(definition.at, _w1, Firefly_Core.List())
+Syntax_.TConstructor(definition.at, _w1, List())
 }));
 (((((((emitSignature(signature.copy(generics = (definition.generics ++ signature.generics), constraints = (Syntax_.Constraint(t) :: (definition.constraints ++ signature.constraints)))) + " =\n    scala.Predef.implicitly[") + emitType(t)) + "].") + escapeKeyword(signature.name)) + "_m(") + signature.parameters.map({(_w1) =>
 _w1.name
@@ -165,7 +165,7 @@ _w1.name
 }
 
 def emitInstanceDefinition(definition : Syntax_.DInstance) : Firefly_Core.String = {
-val signature = emitSignature(Syntax_.Signature(definition.at, ((extractTypeName(definition.traitType) + "_") + definition.hashCode().abs), definition.generics, definition.constraints, Firefly_Core.List(), definition.traitType));
+val signature = emitSignature(Syntax_.Signature(definition.at, ((extractTypeName(definition.traitType) + "_") + definition.hashCode().abs), definition.generics, definition.constraints, List(), definition.traitType));
 val methods = ((((" {\n\nimport " + extractTypeName(definition.traitType)) + "._\n\n") + definition.methods.map({(_w1) =>
 emitFunctionDefinition(_w1, "_m")
 }).join("\n\n")) + "\n\n}");

@@ -11,7 +11,7 @@ object Parser_ {
 case class Parser(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token], end : Token_.Token, var offset : Firefly_Core.Int, var nextTypeVariableIndex : Firefly_Core.Int)
 
 case class Poly(generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint])
-val binaryOperators = Firefly_Core.Array(Firefly_Core.List("||"), Firefly_Core.List("&&"), Firefly_Core.List("!=", "=="), Firefly_Core.List("<=", ">=", "<", ">"), Firefly_Core.List("::"), Firefly_Core.List("++"), Firefly_Core.List("+", "-"), Firefly_Core.List("*", "/", "%"), Firefly_Core.List("^"))
+val binaryOperators = Firefly_Core.Array(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("::"), List("++"), List("+", "-"), List("*", "/", "%"), List("^"))
 def make(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token]) : Parser = {
 Parser(Firefly_Core.if_((file == "../core/Core.ff"), {() =>
 "ff:core/Core.ff"
@@ -89,7 +89,7 @@ self.skip(kind)
 }
 
 def parseModule() : Syntax_.Module = {
-var result = Syntax_.Module(self.file, Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List(), Firefly_Core.List());
+var result = Syntax_.Module(self.file, List(), List(), List(), List(), List(), List(), List(), List());
 Firefly_Core.while_({() =>
 (!self.current.is(Token_.LEnd()))
 }, {() =>
@@ -157,7 +157,7 @@ val nameToken = self.skip(Token_.LLower());
 val poly = Firefly_Core.if_(self.current.rawIs("["), {() =>
 self.parseTypeParameters()
 }).else_({() =>
-Poly(Firefly_Core.List(), Firefly_Core.List())
+Poly(List(), List())
 });
 val parameters = self.parseFunctionParameters();
 val returnType = self.parseOptionalType();
@@ -170,7 +170,7 @@ val nameToken = self.skip(Token_.LLower());
 val poly = Firefly_Core.if_(self.current.rawIs("["), {() =>
 self.parseTypeParameters()
 }).else_({() =>
-Poly(Firefly_Core.List(), Firefly_Core.List())
+Poly(List(), List())
 });
 self.skip(Token_.LColon());
 val type_ = self.parseType();
@@ -192,19 +192,19 @@ def parseTraitDefinition() : Syntax_.DTrait = {
 self.rawSkip(Token_.LKeyword(), "trait");
 val nameToken = self.skip(Token_.LUpper());
 val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Poly(Firefly_Core.List(), Firefly_Core.List())
+Poly(List(), List())
 }).else_({() =>
 self.parseTypeParameters()
 });
 val generatorParameters = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 self.parseFunctionParameters()
 });
 var methodGenerators = Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Lambda]]();
 var methodDefaults = Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Lambda]]();
 val methodSignatures = Firefly_Core.if_((!self.current.rawIs("{")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 var signatures = Firefly_Core.List[Syntax_.Signature]();
 self.rawSkip(Token_.LBracketLeft(), "{");
@@ -239,12 +239,12 @@ var typeArguments = Firefly_Core.List[Syntax_.Type]();
 self.rawSkip(Token_.LBracketLeft(), "[");
 val token = self.skip(Token_.LUpper());
 val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Poly(Firefly_Core.List(), Firefly_Core.List())
+Poly(List(), List())
 }).else_({() =>
 self.parseTypeParameters()
 });
 typeArguments ::= Syntax_.TConstructor(token.at, token.raw, poly.generics.map({(_w1) =>
-Syntax_.TConstructor(token.at, _w1, Firefly_Core.List())
+Syntax_.TConstructor(token.at, _w1, List())
 }));
 Firefly_Core.while_({() =>
 self.current.is(Token_.LComma())
@@ -254,12 +254,12 @@ typeArguments ::= self.parseType()
 });
 self.rawSkip(Token_.LBracketRight(), "]");
 val generatorArguments = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 self.parseFunctionArguments()
 });
 val methods = Firefly_Core.if_((!self.current.rawIs("{")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 var definitions = Firefly_Core.List[Syntax_.DFunction]();
 self.rawSkip(Token_.LBracketLeft(), "{");
@@ -282,17 +282,17 @@ def parseTypeDefinition() : Syntax_.DType = {
 self.rawSkip(Token_.LKeyword(), "type");
 val nameToken = self.skip(Token_.LUpper());
 val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Poly(Firefly_Core.List(), Firefly_Core.List())
+Poly(List(), List())
 }).else_({() =>
 self.parseTypeParameters()
 });
 val commonFields = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 self.parseFunctionParameters(allowMutable = Firefly_Core.True())
 });
 val variants = Firefly_Core.if_((!self.current.rawIs("{")), {() =>
-Firefly_Core.List(Syntax_.Variant(nameToken.at, nameToken.raw, Firefly_Core.List()))
+List(Syntax_.Variant(nameToken.at, nameToken.raw, Firefly_Core.List()))
 }).else_({() =>
 self.rawSkip(Token_.LBracketLeft(), "{");
 var reverseVariants = Firefly_Core.List[Syntax_.Variant]();
@@ -301,7 +301,7 @@ Firefly_Core.while_({() =>
 }, {() =>
 val variantNameToken = self.skip(Token_.LUpper());
 val variantFields = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 self.parseFunctionParameters(allowMutable = Firefly_Core.True())
 });
@@ -320,7 +320,7 @@ def parseImportDefinition() : Syntax_.DImport = {
 self.rawSkip(Token_.LKeyword(), "import");
 val aliasToken = self.skip(Token_.LUpper());
 Firefly_Core.if_((!self.current.is(Token_.LKeyword())), {() =>
-Syntax_.DImport(aliasToken.at, aliasToken.raw, Firefly_Core.None(), Firefly_Core.List(), aliasToken.raw)
+Syntax_.DImport(aliasToken.at, aliasToken.raw, Firefly_Core.None(), List(), aliasToken.raw)
 }).else_({() =>
 self.rawSkip(Token_.LKeyword(), "from");
 val firstName = self.parseDashedName();
@@ -334,9 +334,9 @@ self.skip(Token_.LOperator())
 Firefly_Core.Pair(user, name)
 });
 var path = Firefly_Core.if_(package_.isEmpty, {() =>
-Firefly_Core.List(firstName)
+List(firstName)
 }).else_({() =>
-Firefly_Core.List()
+List()
 });
 Firefly_Core.if_((self.current.rawIs("/") && self.ahead.is2(Token_.LLower(), Token_.LUpper())), {() =>
 self.skip(Token_.LOperator())
@@ -471,7 +471,7 @@ pipe_dot(self.parseType())({
 case (t : Syntax_.TVariable) =>
 self.fail(t.at, ("Unexpected type variable: $" + t.index))
 case (t : Syntax_.TConstructor) =>
-constraints ::= Syntax_.Constraint(t.copy(generics = (Syntax_.TConstructor(t.at, parameterNameToken.raw, Firefly_Core.List()) :: t.generics)))
+constraints ::= Syntax_.Constraint(t.copy(generics = (Syntax_.TConstructor(t.at, parameterNameToken.raw, List()) :: t.generics)))
 })
 })
 });
@@ -614,7 +614,7 @@ self.skip(Token_.LComma())
 });
 self.skip(Token_.LArrowThick());
 val term = self.parseStatements();
-Firefly_Core.List(Syntax_.MatchCase(token.at, parameters.reverse, Firefly_Core.None(), term))
+List(Syntax_.MatchCase(token.at, parameters.reverse, Firefly_Core.None(), term))
 }).else_({() =>
 val term = self.parseStatements();
 val wildcards = Wildcards_.make();
@@ -628,7 +628,7 @@ Syntax_.PVariable(token.at, Firefly_Core.Some(("_w" + i)))
 Syntax_.PVariable(token.at, Firefly_Core.None())
 })
 });
-Firefly_Core.List(Syntax_.MatchCase(token.at, arguments, Firefly_Core.None(), e))
+List(Syntax_.MatchCase(token.at, arguments, Firefly_Core.None(), e))
 });
 Firefly_Core.if_((!colon), {() =>
 self.rawSkip(Token_.LBracketRight(), "}")
@@ -704,7 +704,7 @@ self.current.is(Token_.LWildcard())
 self.skip(Token_.LWildcard());
 Syntax_.PVariantAs(token.at, token.raw, Firefly_Core.None())
 }).else_({() =>
-Syntax_.PVariant(token.at, token.raw, Firefly_Core.List())
+Syntax_.PVariant(token.at, token.raw, List())
 })
 })
 });
@@ -721,7 +721,7 @@ def parseType() : Syntax_.Type = {
 val leftTypes = Firefly_Core.if_(((self.current.rawIs("(") && self.ahead.is(Token_.LLower())) && self.aheadAhead.is(Token_.LColon())), {() =>
 val at = self.current.at;
 val pair = self.parseRecordType().unzip;
-Firefly_Core.List(Syntax_.TConstructor(at, ("Record$" + pair.first.mkString("$")), pair.second))
+List(Syntax_.TConstructor(at, ("Record$" + pair.first.mkString("$")), pair.second))
 }).elseIf({() =>
 self.current.rawIs("(")
 }, {() =>
@@ -734,24 +734,24 @@ self.skip(Token_.LNamespace()).raw
 });
 val token = self.skip(Token_.LUpper());
 val arguments = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 self.parseTypeArguments()
 });
-Firefly_Core.List(Syntax_.TConstructor(token.at, (namespace + token.raw), arguments))
+List(Syntax_.TConstructor(token.at, (namespace + token.raw), arguments))
 });
 Firefly_Core.if_(((!self.current.is(Token_.LArrowThick())) && (leftTypes.size == 1)), {() =>
 leftTypes.head
 }).else_({() =>
 val arrowToken = self.skip(Token_.LArrowThick());
 val rightType = self.parseType();
-Syntax_.TConstructor(arrowToken.at, ("Function$" + leftTypes.size), (leftTypes ++ Firefly_Core.List(rightType)))
+Syntax_.TConstructor(arrowToken.at, ("Function$" + leftTypes.size), (List(leftTypes, List(rightType)).flatten))
 })
 }
 
 def parseStatements() : Syntax_.Term = {
 Firefly_Core.if_(self.current.is2(Token_.LBracketRight(), Token_.LPipe()), {() =>
-Syntax_.EVariant(self.current.at, "Unit", Firefly_Core.List(), Firefly_Core.None())
+Syntax_.EVariant(self.current.at, "Unit", List(), Firefly_Core.None())
 }).else_({() =>
 var result = self.parseStatement();
 Firefly_Core.while_({() =>
@@ -858,8 +858,8 @@ operators.exists(self.current.rawIs)
 }, {() =>
 val token = self.skip(Token_.LOperator());
 val right = self.parseBinary((level + 1));
-val arguments = Firefly_Core.List(Syntax_.Argument(result.at, Firefly_Core.None(), result), Syntax_.Argument(right.at, Firefly_Core.None(), right));
-result = Syntax_.ECall(token.at, Syntax_.EVariable(token.at, token.raw, Firefly_Core.List(), Firefly_Core.List()), Firefly_Core.List(), arguments)
+val arguments = List(Syntax_.Argument(result.at, Firefly_Core.None(), result), Syntax_.Argument(right.at, Firefly_Core.None(), right));
+result = Syntax_.ECall(token.at, Syntax_.EVariable(token.at, token.raw, List(), List()), List(), arguments)
 })
 });
 result
@@ -870,7 +870,7 @@ def parseUnary() : Syntax_.Term = {
 Firefly_Core.if_(self.current.is(Token_.LOperator()), {() =>
 val token = self.skip(Token_.LOperator());
 val term = self.parseUnary();
-Syntax_.ECall(token.at, Syntax_.EVariable(token.at, token.raw, Firefly_Core.List(), Firefly_Core.List()), Firefly_Core.List(), Firefly_Core.List(Syntax_.Argument(term.at, Firefly_Core.None(), term)))
+Syntax_.ECall(token.at, Syntax_.EVariable(token.at, token.raw, List(), List()), List(), List(Syntax_.Argument(term.at, Firefly_Core.None(), term)))
 }).else_({() =>
 self.parseFieldsAndCalls()
 })
@@ -897,12 +897,12 @@ result = Syntax_.EField(token.at, result, token.raw)
 }).else_({() =>
 val at = self.current.at;
 val typeArguments = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 self.parseTypeArguments()
 });
 val arguments = Firefly_Core.if_((!self.current.rawIs("(")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 self.parseFunctionArguments()
 });
@@ -948,7 +948,7 @@ Syntax_.EFloat(token.at, token.raw)
 self.current.is(Token_.LLower())
 }, {() =>
 val token = self.skip(Token_.LLower());
-Syntax_.EVariable(token.at, token.raw, Firefly_Core.List(), Firefly_Core.List())
+Syntax_.EVariable(token.at, token.raw, List(), List())
 }).elseIf({() =>
 self.current.is(Token_.LNamespace())
 }, {() =>
@@ -961,7 +961,7 @@ Firefly_Core.Some(self.skip(Token_.LNamespace()).raw)
 val prefix = (namespaceToken.raw + extraNamespace.getOrElse(""));
 Firefly_Core.if_(self.current.is(Token_.LLower()), {() =>
 val token = self.skip(Token_.LLower());
-Syntax_.EVariable(token.at, (prefix + token.raw), Firefly_Core.List(), Firefly_Core.List())
+Syntax_.EVariable(token.at, (prefix + token.raw), List(), List())
 }).else_({() =>
 self.parseVariant(prefix)
 })
@@ -1003,7 +1003,7 @@ def parseVariant(prefix : Firefly_Core.String) : Syntax_.Term = {
 val token = self.skip(Token_.LUpper());
 val name = (prefix + token.raw);
 val typeArguments = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Firefly_Core.List()
+List()
 }).else_({() =>
 self.parseTypeArguments()
 });

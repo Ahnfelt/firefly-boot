@@ -48,7 +48,7 @@ Firefly_Core.Pair(full(module, (prefix + method.signature.name)), Scheme(Firefly
 });
 val variants = module.types.flatMap({(d) =>
 val returnType = Syntax_.TConstructor(d.at, full(module, d.name), d.generics.map({(typeParameter) =>
-Syntax_.TConstructor(d.at, typeParameter, Firefly_Core.List())
+Syntax_.TConstructor(d.at, typeParameter, List())
 }));
 d.variants.map({(variant) =>
 Firefly_Core.Pair(full(module, variant.name), Scheme(Firefly_Core.False(), Firefly_Core.False(), Syntax_.Signature(variant.at, variant.name, generics = d.generics, constraints = d.constraints, parameters = (d.commonFields ++ variant.fields), returnType = returnType)))

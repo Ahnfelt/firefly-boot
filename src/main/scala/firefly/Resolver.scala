@@ -71,11 +71,11 @@ def entry(name : Firefly_Core.String, unqualified : Firefly_Core.Bool) : Firefly
 val full = ((module.file.dropRight(3) + ".") + name);
 pipe_dot(importAlias)({
 case (Firefly_Core.None()) =>
-Firefly_Core.List(Firefly_Core.Pair(name, name))
+List(Firefly_Core.Pair(name, name))
 case (Firefly_Core.Some(alias)) if unqualified =>
-Firefly_Core.List(Firefly_Core.Pair(((alias + ".") + name), full), Firefly_Core.Pair(name, full))
+List(Firefly_Core.Pair(((alias + ".") + name), full), Firefly_Core.Pair(name, full))
 case (Firefly_Core.Some(alias)) =>
-Firefly_Core.List(Firefly_Core.Pair(((alias + ".") + name), full))
+List(Firefly_Core.Pair(((alias + ".") + name), full))
 })
 }
 val lets = module.lets.flatMap({(_w1) =>
