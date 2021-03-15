@@ -94,7 +94,7 @@ val mutability = Firefly_Core.if_(mutable, {() =>
 def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
 val signature = emitSignature(definition.signature, suffix);
 pipe_dot(definition.body)({
-case (Syntax_.Lambda(_, Firefly_Core.Link(matchCase, Firefly_Core.Empty()))) if matchCase.patterns.all({
+case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
 case (Syntax_.PVariable(_, Firefly_Core.None())) =>
 Firefly_Core.True()
 case (_) =>
@@ -322,7 +322,7 @@ val fieldCode = fields.map({(f) =>
 (((emitTerm(record) + ".copy(") + fieldCode) + ")")
 case (Syntax_.EField(at, record, field)) =>
 ((emitTerm(record) + ".") + escapeKeyword(field))
-case (Syntax_.ELambda(at, Syntax_.Lambda(_, Firefly_Core.Link(Syntax_.MatchCase(_, patterns, Firefly_Core.None(), body), Firefly_Core.Empty())))) if patterns.all({
+case (Syntax_.ELambda(at, Syntax_.Lambda(_, List(Syntax_.MatchCase(_, patterns, Firefly_Core.None(), body))))) if patterns.all({
 case (_ : Syntax_.PVariable) =>
 Firefly_Core.True()
 case (_) =>
@@ -340,9 +340,9 @@ val casesString = cases.map(emitCase).mkString("\n");
 (("{\n" + casesString) + "\n}")
 case (Syntax_.EPipe(at, value, function)) =>
 (((("pipe_dot(" + emitTerm(value)) + ")(") + emitTerm(function)) + ")")
-case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), Firefly_Core.Empty(), Firefly_Core.Link(value, Firefly_Core.Empty()))) if (!operator.head.isLetter) =>
+case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(value))) if (!operator.head.isLetter) =>
 ((("(" + operator) + emitArgument(value)) + ")")
-case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), Firefly_Core.Empty(), Firefly_Core.Link(left, Firefly_Core.Link(right, Firefly_Core.Empty())))) if (!operator.head.isLetter) =>
+case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(left, right))) if (!operator.head.isLetter) =>
 (((((("(" + emitArgument(left)) + " ") + operator) + " ") + emitArgument(right)) + ")")
 case (Syntax_.ECall(at, function, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>
@@ -397,7 +397,7 @@ case (Syntax_.PList(at, _, items)) =>
 case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
 emitPattern(item)
 case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
-(emitPattern(item) + " : _*")
+(emitPattern(item) + " @ _*")
 }).join(", ")) + ")")
 }
 

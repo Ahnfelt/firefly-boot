@@ -32,7 +32,7 @@ val functions = module.functions.map({(d) =>
 Firefly_Core.Pair(full(module, d.signature.name), Scheme(Firefly_Core.False(), Firefly_Core.False(), d.signature))
 });
 val lets = module.lets.map({(d) =>
-Firefly_Core.Pair(full(module, d.name), Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(d.at, d.name, Firefly_Core.Empty(), Firefly_Core.Empty(), Firefly_Core.Empty(), d.variableType)))
+Firefly_Core.Pair(full(module, d.name), Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(d.at, d.name, List(), List(), List(), d.variableType)))
 });
 val extends_ = module.extends_.flatMap({(d) =>
 pipe_dot(d.type_)({

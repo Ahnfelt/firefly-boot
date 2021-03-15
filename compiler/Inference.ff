@@ -54,7 +54,7 @@ extend self: Inference {
 
     inferFunctionDefinition(environment: Environment, definition: DFunction): DFunction {
         let parameters = definition.signature.parameters.map { p =>
-            let scheme = Scheme(True, False, Signature(p.at, p.name, Empty, Empty, Empty, p.valueType))
+            let scheme = Scheme(True, False, Signature(p.at, p.name, [], [], [], p.valueType))
             Pair(p.name, scheme)
         }
         let environment2 = environment.Environment(symbols = environment.symbols ++ parameters)
@@ -83,7 +83,7 @@ extend self: Inference {
         self.unification.unify(case.at, expected, functionType)
         let newEnvironment = (parameterTypes.zip(case.patterns).foldLeft(environment)) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
-                Pair(name, Scheme(True, False, Signature(c.at, name, Empty, Empty, Empty, type)))
+                Pair(name, Scheme(True, False, Signature(c.at, name, [], [], [], type)))
             }
             Environment(environment1.symbols ++ symbols)
         }
@@ -131,7 +131,7 @@ extend self: Inference {
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
         function literal(coreTypeName: String): Term {
-            self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), Empty))
+            self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), []))
             term
         }
         term.{
@@ -162,7 +162,7 @@ extend self: Inference {
                     after = self.inferTerm(environment, expected, after)
                 )
             | ELet e =>
-                let scheme = Scheme(True, False, Signature(e.at, e.name, Empty, Empty, Empty, e.valueType))
+                let scheme = Scheme(True, False, Signature(e.at, e.name, [], [], [], e.valueType))
                 let environment2 = environment.Environment(symbols = environment.symbols + Pair(e.name, scheme))
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)

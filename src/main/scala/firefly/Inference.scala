@@ -41,7 +41,7 @@ definition.copy(value = value)
 
 def inferFunctionDefinition(environment : Environment_.Environment, definition : Syntax_.DFunction) : Syntax_.DFunction = {
 val parameters = definition.signature.parameters.map({(p) =>
-val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(p.at, p.name, Firefly_Core.Empty(), Firefly_Core.Empty(), Firefly_Core.Empty(), p.valueType));
+val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(p.at, p.name, List(), List(), List(), p.valueType));
 Firefly_Core.Pair(p.name, scheme)
 });
 val environment2 = environment.copy(symbols = (environment.symbols ++ parameters));
@@ -68,7 +68,7 @@ val newEnvironment = parameterTypes.zip(case_.patterns).foldLeft(environment)({
 case (environment1, Firefly_Core.Pair(t, c)) =>
 val symbols = self.inferPattern(environment, t, c).map({
 case (Firefly_Core.Pair(name, type_)) =>
-Firefly_Core.Pair(name, Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(c.at, name, Firefly_Core.Empty(), Firefly_Core.Empty(), Firefly_Core.Empty(), type_)))
+Firefly_Core.Pair(name, Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(c.at, name, List(), List(), List(), type_)))
 });
 Environment_.Environment((environment1.symbols ++ symbols))
 });
@@ -126,7 +126,7 @@ self.inferPattern(environment, parameter.valueType, pattern)
 
 def inferTerm(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {
 def literal(coreTypeName : Firefly_Core.String) : Syntax_.Term = {
-self.unification.unify(term.at, expected, Syntax_.TConstructor(term.at, core(coreTypeName), Firefly_Core.Empty()));
+self.unification.unify(term.at, expected, Syntax_.TConstructor(term.at, core(coreTypeName), List()));
 term
 }
 pipe_dot(term)({
@@ -162,7 +162,7 @@ t
 case (Syntax_.ESequential(at, before, after)) =>
 Syntax_.ESequential(at = at, before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before), after = self.inferTerm(environment, expected, after))
 case (e : Syntax_.ELet) =>
-val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(e.at, e.name, Firefly_Core.Empty(), Firefly_Core.Empty(), Firefly_Core.Empty(), e.valueType));
+val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(e.at, e.name, List(), List(), List(), e.valueType));
 val environment2 = environment.copy(symbols = (environment.symbols + Firefly_Core.Pair(e.name, scheme)));
 e.copy(value = self.inferTerm(environment, e.valueType, e.value), body = self.inferTerm(environment2, expected, e.body))
 case (_) =>

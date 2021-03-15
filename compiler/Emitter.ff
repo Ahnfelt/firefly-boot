@@ -62,7 +62,7 @@ emitLetDefinition(definition: DLet, mutable: Bool = False): String {
 emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     let signature = emitSignature(definition.signature, suffix)
     definition.body.{
-        | Lambda(_, Link(matchCase, Empty)) {
+        | Lambda(_, [matchCase]) {
             matchCase.patterns.all { | PVariable(_, None) => True | _ => False }
         } =>
             let body = emitStatements(matchCase.body)
@@ -228,7 +228,7 @@ emitTerm(term: Term): String {
         emitTerm(record) + ".copy(" + fieldCode + ")"
     | EField(at, record, field) =>
         emitTerm(record) + "." + escapeKeyword(field)
-    | ELambda(at, Lambda(_, Link(MatchCase(_, patterns, None, body), Empty))) {
+    | ELambda(at, Lambda(_, [MatchCase(_, patterns, None, body)])) {
         patterns.all { | PVariable _ => True | _ => False }
     } =>
         let parameters =
@@ -239,9 +239,9 @@ emitTerm(term: Term): String {
         "{\n" + casesString + "\n}"
     | EPipe(at, value, function) =>
         "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
-    | ECall(at, EVariable(_, operator, _, _), Empty, Link(value, Empty)) {!operator.head.isLetter} =>
+    | ECall(at, EVariable(_, operator, _, _), [], [value]) {!operator.head.isLetter} =>
         "(" + operator + emitArgument(value) + ")"
-    | ECall(at, EVariable(_, operator, _, _), Empty, Link(left, Link(right, Empty))) {!operator.head.isLetter} =>
+    | ECall(at, EVariable(_, operator, _, _), [], [left, right]) {!operator.head.isLetter} =>
         "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
     | ECall(at, function, typeArguments, arguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
@@ -280,7 +280,7 @@ emitPattern(pattern: MatchPattern): String {
     | PList(at, _, items) =>
         "List(" + items.map {
             | Pair(item, False) => emitPattern(item)
-            | Pair(item, True) => emitPattern(item) + " : _*"
+            | Pair(item, True) => emitPattern(item) + " @ _*"
         }.join(", ") + ")"
 }
 

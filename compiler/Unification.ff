@@ -21,7 +21,7 @@ make(instances: List[DInstance]): Unification {
         2 // Even type variables to avoid collision with the parser
         instances.map { definition =>
             definition.traitType.{
-                | TConstructor(at, name, Link(TConstructor(_, typeName, _), _)) =>
+                | TConstructor(at, name, [TConstructor(_, typeName, _), ..._]) =>
                      Pair(
                         InstanceKey(name, typeName)
                         InstanceValue(
@@ -52,7 +52,7 @@ extend self: Unification {
     }
 
     instantiate(instantiation: Map[String, Type], type: Type): Type {
-        | _, TConstructor(at, name, Empty) =>
+        | _, TConstructor(at, name, []) =>
             instantiation.get(name).{
                 | Some(t) => t
                 | None => type
