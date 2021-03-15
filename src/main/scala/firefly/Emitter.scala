@@ -16,21 +16,21 @@ val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
 }).reverse.takeWhile({(_w1) =>
 (_w1 != '.')
 });
-val parts = Firefly_Core.List(Firefly_Core.List("package firefly"), (Firefly_Core.List("import firefly.Firefly_Core._") ++ module.imports.map({(_w1) =>
+val parts = List(List("package firefly"), (List(List("import firefly.Firefly_Core._"), module.imports.map({(_w1) =>
 (("import firefly." + _w1.file) + "_._")
-})), Firefly_Core.List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
+})).flatten), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")
 }), {() =>
-Firefly_Core.List(emitMain())
+List(emitMain())
 }).else_({() =>
-Firefly_Core.List()
+List()
 }), module.types.map(emitTypeDefinition), module.lets.map({(_w1) =>
 emitLetDefinition(_w1)
 }), module.functions.map({(_w1) =>
 emitFunctionDefinition(_w1)
 }), module.extends_.pairs.map({(pair) =>
 emitExtendImplicit(pair.second, pair.first)
-}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), Firefly_Core.List("}"));
+}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), List("}"));
 module.extends_.map({(_w1) =>
 _w1.type_
 }).flatMap(({ case _w : Syntax_.TConstructor => Some(_w); case _ => None() })).find({(t) =>
