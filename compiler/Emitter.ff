@@ -105,7 +105,7 @@ emitTraitDefinition(definition: DTrait): String {
     let methodWrappers = if(definition.methods.isEmpty) {""} else {
         " \n\n" + definition.methods.map { signature =>
             let t = TConstructor(definition.at, definition.name, definition.generics.map {
-                TConstructor(definition.at, _, List())
+                TConstructor(definition.at, _, [])
             })
             emitSignature(signature.copy(
                 generics = definition.generics ++ signature.generics,
@@ -124,7 +124,7 @@ emitInstanceDefinition(definition: DInstance): String {
         extractTypeName(definition.traitType) + "_" + definition.hashCode().abs,
         definition.generics,
         definition.constraints,
-        List(),
+        [],
         definition.traitType
     ))
     let methods = " {\n\nimport " + extractTypeName(definition.traitType) + "._\n\n" +

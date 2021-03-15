@@ -59,9 +59,9 @@ extend self: Resolver {
         function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
             let full = module.file.dropRight(3) + "." + name
             importAlias.{
-                | None => List(Pair(name, name))
-                | Some(alias) { unqualified } => List(Pair(alias + "." + name, full), Pair(name, full))
-                | Some(alias) => List(Pair(alias + "." + name, full))
+                | None => [Pair(name, name)]
+                | Some(alias) { unqualified } => [Pair(alias + "." + name, full), Pair(name, full)]
+                | Some(alias) => [Pair(alias + "." + name, full)]
             }
         }
         let lets = module.lets.flatMap { entry(_.name, False) }.toMap

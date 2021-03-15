@@ -64,7 +64,7 @@ processModule(module: Module, isCurrentModule: Bool, isCoreModule: Bool): Enviro
     let variants =
         module.types.flatMap { d =>
             let returnType = TConstructor(d.at, full(module, d.name), d.generics.map { typeParameter =>
-                TConstructor(d.at, typeParameter, List())
+                TConstructor(d.at, typeParameter, [])
             })
             d.variants.map { variant =>
                 Pair(

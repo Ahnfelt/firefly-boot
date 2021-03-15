@@ -80,7 +80,7 @@ extend self: Parser {
     }
     
     parseModule(): Module {
-        mutable result = Module(self.file, List(), List(), List(), List(), List(), List(), List(), List())
+        mutable result = Module(self.file, [], [], [], [], [], [], [], [])
         while {!self.current.is(LEnd)} {
             if(self.current.is(LLower) && (self.ahead.is(LAssign) || self.ahead.is(LColon))) {
                 result = result.Module(lets = self.parseLetDefinition() :: result.lets)
@@ -142,7 +142,7 @@ extend self: Parser {
     
     parseSignature(): Signature {
         let nameToken = self.skip(LLower)
-        let poly = if(self.current.rawIs("[")) {self.parseTypeParameters()} else {Poly(List(), List())}
+        let poly = if(self.current.rawIs("[")) {self.parseTypeParameters()} else {Poly([], [])}
         let parameters = self.parseFunctionParameters()
         let returnType = self.parseOptionalType()
         Signature(nameToken.at, nameToken.raw, poly.generics, poly.constraints, parameters, returnType)
@@ -151,7 +151,7 @@ extend self: Parser {
     parseExtendDefinition(): DExtend {
         self.rawSkip(LKeyword, "extend")
         let nameToken = self.skip(LLower)
-        let poly = if(self.current.rawIs("[")) { self.parseTypeParameters() } else { Poly(List(), List()) }
+        let poly = if(self.current.rawIs("[")) { self.parseTypeParameters() } else { Poly([], []) }
         self.skip(LColon)
         let type = self.parseType()
         self.rawSkip(LBracketLeft, "{")
@@ -174,11 +174,11 @@ extend self: Parser {
     parseTraitDefinition(): DTrait {
         self.rawSkip(LKeyword, "trait")
         let nameToken = self.skip(LUpper)
-        let poly = if(!self.current.rawIs("[")) {Poly(List(), List())} else {self.parseTypeParameters()}
-        let generatorParameters = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionParameters()}
+        let poly = if(!self.current.rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
+        let generatorParameters = if(!self.current.rawIs("(")) {[]} else {self.parseFunctionParameters()}
         mutable methodGenerators = List[Pair[String, Lambda]]()
         mutable methodDefaults = List[Pair[String, Lambda]]()
-        let methodSignatures = if(!self.current.rawIs("{")) {List()} else {
+        let methodSignatures = if(!self.current.rawIs("{")) {[]} else {
             mutable signatures = List[Signature]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current.is(LBracketRight)} {
@@ -216,15 +216,15 @@ extend self: Parser {
         mutable typeArguments = List[Type]()
         self.rawSkip(LBracketLeft, "[")
         let token = self.skip(LUpper)
-        let poly = if(!self.current.rawIs("[")) {Poly(List(), List())} else {self.parseTypeParameters()}
-        typeArguments ::= TConstructor(token.at, token.raw, poly.generics.map { TConstructor(token.at, _, List()) })
+        let poly = if(!self.current.rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
+        typeArguments ::= TConstructor(token.at, token.raw, poly.generics.map { TConstructor(token.at, _, []) })
         while {self.current.is(LComma)} {
             self.skip(LComma)
             typeArguments ::= self.parseType()
         }
         self.rawSkip(LBracketRight, "]")
-        let generatorArguments = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionArguments()}
-        let methods = if(!self.current.rawIs("{")) {List()} else {
+        let generatorArguments = if(!self.current.rawIs("(")) {[]} else {self.parseFunctionArguments()}
+        let methods = if(!self.current.rawIs("{")) {[]} else {
             mutable definitions = List[DFunction]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current.is(LBracketRight)} {
@@ -241,14 +241,14 @@ extend self: Parser {
     parseTypeDefinition(): DType {
         self.rawSkip(LKeyword, "type")
         let nameToken = self.skip(LUpper)
-        let poly = if(!self.current.rawIs("[")) {Poly(List(), List())} else {self.parseTypeParameters()}
-        let commonFields = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionParameters(allowMutable = True)}
-        let variants = if(!self.current.rawIs("{")) {List(Variant(nameToken.at, nameToken.raw, List()))} else {
+        let poly = if(!self.current.rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
+        let commonFields = if(!self.current.rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
+        let variants = if(!self.current.rawIs("{")) {[Variant(nameToken.at, nameToken.raw, List())]} else {
             self.rawSkip(LBracketLeft, "{")
             mutable reverseVariants = List[Variant]()
             while {!self.current.is(LBracketRight)} {
                 let variantNameToken = self.skip(LUpper)
-                let variantFields = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionParameters(allowMutable = True)}
+                let variantFields = if(!self.current.rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
                 reverseVariants ::= Variant(variantNameToken.at, variantNameToken.raw, variantFields)
                 if(!self.current.is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
@@ -261,7 +261,7 @@ extend self: Parser {
     parseImportDefinition(): DImport {
         self.rawSkip(LKeyword, "import")
         let aliasToken = self.skip(LUpper)
-        if(!self.current.is(LKeyword)) { DImport(aliasToken.at, aliasToken.raw, None, List(), aliasToken.raw) } else:
+        if(!self.current.is(LKeyword)) { DImport(aliasToken.at, aliasToken.raw, None, [], aliasToken.raw) } else:
         self.rawSkip(LKeyword, "from")
         let firstName = self.parseDashedName()
         let package = if(self.current.is(LColon)) {
@@ -271,7 +271,7 @@ extend self: Parser {
             if(self.current.rawIs("/")) { self.skip(LOperator) }
             Pair(user, name)
         }
-        mutable path = if(package.isEmpty) { List(firstName) } else { List() }
+        mutable path = if(package.isEmpty) { [firstName] } else { [] }
         if(self.current.rawIs("/") && self.ahead.is2(LLower, LUpper)) { self.skip(LOperator) }
         while { self.current.is(LLower) } {
             path ::= self.parseDashedName()
@@ -364,7 +364,7 @@ extend self: Parser {
                         | TVariable t => self.fail(t.at, "Unexpected type variable: $" + t.index)
                         | TConstructor t =>
                             constraints ::= Constraint(t.copy(generics =
-                                TConstructor(t.at, parameterNameToken.raw, List()) :: t.generics
+                                TConstructor(t.at, parameterNameToken.raw, []) :: t.generics
                             ))
                     }
                 }
@@ -460,7 +460,7 @@ extend self: Parser {
             }
             self.skip(LArrowThick)
             let term = self.parseStatements()
-            List(MatchCase(token.at, parameters.reverse, None, term))
+            [MatchCase(token.at, parameters.reverse, None, term)]
         } else {
             let term = self.parseStatements()
             let wildcards = Wildcards.make()
@@ -470,7 +470,7 @@ extend self: Parser {
             } else {
                 1.to(defaultParameterCount).toList.map { i => PVariable(token.at, None) }
             }
-            List(MatchCase(token.at, arguments, None, e))
+            [MatchCase(token.at, arguments, None, e)]
         }
         if(!colon) {self.rawSkip(LBracketRight, "}")}
         Lambda(token.at, result)
@@ -526,7 +526,7 @@ extend self: Parser {
                     self.skip(LWildcard)
                     PVariantAs(token.at, token.raw, None)
                 } else {
-                    PVariant(token.at, token.raw, List())
+                    PVariant(token.at, token.raw, [])
                 }
             }
         }
@@ -541,24 +541,24 @@ extend self: Parser {
         let leftTypes = if(self.current.rawIs("(") && self.ahead.is(LLower) && self.aheadAhead.is(LColon)) {
             let at = self.current.at
             let pair = self.parseRecordType().unzip
-            List(TConstructor(at, "Record$" + pair.first.mkString("$"), pair.second))
+            [TConstructor(at, "Record$" + pair.first.mkString("$"), pair.second)]
         } elseIf {self.current.rawIs("(")} {
             self.parseTypeArguments(parenthesis = True)
         } else {
             let namespace = if(self.current.is(LNamespace)) {self.skip(LNamespace).raw} else {""}
             let token = self.skip(LUpper)
-            let arguments = if(!self.current.rawIs("[")) {List()} else {self.parseTypeArguments()}
-            List(TConstructor(token.at, namespace + token.raw, arguments))
+            let arguments = if(!self.current.rawIs("[")) {[]} else {self.parseTypeArguments()}
+            [TConstructor(token.at, namespace + token.raw, arguments)]
         }
         if(!self.current.is(LArrowThick) && leftTypes.size == 1) {leftTypes.head} else {
             let arrowToken = self.skip(LArrowThick)
             let rightType = self.parseType()
-            TConstructor(arrowToken.at, "Function$" + leftTypes.size, leftTypes ++ List(rightType))
+            TConstructor(arrowToken.at, "Function$" + leftTypes.size, [...leftTypes, rightType])
         }
     }
     
     parseStatements(): Term {
-        if(self.current.is2(LBracketRight, LPipe)) {EVariant(self.current.at, "Unit", List(), None)} else {
+        if(self.current.is2(LBracketRight, LPipe)) {EVariant(self.current.at, "Unit", [], None)} else {
             mutable result = self.parseStatement()
             while {self.currentIsSeparator(LSemicolon)} {
                 let token = self.skipSeparator(LSemicolon)
@@ -629,8 +629,8 @@ extend self: Parser {
             while {operators.exists(self.current.rawIs)} {
                 let token = self.skip(LOperator)
                 let right = self.parseBinary(level + 1)
-                let arguments = List(Argument(result.at, None, result), Argument(right.at, None, right))
-                result = ECall(token.at, EVariable(token.at, token.raw, List(), List()), List(), arguments)
+                let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
+                result = ECall(token.at, EVariable(token.at, token.raw, [], []), [], arguments)
             }
         }
         result
@@ -640,7 +640,7 @@ extend self: Parser {
         if(self.current.is(LOperator)) {
             let token = self.skip(LOperator)
             let term = self.parseUnary()
-            ECall(token.at, EVariable(token.at, token.raw, List(), List()), List(), List(Argument(term.at, None, term)))
+            ECall(token.at, EVariable(token.at, token.raw, [], []), [], [Argument(term.at, None, term)])
         } else {
             self.parseFieldsAndCalls()
         }
@@ -662,8 +662,8 @@ extend self: Parser {
                 }
             } else {
                 let at = self.current.at
-                let typeArguments = if(!self.current.rawIs("[")) {List()} else {self.parseTypeArguments()}
-                let arguments = if(!self.current.rawIs("(")) {List()} else {self.parseFunctionArguments()}
+                let typeArguments = if(!self.current.rawIs("[")) {[]} else {self.parseTypeArguments()}
+                let arguments = if(!self.current.rawIs("(")) {[]} else {self.parseFunctionArguments()}
                 mutable moreArguments = List[Argument]()
                 mutable lastWasCurly = False
                 while {self.current.rawIs("{") || self.current.is(LColon)} {
@@ -696,14 +696,14 @@ extend self: Parser {
             EFloat(token.at, token.raw)
         } elseIf {self.current.is(LLower)} {
             let token = self.skip(LLower)
-            EVariable(token.at, token.raw, List(), List())
+            EVariable(token.at, token.raw, [], [])
         } elseIf {self.current.is(LNamespace)} {
             let namespaceToken = self.skip(LNamespace)
             let extraNamespace = if(!self.current.is(LNamespace)) {None} else {Some(self.skip(LNamespace).raw)}
             let prefix = namespaceToken.raw + extraNamespace.getOrElse("")
             if(self.current.is(LLower)) {
                 let token = self.skip(LLower)
-                EVariable(token.at, prefix + token.raw, List(), List())
+                EVariable(token.at, prefix + token.raw, [], [])
             } else {
                 self.parseVariant(prefix)
             }
@@ -732,7 +732,7 @@ extend self: Parser {
     parseVariant(prefix: String): Term {
         let token = self.skip(LUpper)
         let name = prefix + token.raw
-        let typeArguments = if(!self.current.rawIs("[")) {List()} else {self.parseTypeArguments()}
+        let typeArguments = if(!self.current.rawIs("[")) {[]} else {self.parseTypeArguments()}
         if(self.current.rawIs("?")) { self.skip(LOperator); EVariantIs(token.at, name, typeArguments) } else:
         let arguments = if(!self.current.rawIs("(")) {None} else {Some(self.parseFunctionArguments())}
         EVariant(token.at, name, typeArguments, arguments)
@@ -816,13 +816,13 @@ extend self: Parser {
 }
 
 binaryOperators = Array(
-    List("||"),
-    List("&&"),
-    List("!=", "=="),
-    List("<=", ">=", "<", ">"),
-    List("::"),
-    List("++"),
-    List("+", "-"),
-    List("*", "/", "%"),
-    List("^")
+    ["||"]
+    ["&&"]
+    ["!=", "=="]
+    ["<=", ">=", "<", ">"]
+    ["::"]
+    ["++"]
+    ["+", "-"]
+    ["*", "/", "%"]
+    ["^"]
 )

@@ -61,7 +61,7 @@ extend self: Inference {
         let functionType = TConstructor(
             definition.at,
             "Function$" + parameters.size,
-            parameters.map { _.second.signature.returnType } ++ List(definition.signature.returnType)
+            [...parameters.map { _.second.signature.returnType }, definition.signature.returnType]
         )
         definition.DFunction(body = self.inferLambda(environment2, functionType, definition.body))
     }
@@ -78,7 +78,7 @@ extend self: Inference {
         let functionType = TConstructor(
             case.at,
             "Function$" + case.patterns.size,
-            parameterTypes ++ List(returnType)
+            [...parameterTypes, returnType]
         )
         self.unification.unify(case.at, expected, functionType)
         let newEnvironment = (parameterTypes.zip(case.patterns).foldLeft(environment)) {| environment1, Pair(t, c) =>
@@ -99,7 +99,7 @@ extend self: Inference {
             | PAlias(at, pattern, variable) =>
                 self.inferPattern(environment, expected, pattern) + Pair(variable, expected)
             | PList(at, t, items) =>
-                let listType = TConstructor(at, core("List"), List(t))
+                let listType = TConstructor(at, core("List"), [t])
                 self.unification.unify(at, expected, listType)
                 (items.map {
                     | Pair(item, False) => self.inferPattern(environment, t, pattern)
@@ -151,7 +151,7 @@ extend self: Inference {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }
             | EList(at, t, items) =>
-                let listType = TConstructor(term.at, core("List"), List(t))
+                let listType = TConstructor(term.at, core("List"), [t])
                 EList(at, t, items.map { | Pair(item, spread) =>
                     Pair(self.inferTerm(environment, if(spread) { listType } else { t }, item), spread)
                 })
