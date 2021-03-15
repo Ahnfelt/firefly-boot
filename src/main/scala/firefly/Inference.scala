@@ -17,6 +17,10 @@ Inference(unification = Unification_.make(instances))
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show))
 }
+
+def core(name : Firefly_Core.String) : Firefly_Core.String = {
+("ff:core/Core." + name)
+}
 implicit class Inference_extend0(self : Inference) {
 
 def inferModule(coreModule : Syntax_.Module, module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Syntax_.Module = {
@@ -79,6 +83,17 @@ case (Syntax_.PVariable(at, Firefly_Core.Some(name))) =>
 Firefly_Core.Map(Firefly_Core.Pair(name, expected))
 case (Syntax_.PAlias(at, pattern, variable)) =>
 (self.inferPattern(environment, expected, pattern) + Firefly_Core.Pair(variable, expected))
+case (Syntax_.PList(at, t, items)) =>
+val listType = Syntax_.TConstructor(at, core("List"), Firefly_Core.List(t));
+self.unification.unify(at, expected, listType);
+items.map({
+case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
+self.inferPattern(environment, t, pattern)
+case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
+self.inferPattern(environment, listType, pattern)
+}).foldLeft(Firefly_Core.Map[Firefly_Core.String, Syntax_.Type]())({(_w1, _w2) =>
+(_w1 ++ _w2)
+})
 case (Syntax_.PVariantAs(at, name, Firefly_Core.None())) =>
 val scheme = environment.symbols.get(name).else_({() =>
 fail(at, ("No such variant: " + name))
@@ -110,9 +125,6 @@ self.inferPattern(environment, parameter.valueType, pattern)
 }
 
 def inferTerm(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {
-def core(name : Firefly_Core.String) : Firefly_Core.String = {
-("ff:core/Core." + name)
-}
 def literal(coreTypeName : Firefly_Core.String) : Syntax_.Term = {
 self.unification.unify(term.at, expected, Syntax_.TConstructor(term.at, core(coreTypeName), Firefly_Core.Empty()));
 term
@@ -138,8 +150,14 @@ fail(e.at, ("Functions need to be called: " + e.name))
 fail(e.at, ("Symbol not in scope: " + e.name))
 })
 case (Syntax_.EList(at, t, items)) =>
-Syntax_.EList(at, t, items.map({(_w1) =>
-self.inferTerm(environment, t, _w1)
+val listType = Syntax_.TConstructor(term.at, core("List"), Firefly_Core.List(t));
+Syntax_.EList(at, t, items.map({
+case (Firefly_Core.Pair(item, spread)) =>
+Firefly_Core.Pair(self.inferTerm(environment, Firefly_Core.if_(spread, {() =>
+listType
+}).else_({() =>
+t
+}), item), spread)
 }))
 case (Syntax_.ESequential(at, before, after)) =>
 Syntax_.ESequential(at = at, before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before), after = self.inferTerm(environment, expected, after))

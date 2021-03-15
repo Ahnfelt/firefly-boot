@@ -40,7 +40,7 @@ case class EAssign(at : Location, operator : Firefly_Core.String, variable : Fir
 case class EAssignField(at : Location, operator : Firefly_Core.String, record : Term, field : Firefly_Core.String, value : Term) extends Term
 case class EPipe(at : Location, value : Term, function : Term) extends Term
 case class ECall(at : Location, function : Term, typeArguments : Firefly_Core.List[Type], arguments : Firefly_Core.List[Argument]) extends Term
-case class EList(at : Location, elementType : Type, items : Firefly_Core.List[Term]) extends Term
+case class EList(at : Location, elementType : Type, items : Firefly_Core.List[Firefly_Core.Pair[Term, Firefly_Core.Bool]]) extends Term
 case class ECopy(at : Location, name : Firefly_Core.String, record : Term, arguments : Firefly_Core.List[Field]) extends Term
 case class EVariant(at : Location, name : Firefly_Core.String, typeArguments : Firefly_Core.List[Type], arguments : Firefly_Core.Option[Firefly_Core.List[Argument]]) extends Term
 case class EVariantIs(at : Location, name : Firefly_Core.String, typeArguments : Firefly_Core.List[Type]) extends Term
@@ -57,6 +57,7 @@ case class PVariable(at : Location, name : Firefly_Core.Option[Firefly_Core.Stri
 case class PVariant(at : Location, name : Firefly_Core.String, patterns : Firefly_Core.List[MatchPattern]) extends MatchPattern
 case class PVariantAs(at : Location, name : Firefly_Core.String, variable : Firefly_Core.Option[Firefly_Core.String]) extends MatchPattern
 case class PAlias(at : Location, pattern : MatchPattern, variable : Firefly_Core.String) extends MatchPattern
+case class PList(at : Location, itemType : Type, items : Firefly_Core.List[Firefly_Core.Pair[MatchPattern, Firefly_Core.Bool]]) extends MatchPattern
 
 case class Signature(at : Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Constraint], parameters : Firefly_Core.List[Parameter], returnType : Type)
 

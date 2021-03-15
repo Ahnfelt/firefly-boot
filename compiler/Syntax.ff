@@ -95,7 +95,7 @@ type Term(at: Location) {
     EAssignField(operator: String, record: Term, field: String, value: Term)
     EPipe(value: Term, function: Term)
     ECall(function: Term, typeArguments: List[Type], arguments: List[Argument])
-    EList(elementType: Type, items: List[Term])
+    EList(elementType: Type, items: List[Pair[Term, Bool]])
     ECopy(name: String, record: Term, arguments: List[Field])
     EVariant(name: String, typeArguments: List[Type], arguments: Option[List[Argument]])
     EVariantIs(name: String, typeArguments: List[Type])
@@ -116,6 +116,7 @@ type MatchPattern(at: Location) {
     PVariant(name: String, patterns: List[MatchPattern])
     PVariantAs(name: String, variable: Option[String])
     PAlias(pattern: MatchPattern, variable: String)
+    PList(itemType: Type, items: List[Pair[MatchPattern, Bool]])
 }
 
 type Signature(

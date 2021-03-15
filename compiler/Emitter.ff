@@ -210,7 +210,13 @@ emitTerm(term: Term): String {
     | EInt(at, value) => value
     | EFloat(at, value) => value
     | EVariable(at, name, _, _) => escapeResolved(name)
-    | EList(at, _, items) => "List(" + items.map(emitTerm).mkString(", ") + ")"
+    | EList(at, _, items) { items.all { !_.second } } =>
+        "List(" + items.map { emitTerm(_.first) }.mkString(", ") + ")"
+    | EList(at, _, items) =>
+        "(List(" + items.map {
+            | Pair(item, False) => "List(" + emitTerm(item) + ")"
+            | Pair(item, True) => emitTerm(item)
+        }.mkString(", ") + ").flatten)"
     | EVariant(at, name, typeArguments, arguments) =>
         let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
         escapeResolved(name) + generics + "(" + arguments.toList.flatten.map(emitArgument).mkString(", ") + ")"
@@ -271,6 +277,11 @@ emitPattern(pattern: MatchPattern): String {
         variable.map(escapeKeyword).getOrElse("_") + " : " + escapeResolved(name)
     | PAlias(at, p, variable) =>
         escapeKeyword(variable) + " @ (" + emitPattern(p) + ")"
+    | PList(at, _, items) =>
+        "List(" + items.map {
+            | Pair(item, False) => emitPattern(item)
+            | Pair(item, True) => emitPattern(item) + " : _*"
+        }.join(", ") + ")"
 }
 
 extractTypeName(type: Type): String {

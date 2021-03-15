@@ -175,8 +175,9 @@ term
 })
 })
 case (Syntax_.EList(at, t, items)) =>
-Syntax_.EList(at, self.resolveType(t), items.map({(_w1) =>
-self.resolveTerm(_w1)
+Syntax_.EList(at, self.resolveType(t), items.map({
+case (Firefly_Core.Pair(item, spread)) =>
+Firefly_Core.Pair(self.resolveTerm(item), spread)
 }))
 case (Syntax_.EVariant(at, name, typeArguments, arguments)) =>
 Syntax_.EVariant(at = at, name = self.variants.get(name).else_({() =>
@@ -301,6 +302,13 @@ Firefly_Core.Pair(x, x)
 }).toMap
 case (Syntax_.PAlias(_, pattern, variable)) =>
 (Firefly_Core.Map(Firefly_Core.Pair(variable, variable)) ++ findVariables(pattern))
+case (Syntax_.PList(_, _, items)) =>
+items.map({
+case (Firefly_Core.Pair(item, _)) =>
+findVariables(item)
+}).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
+(_w1 ++ _w2)
+}).toMap
 }
 val variableMap = case_.patterns.map(findVariables).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
@@ -332,6 +340,13 @@ Syntax_.PVariantAs(at, newName, variable)
 case (Syntax_.PAlias(at, pattern, variable)) =>
 val newPattern = self.resolvePattern(pattern);
 Syntax_.PAlias(at, newPattern, variable)
+case (Syntax_.PList(at, t, items)) =>
+val newType = self.resolveType(t);
+val newPatterns = items.map({
+case (Firefly_Core.Pair(pattern, spread)) =>
+Firefly_Core.Pair(self.resolvePattern(pattern), spread)
+});
+Syntax_.PList(at, newType, newPatterns)
 }
 
 }

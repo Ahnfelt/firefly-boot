@@ -19,7 +19,10 @@ extend self: Wildcards {
                 function = self.fixWildcards(e.function),
                 arguments = e.arguments.map { a => a.Argument(value = self.fixWildcards(a.value)) }
             )
-        | EList e => e.EList(items = e.items.map(self.fixWildcards))
+        | EList e =>
+            e.EList(items = e.items.map { | Pair(item, spread) =>
+                Pair(self.fixWildcards(item), spread)
+            })
         | ECopy e =>
             e.ECopy(
                 record = self.fixWildcards(e.record),

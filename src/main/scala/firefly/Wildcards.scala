@@ -27,7 +27,10 @@ e.copy(function = self.fixWildcards(e.function), arguments = e.arguments.map({(a
 a.copy(value = self.fixWildcards(a.value))
 }))
 case (e : Syntax_.EList) =>
-e.copy(items = e.items.map(self.fixWildcards))
+e.copy(items = e.items.map({
+case (Firefly_Core.Pair(item, spread)) =>
+Firefly_Core.Pair(self.fixWildcards(item), spread)
+}))
 case (e : Syntax_.ECopy) =>
 e.copy(record = self.fixWildcards(e.record), arguments = e.arguments.map({(a) =>
 a.copy(value = self.fixWildcards(a.value))

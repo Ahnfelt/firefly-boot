@@ -155,7 +155,9 @@ extend self: Resolver {
                 }
             }
         | EList(at, t, items) =>
-            EList(at, self.resolveType(t), items.map { self.resolveTerm(_) })
+            EList(at, self.resolveType(t), items.map { | Pair(item, spread) =>
+                Pair(self.resolveTerm(item), spread)
+            })
         | EVariant(at, name, typeArguments, arguments) =>
             EVariant(
                 at = at
@@ -289,6 +291,8 @@ extend self: Resolver {
                 variable.toList.map { x => Pair(x, x) }.toMap
             | PAlias(_, pattern, variable) =>
                 Map(Pair(variable, variable)) ++ findVariables(pattern)
+            | PList(_, _, items) =>
+                items.map { | Pair(item, _) => findVariables(item) }.foldLeft(Map[String, String]())({_ ++ _}).toMap
         }
         let variableMap = case.patterns.map(findVariables).foldLeft(Map[String, String]())({_ ++ _}).toMap
         let self2 = self.Resolver(
@@ -315,6 +319,12 @@ extend self: Resolver {
         | PAlias(at, pattern, variable) =>
             let newPattern = self.resolvePattern(pattern)
             PAlias(at, newPattern, variable)
+        | PList(at, t, items) =>
+            let newType = self.resolveType(t)
+            let newPatterns = items.map { | Pair(pattern, spread) =>
+                Pair(self.resolvePattern(pattern), spread)
+            }
+            PList(at, newType, newPatterns)
     }
 
 }

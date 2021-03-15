@@ -505,6 +505,8 @@ extend self: Parser {
             let at = self.current.at
             let pair = self.parseRecordPattern().unzip
             PVariant(at, "Record$" + pair.first.mkString("$"), pair.second)
+        } elseIf {self.current.rawIs("[")} {
+            self.parseListPattern()
         } else {
             let token = self.skip(LUpper)
             if(self.current.rawIs("(")) {
@@ -784,12 +786,27 @@ extend self: Parser {
         self.rawSkip(LBracketRight, ")")
         fields.reverse
     }
-    
-    parseList(): Term {
-        mutable items = List[Term]()
+
+    parseListPattern(): MatchPattern {
+        mutable items = List[Pair[MatchPattern, Bool]]()
         let at = self.rawSkip(LBracketLeft, "[").at
         while {!self.current.rawIs("]")} {
-            items ::= self.parseTerm()
+            let spread = self.current.is(LDotDotDot)
+            if(spread) { self.skip(LDotDotDot) }
+            items ::= Pair(self.parsePattern(), spread)
+            if(!self.current.rawIs("]")) {self.skipSeparator(LComma)}
+        }
+        self.rawSkip(LBracketRight, "]")
+        PList(at, self.freshTypeVariable(at), items.reverse)
+    }
+
+    parseList(): Term {
+        mutable items = List[Pair[Term, Bool]]()
+        let at = self.rawSkip(LBracketLeft, "[").at
+        while {!self.current.rawIs("]")} {
+            let spread = self.current.is(LDotDotDot)
+            if(spread) { self.skip(LDotDotDot) }
+            items ::= Pair(self.parseTerm(), spread)
             if(!self.current.rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")

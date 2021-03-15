@@ -288,8 +288,19 @@ case (Syntax_.EFloat(at, value)) =>
 value
 case (Syntax_.EVariable(at, name, _, _)) =>
 escapeResolved(name)
+case (Syntax_.EList(at, _, items)) if items.all({(_w1) =>
+(!_w1.second)
+}) =>
+(("List(" + items.map({(_w1) =>
+emitTerm(_w1.first)
+}).mkString(", ")) + ")")
 case (Syntax_.EList(at, _, items)) =>
-(("List(" + items.map(emitTerm).mkString(", ")) + ")")
+(("(List(" + items.map({
+case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
+(("List(" + emitTerm(item)) + ")")
+case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
+emitTerm(item)
+}).mkString(", ")) + ").flatten)")
 case (Syntax_.EVariant(at, name, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>
 ""
@@ -381,6 +392,13 @@ case (Syntax_.PVariantAs(at, name, variable)) =>
 ((variable.map(escapeKeyword).getOrElse("_") + " : ") + escapeResolved(name))
 case (Syntax_.PAlias(at, p, variable)) =>
 (((escapeKeyword(variable) + " @ (") + emitPattern(p)) + ")")
+case (Syntax_.PList(at, _, items)) =>
+(("List(" + items.map({
+case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
+emitPattern(item)
+case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
+(emitPattern(item) + " : _*")
+}).join(", ")) + ")")
 }
 
 def extractTypeName(type_ : Syntax_.Type) : Firefly_Core.String = (type_) match {

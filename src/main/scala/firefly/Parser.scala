@@ -675,6 +675,10 @@ self.current.rawIs("(")
 val at = self.current.at;
 val pair = self.parseRecordPattern().unzip;
 Syntax_.PVariant(at, ("Record$" + pair.first.mkString("$")), pair.second)
+}).elseIf({() =>
+self.current.rawIs("[")
+}, {() =>
+self.parseListPattern()
 }).else_({() =>
 val token = self.skip(Token_.LUpper());
 Firefly_Core.if_(self.current.rawIs("("), {() =>
@@ -1087,13 +1091,36 @@ self.rawSkip(Token_.LBracketRight(), ")");
 fields.reverse
 }
 
-def parseList() : Syntax_.Term = {
-var items = Firefly_Core.List[Syntax_.Term]();
+def parseListPattern() : Syntax_.MatchPattern = {
+var items = Firefly_Core.List[Firefly_Core.Pair[Syntax_.MatchPattern, Firefly_Core.Bool]]();
 val at = self.rawSkip(Token_.LBracketLeft(), "[").at;
 Firefly_Core.while_({() =>
 (!self.current.rawIs("]"))
 }, {() =>
-items ::= self.parseTerm();
+val spread = self.current.is(Token_.LDotDotDot());
+Firefly_Core.if_(spread, {() =>
+self.skip(Token_.LDotDotDot())
+});
+items ::= Firefly_Core.Pair(self.parsePattern(), spread);
+Firefly_Core.if_((!self.current.rawIs("]")), {() =>
+self.skipSeparator(Token_.LComma())
+})
+});
+self.rawSkip(Token_.LBracketRight(), "]");
+Syntax_.PList(at, self.freshTypeVariable(at), items.reverse)
+}
+
+def parseList() : Syntax_.Term = {
+var items = Firefly_Core.List[Firefly_Core.Pair[Syntax_.Term, Firefly_Core.Bool]]();
+val at = self.rawSkip(Token_.LBracketLeft(), "[").at;
+Firefly_Core.while_({() =>
+(!self.current.rawIs("]"))
+}, {() =>
+val spread = self.current.is(Token_.LDotDotDot());
+Firefly_Core.if_(spread, {() =>
+self.skip(Token_.LDotDotDot())
+});
+items ::= Firefly_Core.Pair(self.parseTerm(), spread);
 Firefly_Core.if_((!self.current.rawIs("]")), {() =>
 self.skipSeparator(Token_.LComma())
 })
