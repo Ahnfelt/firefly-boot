@@ -793,7 +793,12 @@ extend self: Parser {
         while {!self.current.rawIs("]")} {
             let spread = self.current.is(LDotDotDot)
             if(spread) { self.skip(LDotDotDot) }
-            items ::= Pair(self.parsePattern(), spread)
+            let pattern = if(spread && self.current.rawIs("]")) {
+                PVariable(self.current.at, None)
+            } else {
+                self.parsePattern()
+            }
+            items ::= Pair(pattern, spread)
             if(!self.current.rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")

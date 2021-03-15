@@ -1101,7 +1101,12 @@ val spread = self.current.is(Token_.LDotDotDot());
 Firefly_Core.if_(spread, {() =>
 self.skip(Token_.LDotDotDot())
 });
-items ::= Firefly_Core.Pair(self.parsePattern(), spread);
+val pattern = Firefly_Core.if_((spread && self.current.rawIs("]")), {() =>
+Syntax_.PVariable(self.current.at, Firefly_Core.None())
+}).else_({() =>
+self.parsePattern()
+});
+items ::= Firefly_Core.Pair(pattern, spread);
 Firefly_Core.if_((!self.current.rawIs("]")), {() =>
 self.skipSeparator(Token_.LComma())
 })
