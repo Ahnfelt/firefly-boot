@@ -102,8 +102,8 @@ extend self: Inference {
                 let listType = TConstructor(at, core("List"), [t])
                 self.unification.unify(at, expected, listType)
                 (items.map {
-                    | Pair(item, False) => self.inferPattern(environment, t, pattern)
-                    | Pair(item, True) => self.inferPattern(environment, listType, pattern)
+                    | Pair(item, False) => self.inferPattern(environment, t, item)
+                    | Pair(item, True) => self.inferPattern(environment, listType, item)
                 }.foldLeft(Map[String, Type]())) { _ ++ _ }
             | PVariantAs(at, name, None) =>
                 let scheme = environment.symbols.get(name).else {

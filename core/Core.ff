@@ -34,16 +34,11 @@ type Array[T]() // (items: T...)
 
 type ArrayBuilder[T]() // (items: T...)
 
-type List[T] {
-    Empty
-    Link(head: T, tail: List[T])
-}
-
-type FakeList[T] {
-    List() // (items: T...) // To expose a List(...) constructor
-}
+type List[T] {}
 
 type ListBuilder[T]() // (items: T...)
+
+listBuilderOf[T](): ListBuilder[T] {} // (items: T...)
 
 type Map[K, V]() // (items: Pair[K, V]...)
 

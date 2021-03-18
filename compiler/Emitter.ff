@@ -109,7 +109,7 @@ emitTraitDefinition(definition: DTrait): String {
             })
             emitSignature(signature.copy(
                 generics = definition.generics ++ signature.generics,
-                constraints = Constraint(t) :: definition.constraints ++ signature.constraints
+                constraints = [Constraint(t), ...definition.constraints, ...signature.constraints]
             )) + " =\n    scala.Predef.implicitly[" + emitType(t) + "]." + escapeKeyword(signature.name) +
             "_m(" + signature.parameters.map { _.name }.map(escapeKeyword).join(", ") + ")"
         }.join("\n\n") + "\n\n"

@@ -88,9 +88,9 @@ val listType = Syntax_.TConstructor(at, core("List"), List(t));
 self.unification.unify(at, expected, listType);
 items.map({
 case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
-self.inferPattern(environment, t, pattern)
+self.inferPattern(environment, t, item)
 case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
-self.inferPattern(environment, listType, pattern)
+self.inferPattern(environment, listType, item)
 }).foldLeft(Firefly_Core.Map[Firefly_Core.String, Syntax_.Type]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })

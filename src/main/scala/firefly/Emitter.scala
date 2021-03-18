@@ -156,7 +156,7 @@ val methodWrappers = Firefly_Core.if_(definition.methods.isEmpty, {() =>
 val t = Syntax_.TConstructor(definition.at, definition.name, definition.generics.map({(_w1) =>
 Syntax_.TConstructor(definition.at, _w1, List())
 }));
-(((((((emitSignature(signature.copy(generics = (definition.generics ++ signature.generics), constraints = (Syntax_.Constraint(t) :: (definition.constraints ++ signature.constraints)))) + " =\n    scala.Predef.implicitly[") + emitType(t)) + "].") + escapeKeyword(signature.name)) + "_m(") + signature.parameters.map({(_w1) =>
+(((((((emitSignature(signature.copy(generics = (definition.generics ++ signature.generics), constraints = (List(List(Syntax_.Constraint(t)), definition.constraints, signature.constraints).flatten))) + " =\n    scala.Predef.implicitly[") + emitType(t)) + "].") + escapeKeyword(signature.name)) + "_m(") + signature.parameters.map({(_w1) =>
 _w1.name
 }).map(escapeKeyword).join(", ")) + ")")
 }).join("\n\n")) + "\n\n")

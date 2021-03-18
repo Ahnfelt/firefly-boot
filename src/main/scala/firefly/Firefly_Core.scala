@@ -13,6 +13,7 @@ object Firefly_Core {
 
     type SetBuilder[T] = mutable.SortedSet[T]
     type ArrayBuilder[T] = mutable.ArrayBuffer[T]
+    type ListBuilder[T] = mutable.ListBuffer[T]
 
     def SetBuilder[T](items : T*)(implicit ordering : Ordering[T]) = mutable.SortedSet[T](items : _*)
     def ArrayBuilder[T](items : T*) = mutable.ArrayBuffer[T](items : _*)
@@ -35,6 +36,9 @@ object Firefly_Core {
     type Unit = scala.Unit
 
     case class FireflyException(value : Any) extends RuntimeException
+
+
+    def listBuilderOf[T](items : T*) = mutable.ListBuffer[T]()
 
 
     object Unit {
@@ -230,6 +234,11 @@ object Firefly_Core {
         def any(body : T => Bool) : Bool = list.exists(body)
         def modify(index : Int, body : T => T) : Array[T] = list.updated(index, body(list(index)))
         def pairs() : Array[(Int, T)] = list.zipWithIndex.map(_.swap)
+    }
+
+    implicit class Firefly_ListBuilder[T](list : ListBuilder[T]) {
+        def append(item : T) = list += item
+        def drain = { val result = list.toList; list.clear(); result }
     }
 
     implicit class Firefly_ArrayBuilder[T](list : ArrayBuilder[T]) {

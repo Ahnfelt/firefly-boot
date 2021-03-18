@@ -97,7 +97,7 @@ self.freshTypeVariable(at)
 });
 val instantiation = definition.generics.zip(typeVariables).toMap;
 val traitType1 = self.instantiate(instantiation, definition.traitType);
-val traitType2 = Syntax_.TConstructor(at, constraintName, (type_ :: generics));
+val traitType2 = Syntax_.TConstructor(at, constraintName, (List(List(type_), generics).flatten));
 self.unify(at, traitType1, traitType2);
 definition.constraints.each({(constraint) =>
 pipe_dot(self.instantiate(instantiation, constraint.representation))({

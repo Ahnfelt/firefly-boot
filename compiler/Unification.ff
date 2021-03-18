@@ -92,7 +92,7 @@ extend self: Unification {
                         let typeVariables = definition.generics.map {| _ => self.freshTypeVariable(at) }
                         let instantiation = definition.generics.zip(typeVariables).toMap
                         let traitType1 = self.instantiate(instantiation, definition.traitType)
-                        let traitType2 = TConstructor(at, constraintName, type :: generics)
+                        let traitType2 = TConstructor(at, constraintName, [type, ...generics])
                         self.unify(at, traitType1, traitType2)
                         definition.constraints.each { constraint =>
                             self.instantiate(instantiation, constraint.representation).{
