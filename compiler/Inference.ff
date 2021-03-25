@@ -19,6 +19,7 @@ fail[T](at: Location, message: String): T {
 //myInt = 42
 //myString: String = myInt
 //myFunction(x: Int): String { | a, b => x }
+//myInt = Location("foo", 1, "one")
 
 core(name: String): String {
     "ff:core/Core." + name
@@ -168,6 +169,23 @@ extend self: Inference {
                     value = self.inferTerm(environment, e.valueType, e.value)
                     body = self.inferTerm(environment2, expected, e.body)
                 )
+            | EVariant e =>
+                let signature = environment.symbols.get(e.name).else {
+                    fail(e.at, "Symbol not in scope: " + e.name)
+                }.signature
+                // TODO: Constrain the type arguments
+                // TODO: Named arguments
+                let typeArguments = signature.generics.zip(e.typeArguments).toMap
+                let returnType = self.unification.instantiate(typeArguments, signature.returnType)
+                self.unification.unify(e.at, expected, returnType)
+                let arguments = e.arguments.map { arguments =>
+                    signature.parameters.zip(arguments).map { | Pair(p, a) =>
+                        let t = self.unification.instantiate(typeArguments, p.valueType)
+                        let e = self.inferTerm(environment, t, a.value)
+                        a.Argument(value = e)
+                    }
+                }
+                e.EVariant(arguments = arguments)
             | _ => term
             /*
             | EVariant e =>

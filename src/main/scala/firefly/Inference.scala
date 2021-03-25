@@ -9,7 +9,7 @@ import firefly.Environment_._
 object Inference_ {
 
 case class Inference(unification : Unification_.Unification)
-
+val myInt = Syntax_.Location("foo", 1, "one")
 def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Inference = {
 Inference(unification = Unification_.make(instances))
 }
@@ -165,6 +165,22 @@ case (e : Syntax_.ELet) =>
 val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(e.at, e.name, List(), List(), List(), e.valueType));
 val environment2 = environment.copy(symbols = (environment.symbols + Firefly_Core.Pair(e.name, scheme)));
 e.copy(value = self.inferTerm(environment, e.valueType, e.value), body = self.inferTerm(environment2, expected, e.body))
+case (e : Syntax_.EVariant) =>
+val signature = environment.symbols.get(e.name).else_({() =>
+fail(e.at, ("Symbol not in scope: " + e.name))
+}).signature;
+val typeArguments = signature.generics.zip(e.typeArguments).toMap;
+val returnType = self.unification.instantiate(typeArguments, signature.returnType);
+self.unification.unify(e.at, expected, returnType);
+val arguments = e.arguments.map({(arguments) =>
+signature.parameters.zip(arguments).map({
+case (Firefly_Core.Pair(p, a)) =>
+val t = self.unification.instantiate(typeArguments, p.valueType);
+val e = self.inferTerm(environment, t, a.value);
+a.copy(value = e)
+})
+});
+e.copy(arguments = arguments)
 case (_) =>
 term
 })
