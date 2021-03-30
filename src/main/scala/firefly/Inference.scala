@@ -9,7 +9,7 @@ import firefly.Environment_._
 object Inference_ {
 
 case class Inference(unification : Unification_.Unification)
-val myInt = Syntax_.Location("foo", 1, "one")
+
 def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Inference = {
 Inference(unification = Unification_.make(instances))
 }
