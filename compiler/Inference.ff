@@ -19,7 +19,7 @@ fail[T](at: Location, message: String): T {
 //myInt = 42
 //myString: String = myInt
 //myFunction(x: Int): String { | a, b => x }
-//myInt = Location("foo", 1, "one")
+//myInt = Location("foo", 1, 1)
 
 core(name: String): String {
     "ff:core/Core." + name
