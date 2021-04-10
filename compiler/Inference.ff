@@ -174,18 +174,30 @@ extend self: Inference {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }.signature
                 // TODO: Constrain the type arguments
-                // TODO: Named arguments
-                let typeArguments = signature.generics.zip(e.typeArguments).toMap
-                let returnType = self.unification.instantiate(typeArguments, signature.returnType)
-                self.unification.unify(e.at, expected, returnType)
-                let arguments = e.arguments.map { arguments =>
-                    signature.parameters.zip(arguments).map { | Pair(p, a) =>
-                        let t = self.unification.instantiate(typeArguments, p.valueType)
-                        let e = self.inferTerm(environment, t, a.value)
-                        a.Argument(value = e)
+                let typeArguments = if(e.typeArguments.nonEmpty) {
+                    if(signature.generics.size != e.typeArguments.size) {
+                        fail(e.at,
+                            "Wrong number of type parameters for " + e.name +
+                            ", expected " + signature.generics.size +
+                            ", got " + e.typeArguments.size
+                        )
+                    }
+                    signature.generics.zip(e.typeArguments)
+                } else {
+                    signature.generics.map { name =>
+                        Pair(name, self.unification.freshTypeVariable(e.at))
                     }
                 }
-                e.EVariant(arguments = arguments)
+                let instantiation = typeArguments.toMap
+                let returnType = self.unification.instantiate(instantiation, signature.returnType)
+                self.unification.unify(e.at, expected, returnType)
+                let arguments = e.arguments.map {
+                    self.inferArguments(e.at, environment, instantiation, signature.parameters, _)
+                }
+                e.EVariant(
+                    typeArguments = typeArguments.map { _.second }
+                    arguments = arguments
+                )
             | _ => term
             /*
             | EVariant e =>
@@ -276,6 +288,45 @@ extend self: Inference {
                 )
             */
         }
+    }
+
+    inferArguments(
+        at: Location
+        environment: Environment
+        instantiation: Map[String, Type]
+        parameters: List[Parameter]
+        arguments: List[Argument]
+    ): List[Argument] {
+        mutable remainingArguments = arguments
+        let newArguments = parameters.map { p =>
+            let t = self.unification.instantiate(instantiation, p.valueType)
+            remainingArguments.{
+                | [] =>
+                    p.default.map { e =>
+                        let e2 = self.inferTerm(environment, t, e)
+                        Argument(at, None, e2)
+                    }.else {
+                        fail(at, "Missing argument: " + p.name)
+                    }
+                | [Argument(at, None, e), ...remaining] =>
+                    remainingArguments = remaining.toList
+                    let e2 = self.inferTerm(environment, t, e)
+                    Argument(at, None, e2)
+                | remaining =>
+                    remainingArguments.find { _.name.contains(p.name) }.map { | Argument(at, _, e) =>
+                        remainingArguments = remainingArguments.filter { !_.name.contains(p.name) }
+                        let e2 = self.inferTerm(environment, t, e)
+                        Argument(at, None, e2)
+                    }.else {
+                        fail(at, "Missing argument: " + p.name)
+                    }
+            }
+        }
+        remainingArguments.headOption.each {
+            | Argument(at, None, _) => fail(at, "Too many arguments")
+            | Argument(at, Some(name), _) => fail(at, "Unknown argument: " + name)
+        }
+        newArguments
     }
 
 }

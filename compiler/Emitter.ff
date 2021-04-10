@@ -304,7 +304,7 @@ escapeKeyword(word: String) {
     if(keywords(word)) {word + "_"} else {word}
 }
 
-keywords = Set(
+keywords = [
     "abstract"
     "case"
     "catch"
@@ -346,4 +346,4 @@ keywords = Set(
     "yield"
     "scala"
     "java"
-)
+].toSet

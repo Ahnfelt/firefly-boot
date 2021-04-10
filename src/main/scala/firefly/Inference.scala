@@ -169,21 +169,69 @@ case (e : Syntax_.EVariant) =>
 val signature = environment.symbols.get(e.name).else_({() =>
 fail(e.at, ("Symbol not in scope: " + e.name))
 }).signature;
-val typeArguments = signature.generics.zip(e.typeArguments).toMap;
-val returnType = self.unification.instantiate(typeArguments, signature.returnType);
-self.unification.unify(e.at, expected, returnType);
-val arguments = e.arguments.map({(arguments) =>
-signature.parameters.zip(arguments).map({
-case (Firefly_Core.Pair(p, a)) =>
-val t = self.unification.instantiate(typeArguments, p.valueType);
-val e = self.inferTerm(environment, t, a.value);
-a.copy(value = e)
+val typeArguments = Firefly_Core.if_(e.typeArguments.nonEmpty, {() =>
+Firefly_Core.if_((signature.generics.size != e.typeArguments.size), {() =>
+fail(e.at, ((((("Wrong number of type parameters for " + e.name) + ", expected ") + signature.generics.size) + ", got ") + e.typeArguments.size))
+});
+signature.generics.zip(e.typeArguments)
+}).else_({() =>
+signature.generics.map({(name) =>
+Firefly_Core.Pair(name, self.unification.freshTypeVariable(e.at))
 })
 });
-e.copy(arguments = arguments)
+val instantiation = typeArguments.toMap;
+val returnType = self.unification.instantiate(instantiation, signature.returnType);
+self.unification.unify(e.at, expected, returnType);
+val arguments = e.arguments.map({(_w1) =>
+self.inferArguments(e.at, environment, instantiation, signature.parameters, _w1)
+});
+e.copy(typeArguments = typeArguments.map({(_w1) =>
+_w1.second
+}), arguments = arguments)
 case (_) =>
 term
 })
+}
+
+def inferArguments(at : Syntax_.Location, environment : Environment_.Environment, instantiation : Firefly_Core.Map[Firefly_Core.String, Syntax_.Type], parameters : Firefly_Core.List[Syntax_.Parameter], arguments : Firefly_Core.List[Syntax_.Argument]) : Firefly_Core.List[Syntax_.Argument] = {
+Firefly_Core.log.debug(Firefly_Core.Pair(parameters, arguments));
+var remainingArguments = arguments;
+val newArguments = parameters.map({(p) =>
+val t = self.unification.instantiate(instantiation, p.valueType);
+pipe_dot(remainingArguments)({
+case (List()) =>
+p.default.map({(e) =>
+val e2 = self.inferTerm(environment, t, e);
+Syntax_.Argument(at, Firefly_Core.None(), e2)
+}).else_({() =>
+fail(at, ("Missing argument: " + p.name))
+})
+case (List(Syntax_.Argument(at, Firefly_Core.None(), e), remaining @ _*)) =>
+remainingArguments = remaining.toList;
+val e2 = self.inferTerm(environment, t, e);
+Syntax_.Argument(at, Firefly_Core.None(), e2)
+case (remaining) =>
+remainingArguments.find({(_w1) =>
+_w1.name.contains(p.name)
+}).map({
+case (Syntax_.Argument(at, _, e)) =>
+remainingArguments = remainingArguments.filter({(_w1) =>
+(!_w1.name.contains(p.name))
+});
+val e2 = self.inferTerm(environment, t, e);
+Syntax_.Argument(at, Firefly_Core.None(), e2)
+}).else_({() =>
+fail(at, ("Missing argument: " + p.name))
+})
+})
+});
+remainingArguments.headOption.each({
+case (Syntax_.Argument(at, Firefly_Core.None(), _)) =>
+fail(at, "Too many arguments")
+case (Syntax_.Argument(at, Firefly_Core.Some(name), _)) =>
+fail(at, ("Unknown argument: " + name))
+});
+newArguments
 }
 
 }
