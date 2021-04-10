@@ -174,20 +174,7 @@ extend self: Inference {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }.signature
                 // TODO: Constrain the type arguments
-                let typeArguments = if(e.typeArguments.nonEmpty) {
-                    if(signature.generics.size != e.typeArguments.size) {
-                        fail(e.at,
-                            "Wrong number of type parameters for " + e.name +
-                            ", expected " + signature.generics.size +
-                            ", got " + e.typeArguments.size
-                        )
-                    }
-                    signature.generics.zip(e.typeArguments)
-                } else {
-                    signature.generics.map { name =>
-                        Pair(name, self.unification.freshTypeVariable(e.at))
-                    }
-                }
+                let typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments)
                 let instantiation = typeArguments.toMap
                 let returnType = self.unification.instantiate(instantiation, signature.returnType)
                 self.unification.unify(e.at, expected, returnType)
@@ -287,6 +274,28 @@ extend self: Inference {
                     value = self.resolveTerm(value)
                 )
             */
+        }
+    }
+
+    inferTypeArguments(
+        at: Location
+        name: String
+        generics: List[String],
+        typeArguments: List[Type]
+    ): List[Pair[String, Type]] {
+        if(typeArguments.nonEmpty) {
+            if(generics.size != typeArguments.size) {
+                fail(at,
+                    "Wrong number of type parameters for " + name +
+                    ", expected " + generics.size +
+                    ", got " + typeArguments.size
+                )
+            }
+            generics.zip(typeArguments)
+        } else {
+            generics.map { name =>
+                Pair(name, self.unification.freshTypeVariable(at))
+            }
         }
     }
 

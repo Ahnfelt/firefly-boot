@@ -169,16 +169,7 @@ case (e : Syntax_.EVariant) =>
 val signature = environment.symbols.get(e.name).else_({() =>
 fail(e.at, ("Symbol not in scope: " + e.name))
 }).signature;
-val typeArguments = Firefly_Core.if_(e.typeArguments.nonEmpty, {() =>
-Firefly_Core.if_((signature.generics.size != e.typeArguments.size), {() =>
-fail(e.at, ((((("Wrong number of type parameters for " + e.name) + ", expected ") + signature.generics.size) + ", got ") + e.typeArguments.size))
-});
-signature.generics.zip(e.typeArguments)
-}).else_({() =>
-signature.generics.map({(name) =>
-Firefly_Core.Pair(name, self.unification.freshTypeVariable(e.at))
-})
-});
+val typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments);
 val instantiation = typeArguments.toMap;
 val returnType = self.unification.instantiate(instantiation, signature.returnType);
 self.unification.unify(e.at, expected, returnType);
@@ -193,8 +184,20 @@ term
 })
 }
 
+def inferTypeArguments(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], typeArguments : Firefly_Core.List[Syntax_.Type]) : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]] = {
+Firefly_Core.if_(typeArguments.nonEmpty, {() =>
+Firefly_Core.if_((generics.size != typeArguments.size), {() =>
+fail(at, ((((("Wrong number of type parameters for " + name) + ", expected ") + generics.size) + ", got ") + typeArguments.size))
+});
+generics.zip(typeArguments)
+}).else_({() =>
+generics.map({(name) =>
+Firefly_Core.Pair(name, self.unification.freshTypeVariable(at))
+})
+})
+}
+
 def inferArguments(at : Syntax_.Location, environment : Environment_.Environment, instantiation : Firefly_Core.Map[Firefly_Core.String, Syntax_.Type], parameters : Firefly_Core.List[Syntax_.Parameter], arguments : Firefly_Core.List[Syntax_.Argument]) : Firefly_Core.List[Syntax_.Argument] = {
-Firefly_Core.log.debug(Firefly_Core.Pair(parameters, arguments));
 var remainingArguments = arguments;
 val newArguments = parameters.map({(p) =>
 val t = self.unification.instantiate(instantiation, p.valueType);
