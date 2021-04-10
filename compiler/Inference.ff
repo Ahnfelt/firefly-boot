@@ -187,31 +187,6 @@ extend self: Inference {
                 )
             | _ => term
             /*
-            | EVariant e =>
-                let variant = environment.symbols.get(e.name).else {
-                    fail(e.at, "Symbol not in scope: " + e.name)
-                }
-                let typeArguments = if(e.typeArguments.nonEmpty) {
-                    if(scheme.signature.generics.size != e.typeArguments.size) {
-                        fail(e.at,
-                            "Wrong number of type parameters for " + e.name +
-                            ", expected " + scheme.signature.generics.size +
-                            ", got " + e.typeArguments.size
-                        )
-                    }
-                    scheme.signature.generics.zip(typeArguments)
-                } else {
-                    scheme.signature.generics.map { name =>
-                        Pair(name, self.unification.freshTypeVariable(e.at))
-                    }
-                }
-                let arguments = e.arguments.map { argument =>
-
-                }
-                e.EVariant(
-                    typeArguments = typeArguments.map { _.second }
-                    arguments = arguments
-                )
             | EVariantIs(at, name, typeArguments) =>
                 EVariantIs(
                     at = at
