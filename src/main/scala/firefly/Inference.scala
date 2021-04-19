@@ -179,6 +179,41 @@ self.inferArguments(e.at, environment, instantiation, signature.parameters, _w1)
 e.copy(typeArguments = typeArguments.map({(_w1) =>
 _w1.second
 }), arguments = arguments)
+case (e : Syntax_.EVariantIs) =>
+val signature = environment.symbols.get(e.name).else_({() =>
+fail(e.at, ("Symbol not in scope: " + e.name))
+}).signature;
+val typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments);
+e.copy(typeArguments = typeArguments.map({(_w1) =>
+_w1.second
+}))
+case (e : Syntax_.ECopy) =>
+val signature = environment.symbols.get(e.name).else_({() =>
+fail(e.at, ("Symbol not in scope: " + e.name))
+}).signature;
+val record = self.inferTerm(environment, expected, e.record);
+val typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, List());
+val instantiation = typeArguments.toMap;
+val arguments = e.arguments.map({
+case (Syntax_.Field(at, name, value)) =>
+Syntax_.Argument(at, Firefly_Core.Some(name), value)
+});
+val fields = self.inferArguments(e.at, environment, instantiation, signature.parameters, arguments);
+e.copy(record = record, arguments = fields.map({
+case (Syntax_.Argument(at, Firefly_Core.Some(name), value)) =>
+Syntax_.Field(at, name, value)
+case (Syntax_.Argument(at, _, _)) =>
+fail(at, "Internal error: missing argument name")
+}))
+case (e : Syntax_.EField) =>
+val recordType = self.unification.freshTypeVariable(e.at);
+val record = self.inferTerm(environment, recordType, e.record);
+pipe_dot(self.unification.substitute(recordType))({
+case (Syntax_.TConstructor(_, name, typeParameters)) =>
+e.copy(record = record)
+case (Syntax_.TVariable(_, index)) =>
+fail(e.at, ((("No such field " + e.field) + " on unknown type: $") + index))
+})
 case (_) =>
 term
 })

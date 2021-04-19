@@ -185,23 +185,47 @@ extend self: Inference {
                     typeArguments = typeArguments.map { _.second }
                     arguments = arguments
                 )
-            | _ => term
-            /*
-            | EVariantIs(at, name, typeArguments) =>
-                EVariantIs(
-                    at = at
-                    name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
-                    typeArguments = typeArguments.map { self.resolveType(_) }
+            | EVariantIs e =>
+                let signature = environment.symbols.get(e.name).else {
+                    fail(e.at, "Symbol not in scope: " + e.name)
+                }.signature
+                let typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments)
+                e.EVariantIs(
+                    typeArguments = typeArguments.map { _.second }
                 )
-            | ECopy(at, name, record, arguments) =>
-                ECopy(
-                    at = at
-                    name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
-                    record = self.resolveTerm(record)
-                    arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value)) }
+            | ECopy e =>
+                let signature = environment.symbols.get(e.name).else {
+                    fail(e.at, "Symbol not in scope: " + e.name)
+                }.signature
+                let record = self.inferTerm(environment, expected, e.record)
+                let typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, [])
+                let instantiation = typeArguments.toMap
+                let arguments = e.arguments.map {
+                    | Field(at, name, value) => Argument(at, Some(name), value)
+                }
+                let fields = self.inferArguments(e.at, environment, instantiation, signature.parameters, arguments)
+                e.ECopy(
+                    record = record
+                    arguments = fields.map {
+                        // TODO: inferArguments always throws the argument names away. Keep them instead.
+                        | Argument(at, Some(name), value) => Field(at, name, value)
+                        | Argument(at, _, _) => fail(at, "Internal error: missing argument name")
+                    }
                 )
             | EField e =>
-                e.EField(record = self.resolveTerm(e.record))
+                let recordType = self.unification.freshTypeVariable(e.at)
+                let record = self.inferTerm(environment, recordType, e.record)
+                self.unification.substitute(recordType).{
+                    | TConstructor(_, name, typeParameters) =>
+                        // TODO: Check that field e.name exists on record
+                        e.EField(
+                            record = record
+                        )
+                    | TVariable(_, index) =>
+                        fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
+                }
+            | _ => term
+            /*
             | ELambda(at, Lambda(lambdaAt, cases)) =>
                 ELambda(at, Lambda(lambdaAt, cases.map { self.resolveCase(_) }))
             | EPipe(at, value, function) =>
