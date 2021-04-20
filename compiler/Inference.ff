@@ -19,7 +19,8 @@ fail[T](at: Location, message: String): T {
 //myInt = 42
 //myString: String = myInt
 //myFunction(x: Int): String { | a, b => x }
-myInt = Location("foo", 1, 1).Location(line = 2)
+//myInt = Location("foo", 1, 1).Location(line = 2)
+//myFoo: String = 1.{_}
 
 core(name: String): String {
     "ff:core/Core." + name
@@ -212,7 +213,16 @@ extend self: Inference {
                     ELambda(e.at, Lambda(e.at, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], None, body)]))
                 )
                 self.inferTerm(environment, expected, term)
-            | _ => term
+            | EPipe e =>
+                let valueType = self.unification.freshTypeVariable(e.at)
+                let functionType = TConstructor(e.at, "Function$1", [valueType, expected])
+                let value = self.inferTerm(environment, valueType, e.value)
+                let function = self.inferTerm(environment, functionType, e.function)
+                e.EPipe(
+                    value = value
+                    function = function
+                )
+           | _ => term
             /*
             | EField e =>
                 let recordType = self.unification.freshTypeVariable(e.at)

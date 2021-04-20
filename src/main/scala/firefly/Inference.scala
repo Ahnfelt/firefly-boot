@@ -9,9 +9,7 @@ import firefly.Environment_._
 object Inference_ {
 
 case class Inference(unification : Unification_.Unification)
-val myInt = pipe_dot(Syntax_.Location("foo", 1, 1))({(_c) =>
-Syntax_.Location(file = _c.file, line = 2, column = _c.column)
-})
+
 def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Inference = {
 Inference(unification = Unification_.make(instances))
 }
@@ -214,6 +212,12 @@ Syntax_.Argument(e.at, Firefly_Core.Some(p.name), Syntax_.EField(e.at, Syntax_.E
 val body = Syntax_.EVariant(e.at, e.name, List(), Firefly_Core.Some(arguments));
 val term = Syntax_.EPipe(e.at, e.record, Syntax_.ELambda(e.at, Syntax_.Lambda(e.at, List(Syntax_.MatchCase(e.at, List(Syntax_.PVariable(e.at, Firefly_Core.Some("_c"))), Firefly_Core.None(), body)))));
 self.inferTerm(environment, expected, term)
+case (e : Syntax_.EPipe) =>
+val valueType = self.unification.freshTypeVariable(e.at);
+val functionType = Syntax_.TConstructor(e.at, "Function$1", List(valueType, expected));
+val value = self.inferTerm(environment, valueType, e.value);
+val function = self.inferTerm(environment, functionType, e.function);
+e.copy(value = value, function = function)
 case (_) =>
 term
 })
