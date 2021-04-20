@@ -9,7 +9,9 @@ import firefly.Environment_._
 object Inference_ {
 
 case class Inference(unification : Unification_.Unification)
-
+val myInt = pipe_dot(Syntax_.Location("foo", 1, 1))({(_c) =>
+Syntax_.Location(file = _c.file, line = 2, column = _c.column)
+})
 def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Inference = {
 Inference(unification = Unification_.make(instances))
 }
@@ -191,29 +193,27 @@ case (e : Syntax_.ECopy) =>
 val signature = environment.symbols.get(e.name).else_({() =>
 fail(e.at, ("Symbol not in scope: " + e.name))
 }).signature;
-val record = self.inferTerm(environment, expected, e.record);
-val typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, List());
-val instantiation = typeArguments.toMap;
-val arguments = e.arguments.map({
-case (Syntax_.Field(at, name, value)) =>
-Syntax_.Argument(at, Firefly_Core.Some(name), value)
-});
-val fields = self.inferArguments(e.at, environment, instantiation, signature.parameters, arguments);
-e.copy(record = record, arguments = fields.map({
-case (Syntax_.Argument(at, Firefly_Core.Some(name), value)) =>
-Syntax_.Field(at, name, value)
-case (Syntax_.Argument(at, _, _)) =>
-fail(at, "Internal error: missing argument name")
+e.arguments.find({(a) =>
+(!signature.parameters.exists({(_w1) =>
+(_w1.name == a.name)
 }))
-case (e : Syntax_.EField) =>
-val recordType = self.unification.freshTypeVariable(e.at);
-val record = self.inferTerm(environment, recordType, e.record);
-pipe_dot(self.unification.substitute(recordType))({
-case (Syntax_.TConstructor(_, name, typeParameters)) =>
-e.copy(record = record)
-case (Syntax_.TVariable(_, index)) =>
-fail(e.at, ((("No such field " + e.field) + " on unknown type: $") + index))
+}).each({
+case (Syntax_.Field(at, name, value)) =>
+fail(at, ("Unknown parameter: " + name))
+});
+val arguments = signature.parameters.map({(p) =>
+e.arguments.find({(_w1) =>
+(_w1.name == p.name)
+}).map({
+case (Syntax_.Field(at, _, value)) =>
+Syntax_.Argument(at, Firefly_Core.Some(p.name), value)
+}).else_({() =>
+Syntax_.Argument(e.at, Firefly_Core.Some(p.name), Syntax_.EField(e.at, Syntax_.EVariable(e.at, "_c", List(), List()), p.name))
 })
+});
+val body = Syntax_.EVariant(e.at, e.name, List(), Firefly_Core.Some(arguments));
+val term = Syntax_.EPipe(e.at, e.record, Syntax_.ELambda(e.at, Syntax_.Lambda(e.at, List(Syntax_.MatchCase(e.at, List(Syntax_.PVariable(e.at, Firefly_Core.Some("_c"))), Firefly_Core.None(), body)))));
+self.inferTerm(environment, expected, term)
 case (_) =>
 term
 })
@@ -240,14 +240,14 @@ pipe_dot(remainingArguments)({
 case (List()) =>
 p.default.map({(e) =>
 val e2 = self.inferTerm(environment, t, e);
-Syntax_.Argument(at, Firefly_Core.None(), e2)
+Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
 }).else_({() =>
 fail(at, ("Missing argument: " + p.name))
 })
 case (List(Syntax_.Argument(at, Firefly_Core.None(), e), remaining @ _*)) =>
 remainingArguments = remaining.toList;
 val e2 = self.inferTerm(environment, t, e);
-Syntax_.Argument(at, Firefly_Core.None(), e2)
+Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
 case (remaining) =>
 remainingArguments.find({(_w1) =>
 _w1.name.contains(p.name)
@@ -257,7 +257,7 @@ remainingArguments = remainingArguments.filter({(_w1) =>
 (!_w1.name.contains(p.name))
 });
 val e2 = self.inferTerm(environment, t, e);
-Syntax_.Argument(at, Firefly_Core.None(), e2)
+Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
 }).else_({() =>
 fail(at, ("Missing argument: " + p.name))
 })

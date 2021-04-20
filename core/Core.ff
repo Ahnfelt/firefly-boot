@@ -55,3 +55,12 @@ type Bool {}
 type System {}
 type FileSystem {}
 type Unit()
+
+extend self[T] : List[T] {
+    toArray() : Array[T] {
+        panic("Built-in")
+    }
+    toSet() : Set[T] {
+        panic("Built-in")
+    }
+}

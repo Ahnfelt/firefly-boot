@@ -19,7 +19,7 @@ fail[T](at: Location, message: String): T {
 //myInt = 42
 //myString: String = myInt
 //myFunction(x: Int): String { | a, b => x }
-//myInt = Location("foo", 1, 1)
+myInt = Location("foo", 1, 1).Location(line = 2)
 
 core(name: String): String {
     "ff:core/Core." + name
@@ -197,21 +197,23 @@ extend self: Inference {
                 let signature = environment.symbols.get(e.name).else {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }.signature
-                let record = self.inferTerm(environment, expected, e.record)
-                let typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, [])
-                let instantiation = typeArguments.toMap
-                let arguments = e.arguments.map {
-                    | Field(at, name, value) => Argument(at, Some(name), value)
+                e.arguments.find { a => !signature.parameters.exists { _.name == a.name } }.each {
+                    | Field(at, name, value) => fail(at, "Unknown parameter: " + name)
                 }
-                let fields = self.inferArguments(e.at, environment, instantiation, signature.parameters, arguments)
-                e.ECopy(
-                    record = record
-                    arguments = fields.map {
-                        // TODO: inferArguments always throws the argument names away. Keep them instead.
-                        | Argument(at, Some(name), value) => Field(at, name, value)
-                        | Argument(at, _, _) => fail(at, "Internal error: missing argument name")
+                let arguments = signature.parameters.map { p =>
+                    e.arguments.find { _.name == p.name }.map {
+                        | Field(at, _, value) => Argument(at, Some(p.name), value)
+                    }.else {
+                        Argument(e.at, Some(p.name), EField(e.at, EVariable(e.at, "_c", [], []), p.name))
                     }
+                }
+                let body = EVariant(e.at, e.name, [], Some(arguments))
+                let term = EPipe(e.at, e.record,
+                    ELambda(e.at, Lambda(e.at, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], None, body)]))
                 )
+                self.inferTerm(environment, expected, term)
+            | _ => term
+            /*
             | EField e =>
                 let recordType = self.unification.freshTypeVariable(e.at)
                 let record = self.inferTerm(environment, recordType, e.record)
@@ -224,8 +226,6 @@ extend self: Inference {
                     | TVariable(_, index) =>
                         fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
                 }
-            | _ => term
-            /*
             | ELambda(at, Lambda(lambdaAt, cases)) =>
                 ELambda(at, Lambda(lambdaAt, cases.map { self.resolveCase(_) }))
             | EPipe(at, value, function) =>
@@ -312,19 +312,19 @@ extend self: Inference {
                 | [] =>
                     p.default.map { e =>
                         let e2 = self.inferTerm(environment, t, e)
-                        Argument(at, None, e2)
+                        Argument(at, Some(p.name), e2)
                     }.else {
                         fail(at, "Missing argument: " + p.name)
                     }
                 | [Argument(at, None, e), ...remaining] =>
                     remainingArguments = remaining.toList
                     let e2 = self.inferTerm(environment, t, e)
-                    Argument(at, None, e2)
+                    Argument(at, Some(p.name), e2)
                 | remaining =>
                     remainingArguments.find { _.name.contains(p.name) }.map { | Argument(at, _, e) =>
                         remainingArguments = remainingArguments.filter { !_.name.contains(p.name) }
                         let e2 = self.inferTerm(environment, t, e)
-                        Argument(at, None, e2)
+                        Argument(at, Some(p.name), e2)
                     }.else {
                         fail(at, "Missing argument: " + p.name)
                     }

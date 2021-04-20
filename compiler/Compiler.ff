@@ -67,8 +67,7 @@ extend self: Compiler {
         let module = self.resolve(moduleName)
         let otherModules = self.imports(module).map { self.resolve(self.files.prefixName(_.file)) }
         let instances = coreModule.instances ++ module.instances ++ otherModules.flatMap { _.instances }
-        try { Inference.make(instances).inferModule(coreModule, module, otherModules) }
-        let result = module // TODO
+        let result = try { Inference.make(instances).inferModule(coreModule, module, otherModules) }.getOrElse(module)
 
         self.inferredModules = self.inferredModules.updated(moduleName, result)
         result
