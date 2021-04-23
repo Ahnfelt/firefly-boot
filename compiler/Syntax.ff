@@ -107,7 +107,7 @@ type Term(at: Location) {
 type MatchCase(
     at: Location,
     patterns: List[MatchPattern],
-    condition : Option[Term],
+    condition: Option[Term],
     body: Term
 )
 

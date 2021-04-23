@@ -20,7 +20,7 @@ fail[T](at: Location, message: String): T {
 //myString: String = myInt
 //myFunction(x: Int): String { | a, b => x }
 //myInt = Location("foo", 1, 1).Location(line = 2)
-//myFoo: String = 1.{_}
+//myFoo: String = 1.{x => x}
 
 core(name: String): String {
     "ff:core/Core." + name
@@ -89,7 +89,11 @@ extend self: Inference {
             }
             Environment(environment1.symbols ++ symbols)
         }
-        case
+        // TODO: Condition
+        let body = self.inferTerm(newEnvironment, returnType, case.body)
+        case.MatchCase(
+            body = body
+        )
     }
 
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
@@ -222,7 +226,10 @@ extend self: Inference {
                     value = value
                     function = function
                 )
-           | _ => term
+            | ELambda(at, l) =>
+                let lambda = self.inferLambda(environment, expected, l)
+                ELambda(at, lambda)
+            | _ => term
             /*
             | EField e =>
                 let recordType = self.unification.freshTypeVariable(e.at)

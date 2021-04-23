@@ -9,7 +9,6 @@ import firefly.Environment_._
 object Inference_ {
 
 case class Inference(unification : Unification_.Unification)
-
 def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Inference = {
 Inference(unification = Unification_.make(instances))
 }
@@ -72,7 +71,8 @@ Firefly_Core.Pair(name, Environment_.Scheme(Firefly_Core.True(), Firefly_Core.Fa
 });
 Environment_.Environment((environment1.symbols ++ symbols))
 });
-case_
+val body = self.inferTerm(newEnvironment, returnType, case_.body);
+case_.copy(body = body)
 }
 
 def inferPattern(environment : Environment_.Environment, expected : Syntax_.Type, pattern : Syntax_.MatchPattern) : Firefly_Core.Map[Firefly_Core.String, Syntax_.Type] = {
@@ -218,6 +218,11 @@ val functionType = Syntax_.TConstructor(e.at, "Function$1", List(valueType, expe
 val value = self.inferTerm(environment, valueType, e.value);
 val function = self.inferTerm(environment, functionType, e.function);
 e.copy(value = value, function = function)
+case (Syntax_.ELambda(at, l)) =>
+val lambda = self.inferLambda(environment, expected, l);
+Firefly_Core.log.debug(lambda);
+Firefly_Core.log.debug(self.unification.substitute(expected).show());
+Syntax_.ELambda(at, lambda)
 case (_) =>
 term
 })
