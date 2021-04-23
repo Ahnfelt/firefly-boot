@@ -22,7 +22,11 @@ Firefly_Core.panic(((message + " ") + at.show))
 
 def processModule(module : Syntax_.Module, isCurrentModule : Firefly_Core.Bool, isCoreModule : Firefly_Core.Bool) : Environment = {
 def full(module : Syntax_.Module, name : Firefly_Core.String) : Firefly_Core.String = {
+Firefly_Core.if_(isCurrentModule, {() =>
+name
+}).else_({() =>
 ((module.file.dropRight(3) + ".") + name)
+})
 }
 val functions = module.functions.map({(d) =>
 Firefly_Core.Pair(full(module, d.signature.name), Scheme(Firefly_Core.False(), Firefly_Core.False(), d.signature))
