@@ -9,6 +9,7 @@ import firefly.Environment_._
 object Inference_ {
 
 case class Inference(unification : Unification_.Unification)
+
 def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Inference = {
 Inference(unification = Unification_.make(instances))
 }
@@ -220,8 +221,6 @@ val function = self.inferTerm(environment, functionType, e.function);
 e.copy(value = value, function = function)
 case (Syntax_.ELambda(at, l)) =>
 val lambda = self.inferLambda(environment, expected, l);
-Firefly_Core.log.debug(lambda);
-Firefly_Core.log.debug(self.unification.substitute(expected).show());
 Syntax_.ELambda(at, lambda)
 case (_) =>
 term

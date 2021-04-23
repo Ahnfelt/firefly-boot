@@ -243,14 +243,6 @@ extend self: Inference {
                     | TVariable(_, index) =>
                         fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
                 }
-            | ELambda(at, Lambda(lambdaAt, cases)) =>
-                ELambda(at, Lambda(lambdaAt, cases.map { self.resolveCase(_) }))
-            | EPipe(at, value, function) =>
-                EPipe(
-                    at = at
-                    value = self.resolveTerm(value)
-                    function = self.resolveTerm(function)
-                )
             | ECall(at, function, typeArguments, arguments) =>
                 ECall(
                     at = at
