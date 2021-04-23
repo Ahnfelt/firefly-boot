@@ -72,8 +72,11 @@ Firefly_Core.Pair(name, Environment_.Scheme(Firefly_Core.True(), Firefly_Core.Fa
 });
 Environment_.Environment((environment1.symbols ++ symbols))
 });
+val condition = case_.condition.map({(e) =>
+self.inferTerm(newEnvironment, Syntax_.TConstructor(e.at, core("Bool"), List()), e)
+});
 val body = self.inferTerm(newEnvironment, returnType, case_.body);
-case_.copy(body = body)
+case_.copy(condition = condition, body = body)
 }
 
 def inferPattern(environment : Environment_.Environment, expected : Syntax_.Type, pattern : Syntax_.MatchPattern) : Firefly_Core.Map[Firefly_Core.String, Syntax_.Type] = {

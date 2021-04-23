@@ -89,9 +89,12 @@ extend self: Inference {
             }
             Environment(environment1.symbols ++ symbols)
         }
-        // TODO: Condition
+        let condition = case.condition.map { e =>
+            self.inferTerm(newEnvironment, TConstructor(e.at, core("Bool"), []), e)
+        }
         let body = self.inferTerm(newEnvironment, returnType, case.body)
         case.MatchCase(
+            condition = condition
             body = body
         )
     }
