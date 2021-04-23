@@ -70,7 +70,7 @@ extend self: Compiler {
         let result = try { Inference.make(instances).inferModule(coreModule, module, otherModules) }.getOrElse(module)
 
         self.inferredModules = self.inferredModules.updated(moduleName, result)
-        result
+        module // result
     }
 
     emit(moduleName: String): Unit {

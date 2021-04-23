@@ -66,7 +66,7 @@ val result = Firefly_Core.try_({() =>
 Inference_.make(instances).inferModule(coreModule, module, otherModules)
 }).getOrElse(module);
 self.inferredModules = self.inferredModules.updated(moduleName, result);
-result
+module
 })
 }
 

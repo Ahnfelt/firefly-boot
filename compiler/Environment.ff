@@ -25,7 +25,7 @@ fail[T](at: Location, message: String): T {
 processModule(module: Module, isCurrentModule: Bool, isCoreModule: Bool): Environment {
 
     function full(module: Module, name: String): String {
-        module.file.dropRight(3) + "." + name
+        if(isCurrentModule) { name } else { module.file.dropRight(3) + "." + name }
     }
 
     let functions =
