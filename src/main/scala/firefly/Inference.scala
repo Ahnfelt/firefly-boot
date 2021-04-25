@@ -153,6 +153,11 @@ fail(e.at, ("Functions need to be called: " + e.name))
 }).else_({() =>
 fail(e.at, ("Symbol not in scope: " + e.name))
 })
+case (e : Syntax_.EWildcard) =>
+environment.symbols.get(("_" + e.index)).map({(scheme) =>
+self.unification.unify(e.at, expected, scheme.signature.returnType);
+term
+}).get
 case (Syntax_.EList(at, t, items)) =>
 val listType = Syntax_.TConstructor(term.at, core("List"), List(t));
 Syntax_.EList(at, t, items.map({

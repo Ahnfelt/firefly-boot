@@ -159,6 +159,11 @@ extend self: Inference {
                 } else {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }
+            | EWildcard e =>
+                environment.symbols.get("_" + e.index).map { scheme =>
+                    self.unification.unify(e.at, expected, scheme.signature.returnType)
+                    term
+                }.get
             | EList(at, t, items) =>
                 let listType = TConstructor(term.at, core("List"), [t])
                 EList(at, t, items.map { | Pair(item, spread) =>
@@ -258,9 +263,6 @@ extend self: Inference {
                     at = at
                     fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
                 )
-            | EWildcard e =>
-                if(e.index == 0) { fail(e.at, "Unbound wildcard") }
-                e
             | EFunctions(at, functions, body) =>
                 let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap
                 let self2 = self.Resolver(variables = self.variables ++ functionMap)
