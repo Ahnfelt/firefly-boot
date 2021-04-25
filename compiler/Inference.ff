@@ -124,6 +124,7 @@ extend self: Inference {
                     fail(at, "No such variant: " + name)
                 }
                 let parameters = scheme.signature.parameters
+                // TODO: Shouldn't the parameters be sorted before being concatenated to Record$?
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
                 Map(Pair(variable, recordType))
@@ -239,6 +240,13 @@ extend self: Inference {
                 ELambda(at, lambda)
             | _ => term
             /*
+            | ERecord(at, fields) =>
+                let recordType =
+                    TConstructor(at, "Record$" + fields.map { _.name }.join("$"), fields.map { _.valueType })
+                ERecord(
+                    at = at
+                    fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
+                )
             | EField e =>
                 let recordType = self.unification.freshTypeVariable(e.at)
                 let record = self.inferTerm(environment, recordType, e.record)
@@ -257,11 +265,6 @@ extend self: Inference {
                     function = self.resolveTerm(function)
                     typeArguments = typeArguments.map { self.resolveType(_) }
                     arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }
-                )
-            | ERecord(at, fields) =>
-                ERecord(
-                    at = at
-                    fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
                 )
             | EFunctions(at, functions, body) =>
                 let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap
