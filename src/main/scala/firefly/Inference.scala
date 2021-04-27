@@ -154,7 +154,7 @@ fail(e.at, ("Functions need to be called: " + e.name))
 fail(e.at, ("Symbol not in scope: " + e.name))
 })
 case (e : Syntax_.EWildcard) =>
-environment.symbols.get(("_" + e.index)).map({(scheme) =>
+environment.symbols.get(("_w" + e.index)).map({(scheme) =>
 self.unification.unify(e.at, expected, scheme.signature.returnType);
 term
 }).get
@@ -174,6 +174,9 @@ case (e : Syntax_.ELet) =>
 val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(e.at, e.name, List(), List(), List(), e.valueType));
 val environment2 = environment.copy(symbols = (environment.symbols + Firefly_Core.Pair(e.name, scheme)));
 e.copy(value = self.inferTerm(environment, e.valueType, e.value), body = self.inferTerm(environment2, expected, e.body))
+case (Syntax_.ELambda(at, l)) =>
+val lambda = self.inferLambda(environment, expected, l);
+Syntax_.ELambda(at, lambda)
 case (e : Syntax_.EVariant) =>
 val signature = environment.symbols.get(e.name).else_({() =>
 fail(e.at, ("Symbol not in scope: " + e.name))
@@ -227,9 +230,31 @@ val functionType = Syntax_.TConstructor(e.at, "Function$1", List(valueType, expe
 val value = self.inferTerm(environment, valueType, e.value);
 val function = self.inferTerm(environment, functionType, e.function);
 e.copy(value = value, function = function)
-case (Syntax_.ELambda(at, l)) =>
-val lambda = self.inferLambda(environment, expected, l);
-Syntax_.ELambda(at, lambda)
+case (Syntax_.ECall(_, Syntax_.EVariable(_, x, List(), List()), _, _)) if environment.symbols.get(x).exists({(_w1) =>
+(!_w1.isVariable)
+}) =>
+term
+case (Syntax_.ECall(_, _ : Syntax_.EField, _, _)) =>
+term
+case (e : Syntax_.ECall) =>
+val arguments = e.arguments.map({(argument) =>
+val t = self.unification.freshTypeVariable(argument.at);
+argument.name.foreach({(name) =>
+fail(argument.at, ("Named argument not allowed here: " + name))
+});
+(t -> argument.copy(value = self.inferTerm(environment, t, argument.value)))
+});
+val argumentTypes = arguments.map({(_w1) =>
+_w1.first
+});
+val functionType = Syntax_.TConstructor(e.at, ("Function$" + e.arguments.size), (List(argumentTypes, List(expected)).flatten));
+val function = self.inferTerm(environment, functionType, e.function);
+e.typeArguments.headOption.foreach({(typeArgument) =>
+fail(typeArgument.at, "Type arguments not allowed here")
+});
+e.copy(function = function, typeArguments = List(), arguments = arguments.map({(_w1) =>
+_w1.second
+}))
 case (_) =>
 term
 })

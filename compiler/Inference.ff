@@ -161,7 +161,7 @@ extend self: Inference {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }
             | EWildcard e =>
-                environment.symbols.get("_" + e.index).map { scheme =>
+                environment.symbols.get("_w" + e.index).map { scheme =>
                     self.unification.unify(e.at, expected, scheme.signature.returnType)
                     term
                 }.get
@@ -183,6 +183,9 @@ extend self: Inference {
                     value = self.inferTerm(environment, e.valueType, e.value)
                     body = self.inferTerm(environment2, expected, e.body)
                 )
+            | ELambda(at, l) =>
+                let lambda = self.inferLambda(environment, expected, l)
+                ELambda(at, lambda)
             | EVariant e =>
                 let signature = environment.symbols.get(e.name).else {
                     fail(e.at, "Symbol not in scope: " + e.name)
@@ -235,9 +238,29 @@ extend self: Inference {
                     value = value
                     function = function
                 )
-            | ELambda(at, l) =>
-                let lambda = self.inferLambda(environment, expected, l)
-                ELambda(at, lambda)
+            | ECall(_, EVariable(_, x, [], []), _, _) { environment.symbols.get(x).exists { !_.isVariable } } =>
+                term // TODO
+            | ECall(_, EField _, _, _) =>
+                term // TODO
+            | ECall e =>
+                let arguments = e.arguments.map { argument =>
+                    let t = self.unification.freshTypeVariable(argument.at)
+                    argument.name.foreach { name =>
+                        fail(argument.at, "Named argument not allowed here: " + name)
+                    }
+                    t -> argument.Argument(value = self.inferTerm(environment, t, argument.value))
+                }
+                let argumentTypes = arguments.map { _.first }
+                let functionType = TConstructor(e.at, "Function$" + e.arguments.size, [...argumentTypes, expected])
+                let function = self.inferTerm(environment, functionType, e.function)
+                e.typeArguments.headOption.foreach { typeArgument =>
+                    fail(typeArgument.at, "Type arguments not allowed here")
+                }
+                e.ECall(
+                    function = function
+                    typeArguments = []
+                    arguments = arguments.map { _.second }
+                )
             | _ => term
             /*
             | ERecord(at, fields) =>
