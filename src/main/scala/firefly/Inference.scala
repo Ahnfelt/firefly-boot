@@ -148,7 +148,18 @@ Firefly_Core.if_(scheme.isVariable, {() =>
 self.unification.unify(e.at, expected, scheme.signature.returnType);
 term
 }).else_({() =>
-fail(e.at, ("Functions need to be called: " + e.name))
+val parameters = scheme.signature.parameters.filter({(_w1) =>
+_w1.default.isEmpty
+}).map({(p) =>
+p.name
+});
+val body = Syntax_.ECall(e.at, term, List(), parameters.map({(x) =>
+Syntax_.Argument(e.at, Firefly_Core.Some(x), Syntax_.EVariable(e.at, x, List(), List()))
+}));
+val lambda = Syntax_.ELambda(e.at, Syntax_.Lambda(e.at, List(Syntax_.MatchCase(at = e.at, patterns = parameters.map({(_w1) =>
+Syntax_.PVariable(e.at, Firefly_Core.Some(_w1))
+}), condition = Firefly_Core.None(), body = body))));
+self.inferTerm(environment, expected, lambda)
 })
 }).else_({() =>
 fail(e.at, ("Symbol not in scope: " + e.name))
@@ -230,6 +241,10 @@ val functionType = Syntax_.TConstructor(e.at, "Function$1", List(valueType, expe
 val value = self.inferTerm(environment, valueType, e.value);
 val function = self.inferTerm(environment, functionType, e.function);
 e.copy(value = value, function = function)
+case (Syntax_.ECall(_, Syntax_.EVariable(_, x, List(), List()), _, _)) if x.headOption.exists({(c) =>
+((c != '_') && (!c.isLetter))
+}) =>
+term
 case (Syntax_.ECall(_, Syntax_.EVariable(_, x, List(), List()), _, _)) if environment.symbols.get(x).exists({(_w1) =>
 (!_w1.isVariable)
 }) =>

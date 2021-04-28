@@ -21,6 +21,9 @@ fail[T](at: Location, message: String): T {
 //myFunction(x: Int): String { | a, b => x }
 //myInt = Location("foo", 1, 1).Location(line = 2)
 //myFoo: String = 1.{x => x}
+//myLambda: Int => Int = { x => 1 }
+//myCall = myLambda[Int](1)
+//myEta: Int => String = core
 
 core(name: String): String {
     "ff:core/Core." + name
@@ -155,7 +158,19 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, scheme.signature.returnType)
                         term
                     } else {
-                        fail(e.at, "Functions need to be called: " + e.name)
+                        let parameters = scheme.signature.parameters.filter { _.default.isEmpty }.map { p =>
+                            p.name
+                        }
+                        let body = ECall(e.at, term, [], parameters.map { x =>
+                            Argument(e.at, Some(x), EVariable(e.at, x, [], []))
+                        })
+                        let lambda = ELambda(e.at, Lambda(e.at, [MatchCase(
+                            at = e.at,
+                            patterns = parameters.map { PVariable(e.at, Some(_)) },
+                            condition = None,
+                            body = body
+                        )]))
+                        self.inferTerm(environment, expected, lambda)
                     }
                 } else {
                     fail(e.at, "Symbol not in scope: " + e.name)
@@ -238,6 +253,8 @@ extend self: Inference {
                     value = value
                     function = function
                 )
+            | ECall(_, EVariable(_, x, [], []), _, _) { x.headOption.exists { c => c != '_' && !c.isLetter } } =>
+                term // TODO
             | ECall(_, EVariable(_, x, [], []), _, _) { environment.symbols.get(x).exists { !_.isVariable } } =>
                 term // TODO
             | ECall(_, EField _, _, _) =>
