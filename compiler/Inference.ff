@@ -24,6 +24,7 @@ fail[T](at: Location, message: String): T {
 //myLambda: Int => Int = { x => 1 }
 //myCall = myLambda[Int](1)
 //myEta: Int => String = core
+//myFieldEta: () => Set[Int] = [].toSet
 
 core(name: String): String {
     "ff:core/Core." + name
@@ -158,22 +159,29 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, scheme.signature.returnType)
                         term
                     } else {
-                        let parameters = scheme.signature.parameters.filter { _.default.isEmpty }.map { p =>
-                            p.name
-                        }
-                        let body = ECall(e.at, term, [], parameters.map { x =>
-                            Argument(e.at, Some(x), EVariable(e.at, x, [], []))
-                        })
-                        let lambda = ELambda(e.at, Lambda(e.at, [MatchCase(
-                            at = e.at,
-                            patterns = parameters.map { PVariable(e.at, Some(_)) },
-                            condition = None,
-                            body = body
-                        )]))
-                        self.inferTerm(environment, expected, lambda)
+                        self.inferEtaExpansion(environment, expected, e.at, scheme.signature, term)
                     }
                 } else {
                     fail(e.at, "Symbol not in scope: " + e.name)
+                }
+            | EField e =>
+                let recordType = self.unification.freshTypeVariable(e.at)
+                let record = self.inferTerm(environment, recordType, e.record)
+                let e2 = e.EField(record = record)
+                self.unification.substitute(recordType).{
+                    | TConstructor(_, name, typeParameters) =>
+                        let methodName = name + "_" + e.field
+                        environment.symbols.get(methodName).{
+                            | Some(scheme) =>
+                                let signature = scheme.signature.Signature(
+                                    parameters = scheme.signature.parameters.drop(1) // Drop self for eta expansion
+                                )
+                                self.inferEtaExpansion(environment, expected, e.at, signature, e2)
+                            | None =>
+                                term // TODO: Fields in environment
+                        }
+                    | TVariable(_, index) =>
+                        fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
                 }
             | EWildcard e =>
                 environment.symbols.get("_w" + e.index).map { scheme =>
@@ -182,6 +190,7 @@ extend self: Inference {
                 }.get
             | EList(at, t, items) =>
                 let listType = TConstructor(term.at, core("List"), [t])
+                self.unification.unify(at, expected, listType)
                 EList(at, t, items.map { | Pair(item, spread) =>
                     Pair(self.inferTerm(environment, if(spread) { listType } else { t }, item), spread)
                 })
@@ -287,18 +296,6 @@ extend self: Inference {
                     at = at
                     fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
                 )
-            | EField e =>
-                let recordType = self.unification.freshTypeVariable(e.at)
-                let record = self.inferTerm(environment, recordType, e.record)
-                self.unification.substitute(recordType).{
-                    | TConstructor(_, name, typeParameters) =>
-                        // TODO: Check that field e.name exists on record
-                        e.EField(
-                            record = record
-                        )
-                    | TVariable(_, index) =>
-                        fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
-                }
             | ECall(at, function, typeArguments, arguments) =>
                 ECall(
                     at = at
@@ -331,6 +328,28 @@ extend self: Inference {
                 )
             */
         }
+    }
+
+    inferEtaExpansion(
+        environment: Environment
+        expected: Type
+        at: Location
+        signature: Signature
+        term: Term
+    ): Term {
+        let parameters = signature.parameters.filter { _.default.isEmpty }.map { p =>
+            p.name
+        }
+        let body = ECall(at, term, [], parameters.map { x =>
+            Argument(at, Some(x), EVariable(at, x, [], []))
+        })
+        let lambda = ELambda(at, Lambda(at, [MatchCase(
+            at = at,
+            patterns = parameters.map { PVariable(at, Some(_)) },
+            condition = None,
+            body = body
+        )]))
+        self.inferTerm(environment, expected, lambda)
     }
 
     inferTypeArguments(

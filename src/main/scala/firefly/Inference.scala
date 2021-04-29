@@ -148,21 +148,27 @@ Firefly_Core.if_(scheme.isVariable, {() =>
 self.unification.unify(e.at, expected, scheme.signature.returnType);
 term
 }).else_({() =>
-val parameters = scheme.signature.parameters.filter({(_w1) =>
-_w1.default.isEmpty
-}).map({(p) =>
-p.name
-});
-val body = Syntax_.ECall(e.at, term, List(), parameters.map({(x) =>
-Syntax_.Argument(e.at, Firefly_Core.Some(x), Syntax_.EVariable(e.at, x, List(), List()))
-}));
-val lambda = Syntax_.ELambda(e.at, Syntax_.Lambda(e.at, List(Syntax_.MatchCase(at = e.at, patterns = parameters.map({(_w1) =>
-Syntax_.PVariable(e.at, Firefly_Core.Some(_w1))
-}), condition = Firefly_Core.None(), body = body))));
-self.inferTerm(environment, expected, lambda)
+self.inferEtaExpansion(environment, expected, e.at, scheme.signature, term)
 })
 }).else_({() =>
 fail(e.at, ("Symbol not in scope: " + e.name))
+})
+case (e : Syntax_.EField) =>
+val recordType = self.unification.freshTypeVariable(e.at);
+val record = self.inferTerm(environment, recordType, e.record);
+val e2 = e.copy(record = record);
+pipe_dot(self.unification.substitute(recordType))({
+case (Syntax_.TConstructor(_, name, typeParameters)) =>
+val methodName = ((name + "_") + e.field);
+pipe_dot(environment.symbols.get(methodName))({
+case (Firefly_Core.Some(scheme)) =>
+val signature = scheme.signature.copy(parameters = scheme.signature.parameters.drop(1));
+self.inferEtaExpansion(environment, expected, e.at, signature, e2)
+case (Firefly_Core.None()) =>
+term
+})
+case (Syntax_.TVariable(_, index)) =>
+fail(e.at, ((("No such field " + e.field) + " on unknown type: $") + index))
 })
 case (e : Syntax_.EWildcard) =>
 environment.symbols.get(("_w" + e.index)).map({(scheme) =>
@@ -171,6 +177,7 @@ term
 }).get
 case (Syntax_.EList(at, t, items)) =>
 val listType = Syntax_.TConstructor(term.at, core("List"), List(t));
+self.unification.unify(at, expected, listType);
 Syntax_.EList(at, t, items.map({
 case (Firefly_Core.Pair(item, spread)) =>
 Firefly_Core.Pair(self.inferTerm(environment, Firefly_Core.if_(spread, {() =>
@@ -273,6 +280,21 @@ _w1.second
 case (_) =>
 term
 })
+}
+
+def inferEtaExpansion(environment : Environment_.Environment, expected : Syntax_.Type, at : Syntax_.Location, signature : Syntax_.Signature, term : Syntax_.Term) : Syntax_.Term = {
+val parameters = signature.parameters.filter({(_w1) =>
+_w1.default.isEmpty
+}).map({(p) =>
+p.name
+});
+val body = Syntax_.ECall(at, term, List(), parameters.map({(x) =>
+Syntax_.Argument(at, Firefly_Core.Some(x), Syntax_.EVariable(at, x, List(), List()))
+}));
+val lambda = Syntax_.ELambda(at, Syntax_.Lambda(at, List(Syntax_.MatchCase(at = at, patterns = parameters.map({(_w1) =>
+Syntax_.PVariable(at, Firefly_Core.Some(_w1))
+}), condition = Firefly_Core.None(), body = body))));
+self.inferTerm(environment, expected, lambda)
 }
 
 def inferTypeArguments(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], typeArguments : Firefly_Core.List[Syntax_.Type]) : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]] = {
