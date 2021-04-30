@@ -296,13 +296,6 @@ extend self: Inference {
                     at = at
                     fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
                 )
-            | ECall(at, function, typeArguments, arguments) =>
-                ECall(
-                    at = at
-                    function = self.resolveTerm(function)
-                    typeArguments = typeArguments.map { self.resolveType(_) }
-                    arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }
-                )
             | EFunctions(at, functions, body) =>
                 let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap
                 let self2 = self.Resolver(variables = self.variables ++ functionMap)
