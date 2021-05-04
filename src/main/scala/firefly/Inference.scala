@@ -248,16 +248,59 @@ val functionType = Syntax_.TConstructor(e.at, "Function$1", List(valueType, expe
 val value = self.inferTerm(environment, valueType, e.value);
 val function = self.inferTerm(environment, functionType, e.function);
 e.copy(value = value, function = function)
-case (Syntax_.ECall(_, Syntax_.EVariable(_, x, List(), List()), _, _)) if x.headOption.exists({(c) =>
+case (e : Syntax_.ECall) =>
+pipe_dot(e.function)({
+case (Syntax_.EVariable(variableAt, x, List(), List())) =>
+Firefly_Core.if_(x.headOption.exists({(c) =>
 ((c != '_') && (!c.isLetter))
-}) =>
+}), {() =>
+self.inferOperator(environment, expected, x, e)
+}).else_({() =>
+pipe_dot(environment.symbols.get(x))({
+case (Firefly_Core.Some(scheme)) =>
+Firefly_Core.if_(scheme.isVariable, {() =>
+self.inferLambdaCall(environment, expected, e)
+}).else_({() =>
+self.inferFunctionCall(environment, expected, scheme.signature, e)
+})
+case (Firefly_Core.None()) =>
+fail(variableAt, ("No such function: " + x))
+})
+})
+case (f : Syntax_.EField) =>
+val recordType = self.unification.freshTypeVariable(f.at);
+val record = self.inferTerm(environment, recordType, f.record);
+val e2 = e.copy(function = f.copy(record = record));
+pipe_dot(self.unification.substitute(recordType))({
+case (Syntax_.TConstructor(_, name, typeParameters)) =>
+val methodName = ((name + "_") + f.field);
+pipe_dot(environment.symbols.get(methodName))({
+case (Firefly_Core.Some(scheme)) =>
+self.inferMethodCall(environment, expected, scheme.signature, e2)
+case (Firefly_Core.None()) =>
+self.inferLambdaCall(environment, expected, e2)
+})
+case (Syntax_.TVariable(_, index)) =>
+fail(f.at, ((("No such field " + f.field) + " on unknown type: $") + index))
+})
+case (_) =>
+self.inferLambdaCall(environment, expected, e)
+})
+case (_) =>
 term
-case (Syntax_.ECall(_, Syntax_.EVariable(_, x, List(), List()), _, _)) if environment.symbols.get(x).exists({(_w1) =>
-(!_w1.isVariable)
-}) =>
+})
+}
+
+def inferMethodCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term) : Syntax_.Term = {
 term
-case (Syntax_.ECall(_, _ : Syntax_.EField, _, _)) =>
+}
+
+def inferFunctionCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term) : Syntax_.Term = {
 term
+}
+
+def inferLambdaCall(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {
+pipe_dot(term)({
 case (e : Syntax_.ECall) =>
 val arguments = e.arguments.map({(argument) =>
 val t = self.unification.freshTypeVariable(argument.at);
@@ -278,8 +321,12 @@ e.copy(function = function, typeArguments = List(), arguments = arguments.map({(
 _w1.second
 }))
 case (_) =>
-term
+fail(term.at, "Call expected")
 })
+}
+
+def inferOperator(environment : Environment_.Environment, expected : Syntax_.Type, operator : Firefly_Core.String, term : Syntax_.Term) : Syntax_.Term = {
+term
 }
 
 def inferEtaExpansion(environment : Environment_.Environment, expected : Syntax_.Type, at : Syntax_.Location, signature : Syntax_.Signature, term : Syntax_.Term) : Syntax_.Term = {

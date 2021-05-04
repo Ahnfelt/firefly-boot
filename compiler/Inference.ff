@@ -262,31 +262,42 @@ extend self: Inference {
                     value = value
                     function = function
                 )
-            | ECall(_, EVariable(_, x, [], []), _, _) { x.headOption.exists { c => c != '_' && !c.isLetter } } =>
-                term // TODO
-            | ECall(_, EVariable(_, x, [], []), _, _) { environment.symbols.get(x).exists { !_.isVariable } } =>
-                term // TODO
-            | ECall(_, EField _, _, _) =>
-                term // TODO
             | ECall e =>
-                let arguments = e.arguments.map { argument =>
-                    let t = self.unification.freshTypeVariable(argument.at)
-                    argument.name.foreach { name =>
-                        fail(argument.at, "Named argument not allowed here: " + name)
-                    }
-                    t -> argument.Argument(value = self.inferTerm(environment, t, argument.value))
+                e.function.{
+                    | EVariable(variableAt, x, [], []) =>
+                        if(x.headOption.exists { c => c != '_' && !c.isLetter }) {
+                            self.inferOperator(environment, expected, x, e)
+                        } else {
+                            environment.symbols.get(x).{
+                                | Some(scheme) =>
+                                    if(scheme.isVariable) {
+                                        self.inferLambdaCall(environment, expected, e)
+                                    } else {
+                                        self.inferFunctionCall(environment, expected, scheme.signature, e)
+                                    }
+                                | None =>
+                                    fail(variableAt, "No such function: " + x)
+                            }
+                        }
+                    | EField f =>
+                        let recordType = self.unification.freshTypeVariable(f.at)
+                        let record = self.inferTerm(environment, recordType, f.record)
+                        let e2 = e.ECall(function = f.EField(record = record))
+                        self.unification.substitute(recordType).{
+                            | TConstructor(_, name, typeParameters) =>
+                                let methodName = name + "_" + f.field
+                                environment.symbols.get(methodName).{
+                                    | Some(scheme) =>
+                                        self.inferMethodCall(environment, expected, scheme.signature, e2)
+                                    | None =>
+                                        self.inferLambdaCall(environment, expected, e2)
+                                }
+                            | TVariable(_, index) =>
+                                fail(f.at, "No such field " + f.field + " on unknown type: $" + index)
+                        }
+                    | _ =>
+                        self.inferLambdaCall(environment, expected, e)
                 }
-                let argumentTypes = arguments.map { _.first }
-                let functionType = TConstructor(e.at, "Function$" + e.arguments.size, [...argumentTypes, expected])
-                let function = self.inferTerm(environment, functionType, e.function)
-                e.typeArguments.headOption.foreach { typeArgument =>
-                    fail(typeArgument.at, "Type arguments not allowed here")
-                }
-                e.ECall(
-                    function = function
-                    typeArguments = []
-                    arguments = arguments.map { _.second }
-                )
             | _ => term
             /*
             | ERecord(at, fields) =>
@@ -321,6 +332,44 @@ extend self: Inference {
                 )
             */
         }
+    }
+
+    inferMethodCall(environment: Environment, expected: Type, signature: Signature, term: Term): Term {
+        term // TODO
+    }
+
+    inferFunctionCall(environment: Environment, expected: Type, signature: Signature, term: Term): Term {
+        term // TODO
+    }
+
+    inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
+        term.{
+            | ECall e =>
+                let arguments = e.arguments.map { argument =>
+                    let t = self.unification.freshTypeVariable(argument.at)
+                    argument.name.foreach { name =>
+                        fail(argument.at, "Named argument not allowed here: " + name)
+                    }
+                    t -> argument.Argument(value = self.inferTerm(environment, t, argument.value))
+                }
+                let argumentTypes = arguments.map { _.first }
+                let functionType = TConstructor(e.at, "Function$" + e.arguments.size, [...argumentTypes, expected])
+                let function = self.inferTerm(environment, functionType, e.function)
+                e.typeArguments.headOption.foreach { typeArgument =>
+                    fail(typeArgument.at, "Type arguments not allowed here")
+                }
+                e.ECall(
+                    function = function
+                    typeArguments = []
+                    arguments = arguments.map { _.second }
+                )
+            | _ =>
+                fail(term.at, "Call expected")
+        }
+    }
+
+    inferOperator(environment: Environment, expected: Type, operator: String, term: Term): Term {
+        term // TODO
     }
 
     inferEtaExpansion(
