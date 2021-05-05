@@ -394,7 +394,7 @@ extend self: Inference {
                         self.unification.unify(e.at, t2, t1)
                         self.unification.unify(e.at, expected, t2)
                     | None, None =>
-                        fail(e.at, "Operators on unkown types not currently supported")
+                        fail(e.at, "Operators on unknown types not currently supported")
                 }
                 chooseType(magic(t1), magic(t2))
                 e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])

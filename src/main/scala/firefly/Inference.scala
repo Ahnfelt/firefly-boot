@@ -371,7 +371,7 @@ case (Firefly_Core.None(), Firefly_Core.Some(_)) =>
 self.unification.unify(e.at, t2, t1);
 self.unification.unify(e.at, expected, t2)
 case (Firefly_Core.None(), Firefly_Core.None()) =>
-fail(e.at, "Operators on unkown types not currently supported")
+fail(e.at, "Operators on unknown types not currently supported")
 };
 chooseType(magic(t1), magic(t2));
 e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
