@@ -334,7 +334,13 @@ case (_) =>
 fail(term.at, "Call expected")
 });
 pipe_dot(e.arguments)({
-case (List(a1, a2)) if ((((operator == "+") || (operator == "-")) || (operator == "*")) || (operator == "/")) =>
+case (List(a1, a2)) if ((operator == "||") || (operator == "&&")) =>
+val t = Syntax_.TConstructor(e.at, core("Bool"), List());
+val e1 = self.inferTerm(environment, t, a1.value);
+val e2 = self.inferTerm(environment, t, a2.value);
+self.unification.unify(e.at, expected, t);
+e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
+case (List(a1, a2)) if ((((((operator == "+") || (operator == "-")) || (operator == "*")) || (operator == "/")) || (operator == "%")) || (operator == "^")) =>
 val t1 = self.unification.freshTypeVariable(e.at);
 val t2 = self.unification.freshTypeVariable(e.at);
 val e1 = self.inferTerm(environment, t1, a1.value);
