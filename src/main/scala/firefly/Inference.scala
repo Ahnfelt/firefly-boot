@@ -300,8 +300,12 @@ term
 }
 
 def inferLambdaCall(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {
-pipe_dot(term)({
+val e = pipe_dot(term)({
 case (e : Syntax_.ECall) =>
+e
+case (_) =>
+fail(term.at, "Call expected")
+});
 val arguments = e.arguments.map({(argument) =>
 val t = self.unification.freshTypeVariable(argument.at);
 argument.name.foreach({(name) =>
@@ -320,13 +324,60 @@ fail(typeArgument.at, "Type arguments not allowed here")
 e.copy(function = function, typeArguments = List(), arguments = arguments.map({(_w1) =>
 _w1.second
 }))
-case (_) =>
-fail(term.at, "Call expected")
-})
 }
 
 def inferOperator(environment : Environment_.Environment, expected : Syntax_.Type, operator : Firefly_Core.String, term : Syntax_.Term) : Syntax_.Term = {
+val e = pipe_dot(term)({
+case (e : Syntax_.ECall) =>
+e
+case (_) =>
+fail(term.at, "Call expected")
+});
+pipe_dot(e.arguments)({
+case (List(a1, a2)) if ((((operator == "+") || (operator == "-")) || (operator == "*")) || (operator == "/")) =>
+val t1 = self.unification.freshTypeVariable(e.at);
+val t2 = self.unification.freshTypeVariable(e.at);
+val e1 = self.inferTerm(environment, t1, a1.value);
+val e2 = self.inferTerm(environment, t2, a2.value);
+val magic : Function1[Syntax_.Type, Firefly_Core.Option[Firefly_Core.String]] = {(t) =>
+pipe_dot(self.unification.substitute(t))({
+case (Syntax_.TConstructor(_, name, List())) if (name == core("Float")) =>
+Firefly_Core.Some("Float")
+case (Syntax_.TConstructor(_, name, List())) if (name == core("Int")) =>
+Firefly_Core.Some("Int")
+case (Syntax_.TConstructor(_, name, List())) if ((operator == "+") && (name == core("String"))) =>
+Firefly_Core.Some("String")
+case (_) =>
+Firefly_Core.None()
+})
+};
+val chooseType : Function2[Firefly_Core.Option[Firefly_Core.String], Firefly_Core.Option[Firefly_Core.String], Firefly_Core.Unit] = {
+case (Firefly_Core.Some(n), Firefly_Core.Some(_)) if (n == "String") =>
+self.unification.unify(e.at, expected, t1)
+case (Firefly_Core.Some(_), Firefly_Core.Some(n)) if (n == "String") =>
+self.unification.unify(e.at, expected, t2)
+case (Firefly_Core.Some(n), Firefly_Core.Some(_)) if (n == "Float") =>
+self.unification.unify(e.at, expected, t1)
+case (Firefly_Core.Some(_), Firefly_Core.Some(n)) if (n == "Float") =>
+self.unification.unify(e.at, expected, t2)
+case (Firefly_Core.Some(n), Firefly_Core.Some(_)) if (n == "Int") =>
+self.unification.unify(e.at, expected, t1)
+case (Firefly_Core.Some(_), Firefly_Core.Some(n)) if (n == "Int") =>
+self.unification.unify(e.at, expected, t2)
+case (Firefly_Core.Some(_), Firefly_Core.None()) =>
+self.unification.unify(e.at, t1, t2);
+self.unification.unify(e.at, expected, t1)
+case (Firefly_Core.None(), Firefly_Core.Some(_)) =>
+self.unification.unify(e.at, t2, t1);
+self.unification.unify(e.at, expected, t2)
+case (Firefly_Core.None(), Firefly_Core.None()) =>
+fail(e.at, "Operators on unkown types not currently supported")
+};
+chooseType(magic(t1), magic(t2));
+e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
+case (_) =>
 term
+})
 }
 
 def inferEtaExpansion(environment : Environment_.Environment, expected : Syntax_.Type, at : Syntax_.Location, signature : Syntax_.Signature, term : Syntax_.Term) : Syntax_.Term = {

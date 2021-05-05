@@ -343,33 +343,63 @@ extend self: Inference {
     }
 
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
-        term.{
-            | ECall e =>
-                let arguments = e.arguments.map { argument =>
-                    let t = self.unification.freshTypeVariable(argument.at)
-                    argument.name.foreach { name =>
-                        fail(argument.at, "Named argument not allowed here: " + name)
-                    }
-                    t -> argument.Argument(value = self.inferTerm(environment, t, argument.value))
-                }
-                let argumentTypes = arguments.map { _.first }
-                let functionType = TConstructor(e.at, "Function$" + e.arguments.size, [...argumentTypes, expected])
-                let function = self.inferTerm(environment, functionType, e.function)
-                e.typeArguments.headOption.foreach { typeArgument =>
-                    fail(typeArgument.at, "Type arguments not allowed here")
-                }
-                e.ECall(
-                    function = function
-                    typeArguments = []
-                    arguments = arguments.map { _.second }
-                )
-            | _ =>
-                fail(term.at, "Call expected")
+        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let arguments = e.arguments.map { argument =>
+            let t = self.unification.freshTypeVariable(argument.at)
+            argument.name.foreach { name =>
+                fail(argument.at, "Named argument not allowed here: " + name)
+            }
+            t -> argument.Argument(value = self.inferTerm(environment, t, argument.value))
         }
+        let argumentTypes = arguments.map { _.first }
+        let functionType = TConstructor(e.at, "Function$" + e.arguments.size, [...argumentTypes, expected])
+        let function = self.inferTerm(environment, functionType, e.function)
+        e.typeArguments.headOption.foreach { typeArgument =>
+            fail(typeArgument.at, "Type arguments not allowed here")
+        }
+        e.ECall(
+            function = function
+            typeArguments = []
+            arguments = arguments.map { _.second }
+        )
     }
 
     inferOperator(environment: Environment, expected: Type, operator: String, term: Term): Term {
-        term // TODO
+        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        e.arguments.{
+            | [a1, a2] {operator == "+" || operator == "-" || operator == "*" || operator == "/"} =>
+                let t1 = self.unification.freshTypeVariable(e.at)
+                let t2 = self.unification.freshTypeVariable(e.at)
+                let e1 = self.inferTerm(environment, t1, a1.value)
+                let e2 = self.inferTerm(environment, t2, a2.value)
+                let magic: Type => Option[String] = { t =>
+                    self.unification.substitute(t).{
+                        | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
+                        | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
+                        | TConstructor(_, name, []) {operator == "+" && name == core("String")} => Some("String")
+                        | _ => None
+                    }
+                }
+                let chooseType: (Option[String], Option[String]) => Unit = {
+                    | Some(n), Some(_) {n == "String"} => self.unification.unify(e.at, expected, t1)
+                    | Some(_), Some(n) {n == "String"} => self.unification.unify(e.at, expected, t2)
+                    | Some(n), Some(_) {n == "Float"} => self.unification.unify(e.at, expected, t1)
+                    | Some(_), Some(n) {n == "Float"} => self.unification.unify(e.at, expected, t2)
+                    | Some(n), Some(_) {n == "Int"} => self.unification.unify(e.at, expected, t1)
+                    | Some(_), Some(n) {n == "Int"} => self.unification.unify(e.at, expected, t2)
+                    | Some(_), None =>
+                        self.unification.unify(e.at, t1, t2)
+                        self.unification.unify(e.at, expected, t1)
+                    | None, Some(_) =>
+                        self.unification.unify(e.at, t2, t1)
+                        self.unification.unify(e.at, expected, t2)
+                    | None, None =>
+                        fail(e.at, "Operators on unkown types not currently supported")
+                }
+                chooseType(magic(t1), magic(t2))
+                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+            | _ => term // TODO
+        }
     }
 
     inferEtaExpansion(
