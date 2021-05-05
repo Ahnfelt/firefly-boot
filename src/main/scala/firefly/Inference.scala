@@ -435,7 +435,7 @@ fail(e.at, "Operators on unknown types not currently supported")
 chooseType(magic(t1), magic(t2));
 e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
 case (_) =>
-term
+fail(e.at, ("Unknown operator: " + operator))
 })
 }
 
