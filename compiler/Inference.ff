@@ -469,7 +469,8 @@ extend self: Inference {
                 }
                 chooseType(magic(t1), magic(t2))
                 e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
-            | _ => term // TODO
+            | _ =>
+                fail(e.at, "Unknown operator: " + operator)
         }
     }
 
