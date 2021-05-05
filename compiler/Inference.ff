@@ -367,7 +367,36 @@ extend self: Inference {
     inferOperator(environment: Environment, expected: Type, operator: String, term: Term): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         e.arguments.{
-//val binaryOperators = List(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("++"), List("+", "-"), List("*", "/", "%"), List("^")).toArray
+            | [a1] {
+                operator == "!"
+            } =>
+                let t = TConstructor(e.at, core("Bool"), [])
+                let e1 = self.inferTerm(environment, t, a1.value)
+                self.unification.unify(e.at, expected, t)
+                e.ECall(arguments = [a1.Argument(value = e1)])
+            | [a1] {
+                operator == "-"
+            } =>
+                let t1 = self.unification.freshTypeVariable(e.at)
+                let e1 = self.inferTerm(environment, t1, a1.value)
+                self.unification.substitute(t1).{
+                    | TConstructor(_, name, []) {name == core("Float")} =>
+                        self.unification.unify(e.at, expected, t1)
+                    | TConstructor(_, name, []) {name == core("Int")} =>
+                        self.unification.unify(e.at, expected, t1)
+                    | _ =>
+                        fail(e.at, "Operators on unknown types not currently supported")
+                }
+                e.ECall(arguments = [a1.Argument(value = e1)])
+            | [a1, a2] {
+                operator == "++"
+            } =>
+                let t1 = self.unification.freshTypeVariable(e.at)
+                let t = TConstructor(e.at, core("List"), [t1])
+                let e1 = self.inferTerm(environment, t, a1.value)
+                let e2 = self.inferTerm(environment, t, a2.value)
+                self.unification.unify(e.at, expected, t)
+                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | [a1, a2] {
                 operator == "||" || operator == "&&"
             } =>
@@ -375,6 +404,35 @@ extend self: Inference {
                 let e1 = self.inferTerm(environment, t, a1.value)
                 let e2 = self.inferTerm(environment, t, a2.value)
                 self.unification.unify(e.at, expected, t)
+                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+            | [a1, a2] {
+                operator == "<" || operator == ">" ||
+                operator == "<=" || operator == ">=" ||
+                operator == "==" || operator == "!="
+            } =>
+                let t1 = self.unification.freshTypeVariable(e.at)
+                let t2 = self.unification.freshTypeVariable(e.at)
+                let e1 = self.inferTerm(environment, t1, a1.value)
+                let e2 = self.inferTerm(environment, t2, a2.value)
+                let magic: Type => Option[String] = { t =>
+                    self.unification.substitute(t).{
+                        | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
+                        | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
+                        | TConstructor(_, name, []) {operator == "+" && name == core("String")} => Some("String")
+                        | _ => None
+                    }
+                }
+                let chooseType: (Option[String], Option[String]) => Unit = {
+                    | Some(_), _ =>
+                        self.unification.unify(e.at, t1, t2)
+                        self.unification.unify(e.at, expected, t1)
+                    | _, Some(_) =>
+                        self.unification.unify(e.at, t2, t1)
+                        self.unification.unify(e.at, expected, t2)
+                    | None, None =>
+                        fail(e.at, "Operators on unknown types not currently supported")
+                }
+                chooseType(magic(t1), magic(t2))
                 e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | [a1, a2] {
                 operator == "+" || operator == "-" ||
