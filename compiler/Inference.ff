@@ -410,6 +410,7 @@ extend self: Inference {
                 operator == "<=" || operator == ">=" ||
                 operator == "==" || operator == "!="
             } =>
+                let t = TConstructor(e.at, core("Bool"), [])
                 let t1 = self.unification.freshTypeVariable(e.at)
                 let t2 = self.unification.freshTypeVariable(e.at)
                 let e1 = self.inferTerm(environment, t1, a1.value)
@@ -418,17 +419,16 @@ extend self: Inference {
                     self.unification.substitute(t).{
                         | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
                         | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
-                        | TConstructor(_, name, []) {operator == "+" && name == core("String")} => Some("String")
                         | _ => None
                     }
                 }
                 let chooseType: (Option[String], Option[String]) => Unit = {
                     | Some(_), _ =>
                         self.unification.unify(e.at, t1, t2)
-                        self.unification.unify(e.at, expected, t1)
+                        self.unification.unify(e.at, expected, t)
                     | _, Some(_) =>
                         self.unification.unify(e.at, t2, t1)
-                        self.unification.unify(e.at, expected, t2)
+                        self.unification.unify(e.at, expected, t)
                     | None, None =>
                         fail(e.at, "Operators on unknown types not currently supported")
                 }

@@ -365,6 +365,7 @@ val e2 = self.inferTerm(environment, t, a2.value);
 self.unification.unify(e.at, expected, t);
 e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
 case (List(a1, a2)) if ((((((operator == "<") || (operator == ">")) || (operator == "<=")) || (operator == ">=")) || (operator == "==")) || (operator == "!=")) =>
+val t = Syntax_.TConstructor(e.at, core("Bool"), List());
 val t1 = self.unification.freshTypeVariable(e.at);
 val t2 = self.unification.freshTypeVariable(e.at);
 val e1 = self.inferTerm(environment, t1, a1.value);
@@ -375,8 +376,6 @@ case (Syntax_.TConstructor(_, name, List())) if (name == core("Float")) =>
 Firefly_Core.Some("Float")
 case (Syntax_.TConstructor(_, name, List())) if (name == core("Int")) =>
 Firefly_Core.Some("Int")
-case (Syntax_.TConstructor(_, name, List())) if ((operator == "+") && (name == core("String"))) =>
-Firefly_Core.Some("String")
 case (_) =>
 Firefly_Core.None()
 })
@@ -384,10 +383,10 @@ Firefly_Core.None()
 val chooseType : Function2[Firefly_Core.Option[Firefly_Core.String], Firefly_Core.Option[Firefly_Core.String], Firefly_Core.Unit] = {
 case (Firefly_Core.Some(_), _) =>
 self.unification.unify(e.at, t1, t2);
-self.unification.unify(e.at, expected, t1)
+self.unification.unify(e.at, expected, t)
 case (_, Firefly_Core.Some(_)) =>
 self.unification.unify(e.at, t2, t1);
-self.unification.unify(e.at, expected, t2)
+self.unification.unify(e.at, expected, t)
 case (Firefly_Core.None(), Firefly_Core.None()) =>
 fail(e.at, "Operators on unknown types not currently supported")
 };
