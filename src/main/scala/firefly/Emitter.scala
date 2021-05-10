@@ -7,7 +7,7 @@ object Emitter_ {
 
 val keywords = List("abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java").toSet
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
-Firefly_Core.panic(((message + " ") + at.show))
+Firefly_Core.panic(((message + " ") + at.show()))
 }
 
 def emitModule(module : Syntax_.Module) : Firefly_Core.String = {

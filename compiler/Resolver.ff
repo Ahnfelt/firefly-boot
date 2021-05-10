@@ -22,7 +22,7 @@ make(coreModule: Module) {
 }
 
 fail[T](at: Location, message: String): T {
-    panic(message + " " + at.show)
+    panic(message + " " + at.show())
 }
 
 extend self: Resolver {

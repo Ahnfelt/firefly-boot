@@ -24,7 +24,7 @@ _w1.name
 }
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
-Firefly_Core.panic(((message + " ") + at.show))
+Firefly_Core.panic(((message + " ") + at.show()))
 }
 implicit class Resolver_extend0(self : Resolver) {
 

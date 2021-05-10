@@ -15,7 +15,7 @@ Inference(unification = Unification_.make(instances))
 }
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
-Firefly_Core.panic(((message + " ") + at.show))
+Firefly_Core.panic(((message + " ") + at.show()))
 }
 
 def core(name : Firefly_Core.String) : Firefly_Core.String = {
@@ -261,7 +261,7 @@ case (Firefly_Core.Some(scheme)) =>
 Firefly_Core.if_(scheme.isVariable, {() =>
 self.inferLambdaCall(environment, expected, e)
 }).else_({() =>
-self.inferFunctionCall(environment, expected, scheme.signature, e)
+self.inferFunctionCall(environment, expected, scheme.signature, e, x)
 })
 case (Firefly_Core.None()) =>
 fail(variableAt, ("No such function: " + x))
@@ -295,8 +295,21 @@ def inferMethodCall(environment : Environment_.Environment, expected : Syntax_.T
 term
 }
 
-def inferFunctionCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term) : Syntax_.Term = {
-term
+def inferFunctionCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term, name : Firefly_Core.String) : Syntax_.Term = {
+val e = pipe_dot(term)({
+case (e : Syntax_.ECall) =>
+e
+case (_) =>
+fail(term.at, "Call expected")
+});
+val typeArguments = self.inferTypeArguments(e.at, name, signature.generics, e.typeArguments);
+val instantiation = typeArguments.toMap;
+val returnType = self.unification.instantiate(instantiation, signature.returnType);
+self.unification.unify(e.at, expected, returnType);
+val arguments = self.inferArguments(e.at, environment, instantiation, signature.parameters, e.arguments);
+e.copy(function = e.function, typeArguments = typeArguments.map({(_w1) =>
+_w1.second
+}), arguments = arguments)
 }
 
 def inferLambdaCall(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {
@@ -372,6 +385,8 @@ val e1 = self.inferTerm(environment, t1, a1.value);
 val e2 = self.inferTerm(environment, t2, a2.value);
 val magic : Function1[Syntax_.Type, Firefly_Core.Option[Firefly_Core.String]] = {(t) =>
 pipe_dot(self.unification.substitute(t))({
+case (Syntax_.TConstructor(_, name, List())) if (name == core("String")) =>
+Firefly_Core.Some("String")
 case (Syntax_.TConstructor(_, name, List())) if (name == core("Float")) =>
 Firefly_Core.Some("Float")
 case (Syntax_.TConstructor(_, name, List())) if (name == core("Int")) =>

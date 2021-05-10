@@ -1,7 +1,7 @@
 import Syntax
 
 fail[T](at: Location, message: String): T {
-    panic(message + " " + at.show)
+    panic(message + " " + at.show())
 }
 
 emitModule(module: Module): String {

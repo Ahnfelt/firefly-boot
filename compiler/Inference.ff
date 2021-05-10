@@ -13,7 +13,7 @@ make(instances: List[DInstance]): Inference {
 }
 
 fail[T](at: Location, message: String): T {
-    panic(message + " " + at.show)
+    panic(message + " " + at.show())
 }
 
 //myInt = 42
@@ -273,7 +273,7 @@ extend self: Inference {
                                     if(scheme.isVariable) {
                                         self.inferLambdaCall(environment, expected, e)
                                     } else {
-                                        self.inferFunctionCall(environment, expected, scheme.signature, e)
+                                        self.inferFunctionCall(environment, expected, scheme.signature, e, x)
                                     }
                                 | None =>
                                     fail(variableAt, "No such function: " + x)
@@ -338,8 +338,20 @@ extend self: Inference {
         term // TODO
     }
 
-    inferFunctionCall(environment: Environment, expected: Type, signature: Signature, term: Term): Term {
-        term // TODO
+    inferFunctionCall(environment: Environment, expected: Type, signature: Signature, term: Term, name: String): Term {
+        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        // TODO: Constrain the type arguments
+        let typeArguments = self.inferTypeArguments(e.at, name, signature.generics, e.typeArguments)
+        let instantiation = typeArguments.toMap
+        let returnType = self.unification.instantiate(instantiation, signature.returnType)
+        self.unification.unify(e.at, expected, returnType)
+        // TODO: Varargs
+        let arguments = self.inferArguments(e.at, environment, instantiation, signature.parameters, e.arguments)
+        e.ECall(
+            function = e.function, // It's always a function name - should we propagate that information?
+            typeArguments = typeArguments.map { _.second }
+            arguments = arguments
+        )
     }
 
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
@@ -417,6 +429,7 @@ extend self: Inference {
                 let e2 = self.inferTerm(environment, t2, a2.value)
                 let magic: Type => Option[String] = { t =>
                     self.unification.substitute(t).{
+                        | TConstructor(_, name, []) {name == core("String")} => Some("String")
                         | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
                         | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
                         | _ => None
