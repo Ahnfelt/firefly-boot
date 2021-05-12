@@ -276,7 +276,7 @@ case (Syntax_.TConstructor(_, name, typeParameters)) =>
 val methodName = ((name + "_") + f.field);
 pipe_dot(environment.symbols.get(methodName))({
 case (Firefly_Core.Some(scheme)) =>
-self.inferMethodCall(environment, expected, scheme.signature, e2)
+self.inferMethodCall(environment, expected, scheme.signature, e2, record, methodName)
 case (Firefly_Core.None()) =>
 self.inferLambdaCall(environment, expected, e2)
 })
@@ -291,8 +291,15 @@ term
 })
 }
 
-def inferMethodCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term) : Syntax_.Term = {
-term
+def inferMethodCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term, record : Syntax_.Term, name : Firefly_Core.String) : Syntax_.Term = {
+val e = pipe_dot(term)({
+case (e : Syntax_.ECall) =>
+e
+case (_) =>
+fail(term.at, "Call expected")
+});
+val e2 = e.copy(function = Syntax_.EVariable(e.at, name, List(), List()), arguments = (List(List(Syntax_.Argument(record.at, Firefly_Core.None(), record)), e.arguments).flatten));
+self.inferFunctionCall(environment, expected, signature, e2, name)
 }
 
 def inferFunctionCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term, name : Firefly_Core.String) : Syntax_.Term = {

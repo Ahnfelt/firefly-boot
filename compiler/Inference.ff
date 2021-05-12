@@ -288,7 +288,14 @@ extend self: Inference {
                                 let methodName = name + "_" + f.field
                                 environment.symbols.get(methodName).{
                                     | Some(scheme) =>
-                                        self.inferMethodCall(environment, expected, scheme.signature, e2)
+                                        self.inferMethodCall(
+                                            environment,
+                                            expected,
+                                            scheme.signature,
+                                            e2,
+                                            record,
+                                            methodName
+                                        )
                                     | None =>
                                         self.inferLambdaCall(environment, expected, e2)
                                 }
@@ -334,8 +341,20 @@ extend self: Inference {
         }
     }
 
-    inferMethodCall(environment: Environment, expected: Type, signature: Signature, term: Term): Term {
-        term // TODO
+    inferMethodCall(
+        environment: Environment,
+        expected: Type,
+        signature: Signature,
+        term: Term,
+        record: Term,
+        name: String
+    ): Term {
+        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let e2 = e.ECall(
+            function = EVariable(e.at, name, [], [])
+            arguments = [Argument(record.at, None, record), ...e.arguments]
+        )
+        self.inferFunctionCall(environment, expected, signature, e2, name)
     }
 
     inferFunctionCall(environment: Environment, expected: Type, signature: Signature, term: Term, name: String): Term {
