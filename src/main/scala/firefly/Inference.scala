@@ -31,12 +31,24 @@ self.inferLetDefinition(environment, _w1)
 val functions = module.functions.map({(_w1) =>
 self.inferFunctionDefinition(environment, _w1)
 });
-module.copy(lets = lets, functions = functions)
+val extends_ = module.extends_.map({(_w1) =>
+self.inferExtendDefinition(environment, _w1)
+});
+module.copy(extends_ = extends_, lets = lets, functions = functions)
 }
 
 def inferLetDefinition(environment : Environment_.Environment, definition : Syntax_.DLet) : Syntax_.DLet = {
 val value = self.inferTerm(environment, definition.variableType, definition.value);
 definition.copy(value = value)
+}
+
+def inferExtendDefinition(environment : Environment_.Environment, definition : Syntax_.DExtend) : Syntax_.DExtend = {
+val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(definition.at, definition.name, List(), List(), List(), definition.type_));
+val environment2 = environment.copy(symbols = environment.symbols.updated(definition.name, scheme));
+val methods = definition.methods.map({(_w1) =>
+self.inferFunctionDefinition(environment2, _w1)
+});
+definition.copy(methods = methods)
 }
 
 def inferFunctionDefinition(environment : Environment_.Environment, definition : Syntax_.DFunction) : Syntax_.DFunction = {

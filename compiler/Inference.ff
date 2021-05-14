@@ -39,13 +39,13 @@ extend self: Inference {
 
         let lets = module.lets.map { self.inferLetDefinition(environment, _) }
         let functions = module.functions.map { self.inferFunctionDefinition(environment, _) }
-        //let extends = module.extends.map { self.inferExtendDefinition(_) }
+        let extends = module.extends.map { self.inferExtendDefinition(environment, _) }
         //let traits = module.traits.map { self.inferTraitDefinition(_) }
         //let instances = module.instances.map { self.inferInstanceDefinition(_) }
         module.Module(
             //traits = traits,
             //instances = instances,
-            //extends = extends,
+            extends = extends,
             lets = lets,
             functions = functions,
         )
@@ -55,6 +55,15 @@ extend self: Inference {
         let value = self.inferTerm(environment, definition.variableType, definition.value)
         definition.DLet(
             value = value
+        )
+    }
+
+    inferExtendDefinition(environment: Environment, definition: DExtend): DExtend {
+        let scheme = Scheme(True, False, Signature(definition.at, definition.name, [], [], [], definition.type))
+        let environment2 = environment.Environment(symbols = environment.symbols.updated(definition.name, scheme))
+        let methods = definition.methods.map { self.inferFunctionDefinition(environment2, _) }
+        definition.DExtend(
+            methods = methods,
         )
     }
 
