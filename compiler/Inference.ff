@@ -425,11 +425,17 @@ extend self: Inference {
             | [a1, a2] {
                 operator == "++"
             } =>
-                let t1 = self.unification.freshTypeVariable(e.at)
-                let t = TConstructor(e.at, core("List"), [t1])
+                let t = self.unification.freshTypeVariable(e.at)
                 let e1 = self.inferTerm(environment, t, a1.value)
                 let e2 = self.inferTerm(environment, t, a2.value)
                 self.unification.unify(e.at, expected, t)
+                let name = self.unification.substitute(t).{
+                    | TConstructor(_, name, _) => name
+                    | _ => fail(e.at, "Operators on unknown types not currently supported")
+                }
+                if(name != core("List") && name != core("Array") && name != core("Set") && name != core("Map")) {
+                    fail(e.at, "Operator ++ not currently supported for " + name)
+                }
                 e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | [a1, a2] {
                 operator == "||" || operator == "&&"

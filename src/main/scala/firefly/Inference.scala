@@ -375,11 +375,19 @@ Inference_.fail(e.at, "Operators on unknown types not currently supported")
 });
 e.copy(arguments = List(a1.copy(value = e1)))
 case (List(a1, a2)) if (operator == "++") =>
-val t1 = self.unification.freshTypeVariable(e.at);
-val t = Syntax_.TConstructor(e.at, Inference_.core("List"), List(t1));
+val t = self.unification.freshTypeVariable(e.at);
 val e1 = self.inferTerm(environment, t, a1.value);
 val e2 = self.inferTerm(environment, t, a2.value);
 self.unification.unify(e.at, expected, t);
+val name = pipe_dot(self.unification.substitute(t))({
+case (Syntax_.TConstructor(_, name, _)) =>
+name
+case (_) =>
+Inference_.fail(e.at, "Operators on unknown types not currently supported")
+});
+Firefly_Core.if_(((((name != Inference_.core("List")) && (name != Inference_.core("Array"))) && (name != Inference_.core("Set"))) && (name != Inference_.core("Map"))), {() =>
+Inference_.fail(e.at, ("Operator ++ not currently supported for " + name))
+});
 e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
 case (List(a1, a2)) if ((operator == "||") || (operator == "&&")) =>
 val t = Syntax_.TConstructor(e.at, Inference_.core("Bool"), List());
