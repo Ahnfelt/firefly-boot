@@ -329,24 +329,22 @@ e
 case (_) =>
 Inference_.fail(term.at, "Call expected")
 });
-val arguments = e.arguments.map({(argument) =>
-val t = self.unification.freshTypeVariable(argument.at);
+val argumentTypes = e.arguments.map({(_w1) =>
+self.unification.freshTypeVariable(_w1.at)
+});
+val arguments = e.arguments.zip(argumentTypes).map({
+case (Firefly_Core.Pair(argument, t)) =>
 argument.name.foreach({(name) =>
 Inference_.fail(argument.at, ("Named argument not allowed here: " + name))
 });
-(t -> argument.copy(value = self.inferTerm(environment, t, argument.value)))
-});
-val argumentTypes = arguments.map({(_w1) =>
-_w1.first
+argument.copy(value = self.inferTerm(environment, t, argument.value))
 });
 val functionType = Syntax_.TConstructor(e.at, ("Function$" + e.arguments.size), (List(argumentTypes, List(expected)).flatten));
 val function = self.inferTerm(environment, functionType, e.function);
 e.typeArguments.headOption.foreach({(typeArgument) =>
 Inference_.fail(typeArgument.at, "Type arguments not allowed here")
 });
-e.copy(function = function, typeArguments = List(), arguments = arguments.map({(_w1) =>
-_w1.second
-}))
+e.copy(function = function, typeArguments = List(), arguments = arguments)
 }
 
 def inferOperator(environment : Environment_.Environment, expected : Syntax_.Type, operator : Firefly_Core.String, term : Syntax_.Term) : Syntax_.Term = {
