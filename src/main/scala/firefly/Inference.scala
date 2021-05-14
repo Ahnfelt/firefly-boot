@@ -161,11 +161,14 @@ pipe_dot(self.unification.substitute(recordType))({
 case (Syntax_.TConstructor(_, name, typeParameters)) =>
 val methodName = ((name + "_") + e.field);
 pipe_dot(environment.symbols.get(methodName))({
-case (Firefly_Core.Some(scheme)) =>
+case (Firefly_Core.Some(scheme)) if (!scheme.isVariable) =>
 val signature = scheme.signature.copy(parameters = scheme.signature.parameters.drop(1));
 self.inferEtaExpansion(environment, expected, e.at, signature, e2)
+case (Firefly_Core.Some(scheme)) =>
+self.unification.unify(e.at, expected, scheme.signature.returnType);
+e.copy(record = record)
 case (Firefly_Core.None()) =>
-term
+Inference_.fail(e.at, ((("No such field " + e.field) + " on type: ") + recordType.show()))
 })
 case (Syntax_.TVariable(_, index)) =>
 Inference_.fail(e.at, ((("No such field " + e.field) + " on unknown type: $") + index))

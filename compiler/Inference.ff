@@ -172,13 +172,16 @@ extend self: Inference {
                     | TConstructor(_, name, typeParameters) =>
                         let methodName = name + "_" + e.field
                         environment.symbols.get(methodName).{
-                            | Some(scheme) =>
+                            | Some(scheme) {!scheme.isVariable} =>
                                 let signature = scheme.signature.Signature(
                                     parameters = scheme.signature.parameters.drop(1) // Drop self for eta expansion
                                 )
                                 self.inferEtaExpansion(environment, expected, e.at, signature, e2)
+                            | Some(scheme) =>
+                                self.unification.unify(e.at, expected, scheme.signature.returnType)
+                                e.EField(record = record)
                             | None =>
-                                term // TODO: Fields in environment
+                                fail(e.at, "No such field " + e.field + " on type: " + recordType.show())
                         }
                     | TVariable(_, index) =>
                         fail(e.at, "No such field " + e.field + " on unknown type: $" + index)

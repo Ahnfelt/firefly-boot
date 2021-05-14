@@ -42,6 +42,12 @@ Firefly_Core.Pair(full(module, (prefix + method.signature.name)), Environment_.S
 })
 })
 });
+val fields = module.types.flatMap({(d) =>
+val prefix = (d.name + "_");
+d.commonFields.map({(f) =>
+Firefly_Core.Pair(full(module, (prefix + f.name)), Environment_.Scheme(Firefly_Core.True(), f.mutable, Syntax_.Signature(at = f.at, name = f.name, generics = List(), constraints = List(), parameters = List(), returnType = f.valueType)))
+})
+});
 val variants = module.types.flatMap({(d) =>
 val returnType = Syntax_.TConstructor(d.at, full(module, d.name), d.generics.map({(typeParameter) =>
 Syntax_.TConstructor(d.at, typeParameter, List())
@@ -50,7 +56,7 @@ d.variants.map({(variant) =>
 Firefly_Core.Pair(full(module, variant.name), Environment_.Scheme(Firefly_Core.False(), Firefly_Core.False(), Syntax_.Signature(variant.at, variant.name, generics = d.generics, constraints = d.constraints, parameters = (d.commonFields ++ variant.fields), returnType = returnType)))
 })
 });
-Environment_.Environment((((functions ++ lets) ++ extends_) ++ variants).toMap)
+Environment_.Environment(((((functions ++ lets) ++ fields) ++ extends_) ++ variants).toMap)
 }
 
 
