@@ -290,7 +290,7 @@ extend self: Inference {
                             | TConstructor(_, name, typeParameters) =>
                                 let methodName = name + "_" + f.field
                                 environment.symbols.get(methodName).{
-                                    | Some(scheme) =>
+                                    | Some(scheme) {!scheme.isVariable} =>
                                         self.inferMethodCall(
                                             environment,
                                             expected,
@@ -299,7 +299,7 @@ extend self: Inference {
                                             record,
                                             methodName
                                         )
-                                    | None =>
+                                    | _ =>
                                         self.inferLambdaCall(environment, expected, e2)
                                 }
                             | TVariable(_, index) =>

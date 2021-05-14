@@ -278,9 +278,9 @@ pipe_dot(self.unification.substitute(recordType))({
 case (Syntax_.TConstructor(_, name, typeParameters)) =>
 val methodName = ((name + "_") + f.field);
 pipe_dot(environment.symbols.get(methodName))({
-case (Firefly_Core.Some(scheme)) =>
+case (Firefly_Core.Some(scheme)) if (!scheme.isVariable) =>
 self.inferMethodCall(environment, expected, scheme.signature, e2, record, methodName)
-case (Firefly_Core.None()) =>
+case (_) =>
 self.inferLambdaCall(environment, expected, e2)
 })
 case (Syntax_.TVariable(_, index)) =>
