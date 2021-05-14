@@ -74,8 +74,9 @@ extend self: Inference {
             )
             let lambda = method.body.Lambda(
                 cases = method.body.cases.map { case =>
+                    let selfPattern = PVariable(method.at, Some(definition.name))
                     case.MatchCase(
-                        patterns = [PVariable(method.at, Some(definition.name)), ...case.patterns]
+                        patterns = [selfPattern, ...case.patterns]
                     )
                 }
             )

@@ -47,7 +47,8 @@ val selfParameter = Syntax_.Parameter(at = definition.at, mutable = Firefly_Core
 val functions = definition.methods.map({(method) =>
 val signature = method.signature.copy(generics = (definition.generics ++ method.signature.generics), constraints = (definition.constraints ++ method.signature.constraints), parameters = (List(List(selfParameter), method.signature.parameters).flatten));
 val lambda = method.body.copy(cases = method.body.cases.map({(case_) =>
-case_.copy(patterns = (List(List(Syntax_.PVariable(method.at, Firefly_Core.Some(definition.name))), case_.patterns).flatten))
+val selfPattern = Syntax_.PVariable(method.at, Firefly_Core.Some(definition.name));
+case_.copy(patterns = (List(List(selfPattern), case_.patterns).flatten))
 }));
 val function = method.copy(signature = signature, body = lambda);
 self.inferFunctionDefinition(environment, function)
