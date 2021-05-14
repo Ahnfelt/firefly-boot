@@ -59,11 +59,34 @@ extend self: Inference {
     }
 
     inferExtendDefinition(environment: Environment, definition: DExtend): DExtend {
-        let scheme = Scheme(True, False, Signature(definition.at, definition.name, [], [], [], definition.type))
-        let environment2 = environment.Environment(symbols = environment.symbols.updated(definition.name, scheme))
-        let methods = definition.methods.map { self.inferFunctionDefinition(environment2, _) }
+        let selfParameter = Parameter(
+            at = definition.at
+            mutable = False
+            name = definition.name
+            valueType = definition.type
+            default = None
+        )
+        let functions = definition.methods.map { method =>
+            let signature = method.signature.copy(
+                generics = definition.generics ++ method.signature.generics
+                constraints = definition.constraints ++ method.signature.constraints
+                parameters = [selfParameter, ...method.signature.parameters]
+            )
+            let lambda = method.body.Lambda(
+                cases = method.body.cases.map { case =>
+                    case.MatchCase(
+                        patterns = [PVariable(method.at, Some(definition.name)), ...case.patterns]
+                    )
+                }
+            )
+            let function = method.DFunction(
+                signature = signature
+                body = lambda
+            )
+            self.inferFunctionDefinition(environment, function)
+        }
         definition.DExtend(
-            methods = methods,
+            methods = functions
         )
     }
 

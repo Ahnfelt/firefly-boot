@@ -43,12 +43,16 @@ definition.copy(value = value)
 }
 
 def inferExtendDefinition(environment : Environment_.Environment, definition : Syntax_.DExtend) : Syntax_.DExtend = {
-val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(definition.at, definition.name, List(), List(), List(), definition.type_));
-val environment2 = environment.copy(symbols = environment.symbols.updated(definition.name, scheme));
-val methods = definition.methods.map({(_w1) =>
-self.inferFunctionDefinition(environment2, _w1)
+val selfParameter = Syntax_.Parameter(at = definition.at, mutable = Firefly_Core.False(), name = definition.name, valueType = definition.type_, default = Firefly_Core.None());
+val functions = definition.methods.map({(method) =>
+val signature = method.signature.copy(generics = (definition.generics ++ method.signature.generics), constraints = (definition.constraints ++ method.signature.constraints), parameters = (List(List(selfParameter), method.signature.parameters).flatten));
+val lambda = method.body.copy(cases = method.body.cases.map({(case_) =>
+case_.copy(patterns = (List(List(Syntax_.PVariable(method.at, Firefly_Core.Some(definition.name))), case_.patterns).flatten))
+}));
+val function = method.copy(signature = signature, body = lambda);
+self.inferFunctionDefinition(environment, function)
 });
-definition.copy(methods = methods)
+definition.copy(methods = functions)
 }
 
 def inferFunctionDefinition(environment : Environment_.Environment, definition : Syntax_.DFunction) : Syntax_.DFunction = {
