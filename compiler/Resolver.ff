@@ -59,7 +59,7 @@ extend self: Resolver {
         function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
             let full = module.file.dropRight(3) + "." + name
             importAlias.{
-                | None => [Pair(name, name)]
+                | None => [Pair(name, full)]
                 | Some(alias) { unqualified } => [Pair(alias + "." + name, full), Pair(name, full)]
                 | Some(alias) => [Pair(alias + "." + name, full)]
             }

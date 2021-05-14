@@ -4,7 +4,7 @@ import firefly.Firefly_Core._
 import firefly.Syntax_._
 object Token_ {
 
-case class Token(file : Firefly_Core.String, code : Firefly_Core.String, kind : TokenKind, startLine : Firefly_Core.Int, startLineOffset : Firefly_Core.Int, startOffset : Firefly_Core.Int, stopLine : Firefly_Core.Int, stopLineOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int)
+case class Token(file : Firefly_Core.String, code : Firefly_Core.String, kind : Token_.TokenKind, startLine : Firefly_Core.Int, startLineOffset : Firefly_Core.Int, startOffset : Firefly_Core.Int, stopLine : Firefly_Core.Int, stopLineOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int)
 
 sealed abstract class TokenKind extends Product with Serializable
 case class LEnd() extends TokenKind
@@ -34,7 +34,7 @@ case class LAssignMinus() extends TokenKind
 case class LAssignLink() extends TokenKind
 
 
-implicit class Token_extend0(token : Token) {
+implicit class Token_extend0(token : Token_.Token) {
 
 def at() : Syntax_.Location = {
 Syntax_.Location(token.file, token.startLine, ((token.startOffset - token.startLineOffset) + 1))
@@ -44,15 +44,15 @@ def raw() : Firefly_Core.String = {
 token.code.slice(token.startOffset, token.stopOffset)
 }
 
-def is(kind1 : TokenKind) = {
+def is(kind1 : Token_.TokenKind) = {
 (token.kind == kind1)
 }
 
-def is2(kind1 : TokenKind, kind2 : TokenKind) = {
+def is2(kind1 : Token_.TokenKind, kind2 : Token_.TokenKind) = {
 ((token.kind == kind1) || (token.kind == kind2))
 }
 
-def is3(kind1 : TokenKind, kind2 : TokenKind, kind3 : TokenKind) = {
+def is3(kind1 : Token_.TokenKind, kind2 : Token_.TokenKind, kind3 : Token_.TokenKind) = {
 (((token.kind == kind1) || (token.kind == kind2)) || (token.kind == kind3))
 }
 
@@ -62,169 +62,169 @@ token.code.regionMatches(token.startOffset, value, 0, value.length)
 
 }
 
-implicit class TokenKind_extend1(self : TokenKind) {
+implicit class TokenKind_extend1(self : Token_.TokenKind) {
 
 def beforeSeparator() : Firefly_Core.Bool = {
 pipe_dot(self)({
-case (LEnd()) =>
+case (Token_.LEnd()) =>
 Firefly_Core.False()
-case (LString()) =>
+case (Token_.LString()) =>
 Firefly_Core.True()
-case (LChar()) =>
+case (Token_.LChar()) =>
 Firefly_Core.True()
-case (LInt()) =>
+case (Token_.LInt()) =>
 Firefly_Core.True()
-case (LFloat()) =>
+case (Token_.LFloat()) =>
 Firefly_Core.True()
-case (LKeyword()) =>
+case (Token_.LKeyword()) =>
 Firefly_Core.True()
-case (LNamespace()) =>
+case (Token_.LNamespace()) =>
 Firefly_Core.False()
-case (LLower()) =>
+case (Token_.LLower()) =>
 Firefly_Core.True()
-case (LUpper()) =>
+case (Token_.LUpper()) =>
 Firefly_Core.True()
-case (LWildcard()) =>
+case (Token_.LWildcard()) =>
 Firefly_Core.True()
-case (LBracketLeft()) =>
+case (Token_.LBracketLeft()) =>
 Firefly_Core.False()
-case (LBracketRight()) =>
+case (Token_.LBracketRight()) =>
 Firefly_Core.True()
-case (LOperator()) =>
+case (Token_.LOperator()) =>
 Firefly_Core.False()
-case (LComma()) =>
+case (Token_.LComma()) =>
 Firefly_Core.False()
-case (LSeparator()) =>
+case (Token_.LSeparator()) =>
 Firefly_Core.False()
-case (LDot()) =>
+case (Token_.LDot()) =>
 Firefly_Core.False()
-case (LSemicolon()) =>
+case (Token_.LSemicolon()) =>
 Firefly_Core.False()
-case (LPipe()) =>
+case (Token_.LPipe()) =>
 Firefly_Core.False()
-case (LColon()) =>
+case (Token_.LColon()) =>
 Firefly_Core.False()
-case (LDotDotDot()) =>
+case (Token_.LDotDotDot()) =>
 Firefly_Core.False()
-case (LArrowThick()) =>
+case (Token_.LArrowThick()) =>
 Firefly_Core.False()
-case (LAssign()) =>
+case (Token_.LAssign()) =>
 Firefly_Core.False()
-case (LAssignPlus()) =>
+case (Token_.LAssignPlus()) =>
 Firefly_Core.False()
-case (LAssignMinus()) =>
+case (Token_.LAssignMinus()) =>
 Firefly_Core.False()
-case (LAssignLink()) =>
+case (Token_.LAssignLink()) =>
 Firefly_Core.False()
 })
 }
 
 def afterSeparator() : Firefly_Core.Bool = {
 pipe_dot(self)({
-case (LEnd()) =>
+case (Token_.LEnd()) =>
 Firefly_Core.False()
-case (LString()) =>
+case (Token_.LString()) =>
 Firefly_Core.True()
-case (LChar()) =>
+case (Token_.LChar()) =>
 Firefly_Core.True()
-case (LInt()) =>
+case (Token_.LInt()) =>
 Firefly_Core.True()
-case (LFloat()) =>
+case (Token_.LFloat()) =>
 Firefly_Core.True()
-case (LKeyword()) =>
+case (Token_.LKeyword()) =>
 Firefly_Core.True()
-case (LNamespace()) =>
+case (Token_.LNamespace()) =>
 Firefly_Core.True()
-case (LLower()) =>
+case (Token_.LLower()) =>
 Firefly_Core.True()
-case (LUpper()) =>
+case (Token_.LUpper()) =>
 Firefly_Core.True()
-case (LWildcard()) =>
+case (Token_.LWildcard()) =>
 Firefly_Core.True()
-case (LBracketLeft()) =>
+case (Token_.LBracketLeft()) =>
 Firefly_Core.True()
-case (LBracketRight()) =>
+case (Token_.LBracketRight()) =>
 Firefly_Core.False()
-case (LOperator()) =>
+case (Token_.LOperator()) =>
 Firefly_Core.False()
-case (LComma()) =>
+case (Token_.LComma()) =>
 Firefly_Core.False()
-case (LSeparator()) =>
+case (Token_.LSeparator()) =>
 Firefly_Core.False()
-case (LDot()) =>
+case (Token_.LDot()) =>
 Firefly_Core.False()
-case (LSemicolon()) =>
+case (Token_.LSemicolon()) =>
 Firefly_Core.False()
-case (LPipe()) =>
+case (Token_.LPipe()) =>
 Firefly_Core.False()
-case (LColon()) =>
+case (Token_.LColon()) =>
 Firefly_Core.False()
-case (LDotDotDot()) =>
+case (Token_.LDotDotDot()) =>
 Firefly_Core.True()
-case (LArrowThick()) =>
+case (Token_.LArrowThick()) =>
 Firefly_Core.False()
-case (LAssign()) =>
+case (Token_.LAssign()) =>
 Firefly_Core.False()
-case (LAssignPlus()) =>
+case (Token_.LAssignPlus()) =>
 Firefly_Core.False()
-case (LAssignMinus()) =>
+case (Token_.LAssignMinus()) =>
 Firefly_Core.False()
-case (LAssignLink()) =>
+case (Token_.LAssignLink()) =>
 Firefly_Core.False()
 })
 }
 
 def afterKeyword() : Firefly_Core.Bool = {
 pipe_dot(self)({
-case (LEnd()) =>
+case (Token_.LEnd()) =>
 Firefly_Core.False()
-case (LString()) =>
+case (Token_.LString()) =>
 Firefly_Core.True()
-case (LChar()) =>
+case (Token_.LChar()) =>
 Firefly_Core.True()
-case (LInt()) =>
+case (Token_.LInt()) =>
 Firefly_Core.True()
-case (LFloat()) =>
+case (Token_.LFloat()) =>
 Firefly_Core.True()
-case (LKeyword()) =>
+case (Token_.LKeyword()) =>
 Firefly_Core.True()
-case (LNamespace()) =>
+case (Token_.LNamespace()) =>
 Firefly_Core.True()
-case (LLower()) =>
+case (Token_.LLower()) =>
 Firefly_Core.True()
-case (LUpper()) =>
+case (Token_.LUpper()) =>
 Firefly_Core.True()
-case (LWildcard()) =>
+case (Token_.LWildcard()) =>
 Firefly_Core.True()
-case (LBracketLeft()) =>
+case (Token_.LBracketLeft()) =>
 Firefly_Core.False()
-case (LBracketRight()) =>
+case (Token_.LBracketRight()) =>
 Firefly_Core.False()
-case (LOperator()) =>
+case (Token_.LOperator()) =>
 Firefly_Core.False()
-case (LComma()) =>
+case (Token_.LComma()) =>
 Firefly_Core.False()
-case (LSeparator()) =>
+case (Token_.LSeparator()) =>
 Firefly_Core.False()
-case (LDot()) =>
+case (Token_.LDot()) =>
 Firefly_Core.False()
-case (LSemicolon()) =>
+case (Token_.LSemicolon()) =>
 Firefly_Core.False()
-case (LPipe()) =>
+case (Token_.LPipe()) =>
 Firefly_Core.False()
-case (LColon()) =>
+case (Token_.LColon()) =>
 Firefly_Core.False()
-case (LDotDotDot()) =>
+case (Token_.LDotDotDot()) =>
 Firefly_Core.False()
-case (LArrowThick()) =>
+case (Token_.LArrowThick()) =>
 Firefly_Core.False()
-case (LAssign()) =>
+case (Token_.LAssign()) =>
 Firefly_Core.False()
-case (LAssignPlus()) =>
+case (Token_.LAssignPlus()) =>
 Firefly_Core.False()
-case (LAssignMinus()) =>
+case (Token_.LAssignMinus()) =>
 Firefly_Core.False()
-case (LAssignLink()) =>
+case (Token_.LAssignLink()) =>
 Firefly_Core.False()
 })
 }

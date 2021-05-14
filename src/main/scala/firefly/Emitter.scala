@@ -21,24 +21,24 @@ val parts = List(List("package firefly"), (List(List("import firefly.Firefly_Cor
 })).flatten), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")
 }), {() =>
-List(emitMain())
+List(Emitter_.emitMain())
 }).else_({() =>
 List()
-}), module.types.map(emitTypeDefinition), module.lets.map({(_w1) =>
-emitLetDefinition(_w1)
+}), module.types.map(Emitter_.emitTypeDefinition), module.lets.map({(_w1) =>
+Emitter_.emitLetDefinition(_w1)
 }), module.functions.map({(_w1) =>
-emitFunctionDefinition(_w1)
+Emitter_.emitFunctionDefinition(_w1)
 }), module.extends_.pairs.map({(pair) =>
-emitExtendImplicit(pair.second, pair.first)
-}), module.traits.map(emitTraitDefinition), module.instances.map(emitInstanceDefinition), List("}"));
+Emitter_.emitExtendImplicit(pair.second, pair.first)
+}), module.traits.map(Emitter_.emitTraitDefinition), module.instances.map(Emitter_.emitInstanceDefinition), List("}"));
 module.extends_.map({(_w1) =>
 _w1.type_
 }).flatMap(({ case _w : Syntax_.TConstructor => Some(_w); case _ => None() })).find({(t) =>
 (!module.types.exists({(_w1) =>
-(_w1.name == t.name)
+(((moduleNamespace + ".") + _w1.name) == t.name)
 }))
 }).foreach({(t) =>
-fail(t.at, ("Type not defined in this file: " + t))
+Emitter_.fail(t.at, ("Type not defined in this file: " + t.name))
 });
 (parts.map({(_w1) =>
 _w1.mkString("\n\n")
@@ -51,28 +51,28 @@ def emitMain() = {
 
 def emitTypeMembers(name : Firefly_Core.String, lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction]) = {
 val strings = (lets.map({(_w1) =>
-emitLetDefinition(_w1)
+Emitter_.emitLetDefinition(_w1)
 }) ++ functions.map({(_w1) =>
-emitFunctionDefinition(_w1)
+Emitter_.emitFunctionDefinition(_w1)
 }));
 (((("object " + name) + " {\n\n") + strings.mkString("\n\n")) + "\n\n}")
 }
 
 def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
-val generics = emitTypeParameters(definition.generics);
+val generics = Emitter_.emitTypeParameters(definition.generics);
 Firefly_Core.if_(((definition.variants.size == 1) && (definition.variants.head.name == definition.name)), {() =>
-val fields = (("(" + definition.commonFields.map(emitParameter).mkString(", ")) + ")");
+val fields = (("(" + definition.commonFields.map(Emitter_.emitParameter).mkString(", ")) + ")");
 ((("case class " + definition.name) + generics) + fields)
 }).else_({() =>
 val commonFields = Firefly_Core.if_(definition.commonFields.isEmpty, {() =>
 ""
 }).else_({() =>
-((" {\n" + definition.commonFields.map(emitParameter).map({(_w1) =>
+((" {\n" + definition.commonFields.map(Emitter_.emitParameter).map({(_w1) =>
 (("    val " + _w1) + "\n")
 }).mkString) + "}")
 });
 val variants = definition.variants.map({(_w1) =>
-emitVariantDefinition(definition, _w1)
+Emitter_.emitVariantDefinition(definition, _w1)
 });
 val head = ((("sealed abstract class " + definition.name) + generics) + " extends Product with Serializable");
 ((head + commonFields) + variants.map({(_w1) =>
@@ -82,17 +82,17 @@ val head = ((("sealed abstract class " + definition.name) + generics) + " extend
 }
 
 def emitLetDefinition(definition : Syntax_.DLet, mutable : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.String = {
-val typeAnnotation = emitTypeAnnotation(definition.variableType);
+val typeAnnotation = Emitter_.emitTypeAnnotation(definition.variableType);
 val mutability = Firefly_Core.if_(mutable, {() =>
 "var"
 }).else_({() =>
 "val"
 });
-(((((mutability + " ") + escapeKeyword(definition.name)) + typeAnnotation) + " = ") + emitTerm(definition.value))
+(((((mutability + " ") + Emitter_.escapeKeyword(definition.name)) + typeAnnotation) + " = ") + Emitter_.emitTerm(definition.value))
 }
 
 def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
-val signature = emitSignature(definition.signature, suffix);
+val signature = Emitter_.emitSignature(definition.signature, suffix);
 pipe_dot(definition.body)({
 case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
 case (Syntax_.PVariable(_, Firefly_Core.None())) =>
@@ -100,34 +100,37 @@ Firefly_Core.True()
 case (_) =>
 Firefly_Core.False()
 }) =>
-val body = emitStatements(matchCase.body);
+val body = Emitter_.emitStatements(matchCase.body);
 (((signature + " = {\n") + body) + "\n}")
 case (_) =>
 val tuple = (("(" + definition.signature.parameters.map({(_w1) =>
-escapeKeyword(_w1.name)
+Emitter_.escapeKeyword(_w1.name)
 }).mkString(", ")) + ")");
-val cases = definition.body.cases.map(emitCase).mkString("\n");
+val cases = definition.body.cases.map(Emitter_.emitCase).mkString("\n");
 (((((signature + " = ") + tuple) + " match {\n") + cases) + "\n}")
 })
 }
 
 def emitExtendImplicit(definition : Syntax_.DExtend, index : Firefly_Core.Int) : Firefly_Core.String = {
-val generics = emitTypeParameters(definition.generics);
-val implicits = emitConstraints(definition.constraints);
-val parameter = ((escapeKeyword(definition.name) + " : ") + emitType(definition.type_));
+val generics = Emitter_.emitTypeParameters(definition.generics);
+val implicits = Emitter_.emitConstraints(definition.constraints);
+val parameter = ((Emitter_.escapeKeyword(definition.name) + " : ") + Emitter_.emitType(definition.type_));
 val methods = definition.methods.map({(_w1) =>
-emitFunctionDefinition(_w1)
+Emitter_.emitFunctionDefinition(_w1)
 }).join("\n\n");
-((((((((((("implicit class " + extractTypeName(definition.type_)) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + methods) + "\n\n}")
+val typeName = Emitter_.extractTypeName(definition.type_).reverse.takeWhile({(_w1) =>
+(_w1 != '.')
+}).reverse;
+((((((((((("implicit class " + typeName) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + methods) + "\n\n}")
 }
 
 def emitTraitDefinition(definition : Syntax_.DTrait) : Firefly_Core.String = {
-val generics = emitTypeParameters(definition.generics);
-val implicits = emitConstraints(definition.constraints);
+val generics = Emitter_.emitTypeParameters(definition.generics);
+val implicits = Emitter_.emitConstraints(definition.constraints);
 val parameters = Firefly_Core.if_(definition.generatorParameters.isEmpty, {() =>
 ""
 }).else_({() =>
-(("(" + definition.generatorParameters.map(emitParameter).mkString(", ")) + ")")
+(("(" + definition.generatorParameters.map(Emitter_.emitParameter).mkString(", ")) + ")")
 });
 val methods = Firefly_Core.if_(definition.methods.isEmpty, {() =>
 ""
@@ -137,7 +140,7 @@ val body = definition.methodDefaults.find({(_w1) =>
 (_w1.first == signature.name)
 }).map({
 case (Firefly_Core.Pair(_, lambda)) =>
-((" {\n" + emitStatements(Syntax_.ELambda(lambda.at, lambda))) + "\n}")
+((" {\n" + Emitter_.emitStatements(Syntax_.ELambda(lambda.at, lambda))) + "\n}")
 }).orElse(definition.methodGenerators.find({(_w1) =>
 (_w1.first == signature.name)
 }).map({
@@ -146,7 +149,7 @@ case (Firefly_Core.Pair(_, e)) =>
 })).getOrElse({() =>
 ""
 });
-(emitSignature(signature, "_m") + body)
+(Emitter_.emitSignature(signature, "_m") + body)
 }).mkString("\n\n")) + "\n\n}")
 });
 val methodWrappers = Firefly_Core.if_(definition.methods.isEmpty, {() =>
@@ -156,43 +159,43 @@ val methodWrappers = Firefly_Core.if_(definition.methods.isEmpty, {() =>
 val t = Syntax_.TConstructor(definition.at, definition.name, definition.generics.map({(_w1) =>
 Syntax_.TConstructor(definition.at, _w1, List())
 }));
-(((((((emitSignature(signature.copy(generics = (definition.generics ++ signature.generics), constraints = (List(List(Syntax_.Constraint(t)), definition.constraints, signature.constraints).flatten))) + " =\n    scala.Predef.implicitly[") + emitType(t)) + "].") + escapeKeyword(signature.name)) + "_m(") + signature.parameters.map({(_w1) =>
+(((((((Emitter_.emitSignature(signature.copy(generics = (definition.generics ++ signature.generics), constraints = (List(List(Syntax_.Constraint(t)), definition.constraints, signature.constraints).flatten))) + " =\n    scala.Predef.implicitly[") + Emitter_.emitType(t)) + "].") + Emitter_.escapeKeyword(signature.name)) + "_m(") + signature.parameters.map({(_w1) =>
 _w1.name
-}).map(escapeKeyword).join(", ")) + ")")
+}).map(Emitter_.escapeKeyword).join(", ")) + ")")
 }).join("\n\n")) + "\n\n")
 });
 ((((((((((("abstract class " + definition.name) + generics) + parameters) + implicits) + methods) + "\n") + "object ") + definition.name) + " {") + methodWrappers) + "}")
 }
 
 def emitInstanceDefinition(definition : Syntax_.DInstance) : Firefly_Core.String = {
-val signature = emitSignature(Syntax_.Signature(definition.at, ((extractTypeName(definition.traitType) + "_") + definition.hashCode().abs), definition.generics, definition.constraints, List(), definition.traitType));
-val methods = ((((" {\n\nimport " + extractTypeName(definition.traitType)) + "._\n\n") + definition.methods.map({(_w1) =>
-emitFunctionDefinition(_w1, "_m")
+val signature = Emitter_.emitSignature(Syntax_.Signature(definition.at, ((Emitter_.extractTypeName(definition.traitType) + "_") + definition.hashCode().abs), definition.generics, definition.constraints, List(), definition.traitType));
+val methods = ((((" {\n\nimport " + Emitter_.extractTypeName(definition.traitType)) + "._\n\n") + definition.methods.map({(_w1) =>
+Emitter_.emitFunctionDefinition(_w1, "_m")
 }).join("\n\n")) + "\n\n}");
-val value = (("new " + emitType(definition.traitType)) + methods);
+val value = (("new " + Emitter_.emitType(definition.traitType)) + methods);
 ((("implicit " + signature) + " =\n    ") + value)
 }
 
 def emitVariantDefinition(typeDefinition : Syntax_.DType, definition : Syntax_.Variant) : Firefly_Core.String = {
-val generics = emitTypeParameters(typeDefinition.generics);
+val generics = Emitter_.emitTypeParameters(typeDefinition.generics);
 val allFields = (typeDefinition.commonFields ++ definition.fields);
-val fields = (("(" + allFields.map(emitParameter).mkString(", ")) + ")");
+val fields = (("(" + allFields.map(Emitter_.emitParameter).mkString(", ")) + ")");
 (((((("case class " + definition.name) + generics) + fields) + " extends ") + typeDefinition.name) + generics)
 }
 
 def emitSignature(signature : Syntax_.Signature, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
-val generics = emitTypeParameters(signature.generics);
-val parameters = (("(" + signature.parameters.map(emitParameter).mkString(", ")) + ")");
+val generics = Emitter_.emitTypeParameters(signature.generics);
+val parameters = (("(" + signature.parameters.map(Emitter_.emitParameter).mkString(", ")) + ")");
 val implicits = Firefly_Core.if_(signature.constraints.isEmpty, {() =>
 ""
 }).else_({() =>
 (("(implicit " + signature.constraints.zipWithIndex.map({
 case (Firefly_Core.Pair(c, i)) =>
-((("i_" + i) + " : ") + emitType(c.representation))
+((("i_" + i) + " : ") + Emitter_.emitType(c.representation))
 }).mkString(", ")) + ")")
 });
-val returnType = emitTypeAnnotation(signature.returnType);
-(((((("def " + escapeKeyword(signature.name)) + suffix) + generics) + parameters) + implicits) + returnType)
+val returnType = Emitter_.emitTypeAnnotation(signature.returnType);
+(((((("def " + Emitter_.escapeKeyword(signature.name)) + suffix) + generics) + parameters) + implicits) + returnType)
 }
 
 def emitParameter(parameter : Syntax_.Parameter) : Firefly_Core.String = {
@@ -202,9 +205,9 @@ val mutability = Firefly_Core.if_(parameter.mutable, {() =>
 ""
 });
 val defaultValue = parameter.default.map({(_w1) =>
-(" = " + emitTerm(_w1))
+(" = " + Emitter_.emitTerm(_w1))
 }).getOrElse("");
-(((mutability + escapeKeyword(parameter.name)) + emitTypeAnnotation(parameter.valueType)) + defaultValue)
+(((mutability + Emitter_.escapeKeyword(parameter.name)) + Emitter_.emitTypeAnnotation(parameter.valueType)) + defaultValue)
 }
 
 def emitConstraints(constraints : Firefly_Core.List[Syntax_.Constraint]) : Firefly_Core.String = {
@@ -213,7 +216,7 @@ Firefly_Core.if_(constraints.isEmpty, {() =>
 }).else_({() =>
 val pairs = constraints.map({(_w1) =>
 _w1.representation
-}).map(emitType).zipWithIndex;
+}).map(Emitter_.emitType).zipWithIndex;
 (("(implicit " + pairs.map({
 case (Firefly_Core.Pair(k, v)) =>
 ((("i_" + v) + " : ") + k)
@@ -233,7 +236,7 @@ def emitTypeAnnotation(t : Syntax_.Type) : Firefly_Core.String = (t) match {
 case (_ : Syntax_.TVariable) =>
 ""
 case (_ : Syntax_.TConstructor) =>
-(" : " + emitType(t))
+(" : " + Emitter_.emitType(t))
 }
 
 def emitType(type_ : Syntax_.Type) : Firefly_Core.String = (type_) match {
@@ -241,40 +244,40 @@ case (Syntax_.TVariable(_, index)) =>
 ("$" + index)
 case (t : Syntax_.TConstructor) =>
 Firefly_Core.if_(t.name.startsWith("Function$"), {() =>
-emitType(t.copy(name = t.name.replace("$", "")))
+Emitter_.emitType(t.copy(name = t.name.replace("$", "")))
 }).elseIf({() =>
 t.name.startsWith("Record$")
 }, {() =>
 (("{" + t.name.split('$').drop(1).toList.zip(t.generics).map({
 case (Firefly_Core.Pair(field, fieldType)) =>
-((("val " + escapeKeyword(field)) + " : ") + emitType(fieldType))
+((("val " + Emitter_.escapeKeyword(field)) + " : ") + Emitter_.emitType(fieldType))
 }).mkString("; ")) + "}")
 }).else_({() =>
 val generics = Firefly_Core.if_(t.generics.isEmpty, {() =>
 ""
 }).else_({() =>
-(("[" + t.generics.map(emitType).mkString(", ")) + "]")
+(("[" + t.generics.map(Emitter_.emitType).mkString(", ")) + "]")
 });
-(escapeResolved(t.name) + generics)
+(Emitter_.escapeResolved(t.name) + generics)
 })
 }
 
 def emitStatements(term : Syntax_.Term) : Firefly_Core.String = (term) match {
 case (Syntax_.EFunctions(at, functions, body)) =>
 val functionStrings = functions.map({(f) =>
-emitFunctionDefinition(Syntax_.DFunction(at, f.signature, f.body))
+Emitter_.emitFunctionDefinition(Syntax_.DFunction(at, f.signature, f.body))
 });
-((functionStrings.mkString("\n") + "\n") + emitStatements(body))
+((functionStrings.mkString("\n") + "\n") + Emitter_.emitStatements(body))
 case (Syntax_.ELet(at, mutable, name, valueType, value, body)) =>
-((emitLetDefinition(Syntax_.DLet(at, name, valueType, value), mutable) + ";\n") + emitStatements(body))
+((Emitter_.emitLetDefinition(Syntax_.DLet(at, name, valueType, value), mutable) + ";\n") + Emitter_.emitStatements(body))
 case (Syntax_.ESequential(at, before, after)) =>
-((emitStatements(before) + ";\n") + emitStatements(after))
+((Emitter_.emitStatements(before) + ";\n") + Emitter_.emitStatements(after))
 case (Syntax_.EAssign(at, operator, name, value)) =>
-((((escapeKeyword(name) + " ") + operator) + "= ") + emitTerm(value))
+((((Emitter_.escapeKeyword(name) + " ") + operator) + "= ") + Emitter_.emitTerm(value))
 case (Syntax_.EAssignField(at, operator, record, field, value)) =>
-((((((emitTerm(record) + ".") + escapeKeyword(field)) + " ") + operator) + "= ") + emitTerm(value))
+((((((Emitter_.emitTerm(record) + ".") + Emitter_.escapeKeyword(field)) + " ") + operator) + "= ") + Emitter_.emitTerm(value))
 case (_) =>
-emitTerm(term)
+Emitter_.emitTerm(term)
 }
 
 def emitTerm(term : Syntax_.Term) : Firefly_Core.String = (term) match {
@@ -287,41 +290,41 @@ value
 case (Syntax_.EFloat(at, value)) =>
 value
 case (Syntax_.EVariable(at, name, _, _)) =>
-escapeResolved(name)
+Emitter_.escapeResolved(name)
 case (Syntax_.EList(at, _, items)) if items.all({(_w1) =>
 (!_w1.second)
 }) =>
 (("List(" + items.map({(_w1) =>
-emitTerm(_w1.first)
+Emitter_.emitTerm(_w1.first)
 }).mkString(", ")) + ")")
 case (Syntax_.EList(at, _, items)) =>
 (("(List(" + items.map({
 case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
-(("List(" + emitTerm(item)) + ")")
+(("List(" + Emitter_.emitTerm(item)) + ")")
 case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
-emitTerm(item)
+Emitter_.emitTerm(item)
 }).mkString(", ")) + ").flatten)")
 case (Syntax_.EVariant(at, name, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>
 ""
 }).else_({() =>
-(("[" + typeArguments.map(emitType).mkString(", ")) + "]")
+(("[" + typeArguments.map(Emitter_.emitType).mkString(", ")) + "]")
 });
-((((escapeResolved(name) + generics) + "(") + arguments.toList.flatten.map(emitArgument).mkString(", ")) + ")")
+((((Emitter_.escapeResolved(name) + generics) + "(") + arguments.toList.flatten.map(Emitter_.emitArgument).mkString(", ")) + ")")
 case (Syntax_.EVariantIs(at, name, typeArguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>
 ""
 }).else_({() =>
-(("[" + typeArguments.map(emitType).mkString(", ")) + "]")
+(("[" + typeArguments.map(Emitter_.emitType).mkString(", ")) + "]")
 });
-((("({ case _w : " + escapeResolved(name)) + generics) + " => Some(_w); case _ => None() })")
+((("({ case _w : " + Emitter_.escapeResolved(name)) + generics) + " => Some(_w); case _ => None() })")
 case (Syntax_.ECopy(at, name, record, fields)) =>
 val fieldCode = fields.map({(f) =>
-((escapeKeyword(f.name) + " = ") + emitTerm(f.value))
+((Emitter_.escapeKeyword(f.name) + " = ") + Emitter_.emitTerm(f.value))
 }).mkString(", ");
-(((emitTerm(record) + ".copy(") + fieldCode) + ")")
+(((Emitter_.emitTerm(record) + ".copy(") + fieldCode) + ")")
 case (Syntax_.EField(at, record, field)) =>
-((emitTerm(record) + ".") + escapeKeyword(field))
+((Emitter_.emitTerm(record) + ".") + Emitter_.escapeKeyword(field))
 case (Syntax_.ELambda(at, Syntax_.Lambda(_, List(Syntax_.MatchCase(_, patterns, Firefly_Core.None(), body))))) if patterns.all({
 case (_ : Syntax_.PVariable) =>
 Firefly_Core.True()
@@ -330,86 +333,86 @@ Firefly_Core.False()
 }) =>
 val parameters = patterns.map({
 case (p : Syntax_.PVariable) =>
-p.name.map(escapeKeyword).getOrElse("_")
+p.name.map(Emitter_.escapeKeyword).getOrElse("_")
 case (_) =>
 Firefly_Core.panic("!")
 }).mkString(", ");
-(((("{(" + parameters) + ") =>\n") + emitStatements(body)) + "\n}")
+(((("{(" + parameters) + ") =>\n") + Emitter_.emitStatements(body)) + "\n}")
 case (Syntax_.ELambda(at, Syntax_.Lambda(_, cases))) =>
-val casesString = cases.map(emitCase).mkString("\n");
+val casesString = cases.map(Emitter_.emitCase).mkString("\n");
 (("{\n" + casesString) + "\n}")
 case (Syntax_.EPipe(at, value, function)) =>
-(((("pipe_dot(" + emitTerm(value)) + ")(") + emitTerm(function)) + ")")
+(((("pipe_dot(" + Emitter_.emitTerm(value)) + ")(") + Emitter_.emitTerm(function)) + ")")
 case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(value))) if (!operator.head.isLetter) =>
-((("(" + operator) + emitArgument(value)) + ")")
+((("(" + operator) + Emitter_.emitArgument(value)) + ")")
 case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(left, right))) if (!operator.head.isLetter) =>
-(((((("(" + emitArgument(left)) + " ") + operator) + " ") + emitArgument(right)) + ")")
+(((((("(" + Emitter_.emitArgument(left)) + " ") + operator) + " ") + Emitter_.emitArgument(right)) + ")")
 case (Syntax_.ECall(at, function, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.isEmpty, {() =>
 ""
 }).else_({() =>
-(("[" + typeArguments.map(emitType).mkString(", ")) + "]")
+(("[" + typeArguments.map(Emitter_.emitType).mkString(", ")) + "]")
 });
-((((emitTerm(function) + generics) + "(") + arguments.map(emitArgument).mkString(", ")) + ")")
+((((Emitter_.emitTerm(function) + generics) + "(") + arguments.map(Emitter_.emitArgument).mkString(", ")) + ")")
 case (Syntax_.ERecord(at, fields)) =>
 Firefly_Core.if_(fields.isEmpty, {() =>
 "{}"
 }).else_({() =>
 val list = fields.map({(f) =>
-((("val " + escapeKeyword(f.name)) + " = ") + emitTerm(f.value))
+((("val " + Emitter_.escapeKeyword(f.name)) + " = ") + Emitter_.emitTerm(f.value))
 });
 (("new {\n" + list.mkString(";\n")) + ";\n}")
 })
 case (Syntax_.EWildcard(at, index)) =>
 Firefly_Core.if_((index == 0), {() =>
-fail(at, "Unbound wildcard")
+Emitter_.fail(at, "Unbound wildcard")
 });
 ("_w" + index)
 case (_) =>
-(("{\n" + emitStatements(term)) + "\n}")
+(("{\n" + Emitter_.emitStatements(term)) + "\n}")
 }
 
 def emitArgument(argument : Syntax_.Argument) = {
 (argument.name.map({(name) =>
-(escapeKeyword(name) + " = ")
-}).getOrElse("") + emitTerm(argument.value))
+(Emitter_.escapeKeyword(name) + " = ")
+}).getOrElse("") + Emitter_.emitTerm(argument.value))
 }
 
 def emitCase(matchCase : Syntax_.MatchCase) = {
-val patterns = matchCase.patterns.map(emitPattern).mkString(", ");
+val patterns = matchCase.patterns.map(Emitter_.emitPattern).mkString(", ");
 val condition = matchCase.condition.map({(_w1) =>
-(("if " + emitTerm(_w1)) + " ")
+(("if " + Emitter_.emitTerm(_w1)) + " ")
 }).getOrElse("");
-((((("case (" + patterns) + ") ") + condition) + "=>\n") + emitStatements(matchCase.body))
+((((("case (" + patterns) + ") ") + condition) + "=>\n") + Emitter_.emitStatements(matchCase.body))
 }
 
 def emitPattern(pattern : Syntax_.MatchPattern) : Firefly_Core.String = (pattern) match {
 case (Syntax_.PVariable(at, name)) =>
-name.map(escapeKeyword).getOrElse("_")
+name.map(Emitter_.escapeKeyword).getOrElse("_")
 case (Syntax_.PVariant(at, name, patterns)) =>
-(((escapeResolved(name) + "(") + patterns.map(emitPattern).mkString(", ")) + ")")
+(((Emitter_.escapeResolved(name) + "(") + patterns.map(Emitter_.emitPattern).mkString(", ")) + ")")
 case (Syntax_.PVariantAs(at, name, variable)) =>
-((variable.map(escapeKeyword).getOrElse("_") + " : ") + escapeResolved(name))
+((variable.map(Emitter_.escapeKeyword).getOrElse("_") + " : ") + Emitter_.escapeResolved(name))
 case (Syntax_.PAlias(at, p, variable)) =>
-(((escapeKeyword(variable) + " @ (") + emitPattern(p)) + ")")
+(((Emitter_.escapeKeyword(variable) + " @ (") + Emitter_.emitPattern(p)) + ")")
 case (Syntax_.PList(at, _, items)) =>
 (("List(" + items.map({
 case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
-emitPattern(item)
+Emitter_.emitPattern(item)
 case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
-(emitPattern(item) + " @ _*")
+(Emitter_.emitPattern(item) + " @ _*")
 }).join(", ")) + ")")
 }
 
 def extractTypeName(type_ : Syntax_.Type) : Firefly_Core.String = (type_) match {
 case (Syntax_.TVariable(at, index)) =>
-fail(at, ("Unexpected type variable: $" + index))
+Emitter_.fail(at, ("Unexpected type variable: $" + index))
 case (t : Syntax_.TConstructor) =>
 t.name
 }
 
 def escapeResolved(word : Firefly_Core.String) = {
-val parts = word.split("[.]").toList.map(escapeKeyword).join(".");
+val parts = word.split("[.]").toList.map(Emitter_.escapeKeyword).join(".");
 Firefly_Core.if_(parts.startsWith("ff:core/Core."), {() =>
 parts.replace("ff:core/Core.", "Firefly_Core.")
 }).else_({() =>
@@ -418,7 +421,7 @@ parts.replace(".", "_.")
 }
 
 def escapeKeyword(word : Firefly_Core.String) = {
-Firefly_Core.if_(keywords(word), {() =>
+Firefly_Core.if_(Emitter_.keywords(word), {() =>
 (word + "_")
 }).else_({() =>
 word

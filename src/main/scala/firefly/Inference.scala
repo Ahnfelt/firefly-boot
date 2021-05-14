@@ -10,8 +10,8 @@ object Inference_ {
 
 case class Inference(unification : Unification_.Unification)
 
-def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Inference = {
-Inference(unification = Unification_.make(instances))
+def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Inference_.Inference = {
+Inference_.Inference(unification = Unification_.make(instances))
 }
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
@@ -21,7 +21,7 @@ Firefly_Core.panic(((message + " ") + at.show()))
 def core(name : Firefly_Core.String) : Firefly_Core.String = {
 ("ff:core/Core." + name)
 }
-implicit class Inference_extend0(self : Inference) {
+implicit class Inference_extend0(self : Inference_.Inference) {
 
 def inferModule(coreModule : Syntax_.Module, module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Syntax_.Module = {
 val environment = Environment_.make(coreModule, module, otherModules);
@@ -73,7 +73,7 @@ Firefly_Core.Pair(name, Environment_.Scheme(Firefly_Core.True(), Firefly_Core.Fa
 Environment_.Environment((environment1.symbols ++ symbols))
 });
 val condition = case_.condition.map({(e) =>
-self.inferTerm(newEnvironment, Syntax_.TConstructor(e.at, core("Bool"), List()), e)
+self.inferTerm(newEnvironment, Syntax_.TConstructor(e.at, Inference_.core("Bool"), List()), e)
 });
 val body = self.inferTerm(newEnvironment, returnType, case_.body);
 case_.copy(condition = condition, body = body)
@@ -88,7 +88,7 @@ Firefly_Core.Map(Firefly_Core.Pair(name, expected))
 case (Syntax_.PAlias(at, pattern, variable)) =>
 (self.inferPattern(environment, expected, pattern) + Firefly_Core.Pair(variable, expected))
 case (Syntax_.PList(at, t, items)) =>
-val listType = Syntax_.TConstructor(at, core("List"), List(t));
+val listType = Syntax_.TConstructor(at, Inference_.core("List"), List(t));
 self.unification.unify(at, expected, listType);
 items.map({
 case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
@@ -100,12 +100,12 @@ self.inferPattern(environment, listType, item)
 })
 case (Syntax_.PVariantAs(at, name, Firefly_Core.None())) =>
 val scheme = environment.symbols.get(name).else_({() =>
-fail(at, ("No such variant: " + name))
+Inference_.fail(at, ("No such variant: " + name))
 });
 Firefly_Core.Map()
 case (Syntax_.PVariantAs(at, name, Firefly_Core.Some(variable))) =>
 val scheme = environment.symbols.get(name).else_({() =>
-fail(at, ("No such variant: " + name))
+Inference_.fail(at, ("No such variant: " + name))
 });
 val parameters = scheme.signature.parameters;
 val recordType = Syntax_.TConstructor(at, ("Record$" + parameters.map({(_w1) =>
@@ -116,7 +116,7 @@ _w1.valueType
 Firefly_Core.Map(Firefly_Core.Pair(variable, recordType))
 case (Syntax_.PVariant(at, name, patterns)) =>
 val scheme = environment.symbols.get(name).else_({() =>
-fail(at, ("No such variant: " + name))
+Inference_.fail(at, ("No such variant: " + name))
 });
 val parameters = scheme.signature.parameters;
 patterns.zip(parameters).map({
@@ -130,7 +130,7 @@ self.inferPattern(environment, parameter.valueType, pattern)
 
 def inferTerm(environment : Environment_.Environment, expected : Syntax_.Type, term : Syntax_.Term) : Syntax_.Term = {
 def literal(coreTypeName : Firefly_Core.String) : Syntax_.Term = {
-self.unification.unify(term.at, expected, Syntax_.TConstructor(term.at, core(coreTypeName), List()));
+self.unification.unify(term.at, expected, Syntax_.TConstructor(term.at, Inference_.core(coreTypeName), List()));
 term
 }
 pipe_dot(term)({
@@ -151,7 +151,7 @@ term
 self.inferEtaExpansion(environment, expected, e.at, scheme.signature, term)
 })
 }).else_({() =>
-fail(e.at, ("Symbol not in scope: " + e.name))
+Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
 })
 case (e : Syntax_.EField) =>
 val recordType = self.unification.freshTypeVariable(e.at);
@@ -168,7 +168,7 @@ case (Firefly_Core.None()) =>
 term
 })
 case (Syntax_.TVariable(_, index)) =>
-fail(e.at, ((("No such field " + e.field) + " on unknown type: $") + index))
+Inference_.fail(e.at, ((("No such field " + e.field) + " on unknown type: $") + index))
 })
 case (e : Syntax_.EWildcard) =>
 environment.symbols.get(("_w" + e.index)).map({(scheme) =>
@@ -176,7 +176,7 @@ self.unification.unify(e.at, expected, scheme.signature.returnType);
 term
 }).get
 case (Syntax_.EList(at, t, items)) =>
-val listType = Syntax_.TConstructor(term.at, core("List"), List(t));
+val listType = Syntax_.TConstructor(term.at, Inference_.core("List"), List(t));
 self.unification.unify(at, expected, listType);
 Syntax_.EList(at, t, items.map({
 case (Firefly_Core.Pair(item, spread)) =>
@@ -197,7 +197,7 @@ val lambda = self.inferLambda(environment, expected, l);
 Syntax_.ELambda(at, lambda)
 case (e : Syntax_.EVariant) =>
 val signature = environment.symbols.get(e.name).else_({() =>
-fail(e.at, ("Symbol not in scope: " + e.name))
+Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
 }).signature;
 val typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments);
 val instantiation = typeArguments.toMap;
@@ -211,7 +211,7 @@ _w1.second
 }), arguments = arguments)
 case (e : Syntax_.EVariantIs) =>
 val signature = environment.symbols.get(e.name).else_({() =>
-fail(e.at, ("Symbol not in scope: " + e.name))
+Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
 }).signature;
 val typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments);
 e.copy(typeArguments = typeArguments.map({(_w1) =>
@@ -219,7 +219,7 @@ _w1.second
 }))
 case (e : Syntax_.ECopy) =>
 val signature = environment.symbols.get(e.name).else_({() =>
-fail(e.at, ("Symbol not in scope: " + e.name))
+Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
 }).signature;
 e.arguments.find({(a) =>
 (!signature.parameters.exists({(_w1) =>
@@ -227,7 +227,7 @@ e.arguments.find({(a) =>
 }))
 }).each({
 case (Syntax_.Field(at, name, value)) =>
-fail(at, ("Unknown parameter: " + name))
+Inference_.fail(at, ("Unknown parameter: " + name))
 });
 val arguments = signature.parameters.map({(p) =>
 e.arguments.find({(_w1) =>
@@ -264,7 +264,7 @@ self.inferLambdaCall(environment, expected, e)
 self.inferFunctionCall(environment, expected, scheme.signature, e, x)
 })
 case (Firefly_Core.None()) =>
-fail(variableAt, ("No such function: " + x))
+Inference_.fail(variableAt, ("No such function: " + x))
 })
 })
 case (f : Syntax_.EField) =>
@@ -281,7 +281,7 @@ case (Firefly_Core.None()) =>
 self.inferLambdaCall(environment, expected, e2)
 })
 case (Syntax_.TVariable(_, index)) =>
-fail(f.at, ((("No such field " + f.field) + " on unknown type: $") + index))
+Inference_.fail(f.at, ((("No such field " + f.field) + " on unknown type: $") + index))
 })
 case (_) =>
 self.inferLambdaCall(environment, expected, e)
@@ -296,7 +296,7 @@ val e = pipe_dot(term)({
 case (e : Syntax_.ECall) =>
 e
 case (_) =>
-fail(term.at, "Call expected")
+Inference_.fail(term.at, "Call expected")
 });
 val e2 = e.copy(function = Syntax_.EVariable(e.at, name, List(), List()), arguments = (List(List(Syntax_.Argument(record.at, Firefly_Core.None(), record)), e.arguments).flatten));
 self.inferFunctionCall(environment, expected, signature, e2, name)
@@ -307,7 +307,7 @@ val e = pipe_dot(term)({
 case (e : Syntax_.ECall) =>
 e
 case (_) =>
-fail(term.at, "Call expected")
+Inference_.fail(term.at, "Call expected")
 });
 val typeArguments = self.inferTypeArguments(e.at, name, signature.generics, e.typeArguments);
 val instantiation = typeArguments.toMap;
@@ -324,12 +324,12 @@ val e = pipe_dot(term)({
 case (e : Syntax_.ECall) =>
 e
 case (_) =>
-fail(term.at, "Call expected")
+Inference_.fail(term.at, "Call expected")
 });
 val arguments = e.arguments.map({(argument) =>
 val t = self.unification.freshTypeVariable(argument.at);
 argument.name.foreach({(name) =>
-fail(argument.at, ("Named argument not allowed here: " + name))
+Inference_.fail(argument.at, ("Named argument not allowed here: " + name))
 });
 (t -> argument.copy(value = self.inferTerm(environment, t, argument.value)))
 });
@@ -339,7 +339,7 @@ _w1.first
 val functionType = Syntax_.TConstructor(e.at, ("Function$" + e.arguments.size), (List(argumentTypes, List(expected)).flatten));
 val function = self.inferTerm(environment, functionType, e.function);
 e.typeArguments.headOption.foreach({(typeArgument) =>
-fail(typeArgument.at, "Type arguments not allowed here")
+Inference_.fail(typeArgument.at, "Type arguments not allowed here")
 });
 e.copy(function = function, typeArguments = List(), arguments = arguments.map({(_w1) =>
 _w1.second
@@ -351,11 +351,11 @@ val e = pipe_dot(term)({
 case (e : Syntax_.ECall) =>
 e
 case (_) =>
-fail(term.at, "Call expected")
+Inference_.fail(term.at, "Call expected")
 });
 pipe_dot(e.arguments)({
 case (List(a1)) if (operator == "!") =>
-val t = Syntax_.TConstructor(e.at, core("Bool"), List());
+val t = Syntax_.TConstructor(e.at, Inference_.core("Bool"), List());
 val e1 = self.inferTerm(environment, t, a1.value);
 self.unification.unify(e.at, expected, t);
 e.copy(arguments = List(a1.copy(value = e1)))
@@ -363,40 +363,40 @@ case (List(a1)) if (operator == "-") =>
 val t1 = self.unification.freshTypeVariable(e.at);
 val e1 = self.inferTerm(environment, t1, a1.value);
 pipe_dot(self.unification.substitute(t1))({
-case (Syntax_.TConstructor(_, name, List())) if (name == core("Float")) =>
+case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Float")) =>
 self.unification.unify(e.at, expected, t1)
-case (Syntax_.TConstructor(_, name, List())) if (name == core("Int")) =>
+case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Int")) =>
 self.unification.unify(e.at, expected, t1)
 case (_) =>
-fail(e.at, "Operators on unknown types not currently supported")
+Inference_.fail(e.at, "Operators on unknown types not currently supported")
 });
 e.copy(arguments = List(a1.copy(value = e1)))
 case (List(a1, a2)) if (operator == "++") =>
 val t1 = self.unification.freshTypeVariable(e.at);
-val t = Syntax_.TConstructor(e.at, core("List"), List(t1));
+val t = Syntax_.TConstructor(e.at, Inference_.core("List"), List(t1));
 val e1 = self.inferTerm(environment, t, a1.value);
 val e2 = self.inferTerm(environment, t, a2.value);
 self.unification.unify(e.at, expected, t);
 e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
 case (List(a1, a2)) if ((operator == "||") || (operator == "&&")) =>
-val t = Syntax_.TConstructor(e.at, core("Bool"), List());
+val t = Syntax_.TConstructor(e.at, Inference_.core("Bool"), List());
 val e1 = self.inferTerm(environment, t, a1.value);
 val e2 = self.inferTerm(environment, t, a2.value);
 self.unification.unify(e.at, expected, t);
 e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
 case (List(a1, a2)) if ((((((operator == "<") || (operator == ">")) || (operator == "<=")) || (operator == ">=")) || (operator == "==")) || (operator == "!=")) =>
-val t = Syntax_.TConstructor(e.at, core("Bool"), List());
+val t = Syntax_.TConstructor(e.at, Inference_.core("Bool"), List());
 val t1 = self.unification.freshTypeVariable(e.at);
 val t2 = self.unification.freshTypeVariable(e.at);
 val e1 = self.inferTerm(environment, t1, a1.value);
 val e2 = self.inferTerm(environment, t2, a2.value);
 val magic : Function1[Syntax_.Type, Firefly_Core.Option[Firefly_Core.String]] = {(t) =>
 pipe_dot(self.unification.substitute(t))({
-case (Syntax_.TConstructor(_, name, List())) if (name == core("String")) =>
+case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("String")) =>
 Firefly_Core.Some("String")
-case (Syntax_.TConstructor(_, name, List())) if (name == core("Float")) =>
+case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Float")) =>
 Firefly_Core.Some("Float")
-case (Syntax_.TConstructor(_, name, List())) if (name == core("Int")) =>
+case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Int")) =>
 Firefly_Core.Some("Int")
 case (_) =>
 Firefly_Core.None()
@@ -410,7 +410,7 @@ case (_, Firefly_Core.Some(_)) =>
 self.unification.unify(e.at, t2, t1);
 self.unification.unify(e.at, expected, t)
 case (Firefly_Core.None(), Firefly_Core.None()) =>
-fail(e.at, "Operators on unknown types not currently supported")
+Inference_.fail(e.at, "Operators on unknown types not currently supported")
 };
 chooseType(magic(t1), magic(t2));
 e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
@@ -421,11 +421,11 @@ val e1 = self.inferTerm(environment, t1, a1.value);
 val e2 = self.inferTerm(environment, t2, a2.value);
 val magic : Function1[Syntax_.Type, Firefly_Core.Option[Firefly_Core.String]] = {(t) =>
 pipe_dot(self.unification.substitute(t))({
-case (Syntax_.TConstructor(_, name, List())) if (name == core("Float")) =>
+case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Float")) =>
 Firefly_Core.Some("Float")
-case (Syntax_.TConstructor(_, name, List())) if (name == core("Int")) =>
+case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Int")) =>
 Firefly_Core.Some("Int")
-case (Syntax_.TConstructor(_, name, List())) if ((operator == "+") && (name == core("String"))) =>
+case (Syntax_.TConstructor(_, name, List())) if ((operator == "+") && (name == Inference_.core("String"))) =>
 Firefly_Core.Some("String")
 case (_) =>
 Firefly_Core.None()
@@ -451,12 +451,12 @@ case (Firefly_Core.None(), Firefly_Core.Some(_)) =>
 self.unification.unify(e.at, t2, t1);
 self.unification.unify(e.at, expected, t2)
 case (Firefly_Core.None(), Firefly_Core.None()) =>
-fail(e.at, "Operators on unknown types not currently supported")
+Inference_.fail(e.at, "Operators on unknown types not currently supported")
 };
 chooseType(magic(t1), magic(t2));
 e.copy(arguments = List(a1.copy(value = e1), a2.copy(value = e2)))
 case (_) =>
-fail(e.at, ("Unknown operator: " + operator))
+Inference_.fail(e.at, ("Unknown operator: " + operator))
 })
 }
 
@@ -478,7 +478,7 @@ self.inferTerm(environment, expected, lambda)
 def inferTypeArguments(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], typeArguments : Firefly_Core.List[Syntax_.Type]) : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]] = {
 Firefly_Core.if_(typeArguments.nonEmpty, {() =>
 Firefly_Core.if_((generics.size != typeArguments.size), {() =>
-fail(at, ((((("Wrong number of type parameters for " + name) + ", expected ") + generics.size) + ", got ") + typeArguments.size))
+Inference_.fail(at, ((((("Wrong number of type parameters for " + name) + ", expected ") + generics.size) + ", got ") + typeArguments.size))
 });
 generics.zip(typeArguments)
 }).else_({() =>
@@ -498,7 +498,7 @@ p.default.map({(e) =>
 val e2 = self.inferTerm(environment, t, e);
 Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
 }).else_({() =>
-fail(at, ("Missing argument: " + p.name))
+Inference_.fail(at, ("Missing argument: " + p.name))
 })
 case (List(Syntax_.Argument(at, Firefly_Core.None(), e), remaining @ _*)) =>
 remainingArguments = remaining.toList;
@@ -515,15 +515,15 @@ remainingArguments = remainingArguments.filter({(_w1) =>
 val e2 = self.inferTerm(environment, t, e);
 Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
 }).else_({() =>
-fail(at, ("Missing argument: " + p.name))
+Inference_.fail(at, ("Missing argument: " + p.name))
 })
 })
 });
 remainingArguments.headOption.each({
 case (Syntax_.Argument(at, Firefly_Core.None(), _)) =>
-fail(at, "Too many arguments")
+Inference_.fail(at, "Too many arguments")
 case (Syntax_.Argument(at, Firefly_Core.Some(name), _)) =>
-fail(at, ("Unknown argument: " + name))
+Inference_.fail(at, ("Unknown argument: " + name))
 });
 newArguments
 }

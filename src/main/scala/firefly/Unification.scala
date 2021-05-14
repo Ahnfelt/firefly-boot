@@ -4,7 +4,7 @@ import firefly.Firefly_Core._
 import firefly.Syntax_._
 object Unification_ {
 
-case class Unification(var substitution : Firefly_Core.Map[Firefly_Core.Int, Syntax_.Type], var constraints : Firefly_Core.Map[Firefly_Core.Int, Firefly_Core.Map[Firefly_Core.String, ConstraintGenerics]], var nextTypeVariableIndex : Firefly_Core.Int, instances : Firefly_Core.Map[InstanceKey, InstanceValue])
+case class Unification(var substitution : Firefly_Core.Map[Firefly_Core.Int, Syntax_.Type], var constraints : Firefly_Core.Map[Firefly_Core.Int, Firefly_Core.Map[Firefly_Core.String, Unification_.ConstraintGenerics]], var nextTypeVariableIndex : Firefly_Core.Int, instances : Firefly_Core.Map[Unification_.InstanceKey, Unification_.InstanceValue])
 
 case class ConstraintGenerics(at : Syntax_.Location, generics : Firefly_Core.List[Syntax_.Type])
 
@@ -12,14 +12,14 @@ case class InstanceKey(traitName : Firefly_Core.String, typeName : Firefly_Core.
 
 case class InstanceValue(generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint], traitType : Syntax_.Type)
 
-def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Unification = {
+def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Unification_.Unification = {
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show))
 }
-Unification(Firefly_Core.Map(), Firefly_Core.Map(), 2, instances.map({(definition) =>
+Unification_.Unification(Firefly_Core.Map(), Firefly_Core.Map(), 2, instances.map({(definition) =>
 pipe_dot(definition.traitType)({
 case (Syntax_.TConstructor(at, name, List(Syntax_.TConstructor(_, typeName, _), _ @ _*))) =>
-Firefly_Core.Pair(InstanceKey(name, typeName), InstanceValue(generics = definition.generics, constraints = definition.constraints, traitType = definition.traitType))
+Firefly_Core.Pair(Unification_.InstanceKey(name, typeName), Unification_.InstanceValue(generics = definition.generics, constraints = definition.constraints, traitType = definition.traitType))
 case (Syntax_.TConstructor(at, name, _)) =>
 fail(at, (("Instance requires type arguments: " + name) + "[]"))
 case (Syntax_.TVariable(at, i)) =>
@@ -27,7 +27,7 @@ fail(at, ("Unexpected type variable: $" + i))
 })
 }).toMap)
 }
-implicit class Unification_extend0(self : Unification) {
+implicit class Unification_extend0(self : Unification_.Unification) {
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show))
@@ -64,13 +64,13 @@ self.constrain(at, self.get(i), constraintName, generics)
 case (Syntax_.TVariable(_, i)) =>
 pipe_dot(self.constraints.get(i))({
 case (Firefly_Core.None()) =>
-self.constraints += Firefly_Core.Pair(i, Firefly_Core.Map(Firefly_Core.Pair(constraintName, ConstraintGenerics(at, generics))))
+self.constraints += Firefly_Core.Pair(i, Firefly_Core.Map(Firefly_Core.Pair(constraintName, Unification_.ConstraintGenerics(at, generics))))
 case (Firefly_Core.Some(map)) =>
 pipe_dot(map.get(constraintName))({
 case (Firefly_Core.None()) =>
-val newMap = map.updated(constraintName, ConstraintGenerics(at, generics));
+val newMap = map.updated(constraintName, Unification_.ConstraintGenerics(at, generics));
 self.constraints = self.constraints.updated(i, newMap)
-case (Firefly_Core.Some(ConstraintGenerics(_, generics2))) =>
+case (Firefly_Core.Some(Unification_.ConstraintGenerics(_, generics2))) =>
 generics.zip(generics2).each({
 case (Firefly_Core.Pair(t1, t2)) =>
 self.unify(at, t1, t2)
@@ -78,7 +78,7 @@ self.unify(at, t1, t2)
 })
 })
 case (Syntax_.TConstructor(_, name, generics2)) =>
-pipe_dot(self.instances.get(InstanceKey(constraintName, name)))({
+pipe_dot(self.instances.get(Unification_.InstanceKey(constraintName, name)))({
 case (Firefly_Core.None()) =>
 val g1 = Firefly_Core.if_(generics.isEmpty, {() =>
 ""
@@ -168,7 +168,7 @@ self.substitution += Firefly_Core.Pair(index, type_);
 self.constraints.get(index).each({(map) =>
 self.constraints -= index;
 map.pairs().each({
-case (Firefly_Core.Pair(name, ConstraintGenerics(at2, generics))) =>
+case (Firefly_Core.Pair(name, Unification_.ConstraintGenerics(at2, generics))) =>
 self.constrain(at2, type_, name, generics)
 })
 })

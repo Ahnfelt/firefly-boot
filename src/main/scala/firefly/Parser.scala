@@ -12,14 +12,14 @@ case class Parser(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_
 
 case class Poly(generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint])
 val binaryOperators = List(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("++"), List("+", "-"), List("*", "/", "%"), List("^")).toArray
-def make(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token]) : Parser = {
-Parser(Firefly_Core.if_((file == "../core/Core.ff"), {() =>
+def make(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token]) : Parser_.Parser = {
+Parser_.Parser(Firefly_Core.if_((file == "../core/Core.ff"), {() =>
 "ff:core/Core.ff"
 }).else_({() =>
 file
 }), tokens, tokens.last, 0, 1)
 }
-implicit class Parser_extend0(self : Parser) {
+implicit class Parser_extend0(self : Parser_.Parser) {
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show))
@@ -164,7 +164,7 @@ val nameToken = self.skip(Token_.LLower());
 val poly = Firefly_Core.if_(self.current.rawIs("["), {() =>
 self.parseTypeParameters()
 }).else_({() =>
-Poly(List(), List())
+Parser_.Poly(List(), List())
 });
 val parameters = self.parseFunctionParameters();
 val returnType = self.parseOptionalType();
@@ -177,7 +177,7 @@ val nameToken = self.skip(Token_.LLower());
 val poly = Firefly_Core.if_(self.current.rawIs("["), {() =>
 self.parseTypeParameters()
 }).else_({() =>
-Poly(List(), List())
+Parser_.Poly(List(), List())
 });
 self.skip(Token_.LColon());
 val type_ = self.parseType();
@@ -199,7 +199,7 @@ def parseTraitDefinition() : Syntax_.DTrait = {
 self.rawSkip(Token_.LKeyword(), "trait");
 val nameToken = self.skip(Token_.LUpper());
 val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Poly(List(), List())
+Parser_.Poly(List(), List())
 }).else_({() =>
 self.parseTypeParameters()
 });
@@ -246,7 +246,7 @@ val typeArguments = Firefly_Core.listBuilderOf[Syntax_.Type]();
 self.rawSkip(Token_.LBracketLeft(), "[");
 val token = self.skip(Token_.LUpper());
 val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Poly(List(), List())
+Parser_.Poly(List(), List())
 }).else_({() =>
 self.parseTypeParameters()
 });
@@ -289,7 +289,7 @@ def parseTypeDefinition() : Syntax_.DType = {
 self.rawSkip(Token_.LKeyword(), "type");
 val nameToken = self.skip(Token_.LUpper());
 val poly = Firefly_Core.if_((!self.current.rawIs("[")), {() =>
-Poly(List(), List())
+Parser_.Poly(List(), List())
 }).else_({() =>
 self.parseTypeParameters()
 });
@@ -457,7 +457,7 @@ self.fail(at, ("Package names and paths must not contain underscores or dots: " 
 part
 }
 
-def parseTypeParameters() : Poly = {
+def parseTypeParameters() : Parser_.Poly = {
 self.rawSkip(Token_.LBracketLeft(), "[");
 val parameters = Firefly_Core.listBuilderOf[Firefly_Core.String]();
 val constraints = Firefly_Core.listBuilderOf[Syntax_.Constraint]();
@@ -497,7 +497,7 @@ self.skip(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "]");
-Poly(parameters.drain, constraints.drain)
+Parser_.Poly(parameters.drain, constraints.drain)
 }
 
 def parseTypeArguments(parenthesis : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.List[Syntax_.Type] = {
@@ -853,10 +853,10 @@ self.parseBinary(0)
 }
 
 def parseBinary(level : Firefly_Core.Int) : Syntax_.Term = {
-Firefly_Core.if_((level >= binaryOperators.length), {() =>
+Firefly_Core.if_((level >= Parser_.binaryOperators.length), {() =>
 self.parseUnary()
 }).else_({() =>
-val operators = binaryOperators(level);
+val operators = Parser_.binaryOperators(level);
 var result = self.parseBinary((level + 1));
 Firefly_Core.if_(self.current.is(Token_.LOperator()), {() =>
 Firefly_Core.while_({() =>

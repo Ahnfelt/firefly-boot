@@ -20,9 +20,9 @@ emitModule(module: Module): String {
         ["}"]
     ]
     module.extends.map { _.type }.flatMap(TConstructor?).find { t =>
-        !module.types.exists { _.name == t.name }
+        !module.types.exists { moduleNamespace + "." + _.name == t.name }
     }.foreach { t =>
-        fail(t.at, "Type not defined in this file: " + t)
+        fail(t.at, "Type not defined in this file: " + t.name)
     }
     parts.map { _.mkString("\n\n") }.join("\n") + "\n"
 }
@@ -79,7 +79,8 @@ emitExtendImplicit(definition: DExtend, index: Int): String {
     let implicits = emitConstraints(definition.constraints)
     let parameter = escapeKeyword(definition.name) + " : " + emitType(definition.type)
     let methods = definition.methods.map { emitFunctionDefinition(_) }.join("\n\n")
-    "implicit class " + extractTypeName(definition.type) + "_extend" + index + generics +
+    let typeName = extractTypeName(definition.type).reverse.takeWhile { _ != '.' }.reverse
+    "implicit class " + typeName + "_extend" + index + generics +
     "(" + parameter + ")" + implicits + " {\n\n" + methods + "\n\n}"
 }
 

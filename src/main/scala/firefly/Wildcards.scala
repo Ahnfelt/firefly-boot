@@ -7,9 +7,9 @@ object Wildcards_ {
 case class Wildcards(var seenWildcards : Firefly_Core.Int)
 
 def make() = {
-Wildcards(0)
+Wildcards_.Wildcards(0)
 }
-implicit class Wildcards_extend0(self : Wildcards) {
+implicit class Wildcards_extend0(self : Wildcards_.Wildcards) {
 
 def fixWildcards(term : Syntax_.Term) : Syntax_.Term = (term) match {
 case (e : Syntax_.ELet) =>

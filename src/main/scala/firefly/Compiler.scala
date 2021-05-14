@@ -16,10 +16,10 @@ object Compiler_ {
 
 case class Compiler(files : Firefly_Core.FileSystem, inputPath : Firefly_Core.String, outputPath : Firefly_Core.String, var parsedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var resolvedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var inferredModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var emittedModules : Firefly_Core.Set[Firefly_Core.String])
 
-def make(files : Firefly_Core.FileSystem, inputPath : Firefly_Core.String, outputPath : Firefly_Core.String) : Compiler = {
-Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Firefly_Core.Map(), resolvedModules = Firefly_Core.Map(), inferredModules = Firefly_Core.Map(), emittedModules = Firefly_Core.Set())
+def make(files : Firefly_Core.FileSystem, inputPath : Firefly_Core.String, outputPath : Firefly_Core.String) : Compiler_.Compiler = {
+Compiler_.Compiler(files = files, inputPath = inputPath, outputPath = outputPath, parsedModules = Firefly_Core.Map(), resolvedModules = Firefly_Core.Map(), inferredModules = Firefly_Core.Map(), emittedModules = Firefly_Core.Set())
 }
-implicit class Compiler_extend0(self : Compiler) {
+implicit class Compiler_extend0(self : Compiler_.Compiler) {
 
 def parse(moduleName : Firefly_Core.String) : Syntax_.Module = {
 self.parsedModules.get(moduleName).else_({() =>

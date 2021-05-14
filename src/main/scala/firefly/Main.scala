@@ -25,15 +25,15 @@ val tempPath = system.arguments(2);
 val outputPath = system.arguments(3);
 val fs = system.files;
 Firefly_Core.if_(fs.exists(tempPath), {() =>
-deleteDirectory(fs, tempPath)
+Main_.deleteDirectory(fs, tempPath)
 });
 fs.createDirectory(tempPath);
 val scalaPathFile = (tempPath + "/src/main/scala/firefly");
 fs.createDirectories(scalaPathFile);
 Compiler_.make(fs, inputPath, scalaPathFile).emit("Main");
-writeExtraFiles(fs, corePath, tempPath, scalaPathFile);
+Main_.writeExtraFiles(fs, corePath, tempPath, scalaPathFile);
 Firefly_Core.if_(fs.exists(outputPath), {() =>
-deleteDirectory(fs, outputPath)
+Main_.deleteDirectory(fs, outputPath)
 });
 fs.rename(scalaPathFile, outputPath)
 }
@@ -48,7 +48,7 @@ fs.writeText((outputFile + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 def deleteDirectory(fs : Firefly_Core.FileSystem, outputFile : Firefly_Core.String) : Firefly_Core.Unit = {
 fs.list(outputFile).each({(file) =>
 Firefly_Core.if_(fs.isDirectory(file), {() =>
-deleteDirectory(fs, file)
+Main_.deleteDirectory(fs, file)
 }).else_({() =>
 fs.delete(file)
 })

@@ -10,7 +10,7 @@ def make(coreModule : Syntax_.Module) = {
 def core(name : Firefly_Core.String) : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String] = {
 Firefly_Core.Pair(name, ("ff:core/Core." + name))
 }
-Resolver(variables = (coreModule.lets.map({(_w1) =>
+Resolver_.Resolver(variables = (coreModule.lets.map({(_w1) =>
 _w1.name
 }).map(core).toMap ++ coreModule.functions.map({(_w1) =>
 _w1.signature.name
@@ -26,7 +26,7 @@ _w1.name
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show()))
 }
-implicit class Resolver_extend0(self : Resolver) {
+implicit class Resolver_extend0(self : Resolver_.Resolver) {
 
 def resolveModule(module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Syntax_.Module = {
 val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
@@ -51,7 +51,7 @@ self3.resolveFunctionDefinition(_w1)
 }))
 }
 
-def processImports(imports : Firefly_Core.List[Syntax_.DImport], modules : Firefly_Core.List[Syntax_.Module]) : Resolver = {
+def processImports(imports : Firefly_Core.List[Syntax_.DImport], modules : Firefly_Core.List[Syntax_.Module]) : Resolver_.Resolver = {
 var resolver = self;
 imports.each({(import_) =>
 pipe_dot(modules.find({(_w1) =>
@@ -60,18 +60,18 @@ pipe_dot(modules.find({(_w1) =>
 case (Firefly_Core.Some(module)) =>
 resolver = resolver.processDefinitions(module, Firefly_Core.Some(import_.alias))
 case (Firefly_Core.None()) =>
-fail(import_.at, ("No such module: " + import_.file))
+Resolver_.fail(import_.at, ("No such module: " + import_.file))
 })
 });
 resolver
 }
 
-def processDefinitions(module : Syntax_.Module, importAlias : Firefly_Core.Option[Firefly_Core.String]) : Resolver = {
+def processDefinitions(module : Syntax_.Module, importAlias : Firefly_Core.Option[Firefly_Core.String]) : Resolver_.Resolver = {
 def entry(name : Firefly_Core.String, unqualified : Firefly_Core.Bool) : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String]] = {
 val full = ((module.file.dropRight(3) + ".") + name);
 pipe_dot(importAlias)({
 case (Firefly_Core.None()) =>
-List(Firefly_Core.Pair(name, name))
+List(Firefly_Core.Pair(name, full))
 case (Firefly_Core.Some(alias)) if unqualified =>
 List(Firefly_Core.Pair(((alias + ".") + name), full), Firefly_Core.Pair(name, full))
 case (Firefly_Core.Some(alias)) =>
@@ -100,7 +100,7 @@ _w1.variants
 }).flatMap({(_w1) =>
 entry(_w1.name, Firefly_Core.True())
 }).toMap;
-Resolver(variables = (((self.variables ++ lets) ++ functions) ++ traitMethods), variants = (self.variants ++ variants), types = (self.types ++ types), traits = (self.traits ++ traits))
+Resolver_.Resolver(variables = (((self.variables ++ lets) ++ functions) ++ traitMethods), variants = (self.variants ++ variants), types = (self.types ++ types), traits = (self.traits ++ traits))
 }
 
 def resolveTypeDefinition(definition : Syntax_.DType) : Syntax_.DType = {
@@ -169,7 +169,7 @@ e.copy(name = _w1)
 Firefly_Core.if_(e.name.headOption.any({(_w1) =>
 _w1.isLetter
 }), {() =>
-fail(e.at, ("No such variable: " + e.name))
+Resolver_.fail(e.at, ("No such variable: " + e.name))
 }).else_({() =>
 term
 })
@@ -181,7 +181,7 @@ Firefly_Core.Pair(self.resolveTerm(item), spread)
 }))
 case (Syntax_.EVariant(at, name, typeArguments, arguments)) =>
 Syntax_.EVariant(at = at, name = self.variants.get(name).else_({() =>
-fail(at, ("No such variant: " + name))
+Resolver_.fail(at, ("No such variant: " + name))
 }), typeArguments = typeArguments.map({(_w1) =>
 self.resolveType(_w1)
 }), arguments = arguments.map({(_w1) =>
@@ -191,13 +191,13 @@ a.copy(value = self.resolveTerm(a.value))
 }))
 case (Syntax_.EVariantIs(at, name, typeArguments)) =>
 Syntax_.EVariantIs(at = at, name = self.variants.get(name).else_({() =>
-fail(at, ("No such variant: " + name))
+Resolver_.fail(at, ("No such variant: " + name))
 }), typeArguments = typeArguments.map({(_w1) =>
 self.resolveType(_w1)
 }))
 case (Syntax_.ECopy(at, name, record, arguments)) =>
 Syntax_.ECopy(at = at, name = self.variants.get(name).else_({() =>
-fail(at, ("No such variant: " + name))
+Resolver_.fail(at, ("No such variant: " + name))
 }), record = self.resolveTerm(record), arguments = arguments.map({(f) =>
 f.copy(value = self.resolveTerm(f.value))
 }))
@@ -221,7 +221,7 @@ f.copy(value = self.resolveTerm(f.value))
 }))
 case (e : Syntax_.EWildcard) =>
 Firefly_Core.if_((e.index == 0), {() =>
-fail(e.at, "Unbound wildcard")
+Resolver_.fail(e.at, "Unbound wildcard")
 });
 e
 case (Syntax_.EFunctions(at, functions, body)) =>
@@ -241,7 +241,7 @@ case (Syntax_.ESequential(at, before, after)) =>
 Syntax_.ESequential(at = at, before = self.resolveTerm(before), after = self.resolveTerm(after))
 case (Syntax_.EAssign(at, operator, variable, value)) =>
 Syntax_.EAssign(at = at, operator = operator, variable = self.variables.get(variable).else_({() =>
-fail(at, ("No such variable: " + variable))
+Resolver_.fail(at, ("No such variable: " + variable))
 }), value = self.resolveTerm(value))
 case (Syntax_.EAssignField(at, operator, record, field, value)) =>
 Syntax_.EAssignField(at = at, operator = operator, record = self.resolveTerm(record), field = field, value = self.resolveTerm(value))
@@ -255,7 +255,7 @@ val name = Firefly_Core.if_(constructor.name.contains("$"), {() =>
 constructor.name
 }).else_({() =>
 self.types.get(constructor.name).else_({() =>
-fail(constructor.at, ("No such type: " + constructor.name))
+Resolver_.fail(constructor.at, ("No such type: " + constructor.name))
 })
 });
 constructor.copy(name = name, generics = constructor.generics.map({(_w1) =>
@@ -326,7 +326,7 @@ case (p @ (_ : Syntax_.PVariable)) =>
 p
 case (Syntax_.PVariant(at, name, patterns)) =>
 val newName = self.variants.get(name).else_({() =>
-fail(at, ("No such variant: " + name))
+Resolver_.fail(at, ("No such variant: " + name))
 });
 val newPatterns = patterns.map({(_w1) =>
 self.resolvePattern(_w1)
@@ -334,7 +334,7 @@ self.resolvePattern(_w1)
 Syntax_.PVariant(at, newName, newPatterns)
 case (Syntax_.PVariantAs(at, name, variable)) =>
 val newName = self.variants.get(name).else_({() =>
-fail(at, ("No such variant: " + name))
+Resolver_.fail(at, ("No such variant: " + name))
 });
 Syntax_.PVariantAs(at, newName, variable)
 case (Syntax_.PAlias(at, pattern, variable)) =>
