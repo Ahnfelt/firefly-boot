@@ -202,7 +202,7 @@ extend self: Inference {
                 let record = self.inferTerm(environment, recordType, e.record)
                 let e2 = e.EField(record = record)
                 self.unification.substitute(recordType).{
-                    | TConstructor(_, name, typeParameters) =>
+                    | TConstructor(_, name, typeParameters)@t =>
                         let methodName = name + "_" + e.field
                         environment.symbols.get(methodName).{
                             | Some(scheme) {!scheme.isVariable} =>
@@ -214,7 +214,7 @@ extend self: Inference {
                                 self.unification.unify(e.at, expected, scheme.signature.returnType)
                                 e.EField(record = record)
                             | None =>
-                                fail(e.at, "No such field " + e.field + " on type: " + recordType.show())
+                                fail(e.at, "No such field " + e.field + " on type: " + t.show())
                         }
                     | TVariable(_, index) =>
                         fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
