@@ -90,7 +90,8 @@ object Firefly_Core {
     }
 
 
-    final class System(val arguments : Array[String]) {
+    final class System(argumentsArray : Array[String]) {
+        def arguments() : List[String] = argumentsArray.toList
         def write(value : String) : Unit = scala.Predef.print(value)
         def writeLine(value : String) : Unit = scala.Predef.println(value)
         val files = new FileSystem()
@@ -199,9 +200,11 @@ object Firefly_Core {
         def each(body : T => Unit) : Unit = option.foreach(body)
         def all(body : T => Bool) : Bool = option.forall(body)
         def any(body : T => Bool) : Bool = option.exists(body)
+        def expect() : T = option.get
     }
 
     implicit class Firefly_List[T](list : List[T]) {
+        def expect(index : Int) : T = list(index)
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
@@ -229,6 +232,7 @@ object Firefly_Core {
     }
 
     implicit class Firefly_Array[T : scala.reflect.ClassTag](list : Array[T]) {
+        def expect(index : Int) : T = list(index)
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)

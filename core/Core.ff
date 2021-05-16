@@ -57,10 +57,10 @@ type FileSystem {}
 type Unit()
 
 extend self[T]: List[T] {
-    toArray(): Array[T] {
-        panic("Built-in")
-    }
-    toSet(): Set[T] {
-        panic("Built-in")
-    }
+    toArray(): Array[T] { panic("Built-in") }
+    toSet(): Set[T] { panic("Built-in") }
+}
+
+extend self: System {
+    arguments(): List[String] { panic("Built-in") }
 }

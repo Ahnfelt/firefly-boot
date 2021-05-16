@@ -8,10 +8,10 @@ import Unification
 
 main(system: System): Unit {
 
-    let corePath = system.arguments(0)
-    let inputPath = system.arguments(1)
-    let tempPath = system.arguments(2)
-    let outputPath = system.arguments(3)
+    let corePath = system.arguments().expect(0)
+    let inputPath = system.arguments().expect(1)
+    let tempPath = system.arguments().expect(2)
+    let outputPath = system.arguments().expect(3)
 
     let fs = system.files
 

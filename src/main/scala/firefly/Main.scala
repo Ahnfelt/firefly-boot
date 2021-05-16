@@ -19,10 +19,10 @@ def main(arguments : Array[String]) : Unit = main(new System(arguments))
 
 
 def main(system : Firefly_Core.System) : Firefly_Core.Unit = {
-val corePath = system.arguments(0);
-val inputPath = system.arguments(1);
-val tempPath = system.arguments(2);
-val outputPath = system.arguments(3);
+val corePath = system.arguments().expect(0);
+val inputPath = system.arguments().expect(1);
+val tempPath = system.arguments().expect(2);
+val outputPath = system.arguments().expect(3);
 val fs = system.files;
 Firefly_Core.if_(fs.exists(tempPath), {() =>
 Main_.deleteDirectory(fs, tempPath)
