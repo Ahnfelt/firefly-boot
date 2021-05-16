@@ -14,14 +14,14 @@ var startLine = line;
 var startLineOffset = lineOffset;
 val operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;";
 val operatorCharacters = Firefly_Core.SetBuilder[Firefly_Core.Char]();
-0.until(operatorCharactersString.size).map({(j) =>
-operatorCharacters.add(operatorCharactersString(j))
+0.until(operatorCharactersString.getSize()).map({(j) =>
+operatorCharacters.add(operatorCharactersString.expect(j))
 });
 def emitToken(kind : Token_.TokenKind, startOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int) : Firefly_Core.Unit = {
 Firefly_Core.if_(tokens.nonEmpty, {() =>
 val last = tokens.last;
 Firefly_Core.if_((((last.stopLine == startLine) && (last.kind == Token_.LLower())) && kind.afterKeyword()), {() =>
-tokens.modify((tokens.size - 1), {(_w1) =>
+tokens.modify((tokens.getSize() - 1), {(_w1) =>
 _w1.copy(kind = Token_.LKeyword())
 })
 });

@@ -192,6 +192,11 @@ object Firefly_Core {
     def switch4[A, B, C, D, R](a : A, b : B, c : C, d : D, body : (A, B, C, D) => R) : R = body(a, b, c, d)
     def switch5[A, B, C, D, E, R](a : A, b : B, c : C, d : D, e : E, body : (A, B, C, D, E) => R) : R = body(a, b, c, d, e)
 
+    implicit class Firefly_String(value: String) {
+        def expect(index : Int) : Char = value(index)
+        def getSize() : Int = value.length
+    }
+
     implicit class Firefly_Option[T](option : Option[T]) {
         def elseIf[U >: T](condition : () => Bool, value : () => U) : Option[U] =
             if(option.nonEmpty) option else if_(condition(), value)
@@ -210,6 +215,7 @@ object Firefly_Core {
         def any(body : T => Bool) : Bool = list.exists(body)
         def modify(index : Int, body : T => T) : List[T] = list.updated(index, body(list(index)))
         def pairs() : List[(Int, T)] = list.zipWithIndex.map(_.swap)
+        def getSize() : Int = list.size
     }
 
     implicit class Firefly_String_List(list : List[String]) {
@@ -221,6 +227,7 @@ object Firefly_Core {
         def all(body : T => Bool) : Bool = set.forall(body)
         def any(body : T => Bool) : Bool = set.exists(body)
         def add(value : T) : Set[T] = set + value
+        def getSize() : Int = set.size
     }
 
     implicit class Firefly_Map[K, V](map : Map[K, V]) {
@@ -229,6 +236,7 @@ object Firefly_Core {
         def any(body : Pair[K, V] => Bool) : Bool = map.exists(body)
         def add(key : K, value : V) : Map[K, V] = map + (key -> value)
         def pairs() : List[(K, V)] = map.toList
+        def getSize() : Int = map.size
     }
 
     implicit class Firefly_Array[T : scala.reflect.ClassTag](list : Array[T]) {
@@ -238,11 +246,13 @@ object Firefly_Core {
         def any(body : T => Bool) : Bool = list.exists(body)
         def modify(index : Int, body : T => T) : Array[T] = list.updated(index, body(list(index)))
         def pairs() : Array[(Int, T)] = list.zipWithIndex.map(_.swap)
+        def getSize() : Int = list.length
     }
 
     implicit class Firefly_ListBuilder[T](list : ListBuilder[T]) {
         def append(item : T) = list += item
         def drain = { val result = list.toList; list.clear(); result }
+        def getSize() : Int = list.length
     }
 
     implicit class Firefly_ArrayBuilder[T](list : ArrayBuilder[T]) {
@@ -250,18 +260,21 @@ object Firefly_Core {
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
         def modify(index : Int, body : T => T) : Unit = list.update(index, body(list(index)))
+        def getSize() : Int = list.length
     }
 
     implicit class Firefly_SetBuilder[T](list : SetBuilder[T]) {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
+        def getSize() : Int = list.size
     }
 
     implicit class Firefly_Range(list : Range) {
         def each(body : Int => Unit) : Unit = list.foreach(body)
         def all(body : Int => Bool) : Bool = list.forall(body)
         def any(body : Int => Bool) : Bool = list.exists(body)
+        def getSize() : Int = list.length
     }
 
     implicit class Firefly_Pair[A, B](pair : (A, B)) {

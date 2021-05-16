@@ -56,10 +56,49 @@ type System {}
 type FileSystem {}
 type Unit()
 
+extend self: Int {
+    to(inclusive: Int): List[Int] { panic("Built-in") }
+    until(exclusive: Int): List[Int] { panic("Built-in") }
+}
+
+extend self: String {
+    getSize(): Int { panic("Built-in") }
+    expect(index: Int): Char { panic("Built-in") }
+    replaceFirst(needle: String, replacement: String): String { panic("Built-in") }
+    slice(from: Int, until: Int): String { panic("Built-in") }
+}
+
+extend self[T]: Option[T] {
+    else(body: () => T): T { panic("Built-in") }
+    elseIf(condition: () => Bool, body: () => T): Option[T] { panic("Built-in") }
+}
+
 extend self[T]: List[T] {
     toArray(): Array[T] { panic("Built-in") }
     toSet(): Set[T] { panic("Built-in") }
     expect(index: Int): T { panic("Built-in") }
+    modify(index: Int, body: T => T): List[T] { panic("Built-in") }
+    pairs(): List[Pair[Int, T]] { panic("Built-in") }
+    slice(from: Int, until: Int): List[T] { panic("Built-in") }
+    getSize(): Int { panic("Built-in") }
+    each(body: T => Unit): Unit { panic("Built-in") }
+    all(body: T => Bool): Bool { panic("Built-in") }
+    any(body: T => Bool): Bool { panic("Built-in") }
+    filter(body: T => Bool): List[T] { panic("Built-in") }
+    map[R](body: T => R): List[R] { panic("Built-in") }
+    flatMap[R](body: T => List[R]): List[R] { panic("Built-in") }
+}
+
+extend self[T]: List[List[T]] {
+    flatten(): List[T] { panic("Built-in") }
+}
+
+extend self[T]: SetBuilder[T] {
+    add(value: T): Unit { panic("Built-in") }
+    each(body: T => Unit): Unit { panic("Built-in") }
+    all(body: T => Bool): Bool { panic("Built-in") }
+    any(body: T => Bool): Bool { panic("Built-in") }
+    getSize(): Int { panic("Built-in") }
 }
 
 extend self: System {
