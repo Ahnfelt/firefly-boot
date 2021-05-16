@@ -38,7 +38,7 @@ case (t : Syntax_.TConstructor) =>
 val prefix = (t.name + "_");
 val selfParameter = Syntax_.Parameter(d.at, Firefly_Core.False(), d.name, d.type_, Firefly_Core.None());
 d.methods.map({(method) =>
-Firefly_Core.Pair(full(module, (prefix + method.signature.name)), Environment_.Scheme(Firefly_Core.False(), Firefly_Core.False(), method.signature.copy(generics = (d.generics ++ method.signature.generics), constraints = (d.constraints ++ method.signature.constraints), parameters = (List(List(selfParameter), method.signature.parameters).flatten))))
+Firefly_Core.Pair((prefix + method.signature.name), Environment_.Scheme(Firefly_Core.False(), Firefly_Core.False(), method.signature.copy(generics = (d.generics ++ method.signature.generics), constraints = (d.constraints ++ method.signature.constraints), parameters = (List(List(selfParameter), method.signature.parameters).flatten))))
 })
 })
 });

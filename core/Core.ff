@@ -59,6 +59,7 @@ type Unit()
 extend self[T]: List[T] {
     toArray(): Array[T] { panic("Built-in") }
     toSet(): Set[T] { panic("Built-in") }
+    expect(index: Int): T { panic("Built-in") }
 }
 
 extend self: System {
