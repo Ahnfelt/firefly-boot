@@ -64,4 +64,37 @@ extend self[T]: List[T] {
 
 extend self: System {
     arguments(): List[String] { panic("Built-in") }
+    files(): FileSystem { panic("Built-in") }
+}
+
+extend self: FileSystem {
+
+    readText(file: String): String { panic("Built-in") }
+
+    writeText(file: String, text: String): Unit { panic("Built-in") }
+
+    list(path: String): List[String] { panic("Built-in") }
+
+    exists(path: String): Bool { panic("Built-in") }
+
+    isDirectory(path: String): Bool { panic("Built-in") }
+
+    createDirectory(path: String): Unit { panic("Built-in") }
+
+    createDirectories(path: String): Unit { panic("Built-in") }
+
+    delete(path: String): Unit { panic("Built-in") }
+
+    rename(fromPath: String, toPath: String): Unit { panic("Built-in") }
+
+    getAbsolutePath(path: String): String { panic("Built-in") }
+
+    directoryName(path: String): String { panic("Built-in") }
+
+    baseName(path: String): String { panic("Built-in") }
+
+    prefixName(path: String): String { panic("Built-in") }
+
+    suffixName(path: String): String { panic("Built-in") }
+
 }

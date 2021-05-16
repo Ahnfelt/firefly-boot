@@ -94,7 +94,7 @@ object Firefly_Core {
         def arguments() : List[String] = argumentsArray.toList
         def write(value : String) : Unit = scala.Predef.print(value)
         def writeLine(value : String) : Unit = scala.Predef.println(value)
-        val files = new FileSystem()
+        def files() = new FileSystem()
     }
 
     final class FileSystem() {

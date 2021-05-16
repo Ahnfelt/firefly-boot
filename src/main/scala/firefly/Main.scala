@@ -23,7 +23,7 @@ val corePath = system.arguments().expect(0);
 val inputPath = system.arguments().expect(1);
 val tempPath = system.arguments().expect(2);
 val outputPath = system.arguments().expect(3);
-val fs = system.files;
+val fs = system.files();
 Firefly_Core.if_(fs.exists(tempPath), {() =>
 Main_.deleteDirectory(fs, tempPath)
 });
