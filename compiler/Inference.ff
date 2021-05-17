@@ -502,6 +502,10 @@ extend self: Inference {
                     | _, Some(_) =>
                         self.unification.unify(e.at, t2, t1)
                         self.unification.unify(e.at, expected, t)
+                    | _, _ { operator == "==" || operator == "!=" } =>
+                        // TODO: This case is cheating, remove it
+                        self.unification.unify(e.at, t2, t1)
+                        self.unification.unify(e.at, expected, t)
                     | None, None =>
                         fail(e.at, "Operators on unknown types not currently supported")
                 }

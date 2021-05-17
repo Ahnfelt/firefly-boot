@@ -435,6 +435,9 @@ self.unification.unify(e.at, expected, t)
 case (_, Firefly_Core.Some(_)) =>
 self.unification.unify(e.at, t2, t1);
 self.unification.unify(e.at, expected, t)
+case (_, _) if ((operator == "==") || (operator == "!=")) =>
+self.unification.unify(e.at, t2, t1);
+self.unification.unify(e.at, expected, t)
 case (Firefly_Core.None(), Firefly_Core.None()) =>
 Inference_.fail(e.at, "Operators on unknown types not currently supported")
 };
