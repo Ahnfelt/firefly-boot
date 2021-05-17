@@ -81,6 +81,7 @@ extend self[T]: List[T] {
     modify(index: Int, body: T => T): List[T] { panic("Built-in") }
     pairs(): List[Pair[Int, T]] { panic("Built-in") }
     slice(from: Int, until: Int): List[T] { panic("Built-in") }
+    isEmpty(): Bool { panic("Built-in") }
     getSize(): Int { panic("Built-in") }
     each(body: T => Unit): Unit { panic("Built-in") }
     all(body: T => Bool): Bool { panic("Built-in") }

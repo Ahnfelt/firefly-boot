@@ -109,7 +109,7 @@ implicit class Type_extend1(self : Syntax_.Type) {
 def show() : Firefly_Core.String = {
 pipe_dot(self)({
 case (Syntax_.TConstructor(at, name, generics)) =>
-Firefly_Core.if_(generics.isEmpty, {() =>
+Firefly_Core.if_(generics.isEmpty(), {() =>
 name
 }).else_({() =>
 (((name + "[") + generics.map({(_w1) =>

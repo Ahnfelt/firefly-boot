@@ -195,6 +195,8 @@ object Firefly_Core {
     implicit class Firefly_String(value: String) {
         def expect(index : Int) : Char = value(index)
         def getSize() : Int = value.length
+        def sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = false): Bool =
+            value.regionMatches(ignoreCase, offset, that, thatOffset, length)
     }
 
     implicit class Firefly_Option[T](option : Option[T]) {
