@@ -66,6 +66,7 @@ extend self: String {
     expect(index: Int): Char { panic("Built-in") }
     replaceFirst(needle: String, replacement: String): String { panic("Built-in") }
     slice(from: Int, until: Int): String { panic("Built-in") }
+    sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("Built-in") }
 }
 
 extend self[T]: Option[T] {

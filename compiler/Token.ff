@@ -35,7 +35,7 @@ extend token: Token {
     }
 
     rawIs(value: String) {
-        token.code.regionMatches(token.startOffset, value, 0, value.length)
+        token.code.sliceEquals(token.startOffset, value, 0, value.getSize())
     }
 
 }
