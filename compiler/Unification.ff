@@ -85,8 +85,8 @@ extend self: Unification {
             | TConstructor(_, name, generics2) =>
                 self.instances.get(InstanceKey(constraintName, name)).{
                     | None =>
-                        let g1 = if(generics.isEmpty) { "" } else { "[...]" }
-                        let g2 = if(generics2.isEmpty) { "" } else { "[...]" }
+                        let g1 = if(generics.getEmpty()) { "" } else { "[...]" }
+                        let g2 = if(generics2.getEmpty()) { "" } else { "[...]" }
                         self.fail(at, "No such instance: " + name + g2 + ": " + constraintName + g1)
                     | Some(definition) =>
                         let typeVariables = definition.generics.map {| _ => self.freshTypeVariable(at) }

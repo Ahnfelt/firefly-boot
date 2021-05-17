@@ -44,7 +44,7 @@ emitTypeDefinition(definition: DType): String {
         let fields = "(" + definition.commonFields.map(emitParameter).mkString(", ") + ")"
         "case class " + definition.name + generics + fields
     } else {
-        let commonFields = if(definition.commonFields.isEmpty) {""} else {
+        let commonFields = if(definition.commonFields.getEmpty()) {""} else {
             " {\n" + definition.commonFields.map(emitParameter).map { "    val " + _ + "\n" }.mkString + "}"
         }
         let variants = definition.variants.map { emitVariantDefinition(definition, _) }
@@ -87,10 +87,10 @@ emitExtendImplicit(definition: DExtend, index: Int): String {
 emitTraitDefinition(definition: DTrait): String {
     let generics = emitTypeParameters(definition.generics)
     let implicits = emitConstraints(definition.constraints)
-    let parameters = if(definition.generatorParameters.isEmpty) {""} else {
+    let parameters = if(definition.generatorParameters.getEmpty()) {""} else {
         "(" + definition.generatorParameters.map(emitParameter).mkString(", ") + ")"
     }
-    let methods = if(definition.methods.isEmpty) {""} else {
+    let methods = if(definition.methods.getEmpty()) {""} else {
         " {\n\nimport " + definition.name + "._\n\n" +
         definition.methods.map { signature =>
             let body = definition.methodDefaults.find { _.first == signature.name }.map { | Pair(_, lambda) =>
@@ -103,7 +103,7 @@ emitTraitDefinition(definition: DTrait): String {
             emitSignature(signature, "_m") + body
         }.mkString("\n\n") + "\n\n}"
     }
-    let methodWrappers = if(definition.methods.isEmpty) {""} else {
+    let methodWrappers = if(definition.methods.getEmpty()) {""} else {
         " \n\n" + definition.methods.map { signature =>
             let t = TConstructor(definition.at, definition.name, definition.generics.map {
                 TConstructor(definition.at, _, [])
@@ -144,7 +144,7 @@ emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
 emitSignature(signature: Signature, suffix: String = ""): String {
     let generics = emitTypeParameters(signature.generics)
     let parameters = "(" + signature.parameters.map(emitParameter).mkString(", ") + ")"
-    let implicits = if(signature.constraints.isEmpty) {""} else {
+    let implicits = if(signature.constraints.getEmpty()) {""} else {
         "(implicit " + signature.constraints.zipWithIndex.map { | Pair(c, i) =>
             "i_" + i + " : " + emitType(c.representation)
         }.mkString(", ") + ")"
@@ -160,13 +160,13 @@ emitParameter(parameter: Parameter): String {
 }
 
 emitConstraints(constraints: List[Constraint]): String {
-    if(constraints.isEmpty) {""} else:
+    if(constraints.getEmpty()) {""} else:
     let pairs = constraints.map { _.representation }.map(emitType).zipWithIndex
     "(implicit " + pairs.map { | Pair(k, v) => "i_" + v + " : " + k }.mkString(", ") + ")"
 }
 
 emitTypeParameters(generics: List[String]) {
-    if(generics.isEmpty) {""} else {"[" + generics.mkString(", ") + "]"}
+    if(generics.getEmpty()) {""} else {"[" + generics.mkString(", ") + "]"}
 }
 
 emitTypeAnnotation(t: Type): String {
@@ -185,7 +185,7 @@ emitType(type: Type): String {
                 "val " + escapeKeyword(field) + " : " + emitType(fieldType)
             }.mkString("; ") + "}"
         } else {
-            let generics = if(t.generics.isEmpty) {""} else {"[" + t.generics.map(emitType).mkString(", ") + "]"}
+            let generics = if(t.generics.getEmpty()) {""} else {"[" + t.generics.map(emitType).mkString(", ") + "]"}
             escapeResolved(t.name) + generics
         }
 }
@@ -219,10 +219,10 @@ emitTerm(term: Term): String {
             | Pair(item, True) => emitTerm(item)
         }.mkString(", ") + ").flatten)"
     | EVariant(at, name, typeArguments, arguments) =>
-        let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
+        let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
         escapeResolved(name) + generics + "(" + arguments.toList.flatten.map(emitArgument).mkString(", ") + ")"
     | EVariantIs(at, name, typeArguments) =>
-        let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
+        let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
         "({ case _w : " + escapeResolved(name) + generics + " => Some(_w); case _ => None() })"
     | ECopy(at, name, record, fields) =>
         let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }.mkString(", ")
@@ -245,10 +245,10 @@ emitTerm(term: Term): String {
     | ECall(at, EVariable(_, operator, _, _), [], [left, right]) {!operator.head.isLetter} =>
         "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
     | ECall(at, function, typeArguments, arguments) =>
-        let generics = if(typeArguments.isEmpty) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
+        let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).mkString(", ") + "]"}
         emitTerm(function) + generics + "(" + arguments.map(emitArgument).mkString(", ") + ")"
     | ERecord(at, fields) =>
-        if(fields.isEmpty) {"{}"} else {
+        if(fields.getEmpty()) {"{}"} else {
             let list = fields.map { f => "val " + escapeKeyword(f.name) + " = " + emitTerm(f.value) }
             "new {\n" + list.mkString(";\n") + ";\n}"
         }

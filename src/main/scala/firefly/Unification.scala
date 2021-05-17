@@ -80,12 +80,12 @@ self.unify(at, t1, t2)
 case (Syntax_.TConstructor(_, name, generics2)) =>
 pipe_dot(self.instances.get(Unification_.InstanceKey(constraintName, name)))({
 case (Firefly_Core.None()) =>
-val g1 = Firefly_Core.if_(generics.isEmpty, {() =>
+val g1 = Firefly_Core.if_(generics.getEmpty(), {() =>
 ""
 }).else_({() =>
 "[...]"
 });
-val g2 = Firefly_Core.if_(generics2.isEmpty, {() =>
+val g2 = Firefly_Core.if_(generics2.getEmpty(), {() =>
 ""
 }).else_({() =>
 "[...]"

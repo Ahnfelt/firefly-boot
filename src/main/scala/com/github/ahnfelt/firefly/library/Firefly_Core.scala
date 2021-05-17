@@ -208,15 +208,20 @@ object Firefly_Core {
         def all(body : T => Bool) : Bool = option.forall(body)
         def any(body : T => Bool) : Bool = option.exists(body)
         def expect() : T = option.get
+        def getEmpty() : Bool = option.isEmpty
     }
 
     implicit class Firefly_List[T](list : List[T]) {
         def expect(index : Int) : T = list(index)
+        def expectFirst() : T = list.head
+        def dropFirst(count : Int = 1) : List[T] = list.drop(count)
+        def dropLast(count : Int = 1) : List[T] = list.dropRight(count)
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
         def modify(index : Int, body : T => T) : List[T] = list.updated(index, body(list(index)))
         def pairs() : List[(Int, T)] = list.zipWithIndex.map(_.swap)
+        def getEmpty() : Boolean = list.isEmpty
         def getSize() : Int = list.size
     }
 
@@ -249,6 +254,9 @@ object Firefly_Core {
         def modify(index : Int, body : T => T) : Array[T] = list.updated(index, body(list(index)))
         def pairs() : Array[(Int, T)] = list.zipWithIndex.map(_.swap)
         def getSize() : Int = list.length
+        def getEmpty() : Boolean = list.isEmpty
+        def expectFirst() : T = list.head
+        def expectLast() : T = list.last
     }
 
     implicit class Firefly_ListBuilder[T](list : ListBuilder[T]) {

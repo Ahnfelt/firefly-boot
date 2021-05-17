@@ -558,7 +558,7 @@ extend self: Inference {
         signature: Signature
         term: Term
     ): Term {
-        let parameters = signature.parameters.filter { _.default.isEmpty }.map { p =>
+        let parameters = signature.parameters.filter { _.default.getEmpty() }.map { p =>
             p.name
         }
         let body = ECall(at, term, [], parameters.map { x =>

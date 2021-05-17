@@ -72,16 +72,21 @@ extend self: String {
 extend self[T]: Option[T] {
     else(body: () => T): T { panic("Built-in") }
     elseIf(condition: () => Bool, body: () => T): Option[T] { panic("Built-in") }
+    getEmpty(): Bool { panic("Built-in") }
 }
 
 extend self[T]: List[T] {
     toArray(): Array[T] { panic("Built-in") }
     toSet(): Set[T] { panic("Built-in") }
     expect(index: Int): T { panic("Built-in") }
+    expectFirst(): T { panic("Built-in") }
+    expectLast(): T { panic("Built-in") }
+    dropFirst(count: Int = 1): List[T] { panic("Built-in") }
+    dropLast(count: Int = 1): List[T] { panic("Built-in") }
     modify(index: Int, body: T => T): List[T] { panic("Built-in") }
     pairs(): List[Pair[Int, T]] { panic("Built-in") }
     slice(from: Int, until: Int): List[T] { panic("Built-in") }
-    isEmpty(): Bool { panic("Built-in") }
+    getEmpty(): Bool { panic("Built-in") }
     getSize(): Int { panic("Built-in") }
     each(body: T => Unit): Unit { panic("Built-in") }
     all(body: T => Bool): Bool { panic("Built-in") }
@@ -93,6 +98,18 @@ extend self[T]: List[T] {
 
 extend self[T]: List[List[T]] {
     flatten(): List[T] { panic("Built-in") }
+}
+
+extend self: List[String] {
+    join(separator: String = ""): String { panic("Built-in") }
+}
+
+extend self[T]: Array[T] {
+    getEmpty(): Bool { panic("Built-in") }
+    getSize(): Int { panic("Built-in") }
+    expect(index: Int): T { panic("Built-in") }
+    expectFirst(): T { panic("Built-in") }
+    expectLast(): T { panic("Built-in") }
 }
 
 extend self[T]: SetBuilder[T] {

@@ -491,7 +491,7 @@ Inference_.fail(e.at, ("Unknown operator: " + operator))
 
 def inferEtaExpansion(environment : Environment_.Environment, expected : Syntax_.Type, at : Syntax_.Location, signature : Syntax_.Signature, term : Syntax_.Term) : Syntax_.Term = {
 val parameters = signature.parameters.filter({(_w1) =>
-_w1.default.isEmpty
+_w1.default.getEmpty()
 }).map({(p) =>
 p.name
 });
