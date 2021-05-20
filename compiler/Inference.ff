@@ -160,8 +160,7 @@ extend self: Inference {
                 let scheme = environment.symbols.get(name).else {
                     fail(at, "No such variant: " + name)
                 }
-                let parameters = scheme.signature.parameters
-                // TODO: Shouldn't the parameters be sorted before being concatenated to Record$?
+                let parameters = scheme.signature.parameters.sortBy { _.name }
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
                 Map(Pair(variable, recordType))
@@ -202,7 +201,17 @@ extend self: Inference {
                 let record = self.inferTerm(environment, recordType, e.record)
                 let e2 = e.EField(record = record)
                 self.unification.substitute(recordType).{
-                    | TConstructor(_, name, typeParameters)@t =>
+                    | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
+                        let fieldNames = name.split('$').toList.drop(1)
+                        fieldNames.pairs().find { _.second == e.field }.map { _.first }.map { index =>
+                            let t1 = typeArguments.expect(index)
+                            self.unification.unify(e.at, expected, t1)
+                            e2
+                        }.else {
+                            fail(e.at, "No such field " + e.field + " on type: " + t.show())
+                        }
+                    | TConstructor(_, name, typeArguments)@t =>
+                        // TODO: Shouldn't the typeArguments be used? E.g. Pair[Int, String].first
                         let methodName = name + "_" + e.field
                         environment.symbols.get(methodName).{
                             | Some(scheme) {!scheme.isVariable} =>

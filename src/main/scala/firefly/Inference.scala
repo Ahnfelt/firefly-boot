@@ -124,7 +124,9 @@ case (Syntax_.PVariantAs(at, name, Firefly_Core.Some(variable))) =>
 val scheme = environment.symbols.get(name).else_({() =>
 Inference_.fail(at, ("No such variant: " + name))
 });
-val parameters = scheme.signature.parameters;
+val parameters = scheme.signature.parameters.sortBy({(_w1) =>
+_w1.name
+});
 val recordType = Syntax_.TConstructor(at, ("Record$" + parameters.map({(_w1) =>
 _w1.name
 }).join("$")), parameters.map({(_w1) =>
@@ -175,7 +177,20 @@ val recordType = self.unification.freshTypeVariable(e.at);
 val record = self.inferTerm(environment, recordType, e.record);
 val e2 = e.copy(record = record);
 pipe_dot(self.unification.substitute(recordType))({
-case (t @ (Syntax_.TConstructor(_, name, typeParameters))) =>
+case (t @ (Syntax_.TConstructor(_, name, typeArguments))) if name.startsWith("Record$") =>
+val fieldNames = name.split('$').toList.drop(1);
+fieldNames.pairs().find({(_w1) =>
+(_w1.second == e.field)
+}).map({(_w1) =>
+_w1.first
+}).map({(index) =>
+val t1 = typeArguments.expect(index);
+self.unification.unify(e.at, expected, t1);
+e2
+}).else_({() =>
+Inference_.fail(e.at, ((("No such field " + e.field) + " on type: ") + t.show()))
+})
+case (t @ (Syntax_.TConstructor(_, name, typeArguments))) =>
 val methodName = ((name + "_") + e.field);
 pipe_dot(environment.symbols.get(methodName))({
 case (Firefly_Core.Some(scheme)) if (!scheme.isVariable) =>

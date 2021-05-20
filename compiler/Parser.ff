@@ -792,7 +792,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.drain
+        fields.drain.sortBy { _.first }
     }
 
     parseListPattern(): MatchPattern {

@@ -1094,7 +1094,9 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), ")");
-fields.drain
+fields.drain.sortBy({(_w1) =>
+_w1.first
+})
 }
 
 def parseListPattern() : Syntax_.MatchPattern = {
