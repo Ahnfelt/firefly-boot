@@ -124,7 +124,9 @@ case (Syntax_.PVariantAs(at, name, Firefly_Core.Some(variable))) =>
 val scheme = environment.symbols.get(name).else_({() =>
 Inference_.fail(at, ("No such variant: " + name))
 });
-val parameters = scheme.signature.parameters.sortBy({(_w1) =>
+val instantiated = self.instantiateSignature(at, name, scheme.signature, List());
+self.unification.unify(at, expected, instantiated.returnType);
+val parameters = instantiated.parameters.sortBy({(_w1) =>
 _w1.name
 });
 val recordType = Syntax_.TConstructor(at, ("Record$" + parameters.map({(_w1) =>

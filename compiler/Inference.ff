@@ -160,7 +160,9 @@ extend self: Inference {
                 let scheme = environment.symbols.get(name).else {
                     fail(at, "No such variant: " + name)
                 }
-                let parameters = scheme.signature.parameters.sortBy { _.name }
+                let instantiated = self.instantiateSignature(at, name, scheme.signature, [])
+                self.unification.unify(at, expected, instantiated.returnType)
+                let parameters = instantiated.parameters.sortBy { _.name }
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
                 Map(Pair(variable, recordType))
