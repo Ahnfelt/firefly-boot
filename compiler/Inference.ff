@@ -168,8 +168,9 @@ extend self: Inference {
                 let scheme = environment.symbols.get(name).else {
                     fail(at, "No such variant: " + name)
                 }
-                let parameters = scheme.signature.parameters
-                (patterns.zip(parameters).map {| Pair(pattern, parameter) =>
+                let instantiated = self.instantiateSignature(at, name, scheme.signature, [])
+                self.unification.unify(at, expected, instantiated.returnType)
+                (patterns.zip(instantiated.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
                 }.foldLeft(Map[String, Type]())) { _ ++ _ }
         }
@@ -580,6 +581,25 @@ extend self: Inference {
             body = body
         )]))
         self.inferTerm(environment, expected, lambda)
+    }
+
+    instantiateSignature(
+        at: Location,
+        name: String,
+        signature: Signature,
+        typeArguments: List[Type]
+    ): Signature {
+        let instantiation = self.inferTypeArguments(at, name, signature.generics, typeArguments).toMap
+        let parameters = signature.parameters.map { p =>
+            p.Parameter(valueType = self.unification.instantiate(instantiation, p.valueType))
+        }
+        let returnType = self.unification.instantiate(instantiation, signature.returnType)
+        signature.Signature(
+            generics = []
+            constraints = [] // TODO: Emit the constraints
+            parameters = parameters
+            returnType = returnType
+        )
     }
 
     inferTypeArguments(
