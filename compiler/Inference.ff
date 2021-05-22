@@ -161,7 +161,7 @@ extend self: Inference {
                     fail(at, "No such variant: " + name)
                 }
                 let instantiation = self.inferTypeArguments(at, name, scheme.signature.generics, [])
-                let instantiated = self.instantiateSignature(at, name, scheme.signature, instantiation)
+                let instantiated = self.instantiateSignature(scheme.signature, instantiation)
                 self.unification.unify(at, expected, instantiated.returnType)
                 let parameters = instantiated.parameters.sortBy { _.name }
                 let recordType =
@@ -172,7 +172,7 @@ extend self: Inference {
                     fail(at, "No such variant: " + name)
                 }
                 let instantiation = self.inferTypeArguments(at, name, scheme.signature.generics, [])
-                let instantiated = self.instantiateSignature(at, name, scheme.signature, instantiation)
+                let instantiated = self.instantiateSignature(scheme.signature, instantiation)
                 self.unification.unify(at, expected, instantiated.returnType)
                 (patterns.zip(instantiated.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
@@ -198,7 +198,7 @@ extend self: Inference {
                     } else {
                         let instantiation =
                             self.inferTypeArguments(e.at, e.name, scheme.signature.generics, e.generics)
-                        let instantiated = self.instantiateSignature(e.at, e.name, scheme.signature, instantiation)
+                        let instantiated = self.instantiateSignature(scheme.signature, instantiation)
                         self.inferEtaExpansion(environment, expected, e.at, instantiated, term)
                     }
                 } else {
@@ -224,8 +224,7 @@ extend self: Inference {
                             | Some(scheme) {!scheme.isVariable} =>
                                 let instantiation =
                                     self.inferTypeArguments(e.at, e.field, scheme.signature.generics, typeArguments)
-                                let instantiated = 
-                                    self.instantiateSignature(e.at, e.field, scheme.signature, instantiation)
+                                let instantiated = self.instantiateSignature(scheme.signature, instantiation)
                                 let signature = instantiated.Signature(
                                     parameters = instantiated.parameters.drop(1) // Drop self for eta expansion
                                 )
@@ -273,7 +272,7 @@ extend self: Inference {
                 }.signature
                 // TODO: Constrain the type arguments
                 let instantiation = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments)
-                let instantiated = self.instantiateSignature(e.at, e.name, signature, instantiation)
+                let instantiated = self.instantiateSignature(signature, instantiation)
                 self.unification.unify(e.at, expected, instantiated.returnType)
                 let arguments = e.arguments.map {
                     self.inferArguments(e.at, environment, instantiated.parameters, _)
@@ -418,7 +417,7 @@ extend self: Inference {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         // TODO: Constrain the type arguments
         let instantiation = self.inferTypeArguments(e.at, name, signature.generics, [])
-        let instantiated = self.instantiateSignature(e.at, name, signature, instantiation)
+        let instantiated = self.instantiateSignature(signature, instantiation)
         self.unification.unify(e.at, expected, instantiated.returnType)
         // TODO: Varargs
         let arguments = self.inferArguments(e.at, environment, instantiated.parameters, e.arguments)
@@ -594,8 +593,6 @@ extend self: Inference {
     }
 
     instantiateSignature(
-        at: Location,
-        name: String,
         signature: Signature,
         instantiation: List[Pair[String, Type]]
     ): Signature {
