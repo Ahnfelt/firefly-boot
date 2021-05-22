@@ -160,7 +160,8 @@ extend self: Inference {
                 let scheme = environment.symbols.get(name).else {
                     fail(at, "No such variant: " + name)
                 }
-                let instantiated = self.instantiateSignature(at, name, scheme.signature, [])
+                let instantiation = self.inferTypeArguments(at, name, scheme.signature.generics, [])
+                let instantiated = self.instantiateSignature(at, name, scheme.signature, instantiation)
                 self.unification.unify(at, expected, instantiated.returnType)
                 let parameters = instantiated.parameters.sortBy { _.name }
                 let recordType =
@@ -170,7 +171,8 @@ extend self: Inference {
                 let scheme = environment.symbols.get(name).else {
                     fail(at, "No such variant: " + name)
                 }
-                let instantiated = self.instantiateSignature(at, name, scheme.signature, [])
+                let instantiation = self.inferTypeArguments(at, name, scheme.signature.generics, [])
+                let instantiated = self.instantiateSignature(at, name, scheme.signature, instantiation)
                 self.unification.unify(at, expected, instantiated.returnType)
                 (patterns.zip(instantiated.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
@@ -194,7 +196,10 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, scheme.signature.returnType)
                         term
                     } else {
-                        self.inferEtaExpansion(environment, expected, e.at, scheme.signature, term)
+                        let instantiation =
+                            self.inferTypeArguments(e.at, e.name, scheme.signature.generics, e.generics)
+                        let instantiated = self.instantiateSignature(e.at, e.name, scheme.signature, instantiation)
+                        self.inferEtaExpansion(environment, expected, e.at, instantiated, term)
                     }
                 } else {
                     fail(e.at, "Symbol not in scope: " + e.name)
@@ -217,8 +222,10 @@ extend self: Inference {
                         let methodName = name + "_" + e.field
                         environment.symbols.get(methodName).{
                             | Some(scheme) {!scheme.isVariable} =>
-                                let instantiated =
-                                    self.instantiateSignature(e.at, e.field, scheme.signature, typeArguments)
+                                let instantiation =
+                                    self.inferTypeArguments(e.at, e.field, scheme.signature.generics, typeArguments)
+                                let instantiated = 
+                                    self.instantiateSignature(e.at, e.field, scheme.signature, instantiation)
                                 let signature = instantiated.Signature(
                                     parameters = instantiated.parameters.drop(1) // Drop self for eta expansion
                                 )
@@ -265,15 +272,14 @@ extend self: Inference {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }.signature
                 // TODO: Constrain the type arguments
-                let typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments)
-                let instantiation = typeArguments.toMap
-                let returnType = self.unification.instantiate(instantiation, signature.returnType)
-                self.unification.unify(e.at, expected, returnType)
+                let instantiation = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments)
+                let instantiated = self.instantiateSignature(e.at, e.name, signature, instantiation)
+                self.unification.unify(e.at, expected, instantiated.returnType)
                 let arguments = e.arguments.map {
-                    self.inferArguments(e.at, environment, instantiation, signature.parameters, _)
+                    self.inferArguments(e.at, environment, instantiated.parameters, _)
                 }
                 e.EVariant(
-                    typeArguments = typeArguments.map { _.second }
+                    typeArguments = instantiation.map { _.second }
                     arguments = arguments
                 )
             | EVariantIs e =>
@@ -288,14 +294,15 @@ extend self: Inference {
                 let signature = environment.symbols.get(e.name).else {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }.signature
-                e.arguments.find { a => !signature.parameters.exists { _.name == a.name } }.each {
+                let parameterNames = signature.parameters.map { _.name }
+                e.arguments.find { a => !parameterNames.exists { _ == a.name } }.each {
                     | Field(at, name, value) => fail(at, "Unknown parameter: " + name)
                 }
-                let arguments = signature.parameters.map { p =>
-                    e.arguments.find { _.name == p.name }.map {
-                        | Field(at, _, value) => Argument(at, Some(p.name), value)
+                let arguments = parameterNames.map { name =>
+                    e.arguments.find { _.name == name }.map {
+                        | Field(at, _, value) => Argument(at, Some(name), value)
                     }.else {
-                        Argument(e.at, Some(p.name), EField(e.at, EVariable(e.at, "_c", [], []), p.name))
+                        Argument(e.at, Some(name), EField(e.at, EVariable(e.at, "_c", [], []), name))
                     }
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
@@ -410,15 +417,14 @@ extend self: Inference {
     inferFunctionCall(environment: Environment, expected: Type, signature: Signature, term: Term, name: String): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         // TODO: Constrain the type arguments
-        let typeArguments = self.inferTypeArguments(e.at, name, signature.generics, e.typeArguments)
-        let instantiation = typeArguments.toMap
-        let returnType = self.unification.instantiate(instantiation, signature.returnType)
-        self.unification.unify(e.at, expected, returnType)
+        let instantiation = self.inferTypeArguments(e.at, name, signature.generics, [])
+        let instantiated = self.instantiateSignature(e.at, name, signature, instantiation)
+        self.unification.unify(e.at, expected, instantiated.returnType)
         // TODO: Varargs
-        let arguments = self.inferArguments(e.at, environment, instantiation, signature.parameters, e.arguments)
+        let arguments = self.inferArguments(e.at, environment, instantiated.parameters, e.arguments)
         e.ECall(
             function = e.function, // It's always a function name - should we propagate that information?
-            typeArguments = typeArguments.map { _.second }
+            typeArguments = instantiation.map { _.second }
             arguments = arguments
         )
     }
@@ -591,13 +597,13 @@ extend self: Inference {
         at: Location,
         name: String,
         signature: Signature,
-        typeArguments: List[Type]
+        instantiation: List[Pair[String, Type]]
     ): Signature {
-        let instantiation = self.inferTypeArguments(at, name, signature.generics, typeArguments).toMap
+        let instantiationMap = instantiation.toMap
         let parameters = signature.parameters.map { p =>
-            p.Parameter(valueType = self.unification.instantiate(instantiation, p.valueType))
+            p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
         }
-        let returnType = self.unification.instantiate(instantiation, signature.returnType)
+        let returnType = self.unification.instantiate(instantiationMap, signature.returnType)
         signature.Signature(
             generics = []
             constraints = [] // TODO: Emit the constraints
@@ -631,13 +637,12 @@ extend self: Inference {
     inferArguments(
         at: Location
         environment: Environment
-        instantiation: Map[String, Type]
         parameters: List[Parameter]
         arguments: List[Argument]
     ): List[Argument] {
         mutable remainingArguments = arguments
         let newArguments = parameters.map { p =>
-            let t = self.unification.instantiate(instantiation, p.valueType)
+            let t = p.valueType
             remainingArguments.{
                 | [] =>
                     p.default.map { e =>
