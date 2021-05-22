@@ -214,11 +214,12 @@ extend self: Inference {
                             fail(e.at, "No such field " + e.field + " on type: " + t.show())
                         }
                     | TConstructor(_, name, typeArguments)@t =>
-                        // TODO: Shouldn't the typeArguments be used? E.g. Pair[Int, String].first
                         let methodName = name + "_" + e.field
                         environment.symbols.get(methodName).{
                             | Some(scheme) {!scheme.isVariable} =>
-                                let signature = scheme.signature.Signature(
+                                let instantiated =
+                                    self.instantiateSignature(e.at, e.field, scheme.signature, typeArguments)
+                                let signature = instantiated.Signature(
                                     parameters = scheme.signature.parameters.drop(1) // Drop self for eta expansion
                                 )
                                 self.inferEtaExpansion(environment, expected, e.at, signature, e2)
