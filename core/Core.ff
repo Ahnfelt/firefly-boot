@@ -100,8 +100,17 @@ extend self[T]: List[List[T]] {
     flatten(): List[T] { panic("Built-in") }
 }
 
+extend self[K, V]: List[Pair[K, V]] {
+    getMap(): Map[K, V] { panic("Built-in") }
+}
+
 extend self: List[String] {
     join(separator: String = ""): String { panic("Built-in") }
+}
+
+extend self[K, V]: Map[K, V] {
+    pairs(): List[Pair[K, V]] { panic("Built-in") }
+    getSize(): Int { panic("Built-in") }
 }
 
 extend self[T]: Array[T] {

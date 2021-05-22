@@ -95,11 +95,11 @@ extend self: Inference {
         let parameters = definition.signature.parameters.map { p =>
             let scheme = Scheme(True, False, Signature(p.at, p.name, [], [], [], p.valueType))
             Pair(p.name, scheme)
-        }
+        }.getMap()
         let environment2 = environment.Environment(symbols = environment.symbols ++ parameters)
         let functionType = TConstructor(
             definition.at,
-            "Function$" + parameters.size,
+            "Function$" + parameters.getSize(),
             [...parameters.map { _.second.signature.returnType }, definition.signature.returnType]
         )
         definition.DFunction(body = self.inferLambda(environment2, functionType, definition.body))

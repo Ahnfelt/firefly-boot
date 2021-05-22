@@ -229,6 +229,10 @@ object Firefly_Core {
         def join(separator : String) : String = list.mkString(separator)
     }
 
+    implicit class Firefly_Pair_List[K, V](list : List[Pair[K, V]]) {
+        def getMap() : Map[K, V] = list.toMap
+    }
+
     implicit class Firefly_Set[T](set : Set[T]) {
         def each(body : T => Unit) : Unit = set.foreach(body)
         def all(body : T => Bool) : Bool = set.forall(body)
