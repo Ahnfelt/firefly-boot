@@ -198,7 +198,8 @@ val methodName = ((name + "_") + e.field);
 pipe_dot(environment.symbols.get(methodName))({
 case (Firefly_Core.Some(scheme)) if (!scheme.isVariable) =>
 val instantiated = self.instantiateSignature(e.at, e.field, scheme.signature, typeArguments);
-val signature = instantiated.copy(parameters = scheme.signature.parameters.drop(1));
+val signature = instantiated.copy(parameters = instantiated.parameters.drop(1));
+self.unification.unify(e.at, recordType, instantiated.parameters.expect(0).valueType);
 self.inferEtaExpansion(environment, expected, e.at, signature, e2)
 case (Firefly_Core.Some(scheme)) =>
 self.unification.unify(e.at, expected, scheme.signature.returnType);
