@@ -333,6 +333,22 @@ Inference_.fail(f.at, ((("No such field " + f.field) + " on unknown type: $") + 
 case (_) =>
 self.inferLambdaCall(environment, expected, e)
 })
+case (e : Syntax_.ERecord) =>
+val fields = e.fields.sortBy({(_w1) =>
+_w1.name
+});
+val fieldTypes = fields.map({(_w1) =>
+self.unification.freshTypeVariable(_w1.at)
+});
+val recordType = Syntax_.TConstructor(e.at, ("Record$" + fields.map({(_w1) =>
+_w1.name
+}).join("$")), fieldTypes);
+self.unification.unify(e.at, expected, recordType);
+val newFields = fields.zip(fieldTypes).map({
+case (Firefly_Core.Pair(field, t)) =>
+field.copy(value = self.inferTerm(environment, t, field.value))
+});
+e.copy(fields = newFields)
 case (_) =>
 term
 })

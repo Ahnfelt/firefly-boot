@@ -361,15 +361,20 @@ extend self: Inference {
                     | _ =>
                         self.inferLambdaCall(environment, expected, e)
                 }
+            | ERecord e =>
+                let fields = e.fields.sortBy {_.name}
+                let fieldTypes = fields.map { self.unification.freshTypeVariable(_.at) }
+                let recordType =
+                    TConstructor(e.at, "Record$" + fields.map {_.name}.join("$"), fieldTypes)
+                self.unification.unify(e.at, expected, recordType)
+                let newFields = fields.zip(fieldTypes).map {| Pair(field, t) =>
+                    field.Field(value = self.inferTerm(environment, t, field.value))
+                }
+                e.ERecord(
+                    fields = newFields
+                )
             | _ => term
             /*
-            | ERecord(at, fields) =>
-                let recordType =
-                    TConstructor(at, "Record$" + fields.map { _.name }.join("$"), fields.map { _.valueType })
-                ERecord(
-                    at = at
-                    fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
-                )
             | EFunctions(at, functions, body) =>
                 let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap
                 let self2 = self.Resolver(variables = self.variables ++ functionMap)
