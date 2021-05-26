@@ -73,6 +73,9 @@ extend self[T]: Option[T] {
     else(body: () => T): T { panic("Built-in") }
     elseIf(condition: () => Bool, body: () => T): Option[T] { panic("Built-in") }
     getEmpty(): Bool { panic("Built-in") }
+    filter(body: T => Bool): Option[T] { panic("Built-in") }
+    map[R](body: T => R): Option[R] { panic("Built-in") }
+    flatMap[R](body: T => Option[R]): Option[R] { panic("Built-in") }
 }
 
 extend self[T]: List[T] {

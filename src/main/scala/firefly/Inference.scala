@@ -319,13 +319,15 @@ val recordType = self.unification.freshTypeVariable(f.at);
 val record = self.inferTerm(environment, recordType, f.record);
 val e2 = e.copy(function = f.copy(record = record));
 pipe_dot(self.unification.substitute(recordType))({
-case (Syntax_.TConstructor(_, name, typeParameters)) =>
+case (t @ (Syntax_.TConstructor(_, name, typeParameters))) =>
 val methodName = ((name + "_") + f.field);
 pipe_dot(environment.symbols.get(methodName))({
 case (Firefly_Core.Some(scheme)) if (!scheme.isVariable) =>
 self.inferMethodCall(environment, expected, scheme.signature, e2, record, methodName)
-case (_) =>
+case (Firefly_Core.Some(scheme)) =>
 self.inferLambdaCall(environment, expected, e2)
+case (Firefly_Core.None()) =>
+Inference_.fail(f.at, ((("No such field " + f.field) + " on type: ") + t.show()))
 })
 case (Syntax_.TVariable(_, index)) =>
 Inference_.fail(f.at, ((("No such field " + f.field) + " on unknown type: $") + index))
