@@ -9,18 +9,6 @@ case class Wildcards(var seenWildcards : Firefly_Core.Int)
 def make() = {
 Wildcards_.Wildcards(0)
 }
-
-def mapOption[A, B](option : Firefly_Core.Option[A], body : Function1[A, B]) : Firefly_Core.Option[B] = {
-Firefly_Core.panic("Nullll")
-}
-
-def testExample() : Firefly_Core.Unit = {
-val arguments : Firefly_Core.Option[Firefly_Core.List[Syntax_.Argument]] = Firefly_Core.panic("Nullll");
-arguments.map({(x) =>
-x.getSize()
-});
-Firefly_Core.panic("Blah")
-}
 implicit class Wildcards_extend0(self : Wildcards_.Wildcards) {
 
 def fixWildcards(term : Syntax_.Term) : Syntax_.Term = (term) match {

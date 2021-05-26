@@ -438,14 +438,14 @@ extend self: Inference {
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         let argumentTypes = e.arguments.map { self.unification.freshTypeVariable(_.at) }
+        let functionType = TConstructor(e.at, "Function$" + e.arguments.size, [...argumentTypes, expected])
+        let function = self.inferTerm(environment, functionType, e.function)
         let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
             argument.name.foreach { name =>
                 fail(argument.at, "Named argument not allowed here: " + name)
             }
             argument.Argument(value = self.inferTerm(environment, t, argument.value))
         }
-        let functionType = TConstructor(e.at, "Function$" + e.arguments.size, [...argumentTypes, expected])
-        let function = self.inferTerm(environment, functionType, e.function)
         e.typeArguments.headOption.foreach { typeArgument =>
             fail(typeArgument.at, "Type arguments not allowed here")
         }

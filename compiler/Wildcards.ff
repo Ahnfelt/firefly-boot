@@ -6,14 +6,6 @@ make() {
     Wildcards(0)
 }
 
-//testExample: List[List[String]] => List[List[String]] = { _.map { _.map {_} } }
-mapOption[A, B](option: Option[A], body: A => B): Option[B] { panic("Nullll") }
-testExample(): Unit {
-    let arguments: Option[List[Argument]] = panic("Nullll")
-    arguments.map({ x => x.getSize() })
-    panic("Blah")
-}
-
 extend self: Wildcards {
 
     fixWildcards(term: Term): Term {
