@@ -1,0 +1,46 @@
+type RbMap[K, V] {
+    RbLeaf
+    RbNode(isRed: Bool, left: RbMap[K, V], key: K, value: V, right: RbMap[K, V])
+}
+
+extend self[K, V]: RbMap[K, V] {
+
+    get(key: K): Option[V] {
+        self.{
+            | RbLeaf => None
+            | RbNode(_, l, k, _, _) {key < k} => l.get(key)
+            | RbNode(_, _, k, _, r) {key > k} => r.get(key)
+            | RbNode(_, _, _, v, _) => Some(v)
+        }
+    }
+
+    add(key: K, value: V): RbMap[K, V] {
+        function go(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbLeaf => RbNode(True, RbLeaf, key, value, RbLeaf)
+                | RbNode(c, l, k, v, r) {key < k} => RbNode(c, go(l), k, v, r).balance()
+                | RbNode(c, l, k, v, r) {key > k} => RbNode(c, l, k, v, go(r)).balance()
+                | RbNode(c, l, _, _, r) => RbNode(c, l, key, value, r)
+            }
+        }
+        go(self).{
+            | RbNode n {n.isRed} => n.RbNode(isRed = False)
+            | _ => result
+        }
+    }
+
+    remove(key: K): RbMap[K, V] {
+
+    }
+
+    balance(): RbMap[K, V] {
+        self.{
+            | RbNode(False, RbNode(True, RbNode(True, a, k1, v1, b), k2, v2, c), k3, v3, d) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
+            | RbNode(False, RbNode(True, a, k1, v1, RbNode(True, b, k2, v2, c)), k3, v3, d) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
+            | RbNode(False, a, k1, v1, RbNode(True, RbNode(True, b, k2, v2, c), k3, v3, d)) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
+            | RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, RbNode(True, c, k3, v3, d))) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
+            | _ => self
+        }
+    }
+
+}
