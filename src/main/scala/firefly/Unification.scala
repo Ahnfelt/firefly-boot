@@ -30,7 +30,7 @@ fail(at, ("Unexpected type variable: $" + i))
 implicit class Unification_extend0(self : Unification_.Unification) {
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
-Firefly_Core.panic(((message + " ") + at.show))
+Firefly_Core.panic(((message + " ") + at.show()))
 }
 
 def freshTypeVariable(at : Syntax_.Location) : Syntax_.Type = {

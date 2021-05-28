@@ -42,7 +42,7 @@ make(instances: List[DInstance]): Unification {
 extend self: Unification {
 
     fail[T](at: Location, message: String): T {
-        panic(message + " " + at.show)
+        panic(message + " " + at.show())
     }
 
     freshTypeVariable(at: Location): Type {
