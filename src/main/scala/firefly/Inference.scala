@@ -60,8 +60,9 @@ def inferFunctionDefinition(environment : Environment_.Environment, definition :
 val parameters = definition.signature.parameters.map({(p) =>
 val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(p.at, p.name, List(), List(), List(), p.valueType));
 Firefly_Core.Pair(p.name, scheme)
-}).getMap();
-val environment2 = environment.copy(symbols = (environment.symbols ++ parameters));
+});
+val parameterMap = parameters.getMap();
+val environment2 = environment.copy(symbols = (environment.symbols ++ parameterMap));
 val functionType = Syntax_.TConstructor(definition.at, ("Function$" + parameters.getSize()), (List(parameters.map({(_w1) =>
 _w1.second.signature.returnType
 }), List(definition.signature.returnType)).flatten));

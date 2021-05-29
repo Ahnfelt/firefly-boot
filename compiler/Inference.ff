@@ -95,8 +95,9 @@ extend self: Inference {
         let parameters = definition.signature.parameters.map { p =>
             let scheme = Scheme(True, False, Signature(p.at, p.name, [], [], [], p.valueType))
             Pair(p.name, scheme)
-        }.getMap()
-        let environment2 = environment.Environment(symbols = environment.symbols ++ parameters)
+        }
+        let parameterMap = parameters.getMap()
+        let environment2 = environment.Environment(symbols = environment.symbols ++ parameterMap)
         let functionType = TConstructor(
             definition.at,
             "Function$" + parameters.getSize(),

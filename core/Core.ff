@@ -6,6 +6,8 @@ do(body: () => Unit): Unit {}
 
 panic[T](message: String): T {}
 
+debugShow[T](value: T): String { panic("Built-in") }
+
 try[T](body: () => T): Try[T] {}
 
 type Try[T] {}
@@ -64,6 +66,7 @@ extend self: Int {
 extend self: String {
     getSize(): Int { panic("Built-in") }
     expect(index: Int): Char { panic("Built-in") }
+    replace(needle: String, replacement: String): String { panic("Built-in") }
     replaceFirst(needle: String, replacement: String): String { panic("Built-in") }
     slice(from: Int, until: Int): String { panic("Built-in") }
     sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("Built-in") }
@@ -97,6 +100,7 @@ extend self[T]: List[T] {
     filter(body: T => Bool): List[T] { panic("Built-in") }
     map[R](body: T => R): List[R] { panic("Built-in") }
     flatMap[R](body: T => List[R]): List[R] { panic("Built-in") }
+    foldLeft[R](body: (R, T) => R): R { panic("Built-in") }
 }
 
 extend self[T]: List[List[T]] {
@@ -114,6 +118,7 @@ extend self: List[String] {
 extend self[K, V]: Map[K, V] {
     pairs(): List[Pair[K, V]] { panic("Built-in") }
     getSize(): Int { panic("Built-in") }
+    get(key: K): Option[V] { panic("Built-in") }
 }
 
 extend self[T]: Array[T] {

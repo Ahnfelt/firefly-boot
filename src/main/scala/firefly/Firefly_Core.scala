@@ -41,6 +41,9 @@ object Firefly_Core {
     def listBuilderOf[T](items : T*) = mutable.ListBuffer[T]()
 
 
+    def debugShow[T](value : T) = value.toString
+
+
     object Unit {
         def apply() : Unit = {}
         def unapply(value : Unit) : Bool = true
