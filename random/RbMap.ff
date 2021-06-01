@@ -1,3 +1,5 @@
+// Based on https://github.com/Abhiroop/okasaki/blob/master/src/RedBlackTree.hs
+
 type RbMap[K, V] {
     RbLeaf
     RbNode(isRed: Bool, left: RbMap[K, V], key: K, value: V, right: RbMap[K, V])
@@ -25,12 +27,37 @@ extend self[K, V]: RbMap[K, V] {
         }
         go(self).{
             | RbNode n {n.isRed} => n.RbNode(isRed = False)
-            | _ => result
+            | n => n
         }
     }
 
     remove(key: K): RbMap[K, V] {
-
+        function goLeft(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbLeaf => self
+                | RbNode(c, l, k, v, r) {!l.isRed} => balanceLeft(RbNode(False, go(l), k, v, r))
+                | RbNode(c, l, k, v, r) => balanceLeft(RbNode(True, go(l), k, v, r))
+            }
+        }
+        function goRight(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbLeaf => self
+                | RbNode(c, l, k, v, r) {!r.isRed} => balanceRight(RbNode(False, l, k, v, go(r)))
+                | RbNode(c, l, k, v, r) => balanceRight(RbNode(True, l, k, v, go(r)))
+            }
+        }
+        function go(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbLeaf => self
+                | RbNode(_, _, k, _, _) {key < k} => goLeft(self)
+                | RbNode(_, _, k, _, _) {key > k} => goRight(self)
+                | _ => fuse(self)
+            }
+        }
+        go(self).{
+            | RbNode n {n.isRed} => n.RbNode(isRed = False)
+            | n => n
+        }
     }
 
     balance(): RbMap[K, V] {
