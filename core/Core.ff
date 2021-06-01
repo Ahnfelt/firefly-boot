@@ -65,6 +65,9 @@ extend self: String {
     getSize(): Int { panic("Built-in") }
     expect(index: Int): Char { panic("Built-in") }
     replaceFirst(needle: String, replacement: String): String { panic("Built-in") }
+    replace(needle: String, replacement: String): String { panic("Built-in") }
+    getReverse(): String { panic("Built-in") }
+    takeWhile(p: Char => Bool): String { panic("Built-in") }
     slice(from: Int, until: Int): String { panic("Built-in") }
     sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("Built-in") }
 }

@@ -11,9 +11,9 @@ Firefly_Core.panic(((message + " ") + at.show()))
 }
 
 def emitModule(module : Syntax_.Module) : Firefly_Core.String = {
-val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
+val moduleNamespace = module.file.replace("\\", "/").getReverse().takeWhile({(_w1) =>
 (_w1 != '/')
-}).reverse.takeWhile({(_w1) =>
+}).getReverse().takeWhile({(_w1) =>
 (_w1 != '.')
 });
 val parts = List(List("package firefly"), (List(List("import firefly.Firefly_Core._"), module.imports.map({(_w1) =>

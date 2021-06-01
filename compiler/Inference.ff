@@ -152,29 +152,25 @@ extend self: Inference {
                     | Pair(item, True) => self.inferPattern(environment, listType, item)
                 }.foldLeft(Map[String, Type]())) { _ ++ _ }
             | PVariantAs(at, name, None) =>
-                let scheme = environment.symbols.get(name).else {
+                let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
                 }
                 Map()
             | PVariantAs(at, name, Some(variable)) =>
-                let scheme = environment.symbols.get(name).else {
+                let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
                 }
-                let instantiation = self.inferTypeArguments(at, name, scheme.signature.generics, [])
-                let instantiated = self.instantiateSignature(scheme.signature, instantiation)
-                self.unification.unify(at, expected, instantiated.returnType)
-                let parameters = instantiated.parameters.sortBy { _.name }
+                self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
+                let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
                 Map(Pair(variable, recordType))
             | PVariant(at, name, patterns) =>
-                let scheme = environment.symbols.get(name).else {
+                let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
                 }
-                let instantiation = self.inferTypeArguments(at, name, scheme.signature.generics, [])
-                let instantiated = self.instantiateSignature(scheme.signature, instantiation)
-                self.unification.unify(at, expected, instantiated.returnType)
-                (patterns.zip(instantiated.parameters).map {| Pair(pattern, parameter) =>
+                self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
+                (patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
                 }.foldLeft(Map[String, Type]())) { _ ++ _ }
         }
@@ -191,15 +187,12 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
-                environment.symbols.get(e.name).map { scheme =>
-                    if(scheme.isVariable) {
-                        self.unification.unify(e.at, expected, scheme.signature.returnType)
+                self.lookup(environment, e.at, e.name, e.generics).map { instantiated =>
+                    if(instantiated.scheme.isVariable) {
+                        self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                         term
                     } else {
-                        let instantiation =
-                            self.inferTypeArguments(e.at, e.name, scheme.signature.generics, e.generics)
-                        let instantiated = self.instantiateSignature(scheme.signature, instantiation)
-                        self.inferEtaExpansion(environment, expected, e.at, instantiated, term)
+                        self.inferEtaExpansion(environment, expected, e.at, instantiated.scheme.signature, term)
                     }
                 } else {
                     fail(e.at, "Symbol not in scope: " + e.name)
@@ -220,18 +213,25 @@ extend self: Inference {
                         }
                     | TConstructor(_, name, typeArguments)@t =>
                         let methodName = name + "_" + e.field
-                        environment.symbols.get(methodName).{
-                            | Some(scheme) {!scheme.isVariable} =>
-                                let instantiation =
-                                    self.inferTypeArguments(e.at, e.field, scheme.signature.generics, typeArguments)
-                                let instantiated = self.instantiateSignature(scheme.signature, instantiation)
-                                let signature = instantiated.Signature(
-                                    parameters = instantiated.parameters.drop(1) // Drop self for eta expansion
+                        self.lookup(environment, e.at, methodName, typeArguments).{
+                            | Some(instantiated) {!instantiated.scheme.isVariable} =>
+                                let signature = instantiated.scheme.signature.Signature(
+                                    // Drop self for eta expansion
+                                    parameters = instantiated.scheme.signature.parameters.drop(1)
                                 )
-                                self.unification.unify(e.at, recordType, instantiated.parameters.expect(0).valueType)
+                                self.unification.unify(
+                                    e.at,
+                                    recordType,
+                                    instantiated.scheme.signature.parameters.expect(0).valueType
+                                )
                                 self.inferEtaExpansion(environment, expected, e.at, signature, e2)
-                            | Some(scheme) =>
-                                self.unification.unify(e.at, expected, scheme.signature.returnType)
+                            | Some(instantiated) =>
+                                /*self.unification.unify(
+                                    e.at,
+                                    recordType,
+                                    instantiated.scheme.signature.parameters.expect(0).valueType
+                                )*/
+                                self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                                 e.EField(record = record)
                             | None =>
                                 fail(e.at, "No such field " + e.field + " on type: " + t.show())
@@ -240,8 +240,8 @@ extend self: Inference {
                         fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
                 }
             | EWildcard e =>
-                environment.symbols.get("_w" + e.index).map { scheme =>
-                    self.unification.unify(e.at, expected, scheme.signature.returnType)
+                self.lookup(environment, e.at, "_w" + e.index, []).map { instantiated =>
+                    self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                     term
                 }.get
             | EList(at, t, items) =>
@@ -267,32 +267,29 @@ extend self: Inference {
                 let lambda = self.inferLambda(environment, expected, l)
                 ELambda(at, lambda)
             | EVariant e =>
-                let signature = environment.symbols.get(e.name).else {
+                let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
                     fail(e.at, "Symbol not in scope: " + e.name)
-                }.signature
-                // TODO: Constrain the type arguments
-                let instantiation = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments)
-                let instantiated = self.instantiateSignature(signature, instantiation)
-                self.unification.unify(e.at, expected, instantiated.returnType)
+                }
+                self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                 let arguments = e.arguments.map {
-                    self.inferArguments(e.at, environment, instantiated.parameters, _)
+                    self.inferArguments(e.at, environment, instantiated.scheme.signature.parameters, _)
                 }
                 e.EVariant(
-                    typeArguments = instantiation.map { _.second }
+                    typeArguments = instantiated.typeArguments.map { _.second }
                     arguments = arguments
                 )
             | EVariantIs e =>
-                let signature = environment.symbols.get(e.name).else {
+                let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
                     fail(e.at, "Symbol not in scope: " + e.name)
-                }.signature
-                let typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments)
+                }
+                // TODO: Expected type, e.g. EVariable? : Term => Option[Term_EVariable]
                 e.EVariantIs(
-                    typeArguments = typeArguments.map { _.second }
+                    typeArguments = instantiated.typeArguments.map { _.second }
                 )
             | ECopy e =>
-                let signature = environment.symbols.get(e.name).else {
+                let signature = self.lookup(environment, e.at, e.name, []).else {
                     fail(e.at, "Symbol not in scope: " + e.name)
-                }.signature
+                }.scheme.signature
                 let parameterNames = signature.parameters.map { _.name }
                 e.arguments.find { a => !parameterNames.exists { _ == a.name } }.each {
                     | Field(at, name, value) => fail(at, "Unknown parameter: " + name)
@@ -324,12 +321,20 @@ extend self: Inference {
                         if(x.headOption.exists { c => c != '_' && !c.isLetter }) {
                             self.inferOperator(environment, expected, x, e)
                         } else {
-                            environment.symbols.get(x).{
-                                | Some(scheme) =>
-                                    if(scheme.isVariable) {
+                            self.lookup(environment, e.at, x, e.typeArguments).{
+                                | Some(instantiated) =>
+                                    if(instantiated.scheme.isVariable) {
                                         self.inferLambdaCall(environment, expected, e)
                                     } else {
-                                        self.inferFunctionCall(environment, expected, scheme.signature, e, x)
+                                        let signature = instantiated.scheme.signature
+                                        self.inferFunctionCall(
+                                            environment,
+                                            expected,
+                                            signature,
+                                            instantiated.typeArguments,
+                                            e,
+                                            x
+                                        )
                                     }
                                 | None =>
                                     fail(variableAt, "No such function: " + x)
@@ -342,17 +347,18 @@ extend self: Inference {
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, typeParameters)@t =>
                                 let methodName = name + "_" + f.field
-                                environment.symbols.get(methodName).{
-                                    | Some(scheme) {!scheme.isVariable} =>
+                                self.lookup(environment, f.at, methodName, []).{
+                                    | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                         self.inferMethodCall(
                                             environment,
                                             expected,
-                                            scheme.signature,
+                                            instantiated.scheme.signature,
+                                            instantiated.typeArguments,
                                             e2,
                                             record,
                                             methodName
                                         )
-                                    | Some(scheme) =>
+                                    | Some(instantiated) =>
                                         self.inferLambdaCall(environment, expected, e2)
                                     | None =>
                                         fail(f.at, "No such field " + f.field + " on type: " + t.show())
@@ -408,6 +414,7 @@ extend self: Inference {
         environment: Environment,
         expected: Type,
         signature: Signature,
+        instantiation: List[Pair[String, Type]],
         term: Term,
         record: Term,
         name: String
@@ -417,17 +424,21 @@ extend self: Inference {
             function = EVariable(e.at, name, [], [])
             arguments = [Argument(record.at, None, record), ...e.arguments]
         )
-        self.inferFunctionCall(environment, expected, signature, e2, name)
+        self.inferFunctionCall(environment, expected, signature, instantiation, e2, name)
     }
 
-    inferFunctionCall(environment: Environment, expected: Type, signature: Signature, term: Term, name: String): Term {
+    inferFunctionCall(
+        environment: Environment,
+        expected: Type,
+        signature: Signature,
+        instantiation: List[Pair[String, Type]],
+        term: Term,
+        name: String
+    ): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
-        // TODO: Constrain the type arguments
-        let instantiation = self.inferTypeArguments(e.at, name, signature.generics, [])
-        let instantiated = self.instantiateSignature(signature, instantiation)
-        self.unification.unify(e.at, expected, instantiated.returnType)
+        self.unification.unify(e.at, expected, signature.returnType)
         // TODO: Varargs
-        let arguments = self.inferArguments(e.at, environment, instantiated.parameters, e.arguments)
+        let arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments)
         e.ECall(
             function = e.function, // It's always a function name - should we propagate that information?
             typeArguments = instantiation.map { _.second }
@@ -599,45 +610,6 @@ extend self: Inference {
         self.inferTerm(environment, expected, lambda)
     }
 
-    instantiateSignature(
-        signature: Signature,
-        instantiation: List[Pair[String, Type]]
-    ): Signature {
-        let instantiationMap = instantiation.toMap
-        let parameters = signature.parameters.map { p =>
-            p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
-        }
-        let returnType = self.unification.instantiate(instantiationMap, signature.returnType)
-        signature.Signature(
-            generics = []
-            constraints = [] // TODO: Emit the constraints
-            parameters = parameters
-            returnType = returnType
-        )
-    }
-
-    inferTypeArguments(
-        at: Location
-        name: String
-        generics: List[String],
-        typeArguments: List[Type]
-    ): List[Pair[String, Type]] {
-        if(typeArguments.nonEmpty) {
-            if(generics.size != typeArguments.size) {
-                fail(at,
-                    "Wrong number of type parameters for " + name +
-                    ", expected " + generics.size +
-                    ", got " + typeArguments.size
-                )
-            }
-            generics.zip(typeArguments)
-        } else {
-            generics.map { name =>
-                Pair(name, self.unification.freshTypeVariable(at))
-            }
-        }
-    }
-
     inferArguments(
         at: Location
         environment: Environment
@@ -674,6 +646,45 @@ extend self: Inference {
             | Argument(at, Some(name), _) => fail(at, "Unknown argument: " + name)
         }
         newArguments
+    }
+
+    lookup(environment: Environment, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
+
+        environment.symbols.get(symbol).map: scheme =>
+
+        let instantiation =
+            if(typeArguments.nonEmpty) {
+                if(scheme.signature.generics.size != typeArguments.size) {
+                    fail(at,
+                        "Wrong number of type parameters for " + symbol +
+                        ", expected " + scheme.signature.generics.size +
+                        ", got " + typeArguments.size
+                    )
+                }
+                scheme.signature.generics.zip(typeArguments)
+            } else {
+                scheme.signature.generics.map { name =>
+                    Pair(name, self.unification.freshTypeVariable(at))
+                }
+            }
+
+        let instantiationMap = instantiation.toMap
+        let parameters = scheme.signature.parameters.map { p =>
+            p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
+        }
+        let returnType = self.unification.instantiate(instantiationMap, scheme.signature.returnType)
+        let signature = scheme.signature.Signature(
+            generics = []
+            constraints = [] // TODO: Emit the constraints
+            parameters = parameters
+            returnType = returnType
+        )
+
+        Instantiated(
+            typeArguments = instantiation
+            scheme = scheme.Scheme(signature = signature)
+        )
+
     }
 
 }

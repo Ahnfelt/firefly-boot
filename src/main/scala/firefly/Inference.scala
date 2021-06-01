@@ -116,18 +116,16 @@ self.inferPattern(environment, listType, item)
 (_w1 ++ _w2)
 })
 case (Syntax_.PVariantAs(at, name, Firefly_Core.None())) =>
-val scheme = environment.symbols.get(name).else_({() =>
+val instantiated = self.lookup(environment, at, name, List()).else_({() =>
 Inference_.fail(at, ("No such variant: " + name))
 });
 Firefly_Core.Map()
 case (Syntax_.PVariantAs(at, name, Firefly_Core.Some(variable))) =>
-val scheme = environment.symbols.get(name).else_({() =>
+val instantiated = self.lookup(environment, at, name, List()).else_({() =>
 Inference_.fail(at, ("No such variant: " + name))
 });
-val instantiation = self.inferTypeArguments(at, name, scheme.signature.generics, List());
-val instantiated = self.instantiateSignature(scheme.signature, instantiation);
-self.unification.unify(at, expected, instantiated.returnType);
-val parameters = instantiated.parameters.sortBy({(_w1) =>
+self.unification.unify(at, expected, instantiated.scheme.signature.returnType);
+val parameters = instantiated.scheme.signature.parameters.sortBy({(_w1) =>
 _w1.name
 });
 val recordType = Syntax_.TConstructor(at, ("Record$" + parameters.map({(_w1) =>
@@ -137,13 +135,11 @@ _w1.valueType
 }));
 Firefly_Core.Map(Firefly_Core.Pair(variable, recordType))
 case (Syntax_.PVariant(at, name, patterns)) =>
-val scheme = environment.symbols.get(name).else_({() =>
+val instantiated = self.lookup(environment, at, name, List()).else_({() =>
 Inference_.fail(at, ("No such variant: " + name))
 });
-val instantiation = self.inferTypeArguments(at, name, scheme.signature.generics, List());
-val instantiated = self.instantiateSignature(scheme.signature, instantiation);
-self.unification.unify(at, expected, instantiated.returnType);
-patterns.zip(instantiated.parameters).map({
+self.unification.unify(at, expected, instantiated.scheme.signature.returnType);
+patterns.zip(instantiated.scheme.signature.parameters).map({
 case (Firefly_Core.Pair(pattern, parameter)) =>
 self.inferPattern(environment, parameter.valueType, pattern)
 }).foldLeft(Firefly_Core.Map[Firefly_Core.String, Syntax_.Type]())({(_w1, _w2) =>
@@ -167,14 +163,12 @@ literal("Int")
 case (_ : Syntax_.EFloat) =>
 literal("Float")
 case (e : Syntax_.EVariable) =>
-environment.symbols.get(e.name).map({(scheme) =>
-Firefly_Core.if_(scheme.isVariable, {() =>
-self.unification.unify(e.at, expected, scheme.signature.returnType);
+self.lookup(environment, e.at, e.name, e.generics).map({(instantiated) =>
+Firefly_Core.if_(instantiated.scheme.isVariable, {() =>
+self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType);
 term
 }).else_({() =>
-val instantiation = self.inferTypeArguments(e.at, e.name, scheme.signature.generics, e.generics);
-val instantiated = self.instantiateSignature(scheme.signature, instantiation);
-self.inferEtaExpansion(environment, expected, e.at, instantiated, term)
+self.inferEtaExpansion(environment, expected, e.at, instantiated.scheme.signature, term)
 })
 }).else_({() =>
 Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
@@ -199,15 +193,13 @@ Inference_.fail(e.at, ((("No such field " + e.field) + " on type: ") + t.show())
 })
 case (t @ (Syntax_.TConstructor(_, name, typeArguments))) =>
 val methodName = ((name + "_") + e.field);
-pipe_dot(environment.symbols.get(methodName))({
-case (Firefly_Core.Some(scheme)) if (!scheme.isVariable) =>
-val instantiation = self.inferTypeArguments(e.at, e.field, scheme.signature.generics, typeArguments);
-val instantiated = self.instantiateSignature(scheme.signature, instantiation);
-val signature = instantiated.copy(parameters = instantiated.parameters.drop(1));
-self.unification.unify(e.at, recordType, instantiated.parameters.expect(0).valueType);
+pipe_dot(self.lookup(environment, e.at, methodName, typeArguments))({
+case (Firefly_Core.Some(instantiated)) if (!instantiated.scheme.isVariable) =>
+val signature = instantiated.scheme.signature.copy(parameters = instantiated.scheme.signature.parameters.drop(1));
+self.unification.unify(e.at, recordType, instantiated.scheme.signature.parameters.expect(0).valueType);
 self.inferEtaExpansion(environment, expected, e.at, signature, e2)
-case (Firefly_Core.Some(scheme)) =>
-self.unification.unify(e.at, expected, scheme.signature.returnType);
+case (Firefly_Core.Some(instantiated)) =>
+self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType);
 e.copy(record = record)
 case (Firefly_Core.None()) =>
 Inference_.fail(e.at, ((("No such field " + e.field) + " on type: ") + t.show()))
@@ -216,8 +208,8 @@ case (Syntax_.TVariable(_, index)) =>
 Inference_.fail(e.at, ((("No such field " + e.field) + " on unknown type: $") + index))
 })
 case (e : Syntax_.EWildcard) =>
-environment.symbols.get(("_w" + e.index)).map({(scheme) =>
-self.unification.unify(e.at, expected, scheme.signature.returnType);
+self.lookup(environment, e.at, ("_w" + e.index), List()).map({(instantiated) =>
+self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType);
 term
 }).get
 case (Syntax_.EList(at, t, items)) =>
@@ -241,30 +233,27 @@ case (Syntax_.ELambda(at, l)) =>
 val lambda = self.inferLambda(environment, expected, l);
 Syntax_.ELambda(at, lambda)
 case (e : Syntax_.EVariant) =>
-val signature = environment.symbols.get(e.name).else_({() =>
+val instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else_({() =>
 Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
-}).signature;
-val instantiation = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments);
-val instantiated = self.instantiateSignature(signature, instantiation);
-self.unification.unify(e.at, expected, instantiated.returnType);
-val arguments = e.arguments.map({(_w1) =>
-self.inferArguments(e.at, environment, instantiated.parameters, _w1)
 });
-e.copy(typeArguments = instantiation.map({(_w1) =>
+self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType);
+val arguments = e.arguments.map({(_w1) =>
+self.inferArguments(e.at, environment, instantiated.scheme.signature.parameters, _w1)
+});
+e.copy(typeArguments = instantiated.typeArguments.map({(_w1) =>
 _w1.second
 }), arguments = arguments)
 case (e : Syntax_.EVariantIs) =>
-val signature = environment.symbols.get(e.name).else_({() =>
+val instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else_({() =>
 Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
-}).signature;
-val typeArguments = self.inferTypeArguments(e.at, e.name, signature.generics, e.typeArguments);
-e.copy(typeArguments = typeArguments.map({(_w1) =>
+});
+e.copy(typeArguments = instantiated.typeArguments.map({(_w1) =>
 _w1.second
 }))
 case (e : Syntax_.ECopy) =>
-val signature = environment.symbols.get(e.name).else_({() =>
+val signature = self.lookup(environment, e.at, e.name, List()).else_({() =>
 Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
-}).signature;
+}).scheme.signature;
 val parameterNames = signature.parameters.map({(_w1) =>
 _w1.name
 });
@@ -303,12 +292,13 @@ Firefly_Core.if_(x.headOption.exists({(c) =>
 }), {() =>
 self.inferOperator(environment, expected, x, e)
 }).else_({() =>
-pipe_dot(environment.symbols.get(x))({
-case (Firefly_Core.Some(scheme)) =>
-Firefly_Core.if_(scheme.isVariable, {() =>
+pipe_dot(self.lookup(environment, e.at, x, e.typeArguments))({
+case (Firefly_Core.Some(instantiated)) =>
+Firefly_Core.if_(instantiated.scheme.isVariable, {() =>
 self.inferLambdaCall(environment, expected, e)
 }).else_({() =>
-self.inferFunctionCall(environment, expected, scheme.signature, e, x)
+val signature = instantiated.scheme.signature;
+self.inferFunctionCall(environment, expected, signature, instantiated.typeArguments, e, x)
 })
 case (Firefly_Core.None()) =>
 Inference_.fail(variableAt, ("No such function: " + x))
@@ -321,10 +311,10 @@ val e2 = e.copy(function = f.copy(record = record));
 pipe_dot(self.unification.substitute(recordType))({
 case (t @ (Syntax_.TConstructor(_, name, typeParameters))) =>
 val methodName = ((name + "_") + f.field);
-pipe_dot(environment.symbols.get(methodName))({
-case (Firefly_Core.Some(scheme)) if (!scheme.isVariable) =>
-self.inferMethodCall(environment, expected, scheme.signature, e2, record, methodName)
-case (Firefly_Core.Some(scheme)) =>
+pipe_dot(self.lookup(environment, f.at, methodName, List()))({
+case (Firefly_Core.Some(instantiated)) if (!instantiated.scheme.isVariable) =>
+self.inferMethodCall(environment, expected, instantiated.scheme.signature, instantiated.typeArguments, e2, record, methodName)
+case (Firefly_Core.Some(instantiated)) =>
 self.inferLambdaCall(environment, expected, e2)
 case (Firefly_Core.None()) =>
 Inference_.fail(f.at, ((("No such field " + f.field) + " on type: ") + t.show()))
@@ -356,7 +346,7 @@ term
 })
 }
 
-def inferMethodCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term, record : Syntax_.Term, name : Firefly_Core.String) : Syntax_.Term = {
+def inferMethodCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, instantiation : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]], term : Syntax_.Term, record : Syntax_.Term, name : Firefly_Core.String) : Syntax_.Term = {
 val e = pipe_dot(term)({
 case (e : Syntax_.ECall) =>
 e
@@ -364,20 +354,18 @@ case (_) =>
 Inference_.fail(term.at, "Call expected")
 });
 val e2 = e.copy(function = Syntax_.EVariable(e.at, name, List(), List()), arguments = (List(List(Syntax_.Argument(record.at, Firefly_Core.None(), record)), e.arguments).flatten));
-self.inferFunctionCall(environment, expected, signature, e2, name)
+self.inferFunctionCall(environment, expected, signature, instantiation, e2, name)
 }
 
-def inferFunctionCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, term : Syntax_.Term, name : Firefly_Core.String) : Syntax_.Term = {
+def inferFunctionCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, instantiation : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]], term : Syntax_.Term, name : Firefly_Core.String) : Syntax_.Term = {
 val e = pipe_dot(term)({
 case (e : Syntax_.ECall) =>
 e
 case (_) =>
 Inference_.fail(term.at, "Call expected")
 });
-val instantiation = self.inferTypeArguments(e.at, name, signature.generics, List());
-val instantiated = self.instantiateSignature(signature, instantiation);
-self.unification.unify(e.at, expected, instantiated.returnType);
-val arguments = self.inferArguments(e.at, environment, instantiated.parameters, e.arguments);
+self.unification.unify(e.at, expected, signature.returnType);
+val arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments);
 e.copy(function = e.function, typeArguments = instantiation.map({(_w1) =>
 _w1.second
 }), arguments = arguments)
@@ -548,28 +536,6 @@ Syntax_.PVariable(at, Firefly_Core.Some(_w1))
 self.inferTerm(environment, expected, lambda)
 }
 
-def instantiateSignature(signature : Syntax_.Signature, instantiation : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]]) : Syntax_.Signature = {
-val instantiationMap = instantiation.toMap;
-val parameters = signature.parameters.map({(p) =>
-p.copy(valueType = self.unification.instantiate(instantiationMap, p.valueType))
-});
-val returnType = self.unification.instantiate(instantiationMap, signature.returnType);
-signature.copy(generics = List(), constraints = List(), parameters = parameters, returnType = returnType)
-}
-
-def inferTypeArguments(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], typeArguments : Firefly_Core.List[Syntax_.Type]) : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]] = {
-Firefly_Core.if_(typeArguments.nonEmpty, {() =>
-Firefly_Core.if_((generics.size != typeArguments.size), {() =>
-Inference_.fail(at, ((((("Wrong number of type parameters for " + name) + ", expected ") + generics.size) + ", got ") + typeArguments.size))
-});
-generics.zip(typeArguments)
-}).else_({() =>
-generics.map({(name) =>
-Firefly_Core.Pair(name, self.unification.freshTypeVariable(at))
-})
-})
-}
-
 def inferArguments(at : Syntax_.Location, environment : Environment_.Environment, parameters : Firefly_Core.List[Syntax_.Parameter], arguments : Firefly_Core.List[Syntax_.Argument]) : Firefly_Core.List[Syntax_.Argument] = {
 var remainingArguments = arguments;
 val newArguments = parameters.map({(p) =>
@@ -608,6 +574,28 @@ case (Syntax_.Argument(at, Firefly_Core.Some(name), _)) =>
 Inference_.fail(at, ("Unknown argument: " + name))
 });
 newArguments
+}
+
+def lookup(environment : Environment_.Environment, at : Syntax_.Location, symbol : Firefly_Core.String, typeArguments : Firefly_Core.List[Syntax_.Type]) : Firefly_Core.Option[Environment_.Instantiated] = {
+environment.symbols.get(symbol).map({(scheme) =>
+val instantiation = Firefly_Core.if_(typeArguments.nonEmpty, {() =>
+Firefly_Core.if_((scheme.signature.generics.size != typeArguments.size), {() =>
+Inference_.fail(at, ((((("Wrong number of type parameters for " + symbol) + ", expected ") + scheme.signature.generics.size) + ", got ") + typeArguments.size))
+});
+scheme.signature.generics.zip(typeArguments)
+}).else_({() =>
+scheme.signature.generics.map({(name) =>
+Firefly_Core.Pair(name, self.unification.freshTypeVariable(at))
+})
+});
+val instantiationMap = instantiation.toMap;
+val parameters = scheme.signature.parameters.map({(p) =>
+p.copy(valueType = self.unification.instantiate(instantiationMap, p.valueType))
+});
+val returnType = self.unification.instantiate(instantiationMap, scheme.signature.returnType);
+val signature = scheme.signature.copy(generics = List(), constraints = List(), parameters = parameters, returnType = returnType);
+Environment_.Instantiated(typeArguments = instantiation, scheme = scheme.copy(signature = signature))
+})
 }
 
 }
