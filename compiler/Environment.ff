@@ -10,6 +10,11 @@ type Scheme(
     signature: Signature
 )
 
+type Instantiated(
+    typeArguments: List[Pair[String, Type]]
+    scheme: Scheme
+)
+
 make(coreModule: Module, module: Module, otherModules: List[Module]): Environment {
     Environment(
         processModule(coreModule, False, True).symbols ++
@@ -64,15 +69,17 @@ processModule(module: Module, isCurrentModule: Bool, isCoreModule: Bool): Enviro
     let fields =
         module.types.flatMap { d =>
             let prefix = d.name + "_"
+            let t = TConstructor(d.at, d.name, d.generics.map { g => TConstructor(d.at, g, []) })
+            let selfParameter = Parameter(d.at, False, d.name, t, None)
             d.commonFields.map { f =>
                 Pair(
                     full(module, prefix + f.name),
                     Scheme(True, f.mutable, Signature(
                         at = f.at
                         name = f.name
-                        generics = []
-                        constraints = []
-                        parameters = []
+                        generics = d.generics
+                        constraints = d.constraints
+                        parameters = [selfParameter]
                         returnType = f.valueType
                     ))
                 )

@@ -5,7 +5,8 @@ fail[T](at: Location, message: String): T {
 }
 
 emitModule(module: Module): String {
-    let moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile { _ != '/' }.reverse.takeWhile { _ != '.' }
+    let moduleNamespace =
+        module.file.replace("\\", "/").getReverse().takeWhile { _ != '/' }.getReverse().takeWhile { _ != '.' }
     let parts = [
         ["package firefly"]
         ["import firefly.Firefly_Core._", ...module.imports.map { "import firefly." + _.file + "_._" }]

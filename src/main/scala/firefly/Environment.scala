@@ -8,6 +8,8 @@ case class Environment(symbols : Firefly_Core.Map[Firefly_Core.String, Environme
 
 case class Scheme(isVariable : Firefly_Core.Bool, isMutable : Firefly_Core.Bool, signature : Syntax_.Signature)
 
+case class Instantiated(typeArguments : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]], scheme : Environment_.Scheme)
+
 def make(coreModule : Syntax_.Module, module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Environment_.Environment = {
 Environment_.Environment(((Environment_.processModule(coreModule, Firefly_Core.False(), Firefly_Core.True()).symbols ++ Environment_.processModule(module, Firefly_Core.True(), Firefly_Core.False()).symbols) ++ otherModules.map({(_w1) =>
 Environment_.processModule(_w1, Firefly_Core.False(), Firefly_Core.False()).symbols
@@ -44,8 +46,12 @@ Firefly_Core.Pair((prefix + method.signature.name), Environment_.Scheme(Firefly_
 });
 val fields = module.types.flatMap({(d) =>
 val prefix = (d.name + "_");
+val t = Syntax_.TConstructor(d.at, d.name, d.generics.map({(g) =>
+Syntax_.TConstructor(d.at, g, List())
+}));
+val selfParameter = Syntax_.Parameter(d.at, Firefly_Core.False(), d.name, t, Firefly_Core.None());
 d.commonFields.map({(f) =>
-Firefly_Core.Pair(full(module, (prefix + f.name)), Environment_.Scheme(Firefly_Core.True(), f.mutable, Syntax_.Signature(at = f.at, name = f.name, generics = List(), constraints = List(), parameters = List(), returnType = f.valueType)))
+Firefly_Core.Pair(full(module, (prefix + f.name)), Environment_.Scheme(Firefly_Core.True(), f.mutable, Syntax_.Signature(at = f.at, name = f.name, generics = d.generics, constraints = d.constraints, parameters = List(selfParameter), returnType = f.valueType)))
 })
 });
 val variants = module.types.flatMap({(d) =>
