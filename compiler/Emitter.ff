@@ -15,7 +15,7 @@ emitModule(module: Module): String {
         module.types.map(emitTypeDefinition)
         module.lets.map { emitLetDefinition(_) }
         module.functions.map { emitFunctionDefinition(_) }
-        module.extends.pairs.map { pair => emitExtendImplicit(pair.second, pair.first) }
+        module.extends.pairs().map { pair => emitExtendImplicit(pair.second, pair.first) }
         module.traits.map(emitTraitDefinition)
         module.instances.map(emitInstanceDefinition)
         ["}"]
