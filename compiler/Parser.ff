@@ -139,7 +139,7 @@ extend self: Parser {
     
     parseFunctionDefinition(): DFunction {
         let signature = self.parseSignature()
-        let body = self.parseLambda(signature.parameters.size)
+        let body = self.parseLambda(signature.parameters.getSize())
         DFunction(
             signature.at,
             signature,
@@ -193,7 +193,7 @@ extend self: Parser {
                 signatures.append(signature)
                 if(self.current().rawIs("{")) {
                     let generator = self.ahead().is(LKeyword) && self.ahead().rawIs("generate")
-                    let body = self.parseLambda(signature.parameters.size, ignoreGenerateKeyword = True)
+                    let body = self.parseLambda(signature.parameters.getSize(), ignoreGenerateKeyword = True)
                     if(generator) {
                         methodGenerators.append(Pair(signature.name, body))
                     } else {
@@ -558,10 +558,10 @@ extend self: Parser {
             let arguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
             [TConstructor(token.at(), namespace + token.raw(), arguments)]
         }
-        if(!self.current().is(LArrowThick) && leftTypes.size == 1) {leftTypes.expectFirst()} else {
+        if(!self.current().is(LArrowThick) && leftTypes.getSize() == 1) {leftTypes.expectFirst()} else {
             let arrowToken = self.skip(LArrowThick)
             let rightType = self.parseType()
-            TConstructor(arrowToken.at(), "Function$" + leftTypes.size, [...leftTypes, rightType])
+            TConstructor(arrowToken.at(), "Function$" + leftTypes.getSize(), [...leftTypes, rightType])
         }
     }
     

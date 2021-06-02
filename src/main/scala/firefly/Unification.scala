@@ -14,7 +14,7 @@ case class InstanceValue(generics : Firefly_Core.List[Firefly_Core.String], cons
 
 def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Unification_.Unification = {
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
-Firefly_Core.panic(((message + " ") + at.show))
+Firefly_Core.panic(((message + " ") + at.show()))
 }
 Unification_.Unification(Firefly_Core.Map(), Firefly_Core.Map(), 2, instances.map({(definition) =>
 pipe_dot(definition.traitType)({
@@ -151,7 +151,7 @@ self.bind(at, i, t2)
 case (_, _, Syntax_.TVariable(_, i)) =>
 self.bind(at, i, t1)
 case (_, Syntax_.TConstructor(_, name1, generics1), Syntax_.TConstructor(_, name2, generics2)) =>
-Firefly_Core.if_(((name1 != name2) || (generics1.size != generics2.size)), {() =>
+Firefly_Core.if_(((name1 != name2) || (generics1.getSize() != generics2.getSize())), {() =>
 self.fail(at, ((("Type mismatch: " + self.substitute(t1).show()) + " vs. ") + self.substitute(t2).show()))
 });
 generics1.zip(generics2).each({

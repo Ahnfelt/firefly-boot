@@ -44,19 +44,19 @@ def raw() : Firefly_Core.String = {
 token.code.slice(token.startOffset, token.stopOffset)
 }
 
-def is(kind1 : Token_.TokenKind) = {
+def is(kind1 : Token_.TokenKind) : Firefly_Core.Bool = {
 (token.kind == kind1)
 }
 
-def is2(kind1 : Token_.TokenKind, kind2 : Token_.TokenKind) = {
+def is2(kind1 : Token_.TokenKind, kind2 : Token_.TokenKind) : Firefly_Core.Bool = {
 ((token.kind == kind1) || (token.kind == kind2))
 }
 
-def is3(kind1 : Token_.TokenKind, kind2 : Token_.TokenKind, kind3 : Token_.TokenKind) = {
+def is3(kind1 : Token_.TokenKind, kind2 : Token_.TokenKind, kind3 : Token_.TokenKind) : Firefly_Core.Bool = {
 (((token.kind == kind1) || (token.kind == kind2)) || (token.kind == kind3))
 }
 
-def rawIs(value : Firefly_Core.String) = {
+def rawIs(value : Firefly_Core.String) : Firefly_Core.Bool = {
 token.code.sliceEquals(token.startOffset, value, 0, value.getSize())
 }
 

@@ -155,7 +155,7 @@ Syntax_.DLet(nameToken.at(), nameToken.raw(), variableType, value)
 
 def parseFunctionDefinition() : Syntax_.DFunction = {
 val signature = self.parseSignature();
-val body = self.parseLambda(signature.parameters.size);
+val body = self.parseLambda(signature.parameters.getSize());
 Syntax_.DFunction(signature.at, signature, body)
 }
 
@@ -222,7 +222,7 @@ val signature = self.parseSignature();
 signatures.append(signature);
 Firefly_Core.if_(self.current().rawIs("{"), {() =>
 val generator = (self.ahead().is(Token_.LKeyword()) && self.ahead().rawIs("generate"));
-val body = self.parseLambda(signature.parameters.size, ignoreGenerateKeyword = Firefly_Core.True());
+val body = self.parseLambda(signature.parameters.getSize(), ignoreGenerateKeyword = Firefly_Core.True());
 Firefly_Core.if_(generator, {() =>
 methodGenerators.append(Firefly_Core.Pair(signature.name, body))
 }).else_({() =>
@@ -746,12 +746,12 @@ self.parseTypeArguments()
 });
 List(Syntax_.TConstructor(token.at(), (namespace + token.raw()), arguments))
 });
-Firefly_Core.if_(((!self.current().is(Token_.LArrowThick())) && (leftTypes.size == 1)), {() =>
+Firefly_Core.if_(((!self.current().is(Token_.LArrowThick())) && (leftTypes.getSize() == 1)), {() =>
 leftTypes.expectFirst()
 }).else_({() =>
 val arrowToken = self.skip(Token_.LArrowThick());
 val rightType = self.parseType();
-Syntax_.TConstructor(arrowToken.at(), ("Function$" + leftTypes.size), (List(leftTypes, List(rightType)).flatten))
+Syntax_.TConstructor(arrowToken.at(), ("Function$" + leftTypes.getSize()), (List(leftTypes, List(rightType)).flatten))
 })
 }
 

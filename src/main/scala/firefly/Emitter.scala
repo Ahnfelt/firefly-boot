@@ -60,7 +60,7 @@ Emitter_.emitFunctionDefinition(_w1)
 
 def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
 val generics = Emitter_.emitTypeParameters(definition.generics);
-Firefly_Core.if_(((definition.variants.size == 1) && (definition.variants.head.name == definition.name)), {() =>
+Firefly_Core.if_(((definition.variants.getSize() == 1) && (definition.variants.head.name == definition.name)), {() =>
 val fields = (("(" + definition.commonFields.map(Emitter_.emitParameter).mkString(", ")) + ")");
 ((("case class " + definition.name) + generics) + fields)
 }).else_({() =>

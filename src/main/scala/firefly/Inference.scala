@@ -80,7 +80,7 @@ val parameterTypes = case_.patterns.map({(_w1) =>
 self.unification.freshTypeVariable(_w1.at)
 });
 val returnType = self.unification.freshTypeVariable(case_.at);
-val functionType = Syntax_.TConstructor(case_.at, ("Function$" + case_.patterns.size), (List(parameterTypes, List(returnType)).flatten));
+val functionType = Syntax_.TConstructor(case_.at, ("Function$" + case_.patterns.getSize()), (List(parameterTypes, List(returnType)).flatten));
 self.unification.unify(case_.at, expected, functionType);
 val newEnvironment = parameterTypes.zip(case_.patterns).foldLeft(environment)({
 case (environment1, Firefly_Core.Pair(t, c)) =>
@@ -382,7 +382,7 @@ Inference_.fail(term.at, "Call expected")
 val argumentTypes = e.arguments.map({(_w1) =>
 self.unification.freshTypeVariable(_w1.at)
 });
-val functionType = Syntax_.TConstructor(e.at, ("Function$" + e.arguments.size), (List(argumentTypes, List(expected)).flatten));
+val functionType = Syntax_.TConstructor(e.at, ("Function$" + e.arguments.getSize()), (List(argumentTypes, List(expected)).flatten));
 val function = self.inferTerm(environment, functionType, e.function);
 val arguments = e.arguments.zip(argumentTypes).map({
 case (Firefly_Core.Pair(argument, t)) =>
@@ -580,8 +580,8 @@ newArguments
 def lookup(environment : Environment_.Environment, at : Syntax_.Location, symbol : Firefly_Core.String, typeArguments : Firefly_Core.List[Syntax_.Type]) : Firefly_Core.Option[Environment_.Instantiated] = {
 environment.symbols.get(symbol).map({(scheme) =>
 val instantiation = Firefly_Core.if_(typeArguments.nonEmpty, {() =>
-Firefly_Core.if_((scheme.signature.generics.size != typeArguments.size), {() =>
-Inference_.fail(at, ((((("Wrong number of type parameters for " + symbol) + ", expected ") + scheme.signature.generics.size) + ", got ") + typeArguments.size))
+Firefly_Core.if_((scheme.signature.generics.getSize() != typeArguments.getSize()), {() =>
+Inference_.fail(at, ((((("Wrong number of type parameters for " + symbol) + ", expected ") + scheme.signature.generics.getSize()) + ", got ") + typeArguments.getSize()))
 });
 scheme.signature.generics.zip(typeArguments)
 }).else_({() =>

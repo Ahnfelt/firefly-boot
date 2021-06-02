@@ -22,19 +22,19 @@ extend token: Token {
         token.code.slice(token.startOffset, token.stopOffset)
     }
 
-    is(kind1: TokenKind) {
+    is(kind1: TokenKind): Bool {
         token.kind == kind1
     }
 
-    is2(kind1: TokenKind, kind2: TokenKind) {
+    is2(kind1: TokenKind, kind2: TokenKind): Bool {
         token.kind == kind1 || token.kind == kind2
     }
 
-    is3(kind1: TokenKind, kind2: TokenKind, kind3: TokenKind) {
+    is3(kind1: TokenKind, kind2: TokenKind, kind3: TokenKind): Bool {
         token.kind == kind1 || token.kind == kind2 || token.kind == kind3
     }
 
-    rawIs(value: String) {
+    rawIs(value: String): Bool {
         token.code.sliceEquals(token.startOffset, value, 0, value.getSize())
     }
 

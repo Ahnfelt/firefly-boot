@@ -41,7 +41,7 @@ emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]) {
 
 emitTypeDefinition(definition: DType): String {
     let generics = emitTypeParameters(definition.generics)
-    if(definition.variants.size == 1 && definition.variants.head.name == definition.name) {
+    if(definition.variants.getSize() == 1 && definition.variants.head.name == definition.name) {
         let fields = "(" + definition.commonFields.map(emitParameter).mkString(", ") + ")"
         "case class " + definition.name + generics + fields
     } else {
