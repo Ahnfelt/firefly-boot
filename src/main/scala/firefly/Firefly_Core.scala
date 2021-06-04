@@ -218,6 +218,7 @@ object Firefly_Core {
     implicit class Firefly_List[T](list : List[T]) {
         def expect(index : Int) : T = list(index)
         def expectFirst() : T = list.head
+        def expectLast() : T = list.last
         def dropFirst(count : Int = 1) : List[T] = list.drop(count)
         def dropLast(count : Int = 1) : List[T] = list.dropRight(count)
         def each(body : T => Unit) : Unit = list.foreach(body)

@@ -28,7 +28,7 @@ List()
 Emitter_.emitLetDefinition(_w1)
 }), module.functions.map({(_w1) =>
 Emitter_.emitFunctionDefinition(_w1)
-}), module.extends_.pairs.map({(pair) =>
+}), module.extends_.pairs().map({(pair) =>
 Emitter_.emitExtendImplicit(pair.second, pair.first)
 }), module.traits.map(Emitter_.emitTraitDefinition), module.instances.map(Emitter_.emitInstanceDefinition), List("}"));
 module.extends_.map({(_w1) =>

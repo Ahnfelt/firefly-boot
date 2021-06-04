@@ -70,7 +70,26 @@ definition.copy(body = self.inferLambda(environment2, functionType, definition.b
 }
 
 def inferLambda(environment : Environment_.Environment, expected : Syntax_.Type, lambda : Syntax_.Lambda) : Syntax_.Lambda = {
-lambda.copy(cases = lambda.cases.map({(_w1) =>
+val unitName = "ff:core/Core.Unit";
+val returnsUnit = pipe_dot(self.unification.substitute(expected))({
+case (Syntax_.TConstructor(_, name, ts)) if name.startsWith("Function$") =>
+pipe_dot(ts.expectLast())({
+case (Syntax_.TConstructor(_, n, List())) =>
+(n == unitName)
+case (_) =>
+Firefly_Core.False()
+})
+case (_) =>
+Firefly_Core.False()
+});
+val cases = Firefly_Core.if_((!returnsUnit), {() =>
+lambda.cases
+}).else_({() =>
+lambda.cases.map({(c) =>
+c.copy(body = Syntax_.ESequential(c.at, c.body, Syntax_.EVariant(c.at, unitName, List(), Firefly_Core.None())))
+})
+});
+lambda.copy(cases = cases.map({(_w1) =>
 self.inferMatchCase(environment, expected, _w1)
 }))
 }

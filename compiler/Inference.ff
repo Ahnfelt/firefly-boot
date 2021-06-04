@@ -107,8 +107,22 @@ extend self: Inference {
     }
 
     inferLambda(environment: Environment, expected: Type, lambda: Lambda): Lambda {
+        let unitName = "ff:core/Core.Unit"
+        let returnsUnit = self.unification.substitute(expected).{
+            | TConstructor(_, name, ts) {name.startsWith("Function$")} =>
+                ts.expectLast().{
+                    | TConstructor(_, n, []) => n == unitName
+                    | _ => False
+                }
+            | _ => False
+        }
+        let cases = if(!returnsUnit) { lambda.cases } else {
+            lambda.cases.map { c =>
+                c.MatchCase(body = ESequential(c.at, c.body, EVariant(c.at, unitName, [], None)))
+            }
+        }
         lambda.Lambda(
-            cases = lambda.cases.map { self.inferMatchCase(environment, expected, _) }
+            cases = cases.map { self.inferMatchCase(environment, expected, _) }
         )
     }
 
