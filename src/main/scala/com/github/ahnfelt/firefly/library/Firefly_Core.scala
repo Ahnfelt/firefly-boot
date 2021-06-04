@@ -221,6 +221,8 @@ object Firefly_Core {
             if(option.nonEmpty) option else if_(condition(), value)
         def else_[U >: T](value : () => U) : U =
             option.getOrElse(value())
+        def getElse[U >: T](value : () => Option[U]) : Option[U] =
+            option.orElse(value())
         def each(body : T => Unit) : Unit = option.foreach(body)
         def all(body : T => Bool) : Bool = option.forall(body)
         def any(body : T => Bool) : Bool = option.exists(body)
@@ -243,6 +245,8 @@ object Firefly_Core {
         def pairs() : List[(Int, T)] = list.zipWithIndex.map(_.swap)
         def getEmpty() : Boolean = list.isEmpty
         def getSize() : Int = list.size
+        def getCollect[R](body : T => Option[R]) : List[R] = list.flatMap(body)
+        def getCollectFirst[R](body : T => Option[R]) : Option[R] = list.collectFirst(body.unlift)
     }
 
     implicit class Firefly_List_ClassTag[T : ClassTag](list : List[T]) {

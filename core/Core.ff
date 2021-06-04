@@ -99,6 +99,7 @@ extend self: Char {
 extend self[T]: Option[T] {
     else(body: () => T): T { panic("Built-in") }
     elseIf(condition: () => Bool, body: () => T): Option[T] { panic("Built-in") }
+    getElse(body: () => Option[T]): Option[T] { panic("Built-in") }
     getEmpty(): Bool { panic("Built-in") }
     filter(body: T => Bool): Option[T] { panic("Built-in") }
     map[R](body: T => R): Option[R] { panic("Built-in") }
@@ -134,6 +135,8 @@ extend self[T]: List[T] {
     filter(body: T => Bool): List[T] { panic("Built-in") }
     map[R](body: T => R): List[R] { panic("Built-in") }
     flatMap[R](body: T => List[R]): List[R] { panic("Built-in") }
+    getCollect[R](body: T => Option[R]): List[R] { panic("Built-in") }
+    getCollectFirst[R](body: T => Option[R]): Option[R] { panic("Built-in") }
     foldLeft[R](initial: R): ((R, T) => R) => R { panic("Built-in") }
     updated(index: Int, value: T): List[T] { panic("Built-in") }
     zip[S](list: List[S]): List[Pair[T, S]] { panic("Built-in") }

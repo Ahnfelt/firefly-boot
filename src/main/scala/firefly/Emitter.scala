@@ -33,7 +33,7 @@ Emitter_.emitExtendImplicit(pair.second, pair.first)
 }), module.traits.map(Emitter_.emitTraitDefinition), module.instances.map(Emitter_.emitInstanceDefinition), List("}"));
 module.extends_.map({(_w1) =>
 _w1.type_
-}).flatMap(({ case _w : Syntax_.TConstructor => Some(_w); case _ => None() })).find({(t) =>
+}).getCollect(({ case _w : Syntax_.TConstructor => Some(_w); case _ => None() })).find({(t) =>
 (!module.types.exists({(_w1) =>
 (((moduleNamespace + ".") + _w1.name) == t.name)
 }))
@@ -60,7 +60,7 @@ Emitter_.emitFunctionDefinition(_w1)
 
 def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
 val generics = Emitter_.emitTypeParameters(definition.generics);
-Firefly_Core.if_(((definition.variants.getSize() == 1) && (definition.variants.head.name == definition.name)), {() =>
+Firefly_Core.if_(((definition.variants.getSize() == 1) && (definition.variants.expectFirst().name == definition.name)), {() =>
 val fields = (("(" + definition.commonFields.map(Emitter_.emitParameter).join(", ")) + ")");
 ((("case class " + definition.name) + generics) + fields)
 }).else_({() =>
@@ -120,7 +120,7 @@ Emitter_.emitFunctionDefinition(_w1)
 }).join("\n\n");
 val typeName = Emitter_.extractTypeName(definition.type_).getReverse().takeWhile({(_w1) =>
 (_w1 != '.')
-}).reverse;
+}).getReverse();
 ((((((((((("implicit class " + typeName) + "_extend") + index) + generics) + "(") + parameter) + ")") + implicits) + " {\n\n") + methods) + "\n\n}")
 }
 
@@ -141,12 +141,14 @@ val body = definition.methodDefaults.find({(_w1) =>
 }).map({
 case (Firefly_Core.Pair(_, lambda)) =>
 ((" {\n" + Emitter_.emitStatements(Syntax_.ELambda(lambda.at, lambda))) + "\n}")
-}).orElse(definition.methodGenerators.find({(_w1) =>
+}).getElse({() =>
+definition.methodGenerators.find({(_w1) =>
 (_w1.first == signature.name)
 }).map({
 case (Firefly_Core.Pair(_, e)) =>
 " {\n// TODO: Generate\n}"
-})).getOrElse({() =>
+})
+}).else_({() =>
 ""
 });
 (Emitter_.emitSignature(signature, "_m") + body)

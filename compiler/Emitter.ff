@@ -20,7 +20,7 @@ emitModule(module: Module): String {
         module.instances.map(emitInstanceDefinition)
         ["}"]
     ]
-    module.extends.map { _.type }.flatMap(TConstructor?).find { t =>
+    module.extends.map { _.type }.getCollect(TConstructor?).find { t =>
         !module.types.exists { (moduleNamespace + "." + _.name) == t.name }
     }.each { t =>
         fail(t.at, "Type not defined in this file: " + t.name)
@@ -41,7 +41,7 @@ emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]) {
 
 emitTypeDefinition(definition: DType): String {
     let generics = emitTypeParameters(definition.generics)
-    if(definition.variants.getSize() == 1 && definition.variants.head.name == definition.name) {
+    if(definition.variants.getSize() == 1 && definition.variants.expectFirst().name == definition.name) {
         let fields = "(" + definition.commonFields.map(emitParameter).join(", ") + ")"
         "case class " + definition.name + generics + fields
     } else {
@@ -64,7 +64,7 @@ emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     let signature = emitSignature(definition.signature, suffix)
     definition.body.{
         | Lambda(_, [matchCase]) {
-            matchCase.patterns.all { | PVariable(_, None) => True | _ => False }
+            matchCase.patterns.all {| PVariable(_, None) => True | _ => False }
         } =>
             let body = emitStatements(matchCase.body)
             signature + " = {\n" + body + "\n}"
@@ -80,7 +80,7 @@ emitExtendImplicit(definition: DExtend, index: Int): String {
     let implicits = emitConstraints(definition.constraints)
     let parameter = escapeKeyword(definition.name) + " : " + emitType(definition.type)
     let methods = definition.methods.map { emitFunctionDefinition(_) }.join("\n\n")
-    let typeName = extractTypeName(definition.type).getReverse().takeWhile { _ != '.' }.reverse
+    let typeName = extractTypeName(definition.type).getReverse().takeWhile { _ != '.' }.getReverse()
     "implicit class " + typeName + "_extend" + index + generics +
     "(" + parameter + ")" + implicits + " {\n\n" + methods + "\n\n}"
 }
@@ -94,11 +94,11 @@ emitTraitDefinition(definition: DTrait): String {
     let methods = if(definition.methods.getEmpty()) {""} else {
         " {\n\nimport " + definition.name + "._\n\n" +
         definition.methods.map { signature =>
-            let body = definition.methodDefaults.find { _.first == signature.name }.map { | Pair(_, lambda) =>
+            let body = definition.methodDefaults.find { _.first == signature.name }.map {| Pair(_, lambda) =>
                 " {\n" + emitStatements(ELambda(lambda.at, lambda)) + "\n}"
-            }.orElse(definition.methodGenerators.find { _.first == signature.name }.map { | Pair(_, e) =>
+            }.getElse {definition.methodGenerators.find { _.first == signature.name }.map {| Pair(_, e) =>
                 " {\n// TODO: Generate\n}"
-            }).getOrElse {
+            }}.else {
                 ""
             }
             emitSignature(signature, "_m") + body
@@ -146,7 +146,7 @@ emitSignature(signature: Signature, suffix: String = ""): String {
     let generics = emitTypeParameters(signature.generics)
     let parameters = "(" + signature.parameters.map(emitParameter).join(", ") + ")"
     let implicits = if(signature.constraints.getEmpty()) {""} else {
-        "(implicit " + signature.constraints.zipWithIndex.map { | Pair(c, i) =>
+        "(implicit " + signature.constraints.zipWithIndex.map {| Pair(c, i) =>
             "i_" + i + " : " + emitType(c.representation)
         }.join(", ") + ")"
     }
@@ -163,7 +163,7 @@ emitParameter(parameter: Parameter): String {
 emitConstraints(constraints: List[Constraint]): String {
     if(constraints.getEmpty()) {""} else:
     let pairs = constraints.map { _.representation }.map(emitType).zipWithIndex
-    "(implicit " + pairs.map { | Pair(k, v) => "i_" + v + " : " + k }.join(", ") + ")"
+    "(implicit " + pairs.map {| Pair(k, v) => "i_" + v + " : " + k }.join(", ") + ")"
 }
 
 emitTypeParameters(generics: List[String]) {
@@ -182,7 +182,7 @@ emitType(type: Type): String {
         if(t.name.startsWith("Function$")) {
             emitType(t.copy(name = t.name.replace("$", "")))
         } elseIf {t.name.startsWith("Record$")} {
-            "{" + t.name.split('$').drop(1).toList.zip(t.generics).map { | Pair(field, fieldType) =>
+            "{" + t.name.split('$').drop(1).toList.zip(t.generics).map {| Pair(field, fieldType) =>
                 "val " + escapeKeyword(field) + " : " + emitType(fieldType)
             }.join("; ") + "}"
         } else {
@@ -231,10 +231,10 @@ emitTerm(term: Term): String {
     | EField(at, record, field) =>
         emitTerm(record) + "." + escapeKeyword(field)
     | ELambda(at, Lambda(_, [MatchCase(_, patterns, None, body)])) {
-        patterns.all { | PVariable _ => True | _ => False }
+        patterns.all {| PVariable _ => True | _ => False }
     } =>
         let parameters =
-            patterns.map { | PVariable p => p.name.map(escapeKeyword).getOrElse("_") | _ => panic("!") }.join(", ")
+            patterns.map {| PVariable p => p.name.map(escapeKeyword).getOrElse("_") | _ => panic("!") }.join(", ")
         "{(" + parameters + ") =>\n" + emitStatements(body) + "\n}"
     | ELambda(at, Lambda(_, cases)) =>
         let casesString = cases.map(emitCase).join("\n")
