@@ -297,7 +297,11 @@ extend self: Inference {
                 let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }
-                // TODO: Expected type, e.g. EVariable? : Term => Option[Term_EVariable]
+                let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
+                let recordType =
+                    TConstructor(e.at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
+                let optionType = TConstructor(e.at, "ff:core/Core.Option", [recordType])
+                self.unification.unify(e.at, expected, optionType)
                 e.EVariantIs(
                     typeArguments = instantiated.typeArguments.map { _.second }
                 )

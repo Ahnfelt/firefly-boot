@@ -267,6 +267,16 @@ case (e : Syntax_.EVariantIs) =>
 val instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else_({() =>
 Inference_.fail(e.at, ("Symbol not in scope: " + e.name))
 });
+val parameters = instantiated.scheme.signature.parameters.sortBy({(_w1) =>
+_w1.name
+});
+val recordType = Syntax_.TConstructor(e.at, ("Record$" + parameters.map({(_w1) =>
+_w1.name
+}).join("$")), parameters.map({(_w1) =>
+_w1.valueType
+}));
+val optionType = Syntax_.TConstructor(e.at, "ff:core/Core.Option", List(recordType));
+self.unification.unify(e.at, expected, optionType);
 e.copy(typeArguments = instantiated.typeArguments.map({(_w1) =>
 _w1.second
 }))
@@ -575,7 +585,7 @@ case (List(Syntax_.Argument(at, Firefly_Core.None(), e), remaining @ _*)) =>
 remainingArguments = remaining.toList;
 val e2 = self.inferTerm(environment, t, e);
 Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
-case (remaining) =>
+case (_) =>
 remainingArguments.find({(_w1) =>
 _w1.name.contains(p.name)
 }).map({
