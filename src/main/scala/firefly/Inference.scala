@@ -275,8 +275,8 @@ _w1.name
 }).join("$")), parameters.map({(_w1) =>
 _w1.valueType
 }));
-val optionType = Syntax_.TConstructor(e.at, "ff:core/Core.Option", List(recordType));
-self.unification.unify(e.at, expected, optionType);
+val functionType = Syntax_.TConstructor(e.at, "Function$1", List(instantiated.scheme.signature.returnType, Syntax_.TConstructor(e.at, "ff:core/Core.Option", List(recordType))));
+self.unification.unify(e.at, expected, functionType);
 e.copy(typeArguments = instantiated.typeArguments.map({(_w1) =>
 _w1.second
 }))

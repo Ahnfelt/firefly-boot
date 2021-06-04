@@ -300,8 +300,11 @@ extend self: Inference {
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
                 let recordType =
                     TConstructor(e.at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
-                let optionType = TConstructor(e.at, "ff:core/Core.Option", [recordType])
-                self.unification.unify(e.at, expected, optionType)
+                let functionType = TConstructor(e.at, "Function$1", [
+                    instantiated.scheme.signature.returnType
+                    TConstructor(e.at, "ff:core/Core.Option", [recordType])
+                ])
+                self.unification.unify(e.at, expected, functionType)
                 e.EVariantIs(
                     typeArguments = instantiated.typeArguments.map { _.second }
                 )
