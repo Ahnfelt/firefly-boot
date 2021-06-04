@@ -634,14 +634,17 @@ extend self: Inference {
         mutable remainingArguments = arguments
         let newArguments = parameters.map { p =>
             let t = p.valueType
+            function defaultArgument(): Argument {
+                p.default.map { e =>
+                    let e2 = self.inferTerm(environment, t, e)
+                    Argument(at, Some(p.name), e2)
+                }.else {
+                    fail(at, "Missing argument: " + p.name)
+                }
+            }
             remainingArguments.{
                 | [] =>
-                    p.default.map { e =>
-                        let e2 = self.inferTerm(environment, t, e)
-                        Argument(at, Some(p.name), e2)
-                    }.else {
-                        fail(at, "Missing argument: " + p.name)
-                    }
+                    defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
                     remainingArguments = remaining.toList
                     let e2 = self.inferTerm(environment, t, e)
@@ -652,7 +655,7 @@ extend self: Inference {
                         let e2 = self.inferTerm(environment, t, e)
                         Argument(at, Some(p.name), e2)
                     }.else {
-                        fail(at, "Missing argument: " + p.name)
+                        defaultArgument()
                     }
             }
         }

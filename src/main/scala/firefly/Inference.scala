@@ -560,14 +560,17 @@ def inferArguments(at : Syntax_.Location, environment : Environment_.Environment
 var remainingArguments = arguments;
 val newArguments = parameters.map({(p) =>
 val t = p.valueType;
-pipe_dot(remainingArguments)({
-case (List()) =>
+def defaultArgument() : Syntax_.Argument = {
 p.default.map({(e) =>
 val e2 = self.inferTerm(environment, t, e);
 Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
 }).else_({() =>
 Inference_.fail(at, ("Missing argument: " + p.name))
 })
+}
+pipe_dot(remainingArguments)({
+case (List()) =>
+defaultArgument()
 case (List(Syntax_.Argument(at, Firefly_Core.None(), e), remaining @ _*)) =>
 remainingArguments = remaining.toList;
 val e2 = self.inferTerm(environment, t, e);
@@ -583,7 +586,7 @@ remainingArguments = remainingArguments.filter({(_w1) =>
 val e2 = self.inferTerm(environment, t, e);
 Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
 }).else_({() =>
-Inference_.fail(at, ("Missing argument: " + p.name))
+defaultArgument()
 })
 })
 });
