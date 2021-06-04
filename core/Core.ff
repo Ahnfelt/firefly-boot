@@ -160,6 +160,7 @@ extend self[K, V]: Map[K, V] {
     expect(key: K): V { panic("Built-in") }
     add(key: K, value: V) : Map[K, V] { panic("Built-in") }
     map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] { panic("Built-in") }
+    contains(key: K): Bool { panic("Built-in") }
 }
 
 extend self[T]: Array[T] {
