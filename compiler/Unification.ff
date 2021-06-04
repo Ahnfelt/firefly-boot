@@ -35,7 +35,7 @@ make(instances: List[DInstance]): Unification {
                 | TVariable(at, i) =>
                     fail(at, "Unexpected type variable: $" + i)
             }
-        }.toMap
+        }.getMap()
     )
 }
 
@@ -76,7 +76,7 @@ extend self: Unification {
                     | Some(map) =>
                         map.get(constraintName).{
                             | None =>
-                                let newMap = map.updated(constraintName, ConstraintGenerics(at, generics))
+                                let newMap = map.add(constraintName, ConstraintGenerics(at, generics))
                                 self.constraints = self.constraints.updated(i, newMap)
                             | Some(ConstraintGenerics(_, generics2)) =>
                                 generics.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
@@ -90,7 +90,7 @@ extend self: Unification {
                         self.fail(at, "No such instance: " + name + g2 + ": " + constraintName + g1)
                     | Some(definition) =>
                         let typeVariables = definition.generics.map {| _ => self.freshTypeVariable(at) }
-                        let instantiation = definition.generics.zip(typeVariables).toMap
+                        let instantiation = definition.generics.zip(typeVariables).getMap()
                         let traitType1 = self.instantiate(instantiation, definition.traitType)
                         let traitType2 = TConstructor(at, constraintName, [type, ...generics])
                         self.unify(at, traitType1, traitType2)
@@ -107,7 +107,7 @@ extend self: Unification {
     }
 
     get(index: Int): Type {
-        self.substitution(index).{
+        self.substitution.expect(index).{
             | TVariable(_, i) { self.has(i) } =>
                 let t = self.get(i)
                 self.substitution += Pair(index, t)

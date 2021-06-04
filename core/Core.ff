@@ -2,7 +2,7 @@ if[T](condition: Bool, body: () => T): Option[T] {}
 
 while(condition: () => Bool, body: () => Unit): Unit {}
 
-do(body: () => Unit): Unit {}
+do[T](body: () => T): T {}
 
 panic[T](message: String): T {}
 
@@ -36,12 +36,17 @@ type Array[T]() // (items: T...)
 
 type ArrayBuilder[T]() // (items: T...)
 
+extend self[T]: ArrayBuilder[T] {
+    getArray(): Array[T] { panic("Built-in") }
+}
+
 type List[T] {}
 
 type ListBuilder[T]() // (items: T...)
 
 extend self[T]: ListBuilder[T] {
     append(value: T): Unit { panic("Built-in") }
+    drain(): List[T] { panic("Built-in") }
 }
 
 
@@ -64,8 +69,8 @@ type FileSystem {}
 type Unit()
 
 extend self: Int {
-    to(inclusive: Int): List[Int] { panic("Built-in") }
-    until(exclusive: Int): List[Int] { panic("Built-in") }
+    getTo(inclusive: Int): List[Int] { panic("Built-in") }
+    getUntil(exclusive: Int): List[Int] { panic("Built-in") }
 }
 
 extend self: String {
@@ -78,6 +83,17 @@ extend self: String {
     takeWhile(p: Char => Bool): String { panic("Built-in") }
     slice(from: Int, until: Int): String { panic("Built-in") }
     sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("Built-in") }
+    split(char: Char): Array[String] { panic("Built-in") }
+    dropLast(count: Int = 1): String { panic("Built-in") }
+    expectInt(): Int { panic("Built-in") }
+    first(): Option[Char] { panic("Built-in") }
+    getIsLetter(): Bool { panic("Built-in") }
+    contains(substring : String) : Bool { panic("Built-in") }
+    startsWith(prefix : String) : Bool { panic("Built-in") }
+}
+
+extend self: Char {
+    getIsLetter(): Bool { panic("Built-in") }
 }
 
 extend self[T]: Option[T] {
@@ -87,12 +103,20 @@ extend self[T]: Option[T] {
     filter(body: T => Bool): Option[T] { panic("Built-in") }
     map[R](body: T => R): Option[R] { panic("Built-in") }
     flatMap[R](body: T => Option[R]): Option[R] { panic("Built-in") }
+    getOrElse(fallback : T) : T { panic("Built-in") }
+    each(body: T => Unit): Unit { panic("Built-in") }
+    all(body: T => Bool): Bool { panic("Built-in") }
+    any(body: T => Bool): Bool { panic("Built-in") }
+    expect(): T { panic("Built-in") }
+    contains(value: T): Bool { panic("Built-in") }
 }
 
 extend self[T]: List[T] {
-    toArray(): Array[T] { panic("Built-in") }
+    getArray(): Array[T] { panic("Built-in") }
     toSet(): Set[T] { panic("Built-in") }
     expect(index: Int): T { panic("Built-in") }
+    first(): Option[T] { panic("Built-in") }
+    last(): Option[T] { panic("Built-in") }
     expectFirst(): T { panic("Built-in") }
     expectLast(): T { panic("Built-in") }
     exists(p: T => Bool): Bool { panic("Built-in") }
@@ -106,11 +130,14 @@ extend self[T]: List[T] {
     each(body: T => Unit): Unit { panic("Built-in") }
     all(body: T => Bool): Bool { panic("Built-in") }
     any(body: T => Bool): Bool { panic("Built-in") }
+    find(body: T => Bool): Option[T] { panic("Built-in") }
     filter(body: T => Bool): List[T] { panic("Built-in") }
     map[R](body: T => R): List[R] { panic("Built-in") }
     flatMap[R](body: T => List[R]): List[R] { panic("Built-in") }
     foldLeft[R](initial: R): ((R, T) => R) => R { panic("Built-in") }
     updated(index: Int, value: T): List[T] { panic("Built-in") }
+    zip[S](list: List[S]): List[Pair[T, S]] { panic("Built-in") }
+    sortBy(extract: T => String): List[T] { panic("Built-in") } // TODO generalize
 }
 
 extend self[T]: List[List[T]] {
@@ -119,6 +146,7 @@ extend self[T]: List[List[T]] {
 
 extend self[K, V]: List[Pair[K, V]] {
     getMap(): Map[K, V] { panic("Built-in") }
+    getUnzip(): Pair[List[K], List[V]] { panic("Built-in") }
 }
 
 extend self: List[String] {
@@ -129,6 +157,9 @@ extend self[K, V]: Map[K, V] {
     pairs(): List[Pair[K, V]] { panic("Built-in") }
     getSize(): Int { panic("Built-in") }
     get(key: K): Option[V] { panic("Built-in") }
+    expect(key: K): V { panic("Built-in") }
+    add(key: K, value: V) : Map[K, V] { panic("Built-in") }
+    map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] { panic("Built-in") }
 }
 
 extend self[T]: Array[T] {

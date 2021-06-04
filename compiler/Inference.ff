@@ -156,9 +156,9 @@ extend self: Inference {
             | PVariable(at, None) =>
                 Map()
             | PVariable(at, Some(name)) =>
-                Map(Pair(name, expected))
+                [Pair(name, expected)].getMap()
             | PAlias(at, pattern, variable) =>
-                self.inferPattern(environment, expected, pattern) + Pair(variable, expected)
+                self.inferPattern(environment, expected, pattern).add(variable, expected)
             | PList(at, t, items) =>
                 let listType = TConstructor(at, core("List"), [t])
                 self.unification.unify(at, expected, listType)
@@ -179,7 +179,7 @@ extend self: Inference {
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
-                Map(Pair(variable, recordType))
+                [Pair(variable, recordType)].getMap()
             | PVariant(at, name, patterns) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
@@ -333,7 +333,7 @@ extend self: Inference {
             | ECall e =>
                 e.function.{
                     | EVariable(variableAt, x, [], []) =>
-                        if(x.headOption.exists { c => c != '_' && !c.isLetter }) {
+                        if(x.first().exists { c => c != '_' && !c.isLetter }) {
                             self.inferOperator(environment, expected, x, e)
                         } else {
                             self.lookup(environment, e.at, x, e.typeArguments).{
@@ -399,7 +399,7 @@ extend self: Inference {
             | _ => term
             /*
             | EFunctions(at, functions, body) =>
-                let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap
+                let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.getMap()
                 let self2 = self.Resolver(variables = self.variables ++ functionMap)
                 EFunctions(
                     at = at,
@@ -467,12 +467,12 @@ extend self: Inference {
         let functionType = TConstructor(e.at, "Function$" + e.arguments.getSize(), [...argumentTypes, expected])
         let function = self.inferTerm(environment, functionType, e.function)
         let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
-            argument.name.foreach { name =>
+            argument.name.each { name =>
                 fail(argument.at, "Named argument not allowed here: " + name)
             }
             argument.Argument(value = self.inferTerm(environment, t, argument.value))
         }
-        e.typeArguments.headOption.foreach { typeArgument =>
+        e.typeArguments.first().each { typeArgument =>
             fail(typeArgument.at, "Type arguments not allowed here")
         }
         e.ECall(
@@ -656,7 +656,7 @@ extend self: Inference {
                     }
             }
         }
-        remainingArguments.headOption.each {
+        remainingArguments.first().each {
             | Argument(at, None, _) => fail(at, "Too many arguments")
             | Argument(at, Some(name), _) => fail(at, "Unknown argument: " + name)
         }
@@ -668,7 +668,7 @@ extend self: Inference {
         environment.symbols.get(symbol).map: scheme =>
 
         let instantiation =
-            if(typeArguments.nonEmpty) {
+            if(!typeArguments.getEmpty()) {
                 if(scheme.signature.generics.getSize() != typeArguments.getSize()) {
                     fail(at,
                         "Wrong number of type parameters for " + symbol +
@@ -683,7 +683,7 @@ extend self: Inference {
                 }
             }
 
-        let instantiationMap = instantiation.toMap
+        let instantiationMap = instantiation.getMap()
         let parameters = scheme.signature.parameters.map { p =>
             p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
         }

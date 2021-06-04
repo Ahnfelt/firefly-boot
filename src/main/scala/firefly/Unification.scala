@@ -25,7 +25,7 @@ fail(at, (("Instance requires type arguments: " + name) + "[]"))
 case (Syntax_.TVariable(at, i)) =>
 fail(at, ("Unexpected type variable: $" + i))
 })
-}).toMap)
+}).getMap())
 }
 implicit class Unification_extend0(self : Unification_.Unification) {
 
@@ -68,7 +68,7 @@ self.constraints += Firefly_Core.Pair(i, Firefly_Core.Map(Firefly_Core.Pair(cons
 case (Firefly_Core.Some(map)) =>
 pipe_dot(map.get(constraintName))({
 case (Firefly_Core.None()) =>
-val newMap = map.updated(constraintName, Unification_.ConstraintGenerics(at, generics));
+val newMap = map.add(constraintName, Unification_.ConstraintGenerics(at, generics));
 self.constraints = self.constraints.updated(i, newMap)
 case (Firefly_Core.Some(Unification_.ConstraintGenerics(_, generics2))) =>
 generics.zip(generics2).each({
@@ -95,7 +95,7 @@ case (Firefly_Core.Some(definition)) =>
 val typeVariables = definition.generics.map({(_) =>
 self.freshTypeVariable(at)
 });
-val instantiation = definition.generics.zip(typeVariables).toMap;
+val instantiation = definition.generics.zip(typeVariables).getMap();
 val traitType1 = self.instantiate(instantiation, definition.traitType);
 val traitType2 = Syntax_.TConstructor(at, constraintName, (List(List(type_), generics).flatten));
 self.unify(at, traitType1, traitType2);
@@ -112,7 +112,7 @@ self.fail(at, ("Constraint can't be a type variable: $" + i))
 }
 
 def get(index : Firefly_Core.Int) : Syntax_.Type = {
-pipe_dot(self.substitution(index))({
+pipe_dot(self.substitution.expect(index))({
 case (Syntax_.TVariable(_, i)) if self.has(i) =>
 val t = self.get(i);
 self.substitution += Firefly_Core.Pair(index, t);

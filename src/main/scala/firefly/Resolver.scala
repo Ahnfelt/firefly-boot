@@ -12,15 +12,15 @@ Firefly_Core.Pair(name, ("ff:core/Core." + name))
 }
 Resolver_.Resolver(variables = (coreModule.lets.map({(_w1) =>
 _w1.name
-}).map(core).toMap ++ coreModule.functions.map({(_w1) =>
+}).map(core).getMap() ++ coreModule.functions.map({(_w1) =>
 _w1.signature.name
-}).map(core).toMap), variants = coreModule.types.flatMap({(_w1) =>
+}).map(core).getMap()), variants = coreModule.types.flatMap({(_w1) =>
 _w1.variants
 }).map({(_w1) =>
 _w1.name
-}).map(core).toMap, types = coreModule.types.map({(_w1) =>
+}).map(core).getMap(), types = coreModule.types.map({(_w1) =>
 _w1.name
-}).map(core).toMap, traits = Firefly_Core.Map())
+}).map(core).getMap(), traits = Firefly_Core.Map())
 }
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
@@ -29,9 +29,9 @@ Firefly_Core.panic(((message + " ") + at.show()))
 implicit class Resolver_extend0(self : Resolver_.Resolver) {
 
 def resolveModule(module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Syntax_.Module = {
-val moduleNamespace = module.file.replace('\\', '/').reverse.takeWhile({(_w1) =>
+val moduleNamespace = module.file.replace("\\", "/").getReverse().takeWhile({(_w1) =>
 (_w1 != '/')
-}).reverse.takeWhile({(_w1) =>
+}).getReverse().takeWhile({(_w1) =>
 (_w1 != '.')
 });
 val self2 = self.processImports(module.imports, otherModules);
@@ -55,7 +55,7 @@ def processImports(imports : Firefly_Core.List[Syntax_.DImport], modules : Firef
 var resolver = self;
 imports.each({(import_) =>
 pipe_dot(modules.find({(_w1) =>
-(_w1.file.dropRight(3) == import_.file)
+(_w1.file.dropLast(3) == import_.file)
 }))({
 case (Firefly_Core.Some(module)) =>
 resolver = resolver.processDefinitions(module, Firefly_Core.Some(import_.alias))
@@ -68,7 +68,7 @@ resolver
 
 def processDefinitions(module : Syntax_.Module, importAlias : Firefly_Core.Option[Firefly_Core.String]) : Resolver_.Resolver = {
 def entry(name : Firefly_Core.String, unqualified : Firefly_Core.Bool) : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String]] = {
-val full = ((module.file.dropRight(3) + ".") + name);
+val full = ((module.file.dropLast(3) + ".") + name);
 pipe_dot(importAlias)({
 case (Firefly_Core.None()) =>
 List(Firefly_Core.Pair(name, full))
@@ -80,33 +80,33 @@ List(Firefly_Core.Pair(((alias + ".") + name), full))
 }
 val lets = module.lets.flatMap({(_w1) =>
 entry(_w1.name, Firefly_Core.False())
-}).toMap;
+}).getMap();
 val functions = module.functions.flatMap({(_w1) =>
 entry(_w1.signature.name, Firefly_Core.False())
-}).toMap;
+}).getMap();
 val traitMethods = module.traits.flatMap({(_w1) =>
 _w1.methods
 }).flatMap({(_w1) =>
 entry(_w1.name, Firefly_Core.False())
-}).toMap;
+}).getMap();
 val traits = module.traits.flatMap({(_w1) =>
 entry(_w1.name, Firefly_Core.True())
-}).toMap;
+}).getMap();
 val types = module.types.flatMap({(_w1) =>
 entry(_w1.name, Firefly_Core.True())
-}).toMap;
+}).getMap();
 val variants = module.types.flatMap({(_w1) =>
 _w1.variants
 }).flatMap({(_w1) =>
 entry(_w1.name, Firefly_Core.True())
-}).toMap;
+}).getMap();
 Resolver_.Resolver(variables = (((self.variables ++ lets) ++ functions) ++ traitMethods), variants = (self.variants ++ variants), types = (self.types ++ types), traits = (self.traits ++ traits))
 }
 
 def resolveTypeDefinition(definition : Syntax_.DType) : Syntax_.DType = {
 val generics = definition.generics.map({(g) =>
 Firefly_Core.Pair(g, g)
-}).toMap;
+}).getMap();
 val self2 = self.copy(types = (self.types ++ generics));
 definition.copy(constraints = definition.constraints.map({(c) =>
 c.copy(representation = self2.resolveType(c.representation))
@@ -134,8 +134,8 @@ definition
 def resolveExtendDefinition(definition : Syntax_.DExtend) : Syntax_.DExtend = {
 val generics = definition.generics.map({(g) =>
 Firefly_Core.Pair(g, g)
-}).toMap;
-val self2 = self.copy(types = (self.types ++ generics), variables = (self.variables + Firefly_Core.Pair(definition.name, definition.name)));
+}).getMap();
+val self2 = self.copy(types = (self.types ++ generics), variables = self.variables.add(definition.name, definition.name));
 definition.copy(constraints = definition.constraints.map({(c) =>
 c.copy(representation = self2.resolveType(c.representation))
 }), type_ = self2.resolveType(definition.type_), methods = definition.methods.map({(_w1) =>
@@ -144,7 +144,7 @@ self2.resolveFunctionDefinition(_w1)
 }
 
 def resolveLetDefinition(definition : Syntax_.DLet) : Syntax_.DLet = {
-val self2 = self.copy(variables = (self.variables + Firefly_Core.Pair(definition.name, definition.name)));
+val self2 = self.copy(variables = self.variables.add(definition.name, definition.name));
 definition.copy(variableType = self.resolveType(definition.variableType), value = self.resolveTerm(definition.value))
 }
 
@@ -166,8 +166,8 @@ case (e : Syntax_.EVariable) =>
 self.variables.get(e.name).map({(_w1) =>
 e.copy(name = _w1)
 }).else_({() =>
-Firefly_Core.if_(e.name.headOption.any({(_w1) =>
-_w1.isLetter
+Firefly_Core.if_(e.name.first().any({(_w1) =>
+_w1.getIsLetter()
 }), {() =>
 Resolver_.fail(e.at, ("No such variable: " + e.name))
 }).else_({() =>
@@ -223,19 +223,19 @@ case (e : Syntax_.EWildcard) =>
 Firefly_Core.if_((e.index == 0), {() =>
 Resolver_.fail(e.at, "Unbound wildcard")
 });
-e
+e.copy()
 case (Syntax_.EFunctions(at, functions, body)) =>
 val functionMap = functions.map({(_w1) =>
 _w1.signature.name
 }).map({(name) =>
 Firefly_Core.Pair(name, name)
-}).toMap;
+}).getMap();
 val self2 = self.copy(variables = (self.variables ++ functionMap));
 Syntax_.EFunctions(at = at, functions = functions.map({(_w1) =>
 self2.resolveFunction(_w1)
 }), body = self2.resolveTerm(body))
 case (e : Syntax_.ELet) =>
-val self2 = self.copy(variables = (self.variables + Firefly_Core.Pair(e.name, e.name)));
+val self2 = self.copy(variables = self.variables.add(e.name, e.name));
 e.copy(valueType = self.resolveType(e.valueType), value = self.resolveTerm(e.value), body = self2.resolveTerm(e.body))
 case (Syntax_.ESequential(at, before, after)) =>
 Syntax_.ESequential(at = at, before = self.resolveTerm(before), after = self.resolveTerm(after))
@@ -268,10 +268,10 @@ val variableMap = function.signature.parameters.map({(_w1) =>
 _w1.name
 }).map({(name) =>
 Firefly_Core.Pair(name, name)
-}).toMap;
+}).getMap();
 val typeMap = function.signature.generics.map({(name) =>
 Firefly_Core.Pair(name, name)
-}).toMap;
+}).getMap();
 val self2 = self.copy(variables = (self.variables ++ variableMap), types = (self.types ++ typeMap));
 val signature = function.signature.copy(constraints = function.signature.constraints.map({(c) =>
 Syntax_.Constraint(self2.resolveType(c.representation))
@@ -295,11 +295,11 @@ Firefly_Core.Map()
 case (Syntax_.PVariant(_, _, patterns)) =>
 patterns.map(findVariables).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
-}).toMap
+})
 case (Syntax_.PVariantAs(_, _, variable)) =>
 variable.toList.map({(x) =>
 Firefly_Core.Pair(x, x)
-}).toMap
+}).getMap()
 case (Syntax_.PAlias(_, pattern, variable)) =>
 (Firefly_Core.Map(Firefly_Core.Pair(variable, variable)) ++ findVariables(pattern))
 case (Syntax_.PList(_, _, items)) =>
@@ -308,11 +308,11 @@ case (Firefly_Core.Pair(item, _)) =>
 findVariables(item)
 }).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
-}).toMap
+})
 }
 val variableMap = case_.patterns.map(findVariables).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
-}).toMap;
+});
 val self2 = self.copy(variables = (self.variables ++ variableMap));
 Syntax_.MatchCase(at = case_.at, patterns = case_.patterns.map({(_w1) =>
 self2.resolvePattern(_w1)

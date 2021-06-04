@@ -115,14 +115,14 @@ extend self: Parser {
         }
         Module(
             file = self.file,
-            dependencies = dependencies.drain,
-            imports = imports.drain,
-            lets = lets.drain,
-            functions = functions.drain,
-            extends = extends.drain,
-            types = types.drain,
-            traits = traits.drain,
-            instances = instances.drain
+            dependencies = dependencies.drain(),
+            imports = imports.drain(),
+            lets = lets.drain(),
+            functions = functions.drain(),
+            extends = extends.drain(),
+            types = types.drain(),
+            traits = traits.drain(),
+            instances = instances.drain()
         )
     }
     
@@ -174,7 +174,7 @@ extend self: Parser {
             poly.generics,
             poly.constraints,
             type,
-            methods.drain
+            methods.drain()
         )
     }
     
@@ -203,7 +203,7 @@ extend self: Parser {
                 if(!self.current().is(LBracketRight)) { self.skipSeparator(LSemicolon) }
             }
             self.rawSkip(LBracketRight, "}")
-            signatures.drain
+            signatures.drain()
         }
         DTrait(
             nameToken.at(),
@@ -212,8 +212,8 @@ extend self: Parser {
             poly.constraints,
             generatorParameters,
             methodSignatures,
-            methodDefaults.drain,
-            methodGenerators.drain
+            methodDefaults.drain(),
+            methodGenerators.drain()
         )
     }
     
@@ -239,9 +239,9 @@ extend self: Parser {
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
-            definitions.drain
+            definitions.drain()
         }
-        let traitType = TConstructor(nameToken.at(), nameToken.raw(), typeArguments.drain)
+        let traitType = TConstructor(nameToken.at(), nameToken.raw(), typeArguments.drain())
         DInstance(nameToken.at(), poly.generics, poly.constraints, traitType, generatorArguments, methods)
     }
     
@@ -260,7 +260,7 @@ extend self: Parser {
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
-            variantsBuilder.drain
+            variantsBuilder.drain()
         }
         DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants)
     }
@@ -288,7 +288,7 @@ extend self: Parser {
         let file = if(self.current().is(LUpper)) {
             self.skip(LUpper).raw()
         } else { aliasToken.raw() }
-        DImport(aliasToken.at(), aliasToken.raw(), package, path.drain, file)
+        DImport(aliasToken.at(), aliasToken.raw(), package, path.drain(), file)
     }
     
     parseDependencyDefinition(): DDependency {
@@ -314,7 +314,7 @@ extend self: Parser {
             }
             self.skip(LBracketRight)
         }
-        DDependency(at, Pair(user, name), safety, goodVersions.drain, badVersions.drain)
+        DDependency(at, Pair(user, name), safety, goodVersions.drain(), badVersions.drain())
     }
     
     parseVersion(): Version {
@@ -323,12 +323,12 @@ extend self: Parser {
             let parts = majorMinor.raw().split('.')
             let patch = if(self.current().is(LDot)) {
                  self.skip(LDot)
-                 self.skip(LInt).raw().toInt
+                 self.skip(LInt).raw().expectInt()
             } else { 0 }
-            Version(majorMinor.at(), parts(0).toInt, parts(1).toInt, patch)
+            Version(majorMinor.at(), parts.expect(0).expectInt(), parts.expect(1).expectInt(), patch)
         } else {
             let major = self.skip(LInt)
-            Version(major.at(), major.raw().toInt, 0, 0)
+            Version(major.at(), major.raw().expectInt(), 0, 0)
         }
     }
     
@@ -371,7 +371,7 @@ extend self: Parser {
                     self.parseType().{
                         | TVariable t => self.fail(t.at, "Unexpected type variable: $" + t.index)
                         | TConstructor t =>
-                            constraints.append(Constraint(t.copy(generics =
+                            constraints.append(Constraint(t.TConstructor(generics =
                                 [TConstructor(t.at, parameterNameToken.raw(), []), ...t.generics]
                             )))
                     }
@@ -387,7 +387,7 @@ extend self: Parser {
             }
         }
         self.rawSkip(LBracketRight, "]")
-        Poly(parameters.drain, constraints.drain)
+        Poly(parameters.drain(), constraints.drain())
     }
     
     parseTypeArguments(parenthesis: Bool = False): List[Type] {
@@ -398,7 +398,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skip(LComma)}
         }
         self.rawSkip(LBracketRight, if(parenthesis) {")"} else {"]"})
-        types.drain
+        types.drain()
     }
     
     parseFunctionParameters(allowMutable: Bool = False): List[Parameter] {
@@ -417,7 +417,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        parameters.drain
+        parameters.drain()
     }
     
     parseFunctionArguments(): List[Argument] {
@@ -434,7 +434,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        arguments.drain
+        arguments.drain()
     }
     
     parseOptionalType(): Type {
@@ -458,7 +458,7 @@ extend self: Parser {
             while {self.current().is(LPipe)} {
                 cases.append(self.parseCase())
             }
-            cases.drain
+            cases.drain()
         } elseIf {self.current().is(LLower) && self.ahead().is2(LComma, LArrowThick)} {
             let parameters = listBuilderOf[MatchPattern]()
             while {!self.current().is(LArrowThick)} {
@@ -468,15 +468,15 @@ extend self: Parser {
             }
             self.skip(LArrowThick)
             let term = self.parseStatements()
-            [MatchCase(token.at(), parameters.drain, None, term)]
+            [MatchCase(token.at(), parameters.drain(), None, term)]
         } else {
             let term = self.parseStatements()
-            let wildcards = Wildcards.make()
+            let wildcards = Wildcards(0) // TODO Wildcards.make() gets a wrong type
             let e = wildcards.fixWildcards(term)
             let arguments = if(wildcards.seenWildcards != 0) {
-                1.to(wildcards.seenWildcards).toList.map { i => PVariable(token.at(), Some("_w" + i)) }
+                1.getTo(wildcards.seenWildcards).map { i => PVariable(token.at(), Some("_w" + i)) }
             } else {
-                1.to(defaultParameterCount).toList.map { i => PVariable(token.at(), None) }
+                1.getTo(defaultParameterCount).map { i => PVariable(token.at(), None) }
             }
             [MatchCase(token.at(), arguments, None, e)]
         }
@@ -499,7 +499,7 @@ extend self: Parser {
         }
         self.skip(LArrowThick)
         let body = self.parseStatements()
-        MatchCase(token.at(), patterns.drain, condition, body)
+        MatchCase(token.at(), patterns.drain(), condition, body)
     }
     
     parsePattern(): MatchPattern {
@@ -511,8 +511,8 @@ extend self: Parser {
             PVariable(token.at(), Some(token.raw()))
         } elseIf {self.current().rawIs("(")} {
             let at = self.current().at()
-            let pair = self.parseRecordPattern().unzip
-            PVariant(at, "Record$" + pair.first.mkString("$"), pair.second)
+            let pair = self.parseRecordPattern().getUnzip()
+            PVariant(at, "Record$" + pair.first.join("$"), pair.second)
         } elseIf {self.current().rawIs("[")} {
             self.parseListPattern()
         } else {
@@ -525,7 +525,7 @@ extend self: Parser {
                     if(!self.current().is(LBracketRight)) {self.skip(LComma)}
                 }
                 self.rawSkip(LBracketRight, ")")
-                PVariant(token.at(), token.raw(), patterns.drain)
+                PVariant(token.at(), token.raw(), patterns.drain())
             } else {
                 if(self.current().is(LLower)) {
                     let asToken = self.skip(LLower)
@@ -548,8 +548,8 @@ extend self: Parser {
     parseType(): Type {
         let leftTypes = if(self.current().rawIs("(") && self.ahead().is(LLower) && self.aheadAhead().is(LColon)) {
             let at = self.current().at()
-            let pair = self.parseRecordType().unzip
-            [TConstructor(at, "Record$" + pair.first.mkString("$"), pair.second)]
+            let pair = self.parseRecordType().getUnzip()
+            [TConstructor(at, "Record$" + pair.first.join("$"), pair.second)]
         } elseIf {self.current().rawIs("(")} {
             self.parseTypeArguments(parenthesis = True)
         } else {
@@ -587,7 +587,7 @@ extend self: Parser {
             if(self.current().is(LAssignLink)) {self.skip(LAssignLink)} else:
             self.skip(LAssign)
         }
-        let operator = token.raw().dropRight(1)
+        let operator = token.raw().dropLast(1)
         let value = self.parseTerm()
         term.{
             | EVariable(_, name, _, _) => EAssign(token.at(), operator, name, value)
@@ -622,7 +622,7 @@ extend self: Parser {
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()
-        EFunctions(at, functions.drain, body)
+        EFunctions(at, functions.drain(), body)
     }
     
     parseTerm(): Term {
@@ -631,7 +631,7 @@ extend self: Parser {
     
     parseBinary(level: Int): Term {
         if(level >= binaryOperators.getSize()) {self.parseUnary()} else:
-        let operators = binaryOperators(level)
+        let operators = binaryOperators.expect(level)
         mutable result = self.parseBinary(level + 1)
         if(self.current().is(LOperator)) {
             while {operators.exists(self.current().rawIs)} {
@@ -679,7 +679,7 @@ extend self: Parser {
                     let lambda = self.parseLambda(allowColon = True)
                     moreArguments.append(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
                 }
-                result = ECall(at, result, typeArguments, [...arguments, ...moreArguments.drain])
+                result = ECall(at, result, typeArguments, [...arguments, ...moreArguments.drain()])
                 if(lastWasCurly && self.current().is(LLower)) {
                     let token = self.skip(LLower)
                     result = EField(token.at(), result, token.raw())
@@ -766,7 +766,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.drain
+        fields.drain()
     }
     
     parseRecordType(): List[Pair[String, Type]] {
@@ -779,7 +779,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.drain.sortBy { _.first }
+        fields.drain().sortBy { _.first }
     }
     
     parseRecordPattern(): List[Pair[String, MatchPattern]] {
@@ -792,7 +792,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.drain.sortBy { _.first }
+        fields.drain().sortBy { _.first }
     }
 
     parseListPattern(): MatchPattern {
@@ -810,7 +810,7 @@ extend self: Parser {
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
-        PList(at, self.freshTypeVariable(at), items.drain)
+        PList(at, self.freshTypeVariable(at), items.drain())
     }
 
     parseList(): Term {
@@ -823,7 +823,7 @@ extend self: Parser {
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
-        EList(at, self.freshTypeVariable(at), items.drain)
+        EList(at, self.freshTypeVariable(at), items.drain())
     }
 
 }
@@ -837,4 +837,4 @@ binaryOperators = [
     ["+", "-"]
     ["*", "/", "%"]
     ["^"]
-].toArray
+].getArray()

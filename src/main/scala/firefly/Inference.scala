@@ -121,9 +121,9 @@ pipe_dot(pattern)({
 case (Syntax_.PVariable(at, Firefly_Core.None())) =>
 Firefly_Core.Map()
 case (Syntax_.PVariable(at, Firefly_Core.Some(name))) =>
-Firefly_Core.Map(Firefly_Core.Pair(name, expected))
+List(Firefly_Core.Pair(name, expected)).getMap()
 case (Syntax_.PAlias(at, pattern, variable)) =>
-(self.inferPattern(environment, expected, pattern) + Firefly_Core.Pair(variable, expected))
+self.inferPattern(environment, expected, pattern).add(variable, expected)
 case (Syntax_.PList(at, t, items)) =>
 val listType = Syntax_.TConstructor(at, Inference_.core("List"), List(t));
 self.unification.unify(at, expected, listType);
@@ -153,7 +153,7 @@ _w1.name
 }).join("$")), parameters.map({(_w1) =>
 _w1.valueType
 }));
-Firefly_Core.Map(Firefly_Core.Pair(variable, recordType))
+List(Firefly_Core.Pair(variable, recordType)).getMap()
 case (Syntax_.PVariant(at, name, patterns)) =>
 val instantiated = self.lookup(environment, at, name, List()).else_({() =>
 Inference_.fail(at, ("No such variant: " + name))
@@ -307,7 +307,7 @@ e.copy(value = value, function = function)
 case (e : Syntax_.ECall) =>
 pipe_dot(e.function)({
 case (Syntax_.EVariable(variableAt, x, List(), List())) =>
-Firefly_Core.if_(x.headOption.exists({(c) =>
+Firefly_Core.if_(x.first().exists({(c) =>
 ((c != '_') && (!c.isLetter))
 }), {() =>
 self.inferOperator(environment, expected, x, e)
@@ -405,12 +405,12 @@ val functionType = Syntax_.TConstructor(e.at, ("Function$" + e.arguments.getSize
 val function = self.inferTerm(environment, functionType, e.function);
 val arguments = e.arguments.zip(argumentTypes).map({
 case (Firefly_Core.Pair(argument, t)) =>
-argument.name.foreach({(name) =>
+argument.name.each({(name) =>
 Inference_.fail(argument.at, ("Named argument not allowed here: " + name))
 });
 argument.copy(value = self.inferTerm(environment, t, argument.value))
 });
-e.typeArguments.headOption.foreach({(typeArgument) =>
+e.typeArguments.first().each({(typeArgument) =>
 Inference_.fail(typeArgument.at, "Type arguments not allowed here")
 });
 e.copy(function = function, typeArguments = List(), arguments = arguments)
@@ -587,7 +587,7 @@ Inference_.fail(at, ("Missing argument: " + p.name))
 })
 })
 });
-remainingArguments.headOption.each({
+remainingArguments.first().each({
 case (Syntax_.Argument(at, Firefly_Core.None(), _)) =>
 Inference_.fail(at, "Too many arguments")
 case (Syntax_.Argument(at, Firefly_Core.Some(name), _)) =>
@@ -598,7 +598,7 @@ newArguments
 
 def lookup(environment : Environment_.Environment, at : Syntax_.Location, symbol : Firefly_Core.String, typeArguments : Firefly_Core.List[Syntax_.Type]) : Firefly_Core.Option[Environment_.Instantiated] = {
 environment.symbols.get(symbol).map({(scheme) =>
-val instantiation = Firefly_Core.if_(typeArguments.nonEmpty, {() =>
+val instantiation = Firefly_Core.if_((!typeArguments.getEmpty()), {() =>
 Firefly_Core.if_((scheme.signature.generics.getSize() != typeArguments.getSize()), {() =>
 Inference_.fail(at, ((((("Wrong number of type parameters for " + symbol) + ", expected ") + scheme.signature.generics.getSize()) + ", got ") + typeArguments.getSize()))
 });
@@ -608,7 +608,7 @@ scheme.signature.generics.map({(name) =>
 Firefly_Core.Pair(name, self.unification.freshTypeVariable(at))
 })
 });
-val instantiationMap = instantiation.toMap;
+val instantiationMap = instantiation.getMap();
 val parameters = scheme.signature.parameters.map({(p) =>
 p.copy(valueType = self.unification.instantiate(instantiationMap, p.valueType))
 });

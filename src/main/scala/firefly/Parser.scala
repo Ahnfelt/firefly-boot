@@ -11,7 +11,7 @@ object Parser_ {
 case class Parser(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token], end : Token_.Token, var offset : Firefly_Core.Int, var nextTypeVariableIndex : Firefly_Core.Int)
 
 case class Poly(generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint])
-val binaryOperators = List(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("++"), List("+", "-"), List("*", "/", "%"), List("^")).toArray
+val binaryOperators = List(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("++"), List("+", "-"), List("*", "/", "%"), List("^")).getArray()
 def make(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token]) : Parser_.Parser = {
 Parser_.Parser(Firefly_Core.if_((file == "../core/Core.ff"), {() =>
 "ff:core/Core.ff"
@@ -137,7 +137,7 @@ Firefly_Core.if_((!self.current().is(Token_.LEnd())), {() =>
 self.skipSeparator(Token_.LSemicolon())
 })
 });
-Syntax_.Module(file = self.file, dependencies = dependencies.drain, imports = imports.drain, lets = lets.drain, functions = functions.drain, extends_ = extends_.drain, types = types.drain, traits = traits.drain, instances = instances.drain)
+Syntax_.Module(file = self.file, dependencies = dependencies.drain(), imports = imports.drain(), lets = lets.drain(), functions = functions.drain(), extends_ = extends_.drain(), types = types.drain(), traits = traits.drain(), instances = instances.drain())
 }
 
 def parseLetDefinition() : Syntax_.DLet = {
@@ -192,7 +192,7 @@ self.skipSeparator(Token_.LSemicolon())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "}");
-Syntax_.DExtend(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, type_, methods.drain)
+Syntax_.DExtend(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, type_, methods.drain())
 }
 
 def parseTraitDefinition() : Syntax_.DTrait = {
@@ -234,9 +234,9 @@ self.skipSeparator(Token_.LSemicolon())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "}");
-signatures.drain
+signatures.drain()
 });
-Syntax_.DTrait(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, generatorParameters, methodSignatures, methodDefaults.drain, methodGenerators.drain)
+Syntax_.DTrait(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, generatorParameters, methodSignatures, methodDefaults.drain(), methodGenerators.drain())
 }
 
 def parseInstanceDefinition() : Syntax_.DInstance = {
@@ -279,9 +279,9 @@ self.skipSeparator(Token_.LSemicolon())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "}");
-definitions.drain
+definitions.drain()
 });
-val traitType = Syntax_.TConstructor(nameToken.at(), nameToken.raw(), typeArguments.drain);
+val traitType = Syntax_.TConstructor(nameToken.at(), nameToken.raw(), typeArguments.drain());
 Syntax_.DInstance(nameToken.at(), poly.generics, poly.constraints, traitType, generatorArguments, methods)
 }
 
@@ -318,7 +318,7 @@ self.skipSeparator(Token_.LSemicolon())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "}");
-variantsBuilder.drain
+variantsBuilder.drain()
 });
 Syntax_.DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants)
 }
@@ -360,7 +360,7 @@ self.skip(Token_.LUpper()).raw()
 }).else_({() =>
 aliasToken.raw()
 });
-Syntax_.DImport(aliasToken.at(), aliasToken.raw(), package_, path.drain, file)
+Syntax_.DImport(aliasToken.at(), aliasToken.raw(), package_, path.drain(), file)
 })
 }
 
@@ -401,7 +401,7 @@ self.skip(Token_.LComma())
 });
 self.skip(Token_.LBracketRight())
 });
-Syntax_.DDependency(at, Firefly_Core.Pair(user, name), safety, goodVersions.drain, badVersions.drain)
+Syntax_.DDependency(at, Firefly_Core.Pair(user, name), safety, goodVersions.drain(), badVersions.drain())
 }
 
 def parseVersion() : Syntax_.Version = {
@@ -410,14 +410,14 @@ val majorMinor = self.skip(Token_.LFloat());
 val parts = majorMinor.raw().split('.');
 val patch = Firefly_Core.if_(self.current().is(Token_.LDot()), {() =>
 self.skip(Token_.LDot());
-self.skip(Token_.LInt()).raw().toInt
+self.skip(Token_.LInt()).raw().expectInt()
 }).else_({() =>
 0
 });
-Syntax_.Version(majorMinor.at(), parts(0).toInt, parts(1).toInt, patch)
+Syntax_.Version(majorMinor.at(), parts.expect(0).expectInt(), parts.expect(1).expectInt(), patch)
 }).else_({() =>
 val major = self.skip(Token_.LInt());
-Syntax_.Version(major.at(), major.raw().toInt, 0, 0)
+Syntax_.Version(major.at(), major.raw().expectInt(), 0, 0)
 })
 }
 
@@ -497,7 +497,7 @@ self.skip(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "]");
-Parser_.Poly(parameters.drain, constraints.drain)
+Parser_.Poly(parameters.drain(), constraints.drain())
 }
 
 def parseTypeArguments(parenthesis : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.List[Syntax_.Type] = {
@@ -520,7 +520,7 @@ self.rawSkip(Token_.LBracketRight(), Firefly_Core.if_(parenthesis, {() =>
 }).else_({() =>
 "]"
 }));
-types.drain
+types.drain()
 }
 
 def parseFunctionParameters(allowMutable : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.List[Syntax_.Parameter] = {
@@ -547,7 +547,7 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), ")");
-parameters.drain
+parameters.drain()
 }
 
 def parseFunctionArguments() : Firefly_Core.List[Syntax_.Argument] = {
@@ -574,7 +574,7 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), ")");
-arguments.drain
+arguments.drain()
 }
 
 def parseOptionalType() : Syntax_.Type = {
@@ -604,7 +604,7 @@ self.current().is(Token_.LPipe())
 }, {() =>
 cases.append(self.parseCase())
 });
-cases.drain
+cases.drain()
 }).elseIf({() =>
 (self.current().is(Token_.LLower()) && self.ahead().is2(Token_.LComma(), Token_.LArrowThick()))
 }, {() =>
@@ -620,17 +620,17 @@ self.skip(Token_.LComma())
 });
 self.skip(Token_.LArrowThick());
 val term = self.parseStatements();
-List(Syntax_.MatchCase(token.at(), parameters.drain, Firefly_Core.None(), term))
+List(Syntax_.MatchCase(token.at(), parameters.drain(), Firefly_Core.None(), term))
 }).else_({() =>
 val term = self.parseStatements();
-val wildcards = Wildcards_.make();
+val wildcards = Wildcards_.Wildcards(0);
 val e = wildcards.fixWildcards(term);
 val arguments = Firefly_Core.if_((wildcards.seenWildcards != 0), {() =>
-1.to(wildcards.seenWildcards).toList.map({(i) =>
+1.getTo(wildcards.seenWildcards).map({(i) =>
 Syntax_.PVariable(token.at(), Firefly_Core.Some(("_w" + i)))
 })
 }).else_({() =>
-1.to(defaultParameterCount).toList.map({(i) =>
+1.getTo(defaultParameterCount).map({(i) =>
 Syntax_.PVariable(token.at(), Firefly_Core.None())
 })
 });
@@ -663,7 +663,7 @@ Firefly_Core.Some(term)
 });
 self.skip(Token_.LArrowThick());
 val body = self.parseStatements();
-Syntax_.MatchCase(token.at(), patterns.drain, condition, body)
+Syntax_.MatchCase(token.at(), patterns.drain(), condition, body)
 }
 
 def parsePattern() : Syntax_.MatchPattern = {
@@ -679,8 +679,8 @@ Syntax_.PVariable(token.at(), Firefly_Core.Some(token.raw()))
 self.current().rawIs("(")
 }, {() =>
 val at = self.current().at();
-val pair = self.parseRecordPattern().unzip;
-Syntax_.PVariant(at, ("Record$" + pair.first.mkString("$")), pair.second)
+val pair = self.parseRecordPattern().getUnzip();
+Syntax_.PVariant(at, ("Record$" + pair.first.join("$")), pair.second)
 }).elseIf({() =>
 self.current().rawIs("[")
 }, {() =>
@@ -699,7 +699,7 @@ self.skip(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), ")");
-Syntax_.PVariant(token.at(), token.raw(), patterns.drain)
+Syntax_.PVariant(token.at(), token.raw(), patterns.drain())
 }).else_({() =>
 Firefly_Core.if_(self.current().is(Token_.LLower()), {() =>
 val asToken = self.skip(Token_.LLower());
@@ -726,8 +726,8 @@ pattern
 def parseType() : Syntax_.Type = {
 val leftTypes = Firefly_Core.if_(((self.current().rawIs("(") && self.ahead().is(Token_.LLower())) && self.aheadAhead().is(Token_.LColon())), {() =>
 val at = self.current().at();
-val pair = self.parseRecordType().unzip;
-List(Syntax_.TConstructor(at, ("Record$" + pair.first.mkString("$")), pair.second))
+val pair = self.parseRecordType().getUnzip();
+List(Syntax_.TConstructor(at, ("Record$" + pair.first.join("$")), pair.second))
 }).elseIf({() =>
 self.current().rawIs("(")
 }, {() =>
@@ -796,7 +796,7 @@ self.skip(Token_.LAssign())
 })
 })
 });
-val operator = token.raw().dropRight(1);
+val operator = token.raw().dropLast(1);
 val value = self.parseTerm();
 pipe_dot(term)({
 case (Syntax_.EVariable(_, name, _, _)) =>
@@ -845,7 +845,7 @@ functions.append(Syntax_.LocalFunction(signature, body));
 self.skipSeparator(Token_.LSemicolon())
 });
 val body = self.parseStatements();
-Syntax_.EFunctions(at, functions.drain, body)
+Syntax_.EFunctions(at, functions.drain(), body)
 }
 
 def parseTerm() : Syntax_.Term = {
@@ -856,7 +856,7 @@ def parseBinary(level : Firefly_Core.Int) : Syntax_.Term = {
 Firefly_Core.if_((level >= Parser_.binaryOperators.getSize()), {() =>
 self.parseUnary()
 }).else_({() =>
-val operators = Parser_.binaryOperators(level);
+val operators = Parser_.binaryOperators.expect(level);
 var result = self.parseBinary((level + 1));
 Firefly_Core.if_(self.current().is(Token_.LOperator()), {() =>
 Firefly_Core.while_({() =>
@@ -921,7 +921,7 @@ lastWasCurly = self.current().rawIs("{");
 val lambda = self.parseLambda(allowColon = Firefly_Core.True());
 moreArguments.append(Syntax_.Argument(lambda.at, Firefly_Core.None(), Syntax_.ELambda(lambda.at, lambda)))
 });
-result = Syntax_.ECall(at, result, typeArguments, (List(arguments, moreArguments.drain).flatten));
+result = Syntax_.ECall(at, result, typeArguments, (List(arguments, moreArguments.drain()).flatten));
 Firefly_Core.if_((lastWasCurly && self.current().is(Token_.LLower())), {() =>
 val token = self.skip(Token_.LLower());
 result = Syntax_.EField(token.at(), result, token.raw())
@@ -1058,7 +1058,7 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), ")");
-fields.drain
+fields.drain()
 }
 
 def parseRecordType() : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]] = {
@@ -1075,7 +1075,7 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), ")");
-fields.drain.sortBy({(_w1) =>
+fields.drain().sortBy({(_w1) =>
 _w1.first
 })
 }
@@ -1094,7 +1094,7 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), ")");
-fields.drain.sortBy({(_w1) =>
+fields.drain().sortBy({(_w1) =>
 _w1.first
 })
 }
@@ -1120,7 +1120,7 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "]");
-Syntax_.PList(at, self.freshTypeVariable(at), items.drain)
+Syntax_.PList(at, self.freshTypeVariable(at), items.drain())
 }
 
 def parseList() : Syntax_.Term = {
@@ -1139,7 +1139,7 @@ self.skipSeparator(Token_.LComma())
 })
 });
 self.rawSkip(Token_.LBracketRight(), "]");
-Syntax_.EList(at, self.freshTypeVariable(at), items.drain)
+Syntax_.EList(at, self.freshTypeVariable(at), items.drain())
 }
 
 }

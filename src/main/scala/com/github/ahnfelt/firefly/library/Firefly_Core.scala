@@ -1,6 +1,7 @@
 package com.github.ahnfelt.firefly.library
 
 import scala.collection.mutable
+import scala.reflect.ClassTag
 import scala.util.Try
 
 object Firefly_Core {
@@ -195,12 +196,24 @@ object Firefly_Core {
     def switch4[A, B, C, D, R](a : A, b : B, c : C, d : D, body : (A, B, C, D) => R) : R = body(a, b, c, d)
     def switch5[A, B, C, D, E, R](a : A, b : B, c : C, d : D, e : E, body : (A, B, C, D, E) => R) : R = body(a, b, c, d, e)
 
+    implicit class Firefly_Int(value: Int) {
+        def getTo(inclusive: Int) : List[Int] = value.to(inclusive).toList
+        def getUntil(exclusive: Int) : List[Int] = value.until(exclusive).toList
+    }
+
+    implicit class Firefly_Char(value: Char) {
+        def getIsLetter(): Bool = value.isLetter
+    }
+
     implicit class Firefly_String(value: String) {
         def expect(index : Int) : Char = value(index)
         def getSize() : Int = value.length
         def getReverse() : String = value.reverse
+        def expectInt() : Int = value.toInt
         def sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = false): Bool =
             value.regionMatches(ignoreCase, offset, that, thatOffset, length)
+        def dropLast(count : Int = 1) : String = value.dropRight(count)
+        def first(): Option[Char] = value.headOption
     }
 
     implicit class Firefly_Option[T](option : Option[T]) {
@@ -217,6 +230,8 @@ object Firefly_Core {
 
     implicit class Firefly_List[T](list : List[T]) {
         def expect(index : Int) : T = list(index)
+        def first() : Option[T] = list.headOption
+        def last() : Option[T] = list.lastOption
         def expectFirst() : T = list.head
         def expectLast() : T = list.last
         def dropFirst(count : Int = 1) : List[T] = list.drop(count)
@@ -230,12 +245,17 @@ object Firefly_Core {
         def getSize() : Int = list.size
     }
 
+    implicit class Firefly_List_ClassTag[T : ClassTag](list : List[T]) {
+        def getArray(): Array[T] = list.toArray[T]
+    }
+
     implicit class Firefly_String_List(list : List[String]) {
-        def join(separator : String) : String = list.mkString(separator)
+        def join(separator : String = "") : String = list.mkString(separator)
     }
 
     implicit class Firefly_Pair_List[K, V](list : List[Pair[K, V]]) {
         def getMap() : Map[K, V] = list.toMap
+        def getUnzip(): (List[K], List[V]) = list.unzip
     }
 
     implicit class Firefly_Set[T](set : Set[T]) {
@@ -253,6 +273,7 @@ object Firefly_Core {
         def add(key : K, value : V) : Map[K, V] = map + (key -> value)
         def pairs() : List[(K, V)] = map.toList
         def getSize() : Int = map.size
+        def expect(key : K) : V = map(key)
     }
 
     implicit class Firefly_Array[T : scala.reflect.ClassTag](list : Array[T]) {
@@ -270,16 +291,17 @@ object Firefly_Core {
 
     implicit class Firefly_ListBuilder[T](list : ListBuilder[T]) {
         def append(item : T) = list += item
-        def drain = { val result = list.toList; list.clear(); result }
+        def drain() = { val result = list.toList; list.clear(); result }
         def getSize() : Int = list.length
     }
 
-    implicit class Firefly_ArrayBuilder[T](list : ArrayBuilder[T]) {
+    implicit class Firefly_ArrayBuilder[T : ClassTag](list : ArrayBuilder[T]) {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
         def modify(index : Int, body : T => T) : Unit = list.update(index, body(list(index)))
         def getSize() : Int = list.length
+        def getArray(): Array[T] = list.toArray[T]
     }
 
     implicit class Firefly_SetBuilder[T](list : SetBuilder[T]) {

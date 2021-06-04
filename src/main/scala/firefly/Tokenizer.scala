@@ -14,7 +14,7 @@ var startLine = line;
 var startLineOffset = lineOffset;
 val operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;";
 val operatorCharacters = Firefly_Core.SetBuilder[Firefly_Core.Char]();
-0.until(operatorCharactersString.getSize()).map({(j) =>
+0.getUntil(operatorCharactersString.getSize()).map({(j) =>
 operatorCharacters.add(operatorCharactersString.expect(j))
 });
 def emitToken(kind : Token_.TokenKind, startOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int) : Firefly_Core.Unit = {
@@ -221,10 +221,10 @@ emitToken(Token_.LBracketRight(), start, i)
 Firefly_Core.panic(("Unexpected character: " + code(i)))
 })
 });
-1.to(5).each({(i) =>
+1.getTo(5).each({(i) =>
 emitToken(Token_.LEnd(), i, i)
 });
-tokens.toArray
+tokens.toList.getArray()
 }
 
 

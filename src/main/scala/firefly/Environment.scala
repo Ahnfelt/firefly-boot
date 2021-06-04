@@ -24,7 +24,7 @@ Firefly_Core.panic(((message + " ") + at.show()))
 
 def processModule(module : Syntax_.Module, isCurrentModule : Firefly_Core.Bool, isCoreModule : Firefly_Core.Bool) : Environment_.Environment = {
 def full(module : Syntax_.Module, name : Firefly_Core.String) : Firefly_Core.String = {
-((module.file.dropRight(3) + ".") + name)
+((module.file.dropLast(3) + ".") + name)
 }
 val functions = module.functions.map({(d) =>
 Firefly_Core.Pair(full(module, d.signature.name), Environment_.Scheme(Firefly_Core.False(), Firefly_Core.False(), d.signature))
@@ -62,7 +62,7 @@ d.variants.map({(variant) =>
 Firefly_Core.Pair(full(module, variant.name), Environment_.Scheme(Firefly_Core.False(), Firefly_Core.False(), Syntax_.Signature(variant.at, variant.name, generics = d.generics, constraints = d.constraints, parameters = (d.commonFields ++ variant.fields), returnType = returnType)))
 })
 });
-Environment_.Environment(((((functions ++ lets) ++ fields) ++ extends_) ++ variants).toMap)
+Environment_.Environment(((((functions ++ lets) ++ fields) ++ extends_) ++ variants).getMap())
 }
 
 
