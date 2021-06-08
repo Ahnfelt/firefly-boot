@@ -216,6 +216,8 @@ object Firefly_Core {
             value.regionMatches(ignoreCase, offset, that, thatOffset, length)
         def dropLast(count : Int = 1) : String = value.dropRight(count)
         def first(): Option[Char] = value.headOption
+        def expectFirst(): Char = value.head
+        def expectLast(): Char = value.last
     }
 
     implicit class Firefly_Option[T](option : Option[T]) {
@@ -250,6 +252,10 @@ object Firefly_Core {
         def getSize() : Int = list.size
         def getCollect[R](body : T => Option[R]) : List[R] = list.flatMap(body)
         def getCollectFirst[R](body : T => Option[R]) : Option[R] = list.collectFirst(body.unlift)
+    }
+
+    implicit class Firefly_List_List[T](list : List[List[T]]) {
+        def getFlatten() = list.flatten
     }
 
     implicit class Firefly_List_ClassTag[T : ClassTag](list : List[T]) {

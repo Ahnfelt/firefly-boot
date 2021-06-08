@@ -221,7 +221,7 @@ emitTerm(term: Term): String {
         }.join(", ") + ").flatten)"
     | EVariant(at, name, typeArguments, arguments) =>
         let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
-        escapeResolved(name) + generics + "(" + arguments.getList().flatten.map(emitArgument).join(", ") + ")"
+        escapeResolved(name) + generics + "(" + arguments.getList().getFlatten().map(emitArgument).join(", ") + ")"
     | EVariantIs(at, name, typeArguments) =>
         let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
         "({ case _w : " + escapeResolved(name) + generics + " => Some(_w); case _ => None() })"
@@ -241,9 +241,9 @@ emitTerm(term: Term): String {
         "{\n" + casesString + "\n}"
     | EPipe(at, value, function) =>
         "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
-    | ECall(at, EVariable(_, operator, _, _), [], [value]) {!operator.head.isLetter} =>
+    | ECall(at, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().getIsLetter()} =>
         "(" + operator + emitArgument(value) + ")"
-    | ECall(at, EVariable(_, operator, _, _), [], [left, right]) {!operator.head.isLetter} =>
+    | ECall(at, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().getIsLetter()} =>
         "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
     | ECall(at, function, typeArguments, arguments) =>
         let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
@@ -268,7 +268,7 @@ emitCase(matchCase: MatchCase) {
     let pair = matchCase.patterns.map(emitPattern).getUnzip()
     let patterns = pair.first.join(", ")
     let condition = matchCase.condition.map { "if " + emitTerm(_) + " " }.getOrElse("")
-    let toLists = pair.second.flatMap{_}.join()
+    let toLists = pair.second.getFlatten().join()
     "case (" + patterns + ") " + condition + "=>\n" + toLists + emitStatements(matchCase.body)
 }
 
@@ -294,7 +294,7 @@ emitPattern(pattern: MatchPattern): Pair[String, List[String]] {
                     ["val " + pair.first + " = " + pair.first + "_seq.toList;\n", ...pair.second]
                 )
         }.getUnzip()
-        Pair("List(" + pair.first.join(", ") + ")", pair.second.flatMap{_})
+        Pair("List(" + pair.first.join(", ") + ")", pair.second.getFlatten())
 }
 
 extractTypeName(type: Type): String {

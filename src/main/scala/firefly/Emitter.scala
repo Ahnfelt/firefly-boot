@@ -312,7 +312,7 @@ val generics = Firefly_Core.if_(typeArguments.getEmpty(), {() =>
 }).else_({() =>
 (("[" + typeArguments.map(Emitter_.emitType).join(", ")) + "]")
 });
-((((Emitter_.escapeResolved(name) + generics) + "(") + arguments.getList().flatten.map(Emitter_.emitArgument).join(", ")) + ")")
+((((Emitter_.escapeResolved(name) + generics) + "(") + arguments.getList().getFlatten().map(Emitter_.emitArgument).join(", ")) + ")")
 case (Syntax_.EVariantIs(at, name, typeArguments)) =>
 val generics = Firefly_Core.if_(typeArguments.getEmpty(), {() =>
 ""
@@ -345,9 +345,9 @@ val casesString = cases.map(Emitter_.emitCase).join("\n");
 (("{\n" + casesString) + "\n}")
 case (Syntax_.EPipe(at, value, function)) =>
 (((("pipe_dot(" + Emitter_.emitTerm(value)) + ")(") + Emitter_.emitTerm(function)) + ")")
-case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(value))) if (!operator.head.isLetter) =>
+case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(value))) if (!operator.expectFirst().getIsLetter()) =>
 ((("(" + operator) + Emitter_.emitArgument(value)) + ")")
-case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(left, right))) if (!operator.head.isLetter) =>
+case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(left, right))) if (!operator.expectFirst().getIsLetter()) =>
 (((((("(" + Emitter_.emitArgument(left)) + " ") + operator) + " ") + Emitter_.emitArgument(right)) + ")")
 case (Syntax_.ECall(at, function, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.getEmpty(), {() =>
@@ -386,9 +386,7 @@ val patterns = pair.first.join(", ");
 val condition = matchCase.condition.map({(_w1) =>
 (("if " + Emitter_.emitTerm(_w1)) + " ")
 }).getOrElse("");
-val toLists = pair.second.flatMap({(_w1) =>
-_w1
-}).join();
+val toLists = pair.second.getFlatten().join();
 (((((("case (" + patterns) + ") ") + condition) + "=>\n") + toLists) + Emitter_.emitStatements(matchCase.body))
 }
 
@@ -415,9 +413,7 @@ case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
 val pair = Emitter_.emitPattern(item);
 Firefly_Core.Pair((pair.first + "_seq @ _*"), (List(List((((("val " + pair.first) + " = ") + pair.first) + "_seq.toList;\n")), pair.second).flatten))
 }).getUnzip();
-Firefly_Core.Pair((("List(" + pair.first.join(", ")) + ")"), pair.second.flatMap({(_w1) =>
-_w1
-}))
+Firefly_Core.Pair((("List(" + pair.first.join(", ")) + ")"), pair.second.getFlatten())
 }
 
 def extractTypeName(type_ : Syntax_.Type) : Firefly_Core.String = (type_) match {

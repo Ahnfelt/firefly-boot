@@ -91,6 +91,9 @@ extend self: String {
     dropLast(count: Int = 1): String { panic("Built-in") }
     expectInt(): Int { panic("Built-in") }
     first(): Option[Char] { panic("Built-in") }
+    last(): Option[Char] { panic("Built-in") }
+    expectFirst(): Char { panic("Built-in") }
+    expectLast(): Char { panic("Built-in") }
     getIsLetter(): Bool { panic("Built-in") }
     contains(substring : String) : Bool { panic("Built-in") }
     startsWith(prefix : String) : Bool { panic("Built-in") }
@@ -149,7 +152,7 @@ extend self[T]: List[T] {
 }
 
 extend self[T]: List[List[T]] {
-    flatten(): List[T] { panic("Built-in") }
+    getFlatten(): List[T] { panic("Built-in") }
 }
 
 extend self[K, V]: List[Pair[K, V]] {
