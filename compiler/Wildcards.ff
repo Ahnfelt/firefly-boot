@@ -2,7 +2,7 @@ import Syntax
 
 type Wildcards(mutable seenWildcards : Int)
 
-make() {
+make(): Wildcards { // TODO: Why is this inferred to return Token.Token when the return type is omitted?
     Wildcards(0)
 }
 

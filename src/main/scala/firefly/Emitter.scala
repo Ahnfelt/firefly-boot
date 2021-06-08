@@ -170,7 +170,7 @@ _w1.name
 }
 
 def emitInstanceDefinition(definition : Syntax_.DInstance) : Firefly_Core.String = {
-val signature = Emitter_.emitSignature(Syntax_.Signature(definition.at, ((Emitter_.extractTypeName(definition.traitType) + "_") + definition.hashCode().abs), definition.generics, definition.constraints, List(), definition.traitType));
+val signature = Emitter_.emitSignature(Syntax_.Signature(definition.at, ((Emitter_.extractTypeName(definition.traitType) + "_") + Firefly_Core.magicHashCode(definition).getAbs()), definition.generics, definition.constraints, List(), definition.traitType));
 val methods = ((((" {\n\nimport " + Emitter_.extractTypeName(definition.traitType)) + "._\n\n") + definition.methods.map({(_w1) =>
 Emitter_.emitFunctionDefinition(_w1, "_m")
 }).join("\n\n")) + "\n\n}");
@@ -191,8 +191,8 @@ val parameters = (("(" + signature.parameters.map(Emitter_.emitParameter).join("
 val implicits = Firefly_Core.if_(signature.constraints.getEmpty(), {() =>
 ""
 }).else_({() =>
-(("(implicit " + signature.constraints.zipWithIndex.map({
-case (Firefly_Core.Pair(c, i)) =>
+(("(implicit " + signature.constraints.pairs().map({
+case (Firefly_Core.Pair(i, c)) =>
 ((("i_" + i) + " : ") + Emitter_.emitType(c.representation))
 }).join(", ")) + ")")
 });
@@ -218,10 +218,10 @@ Firefly_Core.if_(constraints.getEmpty(), {() =>
 }).else_({() =>
 val pairs = constraints.map({(_w1) =>
 _w1.representation
-}).map(Emitter_.emitType).zipWithIndex;
+}).map(Emitter_.emitType).pairs();
 (("(implicit " + pairs.map({
 case (Firefly_Core.Pair(k, v)) =>
-((("i_" + v) + " : ") + k)
+((("i_" + k) + " : ") + v)
 }).join(", ")) + ")")
 })
 }
@@ -250,7 +250,7 @@ Emitter_.emitType(t.copy(name = t.name.replace("$", "")))
 }).elseIf({() =>
 t.name.startsWith("Record$")
 }, {() =>
-(("{" + t.name.split('$').drop(1).toList.zip(t.generics).map({
+(("{" + t.name.split('$').drop(1).getList().zip(t.generics).map({
 case (Firefly_Core.Pair(field, fieldType)) =>
 ((("val " + Emitter_.escapeKeyword(field)) + " : ") + Emitter_.emitType(fieldType))
 }).join("; ")) + "}")
@@ -312,7 +312,7 @@ val generics = Firefly_Core.if_(typeArguments.getEmpty(), {() =>
 }).else_({() =>
 (("[" + typeArguments.map(Emitter_.emitType).join(", ")) + "]")
 });
-((((Emitter_.escapeResolved(name) + generics) + "(") + arguments.toList.flatten.map(Emitter_.emitArgument).join(", ")) + ")")
+((((Emitter_.escapeResolved(name) + generics) + "(") + arguments.getList().flatten.map(Emitter_.emitArgument).join(", ")) + ")")
 case (Syntax_.EVariantIs(at, name, typeArguments)) =>
 val generics = Firefly_Core.if_(typeArguments.getEmpty(), {() =>
 ""
@@ -381,29 +381,43 @@ def emitArgument(argument : Syntax_.Argument) = {
 }
 
 def emitCase(matchCase : Syntax_.MatchCase) = {
-val patterns = matchCase.patterns.map(Emitter_.emitPattern).join(", ");
+val pair = matchCase.patterns.map(Emitter_.emitPattern).getUnzip();
+val patterns = pair.first.join(", ");
 val condition = matchCase.condition.map({(_w1) =>
 (("if " + Emitter_.emitTerm(_w1)) + " ")
 }).getOrElse("");
-((((("case (" + patterns) + ") ") + condition) + "=>\n") + Emitter_.emitStatements(matchCase.body))
+val toLists = pair.second.flatMap({(_w1) =>
+_w1
+}).join();
+(((((("case (" + patterns) + ") ") + condition) + "=>\n") + toLists) + Emitter_.emitStatements(matchCase.body))
 }
 
-def emitPattern(pattern : Syntax_.MatchPattern) : Firefly_Core.String = (pattern) match {
+def emitPattern(pattern : Syntax_.MatchPattern) : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.List[Firefly_Core.String]] = (pattern) match {
 case (Syntax_.PVariable(at, name)) =>
-name.map(Emitter_.escapeKeyword).getOrElse("_")
+Firefly_Core.Pair(name.map(Emitter_.escapeKeyword).getOrElse("_"), List())
 case (Syntax_.PVariant(at, name, patterns)) =>
-(((Emitter_.escapeResolved(name) + "(") + patterns.map(Emitter_.emitPattern).join(", ")) + ")")
+val pairs = patterns.map(Emitter_.emitPattern);
+Firefly_Core.Pair((((Emitter_.escapeResolved(name) + "(") + pairs.map({(_w1) =>
+_w1.first
+}).join(", ")) + ")"), pairs.flatMap({(_w1) =>
+_w1.second
+}))
 case (Syntax_.PVariantAs(at, name, variable)) =>
-((variable.map(Emitter_.escapeKeyword).getOrElse("_") + " : ") + Emitter_.escapeResolved(name))
+Firefly_Core.Pair(((variable.map(Emitter_.escapeKeyword).getOrElse("_") + " : ") + Emitter_.escapeResolved(name)), List())
 case (Syntax_.PAlias(at, p, variable)) =>
-(((Emitter_.escapeKeyword(variable) + " @ (") + Emitter_.emitPattern(p)) + ")")
+val pair = Emitter_.emitPattern(p);
+Firefly_Core.Pair((((Emitter_.escapeKeyword(variable) + " @ (") + pair.first) + ")"), pair.second)
 case (Syntax_.PList(at, _, items)) =>
-(("List(" + items.map({
+val pair = items.map({
 case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
 Emitter_.emitPattern(item)
 case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
-(Emitter_.emitPattern(item) + " @ _*")
-}).join(", ")) + ")")
+val pair = Emitter_.emitPattern(item);
+Firefly_Core.Pair((pair.first + "_seq @ _*"), (List(List((((("val " + pair.first) + " = ") + pair.first) + "_seq.toList;\n")), pair.second).flatten))
+}).getUnzip();
+Firefly_Core.Pair((("List(" + pair.first.join(", ")) + ")"), pair.second.flatMap({(_w1) =>
+_w1
+}))
 }
 
 def extractTypeName(type_ : Syntax_.Type) : Firefly_Core.String = (type_) match {
@@ -414,7 +428,7 @@ t.name
 }
 
 def escapeResolved(word : Firefly_Core.String) = {
-val parts = word.split("[.]").toList.map(Emitter_.escapeKeyword).join(".");
+val parts = word.split("[.]").getList().map(Emitter_.escapeKeyword).join(".");
 Firefly_Core.if_(parts.startsWith("ff:core/Core."), {() =>
 parts.replace("ff:core/Core.", "Firefly_Core.")
 }).else_({() =>

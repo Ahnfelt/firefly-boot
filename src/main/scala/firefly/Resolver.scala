@@ -297,7 +297,7 @@ patterns.map(findVariables).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firef
 (_w1 ++ _w2)
 })
 case (Syntax_.PVariantAs(_, _, variable)) =>
-variable.toList.map({(x) =>
+variable.getList().map({(x) =>
 Firefly_Core.Pair(x, x)
 }).getMap()
 case (Syntax_.PAlias(_, pattern, variable)) =>

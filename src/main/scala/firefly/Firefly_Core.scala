@@ -42,7 +42,8 @@ object Firefly_Core {
     def listBuilderOf[T](items : T*) = mutable.ListBuffer[T]()
 
 
-    def debugShow[T](value : T) = value.toString
+    def magicShow[T](value : T) = value.toString
+    def magicHashCode[T](value : T) = value.hashCode()
 
 
     object Unit {
@@ -199,6 +200,7 @@ object Firefly_Core {
     implicit class Firefly_Int(value: Int) {
         def getTo(inclusive: Int) : List[Int] = value.to(inclusive).toList
         def getUntil(exclusive: Int) : List[Int] = value.until(exclusive).toList
+        def getAbs() : Int = value.abs
     }
 
     implicit class Firefly_Char(value: Char) {
@@ -228,6 +230,7 @@ object Firefly_Core {
         def any(body : T => Bool) : Bool = option.exists(body)
         def expect() : T = option.get
         def getEmpty() : Bool = option.isEmpty
+        def getList() : List[T] = option.toList
     }
 
     implicit class Firefly_List[T](list : List[T]) {
@@ -291,6 +294,7 @@ object Firefly_Core {
         def getEmpty() : Boolean = list.isEmpty
         def expectFirst() : T = list.head
         def expectLast() : T = list.last
+        def getList() : List[T] = list.toList
     }
 
     implicit class Firefly_ListBuilder[T](list : ListBuilder[T]) {

@@ -43,7 +43,7 @@ extend self: Parser {
     skip(kind: TokenKind): Token {
         let c = self.current()
         if(c.kind != kind) {
-            self.fail(c.at(), "Expected " + debugShow(kind) + ", got " + c.raw())
+            self.fail(c.at(), "Expected " + magicShow(kind) + ", got " + c.raw())
         }
         self.offset += 1
         c
@@ -52,7 +52,7 @@ extend self: Parser {
     rawSkip(kind: TokenKind, value: String): Token {
         let c = self.current()
         if(c.kind != kind) {
-            self.fail(c.at(), "Expected " + debugShow(kind) + " " + value + ", got " + c.raw())
+            self.fail(c.at(), "Expected " + magicShow(kind) + " " + value + ", got " + c.raw())
         }
         if(!c.rawIs(value)) {
             self.fail(c.at(), "Expected " + value + " got " + c.raw())
@@ -471,7 +471,7 @@ extend self: Parser {
             [MatchCase(token.at(), parameters.drain(), None, term)]
         } else {
             let term = self.parseStatements()
-            let wildcards = Wildcards(0) // TODO Wildcards.make() gets a wrong type
+            let wildcards = Wildcards.make()
             let e = wildcards.fixWildcards(term)
             let arguments = if(wildcards.seenWildcards != 0) {
                 1.getTo(wildcards.seenWildcards).map { i => PVariable(token.at(), Some("_w" + i)) }

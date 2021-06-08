@@ -123,7 +123,7 @@ emitTraitDefinition(definition: DTrait): String {
 emitInstanceDefinition(definition: DInstance): String {
     let signature = emitSignature(Signature(
         definition.at,
-        extractTypeName(definition.traitType) + "_" + definition.hashCode().abs,
+        extractTypeName(definition.traitType) + "_" + magicHashCode(definition).getAbs(),
         definition.generics,
         definition.constraints,
         [],
@@ -146,7 +146,7 @@ emitSignature(signature: Signature, suffix: String = ""): String {
     let generics = emitTypeParameters(signature.generics)
     let parameters = "(" + signature.parameters.map(emitParameter).join(", ") + ")"
     let implicits = if(signature.constraints.getEmpty()) {""} else {
-        "(implicit " + signature.constraints.zipWithIndex.map {| Pair(c, i) =>
+        "(implicit " + signature.constraints.pairs().map {| Pair(i, c) =>
             "i_" + i + " : " + emitType(c.representation)
         }.join(", ") + ")"
     }
@@ -162,8 +162,8 @@ emitParameter(parameter: Parameter): String {
 
 emitConstraints(constraints: List[Constraint]): String {
     if(constraints.getEmpty()) {""} else:
-    let pairs = constraints.map { _.representation }.map(emitType).zipWithIndex
-    "(implicit " + pairs.map {| Pair(k, v) => "i_" + v + " : " + k }.join(", ") + ")"
+    let pairs = constraints.map { _.representation }.map(emitType).pairs()
+    "(implicit " + pairs.map {| Pair(k, v) => "i_" + k + " : " + v }.join(", ") + ")"
 }
 
 emitTypeParameters(generics: List[String]) {
@@ -180,9 +180,9 @@ emitType(type: Type): String {
         "$" + index
     | TConstructor t =>
         if(t.name.startsWith("Function$")) {
-            emitType(t.copy(name = t.name.replace("$", "")))
+            emitType(t.TConstructor(name = t.name.replace("$", "")))
         } elseIf {t.name.startsWith("Record$")} {
-            "{" + t.name.split('$').drop(1).toList.zip(t.generics).map {| Pair(field, fieldType) =>
+            "{" + t.name.split('$').drop(1).getList().zip(t.generics).map {| Pair(field, fieldType) =>
                 "val " + escapeKeyword(field) + " : " + emitType(fieldType)
             }.join("; ") + "}"
         } else {
@@ -221,7 +221,7 @@ emitTerm(term: Term): String {
         }.join(", ") + ").flatten)"
     | EVariant(at, name, typeArguments, arguments) =>
         let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
-        escapeResolved(name) + generics + "(" + arguments.toList.flatten.map(emitArgument).join(", ") + ")"
+        escapeResolved(name) + generics + "(" + arguments.getList().flatten.map(emitArgument).join(", ") + ")"
     | EVariantIs(at, name, typeArguments) =>
         let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
         "({ case _w : " + escapeResolved(name) + generics + " => Some(_w); case _ => None() })"
@@ -265,25 +265,36 @@ emitArgument(argument: Argument) {
 }
 
 emitCase(matchCase: MatchCase) {
-    let patterns = matchCase.patterns.map(emitPattern).join(", ")
+    let pair = matchCase.patterns.map(emitPattern).getUnzip()
+    let patterns = pair.first.join(", ")
     let condition = matchCase.condition.map { "if " + emitTerm(_) + " " }.getOrElse("")
-    "case (" + patterns + ") " + condition + "=>\n" + emitStatements(matchCase.body)
+    let toLists = pair.second.flatMap{_}.join()
+    "case (" + patterns + ") " + condition + "=>\n" + toLists + emitStatements(matchCase.body)
 }
 
-emitPattern(pattern: MatchPattern): String {
+emitPattern(pattern: MatchPattern): Pair[String, List[String]] {
     | PVariable(at, name) =>
-        name.map(escapeKeyword).getOrElse("_")
+        Pair(name.map(escapeKeyword).getOrElse("_"), [])
     | PVariant(at, name, patterns) =>
-        escapeResolved(name) + "(" + patterns.map(emitPattern).join(", ") + ")"
+        let pairs = patterns.map(emitPattern)
+        Pair(escapeResolved(name) + "(" + pairs.map{_.first}.join(", ") + ")", pairs.flatMap{_.second})
     | PVariantAs(at, name, variable) =>
-        variable.map(escapeKeyword).getOrElse("_") + " : " + escapeResolved(name)
+        Pair(variable.map(escapeKeyword).getOrElse("_") + " : " + escapeResolved(name), [])
     | PAlias(at, p, variable) =>
-        escapeKeyword(variable) + " @ (" + emitPattern(p) + ")"
+        let pair = emitPattern(p)
+        Pair(escapeKeyword(variable) + " @ (" + pair.first + ")", pair.second)
     | PList(at, _, items) =>
-        "List(" + items.map {
-            | Pair(item, False) => emitPattern(item)
-            | Pair(item, True) => emitPattern(item) + " @ _*"
-        }.join(", ") + ")"
+        let pair = items.map {
+            | Pair(item, False) =>
+                emitPattern(item)
+            | Pair(item, True) =>
+                let pair = emitPattern(item)
+                Pair(
+                    pair.first + "_seq @ _*",
+                    ["val " + pair.first + " = " + pair.first + "_seq.toList;\n", ...pair.second]
+                )
+        }.getUnzip()
+        Pair("List(" + pair.first.join(", ") + ")", pair.second.flatMap{_})
 }
 
 extractTypeName(type: Type): String {
@@ -294,7 +305,7 @@ extractTypeName(type: Type): String {
 }
 
 escapeResolved(word: String) {
-    let parts = word.split("[.]").toList.map(escapeKeyword).join(".")
+    let parts = word.split("[.]").getList().map(escapeKeyword).join(".")
     if(parts.startsWith("ff:core/Core.")) {
         parts.replace("ff:core/Core.", "Firefly_Core.")
     } else {

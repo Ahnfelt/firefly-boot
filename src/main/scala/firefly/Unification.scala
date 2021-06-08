@@ -18,7 +18,8 @@ Firefly_Core.panic(((message + " ") + at.show()))
 }
 Unification_.Unification(Firefly_Core.Map(), Firefly_Core.Map(), 2, instances.map({(definition) =>
 pipe_dot(definition.traitType)({
-case (Syntax_.TConstructor(at, name, List(Syntax_.TConstructor(_, typeName, _), _ @ _*))) =>
+case (Syntax_.TConstructor(at, name, List(Syntax_.TConstructor(_, typeName, _), __seq @ _*))) =>
+val _ = __seq.toList;
 Firefly_Core.Pair(Unification_.InstanceKey(name, typeName), Unification_.InstanceValue(generics = definition.generics, constraints = definition.constraints, traitType = definition.traitType))
 case (Syntax_.TConstructor(at, name, _)) =>
 fail(at, (("Instance requires type arguments: " + name) + "[]"))

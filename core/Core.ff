@@ -6,7 +6,9 @@ do[T](body: () => T): T {}
 
 panic[T](message: String): T {}
 
-debugShow[T](value: T): String { panic("Built-in") }
+magicShow[T](value: T): String { panic("Built-in") }
+
+magicHashCode[T](value: T): Int { panic("Built-in") }
 
 try[T](body: () => T): Try[T] {}
 
@@ -71,6 +73,7 @@ type Unit()
 extend self: Int {
     getTo(inclusive: Int): List[Int] { panic("Built-in") }
     getUntil(exclusive: Int): List[Int] { panic("Built-in") }
+    getAbs(): Int { panic("Built-in") }
 }
 
 extend self: String {
@@ -84,6 +87,7 @@ extend self: String {
     slice(from: Int, until: Int): String { panic("Built-in") }
     sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("Built-in") }
     split(char: Char): Array[String] { panic("Built-in") }
+    drop(count: Int = 1): String { panic("Built-in") }
     dropLast(count: Int = 1): String { panic("Built-in") }
     expectInt(): Int { panic("Built-in") }
     first(): Option[Char] { panic("Built-in") }
@@ -101,6 +105,7 @@ extend self[T]: Option[T] {
     elseIf(condition: () => Bool, body: () => T): Option[T] { panic("Built-in") }
     getElse(body: () => Option[T]): Option[T] { panic("Built-in") }
     getEmpty(): Bool { panic("Built-in") }
+    getList(): List[T] { panic("Built-in") }
     filter(body: T => Bool): Option[T] { panic("Built-in") }
     map[R](body: T => R): Option[R] { panic("Built-in") }
     flatMap[R](body: T => Option[R]): Option[R] { panic("Built-in") }
@@ -172,6 +177,8 @@ extend self[T]: Array[T] {
     expect(index: Int): T { panic("Built-in") }
     expectFirst(): T { panic("Built-in") }
     expectLast(): T { panic("Built-in") }
+    drop(count: Int = 1): Array[T] { panic("Built-in") }
+    getList(): List[T] { panic("Built-in") }
 }
 
 extend self[T]: SetBuilder[T] {

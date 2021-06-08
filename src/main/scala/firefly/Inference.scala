@@ -199,7 +199,7 @@ val record = self.inferTerm(environment, recordType, e.record);
 val e2 = e.copy(record = record);
 pipe_dot(self.unification.substitute(recordType))({
 case (t @ (Syntax_.TConstructor(_, name, typeArguments))) if name.startsWith("Record$") =>
-val fieldNames = name.split('$').toList.drop(1);
+val fieldNames = name.split('$').getList().drop(1);
 fieldNames.pairs().find({(_w1) =>
 (_w1.second == e.field)
 }).map({(_w1) =>
@@ -581,8 +581,9 @@ Inference_.fail(at, ("Missing argument: " + p.name))
 pipe_dot(remainingArguments)({
 case (List()) =>
 defaultArgument()
-case (List(Syntax_.Argument(at, Firefly_Core.None(), e), remaining @ _*)) =>
-remainingArguments = remaining.toList;
+case (List(Syntax_.Argument(at, Firefly_Core.None(), e), remaining_seq @ _*)) =>
+val remaining = remaining_seq.toList;
+remainingArguments = remaining;
 val e2 = self.inferTerm(environment, t, e);
 Syntax_.Argument(at, Firefly_Core.Some(p.name), e2)
 case (_) =>

@@ -6,7 +6,7 @@ object Wildcards_ {
 
 case class Wildcards(var seenWildcards : Firefly_Core.Int)
 
-def make() = {
+def make() : Wildcards_.Wildcards = {
 Wildcards_.Wildcards(0)
 }
 implicit class Wildcards_extend0(self : Wildcards_.Wildcards) {

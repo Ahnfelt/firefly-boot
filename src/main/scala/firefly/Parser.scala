@@ -52,7 +52,7 @@ self.end
 def skip(kind : Token_.TokenKind) : Token_.Token = {
 val c = self.current();
 Firefly_Core.if_((c.kind != kind), {() =>
-self.fail(c.at(), ((("Expected " + Firefly_Core.debugShow(kind)) + ", got ") + c.raw()))
+self.fail(c.at(), ((("Expected " + Firefly_Core.magicShow(kind)) + ", got ") + c.raw()))
 });
 self.offset += 1;
 c
@@ -61,7 +61,7 @@ c
 def rawSkip(kind : Token_.TokenKind, value : Firefly_Core.String) : Token_.Token = {
 val c = self.current();
 Firefly_Core.if_((c.kind != kind), {() =>
-self.fail(c.at(), ((((("Expected " + Firefly_Core.debugShow(kind)) + " ") + value) + ", got ") + c.raw()))
+self.fail(c.at(), ((((("Expected " + Firefly_Core.magicShow(kind)) + " ") + value) + ", got ") + c.raw()))
 });
 Firefly_Core.if_((!c.rawIs(value)), {() =>
 self.fail(c.at(), ((("Expected " + value) + " got ") + c.raw()))
@@ -623,7 +623,7 @@ val term = self.parseStatements();
 List(Syntax_.MatchCase(token.at(), parameters.drain(), Firefly_Core.None(), term))
 }).else_({() =>
 val term = self.parseStatements();
-val wildcards = Wildcards_.Wildcards(0);
+val wildcards = Wildcards_.make();
 val e = wildcards.fixWildcards(term);
 val arguments = Firefly_Core.if_((wildcards.seenWildcards != 0), {() =>
 1.getTo(wildcards.seenWildcards).map({(i) =>
