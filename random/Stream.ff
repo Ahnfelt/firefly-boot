@@ -53,10 +53,9 @@ extend self[T]: Stream[T] {
     scan[R](initial: R, body: (R, T) => R): Stream[R] {
         Stream: f =>
         mutable state = initial
-        self.consume {x =>
-            state = body(state, x)
-            f(state)
-        }
+        self.consume: x =>
+        state = body(state, x)
+        f(state)
     }
 
     // Terminating methods
