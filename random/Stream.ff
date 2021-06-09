@@ -67,3 +67,35 @@ extend self[T]: Stream[Stream[T]] {
     }
 
 }
+
+
+/*
+
+extend fs: FileSystem {
+
+    readFile(fileName: String): Stream[Buffer] {
+        Stream: body =>
+        let handle = fs.openFileForReading(fileName)
+        mutable continue = True
+        try {
+            loop {
+                let buffer = handle.read()
+                if(buffer.isEmpty) {False} else {
+                    continue = body(buffer)
+                    continue
+                }
+            }
+            continue
+        } finally {
+            handle.close()
+        }
+    }
+
+}
+
+// Streaming copy
+fs.writeFile(toFileName, fs.readFile(fromFileName))
+
+// It's possible that the buffer has to be reused by default for performance
+
+*/
