@@ -1,0 +1,69 @@
+type Stream[T](consume: (T => Bool) => Bool)
+
+extend self[T]: Stream[T] {
+
+    concat(that: Stream[T]): Stream[T] {
+        Stream: f =>
+        self.consume(f) &&
+        that.consume(f)
+    }
+
+    takeWhile(body: T => Bool): Stream[T] {
+        Stream: f =>
+        self.consume: x =>
+        body(x) && f(x)
+    }
+
+    dropWhile(body: T => Bool): Stream[T] {
+        Stream: f =>
+        mutable dropping = True
+        self.consume: x =>
+        dropping = dropping && body(x)
+        if(dropping) {True} else {f(x)}
+    }
+
+    map[R](body: T => R): Stream[R] {
+        Stream: f =>
+        self.consume: x =>
+        f(body(x))
+    }
+
+    flatMap[R](body: T => Stream[R]): Stream[R] {
+        Stream: f =>
+        self.consume: x =>
+        body(x).consume(f)
+    }
+
+    // Terminating methods
+
+    each(body: T => Unit) {
+        self.consume: x =>
+        body(x)
+        True
+    }
+
+    fold[R](initial: R, body: (R, T) => R): R {
+        mutable state = initial
+        self.consume {x =>
+            state = body(state, x)
+        }
+        state
+    }
+
+    toList(): List[T] {
+        self.fold([]) {xs, x =>
+            [x, ...xs]
+        }.reverse()
+    }
+
+}
+
+extend self[T]: Stream[Stream[T]] {
+
+    flatten(): Stream[T] {
+        Stream: f =>
+        self.consume: x =>
+        x.consume(f)
+    }
+
+}
