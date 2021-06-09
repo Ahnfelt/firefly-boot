@@ -50,13 +50,16 @@ extend self[T]: Stream[T] {
         body(x).consume(f)
     }
 
-    // Terminating methods
-
-    each(body: T => Unit) {
-        self.consume: x =>
-        body(x)
-        True
+    scan[R](initial: R, body: (R, T) => R): Stream[R] {
+        Stream: f =>
+        mutable state = initial
+        self.consume {x =>
+            state = body(state, x)
+            f(state)
+        }
     }
+
+    // Terminating methods
 
     fold[R](initial: R, body: (R, T) => R): R {
         mutable state = initial
@@ -70,6 +73,12 @@ extend self[T]: Stream[T] {
         self.fold([]) {xs, x =>
             [x, ...xs]
         }.reverse()
+    }
+
+    each(body: T => Unit) {
+        self.consume: x =>
+        body(x)
+        True
     }
 
 }
