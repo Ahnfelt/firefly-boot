@@ -8,6 +8,22 @@ extend self[T]: Stream[T] {
         that.consume(f)
     }
 
+    take(count: Int): Stream[T] {
+        Stream: f =>
+        mutable counter = count
+        self.consume: x =>
+        counter -= 1
+        counter >= 0 && f(x)
+    }
+
+    drop(count: Int): Stream[T] {
+        Stream: f =>
+        mutable counter = count
+        self.consume: x =>
+        counter -= 1
+        counter >= 0 || f(x)
+    }
+
     takeWhile(body: T => Bool): Stream[T] {
         Stream: f =>
         self.consume: x =>
