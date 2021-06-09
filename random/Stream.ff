@@ -19,7 +19,7 @@ extend self[T]: Stream[T] {
         mutable dropping = True
         self.consume: x =>
         dropping = dropping && body(x)
-        if(dropping) {True} else {f(x)}
+        dropping || f(x)
     }
 
     map[R](body: T => R): Stream[R] {
