@@ -38,6 +38,12 @@ extend self[T]: Stream[T] {
         dropping || f(x)
     }
 
+    filter(body: T => Bool): Stream[T] {
+        Stream: f =>
+        self.consume: x =>
+        !body(x) || f(x)
+    }
+
     map[R](body: T => R): Stream[R] {
         Stream: f =>
         self.consume: x =>
