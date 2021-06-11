@@ -151,7 +151,12 @@ extend self: Parser {
         let nameToken = self.skip(LLower)
         let poly = if(self.current().rawIs("[")) {self.parseTypeParameters()} else {Poly([], [])}
         let parameters = self.parseFunctionParameters()
-        let returnType = self.parseOptionalType()
+        let returnType = if(self.current().is(LColon)) {
+            self.skip(LColon)
+            self.parseType()
+        } else {
+            TConstructor(self.current().at(), "Unit", []) // TODO: Add qualified type names to resolver map and qualify this name
+        }
         Signature(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, parameters, returnType)
     }
     
@@ -334,7 +339,7 @@ extend self: Parser {
     
     parseDashedName(): String {
         let at = self.current().at()
-        function readPart() {
+        function readPart(): String {
             if(self.current().is(LInt)) {
                 let prefix = self.skip(LInt).raw()
                 if(self.current().is(LLower)) { prefix + self.skip(LLower).raw() } else { prefix }
@@ -408,7 +413,8 @@ extend self: Parser {
             let mutable = allowMutable && self.current().is(LKeyword) && self.current().rawIs("mutable")
             if(mutable) {self.skip(LKeyword)}
             let parameterNameToken = self.skip(LLower)
-            let parameterType = self.parseOptionalType()
+            self.skip(LColon)
+            let parameterType = self.parseType()
             let default = if(!self.current().is(LAssign)) {None} else {
                 self.skip(LAssign)
                 Some(self.parseTerm())
@@ -435,14 +441,6 @@ extend self: Parser {
         }
         self.rawSkip(LBracketRight, ")")
         arguments.drain()
-    }
-    
-    parseOptionalType(): Type {
-        let token = self.current()
-        if(token.is(LColon)) {
-            self.skip(LColon)
-            self.parseType()
-        } else { self.freshTypeVariable(token.at()) }
     }
     
     parseLambda(

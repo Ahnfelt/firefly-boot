@@ -28,11 +28,11 @@ emitModule(module: Module): String {
     parts.map { _.join("\n\n") }.join("\n") + "\n"
 }
 
-emitMain() {
+emitMain(): String {
     "def main(arguments : Array[String]) : Unit = main(new System(arguments))"
 }
 
-emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]) {
+emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]): String {
     let strings =
         lets.map { emitLetDefinition(_) } ++
         functions.map { emitFunctionDefinition(_) }
@@ -166,7 +166,7 @@ emitConstraints(constraints: List[Constraint]): String {
     "(implicit " + pairs.map {| Pair(k, v) => "i_" + k + " : " + v }.join(", ") + ")"
 }
 
-emitTypeParameters(generics: List[String]) {
+emitTypeParameters(generics: List[String]): String {
     if(generics.getEmpty()) {""} else {"[" + generics.join(", ") + "]"}
 }
 
@@ -260,11 +260,11 @@ emitTerm(term: Term): String {
         "{\n" + emitStatements(term) + "\n}"
 }
 
-emitArgument(argument: Argument) {
+emitArgument(argument: Argument): String {
     argument.name.map { name => escapeKeyword(name) + " = " }.getOrElse("") + emitTerm(argument.value)
 }
 
-emitCase(matchCase: MatchCase) {
+emitCase(matchCase: MatchCase): String {
     let pair = matchCase.patterns.map(emitPattern).getUnzip()
     let patterns = pair.first.join(", ")
     let condition = matchCase.condition.map { "if " + emitTerm(_) + " " }.getOrElse("")
@@ -304,8 +304,8 @@ extractTypeName(type: Type): String {
         t.name
 }
 
-escapeResolved(word: String) {
-    let parts = word.split("[.]").getList().map(escapeKeyword).join(".")
+escapeResolved(word: String): String {
+    let parts = word.split('.').getList().map(escapeKeyword).join(".")
     if(parts.startsWith("ff:core/Core.")) {
         parts.replace("ff:core/Core.", "Firefly_Core.")
     } else {
@@ -313,8 +313,8 @@ escapeResolved(word: String) {
     }
 }
 
-escapeKeyword(word: String) {
-    if(keywords(word)) {word + "_"} else {word}
+escapeKeyword(word: String): String {
+    if(keywords.contains(word)) {word + "_"} else {word}
 }
 
 keywords = [
@@ -359,4 +359,4 @@ keywords = [
     "yield"
     "scala"
     "java"
-].toSet
+].getSet()

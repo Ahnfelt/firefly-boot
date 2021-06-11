@@ -7,7 +7,7 @@ type Resolver(
     traits: Map[String, String]
 )
 
-make(coreModule: Module) {
+make(coreModule: Module): Resolver {
     function core(name: String): Pair[String, String] {
         Pair(name, "ff:core/Core." + name)
     }
