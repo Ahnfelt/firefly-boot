@@ -61,3 +61,32 @@ extend self: Stream[A] {
     }
 
 }
+
+
+/*
+
+extend fs: FileSystem {
+
+    readFile(fileName: String): Stream[Buffer] {
+        Stream:
+        let handle = fs.openFileForReading(fileName)
+        Iterator {
+            let buffer = handle.read()
+            if(buffer.size() > 0) {
+                Some(buffer)
+            } else {
+                None
+            }
+        } {
+            handle.close()
+        }
+    }
+
+}
+
+// Streaming copy
+fs.writeFile(toFileName, fs.readFile(fromFileName))
+
+// It's possible that the buffer has to be reused by default for performance
+
+*/
