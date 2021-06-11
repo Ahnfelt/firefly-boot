@@ -1,6 +1,6 @@
 import Token
 
-tokenize(file: String, code: String) {
+tokenize(file: String, code: String): Array[Token] {
 
     let tokens = ArrayBuilder[Token]()
     mutable line = 1

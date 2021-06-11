@@ -250,6 +250,7 @@ object Firefly_Core {
         def pairs() : List[(Int, T)] = list.zipWithIndex.map(_.swap)
         def getEmpty() : Boolean = list.isEmpty
         def getSize() : Int = list.size
+        def getSet() : Set[T] = list.toSet
         def getCollect[R](body : T => Option[R]) : List[R] = list.flatMap(body)
         def getCollectFirst[R](body : T => Option[R]) : Option[R] = list.collectFirst(body.unlift)
     }

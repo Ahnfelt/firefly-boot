@@ -5,7 +5,7 @@ import firefly.Syntax_._
 object Emitter_ {
 
 
-val keywords = List("abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java").toSet
+val keywords = List("abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java").getSet()
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show()))
 }
@@ -45,11 +45,11 @@ _w1.join("\n\n")
 }).join("\n") + "\n")
 }
 
-def emitMain() = {
+def emitMain() : Firefly_Core.String = {
 "def main(arguments : Array[String]) : Unit = main(new System(arguments))"
 }
 
-def emitTypeMembers(name : Firefly_Core.String, lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction]) = {
+def emitTypeMembers(name : Firefly_Core.String, lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction]) : Firefly_Core.String = {
 val strings = (lets.map({(_w1) =>
 Emitter_.emitLetDefinition(_w1)
 }) ++ functions.map({(_w1) =>
@@ -226,7 +226,7 @@ case (Firefly_Core.Pair(k, v)) =>
 })
 }
 
-def emitTypeParameters(generics : Firefly_Core.List[Firefly_Core.String]) = {
+def emitTypeParameters(generics : Firefly_Core.List[Firefly_Core.String]) : Firefly_Core.String = {
 Firefly_Core.if_(generics.getEmpty(), {() =>
 ""
 }).else_({() =>
@@ -374,13 +374,13 @@ case (_) =>
 (("{\n" + Emitter_.emitStatements(term)) + "\n}")
 }
 
-def emitArgument(argument : Syntax_.Argument) = {
+def emitArgument(argument : Syntax_.Argument) : Firefly_Core.String = {
 (argument.name.map({(name) =>
 (Emitter_.escapeKeyword(name) + " = ")
 }).getOrElse("") + Emitter_.emitTerm(argument.value))
 }
 
-def emitCase(matchCase : Syntax_.MatchCase) = {
+def emitCase(matchCase : Syntax_.MatchCase) : Firefly_Core.String = {
 val pair = matchCase.patterns.map(Emitter_.emitPattern).getUnzip();
 val patterns = pair.first.join(", ");
 val condition = matchCase.condition.map({(_w1) =>
@@ -423,8 +423,8 @@ case (t : Syntax_.TConstructor) =>
 t.name
 }
 
-def escapeResolved(word : Firefly_Core.String) = {
-val parts = word.split("[.]").getList().map(Emitter_.escapeKeyword).join(".");
+def escapeResolved(word : Firefly_Core.String) : Firefly_Core.String = {
+val parts = word.split('.').getList().map(Emitter_.escapeKeyword).join(".");
 Firefly_Core.if_(parts.startsWith("ff:core/Core."), {() =>
 parts.replace("ff:core/Core.", "Firefly_Core.")
 }).else_({() =>
@@ -432,8 +432,8 @@ parts.replace(".", "_.")
 })
 }
 
-def escapeKeyword(word : Firefly_Core.String) = {
-Firefly_Core.if_(Emitter_.keywords(word), {() =>
+def escapeKeyword(word : Firefly_Core.String) : Firefly_Core.String = {
+Firefly_Core.if_(Emitter_.keywords.contains(word), {() =>
 (word + "_")
 }).else_({() =>
 word

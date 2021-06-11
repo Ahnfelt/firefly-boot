@@ -6,7 +6,7 @@ object Tokenizer_ {
 
 
 
-def tokenize(file : Firefly_Core.String, code : Firefly_Core.String) = {
+def tokenize(file : Firefly_Core.String, code : Firefly_Core.String) : Firefly_Core.Array[Token_.Token] = {
 val tokens = Firefly_Core.ArrayBuilder[Token_.Token]();
 var line = 1;
 var lineOffset = 0;

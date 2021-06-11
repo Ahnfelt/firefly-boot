@@ -6,7 +6,7 @@ object Resolver_ {
 
 case class Resolver(variables : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], variants : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], types : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], traits : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String])
 
-def make(coreModule : Syntax_.Module) = {
+def make(coreModule : Syntax_.Module) : Resolver_.Resolver = {
 def core(name : Firefly_Core.String) : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String] = {
 Firefly_Core.Pair(name, ("ff:core/Core." + name))
 }

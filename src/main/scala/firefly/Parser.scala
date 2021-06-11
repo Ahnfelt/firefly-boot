@@ -167,7 +167,12 @@ self.parseTypeParameters()
 Parser_.Poly(List(), List())
 });
 val parameters = self.parseFunctionParameters();
-val returnType = self.parseOptionalType();
+val returnType = Firefly_Core.if_(self.current().is(Token_.LColon()), {() =>
+self.skip(Token_.LColon());
+self.parseType()
+}).else_({() =>
+Syntax_.TConstructor(self.current().at(), "Unit", List())
+});
 Syntax_.Signature(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, parameters, returnType)
 }
 
@@ -423,7 +428,7 @@ Syntax_.Version(major.at(), major.raw().expectInt(), 0, 0)
 
 def parseDashedName() : Firefly_Core.String = {
 val at = self.current().at();
-def readPart() = {
+def readPart() : Firefly_Core.String = {
 Firefly_Core.if_(self.current().is(Token_.LInt()), {() =>
 val prefix = self.skip(Token_.LInt()).raw();
 Firefly_Core.if_(self.current().is(Token_.LLower()), {() =>
@@ -534,7 +539,8 @@ Firefly_Core.if_(mutable, {() =>
 self.skip(Token_.LKeyword())
 });
 val parameterNameToken = self.skip(Token_.LLower());
-val parameterType = self.parseOptionalType();
+self.skip(Token_.LColon());
+val parameterType = self.parseType();
 val default = Firefly_Core.if_((!self.current().is(Token_.LAssign())), {() =>
 Firefly_Core.None()
 }).else_({() =>
@@ -575,16 +581,6 @@ self.skipSeparator(Token_.LComma())
 });
 self.rawSkip(Token_.LBracketRight(), ")");
 arguments.drain()
-}
-
-def parseOptionalType() : Syntax_.Type = {
-val token = self.current();
-Firefly_Core.if_(token.is(Token_.LColon()), {() =>
-self.skip(Token_.LColon());
-self.parseType()
-}).else_({() =>
-self.freshTypeVariable(token.at())
-})
 }
 
 def parseLambda(defaultParameterCount : Firefly_Core.Int = 0, ignoreGenerateKeyword : Firefly_Core.Bool = Firefly_Core.False(), allowColon : Firefly_Core.Bool = Firefly_Core.False()) : Syntax_.Lambda = {
