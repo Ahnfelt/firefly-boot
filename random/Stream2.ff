@@ -84,7 +84,7 @@ extend fs: FileSystem {
 
 }
 
-// Streaming copy
+// Streaming copy, automatically and safely opens and closes the files
 fs.writeFile(toFileName, fs.readFile(fromFileName))
 
 // It's possible that the buffer has to be reused by default for performance
