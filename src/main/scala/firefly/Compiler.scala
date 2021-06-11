@@ -64,14 +64,16 @@ _w1.instances
 }));
 val result = Firefly_Core.try_({() =>
 Inference_.make(instances).inferModule(coreModule, module, otherModules)
-}).getOrElse(module);
+}).else_({() =>
+module
+});
 self.inferredModules = self.inferredModules.updated(moduleName, result);
 module
 })
 }
 
 def emit(moduleName : Firefly_Core.String) : Firefly_Core.Unit = {
-Firefly_Core.if_(self.emittedModules(moduleName), {() =>
+Firefly_Core.if_(self.emittedModules.contains(moduleName), {() =>
 Firefly_Core.Unit()
 }).else_({() =>
 self.emittedModules = self.emittedModules.add(moduleName);

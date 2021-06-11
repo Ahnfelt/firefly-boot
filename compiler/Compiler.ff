@@ -67,14 +67,14 @@ extend self: Compiler {
         let module = self.resolve(moduleName)
         let otherModules = self.imports(module).map { self.resolve(self.files.prefixName(_.file)) }
         let instances = coreModule.instances ++ module.instances ++ otherModules.flatMap { _.instances }
-        let result = try { Inference.make(instances).inferModule(coreModule, module, otherModules) }.getOrElse(module)
+        let result = try { Inference.make(instances).inferModule(coreModule, module, otherModules) } else { module }
 
         self.inferredModules = self.inferredModules.updated(moduleName, result)
         module // result
     }
 
     emit(moduleName: String): Unit {
-        if(self.emittedModules(moduleName)) {} else:
+        if(self.emittedModules.contains(moduleName)) {} else:
         self.emittedModules = self.emittedModules.add(moduleName)
 
         let module = self.infer(moduleName)

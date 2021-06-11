@@ -14,6 +14,10 @@ try[T](body: () => T): Try[T] {}
 
 type Try[T] {}
 
+extend self[T]: Try[T] {
+    else(body: () => T): T {}
+}
+
 log: Log = 1
 
 type Log {}

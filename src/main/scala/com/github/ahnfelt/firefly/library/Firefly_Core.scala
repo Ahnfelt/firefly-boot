@@ -342,4 +342,9 @@ object Firefly_Core {
         def withSecond[C](value : C) : (A, C) = (first, value)
     }
 
+    implicit class Firefly_Try[T](value : Try[T]) {
+        def else_[U >: T](body : () => U) : U =
+            value.getOrElse(body())
+    }
+
 }
