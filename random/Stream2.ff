@@ -1,0 +1,63 @@
+extend self: Stream[A] {
+
+    zip[B](that: Stream[B]): Stream[Pair[A, B]] {
+        Stream:
+        let a = self.open()
+        let b = try { that.open() } catchAny { e => a.close(); e.rethrow() }
+        Iterator {
+            Pair(a.next(), b.next()).{
+                | Pair(Some(x), Some(y)) => Some(Pair(x, y))
+                | _ => None
+            }
+        } {
+            try { a.close() } finally { b.close() }
+        }
+    }
+
+    map[B](body: A => B): Stream[B] {
+        Stream:
+        let a = self.open()
+        Iterator {
+            a.next().map(body)
+        } {
+            a.close()
+        }
+    }
+
+    filter(body: A => Bool): Stream[A] {
+        Stream:
+        let a = self.open()
+        Iterator {
+            function go() {
+                a.next().{
+                    | None => None
+                    | Some(x) {body(x)} => Some(x)
+                    | Some(_) => tailcall go()
+                }
+            }
+            go()
+        } {
+            a.close()
+        }
+    }
+
+    // Terminating methods
+
+    each(body: A => Unit): Unit {
+        let a = self.open()
+        try {
+            function go() {
+                a.next().{
+                    | None =>
+                    | Some(x) =>
+                        body(x)
+                        tailcall go()
+                }
+            }
+            go()
+        } finally {
+            a.close()
+        }
+    }
+
+}
