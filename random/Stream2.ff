@@ -72,13 +72,15 @@ extend self: Stream[A] {
 
 /*
 
+// Thanks to to Hiperion and MBones on /r/ProgrammingLanguages Discord for helpful discussion
+
 extend fs: FileSystem {
 
-    readFile(fileName: String): Stream[Buffer] {
+    readFile(fileName: String, buffer: Buffer = Buffer.withCapacity(64 * 1024)): Stream[Buffer] {
         Stream:
         let handle = fs.openFileForReading(fileName)
         Iterator {
-            let buffer = handle.read()
+            handle.read(buffer)
             if(buffer.size() > 0) {
                 Some(buffer)
             } else {
@@ -104,7 +106,5 @@ extend fs: FileSystem {
 
 // Streaming copy, automatically and safely opens and closes the files
 fs.writeFile(toFileName, fs.readFile(fromFileName))
-
-// It's possible that the buffer has to be reused by default for performance
 
 */
