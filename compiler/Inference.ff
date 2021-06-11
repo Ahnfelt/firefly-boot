@@ -416,9 +416,9 @@ extend self: Inference {
             | EAssign(at, operator, variable, value) =>
                 EAssign(
                     at = at
-                    operator = operator
-                    variable = self.variables.get(variable).else { fail(at, "No such variable: " + variable) }
-                    value = self.resolveTerm(value)
+                    operator =
+                    variable =
+                    value =
                 )
             | EAssignField(at, operator, record, field, value) =>
                 EAssignField(
