@@ -1,3 +1,10 @@
+ype Iterator[T](
+    next : () => Option[T]
+    close : () => Unit
+)
+
+type Stream[T](open : () => Iterator[T])
+
 extend self: Stream[A] {
 
     zip[B](that: Stream[B]): Stream[Pair[A, B]] {
