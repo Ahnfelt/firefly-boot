@@ -1,4 +1,4 @@
-ype Iterator[T](
+type Iterator[T](
     next : () => Option[T]
     close : () => Unit
 )
