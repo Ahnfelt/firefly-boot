@@ -82,6 +82,17 @@ extend fs: FileSystem {
         }
     }
 
+    writeFile(fileName: String, stream: Stream[Buffer]): Unit {
+        let handle = fs.openFileForWriting(fileName)
+        try {
+            stream.each { buffer =>
+                handle.write(buffer)
+            }
+        } finally {
+            handle.close()
+        }
+    }
+
 }
 
 // Streaming copy, automatically and safely opens and closes the files
