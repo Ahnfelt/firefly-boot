@@ -9,8 +9,11 @@ extend self: Iterator[T] {
         Iterator {
             self.next().else(that.next())
         } {
-            self.close()
-            that.close()
+            try {
+                self.close()
+            } finally {
+                that.close()
+            }
         }
     }
 
