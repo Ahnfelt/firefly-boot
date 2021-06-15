@@ -3,6 +3,27 @@ type Iterator[T](
     close: () => Unit
 )
 
+extend self: Iterator[T] {
+
+    concat(that: Iterator[T]): Iterator[T] {
+        Iterator {
+            self.next().else(that.next())
+        } {
+            self.close()
+            that.close()
+        }
+    }
+
+    use[R](body: Iterator[T] => R): R {
+        try {
+            body(self)
+        } finally {
+            self.close()
+        }
+    }
+
+}
+
 type Stream[T](open: () => Iterator[T])
 
 extend self: Stream[A] {
@@ -45,6 +66,17 @@ extend self: Stream[A] {
             go()
         } {
             a.close()
+        }
+    }
+
+    parse[R](body: Iterator[T] => Iterator[R]): Stream[R] {
+        Stream:
+        let iterator = self.open()
+        try {
+            body(iterator)
+        } catchAny { e =>
+            iterator.close()
+            e.rethrow()
         }
     }
 
@@ -106,5 +138,13 @@ extend fs: FileSystem {
 
 // Streaming copy, automatically and safely opens and closes the files
 fs.writeFile(toFileName, fs.readFile(fromFileName))
+
+// Parse HTTP request stream, emit HTTP response stream, replacing 'a' with 'b'
+requestStream.parse { requestIterator =>
+    let requestHeaders = parseHeaders(requestIterator)
+    let requestBodyIterator = parseBody(requestHeaders, requestIterator)
+    let responseBodyIterator = requestBodyIterator.map { _.replace('a'.toInt, 'b'.toInt) } // byte replacement
+    emitHeaders().concat(responseBodyIterator)
+}
 
 */
