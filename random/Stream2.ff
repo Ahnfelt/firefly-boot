@@ -31,20 +31,6 @@ type Stream[T](open: () => Iterator[T])
 
 extend self: Stream[A] {
 
-    zip[B](that: Stream[B]): Stream[Pair[A, B]] {
-        Stream:
-        let a = self.open()
-        let b = try { that.open() } onThrow { a.close() }
-        Iterator {
-            Pair(a.next(), b.next()).{
-                | Pair(Some(x), Some(y)) => Some(Pair(x, y))
-                | _ => None
-            }
-        } {
-            try { a.close() } finally { b.close() }
-        }
-    }
-
     map[B](body: A => B): Stream[B] {
         Stream:
         let a = self.open()
@@ -98,6 +84,37 @@ extend self: Stream[A] {
             go()
         } {
             a.close()
+        }
+    }
+
+    zip[B](that: Stream[B]): Stream[Pair[A, B]] {
+        Stream:
+        let a = self.open()
+        let b = try { that.open() } onThrow { a.close() }
+        Iterator {
+            Pair(a.next(), b.next()).{
+                | Pair(Some(x), Some(y)) => Some(Pair(x, y))
+                | _ => None
+            }
+        } {
+            try { a.close() } finally { b.close() }
+        }
+    }
+
+    concat(that: Stream[T]): Stream[T] {
+        Stream:
+        mutable firstDone = False
+        mutable iterator = self.open()
+        Iterator {
+            iterator.next().else {
+                if(firstDone) {None} else {
+                    firstDone = True
+                    iterator.close()
+                    iterator = that.open()
+                }
+            }
+        } {
+            iterator.close()
         }
     }
 
