@@ -7,7 +7,7 @@ extend self: Iterator[T] {
 
     concat(that: Iterator[T]): Iterator[T] {
         Iterator {
-            self.next().else(that.next())
+            self.next().orElse(that.next())
         } {
             try {
                 self.close()
@@ -106,7 +106,7 @@ extend self: Stream[A] {
         mutable firstDone = False
         mutable iterator = self.open()
         Iterator {
-            iterator.next().else {
+            iterator.next().orElse {
                 if(firstDone) {None} else {
                     firstDone = True
                     iterator.close()
