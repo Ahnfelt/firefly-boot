@@ -64,6 +64,7 @@ extend self: Stream[A] {
                 b.flatMap {_.next()}.{
                     | Some(v) => body(v)
                     | None =>
+                        b.each {_.close()}
                         a.next().{
                             Some(s) =>
                                 b = Some(s.open())
