@@ -55,6 +55,34 @@ extend self: Stream[A] {
         }
     }
 
+    flatMap[B](body: A => Stream[B]): Stream[B] {
+        Stream:
+        let a = self.open()
+        let b = None
+        Iterator {
+            function go() {
+                b.flatMap {_.next()}.{
+                    | Some(v) => body(v)
+                    | None =>
+                        a.next().{
+                            Some(s) =>
+                                b = Some(s.open())
+                                tailcall go()
+                            None =>
+                                None
+                        }
+                }
+            }
+            go()
+        } {
+            try {
+                b.each {_.close()}
+            } finally {
+                a.close()
+            }
+        }
+    }
+
     filter(body: A => Bool): Stream[A] {
         Stream:
         let a = self.open()
