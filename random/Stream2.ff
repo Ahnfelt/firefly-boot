@@ -122,10 +122,19 @@ extend self: Stream[A] {
     parse[R](body: Iterator[T] => Iterator[R]): Stream[R] {
         Stream:
         let iterator = self.open()
-        try {
+        let i = try {
             body(iterator)
         } onThrow {
             iterator.close()
+        }
+        Iterator {
+            i.next()
+        } {
+            try {
+                i.close()
+            } finally {
+                iterator.close()
+            }
         }
     }
 
