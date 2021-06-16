@@ -66,10 +66,10 @@ extend self: Stream[A] {
                     | None =>
                         b.each {_.close()}
                         a.next().{
-                            Some(s) =>
+                            | Some(s) =>
                                 b = Some(s.open())
                                 tailcall go()
-                            None =>
+                            | None =>
                                 None
                         }
                 }
