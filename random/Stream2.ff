@@ -111,6 +111,7 @@ extend self: Stream[A] {
                     firstDone = True
                     iterator.close()
                     iterator = that.open()
+                    iterator.next()
                 }
             }
         } {
