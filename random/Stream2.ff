@@ -34,7 +34,7 @@ extend self: Stream[A] {
     zip[B](that: Stream[B]): Stream[Pair[A, B]] {
         Stream:
         let a = self.open()
-        let b = try { that.open() } catchAny { e => a.close(); e.rethrow() }
+        let b = try { that.open() } onThrow { a.close() }
         Iterator {
             Pair(a.next(), b.next()).{
                 | Pair(Some(x), Some(y)) => Some(Pair(x, y))
@@ -77,9 +77,8 @@ extend self: Stream[A] {
         let iterator = self.open()
         try {
             body(iterator)
-        } catchAny { e =>
+        } onThrow {
             iterator.close()
-            e.rethrow()
         }
     }
 
