@@ -317,6 +317,7 @@ object Firefly_Core {
         def modify(index : Int, body : T => T) : Unit = list.update(index, body(list(index)))
         def getSize() : Int = list.length
         def getArray(): Array[T] = list.toArray[T]
+        def getEmpty() : Bool = list.isEmpty
     }
 
     implicit class Firefly_SetBuilder[T](list : SetBuilder[T]) {

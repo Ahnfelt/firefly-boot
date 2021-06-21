@@ -18,7 +18,7 @@ val operatorCharacters = Firefly_Core.SetBuilder[Firefly_Core.Char]();
 operatorCharacters.add(operatorCharactersString.expect(j))
 });
 def emitToken(kind : Token_.TokenKind, startOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int) : Firefly_Core.Unit = {
-Firefly_Core.if_(tokens.nonEmpty, {() =>
+Firefly_Core.if_((!tokens.getEmpty()), {() =>
 val last = tokens.last;
 Firefly_Core.if_((((last.stopLine == startLine) && (last.kind == Token_.LLower())) && kind.afterKeyword()), {() =>
 tokens.modify((tokens.getSize() - 1), {(_w1) =>

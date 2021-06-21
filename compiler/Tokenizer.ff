@@ -16,7 +16,7 @@ tokenize(file: String, code: String): Array[Token] {
     }
 
     function emitToken(kind: TokenKind, startOffset: Int, stopOffset: Int): Unit {
-        if(tokens.nonEmpty) {
+        if(!tokens.getEmpty()) {
             let last = tokens.last
             if(last.stopLine == startLine && last.kind == LLower && kind.afterKeyword()) {
                 tokens.modify(tokens.getSize() - 1) {_.Token(kind = LKeyword)}
