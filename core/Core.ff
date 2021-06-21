@@ -10,6 +10,11 @@ magicShow[T](value: T): String {}
 
 magicHashCode[T](value: T): Int {}
 
+listBuilderOf[T](): ListBuilder[T] {} // (items: T...)
+arrayBuilderOf[T](): ListBuilder[T] {} // (items: T...)
+setOf[T](): Set[T] {} // (items: T...)
+mapOf[K, V](): Map[K, V] {} // (items: T...)
+
 try[T](body: () => T): Try[T] {}
 
 type Try[T] {}
@@ -56,8 +61,6 @@ extend self[T]: ListBuilder[T] {
     drain(): List[T] {}
 }
 
-
-listBuilderOf[T](): ListBuilder[T] {} // (items: T...)
 
 type Map[K, V]() // (items: Pair[K, V]...)
 

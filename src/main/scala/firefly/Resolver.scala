@@ -286,9 +286,9 @@ def findVariables(pattern : Syntax_.MatchPattern) : Firefly_Core.Map[Firefly_Cor
 case (Syntax_.PVariable(_, Firefly_Core.Some(name))) =>
 List(Firefly_Core.Pair(name, name)).getMap()
 case (Syntax_.PVariable(_, Firefly_Core.None())) =>
-List().getMap()
+Firefly_Core.mapOf()
 case (Syntax_.PVariant(_, _, patterns)) =>
-patterns.map(findVariables).foldLeft(Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
+patterns.map(findVariables).foldLeft(Firefly_Core.mapOf[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 case (Syntax_.PVariantAs(_, _, variable)) =>
@@ -301,11 +301,11 @@ case (Syntax_.PList(_, _, items)) =>
 items.map({
 case (Firefly_Core.Pair(item, _)) =>
 findVariables(item)
-}).foldLeft(List().getMap[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
+}).foldLeft(Firefly_Core.mapOf[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 }
-val variableMap = case_.patterns.map(findVariables).foldLeft(List().getMap[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
+val variableMap = case_.patterns.map(findVariables).foldLeft(Firefly_Core.mapOf[Firefly_Core.String, Firefly_Core.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 });
 val self2 = self.copy(variables = (self.variables ++ variableMap));

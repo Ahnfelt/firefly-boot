@@ -40,6 +40,9 @@ object Firefly_Core {
 
 
     def listBuilderOf[T](items : T*) = mutable.ListBuffer[T]()
+    def arrayBuilderOf[T](items : T*) = mutable.ArrayBuffer[T]()
+    def setOf[T](items : T*) = Set[T]()
+    def mapOf[K, V](items : Pair[K, V]*) = Map[K, V]()
 
 
     def magicShow[T](value : T) = value.toString
