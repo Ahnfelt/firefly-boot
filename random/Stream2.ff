@@ -205,4 +205,23 @@ requestStream.parse { requestIterator =>
     emitHeaders().concat(responseBodyIterator)
 }
 
+fs.readFile("test.tsv").lines().parse { lineIterator =>
+    let headers = lineIterator.next().expect().split("\t")
+    lineIterator.map { Pair(headers, _) }
+}.map {| Pair(headers, line) => headers.zip(line.split("\t")).toMap }
+
+fs.readFile("test.tsv").lines().parseFirst { _.split("\t") }.map {| Pair(headers, line) =>
+    headers.zip(line.split("\t")).toMap
+}
+
+
+
+val notifications = Iterator.iterate(List[FeedNotification]()) { feedNotifications =>
+    loadFeedNotifications(oldConnection, feedNotifications.lastOption.map(_.notificationNumber).orElse(mark))
+}.drop(1).takeWhile(_.nonEmpty).flatMap { feedNotifications =>
+    loadEntityIdsForFeeds(connection, feedNotifications)
+}.grouped(1000).flatMap { entityNotifications =>
+    loadEntities(connection, entityNotifications, countryCodes, fields)
+}.take(1000).toList
+
 */

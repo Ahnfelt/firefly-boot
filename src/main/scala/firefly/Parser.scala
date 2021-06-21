@@ -830,14 +830,14 @@ Syntax_.ELet(nameToken.at(), mutable, nameToken.raw(), valueType, value, body)
 
 def parseFunctions() : Syntax_.Term = {
 val at = self.current().at();
-val functions = Firefly_Core.listBuilderOf[Syntax_.LocalFunction]();
+val functions = Firefly_Core.listBuilderOf[Syntax_.DFunction]();
 Firefly_Core.while_({() =>
 self.current().rawIs("function")
 }, {() =>
-self.rawSkip(Token_.LKeyword(), "function");
+val functionAt = self.rawSkip(Token_.LKeyword(), "function").at();
 val signature = self.parseSignature();
-val body = self.parseLambda();
-functions.append(Syntax_.LocalFunction(signature, body));
+val body = self.parseLambda(defaultParameterCount = signature.parameters.getSize());
+functions.append(Syntax_.DFunction(functionAt, signature, body));
 self.skipSeparator(Token_.LSemicolon())
 });
 val body = self.parseStatements();

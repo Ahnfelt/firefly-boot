@@ -403,16 +403,21 @@ extend self: Inference {
                 e.ERecord(
                     fields = newFields
                 )
-            | _ => term
-            /*
             | EFunctions(at, functions, body) =>
-                let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.getMap()
-                let self2 = self.Resolver(variables = self.variables ++ functionMap)
+                let functionMap = functions.map { f =>
+                    let scheme = Scheme(False, False, f.signature)
+                    Pair(f.signature.name, scheme)
+                }.getMap()
+                let environment2 = environment.Environment(symbols = environment.symbols ++ functionMap)
+                let newFunctions = functions.map { self.inferFunctionDefinition(environment2, _) }
+                let newBody = self.inferTerm(environment2, expected, body)
                 EFunctions(
                     at = at,
-                    functions = functions.map { self2.resolveFunction(_) },
-                    body = self2.resolveTerm(body)
+                    functions = newFunctions,
+                    body = newBody
                 )
+            | _ => term
+            /*
             | EAssign(at, operator, variable, value) =>
                 EAssign(
                     at = at

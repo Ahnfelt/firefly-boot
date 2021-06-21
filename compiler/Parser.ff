@@ -611,12 +611,12 @@ extend self: Parser {
     
     parseFunctions(): Term {
         let at = self.current().at()
-        let functions = listBuilderOf[LocalFunction]()
+        let functions = listBuilderOf[DFunction]()
         while {self.current().rawIs("function")} {
-            self.rawSkip(LKeyword, "function")
+            let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
-            let body = self.parseLambda()
-            functions.append(LocalFunction(signature, body))
+            let body = self.parseLambda(defaultParameterCount = signature.parameters.getSize())
+            functions.append(DFunction(functionAt, signature, body))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()

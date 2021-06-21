@@ -148,11 +148,6 @@ val self2 = self.copy(variables = self.variables.add(definition.name, definition
 definition.copy(variableType = self.resolveType(definition.variableType), value = self.resolveTerm(definition.value))
 }
 
-def resolveFunctionDefinition(definition : Syntax_.DFunction) : Syntax_.DFunction = {
-val local = self.resolveFunction(Syntax_.LocalFunction(definition.signature, definition.body));
-definition.copy(signature = local.signature, body = local.body)
-}
-
 def resolveTerm(term : Syntax_.Term) : Syntax_.Term = (term) match {
 case (_ : Syntax_.EString) =>
 term
@@ -232,7 +227,7 @@ Firefly_Core.Pair(name, name)
 }).getMap();
 val self2 = self.copy(variables = (self.variables ++ functionMap));
 Syntax_.EFunctions(at = at, functions = functions.map({(_w1) =>
-self2.resolveFunction(_w1)
+self2.resolveFunctionDefinition(_w1)
 }), body = self2.resolveTerm(body))
 case (e : Syntax_.ELet) =>
 val self2 = self.copy(variables = self.variables.add(e.name, e.name));
@@ -263,27 +258,27 @@ self.resolveType(_w1)
 }))
 }
 
-def resolveFunction(function : Syntax_.LocalFunction) : Syntax_.LocalFunction = {
-val variableMap = function.signature.parameters.map({(_w1) =>
+def resolveFunctionDefinition(definition : Syntax_.DFunction) : Syntax_.DFunction = {
+val variableMap = definition.signature.parameters.map({(_w1) =>
 _w1.name
 }).map({(name) =>
 Firefly_Core.Pair(name, name)
 }).getMap();
-val typeMap = function.signature.generics.map({(name) =>
+val typeMap = definition.signature.generics.map({(name) =>
 Firefly_Core.Pair(name, name)
 }).getMap();
 val self2 = self.copy(variables = (self.variables ++ variableMap), types = (self.types ++ typeMap));
-val signature = function.signature.copy(constraints = function.signature.constraints.map({(c) =>
+val signature = definition.signature.copy(constraints = definition.signature.constraints.map({(c) =>
 Syntax_.Constraint(self2.resolveType(c.representation))
-}), parameters = function.signature.parameters.map({(p) =>
+}), parameters = definition.signature.parameters.map({(p) =>
 p.copy(valueType = self2.resolveType(p.valueType), default = p.default.map({(_w1) =>
 self2.resolveTerm(_w1)
 }))
-}), returnType = self2.resolveType(function.signature.returnType));
-val body = function.body.copy(cases = function.body.cases.map({(_w1) =>
+}), returnType = self2.resolveType(definition.signature.returnType));
+val body = definition.body.copy(cases = definition.body.cases.map({(_w1) =>
 self2.resolveCase(_w1)
 }));
-Syntax_.LocalFunction(signature, body)
+Syntax_.DFunction(definition.at, signature, body)
 }
 
 def resolveCase(case_ : Syntax_.MatchCase) : Syntax_.MatchCase = {

@@ -133,14 +133,6 @@ extend self: Resolver {
         )
     }
 
-    resolveFunctionDefinition(definition: DFunction): DFunction {
-        let local = self.resolveFunction(LocalFunction(definition.signature, definition.body))
-        definition.DFunction(
-            signature = local.signature,
-            body = local.body
-        )
-    }
-
     resolveTerm(term: Term): Term {
         | EString _ => term
         | EChar _ => term
@@ -208,7 +200,7 @@ extend self: Resolver {
             let self2 = self.Resolver(variables = self.variables ++ functionMap)
             EFunctions(
                 at = at,
-                functions = functions.map { self2.resolveFunction(_) },
+                functions = functions.map { self2.resolveFunctionDefinition(_) },
                 body = self2.resolveTerm(body)
             )
         | ELet e =>
@@ -256,27 +248,27 @@ extend self: Resolver {
             )
     }
 
-    resolveFunction(function: LocalFunction): LocalFunction {
-        let variableMap = function.signature.parameters.map { _.name }.map { name => Pair(name, name) }.getMap()
-        let typeMap = function.signature.generics.map { name => Pair(name, name) }.getMap()
+    resolveFunctionDefinition(definition: DFunction): DFunction {
+        let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.getMap()
+        let typeMap = definition.signature.generics.map { name => Pair(name, name) }.getMap()
         let self2 = self.Resolver(
             variables = self.variables ++ variableMap
             types = self.types ++ typeMap
         )
-        let signature = function.signature.Signature(
-            constraints = function.signature.constraints.map { c =>
+        let signature = definition.signature.Signature(
+            constraints = definition.signature.constraints.map { c =>
                 Constraint(self2.resolveType(c.representation))
             }
-            parameters = function.signature.parameters.map { p =>
+            parameters = definition.signature.parameters.map { p =>
                 p.Parameter(
                     valueType = self2.resolveType(p.valueType)
                     default = p.default.map { self2.resolveTerm(_) }
                 )
             }
-            returnType = self2.resolveType(function.signature.returnType)
+            returnType = self2.resolveType(definition.signature.returnType)
         )
-        let body = function.body.Lambda(cases = function.body.cases.map { self2.resolveCase(_) })
-        LocalFunction(signature, body)
+        let body = definition.body.Lambda(cases = definition.body.cases.map { self2.resolveCase(_) })
+        DFunction(definition.at, signature, body)
     }
 
     resolveCase(case: MatchCase): MatchCase {

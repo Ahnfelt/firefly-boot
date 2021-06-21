@@ -88,7 +88,7 @@ type Term(at: Location) {
     EFloat(value: String)
     EVariable(name: String, generics: List[Type], instances: List[Instance])
     ELambda(lambda: Lambda)
-    EFunctions(functions: List[LocalFunction], body: Term)
+    EFunctions(functions: List[DFunction], body: Term)
     ELet(mutable: Bool, name: String, valueType: Type, value: Term, body: Term)
     ESequential(before: Term, after: Term)
     EAssign(operator: String, variable: String, value: Term)
@@ -127,8 +127,6 @@ type Signature(
     parameters: List[Parameter],
     returnType: Type
 )
-
-type LocalFunction(signature: Signature, body: Lambda)
 
 type Lambda(at: Location, cases: List[MatchCase])
 

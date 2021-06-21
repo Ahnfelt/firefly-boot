@@ -33,7 +33,7 @@ case class EInt(at : Syntax_.Location, value : Firefly_Core.String) extends Term
 case class EFloat(at : Syntax_.Location, value : Firefly_Core.String) extends Term
 case class EVariable(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Syntax_.Type], instances : Firefly_Core.List[Syntax_.Instance]) extends Term
 case class ELambda(at : Syntax_.Location, lambda : Syntax_.Lambda) extends Term
-case class EFunctions(at : Syntax_.Location, functions : Firefly_Core.List[Syntax_.LocalFunction], body : Syntax_.Term) extends Term
+case class EFunctions(at : Syntax_.Location, functions : Firefly_Core.List[Syntax_.DFunction], body : Syntax_.Term) extends Term
 case class ELet(at : Syntax_.Location, mutable : Firefly_Core.Bool, name : Firefly_Core.String, valueType : Syntax_.Type, value : Syntax_.Term, body : Syntax_.Term) extends Term
 case class ESequential(at : Syntax_.Location, before : Syntax_.Term, after : Syntax_.Term) extends Term
 case class EAssign(at : Syntax_.Location, operator : Firefly_Core.String, variable : Firefly_Core.String, value : Syntax_.Term) extends Term
@@ -60,8 +60,6 @@ case class PAlias(at : Syntax_.Location, pattern : Syntax_.MatchPattern, variabl
 case class PList(at : Syntax_.Location, itemType : Syntax_.Type, items : Firefly_Core.List[Firefly_Core.Pair[Syntax_.MatchPattern, Firefly_Core.Bool]]) extends MatchPattern
 
 case class Signature(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint], parameters : Firefly_Core.List[Syntax_.Parameter], returnType : Syntax_.Type)
-
-case class LocalFunction(signature : Syntax_.Signature, body : Syntax_.Lambda)
 
 case class Lambda(at : Syntax_.Location, cases : Firefly_Core.List[Syntax_.MatchCase])
 

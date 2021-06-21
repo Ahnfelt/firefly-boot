@@ -371,6 +371,17 @@ case (Firefly_Core.Pair(field, t)) =>
 field.copy(value = self.inferTerm(environment, t, field.value))
 });
 e.copy(fields = newFields)
+case (Syntax_.EFunctions(at, functions, body)) =>
+val functionMap = functions.map({(f) =>
+val scheme = Environment_.Scheme(Firefly_Core.False(), Firefly_Core.False(), f.signature);
+Firefly_Core.Pair(f.signature.name, scheme)
+}).getMap();
+val environment2 = environment.copy(symbols = (environment.symbols ++ functionMap));
+val newFunctions = functions.map({(_w1) =>
+self.inferFunctionDefinition(environment2, _w1)
+});
+val newBody = self.inferTerm(environment2, expected, body);
+Syntax_.EFunctions(at = at, functions = newFunctions, body = newBody)
 case (_) =>
 term
 })
