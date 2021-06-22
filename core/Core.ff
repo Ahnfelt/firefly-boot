@@ -116,6 +116,8 @@ extend self: String {
 
 extend self: Char {
     getIsLetter(): Bool {}
+    getIsUpper(): Bool {}
+    getIsLower(): Bool {}
 }
 
 extend self[T]: Option[T] {
@@ -199,7 +201,8 @@ extend self[T]: Array[T] {
     expect(index: Int): T {}
     expectFirst(): T {}
     expectLast(): T {}
-    drop(count: Int = 1): Array[T] {}
+    dropFirst(count: Int = 1): Array[T] {}
+    dropLast(count: Int = 1): Array[T] {}
     getList(): List[T] {}
 }
 

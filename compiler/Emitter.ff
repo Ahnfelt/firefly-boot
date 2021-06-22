@@ -182,7 +182,7 @@ emitType(type: Type): String {
         if(t.name.startsWith("Function$")) {
             emitType(t.TConstructor(name = t.name.replace("$", "")))
         } elseIf {t.name.startsWith("Record$")} {
-            "{" + t.name.split('$').drop(1).getList().zip(t.generics).map {| Pair(field, fieldType) =>
+            "{" + t.name.split('$').dropFirst(1).getList().zip(t.generics).map {| Pair(field, fieldType) =>
                 "val " + escapeKeyword(field) + " : " + emitType(fieldType)
             }.join("; ") + "}"
         } else {

@@ -448,7 +448,7 @@ self.skip(Token_.LOperator());
 part = ((part + "-") + readPart())
 });
 Firefly_Core.if_(part.exists({(_w1) =>
-_w1.isUpper
+_w1.getIsUpper()
 }), {() =>
 self.fail(at, ("Package names and paths must not contain upper case letters: " + part))
 });

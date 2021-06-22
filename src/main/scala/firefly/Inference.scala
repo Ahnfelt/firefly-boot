@@ -199,7 +199,7 @@ val record = self.inferTerm(environment, recordType, e.record);
 val e2 = e.copy(record = record);
 pipe_dot(self.unification.substitute(recordType))({
 case (t @ (Syntax_.TConstructor(_, name, typeArguments))) if name.startsWith("Record$") =>
-val fieldNames = name.split('$').getList().drop(1);
+val fieldNames = name.split('$').getList().dropFirst(1);
 fieldNames.pairs().find({(_w1) =>
 (_w1.second == e.field)
 }).map({(_w1) =>
@@ -215,7 +215,7 @@ case (t @ (Syntax_.TConstructor(_, name, typeArguments))) =>
 val methodName = ((name + "_") + e.field);
 pipe_dot(self.lookup(environment, e.at, methodName, typeArguments))({
 case (Firefly_Core.Some(instantiated)) if (!instantiated.scheme.isVariable) =>
-val signature = instantiated.scheme.signature.copy(parameters = instantiated.scheme.signature.parameters.drop(1));
+val signature = instantiated.scheme.signature.copy(parameters = instantiated.scheme.signature.parameters.dropFirst(1));
 self.unification.unify(e.at, recordType, instantiated.scheme.signature.parameters.expect(0).valueType);
 self.inferEtaExpansion(environment, expected, e.at, signature, e2)
 case (Firefly_Core.Some(instantiated)) =>
@@ -231,7 +231,7 @@ case (e : Syntax_.EWildcard) =>
 self.lookup(environment, e.at, ("_w" + e.index), List()).map({(instantiated) =>
 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType);
 term
-}).get
+}).expect()
 case (Syntax_.EList(at, t, items)) =>
 val listType = Syntax_.TConstructor(term.at, Inference_.core("List"), List(t));
 self.unification.unify(at, expected, listType);
@@ -247,7 +247,7 @@ case (Syntax_.ESequential(at, before, after)) =>
 Syntax_.ESequential(at = at, before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before), after = self.inferTerm(environment, expected, after))
 case (e : Syntax_.ELet) =>
 val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(e.at, e.name, List(), List(), List(), e.valueType));
-val environment2 = environment.copy(symbols = (environment.symbols + Firefly_Core.Pair(e.name, scheme)));
+val environment2 = environment.copy(symbols = environment.symbols.add(e.name, scheme));
 e.copy(value = self.inferTerm(environment, e.valueType, e.value), body = self.inferTerm(environment2, expected, e.body))
 case (Syntax_.ELambda(at, l)) =>
 val lambda = self.inferLambda(environment, expected, l);
@@ -317,18 +317,18 @@ e.copy(value = value, function = function)
 case (e : Syntax_.ECall) =>
 pipe_dot(e.function)({
 case (Syntax_.EVariable(variableAt, x, List(), List())) =>
-Firefly_Core.if_(x.first().exists({(c) =>
-((c != '_') && (!c.isLetter))
+Firefly_Core.if_(x.first().any({(c) =>
+((c != '_') && (!c.getIsLetter()))
 }), {() =>
-self.inferOperator(environment, expected, x, e)
+self.inferOperator(environment, expected, x, term)
 }).else_({() =>
 pipe_dot(self.lookup(environment, e.at, x, e.typeArguments))({
 case (Firefly_Core.Some(instantiated)) =>
 Firefly_Core.if_(instantiated.scheme.isVariable, {() =>
-self.inferLambdaCall(environment, expected, e)
+self.inferLambdaCall(environment, expected, term)
 }).else_({() =>
 val signature = instantiated.scheme.signature;
-self.inferFunctionCall(environment, expected, signature, instantiated.typeArguments, e, x)
+self.inferFunctionCall(environment, expected, signature, instantiated.typeArguments, term, x)
 })
 case (Firefly_Core.None()) =>
 Inference_.fail(variableAt, ("No such function: " + x))
@@ -353,7 +353,7 @@ case (Syntax_.TVariable(_, index)) =>
 Inference_.fail(f.at, ((("No such field " + f.field) + " on unknown type: $") + index))
 })
 case (_) =>
-self.inferLambdaCall(environment, expected, e)
+self.inferLambdaCall(environment, expected, term)
 })
 case (e : Syntax_.ERecord) =>
 val fields = e.fields.sortBy({(_w1) =>

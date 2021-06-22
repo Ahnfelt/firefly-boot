@@ -218,7 +218,7 @@ extend self: Inference {
                 let e2 = e.EField(record = record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
-                        let fieldNames = name.split('$').getList().drop(1)
+                        let fieldNames = name.split('$').getList().dropFirst(1)
                         fieldNames.pairs().find { _.second == e.field }.map { _.first }.map { index =>
                             let t1 = typeArguments.expect(index)
                             self.unification.unify(e.at, expected, t1)
@@ -232,7 +232,7 @@ extend self: Inference {
                             | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                 let signature = instantiated.scheme.signature.Signature(
                                     // Drop self for eta expansion
-                                    parameters = instantiated.scheme.signature.parameters.drop(1)
+                                    parameters = instantiated.scheme.signature.parameters.dropFirst(1)
                                 )
                                 self.unification.unify(
                                     e.at,
@@ -258,7 +258,7 @@ extend self: Inference {
                 self.lookup(environment, e.at, "_w" + e.index, []).map { instantiated =>
                     self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                     term
-                }.get
+                }.expect()
             | EList(at, t, items) =>
                 let listType = TConstructor(term.at, core("List"), [t])
                 self.unification.unify(at, expected, listType)
@@ -273,7 +273,7 @@ extend self: Inference {
                 )
             | ELet e =>
                 let scheme = Scheme(True, False, Signature(e.at, e.name, [], [], [], e.valueType))
-                let environment2 = environment.Environment(symbols = environment.symbols + Pair(e.name, scheme))
+                let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
                     body = self.inferTerm(environment2, expected, e.body)
@@ -340,13 +340,13 @@ extend self: Inference {
             | ECall e =>
                 e.function.{
                     | EVariable(variableAt, x, [], []) =>
-                        if(x.first().exists { c => c != '_' && !c.isLetter }) {
-                            self.inferOperator(environment, expected, x, e)
+                        if(x.first().any { c => c != '_' && !c.getIsLetter() }) {
+                            self.inferOperator(environment, expected, x, term)
                         } else {
                             self.lookup(environment, e.at, x, e.typeArguments).{
                                 | Some(instantiated) =>
                                     if(instantiated.scheme.isVariable) {
-                                        self.inferLambdaCall(environment, expected, e)
+                                        self.inferLambdaCall(environment, expected, term)
                                     } else {
                                         let signature = instantiated.scheme.signature
                                         self.inferFunctionCall(
@@ -354,7 +354,7 @@ extend self: Inference {
                                             expected,
                                             signature,
                                             instantiated.typeArguments,
-                                            e,
+                                            term,
                                             x
                                         )
                                     }
@@ -389,7 +389,7 @@ extend self: Inference {
                                 fail(f.at, "No such field " + f.field + " on unknown type: $" + index)
                         }
                     | _ =>
-                        self.inferLambdaCall(environment, expected, e)
+                        self.inferLambdaCall(environment, expected, term)
                 }
             | ERecord e =>
                 let fields = e.fields.sortBy {_.name}

@@ -317,7 +317,7 @@ extend Parser self:
             self.skip(LOperator)
             part = part + "-" + readPart()
         }
-        if(part.exists { _.isUpper }) {
+        if(part.exists { _.getIsUpper() }) {
             self.fail(at, "Package names and paths must not contain upper case letters @ " + part)
         }
         if(part.exists { _ == '_' } || part.exists { _ == '.' }) {

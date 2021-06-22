@@ -207,7 +207,10 @@ object Firefly_Core {
     }
 
     implicit class Firefly_Char(value: Char) {
-        def getIsLetter(): Bool = value.isLetter
+        def getIsLetter() : Bool = value.isLetter
+        def getIsUpper() : Bool = value.isUpper
+        def getIsLower( ): Bool = value.isLower
+
     }
 
     implicit class Firefly_String(value: String) {
@@ -305,6 +308,9 @@ object Firefly_Core {
         def expectFirst() : T = list.head
         def expectLast() : T = list.last
         def getList() : List[T] = list.toList
+        def dropFirst(count : Int = 1) : Array[T] = list.drop(count)
+        def dropLast(count : Int = 1) : Array[T] = list.dropRight(count)
+
     }
 
     implicit class Firefly_ListBuilder[T](list : ListBuilder[T]) {

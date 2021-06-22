@@ -250,7 +250,7 @@ Emitter_.emitType(t.copy(name = t.name.replace("$", "")))
 }).elseIf({() =>
 t.name.startsWith("Record$")
 }, {() =>
-(("{" + t.name.split('$').drop(1).getList().zip(t.generics).map({
+(("{" + t.name.split('$').dropFirst(1).getList().zip(t.generics).map({
 case (Firefly_Core.Pair(field, fieldType)) =>
 ((("val " + Emitter_.escapeKeyword(field)) + " : ") + Emitter_.emitType(fieldType))
 }).join("; ")) + "}")
