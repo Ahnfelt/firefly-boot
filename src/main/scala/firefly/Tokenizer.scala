@@ -19,7 +19,7 @@ operatorCharacters.add(operatorCharactersString.expect(j))
 });
 def emitToken(kind : Token_.TokenKind, startOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int) : Firefly_Core.Unit = {
 Firefly_Core.if_((!tokens.getEmpty()), {() =>
-val last = tokens.last;
+val last = tokens.expectLast();
 Firefly_Core.if_((((last.stopLine == startLine) && (last.kind == Token_.LLower())) && kind.afterKeyword()), {() =>
 tokens.modify((tokens.getSize() - 1), {(_w1) =>
 _w1.copy(kind = Token_.LKeyword())
@@ -33,40 +33,40 @@ tokens.append(Token_.Token(file, code, kind, startLine, startLineOffset, startOf
 }
 var i = 0;
 Firefly_Core.while_({() =>
-(i < code.length)
+(i < code.getSize())
 }, {() =>
 Firefly_Core.while_({() =>
-((i < code.length) && (((code(i) == ' ') || (code(i) == '\t')) || (code(i) == '\r')))
+((i < code.getSize()) && (((code.expect(i) == ' ') || (code.expect(i) == '\t')) || (code.expect(i) == '\r')))
 }, {() =>
 i += 1
 });
 val start = i;
 startLine = line;
 startLineOffset = lineOffset;
-Firefly_Core.if_((code(i) == '\n'), {() =>
+Firefly_Core.if_((code.expect(i) == '\n'), {() =>
 i += 1;
 line += 1;
 lineOffset = i
 }).elseIf({() =>
-((code(i) == '/') && (code((i + 1)) == '/'))
+((code.expect(i) == '/') && (code.expect((i + 1)) == '/'))
 }, {() =>
 i += 2;
 Firefly_Core.while_({() =>
-((i < code.length) && (code(i) != '\n'))
+((i < code.getSize()) && (code.expect(i) != '\n'))
 }, {() =>
 i += 1
 })
 }).elseIf({() =>
-((code(i) == '/') && (code((i + 1)) == '*'))
+((code.expect(i) == '/') && (code.expect((i + 1)) == '*'))
 }, {() =>
 i += 2;
 Firefly_Core.while_({() =>
-((i < code.length) && ((code(i) != '*') || (code((i + 1)) != '/')))
+((i < code.getSize()) && ((code.expect(i) != '*') || (code.expect((i + 1)) != '/')))
 }, {() =>
-Firefly_Core.if_((i >= code.length), {() =>
+Firefly_Core.if_((i >= code.getSize()), {() =>
 Firefly_Core.panic((("Expected end of comment started on line " + startLine) + ", got end of file."))
 });
-Firefly_Core.if_((code(i) == '\n'), {() =>
+Firefly_Core.if_((code.expect(i) == '\n'), {() =>
 line += 1;
 lineOffset = (i + 1)
 });
@@ -74,20 +74,20 @@ i += 1
 });
 i += 2
 }).elseIf({() =>
-((code(i) == '"') || (code(i) == '\''))
+((code.expect(i) == '"') || (code.expect(i) == '\''))
 }, {() =>
-val endSign = code(i);
+val endSign = code.expect(i);
 i += 1;
 Firefly_Core.while_({() =>
-((i < code.length) && (code(i) != endSign))
+((i < code.getSize()) && (code.expect(i) != endSign))
 }, {() =>
-Firefly_Core.if_((code(i) == '\n'), {() =>
+Firefly_Core.if_((code.expect(i) == '\n'), {() =>
 Firefly_Core.panic((("Unexpected end of line in string started on line " + startLine) + "."))
 });
-Firefly_Core.if_((i >= code.length), {() =>
+Firefly_Core.if_((i >= code.getSize()), {() =>
 Firefly_Core.panic((("Expected end of string started on line " + startLine) + ", got end of file."))
 });
-Firefly_Core.if_(((code(i) == '\\') && (code((i + 1)) != '\n')), {() =>
+Firefly_Core.if_(((code.expect(i) == '\\') && (code.expect((i + 1)) != '\n')), {() =>
 i += 1
 });
 i += 1
@@ -99,43 +99,43 @@ Token_.LString()
 Token_.LChar()
 }), start, i)
 }).elseIf({() =>
-(((code(i) >= 'a') && (code(i) <= 'z')) || ((code(i) >= 'A') && (code(i) <= 'Z')))
+(((code.expect(i) >= 'a') && (code.expect(i) <= 'z')) || ((code.expect(i) >= 'A') && (code.expect(i) <= 'Z')))
 }, {() =>
-val kind = Firefly_Core.if_((code(i) >= 'a'), {() =>
+val kind = Firefly_Core.if_((code.expect(i) >= 'a'), {() =>
 Token_.LLower()
 }).else_({() =>
 Token_.LUpper()
 });
 i += 1;
 Firefly_Core.while_({() =>
-((i < code.length) && ((((code(i) >= 'a') && (code(i) <= 'z')) || ((code(i) >= 'A') && (code(i) <= 'Z'))) || ((code(i) >= '0') && (code(i) <= '9'))))
+((i < code.getSize()) && ((((code.expect(i) >= 'a') && (code.expect(i) <= 'z')) || ((code.expect(i) >= 'A') && (code.expect(i) <= 'Z'))) || ((code.expect(i) >= '0') && (code.expect(i) <= '9'))))
 }, {() =>
 i += 1
 });
-Firefly_Core.if_(((kind == Token_.LUpper()) && (code(i) == '.')), {() =>
+Firefly_Core.if_(((kind == Token_.LUpper()) && (code.expect(i) == '.')), {() =>
 i += 1;
 emitToken(Token_.LNamespace(), start, i)
 }).else_({() =>
 emitToken(kind, start, i)
 })
 }).elseIf({() =>
-((code(i) >= '0') && (code(i) <= '9'))
+((code.expect(i) >= '0') && (code.expect(i) <= '9'))
 }, {() =>
 var dot = Firefly_Core.False();
 var exponent = Firefly_Core.False();
 Firefly_Core.while_({() =>
-((i < code.length) && ((code(i) >= '0') && (code(i) <= '9')))
+((i < code.getSize()) && ((code.expect(i) >= '0') && (code.expect(i) <= '9')))
 }, {() =>
 i += 1;
-Firefly_Core.if_((((code(i) == 'e') || (code(i) == 'E')) && (!exponent)), {() =>
+Firefly_Core.if_((((code.expect(i) == 'e') || (code.expect(i) == 'E')) && (!exponent)), {() =>
 i += 1;
 dot = Firefly_Core.True();
 exponent = Firefly_Core.True();
-Firefly_Core.if_(((code(i) == '+') || (code(i) == '-')), {() =>
+Firefly_Core.if_(((code.expect(i) == '+') || (code.expect(i) == '-')), {() =>
 i += 1
 })
 });
-Firefly_Core.if_((((((((i + 1) < code.length) && (code(i) == '.')) && (code((i + 1)) >= '0')) && (code((i + 1)) <= '9')) && (!dot)) && (!exponent)), {() =>
+Firefly_Core.if_((((((((i + 1) < code.getSize()) && (code.expect(i) == '.')) && (code.expect((i + 1)) >= '0')) && (code.expect((i + 1)) <= '9')) && (!dot)) && (!exponent)), {() =>
 i += 1;
 dot = Firefly_Core.True()
 })
@@ -146,59 +146,59 @@ Token_.LFloat()
 Token_.LInt()
 }), start, i)
 }).elseIf({() =>
-(code(i) == '_')
+(code.expect(i) == '_')
 }, {() =>
 i += 1;
 emitToken(Token_.LWildcard(), start, i)
 }).elseIf({() =>
-operatorCharacters(code(i))
+operatorCharacters.contains(code.expect(i))
 }, {() =>
 i += 1;
 Firefly_Core.while_({() =>
-((i < code.length) && operatorCharacters(code(i)))
+((i < code.getSize()) && operatorCharacters.contains(code.expect(i)))
 }, {() =>
 i += 1
 });
-val o = Firefly_Core.if_((((i - start) == 1) && (code((i - 1)) == '.')), {() =>
+val o = Firefly_Core.if_((((i - start) == 1) && (code.expect((i - 1)) == '.')), {() =>
 Token_.LDot()
 }).elseIf({() =>
-(((i - start) == 1) && (code((i - 1)) == ','))
+(((i - start) == 1) && (code.expect((i - 1)) == ','))
 }, {() =>
 Token_.LComma()
 }).elseIf({() =>
-(((i - start) == 1) && (code((i - 1)) == ';'))
+(((i - start) == 1) && (code.expect((i - 1)) == ';'))
 }, {() =>
 Token_.LSemicolon()
 }).elseIf({() =>
-(((i - start) == 1) && (code((i - 1)) == '|'))
+(((i - start) == 1) && (code.expect((i - 1)) == '|'))
 }, {() =>
 Token_.LPipe()
 }).elseIf({() =>
-(((i - start) == 1) && (code((i - 1)) == ':'))
+(((i - start) == 1) && (code.expect((i - 1)) == ':'))
 }, {() =>
 Token_.LColon()
 }).elseIf({() =>
-(((((i - start) == 3) && (code((i - 3)) == '.')) && (code((i - 2)) == '.')) && (code((i - 1)) == '.'))
+(((((i - start) == 3) && (code.expect((i - 3)) == '.')) && (code.expect((i - 2)) == '.')) && (code.expect((i - 1)) == '.'))
 }, {() =>
 Token_.LDotDotDot()
 }).elseIf({() =>
-((((i - start) == 2) && (code((i - 2)) == '=')) && (code((i - 1)) == '>'))
+((((i - start) == 2) && (code.expect((i - 2)) == '=')) && (code.expect((i - 1)) == '>'))
 }, {() =>
 Token_.LArrowThick()
 }).elseIf({() =>
-(((i - start) == 1) && (code((i - 1)) == '='))
+(((i - start) == 1) && (code.expect((i - 1)) == '='))
 }, {() =>
 Token_.LAssign()
 }).elseIf({() =>
-((((i - start) == 2) && (code((i - 2)) == '+')) && (code((i - 1)) == '='))
+((((i - start) == 2) && (code.expect((i - 2)) == '+')) && (code.expect((i - 1)) == '='))
 }, {() =>
 Token_.LAssignPlus()
 }).elseIf({() =>
-((((i - start) == 2) && (code((i - 2)) == '-')) && (code((i - 1)) == '='))
+((((i - start) == 2) && (code.expect((i - 2)) == '-')) && (code.expect((i - 1)) == '='))
 }, {() =>
 Token_.LAssignMinus()
 }).elseIf({() =>
-(((((i - start) == 3) && (code((i - 3)) == ':')) && (code((i - 2)) == ':')) && (code((i - 1)) == '='))
+(((((i - start) == 3) && (code.expect((i - 3)) == ':')) && (code.expect((i - 2)) == ':')) && (code.expect((i - 1)) == '='))
 }, {() =>
 Token_.LAssignLink()
 }).else_({() =>
@@ -206,25 +206,25 @@ Token_.LOperator()
 });
 emitToken(o, start, i)
 }).elseIf({() =>
-(((code(i) == '(') || (code(i) == '[')) || (code(i) == '{'))
+(((code.expect(i) == '(') || (code.expect(i) == '[')) || (code.expect(i) == '{'))
 }, {() =>
 i += 1;
 emitToken(Token_.LBracketLeft(), start, i)
 }).elseIf({() =>
-(((code(i) == ')') || (code(i) == ']')) || (code(i) == '}'))
+(((code.expect(i) == ')') || (code.expect(i) == ']')) || (code.expect(i) == '}'))
 }, {() =>
 i += 1;
 emitToken(Token_.LBracketRight(), start, i)
 }).elseIf({() =>
-(i < code.length)
+(i < code.getSize())
 }, {() =>
-Firefly_Core.panic(("Unexpected character: " + code(i)))
+Firefly_Core.panic(("Unexpected character: " + Firefly_Core.magicShow(code.expect(i))))
 })
 });
 1.getTo(5).each({(i) =>
 emitToken(Token_.LEnd(), i, i)
 });
-tokens.toList.getArray()
+tokens.drain()
 }
 
 

@@ -497,6 +497,8 @@ case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Float"
 Firefly_Core.Some("Float")
 case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Int")) =>
 Firefly_Core.Some("Int")
+case (Syntax_.TConstructor(_, name, List())) if (name == Inference_.core("Char")) =>
+Firefly_Core.Some("Char")
 case (_) =>
 Firefly_Core.None()
 })

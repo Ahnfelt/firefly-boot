@@ -50,6 +50,12 @@ type ArrayBuilder[T]() // (items: T...)
 extend self[T]: ArrayBuilder[T] {
     getArray(): Array[T] {}
     getEmpty(): Bool {}
+    getSize(): Int {}
+    append(value: T): Unit {}
+    modify(index: Int, body: T => T): Unit {}
+    drain(): Array[T] {}
+    getLast(): Option[T] {}
+    expectLast(): T {}
 }
 
 type List[T] {}
@@ -198,6 +204,7 @@ extend self[T]: Array[T] {
 }
 
 extend self[T]: SetBuilder[T] {
+    contains(value: T): Bool {}
     add(value: T): Unit {}
     each(body: T => Unit): Unit {}
     all(body: T => Bool): Bool {}

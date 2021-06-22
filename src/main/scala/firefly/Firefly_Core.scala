@@ -318,9 +318,13 @@ object Firefly_Core {
         def all(body : T => Bool) : Bool = list.forall(body)
         def any(body : T => Bool) : Bool = list.exists(body)
         def modify(index : Int, body : T => T) : Unit = list.update(index, body(list(index)))
+        def append(item : T) = list += item
+        def drain() = { val result = list.toArray[T]; list.clear(); result }
         def getSize() : Int = list.length
         def getArray(): Array[T] = list.toArray[T]
         def getEmpty() : Bool = list.isEmpty
+        def getLast() : Option[T] = list.lastOption
+        def expectLast() : T = list.last
     }
 
     implicit class Firefly_SetBuilder[T](list : SetBuilder[T]) {
