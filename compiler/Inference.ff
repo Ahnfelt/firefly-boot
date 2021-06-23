@@ -107,7 +107,7 @@ extend self: Inference {
     }
 
     inferLambda(environment: Environment, expected: Type, lambda: Lambda): Lambda {
-        let unitName = "ff:core/Core.Unit"
+        let unitName = core("Unit")
         let returnsUnit = self.unification.substitute(expected).{
             | TConstructor(_, name, ts) {name.startsWith("Function$")} =>
                 ts.expectLast().{
@@ -272,7 +272,7 @@ extend self: Inference {
                     after = self.inferTerm(environment, expected, after)
                 )
             | ELet e =>
-                let scheme = Scheme(True, False, Signature(e.at, e.name, [], [], [], e.valueType))
+                let scheme = Scheme(True, e.mutable, Signature(e.at, e.name, [], [], [], e.valueType))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
@@ -416,15 +416,28 @@ extend self: Inference {
                     functions = newFunctions,
                     body = newBody
                 )
+            | EAssign e =>
+                self.lookup(environment, e.at, e.variable, []).map { instantiated =>
+                    if(instantiated.scheme.isMutable) {
+                        let t = instantiated.scheme.signature.returnType
+                        if(e.operator == "+" || e.operator == "-") {
+                            self.unification.unify(e.at, t, TConstructor(e.at, core("Int"), []))
+                        } elseIf {e.operator != ""} {
+                            fail(e.at, "Only +=, -= and = assignments are supported. Got: " + e.operator + "=")
+                        }
+                        let value = self.inferTerm(environment, t, e.value)
+                        self.unification.unify(e.at, expected, TConstructor(e.at, core("Unit"), []))
+                        e.EAssign(
+                            value = value
+                        )
+                    } else {
+                        fail(e.at, "Symbol is not mutable: " + e.variable)
+                    }
+                } else {
+                    fail(e.at, "Symbol not in scope: " + e.variable)
+                }
             | _ => term
             /*
-            | EAssign(at, operator, variable, value) =>
-                EAssign(
-                    at = at
-                    operator =
-                    variable =
-                    value =
-                )
             | EAssignField(at, operator, record, field, value) =>
                 EAssignField(
                     at = at

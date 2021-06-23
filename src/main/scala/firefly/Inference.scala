@@ -70,7 +70,7 @@ definition.copy(body = self.inferLambda(environment2, functionType, definition.b
 }
 
 def inferLambda(environment : Environment_.Environment, expected : Syntax_.Type, lambda : Syntax_.Lambda) : Syntax_.Lambda = {
-val unitName = "ff:core/Core.Unit";
+val unitName = Inference_.core("Unit");
 val returnsUnit = pipe_dot(self.unification.substitute(expected))({
 case (Syntax_.TConstructor(_, name, ts)) if name.startsWith("Function$") =>
 pipe_dot(ts.expectLast())({
@@ -246,7 +246,7 @@ t
 case (Syntax_.ESequential(at, before, after)) =>
 Syntax_.ESequential(at = at, before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before), after = self.inferTerm(environment, expected, after))
 case (e : Syntax_.ELet) =>
-val scheme = Environment_.Scheme(Firefly_Core.True(), Firefly_Core.False(), Syntax_.Signature(e.at, e.name, List(), List(), List(), e.valueType));
+val scheme = Environment_.Scheme(Firefly_Core.True(), e.mutable, Syntax_.Signature(e.at, e.name, List(), List(), List(), e.valueType));
 val environment2 = environment.copy(symbols = environment.symbols.add(e.name, scheme));
 e.copy(value = self.inferTerm(environment, e.valueType, e.value), body = self.inferTerm(environment2, expected, e.body))
 case (Syntax_.ELambda(at, l)) =>
@@ -382,6 +382,26 @@ self.inferFunctionDefinition(environment2, _w1)
 });
 val newBody = self.inferTerm(environment2, expected, body);
 Syntax_.EFunctions(at = at, functions = newFunctions, body = newBody)
+case (e : Syntax_.EAssign) =>
+self.lookup(environment, e.at, e.variable, List()).map({(instantiated) =>
+Firefly_Core.if_(instantiated.scheme.isMutable, {() =>
+val t = instantiated.scheme.signature.returnType;
+Firefly_Core.if_(((e.operator == "+") || (e.operator == "-")), {() =>
+self.unification.unify(e.at, t, Syntax_.TConstructor(e.at, Inference_.core("Int"), List()))
+}).elseIf({() =>
+(e.operator != "")
+}, {() =>
+Inference_.fail(e.at, (("Only +=, -= and = assignments are supported. Got: " + e.operator) + "="))
+});
+val value = self.inferTerm(environment, t, e.value);
+self.unification.unify(e.at, expected, Syntax_.TConstructor(e.at, Inference_.core("Unit"), List()));
+e.copy(value = value)
+}).else_({() =>
+Inference_.fail(e.at, ("Symbol is not mutable: " + e.variable))
+})
+}).else_({() =>
+Inference_.fail(e.at, ("Symbol not in scope: " + e.variable))
+})
 case (_) =>
 term
 })
