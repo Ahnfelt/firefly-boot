@@ -187,11 +187,14 @@ extend self[K, V]: Map[K, V] {
     get(key: K): Option[V] {}
     expect(key: K): V {}
     add(key: K, value: V) : Map[K, V] {}
+    remove(key: K) : Map[K, V] {}
     map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {}
     contains(key: K): Bool {}
 }
 
 extend self[K]: Set[K] {
+    add(key: K): Set[K] {}
+    remove(key: K) : Set[K] {}
     contains(key: K): Bool {}
 }
 

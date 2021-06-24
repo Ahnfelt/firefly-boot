@@ -385,16 +385,7 @@ Syntax_.EFunctions(at = at, functions = newFunctions, body = newBody)
 case (e : Syntax_.EAssign) =>
 self.lookup(environment, e.at, e.variable, List()).map({(instantiated) =>
 Firefly_Core.if_(instantiated.scheme.isMutable, {() =>
-val t = instantiated.scheme.signature.returnType;
-Firefly_Core.if_(((e.operator == "+") || (e.operator == "-")), {() =>
-self.unification.unify(e.at, t, Syntax_.TConstructor(e.at, Inference_.core("Int"), List()))
-}).elseIf({() =>
-(e.operator != "")
-}, {() =>
-Inference_.fail(e.at, (("Only +=, -= and = assignments are supported. Got: " + e.operator) + "="))
-});
-val value = self.inferTerm(environment, t, e.value);
-self.unification.unify(e.at, expected, Syntax_.TConstructor(e.at, Inference_.core("Unit"), List()));
+val value = self.inferAssignment(environment = environment, expected = expected, at = e.at, operator = e.operator, value = e.value, signature = instantiated.scheme.signature);
 e.copy(value = value)
 }).else_({() =>
 Inference_.fail(e.at, ("Symbol is not mutable: " + e.variable))
@@ -402,9 +393,43 @@ Inference_.fail(e.at, ("Symbol is not mutable: " + e.variable))
 }).else_({() =>
 Inference_.fail(e.at, ("Symbol not in scope: " + e.variable))
 })
+case (e : Syntax_.EAssignField) =>
+val recordType = self.unification.freshTypeVariable(e.at);
+val record = self.inferTerm(environment, recordType, e.record);
+pipe_dot(self.unification.substitute(recordType))({
+case (t @ (Syntax_.TConstructor(_, name, typeArguments))) if name.startsWith("Record$") =>
+Inference_.fail(e.at, ("Can't assign fields of anonymous records: " + e.field))
+case (t @ (Syntax_.TConstructor(_, name, typeArguments))) =>
+val methodName = ((name + "_") + e.field);
+pipe_dot(self.lookup(environment, e.at, methodName, typeArguments))({
+case (Firefly_Core.Some(instantiated)) if instantiated.scheme.isMutable =>
+val value = self.inferAssignment(environment = environment, expected = expected, at = e.at, operator = e.operator, value = e.value, signature = instantiated.scheme.signature);
+e.copy(record = record, value = value)
+case (Firefly_Core.Some(instantiated)) =>
+Inference_.fail(e.at, ((("Can't assign an immutable field " + e.field) + " on type: ") + t.show()))
+case (Firefly_Core.None()) =>
+Inference_.fail(e.at, ((("No such field " + e.field) + " on type: ") + t.show()))
+})
+case (Syntax_.TVariable(_, index)) =>
+Inference_.fail(e.at, ((("No such field " + e.field) + " on unknown type: $") + index))
+})
 case (_) =>
 term
 })
+}
+
+def inferAssignment(environment : Environment_.Environment, expected : Syntax_.Type, at : Syntax_.Location, operator : Firefly_Core.String, value : Syntax_.Term, signature : Syntax_.Signature) : Syntax_.Term = {
+val t = signature.returnType;
+Firefly_Core.if_(((operator == "+") || (operator == "-")), {() =>
+self.unification.unify(at, t, Syntax_.TConstructor(at, Inference_.core("Int"), List()))
+}).elseIf({() =>
+(operator != "")
+}, {() =>
+Inference_.fail(at, (("Only +=, -= and = assignments are supported. Got: " + operator) + "="))
+});
+val newValue = self.inferTerm(environment, t, value);
+self.unification.unify(at, expected, Syntax_.TConstructor(at, Inference_.core("Unit"), List()));
+newValue
 }
 
 def inferMethodCall(environment : Environment_.Environment, expected : Syntax_.Type, signature : Syntax_.Signature, instantiation : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]], term : Syntax_.Term, record : Syntax_.Term, name : Firefly_Core.String) : Syntax_.Term = {

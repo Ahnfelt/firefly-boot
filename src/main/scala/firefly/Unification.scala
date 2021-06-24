@@ -65,12 +65,12 @@ self.constrain(at, self.get(i), constraintName, generics)
 case (Syntax_.TVariable(_, i)) =>
 pipe_dot(self.constraints.get(i))({
 case (Firefly_Core.None()) =>
-self.constraints += Firefly_Core.Pair(i, Firefly_Core.Map(Firefly_Core.Pair(constraintName, Unification_.ConstraintGenerics(at, generics))))
+self.constraints = self.constraints.add(i, List(Firefly_Core.Pair(constraintName, Unification_.ConstraintGenerics(at, generics))).getMap())
 case (Firefly_Core.Some(map)) =>
 pipe_dot(map.get(constraintName))({
 case (Firefly_Core.None()) =>
 val newMap = map.add(constraintName, Unification_.ConstraintGenerics(at, generics));
-self.constraints = self.constraints.updated(i, newMap)
+self.constraints = self.constraints.add(i, newMap)
 case (Firefly_Core.Some(Unification_.ConstraintGenerics(_, generics2))) =>
 generics.zip(generics2).each({
 case (Firefly_Core.Pair(t1, t2)) =>
@@ -116,7 +116,7 @@ def get(index : Firefly_Core.Int) : Syntax_.Type = {
 pipe_dot(self.substitution.expect(index))({
 case (Syntax_.TVariable(_, i)) if self.has(i) =>
 val t = self.get(i);
-self.substitution += Firefly_Core.Pair(index, t);
+self.substitution = self.substitution.add(index, t);
 t
 case (t) =>
 t
@@ -165,9 +165,9 @@ def bind(at : Syntax_.Location, index : Firefly_Core.Int, type_ : Syntax_.Type) 
 Firefly_Core.if_(self.occursIn(index, type_), {() =>
 self.fail(at, ((("Infinite type: $" + index) + " = ") + self.substitute(type_).show()))
 });
-self.substitution += Firefly_Core.Pair(index, type_);
+self.substitution = self.substitution.add(index, type_);
 self.constraints.get(index).each({(map) =>
-self.constraints -= index;
+self.constraints = self.constraints.remove(index);
 map.pairs().each({
 case (Firefly_Core.Pair(name, Unification_.ConstraintGenerics(at2, generics))) =>
 self.constrain(at2, type_, name, generics)

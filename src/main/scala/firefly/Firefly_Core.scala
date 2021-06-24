@@ -283,6 +283,7 @@ object Firefly_Core {
         def all(body : T => Bool) : Bool = set.forall(body)
         def any(body : T => Bool) : Bool = set.exists(body)
         def add(value : T) : Set[T] = set + value
+        def remove(value : T) : Set[T] = set - value
         def getSize() : Int = set.size
     }
 
@@ -291,6 +292,7 @@ object Firefly_Core {
         def all(body : Pair[K, V] => Bool) : Bool = map.forall(body)
         def any(body : Pair[K, V] => Bool) : Bool = map.exists(body)
         def add(key : K, value : V) : Map[K, V] = map + (key -> value)
+        def remove(key : K) : Map[K, V] = map - key
         def pairs() : List[(K, V)] = map.toList
         def getSize() : Int = map.size
         def expect(key : K) : V = map(key)

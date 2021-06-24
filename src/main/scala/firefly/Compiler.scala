@@ -27,7 +27,7 @@ val file = (moduleName + ".ff");
 val code = self.files.readText(((self.inputPath + "/") + file));
 val tokens = Tokenizer_.tokenize(file, code);
 val result = Parser_.make(file, tokens).parseModule();
-self.parsedModules = self.parsedModules.updated(moduleName, result);
+self.parsedModules = self.parsedModules.add(moduleName, result);
 result
 })
 }
@@ -47,7 +47,7 @@ val coreModule = self.parse("../core/Core");
 val module = self.parse(moduleName);
 val otherModules = self.imports(module);
 val result = Resolver_.make(coreModule).resolveModule(module, otherModules);
-self.resolvedModules = self.resolvedModules.updated(moduleName, result);
+self.resolvedModules = self.resolvedModules.add(moduleName, result);
 result
 })
 }
@@ -67,7 +67,7 @@ Inference_.make(instances).inferModule(coreModule, module, otherModules)
 }).else_({() =>
 module
 });
-self.inferredModules = self.inferredModules.updated(moduleName, result);
+self.inferredModules = self.inferredModules.add(moduleName, result);
 module
 })
 }

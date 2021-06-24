@@ -419,14 +419,14 @@ extend self: Inference {
             | EAssign e =>
                 self.lookup(environment, e.at, e.variable, []).map { instantiated =>
                     if(instantiated.scheme.isMutable) {
-                        let t = instantiated.scheme.signature.returnType
-                        if(e.operator == "+" || e.operator == "-") {
-                            self.unification.unify(e.at, t, TConstructor(e.at, core("Int"), []))
-                        } elseIf {e.operator != ""} {
-                            fail(e.at, "Only +=, -= and = assignments are supported. Got: " + e.operator + "=")
-                        }
-                        let value = self.inferTerm(environment, t, e.value)
-                        self.unification.unify(e.at, expected, TConstructor(e.at, core("Unit"), []))
+                        let value = self.inferAssignment(
+                            environment = environment
+                            expected = expected
+                            at = e.at
+                            operator = e.operator
+                            value = e.value
+                            signature = instantiated.scheme.signature
+                        )
                         e.EAssign(
                             value = value
                         )
@@ -436,18 +436,57 @@ extend self: Inference {
                 } else {
                     fail(e.at, "Symbol not in scope: " + e.variable)
                 }
+            | EAssignField e =>
+                let recordType = self.unification.freshTypeVariable(e.at)
+                let record = self.inferTerm(environment, recordType, e.record)
+                self.unification.substitute(recordType).{
+                    | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
+                        fail(e.at, "Can't assign fields of anonymous records: " + e.field)
+                    | TConstructor(_, name, typeArguments)@t =>
+                        let methodName = name + "_" + e.field
+                        self.lookup(environment, e.at, methodName, typeArguments).{
+                            | Some(instantiated) {instantiated.scheme.isMutable} =>
+                                let value = self.inferAssignment(
+                                    environment = environment
+                                    expected = expected
+                                    at = e.at
+                                    operator = e.operator
+                                    value = e.value
+                                    signature = instantiated.scheme.signature
+                                )
+                                e.EAssignField(
+                                    record = record
+                                    value = value
+                                )
+                            | Some(instantiated) =>
+                                fail(e.at, "Can't assign an immutable field " + e.field + " on type: " + t.show())
+                            | None =>
+                                fail(e.at, "No such field " + e.field + " on type: " + t.show())
+                        }
+                    | TVariable(_, index) =>
+                        fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
+                }
             | _ => term
-            /*
-            | EAssignField(at, operator, record, field, value) =>
-                EAssignField(
-                    at = at
-                    operator = operator
-                    record = self.resolveTerm(record)
-                    field = field
-                    value = self.resolveTerm(value)
-                )
-            */
         }
+    }
+
+    inferAssignment(
+        environment: Environment
+        expected: Type
+        at: Location
+        operator: String
+        value: Term
+        signature: Signature
+    ): Term {
+        let t = signature.returnType
+        if(operator == "+" || operator == "-") {
+            self.unification.unify(at, t, TConstructor(at, core("Int"), []))
+        } elseIf {operator != ""} {
+            fail(at, "Only +=, -= and = assignments are supported. Got: " + operator + "=")
+        }
+        let newValue = self.inferTerm(environment, t, value)
+        self.unification.unify(at, expected, TConstructor(at, core("Unit"), []))
+        newValue
     }
 
     inferMethodCall(

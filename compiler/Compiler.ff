@@ -37,7 +37,7 @@ extend self: Compiler {
         let tokens = Tokenizer.tokenize(file, code)
         let result = Parser.make(file, tokens).parseModule()
 
-        self.parsedModules = self.parsedModules.updated(moduleName, result)
+        self.parsedModules = self.parsedModules.add(moduleName, result)
         result
     }
 
@@ -56,7 +56,7 @@ extend self: Compiler {
         let otherModules = self.imports(module)
         let result = Resolver.make(coreModule).resolveModule(module, otherModules)
 
-        self.resolvedModules = self.resolvedModules.updated(moduleName, result)
+        self.resolvedModules = self.resolvedModules.add(moduleName, result)
         result
     }
 
@@ -69,7 +69,7 @@ extend self: Compiler {
         let instances = coreModule.instances ++ module.instances ++ otherModules.flatMap { _.instances }
         let result = try { Inference.make(instances).inferModule(coreModule, module, otherModules) } else { module }
 
-        self.inferredModules = self.inferredModules.updated(moduleName, result)
+        self.inferredModules = self.inferredModules.add(moduleName, result)
         module // result
     }
 
