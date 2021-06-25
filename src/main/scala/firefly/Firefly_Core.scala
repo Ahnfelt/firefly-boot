@@ -14,7 +14,6 @@ object Firefly_Core {
 
     type SetBuilder[T] = mutable.SortedSet[T]
     type ArrayBuilder[T] = mutable.ArrayBuffer[T]
-    type ListBuilder[T] = mutable.ListBuffer[T]
 
     def SetBuilder[T](items : T*)(implicit ordering : Ordering[T]) = mutable.SortedSet[T](items : _*)
     def ArrayBuilder[T](items : T*) = mutable.ArrayBuffer[T](items : _*)
@@ -39,7 +38,6 @@ object Firefly_Core {
     case class FireflyException(value : Any) extends RuntimeException
 
 
-    def listBuilderOf[T](items : T*) = mutable.ListBuffer[T]()
     def arrayBuilderOf[T](items : T*) = mutable.ArrayBuffer[T]()
     def setOf[T](items : T*) = Set[T]()
     def mapOf[K, V](items : Pair[K, V]*) = Map[K, V]()
@@ -315,12 +313,6 @@ object Firefly_Core {
 
     }
 
-    implicit class Firefly_ListBuilder[T](list : ListBuilder[T]) {
-        def append(item : T) = list += item
-        def drain() = { val result = list.toList; list.clear(); result }
-        def getSize() : Int = list.length
-    }
-
     implicit class Firefly_ArrayBuilder[T : ClassTag](list : ArrayBuilder[T]) {
         def each(body : T => Unit) : Unit = list.foreach(body)
         def all(body : T => Bool) : Bool = list.forall(body)
@@ -328,6 +320,7 @@ object Firefly_Core {
         def modify(index : Int, body : T => T) : Unit = list.update(index, body(list(index)))
         def append(item : T) = list += item
         def drain() = { val result = list.toArray[T]; list.clear(); result }
+        def getList() = { list.toList }
         def getSize() : Int = list.length
         def getArray(): Array[T] = list.toArray[T]
         def getEmpty() : Bool = list.isEmpty

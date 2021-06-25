@@ -13,7 +13,7 @@ case class Instantiated(typeArguments : Firefly_Core.List[Firefly_Core.Pair[Fire
 def make(coreModule : Syntax_.Module, module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Environment_.Environment = {
 Environment_.Environment(((Environment_.processModule(coreModule, Firefly_Core.False(), Firefly_Core.True()).symbols ++ Environment_.processModule(module, Firefly_Core.True(), Firefly_Core.False()).symbols) ++ otherModules.map({(_w1) =>
 Environment_.processModule(_w1, Firefly_Core.False(), Firefly_Core.False()).symbols
-}).foldLeft(Firefly_Core.Map[Firefly_Core.String, Environment_.Scheme]())({(_w1, _w2) =>
+}).foldLeft(Firefly_Core.mapOf[Firefly_Core.String, Environment_.Scheme]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })))
 }

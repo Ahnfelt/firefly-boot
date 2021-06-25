@@ -2,7 +2,7 @@ import Token
 
 tokenize(file: String, code: String): Array[Token] {
 
-    let tokens = ArrayBuilder[Token]()
+    let tokens = arrayBuilderOf[Token]()
     mutable line = 1
     mutable lineOffset = 0
 
@@ -10,9 +10,9 @@ tokenize(file: String, code: String): Array[Token] {
     mutable startLineOffset = lineOffset
 
     let operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;"
-    let operatorCharacters = SetBuilder[Char]()
+    mutable operatorCharacters = setOf[Char]()
     0.getUntil(operatorCharactersString.getSize()).map { j =>
-        operatorCharacters.add(operatorCharactersString.expect(j))
+        operatorCharacters = operatorCharacters.add(operatorCharactersString.expect(j))
     }
 
     function emitToken(kind: TokenKind, startOffset: Int, stopOffset: Int): Unit {

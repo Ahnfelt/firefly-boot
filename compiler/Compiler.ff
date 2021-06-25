@@ -20,10 +20,10 @@ make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
         files = files
         inputPath = inputPath
         outputPath = outputPath
-        parsedModules = Map()
-        resolvedModules = Map()
-        inferredModules = Map()
-        emittedModules = Set()
+        parsedModules = mapOf()
+        resolvedModules = mapOf()
+        inferredModules = mapOf()
+        emittedModules = setOf()
     )
 }
 
@@ -67,7 +67,7 @@ extend self: Compiler {
         let module = self.resolve(moduleName)
         let otherModules = self.imports(module).map { self.resolve(self.files.prefixName(_.file)) }
         let instances = coreModule.instances ++ module.instances ++ otherModules.flatMap { _.instances }
-        let result = try { Inference.make(instances).inferModule(coreModule, module, otherModules) } else { module }
+        let result = Inference.make(instances).inferModule(coreModule, module, otherModules)
 
         self.inferredModules = self.inferredModules.add(moduleName, result)
         module // result

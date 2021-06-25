@@ -16,7 +16,7 @@ def make(instances : Firefly_Core.List[Syntax_.DInstance]) : Unification_.Unific
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show()))
 }
-Unification_.Unification(Firefly_Core.Map(), Firefly_Core.Map(), 2, instances.map({(definition) =>
+Unification_.Unification(Firefly_Core.mapOf(), Firefly_Core.mapOf(), 2, instances.map({(definition) =>
 pipe_dot(definition.traitType)({
 case (Syntax_.TConstructor(at, name, List(Syntax_.TConstructor(_, typeName, _), __seq @ _*))) =>
 val _ = __seq.toList;

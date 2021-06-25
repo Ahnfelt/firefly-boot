@@ -17,7 +17,7 @@ make(coreModule: Module): Resolver {
             coreModule.functions.map { _.signature.name }.map(core).getMap()
         variants = coreModule.types.flatMap { _.variants }.map { _.name }.map(core).getMap()
         types = coreModule.types.map { _.name }.map(core).getMap()
-        traits = Map()
+        traits = mapOf()
     )
 }
 

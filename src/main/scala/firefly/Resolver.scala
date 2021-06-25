@@ -20,7 +20,7 @@ _w1.variants
 _w1.name
 }).map(core).getMap(), types = coreModule.types.map({(_w1) =>
 _w1.name
-}).map(core).getMap(), traits = Firefly_Core.Map())
+}).map(core).getMap(), traits = Firefly_Core.mapOf())
 }
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {

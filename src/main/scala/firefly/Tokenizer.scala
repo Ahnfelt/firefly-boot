@@ -7,15 +7,15 @@ object Tokenizer_ {
 
 
 def tokenize(file : Firefly_Core.String, code : Firefly_Core.String) : Firefly_Core.Array[Token_.Token] = {
-val tokens = Firefly_Core.ArrayBuilder[Token_.Token]();
+val tokens = Firefly_Core.arrayBuilderOf[Token_.Token]();
 var line = 1;
 var lineOffset = 0;
 var startLine = line;
 var startLineOffset = lineOffset;
 val operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;";
-val operatorCharacters = Firefly_Core.SetBuilder[Firefly_Core.Char]();
+var operatorCharacters = Firefly_Core.setOf[Firefly_Core.Char]();
 0.getUntil(operatorCharactersString.getSize()).map({(j) =>
-operatorCharacters.add(operatorCharactersString.expect(j))
+operatorCharacters = operatorCharacters.add(operatorCharactersString.expect(j))
 });
 def emitToken(kind : Token_.TokenKind, startOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int) : Firefly_Core.Unit = {
 Firefly_Core.if_((!tokens.getEmpty()), {() =>

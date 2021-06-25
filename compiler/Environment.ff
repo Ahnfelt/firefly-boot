@@ -19,7 +19,7 @@ make(coreModule: Module, module: Module, otherModules: List[Module]): Environmen
     Environment(
         processModule(coreModule, False, True).symbols ++
         processModule(module, True, False).symbols ++
-        otherModules.map { processModule(_, False, False).symbols }.foldLeft(Map[String, Scheme]())({ _ ++ _ })
+        otherModules.map { processModule(_, False, False).symbols }.foldLeft(mapOf[String, Scheme]())({ _ ++ _ })
     )
 }
 

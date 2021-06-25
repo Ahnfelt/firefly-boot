@@ -1,17 +1,29 @@
-if[T](condition: Bool, body: () => T): Option[T] {}
+if[T](condition: Bool, body: () => T): Option[T] {
+    condition.{
+        | False => None
+        | True => Some(body())
+    }
+}
 
-while(condition: () => Bool, body: () => Unit): Unit {}
+while(condition: () => Bool, body: () => Unit): Unit {
+    condition().{
+        | False =>
+        | True =>
+            body()
+            /*tailcall*/ while(condition, body)
+    }
+}
 
-do[T](body: () => T): T {}
+do[T](body: () => T): T {
+    body()
+}
 
 panic[T](message: String): T {}
-
+magicInstance[T](typeName: String): T {}
 magicShow[T](value: T): String {}
-
 magicHashCode[T](value: T): Int {}
 
-listBuilderOf[T](): ListBuilder[T] {} // (items: T...)
-arrayBuilderOf[T](): ListBuilder[T] {} // (items: T...)
+arrayBuilderOf[T](): ArrayBuilder[T] {} // (items: T...)
 setOf[T](): Set[T] {} // (items: T...)
 mapOf[K, V](): Map[K, V] {} // (items: T...)
 
@@ -45,7 +57,7 @@ type Pair[A, B](first: A, second: B)
 
 type Array[T]() // (items: T...)
 
-type ArrayBuilder[T]() // (items: T...)
+type ArrayBuilder[T] {} // (items: T...)
 
 extend self[T]: ArrayBuilder[T] {
     getArray(): Array[T] {}
@@ -54,27 +66,18 @@ extend self[T]: ArrayBuilder[T] {
     append(value: T): Unit {}
     modify(index: Int, body: T => T): Unit {}
     drain(): Array[T] {}
+    getList(): List[T] {}
     getLast(): Option[T] {}
     expectLast(): T {}
 }
 
-type List[T] {}
-
-type ListBuilder[T]() // (items: T...)
-
-extend self[T]: ListBuilder[T] {
-    append(value: T): Unit {}
-    drain(): List[T] {}
+type List[T] {
+    Empty
+    Link(head: T, tail: List[T])
 }
 
-
-type Map[K, V]() // (items: Pair[K, V]...)
-
-type MapBuilder[K, V]() // (items: Pair[K, V]...)
-
-type Set[T]() // (items: T...)
-
-type SetBuilder[T]() // (items: T...)
+type Map[K, V] {}
+type Set[T] {} // (items: T...)
 
 type Int {}
 type String {}
@@ -207,15 +210,6 @@ extend self[T]: Array[T] {
     dropFirst(count: Int = 1): Array[T] {}
     dropLast(count: Int = 1): Array[T] {}
     getList(): List[T] {}
-}
-
-extend self[T]: SetBuilder[T] {
-    contains(value: T): Bool {}
-    add(value: T): Unit {}
-    each(body: T => Unit): Unit {}
-    all(body: T => Bool): Bool {}
-    any(body: T => Bool): Bool {}
-    getSize(): Int {}
 }
 
 extend self: System {

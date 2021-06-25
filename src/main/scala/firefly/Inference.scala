@@ -119,7 +119,7 @@ case_.copy(condition = condition, body = body)
 def inferPattern(environment : Environment_.Environment, expected : Syntax_.Type, pattern : Syntax_.MatchPattern) : Firefly_Core.Map[Firefly_Core.String, Syntax_.Type] = {
 pipe_dot(pattern)({
 case (Syntax_.PVariable(at, Firefly_Core.None())) =>
-Firefly_Core.Map()
+Firefly_Core.mapOf()
 case (Syntax_.PVariable(at, Firefly_Core.Some(name))) =>
 List(Firefly_Core.Pair(name, expected)).getMap()
 case (Syntax_.PAlias(at, pattern, variable)) =>
@@ -132,14 +132,14 @@ case (Firefly_Core.Pair(item, Firefly_Core.False())) =>
 self.inferPattern(environment, t, item)
 case (Firefly_Core.Pair(item, Firefly_Core.True())) =>
 self.inferPattern(environment, listType, item)
-}).foldLeft(Firefly_Core.Map[Firefly_Core.String, Syntax_.Type]())({(_w1, _w2) =>
+}).foldLeft(Firefly_Core.mapOf[Firefly_Core.String, Syntax_.Type]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 case (Syntax_.PVariantAs(at, name, Firefly_Core.None())) =>
 val instantiated = self.lookup(environment, at, name, List()).else_({() =>
 Inference_.fail(at, ("No such variant: " + name))
 });
-Firefly_Core.Map()
+Firefly_Core.mapOf()
 case (Syntax_.PVariantAs(at, name, Firefly_Core.Some(variable))) =>
 val instantiated = self.lookup(environment, at, name, List()).else_({() =>
 Inference_.fail(at, ("No such variant: " + name))
@@ -162,7 +162,7 @@ self.unification.unify(at, expected, instantiated.scheme.signature.returnType);
 patterns.zip(instantiated.scheme.signature.parameters).map({
 case (Firefly_Core.Pair(pattern, parameter)) =>
 self.inferPattern(environment, parameter.valueType, pattern)
-}).foldLeft(Firefly_Core.Map[Firefly_Core.String, Syntax_.Type]())({(_w1, _w2) =>
+}).foldLeft(Firefly_Core.mapOf[Firefly_Core.String, Syntax_.Type]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 })
