@@ -22,6 +22,7 @@ panic[T](message: String): T {}
 magicInstance[T](typeName: String): T {}
 magicShow[T](value: T): String {}
 magicHashCode[T](value: T): Int {}
+magicLess[T](x: T, y: T): Bool {}
 
 arrayBuilderOf[T](): ArrayBuilder[T] {} // (items: T...)
 setOf[T](): Set[T] {} // (items: T...)

@@ -10,8 +10,8 @@ extend self[K, V]: RbMap[K, V] {
     get(key: K): Option[V] {
         self.{
             | RbLeaf => None
-            | RbNode(_, l, k, _, _) {key < k} => l.get(key)
-            | RbNode(_, _, k, _, r) {key > k} => r.get(key)
+            | RbNode(_, l, k, _, _) {magicLess(key, k)} => l.get(key)
+            | RbNode(_, _, k, _, r) {magicLess(k, key)} => r.get(key)
             | RbNode(_, _, _, v, _) => Some(v)
         }
     }
@@ -20,8 +20,8 @@ extend self[K, V]: RbMap[K, V] {
         function go(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => RbNode(True, RbLeaf, key, value, RbLeaf)
-                | RbNode(c, l, k, v, r) {key < k} => RbNode(c, go(l), k, v, r).balance()
-                | RbNode(c, l, k, v, r) {key > k} => RbNode(c, l, k, v, go(r)).balance()
+                | RbNode(c, l, k, v, r) {magicLess(key, k)} => RbNode(c, go(l), k, v, r).balance()
+                | RbNode(c, l, k, v, r) {magicLess(k, key)} => RbNode(c, l, k, v, go(r)).balance()
                 | RbNode(c, l, _, _, r) => RbNode(c, l, key, value, r)
             }
         }
@@ -31,7 +31,7 @@ extend self[K, V]: RbMap[K, V] {
         }
     }
 
-    remove(key: K): RbMap[K, V] {
+    /*remove(key: K): RbMap[K, V] {
         function goLeft(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => self
@@ -58,7 +58,7 @@ extend self[K, V]: RbMap[K, V] {
             | RbNode n {n.isRed} => n.RbNode(isRed = False)
             | n => n
         }
-    }
+    }*/
 
     balance(): RbMap[K, V] {
         self.{

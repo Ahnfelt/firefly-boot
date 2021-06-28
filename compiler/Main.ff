@@ -21,13 +21,14 @@ main(system: System): Unit {
     let scalaPathFile = tempPath + "/src/main/scala/firefly"
     fs.createDirectories(scalaPathFile)
 
-    let success = try {
+    let success = do { //try {
         Compiler.make(fs, inputPath, scalaPathFile).emit("Main")
         True
-    } else {
+    }
+    /*} else {
         log.debug("An exception was thrown from Compiler.")
         False
-    }
+    }*/
 
     if(success) {
         writeExtraFiles(fs, corePath, tempPath, scalaPathFile)

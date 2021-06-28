@@ -30,12 +30,9 @@ Main_.deleteDirectory(fs, tempPath)
 fs.createDirectory(tempPath);
 val scalaPathFile = (tempPath + "/src/main/scala/firefly");
 fs.createDirectories(scalaPathFile);
-val success = Firefly_Core.try_({() =>
+val success = Firefly_Core.do_({() =>
 Compiler_.make(fs, inputPath, scalaPathFile).emit("Main");
 Firefly_Core.True()
-}).else_({() =>
-Firefly_Core.log.debug("An exception was thrown from Compiler.");
-Firefly_Core.False()
 });
 Firefly_Core.if_(success, {() =>
 Main_.writeExtraFiles(fs, corePath, tempPath, scalaPathFile);
