@@ -80,7 +80,7 @@ extend self: Compiler {
         let module = self.infer(moduleName)
         self.imports(module).each { self.emit(self.files.prefixName(_.file)) }
 
-        let emitted = Emitter.emitModule(module)
+        let emitted = Emitter.emitModule(self.inputPath, module)
         let file = self.outputPath + "/" + moduleName + ".scala"
         self.files.writeText(file, emitted)
     }

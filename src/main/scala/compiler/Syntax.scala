@@ -1,5 +1,5 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 object Syntax_ {
 
 case class Location(file : Firefly_Core.String, line : Firefly_Core.Int, column : Firefly_Core.Int)

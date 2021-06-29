@@ -1,7 +1,7 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Syntax_._
+import compiler.Syntax_._
 object Wildcards_ {
 
 case class Wildcards(var seenWildcards : Firefly_Core.Int)

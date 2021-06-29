@@ -1,4 +1,4 @@
-package firefly
+package compiler
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
@@ -45,6 +45,7 @@ object Firefly_Core {
 
     def magicShow[T](value : T) = value.toString
     def magicHashCode[T](value : T) = value.hashCode()
+    def magicLess[T](x : T, y : T) : Boolean = x.asInstanceOf[Ordered[T]] < y
 
 
     object Unit {

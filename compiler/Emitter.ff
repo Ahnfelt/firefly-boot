@@ -4,12 +4,12 @@ fail[T](at: Location, message: String): T {
     panic(message + " " + at.show())
 }
 
-emitModule(module: Module): String {
+emitModule(package: String, module: Module): String {
     let moduleNamespace =
         module.file.replace("\\", "/").getReverse().takeWhile { _ != '/' }.getReverse().takeWhile { _ != '.' }
     let parts = [
-        ["package firefly"]
-        ["import firefly.Firefly_Core._", ...module.imports.map { "import firefly." + _.file + "_._" }]
+        ["package " + package]
+        ["import " + package + ".Firefly_Core._", ...module.imports.map { "import " + package + "." + _.file + "_._" }]
         ["object " + moduleNamespace + "_ {"]
         if(module.functions.exists { _.signature.name == "main" }) { [emitMain()] } else { [] }
         module.types.map(emitTypeDefinition)

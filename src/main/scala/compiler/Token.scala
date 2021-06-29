@@ -1,7 +1,7 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Syntax_._
+import compiler.Syntax_._
 object Token_ {
 
 case class Token(file : Firefly_Core.String, code : Firefly_Core.String, kind : Token_.TokenKind, startLine : Firefly_Core.Int, startLineOffset : Firefly_Core.Int, startOffset : Firefly_Core.Int, stopLine : Firefly_Core.Int, stopLineOffset : Firefly_Core.Int, stopOffset : Firefly_Core.Int)

@@ -1,7 +1,7 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Token_._
+import compiler.Token_._
 object Tokenizer_ {
 
 

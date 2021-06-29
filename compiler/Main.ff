@@ -31,18 +31,18 @@ main(system: System): Unit {
     }*/
 
     if(success) {
-        writeExtraFiles(fs, corePath, tempPath, scalaPathFile)
+        writeExtraFiles(fs, inputPath, corePath, tempPath, scalaPathFile)
         if(fs.exists(outputPath)) { deleteDirectory(fs, outputPath) }
         fs.rename(scalaPathFile, outputPath)
     }
 
 }
 
-writeExtraFiles(fs: FileSystem, corePath: String, outputFile: String, scalaFile: String): Unit {
+writeExtraFiles(fs: FileSystem, package: String, corePath: String, outputFile: String, scalaFile: String): Unit {
     let coreSubPath = "scala/com/github/ahnfelt/firefly/library/Firefly_Core.scala"
     let core = fs.readText(corePath + "/" + coreSubPath).replaceFirst(
         "package com.github.ahnfelt.firefly.library",
-        "package firefly"
+        "package " + package
     )
     fs.writeText(scalaFile + "/Firefly_Core.scala", core)
     fs.writeText(outputFile + "/build.sbt", "scalaVersion := \"2.13.3\"")

@@ -1,7 +1,7 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Syntax_._
+import compiler.Syntax_._
 object Unification_ {
 
 case class Unification(var substitution : Firefly_Core.Map[Firefly_Core.Int, Syntax_.Type], var constraints : Firefly_Core.Map[Firefly_Core.Int, Firefly_Core.Map[Firefly_Core.String, Unification_.ConstraintGenerics]], var nextTypeVariableIndex : Firefly_Core.Int, instances : Firefly_Core.Map[Unification_.InstanceKey, Unification_.InstanceValue])

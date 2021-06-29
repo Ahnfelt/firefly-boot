@@ -1,11 +1,11 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Syntax_._
+import compiler.Syntax_._
 
-import firefly.Unification_._
+import compiler.Unification_._
 
-import firefly.Environment_._
+import compiler.Environment_._
 object Inference_ {
 
 case class Inference(unification : Unification_.Unification)

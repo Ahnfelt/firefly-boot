@@ -1,17 +1,17 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Syntax_._
+import compiler.Syntax_._
 
-import firefly.Tokenizer_._
+import compiler.Tokenizer_._
 
-import firefly.Parser_._
+import compiler.Parser_._
 
-import firefly.Resolver_._
+import compiler.Resolver_._
 
-import firefly.Inference_._
+import compiler.Inference_._
 
-import firefly.Emitter_._
+import compiler.Emitter_._
 object Compiler_ {
 
 case class Compiler(files : Firefly_Core.FileSystem, inputPath : Firefly_Core.String, outputPath : Firefly_Core.String, var parsedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var resolvedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var inferredModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var emittedModules : Firefly_Core.Set[Firefly_Core.String])
@@ -77,7 +77,7 @@ val module = self.infer(moduleName);
 self.imports(module).each({(_w1) =>
 self.emit(self.files.prefixName(_w1.file))
 });
-val emitted = Emitter_.emitModule(module);
+val emitted = Emitter_.emitModule(self.inputPath, module);
 val file = (((self.outputPath + "/") + moduleName) + ".scala");
 self.files.writeText(file, emitted)
 })

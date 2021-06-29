@@ -1,7 +1,7 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Syntax_._
+import compiler.Syntax_._
 object Emitter_ {
 
 
@@ -10,14 +10,14 @@ def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show()))
 }
 
-def emitModule(module : Syntax_.Module) : Firefly_Core.String = {
+def emitModule(package_ : Firefly_Core.String, module : Syntax_.Module) : Firefly_Core.String = {
 val moduleNamespace = module.file.replace("\\", "/").getReverse().takeWhile({(_w1) =>
 (_w1 != '/')
 }).getReverse().takeWhile({(_w1) =>
 (_w1 != '.')
 });
-val parts = List(List("package firefly"), (List(List("import firefly.Firefly_Core._"), module.imports.map({(_w1) =>
-(("import firefly." + _w1.file) + "_._")
+val parts = List(List(("package " + package_)), (List(List((("import " + package_) + ".Firefly_Core._")), module.imports.map({(_w1) =>
+(((("import " + package_) + ".") + _w1.file) + "_._")
 })).flatten), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")
 }), {() =>

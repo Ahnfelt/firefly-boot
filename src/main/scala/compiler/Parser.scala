@@ -1,11 +1,11 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Token_._
+import compiler.Token_._
 
-import firefly.Wildcards_._
+import compiler.Wildcards_._
 
-import firefly.Syntax_._
+import compiler.Syntax_._
 object Parser_ {
 
 case class Parser(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token], end : Token_.Token, var offset : Firefly_Core.Int, var nextTypeVariableIndex : Firefly_Core.Int)

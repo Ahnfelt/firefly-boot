@@ -1,7 +1,7 @@
-package firefly
-import firefly.Firefly_Core._
+package compiler
+import compiler.Firefly_Core._
 
-import firefly.Syntax_._
+import compiler.Syntax_._
 object Environment_ {
 
 case class Environment(symbols : Firefly_Core.Map[Firefly_Core.String, Environment_.Scheme])
