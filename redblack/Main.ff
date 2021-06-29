@@ -2,7 +2,7 @@ import RbMap
 
 main(system: System): Unit {
 
-    mutable map = RbLeaf
+    mutable map : RbMap[Int, String] = RbLeaf
     // TODO: Why does the parser not like [ on the beginning of a line?
     let pairs = [Pair(1, "One"), Pair(2, "Two"), Pair(3, "Three")]
     pairs.each {| Pair(k, v) =>
