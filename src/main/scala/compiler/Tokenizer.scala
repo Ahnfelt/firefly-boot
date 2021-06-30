@@ -26,7 +26,7 @@ _w1.copy(kind = Token_.LKeyword())
 })
 });
 Firefly_Core.if_((((last.stopLine != startLine) && last.kind.beforeSeparator()) && kind.afterSeparator()), {() =>
-tokens.append(Token_.Token(file, code, Token_.LSeparator(), startLine, startLineOffset, startOffset, line, lineOffset, stopOffset))
+tokens.append(Token_.Token(file, code, Token_.LSeparator(), startLine, startLineOffset, startOffset, startLine, startLineOffset, startOffset))
 })
 });
 tokens.append(Token_.Token(file, code, kind, startLine, startLineOffset, startOffset, line, lineOffset, stopOffset))

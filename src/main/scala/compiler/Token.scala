@@ -57,7 +57,7 @@ def is3(kind1 : Token_.TokenKind, kind2 : Token_.TokenKind, kind3 : Token_.Token
 }
 
 def rawIs(value : Firefly_Core.String) : Firefly_Core.Bool = {
-token.code.sliceEquals(token.startOffset, value, 0, value.getSize())
+(((token.stopOffset - token.startOffset) == value.getSize()) && token.code.sliceEquals(token.startOffset, value, 0, value.getSize()))
 }
 
 }

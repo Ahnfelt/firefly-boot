@@ -23,7 +23,9 @@ tokenize(file: String, code: String): Array[Token] {
             }
             if(last.stopLine != startLine && last.kind.beforeSeparator() && kind.afterSeparator()) {
                 tokens.append(Token(
-                    file, code, LSeparator, startLine, startLineOffset, startOffset, line, lineOffset, stopOffset
+                    file, code, LSeparator,
+                    startLine, startLineOffset, startOffset,
+                    startLine, startLineOffset, startOffset
                 ))
             }
         }
