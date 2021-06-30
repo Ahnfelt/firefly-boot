@@ -45,7 +45,7 @@ object Firefly_Core {
 
     def magicShow[T](value : T) = value.toString
     def magicHashCode[T](value : T) = value.hashCode()
-    def magicLess[T](x : T, y : T) : Boolean = x.asInstanceOf[Ordered[T]] < y
+    def magicLess[T](x : T, y : T) : Boolean = x.asInstanceOf[Comparable[T]].compareTo(y) < 0
 
 
     object Unit {

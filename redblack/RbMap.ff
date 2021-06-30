@@ -26,7 +26,7 @@ extend self[K, V]: RbMap[K, V] {
             }
         }
         go(self).{
-            | RbNode n {n.isRed} => n.RbNode(isRed = False)
+            | RbNode(True, l, k, v, r) => RbNode(False, l, k, v, r)
             | n => n
         }
     }
