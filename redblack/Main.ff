@@ -15,4 +15,7 @@ main(system: System): Unit {
     }
     log.debug(map)
 
+    map = map.remove(2)
+    log.debug(map)
+
 }

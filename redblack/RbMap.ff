@@ -31,34 +31,77 @@ extend self[K, V]: RbMap[K, V] {
         }
     }
 
-    /*remove(key: K): RbMap[K, V] {
+    remove(key: K): RbMap[K, V] {
         function goLeft(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => self
-                | RbNode(c, l, k, v, r) {!l.isRed} => balanceLeft(RbNode(False, go(l), k, v, r))
-                | RbNode(c, l, k, v, r) => balanceLeft(RbNode(True, go(l), k, v, r))
+                | RbNode(_, RbNode(False, a, k1, v1, b), k2, v2, c) =>
+                    balanceLeft(RbNode(False, go(RbNode(False, a, k1, v1, b)), k2, v2, c))
+                | RbNode(_, a, k, v, b) => RbNode(True, go(a), k, v, b)
             }
         }
         function goRight(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => self
-                | RbNode(c, l, k, v, r) {!r.isRed} => balanceRight(RbNode(False, l, k, v, go(r)))
-                | RbNode(c, l, k, v, r) => balanceRight(RbNode(True, l, k, v, go(r)))
+                | RbNode(_, a, k1, v1, RbNode(False, b, k2, v2, c)) =>
+                    balanceRight(RbNode(False, a, k1, v1, go(RbNode(False, b, k2, v2, c))))
+                | RbNode(_, a, k, v, b) => RbNode(True, a, k, v, go(b))
             }
         }
         function go(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => self
-                | RbNode(_, _, k, _, _) {key < k} => goLeft(self)
-                | RbNode(_, _, k, _, _) {key > k} => goRight(self)
-                | _ => fuse(self)
+                | RbNode(_, _, k, _, _) {magicLess(key, k)} => goLeft(self)
+                | RbNode(_, _, k, _, _) {magicLess(k, key)} => goRight(self)
+                | RbNode(_, a, _, _, b) => fuse(a, b)
+            }
+        }
+        function balanceLeft(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c) =>
+                    RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, c)
+                | RbNode(False, a, k1, v1, RbNode(False, b, k2, v2, c)) =>
+                    RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, c)).balance()
+                | RbNode(False, a, k1, v1, RbNode(True, RbNode(False, b, k2, v2, c), k3, v3, RbNode(False, d, k4, v4, e))) =>
+                    RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, RbNode(True, d, k4, v4, e)).balance())
+            }
+        }
+        function balanceRight(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, c)) => RbNode(True, a, k1, v1, RbNode(False, b, k2, v2, c))
+                | RbNode(False, RbNode(False, a, k1, v1, b), k2, v2, c) => RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c).balance()
+                | RbNode(False, RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d)), k4, v4, e) =>
+                    RbNode(True, RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c).balance(), k3, v3, RbNode(False, d, k4, v4, e))
+            }
+        }
+        function fuse(x: RbMap[K, V], y: RbMap[K, V]): RbMap[K, V] {
+            Pair(x, y).{
+                | Pair(RbLeaf, a) => a
+                | Pair(a, RbLeaf) => a
+                | Pair(RbNode(False, a, k1, v1, b), RbNode(True, c, k2, v2, d)) =>
+                    RbNode(True, fuse(RbNode(False, a, k1, v1, b), c), k2, v2, d)
+                | Pair(RbNode(True, a, k1, v1, b), c) => RbNode(True, a, k1, v1, fuse(b, c))
+                | Pair(RbNode(True, a, k1, v1, b), RbNode(True, c, k2, v2, d)) =>
+                    let e = fuse(b, c)
+                    e.{
+                        | RbNode(True, f, k3, v3, g) => RbNode(True, RbNode(True, a, k1, v1, f), k3, v3, RbNode(True, g, k2, v2, d))
+                        | RbNode(False, _, _, _, _) => RbNode(True, a, k1, v1, RbNode(True, e, k2, v2, d))
+                        | RbLeaf => RbLeaf
+                    }
+                | Pair(RbNode(False, a, k1, v1, b), RbNode(False, c, k2, v2, d)) =>
+                    let e = fuse(b, c)
+                    e.{
+                        | RbNode(True, f, k3, v3, g) => RbNode(True, RbNode(False, a, k1, v1, f), k3, v3, RbNode(False, g, k2, v2, d))
+                        | RbNode(False, _, _, _, _) => RbNode(False, a, k1, v1, RbNode(False, e, k2, v2, d)).balance()
+                        | RbLeaf => RbLeaf
+                    }
             }
         }
         go(self).{
-            | RbNode n {n.isRed} => n.RbNode(isRed = False)
+            | RbNode(True, a, k1, v1, b) => RbNode(False, a, k1, v1, b)
             | n => n
         }
-    }*/
+    }
 
     balance(): RbMap[K, V] {
         self.{
