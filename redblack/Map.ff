@@ -1,0 +1,44 @@
+type Map[K, V](redBlack: Map[K, Option[V]])
+
+empty = Map(RbLeaf)
+
+extend self[K, V]: Map[K, V] {
+
+    add(key : K, value : V): Map[K, V] {
+        Map(self.redBlack.add(key, Some(value)))
+    }
+
+    get(key : K): Option[V] {
+        self.redBlack.get(key).flatten()
+    }
+
+    remove(key : K): Option[V] {
+        self.redBlack.add(key, None)
+    }
+
+    pairs(): List[Pair[K, V]] {
+        self.redBlack.pairs()
+    }
+
+    getSize(): Int {
+        self.redBlack.size()
+    }
+
+    map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
+        val list = pairs()
+        list.foldLeft(empty, { (tree, pair) =>
+            body(pair).{
+                | Pair(k, v) => tree.add(k, v) }
+            }
+        )
+    }
+
+    contains(key: K): Bool {
+        !self.get(key).getEmpty()
+    }
+
+    expect(key: K): V {
+        self.get(key).expect()
+    }
+
+}

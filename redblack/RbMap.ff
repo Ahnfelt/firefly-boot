@@ -7,6 +7,20 @@ type RbMap[K, V] {
 
 extend self[K, V]: RbMap[K, V] {
 
+    size(): Int {
+        self.{
+            | RbLeaf => 0
+            | RbNode(_, l, _, _, r) => self.size(l) + 1 + self.size(r)
+        }
+    }
+
+    pairs(): List[Pair[K, V]] {
+        self.{
+            | RbLeaf => []
+            | RbNode(_, l, k, v, r) => self.pairs(l) ++ [Pair(k, v)] ++ self.pairs(r)
+        }
+    }
+
     get(key: K): Option[V] {
         self.{
             | RbLeaf => None
@@ -31,6 +45,7 @@ extend self[K, V]: RbMap[K, V] {
         }
     }
 
+    // TODO: Remove does not work: E.g. add 1 2 3 then remove 2 breaks it. It hits a non-exhaustive case in Haskell.
     remove(key: K): RbMap[K, V] {
         function go(self: RbMap[K, V]): RbMap[K, V] {
             self.{
