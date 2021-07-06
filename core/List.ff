@@ -1,0 +1,259 @@
+type List[T] {
+    Empty
+    Link(head: T, tail: List[T])
+}
+
+extend self[T]: List[T] {
+
+    getArray(): Array[T] { panic("TODO: list getArray") }
+
+    getSet(): Set[T] { panic("TODO: list getSet") }
+
+    expect(index: Int): T {
+        function go(list: List[T], i: Int) {
+            list.{
+                | Empty => panic("expect(" + index + ") on list of size " + self.getSize())
+                | Link(head, _) {i == 0} => head
+                | Link(_, tail) => tailcall go(tail, i - 1)
+            }
+        }
+        go(self, index)
+    }
+
+    first(): Option[T] {
+        self.{
+            | Empty => None
+            | Link(head, _) => Some(head)
+        }
+    }
+
+    last(): Option[T] {
+        self.{
+            | Empty => None
+            | Link(head, Empty) => Some(head)
+            | Link(_, tail) => tailcall tail.last()
+        }
+    }
+
+    expectFirst(): T {
+        first().else { panic("expectFirst() on empty list") }
+    }
+
+    expectLast(): T {
+        last().else { panic("expectLast() on empty list") }
+    }
+
+    dropFirst(count: Int = 1): List[T] {
+        self.{
+            | _ {count <= 0} => self
+            | [_, ...tail] => tailcall tail.drop(count - 1)
+        }
+    }
+
+    dropLast(count: Int = 1): List[T] {
+        self.reverse().dropFirst(count).reverse()
+    }
+
+    pairs(): List[Pair[Int, T]] {
+        mutable i = 0
+        self.map {x =>
+            let r = Pair(i, x)
+            i += 1
+            r
+        }
+    }
+
+    slice(from: Int, until: Int): List[T] {
+        self.drop(from).take(until - from)
+    }
+
+    getEmpty(): Bool {
+        self.{
+            | [] => True
+            | _ => False
+        }
+    }
+
+    getSize(): Int {
+        function go(list: List[T], result: Int) {
+            list.{
+                | [] => result
+                | [_, tail] => tailcall go(tail, result + 1)
+            }
+        }
+        go(self, 0)
+    }
+
+    each(body: T => Unit): Unit {
+        self.{
+            | Empty =>
+            | Link(head, tail) =>
+                body(head)
+                tailcall tail.each(body)
+        }
+    }
+
+    all(body: T => Bool): Bool {
+        self.{
+            | Empty => True
+            | Link(head, _) {!body(head)} => False
+            | Link(_, tail) => tailcall tail.all(body)
+        }
+    }
+
+    any(body: T => Bool): Bool {
+        self.{
+            | Empty => False
+            | Link(head, _) {body(head)} => True
+            | Link(_, tail) => tailcall tail.any(body)
+        }
+    }
+
+    find(body: T => Bool): Option[T] {
+        self.{
+            | Empty => None
+            | Link(head, _) {body(head)} => Some(head)
+            | Link(_, tail) => tailcall tail.find(body)
+        }
+    }
+
+    filter(body: T => Bool): List[T] {
+        function go(list: List[T], result: List[T]) {
+            list.{
+                | Empty =>
+                    result.reverse()
+                | Link(head, tail) {body(tail)} =>
+                    tailcall go(tail, [head, ...result])
+                | Link(_, tail) =>
+                    tailcall go(tail, result)
+            }
+        }
+        go(self, [])
+    }
+
+    map[R](body: T => R): List[R] {
+        function go(list: List[T], result: List[R]) {
+            list.{
+                | Empty =>
+                    result.reverse()
+                | Link(head, tail) =>
+                    tailcall go(tail, [body(head), ...result])
+            }
+        }
+        go(self, [])
+    }
+
+    flatMap[R](body: T => List[R]): List[R] {
+        function go(list: List[T], result: List[List[R]]) {
+            list.{
+                | Empty =>
+                    result.reverse().flatten()
+                | Link(head, tail) =>
+                    tailcall go(tail, [body(head), ...result])
+            }
+        }
+        go(self, [])
+    }
+
+    getCollect[R](body: T => Option[R]): List[R] {
+        function go(list: List[T], result: List[T]) {
+            list.{
+                | Empty =>
+                    result.reverse()
+                | Link(head, tail) =>
+                    body(head).{
+                        | None => tailcall go(tail, result)
+                        | Some(value) => tailcall go(tail, [value, ...result])
+                    }
+            }
+        }
+        go(self, [])
+    }
+
+    getCollectFirst[R](body: T => Option[R]): Option[R] {
+        self.{
+            | Empty =>
+                None
+            | Link(head, tail) =>
+                body(head).{
+                    | None => tailcall tail.getCollectFirst(body)
+                    | Some(value) => Some(value)
+                }
+        }
+    }
+
+    foldLeft[R](initial: R): ((R, T) => R) => R {
+        {body =>
+            function go(list: List[R]) {
+                list.{
+                    | Empty =>
+                        initial
+                    | Link(head, tail) =>
+                        tailcall go(body(initial, head), tail)
+                }
+            }
+            go(self)
+        }
+    }
+
+    updated(index: Int, value: T): List[T] {
+        function go(list: List[T], i: Int, result: List[R]) {
+            list.{
+                | Empty =>
+                    result.reverse()
+                | Link(head, tail) {i == 0} =>
+                    tailcall go(tail, i - 1, [value, ...result])
+                | Link(head, tail) =>
+                    tailcall go(tail, i - 1, [head, ...result])
+            }
+        }
+        go(self, index, [])
+    }
+
+    modify(index: Int, body: T => T): List[T] {
+        function go(list: List[T], i: Int, result: List[R]) {
+            list.{
+                | Empty =>
+                    result.reverse()
+                | Link(head, tail) {i == 0} =>
+                    tailcall go(tail, i - 1, [body(head), ...result])
+                | Link(head, tail) =>
+                    tailcall go(tail, i - 1, [head, ...result])
+            }
+        }
+        go(self, index, [])
+    }
+
+    zip[S](that: List[S]): List[Pair[T, S]] {
+        function go(list1: List[T], list2: List[T], result: List[Pair[T, S]]) {
+            Pair(list1, list2).{
+                | Pair([x, ...xs], [y, ...ys]) =>
+                    tailcall go(xs, ys, [Pair(x, y), ...result])
+                | _ =>
+                    result.reverse()
+            }
+        }
+        go(self, that, [])
+    }
+
+    sortBy(body: T => String): List[T] { // TODO generalize to non-strings
+        function divide(list: List[T], xs: List[T], ys: List[T]): Pair[List[T], List[T]] {
+            list.{
+                | Empty => Pair(xs, ys)
+                | Link(x, Empty) => Pair([x, ..xs], ys)
+                | Link(x, Link(y, tail)) => tailcall divide(tail, [x, ...xs], [y, ...ys])
+            }
+        }
+        function merge(xs: List[T], ys: List[T], result: List[T]) {
+            Pair(xs, ys).{
+                | Pair([x, ...xs2], [y, ..._]) {extract(x) < extract(y)} => tailcall merge(xs2, ys, [x, ...result])
+                | Pair([x, ..._], [y, ...ys2]) => tailcall merge(xs, ys2, [y, ...result])
+                | Pair([x, ...xs2], Empty) => tailcall merge(xs2, Empty, [x, ...result])
+                | Pair(Empty, [y, ...ys2]) => tailcall merge(Empty, ys2, [y, ...result])
+                | Pair(Empty, Empty) => result.reverse()
+            }
+        }
+        let pair = divide(self, [], [])
+        merge(pair.first.sortBy(extract), pair.second.sortBy(extract))
+    }
+}
