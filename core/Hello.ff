@@ -1,0 +1,3 @@
+hello(text: String): Unit {
+    log.debug("Hello, World!")
+}

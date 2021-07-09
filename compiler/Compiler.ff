@@ -16,6 +16,7 @@ type Compiler(
 )
 
 make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
+    //Hello.hello()
     Compiler(
         files = files
         inputPath = inputPath
@@ -27,6 +28,16 @@ make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
     )
 }
 
+coreImports: List[DImport] = [
+    DImport(
+        at = Location("<prelude>", 1, 1),
+        alias = "Hello",
+        package = Some(Pair("ff", "core")),
+        directory = [],
+        file = "Hello"
+    )
+]
+
 extend self: Compiler {
 
     parse(moduleName: String): Module {
@@ -35,7 +46,10 @@ extend self: Compiler {
         let file = moduleName + ".ff"
         let code = self.files.readText(self.inputPath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
-        let result = Parser.make(file, tokens).parseModule()
+        let module = Parser.make(file, tokens).parseModule()
+        let result = module.Module(
+            imports = coreImports ++ module.imports
+        )
 
         self.parsedModules = self.parsedModules.add(moduleName, result)
         result

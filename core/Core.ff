@@ -83,7 +83,6 @@ type Set[T] {} // (items: T...)
 type Int {}
 type String {}
 type Char {}
-type Bool {}
 type System {}
 type FileSystem {}
 type Unit()
