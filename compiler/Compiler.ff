@@ -16,7 +16,6 @@ type Compiler(
 )
 
 make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
-    //Hello.hello()
     Compiler(
         files = files
         inputPath = inputPath
@@ -29,13 +28,13 @@ make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
 }
 
 coreImports: List[DImport] = [
-    DImport(
+/*    DImport(
         at = Location("<prelude>", 1, 1),
         alias = "Hello",
         package = Some(Pair("ff", "core")),
         directory = [],
         file = "Hello"
-    )
+    )*/
 ]
 
 extend self: Compiler {
