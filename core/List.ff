@@ -260,6 +260,18 @@ extend self[T]: List[T] {
         let pair = divide(self, [], [])
         merge(pair.first.sortBy(extract), pair.second.sortBy(extract))
     }
+
+    reverse(): List[T] {
+        function go(list: List[T], result: List[R]) {
+            list.{
+                | Empty =>
+                    result
+                | Link(head, tail) =>
+                    tailcall go(tail, [head, ...result])
+            }
+        }
+        go(self, [])
+    }
 }
 
 extend self[T]: List[List[T]] {
