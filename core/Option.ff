@@ -1,0 +1,109 @@
+type Option[T] {
+    None
+    Some(value: T)
+}
+
+extend self[T]: Option[T] {
+
+    else(body: () => T): T {
+        self.{
+            | None => body()
+            | Some(value) => value
+        }
+    }
+
+    elseIf(condition: () => Bool, body: () => T): Option[T] {
+        self.{
+            | None =>
+                condition().{
+                    | True => Some(body())
+                    | False => None
+                }
+            | Some(value) => value
+        }
+    }
+
+    // orElse
+    getElse(body: () => Option[T]): Option[T] {
+        self.{
+            | None => body()
+            | Some(_) => self
+        }
+    }
+
+    // getOrElse removed (use else)
+
+    // empty / isEmpty
+    getEmpty(): Bool {
+        self.{
+            | None => True
+            | Some(_) => False
+        }
+    }
+
+    // list / toList
+    getList(): List[T] {
+        self.{
+            | None => []
+            | Some(v) => [v]
+        }
+    }
+
+    filter(body: T => Bool): Option[T] {
+        self.{
+            | Some(v) {body(v)} => Some(v)
+            | _ => None
+        }
+    }
+
+    map[R](body: T => R): Option[R] {
+        self.{
+            | None => None
+            | Some(v) => Some(body(v))
+        }
+    }
+
+    flatMap[R](body: T => Option[R]): Option[R] {
+        self.{
+            | None => None
+            | Some(v) => body(v)
+        }
+    }
+
+    each(body: T => Unit): Unit {
+        self.{
+            | None => None
+            | Some(v) => body(v)
+        }
+    }
+
+    all(body: T => Bool): Bool {
+        self.{
+            | None => True
+            | Some(v) => body(v)
+        }
+    }
+
+    any(body: T => Bool): Bool {
+        self.{
+            | None => False
+            | Some(v) => body(v)
+        }
+    }
+
+    expect(): T {
+        self.{
+            | None => panic("None.expect()")
+            | Some(v) => v
+        }
+    }
+
+    // TODO: Eq constraint
+    contains(value: T): Bool {
+        self.{
+            | None => False
+            | Some(v) => v == value
+        }
+    }
+
+}
