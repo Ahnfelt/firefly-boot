@@ -41,4 +41,19 @@ extend self[K, V]: Map[K, V] {
         self.get(key).expect()
     }
 
+    updateOrInsert(key : K, update V => V, default : () => V): Map[K, V] {
+        self.get(key).{
+            | None => self.add(key, default())
+            | Some(v) => self.add(key, update(v))
+        }
+    }
+
+}
+
+extend self[K, V]: Map[K, List[V]] {
+
+    addToList(key : K, value : V): Map[K, List[V]] {
+        self.updateOrInsert(key, {[value ..._]}, {[value]})
+    }
+
 }

@@ -290,3 +290,28 @@ extend self[T]: List[List[T]] {
         go(self, [])
     }
 }
+
+extend self[K, V]: List[Pair[K, V]] {
+
+    // toMap
+    getMap(): Map[K, V] {
+        self.foldLeft(Map.empty) {_.add(_)}
+    }
+
+    group(): Map[K, List[V]] {
+        self.foldLeft(Map.empty) {_.addToList(_)}
+    }
+
+    // unzip
+    getUnzip(): Pair[List[K], List[V]] {
+        function go(pairs : List[Pair[K, V]], List[K], vs: List[K]) {
+            pairs.{
+                | Empty =>
+                    Pair(ks.reverse(), vs.reverse())
+                | Link(Pair(k, v), tail) =>
+                    tailcall go(tail, [k, ...ks], [v, ...vs])
+            }
+        }
+        go(self, [], [])
+    }
+}
