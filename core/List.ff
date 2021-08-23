@@ -5,6 +5,10 @@ type List[T] {
 
 extend self[T]: List[T] {
 
+    append(list: List[T]) : List[T] {
+        [self, list].flatten
+    }
+
     getArray(): Array[T] { panic("TODO: list getArray") }
 
     getSet(): Set[T] { panic("TODO: list getSet") }
@@ -255,5 +259,22 @@ extend self[T]: List[T] {
         }
         let pair = divide(self, [], [])
         merge(pair.first.sortBy(extract), pair.second.sortBy(extract))
+    }
+}
+
+extend self[T]: List[List[T]] {
+    // flatten
+    getFlatten(): List[T] {
+        function go(lists: List[List[T]], result: List[T]) {
+            lists.{
+                | Empty =>
+                    result.reverse()
+                | Link(Empty, aas) =>
+                    tailcall go(aas, result)
+                | Link(Link(a, as), aas) =>
+                    tailcall go(Link(as, aas), [a, ...result])
+            }
+        }
+        go(self, [])
     }
 }
