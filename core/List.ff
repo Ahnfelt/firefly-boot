@@ -6,7 +6,7 @@ type List[T] {
 extend self[T]: List[T] {
 
     append(list: List[T]) : List[T] {
-        [self, list].flatten
+        [self, list].getFlatten()
     }
 
     getArray(): Array[T] { panic("TODO: list getArray") }
@@ -279,12 +279,12 @@ extend self[T]: List[List[T]] {
     getFlatten(): List[T] {
         function go(lists: List[List[T]], result: List[T]) {
             lists.{
-                | Empty =>
+                | [] =>
                     result.reverse()
-                | Link(Empty, aas) =>
-                    tailcall go(aas, result)
-                | Link(Link(a, as), aas) =>
-                    tailcall go(Link(as, aas), [a, ...result])
+                | [[], ...ass] =>
+                    tailcall go(ass, result)
+                | [[a, ...as], ...ass] =>
+                    tailcall go([as, ...ass], [a, ...result])
             }
         }
         go(self, [])
