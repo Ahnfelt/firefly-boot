@@ -1,0 +1,12 @@
+type Array[T]() // (items: T...)
+
+extend self[T]: Array[T] {
+    getEmpty(): Bool {}
+    getSize(): Int {}
+    expect(index: Int): T {}
+    expectFirst(): T {}
+    expectLast(): T {}
+    dropFirst(count: Int = 1): Array[T] {}
+    dropLast(count: Int = 1): Array[T] {}
+    getList(): List[T] {}
+}

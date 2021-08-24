@@ -1,0 +1,7 @@
+type Int {}
+
+extend self: Int {
+    getTo(inclusive: Int): List[Int] {}
+    getUntil(exclusive: Int): List[Int] {}
+    getAbs(): Int {}
+}

@@ -6,11 +6,13 @@ type List[T] {
 extend self[T]: List[T] {
 
     append(list: List[T]) : List[T] {
-        [self, list].flatten
+        [self, list].getFlatten()
     }
 
+    // toArray
     getArray(): Array[T] { panic("TODO: list getArray") }
 
+    // toList
     getSet(): Set[T] { panic("TODO: list getSet") }
 
     expect(index: Int): T {
@@ -314,4 +316,8 @@ extend self[K, V]: List[Pair[K, V]] {
         }
         go(self, [], [])
     }
+}
+
+extend self: List[String] {
+    join(separator: String = ""): String {}
 }

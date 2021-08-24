@@ -1,0 +1,15 @@
+arrayBuilderOf[T](): ArrayBuilder[T] {} // (items: T...)
+
+type ArrayBuilder[T] {} // (items: T...)
+
+extend self[T]: ArrayBuilder[T] {
+    getArray(): Array[T] {}
+    getEmpty(): Bool {}
+    getSize(): Int {}
+    append(value: T): Unit {}
+    modify(index: Int, body: T => T): Unit {}
+    drain(): Array[T] {}
+    getList(): List[T] {}
+    getLast(): Option[T] {}
+    expectLast(): T {}
+}
