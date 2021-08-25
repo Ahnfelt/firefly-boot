@@ -1,0 +1,18 @@
+type FileSystem {}
+
+extend self: FileSystem {
+    readText(file: String): String {}
+    writeText(file: String, text: String): Unit {}
+    list(path: String): List[String] {}
+    exists(path: String): Bool {}
+    isDirectory(path: String): Bool {}
+    createDirectory(path: String): Unit {}
+    createDirectories(path: String): Unit {}
+    delete(path: String): Unit {}
+    rename(fromPath: String, toPath: String): Unit {}
+    getAbsolutePath(path: String): String {}
+    directoryName(path: String): String {}
+    baseName(path: String): String {}
+    prefixName(path: String): String {}
+    suffixName(path: String): String {}
+}

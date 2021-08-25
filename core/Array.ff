@@ -1,0 +1,12 @@
+type Array[T]() // (items: T...)
+
+extend self[T]: Array[T] {
+    getEmpty(): Bool { panic("build in") }
+    getSize(): Int { panic("build in") }
+    expect(index: Int): T { panic("build in") }
+    expectFirst(): T { panic("build in") }
+    expectLast(): T { panic("build in") }
+    dropFirst(count: Int = 1): Array[T] { panic("build in") }
+    dropLast(count: Int = 1): Array[T] { panic("build in") }
+    getList(): List[T] { panic("build in") }
+}

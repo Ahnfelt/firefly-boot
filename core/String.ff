@@ -1,0 +1,25 @@
+type String {}
+
+extend self: String {
+    getSize(): Int {}
+    expect(index: Int): Char {}
+    replace(needle: String, replacement: String): String {}
+    replaceFirst(needle: String, replacement: String): String {}
+    replace(needle: String, replacement: String): String {}
+    getReverse(): String {}
+    takeWhile(p: Char => Bool): String {}
+    slice(from: Int, until: Int): String {}
+    sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool {}
+    split(char: Char): Array[String] {}
+    drop(count: Int = 1): String {}
+    dropLast(count: Int = 1): String {}
+    expectInt(): Int {}
+    first(): Option[Char] {}
+    last(): Option[Char] {}
+    expectFirst(): Char {}
+    expectLast(): Char {}
+    getIsLetter(): Bool {}
+    contains(substring : String) : Bool {}
+    startsWith(prefix : String) : Bool {}
+    exists(p: Char => Bool): Bool {}
+}

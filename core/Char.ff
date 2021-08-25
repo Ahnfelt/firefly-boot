@@ -1,0 +1,7 @@
+type Char {}
+
+extend self: Char {
+    getIsLetter(): Bool {}
+    getIsUpper(): Bool {}
+    getIsLower(): Bool {}
+}

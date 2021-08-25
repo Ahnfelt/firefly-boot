@@ -1,0 +1,6 @@
+type System {}
+
+extend self: System {
+    arguments(): List[String] {}
+    files(): FileSystem {}
+}
