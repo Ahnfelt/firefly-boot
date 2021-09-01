@@ -98,7 +98,6 @@ extend self: String {
     expect(index: Int): Char {}
     replace(needle: String, replacement: String): String {}
     replaceFirst(needle: String, replacement: String): String {}
-    replace(needle: String, replacement: String): String {}
     getReverse(): String {}
     takeWhile(p: Char => Bool): String {}
     slice(from: Int, until: Int): String {}

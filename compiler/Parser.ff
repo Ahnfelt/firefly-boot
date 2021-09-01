@@ -271,29 +271,25 @@ extend self: Parser {
     }
     
     parseImportDefinition(): DImport {
-        self.rawSkip(LKeyword, "import")
-        let aliasToken = self.skip(LUpper)
-        if(!self.current().is(LKeyword)) { DImport(aliasToken.at(), aliasToken.raw(), None, [], aliasToken.raw()) } else:
-        self.rawSkip(LKeyword, "from")
-        let firstName = self.parseDashedName()
-        let package = if(self.current().is(LColon)) {
-            let user = firstName
-            self.skip(LColon)
-            let name = self.parseDashedName()
-            if(self.current().rawIs("/")) { self.skip(LOperator) }
-            Pair(user, name)
-        }
+        let importToken = self.rawSkip(LKeyword, "import")
         let path = arrayBuilderOf[String]()
-        if(package.getEmpty()) { path.append(firstName) }
-        if(self.current().rawIs("/") && self.ahead().is2(LLower, LUpper)) { self.skip(LOperator) }
         while { self.current().is(LLower) } {
             path.append(self.parseDashedName())
-            if(self.current().rawIs("/") && self.ahead().is2(LLower, LUpper)) { self.skip(LOperator) }
+            self.skip(LDot)
         }
-        let file = if(self.current().is(LUpper)) {
+        let file = self.skip(LUpper).raw()
+        let alias = if(self.current().rawIs("as")) {
+            self.rawSkip(LKeyword, "as")
             self.skip(LUpper).raw()
-        } else { aliasToken.raw() }
-        DImport(aliasToken.at(), aliasToken.raw(), package, path.getList(), file)
+        } else { file }
+        let package = if(self.current().rawIs("from")) {
+            self.rawSkip(LKeyword, "from")
+            let userName = self.parseDashedName()
+            self.skip(LColon)
+            let packageName = self.parseDashedName()
+            Pair(userName, packageName)
+        }
+        DImport(importToken.at(), alias, package, path.getList(), file)
     }
     
     parseDependencyDefinition(): DDependency {
