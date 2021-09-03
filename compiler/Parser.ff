@@ -3,6 +3,7 @@ import Wildcards
 import Syntax
 
 type Parser(
+    packagePair: Pair[String, String],
     file: String,
     tokens: Array[Token],
     end: Token,
@@ -288,6 +289,8 @@ extend self: Parser {
             self.skip(LColon)
             let packageName = self.parseDashedName()
             Pair(userName, packageName)
+        } else {
+            self.packagePair
         }
         DImport(importToken.at(), alias, package, path.getList(), file)
     }

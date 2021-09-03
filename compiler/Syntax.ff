@@ -31,7 +31,7 @@ type DDependency(
 type DImport(
     at: Location,
     alias: String,
-    package: Option[Pair[String, String]],
+    package: Pair[String, String],
     directory: List[String],
     file: String
 )
