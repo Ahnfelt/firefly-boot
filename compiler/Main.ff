@@ -21,8 +21,12 @@ main(system: System): Unit {
     let scalaPathFile = tempPath + "/src/main/scala/firefly"
     fs.createDirectories(scalaPathFile)
 
+    let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].getMap()
+
+    let literalModuleNames = [Pair("ff:core", ["Bool", "Char", "Int", "List", "String", "Unit"])].getMap()
+
     let success = do { //try {
-        Compiler.make(fs, inputPath, scalaPathFile).emit("Main")
+        Compiler.make(fs, inputPath, scalaPathFile, packagePaths, literalModuleNames).emit("Main")
         True
     }
     /*} else {

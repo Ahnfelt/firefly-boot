@@ -9,17 +9,27 @@ type Compiler(
     files: FileSystem
     inputPath: String
     outputPath: String
+    packagePaths: Map[String, String]
+    literalModuleNames: Map[String, List[String]]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable inferredModules: Map[String, Module]
     mutable emittedModules: Set[String]
 )
 
-make(files: FileSystem, inputPath: String, outputPath: String): Compiler {
+make(
+    files: FileSystem
+    inputPath: String
+    outputPath: String
+    packagePaths: Map[String, String]
+    literalModuleNames: Map[String, List[String]]
+): Compiler {
     Compiler(
         files = files
         inputPath = inputPath
         outputPath = outputPath
+        packagePaths = packagePaths
+        literalModuleNames = literalModuleNames
         parsedModules = mapOf()
         resolvedModules = mapOf()
         inferredModules = mapOf()

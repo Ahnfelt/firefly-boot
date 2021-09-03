@@ -30,8 +30,10 @@ Main_.deleteDirectory(fs, tempPath)
 fs.createDirectory(tempPath);
 val scalaPathFile = (tempPath + "/src/main/scala/firefly");
 fs.createDirectories(scalaPathFile);
+val packagePaths = List(Firefly_Core.Pair("ff:compiler", "compiler"), Firefly_Core.Pair("ff:core", "core")).getMap();
+val literalModuleNames = List(Firefly_Core.Pair("ff:core", List("Bool", "Char", "Int", "List", "String", "Unit"))).getMap();
 val success = Firefly_Core.do_({() =>
-Compiler_.make(fs, inputPath, scalaPathFile).emit("Main");
+Compiler_.make(fs, inputPath, scalaPathFile, packagePaths, literalModuleNames).emit("Main");
 Firefly_Core.True()
 });
 Firefly_Core.if_(success, {() =>
