@@ -10,6 +10,7 @@ extend self: Location {
 }
 
 type Module(
+    packagePair: Pair[String, String],
     file: String,
     dependencies: List[DDependency],
     imports: List[DImport],

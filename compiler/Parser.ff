@@ -13,9 +13,10 @@ type Parser(
 
 type Poly(generics: List[String], constraints: List[Constraint])
 
-make(file: String, tokens: Array[Token]): Parser {
+make(packagePair: Pair[String, String], file: String, tokens: Array[Token]): Parser {
     Parser(
-        if(file == "../core/Core.ff") { "ff:core/Core.ff" } else { file },
+        packagePair,
+        file,
         tokens,
         tokens.expectLast(),
         0,
@@ -115,6 +116,7 @@ extend self: Parser {
             if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
         }
         Module(
+            packagePair = self.packagePair,
             file = self.file,
             dependencies = dependencies.getList(),
             imports = imports.getList(),

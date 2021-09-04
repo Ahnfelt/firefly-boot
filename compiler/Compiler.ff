@@ -50,7 +50,7 @@ extend self: Compiler {
         self.parsedModules.get(packageName + ":" + moduleName).else:
 
         let packagePair = do {
-            let array = packageName.split(":")
+            let array = packageName.split(':')
             Pair(array.expect(0), array.expect(1))
         }
         let packagePath = self.packagePaths.expect(packageName)
@@ -68,7 +68,7 @@ extend self: Compiler {
 
     imports(packageName: String, module: Module): List[Module] {
         module.imports.map { import =>
-            let newPackageName = i.package.first + ":" + i.package.second
+            let newPackageName = import.package.first + ":" + import.package.second
             let newModuleName = import.directory.map { _ + "/" }.join("") + import.file
             self.parse(newPackageName, newModuleName)
         }
@@ -107,12 +107,12 @@ extend self: Compiler {
 
         let module = self.infer(packageName, moduleName)
         self.imports(packageName, module).each { i =>
-            let newPackageName = i.package.first + ":" + i.package.second
-            self.emit(newPackageName, self.files.prefixName(_.file))
+            let newPackageName = i.packagePair.first + ":" + i.packagePair.second
+            self.emit(newPackageName, self.files.prefixName(i.file))
         }
 
         let packagePair = do {
-            let array = packageName.split(":")
+            let array = packageName.split(':')
             Pair(array.expect(0), array.expect(1))
         }
         let emitted = Emitter.emitModule(packagePair, module)

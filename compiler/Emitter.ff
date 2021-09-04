@@ -11,7 +11,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
     let parts = [
         ["package " + package]
         ["import " + package + ".Firefly_Core._", ...module.imports.map { i =>
-            "import " + i.package.first + "." + i.package.second + "." + _.file + "_._"
+            "import " + i.package.first + "." + i.package.second + "." + i.file + "_._"
         }]
         ["object " + moduleNamespace + "_ {"]
         if(module.functions.exists { _.signature.name == "main" }) { [emitMain()] } else { [] }
