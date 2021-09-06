@@ -203,7 +203,7 @@ extend self[T]: List[T] {
     }
 
     updated(index: Int, value: T): List[T] {
-        function go(list: List[T], i: Int, result: List[R]) {
+        function go(list: List[T], i: Int, result: List[T]) {
             list.{
                 | Empty =>
                     result.reverse()
@@ -217,7 +217,7 @@ extend self[T]: List[T] {
     }
 
     modify(index: Int, body: T => T): List[T] {
-        function go(list: List[T], i: Int, result: List[R]) {
+        function go(list: List[T], i: Int, result: List[T]) {
             list.{
                 | Empty =>
                     result.reverse()
@@ -252,7 +252,7 @@ extend self[T]: List[T] {
         }
         function merge(xs: List[T], ys: List[T], result: List[T]) {
             Pair(xs, ys).{
-                | Pair([x, ...xs2], [y, ..._]) {extract(x) < extract(y)} => tailcall merge(xs2, ys, [x, ...result])
+                | Pair([x, ...xs2], [y, ..._]) {body(x) < body(y)} => tailcall merge(xs2, ys, [x, ...result])
                 | Pair([x, ..._], [y, ...ys2]) => tailcall merge(xs, ys2, [y, ...result])
                 | Pair([x, ...xs2], Empty) => tailcall merge(xs2, Empty, [x, ...result])
                 | Pair(Empty, [y, ...ys2]) => tailcall merge(Empty, ys2, [y, ...result])
@@ -260,11 +260,11 @@ extend self[T]: List[T] {
             }
         }
         let pair = divide(self, [], [])
-        merge(pair.first.sortBy(extract), pair.second.sortBy(extract))
+        merge(pair.first.sortBy(body), pair.second.sortBy(body))
     }
 
     reverse(): List[T] {
-        function go(list: List[T], result: List[R]) {
+        function go(list: List[T], result: List[T]) {
             list.{
                 | Empty =>
                     result
@@ -297,11 +297,11 @@ extend self[K, V]: List[Pair[K, V]] {
 
     // toMap
     getMap(): Map[K, V] {
-        self.foldLeft(Map.empty) {_.add(_)}
+        self.foldLeft([].getMap()) {_.add(_)}
     }
 
     group(): Map[K, List[V]] {
-        self.foldLeft(Map.empty) {_.addToList(_)}
+        self.foldLeft([].getMap()) {_.addToList(_)}
     }
 
     // unzip

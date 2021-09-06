@@ -1,14 +1,3 @@
-import Bool
-import Option
-import Unit
-import Try
-import String
-import Int
-import ArrayBuilder
-import Set
-import Map
-import Log
-
 if[T](condition: Bool, body: () => T): Option[T] {
     condition.{
         | False => None

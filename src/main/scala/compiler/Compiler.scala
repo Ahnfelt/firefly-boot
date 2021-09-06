@@ -15,7 +15,7 @@ import compiler.Emitter_._
 object Compiler_ {
 
 case class Compiler(files : Firefly_Core.FileSystem, outputPath : Firefly_Core.String, packagePaths : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], var parsedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var resolvedModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var inferredModules : Firefly_Core.Map[Firefly_Core.String, Syntax_.Module], var emittedModules : Firefly_Core.Set[Firefly_Core.String])
-val coreImports : Firefly_Core.List[Syntax_.DImport] = List("Array", "ArrayBuilder", "Bool", "Char", "Core", "FileSystem", "Int", "List", "Map", "Option", "Pair", "Set", "String", "System", "Try", "Unit").map({(moduleName) =>
+val coreImports : Firefly_Core.List[Syntax_.DImport] = List("Array", "ArrayBuilder", "Bool", "Char", "Core", "FileSystem", "Int", "List", "Map", "Option", "Pair", "Set", "String", "System", "Try", "Unit", "Log").map({(moduleName) =>
 Syntax_.DImport(at = Syntax_.Location("<prelude>", 1, 1), alias = moduleName, package_ = Firefly_Core.Pair("ff", "core"), directory = List(), file = moduleName)
 })
 def make(files : Firefly_Core.FileSystem, outputPath : Firefly_Core.String, packagePaths : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String]) : Compiler_.Compiler = {

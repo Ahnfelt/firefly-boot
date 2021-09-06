@@ -41,6 +41,7 @@ coreImports: List[DImport] =
         "FileSystem",
         "Int",
         "List",
+        "Log",
         "Map",
         "Option",
         "Pair",
