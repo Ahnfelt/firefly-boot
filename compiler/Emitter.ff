@@ -7,6 +7,9 @@ fail[T](at: Location, message: String): T {
 emitModule(packagePair: Pair[String, String], module: Module): String {
     let moduleNamespace =
         module.file.replace("\\", "/").getReverse().takeWhile { _ != '/' }.getReverse().takeWhile { _ != '.' }
+    let modulePrefix =
+        module.packagePair.first + ":" + module.packagePair.second + "/" +
+        module.file.dropLast(3) + "."
     let package = packagePair.first + "." + packagePair.second
     let parts = [
         ["package " + package]
@@ -24,7 +27,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
         ["}"]
     ]
     module.extends.map { _.type }.getCollect(TConstructor?).find { t =>
-        !module.types.exists { (moduleNamespace + "." + _.name) == t.name }
+        !module.types.exists { (modulePrefix + _.name) == t.name }
     }.each { t =>
         fail(t.at, "Type not defined in this file: " + t.name)
     }

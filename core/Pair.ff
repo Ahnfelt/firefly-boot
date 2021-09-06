@@ -1,1 +1,17 @@
 type Pair[A, B](first: A, second: B)
+
+extend self[A, B]: Pair[A, B] {
+
+    mapFirst[C](body: A => C): Pair[C, B] {
+        self.Pair(first = body(self.first))
+    }
+
+    mapSecond[C](body: B => C): Pair[A, C] {
+        self.Pair(second = body(self.second))
+    }
+
+    swap(): Pair[B, A] {
+        Pair(self.second, self.first)
+    }
+
+}

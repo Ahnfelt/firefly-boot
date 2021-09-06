@@ -1,18 +1,18 @@
 type FileSystem {}
 
 extend self: FileSystem {
-    readText(file: String): String {}
-    writeText(file: String, text: String): Unit {}
-    list(path: String): List[String] {}
-    exists(path: String): Bool {}
-    isDirectory(path: String): Bool {}
-    createDirectory(path: String): Unit {}
-    createDirectories(path: String): Unit {}
-    delete(path: String): Unit {}
-    rename(fromPath: String, toPath: String): Unit {}
-    getAbsolutePath(path: String): String {}
-    directoryName(path: String): String {}
-    baseName(path: String): String {}
-    prefixName(path: String): String {}
-    suffixName(path: String): String {}
+    readText(file: String): String { panic("magic") }
+    writeText(file: String, text: String): Unit { panic("magic") }
+    list(path: String): List[String] { panic("magic") }
+    exists(path: String): Bool { panic("magic") }
+    isDirectory(path: String): Bool { panic("magic") }
+    createDirectory(path: String): Unit { panic("magic") }
+    createDirectories(path: String): Unit { panic("magic") }
+    delete(path: String): Unit { panic("magic") }
+    rename(fromPath: String, toPath: String): Unit { panic("magic") }
+    getAbsolutePath(path: String): String { panic("magic") }
+    directoryName(path: String): String { panic("magic") }
+    baseName(path: String): String { panic("magic") }
+    prefixName(path: String): String { panic("magic") }
+    suffixName(path: String): String { panic("magic") }
 }

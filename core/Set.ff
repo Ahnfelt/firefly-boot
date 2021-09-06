@@ -1,7 +1,7 @@
 type Set[T] {} // (items: T...)
 
 extend self[K]: Set[K] {
-    add(key: K): Set[K] {}
-    remove(key: K) : Set[K] {}
-    contains(key: K): Bool {}
+    add(key: K): Set[K] { panic("magic") }
+    remove(key: K) : Set[K] { panic("magic") }
+    contains(key: K): Bool { panic("magic") }
 }

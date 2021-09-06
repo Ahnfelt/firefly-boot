@@ -11,6 +11,9 @@ Firefly_Core.panic(((message + " ") + at.show()))
 }
 
 def emitModule(packagePair : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String], module : Syntax_.Module) : Firefly_Core.String = {
+    val modulePrefix =
+        module.packagePair.first + ":" + module.packagePair.second + "/" +
+        module.file.dropLast(3) + "."
 val moduleNamespace = module.file.replace("\\", "/").getReverse().takeWhile({(_w1) =>
 (_w1 != '/')
 }).getReverse().takeWhile({(_w1) =>
@@ -36,7 +39,7 @@ module.extends_.map({(_w1) =>
 _w1.type_
 }).getCollect(({ case _w : Syntax_.TConstructor => Some(_w); case _ => None() })).find({(t) =>
 (!module.types.exists({(_w1) =>
-(((moduleNamespace + ".") + _w1.name) == t.name)
+((modulePrefix + _w1.name) == t.name)
 }))
 }).each({(t) =>
 Emitter_.fail(t.at, ("Type not defined in this file: " + t.name))

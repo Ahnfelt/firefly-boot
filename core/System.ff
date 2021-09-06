@@ -1,6 +1,6 @@
 type System {}
 
 extend self: System {
-    arguments(): List[String] {}
-    files(): FileSystem {}
+    arguments(): List[String] { panic("magic") }
+    files(): FileSystem { panic("magic") }
 }

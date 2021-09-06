@@ -1,7 +1,7 @@
 type Char {}
 
 extend self: Char {
-    getIsLetter(): Bool {}
-    getIsUpper(): Bool {}
-    getIsLower(): Bool {}
+    getIsLetter(): Bool { panic("magic") }
+    getIsUpper(): Bool { panic("magic") }
+    getIsLower(): Bool { panic("magic") }
 }

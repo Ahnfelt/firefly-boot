@@ -19,7 +19,7 @@ extend self[T]: Option[T] {
                     | True => Some(body())
                     | False => None
                 }
-            | Some(value) => value
+            | Some(_) => self
         }
     }
 
@@ -72,7 +72,7 @@ extend self[T]: Option[T] {
 
     each(body: T => Unit): Unit {
         self.{
-            | None => None
+            | None =>
             | Some(v) => body(v)
         }
     }

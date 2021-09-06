@@ -10,13 +10,13 @@ extend self[T]: List[T] {
     }
 
     // toArray
-    getArray(): Array[T] { panic("TODO: list getArray") }
+    getArray(): Array[T] { panic("magic") }
 
     // toList
-    getSet(): Set[T] { panic("TODO: list getSet") }
+    getSet(): Set[T] { panic("magic") }
 
     expect(index: Int): T {
-        function go(list: List[T], i: Int) {
+        function go(list: List[T], i: Int): T {
             list.{
                 | Empty => panic("expect(" + index + ") on list of size " + self.getSize())
                 | Link(head, _) {i == 0} => head
@@ -52,12 +52,28 @@ extend self[T]: List[T] {
     dropFirst(count: Int = 1): List[T] {
         self.{
             | _ {count <= 0} => self
-            | [_, ...tail] => tailcall tail.drop(count - 1)
+            | [] => self
+            | [_, ...tail] => tailcall tail.dropFirst(count - 1)
         }
     }
 
     dropLast(count: Int = 1): List[T] {
         self.reverse().dropFirst(count).reverse()
+    }
+
+    takeFirst(count: Int = 1): List[T] {
+        function go(list: List[T], count: Int, result: List[T]): List[T] {
+            list.{
+                | _ {count <= 0} => result.reverse()
+                | [] => result.reverse()
+                | [head, ...tail] => tailcall go(tail, count - 1, [head, ...result])
+            }
+        }
+        go(self, count, [])
+    }
+
+    takeLast(count: Int = 1): List[T] {
+        self.reverse().takeFirst(count).reverse()
     }
 
     pairs(): List[Pair[Int, T]] {
@@ -70,7 +86,7 @@ extend self[T]: List[T] {
     }
 
     slice(from: Int, until: Int): List[T] {
-        self.drop(from).take(until - from)
+        self.dropFirst(from).takeFirst(until - from)
     }
 
     getEmpty(): Bool {
@@ -81,10 +97,10 @@ extend self[T]: List[T] {
     }
 
     getSize(): Int {
-        function go(list: List[T], result: Int) {
+        function go(list: List[T], result: Int): Int {
             list.{
                 | [] => result
-                | [_, tail] => tailcall go(tail, result + 1)
+                | [_, ...tail] => tailcall go(tail, result + 1)
             }
         }
         go(self, 0)
@@ -92,8 +108,8 @@ extend self[T]: List[T] {
 
     each(body: T => Unit): Unit {
         self.{
-            | Empty =>
-            | Link(head, tail) =>
+            | [] =>
+            | [head, ...tail] =>
                 body(head)
                 tailcall tail.each(body)
         }
@@ -101,36 +117,36 @@ extend self[T]: List[T] {
 
     all(body: T => Bool): Bool {
         self.{
-            | Empty => True
-            | Link(head, _) {!body(head)} => False
-            | Link(_, tail) => tailcall tail.all(body)
+            | [] => True
+            | [head, ..._] {!body(head)} => False
+            | [_, ...tail] => tailcall tail.all(body)
         }
     }
 
     any(body: T => Bool): Bool {
         self.{
-            | Empty => False
-            | Link(head, _) {body(head)} => True
-            | Link(_, tail) => tailcall tail.any(body)
+            | [] => False
+            | [head, ..._] {body(head)} => True
+            | [_, ...tail] => tailcall tail.any(body)
         }
     }
 
     find(body: T => Bool): Option[T] {
         self.{
-            | Empty => None
-            | Link(head, _) {body(head)} => Some(head)
-            | Link(_, tail) => tailcall tail.find(body)
+            | [] => None
+            | [head, ..._] {body(head)} => Some(head)
+            | [_, ...tail] => tailcall tail.find(body)
         }
     }
 
     filter(body: T => Bool): List[T] {
-        function go(list: List[T], result: List[T]) {
+        function go(list: List[T], result: List[T]): List[T] {
             list.{
-                | Empty =>
+                | [] =>
                     result.reverse()
-                | Link(head, tail) {body(tail)} =>
+                | [head, ...tail] { body(head) } =>
                     tailcall go(tail, [head, ...result])
-                | Link(_, tail) =>
+                | [_, ...tail] =>
                     tailcall go(tail, result)
             }
         }
@@ -138,11 +154,11 @@ extend self[T]: List[T] {
     }
 
     map[R](body: T => R): List[R] {
-        function go(list: List[T], result: List[R]) {
+        function go(list: List[T], result: List[R]): List[R] {
             list.{
-                | Empty =>
+                | [] =>
                     result.reverse()
-                | Link(head, tail) =>
+                | [head, ...tail] =>
                     tailcall go(tail, [body(head), ...result])
             }
         }
@@ -150,11 +166,11 @@ extend self[T]: List[T] {
     }
 
     flatMap[R](body: T => List[R]): List[R] {
-        function go(list: List[T], result: List[List[R]]) {
+        function go(list: List[T], result: List[List[R]]): List[R] {
             list.{
-                | Empty =>
-                    result.reverse().flatten()
-                | Link(head, tail) =>
+                | [] =>
+                    result.reverse().getFlatten()
+                | [head, ...tail] =>
                     tailcall go(tail, [body(head), ...result])
             }
         }
@@ -162,11 +178,11 @@ extend self[T]: List[T] {
     }
 
     getCollect[R](body: T => Option[R]): List[R] {
-        function go(list: List[T], result: List[T]) {
+        function go(list: List[T], result: List[R]): List[R] {
             list.{
-                | Empty =>
+                | [] =>
                     result.reverse()
-                | Link(head, tail) =>
+                | [head, ...tail] =>
                     body(head).{
                         | None => tailcall go(tail, result)
                         | Some(value) => tailcall go(tail, [value, ...result])
@@ -178,9 +194,9 @@ extend self[T]: List[T] {
 
     getCollectFirst[R](body: T => Option[R]): Option[R] {
         self.{
-            | Empty =>
+            | [] =>
                 None
-            | Link(head, tail) =>
+            | [head, ...tail] =>
                 body(head).{
                     | None => tailcall tail.getCollectFirst(body)
                     | Some(value) => Some(value)
@@ -190,26 +206,26 @@ extend self[T]: List[T] {
 
     foldLeft[R](initial: R): ((R, T) => R) => R {
         {body =>
-            function go(list: List[R]) {
+            function go(state: R, list: List[T]): R {
                 list.{
-                    | Empty =>
-                        initial
-                    | Link(head, tail) =>
-                        tailcall go(body(initial, head), tail)
+                    | [] =>
+                        state
+                    | [head, ...tail] =>
+                        tailcall go(body(state, head), tail)
                 }
             }
-            go(self)
+            go(initial, self)
         }
     }
 
     updated(index: Int, value: T): List[T] {
-        function go(list: List[T], i: Int, result: List[T]) {
+        function go(list: List[T], i: Int, result: List[T]): List[T] {
             list.{
-                | Empty =>
+                | [] =>
                     result.reverse()
-                | Link(head, tail) {i == 0} =>
+                | [head, ...tail] {i == 0} =>
                     tailcall go(tail, i - 1, [value, ...result])
-                | Link(head, tail) =>
+                | [head, ...tail] =>
                     tailcall go(tail, i - 1, [head, ...result])
             }
         }
@@ -217,13 +233,13 @@ extend self[T]: List[T] {
     }
 
     modify(index: Int, body: T => T): List[T] {
-        function go(list: List[T], i: Int, result: List[T]) {
+        function go(list: List[T], i: Int, result: List[T]): List[T] {
             list.{
-                | Empty =>
+                | [] =>
                     result.reverse()
-                | Link(head, tail) {i == 0} =>
+                | [head, ...tail] {i == 0} =>
                     tailcall go(tail, i - 1, [body(head), ...result])
-                | Link(head, tail) =>
+                | [head, ...tail] =>
                     tailcall go(tail, i - 1, [head, ...result])
             }
         }
@@ -231,7 +247,7 @@ extend self[T]: List[T] {
     }
 
     zip[S](that: List[S]): List[Pair[T, S]] {
-        function go(list1: List[T], list2: List[T], result: List[Pair[T, S]]) {
+        function go(list1: List[T], list2: List[S], result: List[Pair[T, S]]): List[Pair[T, S]] {
             Pair(list1, list2).{
                 | Pair([x, ...xs], [y, ...ys]) =>
                     tailcall go(xs, ys, [Pair(x, y), ...result])
@@ -245,30 +261,30 @@ extend self[T]: List[T] {
     sortBy(body: T => String): List[T] { // TODO generalize to non-strings
         function divide(list: List[T], xs: List[T], ys: List[T]): Pair[List[T], List[T]] {
             list.{
-                | Empty => Pair(xs, ys)
-                | Link(x, Empty) => Pair([x, ..xs], ys)
-                | Link(x, Link(y, tail)) => tailcall divide(tail, [x, ...xs], [y, ...ys])
+                | [] => Pair(xs, ys)
+                | [x] => Pair([x, ...xs], ys)
+                | [x, y, ...tail] => tailcall divide(tail, [x, ...xs], [y, ...ys])
             }
         }
-        function merge(xs: List[T], ys: List[T], result: List[T]) {
+        function merge(xs: List[T], ys: List[T], result: List[T]): List[T] {
             Pair(xs, ys).{
                 | Pair([x, ...xs2], [y, ..._]) {body(x) < body(y)} => tailcall merge(xs2, ys, [x, ...result])
                 | Pair([x, ..._], [y, ...ys2]) => tailcall merge(xs, ys2, [y, ...result])
-                | Pair([x, ...xs2], Empty) => tailcall merge(xs2, Empty, [x, ...result])
-                | Pair(Empty, [y, ...ys2]) => tailcall merge(Empty, ys2, [y, ...result])
-                | Pair(Empty, Empty) => result.reverse()
+                | Pair([x, ...xs2], []) => tailcall merge(xs2, [], [x, ...result])
+                | Pair([], [y, ...ys2]) => tailcall merge([], ys2, [y, ...result])
+                | Pair([], []) => result.reverse()
             }
         }
         let pair = divide(self, [], [])
-        merge(pair.first.sortBy(body), pair.second.sortBy(body))
+        merge(pair.first.sortBy(body), pair.second.sortBy(body), [])
     }
 
     reverse(): List[T] {
-        function go(list: List[T], result: List[T]) {
+        function go(list: List[T], result: List[T]): List[T] {
             list.{
-                | Empty =>
+                | [] =>
                     result
-                | Link(head, tail) =>
+                | [head, ...tail] =>
                     tailcall go(tail, [head, ...result])
             }
         }
@@ -279,13 +295,13 @@ extend self[T]: List[T] {
 extend self[T]: List[List[T]] {
     // flatten
     getFlatten(): List[T] {
-        function go(lists: List[List[T]], result: List[T]) {
+        function go(lists: List[List[T]], result: List[T]): List[T] {
             lists.{
-                | Empty =>
+                | [] =>
                     result.reverse()
-                | Link(Empty, aas) =>
+                | [[], ...aas] =>
                     tailcall go(aas, result)
-                | Link(Link(a, as), aas) =>
+                | [[a, ...as], ...aas] =>
                     tailcall go(Link(as, aas), [a, ...result])
             }
         }
@@ -297,20 +313,20 @@ extend self[K, V]: List[Pair[K, V]] {
 
     // toMap
     getMap(): Map[K, V] {
-        self.foldLeft([].getMap()) {_.add(_)}
+        (self.foldLeft([].getMap())) { map, pair => map.add(pair.first, pair.second) }
     }
 
     group(): Map[K, List[V]] {
-        self.foldLeft([].getMap()) {_.addToList(_)}
+        (self.foldLeft([].getMap())) { map, pair => map.addToList(pair.first, pair.second) }
     }
 
     // unzip
     getUnzip(): Pair[List[K], List[V]] {
-        function go(pairs: List[Pair[K, V]], ks: List[K], vs: List[K]) {
+        function go(pairs: List[Pair[K, V]], ks: List[K], vs: List[V]): Pair[List[K], List[V]] {
             pairs.{
-                | Empty =>
+                | [] =>
                     Pair(ks.reverse(), vs.reverse())
-                | Link(Pair(k, v), tail) =>
+                | [Pair(k, v), ...tail] =>
                     tailcall go(tail, [k, ...ks], [v, ...vs])
             }
         }
@@ -319,5 +335,5 @@ extend self[K, V]: List[Pair[K, V]] {
 }
 
 extend self: List[String] {
-    join(separator: String = ""): String {}
+    join(separator: String = ""): String { panic("magic") }
 }

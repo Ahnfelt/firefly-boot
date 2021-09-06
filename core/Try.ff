@@ -1,5 +1,5 @@
 type Try[T] {}
 
 extend self[T]: Try[T] {
-    else(body: () => T): T {}
+    else(body: () => T): T { panic("magic") }
 }
