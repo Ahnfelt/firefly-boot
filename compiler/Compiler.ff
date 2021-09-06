@@ -9,7 +9,6 @@ type Compiler(
     files: FileSystem
     outputPath: String
     packagePaths: Map[String, String]
-    literalModuleNames: Map[String, List[String]]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable inferredModules: Map[String, Module]
@@ -20,13 +19,11 @@ make(
     files: FileSystem
     outputPath: String
     packagePaths: Map[String, String]
-    literalModuleNames: Map[String, List[String]]
 ): Compiler {
     Compiler(
         files = files
         outputPath = outputPath
         packagePaths = packagePaths
-        literalModuleNames = literalModuleNames
         parsedModules = mapOf()
         resolvedModules = mapOf()
         inferredModules = mapOf()
@@ -35,13 +32,31 @@ make(
 }
 
 coreImports: List[DImport] = [
-/*    DImport(
-        at = Location("<prelude>", 1, 1),
-        alias = "Hello",
-        package = Some(Pair("ff", "core")),
-        directory = [],
-        file = "Hello"
-    )*/
+    [
+        "Array",
+        "ArrayBuilder",
+        "Bool",
+        "Char",
+        "FileSystem",
+        "Int",
+        "List",
+        "Map",
+        "Option",
+        "Pair",
+        "Set",
+        "String",
+        "System",
+        "Try",
+        "Unit"
+    ].map { moduleName =>
+        DImport(
+            at = Location("<prelude>", 1, 1),
+            alias = moduleName,
+            package = Some(Pair("ff", "core")),
+            directory = [],
+            file = moduleName
+        )
+    }
 ]
 
 extend self: Compiler {
@@ -77,10 +92,9 @@ extend self: Compiler {
     resolve(packageName: String, moduleName: String): Module {
         self.resolvedModules.get(packageName + ":" + moduleName).else:
 
-        let coreModule = self.parse("ff:core", "Core")
         let module = self.parse(packageName, moduleName)
         let otherModules = self.imports(packageName, module)
-        let result = Resolver.make(coreModule).resolveModule(module, otherModules)
+        let result = Resolver.make().resolveModule(module, otherModules)
 
         self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)
         result
@@ -89,13 +103,13 @@ extend self: Compiler {
     infer(packageName: String, moduleName: String): Module {
         self.inferredModules.get(packageName + ":" + moduleName).else:
 
-        let coreModule = self.resolve("ff:core", "Core")
         let module = self.resolve(packageName, moduleName)
-        let otherModules = self.imports(packageName, module).map {
-            self.resolve(packageName, self.files.prefixName(_.file))
+        let otherModules = self.imports(packageName, module).map { i =>
+            let newPackageName = i.packagePair.first + ":" + i.packagePair.second
+            self.resolve(newPackageName, self.files.prefixName(i.file))
         }
-        let instances = coreModule.instances ++ module.instances ++ otherModules.flatMap { _.instances }
-        let result = Inference.make(instances).inferModule(coreModule, module, otherModules)
+        let instances = module.instances ++ otherModules.flatMap { _.instances }
+        let result = Inference.make(instances).inferModule(module, otherModules)
 
         self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)
         module // result

@@ -23,10 +23,8 @@ main(system: System): Unit {
 
     let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].getMap()
 
-    let literalModuleNames = [Pair("ff:core", ["Bool", "Char", "Int", "List", "String", "Unit"])].getMap()
-
     let success = do { //try {
-        Compiler.make(fs, scalaPathFile, packagePaths, literalModuleNames).emit("ff:compiler", "Main")
+        Compiler.make(fs, scalaPathFile, packagePaths).emit("ff:compiler", "Main")
         True
     }
     /*} else {

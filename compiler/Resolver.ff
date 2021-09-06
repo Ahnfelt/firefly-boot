@@ -7,17 +7,12 @@ type Resolver(
     traits: Map[String, String]
 )
 
-make(coreModule: Module): Resolver {
-    function core(name: String): Pair[String, String] {
-        Pair(name, "ff:core/Core." + name)
-    }
+make(): Resolver {
     Resolver(
-        variables =
-            coreModule.lets.map { _.name }.map(core).getMap() ++
-            coreModule.functions.map { _.signature.name }.map(core).getMap()
-        variants = coreModule.types.flatMap { _.variants }.map { _.name }.map(core).getMap()
-        types = coreModule.types.map { _.name }.map(core).getMap()
-        traits = mapOf()
+        variables = [].getMap()
+        variants = [].getMap()
+        types = [].getMap()
+        traits = [].getMap()
     )
 }
 
