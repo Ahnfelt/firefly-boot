@@ -52,7 +52,9 @@ extend self: Resolver {
 
     processDefinitions(module: Module, importAlias: Option[String]): Resolver {
         function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
-            let full = module.file.dropLast(3) + "." + name
+            let full =
+                module.packagePair.first + ":" + module.packagePair.second + "/" +
+                module.file.dropLast(3) + "." + name
             importAlias.{
                 | None => [Pair(name, full)]
                 | Some(alias) { unqualified } => [Pair(alias + "." + name, full), Pair(name, full)]

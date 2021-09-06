@@ -27,7 +27,7 @@ fail[T](at: Location, message: String): T {
 //myFieldEta: () => Set[Int] = [].toSet
 
 core(name: String): String {
-    "ff:core/Core." + name
+    "ff:core/" + name + "." + name
 }
 
 extend self: Inference {
@@ -302,7 +302,7 @@ extend self: Inference {
                     TConstructor(e.at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
                 let functionType = TConstructor(e.at, "Function$1", [
                     instantiated.scheme.signature.returnType
-                    TConstructor(e.at, "ff:core/Core.Option", [recordType])
+                    TConstructor(e.at, core("Option"), [recordType])
                 ])
                 self.unification.unify(e.at, expected, functionType)
                 e.EVariantIs(

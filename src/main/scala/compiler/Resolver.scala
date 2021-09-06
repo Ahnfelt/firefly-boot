@@ -55,7 +55,9 @@ resolver
 
 def processDefinitions(module : Syntax_.Module, importAlias : Firefly_Core.Option[Firefly_Core.String]) : Resolver_.Resolver = {
 def entry(name : Firefly_Core.String, unqualified : Firefly_Core.Bool) : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String]] = {
-val full = ((module.file.dropLast(3) + ".") + name);
+    val full =
+        module.packagePair.first + ":" + module.packagePair.second + "/" +
+        module.file.dropLast(3) + "." + name
 pipe_dot(importAlias)({
 case (Firefly_Core.None()) =>
 List(Firefly_Core.Pair(name, full))

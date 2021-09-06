@@ -19,7 +19,7 @@ Firefly_Core.panic(((message + " ") + at.show()))
 }
 
 def core(name : Firefly_Core.String) : Firefly_Core.String = {
-("ff:core/Core." + name)
+("ff:core/" + name + "." + name)
 }
 implicit class Inference_extend0(self : Inference_.Inference) {
 
@@ -275,7 +275,7 @@ _w1.name
 }).join("$")), parameters.map({(_w1) =>
 _w1.valueType
 }));
-val functionType = Syntax_.TConstructor(e.at, "Function$1", List(instantiated.scheme.signature.returnType, Syntax_.TConstructor(e.at, "ff:core/Core.Option", List(recordType))));
+val functionType = Syntax_.TConstructor(e.at, "Function$1", List(instantiated.scheme.signature.returnType, Syntax_.TConstructor(e.at, core("Option"), List(recordType))));
 self.unification.unify(e.at, expected, functionType);
 e.copy(typeArguments = instantiated.typeArguments.map({(_w1) =>
 _w1.second
