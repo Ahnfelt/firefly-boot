@@ -59,8 +59,12 @@ extend self: Resolver {
                 | Some(alias) => [Pair(alias + "." + name, full)]
             }
         }
-        let lets = module.lets.flatMap { entry(_.name, False) }.getMap()
-        let functions = module.functions.flatMap { entry(_.signature.name, False) }.getMap()
+        let isCore = // TODO: Extend imports to list unqualified symbols instead of this
+            module.packagePair.first == "ff" &&
+            module.packagePair.second == "core" &&
+            module.file == "Core.ff"
+        let lets = module.lets.flatMap { entry(_.name, isCore) }.getMap()
+        let functions = module.functions.flatMap { entry(_.signature.name, isCore) }.getMap()
         let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.getMap()
         let traits = module.traits.flatMap { entry(_.name, True) }.getMap()
         let types = module.types.flatMap { entry(_.name, True) }.getMap()
@@ -175,9 +179,10 @@ extend self: Resolver {
                 value = self.resolveTerm(value)
                 function = self.resolveTerm(function)
             )
-        | ECall(at, function, typeArguments, arguments) =>
+        | ECall(at, tailCall, function, typeArguments, arguments) =>
             ECall(
                 at = at
+                tailCall = tailCall
                 function = self.resolveTerm(function)
                 typeArguments = typeArguments.map { self.resolveType(_) }
                 arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }

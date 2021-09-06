@@ -10,9 +10,9 @@ case class Scheme(isVariable : Firefly_Core.Bool, isMutable : Firefly_Core.Bool,
 
 case class Instantiated(typeArguments : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Type]], scheme : Environment_.Scheme)
 
-def make(coreModule : Syntax_.Module, module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Environment_.Environment = {
-Environment_.Environment(((Environment_.processModule(coreModule, Firefly_Core.False(), Firefly_Core.True()).symbols ++ Environment_.processModule(module, Firefly_Core.True(), Firefly_Core.False()).symbols) ++ otherModules.map({(_w1) =>
-Environment_.processModule(_w1, Firefly_Core.False(), Firefly_Core.False()).symbols
+def make(module : Syntax_.Module, otherModules : Firefly_Core.List[Syntax_.Module]) : Environment_.Environment = {
+Environment_.Environment((Environment_.processModule(module, Firefly_Core.True()).symbols ++ otherModules.map({(_w1) =>
+Environment_.processModule(_w1, Firefly_Core.False()).symbols
 }).foldLeft(Firefly_Core.mapOf[Firefly_Core.String, Environment_.Scheme]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })))
@@ -22,7 +22,7 @@ def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show()))
 }
 
-def processModule(module : Syntax_.Module, isCurrentModule : Firefly_Core.Bool, isCoreModule : Firefly_Core.Bool) : Environment_.Environment = {
+def processModule(module : Syntax_.Module, isCurrentModule : Firefly_Core.Bool) : Environment_.Environment = {
 def full(module : Syntax_.Module, name : Firefly_Core.String) : Firefly_Core.String = {
 ((module.file.dropLast(3) + ".") + name)
 }

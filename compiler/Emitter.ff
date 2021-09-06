@@ -244,11 +244,11 @@ emitTerm(term: Term): String {
         "{\n" + casesString + "\n}"
     | EPipe(at, value, function) =>
         "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
-    | ECall(at, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().getIsLetter()} =>
+    | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().getIsLetter()} =>
         "(" + operator + emitArgument(value) + ")"
-    | ECall(at, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().getIsLetter()} =>
+    | ECall(at, _, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().getIsLetter()} =>
         "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
-    | ECall(at, function, typeArguments, arguments) =>
+    | ECall(at, _, function, typeArguments, arguments) =>
         let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
         emitTerm(function) + generics + "(" + arguments.map(emitArgument).join(", ") + ")"
     | ERecord(at, fields) =>

@@ -1,5 +1,3 @@
-try[T](body: () => T): Try[T] {}
-
 type Try[T] {}
 
 extend self[T]: Try[T] {

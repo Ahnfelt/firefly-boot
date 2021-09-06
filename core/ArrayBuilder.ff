@@ -1,5 +1,3 @@
-arrayBuilderOf[T](): ArrayBuilder[T] {} // (items: T...)
-
 type ArrayBuilder[T] {} // (items: T...)
 
 extend self[T]: ArrayBuilder[T] {

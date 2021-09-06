@@ -6,11 +6,11 @@ case class Location(file : Firefly_Core.String, line : Firefly_Core.Int, column 
 
 case class CompileError(at : Syntax_.Location, message : Firefly_Core.String)
 
-case class Module(file : Firefly_Core.String, dependencies : Firefly_Core.List[Syntax_.DDependency], imports : Firefly_Core.List[Syntax_.DImport], types : Firefly_Core.List[Syntax_.DType], traits : Firefly_Core.List[Syntax_.DTrait], instances : Firefly_Core.List[Syntax_.DInstance], extends_ : Firefly_Core.List[Syntax_.DExtend], lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction])
+case class Module(packagePair : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String], file : Firefly_Core.String, dependencies : Firefly_Core.List[Syntax_.DDependency], imports : Firefly_Core.List[Syntax_.DImport], types : Firefly_Core.List[Syntax_.DType], traits : Firefly_Core.List[Syntax_.DTrait], instances : Firefly_Core.List[Syntax_.DInstance], extends_ : Firefly_Core.List[Syntax_.DExtend], lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction])
 
 case class DDependency(at : Syntax_.Location, package_ : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String], safety : Syntax_.Safety, goodVersions : Firefly_Core.List[Syntax_.Version], badVersions : Firefly_Core.List[Syntax_.Version])
 
-case class DImport(at : Syntax_.Location, alias : Firefly_Core.String, package_ : Firefly_Core.Option[Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String]], directory : Firefly_Core.List[Firefly_Core.String], file : Firefly_Core.String)
+case class DImport(at : Syntax_.Location, alias : Firefly_Core.String, package_ : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String], directory : Firefly_Core.List[Firefly_Core.String], file : Firefly_Core.String)
 
 case class DFunction(at : Syntax_.Location, signature : Syntax_.Signature, body : Syntax_.Lambda)
 
@@ -39,7 +39,7 @@ case class ESequential(at : Syntax_.Location, before : Syntax_.Term, after : Syn
 case class EAssign(at : Syntax_.Location, operator : Firefly_Core.String, variable : Firefly_Core.String, value : Syntax_.Term) extends Term
 case class EAssignField(at : Syntax_.Location, operator : Firefly_Core.String, record : Syntax_.Term, field : Firefly_Core.String, value : Syntax_.Term) extends Term
 case class EPipe(at : Syntax_.Location, value : Syntax_.Term, function : Syntax_.Term) extends Term
-case class ECall(at : Syntax_.Location, function : Syntax_.Term, typeArguments : Firefly_Core.List[Syntax_.Type], arguments : Firefly_Core.List[Syntax_.Argument]) extends Term
+case class ECall(at : Syntax_.Location, tailCall : Firefly_Core.Bool, function : Syntax_.Term, typeArguments : Firefly_Core.List[Syntax_.Type], arguments : Firefly_Core.List[Syntax_.Argument]) extends Term
 case class EList(at : Syntax_.Location, elementType : Syntax_.Type, items : Firefly_Core.List[Firefly_Core.Pair[Syntax_.Term, Firefly_Core.Bool]]) extends Term
 case class ECopy(at : Syntax_.Location, name : Firefly_Core.String, record : Syntax_.Term, arguments : Firefly_Core.List[Syntax_.Field]) extends Term
 case class EVariant(at : Syntax_.Location, name : Firefly_Core.String, typeArguments : Firefly_Core.List[Syntax_.Type], arguments : Firefly_Core.Option[Firefly_Core.List[Syntax_.Argument]]) extends Term

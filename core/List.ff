@@ -42,11 +42,11 @@ extend self[T]: List[T] {
     }
 
     expectFirst(): T {
-        first().else { panic("expectFirst() on empty list") }
+        self.first().else { panic("expectFirst() on empty list") }
     }
 
     expectLast(): T {
-        last().else { panic("expectLast() on empty list") }
+        self.last().else { panic("expectLast() on empty list") }
     }
 
     dropFirst(count: Int = 1): List[T] {
@@ -306,7 +306,7 @@ extend self[K, V]: List[Pair[K, V]] {
 
     // unzip
     getUnzip(): Pair[List[K], List[V]] {
-        function go(pairs : List[Pair[K, V]], List[K], vs: List[K]) {
+        function go(pairs: List[Pair[K, V]], ks: List[K], vs: List[K]) {
             pairs.{
                 | Empty =>
                     Pair(ks.reverse(), vs.reverse())

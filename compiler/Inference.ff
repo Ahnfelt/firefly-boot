@@ -678,7 +678,7 @@ extend self: Inference {
         let parameters = signature.parameters.filter { _.default.getEmpty() }.map { p =>
             p.name
         }
-        let body = ECall(at, term, [], parameters.map { x =>
+        let body = ECall(at, False, term, [], parameters.map { x =>
             Argument(at, Some(x), EVariable(at, x, [], []))
         })
         let lambda = ELambda(at, Lambda(at, [MatchCase(

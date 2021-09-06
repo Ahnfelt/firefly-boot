@@ -1,6 +1,0 @@
-import Array
-import ArrayBuilder
-
-main(system: System): Unit {
-    log.debug("Hello core")
-}

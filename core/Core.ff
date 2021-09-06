@@ -1,3 +1,14 @@
+import Bool
+import Option
+import Unit
+import Try
+import String
+import Int
+import ArrayBuilder
+import Set
+import Map
+import Log
+
 if[T](condition: Bool, body: () => T): Option[T] {
     condition.{
         | False => None
@@ -14,16 +25,27 @@ while(condition: () => Bool, body: () => Unit): Unit {
     }
 }
 
+try[T](body: () => T): Try[T] {}
+
 do[T](body: () => T): T {
     body()
 }
 
 panic[T](message: String): T {}
+
 magicInstance[T](typeName: String): T {}
 magicShow[T](value: T): String {}
 magicHashCode[T](value: T): Int {}
 magicLess[T](x: T, y: T): Bool {}
 
+arrayBuilderOf[T](): ArrayBuilder[T] {} // (items: T...)
+setOf[T](): Set[T] {} // (items: T...)
+mapOf[K, V](): Map[K, V] {} // (items: T...)
+
+log: Log = 1
+
+
+/*
 arrayBuilderOf[T](): ArrayBuilder[T] {} // (items: T...)
 setOf[T](): Set[T] {} // (items: T...)
 mapOf[K, V](): Map[K, V] {} // (items: T...)
@@ -232,3 +254,4 @@ extend self: FileSystem {
     prefixName(path: String): String {}
     suffixName(path: String): String {}
 }
+*/

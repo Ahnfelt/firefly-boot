@@ -95,7 +95,7 @@ type Term(at: Location) {
     EAssign(operator: String, variable: String, value: Term)
     EAssignField(operator: String, record: Term, field: String, value: Term)
     EPipe(value: Term, function: Term)
-    ECall(function: Term, typeArguments: List[Type], arguments: List[Argument])
+    ECall(tailCall: Bool, function: Term, typeArguments: List[Type], arguments: List[Argument])
     EList(elementType: Type, items: List[Pair[Term, Bool]])
     ECopy(name: String, record: Term, arguments: List[Field])
     EVariant(name: String, typeArguments: List[Type], arguments: Option[List[Argument]])

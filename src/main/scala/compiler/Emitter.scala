@@ -10,14 +10,15 @@ def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
 Firefly_Core.panic(((message + " ") + at.show()))
 }
 
-def emitModule(package_ : Firefly_Core.String, module : Syntax_.Module) : Firefly_Core.String = {
+def emitModule(packagePair : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String], module : Syntax_.Module) : Firefly_Core.String = {
 val moduleNamespace = module.file.replace("\\", "/").getReverse().takeWhile({(_w1) =>
 (_w1 != '/')
 }).getReverse().takeWhile({(_w1) =>
 (_w1 != '.')
 });
-val parts = List(List(("package " + package_)), (List(List((("import " + package_) + ".Firefly_Core._")), module.imports.map({(_w1) =>
-(((("import " + package_) + ".") + _w1.file) + "_._")
+val package_ = ((packagePair.first + ".") + packagePair.second);
+val parts = List(List(("package " + package_)), (List(List((("import " + package_) + ".Firefly_Core._")), module.imports.map({(i) =>
+(((((("import " + i.package_.first) + ".") + i.package_.second) + ".") + i.file) + "_._")
 })).flatten), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")
 }), {() =>
@@ -345,11 +346,11 @@ val casesString = cases.map(Emitter_.emitCase).join("\n");
 (("{\n" + casesString) + "\n}")
 case (Syntax_.EPipe(at, value, function)) =>
 (((("pipe_dot(" + Emitter_.emitTerm(value)) + ")(") + Emitter_.emitTerm(function)) + ")")
-case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(value))) if (!operator.expectFirst().getIsLetter()) =>
+case (Syntax_.ECall(at, _, Syntax_.EVariable(_, operator, _, _), List(), List(value))) if (!operator.expectFirst().getIsLetter()) =>
 ((("(" + operator) + Emitter_.emitArgument(value)) + ")")
-case (Syntax_.ECall(at, Syntax_.EVariable(_, operator, _, _), List(), List(left, right))) if (!operator.expectFirst().getIsLetter()) =>
+case (Syntax_.ECall(at, _, Syntax_.EVariable(_, operator, _, _), List(), List(left, right))) if (!operator.expectFirst().getIsLetter()) =>
 (((((("(" + Emitter_.emitArgument(left)) + " ") + operator) + " ") + Emitter_.emitArgument(right)) + ")")
-case (Syntax_.ECall(at, function, typeArguments, arguments)) =>
+case (Syntax_.ECall(at, _, function, typeArguments, arguments)) =>
 val generics = Firefly_Core.if_(typeArguments.getEmpty(), {() =>
 ""
 }).else_({() =>

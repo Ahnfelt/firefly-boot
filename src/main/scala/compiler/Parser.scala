@@ -8,16 +8,12 @@ import compiler.Wildcards_._
 import compiler.Syntax_._
 object Parser_ {
 
-case class Parser(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token], end : Token_.Token, var offset : Firefly_Core.Int, var nextTypeVariableIndex : Firefly_Core.Int)
+case class Parser(packagePair : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String], file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token], end : Token_.Token, var offset : Firefly_Core.Int, var nextTypeVariableIndex : Firefly_Core.Int)
 
 case class Poly(generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint])
 val binaryOperators = List(List("||"), List("&&"), List("!=", "=="), List("<=", ">=", "<", ">"), List("++"), List("+", "-"), List("*", "/", "%"), List("^")).getArray()
-def make(file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token]) : Parser_.Parser = {
-Parser_.Parser(Firefly_Core.if_((file == "../core/Core.ff"), {() =>
-"ff:core/Core.ff"
-}).else_({() =>
-file
-}), tokens, tokens.expectLast(), 0, 1)
+def make(packagePair : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String], file : Firefly_Core.String, tokens : Firefly_Core.Array[Token_.Token]) : Parser_.Parser = {
+Parser_.Parser(packagePair, file, tokens, tokens.expectLast(), 0, 1)
 }
 implicit class Parser_extend0(self : Parser_.Parser) {
 
@@ -137,7 +133,7 @@ Firefly_Core.if_((!self.current().is(Token_.LEnd())), {() =>
 self.skipSeparator(Token_.LSemicolon())
 })
 });
-Syntax_.Module(file = self.file, dependencies = dependencies.getList(), imports = imports.getList(), lets = lets.getList(), functions = functions.getList(), extends_ = extends_.getList(), types = types.getList(), traits = traits.getList(), instances = instances.getList())
+Syntax_.Module(packagePair = self.packagePair, file = self.file, dependencies = dependencies.getList(), imports = imports.getList(), lets = lets.getList(), functions = functions.getList(), extends_ = extends_.getList(), types = types.getList(), traits = traits.getList(), instances = instances.getList())
 }
 
 def parseLetDefinition() : Syntax_.DLet = {
@@ -350,6 +346,8 @@ val userName = self.parseDashedName();
 self.skip(Token_.LColon());
 val packageName = self.parseDashedName();
 Firefly_Core.Pair(userName, packageName)
+}).else_({() =>
+self.packagePair
 });
 Syntax_.DImport(importToken.at(), alias, package_, path.getList(), file)
 }
@@ -846,7 +844,7 @@ operators.exists(self.current().rawIs)
 val token = self.skip(Token_.LOperator());
 val right = self.parseBinary((level + 1));
 val arguments = List(Syntax_.Argument(result.at, Firefly_Core.None(), result), Syntax_.Argument(right.at, Firefly_Core.None(), right));
-result = Syntax_.ECall(token.at(), Syntax_.EVariable(token.at(), token.raw(), List(), List()), List(), arguments)
+result = Syntax_.ECall(token.at(), Firefly_Core.False(), Syntax_.EVariable(token.at(), token.raw(), List(), List()), List(), arguments)
 })
 });
 result
@@ -857,13 +855,19 @@ def parseUnary() : Syntax_.Term = {
 Firefly_Core.if_(self.current().is(Token_.LOperator()), {() =>
 val token = self.skip(Token_.LOperator());
 val term = self.parseUnary();
-Syntax_.ECall(token.at(), Syntax_.EVariable(token.at(), token.raw(), List(), List()), List(), List(Syntax_.Argument(term.at, Firefly_Core.None(), term)))
+Syntax_.ECall(token.at(), Firefly_Core.False(), Syntax_.EVariable(token.at(), token.raw(), List(), List()), List(), List(Syntax_.Argument(term.at, Firefly_Core.None(), term)))
 }).else_({() =>
 self.parseFieldsAndCalls()
 })
 }
 
 def parseFieldsAndCalls() : Syntax_.Term = {
+val tailCall = Firefly_Core.if_((self.current().is(Token_.LKeyword()) && self.current().rawIs("tailcall")), {() =>
+self.skip(Token_.LKeyword());
+Firefly_Core.True()
+}).else_({() =>
+Firefly_Core.False()
+});
 var result = self.parseAtom();
 Firefly_Core.while_({() =>
 ((self.current().is(Token_.LBracketLeft()) || self.current().is(Token_.LColon())) || self.current().is(Token_.LDot()))
@@ -902,7 +906,7 @@ lastWasCurly = self.current().rawIs("{");
 val lambda = self.parseLambda(allowColon = Firefly_Core.True());
 moreArguments.append(Syntax_.Argument(lambda.at, Firefly_Core.None(), Syntax_.ELambda(lambda.at, lambda)))
 });
-result = Syntax_.ECall(at, result, typeArguments, (List(arguments, moreArguments.getList()).flatten));
+result = Syntax_.ECall(at, tailCall, result, typeArguments, (List(arguments, moreArguments.getList()).flatten));
 Firefly_Core.if_((lastWasCurly && self.current().is(Token_.LLower())), {() =>
 val token = self.skip(Token_.LLower());
 result = Syntax_.EField(token.at(), result, token.raw())

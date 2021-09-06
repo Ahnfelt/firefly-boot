@@ -6,21 +6,8 @@ object Resolver_ {
 
 case class Resolver(variables : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], variants : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], types : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String], traits : Firefly_Core.Map[Firefly_Core.String, Firefly_Core.String])
 
-def make(coreModule : Syntax_.Module) : Resolver_.Resolver = {
-def core(name : Firefly_Core.String) : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String] = {
-Firefly_Core.Pair(name, ("ff:core/Core." + name))
-}
-Resolver_.Resolver(variables = (coreModule.lets.map({(_w1) =>
-_w1.name
-}).map(core).getMap() ++ coreModule.functions.map({(_w1) =>
-_w1.signature.name
-}).map(core).getMap()), variants = coreModule.types.flatMap({(_w1) =>
-_w1.variants
-}).map({(_w1) =>
-_w1.name
-}).map(core).getMap(), types = coreModule.types.map({(_w1) =>
-_w1.name
-}).map(core).getMap(), traits = Firefly_Core.mapOf())
+def make() : Resolver_.Resolver = {
+Resolver_.Resolver(variables = List().getMap(), variants = List().getMap(), types = List().getMap(), traits = List().getMap())
 }
 
 def fail[T](at : Syntax_.Location, message : Firefly_Core.String) : T = {
@@ -78,11 +65,12 @@ case (Firefly_Core.Some(alias)) =>
 List(Firefly_Core.Pair(((alias + ".") + name), full))
 })
 }
+val isCore = (((module.packagePair.first == "ff") && (module.packagePair.second == "core")) && (module.file == "Core.ff"));
 val lets = module.lets.flatMap({(_w1) =>
-entry(_w1.name, Firefly_Core.False())
+entry(_w1.name, isCore)
 }).getMap();
 val functions = module.functions.flatMap({(_w1) =>
-entry(_w1.signature.name, Firefly_Core.False())
+entry(_w1.signature.name, isCore)
 }).getMap();
 val traitMethods = module.traits.flatMap({(_w1) =>
 _w1.methods
@@ -204,8 +192,8 @@ self.resolveCase(_w1)
 })))
 case (Syntax_.EPipe(at, value, function)) =>
 Syntax_.EPipe(at = at, value = self.resolveTerm(value), function = self.resolveTerm(function))
-case (Syntax_.ECall(at, function, typeArguments, arguments)) =>
-Syntax_.ECall(at = at, function = self.resolveTerm(function), typeArguments = typeArguments.map({(_w1) =>
+case (Syntax_.ECall(at, tailCall, function, typeArguments, arguments)) =>
+Syntax_.ECall(at = at, tailCall = tailCall, function = self.resolveTerm(function), typeArguments = typeArguments.map({(_w1) =>
 self.resolveType(_w1)
 }), arguments = arguments.map({(a) =>
 a.copy(value = self.resolveTerm(a.value))

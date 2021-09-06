@@ -31,12 +31,13 @@ make(
     )
 }
 
-coreImports: List[DImport] = [
+coreImports: List[DImport] =
     [
         "Array",
         "ArrayBuilder",
         "Bool",
         "Char",
+        "Core",
         "FileSystem",
         "Int",
         "List",
@@ -52,12 +53,11 @@ coreImports: List[DImport] = [
         DImport(
             at = Location("<prelude>", 1, 1),
             alias = moduleName,
-            package = Some(Pair("ff", "core")),
+            package = Pair("ff", "core"),
             directory = [],
             file = moduleName
         )
     }
-]
 
 extend self: Compiler {
 

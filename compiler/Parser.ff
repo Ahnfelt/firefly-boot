@@ -637,7 +637,7 @@ extend self: Parser {
                 let token = self.skip(LOperator)
                 let right = self.parseBinary(level + 1)
                 let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
-                result = ECall(token.at(), EVariable(token.at(), token.raw(), [], []), [], arguments)
+                result = ECall(token.at(), False, EVariable(token.at(), token.raw(), [], []), [], arguments)
             }
         }
         result
@@ -647,13 +647,17 @@ extend self: Parser {
         if(self.current().is(LOperator)) {
             let token = self.skip(LOperator)
             let term = self.parseUnary()
-            ECall(token.at(), EVariable(token.at(), token.raw(), [], []), [], [Argument(term.at, None, term)])
+            ECall(token.at(), False, EVariable(token.at(), token.raw(), [], []), [], [Argument(term.at, None, term)])
         } else {
             self.parseFieldsAndCalls()
         }
     }
     
     parseFieldsAndCalls(): Term {
+        let tailCall = if(self.current().is(LKeyword) && self.current().rawIs("tailcall")) {
+            self.skip(LKeyword)
+            True
+        } else { False }
         mutable result = self.parseAtom()
         while {self.current().is(LBracketLeft) || self.current().is(LColon) || self.current().is(LDot)} {
             if(self.current().is(LDot)) {
@@ -678,7 +682,7 @@ extend self: Parser {
                     let lambda = self.parseLambda(allowColon = True)
                     moreArguments.append(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
                 }
-                result = ECall(at, result, typeArguments, [...arguments, ...moreArguments.getList()])
+                result = ECall(at, tailCall, result, typeArguments, [...arguments, ...moreArguments.getList()])
                 if(lastWasCurly && self.current().is(LLower)) {
                     let token = self.skip(LLower)
                     result = EField(token.at(), result, token.raw())

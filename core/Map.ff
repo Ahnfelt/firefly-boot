@@ -1,5 +1,3 @@
-mapOf[K, V](): Map[K, V] {} // (items: T...)
-
 type Map[K, V] {}
 
 extend self[K, V]: Map[K, V] {
