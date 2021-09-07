@@ -353,10 +353,10 @@ extend self: Parser {
             self.skip(LOperator)
             part = part + "-" + readPart()
         }
-        if(part.exists { _.getIsUpper() }) {
+        if(part.any { _.getIsUpper() }) {
             self.fail(at, "Package names and paths must not contain upper case letters: " + part)
         }
-        if(part.exists { _ == '_' } || part.exists { _ == '.' }) {
+        if(part.any { _ == '_' } || part.any { _ == '.' }) {
             self.fail(at, "Package names and paths must not contain underscores or dots: " + part)
         }
         part
@@ -437,7 +437,7 @@ extend self: Parser {
                 Some(token)
             } else {None}
             let value = self.parseTerm()
-            arguments.append(Argument(nameToken.map{_.at()}.getOrElse(value.at), nameToken.map{_.raw()}, value))
+            arguments.append(Argument(nameToken.map{_.at()}.else{value.at}, nameToken.map{_.raw()}, value))
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
@@ -633,7 +633,7 @@ extend self: Parser {
         let operators = binaryOperators.expect(level)
         mutable result = self.parseBinary(level + 1)
         if(self.current().is(LOperator)) {
-            while {operators.exists(self.current().rawIs)} {
+            while {operators.any(self.current().rawIs)} {
                 let token = self.skip(LOperator)
                 let right = self.parseBinary(level + 1)
                 let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
@@ -711,7 +711,7 @@ extend self: Parser {
         } elseIf {self.current().is(LNamespace)} {
             let namespaceToken = self.skip(LNamespace)
             let extraNamespace = if(!self.current().is(LNamespace)) {None} else {Some(self.skip(LNamespace).raw())}
-            let prefix = namespaceToken.raw() + extraNamespace.getOrElse("")
+            let prefix = namespaceToken.raw() + extraNamespace.else{""}
             if(self.current().is(LLower)) {
                 let token = self.skip(LLower)
                 EVariable(token.at(), prefix + token.raw(), [], [])

@@ -18,7 +18,7 @@ main(system: System): Unit {
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)
 
-    let scalaPathFile = tempPath + "/src/main/scala/firefly"
+    let scalaPathFile = tempPath + "/src/main/scala"
     fs.createDirectories(scalaPathFile)
 
     let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].getMap()

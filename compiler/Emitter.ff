@@ -17,7 +17,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
             "import " + i.package.first + "." + i.package.second + "." + i.file + "_._"
         }]
         ["object " + moduleNamespace + "_ {"]
-        if(module.functions.exists { _.signature.name == "main" }) { [emitMain()] } else { [] }
+        if(module.functions.any { _.signature.name == "main" }) { [emitMain()] } else { [] }
         module.types.map(emitTypeDefinition)
         module.lets.map { emitLetDefinition(_) }
         module.functions.map { emitFunctionDefinition(_) }
@@ -27,7 +27,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
         ["}"]
     ]
     module.extends.map { _.type }.getCollect(TConstructor?).find { t =>
-        !module.types.exists { (modulePrefix + _.name) == t.name }
+        !module.types.any { (modulePrefix + _.name) == t.name }
     }.each { t =>
         fail(t.at, "Type not defined in this file: " + t.name)
     }
@@ -162,7 +162,7 @@ emitSignature(signature: Signature, suffix: String = ""): String {
 
 emitParameter(parameter: Parameter): String {
     let mutability = if(parameter.mutable) {"var "} else {""}
-    let defaultValue = parameter.default.map { " = " + emitTerm(_) }.getOrElse("")
+    let defaultValue = parameter.default.map { " = " + emitTerm(_) }.else{""}
     mutability + escapeKeyword(parameter.name) + emitTypeAnnotation(parameter.valueType) + defaultValue
 }
 
@@ -240,7 +240,7 @@ emitTerm(term: Term): String {
         patterns.all {| PVariable _ => True | _ => False }
     } =>
         let parameters =
-            patterns.map {| PVariable p => p.name.map(escapeKeyword).getOrElse("_") | _ => panic("!") }.join(", ")
+            patterns.map {| PVariable p => p.name.map(escapeKeyword).else{"_"} | _ => panic("!") }.join(", ")
         "{(" + parameters + ") =>\n" + emitStatements(body) + "\n}"
     | ELambda(at, Lambda(_, cases)) =>
         let casesString = cases.map(emitCase).join("\n")
@@ -267,25 +267,25 @@ emitTerm(term: Term): String {
 }
 
 emitArgument(argument: Argument): String {
-    argument.name.map { name => escapeKeyword(name) + " = " }.getOrElse("") + emitTerm(argument.value)
+    argument.name.map { name => escapeKeyword(name) + " = " }.else{""} + emitTerm(argument.value)
 }
 
 emitCase(matchCase: MatchCase): String {
     let pair = matchCase.patterns.map(emitPattern).getUnzip()
     let patterns = pair.first.join(", ")
-    let condition = matchCase.condition.map { "if " + emitTerm(_) + " " }.getOrElse("")
+    let condition = matchCase.condition.map { "if " + emitTerm(_) + " " }.else{""}
     let toLists = pair.second.getFlatten().join()
     "case (" + patterns + ") " + condition + "=>\n" + toLists + emitStatements(matchCase.body)
 }
 
 emitPattern(pattern: MatchPattern): Pair[String, List[String]] {
     | PVariable(at, name) =>
-        Pair(name.map(escapeKeyword).getOrElse("_"), [])
+        Pair(name.map(escapeKeyword).else{"_"}, [])
     | PVariant(at, name, patterns) =>
         let pairs = patterns.map(emitPattern)
         Pair(escapeResolved(name) + "(" + pairs.map{_.first}.join(", ") + ")", pairs.flatMap{_.second})
     | PVariantAs(at, name, variable) =>
-        Pair(variable.map(escapeKeyword).getOrElse("_") + " : " + escapeResolved(name), [])
+        Pair(variable.map(escapeKeyword).else{"_"} + " : " + escapeResolved(name), [])
     | PAlias(at, p, variable) =>
         let pair = emitPattern(p)
         Pair(escapeKeyword(variable) + " @ (" + pair.first + ")", pair.second)

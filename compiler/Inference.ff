@@ -313,7 +313,7 @@ extend self: Inference {
                     fail(e.at, "Symbol not in scope: " + e.name)
                 }.scheme.signature
                 let parameterNames = signature.parameters.map { _.name }
-                e.arguments.find { a => !parameterNames.exists { _ == a.name } }.each {
+                e.arguments.find { a => !parameterNames.any { _ == a.name } }.each {
                     | Field(at, name, value) => fail(at, "Unknown parameter: " + name)
                 }
                 let arguments = parameterNames.map { name =>

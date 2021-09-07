@@ -91,7 +91,9 @@ val array = packageName.split(':');
 Firefly_Core.Pair(array.expect(0), array.expect(1))
 });
 val emitted = Emitter_.emitModule(packagePair, module);
-val file = (((((self.outputPath + "/") + packageName.replace(":", "/")) + "/") + moduleName) + ".scala");
+    val path = self.outputPath + "/" + packageName.replace(":", "/")
+    val file = path + "/" + moduleName + ".scala"
+    self.files.createDirectories(path)
 self.files.writeText(file, emitted)
 })
 }

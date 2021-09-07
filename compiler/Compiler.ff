@@ -131,7 +131,9 @@ extend self: Compiler {
             Pair(array.expect(0), array.expect(1))
         }
         let emitted = Emitter.emitModule(packagePair, module)
-        let file = self.outputPath + "/" + packageName.replace(":", "/") + "/" + moduleName + ".scala"
+        let path = self.outputPath + "/" + packageName.replace(":", "/")
+        let file = path + "/" + moduleName + ".scala"
+        self.files.createDirectories(path)
         self.files.writeText(file, emitted)
     }
 

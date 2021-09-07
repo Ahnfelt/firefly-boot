@@ -28,7 +28,7 @@ Firefly_Core.if_(fs.exists(tempPath), {() =>
 Main_.deleteDirectory(fs, tempPath)
 });
 fs.createDirectory(tempPath);
-val scalaPathFile = (tempPath + "/src/main/scala/firefly");
+val scalaPathFile = (tempPath + "/src/main/scala");
 fs.createDirectories(scalaPathFile);
 val packagePaths = List(Firefly_Core.Pair("ff:compiler", "compiler"), Firefly_Core.Pair("ff:core", "core")).getMap();
 val success = Firefly_Core.do_({() =>
