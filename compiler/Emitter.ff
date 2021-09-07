@@ -18,7 +18,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
         }]
         ["object " + moduleNamespace + "_ {"]
         if(module.functions.any { _.signature.name == "main" }) { [emitMain()] } else { [] }
-        module.types.map(emitTypeDefinition)
+        module.types.filter { _.scalaTarget.getEmpty() }.map(emitTypeDefinition)
         module.lets.map { emitLetDefinition(_) }
         module.functions.map { emitFunctionDefinition(_) }
         module.extends.pairs().map { pair => emitExtendImplicit(pair.second, pair.first) }
@@ -63,11 +63,13 @@ emitTypeDefinition(definition: DType): String {
 emitLetDefinition(definition: DLet, mutable: Bool = False): String {
     let typeAnnotation = emitTypeAnnotation(definition.variableType)
     let mutability = if(mutable) {"var"} else {"val"}
-    mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + emitTerm(definition.value)
+    let valueCode = definition.scalaTarget.else { emitTerm(definition.value) }
+    mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + valueCode
 }
 
 emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     let signature = emitSignature(definition.signature, suffix)
+    definition.scalaTarget.map { code => " = {\n" + code + "\n}" }.else:
     definition.body.{
         | Lambda(_, [matchCase]) {
             matchCase.patterns.all {| PVariable(_, None) => True | _ => False }
