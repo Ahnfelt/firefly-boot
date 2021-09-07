@@ -137,16 +137,25 @@ extend self: Parser {
         } else { self.freshTypeVariable(nameToken.at()) }
         self.skip(LAssign)
         let value = self.parseTerm()
-        DLet(nameToken.at(), nameToken.raw(), variableType, value)
+        let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
+            self.skip(LKeyword)
+            self.skip(LString).raw()
+        }
+        DLet(nameToken.at(), nameToken.raw(), variableType, value, scalaTarget)
     }
     
     parseFunctionDefinition(): DFunction {
         let signature = self.parseSignature()
         let body = self.parseLambda(signature.parameters.getSize())
+        let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
+            self.skip(LKeyword)
+            self.skip(LString).raw()
+        }
         DFunction(
             signature.at,
             signature,
-            body
+            body,
+            scalaTarget
         )
     }
     
@@ -258,19 +267,29 @@ extend self: Parser {
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-        let variants = if(!self.current().rawIs("{")) {[Variant(nameToken.at(), nameToken.raw(), [])]} else {
+        let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
+            self.skip(LKeyword)
+            self.skip(LString).raw()
+        }
+        let variants = if(!self.current().rawIs("{")) {[Variant(nameToken.at(), nameToken.raw(), [], None)]} else {
             self.rawSkip(LBracketLeft, "{")
             let variantsBuilder = arrayBuilderOf[Variant]()
             while {!self.current().is(LBracketRight)} {
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-                variantsBuilder.append(Variant(variantNameToken.at(), variantNameToken.raw(), variantFields))
+                let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
+                    self.skip(LKeyword)
+                    self.skip(LString).raw()
+                }
+                variantsBuilder.append(
+                    Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, scalaTarget)
+                )
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
             variantsBuilder.getList()
         }
-        DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants)
+        DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, scalaTarget)
     }
     
     parseImportDefinition(): DImport {
@@ -617,7 +636,7 @@ extend self: Parser {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
             let body = self.parseLambda(defaultParameterCount = signature.parameters.getSize())
-            functions.append(DFunction(functionAt, signature, body))
+            functions.append(DFunction(functionAt, signature, body, None))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()

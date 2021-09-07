@@ -270,7 +270,7 @@ extend self: Resolver {
             returnType = self2.resolveType(definition.signature.returnType)
         )
         let body = definition.body.Lambda(cases = definition.body.cases.map { self2.resolveCase(_) })
-        DFunction(definition.at, signature, body)
+        DFunction(definition.at, signature, body, definition.scalaTarget)
     }
 
     resolveCase(case: MatchCase): MatchCase {

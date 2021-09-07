@@ -39,13 +39,15 @@ type DImport(
 type DFunction(
     at: Location,
     signature: Signature,
-    body: Lambda
+    body: Lambda,
+    scalaTarget: Option[String]
 )
 type DLet(
     at: Location,
     name: String,
     variableType: Type,
-    value: Term
+    value: Term,
+    scalaTarget: Option[String]
 )
 type DExtend(
     at: Location,
@@ -61,7 +63,8 @@ type DType(
     generics: List[String],
     constraints: List[Constraint],
     commonFields: List[Parameter],
-    variants: List[Variant]
+    variants: List[Variant],
+    scalaTarget: Option[String]
 )
 type DTrait(
     at: Location,
@@ -131,7 +134,7 @@ type Signature(
 
 type Lambda(at: Location, cases: List[MatchCase])
 
-type Variant(at: Location, name: String, fields: List[Parameter])
+type Variant(at: Location, name: String, fields: List[Parameter], scalaTarget: Option[String])
 
 type Parameter(at: Location, mutable: Bool, name: String, valueType: Type, default: Option[Term])
 

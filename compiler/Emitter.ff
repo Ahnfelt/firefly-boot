@@ -199,10 +199,10 @@ emitType(type: Type): String {
 
 emitStatements(term: Term): String {
     | EFunctions(at, functions, body) =>
-        let functionStrings = functions.map { f => emitFunctionDefinition(DFunction(at, f.signature, f.body)) }
+        let functionStrings = functions.map { f => emitFunctionDefinition(DFunction(at, f.signature, f.body, None)) }
         functionStrings.join("\n") + "\n" + emitStatements(body)
     | ELet(at, mutable, name, valueType, value, body) =>
-        emitLetDefinition(DLet(at, name, valueType, value), mutable) + ";\n" + emitStatements(body)
+        emitLetDefinition(DLet(at, name, valueType, value, None), mutable) + ";\n" + emitStatements(body)
     | ESequential(at, before, after) =>
         emitStatements(before) + ";\n" + emitStatements(after)
     | EAssign(at, operator, name, value) =>
