@@ -20,15 +20,15 @@ do[T](body: () => T): T {
     body()
 }
 
-panic[T](message: String): T { panic("magic") }
+panic[T](message: String): T { panic("magic") } scala "println(message); throw new RuntimeException(message)"
 
 magicInstance[T](typeName: String): T { panic("magic") }
-magicShow[T](value: T): String { panic("magic") }
-magicHashCode[T](value: T): Int { panic("magic") }
-magicLess[T](x: T, y: T): Bool { panic("magic") }
+magicShow[T](value: T): String { panic("magic") } scala "value.toString"
+magicHashCode[T](value: T): Int { panic("magic") } scala "value.hashCode()"
+magicLess[T](x: T, y: T): Bool { panic("magic") } scala "x.asInstanceOf[Comparable[T]].compareTo(y) < 0"
 
-arrayBuilderOf[T](): ArrayBuilder[T] { panic("magic") } // (items: T...)
-setOf[T](): Set[T] { panic("magic") } // (items: T...)
-mapOf[K, V](): Map[K, V] { panic("magic") } // (items: T...)
+arrayBuilderOf[T](): ArrayBuilder[T] { panic("magic") } scala "scala.collection.mutable.ArrayBuffer[T]()" // (items: T...)
+setOf[T](): Set[T] { panic("magic") } scala "Set[T]()" // (items: T...)
+mapOf[K, V](): Map[K, V] { panic("magic") } scala "Map[K, V]()" // (items: T...)
 
 log: Log = panic("magic")

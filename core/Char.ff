@@ -1,7 +1,7 @@
 type Char {} scala "scala.Char"
 
 extend self: Char {
-    getIsLetter(): Bool { panic("magic") }
-    getIsUpper(): Bool { panic("magic") }
-    getIsLower(): Bool { panic("magic") }
+    getIsLetter(): Bool { panic("magic") } scala "self.isLetter"
+    getIsUpper(): Bool { panic("magic") } scala "self.isUpper"
+    getIsLower(): Bool { panic("magic") } scala "self.isLower"
 }

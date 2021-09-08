@@ -1,7 +1,7 @@
 type Int {} scala "scala.Int"
 
 extend self: Int {
-    getTo(inclusive: Int): List[Int] { panic("magic") }
-    getUntil(exclusive: Int): List[Int] { panic("magic") }
-    getAbs(): Int { panic("magic") }
+    getTo(inclusive: Int): List[Int] { panic("magic") } scala "self.to(inclusive).toList"
+    getUntil(exclusive: Int): List[Int] { panic("magic") } scala "self.until(exclusive).toList"
+    getAbs(): Int { panic("magic") } scala "self.abs"
 }

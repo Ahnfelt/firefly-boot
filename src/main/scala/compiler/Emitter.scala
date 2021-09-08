@@ -100,27 +100,27 @@ val mutability = Firefly_Core.if_(mutable, {() =>
     mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + valueCode
 }
 
-def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
-val signature = Emitter_.emitSignature(definition.signature, suffix);
-    definition.scalaTarget.map { code => " = {\n" + code + "\n}" }.else_ { () =>
-pipe_dot(definition.body)({
-case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
-case (Syntax_.PVariable(_, Firefly_Core.None())) =>
-Firefly_Core.True()
-case (_) =>
-Firefly_Core.False()
-}) =>
-val body = Emitter_.emitStatements(matchCase.body);
-(((signature + " = {\n") + body) + "\n}")
-case (_) =>
-val tuple = (("(" + definition.signature.parameters.map({(_w1) =>
-Emitter_.escapeKeyword(_w1.name)
-}).join(", ")) + ")");
-val cases = definition.body.cases.map(Emitter_.emitCase).join("\n");
-(((((signature + " = ") + tuple) + " match {\n") + cases) + "\n}")
-})
+    def emitFunctionDefinition(definition: Syntax_.DFunction, suffix: Firefly_Core.String = ""): Firefly_Core.String = {
+        val signature = Emitter_.emitSignature(definition.signature, suffix);
+        definition.scalaTarget.map { code => signature + " = {\n" + code + "\n}" }.else_ { () =>
+            pipe_dot(definition.body)({
+                case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
+                    case (Syntax_.PVariable(_, Firefly_Core.None())) =>
+                        Firefly_Core.True()
+                    case (_) =>
+                        Firefly_Core.False()
+                }) =>
+                    val body = Emitter_.emitStatements(matchCase.body);
+                    (((signature + " = {\n") + body) + "\n}")
+                case (_) =>
+                    val tuple = (("(" + definition.signature.parameters.map({ (_w1) =>
+                        Emitter_.escapeKeyword(_w1.name)
+                    }).join(", ")) + ")");
+                    val cases = definition.body.cases.map(Emitter_.emitCase).join("\n");
+                    (((((signature + " = ") + tuple) + " match {\n") + cases) + "\n}")
+            })
+        }
     }
-}
 
 def emitExtendImplicit(definition : Syntax_.DExtend, index : Firefly_Core.Int) : Firefly_Core.String = {
 val generics = Emitter_.emitTypeParameters(definition.generics);

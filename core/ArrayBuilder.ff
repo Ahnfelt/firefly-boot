@@ -1,13 +1,13 @@
 type ArrayBuilder[T] {} scala "scala.collection.mutable.ArrayBuffer[T]"
 
 extend self[T]: ArrayBuilder[T] {
-    getArray(): Array[T] { panic("magic") }
-    getEmpty(): Bool { panic("magic") }
-    getSize(): Int { panic("magic") }
-    append(value: T): Unit { panic("magic") }
-    modify(index: Int, body: T => T): Unit { panic("magic") }
-    drain(): Array[T] { panic("magic") }
-    getList(): List[T] { panic("magic") }
-    getLast(): Option[T] { panic("magic") }
-    expectLast(): T { panic("magic") }
+    getArray(): Array[T] { panic("magic") } scala "self.toArray"
+    getEmpty(): Bool { panic("magic") } scala "self.isEmpty"
+    getSize(): Int { panic("magic") } scala "self.size"
+    append(value: T): Unit { panic("magic") } scala "self.append(value)"
+    modify(index: Int, body: T => T): Unit { panic("magic") } scala "self.update(index, body(self(index)))"
+    drain(): Array[T] { panic("magic") } scala "val result = self.toArray[T]; self.clear(); result"
+    getList(): List[T] { panic("magic") } scala "self.toList"
+    getLast(): Option[T] { panic("magic") } scala "self.lastOption"
+    expectLast(): T { panic("magic") } scala "self.last"
 }
