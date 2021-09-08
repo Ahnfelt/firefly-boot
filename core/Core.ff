@@ -14,7 +14,7 @@ while(condition: () => Bool, body: () => Unit): Unit {
     }
 }
 
-try[T](body: () => T): Try[T] { panic("magic") }
+try[T](body: () => T): Try[T] { panic("magic") } scala "scala.util.Try { body() }"
 
 do[T](body: () => T): T {
     body()
@@ -31,6 +31,6 @@ arrayBuilderOf[T](): ArrayBuilder[T] { panic("magic") } scala "scala.collection.
 setOf[T](): Set[T] { panic("magic") } scala "Set[T]()" // (items: T...)
 mapOf[K, V](): Map[K, V] { panic("magic") } scala "Map[K, V]()" // (items: T...)
 
-log: Log = panic("magic")
+log: Log = panic("magic") scala "()"
 
 pipeDot(): Unit {} scala "}; def pipe_dot[A, B](value : A)(function : A => B) : B = { function(value)" // hack

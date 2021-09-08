@@ -10,10 +10,10 @@ extend self[T]: List[T] {
     }
 
     // toArray
-    getArray(): Array[T] { panic("magic") }
+    getArray(): Array[T] { panic("magic") } scala "self.toArray"
 
     // toList
-    getSet(): Set[T] { panic("magic") }
+    getSet(): Set[T] { panic("magic") } scala "self.toSet"
 
     expect(index: Int): T {
         function go(list: List[T], i: Int): T {

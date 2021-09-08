@@ -1,18 +1,30 @@
-type FileSystem {}
+type FileSystem {} scala "Unit"
 
 extend self: FileSystem {
-    readText(file: String): String { panic("magic") }
-    writeText(file: String, text: String): Unit { panic("magic") }
-    list(path: String): List[String] { panic("magic") }
-    exists(path: String): Bool { panic("magic") }
-    isDirectory(path: String): Bool { panic("magic") }
-    createDirectory(path: String): Unit { panic("magic") }
-    createDirectories(path: String): Unit { panic("magic") }
-    delete(path: String): Unit { panic("magic") }
-    rename(fromPath: String, toPath: String): Unit { panic("magic") }
-    getAbsolutePath(path: String): String { panic("magic") }
-    directoryName(path: String): String { panic("magic") }
-    baseName(path: String): String { panic("magic") }
-    prefixName(path: String): String { panic("magic") }
-    suffixName(path: String): String { panic("magic") }
+    readText(file: String): String { panic("magic") } scala "val source = scala.io.Source.fromFile(new java.io.File(file), \"UTF-8\"); val result = source.mkString; source.close(); result"
+    writeText(file: String, text: String): Unit { panic("magic") } scala "val writer = new java.io.FileWriter(new java.io.File(file)); writer.write(text); writer.close()}"
+    list(path: String): List[String] { panic("magic") } scala "new java.io.File(path).listFiles().map(_.toString.replace('\\', '/')).toList"
+    exists(path: String): Bool { panic("magic") } scala "new java.io.File(path).exists()"
+    isDirectory(path: String): Bool { panic("magic") } scala "new java.io.File(path).isDirectory"
+    createDirectory(path: String): Unit { panic("magic") } scala "new java.io.File(path).mkdir()"
+    createDirectories(path: String): Unit { panic("magic") } scala "new java.io.File(path).mkdirs()"
+    delete(path: String): Unit { panic("magic") } scala "if(!new java.io.File(path).delete()) { throw new java.io.IOException(\"Could not delete \" + path) }"
+    rename(fromPath: String, toPath: String): Unit { panic("magic") } scala "if(!new java.io.File(fromPath).renameTo(new java.io.File(toPath))) { throw new java.io.IOException(\"Could not rename \" + fromPath + \" to \" + toPath) }"
+    getAbsolutePath(path: String): String { panic("magic") } scala "new java.io.File(path).getAbsolutePath.replace('\\', '/')"
+
+    directoryName(path: String): String {
+        path.getReverse().dropWhile(_ != '/').dropFirst(1).getReverse()
+    }
+
+    baseName(path: String): String {
+        path.getReverse().takeWhile(_ != '/').getReverse()
+    }
+
+    prefixName(path: String): String {
+        path.getReverse().takeWhile(_ != '/').getReverse().takeWhile(_ != '.')
+    }
+
+    suffixName(path: String): String {
+        path.getReverse().takeWhile(_ != '/').takeWhile(_ != '.').getReverse()
+    }
 }
