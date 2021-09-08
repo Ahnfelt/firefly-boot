@@ -12,13 +12,13 @@ case class DDependency(at : Syntax_.Location, package_ : Firefly_Core.Pair[Firef
 
 case class DImport(at : Syntax_.Location, alias : Firefly_Core.String, package_ : Firefly_Core.Pair[Firefly_Core.String, Firefly_Core.String], directory : Firefly_Core.List[Firefly_Core.String], file : Firefly_Core.String)
 
-case class DFunction(at : Syntax_.Location, signature : Syntax_.Signature, body : Syntax_.Lambda)
+case class DFunction(at : Syntax_.Location, signature : Syntax_.Signature, body : Syntax_.Lambda, scalaTarget: Option[String])
 
-case class DLet(at : Syntax_.Location, name : Firefly_Core.String, variableType : Syntax_.Type, value : Syntax_.Term)
+case class DLet(at : Syntax_.Location, name : Firefly_Core.String, variableType : Syntax_.Type, value : Syntax_.Term, scalaTarget: Option[String])
 
 case class DExtend(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint], type_ : Syntax_.Type, methods : Firefly_Core.List[Syntax_.DFunction])
 
-case class DType(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint], commonFields : Firefly_Core.List[Syntax_.Parameter], variants : Firefly_Core.List[Syntax_.Variant])
+case class DType(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint], commonFields : Firefly_Core.List[Syntax_.Parameter], variants : Firefly_Core.List[Syntax_.Variant], scalaTarget: Option[String])
 
 case class DTrait(at : Syntax_.Location, name : Firefly_Core.String, generics : Firefly_Core.List[Firefly_Core.String], constraints : Firefly_Core.List[Syntax_.Constraint], generatorParameters : Firefly_Core.List[Syntax_.Parameter], methods : Firefly_Core.List[Syntax_.Signature], methodDefaults : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Lambda]], methodGenerators : Firefly_Core.List[Firefly_Core.Pair[Firefly_Core.String, Syntax_.Lambda]])
 
@@ -63,7 +63,7 @@ case class Signature(at : Syntax_.Location, name : Firefly_Core.String, generics
 
 case class Lambda(at : Syntax_.Location, cases : Firefly_Core.List[Syntax_.MatchCase])
 
-case class Variant(at : Syntax_.Location, name : Firefly_Core.String, fields : Firefly_Core.List[Syntax_.Parameter])
+case class Variant(at : Syntax_.Location, name : Firefly_Core.String, fields : Firefly_Core.List[Syntax_.Parameter], scalaTarget: Option[String])
 
 case class Parameter(at : Syntax_.Location, mutable : Firefly_Core.Bool, name : Firefly_Core.String, valueType : Syntax_.Type, default : Firefly_Core.Option[Syntax_.Term])
 

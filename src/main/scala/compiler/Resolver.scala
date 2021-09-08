@@ -268,7 +268,7 @@ self2.resolveTerm(_w1)
 val body = definition.body.copy(cases = definition.body.cases.map({(_w1) =>
 self2.resolveCase(_w1)
 }));
-Syntax_.DFunction(definition.at, signature, body)
+Syntax_.DFunction(definition.at, signature, body, definition.scalaTarget)
 }
 
 def resolveCase(case_ : Syntax_.MatchCase) : Syntax_.MatchCase = {

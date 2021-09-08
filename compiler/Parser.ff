@@ -261,16 +261,12 @@ extend self: Parser {
         let traitType = TConstructor(nameToken.at(), nameToken.raw(), typeArguments.getList())
         DInstance(nameToken.at(), poly.generics, poly.constraints, traitType, generatorArguments, methods)
     }
-    
+
     parseTypeDefinition(): DType {
         self.rawSkip(LKeyword, "type")
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-        let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
-            self.skip(LKeyword)
-            self.skip(LString).raw()
-        }
         let variants = if(!self.current().rawIs("{")) {[Variant(nameToken.at(), nameToken.raw(), [], None)]} else {
             self.rawSkip(LBracketLeft, "{")
             let variantsBuilder = arrayBuilderOf[Variant]()
@@ -288,6 +284,10 @@ extend self: Parser {
             }
             self.rawSkip(LBracketRight, "}")
             variantsBuilder.getList()
+        }
+        let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
+            self.skip(LKeyword)
+            self.skip(LString).raw()
         }
         DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, scalaTarget)
     }

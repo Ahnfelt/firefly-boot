@@ -146,13 +146,21 @@ self.freshTypeVariable(nameToken.at())
 });
 self.skip(Token_.LAssign());
 val value = self.parseTerm();
-Syntax_.DLet(nameToken.at(), nameToken.raw(), variableType, value)
+    val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
+        self.skip(LKeyword())
+        Some(self.skip(LString()).raw())
+    } else None()
+    Syntax_.DLet(nameToken.at(), nameToken.raw(), variableType, value, scalaTarget)
 }
 
 def parseFunctionDefinition() : Syntax_.DFunction = {
 val signature = self.parseSignature();
 val body = self.parseLambda(signature.parameters.getSize());
-Syntax_.DFunction(signature.at, signature, body)
+    val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
+        self.skip(LKeyword())
+        Some(self.skip(LString()).raw())
+    } else None()
+Syntax_.DFunction(signature.at, signature, body, scalaTarget)
 }
 
 def parseSignature() : Syntax_.Signature = {
@@ -300,7 +308,7 @@ List()
 self.parseFunctionParameters(allowMutable = Firefly_Core.True())
 });
 val variants = Firefly_Core.if_((!self.current().rawIs("{")), {() =>
-List(Syntax_.Variant(nameToken.at(), nameToken.raw(), List()))
+List(Syntax_.Variant(nameToken.at(), nameToken.raw(), List(), None()))
 }).else_({() =>
 self.rawSkip(Token_.LBracketLeft(), "{");
 val variantsBuilder = Firefly_Core.arrayBuilderOf[Syntax_.Variant]();
@@ -313,7 +321,11 @@ List()
 }).else_({() =>
 self.parseFunctionParameters(allowMutable = Firefly_Core.True())
 });
-variantsBuilder.append(Syntax_.Variant(variantNameToken.at(), variantNameToken.raw(), variantFields));
+    val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
+        self.skip(LKeyword())
+        Some(self.skip(LString()).raw())
+    } else None()
+variantsBuilder.append(Syntax_.Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, scalaTarget));
 Firefly_Core.if_((!self.current().is(Token_.LBracketRight())), {() =>
 self.skipSeparator(Token_.LSemicolon())
 })
@@ -321,7 +333,11 @@ self.skipSeparator(Token_.LSemicolon())
 self.rawSkip(Token_.LBracketRight(), "}");
 variantsBuilder.getList()
 });
-Syntax_.DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants)
+    val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
+        self.skip(LKeyword())
+        Some(self.skip(LString()).raw())
+    } else None()
+    Syntax_.DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, scalaTarget)
 }
 
 def parseImportDefinition() : Syntax_.DImport = {
@@ -820,7 +836,7 @@ self.current().rawIs("function")
 val functionAt = self.rawSkip(Token_.LKeyword(), "function").at();
 val signature = self.parseSignature();
 val body = self.parseLambda(defaultParameterCount = signature.parameters.getSize());
-functions.append(Syntax_.DFunction(functionAt, signature, body));
+functions.append(Syntax_.DFunction(functionAt, signature, body, None()));
 self.skipSeparator(Token_.LSemicolon())
 });
 val body = self.parseStatements();

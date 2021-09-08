@@ -28,7 +28,7 @@ val parts = List(List(("package " + package_)), (List(List((("import " + package
 List(Emitter_.emitMain())
 }).else_({() =>
 List()
-}), module.types.map(Emitter_.emitTypeDefinition), module.lets.map({(_w1) =>
+}), module.types.filter(_.scalaTarget.getEmpty()).map(Emitter_.emitTypeDefinition), module.lets.map({(_w1) =>
 Emitter_.emitLetDefinition(_w1)
 }), module.functions.map({(_w1) =>
 Emitter_.emitFunctionDefinition(_w1)
@@ -92,11 +92,13 @@ val mutability = Firefly_Core.if_(mutable, {() =>
 }).else_({() =>
 "val"
 });
-(((((mutability + " ") + Emitter_.escapeKeyword(definition.name)) + typeAnnotation) + " = ") + Emitter_.emitTerm(definition.value))
+    val valueCode = definition.scalaTarget.else_ { () => emitTerm(definition.value) }
+    mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + valueCode
 }
 
 def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
 val signature = Emitter_.emitSignature(definition.signature, suffix);
+    definition.scalaTarget.map { code => " = {\n" + code + "\n}" }.else_ { () =>
 pipe_dot(definition.body)({
 case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
 case (Syntax_.PVariable(_, Firefly_Core.None())) =>
@@ -113,6 +115,7 @@ Emitter_.escapeKeyword(_w1.name)
 val cases = definition.body.cases.map(Emitter_.emitCase).join("\n");
 (((((signature + " = ") + tuple) + " match {\n") + cases) + "\n}")
 })
+    }
 }
 
 def emitExtendImplicit(definition : Syntax_.DExtend, index : Firefly_Core.Int) : Firefly_Core.String = {
@@ -271,11 +274,11 @@ val generics = Firefly_Core.if_(t.generics.getEmpty(), {() =>
 def emitStatements(term : Syntax_.Term) : Firefly_Core.String = (term) match {
 case (Syntax_.EFunctions(at, functions, body)) =>
 val functionStrings = functions.map({(f) =>
-Emitter_.emitFunctionDefinition(Syntax_.DFunction(at, f.signature, f.body))
+Emitter_.emitFunctionDefinition(Syntax_.DFunction(at, f.signature, f.body, None()))
 });
 ((functionStrings.join("\n") + "\n") + Emitter_.emitStatements(body))
 case (Syntax_.ELet(at, mutable, name, valueType, value, body)) =>
-((Emitter_.emitLetDefinition(Syntax_.DLet(at, name, valueType, value), mutable) + ";\n") + Emitter_.emitStatements(body))
+((Emitter_.emitLetDefinition(Syntax_.DLet(at, name, valueType, value, None()), mutable) + ";\n") + Emitter_.emitStatements(body))
 case (Syntax_.ESequential(at, before, after)) =>
 ((Emitter_.emitStatements(before) + ";\n") + Emitter_.emitStatements(after))
 case (Syntax_.EAssign(at, operator, name, value)) =>
