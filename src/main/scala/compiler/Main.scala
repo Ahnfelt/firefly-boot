@@ -45,9 +45,6 @@ fs.rename(scalaPathFile, outputPath)
 }
 
 def writeExtraFiles(fs : Firefly_Core.FileSystem, package_ : Firefly_Core.String, corePath : Firefly_Core.String, outputFile : Firefly_Core.String, scalaFile : Firefly_Core.String) : Firefly_Core.Unit = {
-val coreSubPath = "scala/com/github/ahnfelt/firefly/library/Firefly_Core.scala";
-val core = fs.readText(((corePath + "/") + coreSubPath)).replaceFirst("package com.github.ahnfelt.firefly.library", ("package " + package_));
-fs.writeText((scalaFile + "/Firefly_Core.scala"), core);
 fs.writeText((outputFile + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 }
 

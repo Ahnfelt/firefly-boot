@@ -20,9 +20,9 @@ val moduleNamespace = module.file.replace("\\", "/").getReverse().takeWhile({(_w
 (_w1 != '.')
 });
 val package_ = ((packagePair.first + ".") + packagePair.second);
-val parts = List(List(("package " + package_)), (List(List((("import " + package_) + ".Firefly_Core._")), module.imports.map({(i) =>
+val parts = List(List(("package " + package_)), (module.imports.map({(i) =>
 (((((("import " + i.package_.first) + ".") + i.package_.second) + ".") + i.file) + "_._")
-})).flatten), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
+})), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")
 }), {() =>
 List(Emitter_.emitMain())
@@ -78,16 +78,16 @@ def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
     val variants = definition.variants.map({(_w1) =>
     Emitter_.emitVariantDefinition(definition, _w1)
     });
-    val head = definition.scalaTarget.map({(code) =>
-    ((((("type " + definition.name) + generics) + " = ") + code) + ";\n")
-    }).else_({() =>
-    ((("sealed abstract class " + definition.name) + generics) + " extends Product with Serializable")
-    });
-    ((head + commonFields) + variants.map({(_w1) =>
-    ("\n" + _w1)
-    }).join())
-    })
-}
+        val head = definition.scalaTarget.map({(code) =>
+        (((((("type " + definition.name) + generics) + " = ") + code) + ";\n"))
+        }).else_({() =>
+        ((("sealed abstract class " + definition.name) + generics) + " extends Product with Serializable" + commonFields)
+        });
+        (head + variants.map({(_w1) =>
+        ("\n" + _w1)
+        }).join())
+        })
+        }
 
 def emitLetDefinition(definition : Syntax_.DLet, mutable : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.String = {
 val typeAnnotation = Emitter_.emitTypeAnnotation(definition.variableType);
@@ -194,12 +194,12 @@ def emitVariantDefinition(typeDefinition : Syntax_.DType, definition : Syntax_.V
     val allFields = (typeDefinition.commonFields ++ definition.fields);
     val fields = (("(" + allFields.map(Emitter_.emitParameter).join(", ")) + ")");
     definition.scalaTarget.map({(code) =>
-    ((((((((((((((((("object " + definition.name) + generics) + " {\n") + "def apply") + generics) + fields) + " = ") + code) + if_((fields != "()"), {() =>
+    ((((((((((((((((("object " + definition.name)) + " {\n") + "def apply") + generics) + fields) + " = ") + code) + if_((fields != "()"), {() =>
     fields
     }).else_({() =>
     ""
     })) + ";\n") + "def unapply") + generics) + "(value : ") + typeDefinition.scalaTarget.expect()) + ") = ") + if_((fields != "()"), {() =>
-    ((((("Some(value).collectFirst { case " + code) + fields) + " => ") + fields) + " };\n")
+    ((((("scala.Some(value).collectFirst { case " + code) + fields) + " => ") + fields) + " };\n")
     }).else_({() =>
     ("value == " + code + ";\n")
     })) + "}")
