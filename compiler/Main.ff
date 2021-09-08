@@ -41,12 +41,6 @@ main(system: System): Unit {
 }
 
 writeExtraFiles(fs: FileSystem, package: String, corePath: String, outputFile: String, scalaFile: String): Unit {
-    let coreSubPath = "scala/com/github/ahnfelt/firefly/library/Firefly_Core.scala"
-    let core = fs.readText(corePath + "/" + coreSubPath).replaceFirst(
-        "package com.github.ahnfelt.firefly.library",
-        "package " + package
-    )
-    fs.writeText(scalaFile + "/Firefly_Core.scala", core)
     fs.writeText(outputFile + "/build.sbt", "scalaVersion := \"2.13.3\"")
 }
 

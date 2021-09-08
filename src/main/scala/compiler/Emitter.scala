@@ -20,9 +20,9 @@ val moduleNamespace = module.file.replace("\\", "/").getReverse().takeWhile({(_w
 (_w1 != '.')
 });
 val package_ = ((packagePair.first + ".") + packagePair.second);
-val parts = List(List(("package " + package_)), (List(List((("import " + package_) + ".Firefly_Core._")), module.imports.map({(i) =>
+val parts = List(List(("package " + package_)), (module.imports.map({(i) =>
 (((((("import " + i.package_.first) + ".") + i.package_.second) + ".") + i.file) + "_._")
-})).flatten), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
+})), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")
 }), {() =>
 List(Emitter_.emitMain())
@@ -78,16 +78,16 @@ def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
     val variants = definition.variants.map({(_w1) =>
     Emitter_.emitVariantDefinition(definition, _w1)
     });
-    val head = definition.scalaTarget.map({(code) =>
-    ((((("type " + definition.name) + generics) + " = ") + code) + ";\n")
-    }).else_({() =>
-    ((("sealed abstract class " + definition.name) + generics) + " extends Product with Serializable")
-    });
-    ((head + commonFields) + variants.map({(_w1) =>
-    ("\n" + _w1)
-    }).join())
-    })
-}
+        val head = definition.scalaTarget.map({(code) =>
+        (((((("type " + definition.name) + generics) + " = ") + code) + ";\n"))
+        }).else_({() =>
+        ((("sealed abstract class " + definition.name) + generics) + " extends Product with Serializable" + commonFields)
+        });
+        (head + variants.map({(_w1) =>
+        ("\n" + _w1)
+        }).join())
+        })
+        }
 
 def emitLetDefinition(definition : Syntax_.DLet, mutable : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.String = {
 val typeAnnotation = Emitter_.emitTypeAnnotation(definition.variableType);
@@ -100,27 +100,27 @@ val mutability = Firefly_Core.if_(mutable, {() =>
     mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + valueCode
 }
 
-    def emitFunctionDefinition(definition: Syntax_.DFunction, suffix: Firefly_Core.String = ""): Firefly_Core.String = {
-        val signature = Emitter_.emitSignature(definition.signature, suffix);
-        definition.scalaTarget.map { code => signature + " = {\n" + code + "\n}" }.else_ { () =>
-            pipe_dot(definition.body)({
-                case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
-                    case (Syntax_.PVariable(_, Firefly_Core.None())) =>
-                        Firefly_Core.True()
-                    case (_) =>
-                        Firefly_Core.False()
-                }) =>
-                    val body = Emitter_.emitStatements(matchCase.body);
-                    (((signature + " = {\n") + body) + "\n}")
-                case (_) =>
-                    val tuple = (("(" + definition.signature.parameters.map({ (_w1) =>
-                        Emitter_.escapeKeyword(_w1.name)
-                    }).join(", ")) + ")");
-                    val cases = definition.body.cases.map(Emitter_.emitCase).join("\n");
-                    (((((signature + " = ") + tuple) + " match {\n") + cases) + "\n}")
-            })
-        }
+def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
+val signature = Emitter_.emitSignature(definition.signature, suffix);
+    definition.scalaTarget.map { code => signature + " = {\n" + code + "\n}" }.else_ { () =>
+pipe_dot(definition.body)({
+case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
+case (Syntax_.PVariable(_, Firefly_Core.None())) =>
+Firefly_Core.True()
+case (_) =>
+Firefly_Core.False()
+}) =>
+val body = Emitter_.emitStatements(matchCase.body);
+(((signature + " = {\n") + body) + "\n}")
+case (_) =>
+val tuple = (("(" + definition.signature.parameters.map({(_w1) =>
+Emitter_.escapeKeyword(_w1.name)
+}).join(", ")) + ")");
+val cases = definition.body.cases.map(Emitter_.emitCase).join("\n");
+(((((signature + " = ") + tuple) + " match {\n") + cases) + "\n}")
+})
     }
+}
 
 def emitExtendImplicit(definition : Syntax_.DExtend, index : Firefly_Core.Int) : Firefly_Core.String = {
 val generics = Emitter_.emitTypeParameters(definition.generics);
@@ -190,10 +190,22 @@ val value = (("new " + Emitter_.emitType(definition.traitType)) + methods);
 }
 
 def emitVariantDefinition(typeDefinition : Syntax_.DType, definition : Syntax_.Variant) : Firefly_Core.String = {
-val generics = Emitter_.emitTypeParameters(typeDefinition.generics);
-val allFields = (typeDefinition.commonFields ++ definition.fields);
-val fields = (("(" + allFields.map(Emitter_.emitParameter).join(", ")) + ")");
-(((((("case class " + definition.name) + generics) + fields) + " extends ") + typeDefinition.name) + generics)
+    val generics = Emitter_.emitTypeParameters(typeDefinition.generics);
+    val allFields = (typeDefinition.commonFields ++ definition.fields);
+    val fields = (("(" + allFields.map(Emitter_.emitParameter).join(", ")) + ")");
+    definition.scalaTarget.map({(code) =>
+    ((((((((((((((((("object " + definition.name)) + " {\n") + "def apply") + generics) + fields) + " = ") + code) + if_((fields != "()"), {() =>
+    fields
+    }).else_({() =>
+    ""
+    })) + ";\n") + "def unapply") + generics) + "(value : ") + typeDefinition.scalaTarget.expect()) + ") = ") + if_((fields != "()"), {() =>
+    ((((("scala.Some(value).collectFirst { case " + code) + fields) + " => ") + fields) + " };\n")
+    }).else_({() =>
+    ("value == " + code + ";\n")
+    })) + "}")
+    }).else_({() =>
+    (((((("case class " + definition.name) + generics) + fields) + " extends ") + typeDefinition.name) + generics)
+    })
 }
 
 def emitSignature(signature : Syntax_.Signature, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
