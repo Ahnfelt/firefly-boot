@@ -59,9 +59,11 @@ emitTypeDefinition(definition: DType): String {
             " {\n" + definition.commonFields.map(emitParameter).map { "    val " + _ + "\n" }.join() + "}"
         }
         let variants = definition.variants.map { emitVariantDefinition(definition, _) }
-        let head =
-            definition.scalaTarget.map { code => "type " + definition.name + generics + " = " + code + ";\n" }
-            .else { "sealed abstract class " + definition.name + generics + " extends Product with Serializable" }
+        let head = definition.scalaTarget.map { code =>
+            "type " + definition.name + generics + " = " + code + ";\n"
+        }.else {
+            "sealed abstract class " + definition.name + generics + " extends Product with Serializable"
+        }
         head + commonFields + variants.map { "\n" + _ }.join()
     }
 }
@@ -153,7 +155,20 @@ emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
     let generics = emitTypeParameters(typeDefinition.generics)
     let allFields = typeDefinition.commonFields ++ definition.fields
     let fields = "(" + allFields.map(emitParameter).join(", ") + ")"
-    "case class " + definition.name + generics + fields + " extends " + typeDefinition.name + generics
+    definition.scalaTarget.map { code =>
+        "object " + definition.name + generics + " {\n" +
+        "def apply" + generics + fields + " = " +
+        code + (if(fields != "()") { fields } else { "" }) + ";\n" +
+        "def unapply" + generics + "(value : " + typeDefinition.scalaTarget.expect() + ") = " +
+        (if(fields != "()") {
+            "Some(value).collectFirst { case " + code + fields + " => " + fields + " };\n"
+        } else {
+            "value == " + code + ";\n"
+        }) +
+        "}"
+    }.else {
+        "case class " + definition.name + generics + fields + " extends " + typeDefinition.name + generics
+    }
 }
 
 emitSignature(signature: Signature, suffix: String = ""): String {

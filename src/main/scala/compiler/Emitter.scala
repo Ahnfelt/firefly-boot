@@ -190,10 +190,22 @@ val value = (("new " + Emitter_.emitType(definition.traitType)) + methods);
 }
 
 def emitVariantDefinition(typeDefinition : Syntax_.DType, definition : Syntax_.Variant) : Firefly_Core.String = {
-val generics = Emitter_.emitTypeParameters(typeDefinition.generics);
-val allFields = (typeDefinition.commonFields ++ definition.fields);
-val fields = (("(" + allFields.map(Emitter_.emitParameter).join(", ")) + ")");
-(((((("case class " + definition.name) + generics) + fields) + " extends ") + typeDefinition.name) + generics)
+    val generics = Emitter_.emitTypeParameters(typeDefinition.generics);
+    val allFields = (typeDefinition.commonFields ++ definition.fields);
+    val fields = (("(" + allFields.map(Emitter_.emitParameter).join(", ")) + ")");
+    definition.scalaTarget.map({(code) =>
+    ((((((((((((((((("object " + definition.name) + generics) + " {\n") + "def apply") + generics) + fields) + " = ") + code) + if_((fields != "()"), {() =>
+    fields
+    }).else_({() =>
+    ""
+    })) + ";\n") + "def unapply") + generics) + "(value : ") + typeDefinition.scalaTarget.expect()) + ") = ") + if_((fields != "()"), {() =>
+    ((((("Some(value).collectFirst { case " + code) + fields) + " => ") + fields) + " };\n")
+    }).else_({() =>
+    ("value == " + code + ";\n")
+    })) + "}")
+    }).else_({() =>
+    (((((("case class " + definition.name) + generics) + fields) + " extends ") + typeDefinition.name) + generics)
+    })
 }
 
 def emitSignature(signature : Syntax_.Signature, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
