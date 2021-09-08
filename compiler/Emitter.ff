@@ -18,7 +18,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
         }]
         ["object " + moduleNamespace + "_ {"]
         if(module.functions.any { _.signature.name == "main" }) { [emitMain()] } else { [] }
-        module.types.filter { _.scalaTarget.getEmpty() }.map(emitTypeDefinition)
+        module.types.map(emitTypeDefinition)
         module.lets.map { emitLetDefinition(_) }
         module.functions.map { emitFunctionDefinition(_) }
         module.extends.pairs().map { pair => emitExtendImplicit(pair.second, pair.first) }
@@ -47,6 +47,7 @@ emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]): Str
 
 emitTypeDefinition(definition: DType): String {
     let generics = emitTypeParameters(definition.generics)
+    definition.scalaTarget.map { name => "type " + definition.name + generics + " = " + name + generics + ";\n" }.else:
     if(definition.variants.getSize() == 1 && definition.variants.expectFirst().name == definition.name) {
         let fields = "(" + definition.commonFields.map(emitParameter).join(", ") + ")"
         "case class " + definition.name + generics + fields
@@ -313,12 +314,9 @@ extractTypeName(type: Type): String {
 }
 
 escapeResolved(word: String): String {
-    let parts = word.split('.').getList().map(escapeKeyword).join(".")
-    if(parts.startsWith("ff:core/Core.")) {
-        parts.replace("ff:core/Core.", "Firefly_Core.")
-    } else {
-        parts.replace(".", "_.")
-    }
+    let parts = word.replace(":", ".").replace("/", ".").split('.').getList().map(escapeKeyword)
+    let initialParts = parts.dropLast()
+    if(initialParts.getEmpty()) { parts.expectLast() } else { initialParts.join(".") + "_." + parts.expectLast() }
 }
 
 escapeKeyword(word: String): String {

@@ -1,4 +1,4 @@
-type Int {}
+type Int {} scala "scala.Int"
 
 extend self: Int {
     getTo(inclusive: Int): List[Int] { panic("magic") }

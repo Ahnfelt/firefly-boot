@@ -1,4 +1,4 @@
 type Bool {
-    False
-    True
-}
+    False scala "false"
+    True scala "true"
+} scala "scala.Bool"

@@ -139,7 +139,7 @@ extend self: Parser {
         let value = self.parseTerm()
         let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
             self.skip(LKeyword)
-            self.skip(LString).raw()
+            self.skip(LString).raw().dropFirst().dropLast()
         }
         DLet(nameToken.at(), nameToken.raw(), variableType, value, scalaTarget)
     }
@@ -149,7 +149,7 @@ extend self: Parser {
         let body = self.parseLambda(signature.parameters.getSize())
         let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
             self.skip(LKeyword)
-            self.skip(LString).raw()
+            self.skip(LString).raw().dropFirst().dropLast()
         }
         DFunction(
             signature.at,
@@ -275,7 +275,7 @@ extend self: Parser {
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
                 let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
                     self.skip(LKeyword)
-                    self.skip(LString).raw()
+                    self.skip(LString).raw().dropFirst().dropLast()
                 }
                 variantsBuilder.append(
                     Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, scalaTarget)
@@ -287,7 +287,7 @@ extend self: Parser {
         }
         let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
             self.skip(LKeyword)
-            self.skip(LString).raw()
+            self.skip(LString).raw().dropFirst().dropLast()
         }
         DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, scalaTarget)
     }

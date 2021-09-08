@@ -1,4 +1,4 @@
-type Char {}
+type Char {} scala "scala.Char"
 
 extend self: Char {
     getIsLetter(): Bool { panic("magic") }

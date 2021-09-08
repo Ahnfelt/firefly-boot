@@ -28,7 +28,7 @@ val parts = List(List(("package " + package_)), (List(List((("import " + package
 List(Emitter_.emitMain())
 }).else_({() =>
 List()
-}), module.types.filter(_.scalaTarget.getEmpty()).map(Emitter_.emitTypeDefinition), module.lets.map({(_w1) =>
+}), module.types.map(Emitter_.emitTypeDefinition), module.lets.map({(_w1) =>
 Emitter_.emitLetDefinition(_w1)
 }), module.functions.map({(_w1) =>
 Emitter_.emitFunctionDefinition(_w1)
@@ -64,6 +64,7 @@ Emitter_.emitFunctionDefinition(_w1)
 
 def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
 val generics = Emitter_.emitTypeParameters(definition.generics);
+    definition.scalaTarget.map(name => "type " + definition.name + generics + " = " + name + generics + ";\n").else_ { () =>
 Firefly_Core.if_(((definition.variants.getSize() == 1) && (definition.variants.expectFirst().name == definition.name)), {() =>
 val fields = (("(" + definition.commonFields.map(Emitter_.emitParameter).join(", ")) + ")");
 ((("case class " + definition.name) + generics) + fields)
@@ -83,7 +84,7 @@ val head = ((("sealed abstract class " + definition.name) + generics) + " extend
 ("\n" + _w1)
 }).join())
 })
-}
+}}
 
 def emitLetDefinition(definition : Syntax_.DLet, mutable : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.String = {
 val typeAnnotation = Emitter_.emitTypeAnnotation(definition.variableType);
@@ -431,12 +432,9 @@ t.name
 }
 
 def escapeResolved(word : Firefly_Core.String) : Firefly_Core.String = {
-val parts = word.split('.').getList().map(Emitter_.escapeKeyword).join(".");
-Firefly_Core.if_(parts.startsWith("ff:core/Core."), {() =>
-parts.replace("ff:core/Core.", "Firefly_Core.")
-}).else_({() =>
-parts.replace(".", "_.")
-})
+    val parts = word.replace(":", ".").replace("/", ".").split('.').getList().map(escapeKeyword)
+    val initialParts = parts.dropLast()
+    if(initialParts.getEmpty()) { parts.last } else { initialParts.join(".") + "_." + parts.last }
 }
 
 def escapeKeyword(word : Firefly_Core.String) : Firefly_Core.String = {

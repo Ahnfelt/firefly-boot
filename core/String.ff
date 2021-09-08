@@ -1,4 +1,4 @@
-type String {}
+type String {} scala "java.lang.String"
 
 extend self: String {
     getSize(): Int { panic("magic") }
@@ -11,7 +11,7 @@ extend self: String {
     slice(from: Int, until: Int): String { panic("magic") }
     sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("magic") }
     split(char: Char): Array[String] { panic("magic") }
-    drop(count: Int = 1): String { panic("magic") }
+    dropFirst(count: Int = 1): String { panic("magic") }
     dropLast(count: Int = 1): String { panic("magic") }
     expectInt(): Int { panic("magic") }
     first(): Option[Char] { panic("magic") }

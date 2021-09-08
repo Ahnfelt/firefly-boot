@@ -148,7 +148,7 @@ self.skip(Token_.LAssign());
 val value = self.parseTerm();
     val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
         self.skip(LKeyword())
-        Some(self.skip(LString()).raw())
+        Some(self.skip(LString()).raw().drop(1).dropLast())
     } else None()
     Syntax_.DLet(nameToken.at(), nameToken.raw(), variableType, value, scalaTarget)
 }
@@ -158,7 +158,7 @@ val signature = self.parseSignature();
 val body = self.parseLambda(signature.parameters.getSize());
     val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
         self.skip(LKeyword())
-        Some(self.skip(LString()).raw())
+        Some(self.skip(LString()).raw().drop(1).dropLast())
     } else None()
 Syntax_.DFunction(signature.at, signature, body, scalaTarget)
 }
@@ -323,7 +323,7 @@ self.parseFunctionParameters(allowMutable = Firefly_Core.True())
 });
     val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
         self.skip(LKeyword())
-        Some(self.skip(LString()).raw())
+        Some(self.skip(LString()).raw().drop(1).dropLast())
     } else None()
 variantsBuilder.append(Syntax_.Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, scalaTarget));
 Firefly_Core.if_((!self.current().is(Token_.LBracketRight())), {() =>
@@ -335,7 +335,7 @@ variantsBuilder.getList()
 });
     val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
         self.skip(LKeyword())
-        Some(self.skip(LString()).raw())
+        Some(self.skip(LString()).raw().drop(1).dropLast())
     } else None()
     Syntax_.DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, scalaTarget)
 }

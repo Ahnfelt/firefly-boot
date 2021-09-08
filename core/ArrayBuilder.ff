@@ -1,4 +1,4 @@
-type ArrayBuilder[T] {} // (items: T...)
+type ArrayBuilder[T] {} scala "scala.collection.mutable.ArrayBuffer"
 
 extend self[T]: ArrayBuilder[T] {
     getArray(): Array[T] { panic("magic") }
