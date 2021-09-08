@@ -1,4 +1,4 @@
-type Array[T] {} scala "scala.Array"
+type Array[T] {} scala "scala.Array[T]"
 
 extend self[T]: Array[T] {
     getEmpty(): Bool { panic("magic") }

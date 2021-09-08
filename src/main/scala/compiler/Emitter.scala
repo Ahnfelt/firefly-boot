@@ -63,28 +63,31 @@ Emitter_.emitFunctionDefinition(_w1)
 }
 
 def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
-val generics = Emitter_.emitTypeParameters(definition.generics);
-    definition.scalaTarget.map(name => "type " + definition.name + generics + " = " + name + generics + ";\n").else_ { () =>
-Firefly_Core.if_(((definition.variants.getSize() == 1) && (definition.variants.expectFirst().name == definition.name)), {() =>
-val fields = (("(" + definition.commonFields.map(Emitter_.emitParameter).join(", ")) + ")");
-((("case class " + definition.name) + generics) + fields)
-}).else_({() =>
-val commonFields = Firefly_Core.if_(definition.commonFields.getEmpty(), {() =>
-""
-}).else_({() =>
-((" {\n" + definition.commonFields.map(Emitter_.emitParameter).map({(_w1) =>
-(("    val " + _w1) + "\n")
-}).join()) + "}")
-});
-val variants = definition.variants.map({(_w1) =>
-Emitter_.emitVariantDefinition(definition, _w1)
-});
-val head = ((("sealed abstract class " + definition.name) + generics) + " extends Product with Serializable");
-((head + commonFields) + variants.map({(_w1) =>
-("\n" + _w1)
-}).join())
-})
-}}
+    val generics = Emitter_.emitTypeParameters(definition.generics);
+    if_(((definition.scalaTarget.getEmpty() && (definition.variants.getSize() == 1)) && (definition.variants.expectFirst().name == definition.name)), {() =>
+    val fields = (("(" + definition.commonFields.map(Emitter_.emitParameter).join(", ")) + ")");
+    ((("case class " + definition.name) + generics) + fields)
+    }).else_({() =>
+    val commonFields = if_(definition.commonFields.getEmpty(), {() =>
+    ""
+    }).else_({() =>
+    ((" {\n" + definition.commonFields.map(Emitter_.emitParameter).map({(_w1) =>
+    (("    val " + _w1) + "\n")
+    }).join()) + "}")
+    });
+    val variants = definition.variants.map({(_w1) =>
+    Emitter_.emitVariantDefinition(definition, _w1)
+    });
+    val head = definition.scalaTarget.map({(code) =>
+    ((((("type " + definition.name) + generics) + " = ") + code) + ";\n")
+    }).else_({() =>
+    ((("sealed abstract class " + definition.name) + generics) + " extends Product with Serializable")
+    });
+    ((head + commonFields) + variants.map({(_w1) =>
+    ("\n" + _w1)
+    }).join())
+    })
+}
 
 def emitLetDefinition(definition : Syntax_.DLet, mutable : Firefly_Core.Bool = Firefly_Core.False()) : Firefly_Core.String = {
 val typeAnnotation = Emitter_.emitTypeAnnotation(definition.variableType);

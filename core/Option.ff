@@ -1,7 +1,7 @@
 type Option[T] {
-    None
-    Some(value: T)
-}
+    None scala "scala.None"
+    Some(value: T) scala "scala.Some"
+} scala "scala.Option[T]"
 
 extend self[T]: Option[T] {
 

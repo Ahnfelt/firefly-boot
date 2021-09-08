@@ -1,4 +1,6 @@
-type Pair[A, B](first: A, second: B)
+type Pair[A, B](first: A, second: B) {
+    Pair() scala "scala.Tuple2"
+} scala "scala.Tuple2[A, B]"
 
 extend self[A, B]: Pair[A, B] {
 
