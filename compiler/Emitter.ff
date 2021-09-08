@@ -77,7 +77,7 @@ emitLetDefinition(definition: DLet, mutable: Bool = False): String {
 
 emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     let signature = emitSignature(definition.signature, suffix)
-    definition.scalaTarget.map { code => " = {\n" + code + "\n}" }.else:
+    definition.scalaTarget.map { code => signature + " = {\n" + code + "\n}" }.else:
     definition.body.{
         | Lambda(_, [matchCase]) {
             matchCase.patterns.all {| PVariable(_, None) => True | _ => False }

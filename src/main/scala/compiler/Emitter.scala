@@ -102,7 +102,7 @@ val mutability = Firefly_Core.if_(mutable, {() =>
 
 def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
 val signature = Emitter_.emitSignature(definition.signature, suffix);
-    definition.scalaTarget.map { code => " = {\n" + code + "\n}" }.else_ { () =>
+    definition.scalaTarget.map { code => signature + " = {\n" + code + "\n}" }.else_ { () =>
 pipe_dot(definition.body)({
 case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
 case (Syntax_.PVariable(_, Firefly_Core.None())) =>
