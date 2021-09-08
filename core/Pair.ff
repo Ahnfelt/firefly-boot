@@ -6,11 +6,11 @@ extend self[A, B]: Pair[A, B] {
 
     mapFirst[C](body: A => C): Pair[C, B] {
         self.Pair(first = body(self.first))
-    } scala "self.copy(_1 = body(self._1))"
+    } scala "self.copy(_1 = body(self._1))}; def first = { self._1"
 
     mapSecond[C](body: B => C): Pair[A, C] {
         self.Pair(second = body(self.second))
-    } scala "self.copy(_2 = body(self._2))"
+    } scala "self.copy(_2 = body(self._2))}; def second = { self._2"
 
     swap(): Pair[B, A] {
         Pair(self.second, self.first)
