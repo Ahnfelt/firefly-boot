@@ -32,3 +32,5 @@ setOf[T](): Set[T] { panic("magic") } // (items: T...)
 mapOf[K, V](): Map[K, V] { panic("magic") } // (items: T...)
 
 log: Log = panic("magic")
+
+pipeDot(): Unit {} scala "}; def pipe_dot[A, B](value : A)(function : A => B) : B = { function(value)" // hack
