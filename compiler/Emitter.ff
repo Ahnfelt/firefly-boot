@@ -35,7 +35,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
 }
 
 emitMain(): String {
-    "def main(arguments : Array[String]) : Unit = main(new System(arguments))"
+    "def main(arguments : Array[String]) : Unit = main(ff.core.System_.SystemArguments(arguments))"
 }
 
 emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]): String {
@@ -155,7 +155,8 @@ emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
     let generics = emitTypeParameters(typeDefinition.generics)
     let allFields = typeDefinition.commonFields ++ definition.fields
     let fields = "(" + allFields.map(emitParameter).join(", ") + ")"
-    definition.scalaTarget.map { code =>
+    definition.scalaTarget.map { originalCode =>
+        let code = if(originalCode == "scala.Unit") {"{}"} else {originalCode}
         "object " + definition.name + " {\n" +
         "def apply" + generics + fields + " = " +
         code + (if(fields != "()") { fields } else { "" }) + ";\n" +
@@ -334,13 +335,17 @@ extractTypeName(type: Type): String {
 }
 
 escapeResolved(word: String): String {
-    let parts = word.replace(":", ".").replace("/", ".").split('.').getList().map(escapeKeyword)
+    let parts = word.replace(":", ".").replace("/", ".").split('.').getList()
     let initialParts = parts.dropLast()
-    if(initialParts.getEmpty()) { parts.expectLast() } else { initialParts.join(".") + "_." + parts.expectLast() }
+    if(initialParts.getEmpty()) {
+        escapeKeyword(parts.expectLast())
+    } else {
+        initialParts.join(".") + "_." + escapeKeyword(parts.expectLast())
+    }
 }
 
 escapeKeyword(word: String): String {
-    if(keywords.contains(word)) {word + "_"} else {word}
+    if(keywords.contains(word) || word.expectFirst().getIsLower()) {word + "_"} else {word}
 }
 
 keywords = [

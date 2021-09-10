@@ -1,12 +1,12 @@
-type Array[T] {} scala "scala.Array[T]"
+type Array[T] {} scala "scala.collection.mutable.ArrayBuffer[T]"
 
 extend self[T]: Array[T] {
-    getEmpty(): Bool { panic("magic") } scala "self.isEmpty"
-    getSize(): Int { panic("magic") } scala "self.length"
-    expect(index: Int): T { panic("magic") } scala "self(index)"
-    expectFirst(): T { panic("magic") } scala "self(0)"
-    expectLast(): T { panic("magic") } scala "self(self.length - 1)"
-    dropFirst(count: Int = 1): Array[T] { panic("magic") } scala "self.drop(1)"
-    dropLast(count: Int = 1): Array[T] { panic("magic") } scala "self.dropRight(1)"
-    getList(): List[T] { panic("magic") } scala "self.toList"
+    getEmpty(): Bool { panic("magic") } scala "self_.isEmpty"
+    getSize(): Int { panic("magic") } scala "self_.length"
+    expect(index: Int): T { panic("magic") } scala "self_(index_)"
+    expectFirst(): T { panic("magic") } scala "self_(0)"
+    expectLast(): T { panic("magic") } scala "self_(self_.length - 1)"
+    dropFirst(count: Int = 1): Array[T] { panic("magic") } scala "self_.drop(1)"
+    dropLast(count: Int = 1): Array[T] { panic("magic") } scala "self_.dropRight(1)"
+    getList(): List[T] { panic("magic") } scala "self_.toList"
 }

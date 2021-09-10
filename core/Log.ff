@@ -1,5 +1,5 @@
-type Log {} scala "Unit"
+type Log {}
 
 extend self: Log {
-    debug[T](value: T): Unit { panic("magic") } scala "println(value)"
+    debug[T](value: T): Unit { panic("magic") } scala "println(value_)"
 }

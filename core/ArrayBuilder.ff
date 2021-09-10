@@ -1,13 +1,13 @@
 type ArrayBuilder[T] {} scala "scala.collection.mutable.ArrayBuffer[T]"
 
 extend self[T]: ArrayBuilder[T] {
-    getArray(): Array[T] { panic("magic") } scala "self.toArray"
-    getEmpty(): Bool { panic("magic") } scala "self.isEmpty"
-    getSize(): Int { panic("magic") } scala "self.size"
-    append(value: T): Unit { panic("magic") } scala "self.append(value)"
-    modify(index: Int, body: T => T): Unit { panic("magic") } scala "self.update(index, body(self(index)))"
-    drain(): Array[T] { panic("magic") } scala "val result = self.toArray[T]; self.clear(); result"
-    getList(): List[T] { panic("magic") } scala "self.toList"
-    getLast(): Option[T] { panic("magic") } scala "self.lastOption"
-    expectLast(): T { panic("magic") } scala "self.last"
+    getArray(): Array[T] { panic("magic") } scala "self_.toArray"
+    getEmpty(): Bool { panic("magic") } scala "self_.isEmpty"
+    getSize(): Int { panic("magic") } scala "self_.size"
+    append(value: T): Unit { panic("magic") } scala "self_.append(value_)"
+    modify(index: Int, body: T => T): Unit { panic("magic") } scala "self_.update(index_, body_(self_(index_)))"
+    drain(): Array[T] { panic("magic") } scala "val result = self_.clone(); self_.clear(); result"
+    getList(): List[T] { panic("magic") } scala "self_.toList"
+    getLast(): Option[T] { panic("magic") } scala "self_.lastOption"
+    expectLast(): T { panic("magic") } scala "self_.last"
 }

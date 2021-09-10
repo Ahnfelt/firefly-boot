@@ -50,7 +50,7 @@ _w1.join("\n\n")
 }
 
 def emitMain() : Firefly_Core.String = {
-"def main(arguments : Array[String]) : Unit = main(new System(arguments))"
+"def main(arguments : Array[String]) : Unit = main(ff.core.System_.SystemArguments(arguments))"
 }
 
 def emitTypeMembers(name : Firefly_Core.String, lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction]) : Firefly_Core.String = {
@@ -193,7 +193,8 @@ def emitVariantDefinition(typeDefinition : Syntax_.DType, definition : Syntax_.V
     val generics = Emitter_.emitTypeParameters(typeDefinition.generics);
     val allFields = (typeDefinition.commonFields ++ definition.fields);
     val fields = (("(" + allFields.map(Emitter_.emitParameter).join(", ")) + ")");
-    definition.scalaTarget.map({(code) =>
+    definition.scalaTarget.map({(originalCode) =>
+        val code = if(originalCode == "scala.Unit") {"{}"} else {originalCode}
     ((((((((((((((((("object " + definition.name)) + " {\n") + "def apply") + generics) + fields) + " = ") + code) + if_((fields != "()"), {() =>
     fields
     }).else_({() =>
@@ -447,13 +448,17 @@ t.name
 }
 
 def escapeResolved(word : Firefly_Core.String) : Firefly_Core.String = {
-    val parts = word.replace(":", ".").replace("/", ".").split('.').getList().map(escapeKeyword)
+    val parts = word.replace(":", ".").replace("/", ".").split('.').getList()
     val initialParts = parts.dropLast()
-    if(initialParts.getEmpty()) { parts.last } else { initialParts.join(".") + "_." + parts.last }
+    if(initialParts.getEmpty()) {
+        escapeKeyword(parts.expectLast())
+    } else {
+        initialParts.join(".") + "_." + escapeKeyword(parts.expectLast())
+    }
 }
 
 def escapeKeyword(word : Firefly_Core.String) : Firefly_Core.String = {
-Firefly_Core.if_(Emitter_.keywords.contains(word), {() =>
+Firefly_Core.if_(Emitter_.keywords.contains(word) || word.expectFirst().getIsLower(), {() =>
 (word + "_")
 }).else_({() =>
 word

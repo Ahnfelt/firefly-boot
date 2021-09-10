@@ -1,30 +1,30 @@
-type FileSystem {} scala "Unit"
+type FileSystem {}
 
 extend self: FileSystem {
-    readText(file: String): String { panic("magic") } scala "val source = scala.io.Source.fromFile(new java.io.File(file), \"UTF-8\"); val result = source.mkString; source.close(); result"
-    writeText(file: String, text: String): Unit { panic("magic") } scala "val writer = new java.io.FileWriter(new java.io.File(file)); writer.write(text); writer.close()}"
-    list(path: String): List[String] { panic("magic") } scala "new java.io.File(path).listFiles().map(_.toString.replace('\\', '/')).toList"
-    exists(path: String): Bool { panic("magic") } scala "new java.io.File(path).exists()"
-    isDirectory(path: String): Bool { panic("magic") } scala "new java.io.File(path).isDirectory"
-    createDirectory(path: String): Unit { panic("magic") } scala "new java.io.File(path).mkdir()"
-    createDirectories(path: String): Unit { panic("magic") } scala "new java.io.File(path).mkdirs()"
-    delete(path: String): Unit { panic("magic") } scala "if(!new java.io.File(path).delete()) { throw new java.io.IOException(\"Could not delete \" + path) }"
-    rename(fromPath: String, toPath: String): Unit { panic("magic") } scala "if(!new java.io.File(fromPath).renameTo(new java.io.File(toPath))) { throw new java.io.IOException(\"Could not rename \" + fromPath + \" to \" + toPath) }"
-    getAbsolutePath(path: String): String { panic("magic") } scala "new java.io.File(path).getAbsolutePath.replace('\\', '/')"
+    readText(file: String): String { panic("magic") } scala "val source = scala.io.Source.fromFile(new java.io.File(file_), \"UTF-8\"); val result = source.mkString; source.close(); result"
+    writeText(file: String, text: String): Unit { panic("magic") } scala "val writer = new java.io.FileWriter(new java.io.File(file_)); writer.write(text_); writer.close()"
+    list(path: String): List[String] { panic("magic") } scala "new java.io.File(path_).listFiles().map(_.toString.replace('\\', '/')).toList"
+    exists(path: String): Bool { panic("magic") } scala "new java.io.File(path_).exists()"
+    isDirectory(path: String): Bool { panic("magic") } scala "new java.io.File(path_).isDirectory"
+    createDirectory(path: String): Unit { panic("magic") } scala "new java.io.File(path_).mkdir()"
+    createDirectories(path: String): Unit { panic("magic") } scala "new java.io.File(path_).mkdirs()"
+    delete(path: String): Unit { panic("magic") } scala "if(!new java.io.File(path_).delete()) { throw new java.io.IOException(\"Could not delete \" + path_) }"
+    rename(fromPath: String, toPath: String): Unit { panic("magic") } scala "if(!new java.io.File(fromPath_).renameTo(new java.io.File(toPath_))) { throw new java.io.IOException(\"Could not rename \" + fromPath_ + \" to \" + toPath_) }"
+    getAbsolutePath(path: String): String { panic("magic") } scala "new java.io.File(path_).getAbsolutePath.replace('\\', '/')"
 
     directoryName(path: String): String {
-        path.getReverse().dropWhile(_ != '/').dropFirst(1).getReverse()
+        path.getReverse().dropWhile { _ != '/' }.dropFirst(1).getReverse()
     }
 
     baseName(path: String): String {
-        path.getReverse().takeWhile(_ != '/').getReverse()
+        path.getReverse().takeWhile { _ != '/' }.getReverse()
     }
 
     prefixName(path: String): String {
-        path.getReverse().takeWhile(_ != '/').getReverse().takeWhile(_ != '.')
+        path.getReverse().takeWhile { _ != '/' }.getReverse().takeWhile { _ != '.' }
     }
 
     suffixName(path: String): String {
-        path.getReverse().takeWhile(_ != '/').takeWhile(_ != '.').getReverse()
+        path.getReverse().takeWhile { _ != '/' }.takeWhile { _ != '.' }.getReverse()
     }
 }
