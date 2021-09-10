@@ -1,7 +1,7 @@
 type ArrayBuilder[T] {} scala "scala.collection.mutable.ArrayBuffer[T]"
 
 extend self[T]: ArrayBuilder[T] {
-    getArray(): Array[T] { panic("magic") } scala "self_.toArray"
+    getArray(): Array[T] { panic("magic") } scala "self_.clone()"
     getEmpty(): Bool { panic("magic") } scala "self_.isEmpty"
     getSize(): Int { panic("magic") } scala "self_.size"
     append(value: T): Unit { panic("magic") } scala "self_.append(value_)"
