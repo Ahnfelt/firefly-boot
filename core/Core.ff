@@ -14,22 +14,22 @@ while(condition: () => Bool, body: () => Unit): Unit {
     }
 }
 
-try[T](body: () => T): Try[T] { panic("magic") } scala "scala.util.Try { body() }"
+try[T](body: () => T): Try[T] { panic("magic") } scala "scala.util.Try { body_() }"
 
 do[T](body: () => T): T {
     body()
 }
 
-panic[T](message: String): T { panic("magic") } scala "println(message); throw new RuntimeException(message)"
+panic[T](message: String): T { panic("magic") } scala "println(message_); throw new RuntimeException(message_)"
 
 magicInstance[T](typeName: String): T { panic("magic") }
 magicShow[T](value: T): String { panic("magic") } scala "value_.toString"
 magicHashCode[T](value: T): Int { panic("magic") } scala "value_.hashCode()"
 magicLess[T](x: T, y: T): Bool { panic("magic") } scala "x_.asInstanceOf[Comparable[T]].compareTo(y_) < 0"
 
-arrayBuilderOf[T](): ArrayBuilder[T] { panic("magic") } scala "scala.collection.mutable.ArrayBuffer[T]()" // (items: T...)
-setOf[T](): Set[T] { panic("magic") } scala "Set[T]()" // (items: T...)
-mapOf[K, V](): Map[K, V] { panic("magic") } scala "Map[K, V]()" // (items: T...)
+arrayBuilderOf[T](): ArrayBuilder[T] { panic("magic") } scala "scala.collection.mutable.ArrayBuffer[T]()"
+setOf[T](): Set[T] { panic("magic") }
+mapOf[K, V](): Map[K, V] { panic("magic") }
 
 log: Log = panic("magic") scala "null"
 
