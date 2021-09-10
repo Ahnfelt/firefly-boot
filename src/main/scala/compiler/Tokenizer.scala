@@ -218,7 +218,8 @@ emitToken(Token_.LBracketRight(), start, i)
 }).elseIf({() =>
 (i < code.getSize())
 }, {() =>
-Firefly_Core.panic(("Unexpected character: " + Firefly_Core.magicShow(code.expect(i))))
+    val column = 1 + i - startLineOffset
+    panic("Unexpected character: " + magicShow(code.expect(i)) + " in " + file + " at line " + line + ", column " + column)
 })
 });
 1.getTo(5).each({(i) =>

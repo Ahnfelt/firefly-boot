@@ -137,26 +137,33 @@ extend self: Parser {
         } else { self.freshTypeVariable(nameToken.at()) }
         self.skip(LAssign)
         let value = self.parseTerm()
-        let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
-            self.skip(LKeyword)
-            self.skip(LString).raw().dropFirst().dropLast()
-        }
+        let scalaTarget = self.parseTargetOption("scala")
         DLet(nameToken.at(), nameToken.raw(), variableType, value, scalaTarget)
     }
     
     parseFunctionDefinition(): DFunction {
         let signature = self.parseSignature()
         let body = self.parseLambda(signature.parameters.getSize())
-        let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
-            self.skip(LKeyword)
-            self.skip(LString).raw().dropFirst().dropLast()
-        }
+        let scalaTarget = self.parseTargetOption("scala")
         DFunction(
             signature.at,
             signature,
             body,
             scalaTarget
         )
+    }
+
+    parseTargetOption(target: String): Option[String] {
+        if(self.current().is(LKeyword) && self.current().rawIs(target)) {
+            self.skip(LKeyword)
+            let result = self.skip(LString).raw()
+            result.dropFirst().dropLast()
+                .replace("\\\"", "\"")
+                .replace("\\r", "\r")
+                .replace("\\n", "\n")
+                .replace("\\t", "\t")
+                .replace("\\\\", "\\")
+        }
     }
     
     parseSignature(): Signature {
@@ -273,10 +280,7 @@ extend self: Parser {
             while {!self.current().is(LBracketRight)} {
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-                let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
-                    self.skip(LKeyword)
-                    self.skip(LString).raw().dropFirst().dropLast()
-                }
+                let scalaTarget = self.parseTargetOption("scala")
                 variantsBuilder.append(
                     Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, scalaTarget)
                 )
@@ -285,10 +289,7 @@ extend self: Parser {
             self.rawSkip(LBracketRight, "}")
             variantsBuilder.getList()
         }
-        let scalaTarget = if(self.current().is(LKeyword) && self.current().rawIs("scala")) {
-            self.skip(LKeyword)
-            self.skip(LString).raw().dropFirst().dropLast()
-        }
+        let scalaTarget = self.parseTargetOption("scala")
         DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, scalaTarget)
     }
     

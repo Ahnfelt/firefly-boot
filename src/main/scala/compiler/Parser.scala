@@ -146,22 +146,24 @@ self.freshTypeVariable(nameToken.at())
 });
 self.skip(Token_.LAssign());
 val value = self.parseTerm();
-    val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
-        self.skip(LKeyword())
-        Some(self.skip(LString()).raw().drop(1).dropLast())
-    } else None()
+    val scalaTarget = self.parseTargetOption("scala");
     Syntax_.DLet(nameToken.at(), nameToken.raw(), variableType, value, scalaTarget)
 }
 
 def parseFunctionDefinition() : Syntax_.DFunction = {
 val signature = self.parseSignature();
 val body = self.parseLambda(signature.parameters.getSize());
-    val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
-        self.skip(LKeyword())
-        Some(self.skip(LString()).raw().drop(1).dropLast())
-    } else None()
+    val scalaTarget = self.parseTargetOption("scala");
 Syntax_.DFunction(signature.at, signature, body, scalaTarget)
 }
+
+    def parseTargetOption(target_ :String) : Option[String] = {
+    if_((self.current().is(LKeyword()) && self.current().rawIs(target_)), {() =>
+    self.skip(LKeyword());
+    val result_ = self.skip(LString()).raw();
+    result_.drop(1).dropLast(1).replace("\\\"", "\"").replace("\\r", "\r").replace("\\n", "\n").replace("\\t", "\t").replace("\\\\", "\\")
+    })
+    }
 
 def parseSignature() : Syntax_.Signature = {
 val nameToken = self.skip(Token_.LLower());
@@ -321,10 +323,7 @@ List()
 }).else_({() =>
 self.parseFunctionParameters(allowMutable = Firefly_Core.True())
 });
-    val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
-        self.skip(LKeyword())
-        Some(self.skip(LString()).raw().drop(1).dropLast())
-    } else None()
+    val scalaTarget = self.parseTargetOption("scala");
 variantsBuilder.append(Syntax_.Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, scalaTarget));
 Firefly_Core.if_((!self.current().is(Token_.LBracketRight())), {() =>
 self.skipSeparator(Token_.LSemicolon())
@@ -333,10 +332,7 @@ self.skipSeparator(Token_.LSemicolon())
 self.rawSkip(Token_.LBracketRight(), "}");
 variantsBuilder.getList()
 });
-    val scalaTarget = if(self.current().is(LKeyword()) && self.current().rawIs("scala")) {
-        self.skip(LKeyword())
-        Some(self.skip(LString()).raw().drop(1).dropLast())
-    } else None()
+    val scalaTarget = self.parseTargetOption("scala");
     Syntax_.DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, scalaTarget)
 }
 
