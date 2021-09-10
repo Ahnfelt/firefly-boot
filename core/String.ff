@@ -5,7 +5,6 @@ extend self: String {
     expect(index: Int): Char { panic("magic") }
     replace(needle: String, replacement: String): String { panic("magic") }
     replaceFirst(needle: String, replacement: String): String { panic("magic") }
-    replace(needle: String, replacement: String): String { panic("magic") }
     getReverse(): String { panic("magic") }
     dropWhile(p: Char => Bool): String { panic("magic") }
     takeWhile(p: Char => Bool): String { panic("magic") }
