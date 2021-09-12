@@ -107,3 +107,12 @@ extend self[T]: Option[T] {
     }
 
 }
+
+extend self[T]: Option[Option[T]] {
+    flatten() : Option[T] {
+        self.{
+            | None => None
+            | Some(v) => v
+        }
+    }
+}

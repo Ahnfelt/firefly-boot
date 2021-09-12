@@ -1,8 +1,8 @@
 type System {} scala "SystemArguments"
 
-type SystemArguments(arguments: Array[String])
+type SystemArguments(array: Array[String])
 
 extend self: System {
-    arguments(): List[String] { panic("magic") } scala "self_.arguments_.toList"
+    arguments(): List[String] { panic("magic") } scala "self_.array_.getList_"
     files(): FileSystem { panic("magic") } scala "null"
 }

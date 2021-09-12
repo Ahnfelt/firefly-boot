@@ -1,6 +1,8 @@
-type Map[K, V](redBlack: Map[K, Option[V]])
+import RbMap
 
-empty = Map(RbLeaf)
+type Map[K, V](redBlack: RbMap[K, Option[V]])
+
+//empty = Map(RbLeaf)
 
 extend self[K, V]: Map[K, V] {
 
@@ -12,12 +14,15 @@ extend self[K, V]: Map[K, V] {
         self.redBlack.get(key).flatten()
     }
 
-    remove(key : K): Option[V] {
-        self.redBlack.add(key, None)
+    remove(key : K): Map[K, V] {
+        Map(self.redBlack.add(key, None))
     }
 
     pairs(): List[Pair[K, V]] {
-        self.redBlack.pairs()
+        self.redBlack.pairs().flatMap{
+            | Pair(k, Some(v)) => [Pair(k, v)]
+            | Pair(k, None) => []
+        }
     }
 
     getSize(): Int {
@@ -25,12 +30,11 @@ extend self[K, V]: Map[K, V] {
     }
 
     map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
-        val list = pairs()
-        list.foldLeft(empty, { (tree, pair) =>
+        self.pairs().foldLeft(Map(RbLeaf)) { tree, pair =>
             body(pair).{
-                | Pair(k, v) => tree.add(k, v) }
+                | Pair(k, v) => tree.add(k, v)
             }
-        )
+        }
     }
 
     contains(key: K): Bool {
@@ -41,7 +45,7 @@ extend self[K, V]: Map[K, V] {
         self.get(key).expect()
     }
 
-    updateOrInsert(key : K, update V => V, default : () => V): Map[K, V] {
+    updateOrInsert(key: K, update: V => V, default: () => V): Map[K, V] {
         self.get(key).{
             | None => self.add(key, default())
             | Some(v) => self.add(key, update(v))
@@ -53,7 +57,7 @@ extend self[K, V]: Map[K, V] {
 extend self[K, V]: Map[K, List[V]] {
 
     addToList(key : K, value : V): Map[K, List[V]] {
-        self.updateOrInsert(key, {[value ..._]}, {[value]})
+        self.updateOrInsert(key, {[value, ... _]}, {[value]})
     }
 
 }
