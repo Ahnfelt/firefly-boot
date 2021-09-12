@@ -1,12 +1,12 @@
 type ArrayBuilder[T] {} scala "scala.collection.mutable.ArrayBuffer[T]"
 
 extend self[T]: ArrayBuilder[T] {
-    getArray(): Array[T] { panic("magic") } scala "self_.clone()"
+    getArray(): Array[T] { panic("magic") } scala "val r = new java.util.ArrayList[T](self_.length); for(i <- 0.until(self_.length)) r.add(self_(i)); r"
     getEmpty(): Bool { panic("magic") } scala "self_.isEmpty"
     getSize(): Int { panic("magic") } scala "self_.size"
     append(value: T): Unit { panic("magic") } scala "self_.append(value_)"
     modify(index: Int, body: T => T): Unit { panic("magic") } scala "self_.update(index_, body_(self_(index_)))"
-    drain(): Array[T] { panic("magic") } scala "val result = self_.clone(); self_.clear(); result"
+    drain(): Array[T] { panic("magic") } scala "val result = self_.getArray_(); self_.clear(); result"
     getList(): List[T] { panic("magic") } scala "self_.toList"
     getLast(): Option[T] { panic("magic") } scala "self_.lastOption"
     expectLast(): T { panic("magic") } scala "self_.last"

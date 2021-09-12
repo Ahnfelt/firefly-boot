@@ -10,7 +10,7 @@ extend self[T]: List[T] {
     }
 
     // toArray
-    getArray(): Array[T] { panic("magic") } scala "new scala.collection.mutable.ArrayBuffer[T]() ++ self_"
+    getArray(): Array[T] { panic("magic") } scala "(new scala.collection.mutable.ArrayBuffer[T]() ++ self_).getArray_()"
 
     // toList
     getSet(): Set[T] { panic("magic") }
