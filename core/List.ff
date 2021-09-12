@@ -313,11 +313,13 @@ extend self[K, V]: List[Pair[K, V]] {
 
     // toMap
     getMap(): Map[K, V] {
-        (self.foldLeft([].getMap())) { map, pair => map.add(pair.first, pair.second) }
+        let initial: List[Pair[K, V]] = []
+        (self.foldLeft(initial.getMap())) { map, pair => map.add(pair.first, pair.second) }
     }
 
     group(): Map[K, List[V]] {
-        (self.foldLeft([].getMap())) { map, pair => map.addToList(pair.first, pair.second) }
+        let initial: List[Pair[K, List[V]]] = []
+        (self.foldLeft(initial.getMap())) { map, pair => map.addToList(pair.first, panic("pair.second")) }
     }
 
     // unzip
