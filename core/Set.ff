@@ -1,7 +1,7 @@
-type Set[T] {} // (items: T...)
+type Set[T] {} scala "scala.collection.immutable.Set[T]"
 
-extend self[K]: Set[K] {
-    add(key: K): Set[K] { panic("magic") }
-    remove(key: K) : Set[K] { panic("magic") }
-    contains(key: K): Bool { panic("magic") }
+extend self[T]: Set[T] {
+    add(value: T): Set[T] { panic("magic") } scala "self_ + value_"
+    remove(value: T) : Set[T] { panic("magic") } scala "self_ - value_"
+    contains(value: T): Bool { panic("magic") } scala "self_.contains(value_)"
 }
