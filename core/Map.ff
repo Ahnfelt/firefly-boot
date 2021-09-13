@@ -1,16 +1,25 @@
 type Map[K, V] {} scala "scala.collection.immutable.Map[K, V]"
 
 extend self[K, V]: Map[K, V] {
-    pairs(): List[Pair[K, V]] { panic("magic") }
-    getSize(): Int { panic("magic") }
-    get(key: K): Option[V] { panic("magic") }
-    expect(key: K): V { panic("magic") }
-    add(key: K, value: V): Map[K, V] { panic("magic") }
-    remove(key: K): Map[K, V] { panic("magic") }
-    map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] { panic("magic") }
-    contains(key: K): Bool { panic("magic") }
+    pairs(): List[Pair[K, V]] { panic("magic") } scala "self_.toList"
+    getSize(): Int { panic("magic") } scala "self_.size"
+    get(key: K): Option[V] { panic("magic") } scala "self_.get(key_)"
+    expect(key: K): V { panic("magic") } scala "self_(key_)"
+    add(key: K, value: V): Map[K, V] { panic("magic") } scala "self_ + (key_, value_)"
+    remove(key: K): Map[K, V] { panic("magic") } scala "self_ - key_"
+    map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] { panic("magic") } scala "self_.map(body_)"
+    contains(key: K): Bool { panic("magic") } scala "self_.contains(key_)"
+
+    updateOrInsert(key: K, update: V => V, default: () => V): Map[K, V] {
+        self.get(key).{
+            | None => self.add(key, default())
+            | Some(v) => self.add(key, update(v))
+        }
+    }
 }
 
 extend self[K, V]: Map[K, List[V]] {
-    addToList(key: K, value: V): Map[K, List[V]] { panic("magic") }
+    addToList(key : K, value : V): Map[K, List[V]] {
+        self.updateOrInsert(key, {[value, ... _]}, {[value]})
+    }
 }
