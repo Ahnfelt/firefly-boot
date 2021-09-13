@@ -329,44 +329,29 @@ Syntax_.DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, 
 }
 
 def parseImportDefinition() : Syntax_.DImport = {
-self.rawSkip(Token_.LKeyword(), "import");
-val aliasToken = self.skip(Token_.LUpper());
-Firefly_Core.if_((!self.current().is(Token_.LKeyword())), {() =>
-Syntax_.DImport(aliasToken.at(), aliasToken.raw(), Firefly_Core.None(), List(), aliasToken.raw())
-}).else_({() =>
-self.rawSkip(Token_.LKeyword(), "from");
-val firstName = self.parseDashedName();
-val package_ = Firefly_Core.if_(self.current().is(Token_.LColon()), {() =>
-val user = firstName;
-self.skip(Token_.LColon());
-val name = self.parseDashedName();
-Firefly_Core.if_(self.current().rawIs("/"), {() =>
-self.skip(Token_.LOperator())
-});
-Firefly_Core.Pair(user, name)
-});
+val importToken = self.rawSkip(Token_.LKeyword(), "import");
 val path = Firefly_Core.arrayBuilderOf[Firefly_Core.String]();
-Firefly_Core.if_(package_.getEmpty(), {() =>
-path.append(firstName)
-});
-Firefly_Core.if_((self.current().rawIs("/") && self.ahead().is2(Token_.LLower(), Token_.LUpper())), {() =>
-self.skip(Token_.LOperator())
-});
 Firefly_Core.while_({() =>
 self.current().is(Token_.LLower())
 }, {() =>
 path.append(self.parseDashedName());
-Firefly_Core.if_((self.current().rawIs("/") && self.ahead().is2(Token_.LLower(), Token_.LUpper())), {() =>
-self.skip(Token_.LOperator())
-})
+self.skip(Token_.LDot())
 });
-val file = Firefly_Core.if_(self.current().is(Token_.LUpper()), {() =>
+val file = self.skip(Token_.LUpper()).raw();
+val alias = Firefly_Core.if_(self.current().rawIs("as"), {() =>
+self.rawSkip(Token_.LKeyword(), "as");
 self.skip(Token_.LUpper()).raw()
 }).else_({() =>
-aliasToken.raw()
+file
 });
-Syntax_.DImport(aliasToken.at(), aliasToken.raw(), package_, path.getList(), file)
-})
+val package_ = Firefly_Core.if_(self.current().rawIs("from"), {() =>
+self.rawSkip(Token_.LKeyword(), "from");
+val userName = self.parseDashedName();
+self.skip(Token_.LColon());
+val packageName = self.parseDashedName();
+Firefly_Core.Pair(userName, packageName)
+});
+Syntax_.DImport(importToken.at(), alias, package_, path.getList(), file)
 }
 
 def parseDependencyDefinition() : Syntax_.DDependency = {
