@@ -252,7 +252,7 @@ extend self[T]: List[T] {
                 | Pair([x, ...xs], [y, ...ys]) =>
                     tailcall go(xs, ys, [Pair(x, y), ...result])
                 | _ =>
-                    result.reverse()
+                    reverseList(result)
             }
         }
         go(self, that, [])
@@ -280,15 +280,7 @@ extend self[T]: List[T] {
     }
 
     reverse(): List[T] {
-        function go(list: List[T], result: List[T]): List[T] {
-            list.{
-                | [] =>
-                    result
-                | [head, ...tail] =>
-                    tailcall go(tail, [head, ...result])
-            }
-        }
-        go(self, [])
+        reverseList(self)
     }
 }
 
@@ -318,8 +310,7 @@ extend self[K, V]: List[Pair[K, V]] {
     }
 
     group(): Map[K, List[V]] {
-        let initial: List[Pair[K, List[V]]] = []
-        (self.foldLeft(initial.getMap())) { map, pair => map.addToList(pair.first, panic("pair.second")) }
+        groupList(self)
     }
 
     // unzip
@@ -338,4 +329,21 @@ extend self[K, V]: List[Pair[K, V]] {
 
 extend self: List[String] {
     join(separator: String = ""): String { panic("magic") }
+}
+
+reverseList[T](list: List[T]): List[T] { // Hack to work around Scala/IDEA inference bug
+    function go(list: List[T], result: List[T]): List[T] {
+        list.{
+            | [] =>
+                result
+            | [head, ...tail] =>
+                tailcall go(tail, [head, ...result])
+        }
+    }
+    go(list, [])
+}
+
+groupList[K, V](list : List[Pair[K, V]]): Map[K, List[V]] { // Hack to work around Scala/IDEA inference bug
+    let initial: List[Pair[K, List[V]]] = []
+    (list.foldLeft(initial.getMap())) { map, pair => map.addToList(pair.first, panic("pair.second")) }
 }

@@ -10,14 +10,14 @@ extend self[K, V]: RbMap[K, V] {
     size(): Int {
         self.{
             | RbLeaf => 0
-            | RbNode(_, l, _, _, r) => self.size(l) + 1 + self.size(r)
+            | RbNode(_, l, _, _, r) => l.size() + 1 + r.size()
         }
     }
 
     pairs(): List[Pair[K, V]] {
         self.{
             | RbLeaf => []
-            | RbNode(_, l, k, v, r) => self.pairs(l) ++ [Pair(k, v)] ++ self.pairs(r)
+            | RbNode(_, l, k, v, r) => l.pairs() ++ [Pair(k, v)] ++ r.pairs()
         }
     }
 

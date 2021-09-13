@@ -30,7 +30,7 @@ extend self[K, V]: Map[K, V] {
     }
 
     map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
-        self.pairs().foldLeft(Map(RbLeaf)) { tree, pair =>
+        (self.pairs().foldLeft(Map(RbLeaf))) { tree, pair =>
             body(pair).{
                 | Pair(k, v) => tree.add(k, v)
             }
