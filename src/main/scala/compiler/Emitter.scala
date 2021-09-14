@@ -20,7 +20,9 @@ val moduleNamespace = module.file.replace("\\", "/").getReverse().takeWhile({(_w
 (_w1 != '.')
 });
 val package_ = ((packagePair.first + ".") + packagePair.second);
-val parts = List(List(("package " + package_)), (module.imports.map({(i) =>
+val parts = List(List(("package " + package_)), (module.imports.sortBy(i =>
+    (((("import " + i.package_.first) + ".") + i.package_.second) + ".") + i.file
+).map({(i) =>
 (((((("import " + i.package_.first) + ".") + i.package_.second) + ".") + i.file) + "_._")
 })), List((("object " + moduleNamespace) + "_ {")), Firefly_Core.if_(module.functions.exists({(_w1) =>
 (_w1.signature.name == "main")

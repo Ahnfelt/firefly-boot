@@ -13,7 +13,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
     let package = packagePair.first + "." + packagePair.second
     let parts = [
         ["package " + package]
-        module.imports.map { i =>
+        module.imports.sortBy{i => i.package.first + "." + i.package.second + "." + i.file}.map { i =>
             "import " + i.package.first + "." + i.package.second + "." + i.file + "_._"
         }
         ["object " + moduleNamespace + "_ {"]
