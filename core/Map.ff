@@ -1,4 +1,4 @@
-type Map[K, V] {} scala "scala.collection.immutable.Map[K, V]"
+type Map[K, V] {} scala "#type Map[K, +V] = scala.collection.immutable.Map[K, V]"
 
 extend self[K, V]: Map[K, V] {
     pairs(): List[Pair[K, V]] { panic("magic") } scala "self_.toList"

@@ -50,7 +50,7 @@ _w1.join("\n\n")
 }
 
 def emitMain() : Firefly_Core.String = {
-"def main(arguments : Array[String]) : Unit = main(ff.core.System_.SystemArguments(arguments))"
+"def main(arguments : Array[String]) : Unit = main_(ff.core.System_.SystemArguments(arguments))"
 }
 
 def emitTypeMembers(name : Firefly_Core.String, lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction]) : Firefly_Core.String = {
@@ -79,7 +79,11 @@ def emitTypeDefinition(definition : Syntax_.DType) : Firefly_Core.String = {
     Emitter_.emitVariantDefinition(definition, _w1)
     });
         val head = definition.scalaTarget.map({(code) =>
-        (((((("type " + definition.name) + generics) + " = ") + code) + ";\n"))
+            if(code.startsWith("#")) {
+                code.drop(1) + ";\n"
+            } else {
+                (((((("type " + definition.name) + generics) + " = ") + code) + ";\n"))
+            }
         }).else_({() =>
         ((("sealed abstract class " + definition.name) + generics) + " extends Product with Serializable" + commonFields)
         });
@@ -102,7 +106,13 @@ val mutability = Firefly_Core.if_(mutable, {() =>
 
 def emitFunctionDefinition(definition : Syntax_.DFunction, suffix : Firefly_Core.String = "") : Firefly_Core.String = {
 val signature = Emitter_.emitSignature(definition.signature, suffix);
-    definition.scalaTarget.map { code => signature + " = {\n" + code + "\n}" }.else_ { () =>
+    definition.scalaTarget.map { code =>
+        if(code.startsWith("#")) {
+            code.drop(1)
+        } else {
+            signature + " = {\n" + code + "\n}"
+        }
+    }.else_ { () =>
 pipe_dot(definition.body)({
 case (Syntax_.Lambda(_, List(matchCase))) if matchCase.patterns.all({
 case (Syntax_.PVariable(_, Firefly_Core.None())) =>
@@ -199,7 +209,7 @@ def emitVariantDefinition(typeDefinition : Syntax_.DType, definition : Syntax_.V
     fields
     }).else_({() =>
     ""
-    })) + ";\n") + "def unapply") + generics) + "(value : ") + typeDefinition.scalaTarget.expect()) + ") = ") + if_((fields != "()"), {() =>
+    })) + ";\n") + "def unapply") + generics) + "(value : ") + typeDefinition.name + generics) + ") = ") + if_((fields != "()"), {() =>
     ((((("scala.Some(value).collectFirst { case " + code) + fields) + " => ") + fields) + " };\n")
     }).else_({() =>
     ("value == " + code + ";\n")
