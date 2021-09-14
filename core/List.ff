@@ -306,7 +306,7 @@ extend self[K, V]: List[Pair[K, V]] {
     // toMap
     getMap(): Map[K, V] {
         let initial: List[Pair[K, V]] = []
-        (self.foldLeft(initial.getMap())) { map, pair => map.add(pair.first, pair.second) }
+        (self.foldLeft(Map.empty[K, V]())) { map, pair => map.add(pair.first, pair.second) }
     }
 
     group(): Map[K, List[V]] {

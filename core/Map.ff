@@ -23,3 +23,7 @@ extend self[K, V]: Map[K, List[V]] {
         self.updateOrInsert(key, {[value, ... _]}, {[value]})
     }
 }
+
+empty[K, V](): Map[K, V] {
+    panic("magic")
+} scala "scala.collection.immutable.Map()"
