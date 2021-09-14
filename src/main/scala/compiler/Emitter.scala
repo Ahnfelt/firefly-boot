@@ -50,7 +50,7 @@ _w1.join("\n\n")
 }
 
 def emitMain() : Firefly_Core.String = {
-"def main(arguments : Array[String]) : Unit = main_(ff.core.System_.SystemArguments(arguments))"
+"def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(arguments.toList.getArray_()))"
 }
 
 def emitTypeMembers(name : Firefly_Core.String, lets : Firefly_Core.List[Syntax_.DLet], functions : Firefly_Core.List[Syntax_.DFunction]) : Firefly_Core.String = {
