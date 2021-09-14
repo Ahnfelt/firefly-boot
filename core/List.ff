@@ -13,7 +13,7 @@ extend self[T]: List[T] {
     getArray(): Array[T] { panic("magic") } scala "(new scala.collection.mutable.ArrayBuffer[T]() ++ self_).getArray_()"
 
     // toList
-    getSet(): Set[T] { panic("magic") }
+    getSet(): Set[T] { panic("magic") } scala "self_.toSet"
 
     expect(index: Int): T {
         function go(list: List[T], i: Int): T {
@@ -277,7 +277,7 @@ extend self[T]: List[T] {
         }
         let pair = divide(self, [], [])
         merge(pair.first.sortBy(body), pair.second.sortBy(body), [])
-    }
+    } scala "self_.sortBy(body_)"
 
     reverse(): List[T] {
         reverseList(self)
@@ -328,7 +328,7 @@ extend self[K, V]: List[Pair[K, V]] {
 }
 
 extend self: List[String] {
-    join(separator: String = ""): String { panic("magic") }
+    join(separator: String = ""): String { panic("magic") } scala "self_.mkString(separator_)"
 }
 
 reverseList[T](list: List[T]): List[T] { // Hack to work around Scala/IDEA inference bug

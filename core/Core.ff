@@ -28,8 +28,8 @@ magicHashCode[T](value: T): Int { panic("magic") } scala "value_.hashCode()"
 magicLess[T](x: T, y: T): Bool { panic("magic") } scala "x_.asInstanceOf[Comparable[T]].compareTo(y_) < 0"
 
 arrayBuilderOf[T](): ArrayBuilder[T] { panic("magic") } scala "scala.collection.mutable.ArrayBuffer[T]()"
-setOf[T](): Set[T] { panic("magic") }
-mapOf[K, V](): Map[K, V] { panic("magic") }
+setOf[T](): Set[T] { panic("magic") } scala "scala.collection.immutable.Set()"
+mapOf[K, V](): Map[K, V] { panic("magic") } scala "scala.collection.immutable.Map()"
 
 log: Log = panic("magic") scala "null"
 
