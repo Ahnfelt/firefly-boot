@@ -259,6 +259,8 @@ extend self[T]: List[T] {
     }
 
     sortBy(body: T => String): List[T] { // TODO generalize to non-strings
+        if(self.getSize() <= 1) {self} else:
+
         function divide(list: List[T], xs: List[T], ys: List[T]): Pair[List[T], List[T]] {
             list.{
                 | [] => Pair(xs, ys)
@@ -277,7 +279,7 @@ extend self[T]: List[T] {
         }
         let pair = divide(self, [], [])
         merge(pair.first.sortBy(body), pair.second.sortBy(body), [])
-    } scala "self_.sortBy(body_)"
+    }
 
     reverse(): List[T] {
         reverseList(self)
