@@ -1,5 +1,7 @@
 type ArrayBuilder[T] {} scala "scala.collection.mutable.ArrayBuffer[T]"
 
+empty[T](): ArrayBuilder[T] { panic("magic") } scala "scala.collection.mutable.ArrayBuffer[T]()"
+
 extend self[T]: ArrayBuilder[T] {
     getArray(): Array[T] { panic("magic") } scala "val r = new java.util.ArrayList[T](self_.length); for(i <- 0.until(self_.length)) r.add(self_(i)); r"
     getEmpty(): Bool { panic("magic") } scala "self_.isEmpty"

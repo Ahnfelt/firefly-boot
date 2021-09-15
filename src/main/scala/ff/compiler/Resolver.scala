@@ -306,9 +306,9 @@ def findVariables_(pattern_ : ff.compiler.Syntax_.MatchPattern) : ff.core.Map_.M
 case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.Some(name_))) =>
 List(ff.core.Pair_.Pair(name_, name_)).getMap_()
 case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.None())) =>
-ff.core.Core_.mapOf_()
+ff.core.Map_.empty_()
 case (ff.compiler.Syntax_.PVariant(_, _, patterns_)) =>
-patterns_.map_(findVariables_).foldLeft_(ff.core.Core_.mapOf_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
+patterns_.map_(findVariables_).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 case (ff.compiler.Syntax_.PVariantAs(_, _, variable_)) =>
@@ -321,11 +321,11 @@ case (ff.compiler.Syntax_.PList(_, _, items_)) =>
 items_.map_({
 case (ff.core.Pair_.Pair(item_, _)) =>
 findVariables_(item_)
-}).foldLeft_(ff.core.Core_.mapOf_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
+}).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 }
-val variableMap_ = case_.patterns_.map_(findVariables_).foldLeft_(ff.core.Core_.mapOf_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
+val variableMap_ = case_.patterns_.map_(findVariables_).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 });
 val self2_ = self_.copy(variables_ = (self_.variables_ ++ variableMap_));

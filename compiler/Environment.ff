@@ -18,7 +18,7 @@ type Instantiated(
 make(module: Module, otherModules: List[Module]): Environment {
     Environment(
         processModule(module, True).symbols ++
-        otherModules.map { processModule(_, False).symbols }.foldLeft(mapOf[String, Scheme]())({ _ ++ _ })
+        otherModules.map { processModule(_, False).symbols }.foldLeft(Map.empty[String, Scheme]())({ _ ++ _ })
     )
 }
 

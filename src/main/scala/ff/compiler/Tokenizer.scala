@@ -39,13 +39,13 @@ object Tokenizer_ {
 
 
 def tokenize_(file_ : ff.core.String_.String, code_ : ff.core.String_.String) : ff.core.Array_.Array[ff.compiler.Token_.Token] = {
-val tokens_ = ff.core.Core_.arrayBuilderOf_[ff.compiler.Token_.Token]();
+val tokens_ = ff.core.ArrayBuilder_.empty_[ff.compiler.Token_.Token]();
 var line_ = 1;
 var lineOffset_ = 0;
 var startLine_ = line_;
 var startLineOffset_ = lineOffset_;
 val operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-,;";
-var operatorCharacters_ = ff.core.Core_.setOf_[ff.core.Char_.Char]();
+var operatorCharacters_ = ff.core.Set_.empty_[ff.core.Char_.Char]();
 0.getUntil_(operatorCharactersString_.getSize_()).map_({(j_) =>
 operatorCharacters_ = operatorCharacters_.add_(operatorCharactersString_.expect_(j_))
 });

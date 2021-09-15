@@ -45,7 +45,7 @@ case class Instantiated(typeArguments_ : ff.core.List_.List[ff.core.Pair_.Pair[f
 def make_(module_ : ff.compiler.Syntax_.Module, otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.compiler.Environment_.Environment = {
 ff.compiler.Environment_.Environment((ff.compiler.Environment_.processModule_(module_, ff.core.Bool_.True()).symbols_ ++ otherModules_.map_({(_w1) =>
 ff.compiler.Environment_.processModule_(_w1, ff.core.Bool_.False()).symbols_
-}).foldLeft_(ff.core.Core_.mapOf_[ff.core.String_.String, ff.compiler.Environment_.Scheme]())({(_w1, _w2) =>
+}).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Environment_.Scheme]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })))
 }

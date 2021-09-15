@@ -51,7 +51,7 @@ val coreImports_ : ff.core.List_.List[ff.compiler.Syntax_.DImport] = List("Array
 ff.compiler.Syntax_.DImport(at_ = ff.compiler.Syntax_.Location("<prelude>", 1, 1), alias_ = moduleName_, package_ = ff.core.Pair_.Pair("ff", "core"), directory_ = List(), file_ = moduleName_)
 })
 def make_(files_ : ff.core.FileSystem_.FileSystem, outputPath_ : ff.core.String_.String, packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]) : ff.compiler.Compiler_.Compiler = {
-ff.compiler.Compiler_.Compiler(files_ = files_, outputPath_ = outputPath_, packagePaths_ = packagePaths_, parsedModules_ = ff.core.Core_.mapOf_(), resolvedModules_ = ff.core.Core_.mapOf_(), inferredModules_ = ff.core.Core_.mapOf_(), emittedModules_ = ff.core.Core_.setOf_())
+ff.compiler.Compiler_.Compiler(files_ = files_, outputPath_ = outputPath_, packagePaths_ = packagePaths_, parsedModules_ = ff.core.Map_.empty_(), resolvedModules_ = ff.core.Map_.empty_(), inferredModules_ = ff.core.Map_.empty_(), emittedModules_ = ff.core.Set_.empty_())
 }
 implicit class Compiler_extend0(self_ : ff.compiler.Compiler_.Compiler) {
 

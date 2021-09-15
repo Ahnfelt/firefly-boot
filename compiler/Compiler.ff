@@ -24,10 +24,10 @@ make(
         files = files
         outputPath = outputPath
         packagePaths = packagePaths
-        parsedModules = mapOf()
-        resolvedModules = mapOf()
-        inferredModules = mapOf()
-        emittedModules = setOf()
+        parsedModules = Map.empty()
+        resolvedModules = Map.empty()
+        inferredModules = Map.empty()
+        emittedModules = Set.empty()
     )
 }
 

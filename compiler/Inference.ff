@@ -154,7 +154,7 @@ extend self: Inference {
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
         pattern.{
             | PVariable(at, None) =>
-                mapOf()
+                Map.empty()
             | PVariable(at, Some(name)) =>
                 [Pair(name, expected)].getMap()
             | PAlias(at, pattern, variable) =>
@@ -165,12 +165,12 @@ extend self: Inference {
                 (items.map {
                     | Pair(item, False) => self.inferPattern(environment, t, item)
                     | Pair(item, True) => self.inferPattern(environment, listType, item)
-                }.foldLeft(mapOf[String, Type]())) { _ ++ _ }
+                }.foldLeft(Map.empty[String, Type]())) { _ ++ _ }
             | PVariantAs(at, name, None) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
                 }
-                mapOf()
+                Map.empty()
             | PVariantAs(at, name, Some(variable)) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
@@ -187,7 +187,7 @@ extend self: Inference {
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
                 (patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
-                }.foldLeft(mapOf[String, Type]())) { _ ++ _ }
+                }.foldLeft(Map.empty[String, Type]())) { _ ++ _ }
         }
     }
 

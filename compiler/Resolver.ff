@@ -278,17 +278,17 @@ extend self: Resolver {
             | PVariable(_, Some(name)) =>
                 [Pair(name, name)].getMap()
             | PVariable(_, None) =>
-                mapOf()
+                Map.empty()
             | PVariant(_, _, patterns) =>
-                patterns.map(findVariables).foldLeft(mapOf[String, String]())({_ ++ _})
+                patterns.map(findVariables).foldLeft(Map.empty[String, String]())({_ ++ _})
             | PVariantAs(_, _, variable) =>
                 variable.getList().map { x => Pair(x, x) }.getMap()
             | PAlias(_, pattern, variable) =>
                 [Pair(variable, variable)].getMap() ++ findVariables(pattern)
             | PList(_, _, items) =>
-                items.map { | Pair(item, _) => findVariables(item) }.foldLeft(mapOf[String, String]())({_ ++ _})
+                items.map { | Pair(item, _) => findVariables(item) }.foldLeft(Map.empty[String, String]())({_ ++ _})
         }
-        let variableMap = case.patterns.map(findVariables).foldLeft(mapOf[String, String]())({_ ++ _})
+        let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty[String, String]())({_ ++ _})
         let self2 = self.Resolver(
             variables = self.variables ++ variableMap
         )

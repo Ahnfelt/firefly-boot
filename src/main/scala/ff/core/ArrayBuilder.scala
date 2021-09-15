@@ -37,7 +37,9 @@ object ArrayBuilder_ {
 type ArrayBuilder[T] = scala.collection.mutable.ArrayBuffer[T];
 
 
-
+def empty_[T]() : ff.core.ArrayBuilder_.ArrayBuilder[T] = {
+scala.collection.mutable.ArrayBuffer[T]()
+}
 implicit class ArrayBuilder_extend0[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) {
 
 def getArray_() : ff.core.Array_.Array[T] = {

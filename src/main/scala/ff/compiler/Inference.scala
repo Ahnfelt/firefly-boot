@@ -151,7 +151,7 @@ case_.copy(condition_ = condition_, body_ = body_)
 def inferPattern_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, pattern_ : ff.compiler.Syntax_.MatchPattern) : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type] = {
 pipe_dot(pattern_)({
 case (ff.compiler.Syntax_.PVariable(at_, ff.core.Option_.None())) =>
-ff.core.Core_.mapOf_()
+ff.core.Map_.empty_()
 case (ff.compiler.Syntax_.PVariable(at_, ff.core.Option_.Some(name_))) =>
 List(ff.core.Pair_.Pair(name_, expected_)).getMap_()
 case (ff.compiler.Syntax_.PAlias(at_, pattern_, variable_)) =>
@@ -164,14 +164,14 @@ case (ff.core.Pair_.Pair(item_, ff.core.Bool_.False())) =>
 self_.inferPattern_(environment_, t_, item_)
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
 self_.inferPattern_(environment_, listType_, item_)
-}).foldLeft_(ff.core.Core_.mapOf_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
+}).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 case (ff.compiler.Syntax_.PVariantAs(at_, name_, ff.core.Option_.None())) =>
 val instantiated_ = self_.lookup_(environment_, at_, name_, List()).else_({() =>
 ff.compiler.Inference_.fail_(at_, ("No such variant: " + name_))
 });
-ff.core.Core_.mapOf_()
+ff.core.Map_.empty_()
 case (ff.compiler.Syntax_.PVariantAs(at_, name_, ff.core.Option_.Some(variable_))) =>
 val instantiated_ = self_.lookup_(environment_, at_, name_, List()).else_({() =>
 ff.compiler.Inference_.fail_(at_, ("No such variant: " + name_))
@@ -194,7 +194,7 @@ self_.unification_.unify_(at_, expected_, instantiated_.scheme_.signature_.retur
 patterns_.zip_(instantiated_.scheme_.signature_.parameters_).map_({
 case (ff.core.Pair_.Pair(pattern_, parameter_)) =>
 self_.inferPattern_(environment_, parameter_.valueType_, pattern_)
-}).foldLeft_(ff.core.Core_.mapOf_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
+}).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 })

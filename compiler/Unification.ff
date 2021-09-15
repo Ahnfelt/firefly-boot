@@ -16,8 +16,8 @@ make(instances: List[DInstance]): Unification {
         panic(message + " " + at.show())
     }
     Unification(
-        mapOf()
-        mapOf()
+        Map.empty()
+        Map.empty()
         2 // Even type variables to avoid collision with the parser
         instances.map { definition =>
             definition.traitType.{

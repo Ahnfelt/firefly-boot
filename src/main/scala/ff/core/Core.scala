@@ -83,18 +83,6 @@ def magicLess_[T](x_ : T, y_ : T) : ff.core.Bool_.Bool = {
 x_.asInstanceOf[Comparable[T]].compareTo(y_) < 0
 }
 
-def arrayBuilderOf_[T]() : ff.core.ArrayBuilder_.ArrayBuilder[T] = {
-scala.collection.mutable.ArrayBuffer[T]()
-}
-
-def setOf_[T]() : ff.core.Set_.Set[T] = {
-ff.core.Set_.empty_()
-}
-
-def mapOf_[K, V]() : ff.core.Map_.Map[K, V] = {
-ff.core.Map_.empty_()
-}
-
 def pipeDot_() : ff.core.Unit_.Unit = {
 }; def pipe_dot[A, B](value : A)(function : A => B) : B = { function(value)
 }

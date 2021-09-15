@@ -27,10 +27,6 @@ magicShow[T](value: T): String { panic("magic") } scala "value_.toString"
 magicHashCode[T](value: T): Int { panic("magic") } scala "value_.hashCode()"
 magicLess[T](x: T, y: T): Bool { panic("magic") } scala "x_.asInstanceOf[Comparable[T]].compareTo(y_) < 0"
 
-arrayBuilderOf[T](): ArrayBuilder[T] { panic("magic") } scala "scala.collection.mutable.ArrayBuffer[T]()"
-setOf[T](): Set[T] { Set.empty() }
-mapOf[K, V](): Map[K, V] { Map.empty() }
-
 log: Log = panic("magic") scala "null"
 
 pipeDot(): Unit {} scala "}; def pipe_dot[A, B](value : A)(function : A => B) : B = { function(value)" // hack

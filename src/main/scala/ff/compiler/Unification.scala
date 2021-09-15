@@ -48,7 +48,7 @@ def make_(instances_ : ff.core.List_.List[ff.compiler.Syntax_.DInstance]) : ff.c
 def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.String) : T = {
 ff.core.Core_.panic_(((message_ + " ") + at_.show_()))
 }
-ff.compiler.Unification_.Unification(ff.core.Core_.mapOf_(), ff.core.Core_.mapOf_(), 2, instances_.map_({(definition_) =>
+ff.compiler.Unification_.Unification(ff.core.Map_.empty_(), ff.core.Map_.empty_(), 2, instances_.map_({(definition_) =>
 pipe_dot(definition_.traitType_)({
 case (ff.compiler.Syntax_.TConstructor(at_, name_, List(ff.compiler.Syntax_.TConstructor(_, typeName_, _), __seq @ _*))) =>
 val _ = __seq.toList;
