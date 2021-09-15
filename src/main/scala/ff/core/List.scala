@@ -75,7 +75,9 @@ def getArray_() : ff.core.Array_.Array[T] = {
 }
 
 def getSet_() : ff.core.Set_.Set[T] = {
-self_.toSet
+self_.foldLeft_(ff.core.Set_.empty_[T]())({(set_, value_) =>
+set_.add_(value_)
+})
 }
 
 def expect_(index_ : ff.core.Int_.Int) : T = {
@@ -450,7 +452,6 @@ go_(self_, List())
 implicit class List_extend2[K, V](self_ : ff.core.List_.List[ff.core.Pair_.Pair[K, V]]) {
 
 def getMap_() : ff.core.Map_.Map[K, V] = {
-val initial_ : ff.core.List_.List[ff.core.Pair_.Pair[K, V]] = List();
 self_.foldLeft_(ff.core.Map_.empty_[K, V]())({(map_, pair_) =>
 map_.add_(pair_.first_, pair_.second_)
 })

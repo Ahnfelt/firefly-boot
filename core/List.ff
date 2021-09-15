@@ -12,8 +12,10 @@ extend self[T]: List[T] {
     // toArray
     getArray(): Array[T] { panic("magic") } scala "(new scala.collection.mutable.ArrayBuffer[T]() ++ self_).getArray_()"
 
-    // toList
-    getSet(): Set[T] { panic("magic") } scala "self_.toSet"
+    // toSet
+    getSet(): Set[T] {
+        (self.foldLeft(Set.empty[T]())) { set, value => set.add(value) }
+    }
 
     expect(index: Int): T {
         function go(list: List[T], i: Int): T {
@@ -307,7 +309,6 @@ extend self[K, V]: List[Pair[K, V]] {
 
     // toMap
     getMap(): Map[K, V] {
-        let initial: List[Pair[K, V]] = []
         (self.foldLeft(Map.empty[K, V]())) { map, pair => map.add(pair.first, pair.second) }
     }
 

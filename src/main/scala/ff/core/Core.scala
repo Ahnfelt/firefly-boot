@@ -88,7 +88,7 @@ scala.collection.mutable.ArrayBuffer[T]()
 }
 
 def setOf_[T]() : ff.core.Set_.Set[T] = {
-scala.collection.immutable.Set()
+ff.core.Set_.empty_()
 }
 
 def mapOf_[K, V]() : ff.core.Map_.Map[K, V] = {

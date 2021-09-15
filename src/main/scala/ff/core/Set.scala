@@ -34,22 +34,23 @@ import ff.core.Try_._
 import ff.core.Unit_._
 object Set_ {
 
-type Set[T] = scala.collection.immutable.Set[T];
+case class Set[T](map_ : ff.core.Map_.Map[T, ff.core.Unit_.Unit])
 
-
-
+def empty_[T]() : ff.core.Set_.Set[T] = {
+ff.core.Set_.Set(ff.core.Map_.empty_())
+}
 implicit class Set_extend0[T](self_ : ff.core.Set_.Set[T]) {
 
 def add_(value_ : T) : ff.core.Set_.Set[T] = {
-self_ + value_
+ff.core.Set_.Set(self_.map_.add_(value_, ff.core.Unit_.Unit()))
 }
 
 def remove_(value_ : T) : ff.core.Set_.Set[T] = {
-self_ - value_
+ff.core.Set_.Set(self_.map_.remove_(value_))
 }
 
 def contains_(value_ : T) : ff.core.Bool_.Bool = {
-self_.contains(value_)
+self_.map_.contains_(value_)
 }
 
 }
