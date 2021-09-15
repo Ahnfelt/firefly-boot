@@ -29,7 +29,7 @@ magicLess[T](x: T, y: T): Bool { panic("magic") } scala "x_.asInstanceOf[Compara
 
 arrayBuilderOf[T](): ArrayBuilder[T] { panic("magic") } scala "scala.collection.mutable.ArrayBuffer[T]()"
 setOf[T](): Set[T] { panic("magic") } scala "scala.collection.immutable.Set()"
-mapOf[K, V](): Map[K, V] { panic("magic") } scala "scala.collection.immutable.Map()"
+mapOf[K, V](): Map[K, V] { Map.empty() }
 
 log: Log = panic("magic") scala "null"
 

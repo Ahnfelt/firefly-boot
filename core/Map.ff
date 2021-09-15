@@ -1,14 +1,57 @@
-type Map[K, V] {} scala "#type Map[K, +V] = scala.collection.immutable.Map[K, V]"
+import RbMap
+
+type Map[K, V](redBlack: RbMap[K, Option[V]]) {
+    MapOf()
+} scala "#sealed abstract class Map[K, +V] { val redBlack_ : ff.core.RbMap_.RbMap[K, ff.core.Option_.Option[V]] }"
+
+empty[K, V](): Map[K, V] { MapOf(RbLeaf) }
 
 extend self[K, V]: Map[K, V] {
-    pairs(): List[Pair[K, V]] { panic("magic") } scala "self_.toList"
-    getSize(): Int { panic("magic") } scala "self_.size"
-    get(key: K): Option[V] { panic("magic") } scala "self_.get(key_)"
-    expect(key: K): V { panic("magic") } scala "self_(key_)"
-    add(key: K, value: V): Map[K, V] { panic("magic") } scala "self_ + ((key_, value_))"
-    remove(key: K): Map[K, V] { panic("magic") } scala "self_ - key_"
-    map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] { panic("magic") } scala "self_.map(body_)"
-    contains(key: K): Bool { panic("magic") } scala "self_.contains(key_)"
+
+    add(key : K, value : V): Map[K, V] {
+        MapOf(self.redBlack.add(key, Some(value)))
+    }
+
+    append(that: Map[K, V]): Map[K, V] {
+        (self.pairs() ++ that.pairs()).getMap()
+    } scala "#def ++(that_ : Map[K, V]) : Map[K, V] = (self_.pairs_() ++ that_.pairs_()).getMap_()"
+
+
+    get(key : K): Option[V] {
+        self.redBlack.get(key).flatten()
+    }
+
+    remove(key : K): Map[K, V] {
+        MapOf(self.redBlack.add(key, None))
+    }
+
+    pairs(): List[Pair[K, V]] {
+        self.redBlack.pairs().flatMap{
+            | Pair(k, Some(v)) => [Pair(k, v)]
+            | Pair(k, None) => []
+        }
+    }
+
+    getSize(): Int {
+        self.redBlack.size()
+    }
+
+    map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
+        let initial: Map[K1, V1] = MapOf[K1, V1](RbLeaf)
+        (self.pairs().foldLeft(initial)) { tree, pair =>
+            body(pair).{
+                | Pair(k, v) => tree.add(k, v)
+            }
+        }
+    }
+
+    contains(key: K): Bool {
+        !self.get(key).getEmpty()
+    }
+
+    expect(key: K): V {
+        self.get(key).expect()
+    }
 
     updateOrInsert(key: K, update: V => V, default: () => V): Map[K, V] {
         self.get(key).{
@@ -16,14 +59,13 @@ extend self[K, V]: Map[K, V] {
             | Some(v) => self.add(key, update(v))
         }
     }
+
 }
 
 extend self[K, V]: Map[K, List[V]] {
+
     addToList(key : K, value : V): Map[K, List[V]] {
         self.updateOrInsert(key, {[value, ... _]}, {[value]})
     }
-}
 
-empty[K, V](): Map[K, V] {
-    panic("magic")
-} scala "scala.collection.immutable.Map()"
+}

@@ -92,7 +92,7 @@ scala.collection.immutable.Set()
 }
 
 def mapOf_[K, V]() : ff.core.Map_.Map[K, V] = {
-scala.collection.immutable.Map()
+ff.core.Map_.empty_()
 }
 
 def pipeDot_() : ff.core.Unit_.Unit = {
