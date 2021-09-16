@@ -466,7 +466,6 @@ extend self: Inference {
                     | TVariable(_, index) =>
                         fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
                 }
-            | _ => term
         }
     }
 

@@ -445,8 +445,6 @@ ff.compiler.Inference_.fail_(e_.at_, ((("No such field " + e_.field_) + " on typ
 case (ff.compiler.Syntax_.TVariable(_, index_)) =>
 ff.compiler.Inference_.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
 })
-case (_) =>
-term_
 })
 }
 
