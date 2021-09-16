@@ -113,7 +113,7 @@ extend self: Compiler {
         let result = Inference.make(instances).inferModule(module, otherModules)
 
         self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)
-        result
+        module // result
     }
 
     emit(packageName: String, moduleName: String): Unit {
