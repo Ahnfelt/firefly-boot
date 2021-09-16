@@ -1,6 +1,8 @@
 package ff.compiler
 import ff.compiler.Environment_._
 
+import ff.compiler.Substitution_._
+
 import ff.compiler.Syntax_._
 
 import ff.compiler.Unification_._
@@ -66,7 +68,8 @@ self_.inferFunctionDefinition_(environment_, _w1)
 val extends_ = module_.extends_.map_({(_w1) =>
 self_.inferExtendDefinition_(environment_, _w1)
 });
-module_.copy(extends_ = extends_, lets_ = lets_, functions_ = functions_)
+val result_ = module_.copy(extends_ = extends_, lets_ = lets_, functions_ = functions_);
+ff.compiler.Substitution_.Substitution(self_.unification_.substitution_).substituteModule_(result_)
 }
 
 def inferLetDefinition_(environment_ : ff.compiler.Environment_.Environment, definition_ : ff.compiler.Syntax_.DLet) : ff.compiler.Syntax_.DLet = {

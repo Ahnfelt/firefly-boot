@@ -1,6 +1,7 @@
 import Syntax
 import Unification
 import Environment
+import Substitution
 
 type Inference(
     unification: Unification
@@ -42,13 +43,14 @@ extend self: Inference {
         let extends = module.extends.map { self.inferExtendDefinition(environment, _) }
         //let traits = module.traits.map { self.inferTraitDefinition(_) }
         //let instances = module.instances.map { self.inferInstanceDefinition(_) }
-        module.Module(
+        let result = module.Module(
             //traits = traits,
             //instances = instances,
             extends = extends,
             lets = lets,
             functions = functions,
         )
+        Substitution(self.unification.substitution).substituteModule(result)
     }
 
     inferLetDefinition(environment: Environment, definition: DLet): DLet {
