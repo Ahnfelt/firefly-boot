@@ -55,23 +55,62 @@ extend self: Substitution {
             | EChar _ => term
             | EInt _ => term
             | EFloat _ => term
-            | EVariable e => term // TODO
-            | EField e => term // TODO
-            | EWildcard e => term // TODO
-            | EList e => term // TODO
-            | ESequential e => term // TODO
-            | ELet e => term // TODO
-            | ELambda e => term // TODO
-            | EVariant e => term // TODO
-            | EVariantIs e => term // TODO
-            | ECopy e => term // TODO
-            | EPipe e => term // TODO
-            | ECall e => term // TODO
-            | ERecord e => term // TODO
-            | EFunctions e => term // TODO
-            | EAssign e => term // TODO
-            | EAssignField e => term // TODO
+            | EVariable e => e.EVariable(generics = e.generics.map(self.substituteType))
+            | EField e => e.EField(record = self.substituteTerm(e.record))
+            | EWildcard e => term
+            | EList e => e.EList(
+                elementType = self.substituteType(e.elementType)
+                items = e.items.map {| Pair(item, b) => Pair(self.substituteTerm(item), b) }
+            )
+            | ESequential e => e.ESequential(
+                before = self.substituteTerm(e.before)
+                after = self.substituteTerm(e.after)
+            )
+            | ELet e => e.ELet(
+                valueType = self.substituteType(e.valueType)
+                value = self.substituteTerm(e.value)
+                body = self.substituteTerm(e.body)
+            )
+            | ELambda e => e.ELambda(lambda = self.substituteLambda(e.lambda))
+            | EVariant e => e.EVariant(
+                typeArguments = e.typeArguments.map(self.substituteType)
+                arguments = e.arguments.map { _.map(self.substituteArgument) }
+            )
+            | EVariantIs e => e.EVariantIs(
+                typeArguments = e.typeArguments.map(self.substituteType)
+            )
+            | ECopy e => e.ECopy(
+                record = self.substituteTerm(e.record)
+                arguments = e.arguments.map(self.substituteField)
+            )
+            | EPipe e => e.EPipe(
+                value = self.substituteTerm(e.value)
+                function = self.substituteTerm(e.function)
+            )
+            | ECall e => e.ECall(
+                function = self.substituteTerm(e.function)
+                typeArguments = e.typeArguments.map(self.substituteType)
+                arguments = e.arguments.map(self.substituteArgument)
+            )
+            | ERecord e => e.ERecord(fields = e.fields.map(self.substituteField))
+            | EFunctions e => e.EFunctions(
+                functions = e.functions.map(self.substituteFunctionDefinition)
+                body = self.substituteTerm(e.body)
+            )
+            | EAssign e => e.EAssign(value = self.substituteTerm(e.value))
+            | EAssignField e => e.EAssignField(
+                record = self.substituteTerm(e.record)
+                value = self.substituteTerm(e.value)
+            )
         }
+    }
+
+    substituteArgument(argument: Argument): Argument {
+        argument.Argument(value = self.substituteTerm(argument.value))
+    }
+
+    substituteField(field: Field): Field {
+        field.Field(value = self.substituteTerm(field.value))
     }
 
     substituteType(type: Type): Type {
