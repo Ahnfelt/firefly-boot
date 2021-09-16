@@ -21,6 +21,16 @@ extend self[K, V]: RbMap[K, V] {
         }
     }
 
+    each(body: (K, V) => Unit): Unit {
+        self.{
+            | RbLeaf =>
+            | RbNode(_, l, k, v, r) =>
+                l.each(body)
+                body(k, v)
+                r.each(body)
+        }
+    }
+
     get(key: K): Option[V] {
         self.{
             | RbLeaf => None

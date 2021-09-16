@@ -7,7 +7,12 @@ type Map[K, V](redBlack: RbMap[K, Option[V]]) {
 empty[K, V](): Map[K, V] { MapOf(RbLeaf) }
 
 append[K, V](self: Map[K, V], that: Map[K, V]): Map[K, V] {
-    (that.pairs().foldLeft(self)) { map, pair => map.add(pair.first, pair.second) }
+    mutable result = self.redBlack
+    that.redBlack.each {
+        | k, Some(_)@v => result = result.add(k, v)
+        | k, None =>
+    }
+    MapOf(result)
 }
 
 extend self[K, V]: Map[K, V] {

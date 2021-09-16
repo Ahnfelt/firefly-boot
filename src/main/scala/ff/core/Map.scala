@@ -45,9 +45,14 @@ ff.core.Map_.MapOf(ff.core.RbMap_.RbLeaf())
 }
 
 def append_[K, V](self_ : ff.core.Map_.Map[K, V], that_ : ff.core.Map_.Map[K, V]) : ff.core.Map_.Map[K, V] = {
-that_.pairs_().foldLeft_(self_)({(map_, pair_) =>
-map_.add_(pair_.first_, pair_.second_)
-})
+var result_ = self_.redBlack_;
+that_.redBlack_.each_({
+case (k_, v_ @ (ff.core.Option_.Some(_))) =>
+result_ = result_.add_(k_, v_)
+case (k_, ff.core.Option_.None()) =>
+ff.core.Unit_.Unit()
+});
+ff.core.Map_.MapOf(result_)
 }
 implicit class Map_extend0[K, V](self_ : ff.core.Map_.Map[K, V]) {
 

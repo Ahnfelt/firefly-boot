@@ -60,6 +60,17 @@ case (ff.core.RbMap_.RbNode(_, l_, k_, v_, r_)) =>
 })
 }
 
+def each_(body_ : Function2[K, V, ff.core.Unit_.Unit]) : ff.core.Unit_.Unit = {
+pipe_dot(self_)({
+case (ff.core.RbMap_.RbLeaf()) =>
+ff.core.Unit_.Unit()
+case (ff.core.RbMap_.RbNode(_, l_, k_, v_, r_)) =>
+l_.each_(body_);
+body_(k_, v_);
+r_.each_(body_)
+})
+}
+
 def get_(key_ : K) : ff.core.Option_.Option[V] = {
 pipe_dot(self_)({
 case (ff.core.RbMap_.RbLeaf()) =>
