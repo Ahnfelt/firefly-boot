@@ -43,13 +43,19 @@ case class MapOf[K, V](redBlack_ : ff.core.RbMap_.RbMap[K, ff.core.Option_.Optio
 def empty_[K, V]() : ff.core.Map_.Map[K, V] = {
 ff.core.Map_.MapOf(ff.core.RbMap_.RbLeaf())
 }
+
+def append_[K, V](self_ : ff.core.Map_.Map[K, V], that_ : ff.core.Map_.Map[K, V]) : ff.core.Map_.Map[K, V] = {
+that_.pairs_().foldLeft_(self_)({(map_, pair_) =>
+map_.add_(pair_.first_, pair_.second_)
+})
+}
 implicit class Map_extend0[K, V](self_ : ff.core.Map_.Map[K, V]) {
 
 def add_(key_ : K, value_ : V) : ff.core.Map_.Map[K, V] = {
 ff.core.Map_.MapOf(self_.redBlack_.add_(key_, ff.core.Option_.Some(value_)))
 }
 
-def ++(that_ : Map[K, V]) : Map[K, V] = (self_.pairs_() ++ that_.pairs_()).getMap_()
+def ++(that_ : Map[K, V]) : Map[K, V] = append_(self_, that_)
 
 def get_(key_ : K) : ff.core.Option_.Option[V] = {
 self_.redBlack_.get_(key_).flatten_()

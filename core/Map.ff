@@ -6,6 +6,10 @@ type Map[K, V](redBlack: RbMap[K, Option[V]]) {
 
 empty[K, V](): Map[K, V] { MapOf(RbLeaf) }
 
+append[K, V](self: Map[K, V], that: Map[K, V]): Map[K, V] {
+    (that.pairs().foldLeft(self)) { map, pair => map.add(pair.first, pair.second) }
+}
+
 extend self[K, V]: Map[K, V] {
 
     add(key : K, value : V): Map[K, V] {
@@ -13,8 +17,8 @@ extend self[K, V]: Map[K, V] {
     }
 
     append(that: Map[K, V]): Map[K, V] {
-        (self.pairs() ++ that.pairs()).getMap()
-    } scala "#def ++(that_ : Map[K, V]) : Map[K, V] = (self_.pairs_() ++ that_.pairs_()).getMap_()"
+        append(self, that)
+    } scala "#def ++(that_ : Map[K, V]) : Map[K, V] = append_(self_, that_)"
 
 
     get(key : K): Option[V] {
