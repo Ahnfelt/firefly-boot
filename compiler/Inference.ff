@@ -17,16 +17,6 @@ fail[T](at: Location, message: String): T {
     panic(message + " " + at.show())
 }
 
-//myInt = 42
-//myString: String = myInt
-//myFunction(x: Int): String { | a, b => x }
-//myInt = Location("foo", 1, 1).Location(line = 2)
-//myFoo: String = 1.{x => x}
-//myLambda: Int => Int = { x => 1 }
-//myCall = myLambda[Int](1)
-//myEta: Int => String = core
-//myFieldEta: () => Set[Int] = [].toSet
-
 core(name: String): String {
     "ff:core/" + name + "." + name
 }

@@ -2,6 +2,10 @@ import Syntax
 
 type Substitution(mutable substitution: Map[Int, Type])
 
+core(name: String): String {
+    "ff:core/" + name + "." + name
+}
+
 extend self: Substitution {
 
     substituteModule(module: Module): Module {
@@ -114,8 +118,10 @@ extend self: Substitution {
     }
 
     substituteType(type: Type): Type {
-        | TVariable(_, i) => if(self.has(i)) { self.substituteType(self.get(i)) } else { type }
-        | TConstructor t => t.TConstructor(generics = t.generics.map { t => self.substituteType(t) })
+        | TVariable(at, i) =>
+            if(self.has(i)) { self.substituteType(self.get(i)) } else { TConstructor(at, core("Nothing"), []) }
+        | TConstructor t =>
+            t.TConstructor(generics = t.generics.map { t => self.substituteType(t) })
     }
 
     get(index: Int): Type {
@@ -124,6 +130,8 @@ extend self: Substitution {
                 let t = self.get(i)
                 self.substitution = self.substitution.add(index, t)
                 t
+            | TVariable(at, _) =>
+                TConstructor(at, core("Nothing"), [])
             | t => t
         }
     }
