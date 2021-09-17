@@ -67,6 +67,10 @@ def panic_[T](message_ : ff.core.String_.String) : T = {
 println(message_); throw new RuntimeException(message_)
 }
 
+def magicInstance_[T](typeName_ : ff.core.String_.String) : T = {
+ff.core.Core_.panic_("magic")
+}
+
 def magicShow_[T](value_ : T) : ff.core.String_.String = {
 value_.toString
 }
