@@ -268,7 +268,7 @@ val returnType_ : ff.compiler.Syntax_.Type = ff.core.Option_.Option_else(self_ =
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LColon());
 ff.compiler.Parser_.Parser_parseType(self_ = self_)
 }), body_ = {() =>
-ff.compiler.Syntax_.TConstructor(at_ = ff.compiler.Token_.Token_at(token_ = ff.compiler.Parser_.Parser_current(self_ = self_)), name_ = "Unit", generics_ = List())
+ff.compiler.Syntax_.TConstructor(at_ = ff.compiler.Token_.Token_at(token_ = ff.compiler.Parser_.Parser_current(self_ = self_)), name_ = "ff:core/Unit.Unit", generics_ = List())
 });
 ff.compiler.Syntax_.Signature(at_ = ff.compiler.Token_.Token_at(token_ = nameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = nameToken_), generics_ = poly_.generics_, constraints_ = poly_.constraints_, parameters_ = parameters_, returnType_ = returnType_)
 }

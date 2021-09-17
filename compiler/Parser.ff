@@ -174,7 +174,7 @@ extend self: Parser {
             self.skip(LColon)
             self.parseType()
         } else {
-            TConstructor(self.current().at(), "Unit", []) // TODO: Add qualified type names to resolver map and qualify this name
+            TConstructor(self.current().at(), "ff:core/Unit.Unit", [])
         }
         Signature(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, parameters, returnType)
     }
