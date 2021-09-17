@@ -2,10 +2,14 @@ type Char {}
     scala "scala.Char"
 
 extend self: Char {
+
     getIsLetter(): Bool { panic("magic") }
         scala "self_.isLetter"
+
     getIsUpper(): Bool { panic("magic") }
         scala "self_.isUpper"
+
     getIsLower(): Bool { panic("magic") }
         scala "self_.isLower"
+
 }

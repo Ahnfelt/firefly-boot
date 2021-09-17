@@ -14,7 +14,8 @@ while(condition: () => Bool, body: () => Unit): Unit {
     }
 }
 
-try[T](body: () => T): Try[T] { panic("magic") } scala "scala.util.Try { body_() }"
+try[T](body: () => T): Try[T] { panic("magic") }
+    scala "scala.util.Try { body_() }"
 
 do[T](body: () => T): T {
     body()
@@ -25,8 +26,10 @@ panic[T](message: String): T { panic("magic") }
 
 magicShow[T](value: T): String { panic("magic") }
     scala "value_.toString"
+
 magicHashCode[T](value: T): Int { panic("magic") }
     scala "value_.hashCode()"
+
 magicLess[T](x: T, y: T): Bool { panic("magic") }
     scala "x_.asInstanceOf[Comparable[T]].compareTo(y_) < 0"
 
