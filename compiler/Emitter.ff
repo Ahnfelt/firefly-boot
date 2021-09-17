@@ -287,6 +287,13 @@ emitTerm(term: Term): String {
         "(" + operator + emitArgument(value) + ")"
     | ECall(at, _, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().getIsLetter()} =>
         "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
+    | ECall(at, _, EVariable(_, name, _, _)@function, _, arguments) {
+        // Hack to support funky Scala FFI for options
+        name == "ff:core/Option.Option_else" ||
+        name == "ff:core/Option.Option_elseIf" ||
+        name == "ff:core/Option.Option_getElse"
+    } =>
+        emitTerm(function) + "(" + arguments.map(emitArgument).join(", ") + ")"
     | ECall(at, _, function, typeArguments, arguments) =>
         let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
         emitTerm(function) + generics + "(" + arguments.map(emitArgument).join(", ") + ")"

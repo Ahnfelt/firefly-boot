@@ -469,6 +469,10 @@ case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operato
 ((("(" + operator_) + ff.compiler.Emitter_.emitArgument_(argument_ = value_)) + ")")
 case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(left_, right_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
 (((((("(" + ff.compiler.Emitter_.emitArgument_(argument_ = left_)) + " ") + operator_) + " ") + ff.compiler.Emitter_.emitArgument_(argument_ = right_)) + ")")
+case (ff.compiler.Syntax_.ECall(at_, _, function_ @ (ff.compiler.Syntax_.EVariable(_, name_, _, _)), _, arguments_)) if (((name_ == "ff:core/Option.Option_else") || (name_ == "ff:core/Option.Option_elseIf")) || (name_ == "ff:core/Option.Option_getElse")) =>
+(((ff.compiler.Emitter_.emitTerm_(term_ = function_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = arguments_, body_ = {(argument_) =>
+ff.compiler.Emitter_.emitArgument_(argument_ = argument_)
+}), separator_ = ", ")) + ")")
 case (ff.compiler.Syntax_.ECall(at_, _, function_, typeArguments_, arguments_)) =>
 val generics_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = typeArguments_), body_ = {() =>
 ""
