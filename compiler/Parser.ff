@@ -154,6 +154,9 @@ extend self: Parser {
     }
 
     parseTargetOption(target: String): Option[String] {
+        if(self.current().is(LSeparator) && self.ahead().is(LKeyword) && self.ahead().rawIs(target)) {
+            self.skip(LSeparator)
+        }
         if(self.current().is(LKeyword) && self.current().rawIs(target)) {
             self.skip(LKeyword)
             let result = self.skip(LString).raw()
