@@ -21,6 +21,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -37,273 +39,302 @@ import ff.core.Unit_._
 object Emitter_ {
 
 
-val keywords_ = List("abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java").getSet_()
+val keywords_ : ff.core.Set_.Set[ff.core.String_.String] = ff.core.List_.List_getSet[ff.core.String_.String](self_ = List("abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java"))
 def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.String) : T = {
-ff.core.Core_.panic_(((message_ + " ") + at_.show_()))
+ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Location_show(self_ = at_)))
 }
 
 def emitModule_(packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], module_ : ff.compiler.Syntax_.Module) : ff.core.String_.String = {
-val moduleNamespace_ = module_.file_.replace_("\\", "/").getReverse_().takeWhile_({(_w1) =>
+val moduleNamespace_ : ff.core.String_.String = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_replace(self_ = module_.file_, needle_ = "\\", replacement_ = "/")), p_ = {(_w1) =>
 (_w1 != '/')
-}).getReverse_().takeWhile_({(_w1) =>
+})), p_ = {(_w1) =>
 (_w1 != '.')
 });
-val modulePrefix_ = (((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + module_.file_.dropLast_(3)) + ".");
-val package_ = ((packagePair_.first_ + ".") + packagePair_.second_);
-val parts_ = List(List(("package " + package_)), module_.imports_.sortBy_({(i_) =>
+val modulePrefix_ : ff.core.String_.String = (((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + ".");
+val package_ : ff.core.String_.String = ((packagePair_.first_ + ".") + packagePair_.second_);
+val parts_ : ff.core.List_.List[ff.core.List_.List[ff.core.String_.String]] = List(List(("package " + package_)), ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
 ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
-}).map_({(i_) =>
+}), body_ = {(i_) =>
 (((((("import " + i_.package_.first_) + ".") + i_.package_.second_) + ".") + i_.file_) + "_._")
-}), List((("object " + moduleNamespace_) + "_ {")), ff.core.Core_.if_(module_.functions_.any_({(_w1) =>
+}), List((("object " + moduleNamespace_) + "_ {")), ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.String_.String]](condition_ = ff.core.List_.List_any[ff.compiler.Syntax_.DFunction](self_ = module_.functions_, body_ = {(_w1) =>
 (_w1.signature_.name_ == "main")
-}), {() =>
+}), body_ = {() =>
 List(ff.compiler.Emitter_.emitMain_())
-}).else_({() =>
+}), body_ = {() =>
 List()
-}), module_.types_.map_(ff.compiler.Emitter_.emitTypeDefinition_), module_.lets_.map_({(_w1) =>
-ff.compiler.Emitter_.emitLetDefinition_(_w1)
-}), module_.functions_.map_({(_w1) =>
-ff.compiler.Emitter_.emitFunctionDefinition_(_w1)
-}), module_.extends_.map_({(_w1) =>
-ff.compiler.Emitter_.emitExtendsDefinition_(_w1)
-}), module_.traits_.map_(ff.compiler.Emitter_.emitTraitDefinition_), module_.instances_.map_(ff.compiler.Emitter_.emitInstanceDefinition_), List("}"));
-module_.extends_.map_({(_w1) =>
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DType, ff.core.String_.String](self_ = module_.types_, body_ = {(definition_) =>
+ff.compiler.Emitter_.emitTypeDefinition_(definition_ = definition_)
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.core.String_.String](self_ = module_.lets_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitLetDefinition_(definition_ = _w1, mutable_ = ff.core.Bool_.False())
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = module_.functions_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = "")
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DExtend, ff.core.String_.String](self_ = module_.extends_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitExtendsDefinition_(definition_ = _w1)
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DTrait, ff.core.String_.String](self_ = module_.traits_, body_ = {(definition_) =>
+ff.compiler.Emitter_.emitTraitDefinition_(definition_ = definition_)
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DInstance, ff.core.String_.String](self_ = module_.instances_, body_ = {(definition_) =>
+ff.compiler.Emitter_.emitInstanceDefinition_(definition_ = definition_)
+}), List("}"));
+ff.core.Option_.Option_each[{val at_ : ff.compiler.Syntax_.Location; val generics_ : ff.core.List_.List[ff.compiler.Syntax_.Type]; val name_ : ff.core.String_.String}](self_ = ff.core.List_.List_find[{val at_ : ff.compiler.Syntax_.Location; val generics_ : ff.core.List_.List[ff.compiler.Syntax_.Type]; val name_ : ff.core.String_.String}](self_ = ff.core.List_.List_getCollect[ff.compiler.Syntax_.Type, {val at_ : ff.compiler.Syntax_.Location; val generics_ : ff.core.List_.List[ff.compiler.Syntax_.Type]; val name_ : ff.core.String_.String}](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DExtend, ff.compiler.Syntax_.Type](self_ = module_.extends_, body_ = {(_w1) =>
 _w1.type_
-}).getCollect_(({ case _w : ff.compiler.Syntax_.TConstructor => Some(_w); case _ => None() })).find_({(t_) =>
-(!module_.types_.any_({(_w1) =>
+}), body_ = ({ case _w : ff.compiler.Syntax_.TConstructor => Some(_w); case _ => None() })), body_ = {(t_) =>
+(!ff.core.List_.List_any[ff.compiler.Syntax_.DType](self_ = module_.types_, body_ = {(_w1) =>
 ((modulePrefix_ + _w1.name_) == t_.name_)
 }))
-}).each_({(t_) =>
-ff.compiler.Emitter_.fail_(t_.at_, ("Type not defined in this file: " + t_.name_))
+}), body_ = {(t_) =>
+ff.compiler.Emitter_.fail_[ff.core.Nothing_.Nothing](at_ = t_.at_, message_ = ("Type not defined in this file: " + t_.name_));
+ff.core.Unit_.Unit()
 });
-(parts_.map_({(_w1) =>
-_w1.join_("\n\n")
-}).join_("\n") + "\n")
+(ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.List_.List[ff.core.String_.String], ff.core.String_.String](self_ = parts_, body_ = {(_w1) =>
+ff.core.List_.List_join(self_ = _w1, separator_ = "\n\n")
+}), separator_ = "\n") + "\n")
 }
 
 def emitMain_() : ff.core.String_.String = {
-"def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(arguments.toList.getArray_()))"
+"def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(List_getArray(arguments.toList)))"
 }
 
 def emitTypeMembers_(name_ : ff.core.String_.String, lets_ : ff.core.List_.List[ff.compiler.Syntax_.DLet], functions_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction]) : ff.core.String_.String = {
-val strings_ = (lets_.map_({(_w1) =>
-ff.compiler.Emitter_.emitLetDefinition_(_w1)
-}) ++ functions_.map_({(_w1) =>
-ff.compiler.Emitter_.emitFunctionDefinition_(_w1)
+val strings_ : ff.core.List_.List[ff.core.String_.String] = (ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.core.String_.String](self_ = lets_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitLetDefinition_(definition_ = _w1, mutable_ = ff.core.Bool_.False())
+}) ++ ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = functions_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = "")
 }));
-(((("object " + name_) + " {\n\n") + strings_.join_("\n\n")) + "\n\n}")
+(((("object " + name_) + " {\n\n") + ff.core.List_.List_join(self_ = strings_, separator_ = "\n\n")) + "\n\n}")
 }
 
 def emitTypeDefinition_(definition_ : ff.compiler.Syntax_.DType) : ff.core.String_.String = {
-val generics_ = ff.compiler.Emitter_.emitTypeParameters_(definition_.generics_);
-ff.core.Core_.if_(((definition_.scalaTarget_.getEmpty_() && (definition_.variants_.getSize_() == 1)) && (definition_.variants_.expectFirst_().name_ == definition_.name_)), {() =>
-val fields_ = (("(" + definition_.commonFields_.map_(ff.compiler.Emitter_.emitParameter_).join_(", ")) + ")");
+val generics_ : ff.core.String_.String = ff.compiler.Emitter_.emitTypeParameters_(generics_ = definition_.generics_);
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ((ff.core.Option_.Option_getEmpty[ff.core.String_.String](self_ = definition_.scalaTarget_) && (ff.core.List_.List_getSize[ff.compiler.Syntax_.Variant](self_ = definition_.variants_) == 1)) && (ff.core.List_.List_expectFirst[ff.compiler.Syntax_.Variant](self_ = definition_.variants_).name_ == definition_.name_)), body_ = {() =>
+val fields_ : ff.core.String_.String = (("(" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.commonFields_, body_ = {(parameter_) =>
+ff.compiler.Emitter_.emitParameter_(parameter_ = parameter_)
+}), separator_ = ", ")) + ")");
 ((("case class " + definition_.name_) + generics_) + fields_)
-}).else_({() =>
-val variants_ = definition_.variants_.map_({(_w1) =>
-ff.compiler.Emitter_.emitVariantDefinition_(definition_, _w1)
+}), body_ = {() =>
+val variants_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.Variant, ff.core.String_.String](self_ = definition_.variants_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitVariantDefinition_(typeDefinition_ = definition_, definition_ = _w1)
 });
-val head_ = definition_.scalaTarget_.map_({(code_) =>
-ff.core.Core_.if_(code_.startsWith_("#"), {() =>
-(code_.dropFirst_() + ";\n")
-}).else_({() =>
+val head_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = definition_.scalaTarget_, body_ = {(code_) =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#"), body_ = {() =>
+(ff.core.String_.String_dropFirst(self_ = code_, count_ = 1) + ";\n")
+}), body_ = {() =>
 ((((("type " + definition_.name_) + generics_) + " = ") + code_) + ";\n")
 })
-}).else_({() =>
-val commonFields_ = ff.core.Core_.if_(definition_.commonFields_.getEmpty_(), {() =>
+}), body_ = {() =>
+val commonFields_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Parameter](self_ = definition_.commonFields_), body_ = {() =>
 ""
-}).else_({() =>
-((" {\n" + definition_.commonFields_.map_(ff.compiler.Emitter_.emitParameter_).map_({(_w1) =>
+}), body_ = {() =>
+((" {\n" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.commonFields_, body_ = {(parameter_) =>
+ff.compiler.Emitter_.emitParameter_(parameter_ = parameter_)
+}), body_ = {(_w1) =>
 (("    val " + _w1) + "\n")
-}).join_()) + "}")
+}), separator_ = "")) + "}")
 });
 (((("sealed abstract class " + definition_.name_) + generics_) + " extends Product with Serializable") + commonFields_)
 });
-(head_ + variants_.map_({(_w1) =>
+(head_ + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.String_.String](self_ = variants_, body_ = {(_w1) =>
 ("\n" + _w1)
-}).join_())
+}), separator_ = ""))
 })
 }
 
 def emitLetDefinition_(definition_ : ff.compiler.Syntax_.DLet, mutable_ : ff.core.Bool_.Bool = ff.core.Bool_.False()) : ff.core.String_.String = {
-val typeAnnotation_ = ff.compiler.Emitter_.emitTypeAnnotation_(definition_.variableType_);
-val mutability_ = ff.core.Core_.if_(mutable_, {() =>
+val typeAnnotation_ : ff.core.String_.String = ff.compiler.Emitter_.emitTypeAnnotation_(t_ = definition_.variableType_);
+val mutability_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = mutable_, body_ = {() =>
 "var"
-}).else_({() =>
+}), body_ = {() =>
 "val"
 });
-val valueCode_ = definition_.scalaTarget_.else_({() =>
-ff.compiler.Emitter_.emitTerm_(definition_.value_)
+val valueCode_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = definition_.scalaTarget_, body_ = {() =>
+ff.compiler.Emitter_.emitTerm_(term_ = definition_.value_)
 });
-(((((mutability_ + " ") + ff.compiler.Emitter_.escapeKeyword_(definition_.name_)) + typeAnnotation_) + " = ") + valueCode_)
+(((((mutability_ + " ") + ff.compiler.Emitter_.escapeKeyword_(word_ = definition_.name_)) + typeAnnotation_) + " = ") + valueCode_)
 }
 
 def emitFunctionDefinition_(definition_ : ff.compiler.Syntax_.DFunction, suffix_ : ff.core.String_.String = "") : ff.core.String_.String = {
-val signature_ = ff.compiler.Emitter_.emitSignature_(definition_.signature_, suffix_);
-definition_.scalaTarget_.map_({(code_) =>
-ff.core.Core_.if_(code_.startsWith_("#"), {() =>
-code_.dropFirst_()
-}).else_({() =>
+val signature_ : ff.core.String_.String = ff.compiler.Emitter_.emitSignature_(signature_ = definition_.signature_, suffix_ = suffix_);
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = definition_.scalaTarget_, body_ = {(code_) =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#"), body_ = {() =>
+ff.core.String_.String_dropFirst(self_ = code_, count_ = 1)
+}), body_ = {() =>
 (((signature_ + " = {\n") + code_) + "\n}")
 })
-}).else_({() =>
+}), body_ = {() =>
 pipe_dot(definition_.body_)({
-case (ff.compiler.Syntax_.Lambda(_, List(matchCase_))) if matchCase_.patterns_.all_({
+case (ff.compiler.Syntax_.Lambda(_, List(matchCase_))) if ff.core.List_.List_all[ff.compiler.Syntax_.MatchPattern](self_ = matchCase_.patterns_, body_ = {
 case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.None())) =>
 ff.core.Bool_.True()
 case (_) =>
 ff.core.Bool_.False()
 }) =>
-val body_ = ff.compiler.Emitter_.emitStatements_(matchCase_.body_);
+val body_ : ff.core.String_.String = ff.compiler.Emitter_.emitStatements_(term_ = matchCase_.body_);
 (((signature_ + " = {\n") + body_) + "\n}")
 case (_) =>
-val tuple_ = (("(" + definition_.signature_.parameters_.map_({(_w1) =>
-ff.compiler.Emitter_.escapeKeyword_(_w1.name_)
-}).join_(", ")) + ")");
-val cases_ = definition_.body_.cases_.map_(ff.compiler.Emitter_.emitCase_).join_("\n");
+val tuple_ : ff.core.String_.String = (("(" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.signature_.parameters_, body_ = {(_w1) =>
+ff.compiler.Emitter_.escapeKeyword_(word_ = _w1.name_)
+}), separator_ = ", ")) + ")");
+val cases_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = definition_.body_.cases_, body_ = {(matchCase_) =>
+ff.compiler.Emitter_.emitCase_(matchCase_ = matchCase_)
+}), separator_ = "\n");
 (((((signature_ + " = ") + tuple_) + " match {\n") + cases_) + "\n}")
 })
 })
 }
 
 def emitExtendsDefinition_(definition_ : ff.compiler.Syntax_.DExtend) : ff.core.String_.String = {
-val typeName_ = ff.compiler.Emitter_.extractTypeName_(definition_.type_).getReverse_().takeWhile_({(_w1) =>
+val typeName_ : ff.core.String_.String = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.compiler.Emitter_.extractTypeName_(type_ = definition_.type_)), p_ = {(_w1) =>
 (_w1 != '.')
-}).getReverse_();
-val methods_ = definition_.methods_.map_({(method_) =>
-method_.copy(signature_ = method_.signature_.copy(name_ = ((typeName_ + "_") + method_.signature_.name_)))
+}));
+val methods_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = definition_.methods_, body_ = {(method_) =>
+pipe_dot(method_)({(_c) =>
+ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = pipe_dot(method_.signature_)({(_c) =>
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = ((typeName_ + "_") + method_.signature_.name_), generics_ = _c.generics_, constraints_ = _c.constraints_, parameters_ = _c.parameters_, returnType_ = _c.returnType_)
+}), body_ = _c.body_, scalaTarget_ = _c.scalaTarget_)
+})
 });
-methods_.map_({(_w1) =>
-ff.compiler.Emitter_.emitFunctionDefinition_(_w1)
-}).join_("\n\n")
+ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = methods_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = "")
+}), separator_ = "\n\n")
 }
 
 def emitTraitDefinition_(definition_ : ff.compiler.Syntax_.DTrait) : ff.core.String_.String = {
-val generics_ = ff.compiler.Emitter_.emitTypeParameters_(definition_.generics_);
-val implicits_ = ff.compiler.Emitter_.emitConstraints_(definition_.constraints_);
-val parameters_ = ff.core.Core_.if_(definition_.generatorParameters_.getEmpty_(), {() =>
+val generics_ : ff.core.String_.String = ff.compiler.Emitter_.emitTypeParameters_(generics_ = definition_.generics_);
+val implicits_ : ff.core.String_.String = ff.compiler.Emitter_.emitConstraints_(constraints_ = definition_.constraints_);
+val parameters_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Parameter](self_ = definition_.generatorParameters_), body_ = {() =>
 ""
-}).else_({() =>
-(("(" + definition_.generatorParameters_.map_(ff.compiler.Emitter_.emitParameter_).join_(", ")) + ")")
+}), body_ = {() =>
+(("(" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.generatorParameters_, body_ = {(parameter_) =>
+ff.compiler.Emitter_.emitParameter_(parameter_ = parameter_)
+}), separator_ = ", ")) + ")")
 });
-val methods_ = ff.core.Core_.if_(definition_.methods_.getEmpty_(), {() =>
+val methods_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Signature](self_ = definition_.methods_), body_ = {() =>
 ""
-}).else_({() =>
-((((" {\n\nimport " + definition_.name_) + "._\n\n") + definition_.methods_.map_({(signature_) =>
-val body_ = definition_.methodDefaults_.find_({(_w1) =>
+}), body_ = {() =>
+((((" {\n\nimport " + definition_.name_) + "._\n\n") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Signature, ff.core.String_.String](self_ = definition_.methods_, body_ = {(signature_) =>
+val body_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_getElse(self_ = ff.core.Option_.Option_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Lambda], ff.core.String_.String](self_ = ff.core.List_.List_find[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Lambda]](self_ = definition_.methodDefaults_, body_ = {(_w1) =>
 (_w1.first_ == signature_.name_)
-}).map_({
+}), body_ = {
 case (ff.core.Pair_.Pair(_, lambda_)) =>
-((" {\n" + ff.compiler.Emitter_.emitStatements_(ff.compiler.Syntax_.ELambda(lambda_.at_, lambda_))) + "\n}")
-}).getElse_({() =>
-definition_.methodGenerators_.find_({(_w1) =>
+((" {\n" + ff.compiler.Emitter_.emitStatements_(term_ = ff.compiler.Syntax_.ELambda(at_ = lambda_.at_, lambda_ = lambda_))) + "\n}")
+}), body_ = {() =>
+ff.core.Option_.Option_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Lambda], ff.core.String_.String](self_ = ff.core.List_.List_find[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Lambda]](self_ = definition_.methodGenerators_, body_ = {(_w1) =>
 (_w1.first_ == signature_.name_)
-}).map_({
+}), body_ = {
 case (ff.core.Pair_.Pair(_, e_)) =>
 " {\n// TODO: Generate\n}"
 })
-}).else_({() =>
+}), body_ = {() =>
 ""
 });
-(ff.compiler.Emitter_.emitSignature_(signature_, "_m") + body_)
-}).join_("\n\n")) + "\n\n}")
+(ff.compiler.Emitter_.emitSignature_(signature_ = signature_, suffix_ = "_m") + body_)
+}), separator_ = "\n\n")) + "\n\n}")
 });
-val methodWrappers_ = ff.core.Core_.if_(definition_.methods_.getEmpty_(), {() =>
+val methodWrappers_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Signature](self_ = definition_.methods_), body_ = {() =>
 ""
-}).else_({() =>
-((" \n\n" + definition_.methods_.map_({(signature_) =>
-val t_ = ff.compiler.Syntax_.TConstructor(definition_.at_, definition_.name_, definition_.generics_.map_({(_w1) =>
-ff.compiler.Syntax_.TConstructor(definition_.at_, _w1, List())
+}), body_ = {() =>
+((" \n\n" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Signature, ff.core.String_.String](self_ = definition_.methods_, body_ = {(signature_) =>
+val t_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = definition_.at_, name_ = definition_.name_, generics_ = ff.core.List_.List_map[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = definition_.generics_, body_ = {(_w1) =>
+ff.compiler.Syntax_.TConstructor(at_ = definition_.at_, name_ = _w1, generics_ = List())
 }));
-(((((((ff.compiler.Emitter_.emitSignature_(signature_.copy(generics_ = (definition_.generics_ ++ signature_.generics_), constraints_ = (List(List(ff.compiler.Syntax_.Constraint(t_)), definition_.constraints_, signature_.constraints_).flatten))) + " =\n    scala.Predef.implicitly[") + ff.compiler.Emitter_.emitType_(t_)) + "].") + ff.compiler.Emitter_.escapeKeyword_(signature_.name_)) + "_m(") + signature_.parameters_.map_({(_w1) =>
+(((((((ff.compiler.Emitter_.emitSignature_(signature_ = pipe_dot(signature_)({(_c) =>
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = (definition_.generics_ ++ signature_.generics_), constraints_ = (List(List(ff.compiler.Syntax_.Constraint(representation_ = t_)), definition_.constraints_, signature_.constraints_).flatten), parameters_ = _c.parameters_, returnType_ = _c.returnType_)
+}), suffix_ = "") + " =\n    scala.Predef.implicitly[") + ff.compiler.Emitter_.emitType_(type_ = t_)) + "].") + ff.compiler.Emitter_.escapeKeyword_(word_ = signature_.name_)) + "_m(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = signature_.parameters_, body_ = {(_w1) =>
 _w1.name_
-}).map_(ff.compiler.Emitter_.escapeKeyword_).join_(", ")) + ")")
-}).join_("\n\n")) + "\n\n")
+}), body_ = {(word_) =>
+ff.compiler.Emitter_.escapeKeyword_(word_ = word_)
+}), separator_ = ", ")) + ")")
+}), separator_ = "\n\n")) + "\n\n")
 });
 ((((((((((("abstract class " + definition_.name_) + generics_) + parameters_) + implicits_) + methods_) + "\n") + "object ") + definition_.name_) + " {") + methodWrappers_) + "}")
 }
 
 def emitInstanceDefinition_(definition_ : ff.compiler.Syntax_.DInstance) : ff.core.String_.String = {
-val signature_ = ff.compiler.Emitter_.emitSignature_(ff.compiler.Syntax_.Signature(definition_.at_, ((ff.compiler.Emitter_.extractTypeName_(definition_.traitType_) + "_") + ff.core.Core_.magicHashCode_(definition_).getAbs_()), definition_.generics_, definition_.constraints_, List(), definition_.traitType_));
-val methods_ = ((((" {\n\nimport " + ff.compiler.Emitter_.extractTypeName_(definition_.traitType_)) + "._\n\n") + definition_.methods_.map_({(_w1) =>
-ff.compiler.Emitter_.emitFunctionDefinition_(_w1, "_m")
-}).join_("\n\n")) + "\n\n}");
-val value_ = (("new " + ff.compiler.Emitter_.emitType_(definition_.traitType_)) + methods_);
+val signature_ : ff.core.String_.String = ff.compiler.Emitter_.emitSignature_(signature_ = ff.compiler.Syntax_.Signature(at_ = definition_.at_, name_ = ((ff.compiler.Emitter_.extractTypeName_(type_ = definition_.traitType_) + "_") + ff.core.Int_.Int_getAbs(self_ = ff.core.Core_.magicHashCode_[ff.compiler.Syntax_.DInstance](value_ = definition_))), generics_ = definition_.generics_, constraints_ = definition_.constraints_, parameters_ = List(), returnType_ = definition_.traitType_), suffix_ = "");
+val methods_ : ff.core.String_.String = ((((" {\n\nimport " + ff.compiler.Emitter_.extractTypeName_(type_ = definition_.traitType_)) + "._\n\n") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = definition_.methods_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = "_m")
+}), separator_ = "\n\n")) + "\n\n}");
+val value_ : ff.core.String_.String = (("new " + ff.compiler.Emitter_.emitType_(type_ = definition_.traitType_)) + methods_);
 ((("implicit " + signature_) + " =\n    ") + value_)
 }
 
 def emitVariantDefinition_(typeDefinition_ : ff.compiler.Syntax_.DType, definition_ : ff.compiler.Syntax_.Variant) : ff.core.String_.String = {
-val generics_ = ff.compiler.Emitter_.emitTypeParameters_(typeDefinition_.generics_);
-val allFields_ = (typeDefinition_.commonFields_ ++ definition_.fields_);
-val fields_ = (("(" + allFields_.map_(ff.compiler.Emitter_.emitParameter_).join_(", ")) + ")");
-definition_.scalaTarget_.map_({(originalCode_) =>
-val code_ = ff.core.Core_.if_((originalCode_ == "scala.Unit"), {() =>
+val generics_ : ff.core.String_.String = ff.compiler.Emitter_.emitTypeParameters_(generics_ = typeDefinition_.generics_);
+val allFields_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter] = (typeDefinition_.commonFields_ ++ definition_.fields_);
+val fields_ : ff.core.String_.String = (("(" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = allFields_, body_ = {(parameter_) =>
+ff.compiler.Emitter_.emitParameter_(parameter_ = parameter_)
+}), separator_ = ", ")) + ")");
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = definition_.scalaTarget_, body_ = {(originalCode_) =>
+val code_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = (originalCode_ == "scala.Unit"), body_ = {() =>
 "{}"
-}).else_({() =>
+}), body_ = {() =>
 originalCode_
 });
-((((((((((((((((("object " + definition_.name_) + " {\n") + "def apply") + generics_) + fields_) + " = ") + code_) + ff.core.Core_.if_((fields_ != "()"), {() =>
+((((((((((((((((("object " + definition_.name_) + " {\n") + "def apply") + generics_) + fields_) + " = ") + code_) + ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = (fields_ != "()"), body_ = {() =>
 fields_
-}).else_({() =>
+}), body_ = {() =>
 ""
-})) + ";\n") + "def unapply") + generics_) + "(value : ") + typeDefinition_.name_) + generics_) + ") = ") + ff.core.Core_.if_((fields_ != "()"), {() =>
+})) + ";\n") + "def unapply") + generics_) + "(value : ") + typeDefinition_.name_) + generics_) + ") = ") + ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = (fields_ != "()"), body_ = {() =>
 ((((("scala.Some(value).collectFirst { case " + code_) + fields_) + " => ") + fields_) + " };\n")
-}).else_({() =>
+}), body_ = {() =>
 (("value == " + code_) + ";\n")
 })) + "}")
-}).else_({() =>
+}), body_ = {() =>
 (((((("case class " + definition_.name_) + generics_) + fields_) + " extends ") + typeDefinition_.name_) + generics_)
 })
 }
 
 def emitSignature_(signature_ : ff.compiler.Syntax_.Signature, suffix_ : ff.core.String_.String = "") : ff.core.String_.String = {
-val generics_ = ff.compiler.Emitter_.emitTypeParameters_(signature_.generics_);
-val parameters_ = (("(" + signature_.parameters_.map_(ff.compiler.Emitter_.emitParameter_).join_(", ")) + ")");
-val implicits_ = ff.core.Core_.if_(signature_.constraints_.getEmpty_(), {() =>
+val generics_ : ff.core.String_.String = ff.compiler.Emitter_.emitTypeParameters_(generics_ = signature_.generics_);
+val parameters_ : ff.core.String_.String = (("(" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = signature_.parameters_, body_ = {(parameter_) =>
+ff.compiler.Emitter_.emitParameter_(parameter_ = parameter_)
+}), separator_ = ", ")) + ")");
+val implicits_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Constraint](self_ = signature_.constraints_), body_ = {() =>
 ""
-}).else_({() =>
-(("(implicit " + signature_.constraints_.pairs_().map_({
+}), body_ = {() =>
+(("(implicit " + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.compiler.Syntax_.Constraint], ff.core.String_.String](self_ = ff.core.List_.List_pairs[ff.compiler.Syntax_.Constraint](self_ = signature_.constraints_), body_ = {
 case (ff.core.Pair_.Pair(i_, c_)) =>
-((("i_" + i_) + " : ") + ff.compiler.Emitter_.emitType_(c_.representation_))
-}).join_(", ")) + ")")
+((("i_" + i_) + " : ") + ff.compiler.Emitter_.emitType_(type_ = c_.representation_))
+}), separator_ = ", ")) + ")")
 });
-val returnType_ = ff.compiler.Emitter_.emitTypeAnnotation_(signature_.returnType_);
-(((((("def " + ff.compiler.Emitter_.escapeKeyword_(signature_.name_)) + suffix_) + generics_) + parameters_) + implicits_) + returnType_)
+val returnType_ : ff.core.String_.String = ff.compiler.Emitter_.emitTypeAnnotation_(t_ = signature_.returnType_);
+(((((("def " + ff.compiler.Emitter_.escapeKeyword_(word_ = signature_.name_)) + suffix_) + generics_) + parameters_) + implicits_) + returnType_)
 }
 
 def emitParameter_(parameter_ : ff.compiler.Syntax_.Parameter) : ff.core.String_.String = {
-val mutability_ = ff.core.Core_.if_(parameter_.mutable_, {() =>
+val mutability_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = parameter_.mutable_, body_ = {() =>
 "var "
-}).else_({() =>
+}), body_ = {() =>
 ""
 });
-val defaultValue_ = parameter_.default_.map_({(_w1) =>
-(" = " + ff.compiler.Emitter_.emitTerm_(_w1))
-}).else_({() =>
+val defaultValue_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.compiler.Syntax_.Term, ff.core.String_.String](self_ = parameter_.default_, body_ = {(_w1) =>
+(" = " + ff.compiler.Emitter_.emitTerm_(term_ = _w1))
+}), body_ = {() =>
 ""
 });
-(((mutability_ + ff.compiler.Emitter_.escapeKeyword_(parameter_.name_)) + ff.compiler.Emitter_.emitTypeAnnotation_(parameter_.valueType_)) + defaultValue_)
+(((mutability_ + ff.compiler.Emitter_.escapeKeyword_(word_ = parameter_.name_)) + ff.compiler.Emitter_.emitTypeAnnotation_(t_ = parameter_.valueType_)) + defaultValue_)
 }
 
 def emitConstraints_(constraints_ : ff.core.List_.List[ff.compiler.Syntax_.Constraint]) : ff.core.String_.String = {
-ff.core.Core_.if_(constraints_.getEmpty_(), {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Constraint](self_ = constraints_), body_ = {() =>
 ""
-}).else_({() =>
-val pairs_ = constraints_.map_({(_w1) =>
+}), body_ = {() =>
+val pairs_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.core.String_.String]] = ff.core.List_.List_pairs[ff.core.String_.String](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Type, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Constraint, ff.compiler.Syntax_.Type](self_ = constraints_, body_ = {(_w1) =>
 _w1.representation_
-}).map_(ff.compiler.Emitter_.emitType_).pairs_();
-(("(implicit " + pairs_.map_({
+}), body_ = {(type_) =>
+ff.compiler.Emitter_.emitType_(type_ = type_)
+}));
+(("(implicit " + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.core.String_.String], ff.core.String_.String](self_ = pairs_, body_ = {
 case (ff.core.Pair_.Pair(k_, v_)) =>
 ((("i_" + k_) + " : ") + v_)
-}).join_(", ")) + ")")
+}), separator_ = ", ")) + ")")
 })
 }
 
 def emitTypeParameters_(generics_ : ff.core.List_.List[ff.core.String_.String]) : ff.core.String_.String = {
-ff.core.Core_.if_(generics_.getEmpty_(), {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.core.String_.String](self_ = generics_), body_ = {() =>
 ""
-}).else_({() =>
-(("[" + generics_.join_(", ")) + "]")
+}), body_ = {() =>
+(("[" + ff.core.List_.List_join(self_ = generics_, separator_ = ", ")) + "]")
 })
 }
 
@@ -311,48 +342,52 @@ def emitTypeAnnotation_(t_ : ff.compiler.Syntax_.Type) : ff.core.String_.String 
 case (_ : ff.compiler.Syntax_.TVariable) =>
 ""
 case (_ : ff.compiler.Syntax_.TConstructor) =>
-(" : " + ff.compiler.Emitter_.emitType_(t_))
+(" : " + ff.compiler.Emitter_.emitType_(type_ = t_))
 }
 
 def emitType_(type_ : ff.compiler.Syntax_.Type) : ff.core.String_.String = (type_) match {
 case (ff.compiler.Syntax_.TVariable(_, index_)) =>
 ("$" + index_)
 case (t_ : ff.compiler.Syntax_.TConstructor) =>
-ff.core.Core_.if_(t_.name_.startsWith_("Function$"), {() =>
-ff.compiler.Emitter_.emitType_(t_.copy(name_ = t_.name_.replace_("$", "")))
-}).elseIf_({() =>
-t_.name_.startsWith_("Record$")
-}, {() =>
-(("{" + t_.name_.split_('$').dropFirst_(1).getList_().zip_(t_.generics_).map_({
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_elseIf(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = t_.name_, prefix_ = "Function$"), body_ = {() =>
+ff.compiler.Emitter_.emitType_(type_ = pipe_dot(t_)({(_c) =>
+ff.compiler.Syntax_.TConstructor(at_ = _c.at_, name_ = ff.core.String_.String_replace(self_ = t_.name_, needle_ = "$", replacement_ = ""), generics_ = _c.generics_)
+}))
+}), condition_ = {() =>
+ff.core.String_.String_startsWith(self_ = t_.name_, prefix_ = "Record$")
+}, body_ = {() =>
+(("{" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type], ff.core.String_.String](self_ = ff.core.List_.List_zip[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = ff.core.Array_.Array_getList[ff.core.String_.String](self_ = ff.core.Array_.Array_dropFirst[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = t_.name_, char_ = '$'), count_ = 1)), that_ = t_.generics_), body_ = {
 case (ff.core.Pair_.Pair(field_, fieldType_)) =>
-((("val " + ff.compiler.Emitter_.escapeKeyword_(field_)) + " : ") + ff.compiler.Emitter_.emitType_(fieldType_))
-}).join_("; ")) + "}")
-}).else_({() =>
-val generics_ = ff.core.Core_.if_(t_.generics_.getEmpty_(), {() =>
+((("val " + ff.compiler.Emitter_.escapeKeyword_(word_ = field_)) + " : ") + ff.compiler.Emitter_.emitType_(type_ = fieldType_))
+}), separator_ = "; ")) + "}")
+}), body_ = {() =>
+val generics_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = t_.generics_), body_ = {() =>
 ""
-}).else_({() =>
-(("[" + t_.generics_.map_(ff.compiler.Emitter_.emitType_).join_(", ")) + "]")
+}), body_ = {() =>
+(("[" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Type, ff.core.String_.String](self_ = t_.generics_, body_ = {(type_) =>
+ff.compiler.Emitter_.emitType_(type_ = type_)
+}), separator_ = ", ")) + "]")
 });
-(ff.compiler.Emitter_.escapeResolved_(t_.name_) + generics_)
+(ff.compiler.Emitter_.escapeResolved_(word_ = t_.name_) + generics_)
 })
 }
 
 def emitStatements_(term_ : ff.compiler.Syntax_.Term) : ff.core.String_.String = (term_) match {
 case (ff.compiler.Syntax_.EFunctions(at_, functions_, body_)) =>
-val functionStrings_ = functions_.map_({(f_) =>
-ff.compiler.Emitter_.emitFunctionDefinition_(ff.compiler.Syntax_.DFunction(at_, f_.signature_, f_.body_, ff.core.Option_.None()))
+val functionStrings_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = functions_, body_ = {(f_) =>
+ff.compiler.Emitter_.emitFunctionDefinition_(definition_ = ff.compiler.Syntax_.DFunction(at_ = at_, signature_ = f_.signature_, body_ = f_.body_, scalaTarget_ = ff.core.Option_.None[ff.core.String_.String]()), suffix_ = "")
 });
-((functionStrings_.join_("\n") + "\n") + ff.compiler.Emitter_.emitStatements_(body_))
+((ff.core.List_.List_join(self_ = functionStrings_, separator_ = "\n") + "\n") + ff.compiler.Emitter_.emitStatements_(term_ = body_))
 case (ff.compiler.Syntax_.ELet(at_, mutable_, name_, valueType_, value_, body_)) =>
-((ff.compiler.Emitter_.emitLetDefinition_(ff.compiler.Syntax_.DLet(at_, name_, valueType_, value_, ff.core.Option_.None()), mutable_) + ";\n") + ff.compiler.Emitter_.emitStatements_(body_))
+((ff.compiler.Emitter_.emitLetDefinition_(definition_ = ff.compiler.Syntax_.DLet(at_ = at_, name_ = name_, variableType_ = valueType_, value_ = value_, scalaTarget_ = ff.core.Option_.None[ff.core.String_.String]()), mutable_ = mutable_) + ";\n") + ff.compiler.Emitter_.emitStatements_(term_ = body_))
 case (ff.compiler.Syntax_.ESequential(at_, before_, after_)) =>
-((ff.compiler.Emitter_.emitStatements_(before_) + ";\n") + ff.compiler.Emitter_.emitStatements_(after_))
+((ff.compiler.Emitter_.emitStatements_(term_ = before_) + ";\n") + ff.compiler.Emitter_.emitStatements_(term_ = after_))
 case (ff.compiler.Syntax_.EAssign(at_, operator_, name_, value_)) =>
-((((ff.compiler.Emitter_.escapeKeyword_(name_) + " ") + operator_) + "= ") + ff.compiler.Emitter_.emitTerm_(value_))
+((((ff.compiler.Emitter_.escapeKeyword_(word_ = name_) + " ") + operator_) + "= ") + ff.compiler.Emitter_.emitTerm_(term_ = value_))
 case (ff.compiler.Syntax_.EAssignField(at_, operator_, record_, field_, value_)) =>
-((((((ff.compiler.Emitter_.emitTerm_(record_) + ".") + ff.compiler.Emitter_.escapeKeyword_(field_)) + " ") + operator_) + "= ") + ff.compiler.Emitter_.emitTerm_(value_))
+((((((ff.compiler.Emitter_.emitTerm_(term_ = record_) + ".") + ff.compiler.Emitter_.escapeKeyword_(word_ = field_)) + " ") + operator_) + "= ") + ff.compiler.Emitter_.emitTerm_(term_ = value_))
 case (_) =>
-ff.compiler.Emitter_.emitTerm_(term_)
+ff.compiler.Emitter_.emitTerm_(term_ = term_)
 }
 
 def emitTerm_(term_ : ff.compiler.Syntax_.Term) : ff.core.String_.String = (term_) match {
@@ -365,161 +400,183 @@ value_
 case (ff.compiler.Syntax_.EFloat(at_, value_)) =>
 value_
 case (ff.compiler.Syntax_.EVariable(at_, name_, _, _)) =>
-ff.compiler.Emitter_.escapeResolved_(name_)
-case (ff.compiler.Syntax_.EList(at_, _, items_)) if items_.all_({(_w1) =>
+ff.compiler.Emitter_.escapeResolved_(word_ = name_)
+case (ff.compiler.Syntax_.EList(at_, _, items_)) if ff.core.List_.List_all[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool]](self_ = items_, body_ = {(_w1) =>
 (!_w1.second_)
 }) =>
-(("List(" + items_.map_({(_w1) =>
-ff.compiler.Emitter_.emitTerm_(_w1.first_)
-}).join_(", ")) + ")")
+(("List(" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool], ff.core.String_.String](self_ = items_, body_ = {(_w1) =>
+ff.compiler.Emitter_.emitTerm_(term_ = _w1.first_)
+}), separator_ = ", ")) + ")")
 case (ff.compiler.Syntax_.EList(at_, _, items_)) =>
-(("(List(" + items_.map_({
+(("(List(" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool], ff.core.String_.String](self_ = items_, body_ = {
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.False())) =>
-(("List(" + ff.compiler.Emitter_.emitTerm_(item_)) + ")")
+(("List(" + ff.compiler.Emitter_.emitTerm_(term_ = item_)) + ")")
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
-ff.compiler.Emitter_.emitTerm_(item_)
-}).join_(", ")) + ").flatten)")
+ff.compiler.Emitter_.emitTerm_(term_ = item_)
+}), separator_ = ", ")) + ").flatten)")
 case (ff.compiler.Syntax_.EVariant(at_, name_, typeArguments_, arguments_)) =>
-val generics_ = ff.core.Core_.if_(typeArguments_.getEmpty_(), {() =>
+val generics_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = typeArguments_), body_ = {() =>
 ""
-}).else_({() =>
-(("[" + typeArguments_.map_(ff.compiler.Emitter_.emitType_).join_(", ")) + "]")
+}), body_ = {() =>
+(("[" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Type, ff.core.String_.String](self_ = typeArguments_, body_ = {(type_) =>
+ff.compiler.Emitter_.emitType_(type_ = type_)
+}), separator_ = ", ")) + "]")
 });
-((((ff.compiler.Emitter_.escapeResolved_(name_) + generics_) + "(") + arguments_.getList_().getFlatten_().map_(ff.compiler.Emitter_.emitArgument_).join_(", ")) + ")")
+((((ff.compiler.Emitter_.escapeResolved_(word_ = name_) + generics_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = ff.core.List_.List_getFlatten[ff.compiler.Syntax_.Argument](self_ = ff.core.Option_.Option_getList[ff.core.List_.List[ff.compiler.Syntax_.Argument]](self_ = arguments_)), body_ = {(argument_) =>
+ff.compiler.Emitter_.emitArgument_(argument_ = argument_)
+}), separator_ = ", ")) + ")")
 case (ff.compiler.Syntax_.EVariantIs(at_, name_, typeArguments_)) =>
-val generics_ = ff.core.Core_.if_(typeArguments_.getEmpty_(), {() =>
+val generics_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = typeArguments_), body_ = {() =>
 ""
-}).else_({() =>
-(("[" + typeArguments_.map_(ff.compiler.Emitter_.emitType_).join_(", ")) + "]")
+}), body_ = {() =>
+(("[" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Type, ff.core.String_.String](self_ = typeArguments_, body_ = {(type_) =>
+ff.compiler.Emitter_.emitType_(type_ = type_)
+}), separator_ = ", ")) + "]")
 });
-((("({ case _w : " + ff.compiler.Emitter_.escapeResolved_(name_)) + generics_) + " => Some(_w); case _ => None() })")
+((("({ case _w : " + ff.compiler.Emitter_.escapeResolved_(word_ = name_)) + generics_) + " => Some(_w); case _ => None() })")
 case (ff.compiler.Syntax_.ECopy(at_, name_, record_, fields_)) =>
-val fieldCode_ = fields_.map_({(f_) =>
-((ff.compiler.Emitter_.escapeKeyword_(f_.name_) + " = ") + ff.compiler.Emitter_.emitTerm_(f_.value_))
-}).join_(", ");
-(((ff.compiler.Emitter_.emitTerm_(record_) + ".copy(") + fieldCode_) + ")")
+val fieldCode_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Field, ff.core.String_.String](self_ = fields_, body_ = {(f_) =>
+((ff.compiler.Emitter_.escapeKeyword_(word_ = f_.name_) + " = ") + ff.compiler.Emitter_.emitTerm_(term_ = f_.value_))
+}), separator_ = ", ");
+(((ff.compiler.Emitter_.emitTerm_(term_ = record_) + ".copy(") + fieldCode_) + ")")
 case (ff.compiler.Syntax_.EField(at_, record_, field_)) =>
-((ff.compiler.Emitter_.emitTerm_(record_) + ".") + ff.compiler.Emitter_.escapeKeyword_(field_))
-case (ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(_, List(ff.compiler.Syntax_.MatchCase(_, patterns_, ff.core.Option_.None(), body_))))) if patterns_.all_({
+((ff.compiler.Emitter_.emitTerm_(term_ = record_) + ".") + ff.compiler.Emitter_.escapeKeyword_(word_ = field_))
+case (ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(_, List(ff.compiler.Syntax_.MatchCase(_, patterns_, ff.core.Option_.None(), body_))))) if ff.core.List_.List_all[ff.compiler.Syntax_.MatchPattern](self_ = patterns_, body_ = {
 case (_ : ff.compiler.Syntax_.PVariable) =>
 ff.core.Bool_.True()
 case (_) =>
 ff.core.Bool_.False()
 }) =>
-val parameters_ = patterns_.map_({
+val parameters_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchPattern, ff.core.String_.String](self_ = patterns_, body_ = {
 case (p_ : ff.compiler.Syntax_.PVariable) =>
-p_.name_.map_(ff.compiler.Emitter_.escapeKeyword_).else_({() =>
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = p_.name_, body_ = {(word_) =>
+ff.compiler.Emitter_.escapeKeyword_(word_ = word_)
+}), body_ = {() =>
 "_"
 })
 case (_) =>
-ff.core.Core_.panic_("!")
-}).join_(", ");
-(((("{(" + parameters_) + ") =>\n") + ff.compiler.Emitter_.emitStatements_(body_)) + "\n}")
+ff.core.Core_.panic_[ff.core.String_.String](message_ = "!")
+}), separator_ = ", ");
+(((("{(" + parameters_) + ") =>\n") + ff.compiler.Emitter_.emitStatements_(term_ = body_)) + "\n}")
 case (ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(_, cases_))) =>
-val casesString_ = cases_.map_(ff.compiler.Emitter_.emitCase_).join_("\n");
+val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(matchCase_) =>
+ff.compiler.Emitter_.emitCase_(matchCase_ = matchCase_)
+}), separator_ = "\n");
 (("{\n" + casesString_) + "\n}")
 case (ff.compiler.Syntax_.EPipe(at_, value_, function_)) =>
-(((("pipe_dot(" + ff.compiler.Emitter_.emitTerm_(value_)) + ")(") + ff.compiler.Emitter_.emitTerm_(function_)) + ")")
-case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!operator_.expectFirst_().getIsLetter_()) =>
-((("(" + operator_) + ff.compiler.Emitter_.emitArgument_(value_)) + ")")
-case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(left_, right_))) if (!operator_.expectFirst_().getIsLetter_()) =>
-(((((("(" + ff.compiler.Emitter_.emitArgument_(left_)) + " ") + operator_) + " ") + ff.compiler.Emitter_.emitArgument_(right_)) + ")")
+(((("pipe_dot(" + ff.compiler.Emitter_.emitTerm_(term_ = value_)) + ")(") + ff.compiler.Emitter_.emitTerm_(term_ = function_)) + ")")
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
+((("(" + operator_) + ff.compiler.Emitter_.emitArgument_(argument_ = value_)) + ")")
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(left_, right_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
+(((((("(" + ff.compiler.Emitter_.emitArgument_(argument_ = left_)) + " ") + operator_) + " ") + ff.compiler.Emitter_.emitArgument_(argument_ = right_)) + ")")
 case (ff.compiler.Syntax_.ECall(at_, _, function_, typeArguments_, arguments_)) =>
-val generics_ = ff.core.Core_.if_(typeArguments_.getEmpty_(), {() =>
+val generics_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = typeArguments_), body_ = {() =>
 ""
-}).else_({() =>
-(("[" + typeArguments_.map_(ff.compiler.Emitter_.emitType_).join_(", ")) + "]")
+}), body_ = {() =>
+(("[" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Type, ff.core.String_.String](self_ = typeArguments_, body_ = {(type_) =>
+ff.compiler.Emitter_.emitType_(type_ = type_)
+}), separator_ = ", ")) + "]")
 });
-((((ff.compiler.Emitter_.emitTerm_(function_) + generics_) + "(") + arguments_.map_(ff.compiler.Emitter_.emitArgument_).join_(", ")) + ")")
+((((ff.compiler.Emitter_.emitTerm_(term_ = function_) + generics_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = arguments_, body_ = {(argument_) =>
+ff.compiler.Emitter_.emitArgument_(argument_ = argument_)
+}), separator_ = ", ")) + ")")
 case (ff.compiler.Syntax_.ERecord(at_, fields_)) =>
-ff.core.Core_.if_(fields_.getEmpty_(), {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Field](self_ = fields_), body_ = {() =>
 "{}"
-}).else_({() =>
-val list_ = fields_.map_({(f_) =>
-((("val " + ff.compiler.Emitter_.escapeKeyword_(f_.name_)) + " = ") + ff.compiler.Emitter_.emitTerm_(f_.value_))
+}), body_ = {() =>
+val list_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.Field, ff.core.String_.String](self_ = fields_, body_ = {(f_) =>
+((("val " + ff.compiler.Emitter_.escapeKeyword_(word_ = f_.name_)) + " = ") + ff.compiler.Emitter_.emitTerm_(term_ = f_.value_))
 });
-(("new {\n" + list_.join_(";\n")) + ";\n}")
+(("new {\n" + ff.core.List_.List_join(self_ = list_, separator_ = ";\n")) + ";\n}")
 })
 case (ff.compiler.Syntax_.EWildcard(at_, index_)) =>
-ff.core.Core_.if_((index_ == 0), {() =>
-ff.compiler.Emitter_.fail_(at_, "Unbound wildcard")
+ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (index_ == 0), body_ = {() =>
+ff.compiler.Emitter_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = "Unbound wildcard")
 });
 ("_w" + index_)
 case (_) =>
-(("{\n" + ff.compiler.Emitter_.emitStatements_(term_)) + "\n}")
+(("{\n" + ff.compiler.Emitter_.emitStatements_(term_ = term_)) + "\n}")
 }
 
 def emitArgument_(argument_ : ff.compiler.Syntax_.Argument) : ff.core.String_.String = {
-(argument_.name_.map_({(name_) =>
-(ff.compiler.Emitter_.escapeKeyword_(name_) + " = ")
-}).else_({() =>
+(ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = argument_.name_, body_ = {(name_) =>
+(ff.compiler.Emitter_.escapeKeyword_(word_ = name_) + " = ")
+}), body_ = {() =>
 ""
-}) + ff.compiler.Emitter_.emitTerm_(argument_.value_))
+}) + ff.compiler.Emitter_.emitTerm_(term_ = argument_.value_))
 }
 
 def emitCase_(matchCase_ : ff.compiler.Syntax_.MatchCase) : ff.core.String_.String = {
-val pair_ = matchCase_.patterns_.map_(ff.compiler.Emitter_.emitPattern_).getUnzip_();
-val patterns_ = pair_.first_.join_(", ");
-val condition_ = matchCase_.condition_.map_({(_w1) =>
-(("if " + ff.compiler.Emitter_.emitTerm_(_w1)) + " ")
-}).else_({() =>
+val pair_ : ff.core.Pair_.Pair[ff.core.List_.List[ff.core.String_.String], ff.core.List_.List[ff.core.List_.List[ff.core.String_.String]]] = ff.core.List_.List_getUnzip[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchPattern, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]]](self_ = matchCase_.patterns_, body_ = {(pattern_) =>
+ff.compiler.Emitter_.emitPattern_(pattern_ = pattern_)
+}));
+val patterns_ : ff.core.String_.String = ff.core.List_.List_join(self_ = pair_.first_, separator_ = ", ");
+val condition_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.compiler.Syntax_.Term, ff.core.String_.String](self_ = matchCase_.condition_, body_ = {(_w1) =>
+(("if " + ff.compiler.Emitter_.emitTerm_(term_ = _w1)) + " ")
+}), body_ = {() =>
 ""
 });
-val toLists_ = pair_.second_.getFlatten_().join_();
-(((((("case (" + patterns_) + ") ") + condition_) + "=>\n") + toLists_) + ff.compiler.Emitter_.emitStatements_(matchCase_.body_))
+val toLists_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_getFlatten[ff.core.String_.String](self_ = pair_.second_), separator_ = "");
+(((((("case (" + patterns_) + ") ") + condition_) + "=>\n") + toLists_) + ff.compiler.Emitter_.emitStatements_(term_ = matchCase_.body_))
 }
 
 def emitPattern_(pattern_ : ff.compiler.Syntax_.MatchPattern) : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]] = (pattern_) match {
 case (ff.compiler.Syntax_.PVariable(at_, name_)) =>
-ff.core.Pair_.Pair(name_.map_(ff.compiler.Emitter_.escapeKeyword_).else_({() =>
+ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]](first_ = ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = name_, body_ = {(word_) =>
+ff.compiler.Emitter_.escapeKeyword_(word_ = word_)
+}), body_ = {() =>
 "_"
-}), List())
+}), second_ = List())
 case (ff.compiler.Syntax_.PVariant(at_, name_, patterns_)) =>
-val pairs_ = patterns_.map_(ff.compiler.Emitter_.emitPattern_);
-ff.core.Pair_.Pair((((ff.compiler.Emitter_.escapeResolved_(name_) + "(") + pairs_.map_({(_w1) =>
+val pairs_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]]] = ff.core.List_.List_map[ff.compiler.Syntax_.MatchPattern, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]]](self_ = patterns_, body_ = {(pattern_) =>
+ff.compiler.Emitter_.emitPattern_(pattern_ = pattern_)
+});
+ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]](first_ = (((ff.compiler.Emitter_.escapeResolved_(word_ = name_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]], ff.core.String_.String](self_ = pairs_, body_ = {(_w1) =>
 _w1.first_
-}).join_(", ")) + ")"), pairs_.flatMap_({(_w1) =>
+}), separator_ = ", ")) + ")"), second_ = ff.core.List_.List_flatMap[ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]], ff.core.String_.String](self_ = pairs_, body_ = {(_w1) =>
 _w1.second_
 }))
 case (ff.compiler.Syntax_.PVariantAs(at_, name_, variable_)) =>
-ff.core.Pair_.Pair(((variable_.map_(ff.compiler.Emitter_.escapeKeyword_).else_({() =>
+ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]](first_ = ((ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = variable_, body_ = {(word_) =>
+ff.compiler.Emitter_.escapeKeyword_(word_ = word_)
+}), body_ = {() =>
 "_"
-}) + " : ") + ff.compiler.Emitter_.escapeResolved_(name_)), List())
+}) + " : ") + ff.compiler.Emitter_.escapeResolved_(word_ = name_)), second_ = List())
 case (ff.compiler.Syntax_.PAlias(at_, p_, variable_)) =>
-val pair_ = ff.compiler.Emitter_.emitPattern_(p_);
-ff.core.Pair_.Pair((((ff.compiler.Emitter_.escapeKeyword_(variable_) + " @ (") + pair_.first_) + ")"), pair_.second_)
+val pair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]] = ff.compiler.Emitter_.emitPattern_(pattern_ = p_);
+ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]](first_ = (((ff.compiler.Emitter_.escapeKeyword_(word_ = variable_) + " @ (") + pair_.first_) + ")"), second_ = pair_.second_)
 case (ff.compiler.Syntax_.PList(at_, _, items_)) =>
-val pair_ = items_.map_({
+val pair_ : ff.core.Pair_.Pair[ff.core.List_.List[ff.core.String_.String], ff.core.List_.List[ff.core.List_.List[ff.core.String_.String]]] = ff.core.List_.List_getUnzip[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.MatchPattern, ff.core.Bool_.Bool], ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]]](self_ = items_, body_ = {
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.False())) =>
-ff.compiler.Emitter_.emitPattern_(item_)
+ff.compiler.Emitter_.emitPattern_(pattern_ = item_)
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
-val pair_ = ff.compiler.Emitter_.emitPattern_(item_);
-ff.core.Pair_.Pair((pair_.first_ + "_seq @ _*"), (List(List((((("val " + pair_.first_) + " = ") + pair_.first_) + "_seq.toList;\n")), pair_.second_).flatten))
-}).getUnzip_();
-ff.core.Pair_.Pair((("List(" + pair_.first_.join_(", ")) + ")"), pair_.second_.getFlatten_())
+val pair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]] = ff.compiler.Emitter_.emitPattern_(pattern_ = item_);
+ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]](first_ = (pair_.first_ + "_seq @ _*"), second_ = (List(List((((("val " + pair_.first_) + " = ") + pair_.first_) + "_seq.toList;\n")), pair_.second_).flatten))
+}));
+ff.core.Pair_.Pair[ff.core.String_.String, ff.core.List_.List[ff.core.String_.String]](first_ = (("List(" + ff.core.List_.List_join(self_ = pair_.first_, separator_ = ", ")) + ")"), second_ = ff.core.List_.List_getFlatten[ff.core.String_.String](self_ = pair_.second_))
 }
 
 def extractTypeName_(type_ : ff.compiler.Syntax_.Type) : ff.core.String_.String = (type_) match {
 case (ff.compiler.Syntax_.TVariable(at_, index_)) =>
-ff.compiler.Emitter_.fail_(at_, ("Unexpected type variable: $" + index_))
+ff.compiler.Emitter_.fail_[ff.core.String_.String](at_ = at_, message_ = ("Unexpected type variable: $" + index_))
 case (t_ : ff.compiler.Syntax_.TConstructor) =>
 t_.name_
 }
 
 def escapeResolved_(word_ : ff.core.String_.String) : ff.core.String_.String = {
-val parts_ = word_.replace_(":", ".").replace_("/", ".").split_('.').getList_();
-val initialParts_ = parts_.dropLast_();
-ff.core.Core_.if_(initialParts_.getEmpty_(), {() =>
-ff.compiler.Emitter_.escapeKeyword_(parts_.expectLast_())
-}).else_({() =>
-((initialParts_.join_(".") + "_.") + ff.compiler.Emitter_.escapeKeyword_(parts_.expectLast_()))
+val parts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.Array_.Array_getList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = word_, needle_ = ":", replacement_ = "."), needle_ = "/", replacement_ = "."), char_ = '.'));
+val initialParts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_dropLast[ff.core.String_.String](self_ = parts_, count_ = 1);
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.core.String_.String](self_ = initialParts_), body_ = {() =>
+ff.compiler.Emitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[ff.core.String_.String](self_ = parts_))
+}), body_ = {() =>
+((ff.core.List_.List_join(self_ = initialParts_, separator_ = ".") + "_.") + ff.compiler.Emitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[ff.core.String_.String](self_ = parts_)))
 })
 }
 
 def escapeKeyword_(word_ : ff.core.String_.String) : ff.core.String_.String = {
-ff.core.Core_.if_((ff.compiler.Emitter_.keywords_.contains_(word_) || word_.expectFirst_().getIsLower_()), {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = (ff.core.Set_.Set_contains[ff.core.String_.String](self_ = ff.compiler.Emitter_.keywords_, value_ = word_) || ff.core.Char_.Char_getIsLower(self_ = ff.core.String_.String_expectFirst(self_ = word_))), body_ = {() =>
 (word_ + "_")
-}).else_({() =>
+}), body_ = {() =>
 word_
 })
 }

@@ -33,6 +33,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -47,48 +49,54 @@ import ff.core.Try_._
 
 import ff.core.Unit_._
 object Main_ {
-def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(arguments.toList.getArray_()))
+def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(List_getArray(arguments.toList)))
 
 
 def main_(system_ : ff.core.System_.System) : ff.core.Unit_.Unit = {
-val corePath_ = system_.arguments_().expect_(0);
-val inputPath_ = system_.arguments_().expect_(1);
-val tempPath_ = system_.arguments_().expect_(2);
-val outputPath_ = system_.arguments_().expect_(3);
-val fs_ = system_.files_();
-ff.core.Core_.if_(fs_.exists_(tempPath_), {() =>
-ff.compiler.Main_.deleteDirectory_(fs_, tempPath_)
+val corePath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 0);
+val inputPath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 1);
+val tempPath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 2);
+val outputPath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 3);
+val fs_ : ff.core.FileSystem_.FileSystem = ff.core.System_.System_files(self_ = system_);
+ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ff.core.FileSystem_.FileSystem_exists(self_ = fs_, path_ = tempPath_), body_ = {() =>
+ff.compiler.Main_.deleteDirectory_(fs_ = fs_, outputFile_ = tempPath_)
 });
-fs_.createDirectory_(tempPath_);
-val scalaPathFile_ = (tempPath_ + "/src/main/scala");
-fs_.createDirectories_(scalaPathFile_);
-val packagePaths_ = List(ff.core.Pair_.Pair("ff:compiler", "compiler"), ff.core.Pair_.Pair("ff:core", "core")).getMap_();
-val success_ = ff.core.Core_.do_({() =>
-ff.compiler.Compiler_.make_(fs_, scalaPathFile_, packagePaths_).emit_("ff:compiler", "Main");
+ff.core.FileSystem_.FileSystem_createDirectory(self_ = fs_, path_ = tempPath_);
+val scalaPathFile_ : ff.core.String_.String = (tempPath_ + "/src/main/scala");
+ff.core.FileSystem_.FileSystem_createDirectories(self_ = fs_, path_ = scalaPathFile_);
+val packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff:compiler", second_ = "compiler"), ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff:core", second_ = "core")));
+val success_ : ff.core.Bool_.Bool = ff.core.Core_.do_[ff.core.Bool_.Bool](body_ = {() =>
+ff.compiler.Compiler_.Compiler_emit(self_ = ff.compiler.Compiler_.make_(files_ = fs_, outputPath_ = scalaPathFile_, packagePaths_ = packagePaths_), packageName_ = "ff:compiler", moduleName_ = "Main");
 ff.core.Bool_.True()
 });
-ff.core.Core_.if_(success_, {() =>
-ff.compiler.Main_.writeExtraFiles_(fs_, inputPath_, corePath_, tempPath_, scalaPathFile_);
-ff.core.Core_.if_(fs_.exists_(outputPath_), {() =>
-ff.compiler.Main_.deleteDirectory_(fs_, outputPath_)
+ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = success_, body_ = {() =>
+ff.compiler.Main_.writeExtraFiles_(fs_ = fs_, package_ = inputPath_, corePath_ = corePath_, outputFile_ = tempPath_, scalaFile_ = scalaPathFile_);
+ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ff.core.FileSystem_.FileSystem_exists(self_ = fs_, path_ = outputPath_), body_ = {() =>
+ff.compiler.Main_.deleteDirectory_(fs_ = fs_, outputFile_ = outputPath_)
 });
-fs_.rename_(scalaPathFile_, outputPath_)
-})
+ff.core.FileSystem_.FileSystem_rename(self_ = fs_, fromPath_ = scalaPathFile_, toPath_ = outputPath_)
+});
+ff.core.Unit_.Unit()
 }
 
 def writeExtraFiles_(fs_ : ff.core.FileSystem_.FileSystem, package_ : ff.core.String_.String, corePath_ : ff.core.String_.String, outputFile_ : ff.core.String_.String, scalaFile_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
-fs_.writeText_((outputFile_ + "/build.sbt"), "scalaVersion := \"2.13.3\"")
+ff.core.FileSystem_.FileSystem_writeText(self_ = fs_, file_ = (outputFile_ + "/build.sbt"), text_ = "scalaVersion := \"2.13.3\"");
+ff.core.Unit_.Unit()
 }
 
 def deleteDirectory_(fs_ : ff.core.FileSystem_.FileSystem, outputFile_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
-fs_.list_(outputFile_).each_({(file_) =>
-ff.core.Core_.if_(fs_.isDirectory_(file_), {() =>
-ff.compiler.Main_.deleteDirectory_(fs_, file_)
-}).else_({() =>
-fs_.delete_(file_)
-})
+ff.core.List_.List_each[ff.core.String_.String](self_ = ff.core.FileSystem_.FileSystem_list(self_ = fs_, path_ = outputFile_), body_ = {(file_) =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ff.core.FileSystem_.FileSystem_isDirectory(self_ = fs_, path_ = file_), body_ = {() =>
+ff.compiler.Main_.deleteDirectory_(fs_ = fs_, outputFile_ = file_);
+ff.core.Unit_.Unit()
+}), body_ = {() =>
+ff.core.FileSystem_.FileSystem_delete(self_ = fs_, path_ = file_);
+ff.core.Unit_.Unit()
 });
-fs_.delete_(outputFile_)
+ff.core.Unit_.Unit()
+});
+ff.core.FileSystem_.FileSystem_delete(self_ = fs_, path_ = outputFile_);
+ff.core.Unit_.Unit()
 }
 
 

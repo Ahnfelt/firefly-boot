@@ -35,7 +35,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
 }
 
 emitMain(): String {
-    "def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(arguments.toList.getArray_()))"
+    "def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(List_getArray(arguments.toList)))"
 }
 
 emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]): String {

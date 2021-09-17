@@ -27,6 +27,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -45,70 +47,91 @@ object Inference_ {
 case class Inference(unification_ : ff.compiler.Unification_.Unification)
 
 def make_(instances_ : ff.core.List_.List[ff.compiler.Syntax_.DInstance]) : ff.compiler.Inference_.Inference = {
-ff.compiler.Inference_.Inference(unification_ = ff.compiler.Unification_.make_(instances_))
+ff.compiler.Inference_.Inference(unification_ = ff.compiler.Unification_.make_(instances_ = instances_))
 }
 
 def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.String) : T = {
-ff.core.Core_.panic_(((message_ + " ") + at_.show_()))
+ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Location_show(self_ = at_)))
 }
 
 def core_(name_ : ff.core.String_.String) : ff.core.String_.String = {
 ((("ff:core/" + name_) + ".") + name_)
 }
-implicit class Inference_extend0(self_ : ff.compiler.Inference_.Inference) {
-
-def inferModule_(module_ : ff.compiler.Syntax_.Module, otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.compiler.Syntax_.Module = {
-val environment_ = ff.compiler.Environment_.make_(module_, otherModules_);
-val lets_ = module_.lets_.map_({(_w1) =>
-self_.inferLetDefinition_(environment_, _w1)
+def Inference_inferModule(self_ : ff.compiler.Inference_.Inference, module_ : ff.compiler.Syntax_.Module, otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.compiler.Syntax_.Module = (self_, module_, otherModules_) match {
+case (self_, _, _) =>
+val environment_ : ff.compiler.Environment_.Environment = ff.compiler.Environment_.make_(module_ = module_, otherModules_ = otherModules_);
+val lets_ : ff.core.List_.List[ff.compiler.Syntax_.DLet] = ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.compiler.Syntax_.DLet](self_ = module_.lets_, body_ = {(_w1) =>
+ff.compiler.Inference_.Inference_inferLetDefinition(self_ = self_, environment_ = environment_, definition_ = _w1)
 });
-val functions_ = module_.functions_.map_({(_w1) =>
-self_.inferFunctionDefinition_(environment_, _w1)
+val functions_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = module_.functions_, body_ = {(_w1) =>
+ff.compiler.Inference_.Inference_inferFunctionDefinition(self_ = self_, environment_ = environment_, definition_ = _w1)
 });
-val extends_ = module_.extends_.map_({(_w1) =>
-self_.inferExtendDefinition_(environment_, _w1)
+val extends_ : ff.core.List_.List[ff.compiler.Syntax_.DExtend] = ff.core.List_.List_map[ff.compiler.Syntax_.DExtend, ff.compiler.Syntax_.DExtend](self_ = module_.extends_, body_ = {(_w1) =>
+ff.compiler.Inference_.Inference_inferExtendDefinition(self_ = self_, environment_ = environment_, definition_ = _w1)
 });
-val result_ = module_.copy(extends_ = extends_, lets_ = lets_, functions_ = functions_);
-ff.compiler.Substitution_.Substitution(self_.unification_.substitution_).substituteModule_(result_)
+val result_ : ff.compiler.Syntax_.Module = pipe_dot(module_)({(_c) =>
+ff.compiler.Syntax_.Module(packagePair_ = _c.packagePair_, file_ = _c.file_, dependencies_ = _c.dependencies_, imports_ = _c.imports_, types_ = _c.types_, traits_ = _c.traits_, instances_ = _c.instances_, extends_ = extends_, lets_ = lets_, functions_ = functions_)
+});
+ff.compiler.Substitution_.Substitution_substituteModule(self_ = ff.compiler.Substitution_.Substitution(substitution_ = self_.unification_.substitution_), module_ = result_)
 }
 
-def inferLetDefinition_(environment_ : ff.compiler.Environment_.Environment, definition_ : ff.compiler.Syntax_.DLet) : ff.compiler.Syntax_.DLet = {
-val value_ = self_.inferTerm_(environment_, definition_.variableType_, definition_.value_);
-definition_.copy(value_ = value_)
+def Inference_inferLetDefinition(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, definition_ : ff.compiler.Syntax_.DLet) : ff.compiler.Syntax_.DLet = (self_, environment_, definition_) match {
+case (self_, _, _) =>
+val value_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = definition_.variableType_, term_ = definition_.value_);
+pipe_dot(definition_)({(_c) =>
+ff.compiler.Syntax_.DLet(at_ = _c.at_, name_ = _c.name_, variableType_ = _c.variableType_, value_ = value_, scalaTarget_ = _c.scalaTarget_)
+})
 }
 
-def inferExtendDefinition_(environment_ : ff.compiler.Environment_.Environment, definition_ : ff.compiler.Syntax_.DExtend) : ff.compiler.Syntax_.DExtend = {
-val selfParameter_ = ff.compiler.Syntax_.Parameter(at_ = definition_.at_, mutable_ = ff.core.Bool_.False(), name_ = definition_.name_, valueType_ = definition_.type_, default_ = ff.core.Option_.None());
-val functions_ = definition_.methods_.map_({(method_) =>
-val signature_ = method_.signature_.copy(generics_ = (definition_.generics_ ++ method_.signature_.generics_), constraints_ = (definition_.constraints_ ++ method_.signature_.constraints_), parameters_ = (List(List(selfParameter_), method_.signature_.parameters_).flatten));
-val lambda_ = method_.body_.copy(cases_ = method_.body_.cases_.map_({(case_) =>
-val selfPattern_ = ff.compiler.Syntax_.PVariable(method_.at_, ff.core.Option_.Some(definition_.name_));
-case_.copy(patterns_ = (List(List(selfPattern_), case_.patterns_).flatten))
-}));
-val function_ = method_.copy(signature_ = signature_, body_ = lambda_);
-self_.inferFunctionDefinition_(environment_, function_)
+def Inference_inferExtendDefinition(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, definition_ : ff.compiler.Syntax_.DExtend) : ff.compiler.Syntax_.DExtend = (self_, environment_, definition_) match {
+case (self_, _, _) =>
+val selfParameter_ : ff.compiler.Syntax_.Parameter = ff.compiler.Syntax_.Parameter(at_ = definition_.at_, mutable_ = ff.core.Bool_.False(), name_ = definition_.name_, valueType_ = definition_.type_, default_ = ff.core.Option_.None[ff.compiler.Syntax_.Term]());
+val functions_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = definition_.methods_, body_ = {(method_) =>
+val signature_ : ff.compiler.Syntax_.Signature = pipe_dot(method_.signature_)({(_c) =>
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = (definition_.generics_ ++ method_.signature_.generics_), constraints_ = (definition_.constraints_ ++ method_.signature_.constraints_), parameters_ = (List(List(selfParameter_), method_.signature_.parameters_).flatten), returnType_ = _c.returnType_)
 });
-definition_.copy(methods_ = functions_)
+val lambda_ : ff.compiler.Syntax_.Lambda = pipe_dot(method_.body_)({(_c) =>
+ff.compiler.Syntax_.Lambda(at_ = _c.at_, cases_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.compiler.Syntax_.MatchCase](self_ = method_.body_.cases_, body_ = {(case_) =>
+val selfPattern_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariable(at_ = method_.at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = definition_.name_));
+pipe_dot(case_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(selfPattern_), case_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
+})
+}))
+});
+val function_ : ff.compiler.Syntax_.DFunction = pipe_dot(method_)({(_c) =>
+ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = signature_, body_ = lambda_, scalaTarget_ = _c.scalaTarget_)
+});
+ff.compiler.Inference_.Inference_inferFunctionDefinition(self_ = self_, environment_ = environment_, definition_ = function_)
+});
+pipe_dot(definition_)({(_c) =>
+ff.compiler.Syntax_.DExtend(at_ = _c.at_, name_ = _c.name_, generics_ = _c.generics_, constraints_ = _c.constraints_, type_ = _c.type_, methods_ = functions_)
+})
 }
 
-def inferFunctionDefinition_(environment_ : ff.compiler.Environment_.Environment, definition_ : ff.compiler.Syntax_.DFunction) : ff.compiler.Syntax_.DFunction = {
-val parameters_ = definition_.signature_.parameters_.map_({(p_) =>
-val scheme_ = ff.compiler.Environment_.Scheme(ff.core.Bool_.True(), ff.core.Bool_.False(), ff.compiler.Syntax_.Signature(p_.at_, p_.name_, List(), List(), List(), p_.valueType_));
-ff.core.Pair_.Pair(p_.name_, scheme_)
+def Inference_inferFunctionDefinition(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, definition_ : ff.compiler.Syntax_.DFunction) : ff.compiler.Syntax_.DFunction = (self_, environment_, definition_) match {
+case (self_, _, _) =>
+val parameters_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = definition_.signature_.parameters_, body_ = {(p_) =>
+val scheme_ : ff.compiler.Environment_.Scheme = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.True(), isMutable_ = ff.core.Bool_.False(), signature_ = ff.compiler.Syntax_.Signature(at_ = p_.at_, name_ = p_.name_, generics_ = List(), constraints_ = List(), parameters_ = List(), returnType_ = p_.valueType_));
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = p_.name_, second_ = scheme_)
 });
-val parameterMap_ = parameters_.getMap_();
-val environment2_ = environment_.copy(symbols_ = (environment_.symbols_ ++ parameterMap_));
-val functionType_ = ff.compiler.Syntax_.TConstructor(definition_.at_, ("Function$" + parameters_.getSize_()), (List(parameters_.map_({(_w1) =>
+val parameterMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme] = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = parameters_);
+val environment2_ : ff.compiler.Environment_.Environment = pipe_dot(environment_)({(_c) =>
+ff.compiler.Environment_.Environment(symbols_ = (environment_.symbols_ ++ parameterMap_))
+});
+val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = definition_.at_, name_ = ("Function$" + ff.core.List_.List_getSize[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = parameters_)), generics_ = (List(ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme], ff.compiler.Syntax_.Type](self_ = parameters_, body_ = {(_w1) =>
 _w1.second_.signature_.returnType_
 }), List(definition_.signature_.returnType_)).flatten));
-definition_.copy(body_ = self_.inferLambda_(environment2_, functionType_, definition_.body_))
+pipe_dot(definition_)({(_c) =>
+ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = _c.signature_, body_ = ff.compiler.Inference_.Inference_inferLambda(self_ = self_, environment_ = environment2_, expected_ = functionType_, lambda_ = definition_.body_), scalaTarget_ = _c.scalaTarget_)
+})
 }
 
-def inferLambda_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, lambda_ : ff.compiler.Syntax_.Lambda) : ff.compiler.Syntax_.Lambda = {
-val unitName_ = ff.compiler.Inference_.core_("Unit");
-val returnsUnit_ = pipe_dot(self_.unification_.substitute_(expected_))({
-case (ff.compiler.Syntax_.TConstructor(_, name_, ts_)) if name_.startsWith_("Function$") =>
-pipe_dot(ts_.expectLast_())({
+def Inference_inferLambda(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, lambda_ : ff.compiler.Syntax_.Lambda) : ff.compiler.Syntax_.Lambda = (self_, environment_, expected_, lambda_) match {
+case (self_, _, _, _) =>
+val unitName_ : ff.core.String_.String = ff.compiler.Inference_.core_(name_ = "Unit");
+val returnsUnit_ : ff.core.Bool_.Bool = pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = expected_))({
+case (ff.compiler.Syntax_.TConstructor(_, name_, ts_)) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Function$") =>
+pipe_dot(ff.core.List_.List_expectLast[ff.compiler.Syntax_.Type](self_ = ts_))({
 case (ff.compiler.Syntax_.TConstructor(_, n_, List())) =>
 (n_ == unitName_)
 case (_) =>
@@ -117,556 +140,660 @@ ff.core.Bool_.False()
 case (_) =>
 ff.core.Bool_.False()
 });
-val cases_ = ff.core.Core_.if_((!returnsUnit_), {() =>
+val cases_ : ff.core.List_.List[ff.compiler.Syntax_.MatchCase] = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.compiler.Syntax_.MatchCase]](condition_ = (!returnsUnit_), body_ = {() =>
 lambda_.cases_
-}).else_({() =>
-lambda_.cases_.map_({(c_) =>
-c_.copy(body_ = ff.compiler.Syntax_.ESequential(c_.at_, c_.body_, ff.compiler.Syntax_.EVariant(c_.at_, unitName_, List(), ff.core.Option_.None())))
+}), body_ = {() =>
+ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.compiler.Syntax_.MatchCase](self_ = lambda_.cases_, body_ = {(c_) =>
+pipe_dot(c_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = _c.patterns_, condition_ = _c.condition_, body_ = ff.compiler.Syntax_.ESequential(at_ = c_.at_, before_ = c_.body_, after_ = ff.compiler.Syntax_.EVariant(at_ = c_.at_, name_ = unitName_, typeArguments_ = List(), arguments_ = ff.core.Option_.None[ff.core.List_.List[ff.compiler.Syntax_.Argument]]())))
+})
 })
 });
-lambda_.copy(cases_ = cases_.map_({(_w1) =>
-self_.inferMatchCase_(environment_, expected_, _w1)
+pipe_dot(lambda_)({(_c) =>
+ff.compiler.Syntax_.Lambda(at_ = _c.at_, cases_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.compiler.Syntax_.MatchCase](self_ = cases_, body_ = {(_w1) =>
+ff.compiler.Inference_.Inference_inferMatchCase(self_ = self_, environment_ = environment_, expected_ = expected_, case_ = _w1)
 }))
+})
 }
 
-def inferMatchCase_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, case_ : ff.compiler.Syntax_.MatchCase) : ff.compiler.Syntax_.MatchCase = {
-val parameterTypes_ = case_.patterns_.map_({(_w1) =>
-self_.unification_.freshTypeVariable_(_w1.at_)
+def Inference_inferMatchCase(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, case_ : ff.compiler.Syntax_.MatchCase) : ff.compiler.Syntax_.MatchCase = (self_, environment_, expected_, case_) match {
+case (self_, _, _, _) =>
+val parameterTypes_ : ff.core.List_.List[ff.compiler.Syntax_.Type] = ff.core.List_.List_map[ff.compiler.Syntax_.MatchPattern, ff.compiler.Syntax_.Type](self_ = case_.patterns_, body_ = {(_w1) =>
+ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = _w1.at_)
 });
-val returnType_ = self_.unification_.freshTypeVariable_(case_.at_);
-val functionType_ = ff.compiler.Syntax_.TConstructor(case_.at_, ("Function$" + case_.patterns_.getSize_()), (List(parameterTypes_, List(returnType_)).flatten));
-self_.unification_.unify_(case_.at_, expected_, functionType_);
-val newEnvironment_ = parameterTypes_.zip_(case_.patterns_).foldLeft_(environment_)({
+val returnType_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = case_.at_);
+val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = case_.at_, name_ = ("Function$" + ff.core.List_.List_getSize[ff.compiler.Syntax_.MatchPattern](self_ = case_.patterns_)), generics_ = (List(parameterTypes_, List(returnType_)).flatten));
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = case_.at_, t1_ = expected_, t2_ = functionType_);
+val newEnvironment_ : ff.compiler.Environment_.Environment = ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[ff.compiler.Syntax_.Type, ff.compiler.Syntax_.MatchPattern], ff.compiler.Environment_.Environment](self_ = ff.core.List_.List_zip[ff.compiler.Syntax_.Type, ff.compiler.Syntax_.MatchPattern](self_ = parameterTypes_, that_ = case_.patterns_), initial_ = environment_)({
 case (environment1_, ff.core.Pair_.Pair(t_, c_)) =>
-val symbols_ = self_.inferPattern_(environment_, t_, c_).map_({
+val symbols_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme] = ff.core.Map_.Map_map[ff.core.String_.String, ff.compiler.Syntax_.Type, ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = environment_, expected_ = t_, pattern_ = c_), body_ = {
 case (ff.core.Pair_.Pair(name_, type_)) =>
-ff.core.Pair_.Pair(name_, ff.compiler.Environment_.Scheme(ff.core.Bool_.True(), ff.core.Bool_.False(), ff.compiler.Syntax_.Signature(c_.at_, name_, List(), List(), List(), type_)))
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = name_, second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.True(), isMutable_ = ff.core.Bool_.False(), signature_ = ff.compiler.Syntax_.Signature(at_ = c_.at_, name_ = name_, generics_ = List(), constraints_ = List(), parameters_ = List(), returnType_ = type_)))
 });
-ff.compiler.Environment_.Environment((environment1_.symbols_ ++ symbols_))
+ff.compiler.Environment_.Environment(symbols_ = (environment1_.symbols_ ++ symbols_))
 });
-val condition_ = case_.condition_.map_({(e_) =>
-self_.inferTerm_(newEnvironment_, ff.compiler.Syntax_.TConstructor(e_.at_, ff.compiler.Inference_.core_("Bool"), List()), e_)
+val condition_ : ff.core.Option_.Option[ff.compiler.Syntax_.Term] = ff.core.Option_.Option_map[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term](self_ = case_.condition_, body_ = {(e_) =>
+ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = newEnvironment_, expected_ = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ff.compiler.Inference_.core_(name_ = "Bool"), generics_ = List()), term_ = e_)
 });
-val body_ = self_.inferTerm_(newEnvironment_, returnType_, case_.body_);
-case_.copy(condition_ = condition_, body_ = body_)
+val body_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = newEnvironment_, expected_ = returnType_, term_ = case_.body_);
+pipe_dot(case_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = _c.patterns_, condition_ = condition_, body_ = body_)
+})
 }
 
-def inferPattern_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, pattern_ : ff.compiler.Syntax_.MatchPattern) : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type] = {
+def Inference_inferPattern(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, pattern_ : ff.compiler.Syntax_.MatchPattern) : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type] = (self_, environment_, expected_, pattern_) match {
+case (self_, _, _, _) =>
 pipe_dot(pattern_)({
 case (ff.compiler.Syntax_.PVariable(at_, ff.core.Option_.None())) =>
-ff.core.Map_.empty_()
+ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]()
 case (ff.compiler.Syntax_.PVariable(at_, ff.core.Option_.Some(name_))) =>
-List(ff.core.Pair_.Pair(name_, expected_)).getMap_()
+ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type](first_ = name_, second_ = expected_)))
 case (ff.compiler.Syntax_.PAlias(at_, pattern_, variable_)) =>
-self_.inferPattern_(environment_, expected_, pattern_).add_(variable_, expected_)
+ff.core.Map_.Map_add[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = environment_, expected_ = expected_, pattern_ = pattern_), key_ = variable_, value_ = expected_)
 case (ff.compiler.Syntax_.PList(at_, t_, items_)) =>
-val listType_ = ff.compiler.Syntax_.TConstructor(at_, ff.compiler.Inference_.core_("List"), List(t_));
-self_.unification_.unify_(at_, expected_, listType_);
-items_.map_({
+val listType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = at_, name_ = ff.compiler.Inference_.core_(name_ = "List"), generics_ = List(t_));
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = at_, t1_ = expected_, t2_ = listType_);
+ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type], ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type]](self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.MatchPattern, ff.core.Bool_.Bool], ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type]](self_ = items_, body_ = {
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.False())) =>
-self_.inferPattern_(environment_, t_, item_)
+ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = environment_, expected_ = t_, pattern_ = item_)
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
-self_.inferPattern_(environment_, listType_, item_)
-}).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
+ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = environment_, expected_ = listType_, pattern_ = item_)
+}), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 case (ff.compiler.Syntax_.PVariantAs(at_, name_, ff.core.Option_.None())) =>
-val instantiated_ = self_.lookup_(environment_, at_, name_, List()).else_({() =>
-ff.compiler.Inference_.fail_(at_, ("No such variant: " + name_))
+val instantiated_ : ff.compiler.Environment_.Instantiated = ff.core.Option_.Option_else(self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = at_, symbol_ = name_, typeArguments_ = List()), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Environment_.Instantiated](at_ = at_, message_ = ("No such variant: " + name_))
 });
-ff.core.Map_.empty_()
+ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]()
 case (ff.compiler.Syntax_.PVariantAs(at_, name_, ff.core.Option_.Some(variable_))) =>
-val instantiated_ = self_.lookup_(environment_, at_, name_, List()).else_({() =>
-ff.compiler.Inference_.fail_(at_, ("No such variant: " + name_))
+val instantiated_ : ff.compiler.Environment_.Instantiated = ff.core.Option_.Option_else(self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = at_, symbol_ = name_, typeArguments_ = List()), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Environment_.Instantiated](at_ = at_, message_ = ("No such variant: " + name_))
 });
-self_.unification_.unify_(at_, expected_, instantiated_.scheme_.signature_.returnType_);
-val parameters_ = instantiated_.scheme_.signature_.parameters_.sortBy_({(_w1) =>
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = at_, t1_ = expected_, t2_ = instantiated_.scheme_.signature_.returnType_);
+val parameters_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter] = ff.core.List_.List_sortBy[ff.compiler.Syntax_.Parameter](self_ = instantiated_.scheme_.signature_.parameters_, body_ = {(_w1) =>
 _w1.name_
 });
-val recordType_ = ff.compiler.Syntax_.TConstructor(at_, ("Record$" + parameters_.map_({(_w1) =>
+val recordType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = at_, name_ = ("Record$" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = parameters_, body_ = {(_w1) =>
 _w1.name_
-}).join_("$")), parameters_.map_({(_w1) =>
+}), separator_ = "$")), generics_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.compiler.Syntax_.Type](self_ = parameters_, body_ = {(_w1) =>
 _w1.valueType_
 }));
-List(ff.core.Pair_.Pair(variable_, recordType_)).getMap_()
+ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type](first_ = variable_, second_ = recordType_)))
 case (ff.compiler.Syntax_.PVariant(at_, name_, patterns_)) =>
-val instantiated_ = self_.lookup_(environment_, at_, name_, List()).else_({() =>
-ff.compiler.Inference_.fail_(at_, ("No such variant: " + name_))
+val instantiated_ : ff.compiler.Environment_.Instantiated = ff.core.Option_.Option_else(self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = at_, symbol_ = name_, typeArguments_ = List()), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Environment_.Instantiated](at_ = at_, message_ = ("No such variant: " + name_))
 });
-self_.unification_.unify_(at_, expected_, instantiated_.scheme_.signature_.returnType_);
-patterns_.zip_(instantiated_.scheme_.signature_.parameters_).map_({
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = at_, t1_ = expected_, t2_ = instantiated_.scheme_.signature_.returnType_);
+ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type], ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type]](self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.MatchPattern, ff.compiler.Syntax_.Parameter], ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type]](self_ = ff.core.List_.List_zip[ff.compiler.Syntax_.MatchPattern, ff.compiler.Syntax_.Parameter](self_ = patterns_, that_ = instantiated_.scheme_.signature_.parameters_), body_ = {
 case (ff.core.Pair_.Pair(pattern_, parameter_)) =>
-self_.inferPattern_(environment_, parameter_.valueType_, pattern_)
-}).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
+ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = environment_, expected_ = parameter_.valueType_, pattern_ = pattern_)
+}), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })
 })
 }
 
-def inferTerm_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = {
+def Inference_inferTerm(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (self_, environment_, expected_, term_) match {
+case (self_, _, _, _) =>
 def literal_(coreTypeName_ : ff.core.String_.String) : ff.compiler.Syntax_.Term = {
-self_.unification_.unify_(term_.at_, expected_, ff.compiler.Syntax_.TConstructor(term_.at_, ff.compiler.Inference_.core_(coreTypeName_), List()));
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = term_.at_, t1_ = expected_, t2_ = ff.compiler.Syntax_.TConstructor(at_ = term_.at_, name_ = ff.compiler.Inference_.core_(name_ = coreTypeName_), generics_ = List()));
 term_
 }
 pipe_dot(term_)({
 case (_ : ff.compiler.Syntax_.EString) =>
-literal_("String")
+literal_(coreTypeName_ = "String")
 case (_ : ff.compiler.Syntax_.EChar) =>
-literal_("Char")
+literal_(coreTypeName_ = "Char")
 case (_ : ff.compiler.Syntax_.EInt) =>
-literal_("Int")
+literal_(coreTypeName_ = "Int")
 case (_ : ff.compiler.Syntax_.EFloat) =>
-literal_("Float")
+literal_(coreTypeName_ = "Float")
 case (e_ : ff.compiler.Syntax_.EVariable) =>
-self_.lookup_(environment_, e_.at_, e_.name_, e_.generics_).map_({(instantiated_) =>
-ff.core.Core_.if_(instantiated_.scheme_.isVariable_, {() =>
-self_.unification_.unify_(e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.compiler.Environment_.Instantiated, ff.compiler.Syntax_.Term](self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = e_.name_, typeArguments_ = e_.generics_), body_ = {(instantiated_) =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.compiler.Syntax_.Term](condition_ = instantiated_.scheme_.isVariable_, body_ = {() =>
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = instantiated_.scheme_.signature_.returnType_);
 term_
-}).else_({() =>
-self_.inferEtaExpansion_(environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_)
+}), body_ = {() =>
+ff.compiler.Inference_.Inference_inferEtaExpansion(self_ = self_, environment_ = environment_, expected_ = expected_, at_ = e_.at_, signature_ = instantiated_.scheme_.signature_, term_ = term_)
 })
-}).else_({() =>
-ff.compiler.Inference_.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+}), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ("Symbol not in scope: " + e_.name_))
 })
 case (e_ : ff.compiler.Syntax_.EField) =>
-val recordType_ = self_.unification_.freshTypeVariable_(e_.at_);
-val record_ = self_.inferTerm_(environment_, recordType_, e_.record_);
-val e2_ = e_.copy(record_ = record_);
-pipe_dot(self_.unification_.substitute_(recordType_))({
-case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if name_.startsWith_("Record$") =>
-val fieldNames_ = name_.split_('$').getList_().dropFirst_(1);
-fieldNames_.pairs_().find_({(_w1) =>
+val recordType_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val record_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = recordType_, term_ = e_.record_);
+val e2_ : ff.compiler.Syntax_.Term = pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.EField(at_ = _c.at_, record_ = record_, field_ = _c.field_)
+});
+pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = recordType_))({
+case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Record$") =>
+val fieldNames_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_dropFirst[ff.core.String_.String](self_ = ff.core.Array_.Array_getList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = name_, char_ = '$')), count_ = 1);
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.Int_.Int, ff.compiler.Syntax_.Term](self_ = ff.core.Option_.Option_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.core.String_.String], ff.core.Int_.Int](self_ = ff.core.List_.List_find[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.core.String_.String]](self_ = ff.core.List_.List_pairs[ff.core.String_.String](self_ = fieldNames_), body_ = {(_w1) =>
 (_w1.second_ == e_.field_)
-}).map_({(_w1) =>
+}), body_ = {(_w1) =>
 _w1.first_
-}).map_({(index_) =>
-val t1_ = typeArguments_.expect_(index_);
-self_.unification_.unify_(e_.at_, expected_, t1_);
+}), body_ = {(index_) =>
+val t1_ : ff.compiler.Syntax_.Type = ff.core.List_.List_expect[ff.compiler.Syntax_.Type](self_ = typeArguments_, index_ = index_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t1_);
 e2_
-}).else_({() =>
-ff.compiler.Inference_.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + t_.show_()))
+}), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ((("No such field " + e_.field_) + " on type: ") + ff.compiler.Syntax_.Type_show(self_ = t_)))
 })
 case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) =>
-val methodName_ = ((name_ + "_") + e_.field_);
-pipe_dot(self_.lookup_(environment_, e_.at_, methodName_, typeArguments_))({
+val methodName_ : ff.core.String_.String = ((name_ + "_") + e_.field_);
+pipe_dot(ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = methodName_, typeArguments_ = typeArguments_))({
 case (ff.core.Option_.Some(instantiated_)) if (!instantiated_.scheme_.isVariable_) =>
-val signature_ = instantiated_.scheme_.signature_.copy(parameters_ = instantiated_.scheme_.signature_.parameters_.dropFirst_(1));
-self_.unification_.unify_(e_.at_, recordType_, instantiated_.scheme_.signature_.parameters_.expect_(0).valueType_);
-self_.inferEtaExpansion_(environment_, expected_, e_.at_, signature_, e2_)
+val signature_ : ff.compiler.Syntax_.Signature = pipe_dot(instantiated_.scheme_.signature_)({(_c) =>
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = _c.generics_, constraints_ = _c.constraints_, parameters_ = ff.core.List_.List_dropFirst[ff.compiler.Syntax_.Parameter](self_ = instantiated_.scheme_.signature_.parameters_, count_ = 1), returnType_ = _c.returnType_)
+});
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = recordType_, t2_ = ff.core.List_.List_expect[ff.compiler.Syntax_.Parameter](self_ = instantiated_.scheme_.signature_.parameters_, index_ = 0).valueType_);
+ff.compiler.Inference_.Inference_inferEtaExpansion(self_ = self_, environment_ = environment_, expected_ = expected_, at_ = e_.at_, signature_ = signature_, term_ = e2_)
 case (ff.core.Option_.Some(instantiated_)) =>
-self_.unification_.unify_(e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
-e_.copy(record_ = record_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = instantiated_.scheme_.signature_.returnType_);
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.EField(at_ = _c.at_, record_ = record_, field_ = _c.field_)
+})
 case (ff.core.Option_.None()) =>
-ff.compiler.Inference_.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + t_.show_()))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ((("No such field " + e_.field_) + " on type: ") + ff.compiler.Syntax_.Type_show(self_ = t_)))
 })
 case (ff.compiler.Syntax_.TVariable(_, index_)) =>
-ff.compiler.Inference_.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ((("No such field " + e_.field_) + " on unknown type: $") + index_))
 })
 case (e_ : ff.compiler.Syntax_.EWildcard) =>
-self_.lookup_(environment_, e_.at_, ("_w" + e_.index_), List()).map_({(instantiated_) =>
-self_.unification_.unify_(e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
+ff.core.Option_.Option_expect[ff.compiler.Syntax_.Term](self_ = ff.core.Option_.Option_map[ff.compiler.Environment_.Instantiated, ff.compiler.Syntax_.Term](self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = ("_w" + e_.index_), typeArguments_ = List()), body_ = {(instantiated_) =>
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = instantiated_.scheme_.signature_.returnType_);
 term_
-}).expect_()
+}))
 case (ff.compiler.Syntax_.EList(at_, t_, items_)) =>
-val listType_ = ff.compiler.Syntax_.TConstructor(term_.at_, ff.compiler.Inference_.core_("List"), List(t_));
-self_.unification_.unify_(at_, expected_, listType_);
-ff.compiler.Syntax_.EList(at_, t_, items_.map_({
+val listType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = term_.at_, name_ = ff.compiler.Inference_.core_(name_ = "List"), generics_ = List(t_));
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = at_, t1_ = expected_, t2_ = listType_);
+ff.compiler.Syntax_.EList(at_ = at_, elementType_ = t_, items_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool], ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool]](self_ = items_, body_ = {
 case (ff.core.Pair_.Pair(item_, spread_)) =>
-ff.core.Pair_.Pair(self_.inferTerm_(environment_, ff.core.Core_.if_(spread_, {() =>
+ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool](first_ = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.compiler.Syntax_.Type](condition_ = spread_, body_ = {() =>
 listType_
-}).else_({() =>
+}), body_ = {() =>
 t_
-}), item_), spread_)
+}), term_ = item_), second_ = spread_)
 }))
 case (ff.compiler.Syntax_.ESequential(at_, before_, after_)) =>
-ff.compiler.Syntax_.ESequential(at_ = at_, before_ = self_.inferTerm_(environment_, self_.unification_.freshTypeVariable_(at_), before_), after_ = self_.inferTerm_(environment_, expected_, after_))
+ff.compiler.Syntax_.ESequential(at_ = at_, before_ = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = at_), term_ = before_), after_ = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = expected_, term_ = after_))
 case (e_ : ff.compiler.Syntax_.ELet) =>
-val scheme_ = ff.compiler.Environment_.Scheme(ff.core.Bool_.True(), e_.mutable_, ff.compiler.Syntax_.Signature(e_.at_, e_.name_, List(), List(), List(), e_.valueType_));
-val environment2_ = environment_.copy(symbols_ = environment_.symbols_.add_(e_.name_, scheme_));
-e_.copy(value_ = self_.inferTerm_(environment_, e_.valueType_, e_.value_), body_ = self_.inferTerm_(environment2_, expected_, e_.body_))
+val scheme_ : ff.compiler.Environment_.Scheme = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.True(), isMutable_ = e_.mutable_, signature_ = ff.compiler.Syntax_.Signature(at_ = e_.at_, name_ = e_.name_, generics_ = List(), constraints_ = List(), parameters_ = List(), returnType_ = e_.valueType_));
+val environment2_ : ff.compiler.Environment_.Environment = pipe_dot(environment_)({(_c) =>
+ff.compiler.Environment_.Environment(symbols_ = ff.core.Map_.Map_add[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = environment_.symbols_, key_ = e_.name_, value_ = scheme_))
+});
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ELet(at_ = _c.at_, mutable_ = _c.mutable_, name_ = _c.name_, valueType_ = _c.valueType_, value_ = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = e_.valueType_, term_ = e_.value_), body_ = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment2_, expected_ = expected_, term_ = e_.body_))
+})
 case (ff.compiler.Syntax_.ELambda(at_, l_)) =>
-val lambda_ = self_.inferLambda_(environment_, expected_, l_);
-ff.compiler.Syntax_.ELambda(at_, lambda_)
+val lambda_ : ff.compiler.Syntax_.Lambda = ff.compiler.Inference_.Inference_inferLambda(self_ = self_, environment_ = environment_, expected_ = expected_, lambda_ = l_);
+ff.compiler.Syntax_.ELambda(at_ = at_, lambda_ = lambda_)
 case (e_ : ff.compiler.Syntax_.EVariant) =>
-val instantiated_ = self_.lookup_(environment_, e_.at_, e_.name_, e_.typeArguments_).else_({() =>
-ff.compiler.Inference_.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+val instantiated_ : ff.compiler.Environment_.Instantiated = ff.core.Option_.Option_else(self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = e_.name_, typeArguments_ = e_.typeArguments_), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Environment_.Instantiated](at_ = e_.at_, message_ = ("Symbol not in scope: " + e_.name_))
 });
-self_.unification_.unify_(e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
-val arguments_ = e_.arguments_.map_({(_w1) =>
-self_.inferArguments_(e_.at_, environment_, instantiated_.scheme_.signature_.parameters_, _w1)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = instantiated_.scheme_.signature_.returnType_);
+val arguments_ : ff.core.Option_.Option[ff.core.List_.List[ff.compiler.Syntax_.Argument]] = ff.core.Option_.Option_map[ff.core.List_.List[ff.compiler.Syntax_.Argument], ff.core.List_.List[ff.compiler.Syntax_.Argument]](self_ = e_.arguments_, body_ = {(_w1) =>
+ff.compiler.Inference_.Inference_inferArguments(self_ = self_, at_ = e_.at_, environment_ = environment_, parameters_ = instantiated_.scheme_.signature_.parameters_, arguments_ = _w1)
 });
-e_.copy(typeArguments_ = instantiated_.typeArguments_.map_({(_w1) =>
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.EVariant(at_ = _c.at_, name_ = _c.name_, typeArguments_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type], ff.compiler.Syntax_.Type](self_ = instantiated_.typeArguments_, body_ = {(_w1) =>
 _w1.second_
 }), arguments_ = arguments_)
+})
 case (e_ : ff.compiler.Syntax_.EVariantIs) =>
-val instantiated_ = self_.lookup_(environment_, e_.at_, e_.name_, e_.typeArguments_).else_({() =>
-ff.compiler.Inference_.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+val instantiated_ : ff.compiler.Environment_.Instantiated = ff.core.Option_.Option_else(self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = e_.name_, typeArguments_ = e_.typeArguments_), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Environment_.Instantiated](at_ = e_.at_, message_ = ("Symbol not in scope: " + e_.name_))
 });
-val parameters_ = instantiated_.scheme_.signature_.parameters_.sortBy_({(_w1) =>
+val parameters_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter] = ff.core.List_.List_sortBy[ff.compiler.Syntax_.Parameter](self_ = instantiated_.scheme_.signature_.parameters_, body_ = {(_w1) =>
 _w1.name_
 });
-val recordType_ = ff.compiler.Syntax_.TConstructor(e_.at_, ("Record$" + parameters_.map_({(_w1) =>
+val recordType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ("Record$" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = parameters_, body_ = {(_w1) =>
 _w1.name_
-}).join_("$")), parameters_.map_({(_w1) =>
+}), separator_ = "$")), generics_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.compiler.Syntax_.Type](self_ = parameters_, body_ = {(_w1) =>
 _w1.valueType_
 }));
-val functionType_ = ff.compiler.Syntax_.TConstructor(e_.at_, "Function$1", List(instantiated_.scheme_.signature_.returnType_, ff.compiler.Syntax_.TConstructor(e_.at_, ff.compiler.Inference_.core_("Option"), List(recordType_))));
-self_.unification_.unify_(e_.at_, expected_, functionType_);
-e_.copy(typeArguments_ = instantiated_.typeArguments_.map_({(_w1) =>
+val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = "Function$1", generics_ = List(instantiated_.scheme_.signature_.returnType_, ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ff.compiler.Inference_.core_(name_ = "Option"), generics_ = List(recordType_))));
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = functionType_);
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.EVariantIs(at_ = _c.at_, name_ = _c.name_, typeArguments_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type], ff.compiler.Syntax_.Type](self_ = instantiated_.typeArguments_, body_ = {(_w1) =>
 _w1.second_
 }))
+})
 case (e_ : ff.compiler.Syntax_.ECopy) =>
-val signature_ = self_.lookup_(environment_, e_.at_, e_.name_, List()).else_({() =>
-ff.compiler.Inference_.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+val signature_ : ff.compiler.Syntax_.Signature = ff.core.Option_.Option_else(self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = e_.name_, typeArguments_ = List()), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Environment_.Instantiated](at_ = e_.at_, message_ = ("Symbol not in scope: " + e_.name_))
 }).scheme_.signature_;
-val parameterNames_ = signature_.parameters_.map_({(_w1) =>
+val parameterNames_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = signature_.parameters_, body_ = {(_w1) =>
 _w1.name_
 });
-e_.arguments_.find_({(a_) =>
-(!parameterNames_.any_({(_w1) =>
+ff.core.Option_.Option_each[ff.compiler.Syntax_.Field](self_ = ff.core.List_.List_find[ff.compiler.Syntax_.Field](self_ = e_.arguments_, body_ = {(a_) =>
+(!ff.core.List_.List_any[ff.core.String_.String](self_ = parameterNames_, body_ = {(_w1) =>
 (_w1 == a_.name_)
 }))
-}).each_({
+}), body_ = {
 case (ff.compiler.Syntax_.Field(at_, name_, value_)) =>
-ff.compiler.Inference_.fail_(at_, ("Unknown parameter: " + name_))
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = ("Unknown parameter: " + name_));
+ff.core.Unit_.Unit()
 });
-val arguments_ = parameterNames_.map_({(name_) =>
-e_.arguments_.find_({(_w1) =>
+val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = ff.core.List_.List_map[ff.core.String_.String, ff.compiler.Syntax_.Argument](self_ = parameterNames_, body_ = {(name_) =>
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.compiler.Syntax_.Field, ff.compiler.Syntax_.Argument](self_ = ff.core.List_.List_find[ff.compiler.Syntax_.Field](self_ = e_.arguments_, body_ = {(_w1) =>
 (_w1.name_ == name_)
-}).map_({
+}), body_ = {
 case (ff.compiler.Syntax_.Field(at_, _, value_)) =>
-ff.compiler.Syntax_.Argument(at_, ff.core.Option_.Some(name_), value_)
-}).else_({() =>
-ff.compiler.Syntax_.Argument(e_.at_, ff.core.Option_.Some(name_), ff.compiler.Syntax_.EField(e_.at_, ff.compiler.Syntax_.EVariable(e_.at_, "_c", List(), List()), name_))
+ff.compiler.Syntax_.Argument(at_ = at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = name_), value_ = value_)
+}), body_ = {() =>
+ff.compiler.Syntax_.Argument(at_ = e_.at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = name_), value_ = ff.compiler.Syntax_.EField(at_ = e_.at_, record_ = ff.compiler.Syntax_.EVariable(at_ = e_.at_, name_ = "_c", generics_ = List(), instances_ = List()), field_ = name_))
 })
 });
-val body_ = ff.compiler.Syntax_.EVariant(e_.at_, e_.name_, List(), ff.core.Option_.Some(arguments_));
-val term_ = ff.compiler.Syntax_.EPipe(e_.at_, e_.record_, ff.compiler.Syntax_.ELambda(e_.at_, ff.compiler.Syntax_.Lambda(e_.at_, List(ff.compiler.Syntax_.MatchCase(e_.at_, List(ff.compiler.Syntax_.PVariable(e_.at_, ff.core.Option_.Some("_c"))), ff.core.Option_.None(), body_)))));
-self_.inferTerm_(environment_, expected_, term_)
+val body_ : ff.compiler.Syntax_.Term = ff.compiler.Syntax_.EVariant(at_ = e_.at_, name_ = e_.name_, typeArguments_ = List(), arguments_ = ff.core.Option_.Some[ff.core.List_.List[ff.compiler.Syntax_.Argument]](value_ = arguments_));
+val term_ : ff.compiler.Syntax_.Term = ff.compiler.Syntax_.EPipe(at_ = e_.at_, value_ = e_.record_, function_ = ff.compiler.Syntax_.ELambda(at_ = e_.at_, lambda_ = ff.compiler.Syntax_.Lambda(at_ = e_.at_, cases_ = List(ff.compiler.Syntax_.MatchCase(at_ = e_.at_, patterns_ = List(ff.compiler.Syntax_.PVariable(at_ = e_.at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = "_c"))), condition_ = ff.core.Option_.None[ff.compiler.Syntax_.Term](), body_ = body_)))));
+ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = expected_, term_ = term_)
 case (e_ : ff.compiler.Syntax_.EPipe) =>
-val valueType_ = self_.unification_.freshTypeVariable_(e_.at_);
-val functionType_ = ff.compiler.Syntax_.TConstructor(e_.at_, "Function$1", List(valueType_, expected_));
-val value_ = self_.inferTerm_(environment_, valueType_, e_.value_);
-val function_ = self_.inferTerm_(environment_, functionType_, e_.function_);
-e_.copy(value_ = value_, function_ = function_)
+val valueType_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = "Function$1", generics_ = List(valueType_, expected_));
+val value_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = valueType_, term_ = e_.value_);
+val function_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = functionType_, term_ = e_.function_);
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.EPipe(at_ = _c.at_, value_ = value_, function_ = function_)
+})
 case (e_ : ff.compiler.Syntax_.ECall) =>
 pipe_dot(e_.function_)({
 case (ff.compiler.Syntax_.EVariable(variableAt_, x_, List(), List())) =>
-ff.core.Core_.if_(x_.first_().any_({(c_) =>
-((c_ != '_') && (!c_.getIsLetter_()))
-}), {() =>
-self_.inferOperator_(environment_, expected_, x_, term_)
-}).else_({() =>
-pipe_dot(self_.lookup_(environment_, e_.at_, x_, e_.typeArguments_))({
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.compiler.Syntax_.Term](condition_ = ff.core.Option_.Option_any[ff.core.Char_.Char](self_ = ff.core.String_.String_first(self_ = x_), body_ = {(c_) =>
+((c_ != '_') && (!ff.core.Char_.Char_getIsLetter(self_ = c_)))
+}), body_ = {() =>
+ff.compiler.Inference_.Inference_inferOperator(self_ = self_, environment_ = environment_, expected_ = expected_, operator_ = x_, term_ = term_)
+}), body_ = {() =>
+pipe_dot(ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = x_, typeArguments_ = e_.typeArguments_))({
 case (ff.core.Option_.Some(instantiated_)) =>
-ff.core.Core_.if_(instantiated_.scheme_.isVariable_, {() =>
-self_.inferLambdaCall_(environment_, expected_, term_)
-}).else_({() =>
-val signature_ = instantiated_.scheme_.signature_;
-self_.inferFunctionCall_(environment_, expected_, signature_, instantiated_.typeArguments_, term_, x_)
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.compiler.Syntax_.Term](condition_ = instantiated_.scheme_.isVariable_, body_ = {() =>
+ff.compiler.Inference_.Inference_inferLambdaCall(self_ = self_, environment_ = environment_, expected_ = expected_, term_ = term_)
+}), body_ = {() =>
+val signature_ : ff.compiler.Syntax_.Signature = instantiated_.scheme_.signature_;
+ff.compiler.Inference_.Inference_inferFunctionCall(self_ = self_, environment_ = environment_, expected_ = expected_, signature_ = signature_, instantiation_ = instantiated_.typeArguments_, term_ = term_, name_ = x_)
 })
 case (ff.core.Option_.None()) =>
-ff.compiler.Inference_.fail_(variableAt_, ("No such function: " + x_))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = variableAt_, message_ = ("No such function: " + x_))
 })
 })
 case (f_ : ff.compiler.Syntax_.EField) =>
-val recordType_ = self_.unification_.freshTypeVariable_(f_.at_);
-val record_ = self_.inferTerm_(environment_, recordType_, f_.record_);
-val e2_ = e_.copy(function_ = f_.copy(record_ = record_));
-pipe_dot(self_.unification_.substitute_(recordType_))({
+val recordType_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = f_.at_);
+val record_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = recordType_, term_ = f_.record_);
+val e2_ : ff.compiler.Syntax_.Term = pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = pipe_dot(f_)({(_c) =>
+ff.compiler.Syntax_.EField(at_ = _c.at_, record_ = record_, field_ = _c.field_)
+}), typeArguments_ = _c.typeArguments_, arguments_ = _c.arguments_)
+});
+pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = recordType_))({
 case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeParameters_))) =>
-val methodName_ = ((name_ + "_") + f_.field_);
-pipe_dot(self_.lookup_(environment_, f_.at_, methodName_, List()))({
+val methodName_ : ff.core.String_.String = ((name_ + "_") + f_.field_);
+pipe_dot(ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = f_.at_, symbol_ = methodName_, typeArguments_ = List()))({
 case (ff.core.Option_.Some(instantiated_)) if (!instantiated_.scheme_.isVariable_) =>
-self_.inferMethodCall_(environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, methodName_)
+ff.compiler.Inference_.Inference_inferMethodCall(self_ = self_, environment_ = environment_, expected_ = expected_, signature_ = instantiated_.scheme_.signature_, instantiation_ = instantiated_.typeArguments_, term_ = e2_, record_ = record_, name_ = methodName_)
 case (ff.core.Option_.Some(instantiated_)) =>
-self_.inferLambdaCall_(environment_, expected_, e2_)
+ff.compiler.Inference_.Inference_inferLambdaCall(self_ = self_, environment_ = environment_, expected_ = expected_, term_ = e2_)
 case (ff.core.Option_.None()) =>
-ff.compiler.Inference_.fail_(f_.at_, ((("No such field " + f_.field_) + " on type: ") + t_.show_()))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = f_.at_, message_ = ((("No such field " + f_.field_) + " on type: ") + ff.compiler.Syntax_.Type_show(self_ = t_)))
 })
 case (ff.compiler.Syntax_.TVariable(_, index_)) =>
-ff.compiler.Inference_.fail_(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = f_.at_, message_ = ((("No such field " + f_.field_) + " on unknown type: $") + index_))
 })
 case (_) =>
-self_.inferLambdaCall_(environment_, expected_, term_)
+ff.compiler.Inference_.Inference_inferLambdaCall(self_ = self_, environment_ = environment_, expected_ = expected_, term_ = term_)
 })
 case (e_ : ff.compiler.Syntax_.ERecord) =>
-val fields_ = e_.fields_.sortBy_({(_w1) =>
+val fields_ : ff.core.List_.List[ff.compiler.Syntax_.Field] = ff.core.List_.List_sortBy[ff.compiler.Syntax_.Field](self_ = e_.fields_, body_ = {(_w1) =>
 _w1.name_
 });
-val fieldTypes_ = fields_.map_({(_w1) =>
-self_.unification_.freshTypeVariable_(_w1.at_)
+val fieldTypes_ : ff.core.List_.List[ff.compiler.Syntax_.Type] = ff.core.List_.List_map[ff.compiler.Syntax_.Field, ff.compiler.Syntax_.Type](self_ = fields_, body_ = {(_w1) =>
+ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = _w1.at_)
 });
-val recordType_ = ff.compiler.Syntax_.TConstructor(e_.at_, ("Record$" + fields_.map_({(_w1) =>
+val recordType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ("Record$" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Field, ff.core.String_.String](self_ = fields_, body_ = {(_w1) =>
 _w1.name_
-}).join_("$")), fieldTypes_);
-self_.unification_.unify_(e_.at_, expected_, recordType_);
-val newFields_ = fields_.zip_(fieldTypes_).map_({
+}), separator_ = "$")), generics_ = fieldTypes_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = recordType_);
+val newFields_ : ff.core.List_.List[ff.compiler.Syntax_.Field] = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Field, ff.compiler.Syntax_.Type], ff.compiler.Syntax_.Field](self_ = ff.core.List_.List_zip[ff.compiler.Syntax_.Field, ff.compiler.Syntax_.Type](self_ = fields_, that_ = fieldTypes_), body_ = {
 case (ff.core.Pair_.Pair(field_, t_)) =>
-field_.copy(value_ = self_.inferTerm_(environment_, t_, field_.value_))
+pipe_dot(field_)({(_c) =>
+ff.compiler.Syntax_.Field(at_ = _c.at_, name_ = _c.name_, value_ = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = field_.value_))
+})
 });
-e_.copy(fields_ = newFields_)
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ERecord(at_ = _c.at_, fields_ = newFields_)
+})
 case (ff.compiler.Syntax_.EFunctions(at_, functions_, body_)) =>
-val functionMap_ = functions_.map_({(f_) =>
-val scheme_ = ff.compiler.Environment_.Scheme(ff.core.Bool_.False(), ff.core.Bool_.False(), f_.signature_);
-ff.core.Pair_.Pair(f_.signature_.name_, scheme_)
-}).getMap_();
-val environment2_ = environment_.copy(symbols_ = (environment_.symbols_ ++ functionMap_));
-val newFunctions_ = functions_.map_({(_w1) =>
-self_.inferFunctionDefinition_(environment2_, _w1)
+val functionMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme] = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = functions_, body_ = {(f_) =>
+val scheme_ : ff.compiler.Environment_.Scheme = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.False(), isMutable_ = ff.core.Bool_.False(), signature_ = f_.signature_);
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = f_.signature_.name_, second_ = scheme_)
+}));
+val environment2_ : ff.compiler.Environment_.Environment = pipe_dot(environment_)({(_c) =>
+ff.compiler.Environment_.Environment(symbols_ = (environment_.symbols_ ++ functionMap_))
 });
-val newBody_ = self_.inferTerm_(environment2_, expected_, body_);
+val newFunctions_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = functions_, body_ = {(_w1) =>
+ff.compiler.Inference_.Inference_inferFunctionDefinition(self_ = self_, environment_ = environment2_, definition_ = _w1)
+});
+val newBody_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment2_, expected_ = expected_, term_ = body_);
 ff.compiler.Syntax_.EFunctions(at_ = at_, functions_ = newFunctions_, body_ = newBody_)
 case (e_ : ff.compiler.Syntax_.EAssign) =>
-self_.lookup_(environment_, e_.at_, e_.variable_, List()).map_({(instantiated_) =>
-ff.core.Core_.if_(instantiated_.scheme_.isMutable_, {() =>
-val value_ = self_.inferAssignment_(environment_ = environment_, expected_ = expected_, at_ = e_.at_, operator_ = e_.operator_, value_ = e_.value_, signature_ = instantiated_.scheme_.signature_);
-e_.copy(value_ = value_)
-}).else_({() =>
-ff.compiler.Inference_.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_))
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.compiler.Environment_.Instantiated, ff.compiler.Syntax_.Term](self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = e_.variable_, typeArguments_ = List()), body_ = {(instantiated_) =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.compiler.Syntax_.Term](condition_ = instantiated_.scheme_.isMutable_, body_ = {() =>
+val value_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferAssignment(self_ = self_, environment_ = environment_, expected_ = expected_, at_ = e_.at_, operator_ = e_.operator_, value_ = e_.value_, signature_ = instantiated_.scheme_.signature_);
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.EAssign(at_ = _c.at_, operator_ = _c.operator_, variable_ = _c.variable_, value_ = value_)
 })
-}).else_({() =>
-ff.compiler.Inference_.fail_(e_.at_, ("Symbol not in scope: " + e_.variable_))
+}), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ("Symbol is not mutable: " + e_.variable_))
+})
+}), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ("Symbol not in scope: " + e_.variable_))
 })
 case (e_ : ff.compiler.Syntax_.EAssignField) =>
-val recordType_ = self_.unification_.freshTypeVariable_(e_.at_);
-val record_ = self_.inferTerm_(environment_, recordType_, e_.record_);
-pipe_dot(self_.unification_.substitute_(recordType_))({
-case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if name_.startsWith_("Record$") =>
-ff.compiler.Inference_.fail_(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_))
+val recordType_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val record_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = recordType_, term_ = e_.record_);
+pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = recordType_))({
+case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Record$") =>
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ("Can't assign fields of anonymous records: " + e_.field_))
 case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) =>
-val methodName_ = ((name_ + "_") + e_.field_);
-pipe_dot(self_.lookup_(environment_, e_.at_, methodName_, typeArguments_))({
+val methodName_ : ff.core.String_.String = ((name_ + "_") + e_.field_);
+pipe_dot(ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = e_.at_, symbol_ = methodName_, typeArguments_ = typeArguments_))({
 case (ff.core.Option_.Some(instantiated_)) if instantiated_.scheme_.isMutable_ =>
-val value_ = self_.inferAssignment_(environment_ = environment_, expected_ = expected_, at_ = e_.at_, operator_ = e_.operator_, value_ = e_.value_, signature_ = instantiated_.scheme_.signature_);
-e_.copy(record_ = record_, value_ = value_)
+val value_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferAssignment(self_ = self_, environment_ = environment_, expected_ = expected_, at_ = e_.at_, operator_ = e_.operator_, value_ = e_.value_, signature_ = instantiated_.scheme_.signature_);
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.EAssignField(at_ = _c.at_, operator_ = _c.operator_, record_ = record_, field_ = _c.field_, value_ = value_)
+})
 case (ff.core.Option_.Some(instantiated_)) =>
-ff.compiler.Inference_.fail_(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + t_.show_()))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff.compiler.Syntax_.Type_show(self_ = t_)))
 case (ff.core.Option_.None()) =>
-ff.compiler.Inference_.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + t_.show_()))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ((("No such field " + e_.field_) + " on type: ") + ff.compiler.Syntax_.Type_show(self_ = t_)))
 })
 case (ff.compiler.Syntax_.TVariable(_, index_)) =>
-ff.compiler.Inference_.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ((("No such field " + e_.field_) + " on unknown type: $") + index_))
 })
 })
 }
 
-def inferAssignment_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, at_ : ff.compiler.Syntax_.Location, operator_ : ff.core.String_.String, value_ : ff.compiler.Syntax_.Term, signature_ : ff.compiler.Syntax_.Signature) : ff.compiler.Syntax_.Term = {
-val t_ = signature_.returnType_;
-ff.core.Core_.if_(((operator_ == "+") || (operator_ == "-")), {() =>
-self_.unification_.unify_(at_, t_, ff.compiler.Syntax_.TConstructor(at_, ff.compiler.Inference_.core_("Int"), List()))
-}).elseIf_({() =>
+def Inference_inferAssignment(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, at_ : ff.compiler.Syntax_.Location, operator_ : ff.core.String_.String, value_ : ff.compiler.Syntax_.Term, signature_ : ff.compiler.Syntax_.Signature) : ff.compiler.Syntax_.Term = (self_, environment_, expected_, at_, operator_, value_, signature_) match {
+case (self_, _, _, _, _, _, _) =>
+val t_ : ff.compiler.Syntax_.Type = signature_.returnType_;
+ff.core.Option_.Option_elseIf(self_ = ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ((operator_ == "+") || (operator_ == "-")), body_ = {() =>
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = at_, t1_ = t_, t2_ = ff.compiler.Syntax_.TConstructor(at_ = at_, name_ = ff.compiler.Inference_.core_(name_ = "Int"), generics_ = List()));
+ff.core.Unit_.Unit()
+}), condition_ = {() =>
 (operator_ != "")
-}, {() =>
-ff.compiler.Inference_.fail_(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "="))
+}, body_ = {() =>
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = (("Only +=, -= and = assignments are supported. Got: " + operator_) + "="));
+ff.core.Unit_.Unit()
 });
-val newValue_ = self_.inferTerm_(environment_, t_, value_);
-self_.unification_.unify_(at_, expected_, ff.compiler.Syntax_.TConstructor(at_, ff.compiler.Inference_.core_("Unit"), List()));
+val newValue_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = value_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = at_, t1_ = expected_, t2_ = ff.compiler.Syntax_.TConstructor(at_ = at_, name_ = ff.compiler.Inference_.core_(name_ = "Unit"), generics_ = List()));
 newValue_
 }
 
-def inferMethodCall_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, signature_ : ff.compiler.Syntax_.Signature, instantiation_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]], term_ : ff.compiler.Syntax_.Term, record_ : ff.compiler.Syntax_.Term, name_ : ff.core.String_.String) : ff.compiler.Syntax_.Term = {
-val e_ = pipe_dot(term_)({
+def Inference_inferMethodCall(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, signature_ : ff.compiler.Syntax_.Signature, instantiation_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]], term_ : ff.compiler.Syntax_.Term, record_ : ff.compiler.Syntax_.Term, name_ : ff.core.String_.String) : ff.compiler.Syntax_.Term = (self_, environment_, expected_, signature_, instantiation_, term_, record_, name_) match {
+case (self_, _, _, _, _, _, _, _) =>
+val e_ : {val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]; val at_ : ff.compiler.Syntax_.Location; val function_ : ff.compiler.Syntax_.Term; val tailCall_ : ff.core.Bool_.Bool; val typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]} = pipe_dot(term_)({
 case (e_ : ff.compiler.Syntax_.ECall) =>
 e_
 case (_) =>
-ff.compiler.Inference_.fail_(term_.at_, "Call expected")
+ff.compiler.Inference_.fail_[{val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]; val at_ : ff.compiler.Syntax_.Location; val function_ : ff.compiler.Syntax_.Term; val tailCall_ : ff.core.Bool_.Bool; val typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]}](at_ = term_.at_, message_ = "Call expected")
 });
-val e2_ = e_.copy(function_ = ff.compiler.Syntax_.EVariable(e_.at_, name_, List(), List()), arguments_ = (List(List(ff.compiler.Syntax_.Argument(record_.at_, ff.core.Option_.None(), record_)), e_.arguments_).flatten));
-self_.inferFunctionCall_(environment_, expected_, signature_, instantiation_, e2_, name_)
+val e2_ : ff.compiler.Syntax_.Term = pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = ff.compiler.Syntax_.EVariable(at_ = e_.at_, name_ = name_, generics_ = List(), instances_ = List()), typeArguments_ = _c.typeArguments_, arguments_ = (List(List(ff.compiler.Syntax_.Argument(at_ = record_.at_, name_ = ff.core.Option_.None[ff.core.String_.String](), value_ = record_)), e_.arguments_).flatten))
+});
+ff.compiler.Inference_.Inference_inferFunctionCall(self_ = self_, environment_ = environment_, expected_ = expected_, signature_ = signature_, instantiation_ = instantiation_, term_ = e2_, name_ = name_)
 }
 
-def inferFunctionCall_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, signature_ : ff.compiler.Syntax_.Signature, instantiation_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]], term_ : ff.compiler.Syntax_.Term, name_ : ff.core.String_.String) : ff.compiler.Syntax_.Term = {
-val e_ = pipe_dot(term_)({
+def Inference_inferFunctionCall(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, signature_ : ff.compiler.Syntax_.Signature, instantiation_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]], term_ : ff.compiler.Syntax_.Term, name_ : ff.core.String_.String) : ff.compiler.Syntax_.Term = (self_, environment_, expected_, signature_, instantiation_, term_, name_) match {
+case (self_, _, _, _, _, _, _) =>
+val e_ : {val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]; val at_ : ff.compiler.Syntax_.Location; val function_ : ff.compiler.Syntax_.Term; val tailCall_ : ff.core.Bool_.Bool; val typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]} = pipe_dot(term_)({
 case (e_ : ff.compiler.Syntax_.ECall) =>
 e_
 case (_) =>
-ff.compiler.Inference_.fail_(term_.at_, "Call expected")
+ff.compiler.Inference_.fail_[{val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]; val at_ : ff.compiler.Syntax_.Location; val function_ : ff.compiler.Syntax_.Term; val tailCall_ : ff.core.Bool_.Bool; val typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]}](at_ = term_.at_, message_ = "Call expected")
 });
-self_.unification_.unify_(e_.at_, expected_, signature_.returnType_);
-val arguments_ = self_.inferArguments_(e_.at_, environment_, signature_.parameters_, e_.arguments_);
-e_.copy(function_ = e_.function_, typeArguments_ = instantiation_.map_({(_w1) =>
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = signature_.returnType_);
+val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = ff.compiler.Inference_.Inference_inferArguments(self_ = self_, at_ = e_.at_, environment_ = environment_, parameters_ = signature_.parameters_, arguments_ = e_.arguments_);
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = e_.function_, typeArguments_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type], ff.compiler.Syntax_.Type](self_ = instantiation_, body_ = {(_w1) =>
 _w1.second_
 }), arguments_ = arguments_)
+})
 }
 
-def inferLambdaCall_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = {
-val e_ = pipe_dot(term_)({
+def Inference_inferLambdaCall(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (self_, environment_, expected_, term_) match {
+case (self_, _, _, _) =>
+val e_ : {val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]; val at_ : ff.compiler.Syntax_.Location; val function_ : ff.compiler.Syntax_.Term; val tailCall_ : ff.core.Bool_.Bool; val typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]} = pipe_dot(term_)({
 case (e_ : ff.compiler.Syntax_.ECall) =>
 e_
 case (_) =>
-ff.compiler.Inference_.fail_(term_.at_, "Call expected")
+ff.compiler.Inference_.fail_[{val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]; val at_ : ff.compiler.Syntax_.Location; val function_ : ff.compiler.Syntax_.Term; val tailCall_ : ff.core.Bool_.Bool; val typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]}](at_ = term_.at_, message_ = "Call expected")
 });
-val argumentTypes_ = e_.arguments_.map_({(_w1) =>
-self_.unification_.freshTypeVariable_(_w1.at_)
+val argumentTypes_ : ff.core.List_.List[ff.compiler.Syntax_.Type] = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.compiler.Syntax_.Type](self_ = e_.arguments_, body_ = {(_w1) =>
+ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = _w1.at_)
 });
-val functionType_ = ff.compiler.Syntax_.TConstructor(e_.at_, ("Function$" + e_.arguments_.getSize_()), (List(argumentTypes_, List(expected_)).flatten));
-val function_ = self_.inferTerm_(environment_, functionType_, e_.function_);
-val arguments_ = e_.arguments_.zip_(argumentTypes_).map_({
+val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ("Function$" + ff.core.List_.List_getSize[ff.compiler.Syntax_.Argument](self_ = e_.arguments_)), generics_ = (List(argumentTypes_, List(expected_)).flatten));
+val function_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = functionType_, term_ = e_.function_);
+val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Argument, ff.compiler.Syntax_.Type], ff.compiler.Syntax_.Argument](self_ = ff.core.List_.List_zip[ff.compiler.Syntax_.Argument, ff.compiler.Syntax_.Type](self_ = e_.arguments_, that_ = argumentTypes_), body_ = {
 case (ff.core.Pair_.Pair(argument_, t_)) =>
-argument_.name_.each_({(name_) =>
-ff.compiler.Inference_.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
+ff.core.Option_.Option_each[ff.core.String_.String](self_ = argument_.name_, body_ = {(name_) =>
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = argument_.at_, message_ = ("Named argument not allowed here: " + name_));
+ff.core.Unit_.Unit()
 });
-argument_.copy(value_ = self_.inferTerm_(environment_, t_, argument_.value_))
+pipe_dot(argument_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = argument_.value_))
+})
 });
-e_.typeArguments_.first_().each_({(typeArgument_) =>
-ff.compiler.Inference_.fail_(typeArgument_.at_, "Type arguments not allowed here")
+ff.core.Option_.Option_each[ff.compiler.Syntax_.Type](self_ = ff.core.List_.List_first[ff.compiler.Syntax_.Type](self_ = e_.typeArguments_), body_ = {(typeArgument_) =>
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = typeArgument_.at_, message_ = "Type arguments not allowed here");
+ff.core.Unit_.Unit()
 });
-e_.copy(function_ = function_, typeArguments_ = List(), arguments_ = arguments_)
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = function_, typeArguments_ = List(), arguments_ = arguments_)
+})
 }
 
-def inferOperator_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, operator_ : ff.core.String_.String, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = {
-val e_ = pipe_dot(term_)({
+def Inference_inferOperator(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, operator_ : ff.core.String_.String, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (self_, environment_, expected_, operator_, term_) match {
+case (self_, _, _, _, _) =>
+val e_ : {val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]; val at_ : ff.compiler.Syntax_.Location; val function_ : ff.compiler.Syntax_.Term; val tailCall_ : ff.core.Bool_.Bool; val typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]} = pipe_dot(term_)({
 case (e_ : ff.compiler.Syntax_.ECall) =>
 e_
 case (_) =>
-ff.compiler.Inference_.fail_(term_.at_, "Call expected")
+ff.compiler.Inference_.fail_[{val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]; val at_ : ff.compiler.Syntax_.Location; val function_ : ff.compiler.Syntax_.Term; val tailCall_ : ff.core.Bool_.Bool; val typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]}](at_ = term_.at_, message_ = "Call expected")
 });
 pipe_dot(e_.arguments_)({
 case (List(a1_)) if (operator_ == "!") =>
-val t_ = ff.compiler.Syntax_.TConstructor(e_.at_, ff.compiler.Inference_.core_("Bool"), List());
-val e1_ = self_.inferTerm_(environment_, t_, a1_.value_);
-self_.unification_.unify_(e_.at_, expected_, t_);
-e_.copy(arguments_ = List(a1_.copy(value_ = e1_)))
+val t_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ff.compiler.Inference_.core_(name_ = "Bool"), generics_ = List());
+val e1_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = a1_.value_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t_);
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = _c.function_, typeArguments_ = _c.typeArguments_, arguments_ = List(pipe_dot(a1_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e1_)
+})))
+})
 case (List(a1_)) if (operator_ == "-") =>
-val t1_ = self_.unification_.freshTypeVariable_(e_.at_);
-val e1_ = self_.inferTerm_(environment_, t1_, a1_.value_);
-pipe_dot(self_.unification_.substitute_(t1_))({
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_("Float")) =>
-self_.unification_.unify_(e_.at_, expected_, t1_)
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_("Int")) =>
-self_.unification_.unify_(e_.at_, expected_, t1_)
+val t1_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val e1_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t1_, term_ = a1_.value_);
+pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = t1_))({
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_(name_ = "Float")) =>
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t1_)
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_(name_ = "Int")) =>
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t1_)
 case (_) =>
-ff.compiler.Inference_.fail_(e_.at_, "Operators on unknown types not currently supported")
+ff.compiler.Inference_.fail_[ff.core.Unit_.Unit](at_ = e_.at_, message_ = "Operators on unknown types not currently supported")
 });
-e_.copy(arguments_ = List(a1_.copy(value_ = e1_)))
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = _c.function_, typeArguments_ = _c.typeArguments_, arguments_ = List(pipe_dot(a1_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e1_)
+})))
+})
 case (List(a1_, a2_)) if (operator_ == "++") =>
-val t_ = self_.unification_.freshTypeVariable_(e_.at_);
-val e1_ = self_.inferTerm_(environment_, t_, a1_.value_);
-val e2_ = self_.inferTerm_(environment_, t_, a2_.value_);
-self_.unification_.unify_(e_.at_, expected_, t_);
-val name_ = pipe_dot(self_.unification_.substitute_(t_))({
+val t_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val e1_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = a1_.value_);
+val e2_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = a2_.value_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t_);
+val name_ : ff.core.String_.String = pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = t_))({
 case (ff.compiler.Syntax_.TConstructor(_, name_, _)) =>
 name_
 case (_) =>
-ff.compiler.Inference_.fail_(e_.at_, "Operators on unknown types not currently supported")
+ff.compiler.Inference_.fail_[ff.core.String_.String](at_ = e_.at_, message_ = "Operators on unknown types not currently supported")
 });
-ff.core.Core_.if_(((((name_ != ff.compiler.Inference_.core_("List")) && (name_ != ff.compiler.Inference_.core_("Array"))) && (name_ != ff.compiler.Inference_.core_("Set"))) && (name_ != ff.compiler.Inference_.core_("Map"))), {() =>
-ff.compiler.Inference_.fail_(e_.at_, ("Operator ++ not currently supported for " + name_))
+ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = ((((name_ != ff.compiler.Inference_.core_(name_ = "List")) && (name_ != ff.compiler.Inference_.core_(name_ = "Array"))) && (name_ != ff.compiler.Inference_.core_(name_ = "Set"))) && (name_ != ff.compiler.Inference_.core_(name_ = "Map"))), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = e_.at_, message_ = ("Operator ++ not currently supported for " + name_))
 });
-e_.copy(arguments_ = List(a1_.copy(value_ = e1_), a2_.copy(value_ = e2_)))
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = _c.function_, typeArguments_ = _c.typeArguments_, arguments_ = List(pipe_dot(a1_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e1_)
+}), pipe_dot(a2_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e2_)
+})))
+})
 case (List(a1_, a2_)) if ((operator_ == "||") || (operator_ == "&&")) =>
-val t_ = ff.compiler.Syntax_.TConstructor(e_.at_, ff.compiler.Inference_.core_("Bool"), List());
-val e1_ = self_.inferTerm_(environment_, t_, a1_.value_);
-val e2_ = self_.inferTerm_(environment_, t_, a2_.value_);
-self_.unification_.unify_(e_.at_, expected_, t_);
-e_.copy(arguments_ = List(a1_.copy(value_ = e1_), a2_.copy(value_ = e2_)))
+val t_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ff.compiler.Inference_.core_(name_ = "Bool"), generics_ = List());
+val e1_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = a1_.value_);
+val e2_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = a2_.value_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t_);
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = _c.function_, typeArguments_ = _c.typeArguments_, arguments_ = List(pipe_dot(a1_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e1_)
+}), pipe_dot(a2_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e2_)
+})))
+})
 case (List(a1_, a2_)) if ((((((operator_ == "<") || (operator_ == ">")) || (operator_ == "<=")) || (operator_ == ">=")) || (operator_ == "==")) || (operator_ == "!=")) =>
-val t_ = ff.compiler.Syntax_.TConstructor(e_.at_, ff.compiler.Inference_.core_("Bool"), List());
-val t1_ = self_.unification_.freshTypeVariable_(e_.at_);
-val t2_ = self_.unification_.freshTypeVariable_(e_.at_);
-val e1_ = self_.inferTerm_(environment_, t1_, a1_.value_);
-val e2_ = self_.inferTerm_(environment_, t2_, a2_.value_);
+val t_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ff.compiler.Inference_.core_(name_ = "Bool"), generics_ = List());
+val t1_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val t2_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val e1_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t1_, term_ = a1_.value_);
+val e2_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t2_, term_ = a2_.value_);
 val magic_ : Function1[ff.compiler.Syntax_.Type, ff.core.Option_.Option[ff.core.String_.String]] = {(t_) =>
-pipe_dot(self_.unification_.substitute_(t_))({
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_("String")) =>
-ff.core.Option_.Some("String")
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_("Float")) =>
-ff.core.Option_.Some("Float")
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_("Int")) =>
-ff.core.Option_.Some("Int")
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_("Char")) =>
-ff.core.Option_.Some("Char")
+pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = t_))({
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_(name_ = "String")) =>
+ff.core.Option_.Some[ff.core.String_.String](value_ = "String")
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_(name_ = "Float")) =>
+ff.core.Option_.Some[ff.core.String_.String](value_ = "Float")
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_(name_ = "Int")) =>
+ff.core.Option_.Some[ff.core.String_.String](value_ = "Int")
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_(name_ = "Char")) =>
+ff.core.Option_.Some[ff.core.String_.String](value_ = "Char")
 case (_) =>
-ff.core.Option_.None()
+ff.core.Option_.None[ff.core.String_.String]()
 })
 };
 val chooseType_ : Function2[ff.core.Option_.Option[ff.core.String_.String], ff.core.Option_.Option[ff.core.String_.String], ff.core.Unit_.Unit] = {
 case (ff.core.Option_.Some(_), _) =>
-self_.unification_.unify_(e_.at_, t1_, t2_);
-self_.unification_.unify_(e_.at_, expected_, t_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = t1_, t2_ = t2_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t_);
+ff.core.Unit_.Unit()
 case (_, ff.core.Option_.Some(_)) =>
-self_.unification_.unify_(e_.at_, t2_, t1_);
-self_.unification_.unify_(e_.at_, expected_, t_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = t2_, t2_ = t1_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t_);
+ff.core.Unit_.Unit()
 case (_, _) if ((operator_ == "==") || (operator_ == "!=")) =>
-self_.unification_.unify_(e_.at_, t2_, t1_);
-self_.unification_.unify_(e_.at_, expected_, t_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = t2_, t2_ = t1_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.None(), ff.core.Option_.None()) =>
-ff.compiler.Inference_.fail_(e_.at_, "Operators on unknown types not currently supported")
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = e_.at_, message_ = "Operators on unknown types not currently supported");
+ff.core.Unit_.Unit()
 };
 chooseType_(magic_(t1_), magic_(t2_));
-e_.copy(arguments_ = List(a1_.copy(value_ = e1_), a2_.copy(value_ = e2_)))
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = _c.function_, typeArguments_ = _c.typeArguments_, arguments_ = List(pipe_dot(a1_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e1_)
+}), pipe_dot(a2_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e2_)
+})))
+})
 case (List(a1_, a2_)) if ((((((operator_ == "+") || (operator_ == "-")) || (operator_ == "*")) || (operator_ == "/")) || (operator_ == "%")) || (operator_ == "^")) =>
-val t1_ = self_.unification_.freshTypeVariable_(e_.at_);
-val t2_ = self_.unification_.freshTypeVariable_(e_.at_);
-val e1_ = self_.inferTerm_(environment_, t1_, a1_.value_);
-val e2_ = self_.inferTerm_(environment_, t2_, a2_.value_);
+val t1_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val t2_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
+val e1_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t1_, term_ = a1_.value_);
+val e2_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t2_, term_ = a2_.value_);
 val magic_ : Function1[ff.compiler.Syntax_.Type, ff.core.Option_.Option[ff.core.String_.String]] = {(t_) =>
-pipe_dot(self_.unification_.substitute_(t_))({
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_("Float")) =>
-ff.core.Option_.Some("Float")
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_("Int")) =>
-ff.core.Option_.Some("Int")
-case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if ((operator_ == "+") && (name_ == ff.compiler.Inference_.core_("String"))) =>
-ff.core.Option_.Some("String")
+pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = t_))({
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_(name_ = "Float")) =>
+ff.core.Option_.Some[ff.core.String_.String](value_ = "Float")
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if (name_ == ff.compiler.Inference_.core_(name_ = "Int")) =>
+ff.core.Option_.Some[ff.core.String_.String](value_ = "Int")
+case (ff.compiler.Syntax_.TConstructor(_, name_, List())) if ((operator_ == "+") && (name_ == ff.compiler.Inference_.core_(name_ = "String"))) =>
+ff.core.Option_.Some[ff.core.String_.String](value_ = "String")
 case (_) =>
-ff.core.Option_.None()
+ff.core.Option_.None[ff.core.String_.String]()
 })
 };
 val chooseType_ : Function2[ff.core.Option_.Option[ff.core.String_.String], ff.core.Option_.Option[ff.core.String_.String], ff.core.Unit_.Unit] = {
 case (ff.core.Option_.Some(n_), ff.core.Option_.Some(_)) if (n_ == "String") =>
-self_.unification_.unify_(e_.at_, expected_, t1_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t1_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.Some(_), ff.core.Option_.Some(n_)) if (n_ == "String") =>
-self_.unification_.unify_(e_.at_, expected_, t2_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t2_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.Some(n_), ff.core.Option_.Some(_)) if (n_ == "Float") =>
-self_.unification_.unify_(e_.at_, expected_, t1_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t1_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.Some(_), ff.core.Option_.Some(n_)) if (n_ == "Float") =>
-self_.unification_.unify_(e_.at_, expected_, t2_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t2_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.Some(n_), ff.core.Option_.Some(_)) if (n_ == "Int") =>
-self_.unification_.unify_(e_.at_, expected_, t1_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t1_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.Some(_), ff.core.Option_.Some(n_)) if (n_ == "Int") =>
-self_.unification_.unify_(e_.at_, expected_, t2_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t2_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.Some(_), ff.core.Option_.None()) =>
-self_.unification_.unify_(e_.at_, t1_, t2_);
-self_.unification_.unify_(e_.at_, expected_, t1_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = t1_, t2_ = t2_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t1_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.None(), ff.core.Option_.Some(_)) =>
-self_.unification_.unify_(e_.at_, t2_, t1_);
-self_.unification_.unify_(e_.at_, expected_, t2_)
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = t2_, t2_ = t1_);
+ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = e_.at_, t1_ = expected_, t2_ = t2_);
+ff.core.Unit_.Unit()
 case (ff.core.Option_.None(), ff.core.Option_.None()) =>
-ff.compiler.Inference_.fail_(e_.at_, "Operators on unknown types not currently supported")
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = e_.at_, message_ = "Operators on unknown types not currently supported");
+ff.core.Unit_.Unit()
 };
 chooseType_(magic_(t1_), magic_(t2_));
-e_.copy(arguments_ = List(a1_.copy(value_ = e1_), a2_.copy(value_ = e2_)))
+pipe_dot(e_)({(_c) =>
+ff.compiler.Syntax_.ECall(at_ = _c.at_, tailCall_ = _c.tailCall_, function_ = _c.function_, typeArguments_ = _c.typeArguments_, arguments_ = List(pipe_dot(a1_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e1_)
+}), pipe_dot(a2_)({(_c) =>
+ff.compiler.Syntax_.Argument(at_ = _c.at_, name_ = _c.name_, value_ = e2_)
+})))
+})
 case (_) =>
-ff.compiler.Inference_.fail_(e_.at_, ("Unknown operator: " + operator_))
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ("Unknown operator: " + operator_))
 })
 }
 
-def inferEtaExpansion_(environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, at_ : ff.compiler.Syntax_.Location, signature_ : ff.compiler.Syntax_.Signature, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = {
-val parameters_ = signature_.parameters_.filter_({(_w1) =>
-_w1.default_.getEmpty_()
-}).map_({(p_) =>
+def Inference_inferEtaExpansion(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, at_ : ff.compiler.Syntax_.Location, signature_ : ff.compiler.Syntax_.Signature, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (self_, environment_, expected_, at_, signature_, term_) match {
+case (self_, _, _, _, _, _) =>
+val parameters_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = ff.core.List_.List_filter[ff.compiler.Syntax_.Parameter](self_ = signature_.parameters_, body_ = {(_w1) =>
+ff.core.Option_.Option_getEmpty[ff.compiler.Syntax_.Term](self_ = _w1.default_)
+}), body_ = {(p_) =>
 p_.name_
 });
-val body_ = ff.compiler.Syntax_.ECall(at_, ff.core.Bool_.False(), term_, List(), parameters_.map_({(x_) =>
-ff.compiler.Syntax_.Argument(at_, ff.core.Option_.Some(x_), ff.compiler.Syntax_.EVariable(at_, x_, List(), List()))
+val body_ : ff.compiler.Syntax_.Term = ff.compiler.Syntax_.ECall(at_ = at_, tailCall_ = ff.core.Bool_.False(), function_ = term_, typeArguments_ = List(), arguments_ = ff.core.List_.List_map[ff.core.String_.String, ff.compiler.Syntax_.Argument](self_ = parameters_, body_ = {(x_) =>
+ff.compiler.Syntax_.Argument(at_ = at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = x_), value_ = ff.compiler.Syntax_.EVariable(at_ = at_, name_ = x_, generics_ = List(), instances_ = List()))
 }));
-val lambda_ = ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(at_, List(ff.compiler.Syntax_.MatchCase(at_ = at_, patterns_ = parameters_.map_({(_w1) =>
-ff.compiler.Syntax_.PVariable(at_, ff.core.Option_.Some(_w1))
-}), condition_ = ff.core.Option_.None(), body_ = body_))));
-self_.inferTerm_(environment_, expected_, lambda_)
+val lambda_ : ff.compiler.Syntax_.Term = ff.compiler.Syntax_.ELambda(at_ = at_, lambda_ = ff.compiler.Syntax_.Lambda(at_ = at_, cases_ = List(ff.compiler.Syntax_.MatchCase(at_ = at_, patterns_ = ff.core.List_.List_map[ff.core.String_.String, ff.compiler.Syntax_.MatchPattern](self_ = parameters_, body_ = {(_w1) =>
+ff.compiler.Syntax_.PVariable(at_ = at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = _w1))
+}), condition_ = ff.core.Option_.None[ff.compiler.Syntax_.Term](), body_ = body_))));
+ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = expected_, term_ = lambda_)
 }
 
-def inferArguments_(at_ : ff.compiler.Syntax_.Location, environment_ : ff.compiler.Environment_.Environment, parameters_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter], arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]) : ff.core.List_.List[ff.compiler.Syntax_.Argument] = {
-var remainingArguments_ = arguments_;
-val newArguments_ = parameters_.map_({(p_) =>
-val t_ = p_.valueType_;
+def Inference_inferArguments(self_ : ff.compiler.Inference_.Inference, at_ : ff.compiler.Syntax_.Location, environment_ : ff.compiler.Environment_.Environment, parameters_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter], arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument]) : ff.core.List_.List[ff.compiler.Syntax_.Argument] = (self_, at_, environment_, parameters_, arguments_) match {
+case (self_, _, _, _, _) =>
+var remainingArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = arguments_;
+val newArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.compiler.Syntax_.Argument](self_ = parameters_, body_ = {(p_) =>
+val t_ : ff.compiler.Syntax_.Type = p_.valueType_;
 def defaultArgument_() : ff.compiler.Syntax_.Argument = {
-p_.default_.map_({(e_) =>
-val e2_ = self_.inferTerm_(environment_, t_, e_);
-ff.compiler.Syntax_.Argument(at_, ff.core.Option_.Some(p_.name_), e2_)
-}).else_({() =>
-ff.compiler.Inference_.fail_(at_, ("Missing argument: " + p_.name_))
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Argument](self_ = p_.default_, body_ = {(e_) =>
+val e2_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = e_);
+ff.compiler.Syntax_.Argument(at_ = at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = p_.name_), value_ = e2_)
+}), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Argument](at_ = at_, message_ = ("Missing argument: " + p_.name_))
 })
 }
 pipe_dot(remainingArguments_)({
@@ -675,54 +802,61 @@ defaultArgument_()
 case (List(ff.compiler.Syntax_.Argument(at_, ff.core.Option_.None(), e_), remaining__seq @ _*)) =>
 val remaining_ = remaining__seq.toList;
 remainingArguments_ = remaining_;
-val e2_ = self_.inferTerm_(environment_, t_, e_);
-ff.compiler.Syntax_.Argument(at_, ff.core.Option_.Some(p_.name_), e2_)
+val e2_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = e_);
+ff.compiler.Syntax_.Argument(at_ = at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = p_.name_), value_ = e2_)
 case (_) =>
-remainingArguments_.find_({(_w1) =>
-_w1.name_.contains_(p_.name_)
-}).map_({
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.compiler.Syntax_.Argument, ff.compiler.Syntax_.Argument](self_ = ff.core.List_.List_find[ff.compiler.Syntax_.Argument](self_ = remainingArguments_, body_ = {(_w1) =>
+ff.core.Option_.Option_contains[ff.core.String_.String](self_ = _w1.name_, value_ = p_.name_)
+}), body_ = {
 case (ff.compiler.Syntax_.Argument(at_, _, e_)) =>
-remainingArguments_ = remainingArguments_.filter_({(_w1) =>
-(!_w1.name_.contains_(p_.name_))
+remainingArguments_ = ff.core.List_.List_filter[ff.compiler.Syntax_.Argument](self_ = remainingArguments_, body_ = {(_w1) =>
+(!ff.core.Option_.Option_contains[ff.core.String_.String](self_ = _w1.name_, value_ = p_.name_))
 });
-val e2_ = self_.inferTerm_(environment_, t_, e_);
-ff.compiler.Syntax_.Argument(at_, ff.core.Option_.Some(p_.name_), e2_)
-}).else_({() =>
+val e2_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = t_, term_ = e_);
+ff.compiler.Syntax_.Argument(at_ = at_, name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = p_.name_), value_ = e2_)
+}), body_ = {() =>
 defaultArgument_()
 })
 })
 });
-remainingArguments_.first_().each_({
+ff.core.Option_.Option_each[ff.compiler.Syntax_.Argument](self_ = ff.core.List_.List_first[ff.compiler.Syntax_.Argument](self_ = remainingArguments_), body_ = {
 case (ff.compiler.Syntax_.Argument(at_, ff.core.Option_.None(), _)) =>
-ff.compiler.Inference_.fail_(at_, "Too many arguments")
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = "Too many arguments");
+ff.core.Unit_.Unit()
 case (ff.compiler.Syntax_.Argument(at_, ff.core.Option_.Some(name_), _)) =>
-ff.compiler.Inference_.fail_(at_, ("Unknown argument: " + name_))
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = ("Unknown argument: " + name_));
+ff.core.Unit_.Unit()
 });
 newArguments_
 }
 
-def lookup_(environment_ : ff.compiler.Environment_.Environment, at_ : ff.compiler.Syntax_.Location, symbol_ : ff.core.String_.String, typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]) : ff.core.Option_.Option[ff.compiler.Environment_.Instantiated] = {
-environment_.symbols_.get_(symbol_).map_({(scheme_) =>
-val instantiation_ = ff.core.Core_.if_((!typeArguments_.getEmpty_()), {() =>
-ff.core.Core_.if_((scheme_.signature_.generics_.getSize_() != typeArguments_.getSize_()), {() =>
-ff.compiler.Inference_.fail_(at_, ((((("Wrong number of type parameters for " + symbol_) + ", expected ") + scheme_.signature_.generics_.getSize_()) + ", got ") + typeArguments_.getSize_()))
+def Inference_lookup(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, at_ : ff.compiler.Syntax_.Location, symbol_ : ff.core.String_.String, typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]) : ff.core.Option_.Option[ff.compiler.Environment_.Instantiated] = (self_, environment_, at_, symbol_, typeArguments_) match {
+case (self_, _, _, _, _) =>
+ff.core.Option_.Option_map[ff.compiler.Environment_.Scheme, ff.compiler.Environment_.Instantiated](self_ = ff.core.Map_.Map_get[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = environment_.symbols_, key_ = symbol_), body_ = {(scheme_) =>
+val instantiation_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]] = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]]](condition_ = (!ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = typeArguments_)), body_ = {() =>
+ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (ff.core.List_.List_getSize[ff.core.String_.String](self_ = scheme_.signature_.generics_) != ff.core.List_.List_getSize[ff.compiler.Syntax_.Type](self_ = typeArguments_)), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = ((((("Wrong number of type parameters for " + symbol_) + ", expected ") + ff.core.List_.List_getSize[ff.core.String_.String](self_ = scheme_.signature_.generics_)) + ", got ") + ff.core.List_.List_getSize[ff.compiler.Syntax_.Type](self_ = typeArguments_)))
 });
-scheme_.signature_.generics_.zip_(typeArguments_)
-}).else_({() =>
-scheme_.signature_.generics_.map_({(name_) =>
-ff.core.Pair_.Pair(name_, self_.unification_.freshTypeVariable_(at_))
+ff.core.List_.List_zip[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = scheme_.signature_.generics_, that_ = typeArguments_)
+}), body_ = {() =>
+ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]](self_ = scheme_.signature_.generics_, body_ = {(name_) =>
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type](first_ = name_, second_ = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = at_))
 })
 });
-val instantiationMap_ = instantiation_.getMap_();
-val parameters_ = scheme_.signature_.parameters_.map_({(p_) =>
-p_.copy(valueType_ = self_.unification_.instantiate_(instantiationMap_, p_.valueType_))
-});
-val returnType_ = self_.unification_.instantiate_(instantiationMap_, scheme_.signature_.returnType_);
-val signature_ = scheme_.signature_.copy(generics_ = List(), constraints_ = List(), parameters_ = parameters_, returnType_ = returnType_);
-ff.compiler.Environment_.Instantiated(typeArguments_ = instantiation_, scheme_ = scheme_.copy(signature_ = signature_))
+val instantiationMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type] = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = instantiation_);
+val parameters_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.compiler.Syntax_.Parameter](self_ = scheme_.signature_.parameters_, body_ = {(p_) =>
+pipe_dot(p_)({(_c) =>
+ff.compiler.Syntax_.Parameter(at_ = _c.at_, mutable_ = _c.mutable_, name_ = _c.name_, valueType_ = ff.compiler.Unification_.Unification_instantiate(self_ = self_.unification_, instantiation_ = instantiationMap_, type_ = p_.valueType_), default_ = _c.default_)
 })
-}
-
+});
+val returnType_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_instantiate(self_ = self_.unification_, instantiation_ = instantiationMap_, type_ = scheme_.signature_.returnType_);
+val signature_ : ff.compiler.Syntax_.Signature = pipe_dot(scheme_.signature_)({(_c) =>
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = List(), constraints_ = List(), parameters_ = parameters_, returnType_ = returnType_)
+});
+ff.compiler.Environment_.Instantiated(typeArguments_ = instantiation_, scheme_ = pipe_dot(scheme_)({(_c) =>
+ff.compiler.Environment_.Scheme(isVariable_ = _c.isVariable_, isMutable_ = _c.isMutable_, signature_ = signature_)
+}))
+})
 }
 
 

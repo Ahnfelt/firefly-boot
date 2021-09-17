@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -37,12 +39,8 @@ object Log_ {
 sealed abstract class Log extends Product with Serializable
 
 
-implicit class Log_extend0(self_ : ff.core.Log_.Log) {
-
-def debug_[T](value_ : T) : ff.core.Unit_.Unit = {
+def Log_debug[T](self_ : ff.core.Log_.Log, value_ : T) : ff.core.Unit_.Unit = {
 println(value_)
-}
-
 }
 
 

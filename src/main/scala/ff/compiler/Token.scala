@@ -21,6 +21,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -66,37 +68,38 @@ case class LAssignMinus() extends TokenKind
 case class LAssignLink() extends TokenKind
 
 
-implicit class Token_extend0(token_ : ff.compiler.Token_.Token) {
-
-def at_() : ff.compiler.Syntax_.Location = {
-ff.compiler.Syntax_.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
+def Token_at(token_ : ff.compiler.Token_.Token) : ff.compiler.Syntax_.Location = (token_) match {
+case (token_) =>
+ff.compiler.Syntax_.Location(file_ = token_.file_, line_ = token_.startLine_, column_ = ((token_.startOffset_ - token_.startLineOffset_) + 1))
 }
 
-def raw_() : ff.core.String_.String = {
-token_.code_.slice_(token_.startOffset_, token_.stopOffset_)
+def Token_raw(token_ : ff.compiler.Token_.Token) : ff.core.String_.String = (token_) match {
+case (token_) =>
+ff.core.String_.String_slice(self_ = token_.code_, from_ = token_.startOffset_, until_ = token_.stopOffset_)
 }
 
-def is_(kind1_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = {
+def Token_is(token_ : ff.compiler.Token_.Token, kind1_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = (token_, kind1_) match {
+case (token_, _) =>
 (token_.kind_ == kind1_)
 }
 
-def is2_(kind1_ : ff.compiler.Token_.TokenKind, kind2_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = {
+def Token_is2(token_ : ff.compiler.Token_.Token, kind1_ : ff.compiler.Token_.TokenKind, kind2_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = (token_, kind1_, kind2_) match {
+case (token_, _, _) =>
 ((token_.kind_ == kind1_) || (token_.kind_ == kind2_))
 }
 
-def is3_(kind1_ : ff.compiler.Token_.TokenKind, kind2_ : ff.compiler.Token_.TokenKind, kind3_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = {
+def Token_is3(token_ : ff.compiler.Token_.Token, kind1_ : ff.compiler.Token_.TokenKind, kind2_ : ff.compiler.Token_.TokenKind, kind3_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = (token_, kind1_, kind2_, kind3_) match {
+case (token_, _, _, _) =>
 (((token_.kind_ == kind1_) || (token_.kind_ == kind2_)) || (token_.kind_ == kind3_))
 }
 
-def rawIs_(value_ : ff.core.String_.String) : ff.core.Bool_.Bool = {
-(((token_.stopOffset_ - token_.startOffset_) == value_.getSize_()) && token_.code_.sliceEquals_(token_.startOffset_, value_, 0, value_.getSize_()))
+def Token_rawIs(token_ : ff.compiler.Token_.Token, value_ : ff.core.String_.String) : ff.core.Bool_.Bool = (token_, value_) match {
+case (token_, _) =>
+(((token_.stopOffset_ - token_.startOffset_) == ff.core.String_.String_getSize(self_ = value_)) && ff.core.String_.String_sliceEquals(self_ = token_.code_, offset_ = token_.startOffset_, that_ = value_, thatOffset_ = 0, length_ = ff.core.String_.String_getSize(self_ = value_), ignoreCase_ = ff.core.Bool_.False()))
 }
 
-}
-
-implicit class TokenKind_extend1(self_ : ff.compiler.Token_.TokenKind) {
-
-def beforeSeparator_() : ff.core.Bool_.Bool = {
+def TokenKind_beforeSeparator(self_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.compiler.Token_.LEnd()) =>
 ff.core.Bool_.False()
@@ -151,7 +154,8 @@ ff.core.Bool_.False()
 })
 }
 
-def afterSeparator_() : ff.core.Bool_.Bool = {
+def TokenKind_afterSeparator(self_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.compiler.Token_.LEnd()) =>
 ff.core.Bool_.False()
@@ -206,7 +210,8 @@ ff.core.Bool_.False()
 })
 }
 
-def afterKeyword_() : ff.core.Bool_.Bool = {
+def TokenKind_afterKeyword(self_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.compiler.Token_.LEnd()) =>
 ff.core.Bool_.False()
@@ -259,8 +264,6 @@ ff.core.Bool_.False()
 case (ff.compiler.Token_.LAssignLink()) =>
 ff.core.Bool_.False()
 })
-}
-
 }
 
 

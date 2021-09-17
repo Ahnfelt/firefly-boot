@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -38,40 +40,38 @@ type Array[T] = java.util.ArrayList[T];
 
 
 
-implicit class Array_extend0[T](self_ : ff.core.Array_.Array[T]) {
-
-def getEmpty_() : ff.core.Bool_.Bool = {
+def Array_getEmpty[T](self_ : ff.core.Array_.Array[T]) : ff.core.Bool_.Bool = {
 self_.isEmpty()
 }
 
-def getSize_() : ff.core.Int_.Int = {
+def Array_getSize[T](self_ : ff.core.Array_.Array[T]) : ff.core.Int_.Int = {
 self_.size()
 }
 
-def expect_(index_ : ff.core.Int_.Int) : T = {
+def Array_expect[T](self_ : ff.core.Array_.Array[T], index_ : ff.core.Int_.Int) : T = {
 self_.get(index_)
 }
 
-def expectFirst_() : T = {
-self_.expect_(0)
+def Array_expectFirst[T](self_ : ff.core.Array_.Array[T]) : T = (self_) match {
+case (self_) =>
+ff.core.Array_.Array_expect[T](self_ = self_, index_ = 0)
 }
 
-def expectLast_() : T = {
-self_.expect_((self_.getSize_() - 1))
+def Array_expectLast[T](self_ : ff.core.Array_.Array[T]) : T = (self_) match {
+case (self_) =>
+ff.core.Array_.Array_expect[T](self_ = self_, index_ = (ff.core.Array_.Array_getSize[T](self_ = self_) - 1))
 }
 
-def dropFirst_(count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {
+def Array_dropFirst[T](self_ : ff.core.Array_.Array[T], count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {
 val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_)); for(i <- count_.until(self_.size())) r.add(self_.get(i)); r
 }
 
-def dropLast_(count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {
+def Array_dropLast[T](self_ : ff.core.Array_.Array[T], count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {
 val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_)); for(i <- 0.until(self_.size() - count_)) r.add(self_.get(i)); r
 }
 
-def getList_() : ff.core.List_.List[T] = {
+def Array_getList[T](self_ : ff.core.Array_.Array[T]) : ff.core.List_.List[T] = {
 import scala.collection.JavaConverters._; self_.asScala.toList
-}
-
 }
 
 

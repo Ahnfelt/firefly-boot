@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -40,44 +42,40 @@ type ArrayBuilder[T] = scala.collection.mutable.ArrayBuffer[T];
 def empty_[T]() : ff.core.ArrayBuilder_.ArrayBuilder[T] = {
 scala.collection.mutable.ArrayBuffer[T]()
 }
-implicit class ArrayBuilder_extend0[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) {
-
-def getArray_() : ff.core.Array_.Array[T] = {
+def ArrayBuilder_getArray[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Array_.Array[T] = {
 val r = new java.util.ArrayList[T](self_.length); for(i <- 0.until(self_.length)) r.add(self_(i)); r
 }
 
-def getEmpty_() : ff.core.Bool_.Bool = {
+def ArrayBuilder_getEmpty[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Bool_.Bool = {
 self_.isEmpty
 }
 
-def getSize_() : ff.core.Int_.Int = {
+def ArrayBuilder_getSize[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Int_.Int = {
 self_.size
 }
 
-def append_(value_ : T) : ff.core.Unit_.Unit = {
+def ArrayBuilder_append[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T], value_ : T) : ff.core.Unit_.Unit = {
 self_.append(value_)
 }
 
-def modify_(index_ : ff.core.Int_.Int, body_ : Function1[T, T]) : ff.core.Unit_.Unit = {
+def ArrayBuilder_modify[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T], index_ : ff.core.Int_.Int, body_ : Function1[T, T]) : ff.core.Unit_.Unit = {
 self_.update(index_, body_(self_(index_)))
 }
 
-def drain_() : ff.core.Array_.Array[T] = {
-val result =(self_.getArray_()); self_.clear(); result
+def ArrayBuilder_drain[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Array_.Array[T] = {
+val result = ArrayBuilder_getArray(self_); self_.clear(); result
 }
 
-def getList_() : ff.core.List_.List[T] = {
+def ArrayBuilder_getList[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.List_.List[T] = {
 self_.toList
 }
 
-def getLast_() : ff.core.Option_.Option[T] = {
+def ArrayBuilder_getLast[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Option_.Option[T] = {
 self_.lastOption
 }
 
-def expectLast_() : T = {
+def ArrayBuilder_expectLast[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : T = {
 self_.last
-}
-
 }
 
 

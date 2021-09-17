@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -46,15 +48,14 @@ def unapply[T](value : Option[T]) = scala.Some(value).collectFirst { case scala.
 }
 
 
-implicit class Option_extend0[T](self_ : ff.core.Option_.Option[T]) {
+def Option_else[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[T2]) : S = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(value_)) => value_})}
 
-def else_[S >: T, T2 <: S](body_ : Function0[T2]) : S = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(value_)) => value_})}
+def Option_elseIf[T, S >: T, T2 <: S](self_ : Option[T], condition_ : Function0[ff.core.Bool_.Bool], body_ : Function0[T2]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => pipe_dot(condition_())({ case (ff.core.Bool_.True()) => ff.core.Option_.Some(body_()); case (ff.core.Bool_.False()) => ff.core.Option_.None()}); case (ff.core.Option_.Some(_)) => self_ })}
 
-def elseIf_[S >: T, T2 <: S](condition_ : Function0[ff.core.Bool_.Bool], body_ : Function0[T2]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => pipe_dot(condition_())({ case (ff.core.Bool_.True()) => ff.core.Option_.Some(body_()); case (ff.core.Bool_.False()) => ff.core.Option_.None()}); case (ff.core.Option_.Some(_)) => self_ })}
+def Option_getElse[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}
 
-def getElse_[S >: T, T2 <: S](body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}
-
-def getEmpty_() : ff.core.Bool_.Bool = {
+def Option_getEmpty[T](self_ : ff.core.Option_.Option[T]) : ff.core.Bool_.Bool = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
 ff.core.Bool_.True()
@@ -63,7 +64,8 @@ ff.core.Bool_.False()
 })
 }
 
-def getList_() : ff.core.List_.List[T] = {
+def Option_getList[T](self_ : ff.core.Option_.Option[T]) : ff.core.List_.List[T] = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
 List()
@@ -72,43 +74,49 @@ List(v_)
 })
 }
 
-def filter_(body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Option_.Option[T] = {
+def Option_filter[T](self_ : ff.core.Option_.Option[T], body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Option_.Option[T] = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (ff.core.Option_.Some(v_)) if body_(v_) =>
-ff.core.Option_.Some(v_)
+ff.core.Option_.Some[T](value_ = v_)
 case (_) =>
-ff.core.Option_.None()
+ff.core.Option_.None[T]()
 })
 }
 
-def map_[R](body_ : Function1[T, R]) : ff.core.Option_.Option[R] = {
+def Option_map[T, R](self_ : ff.core.Option_.Option[T], body_ : Function1[T, R]) : ff.core.Option_.Option[R] = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
-ff.core.Option_.None()
+ff.core.Option_.None[R]()
 case (ff.core.Option_.Some(v_)) =>
-ff.core.Option_.Some(body_(v_))
+ff.core.Option_.Some[R](value_ = body_(v_))
 })
 }
 
-def flatMap_[R](body_ : Function1[T, ff.core.Option_.Option[R]]) : ff.core.Option_.Option[R] = {
+def Option_flatMap[T, R](self_ : ff.core.Option_.Option[T], body_ : Function1[T, ff.core.Option_.Option[R]]) : ff.core.Option_.Option[R] = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
-ff.core.Option_.None()
+ff.core.Option_.None[R]()
 case (ff.core.Option_.Some(v_)) =>
 body_(v_)
 })
 }
 
-def each_(body_ : Function1[T, ff.core.Unit_.Unit]) : ff.core.Unit_.Unit = {
+def Option_each[T](self_ : ff.core.Option_.Option[T], body_ : Function1[T, ff.core.Unit_.Unit]) : ff.core.Unit_.Unit = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
 ff.core.Unit_.Unit()
 case (ff.core.Option_.Some(v_)) =>
 body_(v_)
-})
+});
+ff.core.Unit_.Unit()
 }
 
-def all_(body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = {
+def Option_all[T](self_ : ff.core.Option_.Option[T], body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
 ff.core.Bool_.True()
@@ -117,7 +125,8 @@ body_(v_)
 })
 }
 
-def any_(body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = {
+def Option_any[T](self_ : ff.core.Option_.Option[T], body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
 ff.core.Bool_.False()
@@ -126,16 +135,18 @@ body_(v_)
 })
 }
 
-def expect_() : T = {
+def Option_expect[T](self_ : ff.core.Option_.Option[T]) : T = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
-ff.core.Core_.panic_("None.expect()")
+ff.core.Core_.panic_[T](message_ = "None.expect()")
 case (ff.core.Option_.Some(v_)) =>
 v_
 })
 }
 
-def contains_(value_ : T) : ff.core.Bool_.Bool = {
+def Option_contains[T](self_ : ff.core.Option_.Option[T], value_ : T) : ff.core.Bool_.Bool = (self_, value_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
 ff.core.Bool_.False()
@@ -144,19 +155,14 @@ case (ff.core.Option_.Some(v_)) =>
 })
 }
 
-}
-
-implicit class Option_extend1[T](self_ : ff.core.Option_.Option[ff.core.Option_.Option[T]]) {
-
-def flatten_() : ff.core.Option_.Option[T] = {
+def Option_flatten[T](self_ : ff.core.Option_.Option[ff.core.Option_.Option[T]]) : ff.core.Option_.Option[T] = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>
-ff.core.Option_.None()
+ff.core.Option_.None[T]()
 case (ff.core.Option_.Some(v_)) =>
 v_
 })
-}
-
 }
 
 

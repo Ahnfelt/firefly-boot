@@ -21,6 +21,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -43,58 +45,60 @@ case class Scheme(isVariable_ : ff.core.Bool_.Bool, isMutable_ : ff.core.Bool_.B
 case class Instantiated(typeArguments_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]], scheme_ : ff.compiler.Environment_.Scheme)
 
 def make_(module_ : ff.compiler.Syntax_.Module, otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.compiler.Environment_.Environment = {
-ff.compiler.Environment_.Environment((ff.compiler.Environment_.processModule_(module_, ff.core.Bool_.True()).symbols_ ++ otherModules_.map_({(_w1) =>
-ff.compiler.Environment_.processModule_(_w1, ff.core.Bool_.False()).symbols_
-}).foldLeft_(ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Environment_.Scheme]())({(_w1, _w2) =>
+ff.compiler.Environment_.Environment(symbols_ = (ff.compiler.Environment_.processModule_(module_ = module_, isCurrentModule_ = ff.core.Bool_.True()).symbols_ ++ ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme], ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Module, ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = otherModules_, body_ = {(_w1) =>
+ff.compiler.Environment_.processModule_(module_ = _w1, isCurrentModule_ = ff.core.Bool_.False()).symbols_
+}), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Environment_.Scheme]())({(_w1, _w2) =>
 (_w1 ++ _w2)
 })))
 }
 
 def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.String) : T = {
-ff.core.Core_.panic_(((message_ + " ") + at_.show_()))
+ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Location_show(self_ = at_)))
 }
 
 def processModule_(module_ : ff.compiler.Syntax_.Module, isCurrentModule_ : ff.core.Bool_.Bool) : ff.compiler.Environment_.Environment = {
 def full_(module_ : ff.compiler.Syntax_.Module, name_ : ff.core.String_.String) : ff.core.String_.String = {
-((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + module_.file_.dropLast_(3)) + ".") + name_)
+((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + ".") + name_)
 }
-val functions_ = module_.functions_.map_({(d_) =>
-ff.core.Pair_.Pair(full_(module_, d_.signature_.name_), ff.compiler.Environment_.Scheme(ff.core.Bool_.False(), ff.core.Bool_.False(), d_.signature_))
+val functions_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = module_.functions_, body_ = {(d_) =>
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = full_(module_ = module_, name_ = d_.signature_.name_), second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.False(), isMutable_ = ff.core.Bool_.False(), signature_ = d_.signature_))
 });
-val lets_ = module_.lets_.map_({(d_) =>
-ff.core.Pair_.Pair(full_(module_, d_.name_), ff.compiler.Environment_.Scheme(ff.core.Bool_.True(), ff.core.Bool_.False(), ff.compiler.Syntax_.Signature(d_.at_, d_.name_, List(), List(), List(), d_.variableType_)))
+val lets_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]] = ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = module_.lets_, body_ = {(d_) =>
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = full_(module_ = module_, name_ = d_.name_), second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.True(), isMutable_ = ff.core.Bool_.False(), signature_ = ff.compiler.Syntax_.Signature(at_ = d_.at_, name_ = d_.name_, generics_ = List(), constraints_ = List(), parameters_ = List(), returnType_ = d_.variableType_)))
 });
-val extends_ = module_.extends_.flatMap_({(d_) =>
+val extends_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]] = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DExtend, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = module_.extends_, body_ = {(d_) =>
 pipe_dot(d_.type_)({
 case (t_ : ff.compiler.Syntax_.TVariable) =>
-ff.compiler.Environment_.fail_(t_.at_, ("Unexpected type variable: $" + t_.index_))
+ff.compiler.Environment_.fail_[ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]]](at_ = t_.at_, message_ = ("Unexpected type variable: $" + t_.index_))
 case (t_ : ff.compiler.Syntax_.TConstructor) =>
-val prefix_ = (t_.name_ + "_");
-val selfParameter_ = ff.compiler.Syntax_.Parameter(d_.at_, ff.core.Bool_.False(), d_.name_, d_.type_, ff.core.Option_.None());
-d_.methods_.map_({(method_) =>
-ff.core.Pair_.Pair((prefix_ + method_.signature_.name_), ff.compiler.Environment_.Scheme(ff.core.Bool_.False(), ff.core.Bool_.False(), method_.signature_.copy(generics_ = (d_.generics_ ++ method_.signature_.generics_), constraints_ = (d_.constraints_ ++ method_.signature_.constraints_), parameters_ = (List(List(selfParameter_), method_.signature_.parameters_).flatten))))
+val prefix_ : ff.core.String_.String = (t_.name_ + "_");
+val selfParameter_ : ff.compiler.Syntax_.Parameter = ff.compiler.Syntax_.Parameter(at_ = d_.at_, mutable_ = ff.core.Bool_.False(), name_ = d_.name_, valueType_ = d_.type_, default_ = ff.core.Option_.None[ff.compiler.Syntax_.Term]());
+ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = d_.methods_, body_ = {(method_) =>
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = (prefix_ + method_.signature_.name_), second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.False(), isMutable_ = ff.core.Bool_.False(), signature_ = pipe_dot(method_.signature_)({(_c) =>
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = (d_.generics_ ++ method_.signature_.generics_), constraints_ = (d_.constraints_ ++ method_.signature_.constraints_), parameters_ = (List(List(selfParameter_), method_.signature_.parameters_).flatten), returnType_ = _c.returnType_)
+})))
 })
 })
 });
-val fields_ = module_.types_.flatMap_({(d_) =>
-val prefix_ = (d_.name_ + "_");
-val t_ = ff.compiler.Syntax_.TConstructor(d_.at_, d_.name_, d_.generics_.map_({(g_) =>
-ff.compiler.Syntax_.TConstructor(d_.at_, g_, List())
+val fields_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]] = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DType, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = module_.types_, body_ = {(d_) =>
+val prefix_ : ff.core.String_.String = (d_.name_ + "_");
+val t_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = d_.at_, name_ = d_.name_, generics_ = ff.core.List_.List_map[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = d_.generics_, body_ = {(g_) =>
+ff.compiler.Syntax_.TConstructor(at_ = d_.at_, name_ = g_, generics_ = List())
 }));
-val selfParameter_ = ff.compiler.Syntax_.Parameter(d_.at_, ff.core.Bool_.False(), d_.name_, t_, ff.core.Option_.None());
-d_.commonFields_.map_({(f_) =>
-ff.core.Pair_.Pair(full_(module_, (prefix_ + f_.name_)), ff.compiler.Environment_.Scheme(ff.core.Bool_.True(), f_.mutable_, ff.compiler.Syntax_.Signature(at_ = f_.at_, name_ = f_.name_, generics_ = d_.generics_, constraints_ = d_.constraints_, parameters_ = List(selfParameter_), returnType_ = f_.valueType_)))
+val selfParameter_ : ff.compiler.Syntax_.Parameter = ff.compiler.Syntax_.Parameter(at_ = d_.at_, mutable_ = ff.core.Bool_.False(), name_ = d_.name_, valueType_ = t_, default_ = ff.core.Option_.None[ff.compiler.Syntax_.Term]());
+ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = d_.commonFields_, body_ = {(f_) =>
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = full_(module_ = module_, name_ = (prefix_ + f_.name_)), second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.True(), isMutable_ = f_.mutable_, signature_ = ff.compiler.Syntax_.Signature(at_ = f_.at_, name_ = f_.name_, generics_ = d_.generics_, constraints_ = d_.constraints_, parameters_ = List(selfParameter_), returnType_ = f_.valueType_)))
 })
 });
-val variants_ = module_.types_.flatMap_({(d_) =>
-val returnType_ = ff.compiler.Syntax_.TConstructor(d_.at_, full_(module_, d_.name_), d_.generics_.map_({(typeParameter_) =>
-ff.compiler.Syntax_.TConstructor(d_.at_, typeParameter_, List())
+val variants_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]] = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DType, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = module_.types_, body_ = {(d_) =>
+val returnType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = d_.at_, name_ = full_(module_ = module_, name_ = d_.name_), generics_ = ff.core.List_.List_map[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = d_.generics_, body_ = {(typeParameter_) =>
+ff.compiler.Syntax_.TConstructor(at_ = d_.at_, name_ = typeParameter_, generics_ = List())
 }));
-d_.variants_.map_({(variant_) =>
-ff.core.Pair_.Pair(full_(module_, variant_.name_), ff.compiler.Environment_.Scheme(ff.core.Bool_.False(), ff.core.Bool_.False(), ff.compiler.Syntax_.Signature(variant_.at_, variant_.name_, generics_ = d_.generics_, constraints_ = d_.constraints_, parameters_ = (d_.commonFields_ ++ variant_.fields_), returnType_ = returnType_)))
+ff.core.List_.List_map[ff.compiler.Syntax_.Variant, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = d_.variants_, body_ = {(variant_) =>
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = full_(module_ = module_, name_ = variant_.name_), second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.False(), isMutable_ = ff.core.Bool_.False(), signature_ = ff.compiler.Syntax_.Signature(at_ = variant_.at_, name_ = variant_.name_, generics_ = d_.generics_, constraints_ = d_.constraints_, parameters_ = (d_.commonFields_ ++ variant_.fields_), returnType_ = returnType_)))
 })
 });
-ff.compiler.Environment_.Environment(((((functions_ ++ lets_) ++ fields_) ++ extends_) ++ variants_).getMap_())
+ff.compiler.Environment_.Environment(symbols_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = ((((functions_ ++ lets_) ++ fields_) ++ extends_) ++ variants_)))
 }
 
 

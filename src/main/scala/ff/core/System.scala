@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -40,16 +42,12 @@ type System = SystemArguments;
 case class SystemArguments(array_ : ff.core.Array_.Array[ff.core.String_.String])
 
 
-implicit class System_extend0(self_ : ff.core.System_.System) {
-
-def arguments_() : ff.core.List_.List[ff.core.String_.String] = {
-self_.array_.getList_
+def System_arguments(self_ : ff.core.System_.System) : ff.core.List_.List[ff.core.String_.String] = {
+Array_getList(self_.array_)
 }
 
-def files_() : ff.core.FileSystem_.FileSystem = {
+def System_files(self_ : ff.core.System_.System) : ff.core.FileSystem_.FileSystem = {
 null
-}
-
 }
 
 

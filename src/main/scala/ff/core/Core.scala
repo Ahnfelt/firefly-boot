@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -39,9 +41,9 @@ val log_ : ff.core.Log_.Log = null
 def if_[T](condition_ : ff.core.Bool_.Bool, body_ : Function0[T]) : ff.core.Option_.Option[T] = {
 pipe_dot(condition_)({
 case (ff.core.Bool_.False()) =>
-ff.core.Option_.None()
+ff.core.Option_.None[T]()
 case (ff.core.Bool_.True()) =>
-ff.core.Option_.Some(body_())
+ff.core.Option_.Some[T](value_ = body_())
 })
 }
 
@@ -51,8 +53,9 @@ case (ff.core.Bool_.False()) =>
 ff.core.Unit_.Unit()
 case (ff.core.Bool_.True()) =>
 body_();
-ff.core.Core_.while_(condition_, body_)
-})
+ff.core.Core_.while_(condition_ = condition_, body_ = body_)
+});
+ff.core.Unit_.Unit()
 }
 
 def try_[T](body_ : Function0[T]) : ff.core.Try_.Try[T] = {

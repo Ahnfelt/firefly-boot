@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -37,22 +39,21 @@ object Set_ {
 case class Set[T](map_ : ff.core.Map_.Map[T, ff.core.Unit_.Unit])
 
 def empty_[T]() : ff.core.Set_.Set[T] = {
-ff.core.Set_.Set(ff.core.Map_.empty_())
+ff.core.Set_.Set[T](map_ = ff.core.Map_.empty_[T, ff.core.Unit_.Unit]())
 }
-implicit class Set_extend0[T](self_ : ff.core.Set_.Set[T]) {
-
-def add_(value_ : T) : ff.core.Set_.Set[T] = {
-ff.core.Set_.Set(self_.map_.add_(value_, ff.core.Unit_.Unit()))
-}
-
-def remove_(value_ : T) : ff.core.Set_.Set[T] = {
-ff.core.Set_.Set(self_.map_.remove_(value_))
+def Set_add[T](self_ : ff.core.Set_.Set[T], value_ : T) : ff.core.Set_.Set[T] = (self_, value_) match {
+case (self_, _) =>
+ff.core.Set_.Set[T](map_ = ff.core.Map_.Map_add[T, ff.core.Unit_.Unit](self_ = self_.map_, key_ = value_, value_ = ff.core.Unit_.Unit()))
 }
 
-def contains_(value_ : T) : ff.core.Bool_.Bool = {
-self_.map_.contains_(value_)
+def Set_remove[T](self_ : ff.core.Set_.Set[T], value_ : T) : ff.core.Set_.Set[T] = (self_, value_) match {
+case (self_, _) =>
+ff.core.Set_.Set[T](map_ = ff.core.Map_.Map_remove[T, ff.core.Unit_.Unit](self_ = self_.map_, key_ = value_))
 }
 
+def Set_contains[T](self_ : ff.core.Set_.Set[T], value_ : T) : ff.core.Bool_.Bool = (self_, value_) match {
+case (self_, _) =>
+ff.core.Map_.Map_contains[T, ff.core.Unit_.Unit](self_ = self_.map_, key_ = value_)
 }
 
 

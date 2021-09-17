@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -37,76 +39,76 @@ object FileSystem_ {
 sealed abstract class FileSystem extends Product with Serializable
 
 
-implicit class FileSystem_extend0(self_ : ff.core.FileSystem_.FileSystem) {
-
-def readText_(file_ : ff.core.String_.String) : ff.core.String_.String = {
+def FileSystem_readText(self_ : ff.core.FileSystem_.FileSystem, file_ : ff.core.String_.String) : ff.core.String_.String = {
 val source = scala.io.Source.fromFile(new java.io.File(file_), "UTF-8"); val result = source.mkString; source.close(); result
 }
 
-def writeText_(file_ : ff.core.String_.String, text_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
+def FileSystem_writeText(self_ : ff.core.FileSystem_.FileSystem, file_ : ff.core.String_.String, text_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
 val writer = new java.io.FileWriter(new java.io.File(file_)); writer.write(text_); writer.close()
 }
 
-def list_(path_ : ff.core.String_.String) : ff.core.List_.List[ff.core.String_.String] = {
+def FileSystem_list(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.List_.List[ff.core.String_.String] = {
 new java.io.File(path_).listFiles().map(_.toString.replace('\\', '/')).toList
 }
 
-def exists_(path_ : ff.core.String_.String) : ff.core.Bool_.Bool = {
+def FileSystem_exists(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.Bool_.Bool = {
 new java.io.File(path_).exists()
 }
 
-def isDirectory_(path_ : ff.core.String_.String) : ff.core.Bool_.Bool = {
+def FileSystem_isDirectory(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.Bool_.Bool = {
 new java.io.File(path_).isDirectory
 }
 
-def createDirectory_(path_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
+def FileSystem_createDirectory(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
 new java.io.File(path_).mkdir()
 }
 
-def createDirectories_(path_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
+def FileSystem_createDirectories(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
 new java.io.File(path_).mkdirs()
 }
 
-def delete_(path_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
+def FileSystem_delete(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
 if(!new java.io.File(path_).delete()) { throw new java.io.IOException("Could not delete " + path_) }
 }
 
-def rename_(fromPath_ : ff.core.String_.String, toPath_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
+def FileSystem_rename(self_ : ff.core.FileSystem_.FileSystem, fromPath_ : ff.core.String_.String, toPath_ : ff.core.String_.String) : ff.core.Unit_.Unit = {
 if(!new java.io.File(fromPath_).renameTo(new java.io.File(toPath_))) { throw new java.io.IOException("Could not rename " + fromPath_ + " to " + toPath_) }
 }
 
-def getAbsolutePath_(path_ : ff.core.String_.String) : ff.core.String_.String = {
+def FileSystem_getAbsolutePath(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = {
 new java.io.File(path_).getAbsolutePath.replace('\\', '/')
 }
 
-def directoryName_(path_ : ff.core.String_.String) : ff.core.String_.String = {
-path_.getReverse_().dropWhile_({(_w1) =>
+def FileSystem_directoryName(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = (self_, path_) match {
+case (self_, _) =>
+ff.core.String_.String_getReverse(self_ = ff.core.String_.String_dropFirst(self_ = ff.core.String_.String_dropWhile(self_ = ff.core.String_.String_getReverse(self_ = path_), p_ = {(_w1) =>
 (_w1 != '/')
-}).dropFirst_(1).getReverse_()
+}), count_ = 1))
 }
 
-def baseName_(path_ : ff.core.String_.String) : ff.core.String_.String = {
-path_.getReverse_().takeWhile_({(_w1) =>
+def FileSystem_baseName(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = (self_, path_) match {
+case (self_, _) =>
+ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = path_), p_ = {(_w1) =>
 (_w1 != '/')
-}).getReverse_()
+}))
 }
 
-def prefixName_(path_ : ff.core.String_.String) : ff.core.String_.String = {
-path_.getReverse_().takeWhile_({(_w1) =>
+def FileSystem_prefixName(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = (self_, path_) match {
+case (self_, _) =>
+ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = path_), p_ = {(_w1) =>
 (_w1 != '/')
-}).getReverse_().takeWhile_({(_w1) =>
+})), p_ = {(_w1) =>
 (_w1 != '.')
 })
 }
 
-def suffixName_(path_ : ff.core.String_.String) : ff.core.String_.String = {
-path_.getReverse_().takeWhile_({(_w1) =>
+def FileSystem_suffixName(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = (self_, path_) match {
+case (self_, _) =>
+ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = path_), p_ = {(_w1) =>
 (_w1 != '/')
-}).takeWhile_({(_w1) =>
+}), p_ = {(_w1) =>
 (_w1 != '.')
-}).getReverse_()
-}
-
+}))
 }
 
 

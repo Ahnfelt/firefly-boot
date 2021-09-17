@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -52,81 +54,87 @@ case (List()) =>
 result_
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (List(List(head_), result_).flatten))
+go_(list_ = tail_, result_ = (List(List(head_), result_).flatten))
 })
 }
-go_(list_, List())
+go_(list_ = list_, result_ = List())
 }
 
 def groupList_[K, V](list_ : ff.core.List_.List[ff.core.Pair_.Pair[K, V]]) : ff.core.Map_.Map[K, ff.core.List_.List[V]] = {
 val initial_ : ff.core.List_.List[ff.core.Pair_.Pair[K, ff.core.List_.List[V]]] = List();
-list_.foldLeft_(initial_.getMap_())({(map_, pair_) =>
-map_.addToList_(pair_.first_, ff.core.Core_.panic_("pair.second"))
+ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[K, V], ff.core.Map_.Map[K, ff.core.List_.List[V]]](self_ = list_, initial_ = ff.core.List_.List_getMap[K, ff.core.List_.List[V]](self_ = initial_))({(map_, pair_) =>
+ff.core.Map_.Map_addToList[K, V](self_ = map_, key_ = pair_.first_, value_ = ff.core.Core_.panic_[V](message_ = "pair.second"))
 })
 }
-implicit class List_extend0[T](self_ : ff.core.List_.List[T]) {
-
-def append_(list_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = {
-List(self_, list_).getFlatten_()
+def List_append[T](self_ : ff.core.List_.List[T], list_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = (self_, list_) match {
+case (self_, _) =>
+ff.core.List_.List_getFlatten[T](self_ = List(self_, list_))
 }
 
-def getArray_() : ff.core.Array_.Array[T] = {
-(new scala.collection.mutable.ArrayBuffer[T]() ++ self_).getArray_()
+def List_getArray[T](self_ : ff.core.List_.List[T]) : ff.core.Array_.Array[T] = {
+ArrayBuilder_getArray(new scala.collection.mutable.ArrayBuffer[T]() ++ self_)
 }
 
-def getSet_() : ff.core.Set_.Set[T] = {
-self_.foldLeft_(ff.core.Set_.empty_[T]())({(set_, value_) =>
-set_.add_(value_)
+def List_getSet[T](self_ : ff.core.List_.List[T]) : ff.core.Set_.Set[T] = (self_) match {
+case (self_) =>
+ff.core.List_.List_foldLeft[T, ff.core.Set_.Set[T]](self_ = self_, initial_ = ff.core.Set_.empty_[T]())({(set_, value_) =>
+ff.core.Set_.Set_add[T](self_ = set_, value_ = value_)
 })
 }
 
-def expect_(index_ : ff.core.Int_.Int) : T = {
+def List_expect[T](self_ : ff.core.List_.List[T], index_ : ff.core.Int_.Int) : T = (self_, index_) match {
+case (self_, _) =>
 def go_(list_ : ff.core.List_.List[T], i_ : ff.core.Int_.Int) : T = {
 pipe_dot(list_)({
 case (ff.core.List_.Empty()) =>
-ff.core.Core_.panic_(((("expect(" + index_) + ") on list of size ") + self_.getSize_()))
+ff.core.Core_.panic_[T](message_ = ((("expect(" + index_) + ") on list of size ") + ff.core.List_.List_getSize[T](self_ = self_)))
 case (ff.core.List_.Link(head_, _)) if (i_ == 0) =>
 head_
 case (ff.core.List_.Link(_, tail_)) =>
-go_(tail_, (i_ - 1))
+go_(list_ = tail_, i_ = (i_ - 1))
 })
 }
-go_(self_, index_)
+go_(list_ = self_, i_ = index_)
 }
 
-def first_() : ff.core.Option_.Option[T] = {
+def List_first[T](self_ : ff.core.List_.List[T]) : ff.core.Option_.Option[T] = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.core.List_.Empty()) =>
-ff.core.Option_.None()
+ff.core.Option_.None[T]()
 case (ff.core.List_.Link(head_, _)) =>
-ff.core.Option_.Some(head_)
+ff.core.Option_.Some[T](value_ = head_)
 })
 }
 
-def last_() : ff.core.Option_.Option[T] = {
+def List_last[T](self_ : ff.core.List_.List[T]) : ff.core.Option_.Option[T] = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.core.List_.Empty()) =>
-ff.core.Option_.None()
+ff.core.Option_.None[T]()
 case (ff.core.List_.Link(head_, ff.core.List_.Empty())) =>
-ff.core.Option_.Some(head_)
+ff.core.Option_.Some[T](value_ = head_)
 case (ff.core.List_.Link(_, tail_)) =>
-tail_.last_()
+ff.core.List_.List_last[T](self_ = tail_)
 })
 }
 
-def expectFirst_() : T = {
-self_.first_().else_({() =>
-ff.core.Core_.panic_("expectFirst() on empty list")
+def List_expectFirst[T](self_ : ff.core.List_.List[T]) : T = (self_) match {
+case (self_) =>
+ff.core.Option_.Option_else(self_ = ff.core.List_.List_first[T](self_ = self_), body_ = {() =>
+ff.core.Core_.panic_[T](message_ = "expectFirst() on empty list")
 })
 }
 
-def expectLast_() : T = {
-self_.last_().else_({() =>
-ff.core.Core_.panic_("expectLast() on empty list")
+def List_expectLast[T](self_ : ff.core.List_.List[T]) : T = (self_) match {
+case (self_) =>
+ff.core.Option_.Option_else(self_ = ff.core.List_.List_last[T](self_ = self_), body_ = {() =>
+ff.core.Core_.panic_[T](message_ = "expectLast() on empty list")
 })
 }
 
-def dropFirst_(count_ : ff.core.Int_.Int = 1) : ff.core.List_.List[T] = {
+def List_dropFirst[T](self_ : ff.core.List_.List[T], count_ : ff.core.Int_.Int = 1) : ff.core.List_.List[T] = (self_, count_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (_) if (count_ <= 0) =>
 self_
@@ -134,47 +142,53 @@ case (List()) =>
 self_
 case (List(_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-tail_.dropFirst_((count_ - 1))
+ff.core.List_.List_dropFirst[T](self_ = tail_, count_ = (count_ - 1))
 })
 }
 
-def dropLast_(count_ : ff.core.Int_.Int = 1) : ff.core.List_.List[T] = {
-self_.reverse_().dropFirst_(count_).reverse_()
+def List_dropLast[T](self_ : ff.core.List_.List[T], count_ : ff.core.Int_.Int = 1) : ff.core.List_.List[T] = (self_, count_) match {
+case (self_, _) =>
+ff.core.List_.List_reverse[T](self_ = ff.core.List_.List_dropFirst[T](self_ = ff.core.List_.List_reverse[T](self_ = self_), count_ = count_))
 }
 
-def takeFirst_(count_ : ff.core.Int_.Int = 1) : ff.core.List_.List[T] = {
+def List_takeFirst[T](self_ : ff.core.List_.List[T], count_ : ff.core.Int_.Int = 1) : ff.core.List_.List[T] = (self_, count_) match {
+case (self_, _) =>
 def go_(list_ : ff.core.List_.List[T], count_ : ff.core.Int_.Int, result_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = {
 pipe_dot(list_)({
 case (_) if (count_ <= 0) =>
-result_.reverse_()
+ff.core.List_.List_reverse[T](self_ = result_)
 case (List()) =>
-result_.reverse_()
+ff.core.List_.List_reverse[T](self_ = result_)
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (count_ - 1), (List(List(head_), result_).flatten))
+go_(list_ = tail_, count_ = (count_ - 1), result_ = (List(List(head_), result_).flatten))
 })
 }
-go_(self_, count_, List())
+go_(list_ = self_, count_ = count_, result_ = List())
 }
 
-def takeLast_(count_ : ff.core.Int_.Int = 1) : ff.core.List_.List[T] = {
-self_.reverse_().takeFirst_(count_).reverse_()
+def List_takeLast[T](self_ : ff.core.List_.List[T], count_ : ff.core.Int_.Int = 1) : ff.core.List_.List[T] = (self_, count_) match {
+case (self_, _) =>
+ff.core.List_.List_reverse[T](self_ = ff.core.List_.List_takeFirst[T](self_ = ff.core.List_.List_reverse[T](self_ = self_), count_ = count_))
 }
 
-def pairs_() : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.Int_.Int, T]] = {
-var i_ = 0;
-self_.map_({(x_) =>
-val r_ = ff.core.Pair_.Pair(i_, x_);
+def List_pairs[T](self_ : ff.core.List_.List[T]) : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.Int_.Int, T]] = (self_) match {
+case (self_) =>
+var i_ : ff.core.Int_.Int = 0;
+ff.core.List_.List_map[T, ff.core.Pair_.Pair[ff.core.Int_.Int, T]](self_ = self_, body_ = {(x_) =>
+val r_ : ff.core.Pair_.Pair[ff.core.Int_.Int, T] = ff.core.Pair_.Pair[ff.core.Int_.Int, T](first_ = i_, second_ = x_);
 i_ += 1;
 r_
 })
 }
 
-def slice_(from_ : ff.core.Int_.Int, until_ : ff.core.Int_.Int) : ff.core.List_.List[T] = {
-self_.dropFirst_(from_).takeFirst_((until_ - from_))
+def List_slice[T](self_ : ff.core.List_.List[T], from_ : ff.core.Int_.Int, until_ : ff.core.Int_.Int) : ff.core.List_.List[T] = (self_, from_, until_) match {
+case (self_, _, _) =>
+ff.core.List_.List_takeFirst[T](self_ = ff.core.List_.List_dropFirst[T](self_ = self_, count_ = from_), count_ = (until_ - from_))
 }
 
-def getEmpty_() : ff.core.Bool_.Bool = {
+def List_getEmpty[T](self_ : ff.core.List_.List[T]) : ff.core.Bool_.Bool = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (List()) =>
 ff.core.Bool_.True()
@@ -183,31 +197,35 @@ ff.core.Bool_.False()
 })
 }
 
-def getSize_() : ff.core.Int_.Int = {
+def List_getSize[T](self_ : ff.core.List_.List[T]) : ff.core.Int_.Int = (self_) match {
+case (self_) =>
 def go_(list_ : ff.core.List_.List[T], result_ : ff.core.Int_.Int) : ff.core.Int_.Int = {
 pipe_dot(list_)({
 case (List()) =>
 result_
 case (List(_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (result_ + 1))
+go_(list_ = tail_, result_ = (result_ + 1))
 })
 }
-go_(self_, 0)
+go_(list_ = self_, result_ = 0)
 }
 
-def each_(body_ : Function1[T, ff.core.Unit_.Unit]) : ff.core.Unit_.Unit = {
+def List_each[T](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.Unit_.Unit]) : ff.core.Unit_.Unit = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (List()) =>
 ff.core.Unit_.Unit()
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
 body_(head_);
-tail_.each_(body_)
-})
+ff.core.List_.List_each[T](self_ = tail_, body_ = body_)
+});
+ff.core.Unit_.Unit()
 }
 
-def all_(body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = {
+def List_all[T](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (List()) =>
 ff.core.Bool_.True()
@@ -216,11 +234,12 @@ val _ = __seq.toList;
 ff.core.Bool_.False()
 case (List(_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-tail_.all_(body_)
+ff.core.List_.List_all[T](self_ = tail_, body_ = body_)
 })
 }
 
-def any_(body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = {
+def List_any[T](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (List()) =>
 ff.core.Bool_.False()
@@ -229,99 +248,106 @@ val _ = __seq.toList;
 ff.core.Bool_.True()
 case (List(_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-tail_.any_(body_)
+ff.core.List_.List_any[T](self_ = tail_, body_ = body_)
 })
 }
 
-def find_(body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Option_.Option[T] = {
+def List_find[T](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.Option_.Option[T] = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (List()) =>
-ff.core.Option_.None()
+ff.core.Option_.None[T]()
 case (List(head_, __seq @ _*)) if body_(head_) =>
 val _ = __seq.toList;
-ff.core.Option_.Some(head_)
+ff.core.Option_.Some[T](value_ = head_)
 case (List(_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-tail_.find_(body_)
+ff.core.List_.List_find[T](self_ = tail_, body_ = body_)
 })
 }
 
-def filter_(body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.List_.List[T] = {
+def List_filter[T](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.Bool_.Bool]) : ff.core.List_.List[T] = (self_, body_) match {
+case (self_, _) =>
 def go_(list_ : ff.core.List_.List[T], result_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = {
 pipe_dot(list_)({
 case (List()) =>
-result_.reverse_()
+ff.core.List_.List_reverse[T](self_ = result_)
 case (List(head_, tail__seq @ _*)) if body_(head_) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (List(List(head_), result_).flatten))
+go_(list_ = tail_, result_ = (List(List(head_), result_).flatten))
 case (List(_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, result_)
+go_(list_ = tail_, result_ = result_)
 })
 }
-go_(self_, List())
+go_(list_ = self_, result_ = List())
 }
 
-def map_[R](body_ : Function1[T, R]) : ff.core.List_.List[R] = {
+def List_map[T, R](self_ : ff.core.List_.List[T], body_ : Function1[T, R]) : ff.core.List_.List[R] = (self_, body_) match {
+case (self_, _) =>
 def go_(list_ : ff.core.List_.List[T], result_ : ff.core.List_.List[R]) : ff.core.List_.List[R] = {
 pipe_dot(list_)({
 case (List()) =>
-result_.reverse_()
+ff.core.List_.List_reverse[R](self_ = result_)
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (List(List(body_(head_)), result_).flatten))
+go_(list_ = tail_, result_ = (List(List(body_(head_)), result_).flatten))
 })
 }
-go_(self_, List())
+go_(list_ = self_, result_ = List())
 }
 
-def flatMap_[R](body_ : Function1[T, ff.core.List_.List[R]]) : ff.core.List_.List[R] = {
+def List_flatMap[T, R](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.List_.List[R]]) : ff.core.List_.List[R] = (self_, body_) match {
+case (self_, _) =>
 def go_(list_ : ff.core.List_.List[T], result_ : ff.core.List_.List[ff.core.List_.List[R]]) : ff.core.List_.List[R] = {
 pipe_dot(list_)({
 case (List()) =>
-result_.reverse_().getFlatten_()
+ff.core.List_.List_getFlatten[R](self_ = ff.core.List_.List_reverse[ff.core.List_.List[R]](self_ = result_))
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (List(List(body_(head_)), result_).flatten))
+go_(list_ = tail_, result_ = (List(List(body_(head_)), result_).flatten))
 })
 }
-go_(self_, List())
+go_(list_ = self_, result_ = List())
 }
 
-def getCollect_[R](body_ : Function1[T, ff.core.Option_.Option[R]]) : ff.core.List_.List[R] = {
+def List_getCollect[T, R](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.Option_.Option[R]]) : ff.core.List_.List[R] = (self_, body_) match {
+case (self_, _) =>
 def go_(list_ : ff.core.List_.List[T], result_ : ff.core.List_.List[R]) : ff.core.List_.List[R] = {
 pipe_dot(list_)({
 case (List()) =>
-result_.reverse_()
+ff.core.List_.List_reverse[R](self_ = result_)
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
 pipe_dot(body_(head_))({
 case (ff.core.Option_.None()) =>
-go_(tail_, result_)
+go_(list_ = tail_, result_ = result_)
 case (ff.core.Option_.Some(value_)) =>
-go_(tail_, (List(List(value_), result_).flatten))
+go_(list_ = tail_, result_ = (List(List(value_), result_).flatten))
 })
 })
 }
-go_(self_, List())
+go_(list_ = self_, result_ = List())
 }
 
-def getCollectFirst_[R](body_ : Function1[T, ff.core.Option_.Option[R]]) : ff.core.Option_.Option[R] = {
+def List_getCollectFirst[T, R](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.Option_.Option[R]]) : ff.core.Option_.Option[R] = (self_, body_) match {
+case (self_, _) =>
 pipe_dot(self_)({
 case (List()) =>
-ff.core.Option_.None()
+ff.core.Option_.None[R]()
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
 pipe_dot(body_(head_))({
 case (ff.core.Option_.None()) =>
-tail_.getCollectFirst_(body_)
+ff.core.List_.List_getCollectFirst[T, R](self_ = tail_, body_ = body_)
 case (ff.core.Option_.Some(value_)) =>
-ff.core.Option_.Some(value_)
+ff.core.Option_.Some[R](value_ = value_)
 })
 })
 }
 
-def foldLeft_[R](initial_ : R) : Function1[Function2[R, T, R], R] = {
+def List_foldLeft[T, R](self_ : ff.core.List_.List[T], initial_ : R) : Function1[Function2[R, T, R], R] = (self_, initial_) match {
+case (self_, _) =>
 {(body_) =>
 def go_(state_ : R, list_ : ff.core.List_.List[T]) : R = {
 pipe_dot(list_)({
@@ -329,159 +355,154 @@ case (List()) =>
 state_
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(body_(state_, head_), tail_)
+go_(state_ = body_(state_, head_), list_ = tail_)
 })
 }
-go_(initial_, self_)
+go_(state_ = initial_, list_ = self_)
 }
 }
 
-def updated_(index_ : ff.core.Int_.Int, value_ : T) : ff.core.List_.List[T] = {
+def List_updated[T](self_ : ff.core.List_.List[T], index_ : ff.core.Int_.Int, value_ : T) : ff.core.List_.List[T] = (self_, index_, value_) match {
+case (self_, _, _) =>
 def go_(list_ : ff.core.List_.List[T], i_ : ff.core.Int_.Int, result_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = {
 pipe_dot(list_)({
 case (List()) =>
-result_.reverse_()
+ff.core.List_.List_reverse[T](self_ = result_)
 case (List(head_, tail__seq @ _*)) if (i_ == 0) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (i_ - 1), (List(List(value_), result_).flatten))
+go_(list_ = tail_, i_ = (i_ - 1), result_ = (List(List(value_), result_).flatten))
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (i_ - 1), (List(List(head_), result_).flatten))
+go_(list_ = tail_, i_ = (i_ - 1), result_ = (List(List(head_), result_).flatten))
 })
 }
-go_(self_, index_, List())
+go_(list_ = self_, i_ = index_, result_ = List())
 }
 
-def modify_(index_ : ff.core.Int_.Int, body_ : Function1[T, T]) : ff.core.List_.List[T] = {
+def List_modify[T](self_ : ff.core.List_.List[T], index_ : ff.core.Int_.Int, body_ : Function1[T, T]) : ff.core.List_.List[T] = (self_, index_, body_) match {
+case (self_, _, _) =>
 def go_(list_ : ff.core.List_.List[T], i_ : ff.core.Int_.Int, result_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = {
 pipe_dot(list_)({
 case (List()) =>
-result_.reverse_()
+ff.core.List_.List_reverse[T](self_ = result_)
 case (List(head_, tail__seq @ _*)) if (i_ == 0) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (i_ - 1), (List(List(body_(head_)), result_).flatten))
+go_(list_ = tail_, i_ = (i_ - 1), result_ = (List(List(body_(head_)), result_).flatten))
 case (List(head_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (i_ - 1), (List(List(head_), result_).flatten))
+go_(list_ = tail_, i_ = (i_ - 1), result_ = (List(List(head_), result_).flatten))
 })
 }
-go_(self_, index_, List())
+go_(list_ = self_, i_ = index_, result_ = List())
 }
 
-def zip_[S](that_ : ff.core.List_.List[S]) : ff.core.List_.List[ff.core.Pair_.Pair[T, S]] = {
+def List_zip[T, S](self_ : ff.core.List_.List[T], that_ : ff.core.List_.List[S]) : ff.core.List_.List[ff.core.Pair_.Pair[T, S]] = (self_, that_) match {
+case (self_, _) =>
 def go_(list1_ : ff.core.List_.List[T], list2_ : ff.core.List_.List[S], result_ : ff.core.List_.List[ff.core.Pair_.Pair[T, S]]) : ff.core.List_.List[ff.core.Pair_.Pair[T, S]] = {
-pipe_dot(ff.core.Pair_.Pair(list1_, list2_))({
+pipe_dot(ff.core.Pair_.Pair[ff.core.List_.List[T], ff.core.List_.List[S]](first_ = list1_, second_ = list2_))({
 case (ff.core.Pair_.Pair(List(x_, xs__seq @ _*), List(y_, ys__seq @ _*))) =>
 val xs_ = xs__seq.toList;
 val ys_ = ys__seq.toList;
-go_(xs_, ys_, (List(List(ff.core.Pair_.Pair(x_, y_)), result_).flatten))
+go_(list1_ = xs_, list2_ = ys_, result_ = (List(List(ff.core.Pair_.Pair[T, S](first_ = x_, second_ = y_)), result_).flatten))
 case (_) =>
-ff.core.List_.reverseList_(result_)
+ff.core.List_.reverseList_[ff.core.Pair_.Pair[T, S]](list_ = result_)
 })
 }
-go_(self_, that_, List())
+go_(list1_ = self_, list2_ = that_, result_ = List())
 }
 
-def sortBy_(body_ : Function1[T, ff.core.String_.String]) : ff.core.List_.List[T] = {
-ff.core.Core_.if_((self_.getSize_() <= 1), {() =>
+def List_sortBy[T](self_ : ff.core.List_.List[T], body_ : Function1[T, ff.core.String_.String]) : ff.core.List_.List[T] = (self_, body_) match {
+case (self_, _) =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[T]](condition_ = (ff.core.List_.List_getSize[T](self_ = self_) <= 1), body_ = {() =>
 self_
-}).else_({() =>
+}), body_ = {() =>
 def divide_(list_ : ff.core.List_.List[T], xs_ : ff.core.List_.List[T], ys_ : ff.core.List_.List[T]) : ff.core.Pair_.Pair[ff.core.List_.List[T], ff.core.List_.List[T]] = {
 pipe_dot(list_)({
 case (List()) =>
-ff.core.Pair_.Pair(xs_, ys_)
+ff.core.Pair_.Pair[ff.core.List_.List[T], ff.core.List_.List[T]](first_ = xs_, second_ = ys_)
 case (List(x_)) =>
-ff.core.Pair_.Pair((List(List(x_), xs_).flatten), ys_)
+ff.core.Pair_.Pair[ff.core.List_.List[T], ff.core.List_.List[T]](first_ = (List(List(x_), xs_).flatten), second_ = ys_)
 case (List(x_, y_, tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-divide_(tail_, (List(List(x_), xs_).flatten), (List(List(y_), ys_).flatten))
+divide_(list_ = tail_, xs_ = (List(List(x_), xs_).flatten), ys_ = (List(List(y_), ys_).flatten))
 })
 }
 def merge_(xs_ : ff.core.List_.List[T], ys_ : ff.core.List_.List[T], result_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = {
-pipe_dot(ff.core.Pair_.Pair(xs_, ys_))({
+pipe_dot(ff.core.Pair_.Pair[ff.core.List_.List[T], ff.core.List_.List[T]](first_ = xs_, second_ = ys_))({
 case (ff.core.Pair_.Pair(List(x_, xs2__seq @ _*), List(y_, __seq @ _*))) if (body_(x_) < body_(y_)) =>
 val xs2_ = xs2__seq.toList;
 val _ = __seq.toList;
-merge_(xs2_, ys_, (List(List(x_), result_).flatten))
+merge_(xs_ = xs2_, ys_ = ys_, result_ = (List(List(x_), result_).flatten))
 case (ff.core.Pair_.Pair(List(x_, __seq @ _*), List(y_, ys2__seq @ _*))) =>
 val _ = __seq.toList;
 val ys2_ = ys2__seq.toList;
-merge_(xs_, ys2_, (List(List(y_), result_).flatten))
+merge_(xs_ = xs_, ys_ = ys2_, result_ = (List(List(y_), result_).flatten))
 case (ff.core.Pair_.Pair(List(x_, xs2__seq @ _*), List())) =>
 val xs2_ = xs2__seq.toList;
-merge_(xs2_, List(), (List(List(x_), result_).flatten))
+merge_(xs_ = xs2_, ys_ = List(), result_ = (List(List(x_), result_).flatten))
 case (ff.core.Pair_.Pair(List(), List(y_, ys2__seq @ _*))) =>
 val ys2_ = ys2__seq.toList;
-merge_(List(), ys2_, (List(List(y_), result_).flatten))
+merge_(xs_ = List(), ys_ = ys2_, result_ = (List(List(y_), result_).flatten))
 case (ff.core.Pair_.Pair(List(), List())) =>
-result_.reverse_()
+ff.core.List_.List_reverse[T](self_ = result_)
 })
 }
-val pair_ = divide_(self_, List(), List());
-merge_(pair_.first_.sortBy_(body_), pair_.second_.sortBy_(body_), List())
+val pair_ : ff.core.Pair_.Pair[ff.core.List_.List[T], ff.core.List_.List[T]] = divide_(list_ = self_, xs_ = List(), ys_ = List());
+merge_(xs_ = ff.core.List_.List_sortBy[T](self_ = pair_.first_, body_ = body_), ys_ = ff.core.List_.List_sortBy[T](self_ = pair_.second_, body_ = body_), result_ = List())
 })
 }
 
-def reverse_() : ff.core.List_.List[T] = {
-ff.core.List_.reverseList_(self_)
+def List_reverse[T](self_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = (self_) match {
+case (self_) =>
+ff.core.List_.reverseList_[T](list_ = self_)
 }
 
-}
-
-implicit class List_extend1[T](self_ : ff.core.List_.List[ff.core.List_.List[T]]) {
-
-def getFlatten_() : ff.core.List_.List[T] = {
+def List_getFlatten[T](self_ : ff.core.List_.List[ff.core.List_.List[T]]) : ff.core.List_.List[T] = (self_) match {
+case (self_) =>
 def go_(lists_ : ff.core.List_.List[ff.core.List_.List[T]], result_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = {
 pipe_dot(lists_)({
 case (List()) =>
-result_.reverse_()
+ff.core.List_.List_reverse[T](self_ = result_)
 case (List(List(), aas__seq @ _*)) =>
 val aas_ = aas__seq.toList;
-go_(aas_, result_)
+go_(lists_ = aas_, result_ = result_)
 case (List(List(a_, as__seq @ _*), aas__seq @ _*)) =>
 val as_ = as__seq.toList;
 val aas_ = aas__seq.toList;
-go_(ff.core.List_.Link(as_, aas_), (List(List(a_), result_).flatten))
+go_(lists_ = ff.core.List_.Link[ff.core.List_.List[T]](head_ = as_, tail_ = aas_), result_ = (List(List(a_), result_).flatten))
 })
 }
-go_(self_, List())
+go_(lists_ = self_, result_ = List())
 }
 
-}
-
-implicit class List_extend2[K, V](self_ : ff.core.List_.List[ff.core.Pair_.Pair[K, V]]) {
-
-def getMap_() : ff.core.Map_.Map[K, V] = {
-self_.foldLeft_(ff.core.Map_.empty_[K, V]())({(map_, pair_) =>
-map_.add_(pair_.first_, pair_.second_)
+def List_getMap[K, V](self_ : ff.core.List_.List[ff.core.Pair_.Pair[K, V]]) : ff.core.Map_.Map[K, V] = (self_) match {
+case (self_) =>
+ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[K, V], ff.core.Map_.Map[K, V]](self_ = self_, initial_ = ff.core.Map_.empty_[K, V]())({(map_, pair_) =>
+ff.core.Map_.Map_add[K, V](self_ = map_, key_ = pair_.first_, value_ = pair_.second_)
 })
 }
 
-def group_() : ff.core.Map_.Map[K, ff.core.List_.List[V]] = {
-ff.core.List_.groupList_(self_)
+def List_group[K, V](self_ : ff.core.List_.List[ff.core.Pair_.Pair[K, V]]) : ff.core.Map_.Map[K, ff.core.List_.List[V]] = (self_) match {
+case (self_) =>
+ff.core.List_.groupList_[K, V](list_ = self_)
 }
 
-def getUnzip_() : ff.core.Pair_.Pair[ff.core.List_.List[K], ff.core.List_.List[V]] = {
+def List_getUnzip[K, V](self_ : ff.core.List_.List[ff.core.Pair_.Pair[K, V]]) : ff.core.Pair_.Pair[ff.core.List_.List[K], ff.core.List_.List[V]] = (self_) match {
+case (self_) =>
 def go_(pairs_ : ff.core.List_.List[ff.core.Pair_.Pair[K, V]], ks_ : ff.core.List_.List[K], vs_ : ff.core.List_.List[V]) : ff.core.Pair_.Pair[ff.core.List_.List[K], ff.core.List_.List[V]] = {
 pipe_dot(pairs_)({
 case (List()) =>
-ff.core.Pair_.Pair(ks_.reverse_(), vs_.reverse_())
+ff.core.Pair_.Pair[ff.core.List_.List[K], ff.core.List_.List[V]](first_ = ff.core.List_.List_reverse[K](self_ = ks_), second_ = ff.core.List_.List_reverse[V](self_ = vs_))
 case (List(ff.core.Pair_.Pair(k_, v_), tail__seq @ _*)) =>
 val tail_ = tail__seq.toList;
-go_(tail_, (List(List(k_), ks_).flatten), (List(List(v_), vs_).flatten))
+go_(pairs_ = tail_, ks_ = (List(List(k_), ks_).flatten), vs_ = (List(List(v_), vs_).flatten))
 })
 }
-go_(self_, List(), List())
+go_(pairs_ = self_, ks_ = List(), vs_ = List())
 }
 
-}
-
-implicit class List_extend3(self_ : ff.core.List_.List[ff.core.String_.String]) {
-
-def join_(separator_ : ff.core.String_.String = "") : ff.core.String_.String = {
+def List_join(self_ : ff.core.List_.List[ff.core.String_.String], separator_ : ff.core.String_.String = "") : ff.core.String_.String = {
 self_.mkString(separator_)
-}
-
 }
 
 

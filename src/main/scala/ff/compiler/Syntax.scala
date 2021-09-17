@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -126,31 +128,25 @@ case class Trust() extends Safety
 case class Version(at_ : ff.compiler.Syntax_.Location, major_ : ff.core.Int_.Int, minor_ : ff.core.Int_.Int, patch_ : ff.core.Int_.Int)
 
 
-implicit class Location_extend0(self_ : ff.compiler.Syntax_.Location) {
-
-def show_() : ff.core.String_.String = {
+def Location_show(self_ : ff.compiler.Syntax_.Location) : ff.core.String_.String = (self_) match {
+case (self_) =>
 (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
 }
 
-}
-
-implicit class Type_extend1(self_ : ff.compiler.Syntax_.Type) {
-
-def show_() : ff.core.String_.String = {
+def Type_show(self_ : ff.compiler.Syntax_.Type) : ff.core.String_.String = (self_) match {
+case (self_) =>
 pipe_dot(self_)({
 case (ff.compiler.Syntax_.TConstructor(at_, name_, generics_)) =>
-ff.core.Core_.if_(generics_.getEmpty_(), {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = generics_), body_ = {() =>
 name_
-}).else_({() =>
-(((name_ + "[") + generics_.map_({(_w1) =>
-_w1.show_()
-}).join_(", ")) + "]")
+}), body_ = {() =>
+(((name_ + "[") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Type, ff.core.String_.String](self_ = generics_, body_ = {(_w1) =>
+ff.compiler.Syntax_.Type_show(self_ = _w1)
+}), separator_ = ", ")) + "]")
 })
 case (ff.compiler.Syntax_.TVariable(at_, index_)) =>
 ("$" + index_)
 })
-}
-
 }
 
 

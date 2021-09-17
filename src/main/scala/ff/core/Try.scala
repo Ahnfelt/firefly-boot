@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -38,12 +40,8 @@ type Try[+T] = scala.util.Try[T];
 
 
 
-implicit class Try_extend0[T](self_ : ff.core.Try_.Try[T]) {
-
-def else_(body_ : Function0[T]) : T = {
+def Try_else[T](self_ : ff.core.Try_.Try[T], body_ : Function0[T]) : T = {
 self_.getOrElse(body_())
-}
-
 }
 
 

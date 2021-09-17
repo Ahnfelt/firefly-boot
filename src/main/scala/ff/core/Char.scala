@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -38,20 +40,16 @@ type Char = scala.Char;
 
 
 
-implicit class Char_extend0(self_ : ff.core.Char_.Char) {
-
-def getIsLetter_() : ff.core.Bool_.Bool = {
+def Char_getIsLetter(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
 self_.isLetter
 }
 
-def getIsUpper_() : ff.core.Bool_.Bool = {
+def Char_getIsUpper(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
 self_.isUpper
 }
 
-def getIsLower_() : ff.core.Bool_.Bool = {
+def Char_getIsLower(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
 self_.isLower
-}
-
 }
 
 

@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -42,20 +44,16 @@ def unapply[A, B](value : Pair[A, B]) = scala.Some(value).collectFirst { case sc
 }
 
 
-implicit class Pair_extend0[A, B](self_ : ff.core.Pair_.Pair[A, B]) {
-
-def mapFirst_[C](body_ : Function1[A, C]) : ff.core.Pair_.Pair[C, B] = {
-self_.copy(_1 = body_(self_._1))}; def first_ = { self_._1
+def Pair_mapFirst[A, B, C](self_ : ff.core.Pair_.Pair[A, B], body_ : Function1[A, C]) : ff.core.Pair_.Pair[C, B] = {
+self_.copy(_1 = body_(self_._1))}; implicit class Pair_first_implicit[A, B](self_ : Pair[A, B]) { def first_ = { self_._1 }
 }
 
-def mapSecond_[C](body_ : Function1[B, C]) : ff.core.Pair_.Pair[A, C] = {
-self_.copy(_2 = body_(self_._2))}; def second_ = { self_._2
+def Pair_mapSecond[A, B, C](self_ : ff.core.Pair_.Pair[A, B], body_ : Function1[B, C]) : ff.core.Pair_.Pair[A, C] = {
+self_.copy(_2 = body_(self_._2))}; implicit class Pair_second_implicit[A, B](self_ : Pair[A, B]) { def second_ = { self_._2 }
 }
 
-def swap_() : ff.core.Pair_.Pair[B, A] = {
+def Pair_swap[A, B](self_ : ff.core.Pair_.Pair[A, B]) : ff.core.Pair_.Pair[B, A] = {
 (self_._2, self_._1)
-}
-
 }
 
 

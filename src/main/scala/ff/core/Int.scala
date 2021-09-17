@@ -19,6 +19,8 @@ import ff.core.Log_._
 
 import ff.core.Map_._
 
+import ff.core.Nothing_._
+
 import ff.core.Option_._
 
 import ff.core.Pair_._
@@ -38,20 +40,16 @@ type Int = scala.Int;
 
 
 
-implicit class Int_extend0(self_ : ff.core.Int_.Int) {
-
-def getTo_(inclusive_ : ff.core.Int_.Int) : ff.core.List_.List[ff.core.Int_.Int] = {
+def Int_getTo(self_ : ff.core.Int_.Int, inclusive_ : ff.core.Int_.Int) : ff.core.List_.List[ff.core.Int_.Int] = {
 self_.to(inclusive_).toList
 }
 
-def getUntil_(exclusive_ : ff.core.Int_.Int) : ff.core.List_.List[ff.core.Int_.Int] = {
+def Int_getUntil(self_ : ff.core.Int_.Int, exclusive_ : ff.core.Int_.Int) : ff.core.List_.List[ff.core.Int_.Int] = {
 self_.until(exclusive_).toList
 }
 
-def getAbs_() : ff.core.Int_.Int = {
+def Int_getAbs(self_ : ff.core.Int_.Int) : ff.core.Int_.Int = {
 self_.abs
-}
-
 }
 
 

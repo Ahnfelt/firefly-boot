@@ -10,7 +10,7 @@ extend self: String {
     takeWhile(p: Char => Bool): String { panic("magic") } scala "self_.takeWhile(p_)"
     slice(from: Int, until: Int): String { panic("magic") } scala "self_.slice(from_, until_)"
     sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("magic") } scala "self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)"
-    split(char: Char): Array[String] { panic("magic") } scala "self_.split(char_).toList.getArray_()" // We probably do not want the Scala semantics for this in the future
+    split(char: Char): Array[String] { panic("magic") } scala "List_getArray(self_.split(char_).toList)" // We probably do not want the Scala semantics for this in the future
     dropFirst(count: Int = 1): String { panic("magic") } scala "self_.drop(count_)"
     dropLast(count: Int = 1): String { panic("magic") } scala "self_.dropRight(count_)"
     expectInt(): Int { panic("magic") } scala "self_.toInt"
