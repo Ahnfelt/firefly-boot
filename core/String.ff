@@ -1,26 +1,47 @@
-type String {} scala "java.lang.String"
+type String {}
+    scala "java.lang.String"
 
 extend self: String {
-    getSize(): Int { panic("magic") } scala "self_.size"
-    expect(index: Int): Char { panic("magic") } scala "self_(index_)"
-    replace(needle: String, replacement: String): String { panic("magic") } scala "self_.replaceAllLiterally(needle_, replacement_)"
-    replaceFirst(needle: String, replacement: String): String { panic("magic") } scala "self_.replaceFirst(scala.util.matching.Regex.quote(needle_), replacement_)"
-    getReverse(): String { panic("magic") } scala "self_.reverse"
-    dropWhile(p: Char => Bool): String { panic("magic") } scala "self_.dropWhile(p_)"
-    takeWhile(p: Char => Bool): String { panic("magic") } scala "self_.takeWhile(p_)"
-    slice(from: Int, until: Int): String { panic("magic") } scala "self_.slice(from_, until_)"
-    sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("magic") } scala "self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)"
-    split(char: Char): Array[String] { panic("magic") } scala "List_getArray(self_.split(char_).toList)" // We probably do not want the Scala semantics for this in the future
-    dropFirst(count: Int = 1): String { panic("magic") } scala "self_.drop(count_)"
-    dropLast(count: Int = 1): String { panic("magic") } scala "self_.dropRight(count_)"
-    expectInt(): Int { panic("magic") } scala "self_.toInt"
-    first(): Option[Char] { panic("magic") } scala "self_.headOption"
-    last(): Option[Char] { panic("magic") } scala "self_.lastOption"
-    expectFirst(): Char { panic("magic") } scala "self_.head"
-    expectLast(): Char { panic("magic") } scala "self_.last"
-    //getIsLetter(): Bool { panic("magic") } scala ""
-    contains(substring : String) : Bool { panic("magic") } scala "self_.contains(substring_)"
-    startsWith(prefix : String) : Bool { panic("magic") } scala "self_.startsWith(prefix_)"
-    any(p: Char => Bool): Bool { panic("magic") } scala "self_.exists(p_)"
-    all(p: Char => Bool): Bool { panic("magic") } scala "self_.forall(p_)"
+    getSize(): Int { panic("magic") }
+        scala "self_.size"
+    expect(index: Int): Char { panic("magic") }
+        scala "self_(index_)"
+    replace(needle: String, replacement: String): String { panic("magic") }
+        scala "self_.replaceAllLiterally(needle_, replacement_)"
+    replaceFirst(needle: String, replacement: String): String { panic("magic") }
+        scala "self_.replaceFirst(scala.util.matching.Regex.quote(needle_), replacement_)"
+    getReverse(): String { panic("magic") }
+        scala "self_.reverse"
+    dropWhile(p: Char => Bool): String { panic("magic") }
+        scala "self_.dropWhile(p_)"
+    takeWhile(p: Char => Bool): String { panic("magic") }
+        scala "self_.takeWhile(p_)"
+    slice(from: Int, until: Int): String { panic("magic") }
+        scala "self_.slice(from_, until_)"
+    sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("magic") }
+        scala "self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)"
+    split(char: Char): Array[String] { panic("magic") }
+        scala "List_getArray(self_.split(char_).toList)" // We probably do not want the Scala semantics for this in the future
+    dropFirst(count: Int = 1): String { panic("magic") }
+        scala "self_.drop(count_)"
+    dropLast(count: Int = 1): String { panic("magic") }
+        scala "self_.dropRight(count_)"
+    expectInt(): Int { panic("magic") }
+        scala "self_.toInt"
+    first(): Option[Char] { panic("magic") }
+        scala "self_.headOption"
+    last(): Option[Char] { panic("magic") }
+        scala "self_.lastOption"
+    expectFirst(): Char { panic("magic") }
+        scala "self_.head"
+    expectLast(): Char { panic("magic") }
+        scala "self_.last"
+    contains(substring : String) : Bool { panic("magic") }
+        scala "self_.contains(substring_)"
+    startsWith(prefix : String) : Bool { panic("magic") }
+        scala "self_.startsWith(prefix_)"
+    any(p: Char => Bool): Bool { panic("magic") }
+        scala "self_.exists(p_)"
+    all(p: Char => Bool): Bool { panic("magic") }
+        scala "self_.forall(p_)"
 }

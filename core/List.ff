@@ -2,7 +2,7 @@ type List[T] {
     Empty scala "scala.collection.immutable.Nil"
     Link(head: T, tail: List[T]) scala "scala.collection.immutable.::"
 }
-scala "#type List[+T] = scala.collection.immutable.List[T]"
+    scala "#type List[+T] = scala.collection.immutable.List[T]"
 
 extend self[T]: List[T] {
 
@@ -11,7 +11,8 @@ extend self[T]: List[T] {
     }
 
     // toArray
-    getArray(): Array[T] { panic("magic") } scala "ArrayBuilder_getArray(new scala.collection.mutable.ArrayBuffer[T]() ++ self_)"
+    getArray(): Array[T] { panic("magic") }
+        scala "ArrayBuilder_getArray(new scala.collection.mutable.ArrayBuffer[T]() ++ self_)"
 
     // toSet
     getSet(): Set[T] {
@@ -332,7 +333,8 @@ extend self[K, V]: List[Pair[K, V]] {
 }
 
 extend self: List[String] {
-    join(separator: String = ""): String { panic("magic") } scala "self_.mkString(separator_)"
+    join(separator: String = ""): String { panic("magic") }
+        scala "self_.mkString(separator_)"
 }
 
 reverseList[T](list: List[T]): List[T] { // Hack to work around Scala/IDEA inference bug
