@@ -64,8 +64,8 @@ List()
 ff.compiler.Emitter_.emitLetDefinition_(_w1)
 }), module_.functions_.map_({(_w1) =>
 ff.compiler.Emitter_.emitFunctionDefinition_(_w1)
-}), module_.extends_.pairs_().map_({(pair_) =>
-ff.compiler.Emitter_.emitExtendImplicit_(pair_.second_, pair_.first_)
+}), module_.extends_.map_({(_w1) =>
+ff.compiler.Emitter_.emitExtendsDefinition_(_w1)
 }), module_.traits_.map_(ff.compiler.Emitter_.emitTraitDefinition_), module_.instances_.map_(ff.compiler.Emitter_.emitInstanceDefinition_), List("}"));
 module_.extends_.map_({(_w1) =>
 _w1.type_
@@ -166,17 +166,16 @@ val cases_ = definition_.body_.cases_.map_(ff.compiler.Emitter_.emitCase_).join_
 })
 }
 
-def emitExtendImplicit_(definition_ : ff.compiler.Syntax_.DExtend, index_ : ff.core.Int_.Int) : ff.core.String_.String = {
-val generics_ = ff.compiler.Emitter_.emitTypeParameters_(definition_.generics_);
-val implicits_ = ff.compiler.Emitter_.emitConstraints_(definition_.constraints_);
-val parameter_ = ((ff.compiler.Emitter_.escapeKeyword_(definition_.name_) + " : ") + ff.compiler.Emitter_.emitType_(definition_.type_));
-val methods_ = definition_.methods_.map_({(_w1) =>
-ff.compiler.Emitter_.emitFunctionDefinition_(_w1)
-}).join_("\n\n");
+def emitExtendsDefinition_(definition_ : ff.compiler.Syntax_.DExtend) : ff.core.String_.String = {
 val typeName_ = ff.compiler.Emitter_.extractTypeName_(definition_.type_).getReverse_().takeWhile_({(_w1) =>
 (_w1 != '.')
 }).getReverse_();
-((((((((((("implicit class " + typeName_) + "_extend") + index_) + generics_) + "(") + parameter_) + ")") + implicits_) + " {\n\n") + methods_) + "\n\n}")
+val methods_ = definition_.methods_.map_({(method_) =>
+method_.copy(signature_ = method_.signature_.copy(name_ = ((typeName_ + "_") + method_.signature_.name_)))
+});
+methods_.map_({(_w1) =>
+ff.compiler.Emitter_.emitFunctionDefinition_(_w1)
+}).join_("\n\n")
 }
 
 def emitTraitDefinition_(definition_ : ff.compiler.Syntax_.DTrait) : ff.core.String_.String = {

@@ -8,7 +8,7 @@ extend self[T]: ArrayBuilder[T] {
     getSize(): Int { panic("magic") } scala "self_.size"
     append(value: T): Unit { panic("magic") } scala "self_.append(value_)"
     modify(index: Int, body: T => T): Unit { panic("magic") } scala "self_.update(index_, body_(self_(index_)))"
-    drain(): Array[T] { panic("magic") } scala "val result = self_.getArray_(); self_.clear(); result"
+    drain(): Array[T] { panic("magic") } scala "val result = ArrayBuilder_getArray(self_); self_.clear(); result"
     getList(): List[T] { panic("magic") } scala "self_.toList"
     getLast(): Option[T] { panic("magic") } scala "self_.lastOption"
     expectLast(): T { panic("magic") } scala "self_.last"

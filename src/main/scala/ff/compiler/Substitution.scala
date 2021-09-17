@@ -38,7 +38,9 @@ object Substitution_ {
 
 case class Substitution(var substitution_ : ff.core.Map_.Map[ff.core.Int_.Int, ff.compiler.Syntax_.Type])
 
-
+def core_(name_ : ff.core.String_.String) : ff.core.String_.String = {
+((("ff:core/" + name_) + ".") + name_)
+}
 implicit class Substitution_extend0(self_ : ff.compiler.Substitution_.Substitution) {
 
 def substituteModule_(module_ : ff.compiler.Syntax_.Module) : ff.compiler.Syntax_.Module = {
@@ -133,11 +135,11 @@ field_.copy(value_ = self_.substituteTerm_(field_.value_))
 }
 
 def substituteType_(type_ : ff.compiler.Syntax_.Type) : ff.compiler.Syntax_.Type = (type_) match {
-case (ff.compiler.Syntax_.TVariable(_, i_)) =>
+case (ff.compiler.Syntax_.TVariable(at_, i_)) =>
 ff.core.Core_.if_(self_.has_(i_), {() =>
 self_.substituteType_(self_.get_(i_))
 }).else_({() =>
-type_
+ff.compiler.Syntax_.TConstructor(at_, ff.compiler.Substitution_.core_("Nothing"), List())
 })
 case (t_ : ff.compiler.Syntax_.TConstructor) =>
 t_.copy(generics_ = t_.generics_.map_({(t_) =>
@@ -151,6 +153,8 @@ case (ff.compiler.Syntax_.TVariable(_, i_)) if self_.has_(i_) =>
 val t_ = self_.get_(i_);
 self_.substitution_ = self_.substitution_.add_(index_, t_);
 t_
+case (ff.compiler.Syntax_.TVariable(at_, _)) =>
+ff.compiler.Syntax_.TConstructor(at_, ff.compiler.Substitution_.core_("Nothing"), List())
 case (t_) =>
 t_
 })

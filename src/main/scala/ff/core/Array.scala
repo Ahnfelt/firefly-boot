@@ -61,7 +61,7 @@ self_.expect_((self_.getSize_() - 1))
 }
 
 def dropFirst_(count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {
-val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_)); for(i <- count_.to(self_.size())) r.add(self_.get(i)); r
+val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_)); for(i <- count_.until(self_.size())) r.add(self_.get(i)); r
 }
 
 def dropLast_(count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {

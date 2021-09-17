@@ -47,7 +47,7 @@ import ff.core.Unit_._
 object Compiler_ {
 
 case class Compiler(files_ : ff.core.FileSystem_.FileSystem, outputPath_ : ff.core.String_.String, packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], var parsedModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var resolvedModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var inferredModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var emittedModules_ : ff.core.Set_.Set[ff.core.String_.String])
-val coreImports_ : ff.core.List_.List[ff.compiler.Syntax_.DImport] = List("Array", "ArrayBuilder", "Bool", "Char", "Core", "FileSystem", "Int", "List", "Log", "Map", "Option", "Pair", "Set", "String", "System", "Try", "Unit").map_({(moduleName_) =>
+val coreImports_ : ff.core.List_.List[ff.compiler.Syntax_.DImport] = List("Array", "ArrayBuilder", "Bool", "Char", "Core", "FileSystem", "Int", "List", "Log", "Map", "Nothing", "Option", "Pair", "Set", "String", "System", "Try", "Unit").map_({(moduleName_) =>
 ff.compiler.Syntax_.DImport(at_ = ff.compiler.Syntax_.Location("<prelude>", 1, 1), alias_ = moduleName_, package_ = ff.core.Pair_.Pair("ff", "core"), directory_ = List(), file_ = moduleName_)
 })
 def make_(files_ : ff.core.FileSystem_.FileSystem, outputPath_ : ff.core.String_.String, packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]) : ff.compiler.Compiler_.Compiler = {
@@ -104,7 +104,7 @@ _w1.instances_
 }));
 val result_ = ff.compiler.Inference_.make_(instances_).inferModule_(module_, otherModules_);
 self_.inferredModules_ = self_.inferredModules_.add_(((packageName_ + ":") + moduleName_), result_);
-module_
+result_
 })
 }
 

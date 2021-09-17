@@ -10,7 +10,7 @@ extend self[T]: Option[T] {
             | None => body()
             | Some(value) => value
         }
-    } scala "#def else_[S >: T, T2 <: S](body_ : Function0[T2]) : S = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(value_)) => value_})}"
+    } scala "#def Option_else[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[T2]) : S = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(value_)) => value_})}"
 
     elseIf(condition: () => Bool, body: () => T): Option[T] {
         self.{
@@ -21,7 +21,7 @@ extend self[T]: Option[T] {
                 }
             | Some(_) => self
         }
-    } scala "#def elseIf_[S >: T, T2 <: S](condition_ : Function0[ff.core.Bool_.Bool], body_ : Function0[T2]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => pipe_dot(condition_())({ case (ff.core.Bool_.True()) => ff.core.Option_.Some(body_()); case (ff.core.Bool_.False()) => ff.core.Option_.None()}); case (ff.core.Option_.Some(_)) => self_ })}"
+    } scala "#def Option_elseIf[T, S >: T, T2 <: S](self_ : Option[T], condition_ : Function0[ff.core.Bool_.Bool], body_ : Function0[T2]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => pipe_dot(condition_())({ case (ff.core.Bool_.True()) => ff.core.Option_.Some(body_()); case (ff.core.Bool_.False()) => ff.core.Option_.None()}); case (ff.core.Option_.Some(_)) => self_ })}"
 
     // orElse
     getElse(body: () => Option[T]): Option[T] {
@@ -29,7 +29,7 @@ extend self[T]: Option[T] {
             | None => body()
             | Some(_) => self
         }
-    } scala "#def getElse_[S >: T, T2 <: S](body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}"
+    } scala "#def Option_getElse[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}"
 
     // getOrElse removed (use else)
 

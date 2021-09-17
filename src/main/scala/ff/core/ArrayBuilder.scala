@@ -63,7 +63,7 @@ self_.update(index_, body_(self_(index_)))
 }
 
 def drain_() : ff.core.Array_.Array[T] = {
-val result = self_.getArray_(); self_.clear(); result
+val result =(self_.getArray_()); self_.clear(); result
 }
 
 def getList_() : ff.core.List_.List[T] = {

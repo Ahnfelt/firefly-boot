@@ -21,7 +21,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
         module.types.map(emitTypeDefinition)
         module.lets.map { emitLetDefinition(_) }
         module.functions.map { emitFunctionDefinition(_) }
-        module.extends.pairs().map { pair => emitExtendImplicit(pair.second, pair.first) }
+        module.extends.map { emitExtendsDefinition(_) }
         module.traits.map(emitTraitDefinition)
         module.instances.map(emitInstanceDefinition)
         ["}"]
@@ -101,14 +101,16 @@ emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     }
 }
 
-emitExtendImplicit(definition: DExtend, index: Int): String {
-    let generics = emitTypeParameters(definition.generics)
-    let implicits = emitConstraints(definition.constraints)
-    let parameter = escapeKeyword(definition.name) + " : " + emitType(definition.type)
-    let methods = definition.methods.map { emitFunctionDefinition(_) }.join("\n\n")
+emitExtendsDefinition(definition: DExtend): String {
     let typeName = extractTypeName(definition.type).getReverse().takeWhile { _ != '.' }.getReverse()
-    "implicit class " + typeName + "_extend" + index + generics +
-    "(" + parameter + ")" + implicits + " {\n\n" + methods + "\n\n}"
+    let methods = definition.methods.map { method =>
+        method.DFunction(
+            signature = method.signature.Signature(
+                name = typeName + "_" + method.signature.name
+            )
+        )
+    }
+    methods.map { emitFunctionDefinition(_) }.join("\n\n")
 }
 
 emitTraitDefinition(definition: DTrait): String {
