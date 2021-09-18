@@ -1,5 +1,6 @@
 type Pair[A, B](first: A, second: B) {
-    Pair() scala "scala.Tuple2"
+    Pair()
+        scala "scala.Tuple2"
 }
     scala "scala.Tuple2[A, B]"
 

@@ -248,10 +248,8 @@ ff.compiler.Syntax_.DFunction(at_ = signature_.at_, signature_ = signature_, bod
 
 def Parser_parseTargetOption(self_ : ff.compiler.Parser_.Parser, target_ : ff.core.String_.String) : ff.core.Option_.Option[ff.core.String_.String] = (self_, target_) match {
 case (self_, _) =>
-ff.core.Core_.if_[ff.compiler.Token_.Token](condition_ = ((ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), kind1_ = ff.compiler.Token_.LSeparator()) && ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_ahead(self_ = self_), kind1_ = ff.compiler.Token_.LKeyword())) && ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_ahead(self_ = self_), value_ = target_)), body_ = {() =>
-ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LSeparator())
-});
-ff.core.Core_.if_[ff.core.String_.String](condition_ = (ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), kind1_ = ff.compiler.Token_.LKeyword()) && ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), value_ = target_)), body_ = {() =>
+ff.core.Core_.if_[ff.core.String_.String](condition_ = ((ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), kind1_ = ff.compiler.Token_.LSeparator()) && ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_ahead(self_ = self_), kind1_ = ff.compiler.Token_.LKeyword())) && ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_ahead(self_ = self_), value_ = target_)), body_ = {() =>
+ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LSeparator());
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LKeyword());
 val result_ : ff.core.String_.String = ff.compiler.Token_.Token_raw(token_ = ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LString()));
 val dropCount_ : ff.core.Int_.Int = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Int_.Int](condition_ = ff.core.String_.String_startsWith(self_ = result_, prefix_ = "\"\"\""), body_ = {() =>

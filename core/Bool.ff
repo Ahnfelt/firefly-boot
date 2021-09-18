@@ -1,5 +1,7 @@
 type Bool {
-    False scala "false"
-    True scala "true"
+    False
+        scala "false"
+    True
+        scala "true"
 }
     scala "scala.Boolean"

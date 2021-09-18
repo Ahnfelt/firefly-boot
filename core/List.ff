@@ -1,6 +1,8 @@
 type List[T] {
-    Empty scala "scala.collection.immutable.Nil"
-    Link(head: T, tail: List[T]) scala "scala.collection.immutable.::"
+    Empty
+        scala "scala.collection.immutable.Nil"
+    Link(head: T, tail: List[T])
+        scala "scala.collection.immutable.::"
 }
     scala "#type List[+T] = scala.collection.immutable.List[T]"
 

@@ -1,6 +1,8 @@
 type Option[T] {
-    None scala "scala.None"
-    Some(value: T) scala "scala.Some"
+    None
+        scala "scala.None"
+    Some(value: T)
+        scala "scala.Some"
 }
     scala "#type Option[+T] = scala.Option[T]"
 

@@ -1,2 +1,5 @@
-type Unit { Unit scala "scala.Unit" }
+type Unit {
+    Unit
+        scala "scala.Unit"
+}
     scala "scala.Unit"
