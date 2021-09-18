@@ -171,11 +171,16 @@ ff.core.Unit_.Unit()
 ((ff.core.String_.String_expect(self_ = code_, index_ = i_) == '"') || (ff.core.String_.String_expect(self_ = code_, index_ = i_) == '\''))
 }, body_ = {() =>
 val endSign_ : ff.core.Char_.Char = ff.core.String_.String_expect(self_ = code_, index_ = i_);
-i_ += 1;
+var multiLine_ : ff.core.Bool_.Bool = (((((i_ + 2) < ff.core.String_.String_getSize(self_ = code_)) && (ff.core.String_.String_expect(self_ = code_, index_ = i_) == '"')) && (ff.core.String_.String_expect(self_ = code_, index_ = (i_ + 1)) == '"')) && (ff.core.String_.String_expect(self_ = code_, index_ = (i_ + 2)) == '"'));
+i_ += ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Int_.Int](condition_ = multiLine_, body_ = {() =>
+3
+}), body_ = {() =>
+1
+});
 ff.core.Core_.while_(condition_ = {() =>
-((i_ < ff.core.String_.String_getSize(self_ = code_)) && (ff.core.String_.String_expect(self_ = code_, index_ = i_) != endSign_))
+((i_ < ff.core.String_.String_getSize(self_ = code_)) && (multiLine_ || (ff.core.String_.String_expect(self_ = code_, index_ = i_) != endSign_)))
 }, body_ = {() =>
-ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (ff.core.String_.String_expect(self_ = code_, index_ = i_) == '\n'), body_ = {() =>
+ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = ((!multiLine_) && (ff.core.String_.String_expect(self_ = code_, index_ = i_) == '\n')), body_ = {() =>
 ff.core.Core_.panic_[ff.core.Nothing_.Nothing](message_ = (("Unexpected end of line in string started on line " + startLine_) + "."))
 });
 ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (i_ >= ff.core.String_.String_getSize(self_ = code_)), body_ = {() =>
@@ -191,7 +196,28 @@ ff.core.Unit_.Unit();
 ff.core.Unit_.Unit();
 ff.core.Unit_.Unit()
 });
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = (((((multiLine_ && ((i_ + 2) < ff.core.String_.String_getSize(self_ = code_))) && (((i_ + 3) >= ff.core.String_.String_getSize(self_ = code_)) || (ff.core.String_.String_expect(self_ = code_, index_ = (i_ + 3)) != '"'))) && (ff.core.String_.String_expect(self_ = code_, index_ = i_) == '"')) && (ff.core.String_.String_expect(self_ = code_, index_ = (i_ + 1)) == '"')) && (ff.core.String_.String_expect(self_ = code_, index_ = (i_ + 2)) == '"')), body_ = {() =>
+multiLine_ = ff.core.Bool_.False();
+i_ += 2;
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit()
+}), body_ = {() =>
 i_ += 1;
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit()
+});
 ff.core.Unit_.Unit();
 ff.core.Unit_.Unit();
 ff.core.Unit_.Unit();

@@ -63,11 +63,19 @@ ff.core.Array_.Array_expect[T](self_ = self_, index_ = (ff.core.Array_.Array_get
 }
 
 def Array_dropFirst[T](self_ : ff.core.Array_.Array[T], count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {
-val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_)); for(i <- count_.until(self_.size())) r.add(self_.get(i)); r
+
+            val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_))
+            for(i <- count_.until(self_.size())) r.add(self_.get(i))
+            r
+        
 }
 
 def Array_dropLast[T](self_ : ff.core.Array_.Array[T], count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {
-val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_)); for(i <- 0.until(self_.size() - count_)) r.add(self_.get(i)); r
+
+            val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_))
+            for(i <- 0.until(self_.size() - count_)) r.add(self_.get(i))
+            r
+        
 }
 
 def Array_getList[T](self_ : ff.core.Array_.Array[T]) : ff.core.List_.List[T] = {

@@ -160,7 +160,8 @@ extend self: Parser {
         if(self.current().is(LKeyword) && self.current().rawIs(target)) {
             self.skip(LKeyword)
             let result = self.skip(LString).raw()
-            result.dropFirst().dropLast()
+            let dropCount = if(result.startsWith("\"\"\"")) {3} else {1}
+            result.dropFirst(dropCount).dropLast(dropCount)
                 .replace("\\\"", "\"")
                 .replace("\\r", "\r")
                 .replace("\\n", "\n")

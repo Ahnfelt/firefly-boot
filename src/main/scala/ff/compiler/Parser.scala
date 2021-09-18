@@ -254,7 +254,12 @@ ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LSepar
 ff.core.Core_.if_[ff.core.String_.String](condition_ = (ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), kind1_ = ff.compiler.Token_.LKeyword()) && ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), value_ = target_)), body_ = {() =>
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LKeyword());
 val result_ : ff.core.String_.String = ff.compiler.Token_.Token_raw(token_ = ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LString()));
-ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_dropLast(self_ = ff.core.String_.String_dropFirst(self_ = result_, count_ = 1), count_ = 1), needle_ = "\\\"", replacement_ = "\""), needle_ = "\\r", replacement_ = "\r"), needle_ = "\\n", replacement_ = "\n"), needle_ = "\\t", replacement_ = "\t"), needle_ = "\\\\", replacement_ = "\\")
+val dropCount_ : ff.core.Int_.Int = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Int_.Int](condition_ = ff.core.String_.String_startsWith(self_ = result_, prefix_ = "\"\"\""), body_ = {() =>
+3
+}), body_ = {() =>
+1
+});
+ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_dropLast(self_ = ff.core.String_.String_dropFirst(self_ = result_, count_ = dropCount_), count_ = dropCount_), needle_ = "\\\"", replacement_ = "\""), needle_ = "\\r", replacement_ = "\r"), needle_ = "\\n", replacement_ = "\n"), needle_ = "\\t", replacement_ = "\t"), needle_ = "\\\\", replacement_ = "\\")
 })
 }
 
