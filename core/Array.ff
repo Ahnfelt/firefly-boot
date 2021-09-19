@@ -5,6 +5,7 @@ extend self[T]: Array[T] {
 
     getEmpty(): Bool { panic("magic") }
         scala "self_.isEmpty()"
+        javascript "self_.length == 0"
 
     getSize(): Int { panic("magic") }
         scala "self_.size()"
