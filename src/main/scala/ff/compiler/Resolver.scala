@@ -156,9 +156,9 @@ ff.compiler.Syntax_.Parameter(at_ = _c.at_, mutable_ = _c.mutable_, name_ = _c.n
 ff.compiler.Resolver_.Resolver_resolveTerm(self_ = self2_, term_ = _w1)
 }))
 })
-}), scalaTarget_ = _c.scalaTarget_)
+}), targets_ = _c.targets_)
 })
-}), scalaTarget_ = _c.scalaTarget_)
+}), targets_ = _c.targets_)
 })
 }
 
@@ -197,7 +197,7 @@ val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
 ff.compiler.Resolver_.Resolver(variables_ = ff.core.Map_.Map_add[ff.core.String_.String, ff.core.String_.String](self_ = self_.variables_, key_ = definition_.name_, value_ = definition_.name_), variants_ = _c.variants_, types_ = _c.types_, traits_ = _c.traits_)
 });
 pipe_dot(definition_)({(_c) =>
-ff.compiler.Syntax_.DLet(at_ = _c.at_, name_ = _c.name_, variableType_ = ff.compiler.Resolver_.Resolver_resolveType(self_ = self_, type_ = definition_.variableType_), value_ = ff.compiler.Resolver_.Resolver_resolveTerm(self_ = self_, term_ = definition_.value_), scalaTarget_ = _c.scalaTarget_)
+ff.compiler.Syntax_.DLet(at_ = _c.at_, name_ = _c.name_, variableType_ = ff.compiler.Resolver_.Resolver_resolveType(self_ = self_, type_ = definition_.variableType_), value_ = ff.compiler.Resolver_.Resolver_resolveTerm(self_ = self_, term_ = definition_.value_), targets_ = _c.targets_)
 })
 }
 
@@ -362,7 +362,7 @@ ff.compiler.Syntax_.Lambda(at_ = _c.at_, cases_ = ff.core.List_.List_map[ff.comp
 ff.compiler.Resolver_.Resolver_resolveCase(self_ = self2_, case_ = _w1)
 }))
 });
-ff.compiler.Syntax_.DFunction(at_ = definition_.at_, signature_ = signature_, body_ = body_, scalaTarget_ = definition_.scalaTarget_)
+ff.compiler.Syntax_.DFunction(at_ = definition_.at_, signature_ = signature_, body_ = body_, targets_ = definition_.targets_)
 }
 
 def Resolver_resolveCase(self_ : ff.compiler.Resolver_.Resolver, case_ : ff.compiler.Syntax_.MatchCase) : ff.compiler.Syntax_.MatchCase = (self_, case_) match {

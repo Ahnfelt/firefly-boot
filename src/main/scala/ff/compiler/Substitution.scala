@@ -62,7 +62,7 @@ ff.compiler.Syntax_.Module(packagePair_ = _c.packagePair_, file_ = _c.file_, dep
 def Substitution_substituteLetDefinition(self_ : ff.compiler.Substitution_.Substitution, definition_ : ff.compiler.Syntax_.DLet) : ff.compiler.Syntax_.DLet = (self_, definition_) match {
 case (self_, _) =>
 pipe_dot(definition_)({(_c) =>
-ff.compiler.Syntax_.DLet(at_ = _c.at_, name_ = _c.name_, variableType_ = ff.compiler.Substitution_.Substitution_substituteType(self_ = self_, type_ = definition_.variableType_), value_ = ff.compiler.Substitution_.Substitution_substituteTerm(self_ = self_, term_ = definition_.value_), scalaTarget_ = _c.scalaTarget_)
+ff.compiler.Syntax_.DLet(at_ = _c.at_, name_ = _c.name_, variableType_ = ff.compiler.Substitution_.Substitution_substituteType(self_ = self_, type_ = definition_.variableType_), value_ = ff.compiler.Substitution_.Substitution_substituteTerm(self_ = self_, term_ = definition_.value_), targets_ = _c.targets_)
 })
 }
 
@@ -78,7 +78,7 @@ ff.compiler.Substitution_.Substitution_substituteFunctionDefinition(self_ = self
 def Substitution_substituteFunctionDefinition(self_ : ff.compiler.Substitution_.Substitution, definition_ : ff.compiler.Syntax_.DFunction) : ff.compiler.Syntax_.DFunction = (self_, definition_) match {
 case (self_, _) =>
 pipe_dot(definition_)({(_c) =>
-ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = _c.signature_, body_ = ff.compiler.Substitution_.Substitution_substituteLambda(self_ = self_, definition_ = definition_.body_), scalaTarget_ = _c.scalaTarget_)
+ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = _c.signature_, body_ = ff.compiler.Substitution_.Substitution_substituteLambda(self_ = self_, definition_ = definition_.body_), targets_ = _c.targets_)
 })
 }
 

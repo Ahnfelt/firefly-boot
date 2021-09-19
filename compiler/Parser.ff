@@ -137,37 +137,43 @@ extend self: Parser {
         } else { self.freshTypeVariable(nameToken.at()) }
         self.skip(LAssign)
         let value = self.parseTerm()
-        let scalaTarget = self.parseTargetOption("scala")
-        DLet(nameToken.at(), nameToken.raw(), variableType, value, scalaTarget)
+        let targets = self.parseTargets()
+        DLet(nameToken.at(), nameToken.raw(), variableType, value, targets)
     }
     
     parseFunctionDefinition(): DFunction {
         let signature = self.parseSignature()
         let body = self.parseLambda(signature.parameters.getSize())
-        let scalaTarget = self.parseTargetOption("scala")
+        let targets = self.parseTargets()
         DFunction(
             signature.at,
             signature,
             body,
-            scalaTarget
+            targets
         )
     }
 
-    parseTargetOption(target: String): Option[String] {
-        if(self.current().is(LSeparator) && self.ahead().is(LKeyword) && self.ahead().rawIs(target)) {
-            self.skip(LSeparator)
-            self.skip(LKeyword)
-            let result = self.skip(LString).raw()
-            let dropCount = if(result.startsWith("\"\"\"")) {3} else {1}
-            result.dropFirst(dropCount).dropLast(dropCount)
-                .replace("\\\"", "\"")
-                .replace("\\r", "\r")
-                .replace("\\n", "\n")
-                .replace("\\t", "\t")
-                .replace("\\\\", "\\")
+    parseTargets(): Targets {
+        function parseTargetOption(target: String): Option[String] {
+            if(self.currentIsSeparator(LSemicolon) && self.ahead().is(LKeyword) && self.ahead().rawIs(target)) {
+                self.skip(LSeparator)
+                self.skip(LKeyword)
+                let result = self.skip(LString).raw()
+                let dropCount = if(result.startsWith("\"\"\"")) {3} else {1}
+                result.dropFirst(dropCount).dropLast(dropCount)
+                    .replace("\\\"", "\"")
+                    .replace("\\r", "\r")
+                    .replace("\\n", "\n")
+                    .replace("\\t", "\t")
+                    .replace("\\\\", "\\")
+            }
         }
+        let scala1 = parseTargetOption("scala")
+        let javaScript = parseTargetOption("javascript")
+        let scala = scala1.getElse { parseTargetOption("scala") }
+        Targets(scala = scala, javaScript = javaScript)
     }
-    
+
     parseSignature(): Signature {
         let nameToken = self.skip(LLower)
         let poly = if(self.current().rawIs("[")) {self.parseTypeParameters()} else {Poly([], [])}
@@ -276,23 +282,25 @@ extend self: Parser {
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-        let variants = if(!self.current().rawIs("{")) {[Variant(nameToken.at(), nameToken.raw(), [], None)]} else {
+        let variants = if(!self.current().rawIs("{")) {
+            [Variant(nameToken.at(), nameToken.raw(), [], Targets(None, None))]
+        } else {
             self.rawSkip(LBracketLeft, "{")
             let variantsBuilder = ArrayBuilder.empty[Variant]()
             while {!self.current().is(LBracketRight)} {
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-                let scalaTarget = self.parseTargetOption("scala")
+                let targets = self.parseTargets()
                 variantsBuilder.append(
-                    Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, scalaTarget)
+                    Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, targets)
                 )
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
             variantsBuilder.getList()
         }
-        let scalaTarget = self.parseTargetOption("scala")
-        DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, scalaTarget)
+        let targets = self.parseTargets()
+        DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, targets)
     }
     
     parseImportDefinition(): DImport {
@@ -639,7 +647,7 @@ extend self: Parser {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
             let body = self.parseLambda(defaultParameterCount = signature.parameters.getSize())
-            functions.append(DFunction(functionAt, signature, body, None))
+            functions.append(DFunction(functionAt, signature, body, Targets(None, None)))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()

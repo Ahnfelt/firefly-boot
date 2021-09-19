@@ -79,7 +79,7 @@ def Inference_inferLetDefinition(self_ : ff.compiler.Inference_.Inference, envir
 case (self_, _, _) =>
 val value_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = definition_.variableType_, term_ = definition_.value_);
 pipe_dot(definition_)({(_c) =>
-ff.compiler.Syntax_.DLet(at_ = _c.at_, name_ = _c.name_, variableType_ = _c.variableType_, value_ = value_, scalaTarget_ = _c.scalaTarget_)
+ff.compiler.Syntax_.DLet(at_ = _c.at_, name_ = _c.name_, variableType_ = _c.variableType_, value_ = value_, targets_ = _c.targets_)
 })
 }
 
@@ -99,7 +99,7 @@ ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(selfPattern_)
 }))
 });
 val function_ : ff.compiler.Syntax_.DFunction = pipe_dot(method_)({(_c) =>
-ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = signature_, body_ = lambda_, scalaTarget_ = _c.scalaTarget_)
+ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = signature_, body_ = lambda_, targets_ = _c.targets_)
 });
 ff.compiler.Inference_.Inference_inferFunctionDefinition(self_ = self_, environment_ = environment_, definition_ = function_)
 });
@@ -122,7 +122,7 @@ val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(
 _w1.second_.signature_.returnType_
 }), List(definition_.signature_.returnType_)).flatten));
 pipe_dot(definition_)({(_c) =>
-ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = _c.signature_, body_ = ff.compiler.Inference_.Inference_inferLambda(self_ = self_, environment_ = environment2_, expected_ = functionType_, lambda_ = definition_.body_), scalaTarget_ = _c.scalaTarget_)
+ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = _c.signature_, body_ = ff.compiler.Inference_.Inference_inferLambda(self_ = self_, environment_ = environment2_, expected_ = functionType_, lambda_ = definition_.body_), targets_ = _c.targets_)
 })
 }
 

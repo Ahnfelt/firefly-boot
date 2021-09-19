@@ -234,21 +234,22 @@ ff.compiler.Parser_.Parser_freshTypeVariable(self_ = self_, at_ = ff.compiler.To
 });
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LAssign());
 val value_ : ff.compiler.Syntax_.Term = ff.compiler.Parser_.Parser_parseTerm(self_ = self_);
-val scalaTarget_ : ff.core.Option_.Option[ff.core.String_.String] = ff.compiler.Parser_.Parser_parseTargetOption(self_ = self_, target_ = "scala");
-ff.compiler.Syntax_.DLet(at_ = ff.compiler.Token_.Token_at(token_ = nameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = nameToken_), variableType_ = variableType_, value_ = value_, scalaTarget_ = scalaTarget_)
+val targets_ : ff.compiler.Syntax_.Targets = ff.compiler.Parser_.Parser_parseTargets(self_ = self_);
+ff.compiler.Syntax_.DLet(at_ = ff.compiler.Token_.Token_at(token_ = nameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = nameToken_), variableType_ = variableType_, value_ = value_, targets_ = targets_)
 }
 
 def Parser_parseFunctionDefinition(self_ : ff.compiler.Parser_.Parser) : ff.compiler.Syntax_.DFunction = (self_) match {
 case (self_) =>
 val signature_ : ff.compiler.Syntax_.Signature = ff.compiler.Parser_.Parser_parseSignature(self_ = self_);
 val body_ : ff.compiler.Syntax_.Lambda = ff.compiler.Parser_.Parser_parseLambda(self_ = self_, defaultParameterCount_ = ff.core.List_.List_getSize[ff.compiler.Syntax_.Parameter](self_ = signature_.parameters_), ignoreGenerateKeyword_ = ff.core.Bool_.False(), allowColon_ = ff.core.Bool_.False());
-val scalaTarget_ : ff.core.Option_.Option[ff.core.String_.String] = ff.compiler.Parser_.Parser_parseTargetOption(self_ = self_, target_ = "scala");
-ff.compiler.Syntax_.DFunction(at_ = signature_.at_, signature_ = signature_, body_ = body_, scalaTarget_ = scalaTarget_)
+val targets_ : ff.compiler.Syntax_.Targets = ff.compiler.Parser_.Parser_parseTargets(self_ = self_);
+ff.compiler.Syntax_.DFunction(at_ = signature_.at_, signature_ = signature_, body_ = body_, targets_ = targets_)
 }
 
-def Parser_parseTargetOption(self_ : ff.compiler.Parser_.Parser, target_ : ff.core.String_.String) : ff.core.Option_.Option[ff.core.String_.String] = (self_, target_) match {
-case (self_, _) =>
-ff.core.Core_.if_[ff.core.String_.String](condition_ = ((ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), kind1_ = ff.compiler.Token_.LSeparator()) && ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_ahead(self_ = self_), kind1_ = ff.compiler.Token_.LKeyword())) && ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_ahead(self_ = self_), value_ = target_)), body_ = {() =>
+def Parser_parseTargets(self_ : ff.compiler.Parser_.Parser) : ff.compiler.Syntax_.Targets = (self_) match {
+case (self_) =>
+def parseTargetOption_(target_ : ff.core.String_.String) : ff.core.Option_.Option[ff.core.String_.String] = {
+ff.core.Core_.if_[ff.core.String_.String](condition_ = ((ff.compiler.Parser_.Parser_currentIsSeparator(self_ = self_, kind_ = ff.compiler.Token_.LSemicolon()) && ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_ahead(self_ = self_), kind1_ = ff.compiler.Token_.LKeyword())) && ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_ahead(self_ = self_), value_ = target_)), body_ = {() =>
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LSeparator());
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LKeyword());
 val result_ : ff.core.String_.String = ff.compiler.Token_.Token_raw(token_ = ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LString()));
@@ -259,6 +260,13 @@ val dropCount_ : ff.core.Int_.Int = ff.core.Option_.Option_else(self_ = ff.core.
 });
 ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_dropLast(self_ = ff.core.String_.String_dropFirst(self_ = result_, count_ = dropCount_), count_ = dropCount_), needle_ = "\\\"", replacement_ = "\""), needle_ = "\\r", replacement_ = "\r"), needle_ = "\\n", replacement_ = "\n"), needle_ = "\\t", replacement_ = "\t"), needle_ = "\\\\", replacement_ = "\\")
 })
+}
+val scala1_ : ff.core.Option_.Option[ff.core.String_.String] = parseTargetOption_(target_ = "scala");
+val javaScript_ : ff.core.Option_.Option[ff.core.String_.String] = parseTargetOption_(target_ = "javascript");
+val scala_ : ff.core.Option_.Option[ff.core.String_.String] = ff.core.Option_.Option_getElse(self_ = scala1_, body_ = {() =>
+parseTargetOption_(target_ = "scala")
+});
+ff.compiler.Syntax_.Targets(scala_ = scala_, javaScript_ = javaScript_)
 }
 
 def Parser_parseSignature(self_ : ff.compiler.Parser_.Parser) : ff.compiler.Syntax_.Signature = (self_) match {
@@ -417,7 +425,7 @@ List()
 ff.compiler.Parser_.Parser_parseFunctionParameters(self_ = self_, allowMutable_ = ff.core.Bool_.True())
 });
 val variants_ : ff.core.List_.List[ff.compiler.Syntax_.Variant] = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.compiler.Syntax_.Variant]](condition_ = (!ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), value_ = "{")), body_ = {() =>
-List(ff.compiler.Syntax_.Variant(at_ = ff.compiler.Token_.Token_at(token_ = nameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = nameToken_), fields_ = List(), scalaTarget_ = ff.core.Option_.None[ff.core.String_.String]()))
+List(ff.compiler.Syntax_.Variant(at_ = ff.compiler.Token_.Token_at(token_ = nameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = nameToken_), fields_ = List(), targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())))
 }), body_ = {() =>
 ff.compiler.Parser_.Parser_rawSkip(self_ = self_, kind_ = ff.compiler.Token_.LBracketLeft(), value_ = "{");
 val variantsBuilder_ : ff.core.ArrayBuilder_.ArrayBuilder[ff.compiler.Syntax_.Variant] = ff.core.ArrayBuilder_.empty_[ff.compiler.Syntax_.Variant]();
@@ -430,8 +438,8 @@ List()
 }), body_ = {() =>
 ff.compiler.Parser_.Parser_parseFunctionParameters(self_ = self_, allowMutable_ = ff.core.Bool_.True())
 });
-val scalaTarget_ : ff.core.Option_.Option[ff.core.String_.String] = ff.compiler.Parser_.Parser_parseTargetOption(self_ = self_, target_ = "scala");
-ff.core.ArrayBuilder_.ArrayBuilder_append[ff.compiler.Syntax_.Variant](self_ = variantsBuilder_, value_ = ff.compiler.Syntax_.Variant(at_ = ff.compiler.Token_.Token_at(token_ = variantNameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = variantNameToken_), fields_ = variantFields_, scalaTarget_ = scalaTarget_));
+val targets_ : ff.compiler.Syntax_.Targets = ff.compiler.Parser_.Parser_parseTargets(self_ = self_);
+ff.core.ArrayBuilder_.ArrayBuilder_append[ff.compiler.Syntax_.Variant](self_ = variantsBuilder_, value_ = ff.compiler.Syntax_.Variant(at_ = ff.compiler.Token_.Token_at(token_ = variantNameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = variantNameToken_), fields_ = variantFields_, targets_ = targets_));
 ff.core.Core_.if_[ff.compiler.Token_.Token](condition_ = (!ff.compiler.Token_.Token_is(token_ = ff.compiler.Parser_.Parser_current(self_ = self_), kind1_ = ff.compiler.Token_.LBracketRight())), body_ = {() =>
 ff.compiler.Parser_.Parser_skipSeparator(self_ = self_, kind_ = ff.compiler.Token_.LSemicolon())
 });
@@ -440,8 +448,8 @@ ff.core.Unit_.Unit()
 ff.compiler.Parser_.Parser_rawSkip(self_ = self_, kind_ = ff.compiler.Token_.LBracketRight(), value_ = "}");
 ff.core.ArrayBuilder_.ArrayBuilder_getList[ff.compiler.Syntax_.Variant](self_ = variantsBuilder_)
 });
-val scalaTarget_ : ff.core.Option_.Option[ff.core.String_.String] = ff.compiler.Parser_.Parser_parseTargetOption(self_ = self_, target_ = "scala");
-ff.compiler.Syntax_.DType(at_ = ff.compiler.Token_.Token_at(token_ = nameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = nameToken_), generics_ = poly_.generics_, constraints_ = poly_.constraints_, commonFields_ = commonFields_, variants_ = variants_, scalaTarget_ = scalaTarget_)
+val targets_ : ff.compiler.Syntax_.Targets = ff.compiler.Parser_.Parser_parseTargets(self_ = self_);
+ff.compiler.Syntax_.DType(at_ = ff.compiler.Token_.Token_at(token_ = nameToken_), name_ = ff.compiler.Token_.Token_raw(token_ = nameToken_), generics_ = poly_.generics_, constraints_ = poly_.constraints_, commonFields_ = commonFields_, variants_ = variants_, targets_ = targets_)
 }
 
 def Parser_parseImportDefinition(self_ : ff.compiler.Parser_.Parser) : ff.compiler.Syntax_.DImport = (self_) match {
@@ -982,7 +990,7 @@ ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_current(self_
 val functionAt_ : ff.compiler.Syntax_.Location = ff.compiler.Token_.Token_at(token_ = ff.compiler.Parser_.Parser_rawSkip(self_ = self_, kind_ = ff.compiler.Token_.LKeyword(), value_ = "function"));
 val signature_ : ff.compiler.Syntax_.Signature = ff.compiler.Parser_.Parser_parseSignature(self_ = self_);
 val body_ : ff.compiler.Syntax_.Lambda = ff.compiler.Parser_.Parser_parseLambda(self_ = self_, defaultParameterCount_ = ff.core.List_.List_getSize[ff.compiler.Syntax_.Parameter](self_ = signature_.parameters_), ignoreGenerateKeyword_ = ff.core.Bool_.False(), allowColon_ = ff.core.Bool_.False());
-ff.core.ArrayBuilder_.ArrayBuilder_append[ff.compiler.Syntax_.DFunction](self_ = functions_, value_ = ff.compiler.Syntax_.DFunction(at_ = functionAt_, signature_ = signature_, body_ = body_, scalaTarget_ = ff.core.Option_.None[ff.core.String_.String]()));
+ff.core.ArrayBuilder_.ArrayBuilder_append[ff.compiler.Syntax_.DFunction](self_ = functions_, value_ = ff.compiler.Syntax_.DFunction(at_ = functionAt_, signature_ = signature_, body_ = body_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())));
 ff.compiler.Parser_.Parser_skipSeparator(self_ = self_, kind_ = ff.compiler.Token_.LSemicolon());
 ff.core.Unit_.Unit()
 });

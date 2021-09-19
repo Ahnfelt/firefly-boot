@@ -48,7 +48,7 @@ emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]): Str
 emitTypeDefinition(definition: DType): String {
     let generics = emitTypeParameters(definition.generics)
     if(
-        definition.scalaTarget.getEmpty() &&
+        definition.targets.scala.getEmpty() &&
         definition.variants.getSize() == 1 &&
         definition.variants.expectFirst().name == definition.name
     ) {
@@ -56,7 +56,7 @@ emitTypeDefinition(definition: DType): String {
         "case class " + definition.name + generics + fields
     } else {
         let variants = definition.variants.map { emitVariantDefinition(definition, _) }
-        let head = definition.scalaTarget.map { code =>
+        let head = definition.targets.scala.map { code =>
             if(code.startsWith("#")) {
                 code.dropFirst() + ";\n"
             } else {
@@ -75,13 +75,13 @@ emitTypeDefinition(definition: DType): String {
 emitLetDefinition(definition: DLet, mutable: Bool = False): String {
     let typeAnnotation = emitTypeAnnotation(definition.variableType)
     let mutability = if(mutable) {"var"} else {"val"}
-    let valueCode = definition.scalaTarget.else { emitTerm(definition.value) }
+    let valueCode = definition.targets.scala.else { emitTerm(definition.value) }
     mutability + " " + escapeKeyword(definition.name) + typeAnnotation + " = " + valueCode
 }
 
 emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     let signature = emitSignature(definition.signature, suffix)
-    definition.scalaTarget.map { code =>
+    definition.targets.scala.map { code =>
         if(code.startsWith("#")) {
             code.dropFirst()
         } else {
@@ -167,7 +167,7 @@ emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
     let generics = emitTypeParameters(typeDefinition.generics)
     let allFields = typeDefinition.commonFields ++ definition.fields
     let fields = "(" + allFields.map(emitParameter).join(", ") + ")"
-    definition.scalaTarget.map { originalCode =>
+    definition.targets.scala.map { originalCode =>
         let code = if(originalCode == "scala.Unit") {"{}"} else {originalCode}
         "object " + definition.name + " {\n" +
         "def apply" + generics + fields + " = " +
@@ -235,10 +235,12 @@ emitType(type: Type): String {
 
 emitStatements(term: Term): String {
     | EFunctions(at, functions, body) =>
-        let functionStrings = functions.map { f => emitFunctionDefinition(DFunction(at, f.signature, f.body, None)) }
+        let functionStrings = functions.map { f =>
+            emitFunctionDefinition(DFunction(at, f.signature, f.body, Targets(None, None)))
+        }
         functionStrings.join("\n") + "\n" + emitStatements(body)
     | ELet(at, mutable, name, valueType, value, body) =>
-        emitLetDefinition(DLet(at, name, valueType, value, None), mutable) + ";\n" + emitStatements(body)
+        emitLetDefinition(DLet(at, name, valueType, value, Targets(None, None)), mutable) + ";\n" + emitStatements(body)
     | ESequential(at, before, after) =>
         emitStatements(before) + ";\n" + emitStatements(after)
     | EAssign(at, operator, name, value) =>

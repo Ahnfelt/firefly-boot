@@ -46,13 +46,13 @@ case class DDependency(at_ : ff.compiler.Syntax_.Location, package_ : ff.core.Pa
 
 case class DImport(at_ : ff.compiler.Syntax_.Location, alias_ : ff.core.String_.String, package_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], directory_ : ff.core.List_.List[ff.core.String_.String], file_ : ff.core.String_.String)
 
-case class DFunction(at_ : ff.compiler.Syntax_.Location, signature_ : ff.compiler.Syntax_.Signature, body_ : ff.compiler.Syntax_.Lambda, scalaTarget_ : ff.core.Option_.Option[ff.core.String_.String])
+case class DFunction(at_ : ff.compiler.Syntax_.Location, signature_ : ff.compiler.Syntax_.Signature, body_ : ff.compiler.Syntax_.Lambda, targets_ : ff.compiler.Syntax_.Targets)
 
-case class DLet(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, variableType_ : ff.compiler.Syntax_.Type, value_ : ff.compiler.Syntax_.Term, scalaTarget_ : ff.core.Option_.Option[ff.core.String_.String])
+case class DLet(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, variableType_ : ff.compiler.Syntax_.Type, value_ : ff.compiler.Syntax_.Term, targets_ : ff.compiler.Syntax_.Targets)
 
 case class DExtend(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, generics_ : ff.core.List_.List[ff.core.String_.String], constraints_ : ff.core.List_.List[ff.compiler.Syntax_.Constraint], type_ : ff.compiler.Syntax_.Type, methods_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction])
 
-case class DType(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, generics_ : ff.core.List_.List[ff.core.String_.String], constraints_ : ff.core.List_.List[ff.compiler.Syntax_.Constraint], commonFields_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter], variants_ : ff.core.List_.List[ff.compiler.Syntax_.Variant], scalaTarget_ : ff.core.Option_.Option[ff.core.String_.String])
+case class DType(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, generics_ : ff.core.List_.List[ff.core.String_.String], constraints_ : ff.core.List_.List[ff.compiler.Syntax_.Constraint], commonFields_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter], variants_ : ff.core.List_.List[ff.compiler.Syntax_.Variant], targets_ : ff.compiler.Syntax_.Targets)
 
 case class DTrait(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, generics_ : ff.core.List_.List[ff.core.String_.String], constraints_ : ff.core.List_.List[ff.compiler.Syntax_.Constraint], generatorParameters_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter], methods_ : ff.core.List_.List[ff.compiler.Syntax_.Signature], methodDefaults_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Lambda]], methodGenerators_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Lambda]])
 
@@ -97,7 +97,7 @@ case class Signature(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_
 
 case class Lambda(at_ : ff.compiler.Syntax_.Location, cases_ : ff.core.List_.List[ff.compiler.Syntax_.MatchCase])
 
-case class Variant(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, fields_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter], scalaTarget_ : ff.core.Option_.Option[ff.core.String_.String])
+case class Variant(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, fields_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter], targets_ : ff.compiler.Syntax_.Targets)
 
 case class Parameter(at_ : ff.compiler.Syntax_.Location, mutable_ : ff.core.Bool_.Bool, name_ : ff.core.String_.String, valueType_ : ff.compiler.Syntax_.Type, default_ : ff.core.Option_.Option[ff.compiler.Syntax_.Term])
 
@@ -106,6 +106,8 @@ case class Argument(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.Option_.
 case class Field(at_ : ff.compiler.Syntax_.Location, name_ : ff.core.String_.String, value_ : ff.compiler.Syntax_.Term)
 
 case class Constraint(representation_ : ff.compiler.Syntax_.Type)
+
+case class Targets(scala_ : ff.core.Option_.Option[ff.core.String_.String], javaScript_ : ff.core.Option_.Option[ff.core.String_.String])
 
 sealed abstract class Type extends Product with Serializable {
     val at_ : ff.compiler.Syntax_.Location
