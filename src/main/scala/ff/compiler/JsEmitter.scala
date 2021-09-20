@@ -45,13 +45,38 @@ ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Locat
 }
 
 def emitModule_(packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], module_ : ff.compiler.Syntax_.Module) : ff.core.String_.String = {
-((((ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
+val parts_ : ff.core.List_.List[ff.core.List_.List[ff.core.String_.String]] = List(ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
 ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
-}), body_ = {(i_) =>
-((((((((((((("import * as " + i_.package_.first_) + "_") + i_.package_.second_) + "_") + i_.file_) + " ") + "from \"../../") + i_.package_.first_) + "/") + i_.package_.second_) + "/") + i_.file_) + ".js\"")
-}), separator_ = "\n") + "\n\n") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = module_.functions_, body_ = {(_w1) =>
+}), body_ = {(_w1) =>
+ff.compiler.JsEmitter_.emitImportDefinition_(definition_ = _w1)
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = module_.functions_, body_ = {(_w1) =>
 ("export " + ff.compiler.JsEmitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = ""))
-}), separator_ = "\n\n")) + "\n\n") + "// TODO: JavaScript goes here")
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DExtend, ff.core.String_.String](self_ = module_.extends_, body_ = {(_w1) =>
+ff.compiler.JsEmitter_.emitExtendsDefinition_(definition_ = _w1)
+}), List(("// TODO: JavaScript goes here" + "\n\n")));
+(ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.List_.List[ff.core.String_.String], ff.core.String_.String](self_ = parts_, body_ = {(_w1) =>
+ff.core.List_.List_join(self_ = _w1, separator_ = "\n\n")
+}), separator_ = "\n\n") + "\n")
+}
+
+def emitImportDefinition_(definition_ : ff.compiler.Syntax_.DImport) : ff.core.String_.String = {
+((((((((((((("import * as " + definition_.package_.first_) + "_") + definition_.package_.second_) + "_") + definition_.file_) + " ") + "from \"../../") + definition_.package_.first_) + "/") + definition_.package_.second_) + "/") + definition_.file_) + ".js\"")
+}
+
+def emitExtendsDefinition_(definition_ : ff.compiler.Syntax_.DExtend) : ff.core.String_.String = {
+val typeName_ : ff.core.String_.String = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.compiler.JsEmitter_.extractTypeName_(type_ = definition_.type_)), p_ = {(_w1) =>
+(_w1 != '.')
+}));
+val methods_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = definition_.methods_, body_ = {(method_) =>
+pipe_dot(method_)({(_c) =>
+ff.compiler.Syntax_.DFunction(at_ = _c.at_, signature_ = pipe_dot(method_.signature_)({(_c) =>
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = ((typeName_ + "_") + method_.signature_.name_), generics_ = _c.generics_, constraints_ = _c.constraints_, parameters_ = _c.parameters_, returnType_ = _c.returnType_)
+}), body_ = _c.body_, targets_ = _c.targets_)
+})
+});
+ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = methods_, body_ = {(_w1) =>
+("export " + ff.compiler.JsEmitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = ""))
+}), separator_ = "\n\n")
 }
 
 def emitFunctionDefinition_(definition_ : ff.compiler.Syntax_.DFunction, suffix_ : ff.core.String_.String = "") : ff.core.String_.String = {
@@ -73,7 +98,8 @@ ff.core.Bool_.False()
 val body_ : ff.core.String_.String = "// TODO: emitStatements(matchCase.body)";
 (((signature_ + " {\n") + body_) + "\n}")
 case (_) =>
-"// TODO: Pattern matching"
+val body_ : ff.core.String_.String = "// TODO: Pattern matching";
+(((signature_ + " {\n") + body_) + "\n}")
 })
 })
 }
@@ -94,16 +120,33 @@ val defaultValue_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ =
 (ff.compiler.JsEmitter_.escapeKeyword_(word_ = parameter_.name_) + defaultValue_)
 }
 
+def emitTerm_(term_ : ff.compiler.Syntax_.Term) : ff.core.String_.String = {
+"// TODO: emitTerm"
+}
+
+def extractTypeName_(type_ : ff.compiler.Syntax_.Type) : ff.core.String_.String = (type_) match {
+case (ff.compiler.Syntax_.TVariable(at_, index_)) =>
+ff.compiler.JsEmitter_.fail_[ff.core.String_.String](at_ = at_, message_ = ("Unexpected type variable: $" + index_))
+case (t_ : ff.compiler.Syntax_.TConstructor) =>
+t_.name_
+}
+
+def escapeResolved_(word_ : ff.core.String_.String) : ff.core.String_.String = {
+val parts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.Array_.Array_getList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = word_, needle_ = ":", replacement_ = "."), needle_ = "/", replacement_ = "."), char_ = '.'));
+val initialParts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_dropLast[ff.core.String_.String](self_ = parts_, count_ = 1);
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.core.String_.String](self_ = initialParts_), body_ = {() =>
+ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[ff.core.String_.String](self_ = parts_))
+}), body_ = {() =>
+((ff.core.List_.List_join(self_ = initialParts_, separator_ = ".") + "_.") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[ff.core.String_.String](self_ = parts_)))
+})
+}
+
 def escapeKeyword_(word_ : ff.core.String_.String) : ff.core.String_.String = {
 ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.Char_.Char_getIsLower(self_ = ff.core.String_.String_expectFirst(self_ = word_)), body_ = {() =>
 (word_ + "_")
 }), body_ = {() =>
 word_
 })
-}
-
-def emitTerm_(term_ : ff.compiler.Syntax_.Term) : ff.core.String_.String = {
-"// TODO: emitTerm"
 }
 
 

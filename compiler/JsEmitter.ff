@@ -5,12 +5,32 @@ fail[T](at: Location, message: String): T {
 }
 
 emitModule(packagePair: Pair[String, String], module: Module): String {
-    module.imports.sortBy { i => i.package.first + "." + i.package.second + "." + i.file }.map { i =>
-        "import * as " + i.package.first + "_" + i.package.second + "_" + i.file + " " +
-        "from \"../../" + i.package.first + "/" + i.package.second + "/" + i.file + ".js\""
-    }.join("\n") + "\n\n" +
-    module.functions.map { "export " + emitFunctionDefinition(_) }.join("\n\n") + "\n\n" +
-    "// TODO: JavaScript goes here"
+    let parts = [
+        module.imports.sortBy { i =>
+            i.package.first + "." + i.package.second + "." + i.file
+        }.map { emitImportDefinition(_) }
+        module.functions.map { "export " + emitFunctionDefinition(_) }
+        module.extends.map { emitExtendsDefinition(_) }
+        ["// TODO: JavaScript goes here" + "\n\n"]
+    ]
+    parts.map { _.join("\n\n") }.join("\n\n") + "\n"
+}
+
+emitImportDefinition(definition: DImport): String {
+    "import * as " + definition.package.first + "_" + definition.package.second + "_" + definition.file + " " +
+    "from \"../../" + definition.package.first + "/" + definition.package.second + "/" + definition.file + ".js\""
+}
+
+emitExtendsDefinition(definition: DExtend): String {
+    let typeName = extractTypeName(definition.type).getReverse().takeWhile { _ != '.' }.getReverse()
+    let methods = definition.methods.map { method =>
+        method.DFunction(
+            signature = method.signature.Signature(
+                name = typeName + "_" + method.signature.name
+            )
+        )
+    }
+    methods.map { "export " + emitFunctionDefinition(_) }.join("\n\n")
 }
 
 emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
@@ -29,7 +49,8 @@ emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
             let body = "// TODO: emitStatements(matchCase.body)"
             signature + " {\n" + body + "\n}"
         | _ =>
-            "// TODO: Pattern matching"
+            let body = "// TODO: Pattern matching"
+            signature + " {\n" + body + "\n}"
     }
 }
 
@@ -43,10 +64,26 @@ emitParameter(parameter: Parameter): String {
     escapeKeyword(parameter.name) + defaultValue
 }
 
-escapeKeyword(word: String): String {
-    if(word.expectFirst().getIsLower()) {word + "_"} else {word}
-}
-
 emitTerm(term: Term): String {
     "// TODO: emitTerm"
+}
+
+extractTypeName(type: Type): String {
+    | TVariable(at, index) =>
+        fail(at, "Unexpected type variable: $" + index)
+    | TConstructor t =>
+        t.name
+}
+
+escapeResolved(word: String): String {
+    let parts = word.replace(":", ".").replace("/", ".").split('.').getList()
+    let initialParts = parts.dropLast()
+    if(initialParts.getEmpty()) {
+        escapeKeyword(parts.expectLast())
+    } else {
+        initialParts.join(".") + "_." + escapeKeyword(parts.expectLast())
+    }
+}
+escapeKeyword(word: String): String {
+    if(word.expectFirst().getIsLower()) {word + "_"} else {word}
 }
