@@ -32,6 +32,9 @@ extend self[T]: Array[T] {
         """
 
     getList(): List[T] { panic("magic") }
-        scala "import scala.collection.JavaConverters._; self_.asScala.toList"
+        scala """
+            import scala.collection.JavaConverters._
+            self_.asScala.toList
+        """
 
 }
