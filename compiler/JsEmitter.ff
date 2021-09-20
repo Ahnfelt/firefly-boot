@@ -5,5 +5,9 @@ fail[T](at: Location, message: String): T {
 }
 
 emitModule(packagePair: Pair[String, String], module: Module): String {
+    module.imports.sortBy { i => i.package.first + "." + i.package.second + "." + i.file }.map { i =>
+        "import * as " + i.package.first + "_" + i.package.second + "_" + i.file + " " +
+        "from \"../../" + i.package.first + "/" + i.package.second + "/" + i.file + ".js\""
+    }.join("\n") +
     "// TODO: JavaScript goes here"
 }

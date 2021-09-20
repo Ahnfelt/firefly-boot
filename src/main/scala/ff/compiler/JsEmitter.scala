@@ -45,7 +45,11 @@ ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Locat
 }
 
 def emitModule_(packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], module_ : ff.compiler.Syntax_.Module) : ff.core.String_.String = {
-"// TODO: JavaScript goes here"
+(ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
+((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
+}), body_ = {(i_) =>
+((((((((((((("import * as " + i_.package_.first_) + "_") + i_.package_.second_) + "_") + i_.file_) + " ") + "from \"../../") + i_.package_.first_) + "/") + i_.package_.second_) + "/") + i_.file_) + ".js\"")
+}), separator_ = "\n") + "// TODO: JavaScript goes here")
 }
 
 
