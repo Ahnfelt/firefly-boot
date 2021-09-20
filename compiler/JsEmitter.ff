@@ -6,12 +6,14 @@ fail[T](at: Location, message: String): T {
 
 emitModule(packagePair: Pair[String, String], module: Module): String {
     let parts = [
+        ["// package " + packagePair.first + ":" + packagePair.second + "/" + module.file.dropLast(3)]
         module.imports.sortBy { i =>
             i.package.first + "." + i.package.second + "." + i.file
         }.map { emitImportDefinition(_) }
+        module.types.map { emitTypeDefinition(_) }
+        module.lets.map { emitLetDefinition(_) }
         module.functions.map { "export " + emitFunctionDefinition(_) }
         module.extends.map { emitExtendsDefinition(_) }
-        ["// TODO: JavaScript goes here" + "\n\n"]
     ]
     parts.map { _.join("\n\n") }.join("\n\n") + "\n"
 }
@@ -19,6 +21,12 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
 emitImportDefinition(definition: DImport): String {
     "import * as " + definition.package.first + "_" + definition.package.second + "_" + definition.file + " " +
     "from \"../../" + definition.package.first + "/" + definition.package.second + "/" + definition.file + ".js\""
+}
+
+emitLetDefinition(definition: DLet, mutable: Bool = False): String {
+    let mutability = if(mutable) {"let"} else {"const"}
+    let valueCode = definition.targets.scala.else { emitTerm(definition.value) }
+    mutability + " " + escapeKeyword(definition.name) + " = " + valueCode
 }
 
 emitExtendsDefinition(definition: DExtend): String {
@@ -62,6 +70,10 @@ emitSignature(signature: Signature, suffix: String = ""): String {
 emitParameter(parameter: Parameter): String {
     let defaultValue = parameter.default.map { " = " + emitTerm(_) }.else{""}
     escapeKeyword(parameter.name) + defaultValue
+}
+
+emitTypeDefinition(definition: DType): String {
+    "// type " + definition.name
 }
 
 emitTerm(term: Term): String {

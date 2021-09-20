@@ -45,15 +45,19 @@ ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Locat
 }
 
 def emitModule_(packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], module_ : ff.compiler.Syntax_.Module) : ff.core.String_.String = {
-val parts_ : ff.core.List_.List[ff.core.List_.List[ff.core.String_.String]] = List(ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
+val parts_ : ff.core.List_.List[ff.core.List_.List[ff.core.String_.String]] = List(List(((((("// package " + packagePair_.first_) + ":") + packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3))), ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
 ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 }), body_ = {(_w1) =>
 ff.compiler.JsEmitter_.emitImportDefinition_(definition_ = _w1)
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DType, ff.core.String_.String](self_ = module_.types_, body_ = {(_w1) =>
+ff.compiler.JsEmitter_.emitTypeDefinition_(definition_ = _w1)
+}), ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.core.String_.String](self_ = module_.lets_, body_ = {(_w1) =>
+ff.compiler.JsEmitter_.emitLetDefinition_(definition_ = _w1, mutable_ = ff.core.Bool_.False())
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = module_.functions_, body_ = {(_w1) =>
 ("export " + ff.compiler.JsEmitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = ""))
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DExtend, ff.core.String_.String](self_ = module_.extends_, body_ = {(_w1) =>
 ff.compiler.JsEmitter_.emitExtendsDefinition_(definition_ = _w1)
-}), List(("// TODO: JavaScript goes here" + "\n\n")));
+}));
 (ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.List_.List[ff.core.String_.String], ff.core.String_.String](self_ = parts_, body_ = {(_w1) =>
 ff.core.List_.List_join(self_ = _w1, separator_ = "\n\n")
 }), separator_ = "\n\n") + "\n")
@@ -61,6 +65,18 @@ ff.core.List_.List_join(self_ = _w1, separator_ = "\n\n")
 
 def emitImportDefinition_(definition_ : ff.compiler.Syntax_.DImport) : ff.core.String_.String = {
 ((((((((((((("import * as " + definition_.package_.first_) + "_") + definition_.package_.second_) + "_") + definition_.file_) + " ") + "from \"../../") + definition_.package_.first_) + "/") + definition_.package_.second_) + "/") + definition_.file_) + ".js\"")
+}
+
+def emitLetDefinition_(definition_ : ff.compiler.Syntax_.DLet, mutable_ : ff.core.Bool_.Bool = ff.core.Bool_.False()) : ff.core.String_.String = {
+val mutability_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = mutable_, body_ = {() =>
+"let"
+}), body_ = {() =>
+"const"
+});
+val valueCode_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = definition_.targets_.scala_, body_ = {() =>
+ff.compiler.JsEmitter_.emitTerm_(term_ = definition_.value_)
+});
+((((mutability_ + " ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = definition_.name_)) + " = ") + valueCode_)
 }
 
 def emitExtendsDefinition_(definition_ : ff.compiler.Syntax_.DExtend) : ff.core.String_.String = {
@@ -118,6 +134,10 @@ val defaultValue_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ =
 ""
 });
 (ff.compiler.JsEmitter_.escapeKeyword_(word_ = parameter_.name_) + defaultValue_)
+}
+
+def emitTypeDefinition_(definition_ : ff.compiler.Syntax_.DType) : ff.core.String_.String = {
+("// type " + definition_.name_)
 }
 
 def emitTerm_(term_ : ff.compiler.Syntax_.Term) : ff.core.String_.String = {
