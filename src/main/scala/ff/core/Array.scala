@@ -79,7 +79,10 @@ def Array_dropLast[T](self_ : ff.core.Array_.Array[T], count_ : ff.core.Int_.Int
 }
 
 def Array_getList[T](self_ : ff.core.Array_.Array[T]) : ff.core.List_.List[T] = {
-import scala.collection.JavaConverters._; self_.asScala.toList
+
+            import scala.collection.JavaConverters._
+            self_.asScala.toList
+        
 }
 
 

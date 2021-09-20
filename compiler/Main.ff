@@ -1,6 +1,5 @@
 import Tokenizer
 import Parser
-import Emitter
 import Syntax
 import Resolver
 import Compiler
@@ -11,7 +10,8 @@ main(system: System): Unit {
     let corePath = system.arguments().expect(0)
     let inputPath = system.arguments().expect(1)
     let tempPath = system.arguments().expect(2)
-    let outputPath = system.arguments().expect(3)
+    let scalaOutputPath = system.arguments().expect(3)
+    let jsOutputPath = system.arguments().expect(4)
 
     let fs = system.files()
 
@@ -21,10 +21,13 @@ main(system: System): Unit {
     let scalaPathFile = tempPath + "/src/main/scala"
     fs.createDirectories(scalaPathFile)
 
+    let jsPathFile = tempPath + "/src/main/js"
+    fs.createDirectories(jsPathFile)
+
     let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].getMap()
 
     let success = do { //try {
-        Compiler.make(fs, scalaPathFile, packagePaths).emit("ff:compiler", "Main")
+        Compiler.make(fs, scalaPathFile, jsPathFile, packagePaths).emit("ff:compiler", "Main")
         True
     }
     /*} else {
@@ -34,8 +37,10 @@ main(system: System): Unit {
 
     if(success) {
         writeExtraFiles(fs, inputPath, corePath, tempPath, scalaPathFile)
-        if(fs.exists(outputPath)) { deleteDirectory(fs, outputPath) }
-        fs.rename(scalaPathFile, outputPath)
+        if(fs.exists(scalaOutputPath)) { deleteDirectory(fs, scalaOutputPath) }
+        if(fs.exists(jsOutputPath)) { deleteDirectory(fs, jsOutputPath) }
+        fs.rename(scalaPathFile, scalaOutputPath)
+        fs.rename(jsPathFile, jsOutputPath)
     }
 
 }

@@ -1,8 +1,6 @@
 package ff.compiler
 import ff.compiler.Compiler_._
 
-import ff.compiler.Emitter_._
-
 import ff.compiler.Parser_._
 
 import ff.compiler.Resolver_._
@@ -56,7 +54,8 @@ def main_(system_ : ff.core.System_.System) : ff.core.Unit_.Unit = {
 val corePath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 0);
 val inputPath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 1);
 val tempPath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 2);
-val outputPath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 3);
+val scalaOutputPath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 3);
+val jsOutputPath_ : ff.core.String_.String = ff.core.List_.List_expect[ff.core.String_.String](self_ = ff.core.System_.System_arguments(self_ = system_), index_ = 4);
 val fs_ : ff.core.FileSystem_.FileSystem = ff.core.System_.System_files(self_ = system_);
 ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ff.core.FileSystem_.FileSystem_exists(self_ = fs_, path_ = tempPath_), body_ = {() =>
 ff.compiler.Main_.deleteDirectory_(fs_ = fs_, outputFile_ = tempPath_)
@@ -64,17 +63,23 @@ ff.compiler.Main_.deleteDirectory_(fs_ = fs_, outputFile_ = tempPath_)
 ff.core.FileSystem_.FileSystem_createDirectory(self_ = fs_, path_ = tempPath_);
 val scalaPathFile_ : ff.core.String_.String = (tempPath_ + "/src/main/scala");
 ff.core.FileSystem_.FileSystem_createDirectories(self_ = fs_, path_ = scalaPathFile_);
+val jsPathFile_ : ff.core.String_.String = (tempPath_ + "/src/main/js");
+ff.core.FileSystem_.FileSystem_createDirectories(self_ = fs_, path_ = jsPathFile_);
 val packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff:compiler", second_ = "compiler"), ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff:core", second_ = "core")));
 val success_ : ff.core.Bool_.Bool = ff.core.Core_.do_[ff.core.Bool_.Bool](body_ = {() =>
-ff.compiler.Compiler_.Compiler_emit(self_ = ff.compiler.Compiler_.make_(files_ = fs_, outputPath_ = scalaPathFile_, packagePaths_ = packagePaths_), packageName_ = "ff:compiler", moduleName_ = "Main");
+ff.compiler.Compiler_.Compiler_emit(self_ = ff.compiler.Compiler_.make_(files_ = fs_, scalaOutputPath_ = scalaPathFile_, jsOutputPath_ = jsPathFile_, packagePaths_ = packagePaths_), packageName_ = "ff:compiler", moduleName_ = "Main");
 ff.core.Bool_.True()
 });
 ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = success_, body_ = {() =>
 ff.compiler.Main_.writeExtraFiles_(fs_ = fs_, package_ = inputPath_, corePath_ = corePath_, outputFile_ = tempPath_, scalaFile_ = scalaPathFile_);
-ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ff.core.FileSystem_.FileSystem_exists(self_ = fs_, path_ = outputPath_), body_ = {() =>
-ff.compiler.Main_.deleteDirectory_(fs_ = fs_, outputFile_ = outputPath_)
+ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ff.core.FileSystem_.FileSystem_exists(self_ = fs_, path_ = scalaOutputPath_), body_ = {() =>
+ff.compiler.Main_.deleteDirectory_(fs_ = fs_, outputFile_ = scalaOutputPath_)
 });
-ff.core.FileSystem_.FileSystem_rename(self_ = fs_, fromPath_ = scalaPathFile_, toPath_ = outputPath_)
+ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ff.core.FileSystem_.FileSystem_exists(self_ = fs_, path_ = jsOutputPath_), body_ = {() =>
+ff.compiler.Main_.deleteDirectory_(fs_ = fs_, outputFile_ = jsOutputPath_)
+});
+ff.core.FileSystem_.FileSystem_rename(self_ = fs_, fromPath_ = scalaPathFile_, toPath_ = scalaOutputPath_);
+ff.core.FileSystem_.FileSystem_rename(self_ = fs_, fromPath_ = jsPathFile_, toPath_ = jsOutputPath_)
 });
 ff.core.Unit_.Unit()
 }

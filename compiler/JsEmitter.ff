@@ -1,0 +1,9 @@
+import Syntax
+
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show())
+}
+
+emitModule(packagePair: Pair[String, String], module: Module): String {
+    "// TODO: JavaScript goes here"
+}

@@ -1,11 +1,13 @@
 package ff.compiler
-import ff.compiler.Emitter_._
-
 import ff.compiler.Inference_._
+
+import ff.compiler.JsEmitter_._
 
 import ff.compiler.Parser_._
 
 import ff.compiler.Resolver_._
+
+import ff.compiler.ScalaEmitter_._
 
 import ff.compiler.Syntax_._
 
@@ -48,12 +50,12 @@ import ff.core.Try_._
 import ff.core.Unit_._
 object Compiler_ {
 
-case class Compiler(files_ : ff.core.FileSystem_.FileSystem, outputPath_ : ff.core.String_.String, packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], var parsedModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var resolvedModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var inferredModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var emittedModules_ : ff.core.Set_.Set[ff.core.String_.String])
+case class Compiler(files_ : ff.core.FileSystem_.FileSystem, scalaOutputPath_ : ff.core.String_.String, jsOutputPath_ : ff.core.String_.String, packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], var parsedModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var resolvedModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var inferredModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var emittedModules_ : ff.core.Set_.Set[ff.core.String_.String])
 val coreImports_ : ff.core.List_.List[ff.compiler.Syntax_.DImport] = ff.core.List_.List_map[ff.core.String_.String, ff.compiler.Syntax_.DImport](self_ = List("Array", "ArrayBuilder", "Bool", "Char", "Core", "FileSystem", "Int", "List", "Log", "Map", "Nothing", "Option", "Pair", "Set", "String", "System", "Try", "Unit"), body_ = {(moduleName_) =>
 ff.compiler.Syntax_.DImport(at_ = ff.compiler.Syntax_.Location(file_ = "<prelude>", line_ = 1, column_ = 1), alias_ = moduleName_, package_ = ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff", second_ = "core"), directory_ = List(), file_ = moduleName_)
 })
-def make_(files_ : ff.core.FileSystem_.FileSystem, outputPath_ : ff.core.String_.String, packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]) : ff.compiler.Compiler_.Compiler = {
-ff.compiler.Compiler_.Compiler(files_ = files_, outputPath_ = outputPath_, packagePaths_ = packagePaths_, parsedModules_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Module](), resolvedModules_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Module](), inferredModules_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Module](), emittedModules_ = ff.core.Set_.empty_[ff.core.String_.String]())
+def make_(files_ : ff.core.FileSystem_.FileSystem, scalaOutputPath_ : ff.core.String_.String, jsOutputPath_ : ff.core.String_.String, packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]) : ff.compiler.Compiler_.Compiler = {
+ff.compiler.Compiler_.Compiler(files_ = files_, scalaOutputPath_ = scalaOutputPath_, jsOutputPath_ = jsOutputPath_, packagePaths_ = packagePaths_, parsedModules_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Module](), resolvedModules_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Module](), inferredModules_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Module](), emittedModules_ = ff.core.Set_.empty_[ff.core.String_.String]())
 }
 def Compiler_parse(self_ : ff.compiler.Compiler_.Compiler, packageName_ : ff.core.String_.String, moduleName_ : ff.core.String_.String) : ff.compiler.Syntax_.Module = (self_, packageName_, moduleName_) match {
 case (self_, _, _) =>
@@ -131,11 +133,16 @@ val packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.St
 val array_ : ff.core.Array_.Array[ff.core.String_.String] = ff.core.String_.String_split(self_ = packageName_, char_ = ':');
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = ff.core.Array_.Array_expect[ff.core.String_.String](self_ = array_, index_ = 0), second_ = ff.core.Array_.Array_expect[ff.core.String_.String](self_ = array_, index_ = 1))
 });
-val emitted_ : ff.core.String_.String = ff.compiler.Emitter_.emitModule_(packagePair_ = packagePair_, module_ = module_);
-val path_ : ff.core.String_.String = ((self_.outputPath_ + "/") + ff.core.String_.String_replace(self_ = packageName_, needle_ = ":", replacement_ = "/"));
-val file_ : ff.core.String_.String = (((path_ + "/") + moduleName_) + ".scala");
-ff.core.FileSystem_.FileSystem_createDirectories(self_ = self_.files_, path_ = path_);
-ff.core.FileSystem_.FileSystem_writeText(self_ = self_.files_, file_ = file_, text_ = emitted_);
+val scala_ : ff.core.String_.String = ff.compiler.ScalaEmitter_.emitModule_(packagePair_ = packagePair_, module_ = module_);
+val scalaPath_ : ff.core.String_.String = ((self_.scalaOutputPath_ + "/") + ff.core.String_.String_replace(self_ = packageName_, needle_ = ":", replacement_ = "/"));
+val scalaFile_ : ff.core.String_.String = (((scalaPath_ + "/") + moduleName_) + ".scala");
+ff.core.FileSystem_.FileSystem_createDirectories(self_ = self_.files_, path_ = scalaPath_);
+ff.core.FileSystem_.FileSystem_writeText(self_ = self_.files_, file_ = scalaFile_, text_ = scala_);
+val js_ : ff.core.String_.String = ff.compiler.JsEmitter_.emitModule_(packagePair_ = packagePair_, module_ = module_);
+val jsPath_ : ff.core.String_.String = ((self_.jsOutputPath_ + "/") + ff.core.String_.String_replace(self_ = packageName_, needle_ = ":", replacement_ = "/"));
+val jsFile_ : ff.core.String_.String = (((jsPath_ + "/") + moduleName_) + ".js");
+ff.core.FileSystem_.FileSystem_createDirectories(self_ = self_.files_, path_ = jsPath_);
+ff.core.FileSystem_.FileSystem_writeText(self_ = self_.files_, file_ = jsFile_, text_ = js_);
 ff.core.Unit_.Unit()
 });
 ff.core.Unit_.Unit()

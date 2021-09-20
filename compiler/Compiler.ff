@@ -3,11 +3,13 @@ import Tokenizer
 import Parser
 import Resolver
 import Inference
-import Emitter
+import ScalaEmitter
+import JsEmitter
 
 type Compiler(
     files: FileSystem
-    outputPath: String
+    scalaOutputPath: String
+    jsOutputPath: String
     packagePaths: Map[String, String]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
@@ -17,12 +19,14 @@ type Compiler(
 
 make(
     files: FileSystem
-    outputPath: String
+    scalaOutputPath: String
+    jsOutputPath: String
     packagePaths: Map[String, String]
 ): Compiler {
     Compiler(
         files = files
-        outputPath = outputPath
+        scalaOutputPath = scalaOutputPath
+        jsOutputPath = jsOutputPath
         packagePaths = packagePaths
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
@@ -131,11 +135,19 @@ extend self: Compiler {
             let array = packageName.split(':')
             Pair(array.expect(0), array.expect(1))
         }
-        let emitted = Emitter.emitModule(packagePair, module)
-        let path = self.outputPath + "/" + packageName.replace(":", "/")
-        let file = path + "/" + moduleName + ".scala"
-        self.files.createDirectories(path)
-        self.files.writeText(file, emitted)
+
+        let scala = ScalaEmitter.emitModule(packagePair, module)
+        let scalaPath = self.scalaOutputPath + "/" + packageName.replace(":", "/")
+        let scalaFile = scalaPath + "/" + moduleName + ".scala"
+        self.files.createDirectories(scalaPath)
+        self.files.writeText(scalaFile, scala)
+
+        let js = JsEmitter.emitModule(packagePair, module)
+        let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
+        let jsFile = jsPath + "/" + moduleName + ".js"
+        self.files.createDirectories(jsPath)
+        self.files.writeText(jsFile, js)
+
     }
 
 }
