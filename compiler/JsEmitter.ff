@@ -8,6 +8,45 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
     module.imports.sortBy { i => i.package.first + "." + i.package.second + "." + i.file }.map { i =>
         "import * as " + i.package.first + "_" + i.package.second + "_" + i.file + " " +
         "from \"../../" + i.package.first + "/" + i.package.second + "/" + i.file + ".js\""
-    }.join("\n") +
+    }.join("\n") + "\n\n" +
+    module.functions.map { emitFunctionDefinition(_) }.join("\n") + "\n\n" +
     "// TODO: JavaScript goes here"
+}
+
+emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
+    let signature = emitSignature(definition.signature, suffix)
+    definition.targets.javaScript.map { code =>
+        if(code.startsWith("#")) {
+            code.dropFirst()
+        } else {
+            signature + " {\n" + code + "\n}"
+        }
+    }.else:
+    definition.body.{
+        | Lambda(_, [matchCase]) {
+            matchCase.patterns.all {| PVariable(_, None) => True | _ => False }
+        } =>
+            let body = "// TODO: emitStatements(matchCase.body)"
+            signature + " {\n" + body + "\n}"
+        | _ =>
+            "// TODO: Pattern matching"
+    }
+}
+
+emitSignature(signature: Signature, suffix: String = ""): String {
+    let parameters = "(" + signature.parameters.map(emitParameter).join(", ") + ")"
+    "function " + escapeKeyword(signature.name) + suffix + parameters
+}
+
+emitParameter(parameter: Parameter): String {
+    let defaultValue = parameter.default.map { " = " + emitTerm(_) }.else{""}
+    escapeKeyword(parameter.name) + defaultValue
+}
+
+escapeKeyword(word: String): String {
+    if(word.expectFirst().getIsLower()) {word + "_"} else {word}
+}
+
+emitTerm(term: Term): String {
+    "// TODO: emitTerm"
 }
