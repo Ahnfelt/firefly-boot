@@ -9,7 +9,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
         "import * as " + i.package.first + "_" + i.package.second + "_" + i.file + " " +
         "from \"../../" + i.package.first + "/" + i.package.second + "/" + i.file + ".js\""
     }.join("\n") + "\n\n" +
-    module.functions.map { emitFunctionDefinition(_) }.join("\n") + "\n\n" +
+    module.functions.map { "export " + emitFunctionDefinition(_) }.join("\n\n") + "\n\n" +
     "// TODO: JavaScript goes here"
 }
 

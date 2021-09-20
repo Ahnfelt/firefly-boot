@@ -50,8 +50,8 @@ def emitModule_(packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.cor
 }), body_ = {(i_) =>
 ((((((((((((("import * as " + i_.package_.first_) + "_") + i_.package_.second_) + "_") + i_.file_) + " ") + "from \"../../") + i_.package_.first_) + "/") + i_.package_.second_) + "/") + i_.file_) + ".js\"")
 }), separator_ = "\n") + "\n\n") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = module_.functions_, body_ = {(_w1) =>
-ff.compiler.JsEmitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = "")
-}), separator_ = "\n")) + "\n\n") + "// TODO: JavaScript goes here")
+("export " + ff.compiler.JsEmitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = ""))
+}), separator_ = "\n\n")) + "\n\n") + "// TODO: JavaScript goes here")
 }
 
 def emitFunctionDefinition_(definition_ : ff.compiler.Syntax_.DFunction, suffix_ : ff.core.String_.String = "") : ff.core.String_.String = {
