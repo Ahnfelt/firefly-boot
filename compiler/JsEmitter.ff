@@ -52,9 +52,9 @@ emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
     }.else:
     definition.body.{
         | Lambda(_, [matchCase]) {
-            matchCase.patterns.all {| PVariable(_, None) => True | _ => False }
+            matchCase.patterns.all {| PVariable(_, None) => True | PVariable(_, Some(x)) {True /* TODO */} => True | _ => False }
         } =>
-            let body = "// TODO: emitStatements(matchCase.body)"
+            let body = emitStatements(matchCase.body)
             signature + " {\n" + body + "\n}"
         | _ =>
             let body = "// TODO: Pattern matching"
@@ -77,7 +77,79 @@ emitTypeDefinition(definition: DType): String {
 }
 
 emitTerm(term: Term): String {
-    "// TODO: emitTerm"
+    | EString(at, value) => value
+    | EChar(at, value) => value
+    | EInt(at, value) => value
+    | EFloat(at, value) => value
+    | EVariable(at, name, _, _) => escapeResolved(name)
+    | EList(at, _, items) =>
+        "ff_core_Array.Array_getList([" + items.map {
+            | Pair(item, False) => emitTerm(item)
+            | Pair(item, True) => "...ff_core_List.List_getArray(" + emitTerm(item) + ")"
+        }.join(", ") + "])"
+    | EVariant(at, name, _, arguments) =>
+        escapeResolved(name) + "(" + arguments.getList().getFlatten().map(emitArgument).join(", ") + ")"
+    | EVariantIs(at, name, _) =>
+        "(function(_v) { " +
+        "return _v._ === '" + escapeResolved(name) + "' ? ff_core_Option.Some(_v) : ff_core_Option.None();" +
+        "})"
+    | ECopy(at, name, record, fields) =>
+        let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }.join(", ")
+        "{..." + emitTerm(record) + ", " + fieldCode + "}"
+    | EField(at, record, field) =>
+        emitTerm(record) + "." + escapeKeyword(field)
+    | ELambda(at, Lambda(_, [MatchCase(_, patterns, None, body)])) {
+        patterns.all {| PVariable _ => True | _ => False }
+    } =>
+        let parameters =
+            patterns.map {| PVariable p => p.name.map(escapeKeyword).else{"_"} | _ => panic("!") }.join(", ")
+        "((" + parameters + ") => {\n" + emitStatements(body) + "\n})"
+    | ELambda(at, Lambda(_, cases)) =>
+        let casesString = cases.map(emitCase).join("\n")
+        "((/* TODO */) => {\n" + casesString + "\nthrow 'Unexhaustive pattern match'\n})"
+    | EPipe(at, value, function) =>
+        "(" + emitTerm(function) + ")(" + emitTerm(value) + ")"
+    | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().getIsLetter()} =>
+        "(" + operator + emitArgument(value) + ")"
+    | ECall(at, _, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().getIsLetter()} =>
+        "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
+    | ECall(at, _, function, _, arguments) =>
+        emitTerm(function) + "(" + arguments.map(emitArgument).join(", ") + ")"
+    | ERecord(at, fields) =>
+        if(fields.getEmpty()) {"{}"} else {
+            let list = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }
+            "{\n" + list.join(",\n") + "\n}"
+        }
+    | EWildcard(at, index) =>
+        if(index == 0) {fail(at, "Unbound wildcard")}
+        "_w" + index
+    | _ =>
+        "(function() {\n" + emitStatements(term) + "\n})()"
+}
+
+emitStatements(term: Term): String {
+    | EFunctions(at, functions, body) =>
+        let functionStrings = functions.map { f =>
+            emitFunctionDefinition(DFunction(at, f.signature, f.body, Targets(None, None)))
+        }
+        functionStrings.join("\n") + "\n" + emitStatements(body)
+    | ELet(at, mutable, name, valueType, value, body) =>
+        emitLetDefinition(DLet(at, name, valueType, value, Targets(None, None)), mutable) + ";\n" + emitStatements(body)
+    | ESequential(at, before, after) =>
+        emitStatements(before) + ";\n" + emitStatements(after)
+    | EAssign(at, operator, name, value) =>
+        escapeKeyword(name) + " " + operator + "= " + emitTerm(value)
+    | EAssignField(at, operator, record, field, value) =>
+        emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + emitTerm(value)
+    | _ => emitTerm(term)
+}
+
+emitCase(matchCase: MatchCase): String {
+    "if(true /* TODO */) {\n" + emitStatements(matchCase.body) + "\n}"
+}
+
+emitArgument(argument: Argument): String {
+    emitTerm(argument.value)
 }
 
 extractTypeName(type: Type): String {
@@ -93,7 +165,7 @@ escapeResolved(word: String): String {
     if(initialParts.getEmpty()) {
         escapeKeyword(parts.expectLast())
     } else {
-        initialParts.join(".") + "_." + escapeKeyword(parts.expectLast())
+        initialParts.join("_") + "." + escapeKeyword(parts.expectLast())
     }
 }
 escapeKeyword(word: String): String {

@@ -31,6 +31,13 @@ extend self[T]: Array[T] {
             r
         """
 
+    update(index: Int, body: T => T): Array[T] { panic("magic") }
+        javascript """
+            let result = self_.slice();
+            result[index] = body(result[index]);
+            return result;
+        """
+
     getList(): List[T] { panic("magic") }
         scala """
             import scala.collection.JavaConverters._

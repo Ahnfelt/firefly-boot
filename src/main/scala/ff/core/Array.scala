@@ -78,6 +78,11 @@ def Array_dropLast[T](self_ : ff.core.Array_.Array[T], count_ : ff.core.Int_.Int
         
 }
 
+def Array_update[T](self_ : ff.core.Array_.Array[T], index_ : ff.core.Int_.Int, body_ : Function1[T, T]) : ff.core.Array_.Array[T] = (self_, index_, body_) match {
+case (self_, _, _) =>
+ff.core.Core_.panic_[ff.core.Array_.Array[T]](message_ = "magic")
+}
+
 def Array_getList[T](self_ : ff.core.Array_.Array[T]) : ff.core.List_.List[T] = {
 
             import scala.collection.JavaConverters._
