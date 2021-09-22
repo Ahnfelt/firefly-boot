@@ -249,7 +249,66 @@ ff.compiler.JsEmitter_.emitTerm_(term_ = term_)
 }
 
 def emitCase_(arguments_ : ff.core.List_.List[ff.core.String_.String], matchCase_ : ff.compiler.Syntax_.MatchCase) : ff.core.String_.String = {
-(("if(true /* TODO */) {\n" + ff.compiler.JsEmitter_.emitStatements_(term_ = matchCase_.body_, last_ = ff.core.Bool_.True())) + "\n}")
+pipe_dot(ff.core.Pair_.Pair[ff.core.List_.List[ff.compiler.Syntax_.MatchPattern], ff.core.Option_.Option[ff.compiler.Syntax_.Term]](first_ = matchCase_.patterns_, second_ = matchCase_.condition_))({
+case (ff.core.Pair_.Pair(List(p_, ps__seq @ _*), _)) =>
+val ps_ = ps__seq.toList;
+ff.compiler.JsEmitter_.emitPattern_(argument_ = ff.core.List_.List_expect[ff.core.String_.String](self_ = arguments_, index_ = 0), pattern_ = p_, arguments_ = ff.core.List_.List_dropFirst[ff.core.String_.String](self_ = arguments_, count_ = 1), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = ps_, condition_ = _c.condition_, body_ = _c.body_)
+}))
+case (ff.core.Pair_.Pair(List(), ff.core.Option_.Some(condition_))) =>
+(((("if(" + ff.compiler.JsEmitter_.emitTerm_(term_ = condition_)) + ") {\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = matchCase_.body_, last_ = ff.core.Bool_.True())) + "\n}")
+case (ff.core.Pair_.Pair(List(), ff.core.Option_.None())) =>
+(ff.compiler.JsEmitter_.emitStatements_(term_ = matchCase_.body_, last_ = ff.core.Bool_.True()) + "\n")
+})
+}
+
+def emitPattern_(argument_ : ff.core.String_.String, pattern_ : ff.compiler.Syntax_.MatchPattern, arguments_ : ff.core.List_.List[ff.core.String_.String], matchCase_ : ff.compiler.Syntax_.MatchCase) : ff.core.String_.String = {
+pipe_dot(pattern_)({
+case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.None())) =>
+ff.compiler.JsEmitter_.emitCase_(arguments_ = arguments_, matchCase_ = matchCase_)
+case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.Some(name_))) =>
+((((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = name_)) + " = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "\n") + ff.compiler.JsEmitter_.emitCase_(arguments_ = arguments_, matchCase_ = matchCase_))
+case (ff.compiler.Syntax_.PVariant(_, name_, patterns_)) =>
+val newArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.compiler.Syntax_.MatchPattern], ff.core.String_.String](self_ = ff.core.List_.List_pairs[ff.compiler.Syntax_.MatchPattern](self_ = patterns_), body_ = {
+case (ff.core.Pair_.Pair(i_, p_)) =>
+("?" + i_)
+});
+val variantName_ : ff.core.String_.String = ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = name_), p_ = {(_w1) =>
+(_w1 != '.')
+})));
+(((((("if(" + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "._ === '") + variantName_) + "') {\n") + ff.compiler.JsEmitter_.emitCase_(arguments_ = ff.core.List_.List_addAll[ff.core.String_.String](self_ = newArguments_, list_ = arguments_), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = ff.core.List_.List_addAll[ff.compiler.Syntax_.MatchPattern](self_ = patterns_, list_ = matchCase_.patterns_), condition_ = _c.condition_, body_ = _c.body_)
+}))) + "}")
+case (ff.compiler.Syntax_.PVariantAs(at_, name_, variable_)) =>
+val variantName_ : ff.core.String_.String = ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = name_), p_ = {(_w1) =>
+(_w1 != '.')
+})));
+((((((("if(" + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "._ === '") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = variantName_)) + "') {\n") + ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = variable_, body_ = {(_w1) =>
+(((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = _w1)) + " = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "\n")
+}), body_ = {() =>
+""
+})) + ff.compiler.JsEmitter_.emitCase_(arguments_ = arguments_, matchCase_ = matchCase_)) + "}")
+case (ff.compiler.Syntax_.PAlias(_, pattern_, variable_)) =>
+((((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = variable_)) + " = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "\n") + ff.compiler.JsEmitter_.emitPattern_(argument_ = argument_, pattern_ = pattern_, arguments_ = arguments_, matchCase_ = matchCase_))
+case (ff.compiler.Syntax_.PList(at_, _, List())) =>
+val p_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariant(at_ = at_, name_ = "Empty", patterns_ = List());
+(ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(p_), matchCase_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
+})) + "}")
+case (ff.compiler.Syntax_.PList(at_, t_, List(ff.core.Pair_.Pair(p_, ff.core.Bool_.False()), ps__seq @ _*))) =>
+val ps_ = ps__seq.toList;
+val p2_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariant(at_ = at_, name_ = "Link", patterns_ = List(p_, ff.compiler.Syntax_.PList(at_ = at_, itemType_ = t_, items_ = ps_)));
+(ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(p2_), matchCase_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
+})) + "}")
+case (ff.compiler.Syntax_.PList(at_, t_, List(ff.core.Pair_.Pair(p_, ff.core.Bool_.True())))) =>
+(ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(p_), matchCase_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
+})) + "}")
+case (ff.compiler.Syntax_.PList(at_, t_, List(ff.core.Pair_.Pair(p_, ff.core.Bool_.True()), __seq @ _*))) =>
+val _ = __seq.toList;
+"throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"
+})
 }
 
 def emitArgument_(argument_ : ff.compiler.Syntax_.Argument) : ff.core.String_.String = {

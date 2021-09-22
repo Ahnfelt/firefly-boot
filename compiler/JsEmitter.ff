@@ -149,7 +149,47 @@ emitStatements(term: Term, last: Bool): String {
 }
 
 emitCase(arguments: List[String], matchCase: MatchCase): String {
-    "if(true /* TODO */) {\n" + emitStatements(matchCase.body, True) + "\n}"
+    Pair(matchCase.patterns, matchCase.condition).{
+        | Pair([p, ...ps], _) =>
+            emitPattern(arguments.expect(0), p, arguments.dropFirst(), matchCase.MatchCase(patterns = ps))
+        | Pair([], Some(condition)) =>
+            "if(" + emitTerm(condition) + ") {\n" + emitStatements(matchCase.body, True) + "\n}"
+        | Pair([], None) =>
+            emitStatements(matchCase.body, True) + "\n"
+    }
+}
+
+emitPattern(argument: String, pattern: MatchPattern, arguments: List[String], matchCase: MatchCase): String {
+    pattern.{
+        | PVariable(_, None) =>
+            emitCase(arguments, matchCase)
+        | PVariable(_, Some(name)) =>
+            "const " + escapeKeyword(name) + " = " + escapeKeyword(argument) + "\n" +
+            emitCase(arguments, matchCase)
+        | PVariant(_, name, patterns) =>
+            let newArguments = patterns.pairs().map {| Pair(i, p) => "?" + i } // TODO: Needs field names
+            let variantName = escapeKeyword(name.getReverse().takeWhile { _ != '.' }.getReverse())
+            "if(" + escapeKeyword(argument) + "._ === '" + variantName + "') {\n" +
+            emitCase(newArguments ++ arguments, matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)) + "}"
+        | PVariantAs(at, name, variable) =>
+            let variantName = escapeKeyword(name.getReverse().takeWhile { _ != '.' }.getReverse())
+            "if(" + escapeKeyword(argument) + "._ === '" + escapeKeyword(variantName) + "') {\n" +
+            variable.map { "const " + escapeKeyword(_) + " = " + escapeKeyword(argument) + "\n" }.else {""} +
+            emitCase(arguments, matchCase) + "}"
+        | PAlias(_, pattern, variable) =>
+            "const " + escapeKeyword(variable) + " = " + escapeKeyword(argument) + "\n" +
+            emitPattern(argument, pattern, arguments, matchCase)
+        | PList(at, _, []) =>
+            let p = PVariant(at, "Empty", [])
+            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns])) + "}"
+        | PList(at, t, [Pair(p, False), ...ps]) =>
+            let p2 = PVariant(at, "Link", [p, PList(at, t, ps)])
+            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p2, ...matchCase.patterns])) + "}"
+        | PList(at, t, [Pair(p, True)]) =>
+            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns])) + "}"
+        | PList(at, t, [Pair(p, True), ..._]) =>
+            "throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"
+    }
 }
 
 emitArgument(argument: Argument): String {
