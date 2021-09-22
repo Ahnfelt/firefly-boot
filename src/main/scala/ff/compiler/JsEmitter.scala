@@ -191,10 +191,13 @@ ff.core.Core_.panic_[ff.core.String_.String](message_ = "!")
 }), separator_ = ", ");
 (((("((" + parameters_) + ") => {\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = body_, last_ = ff.core.Bool_.True())) + "\n})")
 case (ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(_, cases_))) =>
-val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(matchCase_) =>
-ff.compiler.JsEmitter_.emitCase_(matchCase_ = matchCase_)
+val arguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.compiler.Syntax_.MatchPattern], ff.core.String_.String](self_ = ff.core.List_.List_pairs[ff.compiler.Syntax_.MatchPattern](self_ = ff.core.List_.List_expect[ff.compiler.Syntax_.MatchCase](self_ = cases_, index_ = 0).patterns_), body_ = {(_w1) =>
+("_" + (_w1.first_ + 1))
+});
+val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(_w1) =>
+ff.compiler.JsEmitter_.emitCase_(arguments_ = arguments_, matchCase_ = _w1)
 }), separator_ = "\n");
-(("((/* TODO */) => {\n" + casesString_) + "\nthrow 'Unexhaustive pattern match'\n})")
+(((("((" + ff.core.List_.List_join(self_ = arguments_, separator_ = ", ")) + ") => {\n") + casesString_) + "\nthrow 'Unexhaustive pattern match'\n})")
 case (ff.compiler.Syntax_.EPipe(at_, value_, function_)) =>
 (((("(" + ff.compiler.JsEmitter_.emitTerm_(term_ = function_)) + ")(") + ff.compiler.JsEmitter_.emitTerm_(term_ = value_)) + ")")
 case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
@@ -245,7 +248,7 @@ ff.compiler.JsEmitter_.emitTerm_(term_ = term_)
 })
 }
 
-def emitCase_(matchCase_ : ff.compiler.Syntax_.MatchCase) : ff.core.String_.String = {
+def emitCase_(arguments_ : ff.core.List_.List[ff.core.String_.String], matchCase_ : ff.compiler.Syntax_.MatchCase) : ff.core.String_.String = {
 (("if(true /* TODO */) {\n" + ff.compiler.JsEmitter_.emitStatements_(term_ = matchCase_.body_, last_ = ff.core.Bool_.True())) + "\n}")
 }
 

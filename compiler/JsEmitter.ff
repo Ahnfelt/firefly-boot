@@ -105,8 +105,9 @@ emitTerm(term: Term): String {
             patterns.map {| PVariable p => p.name.map(escapeKeyword).else{"_"} | _ => panic("!") }.join(", ")
         "((" + parameters + ") => {\n" + emitStatements(body, True) + "\n})"
     | ELambda(at, Lambda(_, cases)) =>
-        let casesString = cases.map(emitCase).join("\n")
-        "((/* TODO */) => {\n" + casesString + "\nthrow 'Unexhaustive pattern match'\n})"
+        let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
+        let casesString = cases.map { emitCase(arguments, _) }.join("\n")
+        "((" + arguments.join(", ") + ") => {\n" + casesString + "\nthrow 'Unexhaustive pattern match'\n})"
     | EPipe(at, value, function) =>
         "(" + emitTerm(function) + ")(" + emitTerm(value) + ")"
     | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().getIsLetter()} =>
@@ -147,7 +148,7 @@ emitStatements(term: Term, last: Bool): String {
     }
 }
 
-emitCase(matchCase: MatchCase): String {
+emitCase(arguments: List[String], matchCase: MatchCase): String {
     "if(true /* TODO */) {\n" + emitStatements(matchCase.body, True) + "\n}"
 }
 
