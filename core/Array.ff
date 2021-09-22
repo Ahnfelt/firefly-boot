@@ -3,6 +3,8 @@ type Array[T] {}
 
 extend self[T]: Array[T] {
 
+    addAll(that: Array[T]): Array[T] { panic("magic") }
+
     getEmpty(): Bool { panic("magic") }
         scala "self_.isEmpty()"
         javascript "self_.length == 0"

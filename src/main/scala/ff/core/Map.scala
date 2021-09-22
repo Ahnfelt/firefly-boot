@@ -65,6 +65,11 @@ ff.core.Map_.MapOf[K, V](redBlack_ = ff.core.RbMap_.RbMap_add[K, ff.core.Option_
 
 implicit class Map_plusPlus_implicit[K, V](self_ : Map[K, V]) { def ++(that_ : Map[K, V]) : Map[K, V] = append_(self_, that_) }
 
+def Map_addAll[K, V](self_ : ff.core.Map_.Map[K, V], that_ : ff.core.Map_.Map[K, V]) : ff.core.Map_.Map[K, V] = (self_, that_) match {
+case (self_, _) =>
+ff.core.Map_.append_[K, V](self_ = self_, that_ = that_)
+}
+
 def Map_get[K, V](self_ : ff.core.Map_.Map[K, V], key_ : K) : ff.core.Option_.Option[V] = (self_, key_) match {
 case (self_, _) =>
 ff.core.Option_.Option_flatten[V](self_ = ff.core.RbMap_.RbMap_get[K, ff.core.Option_.Option[V]](self_ = self_.redBlack_, key_ = key_))

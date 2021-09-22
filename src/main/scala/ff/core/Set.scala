@@ -46,6 +46,11 @@ case (self_, _) =>
 ff.core.Set_.Set[T](map_ = ff.core.Map_.Map_add[T, ff.core.Unit_.Unit](self_ = self_.map_, key_ = value_, value_ = ff.core.Unit_.Unit()))
 }
 
+def Set_addAll[T](self_ : ff.core.Set_.Set[T], that_ : ff.core.Set_.Set[T]) : ff.core.Set_.Set[T] = (self_, that_) match {
+case (self_, _) =>
+ff.core.Set_.Set[T](map_ = ff.core.Map_.Map_addAll[T, ff.core.Unit_.Unit](self_ = self_.map_, that_ = that_.map_))
+}
+
 def Set_remove[T](self_ : ff.core.Set_.Set[T], value_ : T) : ff.core.Set_.Set[T] = (self_, value_) match {
 case (self_, _) =>
 ff.core.Set_.Set[T](map_ = ff.core.Map_.Map_remove[T, ff.core.Unit_.Unit](self_ = self_.map_, key_ = value_))

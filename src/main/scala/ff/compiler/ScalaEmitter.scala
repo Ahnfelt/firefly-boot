@@ -95,9 +95,9 @@ def emitMain_() : ff.core.String_.String = {
 }
 
 def emitTypeMembers_(name_ : ff.core.String_.String, lets_ : ff.core.List_.List[ff.compiler.Syntax_.DLet], functions_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction]) : ff.core.String_.String = {
-val strings_ : ff.core.List_.List[ff.core.String_.String] = (ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.core.String_.String](self_ = lets_, body_ = {(_w1) =>
+val strings_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_addAll[ff.core.String_.String](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.core.String_.String](self_ = lets_, body_ = {(_w1) =>
 ff.compiler.ScalaEmitter_.emitLetDefinition_(definition_ = _w1, mutable_ = ff.core.Bool_.False())
-}) ++ ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = functions_, body_ = {(_w1) =>
+}), list_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = functions_, body_ = {(_w1) =>
 ff.compiler.ScalaEmitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = "")
 }));
 (((("object " + name_) + " {\n\n") + ff.core.List_.List_join(self_ = strings_, separator_ = "\n\n")) + "\n\n}")
@@ -237,7 +237,7 @@ val t_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = defin
 ff.compiler.Syntax_.TConstructor(at_ = definition_.at_, name_ = _w1, generics_ = List())
 }));
 (((((((ff.compiler.ScalaEmitter_.emitSignature_(signature_ = pipe_dot(signature_)({(_c) =>
-ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = (definition_.generics_ ++ signature_.generics_), constraints_ = (List(List(ff.compiler.Syntax_.Constraint(representation_ = t_)), definition_.constraints_, signature_.constraints_).flatten), parameters_ = _c.parameters_, returnType_ = _c.returnType_)
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = ff.core.List_.List_addAll[ff.core.String_.String](self_ = definition_.generics_, list_ = signature_.generics_), constraints_ = (List(List(ff.compiler.Syntax_.Constraint(representation_ = t_)), definition_.constraints_, signature_.constraints_).flatten), parameters_ = _c.parameters_, returnType_ = _c.returnType_)
 }), suffix_ = "") + " =\n    scala.Predef.implicitly[") + ff.compiler.ScalaEmitter_.emitType_(type_ = t_)) + "].") + ff.compiler.ScalaEmitter_.escapeKeyword_(word_ = signature_.name_)) + "_m(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = signature_.parameters_, body_ = {(_w1) =>
 _w1.name_
 }), body_ = {(word_) =>
@@ -259,7 +259,7 @@ val value_ : ff.core.String_.String = (("new " + ff.compiler.ScalaEmitter_.emitT
 
 def emitVariantDefinition_(typeDefinition_ : ff.compiler.Syntax_.DType, definition_ : ff.compiler.Syntax_.Variant) : ff.core.String_.String = {
 val generics_ : ff.core.String_.String = ff.compiler.ScalaEmitter_.emitTypeParameters_(generics_ = typeDefinition_.generics_);
-val allFields_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter] = (typeDefinition_.commonFields_ ++ definition_.fields_);
+val allFields_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter] = ff.core.List_.List_addAll[ff.compiler.Syntax_.Parameter](self_ = typeDefinition_.commonFields_, list_ = definition_.fields_);
 val fields_ : ff.core.String_.String = (("(" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = allFields_, body_ = {(parameter_) =>
 ff.compiler.ScalaEmitter_.emitParameter_(parameter_ = parameter_)
 }), separator_ = ", ")) + ")");

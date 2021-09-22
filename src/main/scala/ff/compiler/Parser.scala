@@ -1018,8 +1018,15 @@ ff.compiler.Token_.Token_rawIs(token_ = ff.compiler.Parser_.Parser_current(self_
 }, body_ = {() =>
 val token_ : ff.compiler.Token_.Token = ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LOperator());
 val right_ : ff.compiler.Syntax_.Term = ff.compiler.Parser_.Parser_parseBinary(self_ = self_, level_ = (level_ + 1));
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = ff.compiler.Token_.Token_rawIs(token_ = token_, value_ = "++"), body_ = {() =>
+val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = List(ff.compiler.Syntax_.Argument(at_ = right_.at_, name_ = ff.core.Option_.None[ff.core.String_.String](), value_ = right_));
+result_ = ff.compiler.Syntax_.ECall(at_ = ff.compiler.Token_.Token_at(token_ = token_), tailCall_ = ff.core.Bool_.False(), function_ = ff.compiler.Syntax_.EField(at_ = ff.compiler.Token_.Token_at(token_ = token_), record_ = result_, field_ = "addAll"), typeArguments_ = List(), arguments_ = arguments_);
+ff.core.Unit_.Unit()
+}), body_ = {() =>
 val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = List(ff.compiler.Syntax_.Argument(at_ = result_.at_, name_ = ff.core.Option_.None[ff.core.String_.String](), value_ = result_), ff.compiler.Syntax_.Argument(at_ = right_.at_, name_ = ff.core.Option_.None[ff.core.String_.String](), value_ = right_));
 result_ = ff.compiler.Syntax_.ECall(at_ = ff.compiler.Token_.Token_at(token_ = token_), tailCall_ = ff.core.Bool_.False(), function_ = ff.compiler.Syntax_.EVariable(at_ = ff.compiler.Token_.Token_at(token_ = token_), name_ = ff.compiler.Token_.Token_raw(token_ = token_), generics_ = List(), instances_ = List()), typeArguments_ = List(), arguments_ = arguments_);
+ff.core.Unit_.Unit()
+});
 ff.core.Unit_.Unit()
 })
 });

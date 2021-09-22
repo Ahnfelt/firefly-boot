@@ -88,7 +88,7 @@ case (self_, _, _) =>
 val selfParameter_ : ff.compiler.Syntax_.Parameter = ff.compiler.Syntax_.Parameter(at_ = definition_.at_, mutable_ = ff.core.Bool_.False(), name_ = definition_.name_, valueType_ = definition_.type_, default_ = ff.core.Option_.None[ff.compiler.Syntax_.Term]());
 val functions_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = definition_.methods_, body_ = {(method_) =>
 val signature_ : ff.compiler.Syntax_.Signature = pipe_dot(method_.signature_)({(_c) =>
-ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = (definition_.generics_ ++ method_.signature_.generics_), constraints_ = (definition_.constraints_ ++ method_.signature_.constraints_), parameters_ = (List(List(selfParameter_), method_.signature_.parameters_).flatten), returnType_ = _c.returnType_)
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = ff.core.List_.List_addAll[ff.core.String_.String](self_ = definition_.generics_, list_ = method_.signature_.generics_), constraints_ = ff.core.List_.List_addAll[ff.compiler.Syntax_.Constraint](self_ = definition_.constraints_, list_ = method_.signature_.constraints_), parameters_ = (List(List(selfParameter_), method_.signature_.parameters_).flatten), returnType_ = _c.returnType_)
 });
 val lambda_ : ff.compiler.Syntax_.Lambda = pipe_dot(method_.body_)({(_c) =>
 ff.compiler.Syntax_.Lambda(at_ = _c.at_, cases_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.compiler.Syntax_.MatchCase](self_ = method_.body_.cases_, body_ = {(case_) =>
@@ -116,7 +116,7 @@ ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](firs
 });
 val parameterMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme] = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = parameters_);
 val environment2_ : ff.compiler.Environment_.Environment = pipe_dot(environment_)({(_c) =>
-ff.compiler.Environment_.Environment(symbols_ = (environment_.symbols_ ++ parameterMap_))
+ff.compiler.Environment_.Environment(symbols_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = environment_.symbols_, that_ = parameterMap_))
 });
 val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = definition_.at_, name_ = ("Function$" + ff.core.List_.List_getSize[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = parameters_)), generics_ = (List(ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme], ff.compiler.Syntax_.Type](self_ = parameters_, body_ = {(_w1) =>
 _w1.second_.signature_.returnType_
@@ -170,7 +170,7 @@ val symbols_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_
 case (ff.core.Pair_.Pair(name_, type_)) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = name_, second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.True(), isMutable_ = ff.core.Bool_.False(), signature_ = ff.compiler.Syntax_.Signature(at_ = c_.at_, name_ = name_, generics_ = List(), constraints_ = List(), parameters_ = List(), returnType_ = type_)))
 });
-ff.compiler.Environment_.Environment(symbols_ = (environment1_.symbols_ ++ symbols_))
+ff.compiler.Environment_.Environment(symbols_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = environment1_.symbols_, that_ = symbols_))
 });
 val condition_ : ff.core.Option_.Option[ff.compiler.Syntax_.Term] = ff.core.Option_.Option_map[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term](self_ = case_.condition_, body_ = {(e_) =>
 ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = newEnvironment_, expected_ = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ff.compiler.Inference_.core_(name_ = "Bool"), generics_ = List()), term_ = e_)
@@ -199,7 +199,7 @@ ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = envi
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
 ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = environment_, expected_ = listType_, pattern_ = item_)
 }), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
-(_w1 ++ _w2)
+ff.core.Map_.Map_addAll[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = _w1, that_ = _w2)
 })
 case (ff.compiler.Syntax_.PVariantAs(at_, name_, ff.core.Option_.None())) =>
 val instantiated_ : ff.compiler.Environment_.Instantiated = ff.core.Option_.Option_else(self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = at_, symbol_ = name_, typeArguments_ = List()), body_ = {() =>
@@ -229,7 +229,7 @@ ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.compiler
 case (ff.core.Pair_.Pair(pattern_, parameter_)) =>
 ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = environment_, expected_ = parameter_.valueType_, pattern_ = pattern_)
 }), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]())({(_w1, _w2) =>
-(_w1 ++ _w2)
+ff.core.Map_.Map_addAll[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = _w1, that_ = _w2)
 })
 })
 }
@@ -469,7 +469,7 @@ val scheme_ : ff.compiler.Environment_.Scheme = ff.compiler.Environment_.Scheme(
 ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = f_.signature_.name_, second_ = scheme_)
 }));
 val environment2_ : ff.compiler.Environment_.Environment = pipe_dot(environment_)({(_c) =>
-ff.compiler.Environment_.Environment(symbols_ = (environment_.symbols_ ++ functionMap_))
+ff.compiler.Environment_.Environment(symbols_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = environment_.symbols_, that_ = functionMap_))
 });
 val newFunctions_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = functions_, body_ = {(_w1) =>
 ff.compiler.Inference_.Inference_inferFunctionDefinition(self_ = self_, environment_ = environment2_, definition_ = _w1)

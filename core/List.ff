@@ -8,7 +8,11 @@ type List[T] {
 
 extend self[T]: List[T] {
 
-    append(list: List[T]) : List[T] {
+    append(list: List[T]) : List[T] { // TODO: Delete
+        [self, list].getFlatten()
+    }
+
+    addAll(list: List[T]) : List[T] {
         [self, list].getFlatten()
     }
 

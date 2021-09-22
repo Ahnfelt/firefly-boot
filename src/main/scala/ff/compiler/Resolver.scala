@@ -126,7 +126,7 @@ _w1.variants_
 }), body_ = {(_w1) =>
 entry_(name_ = _w1.name_, unqualified_ = ff.core.Bool_.True())
 }));
-ff.compiler.Resolver_.Resolver(variables_ = (((self_.variables_ ++ lets_) ++ functions_) ++ traitMethods_), variants_ = (self_.variants_ ++ variants_), types_ = (self_.types_ ++ types_), traits_ = (self_.traits_ ++ traits_))
+ff.compiler.Resolver_.Resolver(variables_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.variables_, that_ = lets_), that_ = functions_), that_ = traitMethods_), variants_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.variants_, that_ = variants_), types_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.types_, that_ = types_), traits_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.traits_, that_ = traits_))
 }
 
 def Resolver_resolveTypeDefinition(self_ : ff.compiler.Resolver_.Resolver, definition_ : ff.compiler.Syntax_.DType) : ff.compiler.Syntax_.DType = (self_, definition_) match {
@@ -135,7 +135,7 @@ val generics_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = g_, second_ = g_)
 }));
 val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
-ff.compiler.Resolver_.Resolver(variables_ = _c.variables_, variants_ = _c.variants_, types_ = (self_.types_ ++ generics_), traits_ = _c.traits_)
+ff.compiler.Resolver_.Resolver(variables_ = _c.variables_, variants_ = _c.variants_, types_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.types_, that_ = generics_), traits_ = _c.traits_)
 });
 pipe_dot(definition_)({(_c) =>
 ff.compiler.Syntax_.DType(at_ = _c.at_, name_ = _c.name_, generics_ = _c.generics_, constraints_ = ff.core.List_.List_map[ff.compiler.Syntax_.Constraint, ff.compiler.Syntax_.Constraint](self_ = definition_.constraints_, body_ = {(c_) =>
@@ -178,7 +178,7 @@ val generics_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = g_, second_ = g_)
 }));
 val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
-ff.compiler.Resolver_.Resolver(variables_ = ff.core.Map_.Map_add[ff.core.String_.String, ff.core.String_.String](self_ = self_.variables_, key_ = definition_.name_, value_ = definition_.name_), variants_ = _c.variants_, types_ = (self_.types_ ++ generics_), traits_ = _c.traits_)
+ff.compiler.Resolver_.Resolver(variables_ = ff.core.Map_.Map_add[ff.core.String_.String, ff.core.String_.String](self_ = self_.variables_, key_ = definition_.name_, value_ = definition_.name_), variants_ = _c.variants_, types_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.types_, that_ = generics_), traits_ = _c.traits_)
 });
 pipe_dot(definition_)({(_c) =>
 ff.compiler.Syntax_.DExtend(at_ = _c.at_, name_ = _c.name_, generics_ = _c.generics_, constraints_ = ff.core.List_.List_map[ff.compiler.Syntax_.Constraint, ff.compiler.Syntax_.Constraint](self_ = definition_.constraints_, body_ = {(c_) =>
@@ -293,7 +293,7 @@ _w1.signature_.name_
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = name_, second_ = name_)
 }));
 val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
-ff.compiler.Resolver_.Resolver(variables_ = (self_.variables_ ++ functionMap_), variants_ = _c.variants_, types_ = _c.types_, traits_ = _c.traits_)
+ff.compiler.Resolver_.Resolver(variables_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.variables_, that_ = functionMap_), variants_ = _c.variants_, types_ = _c.types_, traits_ = _c.traits_)
 });
 ff.compiler.Syntax_.EFunctions(at_ = at_, functions_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = functions_, body_ = {(_w1) =>
 ff.compiler.Resolver_.Resolver_resolveFunctionDefinition(self_ = self2_, definition_ = _w1)
@@ -344,7 +344,7 @@ val typeMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] 
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = name_, second_ = name_)
 }));
 val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
-ff.compiler.Resolver_.Resolver(variables_ = (self_.variables_ ++ variableMap_), variants_ = _c.variants_, types_ = (self_.types_ ++ typeMap_), traits_ = _c.traits_)
+ff.compiler.Resolver_.Resolver(variables_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.variables_, that_ = variableMap_), variants_ = _c.variants_, types_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.types_, that_ = typeMap_), traits_ = _c.traits_)
 });
 val signature_ : ff.compiler.Syntax_.Signature = pipe_dot(definition_.signature_)({(_c) =>
 ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = _c.generics_, constraints_ = ff.core.List_.List_map[ff.compiler.Syntax_.Constraint, ff.compiler.Syntax_.Constraint](self_ = definition_.signature_.constraints_, body_ = {(c_) =>
@@ -376,29 +376,29 @@ case (ff.compiler.Syntax_.PVariant(_, _, patterns_)) =>
 ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchPattern, ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]](self_ = patterns_, body_ = {(pattern_) =>
 findVariables_(pattern_ = pattern_)
 }), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
-(_w1 ++ _w2)
+ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = _w1, that_ = _w2)
 })
 case (ff.compiler.Syntax_.PVariantAs(_, _, variable_)) =>
 ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.Option_.Option_getList[ff.core.String_.String](self_ = variable_), body_ = {(x_) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = x_, second_ = x_)
 }))
 case (ff.compiler.Syntax_.PAlias(_, pattern_, variable_)) =>
-(ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = variable_, second_ = variable_))) ++ findVariables_(pattern_ = pattern_))
+ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = variable_, second_ = variable_))), that_ = findVariables_(pattern_ = pattern_))
 case (ff.compiler.Syntax_.PList(_, _, items_)) =>
 ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.MatchPattern, ff.core.Bool_.Bool], ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]](self_ = items_, body_ = {
 case (ff.core.Pair_.Pair(item_, _)) =>
 findVariables_(pattern_ = item_)
 }), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
-(_w1 ++ _w2)
+ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = _w1, that_ = _w2)
 })
 }
 val variableMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchPattern, ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]](self_ = case_.patterns_, body_ = {(pattern_) =>
 findVariables_(pattern_ = pattern_)
 }), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.core.String_.String]())({(_w1, _w2) =>
-(_w1 ++ _w2)
+ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = _w1, that_ = _w2)
 });
 val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
-ff.compiler.Resolver_.Resolver(variables_ = (self_.variables_ ++ variableMap_), variants_ = _c.variants_, types_ = _c.types_, traits_ = _c.traits_)
+ff.compiler.Resolver_.Resolver(variables_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = self_.variables_, that_ = variableMap_), variants_ = _c.variants_, types_ = _c.types_, traits_ = _c.traits_)
 });
 ff.compiler.Syntax_.MatchCase(at_ = case_.at_, patterns_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchPattern, ff.compiler.Syntax_.MatchPattern](self_ = case_.patterns_, body_ = {(_w1) =>
 ff.compiler.Resolver_.Resolver_resolvePattern(self_ = self2_, pattern_ = _w1)

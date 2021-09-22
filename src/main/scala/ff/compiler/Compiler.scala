@@ -70,7 +70,7 @@ val code_ : ff.core.String_.String = ff.core.FileSystem_.FileSystem_readText(sel
 val tokens_ : ff.core.Array_.Array[ff.compiler.Token_.Token] = ff.compiler.Tokenizer_.tokenize_(file_ = file_, code_ = code_);
 val module_ : ff.compiler.Syntax_.Module = ff.compiler.Parser_.Parser_parseModule(self_ = ff.compiler.Parser_.make_(packagePair_ = packagePair_, file_ = file_, tokens_ = tokens_));
 val result_ : ff.compiler.Syntax_.Module = pipe_dot(module_)({(_c) =>
-ff.compiler.Syntax_.Module(packagePair_ = _c.packagePair_, file_ = _c.file_, dependencies_ = _c.dependencies_, imports_ = (ff.compiler.Compiler_.coreImports_ ++ module_.imports_), types_ = _c.types_, traits_ = _c.traits_, instances_ = _c.instances_, extends_ = _c.extends_, lets_ = _c.lets_, functions_ = _c.functions_)
+ff.compiler.Syntax_.Module(packagePair_ = _c.packagePair_, file_ = _c.file_, dependencies_ = _c.dependencies_, imports_ = ff.core.List_.List_addAll[ff.compiler.Syntax_.DImport](self_ = ff.compiler.Compiler_.coreImports_, list_ = module_.imports_), types_ = _c.types_, traits_ = _c.traits_, instances_ = _c.instances_, extends_ = _c.extends_, lets_ = _c.lets_, functions_ = _c.functions_)
 });
 self_.parsedModules_ = ff.core.Map_.Map_add[ff.core.String_.String, ff.compiler.Syntax_.Module](self_ = self_.parsedModules_, key_ = ((packageName_ + ":") + moduleName_), value_ = result_);
 result_
@@ -107,7 +107,7 @@ val otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module] = ff.core.Lis
 val newPackageName_ : ff.core.String_.String = ((i_.packagePair_.first_ + ":") + i_.packagePair_.second_);
 ff.compiler.Compiler_.Compiler_resolve(self_ = self_, packageName_ = newPackageName_, moduleName_ = ff.core.FileSystem_.FileSystem_prefixName(self_ = self_.files_, path_ = i_.file_))
 });
-val instances_ : ff.core.List_.List[ff.compiler.Syntax_.DInstance] = (module_.instances_ ++ ff.core.List_.List_flatMap[ff.compiler.Syntax_.Module, ff.compiler.Syntax_.DInstance](self_ = otherModules_, body_ = {(_w1) =>
+val instances_ : ff.core.List_.List[ff.compiler.Syntax_.DInstance] = ff.core.List_.List_addAll[ff.compiler.Syntax_.DInstance](self_ = module_.instances_, list_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.Module, ff.compiler.Syntax_.DInstance](self_ = otherModules_, body_ = {(_w1) =>
 _w1.instances_
 }));
 val result_ : ff.compiler.Syntax_.Module = ff.compiler.Inference_.Inference_inferModule(self_ = ff.compiler.Inference_.make_(instances_ = instances_), module_ = module_, otherModules_ = otherModules_);

@@ -58,7 +58,7 @@ pipe_dot(self_)({
 case (ff.core.RbMap_.RbLeaf()) =>
 List()
 case (ff.core.RbMap_.RbNode(_, l_, k_, v_, r_)) =>
-((ff.core.RbMap_.RbMap_pairs[K, V](self_ = l_) ++ List(ff.core.Pair_.Pair[K, V](first_ = k_, second_ = v_))) ++ ff.core.RbMap_.RbMap_pairs[K, V](self_ = r_))
+ff.core.List_.List_addAll[ff.core.Pair_.Pair[K, V]](self_ = ff.core.List_.List_addAll[ff.core.Pair_.Pair[K, V]](self_ = ff.core.RbMap_.RbMap_pairs[K, V](self_ = l_), list_ = List(ff.core.Pair_.Pair[K, V](first_ = k_, second_ = v_))), list_ = ff.core.RbMap_.RbMap_pairs[K, V](self_ = r_))
 })
 }
 

@@ -40,6 +40,11 @@ type Array[T] = java.util.ArrayList[T];
 
 
 
+def Array_addAll[T](self_ : ff.core.Array_.Array[T], that_ : ff.core.Array_.Array[T]) : ff.core.Array_.Array[T] = (self_, that_) match {
+case (self_, _) =>
+ff.core.Core_.panic_[ff.core.Array_.Array[T]](message_ = "magic")
+}
+
 def Array_getEmpty[T](self_ : ff.core.Array_.Array[T]) : ff.core.Bool_.Bool = {
 self_.isEmpty()
 }

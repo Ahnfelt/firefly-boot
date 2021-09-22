@@ -71,6 +71,11 @@ case (self_, _) =>
 ff.core.List_.List_getFlatten[T](self_ = List(self_, list_))
 }
 
+def List_addAll[T](self_ : ff.core.List_.List[T], list_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = (self_, list_) match {
+case (self_, _) =>
+ff.core.List_.List_getFlatten[T](self_ = List(self_, list_))
+}
+
 def List_getArray[T](self_ : ff.core.List_.List[T]) : ff.core.Array_.Array[T] = {
 ArrayBuilder_getArray(new scala.collection.mutable.ArrayBuffer[T]() ++ self_)
 }

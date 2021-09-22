@@ -45,10 +45,10 @@ case class Scheme(isVariable_ : ff.core.Bool_.Bool, isMutable_ : ff.core.Bool_.B
 case class Instantiated(typeArguments_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]], scheme_ : ff.compiler.Environment_.Scheme)
 
 def make_(module_ : ff.compiler.Syntax_.Module, otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.compiler.Environment_.Environment = {
-ff.compiler.Environment_.Environment(symbols_ = (ff.compiler.Environment_.processModule_(module_ = module_, isCurrentModule_ = ff.core.Bool_.True()).symbols_ ++ ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme], ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Module, ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = otherModules_, body_ = {(_w1) =>
+ff.compiler.Environment_.Environment(symbols_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = ff.compiler.Environment_.processModule_(module_ = module_, isCurrentModule_ = ff.core.Bool_.True()).symbols_, that_ = ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme], ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Module, ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = otherModules_, body_ = {(_w1) =>
 ff.compiler.Environment_.processModule_(module_ = _w1, isCurrentModule_ = ff.core.Bool_.False()).symbols_
 }), initial_ = ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Environment_.Scheme]())({(_w1, _w2) =>
-(_w1 ++ _w2)
+ff.core.Map_.Map_addAll[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = _w1, that_ = _w2)
 })))
 }
 
@@ -75,7 +75,7 @@ val prefix_ : ff.core.String_.String = (t_.name_ + "_");
 val selfParameter_ : ff.compiler.Syntax_.Parameter = ff.compiler.Syntax_.Parameter(at_ = d_.at_, mutable_ = ff.core.Bool_.False(), name_ = d_.name_, valueType_ = d_.type_, default_ = ff.core.Option_.None[ff.compiler.Syntax_.Term]());
 ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = d_.methods_, body_ = {(method_) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = (prefix_ + method_.signature_.name_), second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.False(), isMutable_ = ff.core.Bool_.False(), signature_ = pipe_dot(method_.signature_)({(_c) =>
-ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = (d_.generics_ ++ method_.signature_.generics_), constraints_ = (d_.constraints_ ++ method_.signature_.constraints_), parameters_ = (List(List(selfParameter_), method_.signature_.parameters_).flatten), returnType_ = _c.returnType_)
+ff.compiler.Syntax_.Signature(at_ = _c.at_, name_ = _c.name_, generics_ = ff.core.List_.List_addAll[ff.core.String_.String](self_ = d_.generics_, list_ = method_.signature_.generics_), constraints_ = ff.core.List_.List_addAll[ff.compiler.Syntax_.Constraint](self_ = d_.constraints_, list_ = method_.signature_.constraints_), parameters_ = (List(List(selfParameter_), method_.signature_.parameters_).flatten), returnType_ = _c.returnType_)
 })))
 })
 })
@@ -95,10 +95,10 @@ val returnType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at
 ff.compiler.Syntax_.TConstructor(at_ = d_.at_, name_ = typeParameter_, generics_ = List())
 }));
 ff.core.List_.List_map[ff.compiler.Syntax_.Variant, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = d_.variants_, body_ = {(variant_) =>
-ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = full_(module_ = module_, name_ = variant_.name_), second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.False(), isMutable_ = ff.core.Bool_.False(), signature_ = ff.compiler.Syntax_.Signature(at_ = variant_.at_, name_ = variant_.name_, generics_ = d_.generics_, constraints_ = d_.constraints_, parameters_ = (d_.commonFields_ ++ variant_.fields_), returnType_ = returnType_)))
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = full_(module_ = module_, name_ = variant_.name_), second_ = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.False(), isMutable_ = ff.core.Bool_.False(), signature_ = ff.compiler.Syntax_.Signature(at_ = variant_.at_, name_ = variant_.name_, generics_ = d_.generics_, constraints_ = d_.constraints_, parameters_ = ff.core.List_.List_addAll[ff.compiler.Syntax_.Parameter](self_ = d_.commonFields_, list_ = variant_.fields_), returnType_ = returnType_)))
 })
 });
-ff.compiler.Environment_.Environment(symbols_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = ((((functions_ ++ lets_) ++ fields_) ++ extends_) ++ variants_)))
+ff.compiler.Environment_.Environment(symbols_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = ff.core.List_.List_addAll[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = ff.core.List_.List_addAll[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = ff.core.List_.List_addAll[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = ff.core.List_.List_addAll[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = functions_, list_ = lets_), list_ = fields_), list_ = extends_), list_ = variants_)))
 }
 
 
