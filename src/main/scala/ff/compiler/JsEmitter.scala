@@ -113,7 +113,7 @@ ff.core.Bool_.True()
 case (_) =>
 ff.core.Bool_.False()
 }) =>
-val body_ : ff.core.String_.String = ff.compiler.JsEmitter_.emitStatements_(term_ = matchCase_.body_);
+val body_ : ff.core.String_.String = ff.compiler.JsEmitter_.emitStatements_(term_ = matchCase_.body_, last_ = ff.core.Bool_.True());
 (((signature_ + " {\n") + body_) + "\n}")
 case (_) =>
 val body_ : ff.core.String_.String = "// TODO: Pattern matching";
@@ -189,7 +189,7 @@ ff.compiler.JsEmitter_.escapeKeyword_(word_ = word_)
 case (_) =>
 ff.core.Core_.panic_[ff.core.String_.String](message_ = "!")
 }), separator_ = ", ");
-(((("((" + parameters_) + ") => {\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = body_)) + "\n})")
+(((("((" + parameters_) + ") => {\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = body_, last_ = ff.core.Bool_.True())) + "\n})")
 case (ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(_, cases_))) =>
 val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(matchCase_) =>
 ff.compiler.JsEmitter_.emitCase_(matchCase_ = matchCase_)
@@ -220,29 +220,33 @@ ff.compiler.JsEmitter_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = "Un
 });
 ("_w" + index_)
 case (_) =>
-(("(function() {\n" + ff.compiler.JsEmitter_.emitStatements_(term_ = term_)) + "\n})()")
+(("(function() {\n" + ff.compiler.JsEmitter_.emitStatements_(term_ = term_, last_ = ff.core.Bool_.True())) + "\n})()")
 }
 
-def emitStatements_(term_ : ff.compiler.Syntax_.Term) : ff.core.String_.String = (term_) match {
+def emitStatements_(term_ : ff.compiler.Syntax_.Term, last_ : ff.core.Bool_.Bool) : ff.core.String_.String = {
+pipe_dot(term_)({
 case (ff.compiler.Syntax_.EFunctions(at_, functions_, body_)) =>
 val functionStrings_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = functions_, body_ = {(f_) =>
 ff.compiler.JsEmitter_.emitFunctionDefinition_(definition_ = ff.compiler.Syntax_.DFunction(at_ = at_, signature_ = f_.signature_, body_ = f_.body_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())), suffix_ = "")
 });
-((ff.core.List_.List_join(self_ = functionStrings_, separator_ = "\n") + "\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = body_))
+((ff.core.List_.List_join(self_ = functionStrings_, separator_ = "\n") + "\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = body_, last_ = ff.core.Bool_.True()))
 case (ff.compiler.Syntax_.ELet(at_, mutable_, name_, valueType_, value_, body_)) =>
-((ff.compiler.JsEmitter_.emitLetDefinition_(definition_ = ff.compiler.Syntax_.DLet(at_ = at_, name_ = name_, variableType_ = valueType_, value_ = value_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())), mutable_ = mutable_) + ";\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = body_))
+((ff.compiler.JsEmitter_.emitLetDefinition_(definition_ = ff.compiler.Syntax_.DLet(at_ = at_, name_ = name_, variableType_ = valueType_, value_ = value_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())), mutable_ = mutable_) + ";\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = body_, last_ = ff.core.Bool_.True()))
 case (ff.compiler.Syntax_.ESequential(at_, before_, after_)) =>
-((ff.compiler.JsEmitter_.emitStatements_(term_ = before_) + ";\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = after_))
+((ff.compiler.JsEmitter_.emitStatements_(term_ = before_, last_ = ff.core.Bool_.False()) + ";\n") + ff.compiler.JsEmitter_.emitStatements_(term_ = after_, last_ = last_))
 case (ff.compiler.Syntax_.EAssign(at_, operator_, name_, value_)) =>
 ((((ff.compiler.JsEmitter_.escapeKeyword_(word_ = name_) + " ") + operator_) + "= ") + ff.compiler.JsEmitter_.emitTerm_(term_ = value_))
 case (ff.compiler.Syntax_.EAssignField(at_, operator_, record_, field_, value_)) =>
 ((((((ff.compiler.JsEmitter_.emitTerm_(term_ = record_) + ".") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = field_)) + " ") + operator_) + "= ") + ff.compiler.JsEmitter_.emitTerm_(term_ = value_))
+case (_) if last_ =>
+("return " + ff.compiler.JsEmitter_.emitTerm_(term_ = term_))
 case (_) =>
 ff.compiler.JsEmitter_.emitTerm_(term_ = term_)
+})
 }
 
 def emitCase_(matchCase_ : ff.compiler.Syntax_.MatchCase) : ff.core.String_.String = {
-(("if(true /* TODO */) {\n" + ff.compiler.JsEmitter_.emitStatements_(term_ = matchCase_.body_)) + "\n}")
+(("if(true /* TODO */) {\n" + ff.compiler.JsEmitter_.emitStatements_(term_ = matchCase_.body_, last_ = ff.core.Bool_.True())) + "\n}")
 }
 
 def emitArgument_(argument_ : ff.compiler.Syntax_.Argument) : ff.core.String_.String = {

@@ -54,7 +54,7 @@ emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
         | Lambda(_, [matchCase]) {
             matchCase.patterns.all {| PVariable(_, None) => True | PVariable(_, Some(x)) {True /* TODO */} => True | _ => False }
         } =>
-            let body = emitStatements(matchCase.body)
+            let body = emitStatements(matchCase.body, True)
             signature + " {\n" + body + "\n}"
         | _ =>
             let body = "// TODO: Pattern matching"
@@ -103,7 +103,7 @@ emitTerm(term: Term): String {
     } =>
         let parameters =
             patterns.map {| PVariable p => p.name.map(escapeKeyword).else{"_"} | _ => panic("!") }.join(", ")
-        "((" + parameters + ") => {\n" + emitStatements(body) + "\n})"
+        "((" + parameters + ") => {\n" + emitStatements(body, True) + "\n})"
     | ELambda(at, Lambda(_, cases)) =>
         let casesString = cases.map(emitCase).join("\n")
         "((/* TODO */) => {\n" + casesString + "\nthrow 'Unexhaustive pattern match'\n})"
@@ -124,28 +124,31 @@ emitTerm(term: Term): String {
         if(index == 0) {fail(at, "Unbound wildcard")}
         "_w" + index
     | _ =>
-        "(function() {\n" + emitStatements(term) + "\n})()"
+        "(function() {\n" + emitStatements(term, True) + "\n})()"
 }
 
-emitStatements(term: Term): String {
-    | EFunctions(at, functions, body) =>
-        let functionStrings = functions.map { f =>
-            emitFunctionDefinition(DFunction(at, f.signature, f.body, Targets(None, None)))
-        }
-        functionStrings.join("\n") + "\n" + emitStatements(body)
-    | ELet(at, mutable, name, valueType, value, body) =>
-        emitLetDefinition(DLet(at, name, valueType, value, Targets(None, None)), mutable) + ";\n" + emitStatements(body)
-    | ESequential(at, before, after) =>
-        emitStatements(before) + ";\n" + emitStatements(after)
-    | EAssign(at, operator, name, value) =>
-        escapeKeyword(name) + " " + operator + "= " + emitTerm(value)
-    | EAssignField(at, operator, record, field, value) =>
-        emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + emitTerm(value)
-    | _ => emitTerm(term)
+emitStatements(term: Term, last: Bool): String {
+    term.{
+        | EFunctions(at, functions, body) =>
+            let functionStrings = functions.map { f =>
+                emitFunctionDefinition(DFunction(at, f.signature, f.body, Targets(None, None)))
+            }
+            functionStrings.join("\n") + "\n" + emitStatements(body, True)
+        | ELet(at, mutable, name, valueType, value, body) =>
+            emitLetDefinition(DLet(at, name, valueType, value, Targets(None, None)), mutable) + ";\n" + emitStatements(body, True)
+        | ESequential(at, before, after) =>
+            emitStatements(before, False) + ";\n" + emitStatements(after, last)
+        | EAssign(at, operator, name, value) =>
+            escapeKeyword(name) + " " + operator + "= " + emitTerm(value)
+        | EAssignField(at, operator, record, field, value) =>
+            emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + emitTerm(value)
+        | _ {last} => "return " + emitTerm(term)
+        | _ => emitTerm(term)
+    }
 }
 
 emitCase(matchCase: MatchCase): String {
-    "if(true /* TODO */) {\n" + emitStatements(matchCase.body) + "\n}"
+    "if(true /* TODO */) {\n" + emitStatements(matchCase.body, True) + "\n}"
 }
 
 emitArgument(argument: Argument): String {
