@@ -143,8 +143,10 @@ emitStatements(term: Term, last: Bool): String {
             escapeKeyword(name) + " " + operator + "= " + emitTerm(value)
         | EAssignField(at, operator, record, field, value) =>
             emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + emitTerm(value)
-        | _ {last} => "return " + emitTerm(term)
-        | _ => emitTerm(term)
+        | _ {last} =>
+            "return " + emitTerm(term)
+        | _ =>
+            emitTerm(term)
     }
 }
 
@@ -170,12 +172,14 @@ emitPattern(argument: String, pattern: MatchPattern, arguments: List[String], ma
             let newArguments = patterns.pairs().map {| Pair(i, p) => "?" + i } // TODO: Needs field names
             let variantName = escapeKeyword(name.getReverse().takeWhile { _ != '.' }.getReverse())
             "if(" + escapeKeyword(argument) + "._ === '" + variantName + "') {\n" +
-            emitCase(newArguments ++ arguments, matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)) + "}"
+            emitCase(newArguments ++ arguments, matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)) +
+            "}"
         | PVariantAs(at, name, variable) =>
             let variantName = escapeKeyword(name.getReverse().takeWhile { _ != '.' }.getReverse())
             "if(" + escapeKeyword(argument) + "._ === '" + escapeKeyword(variantName) + "') {\n" +
             variable.map { "const " + escapeKeyword(_) + " = " + escapeKeyword(argument) + "\n" }.else {""} +
-            emitCase(arguments, matchCase) + "}"
+            emitCase(arguments, matchCase) +
+            "}"
         | PAlias(_, pattern, variable) =>
             "const " + escapeKeyword(variable) + " = " + escapeKeyword(argument) + "\n" +
             emitPattern(argument, pattern, arguments, matchCase)
