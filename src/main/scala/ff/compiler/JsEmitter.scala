@@ -292,19 +292,19 @@ case (ff.compiler.Syntax_.PAlias(_, pattern_, variable_)) =>
 ((((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = variable_)) + " = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "\n") + ff.compiler.JsEmitter_.emitPattern_(argument_ = argument_, pattern_ = pattern_, arguments_ = arguments_, matchCase_ = matchCase_))
 case (ff.compiler.Syntax_.PList(at_, _, List())) =>
 val p_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariant(at_ = at_, name_ = "Empty", patterns_ = List());
-(ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
 ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(p_), matchCase_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
-})) + "}")
+}))
 case (ff.compiler.Syntax_.PList(at_, t_, List(ff.core.Pair_.Pair(p_, ff.core.Bool_.False()), ps__seq @ _*))) =>
 val ps_ = ps__seq.toList;
 val p2_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariant(at_ = at_, name_ = "Link", patterns_ = List(p_, ff.compiler.Syntax_.PList(at_ = at_, itemType_ = t_, items_ = ps_)));
-(ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
 ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(p2_), matchCase_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
-})) + "}")
+}))
 case (ff.compiler.Syntax_.PList(at_, t_, List(ff.core.Pair_.Pair(p_, ff.core.Bool_.True())))) =>
-(ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+ff.compiler.JsEmitter_.emitCase_(arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
 ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(p_), matchCase_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
-})) + "}")
+}))
 case (ff.compiler.Syntax_.PList(at_, t_, List(ff.core.Pair_.Pair(p_, ff.core.Bool_.True()), __seq @ _*))) =>
 val _ = __seq.toList;
 "throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"

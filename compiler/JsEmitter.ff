@@ -185,12 +185,12 @@ emitPattern(argument: String, pattern: MatchPattern, arguments: List[String], ma
             emitPattern(argument, pattern, arguments, matchCase)
         | PList(at, _, []) =>
             let p = PVariant(at, "Empty", [])
-            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns])) + "}"
+            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns]))
         | PList(at, t, [Pair(p, False), ...ps]) =>
             let p2 = PVariant(at, "Link", [p, PList(at, t, ps)])
-            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p2, ...matchCase.patterns])) + "}"
+            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p2, ...matchCase.patterns]))
         | PList(at, t, [Pair(p, True)]) =>
-            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns])) + "}"
+            emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns]))
         | PList(at, t, [Pair(p, True), ..._]) =>
             "throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"
     }
