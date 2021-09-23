@@ -124,10 +124,11 @@ ff.core.Unit_.Unit()
 }), body_ = {() =>
 self_.emittedModules_ = ff.core.Set_.Set_add[ff.core.String_.String](self_ = self_.emittedModules_, value_ = ((packageName_ + ":") + moduleName_));
 val module_ : ff.compiler.Syntax_.Module = ff.compiler.Compiler_.Compiler_infer(self_ = self_, packageName_ = packageName_, moduleName_ = moduleName_);
-ff.core.List_.List_each[ff.compiler.Syntax_.Module](self_ = ff.compiler.Compiler_.Compiler_imports(self_ = self_, packageName_ = packageName_, module_ = module_), body_ = {(i_) =>
+val otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module] = ff.core.List_.List_map[ff.compiler.Syntax_.Module, ff.compiler.Syntax_.Module](self_ = ff.compiler.Compiler_.Compiler_imports(self_ = self_, packageName_ = packageName_, module_ = module_), body_ = {(i_) =>
 val newPackageName_ : ff.core.String_.String = ((i_.packagePair_.first_ + ":") + i_.packagePair_.second_);
-ff.compiler.Compiler_.Compiler_emit(self_ = self_, packageName_ = newPackageName_, moduleName_ = ff.core.FileSystem_.FileSystem_prefixName(self_ = self_.files_, path_ = i_.file_));
-ff.core.Unit_.Unit()
+val newModuleName_ : ff.core.String_.String = ff.core.FileSystem_.FileSystem_prefixName(self_ = self_.files_, path_ = i_.file_);
+ff.compiler.Compiler_.Compiler_emit(self_ = self_, packageName_ = newPackageName_, moduleName_ = newModuleName_);
+ff.compiler.Compiler_.Compiler_infer(self_ = self_, packageName_ = newPackageName_, moduleName_ = newModuleName_)
 });
 val packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String] = ff.core.Core_.do_[ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](body_ = {() =>
 val array_ : ff.core.Array_.Array[ff.core.String_.String] = ff.core.String_.String_split(self_ = packageName_, char_ = ':');
@@ -138,7 +139,7 @@ val scalaPath_ : ff.core.String_.String = ((self_.scalaOutputPath_ + "/") + ff.c
 val scalaFile_ : ff.core.String_.String = (((scalaPath_ + "/") + moduleName_) + ".scala");
 ff.core.FileSystem_.FileSystem_createDirectories(self_ = self_.files_, path_ = scalaPath_);
 ff.core.FileSystem_.FileSystem_writeText(self_ = self_.files_, file_ = scalaFile_, text_ = scala_);
-val js_ : ff.core.String_.String = ff.compiler.JsEmitter_.emitModule_(packagePair_ = packagePair_, module_ = module_);
+val js_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitModule(self_ = ff.compiler.JsEmitter_.make_(otherModules_ = otherModules_), packagePair_ = packagePair_, module_ = module_);
 val jsPath_ : ff.core.String_.String = ((self_.jsOutputPath_ + "/") + ff.core.String_.String_replace(self_ = packageName_, needle_ = ":", replacement_ = "/"));
 val jsFile_ : ff.core.String_.String = (((jsPath_ + "/") + moduleName_) + ".js");
 ff.core.FileSystem_.FileSystem_createDirectories(self_ = self_.files_, path_ = jsPath_);

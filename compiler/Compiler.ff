@@ -126,9 +126,11 @@ extend self: Compiler {
         self.emittedModules = self.emittedModules.add(packageName + ":" + moduleName)
 
         let module = self.infer(packageName, moduleName)
-        self.imports(packageName, module).each { i =>
+        let otherModules = self.imports(packageName, module).map { i =>
             let newPackageName = i.packagePair.first + ":" + i.packagePair.second
-            self.emit(newPackageName, self.files.prefixName(i.file))
+            let newModuleName = self.files.prefixName(i.file)
+            self.emit(newPackageName, newModuleName)
+            self.infer(newPackageName, newModuleName)
         }
 
         let packagePair = do {
@@ -142,7 +144,7 @@ extend self: Compiler {
         self.files.createDirectories(scalaPath)
         self.files.writeText(scalaFile, scala)
 
-        let js = JsEmitter.emitModule(packagePair, module)
+        let js = JsEmitter.make(otherModules).emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
         let jsFile = jsPath + "/" + moduleName + ".js"
         self.files.createDirectories(jsPath)
