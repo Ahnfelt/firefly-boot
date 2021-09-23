@@ -64,7 +64,11 @@ extend self: JsEmitter {
         }.else:
         definition.body.{
             | Lambda(_, [matchCase]) {
-                matchCase.patterns.all {| PVariable(_, None) => True | PVariable(_, Some(x)) {True /* TODO */} => True | _ => False }
+                matchCase.patterns.all {
+                    | PVariable(_, None) => True
+                    | PVariable(_, Some(x)) {True /* TODO */} => True
+                    | _ => False
+                }
             } =>
                 let body = self.emitStatements(matchCase.body, True)
                 signature + " {\n" + body + "\n}"
