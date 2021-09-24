@@ -38,10 +38,13 @@ import ff.core.Try_._
 import ff.core.Unit_._
 object JsEmitter_ {
 
-case class JsEmitter(otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module])
+case class JsEmitter(otherModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module])
 
 def make_(otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.compiler.JsEmitter_.JsEmitter = {
-ff.compiler.JsEmitter_.JsEmitter(otherModules_ = otherModules_)
+ff.compiler.JsEmitter_.JsEmitter(otherModules_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Module](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Module, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Module]](self_ = otherModules_, body_ = {(m_) =>
+val moduleName_ : ff.core.String_.String = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = m_.file_, count_ = 3));
+ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Module](first_ = moduleName_, second_ = m_)
+})))
 }
 
 def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.String) : T = {
@@ -230,10 +233,13 @@ case (self_, ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(_, case
 val arguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.compiler.Syntax_.MatchPattern], ff.core.String_.String](self_ = ff.core.List_.List_pairs[ff.compiler.Syntax_.MatchPattern](self_ = ff.core.List_.List_expect[ff.compiler.Syntax_.MatchCase](self_ = cases_, index_ = 0).patterns_), body_ = {(_w1) =>
 ("_" + (_w1.first_ + 1))
 });
+val escapedArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.core.String_.String, ff.core.String_.String](self_ = arguments_, body_ = {(word_) =>
+ff.compiler.JsEmitter_.escapeKeyword_(word_ = word_)
+});
 val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(_w1) =>
-ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = _w1)
+ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = escapedArguments_, matchCase_ = _w1)
 }), separator_ = "\n");
-(((("((" + ff.core.List_.List_join(self_ = arguments_, separator_ = ", ")) + ") => {\n") + casesString_) + "\nthrow 'Unexhaustive pattern match'\n})")
+(((("((" + ff.core.List_.List_join(self_ = escapedArguments_, separator_ = ", ")) + ") => {\n") + casesString_) + "\nthrow 'Unexhaustive pattern match'\n})")
 case (self_, ff.compiler.Syntax_.EPipe(at_, value_, function_)) =>
 (((("(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = function_)) + ")(") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = value_)) + ")")
 case (self_, ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
@@ -306,37 +312,49 @@ pipe_dot(pattern_)({
 case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.None())) =>
 ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)
 case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.Some(name_))) =>
-((((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = name_)) + " = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_))
+((((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = name_)) + " = ") + argument_) + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_))
 case (ff.compiler.Syntax_.PVariant(_, name_, patterns_)) =>
-val newArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.compiler.Syntax_.MatchPattern], ff.core.String_.String](self_ = ff.core.List_.List_pairs[ff.compiler.Syntax_.MatchPattern](self_ = patterns_), body_ = {
-case (ff.core.Pair_.Pair(i_, p_)) =>
-("?" + i_)
-});
-val variantName_ : ff.core.String_.String = ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = name_), p_ = {(_w1) =>
+val variantNameUnqualified_ : ff.core.String_.String = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = name_), p_ = {(_w1) =>
 (_w1 != '.')
-})));
-(((((("if(" + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "._ === '") + variantName_) + "') {\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = ff.core.List_.List_addAll[ff.core.String_.String](self_ = newArguments_, list_ = arguments_), matchCase_ = pipe_dot(matchCase_)({(_c) =>
+}));
+val variantName_ : ff.core.String_.String = ff.compiler.JsEmitter_.escapeKeyword_(word_ = variantNameUnqualified_);
+val moduleName_ : ff.core.String_.String = ff.core.String_.String_dropLast(self_ = name_, count_ = (ff.core.String_.String_getSize(self_ = variantNameUnqualified_) + 1));
+val variantModule_ : ff.compiler.Syntax_.Module = ff.core.Map_.Map_expect[ff.core.String_.String, ff.compiler.Syntax_.Module](self_ = self_.otherModules_, key_ = moduleName_);
+val newArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.Option_.Option_expect[ff.core.List_.List[ff.core.String_.String]](self_ = ff.core.List_.List_getCollectFirst[ff.compiler.Syntax_.DType, ff.core.List_.List[ff.core.String_.String]](self_ = variantModule_.types_, body_ = {(definition_) =>
+ff.core.Option_.Option_map[ff.compiler.Syntax_.Variant, ff.core.List_.List[ff.core.String_.String]](self_ = ff.core.List_.List_find[ff.compiler.Syntax_.Variant](self_ = definition_.variants_, body_ = {(_w1) =>
+(_w1.name_ == variantName_)
+}), body_ = {(variant_) =>
+ff.core.List_.List_addAll[ff.core.String_.String](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.commonFields_, body_ = {(_w1) =>
+_w1.name_
+}), list_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = variant_.fields_, body_ = {(_w1) =>
+_w1.name_
+}))
+})
+})), body_ = {(_w1) =>
+((argument_ + ".") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = _w1))
+});
+(((((("if(" + argument_) + "._ === '") + variantName_) + "') {\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = ff.core.List_.List_addAll[ff.core.String_.String](self_ = newArguments_, list_ = arguments_), matchCase_ = pipe_dot(matchCase_)({(_c) =>
 ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = ff.core.List_.List_addAll[ff.compiler.Syntax_.MatchPattern](self_ = patterns_, list_ = matchCase_.patterns_), condition_ = _c.condition_, body_ = _c.body_)
 }))) + "}")
 case (ff.compiler.Syntax_.PVariantAs(at_, name_, variable_)) =>
 val variantName_ : ff.core.String_.String = ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = name_), p_ = {(_w1) =>
 (_w1 != '.')
 })));
-((((((("if(" + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "._ === '") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = variantName_)) + "') {\n") + ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = variable_, body_ = {(_w1) =>
-(((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = _w1)) + " = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "\n")
+((((((("if(" + argument_) + "._ === '") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = variantName_)) + "') {\n") + ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = variable_, body_ = {(_w1) =>
+(((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = _w1)) + " = ") + argument_) + "\n")
 }), body_ = {() =>
 ""
 })) + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)) + "}")
 case (ff.compiler.Syntax_.PAlias(_, pattern_, variable_)) =>
-((((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = variable_)) + " = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = argument_)) + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitPattern(self_ = self_, argument_ = argument_, pattern_ = pattern_, arguments_ = arguments_, matchCase_ = matchCase_))
+((((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = variable_)) + " = ") + argument_) + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitPattern(self_ = self_, argument_ = argument_, pattern_ = pattern_, arguments_ = arguments_, matchCase_ = matchCase_))
 case (ff.compiler.Syntax_.PList(at_, _, List())) =>
-val p_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariant(at_ = at_, name_ = "Empty", patterns_ = List());
+val p_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariant(at_ = at_, name_ = "ff:core/List.Empty", patterns_ = List());
 ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
 ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(p_), matchCase_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
 }))
 case (ff.compiler.Syntax_.PList(at_, t_, List(ff.core.Pair_.Pair(p_, ff.core.Bool_.False()), ps__seq @ _*))) =>
 val ps_ = ps__seq.toList;
-val p2_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariant(at_ = at_, name_ = "Link", patterns_ = List(p_, ff.compiler.Syntax_.PList(at_ = at_, itemType_ = t_, items_ = ps_)));
+val p2_ : ff.compiler.Syntax_.MatchPattern = ff.compiler.Syntax_.PVariant(at_ = at_, name_ = "ff:core/List.Link", patterns_ = List(p_, ff.compiler.Syntax_.PList(at_ = at_, itemType_ = t_, items_ = ps_)));
 ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = (List(List(argument_), arguments_).flatten), matchCase_ = pipe_dot(matchCase_)({(_c) =>
 ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = (List(List(p2_), matchCase_.patterns_).flatten), condition_ = _c.condition_, body_ = _c.body_)
 }))

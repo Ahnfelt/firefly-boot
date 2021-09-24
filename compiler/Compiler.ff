@@ -144,7 +144,7 @@ extend self: Compiler {
         self.files.createDirectories(scalaPath)
         self.files.writeText(scalaFile, scala)
 
-        let js = JsEmitter.make(otherModules).emitModule(packagePair, module)
+        let js = JsEmitter.make([module, ...otherModules]).emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
         let jsFile = jsPath + "/" + moduleName + ".js"
         self.files.createDirectories(jsPath)

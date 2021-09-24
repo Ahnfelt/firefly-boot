@@ -1,12 +1,15 @@
 import Syntax
 
 type JsEmitter(
-    otherModules: List[Module]
+    otherModules: Map[String, Module]
 )
 
 make(otherModules: List[Module]): JsEmitter {
     JsEmitter(
-        otherModules = otherModules
+        otherModules = otherModules.map { m =>
+            let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
+            Pair(moduleName, m)
+        }.getMap()
     )
 }
 
@@ -122,8 +125,9 @@ extend self: JsEmitter {
             "((" + parameters + ") => {\n" + self.emitStatements(body, True) + "\n})"
         | ELambda(at, Lambda(_, cases)) =>
             let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
-            let casesString = cases.map { self.emitCase(arguments, _) }.join("\n")
-            "((" + arguments.join(", ") + ") => {\n" + casesString + "\nthrow 'Unexhaustive pattern match'\n})"
+            let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
+            let casesString = cases.map { self.emitCase(escapedArguments, _) }.join("\n")
+            "((" + escapedArguments.join(", ") + ") => {\n" + casesString + "\nthrow 'Unexhaustive pattern match'\n})"
         | EPipe(at, value, function) =>
             "(" + self.emitTerm(function) + ")(" + self.emitTerm(value) + ")"
         | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().getIsLetter()} =>
@@ -182,28 +186,35 @@ extend self: JsEmitter {
             | PVariable(_, None) =>
                 self.emitCase(arguments, matchCase)
             | PVariable(_, Some(name)) =>
-                "const " + escapeKeyword(name) + " = " + escapeKeyword(argument) + "\n" +
+                "const " + escapeKeyword(name) + " = " + argument + "\n" +
                 self.emitCase(arguments, matchCase)
             | PVariant(_, name, patterns) =>
-                let newArguments = patterns.pairs().map {| Pair(i, p) => "?" + i } // TODO: Needs field names
-                let variantName = escapeKeyword(name.getReverse().takeWhile { _ != '.' }.getReverse())
-                "if(" + escapeKeyword(argument) + "._ === '" + variantName + "') {\n" +
+                let variantNameUnqualified = name.getReverse().takeWhile { _ != '.' }.getReverse()
+                let variantName = escapeKeyword(variantNameUnqualified)
+                let moduleName = name.dropLast(variantNameUnqualified.getSize() + 1)
+                let variantModule = self.otherModules.expect(moduleName)
+                let newArguments = variantModule.types.getCollectFirst { definition =>
+                    definition.variants.find { _.name == variantName }.map { variant =>
+                        definition.commonFields.map { _.name} ++ variant.fields.map {_.name}
+                    }
+                }.expect().map { argument + "." + escapeKeyword(_) }
+                "if(" + argument + "._ === '" + variantName + "') {\n" +
                 self.emitCase(newArguments ++ arguments, matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)) +
                 "}"
             | PVariantAs(at, name, variable) =>
                 let variantName = escapeKeyword(name.getReverse().takeWhile { _ != '.' }.getReverse())
-                "if(" + escapeKeyword(argument) + "._ === '" + escapeKeyword(variantName) + "') {\n" +
-                variable.map { "const " + escapeKeyword(_) + " = " + escapeKeyword(argument) + "\n" }.else {""} +
+                "if(" + argument + "._ === '" + escapeKeyword(variantName) + "') {\n" +
+                variable.map { "const " + escapeKeyword(_) + " = " + argument + "\n" }.else {""} +
                 self.emitCase(arguments, matchCase) +
                 "}"
             | PAlias(_, pattern, variable) =>
-                "const " + escapeKeyword(variable) + " = " + escapeKeyword(argument) + "\n" +
+                "const " + escapeKeyword(variable) + " = " + argument + "\n" +
                 self.emitPattern(argument, pattern, arguments, matchCase)
             | PList(at, _, []) =>
-                let p = PVariant(at, "Empty", [])
+                let p = PVariant(at, "ff:core/List.Empty", [])
                 self.emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns]))
             | PList(at, t, [Pair(p, False), ...ps]) =>
-                let p2 = PVariant(at, "Link", [p, PList(at, t, ps)])
+                let p2 = PVariant(at, "ff:core/List.Link", [p, PList(at, t, ps)])
                 self.emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p2, ...matchCase.patterns]))
             | PList(at, t, [Pair(p, True)]) =>
                 self.emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns]))

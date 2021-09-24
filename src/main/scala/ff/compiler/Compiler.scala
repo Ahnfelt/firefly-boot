@@ -139,7 +139,7 @@ val scalaPath_ : ff.core.String_.String = ((self_.scalaOutputPath_ + "/") + ff.c
 val scalaFile_ : ff.core.String_.String = (((scalaPath_ + "/") + moduleName_) + ".scala");
 ff.core.FileSystem_.FileSystem_createDirectories(self_ = self_.files_, path_ = scalaPath_);
 ff.core.FileSystem_.FileSystem_writeText(self_ = self_.files_, file_ = scalaFile_, text_ = scala_);
-val js_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitModule(self_ = ff.compiler.JsEmitter_.make_(otherModules_ = otherModules_), packagePair_ = packagePair_, module_ = module_);
+val js_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitModule(self_ = ff.compiler.JsEmitter_.make_(otherModules_ = (List(List(module_), otherModules_).flatten)), packagePair_ = packagePair_, module_ = module_);
 val jsPath_ : ff.core.String_.String = ((self_.jsOutputPath_ + "/") + ff.core.String_.String_replace(self_ = packageName_, needle_ = ":", replacement_ = "/"));
 val jsFile_ : ff.core.String_.String = (((jsPath_ + "/") + moduleName_) + ".js");
 ff.core.FileSystem_.FileSystem_createDirectories(self_ = self_.files_, path_ = jsPath_);
