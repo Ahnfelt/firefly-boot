@@ -126,7 +126,7 @@ extend self: JsEmitter {
         | ELambda(at, Lambda(_, cases)) =>
             let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
-            let casesString = cases.map { self.emitCase(escapedArguments, _) }.join("\n")
+            let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _) + "\n}" }.join("\n")
             "((" + escapedArguments.join(", ") + ") => {\n" + casesString + "\nthrow 'Unexhaustive pattern match'\n})"
         | EPipe(at, value, function) =>
             "(" + self.emitTerm(function) + ")(" + self.emitTerm(value) + ")"

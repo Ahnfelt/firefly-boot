@@ -237,7 +237,7 @@ val escapedArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.Lis
 ff.compiler.JsEmitter_.escapeKeyword_(word_ = word_)
 });
 val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(_w1) =>
-ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = escapedArguments_, matchCase_ = _w1)
+(("{\n" + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = escapedArguments_, matchCase_ = _w1)) + "\n}")
 }), separator_ = "\n");
 (((("((" + ff.core.List_.List_join(self_ = escapedArguments_, separator_ = ", ")) + ") => {\n") + casesString_) + "\nthrow 'Unexhaustive pattern match'\n})")
 case (self_, ff.compiler.Syntax_.EPipe(at_, value_, function_)) =>
