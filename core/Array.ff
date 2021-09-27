@@ -12,7 +12,7 @@ extend self[T]: Array[T] {
 
     getSize(): Int { panic("magic") }
         scala "self_.size()"
-        javascript "return self.length"
+        javascript "return self_.length"
 
     expect(index: Int): T { panic("magic") }
         scala "self_.get(index_)"
@@ -36,12 +36,12 @@ extend self[T]: Array[T] {
             for(i <- 0.until(self_.size() - count_)) r.add(self_.get(i))
             r
         """
-        javascript "return self_.slice(0, self.length - count_)"
+        javascript "return self_.slice(0, self_.length - count_)"
 
     update(index: Int, body: T => T): Array[T] { panic("magic") }
         javascript """
             let result = self_.slice();
-            result[index_] = body(result[index_]);
+            result[index_] = body_(result[index_]);
             return result;
         """
 
