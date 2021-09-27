@@ -80,10 +80,15 @@ tokenize(file: String, code: String): Array[Token] {
 
             i += if(multiLine) {3} else {1}
             while {i < code.getSize() && (multiLine || code.expect(i) != endSign)} {
-                if(!multiLine && code.expect(i) == '\n') {
-                    panic(
-                        "Unexpected end of line in string started on line " + startLine + "."
-                    )
+                if(code.expect(i) == '\n') {
+                    if(multiLine) {
+                        line += 1
+                        lineOffset = i + 1
+                    } else {
+                        panic(
+                            "Unexpected end of line in string started on line " + startLine + "."
+                        )
+                    }
                 }
                 if(i >= code.getSize()) {
                     panic(

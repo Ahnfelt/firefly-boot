@@ -180,8 +180,36 @@ i_ += ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Int_.Int](co
 ff.core.Core_.while_(condition_ = {() =>
 ((i_ < ff.core.String_.String_getSize(self_ = code_)) && (multiLine_ || (ff.core.String_.String_expect(self_ = code_, index_ = i_) != endSign_)))
 }, body_ = {() =>
-ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = ((!multiLine_) && (ff.core.String_.String_expect(self_ = code_, index_ = i_) == '\n')), body_ = {() =>
-ff.core.Core_.panic_[ff.core.Nothing_.Nothing](message_ = (("Unexpected end of line in string started on line " + startLine_) + "."))
+ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = (ff.core.String_.String_expect(self_ = code_, index_ = i_) == '\n'), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Unit_.Unit](condition_ = multiLine_, body_ = {() =>
+line_ += 1;
+lineOffset_ = (i_ + 1);
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit()
+}), body_ = {() =>
+ff.core.Core_.panic_[ff.core.Nothing_.Nothing](message_ = (("Unexpected end of line in string started on line " + startLine_) + "."));
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit()
+});
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit();
+ff.core.Unit_.Unit()
 });
 ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (i_ >= ff.core.String_.String_getSize(self_ = code_)), body_ = {() =>
 ff.core.Core_.panic_[ff.core.Nothing_.Nothing](message_ = (("Expected end of string started on line " + startLine_) + ", got end of file."))

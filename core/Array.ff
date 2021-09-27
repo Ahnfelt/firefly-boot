@@ -4,6 +4,7 @@ type Array[T] {}
 extend self[T]: Array[T] {
 
     addAll(that: Array[T]): Array[T] { panic("magic") }
+        javascript "self_.concat(that_)"
 
     getEmpty(): Bool { panic("magic") }
         scala "self_.isEmpty()"
@@ -27,6 +28,7 @@ extend self[T]: Array[T] {
             for(i <- count_.until(self_.size())) r.add(self_.get(i))
             r
         """
+        javascript "self_.slice(count_)"
 
     dropLast(count: Int = 1): Array[T] { panic("magic") }
         scala """
@@ -34,11 +36,12 @@ extend self[T]: Array[T] {
             for(i <- 0.until(self_.size() - count_)) r.add(self_.get(i))
             r
         """
+        javascript "self_.slice(0, self.length - count_)"
 
     update(index: Int, body: T => T): Array[T] { panic("magic") }
         javascript """
             let result = self_.slice();
-            result[index] = body(result[index]);
+            result[index_] = body(result[index_]);
             return result;
         """
 
@@ -46,6 +49,13 @@ extend self[T]: Array[T] {
         scala """
             import scala.collection.JavaConverters._
             self_.asScala.toList
+        """
+        javascript """
+            let result = ff_core_List.Empty();
+            for(let i = self_.length - 1; i >= 0; i--) {
+                result = ff_core_List.Link(self_[i], result);
+            }
+            return result;
         """
 
 }
