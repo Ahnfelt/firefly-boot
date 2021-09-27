@@ -178,7 +178,24 @@ val defaultValue_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ =
 
 def JsEmitter_emitTypeDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, definition_ : ff.compiler.Syntax_.DType) : ff.core.String_.String = (self_, definition_) match {
 case (self_, _) =>
-("// type " + definition_.name_)
+((("// type " + definition_.name_) + "\n") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Variant, ff.core.String_.String](self_ = definition_.variants_, body_ = {(_w1) =>
+ff.compiler.JsEmitter_.JsEmitter_emitVariantDefinition(self_ = self_, typeDefinition_ = definition_, definition_ = _w1)
+}), separator_ = "\n"))
+}
+
+def JsEmitter_emitVariantDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, typeDefinition_ : ff.compiler.Syntax_.DType, definition_ : ff.compiler.Syntax_.Variant) : ff.core.String_.String = (self_, typeDefinition_, definition_) match {
+case (self_, _, _) =>
+val allFields_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter] = ff.core.List_.List_addAll[ff.compiler.Syntax_.Parameter](self_ = typeDefinition_.commonFields_, list_ = definition_.fields_);
+val fields_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = allFields_, body_ = {(_w1) =>
+ff.compiler.JsEmitter_.escapeKeyword_(word_ = _w1.name_)
+}), separator_ = ", ");
+ff.core.Option_.Option_else(self_ = definition_.targets_.javaScript_, body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Parameter](self_ = allFields_), body_ = {() =>
+((((((((((((("const " + definition_.name_) + "$ = {_: '") + definition_.name_) + "'};") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
+}), body_ = {() =>
+(((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {_: '") + definition_.name_) + "', ") + fields_) + "};\n") + "}")
+})
+})
 }
 
 def JsEmitter_emitTerm(self_ : ff.compiler.JsEmitter_.JsEmitter, term_ : ff.compiler.Syntax_.Term) : ff.core.String_.String = (self_, term_) match {

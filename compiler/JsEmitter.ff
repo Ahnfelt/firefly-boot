@@ -92,7 +92,25 @@ extend self: JsEmitter {
     }
 
     emitTypeDefinition(definition: DType): String {
-        "// type " + definition.name
+        "// type " + definition.name + "\n" +
+        definition.variants.map { self.emitVariantDefinition(definition, _) }.join("\n")
+    }
+
+    emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
+        let allFields = typeDefinition.commonFields ++ definition.fields
+        let fields = allFields.map { escapeKeyword(_.name) }.join(", ")
+        definition.targets.javaScript.else {
+            if(allFields.getEmpty()) {
+                "const " + definition.name + "$ = {_: '" + definition.name + "'};\n" +
+                "export function " + definition.name + "(" + fields + ") {\n" +
+                "return " + definition.name + "$;\n" +
+                "}"
+            } else {
+                "export function " + definition.name + "(" + fields + ") {\n" +
+                "return {_: '" + definition.name + "', " + fields + "};\n" +
+                "}"
+            }
+        }
     }
 
     emitTerm(term: Term): String {
