@@ -106,8 +106,20 @@ extend self: JsEmitter {
                 | Pair(item, False) => self.emitTerm(item)
                 | Pair(item, True) => "...ff_core_List.List_getArray(" + self.emitTerm(item) + ")"
             }.join(", ") + "])"
+        | EVariant(at, name, _, _) { name == "ff:core/Bool.False" } =>
+            "false"
+        | EVariant(at, name, _, _) { name == "ff:core/Bool.True" } =>
+            "true"
+        | EVariant(at, name, _, _) { name == "ff:core/Unit.Unit" } =>
+            "(void 0)"
         | EVariant(at, name, _, arguments) =>
             escapeResolved(name) + "(" + arguments.getList().getFlatten().map(self.emitArgument).join(", ") + ")"
+        | EVariantIs(at, name, _) { name == "ff:core/Bool.False" } =>
+            "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
+        | EVariantIs(at, name, _) { name == "ff:core/Bool.True" } =>
+            "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
+        | EVariantIs(at, name, _) { name == "ff:core/Unit.Unit" } =>
+            "function(_v) { return ff_core_Option.Some(_v); }"
         | EVariantIs(at, name, _) =>
             "(function(_v) { " +
             "return _v._ === '" + escapeResolved(name) + "' ? ff_core_Option.Some(_v) : ff_core_Option.None();" +
@@ -187,6 +199,16 @@ extend self: JsEmitter {
                 self.emitCase(arguments, matchCase)
             | PVariable(_, Some(name)) =>
                 "const " + escapeKeyword(name) + " = " + argument + "\n" +
+                self.emitCase(arguments, matchCase)
+            | PVariant(_, name, []) { name == "ff:core/Bool.False" } =>
+                "if(!" + argument + ") {\n" +
+                self.emitCase(arguments, matchCase) +
+                "}"
+            | PVariant(_, name, []) { name == "ff:core/Bool.True" } =>
+                "if(" + argument + ") {\n" +
+                self.emitCase(arguments, matchCase) +
+                "}"
+            | PVariant(_, name, []) { name == "ff:core/Unit.Unit" } =>
                 self.emitCase(arguments, matchCase)
             | PVariant(_, name, patterns) =>
                 let variantNameUnqualified = name.getReverse().takeWhile { _ != '.' }.getReverse()

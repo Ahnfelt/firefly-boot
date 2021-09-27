@@ -11,9 +11,11 @@ extend self[T]: Array[T] {
 
     getSize(): Int { panic("magic") }
         scala "self_.size()"
+        javascript "self.length"
 
     expect(index: Int): T { panic("magic") }
         scala "self_.get(index_)"
+        javascript "self_[index_]"
 
     expectFirst(): T { self.expect(0) }
 

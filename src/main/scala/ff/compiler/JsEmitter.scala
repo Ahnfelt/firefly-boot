@@ -199,10 +199,22 @@ ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = item_)
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
 (("...ff_core_List.List_getArray(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = item_)) + ")")
 }), separator_ = ", ")) + "])")
+case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:core/Bool.False") =>
+"false"
+case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:core/Bool.True") =>
+"true"
+case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:core/Unit.Unit") =>
+"(void 0)"
 case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, arguments_)) =>
 (((ff.compiler.JsEmitter_.escapeResolved_(word_ = name_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = ff.core.List_.List_getFlatten[ff.compiler.Syntax_.Argument](self_ = ff.core.Option_.Option_getList[ff.core.List_.List[ff.compiler.Syntax_.Argument]](self_ = arguments_)), body_ = {(argument_) =>
 ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = argument_)
 }), separator_ = ", ")) + ")")
+case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) if (name_ == "ff:core/Bool.False") =>
+"function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
+case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) if (name_ == "ff:core/Bool.True") =>
+"function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
+case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) if (name_ == "ff:core/Unit.Unit") =>
+"function(_v) { return ff_core_Option.Some(_v); }"
 case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) =>
 (((("(function(_v) { " + "return _v._ === '") + ff.compiler.JsEmitter_.escapeResolved_(word_ = name_)) + "' ? ff_core_Option.Some(_v) : ff_core_Option.None();") + "})")
 case (self_, ff.compiler.Syntax_.ECopy(at_, name_, record_, fields_)) =>
@@ -313,6 +325,12 @@ case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.None())) =>
 ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)
 case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.Some(name_))) =>
 ((((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = name_)) + " = ") + argument_) + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_))
+case (ff.compiler.Syntax_.PVariant(_, name_, List())) if (name_ == "ff:core/Bool.False") =>
+(((("if(!" + argument_) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)) + "}")
+case (ff.compiler.Syntax_.PVariant(_, name_, List())) if (name_ == "ff:core/Bool.True") =>
+(((("if(" + argument_) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)) + "}")
+case (ff.compiler.Syntax_.PVariant(_, name_, List())) if (name_ == "ff:core/Unit.Unit") =>
+ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)
 case (ff.compiler.Syntax_.PVariant(_, name_, patterns_)) =>
 val variantNameUnqualified_ : ff.core.String_.String = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = name_), p_ = {(_w1) =>
 (_w1 != '.')
