@@ -41,7 +41,7 @@ extend self[T]: ArrayBuilder[T] {
             return result;
         """
 
-    getLast(): Option[T] { panic("magic") }
+    last(): Option[T] { panic("magic") }
         scala "self_.lastOption"
         javascript """
             return self_.array.length > 0
