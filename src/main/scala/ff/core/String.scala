@@ -56,7 +56,7 @@ def String_replaceFirst(self_ : ff.core.String_.String, needle_ : ff.core.String
 self_.replaceFirst(scala.util.matching.Regex.quote(needle_), replacement_)
 }
 
-def String_getReverse(self_ : ff.core.String_.String) : ff.core.String_.String = {
+def String_reverse(self_ : ff.core.String_.String) : ff.core.String_.String = {
 self_.reverse
 }
 

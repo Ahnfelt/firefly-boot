@@ -81,21 +81,21 @@ new java.io.File(path_).getAbsolutePath.replace('\\', '/')
 
 def FileSystem_directoryName(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = (self_, path_) match {
 case (self_, _) =>
-ff.core.String_.String_getReverse(self_ = ff.core.String_.String_dropFirst(self_ = ff.core.String_.String_dropWhile(self_ = ff.core.String_.String_getReverse(self_ = path_), p_ = {(_w1) =>
+ff.core.String_.String_reverse(self_ = ff.core.String_.String_dropFirst(self_ = ff.core.String_.String_dropWhile(self_ = ff.core.String_.String_reverse(self_ = path_), p_ = {(_w1) =>
 (_w1 != '/')
 }), count_ = 1))
 }
 
 def FileSystem_baseName(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = (self_, path_) match {
 case (self_, _) =>
-ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = path_), p_ = {(_w1) =>
+ff.core.String_.String_reverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = path_), p_ = {(_w1) =>
 (_w1 != '/')
 }))
 }
 
 def FileSystem_prefixName(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = (self_, path_) match {
 case (self_, _) =>
-ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = path_), p_ = {(_w1) =>
+ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = path_), p_ = {(_w1) =>
 (_w1 != '/')
 })), p_ = {(_w1) =>
 (_w1 != '.')
@@ -104,7 +104,7 @@ ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_
 
 def FileSystem_suffixName(self_ : ff.core.FileSystem_.FileSystem, path_ : ff.core.String_.String) : ff.core.String_.String = (self_, path_) match {
 case (self_, _) =>
-ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = path_), p_ = {(_w1) =>
+ff.core.String_.String_reverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = path_), p_ = {(_w1) =>
 (_w1 != '/')
 }), p_ = {(_w1) =>
 (_w1 != '.')

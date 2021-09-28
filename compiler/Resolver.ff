@@ -24,7 +24,7 @@ extend self: Resolver {
 
     resolveModule(module: Module, otherModules: List[Module]): Module {
         let moduleNamespace =
-            module.file.replace("\\", "/").getReverse().takeWhile { _ != '/' }.getReverse().takeWhile { _ != '.' }
+            module.file.replace("\\", "/").reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
         let self2 = self.processImports(module.imports, otherModules)
         let self3 = self2.processDefinitions(module, None)
         module.Module(

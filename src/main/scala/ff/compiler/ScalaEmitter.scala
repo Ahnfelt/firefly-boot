@@ -45,7 +45,7 @@ ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Locat
 }
 
 def emitModule_(packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], module_ : ff.compiler.Syntax_.Module) : ff.core.String_.String = {
-val moduleNamespace_ : ff.core.String_.String = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_replace(self_ = module_.file_, needle_ = "\\", replacement_ = "/")), p_ = {(_w1) =>
+val moduleNamespace_ : ff.core.String_.String = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = ff.core.String_.String_replace(self_ = module_.file_, needle_ = "\\", replacement_ = "/")), p_ = {(_w1) =>
 (_w1 != '/')
 })), p_ = {(_w1) =>
 (_w1 != '.')
@@ -182,7 +182,7 @@ ff.compiler.ScalaEmitter_.emitCase_(matchCase_ = matchCase_)
 }
 
 def emitExtendsDefinition_(definition_ : ff.compiler.Syntax_.DExtend) : ff.core.String_.String = {
-val typeName_ : ff.core.String_.String = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.compiler.ScalaEmitter_.extractTypeName_(type_ = definition_.type_)), p_ = {(_w1) =>
+val typeName_ : ff.core.String_.String = ff.core.String_.String_reverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = ff.compiler.ScalaEmitter_.extractTypeName_(type_ = definition_.type_)), p_ = {(_w1) =>
 (_w1 != '.')
 }));
 val methods_ : ff.core.List_.List[ff.compiler.Syntax_.DFunction] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.compiler.Syntax_.DFunction](self_ = definition_.methods_, body_ = {(method_) =>

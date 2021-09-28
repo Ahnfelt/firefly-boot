@@ -33,19 +33,19 @@ extend self: FileSystem {
         scala "new java.io.File(path_).getAbsolutePath.replace('\\\\', '/')"
 
     directoryName(path: String): String {
-        path.getReverse().dropWhile { _ != '/' }.dropFirst(1).getReverse()
+        path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()
     }
 
     baseName(path: String): String {
-        path.getReverse().takeWhile { _ != '/' }.getReverse()
+        path.reverse().takeWhile { _ != '/' }.reverse()
     }
 
     prefixName(path: String): String {
-        path.getReverse().takeWhile { _ != '/' }.getReverse().takeWhile { _ != '.' }
+        path.reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
     }
 
     suffixName(path: String): String {
-        path.getReverse().takeWhile { _ != '/' }.takeWhile { _ != '.' }.getReverse()
+        path.reverse().takeWhile { _ != '/' }.takeWhile { _ != '.' }.reverse()
     }
 
 }

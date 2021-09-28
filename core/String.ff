@@ -15,7 +15,7 @@ extend self: String {
     replaceFirst(needle: String, replacement: String): String { panic("magic") }
         scala "self_.replaceFirst(scala.util.matching.Regex.quote(needle_), replacement_)"
 
-    getReverse(): String { panic("magic") }
+    reverse(): String { panic("magic") }
         scala "self_.reverse"
 
     dropWhile(p: Char => Bool): String { panic("magic") }

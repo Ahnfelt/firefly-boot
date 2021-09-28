@@ -6,7 +6,7 @@ fail[T](at: Location, message: String): T {
 
 emitModule(packagePair: Pair[String, String], module: Module): String {
     let moduleNamespace =
-        module.file.replace("\\", "/").getReverse().takeWhile { _ != '/' }.getReverse().takeWhile { _ != '.' }
+        module.file.replace("\\", "/").reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
     let modulePrefix =
         module.packagePair.first + ":" + module.packagePair.second + "/" +
         module.file.dropLast(3) + "."
@@ -102,7 +102,7 @@ emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {
 }
 
 emitExtendsDefinition(definition: DExtend): String {
-    let typeName = extractTypeName(definition.type).getReverse().takeWhile { _ != '.' }.getReverse()
+    let typeName = extractTypeName(definition.type).reverse().takeWhile { _ != '.' }.reverse()
     let methods = definition.methods.map { method =>
         method.DFunction(
             signature = method.signature.Signature(

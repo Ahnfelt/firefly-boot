@@ -49,7 +49,7 @@ extend self: JsEmitter {
     }
 
     emitExtendsDefinition(definition: DExtend): String {
-        let typeName = extractTypeName(definition.type).getReverse().takeWhile { _ != '.' }.getReverse()
+        let typeName = extractTypeName(definition.type).reverse().takeWhile { _ != '.' }.reverse()
         let methods = definition.methods.map { method =>
             method.DFunction(
                 signature = method.signature.Signature(
@@ -233,7 +233,7 @@ extend self: JsEmitter {
             | PVariant(_, name, []) { name == "ff:core/Unit.Unit" } =>
                 self.emitCase(arguments, matchCase)
             | PVariant(_, name, patterns) =>
-                let variantNameUnqualified = name.getReverse().takeWhile { _ != '.' }.getReverse()
+                let variantNameUnqualified = name.reverse().takeWhile { _ != '.' }.reverse()
                 let variantName = escapeKeyword(variantNameUnqualified)
                 let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
                 let variantModule = self.otherModules.expect(moduleName)
@@ -246,7 +246,7 @@ extend self: JsEmitter {
                 self.emitCase(newArguments ++ arguments, matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)) +
                 "}"
             | PVariantAs(at, name, variable) =>
-                let variantName = escapeKeyword(name.getReverse().takeWhile { _ != '.' }.getReverse())
+                let variantName = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse())
                 "if(" + argument + "._ === '" + escapeKeyword(variantName) + "') {\n" +
                 variable.map { "const " + escapeKeyword(_) + " = " + argument + "\n" }.else {""} +
                 self.emitCase(arguments, matchCase) +

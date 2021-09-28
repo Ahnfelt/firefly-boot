@@ -49,7 +49,7 @@ ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Locat
 }
 def Resolver_resolveModule(self_ : ff.compiler.Resolver_.Resolver, module_ : ff.compiler.Syntax_.Module, otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.compiler.Syntax_.Module = (self_, module_, otherModules_) match {
 case (self_, _, _) =>
-val moduleNamespace_ : ff.core.String_.String = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_getReverse(self_ = ff.core.String_.String_replace(self_ = module_.file_, needle_ = "\\", replacement_ = "/")), p_ = {(_w1) =>
+val moduleNamespace_ : ff.core.String_.String = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = ff.core.String_.String_replace(self_ = module_.file_, needle_ = "\\", replacement_ = "/")), p_ = {(_w1) =>
 (_w1 != '/')
 })), p_ = {(_w1) =>
 (_w1 != '.')
