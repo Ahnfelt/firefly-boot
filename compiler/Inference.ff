@@ -86,11 +86,11 @@ extend self: Inference {
             let scheme = Scheme(True, False, Signature(p.at, p.name, [], [], [], p.valueType))
             Pair(p.name, scheme)
         }
-        let parameterMap = parameters.getMap()
+        let parameterMap = parameters.toMap()
         let environment2 = environment.Environment(symbols = environment.symbols ++ parameterMap)
         let functionType = TConstructor(
             definition.at,
-            "Function$" + parameters.getSize(),
+            "Function$" + parameters.size(),
             [...parameters.map { _.second.signature.returnType }, definition.signature.returnType]
         )
         definition.DFunction(body = self.inferLambda(environment2, functionType, definition.body))
@@ -121,7 +121,7 @@ extend self: Inference {
         let returnType = self.unification.freshTypeVariable(case.at)
         let functionType = TConstructor(
             case.at,
-            "Function$" + case.patterns.getSize(),
+            "Function$" + case.patterns.size(),
             [...parameterTypes, returnType]
         )
         self.unification.unify(case.at, expected, functionType)
@@ -146,7 +146,7 @@ extend self: Inference {
             | PVariable(at, None) =>
                 Map.empty()
             | PVariable(at, Some(name)) =>
-                [Pair(name, expected)].getMap()
+                [Pair(name, expected)].toMap()
             | PAlias(at, pattern, variable) =>
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
             | PList(at, t, items) =>
@@ -169,7 +169,7 @@ extend self: Inference {
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
-                [Pair(variable, recordType)].getMap()
+                [Pair(variable, recordType)].toMap()
             | PVariant(at, name, patterns) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
@@ -397,7 +397,7 @@ extend self: Inference {
                 let functionMap = functions.map { f =>
                     let scheme = Scheme(False, False, f.signature)
                     Pair(f.signature.name, scheme)
-                }.getMap()
+                }.toMap()
                 let environment2 = environment.Environment(symbols = environment.symbols ++ functionMap)
                 let newFunctions = functions.map { self.inferFunctionDefinition(environment2, _) }
                 let newBody = self.inferTerm(environment2, expected, body)
@@ -517,7 +517,7 @@ extend self: Inference {
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         let argumentTypes = e.arguments.map { self.unification.freshTypeVariable(_.at) }
-        let functionType = TConstructor(e.at, "Function$" + e.arguments.getSize(), [...argumentTypes, expected])
+        let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [...argumentTypes, expected])
         let function = self.inferTerm(environment, functionType, e.function)
         let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
             argument.name.each { name =>
@@ -664,7 +664,7 @@ extend self: Inference {
         signature: Signature
         term: Term
     ): Term {
-        let parameters = signature.parameters.filter { _.default.getEmpty() }.map { p =>
+        let parameters = signature.parameters.filter { _.default.isEmpty() }.map { p =>
             p.name
         }
         let body = ECall(at, False, term, [], parameters.map { x =>
@@ -725,12 +725,12 @@ extend self: Inference {
         environment.symbols.get(symbol).map: scheme =>
 
         let instantiation =
-            if(!typeArguments.getEmpty()) {
-                if(scheme.signature.generics.getSize() != typeArguments.getSize()) {
+            if(!typeArguments.isEmpty()) {
+                if(scheme.signature.generics.size() != typeArguments.size()) {
                     fail(at,
                         "Wrong number of type parameters for " + symbol +
-                        ", expected " + scheme.signature.generics.getSize() +
-                        ", got " + typeArguments.getSize()
+                        ", expected " + scheme.signature.generics.size() +
+                        ", got " + typeArguments.size()
                     )
                 }
                 scheme.signature.generics.zip(typeArguments)
@@ -740,7 +740,7 @@ extend self: Inference {
                 }
             }
 
-        let instantiationMap = instantiation.getMap()
+        let instantiationMap = instantiation.toMap()
         let parameters = scheme.signature.parameters.map { p =>
             p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
         }

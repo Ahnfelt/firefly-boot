@@ -42,15 +42,15 @@ type ArrayBuilder[T] = scala.collection.mutable.ArrayBuffer[T];
 def empty_[T]() : ff.core.ArrayBuilder_.ArrayBuilder[T] = {
 scala.collection.mutable.ArrayBuffer[T]()
 }
-def ArrayBuilder_getArray[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Array_.Array[T] = {
+def ArrayBuilder_toArray[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Array_.Array[T] = {
 val r = new java.util.ArrayList[T](self_.length); for(i <- 0.until(self_.length)) r.add(self_(i)); r
 }
 
-def ArrayBuilder_getEmpty[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Bool_.Bool = {
+def ArrayBuilder_isEmpty[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Bool_.Bool = {
 self_.isEmpty
 }
 
-def ArrayBuilder_getSize[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Int_.Int = {
+def ArrayBuilder_size[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Int_.Int = {
 self_.size
 }
 
@@ -63,7 +63,7 @@ self_.update(index_, body_(self_(index_)))
 }
 
 def ArrayBuilder_drain[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Array_.Array[T] = {
-val result = ArrayBuilder_getArray(self_); self_.clear(); result
+val result = ArrayBuilder_toArray(self_); self_.clear(); result
 }
 
 def ArrayBuilder_getList[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.List_.List[T] = {

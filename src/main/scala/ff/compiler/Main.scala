@@ -47,7 +47,7 @@ import ff.core.Try_._
 
 import ff.core.Unit_._
 object Main_ {
-def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(List_getArray(arguments.toList)))
+def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(List_toArray(arguments.toList)))
 
 
 def main_(system_ : ff.core.System_.System) : ff.core.Unit_.Unit = {
@@ -65,7 +65,7 @@ val scalaPathFile_ : ff.core.String_.String = (tempPath_ + "/src/main/scala");
 ff.core.FileSystem_.FileSystem_createDirectories(self_ = fs_, path_ = scalaPathFile_);
 val jsPathFile_ : ff.core.String_.String = (tempPath_ + "/src/main/js");
 ff.core.FileSystem_.FileSystem_createDirectories(self_ = fs_, path_ = jsPathFile_);
-val packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff:compiler", second_ = "compiler"), ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff:core", second_ = "core")));
+val packagePaths_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff:compiler", second_ = "compiler"), ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = "ff:core", second_ = "core")));
 val success_ : ff.core.Bool_.Bool = ff.core.Core_.do_[ff.core.Bool_.Bool](body_ = {() =>
 ff.compiler.Compiler_.Compiler_emit(self_ = ff.compiler.Compiler_.make_(files_ = fs_, scalaOutputPath_ = scalaPathFile_, jsOutputPath_ = jsPathFile_, packagePaths_ = packagePaths_), packageName_ = "ff:compiler", moduleName_ = "Main");
 ff.core.Bool_.True()

@@ -9,10 +9,10 @@ type Resolver(
 
 make(): Resolver {
     Resolver(
-        variables = [].getMap()
-        variants = [].getMap()
-        types = [].getMap()
-        traits = [].getMap()
+        variables = [].toMap()
+        variants = [].toMap()
+        types = [].toMap()
+        traits = [].toMap()
     )
 }
 
@@ -65,12 +65,12 @@ extend self: Resolver {
             module.packagePair.first == "ff" &&
             module.packagePair.second == "core" &&
             module.file == "Core.ff"
-        let lets = module.lets.flatMap { entry(_.name, isCore) }.getMap()
-        let functions = module.functions.flatMap { entry(_.signature.name, isCore) }.getMap()
-        let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.getMap()
-        let traits = module.traits.flatMap { entry(_.name, True) }.getMap()
-        let types = module.types.flatMap { entry(_.name, True) }.getMap()
-        let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.getMap()
+        let lets = module.lets.flatMap { entry(_.name, isCore) }.toMap()
+        let functions = module.functions.flatMap { entry(_.signature.name, isCore) }.toMap()
+        let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.toMap()
+        let traits = module.traits.flatMap { entry(_.name, True) }.toMap()
+        let types = module.types.flatMap { entry(_.name, True) }.toMap()
+        let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap()
         Resolver(
             variables = self.variables ++ lets ++ functions ++ traitMethods
             variants = self.variants ++ variants
@@ -80,7 +80,7 @@ extend self: Resolver {
     }
 
     resolveTypeDefinition(definition: DType): DType {
-        let generics = definition.generics.map { g => Pair(g, g) }.getMap()
+        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(types = self.types ++ generics)
         definition.DType(
             constraints = definition.constraints.map { c =>
@@ -112,7 +112,7 @@ extend self: Resolver {
     }
 
     resolveExtendDefinition(definition: DExtend): DExtend {
-        let generics = definition.generics.map { g => Pair(g, g) }.getMap()
+        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
             types = self.types ++ generics
             variables = self.variables.add(definition.name, definition.name)
@@ -198,7 +198,7 @@ extend self: Resolver {
             if(e.index == 0) { fail(e.at, "Unbound wildcard") }
             e.EWildcard()
         | EFunctions(at, functions, body) =>
-            let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.getMap()
+            let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap()
             let self2 = self.Resolver(variables = self.variables ++ functionMap)
             EFunctions(
                 at = at,
@@ -251,8 +251,8 @@ extend self: Resolver {
     }
 
     resolveFunctionDefinition(definition: DFunction): DFunction {
-        let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.getMap()
-        let typeMap = definition.signature.generics.map { name => Pair(name, name) }.getMap()
+        let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
+        let typeMap = definition.signature.generics.map { name => Pair(name, name) }.toMap()
         let self2 = self.Resolver(
             variables = self.variables ++ variableMap
             types = self.types ++ typeMap
@@ -276,15 +276,15 @@ extend self: Resolver {
     resolveCase(case: MatchCase): MatchCase {
         function findVariables(pattern: MatchPattern): Map[String, String] {
             | PVariable(_, Some(name)) =>
-                [Pair(name, name)].getMap()
+                [Pair(name, name)].toMap()
             | PVariable(_, None) =>
                 Map.empty()
             | PVariant(_, _, patterns) =>
                 patterns.map(findVariables).foldLeft(Map.empty[String, String]())({_ ++ _})
             | PVariantAs(_, _, variable) =>
-                variable.getList().map { x => Pair(x, x) }.getMap()
+                variable.getList().map { x => Pair(x, x) }.toMap()
             | PAlias(_, pattern, variable) =>
-                [Pair(variable, variable)].getMap() ++ findVariables(pattern)
+                [Pair(variable, variable)].toMap() ++ findVariables(pattern)
             | PList(_, _, items) =>
                 items.map { | Pair(item, _) => findVariables(item) }.foldLeft(Map.empty[String, String]())({_ ++ _})
         }

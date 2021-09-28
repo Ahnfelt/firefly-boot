@@ -139,7 +139,7 @@ def Type_show(self_ : ff.compiler.Syntax_.Type) : ff.core.String_.String = (self
 case (self_) =>
 pipe_dot(self_)({
 case (ff.compiler.Syntax_.TConstructor(at_, name_, generics_)) =>
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = generics_), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Type](self_ = generics_), body_ = {() =>
 name_
 }), body_ = {() =>
 (((name_ + "[") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Type, ff.core.String_.String](self_ = generics_, body_ = {(_w1) =>

@@ -31,15 +31,15 @@ extend self: Parser {
     }
     
     current(): Token {
-        if(self.offset < self.tokens.getSize()) { self.tokens.expect(self.offset) } else { self.end }
+        if(self.offset < self.tokens.size()) { self.tokens.expect(self.offset) } else { self.end }
     }
     
     ahead(): Token {
-        if(self.offset + 1 < self.tokens.getSize()) { self.tokens.expect(self.offset + 1) } else { self.end }
+        if(self.offset + 1 < self.tokens.size()) { self.tokens.expect(self.offset + 1) } else { self.end }
     }
     
     aheadAhead(): Token {
-        if(self.offset + 2 < self.tokens.getSize()) { self.tokens.expect(self.offset + 2) } else { self.end }
+        if(self.offset + 2 < self.tokens.size()) { self.tokens.expect(self.offset + 2) } else { self.end }
     }
     
     skip(kind: TokenKind): Token {
@@ -143,7 +143,7 @@ extend self: Parser {
     
     parseFunctionDefinition(): DFunction {
         let signature = self.parseSignature()
-        let body = self.parseLambda(signature.parameters.getSize())
+        let body = self.parseLambda(signature.parameters.size())
         let targets = self.parseTargets()
         DFunction(
             signature.at,
@@ -225,7 +225,7 @@ extend self: Parser {
                 signatures.append(signature)
                 if(self.current().rawIs("{")) {
                     let generator = self.ahead().is(LKeyword) && self.ahead().rawIs("generate")
-                    let body = self.parseLambda(signature.parameters.getSize(), ignoreGenerateKeyword = True)
+                    let body = self.parseLambda(signature.parameters.size(), ignoreGenerateKeyword = True)
                     if(generator) {
                         methodGenerators.append(Pair(signature.name, body))
                     } else {
@@ -540,7 +540,7 @@ extend self: Parser {
             PVariable(token.at(), Some(token.raw()))
         } elseIf {self.current().rawIs("(")} {
             let at = self.current().at()
-            let pair = self.parseRecordPattern().getUnzip()
+            let pair = self.parseRecordPattern().unzip()
             PVariant(at, "Record$" + pair.first.join("$"), pair.second)
         } elseIf {self.current().rawIs("[")} {
             self.parseListPattern()
@@ -577,7 +577,7 @@ extend self: Parser {
     parseType(): Type {
         let leftTypes = if(self.current().rawIs("(") && self.ahead().is(LLower) && self.aheadAhead().is(LColon)) {
             let at = self.current().at()
-            let pair = self.parseRecordType().getUnzip()
+            let pair = self.parseRecordType().unzip()
             [TConstructor(at, "Record$" + pair.first.join("$"), pair.second)]
         } elseIf {self.current().rawIs("(")} {
             self.parseTypeArguments(parenthesis = True)
@@ -587,10 +587,10 @@ extend self: Parser {
             let arguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
             [TConstructor(token.at(), namespace + token.raw(), arguments)]
         }
-        if(!self.current().is(LArrowThick) && leftTypes.getSize() == 1) {leftTypes.expectFirst()} else {
+        if(!self.current().is(LArrowThick) && leftTypes.size() == 1) {leftTypes.expectFirst()} else {
             let arrowToken = self.skip(LArrowThick)
             let rightType = self.parseType()
-            TConstructor(arrowToken.at(), "Function$" + leftTypes.getSize(), [...leftTypes, rightType])
+            TConstructor(arrowToken.at(), "Function$" + leftTypes.size(), [...leftTypes, rightType])
         }
     }
     
@@ -646,7 +646,7 @@ extend self: Parser {
         while {self.current().rawIs("function")} {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
-            let body = self.parseLambda(defaultParameterCount = signature.parameters.getSize())
+            let body = self.parseLambda(defaultParameterCount = signature.parameters.size())
             functions.append(DFunction(functionAt, signature, body, Targets(None, None)))
             self.skipSeparator(LSemicolon)
         }
@@ -659,7 +659,7 @@ extend self: Parser {
     }
     
     parseBinary(level: Int): Term {
-        if(level >= binaryOperators.getSize()) {self.parseUnary()} else:
+        if(level >= binaryOperators.size()) {self.parseUnary()} else:
         let operators = binaryOperators.expect(level)
         mutable result = self.parseBinary(level + 1)
         if(self.current().is(LOperator)) {
@@ -875,4 +875,4 @@ binaryOperators = [
     ["+", "-"]
     ["*", "/", "%"]
     ["^"]
-].getArray()
+].toArray()

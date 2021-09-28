@@ -3,7 +3,7 @@ type String {}
 
 extend self: String {
 
-    getSize(): Int { panic("magic") }
+    size(): Int { panic("magic") }
         scala "self_.size"
 
     expect(index: Int): Char { panic("magic") }
@@ -31,7 +31,7 @@ extend self: String {
         scala "self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)"
 
     split(char: Char): Array[String] { panic("magic") }
-        scala "List_getArray(self_.split(char_).toList)" // We probably do not want the Scala semantics for this in the future
+        scala "List_toArray(self_.split(char_).toList)" // We probably do not want the Scala semantics for this in the future
 
     dropFirst(count: Int = 1): String { panic("magic") }
         scala "self_.drop(count_)"

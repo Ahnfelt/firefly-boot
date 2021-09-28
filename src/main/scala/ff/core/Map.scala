@@ -90,7 +90,7 @@ List()
 })
 }
 
-def Map_getSize[K, V](self_ : ff.core.Map_.Map[K, V]) : ff.core.Int_.Int = (self_) match {
+def Map_size[K, V](self_ : ff.core.Map_.Map[K, V]) : ff.core.Int_.Int = (self_) match {
 case (self_) =>
 ff.core.RbMap_.RbMap_size[K, ff.core.Option_.Option[V]](self_ = self_.redBlack_)
 }
@@ -108,7 +108,7 @@ ff.core.Map_.Map_add[K1, V1](self_ = tree_, key_ = k_, value_ = v_)
 
 def Map_contains[K, V](self_ : ff.core.Map_.Map[K, V], key_ : K) : ff.core.Bool_.Bool = (self_, key_) match {
 case (self_, _) =>
-(!ff.core.Option_.Option_getEmpty[V](self_ = ff.core.Map_.Map_get[K, V](self_ = self_, key_ = key_)))
+(!ff.core.Option_.Option_isEmpty[V](self_ = ff.core.Map_.Map_get[K, V](self_ = self_, key_ = key_)))
 }
 
 def Map_expect[K, V](self_ : ff.core.Map_.Map[K, V], key_ : K) : V = (self_, key_) match {

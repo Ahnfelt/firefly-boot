@@ -26,7 +26,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
         module.instances.map(emitInstanceDefinition)
         ["}"]
     ]
-    module.extends.map { _.type }.getCollect(TConstructor?).find { t =>
+    module.extends.map { _.type }.collect(TConstructor?).find { t =>
         !module.types.any { (modulePrefix + _.name) == t.name }
     }.each { t =>
         fail(t.at, "Type not defined in this file: " + t.name)
@@ -35,7 +35,7 @@ emitModule(packagePair: Pair[String, String], module: Module): String {
 }
 
 emitMain(): String {
-    "def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(List_getArray(arguments.toList)))"
+    "def main(arguments : scala.Array[String]) : Unit = main_(ff.core.System_.SystemArguments(List_toArray(arguments.toList)))"
 }
 
 emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]): String {
@@ -48,8 +48,8 @@ emitTypeMembers(name: String, lets: List[DLet], functions: List[DFunction]): Str
 emitTypeDefinition(definition: DType): String {
     let generics = emitTypeParameters(definition.generics)
     if(
-        definition.targets.scala.getEmpty() &&
-        definition.variants.getSize() == 1 &&
+        definition.targets.scala.isEmpty() &&
+        definition.variants.size() == 1 &&
         definition.variants.expectFirst().name == definition.name
     ) {
         let fields = "(" + definition.commonFields.map(emitParameter).join(", ") + ")"
@@ -63,7 +63,7 @@ emitTypeDefinition(definition: DType): String {
                 "type " + definition.name + generics + " = " + code + ";\n"
             }
         }.else {
-            let commonFields = if(definition.commonFields.getEmpty()) {""} else {
+            let commonFields = if(definition.commonFields.isEmpty()) {""} else {
                 " {\n" + definition.commonFields.map(emitParameter).map { "    val " + _ + "\n" }.join() + "}"
             }
             "sealed abstract class " + definition.name + generics + " extends Product with Serializable" + commonFields
@@ -116,10 +116,10 @@ emitExtendsDefinition(definition: DExtend): String {
 emitTraitDefinition(definition: DTrait): String {
     let generics = emitTypeParameters(definition.generics)
     let implicits = emitConstraints(definition.constraints)
-    let parameters = if(definition.generatorParameters.getEmpty()) {""} else {
+    let parameters = if(definition.generatorParameters.isEmpty()) {""} else {
         "(" + definition.generatorParameters.map(emitParameter).join(", ") + ")"
     }
-    let methods = if(definition.methods.getEmpty()) {""} else {
+    let methods = if(definition.methods.isEmpty()) {""} else {
         " {\n\nimport " + definition.name + "._\n\n" +
         definition.methods.map { signature =>
             let body = definition.methodDefaults.find { _.first == signature.name }.map {| Pair(_, lambda) =>
@@ -132,7 +132,7 @@ emitTraitDefinition(definition: DTrait): String {
             emitSignature(signature, "_m") + body
         }.join("\n\n") + "\n\n}"
     }
-    let methodWrappers = if(definition.methods.getEmpty()) {""} else {
+    let methodWrappers = if(definition.methods.isEmpty()) {""} else {
         " \n\n" + definition.methods.map { signature =>
             let t = TConstructor(definition.at, definition.name, definition.generics.map {
                 TConstructor(definition.at, _, [])
@@ -187,7 +187,7 @@ emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
 emitSignature(signature: Signature, suffix: String = ""): String {
     let generics = emitTypeParameters(signature.generics)
     let parameters = "(" + signature.parameters.map(emitParameter).join(", ") + ")"
-    let implicits = if(signature.constraints.getEmpty()) {""} else {
+    let implicits = if(signature.constraints.isEmpty()) {""} else {
         "(implicit " + signature.constraints.pairs().map {| Pair(i, c) =>
             "i_" + i + " : " + emitType(c.representation)
         }.join(", ") + ")"
@@ -203,13 +203,13 @@ emitParameter(parameter: Parameter): String {
 }
 
 emitConstraints(constraints: List[Constraint]): String {
-    if(constraints.getEmpty()) {""} else:
+    if(constraints.isEmpty()) {""} else:
     let pairs = constraints.map { _.representation }.map(emitType).pairs()
     "(implicit " + pairs.map {| Pair(k, v) => "i_" + k + " : " + v }.join(", ") + ")"
 }
 
 emitTypeParameters(generics: List[String]): String {
-    if(generics.getEmpty()) {""} else {"[" + generics.join(", ") + "]"}
+    if(generics.isEmpty()) {""} else {"[" + generics.join(", ") + "]"}
 }
 
 emitTypeAnnotation(t: Type): String {
@@ -228,7 +228,7 @@ emitType(type: Type): String {
                 "val " + escapeKeyword(field) + " : " + emitType(fieldType)
             }.join("; ") + "}"
         } else {
-            let generics = if(t.generics.getEmpty()) {""} else {"[" + t.generics.map(emitType).join(", ") + "]"}
+            let generics = if(t.generics.isEmpty()) {""} else {"[" + t.generics.map(emitType).join(", ") + "]"}
             escapeResolved(t.name) + generics
         }
 }
@@ -264,10 +264,10 @@ emitTerm(term: Term): String {
             | Pair(item, True) => emitTerm(item)
         }.join(", ") + ").flatten)"
     | EVariant(at, name, typeArguments, arguments) =>
-        let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
-        escapeResolved(name) + generics + "(" + arguments.getList().getFlatten().map(emitArgument).join(", ") + ")"
+        let generics = if(typeArguments.isEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
+        escapeResolved(name) + generics + "(" + arguments.getList().flatten().map(emitArgument).join(", ") + ")"
     | EVariantIs(at, name, typeArguments) =>
-        let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
+        let generics = if(typeArguments.isEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
         "({ case _w : " + escapeResolved(name) + generics + " => Some(_w); case _ => None() })"
     | ECopy(at, name, record, fields) =>
         let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + emitTerm(f.value) }.join(", ")
@@ -297,10 +297,10 @@ emitTerm(term: Term): String {
     } =>
         emitTerm(function) + "(" + arguments.map(emitArgument).join(", ") + ")"
     | ECall(at, _, function, typeArguments, arguments) =>
-        let generics = if(typeArguments.getEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
+        let generics = if(typeArguments.isEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
         emitTerm(function) + generics + "(" + arguments.map(emitArgument).join(", ") + ")"
     | ERecord(at, fields) =>
-        if(fields.getEmpty()) {"{}"} else {
+        if(fields.isEmpty()) {"{}"} else {
             let list = fields.map { f => "val " + escapeKeyword(f.name) + " = " + emitTerm(f.value) }
             "new {\n" + list.join(";\n") + ";\n}"
         }
@@ -316,10 +316,10 @@ emitArgument(argument: Argument): String {
 }
 
 emitCase(matchCase: MatchCase): String {
-    let pair = matchCase.patterns.map(emitPattern).getUnzip()
+    let pair = matchCase.patterns.map(emitPattern).unzip()
     let patterns = pair.first.join(", ")
     let condition = matchCase.condition.map { "if " + emitTerm(_) + " " }.else{""}
-    let toLists = pair.second.getFlatten().join()
+    let toLists = pair.second.flatten().join()
     "case (" + patterns + ") " + condition + "=>\n" + toLists + emitStatements(matchCase.body)
 }
 
@@ -344,8 +344,8 @@ emitPattern(pattern: MatchPattern): Pair[String, List[String]] {
                     pair.first + "_seq @ _*",
                     ["val " + pair.first + " = " + pair.first + "_seq.toList;\n", ...pair.second]
                 )
-        }.getUnzip()
-        Pair("List(" + pair.first.join(", ") + ")", pair.second.getFlatten())
+        }.unzip()
+        Pair("List(" + pair.first.join(", ") + ")", pair.second.flatten())
 }
 
 extractTypeName(type: Type): String {
@@ -358,7 +358,7 @@ extractTypeName(type: Type): String {
 escapeResolved(word: String): String {
     let parts = word.replace(":", ".").replace("/", ".").split('.').getList()
     let initialParts = parts.dropLast()
-    if(initialParts.getEmpty()) {
+    if(initialParts.isEmpty()) {
         escapeKeyword(parts.expectLast())
     } else {
         initialParts.join(".") + "_." + escapeKeyword(parts.expectLast())
@@ -411,4 +411,4 @@ keywords = [
     "yield"
     "scala"
     "java"
-].getSet()
+].toSet()

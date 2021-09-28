@@ -6,11 +6,11 @@ extend self[T]: Array[T] {
     addAll(that: Array[T]): Array[T] { panic("magic") }
         javascript "return self_.concat(that_)"
 
-    getEmpty(): Bool { panic("magic") }
+    isEmpty(): Bool { panic("magic") }
         scala "self_.isEmpty()"
         javascript "return self_.length === 0"
 
-    getSize(): Int { panic("magic") }
+    size(): Int { panic("magic") }
         scala "self_.size()"
         javascript "return self_.length"
 
@@ -20,7 +20,7 @@ extend self[T]: Array[T] {
 
     expectFirst(): T { self.expect(0) }
 
-    expectLast(): T { self.expect(self.getSize() - 1) }
+    expectLast(): T { self.expect(self.size() - 1) }
 
     dropFirst(count: Int = 1): Array[T] { panic("magic") }
         scala """

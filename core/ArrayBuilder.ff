@@ -7,15 +7,15 @@ empty[T](): ArrayBuilder[T] { panic("magic") }
 
 extend self[T]: ArrayBuilder[T] {
 
-    getArray(): Array[T] { panic("magic") }
+    toArray(): Array[T] { panic("magic") }
         scala "val r = new java.util.ArrayList[T](self_.length); for(i <- 0.until(self_.length)) r.add(self_(i)); r"
         javascript "return self_.array.slice()"
 
-    getEmpty(): Bool { panic("magic") }
+    isEmpty(): Bool { panic("magic") }
         scala "self_.isEmpty"
         javascript "return self_.array.length === 0"
 
-    getSize(): Int { panic("magic") }
+    size(): Int { panic("magic") }
         scala "self_.size"
         javascript "return self_.array.length"
 
@@ -28,7 +28,7 @@ extend self[T]: ArrayBuilder[T] {
         javascript "self_.array[index_] = body_(self_.array[index_])"
 
     drain(): Array[T] { panic("magic") }
-        scala "val result = ArrayBuilder_getArray(self_); self_.clear(); result"
+        scala "val result = ArrayBuilder_toArray(self_); self_.clear(); result"
         javascript "const result = self_.array; self_.array = []; return result"
 
     getList(): List[T] { panic("magic") }

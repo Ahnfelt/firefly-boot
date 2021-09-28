@@ -40,7 +40,7 @@ extend self[T]: Option[T] {
     // getOrElse removed (use else)
 
     // empty / isEmpty
-    getEmpty(): Bool {
+    isEmpty(): Bool {
         self.{
             | None => True
             | Some(_) => False

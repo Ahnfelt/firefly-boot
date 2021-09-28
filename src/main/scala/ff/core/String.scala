@@ -40,7 +40,7 @@ type String = java.lang.String;
 
 
 
-def String_getSize(self_ : ff.core.String_.String) : ff.core.Int_.Int = {
+def String_size(self_ : ff.core.String_.String) : ff.core.Int_.Int = {
 self_.size
 }
 
@@ -77,7 +77,7 @@ self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)
 }
 
 def String_split(self_ : ff.core.String_.String, char_ : ff.core.Char_.Char) : ff.core.Array_.Array[ff.core.String_.String] = {
-List_getArray(self_.split(char_).toList)
+List_toArray(self_.split(char_).toList)
 }
 
 def String_dropFirst(self_ : ff.core.String_.String, count_ : ff.core.Int_.Int = 1) : ff.core.String_.String = {

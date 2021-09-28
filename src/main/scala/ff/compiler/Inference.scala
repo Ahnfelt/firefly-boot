@@ -114,11 +114,11 @@ val parameters_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, 
 val scheme_ : ff.compiler.Environment_.Scheme = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.True(), isMutable_ = ff.core.Bool_.False(), signature_ = ff.compiler.Syntax_.Signature(at_ = p_.at_, name_ = p_.name_, generics_ = List(), constraints_ = List(), parameters_ = List(), returnType_ = p_.valueType_));
 ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = p_.name_, second_ = scheme_)
 });
-val parameterMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme] = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = parameters_);
+val parameterMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme] = ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = parameters_);
 val environment2_ : ff.compiler.Environment_.Environment = pipe_dot(environment_)({(_c) =>
 ff.compiler.Environment_.Environment(symbols_ = ff.core.Map_.Map_addAll[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = environment_.symbols_, that_ = parameterMap_))
 });
-val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = definition_.at_, name_ = ("Function$" + ff.core.List_.List_getSize[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = parameters_)), generics_ = (List(ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme], ff.compiler.Syntax_.Type](self_ = parameters_, body_ = {(_w1) =>
+val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = definition_.at_, name_ = ("Function$" + ff.core.List_.List_size[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = parameters_)), generics_ = (List(ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme], ff.compiler.Syntax_.Type](self_ = parameters_, body_ = {(_w1) =>
 _w1.second_.signature_.returnType_
 }), List(definition_.signature_.returnType_)).flatten));
 pipe_dot(definition_)({(_c) =>
@@ -162,7 +162,7 @@ val parameterTypes_ : ff.core.List_.List[ff.compiler.Syntax_.Type] = ff.core.Lis
 ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = _w1.at_)
 });
 val returnType_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = case_.at_);
-val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = case_.at_, name_ = ("Function$" + ff.core.List_.List_getSize[ff.compiler.Syntax_.MatchPattern](self_ = case_.patterns_)), generics_ = (List(parameterTypes_, List(returnType_)).flatten));
+val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = case_.at_, name_ = ("Function$" + ff.core.List_.List_size[ff.compiler.Syntax_.MatchPattern](self_ = case_.patterns_)), generics_ = (List(parameterTypes_, List(returnType_)).flatten));
 ff.compiler.Unification_.Unification_unify(self_ = self_.unification_, at_ = case_.at_, t1_ = expected_, t2_ = functionType_);
 val newEnvironment_ : ff.compiler.Environment_.Environment = ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[ff.compiler.Syntax_.Type, ff.compiler.Syntax_.MatchPattern], ff.compiler.Environment_.Environment](self_ = ff.core.List_.List_zip[ff.compiler.Syntax_.Type, ff.compiler.Syntax_.MatchPattern](self_ = parameterTypes_, that_ = case_.patterns_), initial_ = environment_)({
 case (environment1_, ff.core.Pair_.Pair(t_, c_)) =>
@@ -187,7 +187,7 @@ pipe_dot(pattern_)({
 case (ff.compiler.Syntax_.PVariable(at_, ff.core.Option_.None())) =>
 ff.core.Map_.empty_[ff.core.String_.String, ff.compiler.Syntax_.Type]()
 case (ff.compiler.Syntax_.PVariable(at_, ff.core.Option_.Some(name_))) =>
-ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type](first_ = name_, second_ = expected_)))
+ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type](first_ = name_, second_ = expected_)))
 case (ff.compiler.Syntax_.PAlias(at_, pattern_, variable_)) =>
 ff.core.Map_.Map_add[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = ff.compiler.Inference_.Inference_inferPattern(self_ = self_, environment_ = environment_, expected_ = expected_, pattern_ = pattern_), key_ = variable_, value_ = expected_)
 case (ff.compiler.Syntax_.PList(at_, t_, items_)) =>
@@ -219,7 +219,7 @@ _w1.name_
 }), separator_ = "$")), generics_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.compiler.Syntax_.Type](self_ = parameters_, body_ = {(_w1) =>
 _w1.valueType_
 }));
-ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type](first_ = variable_, second_ = recordType_)))
+ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type](first_ = variable_, second_ = recordType_)))
 case (ff.compiler.Syntax_.PVariant(at_, name_, patterns_)) =>
 val instantiated_ : ff.compiler.Environment_.Instantiated = ff.core.Option_.Option_else(self_ = ff.compiler.Inference_.Inference_lookup(self_ = self_, environment_ = environment_, at_ = at_, symbol_ = name_, typeArguments_ = List()), body_ = {() =>
 ff.compiler.Inference_.fail_[ff.compiler.Environment_.Instantiated](at_ = at_, message_ = ("No such variant: " + name_))
@@ -464,7 +464,7 @@ pipe_dot(e_)({(_c) =>
 ff.compiler.Syntax_.ERecord(at_ = _c.at_, fields_ = newFields_)
 })
 case (ff.compiler.Syntax_.EFunctions(at_, functions_, body_)) =>
-val functionMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme] = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = functions_, body_ = {(f_) =>
+val functionMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Environment_.Scheme] = ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme]](self_ = functions_, body_ = {(f_) =>
 val scheme_ : ff.compiler.Environment_.Scheme = ff.compiler.Environment_.Scheme(isVariable_ = ff.core.Bool_.False(), isMutable_ = ff.core.Bool_.False(), signature_ = f_.signature_);
 ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Environment_.Scheme](first_ = f_.signature_.name_, second_ = scheme_)
 }));
@@ -573,7 +573,7 @@ ff.compiler.Inference_.fail_[{val arguments_ : ff.core.List_.List[ff.compiler.Sy
 val argumentTypes_ : ff.core.List_.List[ff.compiler.Syntax_.Type] = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.compiler.Syntax_.Type](self_ = e_.arguments_, body_ = {(_w1) =>
 ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = _w1.at_)
 });
-val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ("Function$" + ff.core.List_.List_getSize[ff.compiler.Syntax_.Argument](self_ = e_.arguments_)), generics_ = (List(argumentTypes_, List(expected_)).flatten));
+val functionType_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = e_.at_, name_ = ("Function$" + ff.core.List_.List_size[ff.compiler.Syntax_.Argument](self_ = e_.arguments_)), generics_ = (List(argumentTypes_, List(expected_)).flatten));
 val function_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = functionType_, term_ = e_.function_);
 val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Argument, ff.compiler.Syntax_.Type], ff.compiler.Syntax_.Argument](self_ = ff.core.List_.List_zip[ff.compiler.Syntax_.Argument, ff.compiler.Syntax_.Type](self_ = e_.arguments_, that_ = argumentTypes_), body_ = {
 case (ff.core.Pair_.Pair(argument_, t_)) =>
@@ -770,7 +770,7 @@ ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = 
 def Inference_inferEtaExpansion(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, expected_ : ff.compiler.Syntax_.Type, at_ : ff.compiler.Syntax_.Location, signature_ : ff.compiler.Syntax_.Signature, term_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (self_, environment_, expected_, at_, signature_, term_) match {
 case (self_, _, _, _, _, _) =>
 val parameters_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = ff.core.List_.List_filter[ff.compiler.Syntax_.Parameter](self_ = signature_.parameters_, body_ = {(_w1) =>
-ff.core.Option_.Option_getEmpty[ff.compiler.Syntax_.Term](self_ = _w1.default_)
+ff.core.Option_.Option_isEmpty[ff.compiler.Syntax_.Term](self_ = _w1.default_)
 }), body_ = {(p_) =>
 p_.name_
 });
@@ -833,9 +833,9 @@ newArguments_
 def Inference_lookup(self_ : ff.compiler.Inference_.Inference, environment_ : ff.compiler.Environment_.Environment, at_ : ff.compiler.Syntax_.Location, symbol_ : ff.core.String_.String, typeArguments_ : ff.core.List_.List[ff.compiler.Syntax_.Type]) : ff.core.Option_.Option[ff.compiler.Environment_.Instantiated] = (self_, environment_, at_, symbol_, typeArguments_) match {
 case (self_, _, _, _, _) =>
 ff.core.Option_.Option_map[ff.compiler.Environment_.Scheme, ff.compiler.Environment_.Instantiated](self_ = ff.core.Map_.Map_get[ff.core.String_.String, ff.compiler.Environment_.Scheme](self_ = environment_.symbols_, key_ = symbol_), body_ = {(scheme_) =>
-val instantiation_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]] = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]]](condition_ = (!ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = typeArguments_)), body_ = {() =>
-ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (ff.core.List_.List_getSize[ff.core.String_.String](self_ = scheme_.signature_.generics_) != ff.core.List_.List_getSize[ff.compiler.Syntax_.Type](self_ = typeArguments_)), body_ = {() =>
-ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = ((((("Wrong number of type parameters for " + symbol_) + ", expected ") + ff.core.List_.List_getSize[ff.core.String_.String](self_ = scheme_.signature_.generics_)) + ", got ") + ff.core.List_.List_getSize[ff.compiler.Syntax_.Type](self_ = typeArguments_)))
+val instantiation_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]] = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type]]](condition_ = (!ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Type](self_ = typeArguments_)), body_ = {() =>
+ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (ff.core.List_.List_size[ff.core.String_.String](self_ = scheme_.signature_.generics_) != ff.core.List_.List_size[ff.compiler.Syntax_.Type](self_ = typeArguments_)), body_ = {() =>
+ff.compiler.Inference_.fail_[ff.core.Nothing_.Nothing](at_ = at_, message_ = ((((("Wrong number of type parameters for " + symbol_) + ", expected ") + ff.core.List_.List_size[ff.core.String_.String](self_ = scheme_.signature_.generics_)) + ", got ") + ff.core.List_.List_size[ff.compiler.Syntax_.Type](self_ = typeArguments_)))
 });
 ff.core.List_.List_zip[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = scheme_.signature_.generics_, that_ = typeArguments_)
 }), body_ = {() =>
@@ -843,7 +843,7 @@ ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String
 ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type](first_ = name_, second_ = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = at_))
 })
 });
-val instantiationMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type] = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = instantiation_);
+val instantiationMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type] = ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = instantiation_);
 val parameters_ : ff.core.List_.List[ff.compiler.Syntax_.Parameter] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.compiler.Syntax_.Parameter](self_ = scheme_.signature_.parameters_, body_ = {(p_) =>
 pipe_dot(p_)({(_c) =>
 ff.compiler.Syntax_.Parameter(at_ = _c.at_, mutable_ = _c.mutable_, name_ = _c.name_, valueType_ = ff.compiler.Unification_.Unification_instantiate(self_ = self_.unification_, instantiation_ = instantiationMap_, type_ = p_.valueType_), default_ = _c.default_)

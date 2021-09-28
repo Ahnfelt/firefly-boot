@@ -54,7 +54,7 @@ def Option_elseIf[T, S >: T, T2 <: S](self_ : Option[T], condition_ : Function0[
 
 def Option_getElse[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}
 
-def Option_getEmpty[T](self_ : ff.core.Option_.Option[T]) : ff.core.Bool_.Bool = (self_) match {
+def Option_isEmpty[T](self_ : ff.core.Option_.Option[T]) : ff.core.Bool_.Bool = (self_) match {
 case (self_) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>

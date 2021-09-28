@@ -41,7 +41,7 @@ object JsEmitter_ {
 case class JsEmitter(otherModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module])
 
 def make_(otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.compiler.JsEmitter_.JsEmitter = {
-ff.compiler.JsEmitter_.JsEmitter(otherModules_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Module](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Module, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Module]](self_ = otherModules_, body_ = {(m_) =>
+ff.compiler.JsEmitter_.JsEmitter(otherModules_ = ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Syntax_.Module](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Module, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Module]](self_ = otherModules_, body_ = {(m_) =>
 val moduleName_ : ff.core.String_.String = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = m_.file_, count_ = 3));
 ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Module](first_ = moduleName_, second_ = m_)
 })))
@@ -61,7 +61,7 @@ t_.name_
 def escapeResolved_(word_ : ff.core.String_.String) : ff.core.String_.String = {
 val parts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.Array_.Array_getList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = word_, needle_ = ":", replacement_ = "."), needle_ = "/", replacement_ = "."), char_ = '.'));
 val initialParts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_dropLast[ff.core.String_.String](self_ = parts_, count_ = 1);
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.core.String_.String](self_ = initialParts_), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.core.String_.String](self_ = initialParts_), body_ = {() =>
 ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[ff.core.String_.String](self_ = parts_))
 }), body_ = {() =>
 ((ff.core.List_.List_join(self_ = initialParts_, separator_ = "_") + ".") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[ff.core.String_.String](self_ = parts_)))
@@ -198,7 +198,7 @@ val fields_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.L
 ff.compiler.JsEmitter_.escapeKeyword_(word_ = _w1.name_)
 }), separator_ = ", ");
 ff.core.Option_.Option_else(self_ = definition_.targets_.javaScript_, body_ = {() =>
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Parameter](self_ = allFields_), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Parameter](self_ = allFields_), body_ = {() =>
 ((((((((((((("const " + definition_.name_) + "$ = {_: '") + definition_.name_) + "'};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
 }), body_ = {() =>
 (((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {_: '") + definition_.name_) + "', ") + fields_) + "};\n") + "}")
@@ -222,7 +222,7 @@ case (self_, ff.compiler.Syntax_.EList(at_, _, items_)) =>
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.False())) =>
 ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = item_)
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
-(("...ff_core_List.List_getArray(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = item_)) + ")")
+(("...ff_core_List.List_toArray(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = item_)) + ")")
 }), separator_ = ", ")) + "])")
 case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:core/Bool.False") =>
 "false"
@@ -231,7 +231,7 @@ case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:co
 case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:core/Unit.Unit") =>
 "(void 0)"
 case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, arguments_)) =>
-(((ff.compiler.JsEmitter_.escapeResolved_(word_ = name_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = ff.core.List_.List_getFlatten[ff.compiler.Syntax_.Argument](self_ = ff.core.Option_.Option_getList[ff.core.List_.List[ff.compiler.Syntax_.Argument]](self_ = arguments_)), body_ = {(argument_) =>
+(((ff.compiler.JsEmitter_.escapeResolved_(word_ = name_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = ff.core.List_.List_flatten[ff.compiler.Syntax_.Argument](self_ = ff.core.Option_.Option_getList[ff.core.List_.List[ff.compiler.Syntax_.Argument]](self_ = arguments_)), body_ = {(argument_) =>
 ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = argument_)
 }), separator_ = ", ")) + ")")
 case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) if (name_ == "ff:core/Bool.False") =>
@@ -288,7 +288,7 @@ case (self_, ff.compiler.Syntax_.ECall(at_, _, function_, _, arguments_)) =>
 ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = argument_)
 }), separator_ = ", ")) + ")")
 case (self_, ff.compiler.Syntax_.ERecord(at_, fields_)) =>
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Field](self_ = fields_), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Field](self_ = fields_), body_ = {() =>
 "{}"
 }), body_ = {() =>
 val list_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.Field, ff.core.String_.String](self_ = fields_, body_ = {(f_) =>
@@ -361,9 +361,9 @@ val variantNameUnqualified_ : ff.core.String_.String = ff.core.String_.String_ge
 (_w1 != '.')
 }));
 val variantName_ : ff.core.String_.String = ff.compiler.JsEmitter_.escapeKeyword_(word_ = variantNameUnqualified_);
-val moduleName_ : ff.core.String_.String = ff.core.String_.String_dropLast(self_ = name_, count_ = (ff.core.String_.String_getSize(self_ = variantNameUnqualified_) + 1));
+val moduleName_ : ff.core.String_.String = ff.core.String_.String_dropLast(self_ = name_, count_ = (ff.core.String_.String_size(self_ = variantNameUnqualified_) + 1));
 val variantModule_ : ff.compiler.Syntax_.Module = ff.core.Map_.Map_expect[ff.core.String_.String, ff.compiler.Syntax_.Module](self_ = self_.otherModules_, key_ = moduleName_);
-val newArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.Option_.Option_expect[ff.core.List_.List[ff.core.String_.String]](self_ = ff.core.List_.List_getCollectFirst[ff.compiler.Syntax_.DType, ff.core.List_.List[ff.core.String_.String]](self_ = variantModule_.types_, body_ = {(definition_) =>
+val newArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.Option_.Option_expect[ff.core.List_.List[ff.core.String_.String]](self_ = ff.core.List_.List_collectFirst[ff.compiler.Syntax_.DType, ff.core.List_.List[ff.core.String_.String]](self_ = variantModule_.types_, body_ = {(definition_) =>
 ff.core.Option_.Option_map[ff.compiler.Syntax_.Variant, ff.core.List_.List[ff.core.String_.String]](self_ = ff.core.List_.List_find[ff.compiler.Syntax_.Variant](self_ = definition_.variants_, body_ = {(_w1) =>
 (_w1.name_ == variantName_)
 }), body_ = {(variant_) =>

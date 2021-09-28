@@ -106,5 +106,5 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             }
         }
 
-    Environment((functions ++ lets ++ fields ++ extends ++ variants).getMap())
+    Environment((functions ++ lets ++ fields ++ extends ++ variants).toMap())
 }

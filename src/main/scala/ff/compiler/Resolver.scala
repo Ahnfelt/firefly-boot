@@ -41,7 +41,7 @@ object Resolver_ {
 case class Resolver(variables_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], variants_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], types_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], traits_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String])
 
 def make_() : ff.compiler.Resolver_.Resolver = {
-ff.compiler.Resolver_.Resolver(variables_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List()), variants_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List()), types_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List()), traits_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List()))
+ff.compiler.Resolver_.Resolver(variables_ = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = List()), variants_ = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = List()), types_ = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = List()), traits_ = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = List()))
 }
 
 def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.String) : T = {
@@ -104,24 +104,24 @@ List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ =
 })
 }
 val isCore_ : ff.core.Bool_.Bool = (((module_.packagePair_.first_ == "ff") && (module_.packagePair_.second_ == "core")) && (module_.file_ == "Core.ff"));
-val lets_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DLet, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = module_.lets_, body_ = {(_w1) =>
+val lets_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DLet, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = module_.lets_, body_ = {(_w1) =>
 entry_(name_ = _w1.name_, unqualified_ = isCore_)
 }));
-val functions_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DFunction, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = module_.functions_, body_ = {(_w1) =>
+val functions_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DFunction, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = module_.functions_, body_ = {(_w1) =>
 entry_(name_ = _w1.signature_.name_, unqualified_ = isCore_)
 }));
-val traitMethods_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.Signature, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DTrait, ff.compiler.Syntax_.Signature](self_ = module_.traits_, body_ = {(_w1) =>
+val traitMethods_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.Signature, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DTrait, ff.compiler.Syntax_.Signature](self_ = module_.traits_, body_ = {(_w1) =>
 _w1.methods_
 }), body_ = {(_w1) =>
 entry_(name_ = _w1.name_, unqualified_ = ff.core.Bool_.False())
 }));
-val traits_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DTrait, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = module_.traits_, body_ = {(_w1) =>
+val traits_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DTrait, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = module_.traits_, body_ = {(_w1) =>
 entry_(name_ = _w1.name_, unqualified_ = ff.core.Bool_.True())
 }));
-val types_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DType, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = module_.types_, body_ = {(_w1) =>
+val types_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DType, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = module_.types_, body_ = {(_w1) =>
 entry_(name_ = _w1.name_, unqualified_ = ff.core.Bool_.True())
 }));
-val variants_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.Variant, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DType, ff.compiler.Syntax_.Variant](self_ = module_.types_, body_ = {(_w1) =>
+val variants_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.Variant, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_flatMap[ff.compiler.Syntax_.DType, ff.compiler.Syntax_.Variant](self_ = module_.types_, body_ = {(_w1) =>
 _w1.variants_
 }), body_ = {(_w1) =>
 entry_(name_ = _w1.name_, unqualified_ = ff.core.Bool_.True())
@@ -131,7 +131,7 @@ ff.compiler.Resolver_.Resolver(variables_ = ff.core.Map_.Map_addAll[ff.core.Stri
 
 def Resolver_resolveTypeDefinition(self_ : ff.compiler.Resolver_.Resolver, definition_ : ff.compiler.Syntax_.DType) : ff.compiler.Syntax_.DType = (self_, definition_) match {
 case (self_, _) =>
-val generics_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = definition_.generics_, body_ = {(g_) =>
+val generics_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = definition_.generics_, body_ = {(g_) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = g_, second_ = g_)
 }));
 val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
@@ -174,7 +174,7 @@ definition_
 
 def Resolver_resolveExtendDefinition(self_ : ff.compiler.Resolver_.Resolver, definition_ : ff.compiler.Syntax_.DExtend) : ff.compiler.Syntax_.DExtend = (self_, definition_) match {
 case (self_, _) =>
-val generics_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = definition_.generics_, body_ = {(g_) =>
+val generics_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = definition_.generics_, body_ = {(g_) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = g_, second_ = g_)
 }));
 val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
@@ -287,7 +287,7 @@ pipe_dot(e_)({(_c) =>
 ff.compiler.Syntax_.EWildcard(at_ = _c.at_, index_ = _c.index_)
 })
 case (self_, ff.compiler.Syntax_.EFunctions(at_, functions_, body_)) =>
-val functionMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = functions_, body_ = {(_w1) =>
+val functionMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = functions_, body_ = {(_w1) =>
 _w1.signature_.name_
 }), body_ = {(name_) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = name_, second_ = name_)
@@ -335,12 +335,12 @@ ff.compiler.Resolver_.Resolver_resolveType(self_ = self_, type_ = _w1)
 
 def Resolver_resolveFunctionDefinition(self_ : ff.compiler.Resolver_.Resolver, definition_ : ff.compiler.Syntax_.DFunction) : ff.compiler.Syntax_.DFunction = (self_, definition_) match {
 case (self_, _) =>
-val variableMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.signature_.parameters_, body_ = {(_w1) =>
+val variableMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.signature_.parameters_, body_ = {(_w1) =>
 _w1.name_
 }), body_ = {(name_) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = name_, second_ = name_)
 }));
-val typeMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = definition_.signature_.generics_, body_ = {(name_) =>
+val typeMap_ : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = definition_.signature_.generics_, body_ = {(name_) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = name_, second_ = name_)
 }));
 val self2_ : ff.compiler.Resolver_.Resolver = pipe_dot(self_)({(_c) =>
@@ -369,7 +369,7 @@ def Resolver_resolveCase(self_ : ff.compiler.Resolver_.Resolver, case_ : ff.comp
 case (self_, _) =>
 def findVariables_(pattern_ : ff.compiler.Syntax_.MatchPattern) : ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String] = (pattern_) match {
 case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.Some(name_))) =>
-ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = name_, second_ = name_)))
+ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = name_, second_ = name_)))
 case (ff.compiler.Syntax_.PVariable(_, ff.core.Option_.None())) =>
 ff.core.Map_.empty_[ff.core.String_.String, ff.core.String_.String]()
 case (ff.compiler.Syntax_.PVariant(_, _, patterns_)) =>
@@ -379,11 +379,11 @@ findVariables_(pattern_ = pattern_)
 ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = _w1, that_ = _w2)
 })
 case (ff.compiler.Syntax_.PVariantAs(_, _, variable_)) =>
-ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.Option_.Option_getList[ff.core.String_.String](self_ = variable_), body_ = {(x_) =>
+ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_map[ff.core.String_.String, ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.Option_.Option_getList[ff.core.String_.String](self_ = variable_), body_ = {(x_) =>
 ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = x_, second_ = x_)
 }))
 case (ff.compiler.Syntax_.PAlias(_, pattern_, variable_)) =>
-ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = variable_, second_ = variable_))), that_ = findVariables_(pattern_ = pattern_))
+ff.core.Map_.Map_addAll[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.List_.List_toMap[ff.core.String_.String, ff.core.String_.String](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String](first_ = variable_, second_ = variable_))), that_ = findVariables_(pattern_ = pattern_))
 case (ff.compiler.Syntax_.PList(_, _, items_)) =>
 ff.core.List_.List_foldLeft[ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String], ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]](self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.MatchPattern, ff.core.Bool_.Bool], ff.core.Map_.Map[ff.core.String_.String, ff.core.String_.String]](self_ = items_, body_ = {
 case (ff.core.Pair_.Pair(item_, _)) =>

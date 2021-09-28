@@ -50,7 +50,7 @@ def make_(instances_ : ff.core.List_.List[ff.compiler.Syntax_.DInstance]) : ff.c
 def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.String) : T = {
 ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Location_show(self_ = at_)))
 }
-ff.compiler.Unification_.Unification(substitution_ = ff.core.Map_.empty_[ff.core.Int_.Int, ff.compiler.Syntax_.Type](), constraints_ = ff.core.Map_.empty_[ff.core.Int_.Int, ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics]](), nextTypeVariableIndex_ = 2, instances_ = ff.core.List_.List_getMap[ff.compiler.Unification_.InstanceKey, ff.compiler.Unification_.InstanceValue](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DInstance, ff.core.Pair_.Pair[ff.compiler.Unification_.InstanceKey, ff.compiler.Unification_.InstanceValue]](self_ = instances_, body_ = {(definition_) =>
+ff.compiler.Unification_.Unification(substitution_ = ff.core.Map_.empty_[ff.core.Int_.Int, ff.compiler.Syntax_.Type](), constraints_ = ff.core.Map_.empty_[ff.core.Int_.Int, ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics]](), nextTypeVariableIndex_ = 2, instances_ = ff.core.List_.List_toMap[ff.compiler.Unification_.InstanceKey, ff.compiler.Unification_.InstanceValue](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DInstance, ff.core.Pair_.Pair[ff.compiler.Unification_.InstanceKey, ff.compiler.Unification_.InstanceValue]](self_ = instances_, body_ = {(definition_) =>
 pipe_dot(definition_.traitType_)({
 case (ff.compiler.Syntax_.TConstructor(at_, name_, List(ff.compiler.Syntax_.TConstructor(_, typeName_, _), __seq @ _*))) =>
 val _ = __seq.toList;
@@ -100,7 +100,7 @@ ff.compiler.Unification_.Unification_constrain(self_ = self_, at_ = at_, type_ =
 case (ff.compiler.Syntax_.TVariable(_, i_)) =>
 pipe_dot(ff.core.Map_.Map_get[ff.core.Int_.Int, ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics]](self_ = self_.constraints_, key_ = i_))({
 case (ff.core.Option_.None()) =>
-self_.constraints_ = ff.core.Map_.Map_add[ff.core.Int_.Int, ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics]](self_ = self_.constraints_, key_ = i_, value_ = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics](first_ = constraintName_, second_ = ff.compiler.Unification_.ConstraintGenerics(at_ = at_, generics_ = generics_)))));
+self_.constraints_ = ff.core.Map_.Map_add[ff.core.Int_.Int, ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics]](self_ = self_.constraints_, key_ = i_, value_ = ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics](self_ = List(ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics](first_ = constraintName_, second_ = ff.compiler.Unification_.ConstraintGenerics(at_ = at_, generics_ = generics_)))));
 ff.core.Unit_.Unit()
 case (ff.core.Option_.Some(map_)) =>
 pipe_dot(ff.core.Map_.Map_get[ff.core.String_.String, ff.compiler.Unification_.ConstraintGenerics](self_ = map_, key_ = constraintName_))({
@@ -119,12 +119,12 @@ ff.core.Unit_.Unit()
 case (ff.compiler.Syntax_.TConstructor(_, name_, generics2_)) =>
 pipe_dot(ff.core.Map_.Map_get[ff.compiler.Unification_.InstanceKey, ff.compiler.Unification_.InstanceValue](self_ = self_.instances_, key_ = ff.compiler.Unification_.InstanceKey(traitName_ = constraintName_, typeName_ = name_)))({
 case (ff.core.Option_.None()) =>
-val g1_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = generics_), body_ = {() =>
+val g1_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Type](self_ = generics_), body_ = {() =>
 ""
 }), body_ = {() =>
 "[...]"
 });
-val g2_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_getEmpty[ff.compiler.Syntax_.Type](self_ = generics2_), body_ = {() =>
+val g2_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Type](self_ = generics2_), body_ = {() =>
 ""
 }), body_ = {() =>
 "[...]"
@@ -135,7 +135,7 @@ case (ff.core.Option_.Some(definition_)) =>
 val typeVariables_ : ff.core.List_.List[ff.compiler.Syntax_.Type] = ff.core.List_.List_map[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = definition_.generics_, body_ = {(_) =>
 ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_, at_ = at_)
 });
-val instantiation_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type] = ff.core.List_.List_getMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = ff.core.List_.List_zip[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = definition_.generics_, that_ = typeVariables_));
+val instantiation_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Type] = ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = ff.core.List_.List_zip[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = definition_.generics_, that_ = typeVariables_));
 val traitType1_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_instantiate(self_ = self_, instantiation_ = instantiation_, type_ = definition_.traitType_);
 val traitType2_ : ff.compiler.Syntax_.Type = ff.compiler.Syntax_.TConstructor(at_ = at_, name_ = constraintName_, generics_ = (List(List(type_), generics_).flatten));
 ff.compiler.Unification_.Unification_unify(self_ = self_, at_ = at_, t1_ = traitType1_, t2_ = traitType2_);
@@ -203,7 +203,7 @@ case (self_, _, _, ff.compiler.Syntax_.TVariable(_, i_)) =>
 ff.compiler.Unification_.Unification_bind(self_ = self_, at_ = at_, index_ = i_, type_ = t1_);
 ff.core.Unit_.Unit()
 case (self_, _, ff.compiler.Syntax_.TConstructor(_, name1_, generics1_), ff.compiler.Syntax_.TConstructor(_, name2_, generics2_)) =>
-ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = ((name1_ != name2_) || (ff.core.List_.List_getSize[ff.compiler.Syntax_.Type](self_ = generics1_) != ff.core.List_.List_getSize[ff.compiler.Syntax_.Type](self_ = generics2_))), body_ = {() =>
+ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = ((name1_ != name2_) || (ff.core.List_.List_size[ff.compiler.Syntax_.Type](self_ = generics1_) != ff.core.List_.List_size[ff.compiler.Syntax_.Type](self_ = generics2_))), body_ = {() =>
 ff.compiler.Unification_.Unification_fail[ff.core.Nothing_.Nothing](self_ = self_, at_ = at_, message_ = ((("Type mismatch: " + ff.compiler.Syntax_.Type_show(self_ = ff.compiler.Unification_.Unification_substitute(self_ = self_, type_ = t1_))) + " vs. ") + ff.compiler.Syntax_.Type_show(self_ = ff.compiler.Unification_.Unification_substitute(self_ = self_, type_ = t2_))))
 });
 ff.core.List_.List_each[ff.core.Pair_.Pair[ff.compiler.Syntax_.Type, ff.compiler.Syntax_.Type]](self_ = ff.core.List_.List_zip[ff.compiler.Syntax_.Type, ff.compiler.Syntax_.Type](self_ = generics1_, that_ = generics2_), body_ = {

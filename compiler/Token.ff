@@ -35,8 +35,8 @@ extend token: Token {
     }
 
     rawIs(value: String): Bool {
-        token.stopOffset - token.startOffset == value.getSize() &&
-        token.code.sliceEquals(token.startOffset, value, 0, value.getSize())
+        token.stopOffset - token.startOffset == value.size() &&
+        token.code.sliceEquals(token.startOffset, value, 0, value.size())
     }
 
 }

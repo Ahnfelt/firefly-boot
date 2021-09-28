@@ -25,7 +25,7 @@ extend self[K, V]: Map[K, V] {
         }
     }
 
-    getSize(): Int {
+    size(): Int {
         self.redBlack.size()
     }
 
@@ -38,7 +38,7 @@ extend self[K, V]: Map[K, V] {
     }
 
     contains(key: K): Bool {
-        !self.get(key).getEmpty()
+        !self.get(key).isEmpty()
     }
 
     expect(key: K): V {

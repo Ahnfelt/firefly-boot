@@ -172,7 +172,7 @@ extend self: Type {
     show(): String {
         self.{
             | TConstructor(at, name, generics) =>
-                if(generics.getEmpty()) { name } else {
+                if(generics.isEmpty()) { name } else {
                     name + "[" + generics.map { _.show() }.join(", ") + "]"
                 }
             | TVariable(at, index) =>

@@ -45,11 +45,11 @@ case (self_, _) =>
 ff.core.Core_.panic_[ff.core.Array_.Array[T]](message_ = "magic")
 }
 
-def Array_getEmpty[T](self_ : ff.core.Array_.Array[T]) : ff.core.Bool_.Bool = {
+def Array_isEmpty[T](self_ : ff.core.Array_.Array[T]) : ff.core.Bool_.Bool = {
 self_.isEmpty()
 }
 
-def Array_getSize[T](self_ : ff.core.Array_.Array[T]) : ff.core.Int_.Int = {
+def Array_size[T](self_ : ff.core.Array_.Array[T]) : ff.core.Int_.Int = {
 self_.size()
 }
 
@@ -64,7 +64,7 @@ ff.core.Array_.Array_expect[T](self_ = self_, index_ = 0)
 
 def Array_expectLast[T](self_ : ff.core.Array_.Array[T]) : T = (self_) match {
 case (self_) =>
-ff.core.Array_.Array_expect[T](self_ = self_, index_ = (ff.core.Array_.Array_getSize[T](self_ = self_) - 1))
+ff.core.Array_.Array_expect[T](self_ = self_, index_ = (ff.core.Array_.Array_size[T](self_ = self_) - 1))
 }
 
 def Array_dropFirst[T](self_ : ff.core.Array_.Array[T], count_ : ff.core.Int_.Int = 1) : ff.core.Array_.Array[T] = {

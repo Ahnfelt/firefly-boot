@@ -24,7 +24,7 @@ main(system: System): Unit {
     let jsPathFile = tempPath + "/src/main/js"
     fs.createDirectories(jsPathFile)
 
-    let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].getMap()
+    let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].toMap()
 
     let success = do { //try {
         Compiler.make(fs, scalaPathFile, jsPathFile, packagePaths).emit("ff:compiler", "Main")

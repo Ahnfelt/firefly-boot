@@ -95,7 +95,7 @@ case (token_, _, _, _) =>
 
 def Token_rawIs(token_ : ff.compiler.Token_.Token, value_ : ff.core.String_.String) : ff.core.Bool_.Bool = (token_, value_) match {
 case (token_, _) =>
-(((token_.stopOffset_ - token_.startOffset_) == ff.core.String_.String_getSize(self_ = value_)) && ff.core.String_.String_sliceEquals(self_ = token_.code_, offset_ = token_.startOffset_, that_ = value_, thatOffset_ = 0, length_ = ff.core.String_.String_getSize(self_ = value_), ignoreCase_ = ff.core.Bool_.False()))
+(((token_.stopOffset_ - token_.startOffset_) == ff.core.String_.String_size(self_ = value_)) && ff.core.String_.String_sliceEquals(self_ = token_.code_, offset_ = token_.startOffset_, that_ = value_, thatOffset_ = 0, length_ = ff.core.String_.String_size(self_ = value_), ignoreCase_ = ff.core.Bool_.False()))
 }
 
 def TokenKind_beforeSeparator(self_ : ff.compiler.Token_.TokenKind) : ff.core.Bool_.Bool = (self_) match {

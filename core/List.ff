@@ -9,26 +9,24 @@ type List[T] {
 extend self[T]: List[T] {
 
     append(list: List[T]) : List[T] { // TODO: Delete
-        [self, list].getFlatten()
+        [self, list].flatten()
     }
 
     addAll(list: List[T]) : List[T] {
-        [self, list].getFlatten()
+        [self, list].flatten()
     }
 
-    // toArray
-    getArray(): Array[T] { panic("magic") }
-        scala "ArrayBuilder_getArray(new scala.collection.mutable.ArrayBuffer[T]() ++ self_)"
+    toArray(): Array[T] { panic("magic") }
+        scala "ArrayBuilder_toArray(new scala.collection.mutable.ArrayBuffer[T]() ++ self_)"
 
-    // toSet
-    getSet(): Set[T] {
+    toSet(): Set[T] {
         (self.foldLeft(Set.empty[T]())) { set, value => set.add(value) }
     }
 
     expect(index: Int): T {
         function go(list: List[T], i: Int): T {
             list.{
-                | Empty => panic("expect(" + index + ") on list of size " + self.getSize())
+                | Empty => panic("expect(" + index + ") on list of size " + self.size())
                 | Link(head, _) {i == 0} => head
                 | Link(_, tail) => tailcall go(tail, i - 1)
             }
@@ -99,14 +97,14 @@ extend self[T]: List[T] {
         self.dropFirst(from).takeFirst(until - from)
     }
 
-    getEmpty(): Bool {
+    isEmpty(): Bool {
         self.{
             | [] => True
             | _ => False
         }
     }
 
-    getSize(): Int {
+    size(): Int {
         function go(list: List[T], result: Int): Int {
             list.{
                 | [] => result
@@ -179,7 +177,7 @@ extend self[T]: List[T] {
         function go(list: List[T], result: List[List[R]]): List[R] {
             list.{
                 | [] =>
-                    result.reverse().getFlatten()
+                    result.reverse().flatten()
                 | [head, ...tail] =>
                     tailcall go(tail, [body(head), ...result])
             }
@@ -187,7 +185,7 @@ extend self[T]: List[T] {
         go(self, [])
     }
 
-    getCollect[R](body: T => Option[R]): List[R] {
+    collect[R](body: T => Option[R]): List[R] {
         function go(list: List[T], result: List[R]): List[R] {
             list.{
                 | [] =>
@@ -202,13 +200,13 @@ extend self[T]: List[T] {
         go(self, [])
     }
 
-    getCollectFirst[R](body: T => Option[R]): Option[R] {
+    collectFirst[R](body: T => Option[R]): Option[R] {
         self.{
             | [] =>
                 None
             | [head, ...tail] =>
                 body(head).{
-                    | None => tailcall tail.getCollectFirst(body)
+                    | None => tailcall tail.collectFirst(body)
                     | Some(value) => Some(value)
                 }
         }
@@ -269,7 +267,7 @@ extend self[T]: List[T] {
     }
 
     sortBy(body: T => String): List[T] { // TODO generalize to non-strings
-        if(self.getSize() <= 1) {self} else:
+        if(self.size() <= 1) {self} else:
 
         function divide(list: List[T], xs: List[T], ys: List[T]): Pair[List[T], List[T]] {
             list.{
@@ -297,8 +295,8 @@ extend self[T]: List[T] {
 }
 
 extend self[T]: List[List[T]] {
-    // flatten
-    getFlatten(): List[T] {
+
+    flatten(): List[T] {
         function go(lists: List[List[T]], result: List[T]): List[T] {
             lists.{
                 | [] =>
@@ -311,12 +309,12 @@ extend self[T]: List[List[T]] {
         }
         go(self, [])
     }
+
 }
 
 extend self[K, V]: List[Pair[K, V]] {
 
-    // toMap
-    getMap(): Map[K, V] {
+    toMap(): Map[K, V] {
         (self.foldLeft(Map.empty[K, V]())) { map, pair => map.add(pair.first, pair.second) }
     }
 
@@ -324,8 +322,7 @@ extend self[K, V]: List[Pair[K, V]] {
         groupList(self)
     }
 
-    // unzip
-    getUnzip(): Pair[List[K], List[V]] {
+    unzip(): Pair[List[K], List[V]] {
         function go(pairs: List[Pair[K, V]], ks: List[K], vs: List[V]): Pair[List[K], List[V]] {
             pairs.{
                 | [] =>
@@ -336,14 +333,18 @@ extend self[K, V]: List[Pair[K, V]] {
         }
         go(self, [], [])
     }
+
 }
 
 extend self: List[String] {
+
     join(separator: String = ""): String { panic("magic") }
         scala "self_.mkString(separator_)"
+
 }
 
 reverseList[T](list: List[T]): List[T] { // Hack to work around Scala/IDEA inference bug
+
     function go(list: List[T], result: List[T]): List[T] {
         list.{
             | [] =>
@@ -353,9 +354,10 @@ reverseList[T](list: List[T]): List[T] { // Hack to work around Scala/IDEA infer
         }
     }
     go(list, [])
+
 }
 
 groupList[K, V](list : List[Pair[K, V]]): Map[K, List[V]] { // Hack to work around Scala/IDEA inference bug
     let initial: List[Pair[K, List[V]]] = []
-    (list.foldLeft(initial.getMap())) { map, pair => map.addToList(pair.first, panic("pair.second")) }
+    (list.foldLeft(initial.toMap())) { map, pair => map.addToList(pair.first, panic("pair.second")) }
 }

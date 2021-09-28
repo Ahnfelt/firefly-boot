@@ -9,7 +9,7 @@ make(otherModules: List[Module]): JsEmitter {
         otherModules = otherModules.map { m =>
             let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
-        }.getMap()
+        }.toMap()
     )
 }
 
@@ -104,7 +104,7 @@ extend self: JsEmitter {
         let allFields = typeDefinition.commonFields ++ definition.fields
         let fields = allFields.map { escapeKeyword(_.name) }.join(", ")
         definition.targets.javaScript.else {
-            if(allFields.getEmpty()) {
+            if(allFields.isEmpty()) {
                 "const " + definition.name + "$ = {_: '" + definition.name + "'};\n" +
                 "export function " + definition.name + "(" + fields + ") {\n" +
                 "return " + definition.name + "$;\n" +
@@ -126,7 +126,7 @@ extend self: JsEmitter {
         | EList(at, _, items) =>
             "ff_core_Array.Array_getList([" + items.map {
                 | Pair(item, False) => self.emitTerm(item)
-                | Pair(item, True) => "...ff_core_List.List_getArray(" + self.emitTerm(item) + ")"
+                | Pair(item, True) => "...ff_core_List.List_toArray(" + self.emitTerm(item) + ")"
             }.join(", ") + "])"
         | EVariant(at, name, _, _) { name == "ff:core/Bool.False" } =>
             "false"
@@ -135,7 +135,7 @@ extend self: JsEmitter {
         | EVariant(at, name, _, _) { name == "ff:core/Unit.Unit" } =>
             "(void 0)"
         | EVariant(at, name, _, arguments) =>
-            escapeResolved(name) + "(" + arguments.getList().getFlatten().map(self.emitArgument).join(", ") + ")"
+            escapeResolved(name) + "(" + arguments.getList().flatten().map(self.emitArgument).join(", ") + ")"
         | EVariantIs(at, name, _) { name == "ff:core/Bool.False" } =>
             "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
         | EVariantIs(at, name, _) { name == "ff:core/Bool.True" } =>
@@ -171,7 +171,7 @@ extend self: JsEmitter {
         | ECall(at, _, function, _, arguments) =>
             self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ")"
         | ERecord(at, fields) =>
-            if(fields.getEmpty()) {"{}"} else {
+            if(fields.isEmpty()) {"{}"} else {
                 let list = fields.map { f => escapeKeyword(f.name) + " = " + self.emitTerm(f.value) }
                 "{\n" + list.join(",\n") + "\n}"
             }
@@ -235,9 +235,9 @@ extend self: JsEmitter {
             | PVariant(_, name, patterns) =>
                 let variantNameUnqualified = name.getReverse().takeWhile { _ != '.' }.getReverse()
                 let variantName = escapeKeyword(variantNameUnqualified)
-                let moduleName = name.dropLast(variantNameUnqualified.getSize() + 1)
+                let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
                 let variantModule = self.otherModules.expect(moduleName)
-                let newArguments = variantModule.types.getCollectFirst { definition =>
+                let newArguments = variantModule.types.collectFirst { definition =>
                     definition.variants.find { _.name == variantName }.map { variant =>
                         definition.commonFields.map { _.name} ++ variant.fields.map {_.name}
                     }
@@ -283,7 +283,7 @@ extractTypeName(type: Type): String {
 escapeResolved(word: String): String {
     let parts = word.replace(":", ".").replace("/", ".").split('.').getList()
     let initialParts = parts.dropLast()
-    if(initialParts.getEmpty()) {
+    if(initialParts.isEmpty()) {
         escapeKeyword(parts.expectLast())
     } else {
         initialParts.join("_") + "." + escapeKeyword(parts.expectLast())
