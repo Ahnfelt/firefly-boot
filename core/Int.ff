@@ -3,7 +3,7 @@ type Int {}
 
 extend self: Int {
 
-    getTo(inclusive: Int): List[Int] { panic("magic") }
+    to(inclusive: Int): List[Int] { panic("magic") }
         scala "self_.to(inclusive_).toList"
         javascript """
             let result = ff_core_List.Empty();
@@ -13,10 +13,10 @@ extend self: Int {
             return result;
         """
 
-    getUntil(exclusive: Int): List[Int] { self.getTo(exclusive - 1) }
+    until(exclusive: Int): List[Int] { self.to(exclusive - 1) }
         scala "self_.until(exclusive_).toList"
 
-    getAbs(): Int { panic("magic") }
+    abs(): Int { panic("magic") }
         scala "self_.abs"
         javascript "return Math.abs(self_)"
 

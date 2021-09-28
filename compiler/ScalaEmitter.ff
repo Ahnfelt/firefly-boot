@@ -151,7 +151,7 @@ emitTraitDefinition(definition: DTrait): String {
 emitInstanceDefinition(definition: DInstance): String {
     let signature = emitSignature(Signature(
         definition.at,
-        extractTypeName(definition.traitType) + "_" + magicHashCode(definition).getAbs(),
+        extractTypeName(definition.traitType) + "_" + magicHashCode(definition).abs(),
         definition.generics,
         definition.constraints,
         [],

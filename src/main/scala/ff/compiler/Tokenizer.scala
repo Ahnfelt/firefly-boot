@@ -48,7 +48,7 @@ var startLine_ : ff.core.Int_.Int = line_;
 var startLineOffset_ : ff.core.Int_.Int = lineOffset_;
 val operatorCharactersString_ : ff.core.String_.String = "!@#$%&/=?+|^~*<>.:-,;";
 var operatorCharacters_ : ff.core.Set_.Set[ff.core.Char_.Char] = ff.core.Set_.empty_[ff.core.Char_.Char]();
-ff.core.List_.List_map[ff.core.Int_.Int, ff.core.Unit_.Unit](self_ = ff.core.Int_.Int_getUntil(self_ = 0, exclusive_ = ff.core.String_.String_getSize(self_ = operatorCharactersString_)), body_ = {(j_) =>
+ff.core.List_.List_map[ff.core.Int_.Int, ff.core.Unit_.Unit](self_ = ff.core.Int_.Int_until(self_ = 0, exclusive_ = ff.core.String_.String_getSize(self_ = operatorCharactersString_)), body_ = {(j_) =>
 operatorCharacters_ = ff.core.Set_.Set_add[ff.core.Char_.Char](self_ = operatorCharacters_, value_ = ff.core.String_.String_expect(self_ = operatorCharactersString_, index_ = j_))
 });
 def emitToken_(kind_ : ff.compiler.Token_.TokenKind, startOffset_ : ff.core.Int_.Int, stopOffset_ : ff.core.Int_.Int) : ff.core.Unit_.Unit = {
@@ -463,7 +463,7 @@ ff.core.Unit_.Unit()
 });
 ff.core.Unit_.Unit()
 });
-ff.core.List_.List_each[ff.core.Int_.Int](self_ = ff.core.Int_.Int_getTo(self_ = 1, inclusive_ = 5), body_ = {(i_) =>
+ff.core.List_.List_each[ff.core.Int_.Int](self_ = ff.core.Int_.Int_to(self_ = 1, inclusive_ = 5), body_ = {(i_) =>
 emitToken_(kind_ = ff.compiler.Token_.LEnd(), startOffset_ = i_, stopOffset_ = i_);
 ff.core.Unit_.Unit()
 });

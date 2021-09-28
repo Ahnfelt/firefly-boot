@@ -40,15 +40,15 @@ type Int = scala.Int;
 
 
 
-def Int_getTo(self_ : ff.core.Int_.Int, inclusive_ : ff.core.Int_.Int) : ff.core.List_.List[ff.core.Int_.Int] = {
+def Int_to(self_ : ff.core.Int_.Int, inclusive_ : ff.core.Int_.Int) : ff.core.List_.List[ff.core.Int_.Int] = {
 self_.to(inclusive_).toList
 }
 
-def Int_getUntil(self_ : ff.core.Int_.Int, exclusive_ : ff.core.Int_.Int) : ff.core.List_.List[ff.core.Int_.Int] = {
+def Int_until(self_ : ff.core.Int_.Int, exclusive_ : ff.core.Int_.Int) : ff.core.List_.List[ff.core.Int_.Int] = {
 self_.until(exclusive_).toList
 }
 
-def Int_getAbs(self_ : ff.core.Int_.Int) : ff.core.Int_.Int = {
+def Int_abs(self_ : ff.core.Int_.Int) : ff.core.Int_.Int = {
 self_.abs
 }
 

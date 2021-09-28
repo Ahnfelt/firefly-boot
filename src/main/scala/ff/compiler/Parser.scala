@@ -764,11 +764,11 @@ val term_ : ff.compiler.Syntax_.Term = ff.compiler.Parser_.Parser_parseStatement
 val wildcards_ : ff.compiler.Wildcards_.Wildcards = ff.compiler.Wildcards_.make_();
 val e_ : ff.compiler.Syntax_.Term = ff.compiler.Wildcards_.Wildcards_fixWildcards(self_ = wildcards_, term_ = term_);
 val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.MatchPattern] = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.compiler.Syntax_.MatchPattern]](condition_ = (wildcards_.seenWildcards_ != 0), body_ = {() =>
-ff.core.List_.List_map[ff.core.Int_.Int, ff.compiler.Syntax_.MatchPattern](self_ = ff.core.Int_.Int_getTo(self_ = 1, inclusive_ = wildcards_.seenWildcards_), body_ = {(i_) =>
+ff.core.List_.List_map[ff.core.Int_.Int, ff.compiler.Syntax_.MatchPattern](self_ = ff.core.Int_.Int_to(self_ = 1, inclusive_ = wildcards_.seenWildcards_), body_ = {(i_) =>
 ff.compiler.Syntax_.PVariable(at_ = ff.compiler.Token_.Token_at(token_ = token_), name_ = ff.core.Option_.Some[ff.core.String_.String](value_ = ("_w" + i_)))
 })
 }), body_ = {() =>
-ff.core.List_.List_map[ff.core.Int_.Int, ff.compiler.Syntax_.MatchPattern](self_ = ff.core.Int_.Int_getTo(self_ = 1, inclusive_ = defaultParameterCount_), body_ = {(i_) =>
+ff.core.List_.List_map[ff.core.Int_.Int, ff.compiler.Syntax_.MatchPattern](self_ = ff.core.Int_.Int_to(self_ = 1, inclusive_ = defaultParameterCount_), body_ = {(i_) =>
 ff.compiler.Syntax_.PVariable(at_ = ff.compiler.Token_.Token_at(token_ = token_), name_ = ff.core.Option_.None[ff.core.String_.String]())
 })
 });

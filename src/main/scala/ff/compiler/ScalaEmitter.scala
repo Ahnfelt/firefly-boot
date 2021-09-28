@@ -249,7 +249,7 @@ ff.compiler.ScalaEmitter_.escapeKeyword_(word_ = word_)
 }
 
 def emitInstanceDefinition_(definition_ : ff.compiler.Syntax_.DInstance) : ff.core.String_.String = {
-val signature_ : ff.core.String_.String = ff.compiler.ScalaEmitter_.emitSignature_(signature_ = ff.compiler.Syntax_.Signature(at_ = definition_.at_, name_ = ((ff.compiler.ScalaEmitter_.extractTypeName_(type_ = definition_.traitType_) + "_") + ff.core.Int_.Int_getAbs(self_ = ff.core.Core_.magicHashCode_[ff.compiler.Syntax_.DInstance](value_ = definition_))), generics_ = definition_.generics_, constraints_ = definition_.constraints_, parameters_ = List(), returnType_ = definition_.traitType_), suffix_ = "");
+val signature_ : ff.core.String_.String = ff.compiler.ScalaEmitter_.emitSignature_(signature_ = ff.compiler.Syntax_.Signature(at_ = definition_.at_, name_ = ((ff.compiler.ScalaEmitter_.extractTypeName_(type_ = definition_.traitType_) + "_") + ff.core.Int_.Int_abs(self_ = ff.core.Core_.magicHashCode_[ff.compiler.Syntax_.DInstance](value_ = definition_))), generics_ = definition_.generics_, constraints_ = definition_.constraints_, parameters_ = List(), returnType_ = definition_.traitType_), suffix_ = "");
 val methods_ : ff.core.String_.String = ((((" {\n\nimport " + ff.compiler.ScalaEmitter_.extractTypeName_(type_ = definition_.traitType_)) + "._\n\n") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = definition_.methods_, body_ = {(_w1) =>
 ff.compiler.ScalaEmitter_.emitFunctionDefinition_(definition_ = _w1, suffix_ = "_m")
 }), separator_ = "\n\n")) + "\n\n}");
