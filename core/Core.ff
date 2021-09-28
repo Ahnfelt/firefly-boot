@@ -16,6 +16,13 @@ while(condition: () => Bool, body: () => Unit): Unit {
 
 try[T](body: () => T): Try[T] { panic("magic") }
     scala "scala.util.Try { body_() }"
+    javascript """
+        try {
+            return {_: 'Success', value_: body_()}
+        } catch(e) {
+            return {_: 'Failure', exception_: e}
+        }
+    """
 
 do[T](body: () => T): T {
     body()
