@@ -70,7 +70,7 @@ def ArrayBuilder_toList[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.c
 self_.toList
 }
 
-def ArrayBuilder_getLast[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Option_.Option[T] = {
+def ArrayBuilder_last[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.Option_.Option[T] = {
 self_.lastOption
 }
 
