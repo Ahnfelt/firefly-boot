@@ -43,7 +43,10 @@ def apply() = {};
 def unapply(value : Unit) = value == {};
 }
 
-
+def testString_() : ff.core.Unit_.Unit = {
+ff.core.String_.String_size(self_ = "abc");
+ff.core.Unit_.Unit()
+}
 
 
 

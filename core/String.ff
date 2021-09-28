@@ -5,39 +5,58 @@ extend self: String {
 
     size(): Int { panic("magic") }
         scala "self_.size"
+        javascript "return self_.length"
 
     expect(index: Int): Char { panic("magic") }
         scala "self_(index_)"
+        javascript "return self_.charCodeAt(index_)"
 
     replace(needle: String, replacement: String): String { panic("magic") }
         scala "self_.replaceAllLiterally(needle_, replacement_)"
+        javascript "return self_.replaceAll(needle_, replacement_)"
 
     replaceFirst(needle: String, replacement: String): String { panic("magic") }
         scala "self_.replaceFirst(scala.util.matching.Regex.quote(needle_), replacement_)"
+        javascript "return self_.replace(needle_, replacement_)"
 
     reverse(): String { panic("magic") }
         scala "self_.reverse"
+        javascript "[...self_].reverse().join('')"
 
     dropWhile(p: Char => Bool): String { panic("magic") }
         scala "self_.dropWhile(p_)"
+        javascript """
+            let i = 0
+            for(; i < self_.length && p_(self_.codePointAt(i)); i++);
+            return self_.slice(i)
+        """
 
     takeWhile(p: Char => Bool): String { panic("magic") }
         scala "self_.takeWhile(p_)"
+        javascript """
+            let i = 0
+            for(; i < self_.length && p_(self_.codePointAt(i)); i++);
+            return self_.slice(0, i)
+        """
 
     slice(from: Int, until: Int): String { panic("magic") }
         scala "self_.slice(from_, until_)"
+        javascript "return self_.slice(from_, until_)"
 
     sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("magic") }
         scala "self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)"
 
     split(char: Char): Array[String] { panic("magic") }
         scala "List_toArray(self_.split(char_).toList)" // We probably do not want the Scala semantics for this in the future
+        javascript "return self_.split(String.fromCharCode(char_))"
 
     dropFirst(count: Int = 1): String { panic("magic") }
         scala "self_.drop(count_)"
+        javascript "return self_.slice(count_)"
 
     dropLast(count: Int = 1): String { panic("magic") }
         scala "self_.dropRight(count_)"
+        javascript "return self_.slice(0, self_.length - count_)"
 
     expectInt(): Int { panic("magic") }
         scala "self_.toInt"
