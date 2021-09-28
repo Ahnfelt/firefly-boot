@@ -28,18 +28,14 @@ extend self[T]: Option[T] {
     }
         scala "#def Option_elseIf[T, S >: T, T2 <: S](self_ : Option[T], condition_ : Function0[ff.core.Bool_.Bool], body_ : Function0[T2]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => pipe_dot(condition_())({ case (ff.core.Bool_.True()) => ff.core.Option_.Some(body_()); case (ff.core.Bool_.False()) => ff.core.Option_.None()}); case (ff.core.Option_.Some(_)) => self_ })}"
 
-    // orElse
-    getElse(body: () => Option[T]): Option[T] {
+    orElse(body: () => Option[T]): Option[T] {
         self.{
             | None => body()
             | Some(_) => self
         }
     }
-        scala "#def Option_getElse[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}"
+        scala "#def Option_orElse[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}"
 
-    // getOrElse removed (use else)
-
-    // empty / isEmpty
     isEmpty(): Bool {
         self.{
             | None => True
@@ -47,8 +43,7 @@ extend self[T]: Option[T] {
         }
     }
 
-    // list / toList
-    getList(): List[T] {
+    toList(): List[T] {
         self.{
             | None => []
             | Some(v) => [v]

@@ -66,7 +66,7 @@ def ArrayBuilder_drain[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.co
 val result = ArrayBuilder_toArray(self_); self_.clear(); result
 }
 
-def ArrayBuilder_getList[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.List_.List[T] = {
+def ArrayBuilder_toList[T](self_ : ff.core.ArrayBuilder_.ArrayBuilder[T]) : ff.core.List_.List[T] = {
 self_.toList
 }
 

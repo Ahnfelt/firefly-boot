@@ -59,7 +59,7 @@ t_.name_
 }
 
 def escapeResolved_(word_ : ff.core.String_.String) : ff.core.String_.String = {
-val parts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.Array_.Array_getList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = word_, needle_ = ":", replacement_ = "."), needle_ = "/", replacement_ = "."), char_ = '.'));
+val parts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.Array_.Array_toList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = ff.core.String_.String_replace(self_ = ff.core.String_.String_replace(self_ = word_, needle_ = ":", replacement_ = "."), needle_ = "/", replacement_ = "."), char_ = '.'));
 val initialParts_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_dropLast[ff.core.String_.String](self_ = parts_, count_ = 1);
 ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.core.String_.String](self_ = initialParts_), body_ = {() =>
 ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[ff.core.String_.String](self_ = parts_))
@@ -218,7 +218,7 @@ value_
 case (self_, ff.compiler.Syntax_.EVariable(at_, name_, _, _)) =>
 ff.compiler.JsEmitter_.escapeResolved_(word_ = name_)
 case (self_, ff.compiler.Syntax_.EList(at_, _, items_)) =>
-(("ff_core_Array.Array_getList([" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool], ff.core.String_.String](self_ = items_, body_ = {
+(("ff_core_Array.Array_toList([" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool], ff.core.String_.String](self_ = items_, body_ = {
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.False())) =>
 ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = item_)
 case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
@@ -231,7 +231,7 @@ case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:co
 case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:core/Unit.Unit") =>
 "(void 0)"
 case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, arguments_)) =>
-(((ff.compiler.JsEmitter_.escapeResolved_(word_ = name_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = ff.core.List_.List_flatten[ff.compiler.Syntax_.Argument](self_ = ff.core.Option_.Option_getList[ff.core.List_.List[ff.compiler.Syntax_.Argument]](self_ = arguments_)), body_ = {(argument_) =>
+(((ff.compiler.JsEmitter_.escapeResolved_(word_ = name_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = ff.core.List_.List_flatten[ff.compiler.Syntax_.Argument](self_ = ff.core.Option_.Option_toList[ff.core.List_.List[ff.compiler.Syntax_.Argument]](self_ = arguments_)), body_ = {(argument_) =>
 ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = argument_)
 }), separator_ = ", ")) + ")")
 case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) if (name_ == "ff:core/Bool.False") =>

@@ -52,7 +52,7 @@ def Option_else[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[T2]) : 
 
 def Option_elseIf[T, S >: T, T2 <: S](self_ : Option[T], condition_ : Function0[ff.core.Bool_.Bool], body_ : Function0[T2]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => pipe_dot(condition_())({ case (ff.core.Bool_.True()) => ff.core.Option_.Some(body_()); case (ff.core.Bool_.False()) => ff.core.Option_.None()}); case (ff.core.Option_.Some(_)) => self_ })}
 
-def Option_getElse[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}
+def Option_orElse[T, S >: T, T2 <: S](self_ : Option[T], body_ : Function0[ff.core.Option_.Option[T2]]) : ff.core.Option_.Option[S] = { pipe_dot(self_)({ case (ff.core.Option_.None()) => body_(); case (ff.core.Option_.Some(_)) => self_ })}
 
 def Option_isEmpty[T](self_ : ff.core.Option_.Option[T]) : ff.core.Bool_.Bool = (self_) match {
 case (self_) =>
@@ -64,7 +64,7 @@ ff.core.Bool_.False()
 })
 }
 
-def Option_getList[T](self_ : ff.core.Option_.Option[T]) : ff.core.List_.List[T] = (self_) match {
+def Option_toList[T](self_ : ff.core.Option_.Option[T]) : ff.core.List_.List[T] = (self_) match {
 case (self_) =>
 pipe_dot(self_)({
 case (ff.core.Option_.None()) =>

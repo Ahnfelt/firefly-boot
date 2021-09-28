@@ -31,7 +31,7 @@ extend self[T]: ArrayBuilder[T] {
         scala "val result = ArrayBuilder_toArray(self_); self_.clear(); result"
         javascript "const result = self_.array; self_.array = []; return result"
 
-    getList(): List[T] { panic("magic") }
+    toList(): List[T] { panic("magic") }
         scala "self_.toList"
         javascript """
             let result = ff_core_List.Empty();

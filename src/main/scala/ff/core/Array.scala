@@ -88,7 +88,7 @@ case (self_, _, _) =>
 ff.core.Core_.panic_[ff.core.Array_.Array[T]](message_ = "magic")
 }
 
-def Array_getList[T](self_ : ff.core.Array_.Array[T]) : ff.core.List_.List[T] = {
+def Array_toList[T](self_ : ff.core.Array_.Array[T]) : ff.core.List_.List[T] = {
 
             import scala.collection.JavaConverters._
             self_.asScala.toList

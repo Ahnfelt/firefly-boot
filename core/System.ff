@@ -6,7 +6,7 @@ type SystemArguments(array: Array[String])
 extend self: System {
 
     arguments(): List[String] { panic("magic") }
-        scala "Array_getList(self_.array_)"
+        scala "Array_toList(self_.array_)"
 
     files(): FileSystem { panic("magic") }
         scala "null"

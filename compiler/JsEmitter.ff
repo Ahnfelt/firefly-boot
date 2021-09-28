@@ -124,7 +124,7 @@ extend self: JsEmitter {
         | EFloat(at, value) => value
         | EVariable(at, name, _, _) => escapeResolved(name)
         | EList(at, _, items) =>
-            "ff_core_Array.Array_getList([" + items.map {
+            "ff_core_Array.Array_toList([" + items.map {
                 | Pair(item, False) => self.emitTerm(item)
                 | Pair(item, True) => "...ff_core_List.List_toArray(" + self.emitTerm(item) + ")"
             }.join(", ") + "])"
@@ -135,7 +135,7 @@ extend self: JsEmitter {
         | EVariant(at, name, _, _) { name == "ff:core/Unit.Unit" } =>
             "(void 0)"
         | EVariant(at, name, _, arguments) =>
-            escapeResolved(name) + "(" + arguments.getList().flatten().map(self.emitArgument).join(", ") + ")"
+            escapeResolved(name) + "(" + arguments.toList().flatten().map(self.emitArgument).join(", ") + ")"
         | EVariantIs(at, name, _) { name == "ff:core/Bool.False" } =>
             "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
         | EVariantIs(at, name, _) { name == "ff:core/Bool.True" } =>
@@ -281,7 +281,7 @@ extractTypeName(type: Type): String {
 }
 
 escapeResolved(word: String): String {
-    let parts = word.replace(":", ".").replace("/", ".").split('.').getList()
+    let parts = word.replace(":", ".").replace("/", ".").split('.').toList()
     let initialParts = parts.dropLast()
     if(initialParts.isEmpty()) {
         escapeKeyword(parts.expectLast())

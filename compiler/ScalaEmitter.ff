@@ -124,7 +124,7 @@ emitTraitDefinition(definition: DTrait): String {
         definition.methods.map { signature =>
             let body = definition.methodDefaults.find { _.first == signature.name }.map {| Pair(_, lambda) =>
                 " {\n" + emitStatements(ELambda(lambda.at, lambda)) + "\n}"
-            }.getElse {definition.methodGenerators.find { _.first == signature.name }.map {| Pair(_, e) =>
+            }.orElse {definition.methodGenerators.find { _.first == signature.name }.map {| Pair(_, e) =>
                 " {\n// TODO: Generate\n}"
             }}.else {
                 ""
@@ -224,7 +224,7 @@ emitType(type: Type): String {
         if(t.name.startsWith("Function$")) {
             emitType(t.TConstructor(name = t.name.replace("$", "")))
         } elseIf {t.name.startsWith("Record$")} {
-            "{" + t.name.split('$').dropFirst(1).getList().zip(t.generics).map {| Pair(field, fieldType) =>
+            "{" + t.name.split('$').dropFirst(1).toList().zip(t.generics).map {| Pair(field, fieldType) =>
                 "val " + escapeKeyword(field) + " : " + emitType(fieldType)
             }.join("; ") + "}"
         } else {
@@ -265,7 +265,7 @@ emitTerm(term: Term): String {
         }.join(", ") + ").flatten)"
     | EVariant(at, name, typeArguments, arguments) =>
         let generics = if(typeArguments.isEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
-        escapeResolved(name) + generics + "(" + arguments.getList().flatten().map(emitArgument).join(", ") + ")"
+        escapeResolved(name) + generics + "(" + arguments.toList().flatten().map(emitArgument).join(", ") + ")"
     | EVariantIs(at, name, typeArguments) =>
         let generics = if(typeArguments.isEmpty()) {""} else {"[" + typeArguments.map(emitType).join(", ") + "]"}
         "({ case _w : " + escapeResolved(name) + generics + " => Some(_w); case _ => None() })"
@@ -293,7 +293,7 @@ emitTerm(term: Term): String {
         // Hack to support funky Scala FFI for options
         name == "ff:core/Option.Option_else" ||
         name == "ff:core/Option.Option_elseIf" ||
-        name == "ff:core/Option.Option_getElse"
+        name == "ff:core/Option.Option_orElse"
     } =>
         emitTerm(function) + "(" + arguments.map(emitArgument).join(", ") + ")"
     | ECall(at, _, function, typeArguments, arguments) =>
@@ -356,7 +356,7 @@ extractTypeName(type: Type): String {
 }
 
 escapeResolved(word: String): String {
-    let parts = word.replace(":", ".").replace("/", ".").split('.').getList()
+    let parts = word.replace(":", ".").replace("/", ".").split('.').toList()
     let initialParts = parts.dropLast()
     if(initialParts.isEmpty()) {
         escapeKeyword(parts.expectLast())

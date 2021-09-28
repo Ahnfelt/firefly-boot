@@ -43,7 +43,7 @@ case class SystemArguments(array_ : ff.core.Array_.Array[ff.core.String_.String]
 
 
 def System_arguments(self_ : ff.core.System_.System) : ff.core.List_.List[ff.core.String_.String] = {
-Array_getList(self_.array_)
+Array_toList(self_.array_)
 }
 
 def System_files(self_ : ff.core.System_.System) : ff.core.FileSystem_.FileSystem = {

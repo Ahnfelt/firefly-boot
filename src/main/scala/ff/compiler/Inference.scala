@@ -268,7 +268,7 @@ ff.compiler.Syntax_.EField(at_ = _c.at_, record_ = record_, field_ = _c.field_)
 });
 pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = recordType_))({
 case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Record$") =>
-val fieldNames_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_dropFirst[ff.core.String_.String](self_ = ff.core.Array_.Array_getList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = name_, char_ = '$')), count_ = 1);
+val fieldNames_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_dropFirst[ff.core.String_.String](self_ = ff.core.Array_.Array_toList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = name_, char_ = '$')), count_ = 1);
 ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.Int_.Int, ff.compiler.Syntax_.Term](self_ = ff.core.Option_.Option_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.core.String_.String], ff.core.Int_.Int](self_ = ff.core.List_.List_find[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.core.String_.String]](self_ = ff.core.List_.List_pairs[ff.core.String_.String](self_ = fieldNames_), body_ = {(_w1) =>
 (_w1.second_ == e_.field_)
 }), body_ = {(_w1) =>

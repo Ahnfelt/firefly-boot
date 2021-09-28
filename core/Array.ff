@@ -45,7 +45,7 @@ extend self[T]: Array[T] {
             return result;
         """
 
-    getList(): List[T] { panic("magic") }
+    toList(): List[T] { panic("magic") }
         scala """
             import scala.collection.JavaConverters._
             self_.asScala.toList

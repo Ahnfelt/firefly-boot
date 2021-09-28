@@ -118,14 +118,14 @@ extend self: Parser {
         Module(
             packagePair = self.packagePair,
             file = self.file,
-            dependencies = dependencies.getList(),
-            imports = imports.getList(),
-            lets = lets.getList(),
-            functions = functions.getList(),
-            extends = extends.getList(),
-            types = types.getList(),
-            traits = traits.getList(),
-            instances = instances.getList()
+            dependencies = dependencies.toList(),
+            imports = imports.toList(),
+            lets = lets.toList(),
+            functions = functions.toList(),
+            extends = extends.toList(),
+            types = types.toList(),
+            traits = traits.toList(),
+            instances = instances.toList()
         )
     }
     
@@ -170,7 +170,7 @@ extend self: Parser {
         }
         let scala1 = parseTargetOption("scala")
         let javaScript = parseTargetOption("javascript")
-        let scala = scala1.getElse { parseTargetOption("scala") }
+        let scala = scala1.orElse { parseTargetOption("scala") }
         Targets(scala = scala, javaScript = javaScript)
     }
 
@@ -206,7 +206,7 @@ extend self: Parser {
             poly.generics,
             poly.constraints,
             type,
-            methods.getList()
+            methods.toList()
         )
     }
     
@@ -235,7 +235,7 @@ extend self: Parser {
                 if(!self.current().is(LBracketRight)) { self.skipSeparator(LSemicolon) }
             }
             self.rawSkip(LBracketRight, "}")
-            signatures.getList()
+            signatures.toList()
         }
         DTrait(
             nameToken.at(),
@@ -244,8 +244,8 @@ extend self: Parser {
             poly.constraints,
             generatorParameters,
             methodSignatures,
-            methodDefaults.getList(),
-            methodGenerators.getList()
+            methodDefaults.toList(),
+            methodGenerators.toList()
         )
     }
     
@@ -271,9 +271,9 @@ extend self: Parser {
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
-            definitions.getList()
+            definitions.toList()
         }
-        let traitType = TConstructor(nameToken.at(), nameToken.raw(), typeArguments.getList())
+        let traitType = TConstructor(nameToken.at(), nameToken.raw(), typeArguments.toList())
         DInstance(nameToken.at(), poly.generics, poly.constraints, traitType, generatorArguments, methods)
     }
 
@@ -297,7 +297,7 @@ extend self: Parser {
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
-            variantsBuilder.getList()
+            variantsBuilder.toList()
         }
         let targets = self.parseTargets()
         DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, targets)
@@ -324,7 +324,7 @@ extend self: Parser {
         } else {
             self.packagePair
         }
-        DImport(importToken.at(), alias, package, path.getList(), file)
+        DImport(importToken.at(), alias, package, path.toList(), file)
     }
     
     parseDependencyDefinition(): DDependency {
@@ -350,7 +350,7 @@ extend self: Parser {
             }
             self.skip(LBracketRight)
         }
-        DDependency(at, Pair(user, name), safety, goodVersions.getList(), badVersions.getList())
+        DDependency(at, Pair(user, name), safety, goodVersions.toList(), badVersions.toList())
     }
     
     parseVersion(): Version {
@@ -423,7 +423,7 @@ extend self: Parser {
             }
         }
         self.rawSkip(LBracketRight, "]")
-        Poly(parameters.getList(), constraints.getList())
+        Poly(parameters.toList(), constraints.toList())
     }
     
     parseTypeArguments(parenthesis: Bool = False): List[Type] {
@@ -434,7 +434,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skip(LComma)}
         }
         self.rawSkip(LBracketRight, if(parenthesis) {")"} else {"]"})
-        types.getList()
+        types.toList()
     }
     
     parseFunctionParameters(allowMutable: Bool = False): List[Parameter] {
@@ -454,7 +454,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        parameters.getList()
+        parameters.toList()
     }
     
     parseFunctionArguments(): List[Argument] {
@@ -471,7 +471,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        arguments.getList()
+        arguments.toList()
     }
     
     parseLambda(
@@ -487,7 +487,7 @@ extend self: Parser {
             while {self.current().is(LPipe)} {
                 cases.append(self.parseCase())
             }
-            cases.getList()
+            cases.toList()
         } elseIf {self.current().is(LLower) && self.ahead().is2(LComma, LArrowThick)} {
             let parameters = ArrayBuilder.empty[MatchPattern]()
             while {!self.current().is(LArrowThick)} {
@@ -497,7 +497,7 @@ extend self: Parser {
             }
             self.skip(LArrowThick)
             let term = self.parseStatements()
-            [MatchCase(token.at(), parameters.getList(), None, term)]
+            [MatchCase(token.at(), parameters.toList(), None, term)]
         } else {
             let term = self.parseStatements()
             let wildcards = Wildcards.make()
@@ -528,7 +528,7 @@ extend self: Parser {
         }
         self.skip(LArrowThick)
         let body = self.parseStatements()
-        MatchCase(token.at(), patterns.getList(), condition, body)
+        MatchCase(token.at(), patterns.toList(), condition, body)
     }
     
     parsePattern(): MatchPattern {
@@ -554,7 +554,7 @@ extend self: Parser {
                     if(!self.current().is(LBracketRight)) {self.skip(LComma)}
                 }
                 self.rawSkip(LBracketRight, ")")
-                PVariant(token.at(), token.raw(), patterns.getList())
+                PVariant(token.at(), token.raw(), patterns.toList())
             } else {
                 if(self.current().is(LLower)) {
                     let asToken = self.skip(LLower)
@@ -651,7 +651,7 @@ extend self: Parser {
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()
-        EFunctions(at, functions.getList(), body)
+        EFunctions(at, functions.toList(), body)
     }
     
     parseTerm(): Term {
@@ -717,7 +717,7 @@ extend self: Parser {
                     let lambda = self.parseLambda(allowColon = True)
                     moreArguments.append(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
                 }
-                result = ECall(at, tailCall, result, typeArguments, [...arguments, ...moreArguments.getList()])
+                result = ECall(at, tailCall, result, typeArguments, [...arguments, ...moreArguments.toList()])
                 if(lastWasCurly && self.current().is(LLower)) {
                     let token = self.skip(LLower)
                     result = EField(token.at(), result, token.raw())
@@ -804,7 +804,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.getList()
+        fields.toList()
     }
     
     parseRecordType(): List[Pair[String, Type]] {
@@ -817,7 +817,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.getList().sortBy { _.first }
+        fields.toList().sortBy { _.first }
     }
     
     parseRecordPattern(): List[Pair[String, MatchPattern]] {
@@ -830,7 +830,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.getList().sortBy { _.first }
+        fields.toList().sortBy { _.first }
     }
 
     parseListPattern(): MatchPattern {
@@ -848,7 +848,7 @@ extend self: Parser {
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
-        PList(at, self.freshTypeVariable(at), items.getList())
+        PList(at, self.freshTypeVariable(at), items.toList())
     }
 
     parseList(): Term {
@@ -861,7 +861,7 @@ extend self: Parser {
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
-        EList(at, self.freshTypeVariable(at), items.getList())
+        EList(at, self.freshTypeVariable(at), items.toList())
     }
 
 }

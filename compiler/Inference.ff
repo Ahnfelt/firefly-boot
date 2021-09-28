@@ -208,7 +208,7 @@ extend self: Inference {
                 let e2 = e.EField(record = record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
-                        let fieldNames = name.split('$').getList().dropFirst(1)
+                        let fieldNames = name.split('$').toList().dropFirst(1)
                         fieldNames.pairs().find { _.second == e.field }.map { _.first }.map { index =>
                             let t1 = typeArguments.expect(index)
                             self.unification.unify(e.at, expected, t1)

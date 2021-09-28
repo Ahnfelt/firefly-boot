@@ -282,7 +282,7 @@ extend self: Resolver {
             | PVariant(_, _, patterns) =>
                 patterns.map(findVariables).foldLeft(Map.empty[String, String]())({_ ++ _})
             | PVariantAs(_, _, variable) =>
-                variable.getList().map { x => Pair(x, x) }.toMap()
+                variable.toList().map { x => Pair(x, x) }.toMap()
             | PAlias(_, pattern, variable) =>
                 [Pair(variable, variable)].toMap() ++ findVariables(pattern)
             | PList(_, _, items) =>
