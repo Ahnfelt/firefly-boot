@@ -20,14 +20,15 @@ fail[T](at: Location, message: String): T {
 extend self: JsEmitter {
 
     emitModule(packagePair: Pair[String, String], module: Module): String {
-        let parts = [
-            [
-                "import * as " + packagePair.first + "_" + packagePair.second + "_" + module.file.dropLast(3) + " " +
-                "from \"../../" + packagePair.first + "/" + packagePair.second + "/" + module.file.dropLast(3) + ".js\""
-            ]
+        let selfImport =
+            "import * as " + packagePair.first + "_" + packagePair.second + "_" + module.file.dropLast(3) + " " +
+            "from \"../../" + packagePair.first + "/" + packagePair.second + "/" + module.file.dropLast(3) + ".js\""
+        let imports =
             module.imports.sortBy { i =>
                 i.package.first + "." + i.package.second + "." + i.file
             }.map { self.emitImportDefinition(_) }
+        let parts = [
+            if(imports.any { _ == selfImport }) { imports } else { [selfImport, ...imports] }
             module.types.map { self.emitTypeDefinition(_) }
             module.lets.map { self.emitLetDefinition(_) }
             module.functions.map { "export " + self.emitFunctionDefinition(_) }

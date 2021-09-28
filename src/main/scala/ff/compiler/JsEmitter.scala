@@ -77,10 +77,18 @@ word_
 }
 def JsEmitter_emitModule(self_ : ff.compiler.JsEmitter_.JsEmitter, packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], module_ : ff.compiler.Syntax_.Module) : ff.core.String_.String = (self_, packagePair_, module_) match {
 case (self_, _, _) =>
-val parts_ : ff.core.List_.List[ff.core.List_.List[ff.core.String_.String]] = List(List(((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + ".js\"")), ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
+val selfImport_ : ff.core.String_.String = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + ".js\"");
+val imports_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
 ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 }), body_ = {(_w1) =>
 ff.compiler.JsEmitter_.JsEmitter_emitImportDefinition(self_ = self_, definition_ = _w1)
+});
+val parts_ : ff.core.List_.List[ff.core.List_.List[ff.core.String_.String]] = List(ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.String_.String]](condition_ = ff.core.List_.List_any[ff.core.String_.String](self_ = imports_, body_ = {(_w1) =>
+(_w1 == selfImport_)
+}), body_ = {() =>
+imports_
+}), body_ = {() =>
+(List(List(selfImport_), imports_).flatten)
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DType, ff.core.String_.String](self_ = module_.types_, body_ = {(_w1) =>
 ff.compiler.JsEmitter_.JsEmitter_emitTypeDefinition(self_ = self_, definition_ = _w1)
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.core.String_.String](self_ = module_.lets_, body_ = {(_w1) =>
