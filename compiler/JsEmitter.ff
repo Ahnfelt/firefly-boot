@@ -119,7 +119,7 @@ extend self: JsEmitter {
 
     emitTerm(term: Term): String {
         | EString(at, value) => value
-        | EChar(at, value) => value
+        | EChar(at, value) => value + ".charCodeAt(0)"
         | EInt(at, value) => value
         | EFloat(at, value) => value
         | EVariable(at, name, _, _) => escapeResolved(name)
@@ -164,9 +164,9 @@ extend self: JsEmitter {
             "((" + escapedArguments.join(", ") + ") => {\n" + casesString + "\nthrow 'Unexhaustive pattern match'\n})"
         | EPipe(at, value, function) =>
             "(" + self.emitTerm(function) + ")(" + self.emitTerm(value) + ")"
-        | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().getIsLetter()} =>
+        | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + operator + self.emitArgument(value) + ")"
-        | ECall(at, _, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().getIsLetter()} =>
+        | ECall(at, _, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + self.emitArgument(left) + " " + operator + " " + self.emitArgument(right) + ")"
         | ECall(at, _, function, _, arguments) =>
             self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ")"
@@ -291,5 +291,5 @@ escapeResolved(word: String): String {
 }
 
 escapeKeyword(word: String): String {
-    if(word.expectFirst().getIsLower()) {word + "_"} else {word}
+    if(word.expectFirst().isAsciiLower()) {word + "_"} else {word}
 }

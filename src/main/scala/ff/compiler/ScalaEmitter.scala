@@ -465,9 +465,9 @@ ff.compiler.ScalaEmitter_.emitCase_(matchCase_ = matchCase_)
 (("{\n" + casesString_) + "\n}")
 case (ff.compiler.Syntax_.EPipe(at_, value_, function_)) =>
 (((("pipe_dot(" + ff.compiler.ScalaEmitter_.emitTerm_(term_ = value_)) + ")(") + ff.compiler.ScalaEmitter_.emitTerm_(term_ = function_)) + ")")
-case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!ff.core.Char_.Char_isAsciiLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
 ((("(" + operator_) + ff.compiler.ScalaEmitter_.emitArgument_(argument_ = value_)) + ")")
-case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(left_, right_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(left_, right_))) if (!ff.core.Char_.Char_isAsciiLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
 (((((("(" + ff.compiler.ScalaEmitter_.emitArgument_(argument_ = left_)) + " ") + operator_) + " ") + ff.compiler.ScalaEmitter_.emitArgument_(argument_ = right_)) + ")")
 case (ff.compiler.Syntax_.ECall(at_, _, function_ @ (ff.compiler.Syntax_.EVariable(_, name_, _, _)), _, arguments_)) if (((name_ == "ff:core/Option.Option_else") || (name_ == "ff:core/Option.Option_elseIf")) || (name_ == "ff:core/Option.Option_getElse")) =>
 (((ff.compiler.ScalaEmitter_.emitTerm_(term_ = function_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = arguments_, body_ = {(argument_) =>
@@ -578,7 +578,7 @@ ff.compiler.ScalaEmitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[f
 }
 
 def escapeKeyword_(word_ : ff.core.String_.String) : ff.core.String_.String = {
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = (ff.core.Set_.Set_contains[ff.core.String_.String](self_ = ff.compiler.ScalaEmitter_.keywords_, value_ = word_) || ff.core.Char_.Char_getIsLower(self_ = ff.core.String_.String_expectFirst(self_ = word_))), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = (ff.core.Set_.Set_contains[ff.core.String_.String](self_ = ff.compiler.ScalaEmitter_.keywords_, value_ = word_) || ff.core.Char_.Char_isAsciiLower(self_ = ff.core.String_.String_expectFirst(self_ = word_))), body_ = {() =>
 (word_ + "_")
 }), body_ = {() =>
 word_

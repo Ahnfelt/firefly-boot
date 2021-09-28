@@ -141,7 +141,7 @@ extend self: Resolver {
         | EFloat _ => term
         | EVariable e =>
             self.variables.get(e.name).map { e.EVariable(name = _) }.else {
-                if(e.name.first().any { _.getIsLetter() }) {
+                if(e.name.first().any { _.isAsciiLetter() }) {
                     fail(e.at, "No such variable: " + e.name)
                 } else {
                     term

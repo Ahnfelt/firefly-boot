@@ -383,7 +383,7 @@ extend self: Parser {
             self.skip(LOperator)
             part = part + "-" + readPart()
         }
-        if(part.any { _.getIsUpper() }) {
+        if(part.any { _.isAsciiUpper() }) {
             self.fail(at, "Package names and paths must not contain upper case letters: " + part)
         }
         if(part.any { _ == '_' } || part.any { _ == '.' }) {

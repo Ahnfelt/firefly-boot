@@ -330,7 +330,7 @@ extend self: Inference {
             | ECall e =>
                 e.function.{
                     | EVariable(variableAt, x, [], []) =>
-                        if(x.first().any { c => c != '_' && !c.getIsLetter() }) {
+                        if(x.first().any { c => c != '_' && !c.isAsciiLetter() }) {
                             self.inferOperator(environment, expected, x, term)
                         } else {
                             self.lookup(environment, e.at, x, e.typeArguments).{

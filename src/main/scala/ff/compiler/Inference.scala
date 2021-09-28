@@ -402,7 +402,7 @@ case (e_ : ff.compiler.Syntax_.ECall) =>
 pipe_dot(e_.function_)({
 case (ff.compiler.Syntax_.EVariable(variableAt_, x_, List(), List())) =>
 ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.compiler.Syntax_.Term](condition_ = ff.core.Option_.Option_any[ff.core.Char_.Char](self_ = ff.core.String_.String_first(self_ = x_), body_ = {(c_) =>
-((c_ != '_') && (!ff.core.Char_.Char_getIsLetter(self_ = c_)))
+((c_ != '_') && (!ff.core.Char_.Char_isAsciiLetter(self_ = c_)))
 }), body_ = {() =>
 ff.compiler.Inference_.Inference_inferOperator(self_ = self_, environment_ = environment_, expected_ = expected_, operator_ = x_, term_ = term_)
 }), body_ = {() =>

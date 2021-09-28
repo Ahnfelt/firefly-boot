@@ -217,7 +217,7 @@ ff.compiler.Syntax_.EVariable(at_ = _c.at_, name_ = _w1, generics_ = _c.generics
 })
 }), body_ = {() =>
 ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.compiler.Syntax_.Term](condition_ = ff.core.Option_.Option_any[ff.core.Char_.Char](self_ = ff.core.String_.String_first(self_ = e_.name_), body_ = {(_w1) =>
-ff.core.Char_.Char_getIsLetter(self_ = _w1)
+ff.core.Char_.Char_isAsciiLetter(self_ = _w1)
 }), body_ = {() =>
 ff.compiler.Resolver_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ("No such variable: " + e_.name_))
 }), body_ = {() =>

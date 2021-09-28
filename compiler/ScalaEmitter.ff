@@ -285,9 +285,9 @@ emitTerm(term: Term): String {
         "{\n" + casesString + "\n}"
     | EPipe(at, value, function) =>
         "pipe_dot(" + emitTerm(value) + ")(" + emitTerm(function) + ")"
-    | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().getIsLetter()} =>
+    | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().isAsciiLetter()} =>
         "(" + operator + emitArgument(value) + ")"
-    | ECall(at, _, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().getIsLetter()} =>
+    | ECall(at, _, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().isAsciiLetter()} =>
         "(" + emitArgument(left) + " " + operator + " " + emitArgument(right) + ")"
     | ECall(at, _, EVariable(_, name, _, _)@function, _, arguments) {
         // Hack to support funky Scala FFI for options
@@ -366,7 +366,7 @@ escapeResolved(word: String): String {
 }
 
 escapeKeyword(word: String): String {
-    if(keywords.contains(word) || word.expectFirst().getIsLower()) {word + "_"} else {word}
+    if(keywords.contains(word) || word.expectFirst().isAsciiLower()) {word + "_"} else {word}
 }
 
 keywords = [

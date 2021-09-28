@@ -568,7 +568,7 @@ part_ = ((part_ + "-") + readPart_());
 ff.core.Unit_.Unit()
 });
 ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = ff.core.String_.String_any(self_ = part_, p_ = {(_w1) =>
-ff.core.Char_.Char_getIsUpper(self_ = _w1)
+ff.core.Char_.Char_isAsciiUpper(self_ = _w1)
 }), body_ = {() =>
 ff.compiler.Parser_.Parser_fail[ff.core.Nothing_.Nothing](self_ = self_, at_ = at_, message_ = ("Package names and paths must not contain upper case letters: " + part_))
 });

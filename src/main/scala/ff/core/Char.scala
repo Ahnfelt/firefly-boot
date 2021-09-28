@@ -40,16 +40,20 @@ type Char = scala.Char;
 
 
 
-def Char_getIsLetter(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
+def Char_isAsciiLetter(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
 self_.isLetter
 }
 
-def Char_getIsUpper(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
+def Char_isAsciiUpper(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
 self_.isUpper
 }
 
-def Char_getIsLower(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
+def Char_isAsciiLower(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
 self_.isLower
+}
+
+def Char_isAsciiDigit(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
+self_.isDigit
 }
 
 

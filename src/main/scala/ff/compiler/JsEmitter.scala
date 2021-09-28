@@ -69,7 +69,7 @@ ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.List_.List_expectLast[ff.c
 }
 
 def escapeKeyword_(word_ : ff.core.String_.String) : ff.core.String_.String = {
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.Char_.Char_getIsLower(self_ = ff.core.String_.String_expectFirst(self_ = word_)), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.Char_.Char_isAsciiLower(self_ = ff.core.String_.String_expectFirst(self_ = word_)), body_ = {() =>
 (word_ + "_")
 }), body_ = {() =>
 word_
@@ -210,7 +210,7 @@ def JsEmitter_emitTerm(self_ : ff.compiler.JsEmitter_.JsEmitter, term_ : ff.comp
 case (self_, ff.compiler.Syntax_.EString(at_, value_)) =>
 value_
 case (self_, ff.compiler.Syntax_.EChar(at_, value_)) =>
-value_
+(value_ + ".charCodeAt(0)")
 case (self_, ff.compiler.Syntax_.EInt(at_, value_)) =>
 value_
 case (self_, ff.compiler.Syntax_.EFloat(at_, value_)) =>
@@ -279,9 +279,9 @@ val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.c
 (((("((" + ff.core.List_.List_join(self_ = escapedArguments_, separator_ = ", ")) + ") => {\n") + casesString_) + "\nthrow 'Unexhaustive pattern match'\n})")
 case (self_, ff.compiler.Syntax_.EPipe(at_, value_, function_)) =>
 (((("(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = function_)) + ")(") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = value_)) + ")")
-case (self_, ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
+case (self_, ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!ff.core.Char_.Char_isAsciiLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
 ((("(" + operator_) + ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = value_)) + ")")
-case (self_, ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(left_, right_))) if (!ff.core.Char_.Char_getIsLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
+case (self_, ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(left_, right_))) if (!ff.core.Char_.Char_isAsciiLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
 (((((("(" + ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = left_)) + " ") + operator_) + " ") + ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = right_)) + ")")
 case (self_, ff.compiler.Syntax_.ECall(at_, _, function_, _, arguments_)) =>
 (((ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = function_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = arguments_, body_ = {(argument_) =>
