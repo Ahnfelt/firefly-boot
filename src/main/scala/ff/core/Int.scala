@@ -52,5 +52,9 @@ def Int_getAbs(self_ : ff.core.Int_.Int) : ff.core.Int_.Int = {
 self_.abs
 }
 
+def Int_toChar(self_ : ff.core.Int_.Int) : ff.core.Char_.Char = {
+self_.toChar
+}
+
 
 }

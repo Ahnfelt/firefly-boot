@@ -119,7 +119,7 @@ extend self: JsEmitter {
 
     emitTerm(term: Term): String {
         | EString(at, value) => value
-        | EChar(at, value) => value + ".charCodeAt(0)"
+        | EChar(at, value) => "" + value.expect(1).toInt()
         | EInt(at, value) => value
         | EFloat(at, value) => value
         | EVariable(at, name, _, _) => escapeResolved(name)

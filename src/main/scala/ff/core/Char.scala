@@ -56,5 +56,9 @@ def Char_isAsciiDigit(self_ : ff.core.Char_.Char) : ff.core.Bool_.Bool = {
 self_.isDigit
 }
 
+def Char_toInt(self_ : ff.core.Char_.Char) : ff.core.Int_.Int = {
+self_.toInt
+}
+
 
 }

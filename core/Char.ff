@@ -15,4 +15,8 @@ extend self: Char {
     isAsciiDigit(): Bool { self >= '0' && self <= '9' }
         scala "self_.isDigit"
 
+    toInt(): Int { panic("magic") }
+        scala "self_.toInt"
+        javascript "return self_"
+
 }

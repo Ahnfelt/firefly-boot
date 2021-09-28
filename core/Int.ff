@@ -12,4 +12,8 @@ extend self: Int {
     getAbs(): Int { panic("magic") }
         scala "self_.abs"
 
+    toChar(): Char { panic("magic") }
+        scala "self_.toChar"
+        javascript "return self_"
+
 }

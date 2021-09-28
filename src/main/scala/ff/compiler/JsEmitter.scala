@@ -210,7 +210,7 @@ def JsEmitter_emitTerm(self_ : ff.compiler.JsEmitter_.JsEmitter, term_ : ff.comp
 case (self_, ff.compiler.Syntax_.EString(at_, value_)) =>
 value_
 case (self_, ff.compiler.Syntax_.EChar(at_, value_)) =>
-(value_ + ".charCodeAt(0)")
+("" + ff.core.Char_.Char_toInt(self_ = ff.core.String_.String_expect(self_ = value_, index_ = 1)))
 case (self_, ff.compiler.Syntax_.EInt(at_, value_)) =>
 value_
 case (self_, ff.compiler.Syntax_.EFloat(at_, value_)) =>
