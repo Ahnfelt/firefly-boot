@@ -5,12 +5,20 @@ extend self: Int {
 
     getTo(inclusive: Int): List[Int] { panic("magic") }
         scala "self_.to(inclusive_).toList"
+        javascript """
+            let result = ff_core_List.Empty();
+            for(let i = inclusive_; i >= self_; i--) {
+                result = ff_core_List.Link(i, result);
+            }
+            return result;
+        """
 
-    getUntil(exclusive: Int): List[Int] { panic("magic") }
+    getUntil(exclusive: Int): List[Int] { self.getTo(exclusive - 1) }
         scala "self_.until(exclusive_).toList"
 
     getAbs(): Int { panic("magic") }
         scala "self_.abs"
+        javascript "return Math.abs(self_)"
 
     toChar(): Char { panic("magic") }
         scala "self_.toChar"
