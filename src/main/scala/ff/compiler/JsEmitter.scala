@@ -92,7 +92,7 @@ imports_
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DType, ff.core.String_.String](self_ = module_.types_, body_ = {(_w1) =>
 ff.compiler.JsEmitter_.JsEmitter_emitTypeDefinition(self_ = self_, definition_ = _w1)
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DLet, ff.core.String_.String](self_ = module_.lets_, body_ = {(_w1) =>
-ff.compiler.JsEmitter_.JsEmitter_emitLetDefinition(self_ = self_, definition_ = _w1, mutable_ = ff.core.Bool_.False())
+("export " + ff.compiler.JsEmitter_.JsEmitter_emitLetDefinition(self_ = self_, definition_ = _w1, mutable_ = ff.core.Bool_.False()))
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = module_.functions_, body_ = {(_w1) =>
 ("export " + ff.compiler.JsEmitter_.JsEmitter_emitFunctionDefinition(self_ = self_, definition_ = _w1, suffix_ = ""))
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DExtend, ff.core.String_.String](self_ = module_.extends_, body_ = {(_w1) =>

@@ -30,7 +30,7 @@ extend self: JsEmitter {
         let parts = [
             if(imports.any { _ == selfImport }) { imports } else { [selfImport, ...imports] }
             module.types.map { self.emitTypeDefinition(_) }
-            module.lets.map { self.emitLetDefinition(_) }
+            module.lets.map { "export " + self.emitLetDefinition(_) }
             module.functions.map { "export " + self.emitFunctionDefinition(_) }
             module.extends.map { self.emitExtendsDefinition(_) }
         ]
