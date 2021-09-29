@@ -30,7 +30,7 @@ do[T](body: () => T): T {
 
 panic[T](message: String): T { panic("magic") }
     scala "println(message_); throw new RuntimeException(message_)"
-    javascript "console.log(message_); throw message_"
+    javascript "throw new Error(message_)"
 
 magicShow[T](value: T): String { panic("magic") }
     scala "value_.toString"
