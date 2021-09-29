@@ -72,10 +72,6 @@ def String_slice(self_ : ff.core.String_.String, from_ : ff.core.Int_.Int, until
 self_.slice(from_, until_)
 }
 
-def String_sliceEquals(self_ : ff.core.String_.String, offset_ : ff.core.Int_.Int, that_ : ff.core.String_.String, thatOffset_ : ff.core.Int_.Int, length_ : ff.core.Int_.Int, ignoreCase_ : ff.core.Bool_.Bool = ff.core.Bool_.False()) : ff.core.Bool_.Bool = {
-self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)
-}
-
 def String_split(self_ : ff.core.String_.String, char_ : ff.core.Char_.Char) : ff.core.Array_.Array[ff.core.String_.String] = {
 List_toArray(self_.split(char_).toList)
 }
@@ -112,16 +108,19 @@ def String_contains(self_ : ff.core.String_.String, substring_ : ff.core.String_
 self_.contains(substring_)
 }
 
-def String_startsWith(self_ : ff.core.String_.String, prefix_ : ff.core.String_.String) : ff.core.Bool_.Bool = {
-self_.startsWith(prefix_)
+def String_startsWith(self_ : ff.core.String_.String, prefix_ : ff.core.String_.String, offset_ : ff.core.Int_.Int = 0) : ff.core.Bool_.Bool = {
+
+            if(offset_ == 0) self_.startsWith(prefix_)
+            else self_.regionMatches(false, offset_, prefix_, 0, prefix_.size)
+        
 }
 
-def String_any(self_ : ff.core.String_.String, p_ : Function1[ff.core.Char_.Char, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = {
-self_.exists(p_)
+def String_any(self_ : ff.core.String_.String, body_ : Function1[ff.core.Char_.Char, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = {
+self_.exists(body_)
 }
 
-def String_all(self_ : ff.core.String_.String, p_ : Function1[ff.core.Char_.Char, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = {
-self_.forall(p_)
+def String_all(self_ : ff.core.String_.String, body_ : Function1[ff.core.Char_.Char, ff.core.Bool_.Bool]) : ff.core.Bool_.Bool = {
+self_.forall(body_)
 }
 
 

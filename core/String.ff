@@ -21,7 +21,7 @@ extend self: String {
 
     reverse(): String { panic("magic") }
         scala "self_.reverse"
-        javascript "[...self_].reverse().join('')"
+        javascript "return [...self_].reverse().join('')"
 
     dropWhile(p: Char => Bool): String { panic("magic") }
         scala "self_.dropWhile(p_)"
@@ -42,9 +42,6 @@ extend self: String {
     slice(from: Int, until: Int): String { panic("magic") }
         scala "self_.slice(from_, until_)"
         javascript "return self_.slice(from_, until_)"
-
-    sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("magic") }
-        scala "self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)"
 
     split(char: Char): Array[String] { panic("magic") }
         scala "List_toArray(self_.split(char_).toList)" // We probably do not want the Scala semantics for this in the future
@@ -73,7 +70,7 @@ extend self: String {
         scala "self_.headOption"
         javascript """
             return self_.length > 0
-                ? ff_core_Option.Some(self_.slice(0, 1))
+                ? ff_core_Option.Some(self_.charCodeAt(0))
                 : ff_core_Option.None()
         """
 
@@ -81,45 +78,42 @@ extend self: String {
         scala "self_.lastOption"
         javascript """
             return self_.length > 0
-                ? ff_core_Option.Some(self_.slice(self_.length - 1))
+                ? ff_core_Option.Some(self_.charCodeAt(self_.length - 1))
                 : ff_core_Option.None()
         """
 
-    expectFirst(): Char { panic("magic") }
+    expectFirst(): Char { self.first().else { panic("expectFirst() on empty string") } }
         scala "self_.head"
-        javascript """
-            return self_.length > 0
-                ? self_.slice(0, 1)
-                : throw "expectFirst on empty string"
-        """
 
-    expectLast(): Char { panic("magic") }
+    expectLast(): Char { self.last().else { panic("expectFirst() on empty string") } }
         scala "self_.last"
-        javascript """
-            return self_.length > 0
-                ? self_.slice(self_.length - 1)
-                : throw "expectLast on empty string"
-        """
 
-    contains(substring : String) : Bool { panic("magic") }
+    contains(substring: String) : Bool { panic("magic") }
         scala "self_.contains(substring_)"
-        javascript "return self_.includes(substring_)"
 
-    startsWith(prefix : String) : Bool { panic("magic") }
-        scala "self_.startsWith(prefix_)"
-        javascript "return self_.startsWith(prefix_)"
+    startsWith(prefix: String, offset: Int = 0) : Bool { panic("magic") }
+        scala """
+            if(offset_ == 0) self_.startsWith(prefix_)
+            else self_.regionMatches(false, offset_, prefix_, 0, prefix_.size)
+        """
+        javascript "return self_.startsWith(prefix_, offset_)"
 
-    any(p: Char => Bool): Bool { panic("magic") }
-        scala "self_.exists(p_)"
+    any(body: Char => Bool): Bool { panic("magic") }
+        scala "self_.exists(body_)"
         javascript """
-            for(let i = 0; i < self_.length; i++) if(p_(self_.codePointAt(i)) return true;
+            for(let i = 0; i < self_.length; i++) {
+                if(body_(self_.charCodeAt(i))) return true;
+            }
             return false;
         """
 
-    all(p: Char => Bool): Bool { panic("magic") }
-        scala "self_.forall(p_)"
+    all(body: Char => Bool): Bool { panic("magic") }
+        scala "self_.forall(body_)"
         javascript """
-            for(let i = 0; i < self_.length; i++) if(!p_(self_.codePointAt(i)) return false;
+            for(let i = 0; i < self_.length; i++) {
+                if(!body_(self_.charCodeAt(i))) return false;
+            }
             return true;
         """
+
 }

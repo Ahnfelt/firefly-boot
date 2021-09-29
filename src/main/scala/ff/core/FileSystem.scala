@@ -39,6 +39,11 @@ object FileSystem_ {
 sealed abstract class FileSystem extends Product with Serializable
 
 
+def FileSystem_jsFileSystemHack(self_ : ff.core.FileSystem_.FileSystem) : ff.core.Nothing_.Nothing = (self_) match {
+case (self_) =>
+ff.core.Core_.panic_[ff.core.Nothing_.Nothing](message_ = "magic")
+}
+
 def FileSystem_readText(self_ : ff.core.FileSystem_.FileSystem, file_ : ff.core.String_.String) : ff.core.String_.String = {
 val source = scala.io.Source.fromFile(new java.io.File(file_), "UTF-8"); val result = source.mkString; source.close(); result
 }

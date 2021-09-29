@@ -77,7 +77,7 @@ word_
 }
 def JsEmitter_emitModule(self_ : ff.compiler.JsEmitter_.JsEmitter, packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], module_ : ff.compiler.Syntax_.Module) : ff.core.String_.String = (self_, packagePair_, module_) match {
 case (self_, _, _) =>
-val selfImport_ : ff.core.String_.String = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + ".js\"");
+val selfImport_ : ff.core.String_.String = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + ".mjs\"");
 val imports_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
 ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 }), body_ = {(_w1) =>
@@ -97,15 +97,26 @@ ff.compiler.JsEmitter_.JsEmitter_emitTypeDefinition(self_ = self_, definition_ =
 ("export " + ff.compiler.JsEmitter_.JsEmitter_emitFunctionDefinition(self_ = self_, definition_ = _w1, suffix_ = ""))
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DExtend, ff.core.String_.String](self_ = module_.extends_, body_ = {(_w1) =>
 ff.compiler.JsEmitter_.JsEmitter_emitExtendsDefinition(self_ = self_, definition_ = _w1)
+}), ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.String_.String]](condition_ = ((module_.file_ == "Main.ff") && ff.core.List_.List_any[ff.compiler.Syntax_.DFunction](self_ = module_.functions_, body_ = {(_w1) =>
+(_w1.signature_.name_ == "main")
+})), body_ = {() =>
+List(ff.compiler.JsEmitter_.JsEmitter_emitMain(self_ = self_))
+}), body_ = {() =>
+List()
 }));
 (ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.List_.List[ff.core.String_.String], ff.core.String_.String](self_ = parts_, body_ = {(_w1) =>
 ff.core.List_.List_join(self_ = _w1, separator_ = "\n\n")
 }), separator_ = "\n\n") + "\n")
 }
 
+def JsEmitter_emitMain(self_ : ff.compiler.JsEmitter_.JsEmitter) : ff.core.String_.String = (self_) match {
+case (self_) =>
+"queueMicrotask(() => main_({array_: process.argv.slice(1)}))"
+}
+
 def JsEmitter_emitImportDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, definition_ : ff.compiler.Syntax_.DImport) : ff.core.String_.String = (self_, definition_) match {
 case (self_, _) =>
-((((((((((((("import * as " + definition_.package_.first_) + "_") + definition_.package_.second_) + "_") + definition_.file_) + " ") + "from \"../../") + definition_.package_.first_) + "/") + definition_.package_.second_) + "/") + definition_.file_) + ".js\"")
+((((((((((((("import * as " + definition_.package_.first_) + "_") + definition_.package_.second_) + "_") + definition_.file_) + " ") + "from \"../../") + definition_.package_.first_) + "/") + definition_.package_.second_) + "/") + definition_.file_) + ".mjs\"")
 }
 
 def JsEmitter_emitLetDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, definition_ : ff.compiler.Syntax_.DLet, mutable_ : ff.core.Bool_.Bool = ff.core.Bool_.False()) : ff.core.String_.String = (self_, definition_, mutable_) match {
@@ -142,7 +153,7 @@ def JsEmitter_emitFunctionDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, d
 case (self_, _, _) =>
 val signature_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitSignature(self_ = self_, signature_ = definition_.signature_, suffix_ = suffix_);
 ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = definition_.targets_.javaScript_, body_ = {(code_) =>
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#"), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#", offset_ = 0), body_ = {() =>
 ff.core.String_.String_dropFirst(self_ = code_, count_ = 1)
 }), body_ = {() =>
 (((signature_ + " {\n") + code_) + "\n}")

@@ -18,6 +18,15 @@ extend self[T]: List[T] {
 
     toArray(): Array[T] { panic("magic") }
         scala "ArrayBuilder_toArray(new scala.collection.mutable.ArrayBuffer[T]() ++ self_)"
+        javascript """
+            let current = self_;
+            let result = [];
+            while(current._ === 'Link') {
+                result.push(current.head_);
+                current = current.tail_;
+            }
+            return result;
+        """
 
     toSet(): Set[T] {
         (self.foldLeft(Set.empty[T]())) { set, value => set.add(value) }
@@ -338,7 +347,7 @@ extend self[K, V]: List[Pair[K, V]] {
 
 extend self: List[String] {
 
-    join(separator: String = ""): String { panic("magic") }
+    join(separator: String = ""): String { self.toArray().join(separator) }
         scala "self_.mkString(separator_)"
 
 }

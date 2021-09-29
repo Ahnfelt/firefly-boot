@@ -253,7 +253,7 @@ ff.core.Core_.if_[ff.core.String_.String](condition_ = ((ff.compiler.Parser_.Par
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LSeparator());
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LKeyword());
 val result_ : ff.core.String_.String = ff.compiler.Token_.Token_raw(token_ = ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LString()));
-val dropCount_ : ff.core.Int_.Int = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Int_.Int](condition_ = ff.core.String_.String_startsWith(self_ = result_, prefix_ = "\"\"\""), body_ = {() =>
+val dropCount_ : ff.core.Int_.Int = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Int_.Int](condition_ = ff.core.String_.String_startsWith(self_ = result_, prefix_ = "\"\"\"", offset_ = 0), body_ = {() =>
 3
 }), body_ = {() =>
 1
@@ -567,14 +567,14 @@ ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LOpera
 part_ = ((part_ + "-") + readPart_());
 ff.core.Unit_.Unit()
 });
-ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = ff.core.String_.String_any(self_ = part_, p_ = {(_w1) =>
+ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = ff.core.String_.String_any(self_ = part_, body_ = {(_w1) =>
 ff.core.Char_.Char_isAsciiUpper(self_ = _w1)
 }), body_ = {() =>
 ff.compiler.Parser_.Parser_fail[ff.core.Nothing_.Nothing](self_ = self_, at_ = at_, message_ = ("Package names and paths must not contain upper case letters: " + part_))
 });
-ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (ff.core.String_.String_any(self_ = part_, p_ = {(_w1) =>
+ff.core.Core_.if_[ff.core.Nothing_.Nothing](condition_ = (ff.core.String_.String_any(self_ = part_, body_ = {(_w1) =>
 (_w1 == '_')
-}) || ff.core.String_.String_any(self_ = part_, p_ = {(_w1) =>
+}) || ff.core.String_.String_any(self_ = part_, body_ = {(_w1) =>
 (_w1 == '.')
 })), body_ = {() =>
 ff.compiler.Parser_.Parser_fail[ff.core.Nothing_.Nothing](self_ = self_, at_ = at_, message_ = ("Package names and paths must not contain underscores or dots: " + part_))

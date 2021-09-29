@@ -2,35 +2,48 @@ type FileSystem {}
 
 extend self: FileSystem {
 
+    jsFileSystemHack(): Nothing { panic("magic") }
+        javascript "#function jsFileSystemHack() {} import * as fs from 'fs'; import * as path from 'path';"
+
     readText(file: String): String { panic("magic") }
         scala "val source = scala.io.Source.fromFile(new java.io.File(file_), \"UTF-8\"); val result = source.mkString; source.close(); result"
+        javascript "return fs.readFileSync(file_)"
 
     writeText(file: String, text: String): Unit { panic("magic") }
         scala "val writer = new java.io.FileWriter(new java.io.File(file_)); writer.write(text_); writer.close()"
+        javascript "fs.writeFileSync(file_, text_)"
 
     list(path: String): List[String] { panic("magic") }
         scala "new java.io.File(path_).listFiles().map(_.toString.replace('\\\\', '/')).toList"
+        javascript "return fs_core_Array.Array_toList(fs.readdirSync(path_))"
 
     exists(path: String): Bool { panic("magic") }
         scala "new java.io.File(path_).exists()"
+        javascript "return fs.existsSync(path_)"
 
     isDirectory(path: String): Bool { panic("magic") }
         scala "new java.io.File(path_).isDirectory"
+        javascript "return fs.lstatSync(path_).isDirectory()"
 
     createDirectory(path: String): Unit { panic("magic") }
         scala "new java.io.File(path_).mkdir()"
+        javascript "fs.mkdirSync(path_)"
 
     createDirectories(path: String): Unit { panic("magic") }
         scala "new java.io.File(path_).mkdirs()"
+        javascript "fs.mkdirSync(path_, {recursive: true})"
 
     delete(path: String): Unit { panic("magic") }
         scala "if(!new java.io.File(path_).delete()) { throw new java.io.IOException(\"Could not delete \" + path_) }"
+        javascript "fs.rmSync(path_)"
 
     rename(fromPath: String, toPath: String): Unit { panic("magic") }
         scala "if(!new java.io.File(fromPath_).renameTo(new java.io.File(toPath_))) { throw new java.io.IOException(\"Could not rename \" + fromPath_ + \" to \" + toPath_) }"
+        javascript "fs.renameSync(fromPath_, toPath_)"
 
     getAbsolutePath(path: String): String { panic("magic") }
         scala "new java.io.File(path_).getAbsolutePath.replace('\\\\', '/')"
+        javascript "return path.resolve(path_)"
 
     directoryName(path: String): String {
         path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()

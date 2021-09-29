@@ -146,7 +146,7 @@ extend self: Compiler {
 
         let js = JsEmitter.make([module, ...otherModules]).emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
-        let jsFile = jsPath + "/" + moduleName + ".js"
+        let jsFile = jsPath + "/" + moduleName + ".mjs"
         self.files.createDirectories(jsPath)
         self.files.writeText(jsFile, js)
 

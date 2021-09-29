@@ -130,7 +130,7 @@ def Inference_inferLambda(self_ : ff.compiler.Inference_.Inference, environment_
 case (self_, _, _, _) =>
 val unitName_ : ff.core.String_.String = ff.compiler.Inference_.core_(name_ = "Unit");
 val returnsUnit_ : ff.core.Bool_.Bool = pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = expected_))({
-case (ff.compiler.Syntax_.TConstructor(_, name_, ts_)) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Function$") =>
+case (ff.compiler.Syntax_.TConstructor(_, name_, ts_)) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Function$", offset_ = 0) =>
 pipe_dot(ff.core.List_.List_expectLast[ff.compiler.Syntax_.Type](self_ = ts_))({
 case (ff.compiler.Syntax_.TConstructor(_, n_, List())) =>
 (n_ == unitName_)
@@ -267,7 +267,7 @@ val e2_ : ff.compiler.Syntax_.Term = pipe_dot(e_)({(_c) =>
 ff.compiler.Syntax_.EField(at_ = _c.at_, record_ = record_, field_ = _c.field_)
 });
 pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = recordType_))({
-case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Record$") =>
+case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Record$", offset_ = 0) =>
 val fieldNames_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_dropFirst[ff.core.String_.String](self_ = ff.core.Array_.Array_toList[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = name_, char_ = '$')), count_ = 1);
 ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.Int_.Int, ff.compiler.Syntax_.Term](self_ = ff.core.Option_.Option_map[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.core.String_.String], ff.core.Int_.Int](self_ = ff.core.List_.List_find[ff.core.Pair_.Pair[ff.core.Int_.Int, ff.core.String_.String]](self_ = ff.core.List_.List_pairs[ff.core.String_.String](self_ = fieldNames_), body_ = {(_w1) =>
 (_w1.second_ == e_.field_)
@@ -493,7 +493,7 @@ case (e_ : ff.compiler.Syntax_.EAssignField) =>
 val recordType_ : ff.compiler.Syntax_.Type = ff.compiler.Unification_.Unification_freshTypeVariable(self_ = self_.unification_, at_ = e_.at_);
 val record_ : ff.compiler.Syntax_.Term = ff.compiler.Inference_.Inference_inferTerm(self_ = self_, environment_ = environment_, expected_ = recordType_, term_ = e_.record_);
 pipe_dot(ff.compiler.Unification_.Unification_substitute(self_ = self_.unification_, type_ = recordType_))({
-case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Record$") =>
+case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) if ff.core.String_.String_startsWith(self_ = name_, prefix_ = "Record$", offset_ = 0) =>
 ff.compiler.Inference_.fail_[ff.compiler.Syntax_.Term](at_ = e_.at_, message_ = ("Can't assign fields of anonymous records: " + e_.field_))
 case (t_ @ (ff.compiler.Syntax_.TConstructor(_, name_, typeArguments_))) =>
 val methodName_ : ff.core.String_.String = ((name_ + "_") + e_.field_);
