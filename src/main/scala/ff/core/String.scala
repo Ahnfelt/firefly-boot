@@ -72,10 +72,6 @@ def String_slice(self_ : ff.core.String_.String, from_ : ff.core.Int_.Int, until
 self_.slice(from_, until_)
 }
 
-def String_sliceEquals(self_ : ff.core.String_.String, offset_ : ff.core.Int_.Int, that_ : ff.core.String_.String, thatOffset_ : ff.core.Int_.Int, length_ : ff.core.Int_.Int, ignoreCase_ : ff.core.Bool_.Bool = ff.core.Bool_.False()) : ff.core.Bool_.Bool = {
-self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)
-}
-
 def String_split(self_ : ff.core.String_.String, char_ : ff.core.Char_.Char) : ff.core.Array_.Array[ff.core.String_.String] = {
 List_toArray(self_.split(char_).toList)
 }

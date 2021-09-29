@@ -95,5 +95,10 @@ def Array_toList[T](self_ : ff.core.Array_.Array[T]) : ff.core.List_.List[T] = {
         
 }
 
+def Array_join(self_ : ff.core.Array_.Array[ff.core.String_.String], separator_ : ff.core.String_.String = "") : ff.core.String_.String = (self_, separator_) match {
+case (self_, _) =>
+ff.core.Core_.panic_[ff.core.String_.String](message_ = "magic")
+}
+
 
 }

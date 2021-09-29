@@ -7,8 +7,10 @@ extend self: System {
 
     arguments(): List[String] { panic("magic") }
         scala "Array_toList(self_.array_)"
+        javascript "ff_core_Array.Array_toList(self_.array_)"
 
     files(): FileSystem { panic("magic") }
         scala "null"
+        javascript "null"
 
 }

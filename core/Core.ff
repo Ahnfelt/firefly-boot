@@ -34,7 +34,7 @@ panic[T](message: String): T { panic("magic") }
 
 magicShow[T](value: T): String { panic("magic") }
     scala "value_.toString"
-    javascript "console.log(message_)"
+    javascript "('' + message_)"
 
 magicHashCode[T](value: T): Int { panic("magic") }
     scala "value_.hashCode()"

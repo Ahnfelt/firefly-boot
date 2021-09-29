@@ -43,9 +43,6 @@ extend self: String {
         scala "self_.slice(from_, until_)"
         javascript "return self_.slice(from_, until_)"
 
-    sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool { panic("magic") }
-        scala "self_.regionMatches(ignoreCase_, offset_, that_, thatOffset_, length_)"
-
     split(char: Char): Array[String] { panic("magic") }
         scala "List_toArray(self_.split(char_).toList)" // We probably do not want the Scala semantics for this in the future
         javascript "return self_.split(String.fromCharCode(char_))"

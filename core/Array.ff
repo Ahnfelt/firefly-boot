@@ -59,3 +59,10 @@ extend self[T]: Array[T] {
         """
 
 }
+
+extend self: Array[String] {
+
+    join(separator: String = ""): String { panic("magic") }
+        javascript "return self_.join(separator_)"
+
+}
