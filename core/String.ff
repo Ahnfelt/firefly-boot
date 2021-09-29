@@ -60,29 +60,66 @@ extend self: String {
 
     expectInt(): Int { panic("magic") }
         scala "self_.toInt"
+        javascript """
+            if(self_.array.length == 0) throw "expectInt on empty string"
+            for(let i = 0; i < self_.length; i++) {
+                let c = self_.codePointAt(i);
+                if(c < 48 || c > 57) throw "expectInt on non-digit string";
+            }
+            return parseInt(self_, 10);
+        """
 
     first(): Option[Char] { panic("magic") }
         scala "self_.headOption"
+        javascript """
+            return self_.length > 0
+                ? ff_core_Option.Some(self_.slice(0, 1))
+                : ff_core_Option.None()
+        """
 
     last(): Option[Char] { panic("magic") }
         scala "self_.lastOption"
+        javascript """
+            return self_.length > 0
+                ? ff_core_Option.Some(self_.slice(self_.length - 1))
+                : ff_core_Option.None()
+        """
 
     expectFirst(): Char { panic("magic") }
         scala "self_.head"
+        javascript """
+            return self_.length > 0
+                ? self_.slice(0, 1)
+                : throw "expectFirst on empty string"
+        """
 
     expectLast(): Char { panic("magic") }
         scala "self_.last"
+        javascript """
+            return self_.length > 0
+                ? self_.slice(self_.length - 1)
+                : throw "expectLast on empty string"
+        """
 
     contains(substring : String) : Bool { panic("magic") }
         scala "self_.contains(substring_)"
+        javascript "return self_.includes(substring_)"
 
     startsWith(prefix : String) : Bool { panic("magic") }
         scala "self_.startsWith(prefix_)"
+        javascript "return self_.startsWith(prefix_)"
 
     any(p: Char => Bool): Bool { panic("magic") }
         scala "self_.exists(p_)"
+        javascript """
+            for(let i = 0; i < self_.length; i++) if(p_(self_.codePointAt(i)) return true;
+            return false;
+        """
 
     all(p: Char => Bool): Bool { panic("magic") }
         scala "self_.forall(p_)"
-
+        javascript """
+            for(let i = 0; i < self_.length; i++) if(!p_(self_.codePointAt(i)) return false;
+            return true;
+        """
 }
