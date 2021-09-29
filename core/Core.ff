@@ -20,7 +20,7 @@ try[T](body: () => T): Try[T] { panic("magic") }
         try {
             return {_: 'Success', value_: body_()}
         } catch(e) {
-            return {_: 'Failure', exception_: e}
+            return {_: 'Failure', exception_: e.message}
         }
     """
 
