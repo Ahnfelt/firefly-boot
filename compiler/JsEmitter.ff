@@ -41,7 +41,7 @@ extend self: JsEmitter {
     }
 
     emitMain(): String {
-        "queueMicrotask(() => main_({array_: process.argv.slice(1)}))"
+        "queueMicrotask(() => main_({array_: process.argv.slice(2)}))"
     }
 
     emitImportDefinition(definition: DImport): String {
