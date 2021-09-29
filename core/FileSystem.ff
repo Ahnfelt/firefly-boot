@@ -1,4 +1,5 @@
 type FileSystem {}
+    javascript "#import * as fs from 'fs'; import * as path from 'path';"
 
 extend self: FileSystem {
 
@@ -40,6 +41,7 @@ extend self: FileSystem {
 
     getAbsolutePath(path: String): String { panic("magic") }
         scala "new java.io.File(path_).getAbsolutePath.replace('\\\\', '/')"
+        javascript "return path.resolve(path_)"
 
     directoryName(path: String): String {
         path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()

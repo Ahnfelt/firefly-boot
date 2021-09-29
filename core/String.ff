@@ -78,10 +78,10 @@ extend self: String {
                 : ff_core_Option.None()
         """
 
-    expectFirst(): Char { first().else { panic("expectFirst() on empty string") } }
+    expectFirst(): Char { self.first().else { panic("expectFirst() on empty string") } }
         scala "self_.head"
 
-    expectLast(): Char { last().else { panic("expectFirst() on empty string") } }
+    expectLast(): Char { self.last().else { panic("expectFirst() on empty string") } }
         scala "self_.last"
 
     contains(substring : String) : Bool { panic("magic") }
@@ -93,7 +93,7 @@ extend self: String {
         javascript "return self_.startsWith(substring_)"
 
     any(body: Char => Bool): Bool { panic("magic") }
-        scala "self_.exists(p_)"
+        scala "self_.exists(body_)"
         javascript """
             for(let i = 0; i < self_.length; i++) {
                 if(body_(self_.charCodeAt(i))) return true;
@@ -102,7 +102,7 @@ extend self: String {
         """
 
     all(body: Char => Bool): Bool { panic("magic") }
-        scala "self_.forall(p_)"
+        scala "self_.forall(body_)"
         javascript """
             for(let i = 0; i < self_.length; i++) {
                 if(!body_(self_.charCodeAt(i))) return false;
