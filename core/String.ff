@@ -21,7 +21,7 @@ extend self: String {
 
     reverse(): String { panic("magic") }
         scala "self_.reverse"
-        javascript "[...self_].reverse().join('')"
+        javascript "return [...self_].reverse().join('')"
 
     dropWhile(p: Char => Bool): String { panic("magic") }
         scala "self_.dropWhile(p_)"

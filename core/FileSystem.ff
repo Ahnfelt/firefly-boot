@@ -1,7 +1,9 @@
 type FileSystem {}
-    javascript "#import * as fs from 'fs'; import * as path from 'path';"
 
 extend self: FileSystem {
+
+    jsFileSystemHack(): Nothing { panic("magic") }
+        javascript "#function jsFileSystemHack() {} import * as fs from 'fs'; import * as path from 'path';"
 
     readText(file: String): String { panic("magic") }
         scala "val source = scala.io.Source.fromFile(new java.io.File(file_), \"UTF-8\"); val result = source.mkString; source.close(); result"
