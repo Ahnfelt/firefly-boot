@@ -111,7 +111,7 @@ ff.core.List_.List_join(self_ = _w1, separator_ = "\n\n")
 
 def JsEmitter_emitMain(self_ : ff.compiler.JsEmitter_.JsEmitter) : ff.core.String_.String = (self_) match {
 case (self_) =>
-"queueMicrotask(() => main_({array_: process.argv.slice(1)}))"
+"queueMicrotask(() => main_({array_: process.argv.slice(2)}))"
 }
 
 def JsEmitter_emitImportDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, definition_ : ff.compiler.Syntax_.DImport) : ff.core.String_.String = (self_, definition_) match {
