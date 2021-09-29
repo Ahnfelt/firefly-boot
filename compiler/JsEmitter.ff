@@ -22,7 +22,7 @@ extend self: JsEmitter {
     emitModule(packagePair: Pair[String, String], module: Module): String {
         let selfImport =
             "import * as " + packagePair.first + "_" + packagePair.second + "_" + module.file.dropLast(3) + " " +
-            "from \"../../" + packagePair.first + "/" + packagePair.second + "/" + module.file.dropLast(3) + ".js\""
+            "from \"../../" + packagePair.first + "/" + packagePair.second + "/" + module.file.dropLast(3) + ".mjs\""
         let imports =
             module.imports.sortBy { i =>
                 i.package.first + "." + i.package.second + "." + i.file
@@ -41,12 +41,12 @@ extend self: JsEmitter {
     }
 
     emitMain(): String {
-        "main_({array_: process.argv.slice(1)})"
+        "queueMicrotask(() => main_({array_: process.argv.slice(1)}))"
     }
 
     emitImportDefinition(definition: DImport): String {
         "import * as " + definition.package.first + "_" + definition.package.second + "_" + definition.file + " " +
-        "from \"../../" + definition.package.first + "/" + definition.package.second + "/" + definition.file + ".js\""
+        "from \"../../" + definition.package.first + "/" + definition.package.second + "/" + definition.file + ".mjs\""
     }
 
     emitLetDefinition(definition: DLet, mutable: Bool = False): String {

@@ -77,7 +77,7 @@ word_
 }
 def JsEmitter_emitModule(self_ : ff.compiler.JsEmitter_.JsEmitter, packagePair_ : ff.core.Pair_.Pair[ff.core.String_.String, ff.core.String_.String], module_ : ff.compiler.Syntax_.Module) : ff.core.String_.String = (self_, packagePair_, module_) match {
 case (self_, _, _) =>
-val selfImport_ : ff.core.String_.String = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + ".js\"");
+val selfImport_ : ff.core.String_.String = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = module_.file_, count_ = 3)) + ".mjs\"");
 val imports_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.DImport, ff.core.String_.String](self_ = ff.core.List_.List_sortBy[ff.compiler.Syntax_.DImport](self_ = module_.imports_, body_ = {(i_) =>
 ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 }), body_ = {(_w1) =>
@@ -111,12 +111,12 @@ ff.core.List_.List_join(self_ = _w1, separator_ = "\n\n")
 
 def JsEmitter_emitMain(self_ : ff.compiler.JsEmitter_.JsEmitter) : ff.core.String_.String = (self_) match {
 case (self_) =>
-"main_({array_: process.argv.slice(1)})"
+"queueMicrotask(() => main_({array_: process.argv.slice(1)}))"
 }
 
 def JsEmitter_emitImportDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, definition_ : ff.compiler.Syntax_.DImport) : ff.core.String_.String = (self_, definition_) match {
 case (self_, _) =>
-((((((((((((("import * as " + definition_.package_.first_) + "_") + definition_.package_.second_) + "_") + definition_.file_) + " ") + "from \"../../") + definition_.package_.first_) + "/") + definition_.package_.second_) + "/") + definition_.file_) + ".js\"")
+((((((((((((("import * as " + definition_.package_.first_) + "_") + definition_.package_.second_) + "_") + definition_.file_) + " ") + "from \"../../") + definition_.package_.first_) + "/") + definition_.package_.second_) + "/") + definition_.file_) + ".mjs\"")
 }
 
 def JsEmitter_emitLetDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, definition_ : ff.compiler.Syntax_.DLet, mutable_ : ff.core.Bool_.Bool = ff.core.Bool_.False()) : ff.core.String_.String = (self_, definition_, mutable_) match {
