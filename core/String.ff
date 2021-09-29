@@ -86,14 +86,28 @@ extend self: String {
 
     contains(substring : String) : Bool { panic("magic") }
         scala "self_.contains(substring_)"
+        javascript "return self_.includes(substring_)"
 
     startsWith(prefix : String) : Bool { panic("magic") }
         scala "self_.startsWith(prefix_)"
+        javascript "return self_.startsWith(substring_)"
 
-    any(p: Char => Bool): Bool { panic("magic") }
+    any(body: Char => Bool): Bool { panic("magic") }
         scala "self_.exists(p_)"
+        javascript """
+            for(let i = 0; i < self_.length; i++) {
+                if(body_(self_.charCodeAt(i))) return true;
+            }
+            return false;
+        """
 
-    all(p: Char => Bool): Bool { panic("magic") }
+    all(body: Char => Bool): Bool { panic("magic") }
         scala "self_.forall(p_)"
+        javascript """
+            for(let i = 0; i < self_.length; i++) {
+                if(!body_(self_.charCodeAt(i))) return false;
+            }
+            return true;
+        """
 
 }
