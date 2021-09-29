@@ -57,7 +57,14 @@ extend self: String {
 
     expectInt(): Int { panic("magic") }
         scala "self_.toInt"
-        javascript "return parseInt(self_)"
+        javascript """
+            if(self_.array.length == 0) throw "expectInt on empty string"
+            for(let i = 0; i < self_.length; i++) {
+                let c = self_.codePointAt(i);
+                if(c < 48 || c > 57) throw "expectInt on non-digit string";
+            }
+            return parseInt(self_, 10);
+        """
 
     first(): Option[Char] { panic("magic") }
         scala "self_.headOption"
@@ -83,7 +90,6 @@ extend self: String {
 
     contains(substring: String) : Bool { panic("magic") }
         scala "self_.contains(substring_)"
-        javascript "return self_.includes(substring_)"
 
     startsWith(prefix: String, offset: Int = 0) : Bool { panic("magic") }
         scala """
