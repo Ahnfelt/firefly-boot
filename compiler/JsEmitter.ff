@@ -33,8 +33,15 @@ extend self: JsEmitter {
             module.lets.map { "export " + self.emitLetDefinition(_) }
             module.functions.map { "export " + self.emitFunctionDefinition(_) }
             module.extends.map { self.emitExtendsDefinition(_) }
+            if(module.file == "Main.ff" && module.functions.any { _.signature.name == "main" }) {
+                [self.emitMain()]
+            } else { [] }
         ]
         parts.map { _.join("\n\n") }.join("\n\n") + "\n"
+    }
+
+    emitMain(): String {
+        "main_({array_: process.argv.slice(1)})"
     }
 
     emitImportDefinition(definition: DImport): String {

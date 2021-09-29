@@ -97,10 +97,21 @@ ff.compiler.JsEmitter_.JsEmitter_emitTypeDefinition(self_ = self_, definition_ =
 ("export " + ff.compiler.JsEmitter_.JsEmitter_emitFunctionDefinition(self_ = self_, definition_ = _w1, suffix_ = ""))
 }), ff.core.List_.List_map[ff.compiler.Syntax_.DExtend, ff.core.String_.String](self_ = module_.extends_, body_ = {(_w1) =>
 ff.compiler.JsEmitter_.JsEmitter_emitExtendsDefinition(self_ = self_, definition_ = _w1)
+}), ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.String_.String]](condition_ = ((module_.file_ == "Main.ff") && ff.core.List_.List_any[ff.compiler.Syntax_.DFunction](self_ = module_.functions_, body_ = {(_w1) =>
+(_w1.signature_.name_ == "main")
+})), body_ = {() =>
+List(ff.compiler.JsEmitter_.JsEmitter_emitMain(self_ = self_))
+}), body_ = {() =>
+List()
 }));
 (ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.List_.List[ff.core.String_.String], ff.core.String_.String](self_ = parts_, body_ = {(_w1) =>
 ff.core.List_.List_join(self_ = _w1, separator_ = "\n\n")
 }), separator_ = "\n\n") + "\n")
+}
+
+def JsEmitter_emitMain(self_ : ff.compiler.JsEmitter_.JsEmitter) : ff.core.String_.String = (self_) match {
+case (self_) =>
+"main_({array_: process.argv.slice(1)})"
 }
 
 def JsEmitter_emitImportDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, definition_ : ff.compiler.Syntax_.DImport) : ff.core.String_.String = (self_, definition_) match {
