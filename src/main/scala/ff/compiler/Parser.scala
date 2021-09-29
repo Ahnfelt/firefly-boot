@@ -253,7 +253,7 @@ ff.core.Core_.if_[ff.core.String_.String](condition_ = ((ff.compiler.Parser_.Par
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LSeparator());
 ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LKeyword());
 val result_ : ff.core.String_.String = ff.compiler.Token_.Token_raw(token_ = ff.compiler.Parser_.Parser_skip(self_ = self_, kind_ = ff.compiler.Token_.LString()));
-val dropCount_ : ff.core.Int_.Int = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Int_.Int](condition_ = ff.core.String_.String_startsWith(self_ = result_, prefix_ = "\"\"\""), body_ = {() =>
+val dropCount_ : ff.core.Int_.Int = ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.Int_.Int](condition_ = ff.core.String_.String_startsWith(self_ = result_, prefix_ = "\"\"\"", offset_ = 0), body_ = {() =>
 3
 }), body_ = {() =>
 1

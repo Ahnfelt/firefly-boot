@@ -115,7 +115,7 @@ val variants_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_
 ff.compiler.ScalaEmitter_.emitVariantDefinition_(typeDefinition_ = definition_, definition_ = _w1)
 });
 val head_ : ff.core.String_.String = ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = definition_.targets_.scala_, body_ = {(code_) =>
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#"), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#", offset_ = 0), body_ = {() =>
 (ff.core.String_.String_dropFirst(self_ = code_, count_ = 1) + ";\n")
 }), body_ = {() =>
 ((((("type " + definition_.name_) + generics_) + " = ") + code_) + ";\n")
@@ -154,7 +154,7 @@ ff.compiler.ScalaEmitter_.emitTerm_(term_ = definition_.value_)
 def emitFunctionDefinition_(definition_ : ff.compiler.Syntax_.DFunction, suffix_ : ff.core.String_.String = "") : ff.core.String_.String = {
 val signature_ : ff.core.String_.String = ff.compiler.ScalaEmitter_.emitSignature_(signature_ = definition_.signature_, suffix_ = suffix_);
 ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = definition_.targets_.scala_, body_ = {(code_) =>
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#"), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#", offset_ = 0), body_ = {() =>
 ff.core.String_.String_dropFirst(self_ = code_, count_ = 1)
 }), body_ = {() =>
 (((signature_ + " = {\n") + code_) + "\n}")
@@ -349,12 +349,12 @@ def emitType_(type_ : ff.compiler.Syntax_.Type) : ff.core.String_.String = (type
 case (ff.compiler.Syntax_.TVariable(_, index_)) =>
 ("$" + index_)
 case (t_ : ff.compiler.Syntax_.TConstructor) =>
-ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_elseIf(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = t_.name_, prefix_ = "Function$"), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_elseIf(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = t_.name_, prefix_ = "Function$", offset_ = 0), body_ = {() =>
 ff.compiler.ScalaEmitter_.emitType_(type_ = pipe_dot(t_)({(_c) =>
 ff.compiler.Syntax_.TConstructor(at_ = _c.at_, name_ = ff.core.String_.String_replace(self_ = t_.name_, needle_ = "$", replacement_ = ""), generics_ = _c.generics_)
 }))
 }), condition_ = {() =>
-ff.core.String_.String_startsWith(self_ = t_.name_, prefix_ = "Record$")
+ff.core.String_.String_startsWith(self_ = t_.name_, prefix_ = "Record$", offset_ = 0)
 }, body_ = {() =>
 (("{" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Type], ff.core.String_.String](self_ = ff.core.List_.List_zip[ff.core.String_.String, ff.compiler.Syntax_.Type](self_ = ff.core.Array_.Array_toList[ff.core.String_.String](self_ = ff.core.Array_.Array_dropFirst[ff.core.String_.String](self_ = ff.core.String_.String_split(self_ = t_.name_, char_ = '$'), count_ = 1)), that_ = t_.generics_), body_ = {
 case (ff.core.Pair_.Pair(field_, fieldType_)) =>

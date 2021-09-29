@@ -84,13 +84,16 @@ extend self: String {
     expectLast(): Char { self.last().else { panic("expectFirst() on empty string") } }
         scala "self_.last"
 
-    contains(substring : String) : Bool { panic("magic") }
+    contains(substring: String) : Bool { panic("magic") }
         scala "self_.contains(substring_)"
         javascript "return self_.includes(substring_)"
 
-    startsWith(prefix : String) : Bool { panic("magic") }
-        scala "self_.startsWith(prefix_)"
-        javascript "return self_.startsWith(substring_)"
+    startsWith(prefix: String, offset: Int = 0) : Bool { panic("magic") }
+        scala """
+            if(offset_ == 0) self_.startsWith(prefix_)
+            else self_.regionMatches(false, offset_, prefix_, 0, prefix_.size)
+        """
+        javascript "return self_.startsWith(prefix_, offset_)"
 
     any(body: Char => Bool): Bool { panic("magic") }
         scala "self_.exists(body_)"

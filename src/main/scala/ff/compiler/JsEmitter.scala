@@ -142,7 +142,7 @@ def JsEmitter_emitFunctionDefinition(self_ : ff.compiler.JsEmitter_.JsEmitter, d
 case (self_, _, _) =>
 val signature_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitSignature(self_ = self_, signature_ = definition_.signature_, suffix_ = suffix_);
 ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = definition_.targets_.javaScript_, body_ = {(code_) =>
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#"), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.String_.String_startsWith(self_ = code_, prefix_ = "#", offset_ = 0), body_ = {() =>
 ff.core.String_.String_dropFirst(self_ = code_, count_ = 1)
 }), body_ = {() =>
 (((signature_ + " {\n") + code_) + "\n}")
