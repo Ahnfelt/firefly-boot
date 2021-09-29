@@ -15,7 +15,7 @@ extend self: FileSystem {
 
     list(path: String): List[String] { panic("magic") }
         scala "new java.io.File(path_).listFiles().map(_.toString.replace('\\\\', '/')).toList"
-        javascript "return fs_core_Array.Array_toList(fs.readdirSync(path_))"
+        javascript "return ff_core_Array.Array_toList(fs.readdirSync(path_))"
 
     exists(path: String): Bool { panic("magic") }
         scala "new java.io.File(path_).exists()"
