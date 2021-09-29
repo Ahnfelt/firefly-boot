@@ -11,7 +11,7 @@ extend self: FileSystem {
 
     writeText(file: String, text: String): Unit { panic("magic") }
         scala "val writer = new java.io.FileWriter(new java.io.File(file_)); writer.write(text_); writer.close()"
-        javascript "fs.writeFileSync(file, text_)"
+        javascript "fs.writeFileSync(file_, text_)"
 
     list(path: String): List[String] { panic("magic") }
         scala "new java.io.File(path_).listFiles().map(_.toString.replace('\\\\', '/')).toList"
