@@ -60,17 +60,28 @@ extend self: String {
 
     expectInt(): Int { panic("magic") }
         scala "self_.toInt"
+        javascript "return parseInt(self_)"
 
     first(): Option[Char] { panic("magic") }
         scala "self_.headOption"
+        javascript """
+            return self_.length > 0
+                ? ff_core_Option.Some(self_.charCodeAt(0))
+                : ff_core_Option.None()
+        """
 
     last(): Option[Char] { panic("magic") }
         scala "self_.lastOption"
+        javascript """
+            return self_.length > 0
+                ? ff_core_Option.Some(self_.charCodeAt(self_.length - 1))
+                : ff_core_Option.None()
+        """
 
-    expectFirst(): Char { panic("magic") }
+    expectFirst(): Char { first().else { panic("expectFirst() on empty string") } }
         scala "self_.head"
 
-    expectLast(): Char { panic("magic") }
+    expectLast(): Char { last().else { panic("expectFirst() on empty string") } }
         scala "self_.last"
 
     contains(substring : String) : Bool { panic("magic") }
