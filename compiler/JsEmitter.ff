@@ -86,14 +86,14 @@ extend self: JsEmitter {
             } =>
                 let body = self.emitStatements(matchCase.body, True)
                 signature + " {\n" + body + "\n}"
-            | lambda =>
-                let arguments = definition.signature.parameters.map { p =>
-                    Argument(p.at, None, EVariable(p.at, p.name, [], []))
-                }
-                let function = ELambda(definition.at, lambda)
-                let call = ECall(definition.at, False, function, [], arguments)
-                let body = self.emitTerm(call)
-                signature + " {\n return " + body + "\n}"
+            | Lambda(_, cases) =>
+                let escapedArguments = definition.signature.parameters.map { _.name + "_a" }
+                let shadowingWorkaround = definition.signature.parameters.map { p =>
+                    "const " + p.name + "_a = " + escapeKeyword(p.name)
+                }.join("\n")
+                let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _) + "\n}" }.join("\n")
+                signature +
+                "{\n" + shadowingWorkaround + "\n" + casesString + "\nthrow new Error('Unexhaustive pattern match')\n}"
         }
     }
 
@@ -238,7 +238,8 @@ extend self: JsEmitter {
             | PVariable(_, None) =>
                 self.emitCase(arguments, matchCase)
             | PVariable(_, Some(name)) =>
-                "const " + escapeKeyword(name) + " = " + argument + "\n" +
+                let escaped = escapeKeyword(name)
+                if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +
                 self.emitCase(arguments, matchCase)
             | PVariant(_, name, []) { name == "ff:core/Bool.False" } =>
                 "if(!" + argument + ") {\n" +
@@ -266,11 +267,14 @@ extend self: JsEmitter {
             | PVariantAs(at, name, variable) =>
                 let variantName = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse())
                 "if(" + argument + "._ === '" + escapeKeyword(variantName) + "') {\n" +
-                variable.map { "const " + escapeKeyword(_) + " = " + argument + "\n" }.else {""} +
+                variable.map(escapeKeyword).filter { _ != argument }.map {
+                    "const " + _ + " = " + argument + "\n"
+                }.else {""} +
                 self.emitCase(arguments, matchCase) +
                 "}"
             | PAlias(_, pattern, variable) =>
-                "const " + escapeKeyword(variable) + " = " + argument + "\n" +
+                let escaped = escapeKeyword(variable)
+                if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +
                 self.emitPattern(argument, pattern, arguments, matchCase)
             | PList(at, _, []) =>
                 let p = PVariant(at, "ff:core/List.Empty", [])
