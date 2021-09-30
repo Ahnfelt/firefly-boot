@@ -457,7 +457,7 @@ ff.core.Unit_.Unit()
 }), condition_ = {() =>
 (i_ < ff.core.String_.String_size(self_ = code_))
 }, body_ = {() =>
-val column_ : ff.core.Int_.Int = (i_ - startLineOffset_);
+val column_ : ff.core.Int_.Int = ((i_ - startLineOffset_) + 1);
 ff.core.Core_.panic_[ff.core.Nothing_.Nothing](message_ = ((((((("Unexpected character: " + ff.core.Core_.magicShow_[ff.core.Char_.Char](value_ = ff.core.String_.String_expect(self_ = code_, index_ = i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_));
 ff.core.Unit_.Unit()
 });

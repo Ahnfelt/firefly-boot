@@ -220,6 +220,12 @@ ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](co
 def JsEmitter_emitTerm(self_ : ff.compiler.JsEmitter_.JsEmitter, term_ : ff.compiler.Syntax_.Term) : ff.core.String_.String = (self_, term_) match {
 case (self_, ff.compiler.Syntax_.EString(at_, value_)) =>
 value_
+case (self_, ff.compiler.Syntax_.EChar(at_, value_)) if (value_ == "'\\t'") =>
+"9"
+case (self_, ff.compiler.Syntax_.EChar(at_, value_)) if (value_ == "'\\n'") =>
+"10"
+case (self_, ff.compiler.Syntax_.EChar(at_, value_)) if (value_ == "'\\r'") =>
+"13"
 case (self_, ff.compiler.Syntax_.EChar(at_, value_)) =>
 ("" + ff.core.Char_.Char_toInt(self_ = ff.core.String_.String_expect(self_ = value_, index_ = 1)))
 case (self_, ff.compiler.Syntax_.EInt(at_, value_)) =>
