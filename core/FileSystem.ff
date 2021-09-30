@@ -15,7 +15,7 @@ extend self: FileSystem {
 
     list(path: String): List[String] { panic("magic") }
         scala "new java.io.File(path_).listFiles().map(_.toString.replace('\\\\', '/')).toList"
-        javascript "return ff_core_Array.Array_toList(fs.readdirSync(path_))"
+        javascript "return ff_core_Array.Array_toList(fs.readdirSync(path_).map(f => path_ + '/' + f))"
 
     exists(path: String): Bool { panic("magic") }
         scala "new java.io.File(path_).exists()"
@@ -35,7 +35,7 @@ extend self: FileSystem {
 
     delete(path: String): Unit { panic("magic") }
         scala "if(!new java.io.File(path_).delete()) { throw new java.io.IOException(\"Could not delete \" + path_) }"
-        javascript "fs.rmSync(path_)"
+        javascript "try { fs.rmdirSync(path_) } catch(_) { fs.rmSync(path_) }"
 
     rename(fromPath: String, toPath: String): Unit { panic("magic") }
         scala "if(!new java.io.File(fromPath_).renameTo(new java.io.File(toPath_))) { throw new java.io.IOException(\"Could not rename \" + fromPath_ + \" to \" + toPath_) }"
