@@ -297,7 +297,7 @@ ff.compiler.JsEmitter_.escapeKeyword_(word_ = word_)
 val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(_w1) =>
 (("{\n" + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = escapedArguments_, matchCase_ = _w1)) + "\n}")
 }), separator_ = "\n");
-(((("((" + ff.core.List_.List_join(self_ = escapedArguments_, separator_ = ", ")) + ") => {\n") + casesString_) + "\nthrow 'Unexhaustive pattern match'\n})")
+((((("((" + ff.core.List_.List_join(self_ = escapedArguments_, separator_ = ", ")) + ") => ") + "{\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n})")
 case (self_, ff.compiler.Syntax_.EPipe(at_, value_, function_)) =>
 (((("(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = function_)) + ")(") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = value_)) + ")")
 case (self_, ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(value_))) if (!ff.core.Char_.Char_isAsciiLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
@@ -358,9 +358,9 @@ ff.compiler.JsEmitter_.JsEmitter_emitPattern(self_ = self_, argument_ = ff.core.
 ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = ps_, condition_ = _c.condition_, body_ = _c.body_)
 }))
 case (ff.core.Pair_.Pair(List(), ff.core.Option_.Some(condition_))) =>
-(((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_)) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = matchCase_.body_, last_ = ff.core.Bool_.True())) + "\n}")
+(((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_)) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = matchCase_.body_, last_ = ff.core.Bool_.True())) + "\nreturn\n}")
 case (ff.core.Pair_.Pair(List(), ff.core.Option_.None())) =>
-(ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = matchCase_.body_, last_ = ff.core.Bool_.True()) + "\n")
+(ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = matchCase_.body_, last_ = ff.core.Bool_.True()) + "\nreturn\n")
 })
 }
 

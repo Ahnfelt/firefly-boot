@@ -222,9 +222,9 @@ extend self: JsEmitter {
             | Pair([p, ...ps], _) =>
                 self.emitPattern(arguments.expect(0), p, arguments.dropFirst(), matchCase.MatchCase(patterns = ps))
             | Pair([], Some(condition)) =>
-                "if(" + self.emitTerm(condition) + ") {\n" + self.emitStatements(matchCase.body, True) + "\n}"
+                "if(" + self.emitTerm(condition) + ") {\n" + self.emitStatements(matchCase.body, True) + "\nreturn\n}"
             | Pair([], None) =>
-                self.emitStatements(matchCase.body, True) + "\n"
+                self.emitStatements(matchCase.body, True) + "\nreturn\n"
         }
     }
 
