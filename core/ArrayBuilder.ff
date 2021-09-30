@@ -21,7 +21,7 @@ extend self[T]: ArrayBuilder[T] {
 
     append(value: T): Unit { panic("magic") }
         scala "self_.append(value_)"
-        javascript "self_.array.push(...value_)"
+        javascript "self_.array.push(value_)"
 
     modify(index: Int, body: T => T): Unit { panic("magic") }
         scala "self_.update(index_, body_(self_(index_)))"
