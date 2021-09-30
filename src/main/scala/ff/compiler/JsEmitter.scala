@@ -170,9 +170,14 @@ ff.core.Bool_.False()
 }) =>
 val body_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = matchCase_.body_, last_ = ff.core.Bool_.True());
 (((signature_ + " {\n") + body_) + "\n}")
-case (_) =>
-val body_ : ff.core.String_.String = "// TODO: Pattern matching";
-(((signature_ + " {\n") + body_) + "\n}")
+case (lambda_) =>
+val arguments_ : ff.core.List_.List[ff.compiler.Syntax_.Argument] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.compiler.Syntax_.Argument](self_ = definition_.signature_.parameters_, body_ = {(p_) =>
+ff.compiler.Syntax_.Argument(at_ = p_.at_, name_ = ff.core.Option_.None[ff.core.String_.String](), value_ = ff.compiler.Syntax_.EVariable(at_ = p_.at_, name_ = p_.name_, generics_ = List(), instances_ = List()))
+});
+val function_ : ff.compiler.Syntax_.Term = ff.compiler.Syntax_.ELambda(at_ = definition_.at_, lambda_ = lambda_);
+val call_ : ff.compiler.Syntax_.Term = ff.compiler.Syntax_.ECall(at_ = definition_.at_, tailCall_ = ff.core.Bool_.False(), function_ = function_, typeArguments_ = List(), arguments_ = arguments_);
+val body_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = call_);
+(((signature_ + " {\n return ") + body_) + "\n}")
 })
 })
 }

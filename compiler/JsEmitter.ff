@@ -86,9 +86,14 @@ extend self: JsEmitter {
             } =>
                 let body = self.emitStatements(matchCase.body, True)
                 signature + " {\n" + body + "\n}"
-            | _ =>
-                let body = "// TODO: Pattern matching"
-                signature + " {\n" + body + "\n}"
+            | lambda =>
+                let arguments = definition.signature.parameters.map { p =>
+                    Argument(p.at, None, EVariable(p.at, p.name, [], []))
+                }
+                let function = ELambda(definition.at, lambda)
+                let call = ECall(definition.at, False, function, [], arguments)
+                let body = self.emitTerm(call)
+                signature + " {\n return " + body + "\n}"
         }
     }
 
