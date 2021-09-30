@@ -129,7 +129,7 @@ extend self: JsEmitter {
         | EChar(at, value) { value == "'\\t'" } => "9"
         | EChar(at, value) { value == "'\\n'" } => "10"
         | EChar(at, value) { value == "'\\r'" } => "13"
-        | EChar(at, value) { value == "'\\"'" } => "34"
+        | EChar(at, value) { value == "'\\\"'" } => "34"
         | EChar(at, value) { value == "'\\''" } => "39"
         | EChar(at, value) => "" + value.expect(1).toInt()
         | EInt(at, value) => value
