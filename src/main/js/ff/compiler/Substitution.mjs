@@ -1,0 +1,377 @@
+import * as ff_compiler_Substitution from "../../ff/compiler/Substitution.mjs"
+
+import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
+
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
+import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
+
+import * as ff_core_Bool from "../../ff/core/Bool.mjs"
+
+import * as ff_core_Char from "../../ff/core/Char.mjs"
+
+import * as ff_core_Core from "../../ff/core/Core.mjs"
+
+import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
+
+import * as ff_core_Int from "../../ff/core/Int.mjs"
+
+import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Log from "../../ff/core/Log.mjs"
+
+import * as ff_core_Map from "../../ff/core/Map.mjs"
+
+import * as ff_core_Nothing from "../../ff/core/Nothing.mjs"
+
+import * as ff_core_Option from "../../ff/core/Option.mjs"
+
+import * as ff_core_Pair from "../../ff/core/Pair.mjs"
+
+import * as ff_core_Set from "../../ff/core/Set.mjs"
+
+import * as ff_core_String from "../../ff/core/String.mjs"
+
+import * as ff_core_System from "../../ff/core/System.mjs"
+
+import * as ff_core_Try from "../../ff/core/Try.mjs"
+
+import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+// type Substitution
+export function Substitution(substitution_) {
+return {_: 'Substitution', substitution_};
+}
+
+
+
+export function core_(name_) {
+return ((("ff:core/" + name_) + ".") + name_)
+}
+
+export function Substitution_substituteModule(self_, module_) {
+const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteLetDefinition(self_, _w1)
+}));
+const functions_ = ff_core_List.List_map(module_.functions_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
+}));
+const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteExtendDefinition(self_, _w1)
+}));
+return (((_c) => {
+return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, _c.instances_, extends_, lets_, functions_)
+}))(module_)
+}
+
+export function Substitution_substituteLetDefinition(self_, definition_) {
+return (((_c) => {
+return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.variableType_), ff_compiler_Substitution.Substitution_substituteTerm(self_, definition_.value_), _c.targets_)
+}))(definition_)
+}
+
+export function Substitution_substituteExtendDefinition(self_, definition_) {
+return (((_c) => {
+return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
+})))
+}))(definition_)
+}
+
+export function Substitution_substituteFunctionDefinition(self_, definition_) {
+return (((_c) => {
+return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_.body_), _c.targets_)
+}))(definition_)
+}
+
+export function Substitution_substituteLambda(self_, definition_) {
+return (((_c) => {
+return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(definition_.cases_, ((case_) => {
+return (((_c) => {
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Option.Option_map(case_.condition_, ((term_) => {
+return ff_compiler_Substitution.Substitution_substituteTerm(self_, term_)
+})), ff_compiler_Substitution.Substitution_substituteTerm(self_, case_.body_))
+}))(case_)
+})))
+}))(definition_)
+}
+
+export function Substitution_substituteTerm(self_, term_) {
+return (((_1) => {
+{
+if(_1._ === 'EString') {
+return term_
+return
+}
+}
+{
+if(_1._ === 'EChar') {
+return term_
+return
+}
+}
+{
+if(_1._ === 'EInt') {
+return term_
+return
+}
+}
+{
+if(_1._ === 'EFloat') {
+return term_
+return
+}
+}
+{
+if(_1._ === 'EVariable') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EVariable(_c.at_, _c.name_, ff_core_List.List_map(e_.generics_, ((type_) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
+})), _c.instances_)
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'EField') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EField(_c.at_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), _c.field_)
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'EWildcard') {
+const e_ = _1
+return term_
+return
+}
+}
+{
+if(_1._ === 'EList') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EList(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, e_.elementType_), ff_core_List.List_map(e_.items_, ((_1) => {
+{
+if(_1._ === 'Pair') {
+const item_ = _1.first_
+const b_ = _1.second_
+return ff_core_Pair.Pair(ff_compiler_Substitution.Substitution_substituteTerm(self_, item_), b_)
+return
+}
+}
+throw new Error('Unexhaustive pattern match')
+})))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'ESequential') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.before_), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.after_))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'ELet') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, e_.valueType_), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.value_), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.body_))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'ELambda') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.ELambda(_c.at_, ff_compiler_Substitution.Substitution_substituteLambda(self_, e_.lambda_))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'EVariant') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
+})), ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
+return ff_core_List.List_map(_w1, ((argument_) => {
+return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)
+}))
+})))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'EVariantIs') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
+})))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'ECopy') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((field_) => {
+return ff_compiler_Substitution.Substitution_substituteField(self_, field_)
+})))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'EPipe') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.value_), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.function_))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'ECall') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.function_), ff_core_List.List_map(e_.typeArguments_, ((type_) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
+})), ff_core_List.List_map(e_.arguments_, ((argument_) => {
+return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)
+})))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'ERecord') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((field_) => {
+return ff_compiler_Substitution.Substitution_substituteField(self_, field_)
+})))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'EFunctions') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EFunctions(_c.at_, ff_core_List.List_map(e_.functions_, ((definition_) => {
+return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, definition_)
+})), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.body_))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'EAssign') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.value_))
+}))(e_)
+return
+}
+}
+{
+if(_1._ === 'EAssignField') {
+const e_ = _1
+return (((_c) => {
+return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), _c.field_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.value_))
+}))(e_)
+return
+}
+}
+throw new Error('Unexhaustive pattern match')
+}))(term_)
+}
+
+export function Substitution_substituteArgument(self_, argument_) {
+return (((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, argument_.value_))
+}))(argument_)
+}
+
+export function Substitution_substituteField(self_, field_) {
+return (((_c) => {
+return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, field_.value_))
+}))(field_)
+}
+
+export function Substitution_substituteType(self_, type_){
+const self_a = self_
+const type_a = type_
+{
+const self_ = self_a
+if(type_a._ === 'TVariable') {
+const at_ = type_a.at_
+const i_ = type_a.index_
+return ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Substitution.Substitution_has(self_, i_), (() => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, ff_compiler_Substitution.Substitution_get(self_, i_))
+})), (() => {
+return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_Array.Array_toList([]))
+}))
+return
+}
+}
+{
+const self_ = self_a
+if(type_a._ === 'TConstructor') {
+const t_ = type_a
+return (((_c) => {
+return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((t_) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, t_)
+})))
+}))(t_)
+return
+}
+}
+throw new Error('Unexhaustive pattern match')
+}
+
+export function Substitution_get(self_, index_) {
+return (((_1) => {
+{
+if(_1._ === 'TVariable') {
+const i_ = _1.index_
+if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
+const t_ = ff_compiler_Substitution.Substitution_get(self_, i_);
+self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_);
+return t_
+return
+}}
+}
+{
+if(_1._ === 'TVariable') {
+const at_ = _1.at_
+return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_Array.Array_toList([]))
+return
+}
+}
+{
+const t_ = _1
+return t_
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}))(ff_core_Map.Map_expect(self_.substitution_, index_))
+}
+
+export function Substitution_has(self_, index_) {
+return ff_core_Map.Map_contains(self_.substitution_, index_)
+}
+
+
