@@ -218,9 +218,15 @@ extend self: JsEmitter {
             | ECall(at, _, EVariable(_, word, _, _), _, [condition, body]) { word == "ff:core/Core.while" } =>
                 "while(" + self.emitTerm(invokeImmediately(condition.value)) + ") {\n" +
                 self.emitStatements(invokeImmediately(body.value), False) + "\n}"
-            | ECall(at, _, EVariable(_, word, _, _), _, [condition, body]) { word == "ff:core/Core.if" && !last } =>
+            | ECall(at, _, EVariable(_, word, _, _), _, [condition, body]) { word == "ff:core/Core.if" } =>
+                let invokedBody = invokeImmediately(body.value)
                 "if(" + self.emitTerm(condition.value) + ") {\n" +
-                self.emitStatements(invokeImmediately(body.value), False) + "\n}"
+                if(last) {
+                    "return ff_core_Option.Some(" + self.emitTerm(invokedBody) +
+                    ")\n} else return ff_core_Option.None()"
+                } else {
+                    self.emitStatements(invokedBody, False) + "\n}"
+                }
             | _ {last} =>
                 "return " + self.emitTerm(term)
             | _ =>

@@ -243,7 +243,8 @@ return ff_compiler_Syntax.DFunction(signature_.at_, signature_, body_, targets_)
 
 export function Parser_parseTargets(self_) {
 function parseTargetOption_(target_) {
-return ff_core_Core.if_(((ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LKeyword())) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_ahead(self_), target_)), (() => {
+if(((ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LKeyword())) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_ahead(self_), target_))) {
+return ff_core_Option.Some((function() {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LSeparator());
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword());
 const result_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
@@ -253,7 +254,8 @@ return 3
 return 1
 }));
 return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(result_, dropCount_), dropCount_), "\\\"", "\""), "\\r", "\r"), "\\n", "\n"), "\\t", "\t"), "\\\\", "\\")
-}))
+})())
+} else return ff_core_Option.None()
 }
 const scala1_ = parseTargetOption_("scala");
 const javaScript_ = parseTargetOption_("javascript");

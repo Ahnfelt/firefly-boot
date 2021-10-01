@@ -756,8 +756,13 @@ const condition_ = _1.arguments_.head_
 if(_1.arguments_.tail_._ === 'Link') {
 const body_ = _1.arguments_.tail_.head_
 if(_1.arguments_.tail_.tail_._ === 'Empty') {
-if(((word_ == "ff:core/Core.if") && (!last_))) {
-return (((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_.value_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false)) + "\n}")
+if((word_ == "ff:core/Core.if")) {
+const invokedBody_ = ff_compiler_JsEmitter.invokeImmediately_(body_.value_);
+return ((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_.value_)) + ") {\n") + ff_core_Option.Option_else(ff_core_Core.if_(last_, (() => {
+return (("return ff_core_Option.Some(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, invokedBody_)) + ")\n} else return ff_core_Option.None()")
+})), (() => {
+return (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, invokedBody_, false) + "\n}")
+})))
 return
 }}}}}}
 }

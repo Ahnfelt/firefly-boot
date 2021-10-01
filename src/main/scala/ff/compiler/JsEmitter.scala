@@ -359,8 +359,13 @@ case (ff.compiler.Syntax_.EAssignField(at_, operator_, record_, field_, value_))
 ((((((ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = record_) + ".") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = field_)) + " ") + operator_) + "= ") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = value_))
 case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if (word_ == "ff:core/Core.while") =>
 (((("while(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = condition_.value_))) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_), last_ = ff.core.Bool_.False())) + "\n}")
-case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if ((word_ == "ff:core/Core.if") && (!last_)) =>
-(((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_.value_)) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_), last_ = ff.core.Bool_.False())) + "\n}")
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if (word_ == "ff:core/Core.if") =>
+val invokedBody_ : ff.compiler.Syntax_.Term = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_);
+((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_.value_)) + ") {\n") + ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = last_, body_ = {() =>
+(("return ff_core_Option.Some(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = invokedBody_)) + ")\n} else return ff_core_Option.None()")
+}), body_ = {() =>
+(ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = invokedBody_, last_ = ff.core.Bool_.False()) + "\n}")
+}))
 case (_) if last_ =>
 ("return " + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = term_))
 case (_) =>
