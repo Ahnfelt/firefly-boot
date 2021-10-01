@@ -73,6 +73,7 @@ ff_compiler_Compiler.Compiler_emit(ff_compiler_Compiler.make_(fs_, scalaPathFile
 return true
 }));
 if(success_) {
+return ff_core_Option.Some((function() {
 ff_compiler_Main.writeExtraFiles_(fs_, inputPath_, corePath_, tempPath_, scalaPathFile_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, scalaOutputPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, scalaOutputPath_)
@@ -81,29 +82,24 @@ if(ff_core_FileSystem.FileSystem_exists(fs_, jsOutputPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, jsOutputPath_)
 };
 ff_core_FileSystem.FileSystem_rename(fs_, scalaPathFile_, scalaOutputPath_);
-ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
-};
-return (void 0)
+return ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
+})())
+} else return ff_core_Option.None()
 }
 
 export function writeExtraFiles_(fs_, package_, corePath_, outputFile_, scalaFile_) {
-ff_core_FileSystem.FileSystem_writeText(fs_, (outputFile_ + "/build.sbt"), "scalaVersion := \"2.13.3\"");
-return (void 0)
+return ff_core_FileSystem.FileSystem_writeText(fs_, (outputFile_ + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 }
 
 export function deleteDirectory_(fs_, outputFile_) {
 ff_core_List.List_each(ff_core_FileSystem.FileSystem_list(fs_, outputFile_), ((file_) => {
 if(ff_core_FileSystem.FileSystem_isDirectory(fs_, file_)) {
-ff_compiler_Main.deleteDirectory_(fs_, file_);
-(void 0)
+return ff_compiler_Main.deleteDirectory_(fs_, file_)
 } else {
-ff_core_FileSystem.FileSystem_delete(fs_, file_);
-(void 0)
-};
-return (void 0)
+return ff_core_FileSystem.FileSystem_delete(fs_, file_)
+}
 }));
-ff_core_FileSystem.FileSystem_delete(fs_, outputFile_);
-return (void 0)
+return ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
 }
 
 

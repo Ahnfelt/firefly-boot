@@ -57,10 +57,10 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function while_(condition_, body_) {
-(((_1) => {
+return (((_1) => {
 {
 if(!_1) {
-return (void 0)
+
 return
 }
 }
@@ -74,8 +74,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(condition_());
-return (void 0)
+}))(condition_())
 }
 
 export function try_(body_) {
@@ -109,8 +108,7 @@ return x_ < y_
 }
 
 export function pipeDot_() {
-(void 0);
-return (void 0)
+
 }
 
 

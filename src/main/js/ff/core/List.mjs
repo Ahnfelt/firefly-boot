@@ -304,10 +304,10 @@ return go_(self_, 0)
 }
 
 export function List_each(self_, body_) {
-(((_1) => {
+return (((_1) => {
 {
 if(_1._ === 'Empty') {
-return (void 0)
+
 return
 }
 }
@@ -321,8 +321,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_);
-return (void 0)
+}))(self_)
 }
 
 export function List_all(self_, body_) {

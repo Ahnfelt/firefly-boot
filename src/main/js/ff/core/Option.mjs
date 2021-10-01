@@ -211,10 +211,10 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Option_each(self_, body_) {
-(((_1) => {
+return (((_1) => {
 {
 if(_1._ === 'None') {
-return (void 0)
+
 return
 }
 }
@@ -226,8 +226,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_);
-return (void 0)
+}))(self_)
 }
 
 export function Option_all(self_, body_) {

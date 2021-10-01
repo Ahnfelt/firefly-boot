@@ -54,16 +54,14 @@ ff_core_RbMap.RbMap_each(that_.redBlack_, ((_1, _2) => {
 const k_ = _1
 const v_ = _2
 if(_2._ === 'Some') {
-result_ = ff_core_RbMap.RbMap_add(result_, k_, v_);
-return (void 0)
+result_ = ff_core_RbMap.RbMap_add(result_, k_, v_)
 return
 }
 }
 {
 const k_ = _1
 if(_2._ === 'None') {
-(void 0);
-return (void 0)
+
 return
 }
 }

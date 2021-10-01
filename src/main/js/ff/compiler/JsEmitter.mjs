@@ -811,6 +811,39 @@ return
 }
 }
 {
+if(_1._ === 'EVariant') {
+const at_ = _1.at_
+const word_ = _1.name_
+if((word_ == "ff:core/Unit.Unit")) {
+return ""
+return
+}}
+}
+{
+if(_1._ === 'ESequential') {
+const at_ = _1.at_
+if(_1.before_._ === 'EVariant') {
+const at_ = _1.before_.at_
+const word_ = _1.before_.name_
+const after_ = _1.after_
+if((word_ == "ff:core/Unit.Unit")) {
+return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_)
+return
+}}}
+}
+{
+if(_1._ === 'ESequential') {
+const at_ = _1.at_
+const before_ = _1.before_
+if(_1.after_._ === 'EVariant') {
+const at_ = _1.after_.at_
+const word_ = _1.after_.name_
+if((word_ == "ff:core/Unit.Unit")) {
+return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, last_)
+return
+}}}
+}
+{
 if(_1._ === 'ESequential') {
 const at_ = _1.at_
 const before_ = _1.before_

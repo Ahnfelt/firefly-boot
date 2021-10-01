@@ -386,6 +386,12 @@ ff.compiler.JsEmitter_.JsEmitter_emitFunctionDefinition(self_ = self_, definitio
 ((ff.core.List_.List_join(self_ = functionStrings_, separator_ = "\n") + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = last_))
 case (ff.compiler.Syntax_.ELet(at_, mutable_, name_, valueType_, value_, body_)) =>
 ((ff.compiler.JsEmitter_.JsEmitter_emitLetDefinition(self_ = self_, definition_ = ff.compiler.Syntax_.DLet(at_ = at_, name_ = name_, variableType_ = valueType_, value_ = value_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())), mutable_ = mutable_) + ";\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = last_))
+case (ff.compiler.Syntax_.EVariant(at_, word_, _, _)) if (word_ == "ff:core/Unit.Unit") =>
+""
+case (ff.compiler.Syntax_.ESequential(at_, ff.compiler.Syntax_.EVariant(at_, word_, _, _), after_)) if (word_ == "ff:core/Unit.Unit") =>
+ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = after_, last_ = last_)
+case (ff.compiler.Syntax_.ESequential(at_, before_, ff.compiler.Syntax_.EVariant(at_, word_, _, _))) if (word_ == "ff:core/Unit.Unit") =>
+ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = before_, last_ = last_)
 case (ff.compiler.Syntax_.ESequential(at_, before_, after_)) =>
 ((ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = before_, last_ = ff.core.Bool_.False()) + ";\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = after_, last_ = last_))
 case (ff.compiler.Syntax_.EAssign(at_, operator_, name_, value_)) =>

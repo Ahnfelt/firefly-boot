@@ -81,7 +81,7 @@ return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1)
 export function Resolver_processImports(self_, imports_, modules_) {
 let resolver_ = self_;
 ff_core_List.List_each(imports_, ((import_) => {
-(((_1) => {
+return (((_1) => {
 {
 if(_1._ === 'Some') {
 const module_ = _1.value_
@@ -98,8 +98,7 @@ return
 throw new Error('Unexhaustive pattern match')
 }))(ff_core_List.List_find(modules_, ((_w1) => {
 return (ff_core_String.String_dropLast(_w1.file_, 3) == import_.file_)
-})));
-return (void 0)
+})))
 }));
 return resolver_
 }
