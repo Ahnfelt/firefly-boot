@@ -79,8 +79,7 @@ i_ += 1;
 const start_ = i_;
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
-((ff_core_String.String_expect(code_, i_) == 10)
-? ff_core_Option.Some((function() {
+if((ff_core_String.String_expect(code_, i_) == 10)) {
 i_ += 1;
 line_ += 1;
 lineOffset_ = i_;
@@ -93,10 +92,8 @@ lineOffset_ = i_;
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: ((ff_core_String.String_expect(code_, i_) == 47) && (ff_core_String.String_expect(code_, (i_ + 1)) == 47))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if(((ff_core_String.String_expect(code_, i_) == 47) && (ff_core_String.String_expect(code_, (i_ + 1)) == 47))) {
 i_ += 2;
 while(((i_ < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) != 10))) {
 i_ += 1;
@@ -120,10 +117,8 @@ i_ += 1;
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: ((ff_core_String.String_expect(code_, i_) == 47) && (ff_core_String.String_expect(code_, (i_ + 1)) == 42))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if(((ff_core_String.String_expect(code_, i_) == 47) && (ff_core_String.String_expect(code_, (i_ + 1)) == 42))) {
 i_ += 2;
 while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_expect(code_, i_) != 42) || (ff_core_String.String_expect(code_, (i_ + 1)) != 47)))) {
 if((i_ >= ff_core_String.String_size(code_))) {
@@ -161,10 +156,8 @@ i_ += 2;
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: ((ff_core_String.String_expect(code_, i_) == 34) || (ff_core_String.String_expect(code_, i_) == 39))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if(((ff_core_String.String_expect(code_, i_) == 34) || (ff_core_String.String_expect(code_, i_) == 39))) {
 const endSign_ = ff_core_String.String_expect(code_, i_);
 let multiLine_ = (((((i_ + 2) < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) == 34)) && (ff_core_String.String_expect(code_, (i_ + 1)) == 34)) && (ff_core_String.String_expect(code_, (i_ + 2)) == 34));
 i_ += (multiLine_
@@ -172,8 +165,7 @@ i_ += (multiLine_
 : 1);
 while(((i_ < ff_core_String.String_size(code_)) && (multiLine_ || (ff_core_String.String_expect(code_, i_) != endSign_)))) {
 if((ff_core_String.String_expect(code_, i_) == 10)) {
-(multiLine_
-? (function() {
+if(multiLine_) {
 line_ += 1;
 lineOffset_ = (i_ + 1);
 (void 0);
@@ -183,9 +175,8 @@ lineOffset_ = (i_ + 1);
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})()
-: (function() {
+(void 0)
+} else {
 ff_core_Core.panic_((("Unexpected end of line in string started on line " + startLine_) + "."));
 (void 0);
 (void 0);
@@ -194,8 +185,8 @@ ff_core_Core.panic_((("Unexpected end of line in string started on line " + star
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})());
+(void 0)
+};
 (void 0);
 (void 0);
 (void 0);
@@ -217,8 +208,7 @@ i_ += 1;
 (void 0);
 (void 0)
 };
-((((((multiLine_ && ((i_ + 2) < ff_core_String.String_size(code_))) && (((i_ + 3) >= ff_core_String.String_size(code_)) || (ff_core_String.String_expect(code_, (i_ + 3)) != 34))) && (ff_core_String.String_expect(code_, i_) == 34)) && (ff_core_String.String_expect(code_, (i_ + 1)) == 34)) && (ff_core_String.String_expect(code_, (i_ + 2)) == 34))
-? (function() {
+if((((((multiLine_ && ((i_ + 2) < ff_core_String.String_size(code_))) && (((i_ + 3) >= ff_core_String.String_size(code_)) || (ff_core_String.String_expect(code_, (i_ + 3)) != 34))) && (ff_core_String.String_expect(code_, i_) == 34)) && (ff_core_String.String_expect(code_, (i_ + 1)) == 34)) && (ff_core_String.String_expect(code_, (i_ + 2)) == 34))) {
 multiLine_ = false;
 i_ += 2;
 (void 0);
@@ -228,9 +218,8 @@ i_ += 2;
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})()
-: (function() {
+(void 0)
+} else {
 i_ += 1;
 (void 0);
 (void 0);
@@ -239,8 +228,8 @@ i_ += 1;
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})());
+(void 0)
+};
 (void 0);
 (void 0);
 (void 0);
@@ -261,10 +250,8 @@ emitToken_(((endSign_ == 34)
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: (((ff_core_String.String_expect(code_, i_) >= 97) && (ff_core_String.String_expect(code_, i_) <= 122)) || ((ff_core_String.String_expect(code_, i_) >= 65) && (ff_core_String.String_expect(code_, i_) <= 90)))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if((((ff_core_String.String_expect(code_, i_) >= 97) && (ff_core_String.String_expect(code_, i_) <= 122)) || ((ff_core_String.String_expect(code_, i_) >= 65) && (ff_core_String.String_expect(code_, i_) <= 90)))) {
 const kind_ = ((ff_core_String.String_expect(code_, i_) >= 97)
 ? ff_compiler_Token.LLower()
 : ff_compiler_Token.LUpper());
@@ -279,8 +266,7 @@ i_ += 1;
 (void 0);
 (void 0)
 };
-(((kind_ == ff_compiler_Token.LUpper()) && (ff_core_String.String_expect(code_, i_) == 46))
-? (function() {
+if(((kind_ == ff_compiler_Token.LUpper()) && (ff_core_String.String_expect(code_, i_) == 46))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_);
 (void 0);
@@ -289,9 +275,8 @@ emitToken_(ff_compiler_Token.LNamespace(), start_, i_);
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})()
-: (function() {
+(void 0)
+} else {
 emitToken_(kind_, start_, i_);
 (void 0);
 (void 0);
@@ -299,18 +284,16 @@ emitToken_(kind_, start_, i_);
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})());
+(void 0)
+};
 (void 0);
 (void 0);
 (void 0);
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: ((ff_core_String.String_expect(code_, i_) >= 48) && (ff_core_String.String_expect(code_, i_) <= 57))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if(((ff_core_String.String_expect(code_, i_) >= 48) && (ff_core_String.String_expect(code_, i_) <= 57))) {
 let dot_ = false;
 let exponent_ = false;
 while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_expect(code_, i_) >= 48) && (ff_core_String.String_expect(code_, i_) <= 57)))) {
@@ -352,20 +335,16 @@ emitToken_(((dot_ || exponent_)
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: (ff_core_String.String_expect(code_, i_) == 95)
-? ff_core_Option.Some((function() {
+(void 0)
+} else if((ff_core_String.String_expect(code_, i_) == 95)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_);
 (void 0);
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_))) {
 i_ += 1;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_)))) {
 i_ += 1;
@@ -401,30 +380,23 @@ emitToken_(o_, start_, i_);
 (void 0);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: (((ff_core_String.String_expect(code_, i_) == 40) || (ff_core_String.String_expect(code_, i_) == 91)) || (ff_core_String.String_expect(code_, i_) == 123))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if((((ff_core_String.String_expect(code_, i_) == 40) || (ff_core_String.String_expect(code_, i_) == 91)) || (ff_core_String.String_expect(code_, i_) == 123))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_);
 (void 0);
 (void 0);
-return (void 0)
-})())
-: (((ff_core_String.String_expect(code_, i_) == 41) || (ff_core_String.String_expect(code_, i_) == 93)) || (ff_core_String.String_expect(code_, i_) == 125))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if((((ff_core_String.String_expect(code_, i_) == 41) || (ff_core_String.String_expect(code_, i_) == 93)) || (ff_core_String.String_expect(code_, i_) == 125))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_);
 (void 0);
-return (void 0)
-})())
-: (i_ < ff_core_String.String_size(code_))
-? ff_core_Option.Some((function() {
+(void 0)
+} else if((i_ < ff_core_String.String_size(code_))) {
 const column_ = ((i_ - startLineOffset_) + 1);
 ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Core.magicShow_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_));
-return (void 0)
-})())
-: ff_core_Option.None());
+(void 0)
+} else {};
 (void 0)
 };
 ff_core_List.List_each(ff_core_Int.Int_to(1, 5), ((i_) => {

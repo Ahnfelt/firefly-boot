@@ -265,11 +265,13 @@ return (((_c) => {
 return ff_compiler_Syntax.EVariable(_c.at_, _w1, _c.generics_, _c.instances_)
 }))(e_)
 })), (() => {
-return (ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
+if(ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
-}))
-? ff_compiler_Resolver.fail_(e_.at_, ("No such variable: " + e_.name_))
-: term_)
+}))) {
+return ff_compiler_Resolver.fail_(e_.at_, ("No such variable: " + e_.name_))
+} else {
+return term_
+}
 }))
 return
 }

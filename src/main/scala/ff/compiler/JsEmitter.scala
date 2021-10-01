@@ -400,10 +400,32 @@ case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, 
 }), body_ = {() =>
 (ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_), last_ = ff.core.Bool_.False()) + "\n}")
 }))
-case (_) if last_ =>
-("return " + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = term_))
 case (_) =>
+pipe_dot(ff.compiler.JsEmitter_.detectIfElse_(term_ = term_))({
+case (List()) =>
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = last_, body_ = {() =>
+("return " + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = term_))
+}), body_ = {() =>
 ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = term_)
+})
+case (List(ff.core.Pair_.Pair(ff.compiler.Syntax_.EVariant(_, word_, _, _), elseBody_), list__seq @ _*)) if (word_ == "ff:core/Bool.True") =>
+val list_ = list__seq.toList;
+val initial_ : ff.core.String_.String = (("{\n" + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = elseBody_, last_ = last_)) + "\n}");
+ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term], ff.core.String_.String](self_ = list_, initial_ = initial_)({
+case (otherwise_, ff.core.Pair_.Pair(condition_, body_)) =>
+((((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_)) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = last_)) + "\n} else ") + otherwise_)
+})
+case (list_) if (!last_) =>
+ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term], ff.core.String_.String](self_ = list_, initial_ = "{}")({
+case (otherwise_, ff.core.Pair_.Pair(condition_, body_)) =>
+((((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_)) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = last_)) + "\n} else ") + otherwise_)
+})
+case (list_) =>
+ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term], ff.core.String_.String](self_ = list_, initial_ = "return ff_core_Option.None()")({
+case (otherwise_, ff.core.Pair_.Pair(condition_, body_)) =>
+(((((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_)) + ") {\n") + "return ff_core_Option.Some(") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = body_)) + ")\n} else ") + otherwise_)
+})
+})
 })
 }
 

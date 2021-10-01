@@ -327,9 +327,11 @@ const type_a = type_
 const self_ = self_a
 if(type_a._ === 'TVariable') {
 const i_ = type_a.index_
-return (ff_compiler_Unification.Unification_has(self_, i_)
-? ff_compiler_Unification.Unification_substitute(self_, ff_compiler_Unification.Unification_get(self_, i_))
-: type_)
+if(ff_compiler_Unification.Unification_has(self_, i_)) {
+return ff_compiler_Unification.Unification_substitute(self_, ff_compiler_Unification.Unification_get(self_, i_))
+} else {
+return type_
+}
 return
 }
 }

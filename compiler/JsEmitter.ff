@@ -239,10 +239,27 @@ extend self: JsEmitter {
                 } else {
                     self.emitStatements(invokeImmediately(body.value), False) + "\n}"
                 }
-            | _ {last} =>
-                "return " + self.emitTerm(term)
             | _ =>
-                self.emitTerm(term)
+                detectIfElse(term).{
+                    | [] =>
+                        if(last) { "return " + self.emitTerm(term) } else { self.emitTerm(term) }
+                    | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>
+                        let initial = "{\n" + self.emitStatements(elseBody, last) + "\n}"
+                        (list.foldLeft(initial)) {| otherwise, Pair(condition, body) =>
+                            "if(" + self.emitTerm(condition) + ") {\n" +
+                            self.emitStatements(body, last) + "\n} else " + otherwise
+                        }
+                    | list { !last } =>
+                        (list.foldLeft("{}")) {| otherwise, Pair(condition, body) =>
+                            "if(" + self.emitTerm(condition) + ") {\n" +
+                            self.emitStatements(body, last) + "\n} else " + otherwise
+                        }
+                    | list =>
+                        (list.foldLeft("return ff_core_Option.None()")) {| otherwise, Pair(condition, body) =>
+                            "if(" + self.emitTerm(condition) + ") {\n" +
+                            "return ff_core_Option.Some(" + self.emitTerm(body) + ")\n} else " + otherwise
+                        }
+                }
         }
     }
 

@@ -371,12 +371,12 @@ return
 if(_1._ === 'EVariable') {
 const e_ = _1
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.generics_), ((instantiated_) => {
-return (instantiated_.scheme_.isVariable_
-? (function() {
+if(instantiated_.scheme_.isVariable_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
-})()
-: ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_))
+} else {
+return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_)
+}
 })), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
 }))
@@ -643,20 +643,21 @@ const variableAt_ = _1.at_
 const x_ = _1.name_
 if(_1.generics_._ === 'Empty') {
 if(_1.instances_._ === 'Empty') {
-return (ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
+if(ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
 return ((c_ != 95) && (!ff_core_Char.Char_isAsciiLetter(c_)))
-}))
-? ff_compiler_Inference.Inference_inferOperator(self_, environment_, expected_, x_, term_)
-: (((_1) => {
+}))) {
+return ff_compiler_Inference.Inference_inferOperator(self_, environment_, expected_, x_, term_)
+} else {
+return (((_1) => {
 {
 if(_1._ === 'Some') {
 const instantiated_ = _1.value_
-return (instantiated_.scheme_.isVariable_
-? ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
-: (function() {
+if(instantiated_.scheme_.isVariable_) {
+return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
+} else {
 const signature_ = instantiated_.scheme_.signature_;
 return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiated_.typeArguments_, term_, x_)
-})())
+}
 return
 }
 }
@@ -667,7 +668,8 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, x_, e_.typeArguments_)))
+}))(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, x_, e_.typeArguments_))
+}
 return
 }}}
 }
@@ -793,14 +795,14 @@ return
 if(_1._ === 'EAssign') {
 const e_ = _1
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.variable_, ff_core_Array.Array_toList([])), ((instantiated_) => {
-return (instantiated_.scheme_.isMutable_
-? (function() {
+if(instantiated_.scheme_.isMutable_) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 return (((_c) => {
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 }))(e_)
-})()
-: ff_compiler_Inference.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_)))
+} else {
+return ff_compiler_Inference.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_))
+}
 })), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.variable_))
 }))
@@ -877,17 +879,13 @@ throw new Error('Unexhaustive pattern match')
 
 export function Inference_inferAssignment(self_, environment_, expected_, at_, operator_, value_, signature_) {
 const t_ = signature_.returnType_;
-(((operator_ == "+") || (operator_ == "-"))
-? ff_core_Option.Some((function() {
+if(((operator_ == "+") || (operator_ == "-"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_Array.Array_toList([])));
-return (void 0)
-})())
-: (operator_ != "")
-? ff_core_Option.Some((function() {
+(void 0)
+} else if((operator_ != "")) {
 ff_compiler_Inference.fail_(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "="));
-return (void 0)
-})())
-: ff_core_Option.None());
+(void 0)
+} else {};
 const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_Array.Array_toList([])));
 return newValue_
