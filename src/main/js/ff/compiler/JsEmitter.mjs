@@ -839,7 +839,7 @@ if(_1.after_._ === 'EVariant') {
 const at_ = _1.after_.at_
 const word_ = _1.after_.name_
 if((word_ == "ff:core/Unit.Unit")) {
-return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, last_)
+return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false)
 return
 }}}
 }

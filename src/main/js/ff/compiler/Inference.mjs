@@ -590,7 +590,7 @@ if(_1._ === 'Field') {
 const at_ = _1.at_
 const name_ = _1.name_
 const value_ = _1.value_
-return ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
+ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
 return
 }
 }
@@ -962,7 +962,7 @@ if(_1._ === 'Pair') {
 const argument_ = _1.first_
 const t_ = _1.second_
 ff_core_Option.Option_each(argument_.name_, ((name_) => {
-return ff_compiler_Inference.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
+ff_compiler_Inference.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
 }));
 return (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, argument_.value_))
@@ -973,7 +973,7 @@ return
 throw new Error('Unexhaustive pattern match')
 }));
 ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_) => {
-return ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
+ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
 }));
 return (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, function_, ff_core_Array.Array_toList([]), arguments_)
@@ -1176,28 +1176,28 @@ const chooseType_ = ((_1, _2) => {
 {
 if(_1._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_);
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(_2._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(((operator_ == "==") || (operator_ == "!="))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(_1._ === 'None') {
 if(_2._ === 'None') {
-return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
 }}
 }
@@ -1268,7 +1268,7 @@ if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "String")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }}}
 }
@@ -1277,7 +1277,7 @@ if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "String")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }}}
 }
@@ -1286,7 +1286,7 @@ if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "Float")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }}}
 }
@@ -1295,7 +1295,7 @@ if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "Float")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }}}
 }
@@ -1304,7 +1304,7 @@ if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "Int")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }}}
 }
@@ -1313,7 +1313,7 @@ if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "Int")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }}}
 }
@@ -1321,7 +1321,7 @@ return
 if(_1._ === 'Some') {
 if(_2._ === 'None') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_);
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }}
 }
@@ -1329,14 +1329,14 @@ return
 if(_1._ === 'None') {
 if(_2._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }}
 }
 {
 if(_1._ === 'None') {
 if(_2._ === 'None') {
-return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
 }}
 }
@@ -1440,7 +1440,7 @@ ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) =
 if(_1._ === 'Argument') {
 const at_ = _1.at_
 if(_1.name_._ === 'None') {
-return ff_compiler_Inference.fail_(at_, "Too many arguments")
+ff_compiler_Inference.fail_(at_, "Too many arguments")
 return
 }}
 }
@@ -1449,7 +1449,7 @@ if(_1._ === 'Argument') {
 const at_ = _1.at_
 if(_1.name_._ === 'Some') {
 const name_ = _1.name_.value_
-return ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
+ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
 return
 }}
 }

@@ -81,7 +81,7 @@ return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1)
 export function Resolver_processImports(self_, imports_, modules_) {
 let resolver_ = self_;
 ff_core_List.List_each(imports_, ((import_) => {
-return (((_1) => {
+(((_1) => {
 {
 if(_1._ === 'Some') {
 const module_ = _1.value_

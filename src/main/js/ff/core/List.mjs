@@ -304,7 +304,7 @@ return go_(self_, 0)
 }
 
 export function List_each(self_, body_) {
-return (((_1) => {
+(((_1) => {
 {
 if(_1._ === 'Empty') {
 

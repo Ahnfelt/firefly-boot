@@ -227,7 +227,7 @@ extend self: JsEmitter {
             | ESequential(at, EVariant(at, word, _, _), after) { word == "ff:core/Unit.Unit" } =>
                 self.emitStatements(after, last)
             | ESequential(at, before, EVariant(at, word, _, _)) { word == "ff:core/Unit.Unit" } =>
-                self.emitStatements(before, last)
+                self.emitStatements(before, False)
             | ESequential(at, before, after) =>
                 self.emitStatements(before, False) + ";\n" + self.emitStatements(after, last)
             | EAssign(at, operator, name, value) =>
