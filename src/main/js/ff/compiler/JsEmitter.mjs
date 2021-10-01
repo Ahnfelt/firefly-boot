@@ -662,7 +662,7 @@ const body_ = _1.body_
 const functionStrings_ = ff_core_List.List_map(functions_, ((f_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), "")
 }));
-return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, true))
+return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_))
 return
 }
 }
@@ -674,7 +674,7 @@ const name_ = _1.name_
 const valueType_ = _1.valueType_
 const value_ = _1.value_
 const body_ = _1.body_
-return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), mutable_) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, true))
+return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), mutable_) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_))
 return
 }
 }
@@ -707,6 +707,44 @@ const value_ = _1.value_
 return ((((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_)) + " ") + operator_) + "= ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_))
 return
 }
+}
+{
+if(_1._ === 'ECall') {
+const at_ = _1.at_
+if(_1.function_._ === 'EVariable') {
+const word_ = _1.function_.name_
+if(_1.arguments_._ === 'Link') {
+const condition_ = _1.arguments_.head_
+if(_1.arguments_.tail_._ === 'Link') {
+const body_ = _1.arguments_.tail_.head_
+if(_1.arguments_.tail_.tail_._ === 'Empty') {
+if((word_ == "ff:core/Core.while")) {
+function invoke_(function_){
+const function_a = function_
+{
+if(function_a._ === 'ELambda') {
+const at_ = function_a.at_
+if(function_a.lambda_._ === 'Lambda') {
+if(function_a.lambda_.cases_._ === 'Link') {
+if(function_a.lambda_.cases_.head_._ === 'MatchCase') {
+if(function_a.lambda_.cases_.head_.patterns_._ === 'Empty') {
+if(function_a.lambda_.cases_.head_.condition_._ === 'None') {
+const body_ = function_a.lambda_.cases_.head_.body_
+if(function_a.lambda_.cases_.tail_._ === 'Empty') {
+return body_
+return
+}}}}}}}
+}
+{
+return ff_compiler_Syntax.ECall(at_, false, function_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]))
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
+return (((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, invoke_(condition_.value_))) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, invoke_(body_.value_), false)) + "\n}")
+return
+}}}}}}
 }
 {
 if(last_) {

@@ -72,7 +72,7 @@ const success_ = ff_core_Core.do_((() => {
 ff_compiler_Compiler.Compiler_emit(ff_compiler_Compiler.make_(fs_, scalaPathFile_, jsPathFile_, packagePaths_), "ff:compiler", "Main");
 return true
 }));
-return ff_core_Core.if_(success_, (() => {
+ff_core_Core.if_(success_, (() => {
 ff_compiler_Main.writeExtraFiles_(fs_, inputPath_, corePath_, tempPath_, scalaPathFile_);
 ff_core_Core.if_(ff_core_FileSystem.FileSystem_exists(fs_, scalaOutputPath_), (() => {
 return ff_compiler_Main.deleteDirectory_(fs_, scalaOutputPath_)

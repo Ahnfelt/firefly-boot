@@ -134,9 +134,7 @@ const instances_ = ff_core_ArrayBuilder.empty_();
 const extends_ = ff_core_ArrayBuilder.empty_();
 const lets_ = ff_core_ArrayBuilder.empty_();
 const functions_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd()))) {
 ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_elseIf(ff_core_Option.Option_elseIf(ff_core_Option.Option_elseIf(ff_core_Option.Option_elseIf(ff_core_Option.Option_elseIf(ff_core_Option.Option_elseIf(ff_core_Core.if_((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()) && (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LAssign()) || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LColon()))), (() => {
 ff_core_ArrayBuilder.ArrayBuilder_append(lets_, ff_compiler_Parser.Parser_parseLetDefinition(self_));
 (void 0);
@@ -217,8 +215,8 @@ return (void 0)
 ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }));
-return (void 0)
-}));
+(void 0)
+};
 return ff_compiler_Syntax.Module(self_.packagePair_, self_.file_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_), ff_core_ArrayBuilder.ArrayBuilder_toList(imports_), ff_core_ArrayBuilder.ArrayBuilder_toList(types_), ff_core_ArrayBuilder.ArrayBuilder_toList(traits_), ff_core_ArrayBuilder.ArrayBuilder_toList(instances_), ff_core_ArrayBuilder.ArrayBuilder_toList(extends_), ff_core_ArrayBuilder.ArrayBuilder_toList(lets_), ff_core_ArrayBuilder.ArrayBuilder_toList(functions_))
 }
 
@@ -294,15 +292,13 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const type_ = ff_compiler_Parser.Parser_parseType(self_);
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "{");
 const methods_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 ff_core_ArrayBuilder.ArrayBuilder_append(methods_, ff_compiler_Parser.Parser_parseFunctionDefinition(self_));
 ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 return ff_compiler_Syntax.DExtend(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, type_, ff_core_ArrayBuilder.ArrayBuilder_toList(methods_))
 }
@@ -327,9 +323,7 @@ return ff_core_Array.Array_toList([])
 })), (() => {
 const signatures_ = ff_core_ArrayBuilder.empty_();
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "{");
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const signature_ = ff_compiler_Parser.Parser_parseSignature(self_);
 ff_core_ArrayBuilder.ArrayBuilder_append(signatures_, signature_);
 ff_core_Core.if_(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"), (() => {
@@ -343,11 +337,11 @@ ff_core_ArrayBuilder.ArrayBuilder_append(methodDefaults_, ff_core_Pair.Pair(sign
 return (void 0)
 }))
 }));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 return ff_core_ArrayBuilder.ArrayBuilder_toList(signatures_)
 }));
@@ -368,13 +362,11 @@ return ff_compiler_Parser.Parser_parseTypeParameters(self_)
 ff_core_ArrayBuilder.ArrayBuilder_append(typeArguments_, ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_List.List_map(poly_.generics_, ((_w1) => {
 return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), _w1, ff_core_Array.Array_toList([]))
 }))));
-ff_core_Core.while_((() => {
-return ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LComma())
-}), (() => {
+while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LComma())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma());
 ff_core_ArrayBuilder.ArrayBuilder_append(typeArguments_, ff_compiler_Parser.Parser_parseType(self_));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]");
 const generatorArguments_ = ff_core_Option.Option_else(ff_core_Core.if_((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")), (() => {
 return ff_core_Array.Array_toList([])
@@ -386,15 +378,13 @@ return ff_core_Array.Array_toList([])
 })), (() => {
 const definitions_ = ff_core_ArrayBuilder.empty_();
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "{");
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 ff_core_ArrayBuilder.ArrayBuilder_append(definitions_, ff_compiler_Parser.Parser_parseFunctionDefinition(self_));
 ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 return ff_core_ArrayBuilder.ArrayBuilder_toList(definitions_)
 }));
@@ -420,9 +410,7 @@ return ff_core_Array.Array_toList([ff_compiler_Syntax.Variant(ff_compiler_Token.
 })), (() => {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "{");
 const variantsBuilder_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const variantNameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper());
 const variantFields_ = ff_core_Option.Option_else(ff_core_Core.if_((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")), (() => {
 return ff_core_Array.Array_toList([])
@@ -431,11 +419,11 @@ return ff_compiler_Parser.Parser_parseFunctionParameters(self_, true)
 }));
 const targets_ = ff_compiler_Parser.Parser_parseTargets(self_);
 ff_core_ArrayBuilder.ArrayBuilder_append(variantsBuilder_, ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(variantNameToken_), ff_compiler_Token.Token_raw(variantNameToken_), variantFields_, targets_));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 return ff_core_ArrayBuilder.ArrayBuilder_toList(variantsBuilder_)
 }));
@@ -446,13 +434,11 @@ return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), ff_compi
 export function Parser_parseImportDefinition(self_) {
 const importToken_ = ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "import");
 const path_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
-}), (() => {
+while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())) {
 ff_core_ArrayBuilder.ArrayBuilder_append(path_, ff_compiler_Parser.Parser_parseDashedName(self_));
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
-return (void 0)
-}));
+(void 0)
+};
 const file_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper()));
 const alias_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "as"), (() => {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "as");
@@ -490,9 +476,7 @@ const goodVersions_ = ff_core_ArrayBuilder.empty_();
 const badVersions_ = ff_core_ArrayBuilder.empty_();
 ff_core_Core.if_(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("), (() => {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketLeft());
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const bad_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "!");
 ff_core_Core.if_(bad_, (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator())
@@ -505,11 +489,11 @@ return (void 0)
 ff_core_ArrayBuilder.ArrayBuilder_append(goodVersions_, version_);
 return (void 0)
 }));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketRight())
 }));
 return ff_compiler_Syntax.DDependency(at_, ff_core_Pair.Pair(user_, name_), safety_, ff_core_ArrayBuilder.ArrayBuilder_toList(goodVersions_), ff_core_ArrayBuilder.ArrayBuilder_toList(badVersions_))
@@ -547,13 +531,11 @@ return ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_comp
 }))
 }
 let part_ = readPart_();
-ff_core_Core.while_((() => {
-return ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "-")
-}), (() => {
+while(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "-")) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
 part_ = ((part_ + "-") + readPart_());
-return (void 0)
-}));
+(void 0)
+};
 ff_core_Core.if_(ff_core_String.String_any(part_, ((_w1) => {
 return ff_core_Char.Char_isAsciiUpper(_w1)
 })), (() => {
@@ -573,18 +555,14 @@ export function Parser_parseTypeParameters(self_) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "[");
 const parameters_ = ff_core_ArrayBuilder.empty_();
 const constraints_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())) && (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LSemicolon())))
-}), (() => {
+while(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())) && (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LSemicolon())))) {
 ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LBracketLeft()), (() => {
 ff_core_ArrayBuilder.ArrayBuilder_append(constraints_, ff_compiler_Syntax.Constraint(ff_compiler_Parser.Parser_parseType(self_)));
 return (void 0)
 })), (() => {
 const parameterNameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper());
 ff_core_ArrayBuilder.ArrayBuilder_append(parameters_, ff_compiler_Token.Token_raw(parameterNameToken_));
-return ff_core_Core.while_((() => {
-return ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon())
-}), (() => {
+while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 (((_1) => {
 {
@@ -605,26 +583,24 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_compiler_Parser.Parser_parseType(self_));
-return (void 0)
-}));
+(void 0)
+};
 return (void 0)
 }));
 ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_core_Core.if_(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LSemicolon()), (() => {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LSemicolon());
-return ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 ff_core_ArrayBuilder.ArrayBuilder_append(constraints_, ff_compiler_Syntax.Constraint(ff_compiler_Parser.Parser_parseType(self_)));
 ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}))
+(void 0)
+}
 }));
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]");
 return ff_compiler_Parser.Poly(ff_core_ArrayBuilder.ArrayBuilder_toList(parameters_), ff_core_ArrayBuilder.ArrayBuilder_toList(constraints_))
@@ -637,15 +613,13 @@ return "("
 return "["
 })));
 const types_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 ff_core_ArrayBuilder.ArrayBuilder_append(types_, ff_compiler_Parser.Parser_parseType(self_));
 ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ff_core_Option.Option_else(ff_core_Core.if_(parenthesis_, (() => {
 return ")"
 })), (() => {
@@ -657,9 +631,7 @@ return ff_core_ArrayBuilder.ArrayBuilder_toList(types_)
 export function Parser_parseFunctionParameters(self_, allowMutable_ = false) {
 const parameters_ = ff_core_ArrayBuilder.empty_();
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const mutable_ = ((allowMutable_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword())) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "mutable"));
 ff_core_Core.if_(mutable_, (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword())
@@ -674,11 +646,11 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign());
 return ff_core_Option.Some(ff_compiler_Parser.Parser_parseTerm(self_))
 }));
 ff_core_ArrayBuilder.ArrayBuilder_append(parameters_, ff_compiler_Syntax.Parameter(ff_compiler_Token.Token_at(parameterNameToken_), mutable_, ff_compiler_Token.Token_raw(parameterNameToken_), parameterType_, default_));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
 return ff_core_ArrayBuilder.ArrayBuilder_toList(parameters_)
 }
@@ -686,9 +658,7 @@ return ff_core_ArrayBuilder.ArrayBuilder_toList(parameters_)
 export function Parser_parseFunctionArguments(self_) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
 const arguments_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const nameToken_ = ff_core_Option.Option_else(ff_core_Core.if_((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LAssign())), (() => {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign());
@@ -704,11 +674,11 @@ return value_.at_
 })), ff_core_Option.Option_map(nameToken_, ((_w1) => {
 return ff_compiler_Token.Token_raw(_w1)
 })), value_));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
 return ff_core_ArrayBuilder.ArrayBuilder_toList(arguments_)
 }
@@ -725,30 +695,26 @@ return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword())
 }));
 const result_ = ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Core.if_(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LPipe()), (() => {
 const cases_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LPipe())
-}), (() => {
+while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LPipe())) {
 ff_core_ArrayBuilder.ArrayBuilder_append(cases_, ff_compiler_Parser.Parser_parseCase(self_));
 (void 0);
 (void 0);
-return (void 0)
-}));
+(void 0)
+};
 return ff_core_ArrayBuilder.ArrayBuilder_toList(cases_)
 })), (() => {
 return (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()) && ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LComma(), ff_compiler_Token.LArrowThick()))
 }), (() => {
 const parameters_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick()))) {
 const parameterToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 ff_core_ArrayBuilder.ArrayBuilder_append(parameters_, ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(parameterToken_), ff_core_Option.Some(ff_compiler_Token.Token_raw(parameterToken_))));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())), (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }));
 (void 0);
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick());
 const term_ = ff_compiler_Parser.Parser_parseStatements(self_);
 return ff_core_Array.Array_toList([ff_compiler_Syntax.MatchCase(ff_compiler_Token.Token_at(token_), ff_core_ArrayBuilder.ArrayBuilder_toList(parameters_), ff_core_Option.None(), term_)])
@@ -776,15 +742,13 @@ return ff_compiler_Syntax.Lambda(ff_compiler_Token.Token_at(token_), result_)
 export function Parser_parseCase(self_) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LPipe());
 const patterns_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")))
-}), (() => {
+while(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")))) {
 ff_core_ArrayBuilder.ArrayBuilder_append(patterns_, ff_compiler_Parser.Parser_parsePattern(self_));
 ff_core_Core.if_(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"))), (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 const condition_ = ff_core_Option.Option_else(ff_core_Core.if_((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")), (() => {
 return ff_core_Option.None()
 })), (() => {
@@ -822,16 +786,14 @@ const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 return ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("), (() => {
 const patterns_ = ff_core_ArrayBuilder.empty_();
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 ff_core_ArrayBuilder.ArrayBuilder_append(patterns_, ff_compiler_Parser.Parser_parsePattern(self_));
 ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }));
 (void 0);
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
 return ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_ArrayBuilder.ArrayBuilder_toList(patterns_))
 })), (() => {
@@ -894,13 +856,11 @@ return ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Token.Token_is2(f
 return ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Unit", ff_core_Array.Array_toList([]), ff_core_Option.None())
 })), (() => {
 let result_ = ff_compiler_Parser.Parser_parseStatement(self_);
-ff_core_Core.while_((() => {
-return ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon())
-}), (() => {
+while(ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon())) {
 const token_ = ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon());
 result_ = ff_compiler_Syntax.ESequential(ff_compiler_Token.Token_at(token_), result_, ff_compiler_Parser.Parser_parseStatement(self_));
-return (void 0)
-}));
+(void 0)
+};
 return result_
 }))
 }
@@ -984,16 +944,14 @@ return ff_compiler_Syntax.ELet(ff_compiler_Token.Token_at(nameToken_), mutable_,
 export function Parser_parseFunctions(self_) {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_));
 const functions_ = ff_core_ArrayBuilder.empty_();
-ff_core_Core.while_((() => {
-return ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "function")
-}), (() => {
+while(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "function")) {
 const functionAt_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "function"));
 const signature_ = ff_compiler_Parser.Parser_parseSignature(self_);
 const body_ = ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), false, false);
 ff_core_ArrayBuilder.ArrayBuilder_append(functions_, ff_compiler_Syntax.DFunction(functionAt_, signature_, body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())));
-return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon());
-return (void 0)
-}));
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon());
+(void 0)
+};
 const body_ = ff_compiler_Parser.Parser_parseStatements(self_);
 return ff_compiler_Syntax.EFunctions(at_, ff_core_ArrayBuilder.ArrayBuilder_toList(functions_), body_)
 }
@@ -1009,14 +967,12 @@ return ff_compiler_Parser.Parser_parseUnary(self_)
 const operators_ = ff_core_Array.Array_expect(ff_compiler_Parser.binaryOperators_, level_);
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 ff_core_Core.if_(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator()), (() => {
-return ff_core_Core.while_((() => {
-return ff_core_List.List_any(operators_, ((value_) => {
+while(ff_core_List.List_any(operators_, ((value_) => {
 return ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), value_)
-}))
-}), (() => {
+}))) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
 const right_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Token.Token_rawIs(token_, "++"), (() => {
+ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Token.Token_rawIs(token_, "++"), (() => {
 const arguments_ = ff_core_Array.Array_toList([ff_compiler_Syntax.Argument(right_.at_, ff_core_Option.None(), right_)]);
 result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), result_, "addAll"), ff_core_Array.Array_toList([]), arguments_);
 return (void 0)
@@ -1025,8 +981,8 @@ const arguments_ = ff_core_Array.Array_toList([ff_compiler_Syntax.Argument(resul
 result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([])), ff_core_Array.Array_toList([]), arguments_);
 return (void 0)
 }));
-return (void 0)
-}))
+(void 0)
+}
 }));
 return result_
 }))
@@ -1050,9 +1006,7 @@ return true
 return false
 }));
 let result_ = ff_compiler_Parser.Parser_parseAtom(self_);
-ff_core_Core.while_((() => {
-return ((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft()) || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon())) || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot()))
-}), (() => {
+while(((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketLeft()) || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon())) || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot()))) {
 ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot()), (() => {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
 ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Core.if_(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"), (() => {
@@ -1089,23 +1043,21 @@ return ff_compiler_Parser.Parser_parseFunctionArguments(self_)
 }));
 const moreArguments_ = ff_core_ArrayBuilder.empty_();
 let lastWasCurly_ = false;
-ff_core_Core.while_((() => {
-return (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{") || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))
-}), (() => {
+while((ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{") || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))) {
 lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{");
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true);
-return ff_core_ArrayBuilder.ArrayBuilder_append(moreArguments_, ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_)));
-return (void 0)
-}));
+ff_core_ArrayBuilder.ArrayBuilder_append(moreArguments_, ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_)));
+(void 0)
+};
 result_ = ff_compiler_Syntax.ECall(at_, tailCall_, result_, typeArguments_, ff_core_Array.Array_toList([...ff_core_List.List_toArray(arguments_), ...ff_core_List.List_toArray(ff_core_ArrayBuilder.ArrayBuilder_toList(moreArguments_))]));
-return ff_core_Core.if_((lastWasCurly_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())), (() => {
+ff_core_Core.if_((lastWasCurly_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())), (() => {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), result_, ff_compiler_Token.Token_raw(token_))
 }));
 return (void 0)
 }));
-return (void 0)
-}));
+(void 0)
+};
 return result_
 }
 
@@ -1227,17 +1179,15 @@ return ff_compiler_Syntax.ECopy(ff_compiler_Token.Token_at(token_), name_, recor
 export function Parser_parseRecord(self_) {
 const fields_ = ff_core_ArrayBuilder.empty_();
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const fieldToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign());
 ff_core_ArrayBuilder.ArrayBuilder_append(fields_, ff_compiler_Syntax.Field(ff_compiler_Token.Token_at(fieldToken_), ff_compiler_Token.Token_raw(fieldToken_), ff_compiler_Parser.Parser_parseTerm(self_)));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
 return ff_core_ArrayBuilder.ArrayBuilder_toList(fields_)
 }
@@ -1245,17 +1195,15 @@ return ff_core_ArrayBuilder.ArrayBuilder_toList(fields_)
 export function Parser_parseRecordType(self_) {
 const fields_ = ff_core_ArrayBuilder.empty_();
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const fieldToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LColon());
 ff_core_ArrayBuilder.ArrayBuilder_append(fields_, ff_core_Pair.Pair(ff_compiler_Token.Token_raw(fieldToken_), ff_compiler_Parser.Parser_parseType(self_)));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
 return ff_core_List.List_sortBy(ff_core_ArrayBuilder.ArrayBuilder_toList(fields_), ((_w1) => {
 return _w1.first_
@@ -1265,17 +1213,15 @@ return _w1.first_
 export function Parser_parseRecordPattern(self_) {
 const fields_ = ff_core_ArrayBuilder.empty_();
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))
-}), (() => {
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const fieldToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign());
 ff_core_ArrayBuilder.ArrayBuilder_append(fields_, ff_core_Pair.Pair(ff_compiler_Token.Token_raw(fieldToken_), ff_compiler_Parser.Parser_parsePattern(self_)));
-return ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
 return ff_core_List.List_sortBy(ff_core_ArrayBuilder.ArrayBuilder_toList(fields_), ((_w1) => {
 return _w1.first_
@@ -1285,9 +1231,7 @@ return _w1.first_
 export function Parser_parseListPattern(self_) {
 const items_ = ff_core_ArrayBuilder.empty_();
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "["));
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]"))
-}), (() => {
+while((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]"))) {
 const spread_ = ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDotDotDot());
 ff_core_Core.if_(spread_, (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDotDotDot())
@@ -1298,11 +1242,11 @@ return ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(ff_compiler_Parse
 return ff_compiler_Parser.Parser_parsePattern(self_)
 }));
 ff_core_ArrayBuilder.ArrayBuilder_append(items_, ff_core_Pair.Pair(pattern_, spread_));
-return ff_core_Core.if_((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]")), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]")), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]");
 return ff_compiler_Syntax.PList(at_, ff_compiler_Parser.Parser_freshTypeVariable(self_, at_), ff_core_ArrayBuilder.ArrayBuilder_toList(items_))
 }
@@ -1310,19 +1254,17 @@ return ff_compiler_Syntax.PList(at_, ff_compiler_Parser.Parser_freshTypeVariable
 export function Parser_parseList(self_) {
 const items_ = ff_core_ArrayBuilder.empty_();
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "["));
-ff_core_Core.while_((() => {
-return (!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]"))
-}), (() => {
+while((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]"))) {
 const spread_ = ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDotDotDot());
 ff_core_Core.if_(spread_, (() => {
 return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDotDotDot())
 }));
 ff_core_ArrayBuilder.ArrayBuilder_append(items_, ff_core_Pair.Pair(ff_compiler_Parser.Parser_parseTerm(self_), spread_));
-return ff_core_Core.if_((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]")), (() => {
+ff_core_Core.if_((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]")), (() => {
 return ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }));
-return (void 0)
-}));
+(void 0)
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]");
 return ff_compiler_Syntax.EList(at_, ff_compiler_Parser.Parser_freshTypeVariable(self_, at_), ff_core_ArrayBuilder.ArrayBuilder_toList(items_))
 }

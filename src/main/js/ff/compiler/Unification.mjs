@@ -248,7 +248,7 @@ return ""
 })), (() => {
 return "[...]"
 }));
-return ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_));
+ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_));
 return (void 0)
 return
 }
@@ -263,7 +263,7 @@ const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, definition_.traitType_);
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_Array.Array_toList([type_, ...ff_core_List.List_toArray(generics_)]));
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_);
-return ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
+ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
 (((_1) => {
 {
 if(_1._ === 'TConstructor') {

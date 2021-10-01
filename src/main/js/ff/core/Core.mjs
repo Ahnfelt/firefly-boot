@@ -67,7 +67,9 @@ return
 {
 if(_1) {
 body_();
-return ff_core_Core.while_(condition_, body_)
+while(condition_()) {
+body_()
+}
 return
 }
 }

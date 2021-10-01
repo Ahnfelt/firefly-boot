@@ -341,15 +341,23 @@ case (ff.compiler.Syntax_.EFunctions(at_, functions_, body_)) =>
 val functionStrings_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.DFunction, ff.core.String_.String](self_ = functions_, body_ = {(f_) =>
 ff.compiler.JsEmitter_.JsEmitter_emitFunctionDefinition(self_ = self_, definition_ = ff.compiler.Syntax_.DFunction(at_ = at_, signature_ = f_.signature_, body_ = f_.body_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())), suffix_ = "")
 });
-((ff.core.List_.List_join(self_ = functionStrings_, separator_ = "\n") + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = ff.core.Bool_.True()))
+((ff.core.List_.List_join(self_ = functionStrings_, separator_ = "\n") + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = last_))
 case (ff.compiler.Syntax_.ELet(at_, mutable_, name_, valueType_, value_, body_)) =>
-((ff.compiler.JsEmitter_.JsEmitter_emitLetDefinition(self_ = self_, definition_ = ff.compiler.Syntax_.DLet(at_ = at_, name_ = name_, variableType_ = valueType_, value_ = value_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())), mutable_ = mutable_) + ";\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = ff.core.Bool_.True()))
+((ff.compiler.JsEmitter_.JsEmitter_emitLetDefinition(self_ = self_, definition_ = ff.compiler.Syntax_.DLet(at_ = at_, name_ = name_, variableType_ = valueType_, value_ = value_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())), mutable_ = mutable_) + ";\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = last_))
 case (ff.compiler.Syntax_.ESequential(at_, before_, after_)) =>
 ((ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = before_, last_ = ff.core.Bool_.False()) + ";\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = after_, last_ = last_))
 case (ff.compiler.Syntax_.EAssign(at_, operator_, name_, value_)) =>
 ((((ff.compiler.JsEmitter_.escapeKeyword_(word_ = name_) + " ") + operator_) + "= ") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = value_))
 case (ff.compiler.Syntax_.EAssignField(at_, operator_, record_, field_, value_)) =>
 ((((((ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = record_) + ".") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = field_)) + " ") + operator_) + "= ") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = value_))
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if (word_ == "ff:core/Core.while") =>
+def invoke_(function_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (function_) match {
+case (ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(_, List(ff.compiler.Syntax_.MatchCase(_, List(), ff.core.Option_.None(), body_))))) =>
+body_
+case (_) =>
+ff.compiler.Syntax_.ECall(at_ = at_, tailCall_ = ff.core.Bool_.False(), function_ = function_, typeArguments_ = List(), arguments_ = List())
+}
+(((("while(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = invoke_(function_ = condition_.value_))) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = invoke_(function_ = body_.value_), last_ = ff.core.Bool_.False())) + "\n}")
 case (_) if last_ =>
 ("return " + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = term_))
 case (_) =>
