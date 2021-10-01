@@ -238,16 +238,12 @@ const generics2_ = _1.generics_
 return (((_1) => {
 {
 if(_1._ === 'None') {
-const g1_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(generics_), (() => {
-return ""
-})), (() => {
-return "[...]"
-}));
-const g2_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(generics2_), (() => {
-return ""
-})), (() => {
-return "[...]"
-}));
+const g1_ = (ff_core_List.List_isEmpty(generics_)
+? ""
+: "[...]");
+const g2_ = (ff_core_List.List_isEmpty(generics2_)
+? ""
+: "[...]");
 ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_));
 return (void 0)
 return
@@ -331,11 +327,9 @@ const type_a = type_
 const self_ = self_a
 if(type_a._ === 'TVariable') {
 const i_ = type_a.index_
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Unification.Unification_has(self_, i_), (() => {
-return ff_compiler_Unification.Unification_substitute(self_, ff_compiler_Unification.Unification_get(self_, i_))
-})), (() => {
-return type_
-}))
+return (ff_compiler_Unification.Unification_has(self_, i_)
+? ff_compiler_Unification.Unification_substitute(self_, ff_compiler_Unification.Unification_get(self_, i_))
+: type_)
 return
 }
 }

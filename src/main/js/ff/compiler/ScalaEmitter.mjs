@@ -58,13 +58,11 @@ const parts_ = ff_core_Array.Array_toList([ff_core_Array.Array_toList([("package
 return ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 })), ((i_) => {
 return (((((("import " + i_.package_.first_) + ".") + i_.package_.second_) + ".") + i_.file_) + "_._")
-})), ff_core_Array.Array_toList([(("object " + moduleNamespace_) + "_ {")]), ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_any(module_.functions_, ((_w1) => {
+})), ff_core_Array.Array_toList([(("object " + moduleNamespace_) + "_ {")]), (ff_core_List.List_any(module_.functions_, ((_w1) => {
 return (_w1.signature_.name_ == "main")
-})), (() => {
-return ff_core_Array.Array_toList([ff_compiler_ScalaEmitter.emitMain_()])
-})), (() => {
-return ff_core_Array.Array_toList([])
-})), ff_core_List.List_map(module_.types_, ((definition_) => {
+}))
+? ff_core_Array.Array_toList([ff_compiler_ScalaEmitter.emitMain_()])
+: ff_core_Array.Array_toList([])), ff_core_List.List_map(module_.types_, ((definition_) => {
 return ff_compiler_ScalaEmitter.emitTypeDefinition_(definition_)
 })), ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitLetDefinition_(_w1, false)
@@ -107,46 +105,42 @@ return (((("object " + name_) + " {\n\n") + ff_core_List.List_join(strings_, "\n
 
 export function emitTypeDefinition_(definition_) {
 const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(definition_.generics_);
-return ff_core_Option.Option_else(ff_core_Core.if_(((ff_core_Option.Option_isEmpty(definition_.targets_.scala_) && (ff_core_List.List_size(definition_.variants_) == 1)) && (ff_core_List.List_expectFirst(definition_.variants_).name_ == definition_.name_)), (() => {
+return (((ff_core_Option.Option_isEmpty(definition_.targets_.scala_) && (ff_core_List.List_size(definition_.variants_) == 1)) && (ff_core_List.List_expectFirst(definition_.variants_).name_ == definition_.name_))
+? (function() {
 const fields_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(definition_.commonFields_, ((parameter_) => {
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
 })), ", ")) + ")");
 return ((("case class " + definition_.name_) + generics_) + fields_)
-})), (() => {
+})()
+: (function() {
 const variants_ = ff_core_List.List_map(definition_.variants_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitVariantDefinition_(definition_, _w1)
 }));
 const head_ = ff_core_Option.Option_else(ff_core_Option.Option_map(definition_.targets_.scala_, ((code_) => {
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_String.String_startsWith(code_, "#", 0), (() => {
-return (ff_core_String.String_dropFirst(code_, 1) + ";\n")
+return (ff_core_String.String_startsWith(code_, "#", 0)
+? (ff_core_String.String_dropFirst(code_, 1) + ";\n")
+: ((((("type " + definition_.name_) + generics_) + " = ") + code_) + ";\n"))
 })), (() => {
-return ((((("type " + definition_.name_) + generics_) + " = ") + code_) + ";\n")
-}))
-})), (() => {
-const commonFields_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(definition_.commonFields_), (() => {
-return ""
-})), (() => {
-return ((" {\n" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_map(definition_.commonFields_, ((parameter_) => {
+const commonFields_ = (ff_core_List.List_isEmpty(definition_.commonFields_)
+? ""
+: ((" {\n" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_map(definition_.commonFields_, ((parameter_) => {
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
 })), ((_w1) => {
 return (("    val " + _w1) + "\n")
-})), "")) + "}")
-}));
+})), "")) + "}"));
 return (((("sealed abstract class " + definition_.name_) + generics_) + " extends Product with Serializable") + commonFields_)
 }));
 return (head_ + ff_core_List.List_join(ff_core_List.List_map(variants_, ((_w1) => {
 return ("\n" + _w1)
 })), ""))
-}))
+})())
 }
 
 export function emitLetDefinition_(definition_, mutable_ = false) {
 const typeAnnotation_ = ff_compiler_ScalaEmitter.emitTypeAnnotation_(definition_.variableType_);
-const mutability_ = ff_core_Option.Option_else(ff_core_Core.if_(mutable_, (() => {
-return "var"
-})), (() => {
-return "val"
-}));
+const mutability_ = (mutable_
+? "var"
+: "val");
 const valueCode_ = ff_core_Option.Option_else(definition_.targets_.scala_, (() => {
 return ff_compiler_ScalaEmitter.emitTerm_(definition_.value_)
 }));
@@ -156,11 +150,9 @@ return (((((mutability_ + " ") + ff_compiler_ScalaEmitter.escapeKeyword_(definit
 export function emitFunctionDefinition_(definition_, suffix_ = "") {
 const signature_ = ff_compiler_ScalaEmitter.emitSignature_(definition_.signature_, suffix_);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(definition_.targets_.scala_, ((code_) => {
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_String.String_startsWith(code_, "#", 0), (() => {
-return ff_core_String.String_dropFirst(code_, 1)
-})), (() => {
-return (((signature_ + " = {\n") + code_) + "\n}")
-}))
+return (ff_core_String.String_startsWith(code_, "#", 0)
+? ff_core_String.String_dropFirst(code_, 1)
+: (((signature_ + " = {\n") + code_) + "\n}"))
 })), (() => {
 return (((_1) => {
 {
@@ -223,17 +215,14 @@ return ff_compiler_ScalaEmitter.emitFunctionDefinition_(_w1, "")
 export function emitTraitDefinition_(definition_) {
 const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(definition_.generics_);
 const implicits_ = ff_compiler_ScalaEmitter.emitConstraints_(definition_.constraints_);
-const parameters_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(definition_.generatorParameters_), (() => {
-return ""
-})), (() => {
-return (("(" + ff_core_List.List_join(ff_core_List.List_map(definition_.generatorParameters_, ((parameter_) => {
+const parameters_ = (ff_core_List.List_isEmpty(definition_.generatorParameters_)
+? ""
+: (("(" + ff_core_List.List_join(ff_core_List.List_map(definition_.generatorParameters_, ((parameter_) => {
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
-})), ", ")) + ")")
-}));
-const methods_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(definition_.methods_), (() => {
-return ""
-})), (() => {
-return ((((" {\n\nimport " + definition_.name_) + "._\n\n") + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((signature_) => {
+})), ", ")) + ")"));
+const methods_ = (ff_core_List.List_isEmpty(definition_.methods_)
+? ""
+: ((((" {\n\nimport " + definition_.name_) + "._\n\n") + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((signature_) => {
 const body_ = ff_core_Option.Option_else(ff_core_Option.Option_orElse(ff_core_Option.Option_map(ff_core_List.List_find(definition_.methodDefaults_, ((_w1) => {
 return (_w1.first_ == signature_.name_)
 })), ((_1) => {
@@ -262,12 +251,10 @@ throw new Error('Unexhaustive pattern match')
 return ""
 }));
 return (ff_compiler_ScalaEmitter.emitSignature_(signature_, "_m") + body_)
-})), "\n\n")) + "\n\n}")
-}));
-const methodWrappers_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(definition_.methods_), (() => {
-return ""
-})), (() => {
-return ((" \n\n" + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((signature_) => {
+})), "\n\n")) + "\n\n}"));
+const methodWrappers_ = (ff_core_List.List_isEmpty(definition_.methods_)
+? ""
+: ((" \n\n" + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((signature_) => {
 const t_ = ff_compiler_Syntax.TConstructor(definition_.at_, definition_.name_, ff_core_List.List_map(definition_.generics_, ((_w1) => {
 return ff_compiler_Syntax.TConstructor(definition_.at_, _w1, ff_core_Array.Array_toList([]))
 })));
@@ -278,8 +265,7 @@ return _w1.name_
 })), ((word_) => {
 return ff_compiler_ScalaEmitter.escapeKeyword_(word_)
 })), ", ")) + ")")
-})), "\n\n")) + "\n\n")
-}));
+})), "\n\n")) + "\n\n"));
 return ((((((((((("abstract class " + definition_.name_) + generics_) + parameters_) + implicits_) + methods_) + "\n") + "object ") + definition_.name_) + " {") + methodWrappers_) + "}")
 }
 
@@ -299,20 +285,14 @@ const fields_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(allFields_,
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
 })), ", ")) + ")");
 return ff_core_Option.Option_else(ff_core_Option.Option_map(definition_.targets_.scala_, ((originalCode_) => {
-const code_ = ff_core_Option.Option_else(ff_core_Core.if_((originalCode_ == "scala.Unit"), (() => {
-return "{}"
-})), (() => {
-return originalCode_
-}));
-return ((((((((((((((((("object " + definition_.name_) + " {\n") + "def apply") + generics_) + fields_) + " = ") + code_) + ff_core_Option.Option_else(ff_core_Core.if_((fields_ != "()"), (() => {
-return fields_
-})), (() => {
-return ""
-}))) + ";\n") + "def unapply") + generics_) + "(value : ") + typeDefinition_.name_) + generics_) + ") = ") + ff_core_Option.Option_else(ff_core_Core.if_((fields_ != "()"), (() => {
-return ((((("scala.Some(value).collectFirst { case " + code_) + fields_) + " => ") + fields_) + " };\n")
-})), (() => {
-return (("value == " + code_) + ";\n")
-}))) + "}")
+const code_ = ((originalCode_ == "scala.Unit")
+? "{}"
+: originalCode_);
+return ((((((((((((((((("object " + definition_.name_) + " {\n") + "def apply") + generics_) + fields_) + " = ") + code_) + ((fields_ != "()")
+? fields_
+: "")) + ";\n") + "def unapply") + generics_) + "(value : ") + typeDefinition_.name_) + generics_) + ") = ") + ((fields_ != "()")
+? ((((("scala.Some(value).collectFirst { case " + code_) + fields_) + " => ") + fields_) + " };\n")
+: (("value == " + code_) + ";\n"))) + "}")
 })), (() => {
 return (((((("case class " + definition_.name_) + generics_) + fields_) + " extends ") + typeDefinition_.name_) + generics_)
 }))
@@ -323,10 +303,9 @@ const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(signature_.generi
 const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(signature_.parameters_, ((parameter_) => {
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
 })), ", ")) + ")");
-const implicits_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(signature_.constraints_), (() => {
-return ""
-})), (() => {
-return (("(implicit " + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_pairs(signature_.constraints_), ((_1) => {
+const implicits_ = (ff_core_List.List_isEmpty(signature_.constraints_)
+? ""
+: (("(implicit " + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_pairs(signature_.constraints_), ((_1) => {
 {
 if(_1._ === 'Pair') {
 const i_ = _1.first_
@@ -336,18 +315,15 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-})), ", ")) + ")")
-}));
+})), ", ")) + ")"));
 const returnType_ = ff_compiler_ScalaEmitter.emitTypeAnnotation_(signature_.returnType_);
 return (((((("def " + ff_compiler_ScalaEmitter.escapeKeyword_(signature_.name_)) + suffix_) + generics_) + parameters_) + implicits_) + returnType_)
 }
 
 export function emitParameter_(parameter_) {
-const mutability_ = ff_core_Option.Option_else(ff_core_Core.if_(parameter_.mutable_, (() => {
-return "var "
-})), (() => {
-return ""
-}));
+const mutability_ = (parameter_.mutable_
+? "var "
+: "");
 const defaultValue_ = ff_core_Option.Option_else(ff_core_Option.Option_map(parameter_.default_, ((_w1) => {
 return (" = " + ff_compiler_ScalaEmitter.emitTerm_(_w1))
 })), (() => {
@@ -357,9 +333,9 @@ return (((mutability_ + ff_compiler_ScalaEmitter.escapeKeyword_(parameter_.name_
 }
 
 export function emitConstraints_(constraints_) {
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(constraints_), (() => {
-return ""
-})), (() => {
+return (ff_core_List.List_isEmpty(constraints_)
+? ""
+: (function() {
 const pairs_ = ff_core_List.List_pairs(ff_core_List.List_map(ff_core_List.List_map(constraints_, ((_w1) => {
 return _w1.representation_
 })), ((type_) => {
@@ -376,15 +352,13 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 })), ", ")) + ")")
-}))
+})())
 }
 
 export function emitTypeParameters_(generics_) {
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(generics_), (() => {
-return ""
-})), (() => {
-return (("[" + ff_core_List.List_join(generics_, ", ")) + "]")
-}))
+return (ff_core_List.List_isEmpty(generics_)
+? ""
+: (("[" + ff_core_List.List_join(generics_, ", ")) + "]"))
 }
 
 export function emitTypeAnnotation_(t_){
@@ -416,14 +390,12 @@ return
 {
 if(type_a._ === 'TConstructor') {
 const t_ = type_a
-return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Core.if_(ff_core_String.String_startsWith(t_.name_, "Function$", 0), (() => {
-return ff_compiler_ScalaEmitter.emitType_((((_c) => {
+return (ff_core_String.String_startsWith(t_.name_, "Function$", 0)
+? ff_compiler_ScalaEmitter.emitType_((((_c) => {
 return ff_compiler_Syntax.TConstructor(_c.at_, ff_core_String.String_replace(t_.name_, "$", ""), _c.generics_)
 }))(t_))
-})), (() => {
-return ff_core_String.String_startsWith(t_.name_, "Record$", 0)
-}), (() => {
-return (("{" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_zip(ff_core_Array.Array_toList(ff_core_Array.Array_dropFirst(ff_core_String.String_split(t_.name_, 36), 1)), t_.generics_), ((_1) => {
+: ff_core_String.String_startsWith(t_.name_, "Record$", 0)
+? (("{" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_zip(ff_core_Array.Array_toList(ff_core_Array.Array_dropFirst(ff_core_String.String_split(t_.name_, 36), 1)), t_.generics_), ((_1) => {
 {
 if(_1._ === 'Pair') {
 const field_ = _1.first_
@@ -434,16 +406,14 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 })), "; ")) + "}")
-})), (() => {
-const generics_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(t_.generics_), (() => {
-return ""
-})), (() => {
-return (("[" + ff_core_List.List_join(ff_core_List.List_map(t_.generics_, ((type_) => {
+: (function() {
+const generics_ = (ff_core_List.List_isEmpty(t_.generics_)
+? ""
+: (("[" + ff_core_List.List_join(ff_core_List.List_map(t_.generics_, ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})), ", ")) + "]")
-}));
+})), ", ")) + "]"));
 return (ff_compiler_ScalaEmitter.escapeResolved_(t_.name_) + generics_)
-}))
+})())
 return
 }
 }
@@ -601,13 +571,11 @@ const at_ = term_a.at_
 const name_ = term_a.name_
 const typeArguments_ = term_a.typeArguments_
 const arguments_ = term_a.arguments_
-const generics_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(typeArguments_), (() => {
-return ""
-})), (() => {
-return (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
+const generics_ = (ff_core_List.List_isEmpty(typeArguments_)
+? ""
+: (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})), ", ")) + "]")
-}));
+})), ", ")) + "]"));
 return ((((ff_compiler_ScalaEmitter.escapeResolved_(name_) + generics_) + "(") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_flatten(ff_core_Option.Option_toList(arguments_)), ((argument_) => {
 return ff_compiler_ScalaEmitter.emitArgument_(argument_)
 })), ", ")) + ")")
@@ -619,13 +587,11 @@ if(term_a._ === 'EVariantIs') {
 const at_ = term_a.at_
 const name_ = term_a.name_
 const typeArguments_ = term_a.typeArguments_
-const generics_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(typeArguments_), (() => {
-return ""
-})), (() => {
-return (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
+const generics_ = (ff_core_List.List_isEmpty(typeArguments_)
+? ""
+: (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})), ", ")) + "]")
-}));
+})), ", ")) + "]"));
 return ((("({ case _w : " + ff_compiler_ScalaEmitter.escapeResolved_(name_)) + generics_) + " => Some(_w); case _ => None() })")
 return
 }
@@ -770,13 +736,11 @@ const at_ = term_a.at_
 const function_ = term_a.function_
 const typeArguments_ = term_a.typeArguments_
 const arguments_ = term_a.arguments_
-const generics_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(typeArguments_), (() => {
-return ""
-})), (() => {
-return (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
+const generics_ = (ff_core_List.List_isEmpty(typeArguments_)
+? ""
+: (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})), ", ")) + "]")
-}));
+})), ", ")) + "]"));
 return ((((ff_compiler_ScalaEmitter.emitTerm_(function_) + generics_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
 return ff_compiler_ScalaEmitter.emitArgument_(argument_)
 })), ", ")) + ")")
@@ -787,14 +751,14 @@ return
 if(term_a._ === 'ERecord') {
 const at_ = term_a.at_
 const fields_ = term_a.fields_
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(fields_), (() => {
-return "{}"
-})), (() => {
+return (ff_core_List.List_isEmpty(fields_)
+? "{}"
+: (function() {
 const list_ = ff_core_List.List_map(fields_, ((f_) => {
 return ((("val " + ff_compiler_ScalaEmitter.escapeKeyword_(f_.name_)) + " = ") + ff_compiler_ScalaEmitter.emitTerm_(f_.value_))
 }));
 return (("new {\n" + ff_core_List.List_join(list_, ";\n")) + ";\n}")
-}))
+})())
 return
 }
 }
@@ -946,19 +910,15 @@ throw new Error('Unexhaustive pattern match')
 export function escapeResolved_(word_) {
 const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(initialParts_), (() => {
-return ff_compiler_ScalaEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))
-})), (() => {
-return ((ff_core_List.List_join(initialParts_, ".") + "_.") + ff_compiler_ScalaEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_)))
-}))
+return (ff_core_List.List_isEmpty(initialParts_)
+? ff_compiler_ScalaEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))
+: ((ff_core_List.List_join(initialParts_, ".") + "_.") + ff_compiler_ScalaEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))))
 }
 
 export function escapeKeyword_(word_) {
-return ff_core_Option.Option_else(ff_core_Core.if_((ff_core_Set.Set_contains(ff_compiler_ScalaEmitter.keywords_, word_) || ff_core_Char.Char_isAsciiLower(ff_core_String.String_expectFirst(word_))), (() => {
-return (word_ + "_")
-})), (() => {
-return word_
-}))
+return ((ff_core_Set.Set_contains(ff_compiler_ScalaEmitter.keywords_, word_) || ff_core_Char.Char_isAsciiLower(ff_core_String.String_expectFirst(word_)))
+? (word_ + "_")
+: word_)
 }
 
 

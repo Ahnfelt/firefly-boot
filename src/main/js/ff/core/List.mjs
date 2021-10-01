@@ -672,9 +672,9 @@ return go_(self_, that_, ff_core_Array.Array_toList([]))
 }
 
 export function List_sortBy(self_, body_) {
-return ff_core_Option.Option_else(ff_core_Core.if_((ff_core_List.List_size(self_) <= 1), (() => {
-return self_
-})), (() => {
+return ((ff_core_List.List_size(self_) <= 1)
+? self_
+: (function() {
 function divide_(list_, xs_, ys_) {
 return (((_1) => {
 {
@@ -762,7 +762,7 @@ throw new Error('Unexhaustive pattern match')
 }
 const pair_ = divide_(self_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]));
 return merge_(ff_core_List.List_sortBy(pair_.first_, body_), ff_core_List.List_sortBy(pair_.second_, body_), ff_core_Array.Array_toList([]))
-}))
+})())
 }
 
 export function List_reverse(self_) {

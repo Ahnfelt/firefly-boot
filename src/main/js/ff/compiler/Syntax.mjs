@@ -268,13 +268,11 @@ if(_1._ === 'TConstructor') {
 const at_ = _1.at_
 const name_ = _1.name_
 const generics_ = _1.generics_
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_List.List_isEmpty(generics_), (() => {
-return name_
-})), (() => {
-return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return (ff_core_List.List_isEmpty(generics_)
+? name_
+: (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
 return ff_compiler_Syntax.Type_show(_w1)
-})), ", ")) + "]")
-}))
+})), ", ")) + "]"))
 return
 }
 }

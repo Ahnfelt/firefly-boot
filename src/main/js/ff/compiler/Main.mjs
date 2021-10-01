@@ -93,13 +93,15 @@ return (void 0)
 
 export function deleteDirectory_(fs_, outputFile_) {
 ff_core_List.List_each(ff_core_FileSystem.FileSystem_list(fs_, outputFile_), ((file_) => {
-ff_core_Option.Option_else(ff_core_Core.if_(ff_core_FileSystem.FileSystem_isDirectory(fs_, file_), (() => {
+(ff_core_FileSystem.FileSystem_isDirectory(fs_, file_)
+? (function() {
 ff_compiler_Main.deleteDirectory_(fs_, file_);
 return (void 0)
-})), (() => {
+})()
+: (function() {
 ff_core_FileSystem.FileSystem_delete(fs_, file_);
 return (void 0)
-}));
+})());
 return (void 0)
 }));
 ff_core_FileSystem.FileSystem_delete(fs_, outputFile_);

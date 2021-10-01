@@ -119,10 +119,12 @@ return result_
 }
 
 export function Compiler_emit(self_, packageName_, moduleName_) {
-ff_core_Option.Option_else(ff_core_Core.if_(ff_core_Set.Set_contains(self_.emittedModules_, ((packageName_ + ":") + moduleName_)), (() => {
+(ff_core_Set.Set_contains(self_.emittedModules_, ((packageName_ + ":") + moduleName_))
+? (function() {
 (void 0);
 return (void 0)
-})), (() => {
+})()
+: (function() {
 self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ((packageName_ + ":") + moduleName_));
 const module_ = ff_compiler_Compiler.Compiler_infer(self_, packageName_, moduleName_);
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_), ((i_) => {
@@ -146,7 +148,7 @@ const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs");
 ff_core_FileSystem.FileSystem_createDirectories(self_.files_, jsPath_);
 ff_core_FileSystem.FileSystem_writeText(self_.files_, jsFile_, js_);
 return (void 0)
-}));
+})());
 return (void 0)
 }
 

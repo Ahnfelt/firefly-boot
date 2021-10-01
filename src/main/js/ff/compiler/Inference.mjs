@@ -162,15 +162,13 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_compiler_Unification.Unification_substitute(self_.unification_, expected_));
-const cases_ = ff_core_Option.Option_else(ff_core_Core.if_((!returnsUnit_), (() => {
-return lambda_.cases_
-})), (() => {
-return ff_core_List.List_map(lambda_.cases_, ((c_) => {
+const cases_ = ((!returnsUnit_)
+? lambda_.cases_
+: ff_core_List.List_map(lambda_.cases_, ((c_) => {
 return (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.condition_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, ff_core_Array.Array_toList([]), ff_core_Option.None())))
 }))(c_)
-}))
-}));
+})));
 return (((_c) => {
 return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(cases_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferMatchCase(self_, environment_, expected_, _w1)
@@ -373,12 +371,12 @@ return
 if(_1._ === 'EVariable') {
 const e_ = _1
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.generics_), ((instantiated_) => {
-return ff_core_Option.Option_else(ff_core_Core.if_(instantiated_.scheme_.isVariable_, (() => {
+return (instantiated_.scheme_.isVariable_
+? (function() {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
-})), (() => {
-return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_)
-}))
+})()
+: ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_))
 })), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
 }))
@@ -489,11 +487,9 @@ return ff_compiler_Syntax.EList(at_, t_, ff_core_List.List_map(items_, ((_1) => 
 if(_1._ === 'Pair') {
 const item_ = _1.first_
 const spread_ = _1.second_
-return ff_core_Pair.Pair(ff_compiler_Inference.Inference_inferTerm(self_, environment_, ff_core_Option.Option_else(ff_core_Core.if_(spread_, (() => {
-return listType_
-})), (() => {
-return t_
-})), item_), spread_)
+return ff_core_Pair.Pair(ff_compiler_Inference.Inference_inferTerm(self_, environment_, (spread_
+? listType_
+: t_), item_), spread_)
 return
 }
 }
@@ -647,21 +643,20 @@ const variableAt_ = _1.at_
 const x_ = _1.name_
 if(_1.generics_._ === 'Empty') {
 if(_1.instances_._ === 'Empty') {
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
+return (ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
 return ((c_ != 95) && (!ff_core_Char.Char_isAsciiLetter(c_)))
-})), (() => {
-return ff_compiler_Inference.Inference_inferOperator(self_, environment_, expected_, x_, term_)
-})), (() => {
-return (((_1) => {
+}))
+? ff_compiler_Inference.Inference_inferOperator(self_, environment_, expected_, x_, term_)
+: (((_1) => {
 {
 if(_1._ === 'Some') {
 const instantiated_ = _1.value_
-return ff_core_Option.Option_else(ff_core_Core.if_(instantiated_.scheme_.isVariable_, (() => {
-return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
-})), (() => {
+return (instantiated_.scheme_.isVariable_
+? ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
+: (function() {
 const signature_ = instantiated_.scheme_.signature_;
 return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiated_.typeArguments_, term_, x_)
-}))
+})())
 return
 }
 }
@@ -672,8 +667,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, x_, e_.typeArguments_))
-}))
+}))(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, x_, e_.typeArguments_)))
 return
 }}}
 }
@@ -799,14 +793,14 @@ return
 if(_1._ === 'EAssign') {
 const e_ = _1
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.variable_, ff_core_Array.Array_toList([])), ((instantiated_) => {
-return ff_core_Option.Option_else(ff_core_Core.if_(instantiated_.scheme_.isMutable_, (() => {
+return (instantiated_.scheme_.isMutable_
+? (function() {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 return (((_c) => {
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 }))(e_)
-})), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_))
-}))
+})()
+: ff_compiler_Inference.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_)))
 })), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.variable_))
 }))
@@ -883,15 +877,17 @@ throw new Error('Unexhaustive pattern match')
 
 export function Inference_inferAssignment(self_, environment_, expected_, at_, operator_, value_, signature_) {
 const t_ = signature_.returnType_;
-ff_core_Option.Option_elseIf(ff_core_Core.if_(((operator_ == "+") || (operator_ == "-")), (() => {
+(((operator_ == "+") || (operator_ == "-"))
+? ff_core_Option.Some((function() {
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_Array.Array_toList([])));
 return (void 0)
-})), (() => {
-return (operator_ != "")
-}), (() => {
+})())
+: (operator_ != "")
+? ff_core_Option.Some((function() {
 ff_compiler_Inference.fail_(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "="));
 return (void 0)
-}));
+})())
+: ff_core_Option.None());
 const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_Array.Array_toList([])));
 return newValue_
@@ -1486,16 +1482,16 @@ return newArguments_
 
 export function Inference_lookup(self_, environment_, at_, symbol_, typeArguments_) {
 return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_), ((scheme_) => {
-const instantiation_ = ff_core_Option.Option_else(ff_core_Core.if_((!ff_core_List.List_isEmpty(typeArguments_)), (() => {
+const instantiation_ = ((!ff_core_List.List_isEmpty(typeArguments_))
+? (function() {
 if((ff_core_List.List_size(scheme_.signature_.generics_) != ff_core_List.List_size(typeArguments_))) {
 ff_compiler_Inference.fail_(at_, ((((("Wrong number of type parameters for " + symbol_) + ", expected ") + ff_core_List.List_size(scheme_.signature_.generics_)) + ", got ") + ff_core_List.List_size(typeArguments_)))
 };
 return ff_core_List.List_zip(scheme_.signature_.generics_, typeArguments_)
-})), (() => {
-return ff_core_List.List_map(scheme_.signature_.generics_, ((name_) => {
+})()
+: ff_core_List.List_map(scheme_.signature_.generics_, ((name_) => {
 return ff_core_Pair.Pair(name_, ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, at_))
-}))
-}));
+})));
 const instantiationMap_ = ff_core_List.List_toMap(instantiation_);
 const parameters_ = ff_core_List.List_map(scheme_.signature_.parameters_, ((p_) => {
 return (((_c) => {

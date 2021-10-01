@@ -265,13 +265,11 @@ return (((_c) => {
 return ff_compiler_Syntax.EVariable(_c.at_, _w1, _c.generics_, _c.instances_)
 }))(e_)
 })), (() => {
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
+return (ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
-})), (() => {
-return ff_compiler_Resolver.fail_(e_.at_, ("No such variable: " + e_.name_))
-})), (() => {
-return term_
 }))
+? ff_compiler_Resolver.fail_(e_.at_, ("No such variable: " + e_.name_))
+: term_)
 }))
 return
 }
@@ -510,13 +508,11 @@ return
 const self_ = self_a
 if(type_a._ === 'TConstructor') {
 const constructor_ = type_a
-const name_ = ff_core_Option.Option_else(ff_core_Core.if_(ff_core_String.String_contains(constructor_.name_, "$"), (() => {
-return constructor_.name_
-})), (() => {
-return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_), (() => {
+const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
+? constructor_.name_
+: ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_), (() => {
 return ff_compiler_Resolver.fail_(constructor_.at_, ("No such type: " + constructor_.name_))
-}))
-}));
+})));
 return (((_c) => {
 return ff_compiler_Syntax.TConstructor(_c.at_, name_, ff_core_List.List_map(constructor_.generics_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1)

@@ -187,7 +187,20 @@ extend self: JsEmitter {
         | ECall(at, _, EVariable(_, operator, _, _), [], [left, right]) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + self.emitArgument(left) + " " + operator + " " + self.emitArgument(right) + ")"
         | ECall(at, _, function, _, arguments) =>
-            self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ")"
+            detectIfElse(term).{
+                | [] =>
+                    self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ")"
+                | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>
+                    "(" + (list.foldLeft(self.emitTerm(elseBody))) {| otherwise, Pair(condition, body) =>
+                        self.emitTerm(condition) +
+                        "\n? " + self.emitTerm(body) + "\n: " + otherwise
+                    } + ")"
+                | list =>
+                    "(" + (list.foldLeft("ff_core_Option.None()")) {| otherwise, Pair(condition, body) =>
+                        self.emitTerm(condition) +
+                        "\n? ff_core_Option.Some(" + self.emitTerm(body) + ")\n: " + otherwise
+                    } + ")"
+            }
         | ERecord(at, fields) =>
             if(fields.isEmpty()) {"{}"} else {
                 let list = fields.map { f => escapeKeyword(f.name) + " = " + self.emitTerm(f.value) }
@@ -219,13 +232,12 @@ extend self: JsEmitter {
                 "while(" + self.emitTerm(invokeImmediately(condition.value)) + ") {\n" +
                 self.emitStatements(invokeImmediately(body.value), False) + "\n}"
             | ECall(at, _, EVariable(_, word, _, _), _, [condition, body]) { word == "ff:core/Core.if" } =>
-                let invokedBody = invokeImmediately(body.value)
                 "if(" + self.emitTerm(condition.value) + ") {\n" +
                 if(last) {
-                    "return ff_core_Option.Some(" + self.emitTerm(invokedBody) +
+                    "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body.value)) +
                     ")\n} else return ff_core_Option.None()"
                 } else {
-                    self.emitStatements(invokedBody, False) + "\n}"
+                    self.emitStatements(invokeImmediately(body.value), False) + "\n}"
                 }
             | _ {last} =>
                 "return " + self.emitTerm(term)
@@ -305,6 +317,21 @@ extend self: JsEmitter {
         self.emitTerm(argument.value)
     }
 
+}
+
+detectIfElse(term: Term): List[Pair[Term, Term]] {
+    | ECall(at, _, EVariable(_, word, _, _), _, [condition, body]) { word == "ff:core/Core.if" } =>
+        [Pair(condition.value, invokeImmediately(body.value))]
+    | ECall(at, _, EVariable(_, word, _, _), _, [option, condition, body]) { word == "ff:core/Option.Option_elseIf" } =>
+        let list = detectIfElse(option.value)
+        if(list.isEmpty()) { [] } else:
+        [Pair(invokeImmediately(condition.value), invokeImmediately(body.value)), ...list]
+    | ECall(at, _, EVariable(_, word, _, _), _, [option, body]) { word == "ff:core/Option.Option_else" } =>
+        let list = detectIfElse(option.value)
+        if(list.isEmpty()) { [] } else:
+        [Pair(EVariant(at, "ff:core/Bool.True", [], None), invokeImmediately(body.value)), ...list]
+    | _ =>
+        []
 }
 
 invokeImmediately(function: Term): Term {

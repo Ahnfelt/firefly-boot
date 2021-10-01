@@ -318,11 +318,9 @@ const self_ = self_a
 if(type_a._ === 'TVariable') {
 const at_ = type_a.at_
 const i_ = type_a.index_
-return ff_core_Option.Option_else(ff_core_Core.if_(ff_compiler_Substitution.Substitution_has(self_, i_), (() => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, ff_compiler_Substitution.Substitution_get(self_, i_))
-})), (() => {
-return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_Array.Array_toList([]))
-}))
+return (ff_compiler_Substitution.Substitution_has(self_, i_)
+? ff_compiler_Substitution.Substitution_substituteType(self_, ff_compiler_Substitution.Substitution_get(self_, i_))
+: ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_Array.Array_toList([])))
 return
 }
 }

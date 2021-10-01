@@ -51,6 +51,27 @@ def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.Stri
 ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Location_show(self_ = at_)))
 }
 
+def detectIfElse_(term_ : ff.compiler.Syntax_.Term) : ff.core.List_.List[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term]] = (term_) match {
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if (word_ == "ff:core/Core.if") =>
+List(ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term](first_ = condition_.value_, second_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_)))
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(option_, condition_, body_))) if (word_ == "ff:core/Option.Option_elseIf") =>
+val list_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term]] = ff.compiler.JsEmitter_.detectIfElse_(term_ = option_.value_);
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term]]](condition_ = ff.core.List_.List_isEmpty[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term]](self_ = list_), body_ = {() =>
+List()
+}), body_ = {() =>
+(List(List(ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term](first_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = condition_.value_), second_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_))), list_).flatten)
+})
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(option_, body_))) if (word_ == "ff:core/Option.Option_else") =>
+val list_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term]] = ff.compiler.JsEmitter_.detectIfElse_(term_ = option_.value_);
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.List_.List[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term]]](condition_ = ff.core.List_.List_isEmpty[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term]](self_ = list_), body_ = {() =>
+List()
+}), body_ = {() =>
+(List(List(ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term](first_ = ff.compiler.Syntax_.EVariant(at_ = at_, name_ = "ff:core/Bool.True", typeArguments_ = List(), arguments_ = ff.core.Option_.None[ff.core.List_.List[ff.compiler.Syntax_.Argument]]()), second_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_))), list_).flatten)
+})
+case (_) =>
+List()
+}
+
 def invokeImmediately_(function_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (function_) match {
 case (ff.compiler.Syntax_.ELambda(_, ff.compiler.Syntax_.Lambda(_, List(ff.compiler.Syntax_.MatchCase(_, List(), ff.core.Option_.None(), body_))))) =>
 body_
@@ -320,9 +341,23 @@ case (self_, ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, 
 case (self_, ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, operator_, _, _), List(), List(left_, right_))) if (!ff.core.Char_.Char_isAsciiLetter(self_ = ff.core.String_.String_expectFirst(self_ = operator_))) =>
 (((((("(" + ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = left_)) + " ") + operator_) + " ") + ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = right_)) + ")")
 case (self_, ff.compiler.Syntax_.ECall(at_, _, function_, _, arguments_)) =>
+pipe_dot(ff.compiler.JsEmitter_.detectIfElse_(term_ = term_))({
+case (List()) =>
 (((ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = function_) + "(") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = arguments_, body_ = {(argument_) =>
 ff.compiler.JsEmitter_.JsEmitter_emitArgument(self_ = self_, argument_ = argument_)
 }), separator_ = ", ")) + ")")
+case (List(ff.core.Pair_.Pair(ff.compiler.Syntax_.EVariant(_, word_, _, _), elseBody_), list__seq @ _*)) if (word_ == "ff:core/Bool.True") =>
+val list_ = list__seq.toList;
+(("(" + ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term], ff.core.String_.String](self_ = list_, initial_ = ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = elseBody_))({
+case (otherwise_, ff.core.Pair_.Pair(condition_, body_)) =>
+((((ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_) + "\n? ") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = body_)) + "\n: ") + otherwise_)
+})) + ")")
+case (list_) =>
+(("(" + ff.core.List_.List_foldLeft[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.compiler.Syntax_.Term], ff.core.String_.String](self_ = list_, initial_ = "ff_core_Option.None()")({
+case (otherwise_, ff.core.Pair_.Pair(condition_, body_)) =>
+((((ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_) + "\n? ff_core_Option.Some(") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = body_)) + ")\n: ") + otherwise_)
+})) + ")")
+})
 case (self_, ff.compiler.Syntax_.ERecord(at_, fields_)) =>
 ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Field](self_ = fields_), body_ = {() =>
 "{}"
@@ -360,11 +395,10 @@ case (ff.compiler.Syntax_.EAssignField(at_, operator_, record_, field_, value_))
 case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if (word_ == "ff:core/Core.while") =>
 (((("while(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = condition_.value_))) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_), last_ = ff.core.Bool_.False())) + "\n}")
 case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if (word_ == "ff:core/Core.if") =>
-val invokedBody_ : ff.compiler.Syntax_.Term = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_);
 ((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_.value_)) + ") {\n") + ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = last_, body_ = {() =>
-(("return ff_core_Option.Some(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = invokedBody_)) + ")\n} else return ff_core_Option.None()")
+(("return ff_core_Option.Some(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_))) + ")\n} else return ff_core_Option.None()")
 }), body_ = {() =>
-(ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = invokedBody_, last_ = ff.core.Bool_.False()) + "\n}")
+(ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_), last_ = ff.core.Bool_.False()) + "\n}")
 }))
 case (_) if last_ =>
 ("return " + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = term_))
