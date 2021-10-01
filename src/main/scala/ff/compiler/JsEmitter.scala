@@ -51,6 +51,13 @@ def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.Stri
 ff.core.Core_.panic_[T](message_ = ((message_ + " ") + ff.compiler.Syntax_.Location_show(self_ = at_)))
 }
 
+def invokeImmediately_(function_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (function_) match {
+case (ff.compiler.Syntax_.ELambda(_, ff.compiler.Syntax_.Lambda(_, List(ff.compiler.Syntax_.MatchCase(_, List(), ff.core.Option_.None(), body_))))) =>
+body_
+case (_) =>
+ff.compiler.Syntax_.ECall(at_ = function_.at_, tailCall_ = ff.core.Bool_.False(), function_ = function_, typeArguments_ = List(), arguments_ = List())
+}
+
 def extractTypeName_(type_ : ff.compiler.Syntax_.Type) : ff.core.String_.String = (type_) match {
 case (ff.compiler.Syntax_.TVariable(at_, index_)) =>
 ff.compiler.JsEmitter_.fail_[ff.core.String_.String](at_ = at_, message_ = ("Unexpected type variable: $" + index_))
@@ -351,13 +358,9 @@ case (ff.compiler.Syntax_.EAssign(at_, operator_, name_, value_)) =>
 case (ff.compiler.Syntax_.EAssignField(at_, operator_, record_, field_, value_)) =>
 ((((((ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = record_) + ".") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = field_)) + " ") + operator_) + "= ") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = value_))
 case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if (word_ == "ff:core/Core.while") =>
-def invoke_(function_ : ff.compiler.Syntax_.Term) : ff.compiler.Syntax_.Term = (function_) match {
-case (ff.compiler.Syntax_.ELambda(at_, ff.compiler.Syntax_.Lambda(_, List(ff.compiler.Syntax_.MatchCase(_, List(), ff.core.Option_.None(), body_))))) =>
-body_
-case (_) =>
-ff.compiler.Syntax_.ECall(at_ = at_, tailCall_ = ff.core.Bool_.False(), function_ = function_, typeArguments_ = List(), arguments_ = List())
-}
-(((("while(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = invoke_(function_ = condition_.value_))) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = invoke_(function_ = body_.value_), last_ = ff.core.Bool_.False())) + "\n}")
+(((("while(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = condition_.value_))) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_), last_ = ff.core.Bool_.False())) + "\n}")
+case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, _, _), _, List(condition_, body_))) if ((word_ == "ff:core/Core.if") && (!last_)) =>
+(((("if(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = condition_.value_)) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_), last_ = ff.core.Bool_.False())) + "\n}")
 case (_) if last_ =>
 ("return " + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = term_))
 case (_) =>

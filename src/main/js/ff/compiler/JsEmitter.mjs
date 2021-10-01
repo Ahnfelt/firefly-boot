@@ -56,6 +56,29 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
+export function invokeImmediately_(function_){
+const function_a = function_
+{
+if(function_a._ === 'ELambda') {
+if(function_a.lambda_._ === 'Lambda') {
+if(function_a.lambda_.cases_._ === 'Link') {
+if(function_a.lambda_.cases_.head_._ === 'MatchCase') {
+if(function_a.lambda_.cases_.head_.patterns_._ === 'Empty') {
+if(function_a.lambda_.cases_.head_.condition_._ === 'None') {
+const body_ = function_a.lambda_.cases_.head_.body_
+if(function_a.lambda_.cases_.tail_._ === 'Empty') {
+return body_
+return
+}}}}}}}
+}
+{
+return ff_compiler_Syntax.ECall(function_.at_, false, function_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]))
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
+
 export function extractTypeName_(type_){
 const type_a = type_
 {
@@ -636,9 +659,9 @@ const self_ = self_a
 if(term_a._ === 'EWildcard') {
 const at_ = term_a.at_
 const index_ = term_a.index_
-ff_core_Core.if_((index_ == 0), (() => {
-return ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
-}));
+if((index_ == 0)) {
+ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
+};
 return ("_w" + index_)
 return
 }
@@ -719,30 +742,22 @@ if(_1.arguments_.tail_._ === 'Link') {
 const body_ = _1.arguments_.tail_.head_
 if(_1.arguments_.tail_.tail_._ === 'Empty') {
 if((word_ == "ff:core/Core.while")) {
-function invoke_(function_){
-const function_a = function_
-{
-if(function_a._ === 'ELambda') {
-const at_ = function_a.at_
-if(function_a.lambda_._ === 'Lambda') {
-if(function_a.lambda_.cases_._ === 'Link') {
-if(function_a.lambda_.cases_.head_._ === 'MatchCase') {
-if(function_a.lambda_.cases_.head_.patterns_._ === 'Empty') {
-if(function_a.lambda_.cases_.head_.condition_._ === 'None') {
-const body_ = function_a.lambda_.cases_.head_.body_
-if(function_a.lambda_.cases_.tail_._ === 'Empty') {
-return body_
+return (((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_.value_))) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false)) + "\n}")
 return
-}}}}}}}
+}}}}}}
 }
 {
-return ff_compiler_Syntax.ECall(at_, false, function_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]))
-return
-
-}
-throw new Error('Unexhaustive pattern match')
-}
-return (((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, invoke_(condition_.value_))) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, invoke_(body_.value_), false)) + "\n}")
+if(_1._ === 'ECall') {
+const at_ = _1.at_
+if(_1.function_._ === 'EVariable') {
+const word_ = _1.function_.name_
+if(_1.arguments_._ === 'Link') {
+const condition_ = _1.arguments_.head_
+if(_1.arguments_.tail_._ === 'Link') {
+const body_ = _1.arguments_.tail_.head_
+if(_1.arguments_.tail_.tail_._ === 'Empty') {
+if(((word_ == "ff:core/Core.if") && (!last_))) {
+return (((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_.value_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false)) + "\n}")
 return
 }}}}}}
 }

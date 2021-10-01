@@ -416,9 +416,9 @@ return
 const self_ = self_a
 if(term_a._ === 'EWildcard') {
 const e_ = term_a
-ff_core_Core.if_((e_.index_ == 0), (() => {
-return ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
-}));
+if((e_.index_ == 0)) {
+ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
+};
 return (((_c) => {
 return ff_compiler_Syntax.EWildcard(_c.at_, _c.index_)
 }))(e_)

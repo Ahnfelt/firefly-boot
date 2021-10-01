@@ -417,9 +417,9 @@ const generics1_ = t1_a.generics_
 if(t2_a._ === 'TConstructor') {
 const name2_ = t2_a.name_
 const generics2_ = t2_a.generics_
-ff_core_Core.if_(((name1_ != name2_) || (ff_core_List.List_size(generics1_) != ff_core_List.List_size(generics2_))), (() => {
-return ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
-}));
+if(((name1_ != name2_) || (ff_core_List.List_size(generics1_) != ff_core_List.List_size(generics2_)))) {
+ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
+};
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
 {
 if(_1._ === 'Pair') {
@@ -440,9 +440,9 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Unification_bind(self_, at_, index_, type_) {
-ff_core_Core.if_(ff_compiler_Unification.Unification_occursIn(self_, index_, type_), (() => {
-return ff_compiler_Unification.Unification_fail(self_, at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
-}));
+if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
+ff_compiler_Unification.Unification_fail(self_, at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
+};
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_);
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_), ((map_) => {
 self_.constraints_ = ff_core_Map.Map_remove(self_.constraints_, index_);

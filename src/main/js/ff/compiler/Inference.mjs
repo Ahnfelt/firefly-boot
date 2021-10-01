@@ -1091,9 +1091,9 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_compiler_Unification.Unification_substitute(self_.unification_, t_));
-ff_core_Core.if_(((((name_ != ff_compiler_Inference.core_("List")) && (name_ != ff_compiler_Inference.core_("Array"))) && (name_ != ff_compiler_Inference.core_("Set"))) && (name_ != ff_compiler_Inference.core_("Map"))), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Operator ++ not currently supported for " + name_))
-}));
+if(((((name_ != ff_compiler_Inference.core_("List")) && (name_ != ff_compiler_Inference.core_("Array"))) && (name_ != ff_compiler_Inference.core_("Set"))) && (name_ != ff_compiler_Inference.core_("Map")))) {
+ff_compiler_Inference.fail_(e_.at_, ("Operator ++ not currently supported for " + name_))
+};
 return (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_Array.Array_toList([(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
@@ -1487,9 +1487,9 @@ return newArguments_
 export function Inference_lookup(self_, environment_, at_, symbol_, typeArguments_) {
 return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_), ((scheme_) => {
 const instantiation_ = ff_core_Option.Option_else(ff_core_Core.if_((!ff_core_List.List_isEmpty(typeArguments_)), (() => {
-ff_core_Core.if_((ff_core_List.List_size(scheme_.signature_.generics_) != ff_core_List.List_size(typeArguments_)), (() => {
-return ff_compiler_Inference.fail_(at_, ((((("Wrong number of type parameters for " + symbol_) + ", expected ") + ff_core_List.List_size(scheme_.signature_.generics_)) + ", got ") + ff_core_List.List_size(typeArguments_)))
-}));
+if((ff_core_List.List_size(scheme_.signature_.generics_) != ff_core_List.List_size(typeArguments_))) {
+ff_compiler_Inference.fail_(at_, ((((("Wrong number of type parameters for " + symbol_) + ", expected ") + ff_core_List.List_size(scheme_.signature_.generics_)) + ", got ") + ff_core_List.List_size(typeArguments_)))
+};
 return ff_core_List.List_zip(scheme_.signature_.generics_, typeArguments_)
 })), (() => {
 return ff_core_List.List_map(scheme_.signature_.generics_, ((name_) => {

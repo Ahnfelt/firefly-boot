@@ -59,9 +59,9 @@ const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(syste
 const scalaOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3);
 const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4);
 const fs_ = ff_core_System.System_files(system_);
-ff_core_Core.if_(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_), (() => {
-return ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
-}));
+if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
+ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
+};
 ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_);
 const scalaPathFile_ = (tempPath_ + "/src/main/scala");
 ff_core_FileSystem.FileSystem_createDirectories(fs_, scalaPathFile_);
@@ -72,17 +72,17 @@ const success_ = ff_core_Core.do_((() => {
 ff_compiler_Compiler.Compiler_emit(ff_compiler_Compiler.make_(fs_, scalaPathFile_, jsPathFile_, packagePaths_), "ff:compiler", "Main");
 return true
 }));
-ff_core_Core.if_(success_, (() => {
+if(success_) {
 ff_compiler_Main.writeExtraFiles_(fs_, inputPath_, corePath_, tempPath_, scalaPathFile_);
-ff_core_Core.if_(ff_core_FileSystem.FileSystem_exists(fs_, scalaOutputPath_), (() => {
-return ff_compiler_Main.deleteDirectory_(fs_, scalaOutputPath_)
-}));
-ff_core_Core.if_(ff_core_FileSystem.FileSystem_exists(fs_, jsOutputPath_), (() => {
-return ff_compiler_Main.deleteDirectory_(fs_, jsOutputPath_)
-}));
+if(ff_core_FileSystem.FileSystem_exists(fs_, scalaOutputPath_)) {
+ff_compiler_Main.deleteDirectory_(fs_, scalaOutputPath_)
+};
+if(ff_core_FileSystem.FileSystem_exists(fs_, jsOutputPath_)) {
+ff_compiler_Main.deleteDirectory_(fs_, jsOutputPath_)
+};
 ff_core_FileSystem.FileSystem_rename(fs_, scalaPathFile_, scalaOutputPath_);
-return ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
-}));
+ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
+};
 return (void 0)
 }
 

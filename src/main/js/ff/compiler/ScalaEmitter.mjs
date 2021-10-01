@@ -802,9 +802,9 @@ return
 if(term_a._ === 'EWildcard') {
 const at_ = term_a.at_
 const index_ = term_a.index_
-ff_core_Core.if_((index_ == 0), (() => {
-return ff_compiler_ScalaEmitter.fail_(at_, "Unbound wildcard")
-}));
+if((index_ == 0)) {
+ff_compiler_ScalaEmitter.fail_(at_, "Unbound wildcard")
+};
 return ("_w" + index_)
 return
 }

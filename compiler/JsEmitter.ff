@@ -216,12 +216,11 @@ extend self: JsEmitter {
             | EAssignField(at, operator, record, field, value) =>
                 self.emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + self.emitTerm(value)
             | ECall(at, _, EVariable(_, word, _, _), _, [condition, body]) { word == "ff:core/Core.while" } =>
-                function invoke(function: Term): Term {
-                    | ELambda(at, Lambda(_, [MatchCase(_, [], None, body)])) => body
-                    | _ => ECall(at, False, function, [], [])
-                }
-                "while(" + self.emitTerm(invoke(condition.value)) + ") {\n" +
-                self.emitStatements(invoke(body.value), False) + "\n}"
+                "while(" + self.emitTerm(invokeImmediately(condition.value)) + ") {\n" +
+                self.emitStatements(invokeImmediately(body.value), False) + "\n}"
+            | ECall(at, _, EVariable(_, word, _, _), _, [condition, body]) { word == "ff:core/Core.if" && !last } =>
+                "if(" + self.emitTerm(condition.value) + ") {\n" +
+                self.emitStatements(invokeImmediately(body.value), False) + "\n}"
             | _ {last} =>
                 "return " + self.emitTerm(term)
             | _ =>
@@ -300,6 +299,11 @@ extend self: JsEmitter {
         self.emitTerm(argument.value)
     }
 
+}
+
+invokeImmediately(function: Term): Term {
+    | ELambda(_, Lambda(_, [MatchCase(_, [], None, body)])) => body
+    | _ => ECall(function.at, False, function, [], [])
 }
 
 extractTypeName(type: Type): String {
