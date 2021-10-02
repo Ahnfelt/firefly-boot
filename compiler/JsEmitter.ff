@@ -221,7 +221,7 @@ extend self: JsEmitter {
                 }
                 functionStrings.join("\n") + "\n" + self.emitStatements(body, last)
             | ELet(at, mutable, name, valueType, value, body) =>
-                self.emitLetDefinition(DLet(at, name, valueType, value, Targets(None, None)), mutable) + ";\n" + self.emitStatements(body, last)
+                self.emitLetDefinition(DLet(at, name, valueType, value, Targets(None, None)), mutable) + "\n" + self.emitStatements(body, last)
             | EVariant(at, word, _, _) { word == "ff:core/Unit.Unit" } =>
                 ""
             | ESequential(at, EVariant(at, word, _, _), after) { word == "ff:core/Unit.Unit" } =>
@@ -229,7 +229,7 @@ extend self: JsEmitter {
             | ESequential(at, before, EVariant(at, word, _, _)) { word == "ff:core/Unit.Unit" } =>
                 self.emitStatements(before, False)
             | ESequential(at, before, after) =>
-                self.emitStatements(before, False) + ";\n" + self.emitStatements(after, last)
+                self.emitStatements(before, False) + "\n" + self.emitStatements(after, last)
             | EAssign(at, operator, name, value) =>
                 escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value)
             | EAssignField(at, operator, record, field, value) =>

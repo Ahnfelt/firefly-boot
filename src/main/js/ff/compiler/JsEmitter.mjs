@@ -47,7 +47,7 @@ return {_: 'JsEmitter', otherModules_};
 
 export function make_(otherModules_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
-const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
+const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3))
 return ff_core_Pair.Pair(moduleName_, m_)
 }))))
 }
@@ -86,7 +86,7 @@ if(term_a.arguments_.tail_.tail_._ === 'Link') {
 const body_ = term_a.arguments_.tail_.tail_.head_
 if(term_a.arguments_.tail_.tail_.tail_._ === 'Empty') {
 if((word_ == "ff:core/Option.Option_elseIf")) {
-const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_);
+const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_)
 if(ff_core_List.List_isEmpty(list_)) {
 return ff_core_Array.Array_toList([])
 } else {
@@ -106,7 +106,7 @@ if(term_a.arguments_.tail_._ === 'Link') {
 const body_ = term_a.arguments_.tail_.head_
 if(term_a.arguments_.tail_.tail_._ === 'Empty') {
 if((word_ == "ff:core/Option.Option_else")) {
-const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_);
+const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_)
 if(ff_core_List.List_isEmpty(list_)) {
 return ff_core_Array.Array_toList([])
 } else {
@@ -167,8 +167,8 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function escapeResolved_(word_) {
-const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
-const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
+const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46))
+const initialParts_ = ff_core_List.List_dropLast(parts_, 1)
 if(ff_core_List.List_isEmpty(initialParts_)) {
 return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))
 } else {
@@ -185,12 +185,12 @@ return word_
 }
 
 export function JsEmitter_emitModule(self_, packagePair_, module_) {
-const selfImport_ = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
+const selfImport_ = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"")
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
 return ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 })), ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitImportDefinition(self_, _w1)
-}));
+}))
 const parts_ = ff_core_Array.Array_toList([(ff_core_List.List_any(imports_, ((_w1) => {
 return (_w1 == selfImport_)
 }))
@@ -207,7 +207,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 return (_w1.signature_.name_ == "main")
 })))
 ? ff_core_Array.Array_toList([ff_compiler_JsEmitter.JsEmitter_emitMain(self_)])
-: ff_core_Array.Array_toList([]))]);
+: ff_core_Array.Array_toList([]))])
 return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
@@ -224,31 +224,31 @@ return ((((((((((((("import * as " + definition_.package_.first_) + "_") + defin
 export function JsEmitter_emitLetDefinition(self_, definition_, mutable_ = false) {
 const mutability_ = (mutable_
 ? "let"
-: "const");
+: "const")
 const valueCode_ = ff_core_Option.Option_else(definition_.targets_.scala_, (() => {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_)
-}));
+}))
 return ((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + " = ") + valueCode_)
 }
 
 export function JsEmitter_emitExtendsDefinition(self_, definition_) {
 const typeName_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_compiler_JsEmitter.extractTypeName_(definition_.type_)), ((_w1) => {
 return (_w1 != 46)
-})));
+})))
 const methods_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 return (((_c) => {
 return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_)
 }))(method_.signature_), _c.body_, _c.targets_)
 }))(method_)
-}));
+}))
 return ff_core_List.List_join(ff_core_List.List_map(methods_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, ""))
 })), "\n\n")
 }
 
 export function JsEmitter_emitFunctionDefinition(self_, definition_, suffix_ = "") {
-const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, suffix_);
+const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, suffix_)
 return ff_core_Option.Option_else(ff_core_Option.Option_map(definition_.targets_.javaScript_, ((code_) => {
 if(ff_core_String.String_startsWith(code_, "#", 0)) {
 return ff_core_String.String_dropFirst(code_, 1)
@@ -286,7 +286,7 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))) {
-const body_ = ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true);
+const body_ = ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true)
 return (((signature_ + " {\n") + body_) + "\n}")
 return
 }}}}
@@ -296,13 +296,13 @@ if(_1._ === 'Lambda') {
 const cases_ = _1.cases_
 const escapedArguments_ = ff_core_List.List_map(definition_.signature_.parameters_, ((_w1) => {
 return (_w1.name_ + "_a")
-}));
+}))
 const shadowingWorkaround_ = ff_core_List.List_join(ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
 return ((("const " + p_.name_) + "_a = ") + ff_compiler_JsEmitter.escapeKeyword_(p_.name_))
-})), "\n");
+})), "\n")
 const casesString_ = ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
 return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1)) + "\n}")
-})), "\n");
+})), "\n")
 return (((((signature_ + "{\n") + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
 return
 }
@@ -315,7 +315,7 @@ throw new Error('Unexhaustive pattern match')
 export function JsEmitter_emitSignature(self_, signature_, suffix_ = "") {
 const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(signature_.parameters_, ((parameter_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitParameter(self_, parameter_)
-})), ", ")) + ")");
+})), ", ")) + ")")
 return ((("function " + ff_compiler_JsEmitter.escapeKeyword_(signature_.name_)) + suffix_) + parameters_)
 }
 
@@ -324,7 +324,7 @@ const defaultValue_ = ff_core_Option.Option_else(ff_core_Option.Option_map(param
 return (" = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1))
 })), (() => {
 return ""
-}));
+}))
 return (ff_compiler_JsEmitter.escapeKeyword_(parameter_.name_) + defaultValue_)
 }
 
@@ -335,10 +335,10 @@ return ff_compiler_JsEmitter.JsEmitter_emitVariantDefinition(self_, definition_,
 }
 
 export function JsEmitter_emitVariantDefinition(self_, typeDefinition_, definition_) {
-const allFields_ = ff_core_List.List_addAll(typeDefinition_.commonFields_, definition_.fields_);
+const allFields_ = ff_core_List.List_addAll(typeDefinition_.commonFields_, definition_.fields_)
 const fields_ = ff_core_List.List_join(ff_core_List.List_map(allFields_, ((_w1) => {
 return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
-})), ", ");
+})), ", ")
 return ff_core_Option.Option_else(definition_.targets_.javaScript_, (() => {
 if(ff_core_List.List_isEmpty(allFields_)) {
 return ((((((((((((("const " + definition_.name_) + "$ = {_: '") + definition_.name_) + "'};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
@@ -563,7 +563,7 @@ const record_ = term_a.record_
 const fields_ = term_a.arguments_
 const fieldCode_ = ff_core_List.List_join(ff_core_List.List_map(fields_, ((f_) => {
 return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_))
-})), ", ");
+})), ", ")
 return (((("{..." + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_)) + ", ") + fieldCode_) + "}")
 return
 }
@@ -621,7 +621,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-})), ", ");
+})), ", ")
 return (((("((" + parameters_) + ") => {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, true)) + "\n})")
 return
 }}}}}}}
@@ -634,13 +634,13 @@ if(term_a.lambda_._ === 'Lambda') {
 const cases_ = term_a.lambda_.cases_
 const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_expect(cases_, 0).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
-}));
+}))
 const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
-}));
+}))
 const casesString_ = ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
 return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1)) + "\n}")
-})), "\n");
+})), "\n")
 return ((((("((" + ff_core_List.List_join(escapedArguments_, ", ")) + ") => ") + "{\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n})")
 return
 }}
@@ -757,7 +757,7 @@ return "{}"
 } else {
 const list_ = ff_core_List.List_map(fields_, ((f_) => {
 return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_))
-}));
+}))
 return (("{\n" + ff_core_List.List_join(list_, ",\n")) + "\n}")
 }
 return
@@ -770,7 +770,7 @@ const at_ = term_a.at_
 const index_ = term_a.index_
 if((index_ == 0)) {
 ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
-};
+}
 return ("_w" + index_)
 return
 }
@@ -793,7 +793,7 @@ const functions_ = _1.functions_
 const body_ = _1.body_
 const functionStrings_ = ff_core_List.List_map(functions_, ((f_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), "")
-}));
+}))
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_))
 return
 }
@@ -806,7 +806,7 @@ const name_ = _1.name_
 const valueType_ = _1.valueType_
 const value_ = _1.value_
 const body_ = _1.body_
-return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), mutable_) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), mutable_) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_))
 return
 }
 }
@@ -848,7 +848,7 @@ if(_1._ === 'ESequential') {
 const at_ = _1.at_
 const before_ = _1.before_
 const after_ = _1.after_
-return ((ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_))
 return
 }
 }
@@ -925,7 +925,7 @@ const word_ = _1.head_.first_.name_
 const elseBody_ = _1.head_.second_
 const list_ = _1.tail_
 if((word_ == "ff:core/Bool.True")) {
-const initial_ = (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, elseBody_, last_)) + "\n}");
+const initial_ = (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, elseBody_, last_)) + "\n}")
 return ff_core_List.List_foldLeft(list_, initial_)(((_1, _2) => {
 {
 const otherwise_ = _1
@@ -1032,7 +1032,7 @@ return
 if(_1._ === 'PVariable') {
 if(_1.name_._ === 'Some') {
 const name_ = _1.name_.value_
-const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(name_);
+const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(name_)
 return (((escaped_ != argument_)
 ? (((("const " + escaped_) + " = ") + argument_) + "\n")
 : "") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_))
@@ -1072,10 +1072,10 @@ const name_ = _1.name_
 const patterns_ = _1.patterns_
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
-})));
-const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
-const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_);
+})))
+const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
+const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
+const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
 const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ == variantName_)
@@ -1088,7 +1088,7 @@ return _w1.name_
 }))
 }))), ((_w1) => {
 return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(_w1))
-}));
+}))
 return (((((("if(" + argument_) + "._ === '") + variantName_) + "') {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.List_addAll(newArguments_, arguments_), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.List_addAll(patterns_, matchCase_.patterns_), _c.condition_, _c.body_)
 }))(matchCase_))) + "}")
@@ -1102,7 +1102,7 @@ const name_ = _1.name_
 const variable_ = _1.variable_
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
-}))));
+}))))
 return ((((((("if(" + argument_) + "._ === '") + ff_compiler_JsEmitter.escapeKeyword_(variantName_)) + "') {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 })), ((_w1) => {
@@ -1119,7 +1119,7 @@ return
 if(_1._ === 'PAlias') {
 const pattern_ = _1.pattern_
 const variable_ = _1.variable_
-const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(variable_);
+const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(variable_)
 return (((escaped_ != argument_)
 ? (((("const " + escaped_) + " = ") + argument_) + "\n")
 : "") + ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_))
@@ -1130,7 +1130,7 @@ return
 if(_1._ === 'PList') {
 const at_ = _1.at_
 if(_1.items_._ === 'Empty') {
-const p_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Empty", ff_core_Array.Array_toList([]));
+const p_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Empty", ff_core_Array.Array_toList([]))
 return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toList([argument_, ...ff_core_List.List_toArray(arguments_)]), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([p_, ...ff_core_List.List_toArray(matchCase_.patterns_)]), _c.condition_, _c.body_)
 }))(matchCase_))
@@ -1146,7 +1146,7 @@ if(_1.items_.head_._ === 'Pair') {
 const p_ = _1.items_.head_.first_
 if(!_1.items_.head_.second_) {
 const ps_ = _1.items_.tail_
-const p2_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Link", ff_core_Array.Array_toList([p_, ff_compiler_Syntax.PList(at_, t_, ps_)]));
+const p2_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Link", ff_core_Array.Array_toList([p_, ff_compiler_Syntax.PList(at_, t_, ps_)]))
 return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toList([argument_, ...ff_core_List.List_toArray(arguments_)]), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([p2_, ...ff_core_List.List_toArray(matchCase_.patterns_)]), _c.condition_, _c.body_)
 }))(matchCase_))
