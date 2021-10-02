@@ -43,6 +43,11 @@ export function JsEmitter(otherModules_) {
 return {_: 'JsEmitter', otherModules_};
 }
 
+// type ProcessedVariantCase
+export function ProcessedVariantCase(variantName_, loneVariant_, arguments_) {
+return {_: 'ProcessedVariantCase', variantName_, loneVariant_, arguments_};
+}
+
 
 
 export function make_(otherModules_) {
@@ -1042,32 +1047,12 @@ return
 if(_1._ === 'PVariant') {
 const name_ = _1.name_
 const patterns_ = _1.patterns_
-const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
-})))
-const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
-const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
-let singleVariant_ = false
-const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
-return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
-return (_w1.name_ == variantName_)
-})), ((variant_) => {
-singleVariant_ = (ff_core_List.List_size(definition_.variants_) == 1)
-return ff_core_List.List_addAll(ff_core_List.List_map(definition_.commonFields_, ((_w1) => {
-return _w1.name_
-})), ff_core_List.List_map(variant_.fields_, ((_w1) => {
-return _w1.name_
-})))
-}))
-}))), ((_w1) => {
-return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(_w1))
-}))
-return (((singleVariant_
+const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, name_, argument_)
+return (((processed_.loneVariant_
 ? ""
-: (((("if(" + argument_) + "._ === '") + variantName_) + "') {\n")) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.List_addAll(newArguments_, arguments_), (((_c) => {
+: (((("if(" + argument_) + "._ === '") + processed_.variantName_) + "') {\n")) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.List_addAll(processed_.arguments_, arguments_), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.List_addAll(patterns_, matchCase_.patterns_), _c.condition_, _c.body_)
-}))(matchCase_))) + (singleVariant_
+}))(matchCase_))) + (processed_.loneVariant_
 ? ""
 : "}"))
 return
@@ -1078,20 +1063,10 @@ if(_1._ === 'PVariantAs') {
 const at_ = _1.at_
 const name_ = _1.name_
 const variable_ = _1.variable_
-const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
-})))
-const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
-const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
-const singleVariant_ = ff_core_List.List_any(variantModule_.types_, ((definition_) => {
-return ff_core_List.List_any(definition_.variants_, ((_w1) => {
-return ((_w1.name_ == variantName_) && (ff_core_List.List_size(definition_.variants_) == 1))
-}))
-}))
-return ((((singleVariant_
+const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, name_, argument_)
+return ((((processed_.loneVariant_
 ? ""
-: (((("if(" + argument_) + "._ === '") + variantName_) + "') {\n")) + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
+: (((("if(" + argument_) + "._ === '") + processed_.variantName_) + "') {\n")) + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 })), ((_w1) => {
 return (_w1 != argument_)
@@ -1099,7 +1074,7 @@ return (_w1 != argument_)
 return (((("const " + _w1) + " = ") + argument_) + "\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_)) + (singleVariant_
+}))) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_)) + (processed_.loneVariant_
 ? ""
 : "}"))
 return
@@ -1169,6 +1144,31 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))(pattern_)
+}
+
+export function JsEmitter_processVariantCase(self_, name_, argument_) {
+const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
+return (_w1 != 46)
+})))
+const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
+const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
+const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
+let loneVariant_ = false
+const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
+return (_w1.name_ == variantName_)
+})), ((variant_) => {
+loneVariant_ = (ff_core_List.List_size(definition_.variants_) == 1)
+return ff_core_List.List_addAll(ff_core_List.List_map(definition_.commonFields_, ((_w1) => {
+return _w1.name_
+})), ff_core_List.List_map(variant_.fields_, ((_w1) => {
+return _w1.name_
+})))
+}))
+}))), ((_w1) => {
+return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(_w1))
+}))
+return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, loneVariant_, newArguments_)
 }
 
 export function JsEmitter_emitArgument(self_, argument_) {
