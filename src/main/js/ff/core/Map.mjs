@@ -48,7 +48,7 @@ return ff_core_Map.MapOf(ff_core_RbMap.RbLeaf())
 }
 
 export function append_(self_, that_) {
-let result_ = self_.redBlack_;
+let result_ = self_.redBlack_
 ff_core_RbMap.RbMap_each(that_.redBlack_, ((_1, _2) => {
 {
 const k_ = _1
@@ -66,7 +66,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}));
+}))
 return ff_core_Map.MapOf(result_)
 }
 
@@ -93,21 +93,19 @@ return ff_core_Map.MapOf(ff_core_RbMap.RbMap_add(self_.redBlack_, key_, ff_core_
 export function Map_pairs(self_) {
 return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_.redBlack_), ((_1) => {
 {
-if(_1._ === 'Pair') {
 const k_ = _1.first_
 if(_1.second_._ === 'Some') {
 const v_ = _1.second_.value_
 return ff_core_Array.Array_toList([ff_core_Pair.Pair(k_, v_)])
 return
-}}
+}
 }
 {
-if(_1._ === 'Pair') {
 const k_ = _1.first_
 if(_1.second_._ === 'None') {
 return ff_core_Array.Array_toList([])
 return
-}}
+}
 }
 throw new Error('Unexhaustive pattern match')
 }))
@@ -118,16 +116,15 @@ return ff_core_RbMap.RbMap_size(self_.redBlack_)
 }
 
 export function Map_map(self_, body_) {
-const initial_ = ff_core_Map.MapOf(ff_core_RbMap.RbLeaf());
+const initial_ = ff_core_Map.MapOf(ff_core_RbMap.RbLeaf())
 return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_), initial_)(((tree_, pair_) => {
 return (((_1) => {
 {
-if(_1._ === 'Pair') {
 const k_ = _1.first_
 const v_ = _1.second_
 return ff_core_Map.Map_add(tree_, k_, v_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 }))(body_(pair_))

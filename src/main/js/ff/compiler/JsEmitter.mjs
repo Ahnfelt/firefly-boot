@@ -127,16 +127,14 @@ export function invokeImmediately_(function_){
 const function_a = function_
 {
 if(function_a._ === 'ELambda') {
-if(function_a.lambda_._ === 'Lambda') {
 if(function_a.lambda_.cases_._ === 'Link') {
-if(function_a.lambda_.cases_.head_._ === 'MatchCase') {
 if(function_a.lambda_.cases_.head_.patterns_._ === 'Empty') {
 if(function_a.lambda_.cases_.head_.condition_._ === 'None') {
 const body_ = function_a.lambda_.cases_.head_.body_
 if(function_a.lambda_.cases_.tail_._ === 'Empty') {
 return body_
 return
-}}}}}}}
+}}}}}
 }
 {
 return ff_compiler_Syntax.ECall(function_.at_, false, function_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]))
@@ -258,7 +256,6 @@ return (((signature_ + " {\n") + code_) + "\n}")
 })), (() => {
 return (((_1) => {
 {
-if(_1._ === 'Lambda') {
 if(_1.cases_._ === 'Link') {
 const matchCase_ = _1.cases_.head_
 if(_1.cases_.tail_._ === 'Empty') {
@@ -289,10 +286,9 @@ throw new Error('Unexhaustive pattern match')
 const body_ = ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true)
 return (((signature_ + " {\n") + body_) + "\n}")
 return
-}}}}
+}}}
 }
 {
-if(_1._ === 'Lambda') {
 const cases_ = _1.cases_
 const escapedArguments_ = ff_core_List.List_map(definition_.signature_.parameters_, ((_w1) => {
 return (_w1.name_ + "_a")
@@ -305,7 +301,7 @@ return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArgument
 })), "\n")
 return (((((signature_ + "{\n") + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 }))(definition_.body_)
@@ -453,20 +449,18 @@ const at_ = term_a.at_
 const items_ = term_a.items_
 return (("ff_core_Array.Array_toList([" + ff_core_List.List_join(ff_core_List.List_map(items_, ((_1) => {
 {
-if(_1._ === 'Pair') {
 const item_ = _1.first_
 if(!_1.second_) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_)
 return
-}}
+}
 }
 {
-if(_1._ === 'Pair') {
 const item_ = _1.first_
 if(_1.second_) {
 return (("...ff_core_List.List_toArray(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_)) + ")")
 return
-}}
+}
 }
 throw new Error('Unexhaustive pattern match')
 })), ", ")) + "])")
@@ -582,9 +576,7 @@ return
 const self_ = self_a
 if(term_a._ === 'ELambda') {
 const at_ = term_a.at_
-if(term_a.lambda_._ === 'Lambda') {
 if(term_a.lambda_.cases_._ === 'Link') {
-if(term_a.lambda_.cases_.head_._ === 'MatchCase') {
 const patterns_ = term_a.lambda_.cases_.head_.patterns_
 if(term_a.lambda_.cases_.head_.condition_._ === 'None') {
 const body_ = term_a.lambda_.cases_.head_.body_
@@ -624,13 +616,12 @@ throw new Error('Unexhaustive pattern match')
 })), ", ")
 return (((("((" + parameters_) + ") => {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, true)) + "\n})")
 return
-}}}}}}}
+}}}}}
 }
 {
 const self_ = self_a
 if(term_a._ === 'ELambda') {
 const at_ = term_a.at_
-if(term_a.lambda_._ === 'Lambda') {
 const cases_ = term_a.lambda_.cases_
 const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_expect(cases_, 0).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
@@ -643,7 +634,7 @@ return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArgument
 })), "\n")
 return ((((("((" + ff_core_List.List_join(escapedArguments_, ", ")) + ") => ") + "{\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n})")
 return
-}}
+}
 }
 {
 const self_ = self_a
@@ -704,7 +695,6 @@ return
 }
 {
 if(_1._ === 'Link') {
-if(_1.head_._ === 'Pair') {
 if(_1.head_.first_._ === 'EVariant') {
 const word_ = _1.head_.first_.name_
 const elseBody_ = _1.head_.second_
@@ -713,29 +703,27 @@ if((word_ == "ff:core/Bool.True")) {
 return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_))(((_1, _2) => {
 {
 const otherwise_ = _1
-if(_2._ === 'Pair') {
 const condition_ = _2.first_
 const body_ = _2.second_
 return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_) + "\n? ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_)) + "\n: ") + otherwise_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 }))) + ")")
 return
-}}}}
+}}}
 }
 {
 const list_ = _1
 return (("(" + ff_core_List.List_foldLeft(list_, "ff_core_Option.None()")(((_1, _2) => {
 {
 const otherwise_ = _1
-if(_2._ === 'Pair') {
 const condition_ = _2.first_
 const body_ = _2.second_
 return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_) + "\n? ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_)) + ")\n: ") + otherwise_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 }))) + ")")
@@ -919,7 +907,6 @@ return
 }
 {
 if(_1._ === 'Link') {
-if(_1.head_._ === 'Pair') {
 if(_1.head_.first_._ === 'EVariant') {
 const word_ = _1.head_.first_.name_
 const elseBody_ = _1.head_.second_
@@ -929,17 +916,16 @@ const initial_ = (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_,
 return ff_core_List.List_foldLeft(list_, initial_)(((_1, _2) => {
 {
 const otherwise_ = _1
-if(_2._ === 'Pair') {
 const condition_ = _2.first_
 const body_ = _2.second_
 return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_)) + "\n} else ") + otherwise_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 }))
 return
-}}}}
+}}}
 }
 {
 const list_ = _1
@@ -947,12 +933,11 @@ if((!last_)) {
 return ff_core_List.List_foldLeft(list_, "{}")(((_1, _2) => {
 {
 const otherwise_ = _1
-if(_2._ === 'Pair') {
 const condition_ = _2.first_
 const body_ = _2.second_
 return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_)) + "\n} else ") + otherwise_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 }))
@@ -964,12 +949,11 @@ const list_ = _1
 return ff_core_List.List_foldLeft(list_, "return ff_core_Option.None()")(((_1, _2) => {
 {
 const otherwise_ = _1
-if(_2._ === 'Pair') {
 const condition_ = _2.first_
 const body_ = _2.second_
 return (((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_)) + ") {\n") + "return ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_)) + ")\n} else ") + otherwise_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 }))
@@ -988,7 +972,6 @@ throw new Error('Unexhaustive pattern match')
 export function JsEmitter_emitCase(self_, arguments_, matchCase_) {
 return (((_1) => {
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Link') {
 const p_ = _1.first_.head_
 const ps_ = _1.first_.tail_
@@ -996,24 +979,22 @@ return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_expe
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.condition_, _c.body_)
 }))(matchCase_))
 return
-}}
+}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Empty') {
 if(_1.second_._ === 'Some') {
 const condition_ = _1.second_.value_
 return (((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true)) + "\nreturn\n}")
 return
-}}}
+}}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Empty') {
 if(_1.second_._ === 'None') {
 return (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true) + "\nreturn\n")
 return
-}}}
+}}
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.condition_))
@@ -1076,10 +1057,12 @@ return (_w1 != 46)
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
 const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
+let singleVariant_ = false
 const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ == variantName_)
 })), ((variant_) => {
+singleVariant_ = (ff_core_List.List_size(definition_.variants_) == 1)
 return ff_core_List.List_addAll(ff_core_List.List_map(definition_.commonFields_, ((_w1) => {
 return _w1.name_
 })), ff_core_List.List_map(variant_.fields_, ((_w1) => {
@@ -1089,9 +1072,13 @@ return _w1.name_
 }))), ((_w1) => {
 return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(_w1))
 }))
-return (((((("if(" + argument_) + "._ === '") + variantName_) + "') {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.List_addAll(newArguments_, arguments_), (((_c) => {
+return (((singleVariant_
+? ""
+: (((("if(" + argument_) + "._ === '") + variantName_) + "') {\n")) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.List_addAll(newArguments_, arguments_), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.List_addAll(patterns_, matchCase_.patterns_), _c.condition_, _c.body_)
-}))(matchCase_))) + "}")
+}))(matchCase_))) + (singleVariant_
+? ""
+: "}"))
 return
 }
 }
@@ -1100,10 +1087,20 @@ if(_1._ === 'PVariantAs') {
 const at_ = _1.at_
 const name_ = _1.name_
 const variable_ = _1.variable_
-const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
+const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
-}))))
-return ((((((("if(" + argument_) + "._ === '") + ff_compiler_JsEmitter.escapeKeyword_(variantName_)) + "') {\n") + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
+})))
+const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
+const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
+const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
+const singleVariant_ = ff_core_List.List_any(variantModule_.types_, ((definition_) => {
+return ff_core_List.List_any(definition_.variants_, ((_w1) => {
+return ((_w1.name_ == variantName_) && (ff_core_List.List_size(definition_.variants_) == 1))
+}))
+}))
+return ((((singleVariant_
+? ""
+: (((("if(" + argument_) + "._ === '") + variantName_) + "') {\n")) + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 })), ((_w1) => {
 return (_w1 != argument_)
@@ -1111,7 +1108,9 @@ return (_w1 != argument_)
 return (((("const " + _w1) + " = ") + argument_) + "\n")
 })), (() => {
 return ""
-}))) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_)) + "}")
+}))) + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_)) + (singleVariant_
+? ""
+: "}"))
 return
 }
 }
@@ -1142,7 +1141,6 @@ if(_1._ === 'PList') {
 const at_ = _1.at_
 const t_ = _1.itemType_
 if(_1.items_._ === 'Link') {
-if(_1.items_.head_._ === 'Pair') {
 const p_ = _1.items_.head_.first_
 if(!_1.items_.head_.second_) {
 const ps_ = _1.items_.tail_
@@ -1151,14 +1149,13 @@ return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toLis
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([p2_, ...ff_core_List.List_toArray(matchCase_.patterns_)]), _c.condition_, _c.body_)
 }))(matchCase_))
 return
-}}}}
+}}}
 }
 {
 if(_1._ === 'PList') {
 const at_ = _1.at_
 const t_ = _1.itemType_
 if(_1.items_._ === 'Link') {
-if(_1.items_.head_._ === 'Pair') {
 const p_ = _1.items_.head_.first_
 if(_1.items_.head_.second_) {
 if(_1.items_.tail_._ === 'Empty') {
@@ -1166,19 +1163,18 @@ return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toLis
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([p_, ...ff_core_List.List_toArray(matchCase_.patterns_)]), _c.condition_, _c.body_)
 }))(matchCase_))
 return
-}}}}}
+}}}}
 }
 {
 if(_1._ === 'PList') {
 const at_ = _1.at_
 const t_ = _1.itemType_
 if(_1.items_._ === 'Link') {
-if(_1.items_.head_._ === 'Pair') {
 const p_ = _1.items_.head_.first_
 if(_1.items_.head_.second_) {
 return "throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"
 return
-}}}}
+}}}
 }
 throw new Error('Unexhaustive pattern match')
 }))(pattern_)

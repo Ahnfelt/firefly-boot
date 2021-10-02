@@ -303,22 +303,30 @@ extend self: JsEmitter {
                 let variantName = escapeKeyword(variantNameUnqualified)
                 let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
                 let variantModule = self.otherModules.expect(moduleName)
+                mutable singleVariant = False
                 let newArguments = variantModule.types.collectFirst { definition =>
                     definition.variants.find { _.name == variantName }.map { variant =>
+                        singleVariant = definition.variants.size() == 1
                         definition.commonFields.map { _.name} ++ variant.fields.map {_.name}
                     }
                 }.expect().map { argument + "." + escapeKeyword(_) }
-                "if(" + argument + "._ === '" + variantName + "') {\n" +
+                if(singleVariant) { "" } else { "if(" + argument + "._ === '" + variantName + "') {\n" } +
                 self.emitCase(newArguments ++ arguments, matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)) +
-                "}"
+                if(singleVariant) { "" } else { "}" }
             | PVariantAs(at, name, variable) =>
-                let variantName = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse())
-                "if(" + argument + "._ === '" + escapeKeyword(variantName) + "') {\n" +
+                let variantNameUnqualified = name.reverse().takeWhile { _ != '.' }.reverse()
+                let variantName = escapeKeyword(variantNameUnqualified)
+                let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
+                let variantModule = self.otherModules.expect(moduleName)
+                let singleVariant = variantModule.types.any { definition =>
+                    definition.variants.any { _.name == variantName && definition.variants.size() == 1 }
+                }
+                if(singleVariant) { "" } else { "if(" + argument + "._ === '" + variantName + "') {\n" } +
                 variable.map(escapeKeyword).filter { _ != argument }.map {
                     "const " + _ + " = " + argument + "\n"
                 }.else {""} +
                 self.emitCase(arguments, matchCase) +
-                "}"
+                if(singleVariant) { "" } else { "}" }
             | PAlias(_, pattern, variable) =>
                 let escaped = escapeKeyword(variable)
                 if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +

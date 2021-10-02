@@ -123,12 +123,11 @@ const e_ = term_a
 return (((_c) => {
 return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e_.items_, ((_1) => {
 {
-if(_1._ === 'Pair') {
 const item_ = _1.first_
 const spread_ = _1.second_
 return ff_core_Pair.Pair(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, item_), spread_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 })))
@@ -194,7 +193,7 @@ return
 const self_ = self_a
 if(term_a._ === 'EWildcard') {
 const e_ = term_a
-self_.seenWildcards_ += 1;
+self_.seenWildcards_ += 1
 return (((_c) => {
 return ff_compiler_Syntax.EWildcard(_c.at_, self_.seenWildcards_)
 }))(e_)

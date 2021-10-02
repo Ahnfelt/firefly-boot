@@ -105,8 +105,8 @@ const l_ = _1.left_
 const k_ = _1.key_
 const v_ = _1.value_
 const r_ = _1.right_
-ff_core_RbMap.RbMap_each(l_, body_);
-body_(k_, v_);
+ff_core_RbMap.RbMap_each(l_, body_)
+body_(k_, v_)
 return ff_core_RbMap.RbMap_each(r_, body_)
 return
 }
@@ -456,23 +456,20 @@ throw new Error('Unexhaustive pattern match')
 function fuse_(x_, y_) {
 return (((_1) => {
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'RbLeaf') {
 const a_ = _1.second_
 return a_
 return
-}}
+}
 }
 {
-if(_1._ === 'Pair') {
 const a_ = _1.first_
 if(_1.second_._ === 'RbLeaf') {
 return a_
 return
-}}
+}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'RbNode') {
 if(!_1.first_.isRed_) {
 const a_ = _1.first_.left_
@@ -487,10 +484,9 @@ const v2_ = _1.second_.value_
 const d_ = _1.second_.right_
 return ff_core_RbMap.RbNode(true, fuse_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), c_), k2_, v2_, d_)
 return
-}}}}}
+}}}}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'RbNode') {
 if(_1.first_.isRed_) {
 const a_ = _1.first_.left_
@@ -505,10 +501,9 @@ const v2_ = _1.second_.value_
 const d_ = _1.second_.right_
 return ff_core_RbMap.RbNode(true, a_, k1_, v1_, fuse_(b_, ff_core_RbMap.RbNode(false, c_, k2_, v2_, d_)))
 return
-}}}}}
+}}}}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'RbNode') {
 if(_1.first_.isRed_) {
 const a_ = _1.first_.left_
@@ -521,7 +516,7 @@ const c_ = _1.second_.left_
 const k2_ = _1.second_.key_
 const v2_ = _1.second_.value_
 const d_ = _1.second_.right_
-const e_ = fuse_(b_, c_);
+const e_ = fuse_(b_, c_)
 return (((_1) => {
 {
 if(_1._ === 'RbNode') {
@@ -550,10 +545,9 @@ return
 throw new Error('Unexhaustive pattern match')
 }))(e_)
 return
-}}}}}
+}}}}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'RbNode') {
 if(!_1.first_.isRed_) {
 const a_ = _1.first_.left_
@@ -566,7 +560,7 @@ const c_ = _1.second_.left_
 const k2_ = _1.second_.key_
 const v2_ = _1.second_.value_
 const d_ = _1.second_.right_
-const e_ = fuse_(b_, c_);
+const e_ = fuse_(b_, c_)
 return (((_1) => {
 {
 if(_1._ === 'RbNode') {
@@ -595,7 +589,7 @@ return
 throw new Error('Unexhaustive pattern match')
 }))(e_)
 return
-}}}}}
+}}}}
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_core_Pair.Pair(x_, y_))

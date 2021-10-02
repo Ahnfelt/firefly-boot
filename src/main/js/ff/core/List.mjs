@@ -69,7 +69,7 @@ return go_(list_, ff_core_Array.Array_toList([]))
 }
 
 export function groupList_(list_) {
-const initial_ = ff_core_Array.Array_toList([]);
+const initial_ = ff_core_Array.Array_toList([])
 return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_))(((map_, pair_) => {
 return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.second"))
 }))
@@ -252,10 +252,10 @@ return ff_core_List.List_reverse(ff_core_List.List_takeFirst(ff_core_List.List_r
 }
 
 export function List_pairs(self_) {
-let i_ = 0;
+let i_ = 0
 return ff_core_List.List_map(self_, ((x_) => {
-const r_ = ff_core_Pair.Pair(i_, x_);
-i_ += 1;
+const r_ = ff_core_Pair.Pair(i_, x_)
+i_ += 1
 return r_
 }))
 }
@@ -315,7 +315,7 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-body_(head_);
+body_(head_)
 return ff_core_List.List_each(tail_, body_)
 return
 }
@@ -648,7 +648,6 @@ export function List_zip(self_, that_) {
 function go_(list1_, list2_, result_) {
 return (((_1) => {
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Link') {
 const x_ = _1.first_.head_
 const xs_ = _1.first_.tail_
@@ -657,7 +656,7 @@ const y_ = _1.second_.head_
 const ys_ = _1.second_.tail_
 return go_(xs_, ys_, ff_core_Array.Array_toList([ff_core_Pair.Pair(x_, y_), ...ff_core_List.List_toArray(result_)]))
 return
-}}}
+}}
 }
 {
 return ff_core_List.reverseList_(result_)
@@ -706,7 +705,6 @@ throw new Error('Unexhaustive pattern match')
 function merge_(xs_, ys_, result_) {
 return (((_1) => {
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Link') {
 const x_ = _1.first_.head_
 const xs2_ = _1.first_.tail_
@@ -715,10 +713,9 @@ const y_ = _1.second_.head_
 if((body_(x_) < body_(y_))) {
 return merge_(xs2_, ys_, ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(result_)]))
 return
-}}}}
+}}}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Link') {
 const x_ = _1.first_.head_
 if(_1.second_._ === 'Link') {
@@ -726,40 +723,37 @@ const y_ = _1.second_.head_
 const ys2_ = _1.second_.tail_
 return merge_(xs_, ys2_, ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(result_)]))
 return
-}}}
+}}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Link') {
 const x_ = _1.first_.head_
 const xs2_ = _1.first_.tail_
 if(_1.second_._ === 'Empty') {
 return merge_(xs2_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(result_)]))
 return
-}}}
+}}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Empty') {
 if(_1.second_._ === 'Link') {
 const y_ = _1.second_.head_
 const ys2_ = _1.second_.tail_
 return merge_(ff_core_Array.Array_toList([]), ys2_, ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(result_)]))
 return
-}}}
+}}
 }
 {
-if(_1._ === 'Pair') {
 if(_1.first_._ === 'Empty') {
 if(_1.second_._ === 'Empty') {
 return ff_core_List.List_reverse(result_)
 return
-}}}
+}}
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_core_Pair.Pair(xs_, ys_))
 }
-const pair_ = divide_(self_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]));
+const pair_ = divide_(self_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]))
 return merge_(ff_core_List.List_sortBy(pair_.first_, body_), ff_core_List.List_sortBy(pair_.second_, body_), ff_core_Array.Array_toList([]))
 }
 }
@@ -822,13 +816,12 @@ return
 }
 {
 if(_1._ === 'Link') {
-if(_1.head_._ === 'Pair') {
 const k_ = _1.head_.first_
 const v_ = _1.head_.second_
 const tail_ = _1.tail_
 return go_(tail_, ff_core_Array.Array_toList([k_, ...ff_core_List.List_toArray(ks_)]), ff_core_Array.Array_toList([v_, ...ff_core_List.List_toArray(vs_)]))
 return
-}}
+}
 }
 throw new Error('Unexhaustive pattern match')
 }))(pairs_)

@@ -73,10 +73,10 @@ return ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) 
 }
 const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
 return ff_core_Pair.Pair(full_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, d_.signature_))
-}));
+}))
 const lets_ = ff_core_List.List_map(module_.lets_, ((d_) => {
 return ff_core_Pair.Pair(full_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]), d_.variableType_)))
-}));
+}))
 const extends_ = ff_core_List.List_flatMap(module_.extends_, ((d_) => {
 return (((_1) => {
 {
@@ -89,8 +89,8 @@ return
 {
 if(_1._ === 'TConstructor') {
 const t_ = _1
-const prefix_ = (t_.name_ + "_");
-const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, d_.type_, ff_core_Option.None());
+const prefix_ = (t_.name_ + "_")
+const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, d_.type_, ff_core_Option.None())
 return ff_core_List.List_map(d_.methods_, ((method_) => {
 return ff_core_Pair.Pair((prefix_ + method_.signature_.name_), ff_compiler_Environment.Scheme(false, false, (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(d_.generics_, method_.signature_.generics_), ff_core_List.List_addAll(d_.constraints_, method_.signature_.constraints_), ff_core_Array.Array_toList([selfParameter_, ...ff_core_List.List_toArray(method_.signature_.parameters_)]), _c.returnType_)
@@ -101,25 +101,25 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))(d_.type_)
-}));
+}))
 const fields_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
-const prefix_ = (d_.name_ + "_");
+const prefix_ = (d_.name_ + "_")
 const t_ = ff_compiler_Syntax.TConstructor(d_.at_, d_.name_, ff_core_List.List_map(d_.generics_, ((g_) => {
 return ff_compiler_Syntax.TConstructor(d_.at_, g_, ff_core_Array.Array_toList([]))
-})));
-const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, t_, ff_core_Option.None());
+})))
+const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, t_, ff_core_Option.None())
 return ff_core_List.List_map(d_.commonFields_, ((f_) => {
 return ff_core_Pair.Pair(full_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, ff_compiler_Syntax.Signature(f_.at_, f_.name_, d_.generics_, d_.constraints_, ff_core_Array.Array_toList([selfParameter_]), f_.valueType_)))
 }))
-}));
+}))
 const variants_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
 const returnType_ = ff_compiler_Syntax.TConstructor(d_.at_, full_(module_, d_.name_), ff_core_List.List_map(d_.generics_, ((typeParameter_) => {
 return ff_compiler_Syntax.TConstructor(d_.at_, typeParameter_, ff_core_Array.Array_toList([]))
-})));
+})))
 return ff_core_List.List_map(d_.variants_, ((variant_) => {
 return ff_core_Pair.Pair(full_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, d_.generics_, d_.constraints_, ff_core_List.List_addAll(d_.commonFields_, variant_.fields_), returnType_)))
 }))
-}));
+}))
 return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_List.List_addAll(functions_, lets_), fields_), extends_), variants_)))
 }
 

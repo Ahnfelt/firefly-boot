@@ -51,9 +51,9 @@ const moduleNamespace_ = ff_core_String.String_takeWhile(ff_core_String.String_r
 return (_w1 != 47)
 }))), ((_w1) => {
 return (_w1 != 46)
-}));
-const modulePrefix_ = (((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".");
-const package_ = ((packagePair_.first_ + ".") + packagePair_.second_);
+}))
+const modulePrefix_ = (((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".")
+const package_ = ((packagePair_.first_ + ".") + packagePair_.second_)
 const parts_ = ff_core_Array.Array_toList([ff_core_Array.Array_toList([("package " + package_)]), ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
 return ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 })), ((i_) => {
@@ -74,7 +74,7 @@ return ff_compiler_ScalaEmitter.emitExtendsDefinition_(_w1)
 return ff_compiler_ScalaEmitter.emitTraitDefinition_(definition_)
 })), ff_core_List.List_map(module_.instances_, ((definition_) => {
 return ff_compiler_ScalaEmitter.emitInstanceDefinition_(definition_)
-})), ff_core_Array.Array_toList(["}"])]);
+})), ff_core_Array.Array_toList(["}"])])
 ff_core_Option.Option_each(ff_core_List.List_find(ff_core_List.List_collect(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return _w1.type_
 })), (function(_v) { return _v._ === 'ff_compiler_Syntax.TConstructor' ? ff_core_Option.Some(_v) : ff_core_Option.None();})), ((t_) => {
@@ -83,7 +83,7 @@ return ((modulePrefix_ + _w1.name_) == t_.name_)
 })))
 })), ((t_) => {
 ff_compiler_ScalaEmitter.fail_(t_.at_, ("Type not defined in this file: " + t_.name_))
-}));
+}))
 return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n") + "\n")
@@ -98,21 +98,21 @@ const strings_ = ff_core_List.List_addAll(ff_core_List.List_map(lets_, ((_w1) =>
 return ff_compiler_ScalaEmitter.emitLetDefinition_(_w1, false)
 })), ff_core_List.List_map(functions_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitFunctionDefinition_(_w1, "")
-})));
+})))
 return (((("object " + name_) + " {\n\n") + ff_core_List.List_join(strings_, "\n\n")) + "\n\n}")
 }
 
 export function emitTypeDefinition_(definition_) {
-const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(definition_.generics_);
+const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(definition_.generics_)
 if(((ff_core_Option.Option_isEmpty(definition_.targets_.scala_) && (ff_core_List.List_size(definition_.variants_) == 1)) && (ff_core_List.List_expectFirst(definition_.variants_).name_ == definition_.name_))) {
 const fields_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(definition_.commonFields_, ((parameter_) => {
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
-})), ", ")) + ")");
+})), ", ")) + ")")
 return ((("case class " + definition_.name_) + generics_) + fields_)
 } else {
 const variants_ = ff_core_List.List_map(definition_.variants_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitVariantDefinition_(definition_, _w1)
-}));
+}))
 const head_ = ff_core_Option.Option_else(ff_core_Option.Option_map(definition_.targets_.scala_, ((code_) => {
 if(ff_core_String.String_startsWith(code_, "#", 0)) {
 return (ff_core_String.String_dropFirst(code_, 1) + ";\n")
@@ -126,9 +126,9 @@ const commonFields_ = (ff_core_List.List_isEmpty(definition_.commonFields_)
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
 })), ((_w1) => {
 return (("    val " + _w1) + "\n")
-})), "")) + "}"));
+})), "")) + "}"))
 return (((("sealed abstract class " + definition_.name_) + generics_) + " extends Product with Serializable") + commonFields_)
-}));
+}))
 return (head_ + ff_core_List.List_join(ff_core_List.List_map(variants_, ((_w1) => {
 return ("\n" + _w1)
 })), ""))
@@ -136,18 +136,18 @@ return ("\n" + _w1)
 }
 
 export function emitLetDefinition_(definition_, mutable_ = false) {
-const typeAnnotation_ = ff_compiler_ScalaEmitter.emitTypeAnnotation_(definition_.variableType_);
+const typeAnnotation_ = ff_compiler_ScalaEmitter.emitTypeAnnotation_(definition_.variableType_)
 const mutability_ = (mutable_
 ? "var"
-: "val");
+: "val")
 const valueCode_ = ff_core_Option.Option_else(definition_.targets_.scala_, (() => {
 return ff_compiler_ScalaEmitter.emitTerm_(definition_.value_)
-}));
+}))
 return (((((mutability_ + " ") + ff_compiler_ScalaEmitter.escapeKeyword_(definition_.name_)) + typeAnnotation_) + " = ") + valueCode_)
 }
 
 export function emitFunctionDefinition_(definition_, suffix_ = "") {
-const signature_ = ff_compiler_ScalaEmitter.emitSignature_(definition_.signature_, suffix_);
+const signature_ = ff_compiler_ScalaEmitter.emitSignature_(definition_.signature_, suffix_)
 return ff_core_Option.Option_else(ff_core_Option.Option_map(definition_.targets_.scala_, ((code_) => {
 if(ff_core_String.String_startsWith(code_, "#", 0)) {
 return ff_core_String.String_dropFirst(code_, 1)
@@ -157,7 +157,6 @@ return (((signature_ + " = {\n") + code_) + "\n}")
 })), (() => {
 return (((_1) => {
 {
-if(_1._ === 'Lambda') {
 if(_1.cases_._ === 'Link') {
 const matchCase_ = _1.cases_.head_
 if(_1.cases_.tail_._ === 'Empty') {
@@ -176,18 +175,18 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))) {
-const body_ = ff_compiler_ScalaEmitter.emitStatements_(matchCase_.body_);
+const body_ = ff_compiler_ScalaEmitter.emitStatements_(matchCase_.body_)
 return (((signature_ + " = {\n") + body_) + "\n}")
 return
-}}}}
+}}}
 }
 {
 const tuple_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(definition_.signature_.parameters_, ((_w1) => {
 return ff_compiler_ScalaEmitter.escapeKeyword_(_w1.name_)
-})), ", ")) + ")");
+})), ", ")) + ")")
 const cases_ = ff_core_List.List_join(ff_core_List.List_map(definition_.body_.cases_, ((matchCase_) => {
 return ff_compiler_ScalaEmitter.emitCase_(matchCase_)
-})), "\n");
+})), "\n")
 return (((((signature_ + " = ") + tuple_) + " match {\n") + cases_) + "\n}")
 return
 
@@ -200,27 +199,27 @@ throw new Error('Unexhaustive pattern match')
 export function emitExtendsDefinition_(definition_) {
 const typeName_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_compiler_ScalaEmitter.extractTypeName_(definition_.type_)), ((_w1) => {
 return (_w1 != 46)
-})));
+})))
 const methods_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 return (((_c) => {
 return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_)
 }))(method_.signature_), _c.body_, _c.targets_)
 }))(method_)
-}));
+}))
 return ff_core_List.List_join(ff_core_List.List_map(methods_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitFunctionDefinition_(_w1, "")
 })), "\n\n")
 }
 
 export function emitTraitDefinition_(definition_) {
-const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(definition_.generics_);
-const implicits_ = ff_compiler_ScalaEmitter.emitConstraints_(definition_.constraints_);
+const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(definition_.generics_)
+const implicits_ = ff_compiler_ScalaEmitter.emitConstraints_(definition_.constraints_)
 const parameters_ = (ff_core_List.List_isEmpty(definition_.generatorParameters_)
 ? ""
 : (("(" + ff_core_List.List_join(ff_core_List.List_map(definition_.generatorParameters_, ((parameter_) => {
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
-})), ", ")) + ")"));
+})), ", ")) + ")"))
 const methods_ = (ff_core_List.List_isEmpty(definition_.methods_)
 ? ""
 : ((((" {\n\nimport " + definition_.name_) + "._\n\n") + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((signature_) => {
@@ -228,11 +227,10 @@ const body_ = ff_core_Option.Option_else(ff_core_Option.Option_orElse(ff_core_Op
 return (_w1.first_ == signature_.name_)
 })), ((_1) => {
 {
-if(_1._ === 'Pair') {
 const lambda_ = _1.second_
 return ((" {\n" + ff_compiler_ScalaEmitter.emitStatements_(ff_compiler_Syntax.ELambda(lambda_.at_, lambda_))) + "\n}")
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 })), (() => {
@@ -240,25 +238,24 @@ return ff_core_Option.Option_map(ff_core_List.List_find(definition_.methodGenera
 return (_w1.first_ == signature_.name_)
 })), ((_1) => {
 {
-if(_1._ === 'Pair') {
 const e_ = _1.second_
 return " {\n// TODO: Generate\n}"
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 }))
 })), (() => {
 return ""
-}));
+}))
 return (ff_compiler_ScalaEmitter.emitSignature_(signature_, "_m") + body_)
-})), "\n\n")) + "\n\n}"));
+})), "\n\n")) + "\n\n}"))
 const methodWrappers_ = (ff_core_List.List_isEmpty(definition_.methods_)
 ? ""
 : ((" \n\n" + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((signature_) => {
 const t_ = ff_compiler_Syntax.TConstructor(definition_.at_, definition_.name_, ff_core_List.List_map(definition_.generics_, ((_w1) => {
 return ff_compiler_Syntax.TConstructor(definition_.at_, _w1, ff_core_Array.Array_toList([]))
-})));
+})))
 return (((((((ff_compiler_ScalaEmitter.emitSignature_((((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, signature_.generics_), ff_core_Array.Array_toList([ff_compiler_Syntax.Constraint(t_), ...ff_core_List.List_toArray(definition_.constraints_), ...ff_core_List.List_toArray(signature_.constraints_)]), _c.parameters_, _c.returnType_)
 }))(signature_), "") + " =\n    scala.Predef.implicitly[") + ff_compiler_ScalaEmitter.emitType_(t_)) + "].") + ff_compiler_ScalaEmitter.escapeKeyword_(signature_.name_)) + "_m(") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_map(signature_.parameters_, ((_w1) => {
@@ -266,29 +263,29 @@ return _w1.name_
 })), ((word_) => {
 return ff_compiler_ScalaEmitter.escapeKeyword_(word_)
 })), ", ")) + ")")
-})), "\n\n")) + "\n\n"));
+})), "\n\n")) + "\n\n"))
 return ((((((((((("abstract class " + definition_.name_) + generics_) + parameters_) + implicits_) + methods_) + "\n") + "object ") + definition_.name_) + " {") + methodWrappers_) + "}")
 }
 
 export function emitInstanceDefinition_(definition_) {
-const signature_ = ff_compiler_ScalaEmitter.emitSignature_(ff_compiler_Syntax.Signature(definition_.at_, ((ff_compiler_ScalaEmitter.extractTypeName_(definition_.traitType_) + "_") + ff_core_Int.Int_abs(ff_core_Core.magicHashCode_(definition_))), definition_.generics_, definition_.constraints_, ff_core_Array.Array_toList([]), definition_.traitType_), "");
+const signature_ = ff_compiler_ScalaEmitter.emitSignature_(ff_compiler_Syntax.Signature(definition_.at_, ((ff_compiler_ScalaEmitter.extractTypeName_(definition_.traitType_) + "_") + ff_core_Int.Int_abs(ff_core_Core.magicHashCode_(definition_))), definition_.generics_, definition_.constraints_, ff_core_Array.Array_toList([]), definition_.traitType_), "")
 const methods_ = ((((" {\n\nimport " + ff_compiler_ScalaEmitter.extractTypeName_(definition_.traitType_)) + "._\n\n") + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitFunctionDefinition_(_w1, "_m")
-})), "\n\n")) + "\n\n}");
-const value_ = (("new " + ff_compiler_ScalaEmitter.emitType_(definition_.traitType_)) + methods_);
+})), "\n\n")) + "\n\n}")
+const value_ = (("new " + ff_compiler_ScalaEmitter.emitType_(definition_.traitType_)) + methods_)
 return ((("implicit " + signature_) + " =\n    ") + value_)
 }
 
 export function emitVariantDefinition_(typeDefinition_, definition_) {
-const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(typeDefinition_.generics_);
-const allFields_ = ff_core_List.List_addAll(typeDefinition_.commonFields_, definition_.fields_);
+const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(typeDefinition_.generics_)
+const allFields_ = ff_core_List.List_addAll(typeDefinition_.commonFields_, definition_.fields_)
 const fields_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(allFields_, ((parameter_) => {
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
-})), ", ")) + ")");
+})), ", ")) + ")")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(definition_.targets_.scala_, ((originalCode_) => {
 const code_ = ((originalCode_ == "scala.Unit")
 ? "{}"
-: originalCode_);
+: originalCode_)
 return ((((((((((((((((("object " + definition_.name_) + " {\n") + "def apply") + generics_) + fields_) + " = ") + code_) + ((fields_ != "()")
 ? fields_
 : "")) + ";\n") + "def unapply") + generics_) + "(value : ") + typeDefinition_.name_) + generics_) + ") = ") + ((fields_ != "()")
@@ -300,36 +297,35 @@ return (((((("case class " + definition_.name_) + generics_) + fields_) + " exte
 }
 
 export function emitSignature_(signature_, suffix_ = "") {
-const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(signature_.generics_);
+const generics_ = ff_compiler_ScalaEmitter.emitTypeParameters_(signature_.generics_)
 const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(signature_.parameters_, ((parameter_) => {
 return ff_compiler_ScalaEmitter.emitParameter_(parameter_)
-})), ", ")) + ")");
+})), ", ")) + ")")
 const implicits_ = (ff_core_List.List_isEmpty(signature_.constraints_)
 ? ""
 : (("(implicit " + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_pairs(signature_.constraints_), ((_1) => {
 {
-if(_1._ === 'Pair') {
 const i_ = _1.first_
 const c_ = _1.second_
 return ((("i_" + i_) + " : ") + ff_compiler_ScalaEmitter.emitType_(c_.representation_))
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
-})), ", ")) + ")"));
-const returnType_ = ff_compiler_ScalaEmitter.emitTypeAnnotation_(signature_.returnType_);
+})), ", ")) + ")"))
+const returnType_ = ff_compiler_ScalaEmitter.emitTypeAnnotation_(signature_.returnType_)
 return (((((("def " + ff_compiler_ScalaEmitter.escapeKeyword_(signature_.name_)) + suffix_) + generics_) + parameters_) + implicits_) + returnType_)
 }
 
 export function emitParameter_(parameter_) {
 const mutability_ = (parameter_.mutable_
 ? "var "
-: "");
+: "")
 const defaultValue_ = ff_core_Option.Option_else(ff_core_Option.Option_map(parameter_.default_, ((_w1) => {
 return (" = " + ff_compiler_ScalaEmitter.emitTerm_(_w1))
 })), (() => {
 return ""
-}));
+}))
 return (((mutability_ + ff_compiler_ScalaEmitter.escapeKeyword_(parameter_.name_)) + ff_compiler_ScalaEmitter.emitTypeAnnotation_(parameter_.valueType_)) + defaultValue_)
 }
 
@@ -341,15 +337,14 @@ const pairs_ = ff_core_List.List_pairs(ff_core_List.List_map(ff_core_List.List_m
 return _w1.representation_
 })), ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})));
+})))
 return (("(implicit " + ff_core_List.List_join(ff_core_List.List_map(pairs_, ((_1) => {
 {
-if(_1._ === 'Pair') {
 const k_ = _1.first_
 const v_ = _1.second_
 return ((("i_" + k_) + " : ") + v_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 })), ", ")) + ")")
@@ -400,12 +395,11 @@ return ff_compiler_Syntax.TConstructor(_c.at_, ff_core_String.String_replace(t_.
 } else if(ff_core_String.String_startsWith(t_.name_, "Record$", 0)) {
 return (("{" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_zip(ff_core_Array.Array_toList(ff_core_Array.Array_dropFirst(ff_core_String.String_split(t_.name_, 36), 1)), t_.generics_), ((_1) => {
 {
-if(_1._ === 'Pair') {
 const field_ = _1.first_
 const fieldType_ = _1.second_
 return ((("val " + ff_compiler_ScalaEmitter.escapeKeyword_(field_)) + " : ") + ff_compiler_ScalaEmitter.emitType_(fieldType_))
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 })), "; ")) + "}")
@@ -414,7 +408,7 @@ const generics_ = (ff_core_List.List_isEmpty(t_.generics_)
 ? ""
 : (("[" + ff_core_List.List_join(ff_core_List.List_map(t_.generics_, ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})), ", ")) + "]"));
+})), ", ")) + "]"))
 return (ff_compiler_ScalaEmitter.escapeResolved_(t_.name_) + generics_)
 }
 return
@@ -432,7 +426,7 @@ const functions_ = term_a.functions_
 const body_ = term_a.body_
 const functionStrings_ = ff_core_List.List_map(functions_, ((f_) => {
 return ff_compiler_ScalaEmitter.emitFunctionDefinition_(ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), "")
-}));
+}))
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_ScalaEmitter.emitStatements_(body_))
 return
 }
@@ -548,20 +542,18 @@ const at_ = term_a.at_
 const items_ = term_a.items_
 return (("(List(" + ff_core_List.List_join(ff_core_List.List_map(items_, ((_1) => {
 {
-if(_1._ === 'Pair') {
 const item_ = _1.first_
 if(!_1.second_) {
 return (("List(" + ff_compiler_ScalaEmitter.emitTerm_(item_)) + ")")
 return
-}}
+}
 }
 {
-if(_1._ === 'Pair') {
 const item_ = _1.first_
 if(_1.second_) {
 return ff_compiler_ScalaEmitter.emitTerm_(item_)
 return
-}}
+}
 }
 throw new Error('Unexhaustive pattern match')
 })), ", ")) + ").flatten)")
@@ -578,7 +570,7 @@ const generics_ = (ff_core_List.List_isEmpty(typeArguments_)
 ? ""
 : (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})), ", ")) + "]"));
+})), ", ")) + "]"))
 return ((((ff_compiler_ScalaEmitter.escapeResolved_(name_) + generics_) + "(") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_flatten(ff_core_Option.Option_toList(arguments_)), ((argument_) => {
 return ff_compiler_ScalaEmitter.emitArgument_(argument_)
 })), ", ")) + ")")
@@ -594,7 +586,7 @@ const generics_ = (ff_core_List.List_isEmpty(typeArguments_)
 ? ""
 : (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})), ", ")) + "]"));
+})), ", ")) + "]"))
 return ((("({ case _w : " + ff_compiler_ScalaEmitter.escapeResolved_(name_)) + generics_) + " => Some(_w); case _ => None() })")
 return
 }
@@ -607,7 +599,7 @@ const record_ = term_a.record_
 const fields_ = term_a.arguments_
 const fieldCode_ = ff_core_List.List_join(ff_core_List.List_map(fields_, ((f_) => {
 return ((ff_compiler_ScalaEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_ScalaEmitter.emitTerm_(f_.value_))
-})), ", ");
+})), ", ")
 return (((ff_compiler_ScalaEmitter.emitTerm_(record_) + ".copy(") + fieldCode_) + ")")
 return
 }
@@ -624,9 +616,7 @@ return
 {
 if(term_a._ === 'ELambda') {
 const at_ = term_a.at_
-if(term_a.lambda_._ === 'Lambda') {
 if(term_a.lambda_.cases_._ === 'Link') {
-if(term_a.lambda_.cases_.head_._ === 'MatchCase') {
 const patterns_ = term_a.lambda_.cases_.head_.patterns_
 if(term_a.lambda_.cases_.head_.condition_._ === 'None') {
 const body_ = term_a.lambda_.cases_.head_.body_
@@ -663,22 +653,21 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-})), ", ");
+})), ", ")
 return (((("{(" + parameters_) + ") =>\n") + ff_compiler_ScalaEmitter.emitStatements_(body_)) + "\n}")
 return
-}}}}}}}
+}}}}}
 }
 {
 if(term_a._ === 'ELambda') {
 const at_ = term_a.at_
-if(term_a.lambda_._ === 'Lambda') {
 const cases_ = term_a.lambda_.cases_
 const casesString_ = ff_core_List.List_join(ff_core_List.List_map(cases_, ((matchCase_) => {
 return ff_compiler_ScalaEmitter.emitCase_(matchCase_)
-})), "\n");
+})), "\n")
 return (("{\n" + casesString_) + "\n}")
 return
-}}
+}
 }
 {
 if(term_a._ === 'EPipe') {
@@ -743,7 +732,7 @@ const generics_ = (ff_core_List.List_isEmpty(typeArguments_)
 ? ""
 : (("[" + ff_core_List.List_join(ff_core_List.List_map(typeArguments_, ((type_) => {
 return ff_compiler_ScalaEmitter.emitType_(type_)
-})), ", ")) + "]"));
+})), ", ")) + "]"))
 return ((((ff_compiler_ScalaEmitter.emitTerm_(function_) + generics_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
 return ff_compiler_ScalaEmitter.emitArgument_(argument_)
 })), ", ")) + ")")
@@ -759,7 +748,7 @@ return "{}"
 } else {
 const list_ = ff_core_List.List_map(fields_, ((f_) => {
 return ((("val " + ff_compiler_ScalaEmitter.escapeKeyword_(f_.name_)) + " = ") + ff_compiler_ScalaEmitter.emitTerm_(f_.value_))
-}));
+}))
 return (("new {\n" + ff_core_List.List_join(list_, ";\n")) + ";\n}")
 }
 return
@@ -771,7 +760,7 @@ const at_ = term_a.at_
 const index_ = term_a.index_
 if((index_ == 0)) {
 ff_compiler_ScalaEmitter.fail_(at_, "Unbound wildcard")
-};
+}
 return ("_w" + index_)
 return
 }
@@ -795,14 +784,14 @@ return ""
 export function emitCase_(matchCase_) {
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_map(matchCase_.patterns_, ((pattern_) => {
 return ff_compiler_ScalaEmitter.emitPattern_(pattern_)
-})));
-const patterns_ = ff_core_List.List_join(pair_.first_, ", ");
+})))
+const patterns_ = ff_core_List.List_join(pair_.first_, ", ")
 const condition_ = ff_core_Option.Option_else(ff_core_Option.Option_map(matchCase_.condition_, ((_w1) => {
 return (("if " + ff_compiler_ScalaEmitter.emitTerm_(_w1)) + " ")
 })), (() => {
 return ""
-}));
-const toLists_ = ff_core_List.List_join(ff_core_List.List_flatten(pair_.second_), "");
+}))
+const toLists_ = ff_core_List.List_join(ff_core_List.List_flatten(pair_.second_), "")
 return (((((("case (" + patterns_) + ") ") + condition_) + "=>\n") + toLists_) + ff_compiler_ScalaEmitter.emitStatements_(matchCase_.body_))
 }
 
@@ -827,7 +816,7 @@ const name_ = pattern_a.name_
 const patterns_ = pattern_a.patterns_
 const pairs_ = ff_core_List.List_map(patterns_, ((pattern_) => {
 return ff_compiler_ScalaEmitter.emitPattern_(pattern_)
-}));
+}))
 return ff_core_Pair.Pair((((ff_compiler_ScalaEmitter.escapeResolved_(name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(pairs_, ((_w1) => {
 return _w1.first_
 })), ", ")) + ")"), ff_core_List.List_flatMap(pairs_, ((_w1) => {
@@ -854,7 +843,7 @@ if(pattern_a._ === 'PAlias') {
 const at_ = pattern_a.at_
 const p_ = pattern_a.pattern_
 const variable_ = pattern_a.variable_
-const pair_ = ff_compiler_ScalaEmitter.emitPattern_(p_);
+const pair_ = ff_compiler_ScalaEmitter.emitPattern_(p_)
 return ff_core_Pair.Pair((((ff_compiler_ScalaEmitter.escapeKeyword_(variable_) + " @ (") + pair_.first_) + ")"), pair_.second_)
 return
 }
@@ -865,24 +854,22 @@ const at_ = pattern_a.at_
 const items_ = pattern_a.items_
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_map(items_, ((_1) => {
 {
-if(_1._ === 'Pair') {
 const item_ = _1.first_
 if(!_1.second_) {
 return ff_compiler_ScalaEmitter.emitPattern_(item_)
 return
-}}
+}
 }
 {
-if(_1._ === 'Pair') {
 const item_ = _1.first_
 if(_1.second_) {
-const pair_ = ff_compiler_ScalaEmitter.emitPattern_(item_);
+const pair_ = ff_compiler_ScalaEmitter.emitPattern_(item_)
 return ff_core_Pair.Pair((pair_.first_ + "_seq @ _*"), ff_core_Array.Array_toList([(((("val " + pair_.first_) + " = ") + pair_.first_) + "_seq.toList;\n"), ...ff_core_List.List_toArray(pair_.second_)]))
 return
-}}
+}
 }
 throw new Error('Unexhaustive pattern match')
-})));
+})))
 return ff_core_Pair.Pair((("List(" + ff_core_List.List_join(pair_.first_, ", ")) + ")"), ff_core_List.List_flatten(pair_.second_))
 return
 }
@@ -911,8 +898,8 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function escapeResolved_(word_) {
-const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
-const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
+const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46))
+const initialParts_ = ff_core_List.List_dropLast(parts_, 1)
 if(ff_core_List.List_isEmpty(initialParts_)) {
 return ff_compiler_ScalaEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))
 } else {

@@ -52,13 +52,13 @@ return ((("ff:core/" + name_) + ".") + name_)
 export function Substitution_substituteModule(self_, module_) {
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteLetDefinition(self_, _w1)
-}));
+}))
 const functions_ = ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
-}));
+}))
 const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteExtendDefinition(self_, _w1)
-}));
+}))
 return (((_c) => {
 return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, _c.instances_, extends_, lets_, functions_)
 }))(module_)
@@ -155,12 +155,11 @@ const e_ = _1
 return (((_c) => {
 return ff_compiler_Syntax.EList(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, e_.elementType_), ff_core_List.List_map(e_.items_, ((_1) => {
 {
-if(_1._ === 'Pair') {
 const item_ = _1.first_
 const b_ = _1.second_
 return ff_core_Pair.Pair(ff_compiler_Substitution.Substitution_substituteTerm(self_, item_), b_)
 return
-}
+
 }
 throw new Error('Unexhaustive pattern match')
 })))
@@ -347,8 +346,8 @@ return (((_1) => {
 if(_1._ === 'TVariable') {
 const i_ = _1.index_
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
-const t_ = ff_compiler_Substitution.Substitution_get(self_, i_);
-self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_);
+const t_ = ff_compiler_Substitution.Substitution_get(self_, i_)
+self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_)
 return t_
 return
 }}
