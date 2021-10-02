@@ -466,8 +466,6 @@ case (ff.compiler.Syntax_.PVariant(_, name_, List())) if (name_ == "ff:core/Bool
 (((("if(!" + argument_) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)) + "}")
 case (ff.compiler.Syntax_.PVariant(_, name_, List())) if (name_ == "ff:core/Bool.True") =>
 (((("if(" + argument_) + ") {\n") + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)) + "}")
-case (ff.compiler.Syntax_.PVariant(_, name_, List())) if (name_ == "ff:core/Unit.Unit") =>
-ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = arguments_, matchCase_ = matchCase_)
 case (ff.compiler.Syntax_.PVariant(_, name_, patterns_)) =>
 val variantNameUnqualified_ : ff.core.String_.String = ff.core.String_.String_reverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = name_), p_ = {(_w1) =>
 (_w1 != '.')

@@ -1041,15 +1041,6 @@ return
 {
 if(_1._ === 'PVariant') {
 const name_ = _1.name_
-if(_1.patterns_._ === 'Empty') {
-if((name_ == "ff:core/Unit.Unit")) {
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_)
-return
-}}}
-}
-{
-if(_1._ === 'PVariant') {
-const name_ = _1.name_
 const patterns_ = _1.patterns_
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
