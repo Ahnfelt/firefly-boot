@@ -264,13 +264,16 @@ extend self: JsEmitter {
                 }
             | ECall(at, True, function, _, arguments) =>
                 self.tailCallUsed = True
-                let renaming = arguments.map { a =>
-                    "const " + escapeKeyword(a.name.expect() + "_r") + " = " + self.emitTerm(a.value)
-                }.join("\n")
-                let assignment = arguments.map { a =>
-                    escapeKeyword(a.name.expect()) + " = " + escapeKeyword(a.name.expect() + "_r")
-                }.join("\n")
-                "{\n" + renaming + "\n" + assignment + "\ncontinue\n}"
+                let pair = arguments.map {
+                    | Argument(_, Some(x), EVariable(_, y, _, _)) { x == y } =>
+                        None
+                    | a =>
+                        Some(Pair(
+                            "const " + escapeKeyword(a.name.expect() + "_r") + " = " + self.emitTerm(a.value)
+                            escapeKeyword(a.name.expect()) + " = " + escapeKeyword(a.name.expect() + "_r")
+                        ))
+                }.collect {_}.unzip()
+                "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue\n}"
             | EPipe(at, value, ELambda(_, Lambda(_, cases))) {last} =>
                 "{\nconst _1 = " + self.emitTerm(value) + "\n" +
                 cases.map { "{\n" + self.emitCase(["_1"], _) + "\n}" }.join("\n") +

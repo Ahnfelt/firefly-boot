@@ -933,13 +933,28 @@ if(_1.tailCall_) {
 const function_ = _1.function_
 const arguments_ = _1.arguments_
 self_.tailCallUsed_ = true
-const renaming_ = ff_core_List.List_join(ff_core_List.List_map(arguments_, ((a_) => {
-return ((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_))
-})), "\n")
-const assignment_ = ff_core_List.List_join(ff_core_List.List_map(arguments_, ((a_) => {
-return ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_expect(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r")))
-})), "\n")
-return (((("{\n" + renaming_) + "\n") + assignment_) + "\ncontinue\n}")
+const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((_1) => {
+{
+if(_1.name_._ === 'Some') {
+const x_ = _1.name_.value_
+if(_1.value_._ === 'EVariable') {
+const y_ = _1.value_.name_
+if((x_ == y_)) {
+return ff_core_Option.None()
+return
+}}}
+}
+{
+const a_ = _1
+return ff_core_Option.Some(ff_core_Pair.Pair(((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_)), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_expect(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r")))))
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+})), ((_w1) => {
+return _w1
+})))
+return (((("{\n" + ff_core_List.List_join(pair_.first_, "\n")) + "\n") + ff_core_List.List_join(pair_.second_, "\n")) + "\ncontinue\n}")
 return
 }}
 }

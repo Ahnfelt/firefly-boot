@@ -382,9 +382,7 @@ const tail_ = _1.tail_
 body_(head_)
 {
 const self_r_ = tail_
-const body_r_ = body_
 self_ = self_r_
-body_ = body_r_
 continue
 }
 return
@@ -419,9 +417,7 @@ if(_1._ === 'Link') {
 const tail_ = _1.tail_
 {
 const self_r_ = tail_
-const body_r_ = body_
 self_ = self_r_
-body_ = body_r_
 continue
 }
 return
@@ -456,9 +452,7 @@ if(_1._ === 'Link') {
 const tail_ = _1.tail_
 {
 const self_r_ = tail_
-const body_r_ = body_
 self_ = self_r_
-body_ = body_r_
 continue
 }
 return
@@ -493,9 +487,7 @@ if(_1._ === 'Link') {
 const tail_ = _1.tail_
 {
 const self_r_ = tail_
-const body_r_ = body_
 self_ = self_r_
-body_ = body_r_
 continue
 }
 return
@@ -538,9 +530,7 @@ if(_1._ === 'Link') {
 const tail_ = _1.tail_
 {
 const list_r_ = tail_
-const result_r_ = result_
 list_ = list_r_
-result_ = result_r_
 continue
 }
 return
@@ -641,9 +631,7 @@ const _1 = body_(head_)
 if(_1._ === 'None') {
 {
 const list_r_ = tail_
-const result_r_ = result_
 list_ = list_r_
-result_ = result_r_
 continue
 }
 return
@@ -695,9 +683,7 @@ const _1 = body_(head_)
 if(_1._ === 'None') {
 {
 const self_r_ = tail_
-const body_r_ = body_
 self_ = self_r_
-body_ = body_r_
 continue
 }
 return
@@ -955,10 +941,8 @@ const y_ = _1.second_.head_
 if((body_(x_) < body_(y_))) {
 {
 const xs_r_ = xs2_
-const ys_r_ = ys_
 const result_r_ = ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(result_)])
 xs_ = xs_r_
-ys_ = ys_r_
 result_ = result_r_
 continue
 }
@@ -972,10 +956,8 @@ if(_1.second_._ === 'Link') {
 const y_ = _1.second_.head_
 const ys2_ = _1.second_.tail_
 {
-const xs_r_ = xs_
 const ys_r_ = ys2_
 const result_r_ = ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(result_)])
-xs_ = xs_r_
 ys_ = ys_r_
 result_ = result_r_
 continue
@@ -1055,9 +1037,7 @@ if(_1.head_._ === 'Empty') {
 const aas_ = _1.tail_
 {
 const lists_r_ = aas_
-const result_r_ = result_
 lists_ = lists_r_
-result_ = result_r_
 continue
 }
 return
