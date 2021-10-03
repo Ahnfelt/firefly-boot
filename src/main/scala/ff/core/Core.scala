@@ -37,7 +37,7 @@ import ff.core.Unit_._
 object Core_ {
 
 
-val log_ : ff.core.Log_.Log = null
+
 def if_[T](condition_ : ff.core.Bool_.Bool, body_ : Function0[T]) : ff.core.Option_.Option[T] = {
 pipe_dot(condition_)({
 case (ff.core.Bool_.False()) =>

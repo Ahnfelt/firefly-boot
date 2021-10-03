@@ -31,7 +31,7 @@ main(system: System): Unit {
         True
     }
     /*} else {
-        log.debug("An exception was thrown from Compiler.")
+        Log.debug("An exception was thrown from Compiler.")
         False
     }*/
 

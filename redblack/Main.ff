@@ -13,9 +13,9 @@ main(system: System): Unit {
     pairs.each {| Pair(k, v) =>
         map = map.add(k, v)
     }
-    log.debug(map)
+    Log.debug(map)
 
     map = map.remove(2)
-    log.debug(map)
+    Log.debug(map)
 
 }

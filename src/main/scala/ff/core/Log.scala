@@ -36,12 +36,12 @@ import ff.core.Try_._
 import ff.core.Unit_._
 object Log_ {
 
-sealed abstract class Log extends Product with Serializable
 
 
-def Log_debug[T](self_ : ff.core.Log_.Log, value_ : T) : ff.core.Unit_.Unit = {
+def debug_[T](value_ : T) : ff.core.Unit_.Unit = {
 println(value_)
 }
+
 
 
 }

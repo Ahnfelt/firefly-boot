@@ -36,7 +36,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export const log_ = null
+
 
 export function if_(condition_, body_) {
 {

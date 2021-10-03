@@ -1,9 +1,3 @@
-type Log {}
-
-extend self: Log {
-
-    debug[T](value: T): Unit { panic("magic") }
-        scala "println(value_)"
-        javascript "console.log(value_)"
-
-}
+debug[T](value: T): Unit { panic("magic") }
+    scala "println(value_)"
+    javascript "console.log(value_)"

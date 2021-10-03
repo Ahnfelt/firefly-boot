@@ -34,15 +34,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Log
 
 
 
 
-
-
-export function Log_debug(self_, value_) {
+export function debug_(value_) {
 console.log(value_)
 }
+
+
 
 
