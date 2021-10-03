@@ -50,7 +50,8 @@ return {_: 'RbNode', isRed_, left_, key_, value_, right_};
 
 
 export function RbMap_size(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 return 0
@@ -66,11 +67,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function RbMap_pairs(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 return ff_core_Array.Array_toList([])
@@ -88,11 +90,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function RbMap_each(self_, body_) {
-(((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 
@@ -112,11 +115,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function RbMap_get(self_, key_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 return ff_core_Option.None()
@@ -149,12 +153,13 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function RbMap_add(self_, key_, value_) {
 function go_(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbLeaf(), key_, value_, ff_core_RbMap.RbLeaf())
@@ -195,9 +200,10 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
 }
-return (((_1) => {
+}
+{
+const _1 = go_(self_)
 {
 if(_1._ === 'RbNode') {
 if(_1.isRed_) {
@@ -216,12 +222,13 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(go_(self_))
+}
 }
 
 export function RbMap_remove(self_, key_) {
 function go_(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 return self_
@@ -253,10 +260,11 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 function goLeft_(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 return self_
@@ -289,10 +297,11 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 function balanceLeft_(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbNode') {
 if(!_1.isRed_) {
@@ -352,10 +361,11 @@ return
 }}}}}}}}
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 function goRight_(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 return self_
@@ -388,10 +398,11 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 function balanceRight_(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbNode') {
 if(!_1.isRed_) {
@@ -451,10 +462,11 @@ return
 }}}}}}}}
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 function fuse_(x_, y_) {
-return (((_1) => {
+{
+const _1 = ff_core_Pair.Pair(x_, y_)
 {
 if(_1.first_._ === 'RbLeaf') {
 const a_ = _1.second_
@@ -517,7 +529,8 @@ const k2_ = _1.second_.key_
 const v2_ = _1.second_.value_
 const d_ = _1.second_.right_
 const e_ = fuse_(b_, c_)
-return (((_1) => {
+{
+const _1 = e_
 {
 if(_1._ === 'RbNode') {
 if(_1.isRed_) {
@@ -543,7 +556,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(e_)
+}
 return
 }}}}
 }
@@ -561,7 +574,8 @@ const k2_ = _1.second_.key_
 const v2_ = _1.second_.value_
 const d_ = _1.second_.right_
 const e_ = fuse_(b_, c_)
-return (((_1) => {
+{
+const _1 = e_
 {
 if(_1._ === 'RbNode') {
 if(_1.isRed_) {
@@ -587,14 +601,15 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(e_)
+}
 return
 }}}}
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Pair.Pair(x_, y_))
 }
-return (((_1) => {
+}
+{
+const _1 = go_(self_)
 {
 if(_1._ === 'RbNode') {
 if(_1.isRed_) {
@@ -613,11 +628,12 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(go_(self_))
+}
 }
 
 export function RbMap_balance(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbNode') {
 if(!_1.isRed_) {
@@ -708,7 +724,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 

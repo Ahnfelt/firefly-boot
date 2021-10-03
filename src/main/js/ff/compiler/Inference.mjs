@@ -82,9 +82,16 @@ return ff_compiler_Substitution.Substitution_substituteModule(ff_compiler_Substi
 
 export function Inference_inferLetDefinition(self_, environment_, definition_) {
 const value_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, definition_.variableType_, definition_.value_)
-return (((_c) => {
+{
+const _1 = definition_
+{
+const _c = _1
 return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, value_, _c.targets_)
-}))(definition_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Inference_inferExtendDefinition(self_, environment_, definition_) {
@@ -96,9 +103,16 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(d
 const lambda_ = (((_c) => {
 return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(method_.body_.cases_, ((case_) => {
 const selfPattern_ = ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.Some(definition_.name_))
-return (((_c) => {
+{
+const _1 = case_
+{
+const _c = _1
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([selfPattern_, ...ff_core_List.List_toArray(case_.patterns_)]), _c.condition_, _c.body_)
-}))(case_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })))
 }))(method_.body_)
 const function_ = (((_c) => {
@@ -106,9 +120,16 @@ return ff_compiler_Syntax.DFunction(_c.at_, signature_, lambda_, _c.targets_)
 }))(method_)
 return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, function_)
 }))
-return (((_c) => {
+{
+const _1 = definition_
+{
+const _c = _1
 return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, functions_)
-}))(definition_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Inference_inferFunctionDefinition(self_, environment_, definition_) {
@@ -123,9 +144,16 @@ return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.s
 const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameters_)), ff_core_Array.Array_toList([...ff_core_List.List_toArray(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
 }))), definition_.signature_.returnType_]))
-return (((_c) => {
+{
+const _1 = definition_
+{
+const _c = _1
 return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Inference.Inference_inferLambda(self_, environment2_, functionType_, definition_.body_), _c.targets_)
-}))(definition_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Inference_inferLambda(self_, environment_, expected_, lambda_) {
@@ -136,7 +164,8 @@ if(_1._ === 'TConstructor') {
 const name_ = _1.name_
 const ts_ = _1.generics_
 if(ff_core_String.String_startsWith(name_, "Function$", 0)) {
-return (((_1) => {
+{
+const _1 = ff_core_List.List_expectLast(ts_)
 {
 if(_1._ === 'TConstructor') {
 const n_ = _1.name_
@@ -151,7 +180,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_List.List_expectLast(ts_))
+}
 return
 }}
 }
@@ -165,15 +194,29 @@ throw new Error('Unexhaustive pattern match')
 const cases_ = ((!returnsUnit_)
 ? lambda_.cases_
 : ff_core_List.List_map(lambda_.cases_, ((c_) => {
-return (((_c) => {
+{
+const _1 = c_
+{
+const _c = _1
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.condition_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, ff_core_Array.Array_toList([]), ff_core_Option.None())))
-}))(c_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })))
-return (((_c) => {
+{
+const _1 = lambda_
+{
+const _c = _1
 return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(cases_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferMatchCase(self_, environment_, expected_, _w1)
 })))
-}))(lambda_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Inference_inferMatchCase(self_, environment_, expected_, case_) {
@@ -208,13 +251,21 @@ const condition_ = ff_core_Option.Option_map(case_.condition_, ((e_) => {
 return ff_compiler_Inference.Inference_inferTerm(self_, newEnvironment_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_Array.Array_toList([])), e_)
 }))
 const body_ = ff_compiler_Inference.Inference_inferTerm(self_, newEnvironment_, returnType_, case_.body_)
-return (((_c) => {
+{
+const _1 = case_
+{
+const _c = _1
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, condition_, body_)
-}))(case_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Inference_inferPattern(self_, environment_, expected_, pattern_) {
-return (((_1) => {
+{
+const _1 = pattern_
 {
 if(_1._ === 'PVariable') {
 const at_ = _1.at_
@@ -329,7 +380,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(pattern_)
+}
 }
 
 export function Inference_inferTerm(self_, environment_, expected_, term_) {
@@ -337,7 +388,8 @@ function literal_(coreTypeName_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_Array.Array_toList([])))
 return term_
 }
-return (((_1) => {
+{
+const _1 = term_
 {
 if(_1._ === 'EString') {
 return literal_("String")
@@ -386,7 +438,8 @@ const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, r
 const e2_ = (((_c) => {
 return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
 }))(e_)
-return (((_1) => {
+{
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_)
 {
 const t_ = _1
 if(_1._ === 'TConstructor') {
@@ -414,7 +467,8 @@ if(_1._ === 'TConstructor') {
 const name_ = _1.name_
 const typeArguments_ = _1.generics_
 const methodName_ = ((name_ + "_") + e_.field_)
-return (((_1) => {
+{
+const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, methodName_, typeArguments_)
 {
 if(_1._ === 'Some') {
 const instantiated_ = _1.value_
@@ -431,9 +485,16 @@ return
 if(_1._ === 'Some') {
 const instantiated_ = _1.value_
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -444,7 +505,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, methodName_, typeArguments_))
+}
 return
 }
 }
@@ -456,7 +517,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_))
+}
 return
 }
 }
@@ -508,9 +569,16 @@ const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, ff_compiler_Sy
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_))
 }))(environment_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, e_.valueType_, e_.value_), ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, e_.body_))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -533,11 +601,18 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const arguments_ = ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, environment_, instantiated_.scheme_.signature_.parameters_, _w1)
 }))
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(instantiated_.typeArguments_, ((_w1) => {
 return _w1.second_
 })), arguments_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -557,11 +632,18 @@ return _w1.valueType_
 })))
 const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_Array.Array_toList([instantiated_.scheme_.signature_.returnType_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Option"), ff_core_Array.Array_toList([recordType_]))]))
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, functionType_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(instantiated_.typeArguments_, ((_w1) => {
 return _w1.second_
 })))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -583,7 +665,7 @@ return (_w1 == a_.name_)
 const at_ = _1.at_
 const name_ = _1.name_
 const value_ = _1.value_
-ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
+return ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
 return
 
 }
@@ -618,16 +700,24 @@ const valueType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.u
 const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_Array.Array_toList([valueType_, expected_]))
 const value_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, valueType_, e_.value_)
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, e_.function_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EPipe(_c.at_, value_, function_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
 {
 if(_1._ === 'ECall') {
 const e_ = _1
-return (((_1) => {
+{
+const _1 = e_.function_
 {
 if(_1._ === 'EVariable') {
 const variableAt_ = _1.at_
@@ -639,7 +729,8 @@ return ((c_ != 95) && (!ff_core_Char.Char_isAsciiLetter(c_)))
 }))) {
 return ff_compiler_Inference.Inference_inferOperator(self_, environment_, expected_, x_, term_)
 } else {
-return (((_1) => {
+{
+const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, x_, e_.typeArguments_)
 {
 if(_1._ === 'Some') {
 const instantiated_ = _1.value_
@@ -659,7 +750,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, x_, e_.typeArguments_))
+}
 }
 return
 }}}
@@ -674,14 +765,16 @@ return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, (((_c) => {
 return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
 }))(f_), _c.typeArguments_, _c.arguments_)
 }))(e_)
-return (((_1) => {
+{
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_)
 {
 const t_ = _1
 if(_1._ === 'TConstructor') {
 const name_ = _1.name_
 const typeParameters_ = _1.generics_
 const methodName_ = ((name_ + "_") + f_.field_)
-return (((_1) => {
+{
+const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, f_.at_, methodName_, ff_core_Array.Array_toList([]))
 {
 if(_1._ === 'Some') {
 const instantiated_ = _1.value_
@@ -704,7 +797,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Inference.Inference_lookup(self_, environment_, f_.at_, methodName_, ff_core_Array.Array_toList([])))
+}
 return
 }
 }
@@ -716,7 +809,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_))
+}
 return
 }
 }
@@ -726,7 +819,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(e_.function_)
+}
 return
 }
 }
@@ -747,17 +840,31 @@ const newFields_ = ff_core_List.List_map(ff_core_List.List_zip(fields_, fieldTyp
 {
 const field_ = _1.first_
 const t_ = _1.second_
-return (((_c) => {
+{
+const _1 = field_
+{
+const _c = _1
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, field_.value_))
-}))(field_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 
 }
 throw new Error('Unexhaustive pattern match')
 }))
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ERecord(_c.at_, newFields_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -787,9 +894,16 @@ const e_ = _1
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.variable_, ff_core_Array.Array_toList([])), ((instantiated_) => {
 if(instantiated_.scheme_.isMutable_) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 } else {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_))
 }
@@ -804,7 +918,8 @@ if(_1._ === 'EAssignField') {
 const e_ = _1
 const recordType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_)
-return (((_1) => {
+{
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_)
 {
 const t_ = _1
 if(_1._ === 'TConstructor') {
@@ -821,15 +936,23 @@ if(_1._ === 'TConstructor') {
 const name_ = _1.name_
 const typeArguments_ = _1.generics_
 const methodName_ = ((name_ + "_") + e_.field_)
-return (((_1) => {
+{
+const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, methodName_, typeArguments_)
 {
 if(_1._ === 'Some') {
 const instantiated_ = _1.value_
 if(instantiated_.scheme_.isMutable_) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, record_, _c.field_, value_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }}
 }
@@ -847,7 +970,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, methodName_, typeArguments_))
+}
 return
 }
 }
@@ -859,12 +982,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_))
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(term_)
+}
 }
 
 export function Inference_inferAssignment(self_, environment_, expected_, at_, operator_, value_, signature_) {
@@ -919,11 +1042,18 @@ throw new Error('Unexhaustive pattern match')
 }))(term_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, signature_.returnType_)
 const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, environment_, signature_.parameters_, e_.arguments_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, e_.function_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Inference_inferLambdaCall(self_, environment_, expected_, term_) {
@@ -952,22 +1082,36 @@ const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, ar
 const argument_ = _1.first_
 const t_ = _1.second_
 ff_core_Option.Option_each(argument_.name_, ((name_) => {
-ff_compiler_Inference.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
+return ff_compiler_Inference.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
 }))
-return (((_c) => {
+{
+const _1 = argument_
+{
+const _c = _1
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, argument_.value_))
-}))(argument_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 
 }
 throw new Error('Unexhaustive pattern match')
 }))
 ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_) => {
-ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
+return ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
 }))
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, function_, ff_core_Array.Array_toList([]), arguments_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Inference_inferOperator(self_, environment_, expected_, operator_, term_) {
@@ -986,7 +1130,8 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))(term_)
-return (((_1) => {
+{
+const _1 = e_.arguments_
 {
 if(_1._ === 'Link') {
 const a1_ = _1.head_
@@ -995,11 +1140,18 @@ if((operator_ == "!")) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_Array.Array_toList([]))
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_Array.Array_toList([(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_)]))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }}}
 }
@@ -1036,11 +1188,18 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_compiler_Unification.Unification_substitute(self_.unification_, t1_))
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_Array.Array_toList([(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_)]))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }}}
 }
@@ -1073,13 +1232,20 @@ throw new Error('Unexhaustive pattern match')
 if(((((name_ != ff_compiler_Inference.core_("List")) && (name_ != ff_compiler_Inference.core_("Array"))) && (name_ != ff_compiler_Inference.core_("Set"))) && (name_ != ff_compiler_Inference.core_("Map")))) {
 ff_compiler_Inference.fail_(e_.at_, ("Operator ++ not currently supported for " + name_))
 }
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_Array.Array_toList([(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_)]))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }}}}
 }
@@ -1094,13 +1260,20 @@ const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a2_.value_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_Array.Array_toList([(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_)]))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }}}}
 }
@@ -1117,7 +1290,8 @@ const t2_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unificat
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_)
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t2_, a2_.value_)
 const magic_ = ((t_) => {
-return (((_1) => {
+{
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_)
 {
 if(_1._ === 'TConstructor') {
 const name_ = _1.name_
@@ -1160,47 +1334,54 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Unification.Unification_substitute(self_.unification_, t_))
+}
 })
 const chooseType_ = ((_1, _2) => {
 {
 if(_1._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_)
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(_2._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(((operator_ == "==") || (operator_ == "!="))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(_1._ === 'None') {
 if(_2._ === 'None') {
-ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
 }}
 }
 throw new Error('Unexhaustive pattern match')
 })
 chooseType_(magic_(t1_), magic_(t2_))
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_Array.Array_toList([(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_)]))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }}}}
 }
@@ -1216,7 +1397,8 @@ const t2_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unificat
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_)
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t2_, a2_.value_)
 const magic_ = ((t_) => {
-return (((_1) => {
+{
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_)
 {
 if(_1._ === 'TConstructor') {
 const name_ = _1.name_
@@ -1250,7 +1432,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Unification.Unification_substitute(self_.unification_, t_))
+}
 })
 const chooseType_ = ((_1, _2) => {
 {
@@ -1258,7 +1440,7 @@ if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "String")) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }}}
 }
@@ -1267,7 +1449,7 @@ if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "String")) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }}}
 }
@@ -1276,7 +1458,7 @@ if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "Float")) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }}}
 }
@@ -1285,7 +1467,7 @@ if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "Float")) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }}}
 }
@@ -1294,7 +1476,7 @@ if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "Int")) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }}}
 }
@@ -1303,7 +1485,7 @@ if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "Int")) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }}}
 }
@@ -1311,7 +1493,7 @@ return
 if(_1._ === 'Some') {
 if(_2._ === 'None') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_)
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }}
 }
@@ -1319,27 +1501,34 @@ return
 if(_1._ === 'None') {
 if(_2._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }}
 }
 {
 if(_1._ === 'None') {
 if(_2._ === 'None') {
-ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
 }}
 }
 throw new Error('Unexhaustive pattern match')
 })
 chooseType_(magic_(t1_), magic_(t2_))
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_Array.Array_toList([(((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), (((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_)]))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }}}}
 }
@@ -1349,7 +1538,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(e_.arguments_)
+}
 }
 
 export function Inference_inferEtaExpansion(self_, environment_, expected_, at_, signature_, term_) {
@@ -1379,7 +1568,8 @@ return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
 return ff_compiler_Inference.fail_(at_, ("Missing argument: " + p_.name_))
 }))
 }
-return (((_1) => {
+{
+const _1 = remainingArguments_
 {
 if(_1._ === 'Empty') {
 return defaultArgument_()
@@ -1421,13 +1611,13 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(remainingArguments_)
+}
 }))
 ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) => {
 {
 const at_ = _1.at_
 if(_1.name_._ === 'None') {
-ff_compiler_Inference.fail_(at_, "Too many arguments")
+return ff_compiler_Inference.fail_(at_, "Too many arguments")
 return
 }
 }
@@ -1435,7 +1625,7 @@ return
 const at_ = _1.at_
 if(_1.name_._ === 'Some') {
 const name_ = _1.name_.value_
-ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
+return ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
 return
 }
 }
@@ -1458,9 +1648,16 @@ return ff_core_Pair.Pair(name_, ff_compiler_Unification.Unification_freshTypeVar
 })))
 const instantiationMap_ = ff_core_List.List_toMap(instantiation_)
 const parameters_ = ff_core_List.List_map(scheme_.signature_.parameters_, ((p_) => {
-return (((_c) => {
+{
+const _1 = p_
+{
+const _c = _1
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, p_.valueType_), _c.default_)
-}))(p_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }))
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, scheme_.signature_.returnType_)
 const signature_ = (((_c) => {

@@ -118,7 +118,8 @@ return ff_core_RbMap.RbMap_size(self_.redBlack_)
 export function Map_map(self_, body_) {
 const initial_ = ff_core_Map.MapOf(ff_core_RbMap.RbLeaf())
 return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_), initial_)(((tree_, pair_) => {
-return (((_1) => {
+{
+const _1 = body_(pair_)
 {
 const k_ = _1.first_
 const v_ = _1.second_
@@ -127,7 +128,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(body_(pair_))
+}
 }))
 }
 
@@ -140,7 +141,8 @@ return ff_core_Option.Option_expect(ff_core_Map.Map_get(self_, key_))
 }
 
 export function Map_updateOrInsert(self_, key_, update_, default_) {
-return (((_1) => {
+{
+const _1 = ff_core_Map.Map_get(self_, key_)
 {
 if(_1._ === 'None') {
 return ff_core_Map.Map_add(self_, key_, default_())
@@ -155,7 +157,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Map.Map_get(self_, key_))
+}
 }
 
 export function Map_addToList(self_, key_, value_) {

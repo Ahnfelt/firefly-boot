@@ -174,7 +174,8 @@ return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_siz
 }
 
 export function TokenKind_beforeSeparator(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'LEnd') {
 return false
@@ -326,11 +327,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function TokenKind_afterSeparator(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'LEnd') {
 return false
@@ -482,11 +484,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function TokenKind_afterKeyword(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'LEnd') {
 return false
@@ -638,7 +641,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 

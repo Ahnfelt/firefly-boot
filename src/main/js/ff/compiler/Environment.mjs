@@ -78,7 +78,8 @@ const lets_ = ff_core_List.List_map(module_.lets_, ((d_) => {
 return ff_core_Pair.Pair(full_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]), d_.variableType_)))
 }))
 const extends_ = ff_core_List.List_flatMap(module_.extends_, ((d_) => {
-return (((_1) => {
+{
+const _1 = d_.type_
 {
 if(_1._ === 'TVariable') {
 const t_ = _1
@@ -100,7 +101,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(d_.type_)
+}
 }))
 const fields_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
 const prefix_ = (d_.name_ + "_")

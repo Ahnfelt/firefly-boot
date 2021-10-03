@@ -262,7 +262,8 @@ return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", colum
 }
 
 export function Type_show(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'TConstructor') {
 const at_ = _1.at_
@@ -287,7 +288,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 

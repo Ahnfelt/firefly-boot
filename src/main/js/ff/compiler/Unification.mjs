@@ -65,7 +65,8 @@ function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 2, ff_core_List.List_toMap(ff_core_List.List_map(instances_, ((definition_) => {
-return (((_1) => {
+{
+const _1 = definition_.traitType_
 {
 if(_1._ === 'TConstructor') {
 const at_ = _1.at_
@@ -94,7 +95,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(definition_.traitType_)
+}
 }))))
 }
 
@@ -118,7 +119,8 @@ if(type_a._ === 'TConstructor') {
 const at_ = type_a.at_
 const name_ = type_a.name_
 if(type_a.generics_._ === 'Empty') {
-return (((_1) => {
+{
+const _1 = ff_core_Map.Map_get(instantiation_, name_)
 {
 if(_1._ === 'Some') {
 const t_ = _1.value_
@@ -133,7 +135,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Map.Map_get(instantiation_, name_))
+}
 return
 }}
 }
@@ -170,7 +172,8 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Unification_constrain(self_, at_, type_, constraintName_, generics_) {
-(((_1) => {
+{
+const _1 = type_
 {
 if(_1._ === 'TVariable') {
 const i_ = _1.index_
@@ -182,7 +185,8 @@ return
 {
 if(_1._ === 'TVariable') {
 const i_ = _1.index_
-return (((_1) => {
+{
+const _1 = ff_core_Map.Map_get(self_.constraints_, i_)
 {
 if(_1._ === 'None') {
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_Array.Array_toList([ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))])))
@@ -192,7 +196,8 @@ return
 {
 if(_1._ === 'Some') {
 const map_ = _1.value_
-(((_1) => {
+{
+const _1 = ff_core_Map.Map_get(map_, constraintName_)
 {
 if(_1._ === 'None') {
 const newMap_ = ff_core_Map.Map_add(map_, constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))
@@ -207,7 +212,7 @@ return ff_core_List.List_each(ff_core_List.List_zip(generics_, generics2_), ((_1
 {
 const t1_ = _1.first_
 const t2_ = _1.second_
-ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
+return ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
 return
 
 }
@@ -217,12 +222,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Map.Map_get(map_, constraintName_))
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Map.Map_get(self_.constraints_, i_))
+}
 return
 }
 }
@@ -230,7 +235,8 @@ return
 if(_1._ === 'TConstructor') {
 const name_ = _1.name_
 const generics2_ = _1.generics_
-return (((_1) => {
+{
+const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraintName_, name_))
 {
 if(_1._ === 'None') {
 const g1_ = (ff_core_List.List_isEmpty(generics_)
@@ -239,7 +245,7 @@ const g1_ = (ff_core_List.List_isEmpty(generics_)
 const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]")
-ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
+return ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
 return
 }
 }
@@ -253,8 +259,9 @@ const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, definition_.traitType_)
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_Array.Array_toList([type_, ...ff_core_List.List_toArray(generics_)]))
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
-ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
-(((_1) => {
+return ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
+{
+const _1 = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, constraint_.representation_)
 {
 if(_1._ === 'TConstructor') {
 const newConstraintName_ = _1.name_
@@ -271,22 +278,23 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Unification.Unification_instantiate(self_, instantiation_, constraint_.representation_))
+}
 }))
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraintName_, name_)))
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(type_)
+}
 }
 
 export function Unification_get(self_, index_) {
-return (((_1) => {
+{
+const _1 = ff_core_Map.Map_expect(self_.substitution_, index_)
 {
 if(_1._ === 'TVariable') {
 const i_ = _1.index_
@@ -304,7 +312,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Map.Map_expect(self_.substitution_, index_))
+}
 }
 
 export function Unification_has(self_, index_) {
@@ -330,11 +338,18 @@ return
 const self_ = self_a
 if(type_a._ === 'TConstructor') {
 const t_ = type_a
-return (((_c) => {
+{
+const _1 = t_
+{
+const _c = _1
 return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((t_) => {
 return ff_compiler_Unification.Unification_substitute(self_, t_)
 })))
-}))(t_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -362,7 +377,7 @@ const self_ = self_a
 if(t1_a._ === 'TVariable') {
 const i_ = t1_a.index_
 if(ff_compiler_Unification.Unification_has(self_, i_)) {
-ff_compiler_Unification.Unification_unify(self_, at_, ff_compiler_Unification.Unification_get(self_, i_), t2_)
+return ff_compiler_Unification.Unification_unify(self_, at_, ff_compiler_Unification.Unification_get(self_, i_), t2_)
 return
 }}
 }
@@ -371,7 +386,7 @@ const self_ = self_a
 if(t2_a._ === 'TVariable') {
 const i_ = t2_a.index_
 if(ff_compiler_Unification.Unification_has(self_, i_)) {
-ff_compiler_Unification.Unification_unify(self_, at_, t1_, ff_compiler_Unification.Unification_get(self_, i_))
+return ff_compiler_Unification.Unification_unify(self_, at_, t1_, ff_compiler_Unification.Unification_get(self_, i_))
 return
 }}
 }
@@ -379,7 +394,7 @@ return
 const self_ = self_a
 if(t1_a._ === 'TVariable') {
 const i_ = t1_a.index_
-ff_compiler_Unification.Unification_bind(self_, at_, i_, t2_)
+return ff_compiler_Unification.Unification_bind(self_, at_, i_, t2_)
 return
 }
 }
@@ -387,7 +402,7 @@ return
 const self_ = self_a
 if(t2_a._ === 'TVariable') {
 const i_ = t2_a.index_
-ff_compiler_Unification.Unification_bind(self_, at_, i_, t1_)
+return ff_compiler_Unification.Unification_bind(self_, at_, i_, t1_)
 return
 }
 }
@@ -402,11 +417,11 @@ const generics2_ = t2_a.generics_
 if(((name1_ != name2_) || (ff_core_List.List_size(generics1_) != ff_core_List.List_size(generics2_)))) {
 ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
 }
-ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
+return ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
 {
 const t1_ = _1.first_
 const t2_ = _1.second_
-ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
+return ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
 return
 
 }
@@ -423,14 +438,14 @@ if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
 ff_compiler_Unification.Unification_fail(self_, at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
 }
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_)
-ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_), ((map_) => {
+return ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_), ((map_) => {
 self_.constraints_ = ff_core_Map.Map_remove(self_.constraints_, index_)
-ff_core_List.List_each(ff_core_Map.Map_pairs(map_), ((_1) => {
+return ff_core_List.List_each(ff_core_Map.Map_pairs(map_), ((_1) => {
 {
 const name_ = _1.first_
 const at2_ = _1.second_.at_
 const generics_ = _1.second_.generics_
-ff_compiler_Unification.Unification_constrain(self_, at2_, type_, name_, generics_)
+return ff_compiler_Unification.Unification_constrain(self_, at2_, type_, name_, generics_)
 return
 
 }

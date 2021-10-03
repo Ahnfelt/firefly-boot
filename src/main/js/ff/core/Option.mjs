@@ -48,7 +48,8 @@ return {_: 'Some', value_};
 
 
 export function Option_else(self_, body_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return body_()
@@ -63,14 +64,16 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_elseIf(self_, condition_, body_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
-return (((_1) => {
+{
+const _1 = condition_()
 {
 if(_1) {
 return ff_core_Option.Some(body_())
@@ -84,7 +87,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(condition_())
+}
 return
 }
 }
@@ -95,11 +98,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_orElse(self_, body_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return body_()
@@ -113,11 +117,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_isEmpty(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return true
@@ -131,11 +136,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_toList(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return ff_core_Array.Array_toList([])
@@ -150,11 +156,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_filter(self_, body_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'Some') {
 const v_ = _1.value_
@@ -169,11 +176,12 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_map(self_, body_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return ff_core_Option.None()
@@ -188,11 +196,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_flatMap(self_, body_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return ff_core_Option.None()
@@ -207,11 +216,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_each(self_, body_) {
-(((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 
@@ -226,11 +236,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_all(self_, body_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return true
@@ -245,11 +256,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_any(self_, body_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return false
@@ -264,11 +276,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_expect(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return ff_core_Core.panic_("None.expect()")
@@ -283,11 +296,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_contains(self_, value_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return false
@@ -302,11 +316,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function Option_flatten(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'None') {
 return ff_core_Option.None()
@@ -321,7 +336,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 

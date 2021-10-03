@@ -82,7 +82,7 @@ return (!ff_core_List.List_any(module_.types_, ((_w1) => {
 return ((modulePrefix_ + _w1.name_) == t_.name_)
 })))
 })), ((t_) => {
-ff_compiler_ScalaEmitter.fail_(t_.at_, ("Type not defined in this file: " + t_.name_))
+return ff_compiler_ScalaEmitter.fail_(t_.at_, ("Type not defined in this file: " + t_.name_))
 }))
 return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
@@ -155,7 +155,8 @@ return ff_core_String.String_dropFirst(code_, 1)
 return (((signature_ + " = {\n") + code_) + "\n}")
 }
 })), (() => {
-return (((_1) => {
+{
+const _1 = definition_.body_
 {
 if(_1.cases_._ === 'Link') {
 const matchCase_ = _1.cases_.head_
@@ -192,7 +193,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(definition_.body_)
+}
 }))
 }
 
@@ -201,11 +202,18 @@ const typeName_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(
 return (_w1 != 46)
 })))
 const methods_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
-return (((_c) => {
+{
+const _1 = method_
+{
+const _c = _1
 return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_)
 }))(method_.signature_), _c.body_, _c.targets_)
-}))(method_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }))
 return ff_core_List.List_join(ff_core_List.List_map(methods_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitFunctionDefinition_(_w1, "")

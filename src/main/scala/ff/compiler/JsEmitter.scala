@@ -38,7 +38,7 @@ import ff.core.Try_._
 import ff.core.Unit_._
 object JsEmitter_ {
 
-case class JsEmitter(otherModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module])
+case class JsEmitter(otherModules_ : ff.core.Map_.Map[ff.core.String_.String, ff.compiler.Syntax_.Module], var tailCallUsed_ : ff.core.Bool_.Bool)
 
 case class ProcessedVariantCase(variantName_ : ff.core.String_.String, loneVariant_ : ff.core.Bool_.Bool, arguments_ : ff.core.List_.List[ff.core.String_.String])
 
@@ -46,7 +46,7 @@ def make_(otherModules_ : ff.core.List_.List[ff.compiler.Syntax_.Module]) : ff.c
 ff.compiler.JsEmitter_.JsEmitter(otherModules_ = ff.core.List_.List_toMap[ff.core.String_.String, ff.compiler.Syntax_.Module](self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Module, ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Module]](self_ = otherModules_, body_ = {(m_) =>
 val moduleName_ : ff.core.String_.String = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff.core.String_.String_dropLast(self_ = m_.file_, count_ = 3));
 ff.core.Pair_.Pair[ff.core.String_.String, ff.compiler.Syntax_.Module](first_ = moduleName_, second_ = m_)
-})))
+})), tailCallUsed_ = ff.core.Bool_.False())
 }
 
 def fail_[T](at_ : ff.compiler.Syntax_.Location, message_ : ff.core.String_.String) : T = {
@@ -198,7 +198,9 @@ ff.core.Bool_.True()
 case (_) =>
 ff.core.Bool_.False()
 }) =>
-val body_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = matchCase_.body_, last_ = ff.core.Bool_.True());
+val body_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitTailCall(self_ = self_, body_ = {() =>
+ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = matchCase_.body_, last_ = ff.core.Bool_.True())
+});
 (((signature_ + " {\n") + body_) + "\n}")
 case (ff.compiler.Syntax_.Lambda(_, cases_)) =>
 val escapedArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.signature_.parameters_, body_ = {(_w1) =>
@@ -207,11 +209,28 @@ val escapedArguments_ : ff.core.List_.List[ff.core.String_.String] = ff.core.Lis
 val shadowingWorkaround_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Parameter, ff.core.String_.String](self_ = definition_.signature_.parameters_, body_ = {(p_) =>
 ((("const " + p_.name_) + "_a = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = p_.name_))
 }), separator_ = "\n");
+val body_ : ff.core.String_.String = ff.compiler.JsEmitter_.JsEmitter_emitTailCall(self_ = self_, body_ = {() =>
 val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(_w1) =>
 (("{\n" + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = escapedArguments_, matchCase_ = _w1)) + "\n}")
 }), separator_ = "\n");
-(((((signature_ + "{\n") + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
+(((("{\n" + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
+});
+(signature_ + body_)
 })
+})
+}
+
+def JsEmitter_emitTailCall(self_ : ff.compiler.JsEmitter_.JsEmitter, body_ : Function0[ff.core.String_.String]) : ff.core.String_.String = (self_, body_) match {
+case (self_, _) =>
+val outerTailCallUsed_ : ff.core.Bool_.Bool = self_.tailCallUsed_;
+self_.tailCallUsed_ = ff.core.Bool_.False();
+val result_ : ff.core.String_.String = body_();
+val tailCallUsed_ : ff.core.Bool_.Bool = self_.tailCallUsed_;
+self_.tailCallUsed_ = outerTailCallUsed_;
+ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = tailCallUsed_, body_ = {() =>
+(("while(true) {\n" + result_) + "\nreturn\n}")
+}), body_ = {() =>
+result_
 })
 }
 
@@ -393,7 +412,7 @@ case (ff.compiler.Syntax_.EVariant(at_, word_, _, _)) if (word_ == "ff:core/Unit
 case (ff.compiler.Syntax_.ESequential(at_, ff.compiler.Syntax_.EVariant(at_, word_, _, _), after_)) if (word_ == "ff:core/Unit.Unit") =>
 ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = after_, last_ = last_)
 case (ff.compiler.Syntax_.ESequential(at_, before_, ff.compiler.Syntax_.EVariant(at_, word_, _, _))) if (word_ == "ff:core/Unit.Unit") =>
-ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = before_, last_ = ff.core.Bool_.False())
+ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = before_, last_ = last_)
 case (ff.compiler.Syntax_.ESequential(at_, before_, after_)) =>
 ((ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = before_, last_ = ff.core.Bool_.False()) + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = after_, last_ = last_))
 case (ff.compiler.Syntax_.EAssign(at_, operator_, name_, value_)) =>
@@ -408,6 +427,19 @@ case (ff.compiler.Syntax_.ECall(at_, _, ff.compiler.Syntax_.EVariable(_, word_, 
 }), body_ = {() =>
 (ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = ff.compiler.JsEmitter_.invokeImmediately_(function_ = body_.value_), last_ = ff.core.Bool_.False()) + "\n}")
 }))
+case (ff.compiler.Syntax_.ECall(at_, ff.core.Bool_.True(), function_, _, arguments_)) =>
+self_.tailCallUsed_ = ff.core.Bool_.True();
+val renaming_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = arguments_, body_ = {(a_) =>
+((("const " + ff.compiler.JsEmitter_.escapeKeyword_(word_ = (ff.core.Option_.Option_expect[ff.core.String_.String](self_ = a_.name_) + "_r"))) + " = ") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = a_.value_))
+}), separator_ = "\n");
+val assignment_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Argument, ff.core.String_.String](self_ = arguments_, body_ = {(a_) =>
+((ff.compiler.JsEmitter_.escapeKeyword_(word_ = ff.core.Option_.Option_expect[ff.core.String_.String](self_ = a_.name_)) + " = ") + ff.compiler.JsEmitter_.escapeKeyword_(word_ = (ff.core.Option_.Option_expect[ff.core.String_.String](self_ = a_.name_) + "_r")))
+}), separator_ = "\n");
+(((("{\n" + renaming_) + "\n") + assignment_) + "\ncontinue\n}")
+case (ff.compiler.Syntax_.EPipe(at_, value_, ff.compiler.Syntax_.ELambda(_, ff.compiler.Syntax_.Lambda(_, cases_)))) if last_ =>
+(((("{\nconst _1 = " + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = value_)) + "\n") + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.core.String_.String](self_ = cases_, body_ = {(_w1) =>
+(("{\n" + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = List("_1"), matchCase_ = _w1)) + "\n}")
+}), separator_ = "\n")) + "\nthrow new Error('Unexhaustive pattern match')\n}")
 case (_) =>
 pipe_dot(ff.compiler.JsEmitter_.detectIfElse_(term_ = term_))({
 case (List()) =>

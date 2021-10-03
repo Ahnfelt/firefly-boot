@@ -2,6 +2,7 @@ import Syntax
 
 type JsEmitter(
     otherModules: Map[String, Module]
+    mutable tailCallUsed: Bool
 )
 
 make(otherModules: List[Module]): JsEmitter {
@@ -10,6 +11,7 @@ make(otherModules: List[Module]): JsEmitter {
             let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
+        tailCallUsed = False
     )
 }
 
@@ -84,16 +86,31 @@ extend self: JsEmitter {
                     | _ => False
                 }
             } =>
-                let body = self.emitStatements(matchCase.body, True)
+                let body = self.emitTailCall { self.emitStatements(matchCase.body, True) }
                 signature + " {\n" + body + "\n}"
             | Lambda(_, cases) =>
                 let escapedArguments = definition.signature.parameters.map { _.name + "_a" }
                 let shadowingWorkaround = definition.signature.parameters.map { p =>
                     "const " + p.name + "_a = " + escapeKeyword(p.name)
                 }.join("\n")
-                let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _) + "\n}" }.join("\n")
-                signature +
-                "{\n" + shadowingWorkaround + "\n" + casesString + "\nthrow new Error('Unexhaustive pattern match')\n}"
+                let body = self.emitTailCall {
+                    let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _) + "\n}" }.join("\n")
+                    "{\n" + shadowingWorkaround + "\n" + casesString + "\nthrow new Error('Unexhaustive pattern match')\n}"
+                }
+                signature + body
+        }
+    }
+
+    emitTailCall(body: () => String): String {
+        let outerTailCallUsed = self.tailCallUsed
+        self.tailCallUsed = False
+        let result = body()
+        let tailCallUsed = self.tailCallUsed
+        self.tailCallUsed = outerTailCallUsed
+        if(tailCallUsed) {
+            "while(true) {\n" + result + "\nreturn\n}"
+        } else {
+            result
         }
     }
 
@@ -227,7 +244,7 @@ extend self: JsEmitter {
             | ESequential(at, EVariant(at, word, _, _), after) { word == "ff:core/Unit.Unit" } =>
                 self.emitStatements(after, last)
             | ESequential(at, before, EVariant(at, word, _, _)) { word == "ff:core/Unit.Unit" } =>
-                self.emitStatements(before, False)
+                self.emitStatements(before, last) // TODO: Is it OK to return non-unit? The EPipe case below needs last
             | ESequential(at, before, after) =>
                 self.emitStatements(before, False) + "\n" + self.emitStatements(after, last)
             | EAssign(at, operator, name, value) =>
@@ -245,6 +262,19 @@ extend self: JsEmitter {
                 } else {
                     self.emitStatements(invokeImmediately(body.value), False) + "\n}"
                 }
+            | ECall(at, True, function, _, arguments) =>
+                self.tailCallUsed = True
+                let renaming = arguments.map { a =>
+                    "const " + escapeKeyword(a.name.expect() + "_r") + " = " + self.emitTerm(a.value)
+                }.join("\n")
+                let assignment = arguments.map { a =>
+                    escapeKeyword(a.name.expect()) + " = " + escapeKeyword(a.name.expect() + "_r")
+                }.join("\n")
+                "{\n" + renaming + "\n" + assignment + "\ncontinue\n}"
+            | EPipe(at, value, ELambda(_, Lambda(_, cases))) {last} =>
+                "{\nconst _1 = " + self.emitTerm(value) + "\n" +
+                cases.map { "{\n" + self.emitCase(["_1"], _) + "\n}" }.join("\n") +
+                "\nthrow new Error('Unexhaustive pattern match')\n}"
             | _ =>
                 detectIfElse(term).{
                     | [] =>

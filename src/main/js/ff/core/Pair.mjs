@@ -44,15 +44,29 @@ return {_: 'Pair', first_, second_};
 
 
 export function Pair_mapFirst(self_, body_) {
-return (((_c) => {
+{
+const _1 = self_
+{
+const _c = _1
 return ff_core_Pair.Pair(body_(self_.first_), _c.second_)
-}))(self_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Pair_mapSecond(self_, body_) {
-return (((_c) => {
+{
+const _1 = self_
+{
+const _c = _1
 return ff_core_Pair.Pair(_c.first_, body_(self_.second_))
-}))(self_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Pair_swap(self_) {

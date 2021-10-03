@@ -56,9 +56,16 @@ const term_a = term_
 const self_ = self_a
 if(term_a._ === 'ELet') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.body_))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -66,9 +73,16 @@ return
 const self_ = self_a
 if(term_a._ === 'ESequential') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.before_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.after_))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -76,9 +90,16 @@ return
 const self_ = self_a
 if(term_a._ === 'EAssign') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -86,9 +107,16 @@ return
 const self_ = self_a
 if(term_a._ === 'EAssignField') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -96,9 +124,16 @@ return
 const self_ = self_a
 if(term_a._ === 'EPipe') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -106,13 +141,27 @@ return
 const self_ = self_a
 if(term_a._ === 'ECall') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_), _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
-return (((_c) => {
+{
+const _1 = a_
+{
+const _c = _1
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-}))(a_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -120,7 +169,10 @@ return
 const self_ = self_a
 if(term_a._ === 'EList') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e_.items_, ((_1) => {
 {
 const item_ = _1.first_
@@ -131,7 +183,11 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 })))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -139,13 +195,27 @@ return
 const self_ = self_a
 if(term_a._ === 'ECopy') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((a_) => {
-return (((_c) => {
+{
+const _1 = a_
+{
+const _c = _1
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-}))(a_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -153,15 +223,29 @@ return
 const self_ = self_a
 if(term_a._ === 'EVariant') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, _c.typeArguments_, ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
 return ff_core_List.List_map(_w1, ((a_) => {
-return (((_c) => {
+{
+const _1 = a_
+{
+const _c = _1
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-}))(a_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }))
 })))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -169,13 +253,27 @@ return
 const self_ = self_a
 if(term_a._ === 'ERecord') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((a_) => {
-return (((_c) => {
+{
+const _1 = a_
+{
+const _c = _1
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
-}))(a_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -183,9 +281,16 @@ return
 const self_ = self_a
 if(term_a._ === 'EField') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EField(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -194,9 +299,16 @@ const self_ = self_a
 if(term_a._ === 'EWildcard') {
 const e_ = term_a
 self_.seenWildcards_ += 1
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EWildcard(_c.at_, self_.seenWildcards_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }

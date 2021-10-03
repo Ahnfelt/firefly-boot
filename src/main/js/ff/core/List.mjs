@@ -47,7 +47,9 @@ return {_: 'Link', head_, tail_};
 
 export function reverseList_(list_) {
 function go_(list_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return result_
@@ -58,12 +60,20 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return go_(tail_, ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(list_, ff_core_Array.Array_toList([]))
 }
@@ -103,7 +113,9 @@ return ff_core_Set.Set_add(set_, value_)
 
 export function List_expect(self_, index_) {
 function go_(list_, i_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return ff_core_Core.panic_(((("expect(" + index_) + ") on list of size ") + ff_core_List.List_size(self_)))
@@ -121,18 +133,27 @@ return
 {
 if(_1._ === 'Link') {
 const tail_ = _1.tail_
-return go_(tail_, (i_ - 1))
+{
+const list_r_ = tail_
+const i_r_ = (i_ - 1)
+list_ = list_r_
+i_ = i_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, index_)
 }
 
 export function List_first(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 return ff_core_Option.None()
@@ -147,11 +168,13 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function List_last(self_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 return ff_core_Option.None()
@@ -169,12 +192,18 @@ return
 {
 if(_1._ === 'Link') {
 const tail_ = _1.tail_
-return ff_core_List.List_last(tail_)
+{
+const self_r_ = tail_
+self_ = self_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
+return
+}
 }
 
 export function List_expectFirst(self_) {
@@ -190,7 +219,9 @@ return ff_core_Core.panic_("expectLast() on empty list")
 }
 
 export function List_dropFirst(self_, count_ = 1) {
-return (((_1) => {
+while(true) {
+{
+const _1 = self_
 {
 if((count_ <= 0)) {
 return self_
@@ -206,12 +237,20 @@ return
 {
 if(_1._ === 'Link') {
 const tail_ = _1.tail_
-return ff_core_List.List_dropFirst(tail_, (count_ - 1))
+{
+const self_r_ = tail_
+const count_r_ = (count_ - 1)
+self_ = self_r_
+count_ = count_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
+return
+}
 }
 
 export function List_dropLast(self_, count_ = 1) {
@@ -220,7 +259,9 @@ return ff_core_List.List_reverse(ff_core_List.List_dropFirst(ff_core_List.List_r
 
 export function List_takeFirst(self_, count_ = 1) {
 function go_(list_, count_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if((count_ <= 0)) {
 return ff_core_List.List_reverse(result_)
@@ -237,12 +278,22 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return go_(tail_, (count_ - 1), ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const count_r_ = (count_ - 1)
+const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+count_ = count_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, count_, ff_core_Array.Array_toList([]))
 }
@@ -265,7 +316,8 @@ return ff_core_List.List_takeFirst(ff_core_List.List_dropFirst(self_, from_), (u
 }
 
 export function List_isEmpty(self_) {
-return (((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 return true
@@ -278,12 +330,14 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function List_size(self_) {
 function go_(list_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return result_
@@ -293,18 +347,28 @@ return
 {
 if(_1._ === 'Link') {
 const tail_ = _1.tail_
-return go_(tail_, (result_ + 1))
+{
+const list_r_ = tail_
+const result_r_ = (result_ + 1)
+list_ = list_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, 0)
 }
 
 export function List_each(self_, body_) {
-(((_1) => {
+while(true) {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 
@@ -316,16 +380,26 @@ if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
 body_(head_)
-return ff_core_List.List_each(tail_, body_)
+{
+const self_r_ = tail_
+const body_r_ = body_
+self_ = self_r_
+body_ = body_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
+return
+}
 }
 
 export function List_all(self_, body_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 return true
@@ -343,16 +417,26 @@ return
 {
 if(_1._ === 'Link') {
 const tail_ = _1.tail_
-return ff_core_List.List_all(tail_, body_)
+{
+const self_r_ = tail_
+const body_r_ = body_
+self_ = self_r_
+body_ = body_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
+return
+}
 }
 
 export function List_any(self_, body_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 return false
@@ -370,16 +454,26 @@ return
 {
 if(_1._ === 'Link') {
 const tail_ = _1.tail_
-return ff_core_List.List_any(tail_, body_)
+{
+const self_r_ = tail_
+const body_r_ = body_
+self_ = self_r_
+body_ = body_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
+return
+}
 }
 
 export function List_find(self_, body_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 return ff_core_Option.None()
@@ -397,17 +491,27 @@ return
 {
 if(_1._ === 'Link') {
 const tail_ = _1.tail_
-return ff_core_List.List_find(tail_, body_)
+{
+const self_r_ = tail_
+const body_r_ = body_
+self_ = self_r_
+body_ = body_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
+return
+}
 }
 
 export function List_filter(self_, body_) {
 function go_(list_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return ff_core_List.List_reverse(result_)
@@ -419,26 +523,42 @@ if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
 if(body_(head_)) {
-return go_(tail_, ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
 {
 if(_1._ === 'Link') {
 const tail_ = _1.tail_
-return go_(tail_, result_)
+{
+const list_r_ = tail_
+const result_r_ = result_
+list_ = list_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, ff_core_Array.Array_toList([]))
 }
 
 export function List_map(self_, body_) {
 function go_(list_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return ff_core_List.List_reverse(result_)
@@ -449,19 +569,29 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return go_(tail_, ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const result_r_ = ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, ff_core_Array.Array_toList([]))
 }
 
 export function List_flatMap(self_, body_) {
 function go_(list_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return ff_core_List.List_flatten(ff_core_List.List_reverse(result_))
@@ -472,19 +602,29 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return go_(tail_, ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const result_r_ = ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, ff_core_Array.Array_toList([]))
 }
 
 export function List_collect(self_, body_) {
 function go_(list_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return ff_core_List.List_reverse(result_)
@@ -495,33 +635,50 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return (((_1) => {
+{
+const _1 = body_(head_)
 {
 if(_1._ === 'None') {
-return go_(tail_, result_)
+{
+const list_r_ = tail_
+const result_r_ = result_
+list_ = list_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 {
 if(_1._ === 'Some') {
 const value_ = _1.value_
-return go_(tail_, ff_core_Array.Array_toList([value_, ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const result_r_ = ff_core_Array.Array_toList([value_, ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(body_(head_))
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, ff_core_Array.Array_toList([]))
 }
 
 export function List_collectFirst(self_, body_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 return ff_core_Option.None()
@@ -532,10 +689,17 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return (((_1) => {
+{
+const _1 = body_(head_)
 {
 if(_1._ === 'None') {
-return ff_core_List.List_collectFirst(tail_, body_)
+{
+const self_r_ = tail_
+const body_r_ = body_
+self_ = self_r_
+body_ = body_r_
+continue
+}
 return
 }
 }
@@ -547,18 +711,22 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(body_(head_))
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
+return
+}
 }
 
 export function List_foldLeft(self_, initial_) {
 return ((body_) => {
 function go_(state_, list_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return state_
@@ -569,12 +737,20 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return go_(body_(state_, head_), tail_)
+{
+const state_r_ = body_(state_, head_)
+const list_r_ = tail_
+state_ = state_r_
+list_ = list_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(initial_, self_)
 })
@@ -582,7 +758,9 @@ return go_(initial_, self_)
 
 export function List_updated(self_, index_, value_) {
 function go_(list_, i_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return ff_core_List.List_reverse(result_)
@@ -594,7 +772,15 @@ if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
 if((i_ == 0)) {
-return go_(tail_, (i_ - 1), ff_core_Array.Array_toList([value_, ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const i_r_ = (i_ - 1)
+const result_r_ = ff_core_Array.Array_toList([value_, ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+i_ = i_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
@@ -602,19 +788,31 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return go_(tail_, (i_ - 1), ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const i_r_ = (i_ - 1)
+const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+i_ = i_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, index_, ff_core_Array.Array_toList([]))
 }
 
 export function List_modify(self_, index_, body_) {
 function go_(list_, i_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return ff_core_List.List_reverse(result_)
@@ -626,7 +824,15 @@ if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
 if((i_ == 0)) {
-return go_(tail_, (i_ - 1), ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const i_r_ = (i_ - 1)
+const result_r_ = ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+i_ = i_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
@@ -634,19 +840,31 @@ return
 if(_1._ === 'Link') {
 const head_ = _1.head_
 const tail_ = _1.tail_
-return go_(tail_, (i_ - 1), ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)]))
+{
+const list_r_ = tail_
+const i_r_ = (i_ - 1)
+const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)])
+list_ = list_r_
+i_ = i_r_
+result_ = result_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 return go_(self_, index_, ff_core_Array.Array_toList([]))
 }
 
 export function List_zip(self_, that_) {
 function go_(list1_, list2_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = ff_core_Pair.Pair(list1_, list2_)
 {
 if(_1.first_._ === 'Link') {
 const x_ = _1.first_.head_
@@ -654,7 +872,15 @@ const xs_ = _1.first_.tail_
 if(_1.second_._ === 'Link') {
 const y_ = _1.second_.head_
 const ys_ = _1.second_.tail_
-return go_(xs_, ys_, ff_core_Array.Array_toList([ff_core_Pair.Pair(x_, y_), ...ff_core_List.List_toArray(result_)]))
+{
+const list1_r_ = xs_
+const list2_r_ = ys_
+const result_r_ = ff_core_Array.Array_toList([ff_core_Pair.Pair(x_, y_), ...ff_core_List.List_toArray(result_)])
+list1_ = list1_r_
+list2_ = list2_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
@@ -664,7 +890,9 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Pair.Pair(list1_, list2_))
+}
+return
+}
 }
 return go_(self_, that_, ff_core_Array.Array_toList([]))
 }
@@ -674,7 +902,9 @@ if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
 function divide_(list_, xs_, ys_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = list_
 {
 if(_1._ === 'Empty') {
 return ff_core_Pair.Pair(xs_, ys_)
@@ -695,15 +925,27 @@ const x_ = _1.head_
 if(_1.tail_._ === 'Link') {
 const y_ = _1.tail_.head_
 const tail_ = _1.tail_.tail_
-return divide_(tail_, ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(xs_)]), ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(ys_)]))
+{
+const list_r_ = tail_
+const xs_r_ = ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(xs_)])
+const ys_r_ = ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(ys_)])
+list_ = list_r_
+xs_ = xs_r_
+ys_ = ys_r_
+continue
+}
 return
 }}
 }
 throw new Error('Unexhaustive pattern match')
-}))(list_)
+}
+return
+}
 }
 function merge_(xs_, ys_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = ff_core_Pair.Pair(xs_, ys_)
 {
 if(_1.first_._ === 'Link') {
 const x_ = _1.first_.head_
@@ -711,7 +953,15 @@ const xs2_ = _1.first_.tail_
 if(_1.second_._ === 'Link') {
 const y_ = _1.second_.head_
 if((body_(x_) < body_(y_))) {
-return merge_(xs2_, ys_, ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(result_)]))
+{
+const xs_r_ = xs2_
+const ys_r_ = ys_
+const result_r_ = ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(result_)])
+xs_ = xs_r_
+ys_ = ys_r_
+result_ = result_r_
+continue
+}
 return
 }}}
 }
@@ -721,7 +971,15 @@ const x_ = _1.first_.head_
 if(_1.second_._ === 'Link') {
 const y_ = _1.second_.head_
 const ys2_ = _1.second_.tail_
-return merge_(xs_, ys2_, ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(result_)]))
+{
+const xs_r_ = xs_
+const ys_r_ = ys2_
+const result_r_ = ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(result_)])
+xs_ = xs_r_
+ys_ = ys_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
@@ -730,7 +988,15 @@ if(_1.first_._ === 'Link') {
 const x_ = _1.first_.head_
 const xs2_ = _1.first_.tail_
 if(_1.second_._ === 'Empty') {
-return merge_(xs2_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(result_)]))
+{
+const xs_r_ = xs2_
+const ys_r_ = ff_core_Array.Array_toList([])
+const result_r_ = ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(result_)])
+xs_ = xs_r_
+ys_ = ys_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
@@ -739,7 +1005,15 @@ if(_1.first_._ === 'Empty') {
 if(_1.second_._ === 'Link') {
 const y_ = _1.second_.head_
 const ys2_ = _1.second_.tail_
-return merge_(ff_core_Array.Array_toList([]), ys2_, ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(result_)]))
+{
+const xs_r_ = ff_core_Array.Array_toList([])
+const ys_r_ = ys2_
+const result_r_ = ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(result_)])
+xs_ = xs_r_
+ys_ = ys_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
@@ -751,7 +1025,9 @@ return
 }}
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Pair.Pair(xs_, ys_))
+}
+return
+}
 }
 const pair_ = divide_(self_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]))
 return merge_(ff_core_List.List_sortBy(pair_.first_, body_), ff_core_List.List_sortBy(pair_.second_, body_), ff_core_Array.Array_toList([]))
@@ -764,7 +1040,9 @@ return ff_core_List.reverseList_(self_)
 
 export function List_flatten(self_) {
 function go_(lists_, result_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = lists_
 {
 if(_1._ === 'Empty') {
 return ff_core_List.List_reverse(result_)
@@ -775,7 +1053,13 @@ return
 if(_1._ === 'Link') {
 if(_1.head_._ === 'Empty') {
 const aas_ = _1.tail_
-return go_(aas_, result_)
+{
+const lists_r_ = aas_
+const result_r_ = result_
+lists_ = lists_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
@@ -785,12 +1069,20 @@ if(_1.head_._ === 'Link') {
 const a_ = _1.head_.head_
 const as_ = _1.head_.tail_
 const aas_ = _1.tail_
-return go_(ff_core_List.Link(as_, aas_), ff_core_Array.Array_toList([a_, ...ff_core_List.List_toArray(result_)]))
+{
+const lists_r_ = ff_core_List.Link(as_, aas_)
+const result_r_ = ff_core_Array.Array_toList([a_, ...ff_core_List.List_toArray(result_)])
+lists_ = lists_r_
+result_ = result_r_
+continue
+}
 return
 }}
 }
 throw new Error('Unexhaustive pattern match')
-}))(lists_)
+}
+return
+}
 }
 return go_(self_, ff_core_Array.Array_toList([]))
 }
@@ -807,7 +1099,9 @@ return ff_core_List.groupList_(self_)
 
 export function List_unzip(self_) {
 function go_(pairs_, ks_, vs_) {
-return (((_1) => {
+while(true) {
+{
+const _1 = pairs_
 {
 if(_1._ === 'Empty') {
 return ff_core_Pair.Pair(ff_core_List.List_reverse(ks_), ff_core_List.List_reverse(vs_))
@@ -819,12 +1113,22 @@ if(_1._ === 'Link') {
 const k_ = _1.head_.first_
 const v_ = _1.head_.second_
 const tail_ = _1.tail_
-return go_(tail_, ff_core_Array.Array_toList([k_, ...ff_core_List.List_toArray(ks_)]), ff_core_Array.Array_toList([v_, ...ff_core_List.List_toArray(vs_)]))
+{
+const pairs_r_ = tail_
+const ks_r_ = ff_core_Array.Array_toList([k_, ...ff_core_List.List_toArray(ks_)])
+const vs_r_ = ff_core_Array.Array_toList([v_, ...ff_core_List.List_toArray(vs_)])
+pairs_ = pairs_r_
+ks_ = ks_r_
+vs_ = vs_r_
+continue
+}
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(pairs_)
+}
+return
+}
 }
 return go_(self_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]))
 }

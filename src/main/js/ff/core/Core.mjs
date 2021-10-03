@@ -39,7 +39,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export const log_ = null
 
 export function if_(condition_, body_) {
-return (((_1) => {
+{
+const _1 = condition_
 {
 if(!_1) {
 return ff_core_Option.None()
@@ -53,11 +54,12 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(condition_)
+}
 }
 
 export function while_(condition_, body_) {
-(((_1) => {
+{
+const _1 = condition_()
 {
 if(!_1) {
 
@@ -74,7 +76,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(condition_())
+}
 }
 
 export function try_(body_) {

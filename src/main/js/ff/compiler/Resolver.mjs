@@ -61,7 +61,10 @@ return (_w1 != 46)
 }))
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_)
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None())
-return (((_c) => {
+{
+const _1 = module_
+{
+const _c = _1
 return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.traits_, ((_w1) => {
@@ -75,13 +78,20 @@ return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1)
 })))
-}))(module_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Resolver_processImports(self_, imports_, modules_) {
 let resolver_ = self_
 ff_core_List.List_each(imports_, ((import_) => {
-(((_1) => {
+{
+const _1 = ff_core_List.List_find(modules_, ((_w1) => {
+return (ff_core_String.String_dropLast(_w1.file_, 3) == import_.file_)
+}))
 {
 if(_1._ === 'Some') {
 const module_ = _1.value_
@@ -96,9 +106,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_List.List_find(modules_, ((_w1) => {
-return (ff_core_String.String_dropLast(_w1.file_, 3) == import_.file_)
-})))
+}
 }))
 return resolver_
 }
@@ -106,7 +114,8 @@ return resolver_
 export function Resolver_processDefinitions(self_, module_, importAlias_) {
 function entry_(name_, unqualified_) {
 const full_ = ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
-return (((_1) => {
+{
+const _1 = importAlias_
 {
 if(_1._ === 'None') {
 return ff_core_Array.Array_toList([ff_core_Pair.Pair(name_, full_)])
@@ -129,7 +138,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(importAlias_)
+}
 }
 const isCore_ = (((module_.packagePair_.first_ == "ff") && (module_.packagePair_.second_ == "core")) && (module_.file_ == "Core.ff"))
 const lets_ = ff_core_List.List_toMap(ff_core_List.List_flatMap(module_.lets_, ((_w1) => {
@@ -164,29 +173,64 @@ return ff_core_Pair.Pair(g_, g_)
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_), _c.traits_)
 }))(self_)
-return (((_c) => {
+{
+const _1 = definition_
+{
+const _c = _1
 return ff_compiler_Syntax.DType(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((c_) => {
-return (((_c) => {
+{
+const _1 = c_
+{
+const _c = _1
 return ff_compiler_Syntax.Constraint(ff_compiler_Resolver.Resolver_resolveType(self2_, c_.representation_))
-}))(c_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })), ff_core_List.List_map(definition_.commonFields_, ((f_) => {
-return (((_c) => {
+{
+const _1 = f_
+{
+const _c = _1
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self2_, f_.valueType_), ff_core_Option.Option_map(f_.default_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
 })))
-}))(f_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })), ff_core_List.List_map(definition_.variants_, ((v_) => {
-return (((_c) => {
+{
+const _1 = v_
+{
+const _c = _1
 return ff_compiler_Syntax.Variant(_c.at_, _c.name_, ff_core_List.List_map(v_.fields_, ((f_) => {
-return (((_c) => {
+{
+const _1 = f_
+{
+const _c = _1
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self2_, f_.valueType_), ff_core_Option.Option_map(f_.default_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
 })))
-}))(f_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })), _c.targets_)
-}))(v_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })), _c.targets_)
-}))(definition_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Resolver_resolveTraitDefinition(self_, definition_) {
@@ -204,24 +248,45 @@ return ff_core_Pair.Pair(g_, g_)
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_), _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_), _c.traits_)
 }))(self_)
-return (((_c) => {
+{
+const _1 = definition_
+{
+const _c = _1
 return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((c_) => {
-return (((_c) => {
+{
+const _1 = c_
+{
+const _c = _1
 return ff_compiler_Syntax.Constraint(ff_compiler_Resolver.Resolver_resolveType(self2_, c_.representation_))
-}))(c_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })), ff_compiler_Resolver.Resolver_resolveType(self2_, definition_.type_), ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1)
 })))
-}))(definition_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Resolver_resolveLetDefinition(self_, definition_) {
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_), _c.variants_, _c.types_, _c.traits_)
 }))(self_)
-return (((_c) => {
+{
+const _1 = definition_
+{
+const _c = _1
 return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, definition_.variableType_), ff_compiler_Resolver.Resolver_resolveTerm(self_, definition_.value_), _c.targets_)
-}))(definition_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Resolver_resolveTerm(self_, term_){
@@ -260,9 +325,16 @@ const self_ = self_a
 if(term_a._ === 'EVariable') {
 const e_ = term_a
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(self_.variables_, e_.name_), ((_w1) => {
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EVariable(_c.at_, _w1, _c.generics_, _c.instances_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })), (() => {
 if(ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
@@ -307,9 +379,16 @@ return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1)
 })), ff_core_Option.Option_map(arguments_, ((_w1) => {
 return ff_core_List.List_map(_w1, ((a_) => {
-return (((_c) => {
+{
+const _1 = a_
+{
+const _c = _1
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveTerm(self_, a_.value_))
-}))(a_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }))
 })))
 return
@@ -339,9 +418,16 @@ const arguments_ = term_a.arguments_
 return ff_compiler_Syntax.ECopy(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_), (() => {
 return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, record_), ff_core_List.List_map(arguments_, ((f_) => {
-return (((_c) => {
+{
+const _1 = f_
+{
+const _c = _1
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveTerm(self_, f_.value_))
-}))(f_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })))
 return
 }
@@ -350,9 +436,16 @@ return
 const self_ = self_a
 if(term_a._ === 'EField') {
 const e_ = term_a
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EField(_c.at_, ff_compiler_Resolver.Resolver_resolveTerm(self_, e_.record_), _c.field_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -389,9 +482,16 @@ const arguments_ = term_a.arguments_
 return ff_compiler_Syntax.ECall(at_, tailCall_, ff_compiler_Resolver.Resolver_resolveTerm(self_, function_), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1)
 })), ff_core_List.List_map(arguments_, ((a_) => {
-return (((_c) => {
+{
+const _1 = a_
+{
+const _c = _1
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveTerm(self_, a_.value_))
-}))(a_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })))
 return
 }
@@ -402,9 +502,16 @@ if(term_a._ === 'ERecord') {
 const at_ = term_a.at_
 const fields_ = term_a.fields_
 return ff_compiler_Syntax.ERecord(at_, ff_core_List.List_map(fields_, ((f_) => {
-return (((_c) => {
+{
+const _1 = f_
+{
+const _c = _1
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveTerm(self_, f_.value_))
-}))(f_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })))
 return
 }
@@ -416,9 +523,16 @@ const e_ = term_a
 if((e_.index_ == 0)) {
 ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
 }
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.EWildcard(_c.at_, _c.index_)
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -449,9 +563,16 @@ const e_ = term_a
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, e_.name_, e_.name_), _c.variants_, _c.types_, _c.traits_)
 }))(self_)
-return (((_c) => {
+{
+const _1 = e_
+{
+const _c = _1
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, e_.valueType_), ff_compiler_Resolver.Resolver_resolveTerm(self_, e_.value_), ff_compiler_Resolver.Resolver_resolveTerm(self2_, e_.body_))
-}))(e_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -512,11 +633,18 @@ const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_), (() => {
 return ff_compiler_Resolver.fail_(constructor_.at_, ("No such type: " + constructor_.name_))
 })))
-return (((_c) => {
+{
+const _1 = constructor_
+{
+const _c = _1
 return ff_compiler_Syntax.TConstructor(_c.at_, name_, ff_core_List.List_map(constructor_.generics_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1)
 })))
-}))(constructor_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
@@ -539,11 +667,18 @@ const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.signature_.constraints_, ((c_) => {
 return ff_compiler_Syntax.Constraint(ff_compiler_Resolver.Resolver_resolveType(self2_, c_.representation_))
 })), ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
-return (((_c) => {
+{
+const _1 = p_
+{
+const _c = _1
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self2_, p_.valueType_), ff_core_Option.Option_map(p_.default_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
 })))
-}))(p_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 })), ff_compiler_Resolver.Resolver_resolveType(self2_, definition_.signature_.returnType_))
 }))(definition_.signature_)
 const body_ = (((_c) => {

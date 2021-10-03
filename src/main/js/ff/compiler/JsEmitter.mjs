@@ -39,8 +39,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_) {
-return {_: 'JsEmitter', otherModules_};
+export function JsEmitter(otherModules_, tailCallUsed_) {
+return {_: 'JsEmitter', otherModules_, tailCallUsed_};
 }
 
 // type ProcessedVariantCase
@@ -54,7 +54,7 @@ export function make_(otherModules_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3))
 return ff_core_Pair.Pair(moduleName_, m_)
-}))))
+}))), false)
 }
 
 export function fail_(at_, message_) {
@@ -239,11 +239,18 @@ const typeName_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(
 return (_w1 != 46)
 })))
 const methods_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
-return (((_c) => {
+{
+const _1 = method_
+{
+const _c = _1
 return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_)
 }))(method_.signature_), _c.body_, _c.targets_)
-}))(method_)
+return
+
+}
+throw new Error('Unexhaustive pattern match')
+}
 }))
 return ff_core_List.List_join(ff_core_List.List_map(methods_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, ""))
@@ -259,7 +266,8 @@ return ff_core_String.String_dropFirst(code_, 1)
 return (((signature_ + " {\n") + code_) + "\n}")
 }
 })), (() => {
-return (((_1) => {
+{
+const _1 = definition_.body_
 {
 if(_1.cases_._ === 'Link') {
 const matchCase_ = _1.cases_.head_
@@ -288,7 +296,9 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))) {
-const body_ = ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true)
+const body_ = ff_compiler_JsEmitter.JsEmitter_emitTailCall(self_, (() => {
+return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true)
+}))
 return (((signature_ + " {\n") + body_) + "\n}")
 return
 }}}
@@ -301,16 +311,32 @@ return (_w1.name_ + "_a")
 const shadowingWorkaround_ = ff_core_List.List_join(ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
 return ((("const " + p_.name_) + "_a = ") + ff_compiler_JsEmitter.escapeKeyword_(p_.name_))
 })), "\n")
+const body_ = ff_compiler_JsEmitter.JsEmitter_emitTailCall(self_, (() => {
 const casesString_ = ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
 return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1)) + "\n}")
 })), "\n")
-return (((((signature_ + "{\n") + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
+return (((("{\n" + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
+}))
+return (signature_ + body_)
 return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(definition_.body_)
+}
 }))
+}
+
+export function JsEmitter_emitTailCall(self_, body_) {
+const outerTailCallUsed_ = self_.tailCallUsed_
+self_.tailCallUsed_ = false
+const result_ = body_()
+const tailCallUsed_ = self_.tailCallUsed_
+self_.tailCallUsed_ = outerTailCallUsed_
+if(tailCallUsed_) {
+return (("while(true) {\n" + result_) + "\nreturn\n}")
+} else {
+return result_
+}
 }
 
 export function JsEmitter_emitSignature(self_, signature_, suffix_ = "") {
@@ -689,7 +715,8 @@ if(term_a._ === 'ECall') {
 const at_ = term_a.at_
 const function_ = term_a.function_
 const arguments_ = term_a.arguments_
-return (((_1) => {
+{
+const _1 = ff_compiler_JsEmitter.detectIfElse_(term_)
 {
 if(_1._ === 'Empty') {
 return (((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
@@ -736,7 +763,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_JsEmitter.detectIfElse_(term_))
+}
 return
 }
 }
@@ -778,7 +805,8 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function JsEmitter_emitStatements(self_, term_, last_) {
-return (((_1) => {
+{
+const _1 = term_
 {
 if(_1._ === 'EFunctions') {
 const at_ = _1.at_
@@ -832,7 +860,7 @@ if(_1.after_._ === 'EVariant') {
 const at_ = _1.after_.at_
 const word_ = _1.after_.name_
 if((word_ == "ff:core/Unit.Unit")) {
-return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false)
+return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, last_)
 return
 }}}
 }
@@ -899,7 +927,38 @@ return
 }}}}}}
 }
 {
-return (((_1) => {
+if(_1._ === 'ECall') {
+const at_ = _1.at_
+if(_1.tailCall_) {
+const function_ = _1.function_
+const arguments_ = _1.arguments_
+self_.tailCallUsed_ = true
+const renaming_ = ff_core_List.List_join(ff_core_List.List_map(arguments_, ((a_) => {
+return ((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_))
+})), "\n")
+const assignment_ = ff_core_List.List_join(ff_core_List.List_map(arguments_, ((a_) => {
+return ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_expect(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r")))
+})), "\n")
+return (((("{\n" + renaming_) + "\n") + assignment_) + "\ncontinue\n}")
+return
+}}
+}
+{
+if(_1._ === 'EPipe') {
+const at_ = _1.at_
+const value_ = _1.value_
+if(_1.function_._ === 'ELambda') {
+const cases_ = _1.function_.lambda_.cases_
+if(last_) {
+return (((("{\nconst _1 = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_)) + "\n") + ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
+return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toList(["_1"]), _w1)) + "\n}")
+})), "\n")) + "\nthrow new Error('Unexhaustive pattern match')\n}")
+return
+}}}
+}
+{
+{
+const _1 = ff_compiler_JsEmitter.detectIfElse_(term_)
 {
 if(_1._ === 'Empty') {
 if(last_) {
@@ -966,16 +1025,17 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_JsEmitter.detectIfElse_(term_))
+}
 return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(term_)
+}
 }
 
 export function JsEmitter_emitCase(self_, arguments_, matchCase_) {
-return (((_1) => {
+{
+const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.condition_)
 {
 if(_1.first_._ === 'Link') {
 const p_ = _1.first_.head_
@@ -1002,11 +1062,12 @@ return
 }}
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.condition_))
+}
 }
 
 export function JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_) {
-return (((_1) => {
+{
+const _1 = pattern_
 {
 if(_1._ === 'PVariable') {
 if(_1.name_._ === 'None') {
@@ -1143,7 +1204,7 @@ return
 }}}
 }
 throw new Error('Unexhaustive pattern match')
-}))(pattern_)
+}
 }
 
 export function JsEmitter_processVariantCase(self_, name_, argument_) {

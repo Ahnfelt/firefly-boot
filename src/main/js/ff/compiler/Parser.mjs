@@ -771,7 +771,8 @@ return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign())
 }))
 const operator_ = ff_core_String.String_dropLast(ff_compiler_Token.Token_raw(token_), 1)
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_)
-return (((_1) => {
+{
+const _1 = term_
 {
 if(_1._ === 'EVariable') {
 const name_ = _1.name_
@@ -792,7 +793,7 @@ return
 
 }
 throw new Error('Unexhaustive pattern match')
-}))(term_)
+}
 }
 }
 }
