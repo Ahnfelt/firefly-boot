@@ -58,8 +58,7 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function while_(condition_, body_) {
-{
-const _1 = condition_()
+(((_1) => {
 {
 if(!_1) {
 
@@ -76,7 +75,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}
+}))(condition_())
 }
 
 export function try_(body_) {

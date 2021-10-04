@@ -82,7 +82,7 @@ return (!ff_core_List.List_any(module_.types_, ((_w1) => {
 return ((modulePrefix_ + _w1.name_) == t_.name_)
 })))
 })), ((t_) => {
-return ff_compiler_ScalaEmitter.fail_(t_.at_, ("Type not defined in this file: " + t_.name_))
+ff_compiler_ScalaEmitter.fail_(t_.at_, ("Type not defined in this file: " + t_.name_))
 }))
 return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")

@@ -860,7 +860,7 @@ if(_1.after_._ === 'EVariant') {
 const at_ = _1.after_.at_
 const word_ = _1.after_.name_
 if((word_ == "ff:core/Unit.Unit")) {
-return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, last_)
+return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false)
 return
 }}}
 }
@@ -933,24 +933,8 @@ if(_1.tailCall_) {
 const function_ = _1.function_
 const arguments_ = _1.arguments_
 self_.tailCallUsed_ = true
-const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((_1) => {
-{
-if(_1.name_._ === 'Some') {
-const x_ = _1.name_.value_
-if(_1.value_._ === 'EVariable') {
-const y_ = _1.value_.name_
-if((x_ == y_)) {
-return ff_core_Option.None()
-return
-}}}
-}
-{
-const a_ = _1
+const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((a_) => {
 return ff_core_Option.Some(ff_core_Pair.Pair(((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_)), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_expect(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r")))))
-return
-
-}
-throw new Error('Unexhaustive pattern match')
 })), ((_w1) => {
 return _w1
 })))
