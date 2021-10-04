@@ -1142,7 +1142,7 @@ if(_1.tail_._ === 'Empty') {
 if((operator_ == "-")) {
 const t1_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_)
-_553_49: do {
+for(;;) {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1_)
 {
 if(_1._ === 'TConstructor') {
@@ -1150,7 +1150,7 @@ const name_ = _1.name_
 if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Float"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
-break _553_49
+break
 }
 }
 }
@@ -1161,17 +1161,17 @@ const name_ = _1.name_
 if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Int"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
-break _553_49
+break
 }
 }
 }
 }
 {
 ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
-break _553_49
+break
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
+}
 {
 const _1 = e_
 {

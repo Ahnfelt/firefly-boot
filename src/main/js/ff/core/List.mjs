@@ -47,7 +47,7 @@ return {_: 'Link', head_, tail_};
 
 export function reverseList_(list_) {
 function go_(list_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -65,7 +65,7 @@ const list_r_ = tail_
 const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)])
 list_ = list_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -113,7 +113,7 @@ return ff_core_Set.Set_add(set_, value_)
 
 export function List_expect(self_, index_) {
 function go_(list_, i_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -139,7 +139,7 @@ const list_r_ = tail_
 const i_r_ = (i_ - 1)
 list_ = list_r_
 i_ = i_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -173,7 +173,7 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function List_last(self_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = self_
 {
@@ -197,7 +197,7 @@ const tail_ = _1.tail_
 {
 const self_r_ = tail_
 self_ = self_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -221,7 +221,7 @@ return ff_core_Core.panic_("expectLast() on empty list")
 }
 
 export function List_dropFirst(self_, count_ = 1) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = self_
 {
@@ -244,7 +244,7 @@ const self_r_ = tail_
 const count_r_ = (count_ - 1)
 self_ = self_r_
 count_ = count_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -261,7 +261,7 @@ return ff_core_List.List_reverse(ff_core_List.List_dropFirst(ff_core_List.List_r
 
 export function List_takeFirst(self_, count_ = 1) {
 function go_(list_, count_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -287,7 +287,7 @@ const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArra
 list_ = list_r_
 count_ = count_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -336,7 +336,7 @@ throw new Error('Unexhaustive pattern match')
 
 export function List_size(self_) {
 function go_(list_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -353,7 +353,7 @@ const list_r_ = tail_
 const result_r_ = (result_ + 1)
 list_ = list_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -367,13 +367,13 @@ return go_(self_, 0)
 }
 
 export function List_each(self_, body_) {
-_0_0: while(true) {
-_127_14: do {
+_tailcall: for(;;) {
+for(;;) {
 const _1 = self_
 {
 if(_1._ === 'Empty') {
 
-break _127_14
+break
 }
 }
 {
@@ -386,19 +386,19 @@ const self_r_ = tail_
 const body_r_ = body_
 self_ = self_r_
 body_ = body_r_
-continue _0_0
+continue _tailcall
 }
-break _127_14
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
+}
 return
 }
 }
 
 export function List_all(self_, body_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = self_
 {
@@ -424,7 +424,7 @@ const self_r_ = tail_
 const body_r_ = body_
 self_ = self_r_
 body_ = body_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -436,7 +436,7 @@ return
 }
 
 export function List_any(self_, body_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = self_
 {
@@ -462,7 +462,7 @@ const self_r_ = tail_
 const body_r_ = body_
 self_ = self_r_
 body_ = body_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -474,7 +474,7 @@ return
 }
 
 export function List_find(self_, body_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = self_
 {
@@ -500,7 +500,7 @@ const self_r_ = tail_
 const body_r_ = body_
 self_ = self_r_
 body_ = body_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -513,7 +513,7 @@ return
 
 export function List_filter(self_, body_) {
 function go_(list_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -532,7 +532,7 @@ const list_r_ = tail_
 const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArray(result_)])
 list_ = list_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -546,7 +546,7 @@ const list_r_ = tail_
 const result_r_ = result_
 list_ = list_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -561,7 +561,7 @@ return go_(self_, ff_core_Array.Array_toList([]))
 
 export function List_map(self_, body_) {
 function go_(list_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -579,7 +579,7 @@ const list_r_ = tail_
 const result_r_ = ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List_toArray(result_)])
 list_ = list_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -594,7 +594,7 @@ return go_(self_, ff_core_Array.Array_toList([]))
 
 export function List_flatMap(self_, body_) {
 function go_(list_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -612,7 +612,7 @@ const list_r_ = tail_
 const result_r_ = ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List_toArray(result_)])
 list_ = list_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -627,7 +627,7 @@ return go_(self_, ff_core_Array.Array_toList([]))
 
 export function List_collect(self_, body_) {
 function go_(list_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -649,7 +649,7 @@ const list_r_ = tail_
 const result_r_ = result_
 list_ = list_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -662,7 +662,7 @@ const list_r_ = tail_
 const result_r_ = ff_core_Array.Array_toList([value_, ...ff_core_List.List_toArray(result_)])
 list_ = list_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -681,7 +681,7 @@ return go_(self_, ff_core_Array.Array_toList([]))
 }
 
 export function List_collectFirst(self_, body_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = self_
 {
@@ -703,7 +703,7 @@ const self_r_ = tail_
 const body_r_ = body_
 self_ = self_r_
 body_ = body_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -729,7 +729,7 @@ return
 export function List_foldLeft(self_, initial_) {
 return ((body_) => {
 function go_(state_, list_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -747,7 +747,7 @@ const state_r_ = body_(state_, head_)
 const list_r_ = tail_
 state_ = state_r_
 list_ = list_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -763,7 +763,7 @@ return go_(initial_, self_)
 
 export function List_updated(self_, index_, value_) {
 function go_(list_, i_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -784,7 +784,7 @@ const result_r_ = ff_core_Array.Array_toList([value_, ...ff_core_List.List_toArr
 list_ = list_r_
 i_ = i_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -801,7 +801,7 @@ const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArra
 list_ = list_r_
 i_ = i_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -816,7 +816,7 @@ return go_(self_, index_, ff_core_Array.Array_toList([]))
 
 export function List_modify(self_, index_, body_) {
 function go_(list_, i_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -837,7 +837,7 @@ const result_r_ = ff_core_Array.Array_toList([body_(head_), ...ff_core_List.List
 list_ = list_r_
 i_ = i_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -854,7 +854,7 @@ const result_r_ = ff_core_Array.Array_toList([head_, ...ff_core_List.List_toArra
 list_ = list_r_
 i_ = i_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -869,7 +869,7 @@ return go_(self_, index_, ff_core_Array.Array_toList([]))
 
 export function List_zip(self_, that_) {
 function go_(list1_, list2_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = ff_core_Pair.Pair(list1_, list2_)
 {
@@ -886,7 +886,7 @@ const result_r_ = ff_core_Array.Array_toList([ff_core_Pair.Pair(x_, y_), ...ff_c
 list1_ = list1_r_
 list2_ = list2_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -909,7 +909,7 @@ if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
 function divide_(list_, xs_, ys_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = list_
 {
@@ -940,7 +940,7 @@ const ys_r_ = ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(ys_)]
 list_ = list_r_
 xs_ = xs_r_
 ys_ = ys_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -952,7 +952,7 @@ return
 }
 }
 function merge_(xs_, ys_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = ff_core_Pair.Pair(xs_, ys_)
 {
@@ -969,7 +969,7 @@ const result_r_ = ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(r
 xs_ = xs_r_
 ys_ = ys_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -989,7 +989,7 @@ const result_r_ = ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(r
 xs_ = xs_r_
 ys_ = ys_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -1007,7 +1007,7 @@ const result_r_ = ff_core_Array.Array_toList([x_, ...ff_core_List.List_toArray(r
 xs_ = xs_r_
 ys_ = ys_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -1025,7 +1025,7 @@ const result_r_ = ff_core_Array.Array_toList([y_, ...ff_core_List.List_toArray(r
 xs_ = xs_r_
 ys_ = ys_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -1055,7 +1055,7 @@ return ff_core_List.reverseList_(self_)
 
 export function List_flatten(self_) {
 function go_(lists_, result_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = lists_
 {
@@ -1073,7 +1073,7 @@ const lists_r_ = aas_
 const result_r_ = result_
 lists_ = lists_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -1090,7 +1090,7 @@ const lists_r_ = ff_core_List.Link(as_, aas_)
 const result_r_ = ff_core_Array.Array_toList([a_, ...ff_core_List.List_toArray(result_)])
 lists_ = lists_r_
 result_ = result_r_
-continue _0_0
+continue _tailcall
 }
 return
 }
@@ -1116,7 +1116,7 @@ return ff_core_List.groupList_(self_)
 
 export function List_unzip(self_) {
 function go_(pairs_, ks_, vs_) {
-_0_0: while(true) {
+_tailcall: for(;;) {
 {
 const _1 = pairs_
 {
@@ -1137,7 +1137,7 @@ const vs_r_ = ff_core_Array.Array_toList([v_, ...ff_core_List.List_toArray(vs_)]
 pairs_ = pairs_r_
 ks_ = ks_r_
 vs_ = vs_r_
-continue _0_0
+continue _tailcall
 }
 return
 }

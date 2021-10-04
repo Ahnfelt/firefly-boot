@@ -470,13 +470,13 @@ const parameterNameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_To
 ff_core_ArrayBuilder.ArrayBuilder_append(parameters_, ff_compiler_Token.Token_raw(parameterNameToken_))
 while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
-_407_38: do {
+for(;;) {
 const _1 = ff_compiler_Parser.Parser_parseType(self_)
 {
 if(_1._ === 'TVariable') {
 const t_ = _1
 ff_compiler_Parser.Parser_fail(self_, t_.at_, ("Unexpected type variable: $" + t_.index_))
-break _407_38
+break
 }
 }
 {
@@ -485,11 +485,11 @@ const t_ = _1
 ff_core_ArrayBuilder.ArrayBuilder_append(constraints_, ff_compiler_Syntax.Constraint((((_c) => {
 return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_Array.Array_toList([ff_compiler_Syntax.TConstructor(t_.at_, ff_compiler_Token.Token_raw(parameterNameToken_), ff_core_Array.Array_toList([])), ...ff_core_List.List_toArray(t_.generics_)]))
 }))(t_)))
-break _407_38
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
+}
 }
 }
 if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {

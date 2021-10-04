@@ -176,38 +176,38 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Unification_constrain(self_, at_, type_, constraintName_, generics_) {
-_69_14: do {
+for(;;) {
 const _1 = type_
 {
 if(_1._ === 'TVariable') {
 const i_ = _1.index_
 if(ff_compiler_Unification.Unification_has(self_, i_)) {
 ff_compiler_Unification.Unification_constrain(self_, at_, ff_compiler_Unification.Unification_get(self_, i_), constraintName_, generics_)
-break _69_14
+break
 }
 }
 }
 {
 if(_1._ === 'TVariable') {
 const i_ = _1.index_
-_73_41: do {
+for(;;) {
 const _1 = ff_core_Map.Map_get(self_.constraints_, i_)
 {
 if(_1._ === 'None') {
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_Array.Array_toList([ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))])))
-break _73_41
+break
 }
 }
 {
 if(_1._ === 'Some') {
 const map_ = _1.value_
-_79_49: do {
+for(;;) {
 const _1 = ff_core_Map.Map_get(map_, constraintName_)
 {
 if(_1._ === 'None') {
 const newMap_ = ff_core_Map.Map_add(map_, constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, newMap_)
-break _79_49
+break
 }
 }
 {
@@ -222,24 +222,24 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))
-break _79_49
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
-break _73_41
+}
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
-break _69_14
+}
+break
 }
 }
 {
 if(_1._ === 'TConstructor') {
 const name_ = _1.name_
 const generics2_ = _1.generics_
-_88_71: do {
+for(;;) {
 const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraintName_, name_))
 {
 if(_1._ === 'None') {
@@ -250,7 +250,7 @@ const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]")
 ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
-break _88_71
+break
 }
 }
 {
@@ -264,36 +264,36 @@ const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, insta
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_Array.Array_toList([type_, ...ff_core_List.List_toArray(generics_)]))
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
 ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
-_100_88: do {
+for(;;) {
 const _1 = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, constraint_.representation_)
 {
 if(_1._ === 'TConstructor') {
 const newConstraintName_ = _1.name_
 const newGenerics_ = _1.generics_
 ff_compiler_Unification.Unification_constrain(self_, at_, type_, newConstraintName_, newGenerics_)
-break _100_88
+break
 }
 }
 {
 if(_1._ === 'TVariable') {
 const i_ = _1.index_
 ff_compiler_Unification.Unification_fail(self_, at_, ("Constraint can't be a type variable: $" + i_))
-break _100_88
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
+}
 }))
-break _88_71
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
-break _69_14
+}
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
+}
 }
 
 export function Unification_get(self_, index_) {

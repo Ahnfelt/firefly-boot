@@ -58,12 +58,12 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function while_(condition_, body_) {
-_9_17: do {
+for(;;) {
 const _1 = condition_()
 {
 if(!_1) {
 
-break _9_17
+break
 }
 }
 {
@@ -72,11 +72,11 @@ body_()
 while(condition_()) {
 body_()
 }
-break _9_17
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
+}
 }
 
 export function try_(body_) {

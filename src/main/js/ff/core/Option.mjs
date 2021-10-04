@@ -220,23 +220,23 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Option_each(self_, body_) {
-_75_14: do {
+for(;;) {
 const _1 = self_
 {
 if(_1._ === 'None') {
 
-break _75_14
+break
 }
 }
 {
 if(_1._ === 'Some') {
 const v_ = _1.value_
 body_(v_)
-break _75_14
+break
 }
 }
 throw new Error('Unexhaustive pattern match')
-} while(false)
+}
 }
 
 export function Option_all(self_, body_) {
