@@ -94,7 +94,7 @@ extend self: JsEmitter {
                     "const " + p.name + "_a = " + escapeKeyword(p.name)
                 }.join("\n")
                 let body = self.emitTailCall {
-                    let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _) + "\n}" }.join("\n")
+                    let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _, None) + "\n}" }.join("\n")
                     "{\n" + shadowingWorkaround + "\n" + casesString + "\nthrow new Error('Unexhaustive pattern match')\n}"
                 }
                 signature + body
@@ -108,7 +108,7 @@ extend self: JsEmitter {
         let tailCallUsed = self.tailCallUsed
         self.tailCallUsed = outerTailCallUsed
         if(tailCallUsed) {
-            "while(true) {\n" + result + "\nreturn\n}"
+            "_0_0: while(true) {\n" + result + "\nreturn\n}"
         } else {
             result
         }
@@ -194,7 +194,7 @@ extend self: JsEmitter {
         | ELambda(at, Lambda(_, cases)) =>
             let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
-            let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _) + "\n}" }.join("\n")
+            let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _, None) + "\n}" }.join("\n")
             "((" + escapedArguments.join(", ") + ") => " +
             "{\n" + casesString + "\nthrow new Error('Unexhaustive pattern match')\n})"
         | EPipe(at, value, function) =>
@@ -244,7 +244,7 @@ extend self: JsEmitter {
             | ESequential(at, EVariant(at, word, _, _), after) { word == "ff:core/Unit.Unit" } =>
                 self.emitStatements(after, last)
             | ESequential(at, before, EVariant(at, word, _, _)) { word == "ff:core/Unit.Unit" } =>
-                self.emitStatements(before, last) // TODO: Is it OK to return non-unit? The EPipe case below needs last
+                self.emitStatements(before, False)
             | ESequential(at, before, after) =>
                 self.emitStatements(before, False) + "\n" + self.emitStatements(after, last)
             | EAssign(at, operator, name, value) =>
@@ -270,11 +270,14 @@ extend self: JsEmitter {
                         escapeKeyword(a.name.expect()) + " = " + escapeKeyword(a.name.expect() + "_r")
                     ))
                 }.collect {_}.unzip()
-                "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue\n}"
-            | EPipe(at, value, ELambda(_, Lambda(_, cases))) {last} =>
+                "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _0_0\n}"
+            | EPipe(at, value, ELambda(_, Lambda(_, cases))) =>
+                let label = if(!last) { "_" + at.line + "_" + at.column }
+                label.map { _ + ": do " }.else { "" } +
                 "{\nconst _1 = " + self.emitTerm(value) + "\n" +
-                cases.map { "{\n" + self.emitCase(["_1"], _) + "\n}" }.join("\n") +
-                "\nthrow new Error('Unexhaustive pattern match')\n}"
+                cases.map { "{\n" + self.emitCase(["_1"], _, label) + "\n}" }.join("\n") +
+                "\nthrow new Error('Unexhaustive pattern match')\n}" +
+                if(!last) { " while(false)" } else { "" }
             | _ =>
                 detectIfElse(term).{
                     | [] =>
@@ -299,43 +302,56 @@ extend self: JsEmitter {
         }
     }
 
-    emitCase(arguments: List[String], matchCase: MatchCase): String {
+    emitCase(arguments: List[String], matchCase: MatchCase, label: Option[String]): String {
         Pair(matchCase.patterns, matchCase.condition).{
             | Pair([p, ...ps], _) =>
-                self.emitPattern(arguments.expect(0), p, arguments.dropFirst(), matchCase.MatchCase(patterns = ps))
+                self.emitPattern(
+                    arguments.expect(0),
+                    p,
+                    arguments.dropFirst(),
+                    matchCase.MatchCase(patterns = ps),
+                    label
+                )
             | Pair([], Some(condition)) =>
-                "if(" + self.emitTerm(condition) + ") {\n" + self.emitStatements(matchCase.body, True) + "\nreturn\n}"
+                "if(" + self.emitTerm(condition) + ") {\n" +
+                self.emitStatements(matchCase.body, label.isEmpty()) +
+                label.map { "\nbreak " + _ + "\n}" }.else { "\nreturn\n}" }
             | Pair([], None) =>
-                self.emitStatements(matchCase.body, True) + "\nreturn\n"
+                self.emitStatements(matchCase.body, label.isEmpty()) +
+                label.map { "\nbreak " + _ }.else { "\nreturn" }
         }
     }
 
-    emitPattern(argument: String, pattern: MatchPattern, arguments: List[String], matchCase: MatchCase): String {
+    emitPattern(
+        argument: String,
+        pattern: MatchPattern,
+        arguments: List[String],
+        matchCase: MatchCase,
+        label: Option[String]
+    ): String {
         pattern.{
             | PVariable(_, None) =>
-                self.emitCase(arguments, matchCase)
+                self.emitCase(arguments, matchCase, label)
             | PVariable(_, Some(name)) =>
                 let escaped = escapeKeyword(name)
                 if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +
-                self.emitCase(arguments, matchCase)
+                self.emitCase(arguments, matchCase, label)
             | PVariant(_, name, []) { name == "ff:core/Bool.False" } =>
                 "if(!" + argument + ") {\n" +
-                self.emitCase(arguments, matchCase) +
-                "}"
+                self.emitCase(arguments, matchCase, label) +
+                "\n}"
             | PVariant(_, name, []) { name == "ff:core/Bool.True" } =>
                 "if(" + argument + ") {\n" +
-                self.emitCase(arguments, matchCase) +
-                "}"
+                self.emitCase(arguments, matchCase, label) +
+                "\n}"
             | PVariant(_, name, patterns) =>
                 let processed = self.processVariantCase(name, argument)
+                let newMatchCase = matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)
                 if(processed.loneVariant) { "" } else {
                     "if(" + argument + "._ === '" + processed.variantName + "') {\n"
                 } +
-                self.emitCase(
-                    processed.arguments ++ arguments,
-                    matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)
-                ) +
-                if(processed.loneVariant) { "" } else { "}" }
+                self.emitCase(processed.arguments ++ arguments, newMatchCase, label) +
+                if(processed.loneVariant) { "" } else { "\n}" }
             | PVariantAs(at, name, variable) =>
                 let processed = self.processVariantCase(name, argument)
                 if(processed.loneVariant) { "" } else {
@@ -344,20 +360,23 @@ extend self: JsEmitter {
                 variable.map(escapeKeyword).filter { _ != argument }.map {
                     "const " + _ + " = " + argument + "\n"
                 }.else {""} +
-                self.emitCase(arguments, matchCase) +
-                if(processed.loneVariant) { "" } else { "}" }
+                self.emitCase(arguments, matchCase, label) +
+                if(processed.loneVariant) { "" } else { "\n}" }
             | PAlias(_, pattern, variable) =>
                 let escaped = escapeKeyword(variable)
                 if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +
-                self.emitPattern(argument, pattern, arguments, matchCase)
+                self.emitPattern(argument, pattern, arguments, matchCase, label)
             | PList(at, _, []) =>
                 let p = PVariant(at, "ff:core/List.Empty", [])
-                self.emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns]))
+                let newMatchCase = matchCase.MatchCase(patterns = [p, ...matchCase.patterns])
+                self.emitCase([argument, ...arguments], newMatchCase, label)
             | PList(at, t, [Pair(p, False), ...ps]) =>
                 let p2 = PVariant(at, "ff:core/List.Link", [p, PList(at, t, ps)])
-                self.emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p2, ...matchCase.patterns]))
+                let newMatchCase = matchCase.MatchCase(patterns = [p2, ...matchCase.patterns])
+                self.emitCase([argument, ...arguments], newMatchCase, label)
             | PList(at, t, [Pair(p, True)]) =>
-                self.emitCase([argument, ...arguments], matchCase.MatchCase(patterns = [p, ...matchCase.patterns]))
+                let newMatchCase = matchCase.MatchCase(patterns = [p, ...matchCase.patterns])
+                self.emitCase([argument, ...arguments], newMatchCase, label)
             | PList(at, t, [Pair(p, True), ..._]) =>
                 "throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"
         }

@@ -88,7 +88,6 @@ const _1 = definition_
 const _c = _1
 return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, value_, _c.targets_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -109,7 +108,6 @@ const _1 = case_
 const _c = _1
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([selfPattern_, ...ff_core_List.List_toArray(case_.patterns_)]), _c.condition_, _c.body_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -126,7 +124,6 @@ const _1 = definition_
 const _c = _1
 return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, functions_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -150,7 +147,6 @@ const _1 = definition_
 const _c = _1
 return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Inference.Inference_inferLambda(self_, environment2_, functionType_, definition_.body_), _c.targets_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -172,22 +168,22 @@ const n_ = _1.name_
 if(_1.generics_._ === 'Empty') {
 return (n_ == unitName_)
 return
-}}
+}
+}
 }
 {
 return false
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}
+}
+}
 }
 {
 return false
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_compiler_Unification.Unification_substitute(self_.unification_, expected_))
@@ -200,7 +196,6 @@ const _1 = c_
 const _c = _1
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.condition_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, ff_core_Array.Array_toList([]), ff_core_Option.None())))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -213,7 +208,6 @@ return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(cases_, ((_w1) =>
 return ff_compiler_Inference.Inference_inferMatchCase(self_, environment_, expected_, _w1)
 })))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -237,13 +231,11 @@ const name_ = _1.first_
 const type_ = _1.second_
 return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]), type_)))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))
 return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment1_.symbols_, symbols_))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))
@@ -257,7 +249,6 @@ const _1 = case_
 const _c = _1
 return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, condition_, body_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -272,7 +263,8 @@ const at_ = _1.at_
 if(_1.name_._ === 'None') {
 return ff_core_Map.empty_()
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'PVariable') {
@@ -281,7 +273,8 @@ if(_1.name_._ === 'Some') {
 const name_ = _1.name_.value_
 return ff_core_List.List_toMap(ff_core_Array.Array_toList([ff_core_Pair.Pair(name_, expected_)]))
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'PAlias') {
@@ -331,7 +324,8 @@ return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }))
 return ff_core_Map.empty_()
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'PVariantAs') {
@@ -353,7 +347,8 @@ return _w1.valueType_
 })))
 return ff_core_List.List_toMap(ff_core_Array.Array_toList([ff_core_Pair.Pair(variable_, recordType_)]))
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'PVariant') {
@@ -370,7 +365,6 @@ const pattern_ = _1.first_
 const parameter_ = _1.second_
 return ff_compiler_Inference.Inference_inferPattern(self_, environment_, parameter_.valueType_, pattern_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })), ff_core_Map.empty_())(((_w1, _w2) => {
@@ -459,7 +453,8 @@ return e2_
 return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
 }))
 return
-}}
+}
+}
 }
 {
 const t_ = _1
@@ -479,7 +474,8 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constrain
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_expect(instantiated_.scheme_.signature_.parameters_, 0).valueType_)
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, e2_)
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'Some') {
@@ -491,7 +487,6 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -546,7 +541,6 @@ return ff_core_Pair.Pair(ff_compiler_Inference.Inference_inferTerm(self_, enviro
 ? listType_
 : t_), item_), spread_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })))
@@ -575,7 +569,6 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, e_.valueType_, e_.value_), ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, e_.body_))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -609,7 +602,6 @@ return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(insta
 return _w1.second_
 })), arguments_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -640,7 +632,6 @@ return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(ins
 return _w1.second_
 })))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -665,9 +656,8 @@ return (_w1 == a_.name_)
 const at_ = _1.at_
 const name_ = _1.name_
 const value_ = _1.value_
-return ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
+ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))
@@ -680,7 +670,6 @@ const at_ = _1.at_
 const value_ = _1.value_
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(name_), value_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })), (() => {
@@ -706,7 +695,6 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.EPipe(_c.at_, value_, function_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -753,7 +741,9 @@ throw new Error('Unexhaustive pattern match')
 }
 }
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'EField') {
@@ -781,7 +771,8 @@ const instantiated_ = _1.value_
 if((!instantiated_.scheme_.isVariable_)) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, methodName_)
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'Some') {
@@ -816,7 +807,6 @@ return
 {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -846,12 +836,10 @@ const _1 = field_
 const _c = _1
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, field_.value_))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))
@@ -861,7 +849,6 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.ERecord(_c.at_, newFields_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -900,7 +887,6 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -928,7 +914,8 @@ const typeArguments_ = _1.generics_
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
 return ff_compiler_Inference.fail_(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_))
 return
-}}
+}
+}
 }
 {
 const t_ = _1
@@ -949,12 +936,12 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, record_, _c.field_, value_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'Some') {
@@ -1014,7 +1001,6 @@ return
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))(term_)
@@ -1036,7 +1022,6 @@ return
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))(term_)
@@ -1050,7 +1035,6 @@ return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, e_.function_, ff_core_List
 return _w1.second_
 })), arguments_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -1068,7 +1052,6 @@ return
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))(term_)
@@ -1082,7 +1065,7 @@ const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, ar
 const argument_ = _1.first_
 const t_ = _1.second_
 ff_core_Option.Option_each(argument_.name_, ((name_) => {
-return ff_compiler_Inference.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
+ff_compiler_Inference.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
 }))
 {
 const _1 = argument_
@@ -1090,17 +1073,15 @@ const _1 = argument_
 const _c = _1
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, argument_.value_))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))
 ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_) => {
-return ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
+ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
 }))
 {
 const _1 = e_
@@ -1108,7 +1089,6 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, function_, ff_core_Array.Array_toList([]), arguments_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -1126,7 +1106,6 @@ return
 {
 return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))(term_)
@@ -1148,12 +1127,13 @@ return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArgum
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_)]))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'Link') {
@@ -1162,32 +1142,36 @@ if(_1.tail_._ === 'Empty') {
 if((operator_ == "-")) {
 const t1_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_)
-(((_1) => {
+_553_49: do {
+const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1_)
 {
 if(_1._ === 'TConstructor') {
 const name_ = _1.name_
 if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Float"))) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
-return
-}}}
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+break _553_49
+}
+}
+}
 }
 {
 if(_1._ === 'TConstructor') {
 const name_ = _1.name_
 if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Int"))) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
-return
-}}}
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+break _553_49
+}
+}
+}
 }
 {
-return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
-return
-
+ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+break _553_49
 }
 throw new Error('Unexhaustive pattern match')
-}))(ff_compiler_Unification.Unification_substitute(self_.unification_, t1_))
+} while(false)
 {
 const _1 = e_
 {
@@ -1196,12 +1180,13 @@ return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArgum
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_)]))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'Link') {
@@ -1225,7 +1210,6 @@ return
 {
 return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))(ff_compiler_Unification.Unification_substitute(self_.unification_, t_))
@@ -1242,12 +1226,14 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_)]))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'Link') {
@@ -1270,12 +1256,14 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_)]))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'Link') {
@@ -1299,7 +1287,9 @@ if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("String"))) {
 return ff_core_Option.Some("String")
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'TConstructor') {
@@ -1308,7 +1298,9 @@ if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'TConstructor') {
@@ -1317,7 +1309,9 @@ if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'TConstructor') {
@@ -1326,12 +1320,13 @@ if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Char"))) {
 return ff_core_Option.Some("Char")
 return
-}}}
+}
+}
+}
 }
 {
 return ff_core_Option.None()
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -1340,30 +1335,31 @@ const chooseType_ = ((_1, _2) => {
 {
 if(_1._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_)
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(_2._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(((operator_ == "==") || (operator_ == "!="))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
 if(_1._ === 'None') {
 if(_2._ === 'None') {
-return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
-}}
+}
+}
 }
 throw new Error('Unexhaustive pattern match')
 })
@@ -1378,12 +1374,14 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_)]))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'Link') {
@@ -1406,7 +1404,9 @@ if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'TConstructor') {
@@ -1415,7 +1415,9 @@ if(_1.generics_._ === 'Empty') {
 if((name_ == ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'TConstructor') {
@@ -1424,12 +1426,13 @@ if(_1.generics_._ === 'Empty') {
 if(((operator_ == "+") && (name_ == ff_compiler_Inference.core_("String")))) {
 return ff_core_Option.Some("String")
 return
-}}}
+}
+}
+}
 }
 {
 return ff_core_Option.None()
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -1440,77 +1443,92 @@ if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "String")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "String")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "Float")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "Float")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'Some') {
 const n_ = _1.value_
 if(_2._ === 'Some') {
 if((n_ == "Int")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'Some') {
 if(_2._ === 'Some') {
 const n_ = _2.value_
 if((n_ == "Int")) {
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'Some') {
 if(_2._ === 'None') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_)
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'None') {
 if(_2._ === 'Some') {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
-return ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'None') {
 if(_2._ === 'None') {
-return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
-}}
+}
+}
 }
 throw new Error('Unexhaustive pattern match')
 })
@@ -1525,17 +1543,18 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_)]))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}}}
+}
+}
+}
+}
 }
 {
 return ff_compiler_Inference.fail_(e_.at_, ("Unknown operator: " + operator_))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -1586,7 +1605,8 @@ remainingArguments_ = remaining_
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_)
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
 return
-}}
+}
+}
 }
 {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_find(remainingArguments_, ((_w1) => {
@@ -1601,14 +1621,12 @@ return (!ff_core_Option.Option_contains(_w1.name_, p_.name_))
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_)
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })), (() => {
 return defaultArgument_()
 }))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -1617,7 +1635,7 @@ ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) =
 {
 const at_ = _1.at_
 if(_1.name_._ === 'None') {
-return ff_compiler_Inference.fail_(at_, "Too many arguments")
+ff_compiler_Inference.fail_(at_, "Too many arguments")
 return
 }
 }
@@ -1625,7 +1643,7 @@ return
 const at_ = _1.at_
 if(_1.name_._ === 'Some') {
 const name_ = _1.name_.value_
-return ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
+ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
 return
 }
 }
@@ -1654,7 +1672,6 @@ const _1 = p_
 const _c = _1
 return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, p_.valueType_), _c.default_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }

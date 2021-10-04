@@ -94,12 +94,12 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function RbMap_each(self_, body_) {
-{
+_26_14: do {
 const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 
-return
+break _26_14
 }
 }
 {
@@ -110,12 +110,12 @@ const v_ = _1.value_
 const r_ = _1.right_
 ff_core_RbMap.RbMap_each(l_, body_)
 body_(k_, v_)
-return ff_core_RbMap.RbMap_each(r_, body_)
-return
+ff_core_RbMap.RbMap_each(r_, body_)
+break _26_14
 }
 }
 throw new Error('Unexhaustive pattern match')
-}
+} while(false)
 }
 
 export function RbMap_get(self_, key_) {
@@ -134,7 +134,8 @@ const k_ = _1.key_
 if(ff_core_Core.magicLess_(key_, k_)) {
 return ff_core_RbMap.RbMap_get(l_, key_)
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -143,7 +144,8 @@ const r_ = _1.right_
 if(ff_core_Core.magicLess_(k_, key_)) {
 return ff_core_RbMap.RbMap_get(r_, key_)
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -176,7 +178,8 @@ const r_ = _1.right_
 if(ff_core_Core.magicLess_(key_, k_)) {
 return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, go_(l_), k_, v_, r_))
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -188,7 +191,8 @@ const r_ = _1.right_
 if(ff_core_Core.magicLess_(k_, key_)) {
 return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, l_, k_, v_, go_(r_)))
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -213,13 +217,13 @@ const v_ = _1.value_
 const r_ = _1.right_
 return ff_core_RbMap.RbNode(false, l_, k_, v_, r_)
 return
-}}
+}
+}
 }
 {
 const n_ = _1
 return n_
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -241,7 +245,8 @@ const k_ = _1.key_
 if(ff_core_Core.magicLess_(key_, k_)) {
 return goLeft_(self_)
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -249,7 +254,8 @@ const k_ = _1.key_
 if(ff_core_Core.magicLess_(k_, key_)) {
 return goRight_(self_)
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -284,7 +290,9 @@ const v2_ = _1.value_
 const c_ = _1.right_
 return balanceLeft_(ff_core_RbMap.RbNode(false, go_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_)), k2_, v2_, c_))
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -316,7 +324,10 @@ const v2_ = _1.value_
 const c_ = _1.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, c_)
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -332,7 +343,10 @@ const v2_ = _1.right_.value_
 const c_ = _1.right_.right_
 return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, a_, k1_, v1_, ff_core_RbMap.RbNode(true, b_, k2_, v2_, c_)))
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -358,7 +372,14 @@ const v4_ = _1.right_.right_.value_
 const e_ = _1.right_.right_.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, c_, k3_, v3_, ff_core_RbMap.RbNode(true, d_, k4_, v4_, e_))))
 return
-}}}}}}}}
+}
+}
+}
+}
+}
+}
+}
+}
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -385,7 +406,9 @@ const v2_ = _1.right_.value_
 const c_ = _1.right_.right_
 return balanceRight_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, go_(ff_core_RbMap.RbNode(false, b_, k2_, v2_, c_))))
 return
-}}}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -417,7 +440,10 @@ const v2_ = _1.right_.value_
 const c_ = _1.right_.right_
 return ff_core_RbMap.RbNode(true, a_, k1_, v1_, ff_core_RbMap.RbNode(false, b_, k2_, v2_, c_))
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -433,7 +459,10 @@ const v2_ = _1.value_
 const c_ = _1.right_
 return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_))
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -459,7 +488,14 @@ const v4_ = _1.value_
 const e_ = _1.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_)), k3_, v3_, ff_core_RbMap.RbNode(false, d_, k4_, v4_, e_))
 return
-}}}}}}}}
+}
+}
+}
+}
+}
+}
+}
+}
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -496,7 +532,10 @@ const v2_ = _1.second_.value_
 const d_ = _1.second_.right_
 return ff_core_RbMap.RbNode(true, fuse_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), c_), k2_, v2_, d_)
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1.first_._ === 'RbNode') {
@@ -513,7 +552,10 @@ const v2_ = _1.second_.value_
 const d_ = _1.second_.right_
 return ff_core_RbMap.RbNode(true, a_, k1_, v1_, fuse_(b_, ff_core_RbMap.RbNode(false, c_, k2_, v2_, d_)))
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1.first_._ === 'RbNode') {
@@ -540,14 +582,16 @@ const v3_ = _1.value_
 const g_ = _1.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(true, a_, k1_, v1_, f_), k3_, v3_, ff_core_RbMap.RbNode(true, g_, k2_, v2_, d_))
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
 if(!_1.isRed_) {
 return ff_core_RbMap.RbNode(true, a_, k1_, v1_, ff_core_RbMap.RbNode(true, e_, k2_, v2_, d_))
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbLeaf') {
@@ -558,7 +602,10 @@ return
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}}}
+}
+}
+}
+}
 }
 {
 if(_1.first_._ === 'RbNode') {
@@ -585,14 +632,16 @@ const v3_ = _1.value_
 const g_ = _1.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(true, a_, k1_, v1_, f_), k3_, v3_, ff_core_RbMap.RbNode(true, g_, k2_, v2_, d_))
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
 if(!_1.isRed_) {
 return balanceLeft_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, ff_core_RbMap.RbNode(false, e_, k2_, v2_, d_)))
 return
-}}
+}
+}
 }
 {
 if(_1._ === 'RbLeaf') {
@@ -603,7 +652,10 @@ return
 throw new Error('Unexhaustive pattern match')
 }
 return
-}}}}
+}
+}
+}
+}
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -619,13 +671,13 @@ const v1_ = _1.value_
 const b_ = _1.right_
 return ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_)
 return
-}}
+}
+}
 }
 {
 const n_ = _1
 return n_
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -653,7 +705,12 @@ const v3_ = _1.value_
 const d_ = _1.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
 return
-}}}}}}
+}
+}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -674,7 +731,12 @@ const v3_ = _1.value_
 const d_ = _1.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
 return
-}}}}}}
+}
+}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -695,7 +757,12 @@ const v3_ = _1.right_.value_
 const d_ = _1.right_.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
 return
-}}}}}}
+}
+}
+}
+}
+}
+}
 }
 {
 if(_1._ === 'RbNode') {
@@ -716,12 +783,16 @@ const v3_ = _1.right_.right_.value_
 const d_ = _1.right_.right_.right_
 return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
 return
-}}}}}}
+}
+}
+}
+}
+}
+}
 }
 {
 return self_
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }

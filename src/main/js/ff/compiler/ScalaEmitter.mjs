@@ -82,7 +82,7 @@ return (!ff_core_List.List_any(module_.types_, ((_w1) => {
 return ((modulePrefix_ + _w1.name_) == t_.name_)
 })))
 })), ((t_) => {
-return ff_compiler_ScalaEmitter.fail_(t_.at_, ("Type not defined in this file: " + t_.name_))
+ff_compiler_ScalaEmitter.fail_(t_.at_, ("Type not defined in this file: " + t_.name_))
 }))
 return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
@@ -167,19 +167,21 @@ if(_1._ === 'PVariable') {
 if(_1.name_._ === 'None') {
 return true
 return
-}}
+}
+}
 }
 {
 return false
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))) {
 const body_ = ff_compiler_ScalaEmitter.emitStatements_(matchCase_.body_)
 return (((signature_ + " = {\n") + body_) + "\n}")
 return
-}}}
+}
+}
+}
 }
 {
 const tuple_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(definition_.signature_.parameters_, ((_w1) => {
@@ -190,7 +192,6 @@ return ff_compiler_ScalaEmitter.emitCase_(matchCase_)
 })), "\n")
 return (((((signature_ + " = ") + tuple_) + " match {\n") + cases_) + "\n}")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -210,7 +211,6 @@ return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_)
 }))(method_.signature_), _c.body_, _c.targets_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -238,7 +238,6 @@ return (_w1.first_ == signature_.name_)
 const lambda_ = _1.second_
 return ((" {\n" + ff_compiler_ScalaEmitter.emitStatements_(ff_compiler_Syntax.ELambda(lambda_.at_, lambda_))) + "\n}")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })), (() => {
@@ -249,7 +248,6 @@ return (_w1.first_ == signature_.name_)
 const e_ = _1.second_
 return " {\n// TODO: Generate\n}"
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))
@@ -317,7 +315,6 @@ const i_ = _1.first_
 const c_ = _1.second_
 return ((("i_" + i_) + " : ") + ff_compiler_ScalaEmitter.emitType_(c_.representation_))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })), ", ")) + ")"))
@@ -352,7 +349,6 @@ const k_ = _1.first_
 const v_ = _1.second_
 return ((("i_" + k_) + " : ") + v_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })), ", ")) + ")")
@@ -407,7 +403,6 @@ const field_ = _1.first_
 const fieldType_ = _1.second_
 return ((("val " + ff_compiler_ScalaEmitter.escapeKeyword_(field_)) + " : ") + ff_compiler_ScalaEmitter.emitType_(fieldType_))
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })), "; ")) + "}")
@@ -484,7 +479,6 @@ return
 {
 return ff_compiler_ScalaEmitter.emitTerm_(term_)
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -542,7 +536,8 @@ return (("List(" + ff_core_List.List_join(ff_core_List.List_map(items_, ((_w1) =
 return ff_compiler_ScalaEmitter.emitTerm_(_w1.first_)
 })), ", ")) + ")")
 return
-}}
+}
+}
 }
 {
 if(term_a._ === 'EList') {
@@ -639,7 +634,6 @@ return
 {
 return false
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }))) {
@@ -658,13 +652,16 @@ return
 {
 return ff_core_Core.panic_("!")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 })), ", ")
 return (((("{(" + parameters_) + ") =>\n") + ff_compiler_ScalaEmitter.emitStatements_(body_)) + "\n}")
 return
-}}}}}
+}
+}
+}
+}
+}
 }
 {
 if(term_a._ === 'ELambda') {
@@ -698,7 +695,12 @@ if(term_a.arguments_.tail_._ === 'Empty') {
 if((!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)))) {
 return ((("(" + operator_) + ff_compiler_ScalaEmitter.emitArgument_(value_)) + ")")
 return
-}}}}}}
+}
+}
+}
+}
+}
+}
 }
 {
 if(term_a._ === 'ECall') {
@@ -714,7 +716,13 @@ if(term_a.arguments_.tail_.tail_._ === 'Empty') {
 if((!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)))) {
 return (((((("(" + ff_compiler_ScalaEmitter.emitArgument_(left_)) + " ") + operator_) + " ") + ff_compiler_ScalaEmitter.emitArgument_(right_)) + ")")
 return
-}}}}}}}
+}
+}
+}
+}
+}
+}
+}
 }
 {
 if(term_a._ === 'ECall') {
@@ -728,7 +736,9 @@ return (((ff_compiler_ScalaEmitter.emitTerm_(function_) + "(") + ff_core_List.Li
 return ff_compiler_ScalaEmitter.emitArgument_(argument_)
 })), ", ")) + ")")
 return
-}}}
+}
+}
+}
 }
 {
 if(term_a._ === 'ECall') {
@@ -776,7 +786,6 @@ return
 {
 return (("{\n" + ff_compiler_ScalaEmitter.emitStatements_(term_)) + "\n}")
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }

@@ -168,12 +168,12 @@ const v_ = _1.value_
 if(body_(v_)) {
 return ff_core_Option.Some(v_)
 return
-}}
+}
+}
 }
 {
 return ff_core_Option.None()
 return
-
 }
 throw new Error('Unexhaustive pattern match')
 }
@@ -220,23 +220,23 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Option_each(self_, body_) {
-{
+_75_14: do {
 const _1 = self_
 {
 if(_1._ === 'None') {
 
-return
+break _75_14
 }
 }
 {
 if(_1._ === 'Some') {
 const v_ = _1.value_
-return body_(v_)
-return
+body_(v_)
+break _75_14
 }
 }
 throw new Error('Unexhaustive pattern match')
-}
+} while(false)
 }
 
 export function Option_all(self_, body_) {
