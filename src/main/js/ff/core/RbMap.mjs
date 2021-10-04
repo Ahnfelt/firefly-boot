@@ -94,7 +94,8 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function RbMap_each(self_, body_) {
-(((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
 
@@ -114,7 +115,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 }
 
 export function RbMap_get(self_, key_) {

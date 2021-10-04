@@ -367,7 +367,8 @@ return go_(self_, 0)
 
 export function List_each(self_, body_) {
 while(true) {
-(((_1) => {
+{
+const _1 = self_
 {
 if(_1._ === 'Empty') {
 
@@ -390,7 +391,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
-}))(self_)
+}
 return
 }
 }

@@ -143,7 +143,7 @@ const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.mak
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"))
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs")
 ff_core_FileSystem.FileSystem_createDirectories(self_.files_, jsPath_)
-ff_core_FileSystem.FileSystem_writeText(self_.files_, jsFile_, js_)
+return ff_core_FileSystem.FileSystem_writeText(self_.files_, jsFile_, js_)
 }
 }
 

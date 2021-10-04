@@ -74,7 +74,7 @@ if((((last_.stopLine_ != startLine_) && ff_compiler_Token.TokenKind_beforeSepara
 ff_core_ArrayBuilder.ArrayBuilder_append(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
 }
 }
-ff_core_ArrayBuilder.ArrayBuilder_append(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
+return ff_core_ArrayBuilder.ArrayBuilder_append(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0
 while((i_ < ff_core_String.String_size(code_))) {
@@ -217,7 +217,7 @@ ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Core.magicShow_(ff
 } else {}
 }
 ff_core_List.List_each(ff_core_Int.Int_to(1, 5), ((i_) => {
-emitToken_(ff_compiler_Token.LEnd(), i_, i_)
+return emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 }))
 return ff_core_ArrayBuilder.ArrayBuilder_drain(tokens_)
 }
