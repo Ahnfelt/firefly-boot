@@ -138,6 +138,10 @@ extend self: JsEmitter {
                 "export function " + definition.name + "(" + fields + ") {\n" +
                 "return " + definition.name + "$;\n" +
                 "}"
+            } elseIf { typeDefinition.variants.size() == 1 } {
+                "export function " + definition.name + "(" + fields + ") {\n" +
+                "return {" + fields + "};\n" +
+                "}"
             } else {
                 "export function " + definition.name + "(" + fields + ") {\n" +
                 "return {_: '" + definition.name + "', " + fields + "};\n" +
@@ -310,10 +314,10 @@ extend self: JsEmitter {
             | Pair([], Some(condition)) =>
                 "if(" + self.emitTerm(condition) + ") {\n" +
                 self.emitStatements(matchCase.body, last) +
-                if(last) { "\nreturn\n}" }.else { "\nbreak\n}" }
+                if(last) { "\nreturn\n}" } else { "\nbreak\n}" }
             | Pair([], None) =>
                 self.emitStatements(matchCase.body, last) +
-                if(last) { "\nreturn" }.else { "\nbreak" }
+                if(last) { "\nreturn" } else { "\nbreak" }
         }
     }
 

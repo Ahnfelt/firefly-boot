@@ -36,7 +36,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Set
 export function Set(map_) {
-return {_: 'Set', map_};
+return {map_};
 }
 
 

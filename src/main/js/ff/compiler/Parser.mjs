@@ -44,12 +44,12 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Parser
 export function Parser(packagePair_, file_, tokens_, end_, offset_, nextTypeVariableIndex_) {
-return {_: 'Parser', packagePair_, file_, tokens_, end_, offset_, nextTypeVariableIndex_};
+return {packagePair_, file_, tokens_, end_, offset_, nextTypeVariableIndex_};
 }
 
 // type Poly
 export function Poly(generics_, constraints_) {
-return {_: 'Poly', generics_, constraints_};
+return {generics_, constraints_};
 }
 
 export const binaryOperators_ = ff_core_List.List_toArray(ff_core_List.Link(ff_core_List.Link("||", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("&&", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("!=", ff_core_List.Link("==", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("<=", ff_core_List.Link(">=", ff_core_List.Link("<", ff_core_List.Link(">", ff_core_List.Empty())))), ff_core_List.Link(ff_core_List.Link("++", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("+", ff_core_List.Link("-", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("*", ff_core_List.Link("/", ff_core_List.Link("%", ff_core_List.Empty()))), ff_core_List.Link(ff_core_List.Link("^", ff_core_List.Empty()), ff_core_List.Empty())))))))))

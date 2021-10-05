@@ -38,7 +38,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Map
 export function MapOf(redBlack_) {
-return {_: 'MapOf', redBlack_};
+return {redBlack_};
 }
 
 

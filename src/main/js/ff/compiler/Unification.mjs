@@ -40,22 +40,22 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Unification
 export function Unification(substitution_, constraints_, nextTypeVariableIndex_, instances_) {
-return {_: 'Unification', substitution_, constraints_, nextTypeVariableIndex_, instances_};
+return {substitution_, constraints_, nextTypeVariableIndex_, instances_};
 }
 
 // type ConstraintGenerics
 export function ConstraintGenerics(at_, generics_) {
-return {_: 'ConstraintGenerics', at_, generics_};
+return {at_, generics_};
 }
 
 // type InstanceKey
 export function InstanceKey(traitName_, typeName_) {
-return {_: 'InstanceKey', traitName_, typeName_};
+return {traitName_, typeName_};
 }
 
 // type InstanceValue
 export function InstanceValue(generics_, constraints_, traitType_) {
-return {_: 'InstanceValue', generics_, constraints_, traitType_};
+return {generics_, constraints_, traitType_};
 }
 
 

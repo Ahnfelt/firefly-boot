@@ -266,8 +266,12 @@ val fields_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.L
 ff.compiler.JsEmitter_.escapeKeyword_(word_ = _w1.name_)
 }), separator_ = ", ");
 ff.core.Option_.Option_else(self_ = definition_.targets_.javaScript_, body_ = {() =>
-ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Parameter](self_ = allFields_), body_ = {() =>
+ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_elseIf(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Parameter](self_ = allFields_), body_ = {() =>
 ((((((((((((("const " + definition_.name_) + "$ = {_: '") + definition_.name_) + "'};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
+}), condition_ = {() =>
+(ff.core.List_.List_size[ff.compiler.Syntax_.Variant](self_ = typeDefinition_.variants_) == 1)
+}, body_ = {() =>
+(((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + fields_) + "};\n") + "}")
 }), body_ = {() =>
 (((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {_: '") + definition_.name_) + "', ") + fields_) + "};\n") + "}")
 })

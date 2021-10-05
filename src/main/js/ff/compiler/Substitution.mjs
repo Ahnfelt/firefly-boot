@@ -40,7 +40,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Substitution
 export function Substitution(substitution_) {
-return {_: 'Substitution', substitution_};
+return {substitution_};
 }
 
 

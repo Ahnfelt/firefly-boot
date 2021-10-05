@@ -40,7 +40,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Token
 export function Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, stopLine_, stopLineOffset_, stopOffset_) {
-return {_: 'Token', file_, code_, kind_, startLine_, startLineOffset_, startOffset_, stopLine_, stopLineOffset_, stopOffset_};
+return {file_, code_, kind_, startLine_, startLineOffset_, startOffset_, stopLine_, stopLineOffset_, stopOffset_};
 }
 
 // type TokenKind

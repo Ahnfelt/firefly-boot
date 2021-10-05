@@ -39,7 +39,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type SystemArguments
 export function SystemArguments(array_) {
-return {_: 'SystemArguments', array_};
+return {array_};
 }
 
 

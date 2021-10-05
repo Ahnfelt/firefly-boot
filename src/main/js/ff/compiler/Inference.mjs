@@ -46,7 +46,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Inference
 export function Inference(unification_) {
-return {_: 'Inference', unification_};
+return {unification_};
 }
 
 

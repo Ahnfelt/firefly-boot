@@ -36,7 +36,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Pair
 export function Pair(first_, second_) {
-return {_: 'Pair', first_, second_};
+return {first_, second_};
 }
 
 

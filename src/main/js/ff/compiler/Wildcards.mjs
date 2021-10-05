@@ -40,7 +40,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Wildcards
 export function Wildcards(seenWildcards_) {
-return {_: 'Wildcards', seenWildcards_};
+return {seenWildcards_};
 }
 
 

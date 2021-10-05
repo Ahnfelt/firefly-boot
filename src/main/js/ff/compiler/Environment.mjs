@@ -40,17 +40,17 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Environment
 export function Environment(symbols_) {
-return {_: 'Environment', symbols_};
+return {symbols_};
 }
 
 // type Scheme
 export function Scheme(isVariable_, isMutable_, signature_) {
-return {_: 'Scheme', isVariable_, isMutable_, signature_};
+return {isVariable_, isMutable_, signature_};
 }
 
 // type Instantiated
 export function Instantiated(typeArguments_, scheme_) {
-return {_: 'Instantiated', typeArguments_, scheme_};
+return {typeArguments_, scheme_};
 }
 
 

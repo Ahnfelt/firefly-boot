@@ -40,7 +40,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Resolver
 export function Resolver(variables_, variants_, types_, traits_) {
-return {_: 'Resolver', variables_, variants_, types_, traits_};
+return {variables_, variants_, types_, traits_};
 }
 
 

@@ -40,12 +40,12 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
 export function JsEmitter(otherModules_, tailCallUsed_) {
-return {_: 'JsEmitter', otherModules_, tailCallUsed_};
+return {otherModules_, tailCallUsed_};
 }
 
 // type ProcessedVariantCase
 export function ProcessedVariantCase(variantName_, loneVariant_, arguments_) {
-return {_: 'ProcessedVariantCase', variantName_, loneVariant_, arguments_};
+return {variantName_, loneVariant_, arguments_};
 }
 
 
@@ -389,6 +389,8 @@ return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
 return ff_core_Option.Option_else(definition_.targets_.javaScript_, (() => {
 if(ff_core_List.List_isEmpty(allFields_)) {
 return ((((((((((((("const " + definition_.name_) + "$ = {_: '") + definition_.name_) + "'};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
+} else if((ff_core_List.List_size(typeDefinition_.variants_) == 1)) {
+return (((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + fields_) + "};\n") + "}")
 } else {
 return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {_: '") + definition_.name_) + "', ") + fields_) + "};\n") + "}")
 }

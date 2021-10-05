@@ -38,57 +38,57 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Location
 export function Location(file_, line_, column_) {
-return {_: 'Location', file_, line_, column_};
+return {file_, line_, column_};
 }
 
 // type CompileError
 export function CompileError(at_, message_) {
-return {_: 'CompileError', at_, message_};
+return {at_, message_};
 }
 
 // type Module
 export function Module(packagePair_, file_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_) {
-return {_: 'Module', packagePair_, file_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
+return {packagePair_, file_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
 }
 
 // type DDependency
 export function DDependency(at_, package_, safety_, goodVersions_, badVersions_) {
-return {_: 'DDependency', at_, package_, safety_, goodVersions_, badVersions_};
+return {at_, package_, safety_, goodVersions_, badVersions_};
 }
 
 // type DImport
 export function DImport(at_, alias_, package_, directory_, file_) {
-return {_: 'DImport', at_, alias_, package_, directory_, file_};
+return {at_, alias_, package_, directory_, file_};
 }
 
 // type DFunction
 export function DFunction(at_, signature_, body_, targets_) {
-return {_: 'DFunction', at_, signature_, body_, targets_};
+return {at_, signature_, body_, targets_};
 }
 
 // type DLet
 export function DLet(at_, name_, variableType_, value_, targets_) {
-return {_: 'DLet', at_, name_, variableType_, value_, targets_};
+return {at_, name_, variableType_, value_, targets_};
 }
 
 // type DExtend
 export function DExtend(at_, name_, generics_, constraints_, type_, methods_) {
-return {_: 'DExtend', at_, name_, generics_, constraints_, type_, methods_};
+return {at_, name_, generics_, constraints_, type_, methods_};
 }
 
 // type DType
 export function DType(at_, name_, generics_, constraints_, commonFields_, variants_, targets_) {
-return {_: 'DType', at_, name_, generics_, constraints_, commonFields_, variants_, targets_};
+return {at_, name_, generics_, constraints_, commonFields_, variants_, targets_};
 }
 
 // type DTrait
 export function DTrait(at_, name_, generics_, constraints_, generatorParameters_, methods_, methodDefaults_, methodGenerators_) {
-return {_: 'DTrait', at_, name_, generics_, constraints_, generatorParameters_, methods_, methodDefaults_, methodGenerators_};
+return {at_, name_, generics_, constraints_, generatorParameters_, methods_, methodDefaults_, methodGenerators_};
 }
 
 // type DInstance
 export function DInstance(at_, generics_, constraints_, traitType_, generatorArguments_, methods_) {
-return {_: 'DInstance', at_, generics_, constraints_, traitType_, generatorArguments_, methods_};
+return {at_, generics_, constraints_, traitType_, generatorArguments_, methods_};
 }
 
 // type Term
@@ -155,7 +155,7 @@ return {_: 'EWildcard', at_, index_};
 
 // type MatchCase
 export function MatchCase(at_, patterns_, condition_, body_) {
-return {_: 'MatchCase', at_, patterns_, condition_, body_};
+return {at_, patterns_, condition_, body_};
 }
 
 // type MatchPattern
@@ -177,42 +177,42 @@ return {_: 'PList', at_, itemType_, items_};
 
 // type Signature
 export function Signature(at_, name_, generics_, constraints_, parameters_, returnType_) {
-return {_: 'Signature', at_, name_, generics_, constraints_, parameters_, returnType_};
+return {at_, name_, generics_, constraints_, parameters_, returnType_};
 }
 
 // type Lambda
 export function Lambda(at_, cases_) {
-return {_: 'Lambda', at_, cases_};
+return {at_, cases_};
 }
 
 // type Variant
 export function Variant(at_, name_, fields_, targets_) {
-return {_: 'Variant', at_, name_, fields_, targets_};
+return {at_, name_, fields_, targets_};
 }
 
 // type Parameter
 export function Parameter(at_, mutable_, name_, valueType_, default_) {
-return {_: 'Parameter', at_, mutable_, name_, valueType_, default_};
+return {at_, mutable_, name_, valueType_, default_};
 }
 
 // type Argument
 export function Argument(at_, name_, value_) {
-return {_: 'Argument', at_, name_, value_};
+return {at_, name_, value_};
 }
 
 // type Field
 export function Field(at_, name_, value_) {
-return {_: 'Field', at_, name_, value_};
+return {at_, name_, value_};
 }
 
 // type Constraint
 export function Constraint(representation_) {
-return {_: 'Constraint', representation_};
+return {representation_};
 }
 
 // type Targets
 export function Targets(scala_, javaScript_) {
-return {_: 'Targets', scala_, javaScript_};
+return {scala_, javaScript_};
 }
 
 // type Type
@@ -250,7 +250,7 @@ return Trust$;
 
 // type Version
 export function Version(at_, major_, minor_, patch_) {
-return {_: 'Version', at_, major_, minor_, patch_};
+return {at_, major_, minor_, patch_};
 }
 
 
