@@ -92,14 +92,14 @@ const _1 = ff_core_List.List_find(modules_, ((_w1) => {
 return (ff_core_String.String_dropLast(_w1.file_, 3) == import_.file_)
 }))
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const module_ = _1.value_
 resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_, ff_core_Option.Some(import_.alias_))
 break
 }
 }
 {
-if(_1._ === 'None') {
+if(_1.None) {
 ff_compiler_Resolver.fail_(import_.at_, ("No such module: " + import_.file_))
 break
 }
@@ -116,13 +116,13 @@ const full_ = ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.se
 {
 const _1 = importAlias_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Empty())
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const alias_ = _1.value_
 if(unqualified_) {
 return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Empty()))
@@ -131,7 +131,7 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const alias_ = _1.value_
 return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Empty())
 return
@@ -286,35 +286,35 @@ const self_a = self_
 const term_a = term_
 {
 const self_ = self_a
-if(term_a._ === 'EString') {
+if(term_a.EString) {
 return term_
 return
 }
 }
 {
 const self_ = self_a
-if(term_a._ === 'EChar') {
+if(term_a.EChar) {
 return term_
 return
 }
 }
 {
 const self_ = self_a
-if(term_a._ === 'EInt') {
+if(term_a.EInt) {
 return term_
 return
 }
 }
 {
 const self_ = self_a
-if(term_a._ === 'EFloat') {
+if(term_a.EFloat) {
 return term_
 return
 }
 }
 {
 const self_ = self_a
-if(term_a._ === 'EVariable') {
+if(term_a.EVariable) {
 const e_ = term_a
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(self_.variables_, e_.name_), ((_w1) => {
 {
@@ -340,7 +340,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EList') {
+if(term_a.EList) {
 const at_ = term_a.at_
 const t_ = term_a.elementType_
 const items_ = term_a.items_
@@ -358,7 +358,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EVariant') {
+if(term_a.EVariant) {
 const at_ = term_a.at_
 const name_ = term_a.name_
 const typeArguments_ = term_a.typeArguments_
@@ -385,7 +385,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EVariantIs') {
+if(term_a.EVariantIs) {
 const at_ = term_a.at_
 const name_ = term_a.name_
 const typeArguments_ = term_a.typeArguments_
@@ -399,7 +399,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ECopy') {
+if(term_a.ECopy) {
 const at_ = term_a.at_
 const name_ = term_a.name_
 const record_ = term_a.record_
@@ -422,7 +422,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EField') {
+if(term_a.EField) {
 const e_ = term_a
 {
 const _1 = e_
@@ -438,7 +438,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ELambda') {
+if(term_a.ELambda) {
 const at_ = term_a.at_
 const lambdaAt_ = term_a.lambda_.at_
 const cases_ = term_a.lambda_.cases_
@@ -450,7 +450,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EPipe') {
+if(term_a.EPipe) {
 const at_ = term_a.at_
 const value_ = term_a.value_
 const function_ = term_a.function_
@@ -460,7 +460,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ECall') {
+if(term_a.ECall) {
 const at_ = term_a.at_
 const tailCall_ = term_a.tailCall_
 const function_ = term_a.function_
@@ -484,7 +484,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ERecord') {
+if(term_a.ERecord) {
 const at_ = term_a.at_
 const fields_ = term_a.fields_
 return ff_compiler_Syntax.ERecord(at_, ff_core_List.List_map(fields_, ((f_) => {
@@ -503,7 +503,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EWildcard') {
+if(term_a.EWildcard) {
 const e_ = term_a
 if((e_.index_ == 0)) {
 ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
@@ -522,7 +522,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EFunctions') {
+if(term_a.EFunctions) {
 const at_ = term_a.at_
 const functions_ = term_a.functions_
 const body_ = term_a.body_
@@ -542,7 +542,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ELet') {
+if(term_a.ELet) {
 const e_ = term_a
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, e_.name_, e_.name_), _c.variants_, _c.types_, _c.traits_)
@@ -561,7 +561,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ESequential') {
+if(term_a.ESequential) {
 const at_ = term_a.at_
 const before_ = term_a.before_
 const after_ = term_a.after_
@@ -571,7 +571,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EAssign') {
+if(term_a.EAssign) {
 const at_ = term_a.at_
 const operator_ = term_a.operator_
 const variable_ = term_a.variable_
@@ -584,7 +584,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EAssignField') {
+if(term_a.EAssignField) {
 const at_ = term_a.at_
 const operator_ = term_a.operator_
 const record_ = term_a.record_
@@ -602,14 +602,14 @@ const self_a = self_
 const type_a = type_
 {
 const self_ = self_a
-if(type_a._ === 'TVariable') {
+if(type_a.TVariable) {
 return type_
 return
 }
 }
 {
 const self_ = self_a
-if(type_a._ === 'TConstructor') {
+if(type_a.TConstructor) {
 const constructor_ = type_a
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
@@ -674,8 +674,8 @@ export function Resolver_resolveCase(self_, case_) {
 function findVariables_(pattern_){
 const pattern_a = pattern_
 {
-if(pattern_a._ === 'PVariable') {
-if(pattern_a.name_._ === 'Some') {
+if(pattern_a.PVariable) {
+if(pattern_a.name_.Some) {
 const name_ = pattern_a.name_.value_
 return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, name_), ff_core_List.Empty()))
 return
@@ -683,15 +683,15 @@ return
 }
 }
 {
-if(pattern_a._ === 'PVariable') {
-if(pattern_a.name_._ === 'None') {
+if(pattern_a.PVariable) {
+if(pattern_a.name_.None) {
 return ff_core_Map.empty_()
 return
 }
 }
 }
 {
-if(pattern_a._ === 'PVariant') {
+if(pattern_a.PVariant) {
 const patterns_ = pattern_a.patterns_
 return ff_core_List.List_foldLeft(ff_core_List.List_map(patterns_, ((pattern_) => {
 return findVariables_(pattern_)
@@ -702,7 +702,7 @@ return
 }
 }
 {
-if(pattern_a._ === 'PVariantAs') {
+if(pattern_a.PVariantAs) {
 const variable_ = pattern_a.variable_
 return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variable_), ((x_) => {
 return ff_core_Pair.Pair(x_, x_)
@@ -711,7 +711,7 @@ return
 }
 }
 {
-if(pattern_a._ === 'PAlias') {
+if(pattern_a.PAlias) {
 const pattern_ = pattern_a.pattern_
 const variable_ = pattern_a.variable_
 return ff_core_Map.Map_addAll(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(variable_, variable_), ff_core_List.Empty())), findVariables_(pattern_))
@@ -719,7 +719,7 @@ return
 }
 }
 {
-if(pattern_a._ === 'PList') {
+if(pattern_a.PList) {
 const items_ = pattern_a.items_
 return ff_core_List.List_foldLeft(ff_core_List.List_map(items_, ((_1) => {
 {
@@ -757,14 +757,14 @@ const pattern_a = pattern_
 {
 const self_ = self_a
 const p_ = pattern_a
-if(pattern_a._ === 'PVariable') {
+if(pattern_a.PVariable) {
 return p_
 return
 }
 }
 {
 const self_ = self_a
-if(pattern_a._ === 'PVariant') {
+if(pattern_a.PVariant) {
 const at_ = pattern_a.at_
 const name_ = pattern_a.name_
 const patterns_ = pattern_a.patterns_
@@ -780,7 +780,7 @@ return
 }
 {
 const self_ = self_a
-if(pattern_a._ === 'PVariantAs') {
+if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_
 const name_ = pattern_a.name_
 const variable_ = pattern_a.variable_
@@ -793,7 +793,7 @@ return
 }
 {
 const self_ = self_a
-if(pattern_a._ === 'PAlias') {
+if(pattern_a.PAlias) {
 const at_ = pattern_a.at_
 const pattern_ = pattern_a.pattern_
 const variable_ = pattern_a.variable_
@@ -804,7 +804,7 @@ return
 }
 {
 const self_ = self_a
-if(pattern_a._ === 'PList') {
+if(pattern_a.PList) {
 const at_ = pattern_a.at_
 const t_ = pattern_a.itemType_
 const items_ = pattern_a.items_

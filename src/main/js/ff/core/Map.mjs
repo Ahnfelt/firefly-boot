@@ -53,14 +53,14 @@ ff_core_RbMap.RbMap_each(that_.redBlack_, ((_1, _2) => {
 {
 const k_ = _1
 const v_ = _2
-if(_2._ === 'Some') {
+if(_2.Some) {
 result_ = ff_core_RbMap.RbMap_add(result_, k_, v_)
 return
 }
 }
 {
 const k_ = _1
-if(_2._ === 'None') {
+if(_2.None) {
 
 return
 }
@@ -94,7 +94,7 @@ export function Map_pairs(self_) {
 return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_.redBlack_), ((_1) => {
 {
 const k_ = _1.first_
-if(_1.second_._ === 'Some') {
+if(_1.second_.Some) {
 const v_ = _1.second_.value_
 return ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_List.Empty())
 return
@@ -102,7 +102,7 @@ return
 }
 {
 const k_ = _1.first_
-if(_1.second_._ === 'None') {
+if(_1.second_.None) {
 return ff_core_List.Empty()
 return
 }
@@ -143,13 +143,13 @@ export function Map_updateOrInsert(self_, key_, update_, default_) {
 {
 const _1 = ff_core_Map.Map_get(self_, key_)
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_core_Map.Map_add(self_, key_, default_())
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return ff_core_Map.Map_add(self_, key_, update_(v_))
 return

@@ -473,14 +473,14 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 for(;;) {
 const _1 = ff_compiler_Parser.Parser_parseType(self_)
 {
-if(_1._ === 'TVariable') {
+if(_1.TVariable) {
 const t_ = _1
 ff_compiler_Parser.Parser_fail(self_, t_.at_, ("Unexpected type variable: $" + t_.index_))
 break
 }
 }
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const t_ = _1
 ff_core_ArrayBuilder.ArrayBuilder_append(constraints_, ff_compiler_Syntax.Constraint((((_c) => {
 return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(t_.at_, ff_compiler_Token.Token_raw(parameterNameToken_), ff_core_List.Empty()), t_.generics_))
@@ -775,14 +775,14 @@ const value_ = ff_compiler_Parser.Parser_parseTerm(self_)
 {
 const _1 = term_
 {
-if(_1._ === 'EVariable') {
+if(_1.EVariable) {
 const name_ = _1.name_
 return ff_compiler_Syntax.EAssign(ff_compiler_Token.Token_at(token_), operator_, name_, value_)
 return
 }
 }
 {
-if(_1._ === 'EField') {
+if(_1.EField) {
 const e_ = _1
 return ff_compiler_Syntax.EAssignField(ff_compiler_Token.Token_at(token_), operator_, e_.record_, e_.field_, value_)
 return

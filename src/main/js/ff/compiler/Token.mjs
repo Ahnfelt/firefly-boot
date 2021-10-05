@@ -44,103 +44,103 @@ return {file_, code_, kind_, startLine_, startLineOffset_, startOffset_, stopLin
 }
 
 // type TokenKind
-const LEnd$ = {_: 'LEnd'};
+const LEnd$ = {LEnd: true};
 export function LEnd() {
 return LEnd$;
 }
-const LString$ = {_: 'LString'};
+const LString$ = {LString: true};
 export function LString() {
 return LString$;
 }
-const LChar$ = {_: 'LChar'};
+const LChar$ = {LChar: true};
 export function LChar() {
 return LChar$;
 }
-const LInt$ = {_: 'LInt'};
+const LInt$ = {LInt: true};
 export function LInt() {
 return LInt$;
 }
-const LFloat$ = {_: 'LFloat'};
+const LFloat$ = {LFloat: true};
 export function LFloat() {
 return LFloat$;
 }
-const LKeyword$ = {_: 'LKeyword'};
+const LKeyword$ = {LKeyword: true};
 export function LKeyword() {
 return LKeyword$;
 }
-const LNamespace$ = {_: 'LNamespace'};
+const LNamespace$ = {LNamespace: true};
 export function LNamespace() {
 return LNamespace$;
 }
-const LLower$ = {_: 'LLower'};
+const LLower$ = {LLower: true};
 export function LLower() {
 return LLower$;
 }
-const LUpper$ = {_: 'LUpper'};
+const LUpper$ = {LUpper: true};
 export function LUpper() {
 return LUpper$;
 }
-const LWildcard$ = {_: 'LWildcard'};
+const LWildcard$ = {LWildcard: true};
 export function LWildcard() {
 return LWildcard$;
 }
-const LBracketLeft$ = {_: 'LBracketLeft'};
+const LBracketLeft$ = {LBracketLeft: true};
 export function LBracketLeft() {
 return LBracketLeft$;
 }
-const LBracketRight$ = {_: 'LBracketRight'};
+const LBracketRight$ = {LBracketRight: true};
 export function LBracketRight() {
 return LBracketRight$;
 }
-const LOperator$ = {_: 'LOperator'};
+const LOperator$ = {LOperator: true};
 export function LOperator() {
 return LOperator$;
 }
-const LComma$ = {_: 'LComma'};
+const LComma$ = {LComma: true};
 export function LComma() {
 return LComma$;
 }
-const LSeparator$ = {_: 'LSeparator'};
+const LSeparator$ = {LSeparator: true};
 export function LSeparator() {
 return LSeparator$;
 }
-const LDot$ = {_: 'LDot'};
+const LDot$ = {LDot: true};
 export function LDot() {
 return LDot$;
 }
-const LSemicolon$ = {_: 'LSemicolon'};
+const LSemicolon$ = {LSemicolon: true};
 export function LSemicolon() {
 return LSemicolon$;
 }
-const LPipe$ = {_: 'LPipe'};
+const LPipe$ = {LPipe: true};
 export function LPipe() {
 return LPipe$;
 }
-const LColon$ = {_: 'LColon'};
+const LColon$ = {LColon: true};
 export function LColon() {
 return LColon$;
 }
-const LDotDotDot$ = {_: 'LDotDotDot'};
+const LDotDotDot$ = {LDotDotDot: true};
 export function LDotDotDot() {
 return LDotDotDot$;
 }
-const LArrowThick$ = {_: 'LArrowThick'};
+const LArrowThick$ = {LArrowThick: true};
 export function LArrowThick() {
 return LArrowThick$;
 }
-const LAssign$ = {_: 'LAssign'};
+const LAssign$ = {LAssign: true};
 export function LAssign() {
 return LAssign$;
 }
-const LAssignPlus$ = {_: 'LAssignPlus'};
+const LAssignPlus$ = {LAssignPlus: true};
 export function LAssignPlus() {
 return LAssignPlus$;
 }
-const LAssignMinus$ = {_: 'LAssignMinus'};
+const LAssignMinus$ = {LAssignMinus: true};
 export function LAssignMinus() {
 return LAssignMinus$;
 }
-const LAssignLink$ = {_: 'LAssignLink'};
+const LAssignLink$ = {LAssignLink: true};
 export function LAssignLink() {
 return LAssignLink$;
 }
@@ -177,151 +177,151 @@ export function TokenKind_beforeSeparator(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'LEnd') {
+if(_1.LEnd) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LString') {
+if(_1.LString) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LChar') {
+if(_1.LChar) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LInt') {
+if(_1.LInt) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LFloat') {
+if(_1.LFloat) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LKeyword') {
+if(_1.LKeyword) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LNamespace') {
+if(_1.LNamespace) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LLower') {
+if(_1.LLower) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LUpper') {
+if(_1.LUpper) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LWildcard') {
+if(_1.LWildcard) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LBracketLeft') {
+if(_1.LBracketLeft) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LBracketRight') {
+if(_1.LBracketRight) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LOperator') {
+if(_1.LOperator) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LComma') {
+if(_1.LComma) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LSeparator') {
+if(_1.LSeparator) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LDot') {
+if(_1.LDot) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LSemicolon') {
+if(_1.LSemicolon) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LPipe') {
+if(_1.LPipe) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LColon') {
+if(_1.LColon) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LDotDotDot') {
+if(_1.LDotDotDot) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LArrowThick') {
+if(_1.LArrowThick) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssign') {
+if(_1.LAssign) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignPlus') {
+if(_1.LAssignPlus) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignMinus') {
+if(_1.LAssignMinus) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignLink') {
+if(_1.LAssignLink) {
 return false
 return
 }
@@ -334,151 +334,151 @@ export function TokenKind_afterSeparator(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'LEnd') {
+if(_1.LEnd) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LString') {
+if(_1.LString) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LChar') {
+if(_1.LChar) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LInt') {
+if(_1.LInt) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LFloat') {
+if(_1.LFloat) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LKeyword') {
+if(_1.LKeyword) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LNamespace') {
+if(_1.LNamespace) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LLower') {
+if(_1.LLower) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LUpper') {
+if(_1.LUpper) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LWildcard') {
+if(_1.LWildcard) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LBracketLeft') {
+if(_1.LBracketLeft) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LBracketRight') {
+if(_1.LBracketRight) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LOperator') {
+if(_1.LOperator) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LComma') {
+if(_1.LComma) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LSeparator') {
+if(_1.LSeparator) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LDot') {
+if(_1.LDot) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LSemicolon') {
+if(_1.LSemicolon) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LPipe') {
+if(_1.LPipe) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LColon') {
+if(_1.LColon) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LDotDotDot') {
+if(_1.LDotDotDot) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LArrowThick') {
+if(_1.LArrowThick) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssign') {
+if(_1.LAssign) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignPlus') {
+if(_1.LAssignPlus) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignMinus') {
+if(_1.LAssignMinus) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignLink') {
+if(_1.LAssignLink) {
 return false
 return
 }
@@ -491,151 +491,151 @@ export function TokenKind_afterKeyword(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'LEnd') {
+if(_1.LEnd) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LString') {
+if(_1.LString) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LChar') {
+if(_1.LChar) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LInt') {
+if(_1.LInt) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LFloat') {
+if(_1.LFloat) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LKeyword') {
+if(_1.LKeyword) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LNamespace') {
+if(_1.LNamespace) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LLower') {
+if(_1.LLower) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LUpper') {
+if(_1.LUpper) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LWildcard') {
+if(_1.LWildcard) {
 return true
 return
 }
 }
 {
-if(_1._ === 'LBracketLeft') {
+if(_1.LBracketLeft) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LBracketRight') {
+if(_1.LBracketRight) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LOperator') {
+if(_1.LOperator) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LComma') {
+if(_1.LComma) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LSeparator') {
+if(_1.LSeparator) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LDot') {
+if(_1.LDot) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LSemicolon') {
+if(_1.LSemicolon) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LPipe') {
+if(_1.LPipe) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LColon') {
+if(_1.LColon) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LDotDotDot') {
+if(_1.LDotDotDot) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LArrowThick') {
+if(_1.LArrowThick) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssign') {
+if(_1.LAssign) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignPlus') {
+if(_1.LAssignPlus) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignMinus') {
+if(_1.LAssignMinus) {
 return false
 return
 }
 }
 {
-if(_1._ === 'LAssignLink') {
+if(_1.LAssignLink) {
 return false
 return
 }

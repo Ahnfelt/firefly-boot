@@ -18,9 +18,9 @@ try[T](body: () => T): Try[T] { panic("magic") }
     scala "scala.util.Try { body_() }"
     javascript """
         try {
-            return {_: 'Success', value_: body_()}
+            return {Success: true, value_: body_()}
         } catch(e) {
-            return {_: 'Failure', exception_: e.message}
+            return {Failure: true, exception_: e.message}
         }
     """
 

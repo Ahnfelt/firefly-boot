@@ -35,12 +35,12 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Option
-const None$ = {_: 'None'};
+const None$ = {None: true};
 export function None() {
 return None$;
 }
 export function Some(value_) {
-return {_: 'Some', value_};
+return {Some: true, value_};
 }
 
 
@@ -51,13 +51,13 @@ export function Option_else(self_, body_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return body_()
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const value_ = _1.value_
 return value_
 return
@@ -71,7 +71,7 @@ export function Option_elseIf(self_, condition_, body_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 {
 const _1 = condition_()
 {
@@ -92,7 +92,7 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 return self_
 return
 }
@@ -105,13 +105,13 @@ export function Option_orElse(self_, body_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return body_()
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 return self_
 return
 }
@@ -124,13 +124,13 @@ export function Option_isEmpty(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return true
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 return false
 return
 }
@@ -143,13 +143,13 @@ export function Option_toList(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_core_List.Empty()
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return ff_core_List.Link(v_, ff_core_List.Empty())
 return
@@ -163,7 +163,7 @@ export function Option_filter(self_, body_) {
 {
 const _1 = self_
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 if(body_(v_)) {
 return ff_core_Option.Some(v_)
@@ -183,13 +183,13 @@ export function Option_map(self_, body_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return ff_core_Option.Some(body_(v_))
 return
@@ -203,13 +203,13 @@ export function Option_flatMap(self_, body_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return body_(v_)
 return
@@ -223,13 +223,13 @@ export function Option_each(self_, body_) {
 for(;;) {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 
 break
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 body_(v_)
 break
@@ -243,13 +243,13 @@ export function Option_all(self_, body_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return true
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return body_(v_)
 return
@@ -263,13 +263,13 @@ export function Option_any(self_, body_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return false
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return body_(v_)
 return
@@ -283,13 +283,13 @@ export function Option_expect(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_core_Core.panic_("None.expect()")
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return v_
 return
@@ -303,13 +303,13 @@ export function Option_contains(self_, value_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return false
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return (v_ == value_)
 return
@@ -323,13 +323,13 @@ export function Option_flatten(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const v_ = _1.value_
 return v_
 return

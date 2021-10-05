@@ -93,64 +93,64 @@ return {at_, generics_, constraints_, traitType_, generatorArguments_, methods_}
 
 // type Term
 export function EString(at_, value_) {
-return {_: 'EString', at_, value_};
+return {EString: true, at_, value_};
 }
 export function EChar(at_, value_) {
-return {_: 'EChar', at_, value_};
+return {EChar: true, at_, value_};
 }
 export function EInt(at_, value_) {
-return {_: 'EInt', at_, value_};
+return {EInt: true, at_, value_};
 }
 export function EFloat(at_, value_) {
-return {_: 'EFloat', at_, value_};
+return {EFloat: true, at_, value_};
 }
 export function EVariable(at_, name_, generics_, instances_) {
-return {_: 'EVariable', at_, name_, generics_, instances_};
+return {EVariable: true, at_, name_, generics_, instances_};
 }
 export function ELambda(at_, lambda_) {
-return {_: 'ELambda', at_, lambda_};
+return {ELambda: true, at_, lambda_};
 }
 export function EFunctions(at_, functions_, body_) {
-return {_: 'EFunctions', at_, functions_, body_};
+return {EFunctions: true, at_, functions_, body_};
 }
 export function ELet(at_, mutable_, name_, valueType_, value_, body_) {
-return {_: 'ELet', at_, mutable_, name_, valueType_, value_, body_};
+return {ELet: true, at_, mutable_, name_, valueType_, value_, body_};
 }
 export function ESequential(at_, before_, after_) {
-return {_: 'ESequential', at_, before_, after_};
+return {ESequential: true, at_, before_, after_};
 }
 export function EAssign(at_, operator_, variable_, value_) {
-return {_: 'EAssign', at_, operator_, variable_, value_};
+return {EAssign: true, at_, operator_, variable_, value_};
 }
 export function EAssignField(at_, operator_, record_, field_, value_) {
-return {_: 'EAssignField', at_, operator_, record_, field_, value_};
+return {EAssignField: true, at_, operator_, record_, field_, value_};
 }
 export function EPipe(at_, value_, function_) {
-return {_: 'EPipe', at_, value_, function_};
+return {EPipe: true, at_, value_, function_};
 }
 export function ECall(at_, tailCall_, function_, typeArguments_, arguments_) {
-return {_: 'ECall', at_, tailCall_, function_, typeArguments_, arguments_};
+return {ECall: true, at_, tailCall_, function_, typeArguments_, arguments_};
 }
 export function EList(at_, elementType_, items_) {
-return {_: 'EList', at_, elementType_, items_};
+return {EList: true, at_, elementType_, items_};
 }
 export function ECopy(at_, name_, record_, arguments_) {
-return {_: 'ECopy', at_, name_, record_, arguments_};
+return {ECopy: true, at_, name_, record_, arguments_};
 }
 export function EVariant(at_, name_, typeArguments_, arguments_) {
-return {_: 'EVariant', at_, name_, typeArguments_, arguments_};
+return {EVariant: true, at_, name_, typeArguments_, arguments_};
 }
 export function EVariantIs(at_, name_, typeArguments_) {
-return {_: 'EVariantIs', at_, name_, typeArguments_};
+return {EVariantIs: true, at_, name_, typeArguments_};
 }
 export function ERecord(at_, fields_) {
-return {_: 'ERecord', at_, fields_};
+return {ERecord: true, at_, fields_};
 }
 export function EField(at_, record_, field_) {
-return {_: 'EField', at_, record_, field_};
+return {EField: true, at_, record_, field_};
 }
 export function EWildcard(at_, index_) {
-return {_: 'EWildcard', at_, index_};
+return {EWildcard: true, at_, index_};
 }
 
 // type MatchCase
@@ -160,19 +160,19 @@ return {at_, patterns_, condition_, body_};
 
 // type MatchPattern
 export function PVariable(at_, name_) {
-return {_: 'PVariable', at_, name_};
+return {PVariable: true, at_, name_};
 }
 export function PVariant(at_, name_, patterns_) {
-return {_: 'PVariant', at_, name_, patterns_};
+return {PVariant: true, at_, name_, patterns_};
 }
 export function PVariantAs(at_, name_, variable_) {
-return {_: 'PVariantAs', at_, name_, variable_};
+return {PVariantAs: true, at_, name_, variable_};
 }
 export function PAlias(at_, pattern_, variable_) {
-return {_: 'PAlias', at_, pattern_, variable_};
+return {PAlias: true, at_, pattern_, variable_};
 }
 export function PList(at_, itemType_, items_) {
-return {_: 'PList', at_, itemType_, items_};
+return {PList: true, at_, itemType_, items_};
 }
 
 // type Signature
@@ -217,33 +217,33 @@ return {scala_, javaScript_};
 
 // type Type
 export function TConstructor(at_, name_, generics_) {
-return {_: 'TConstructor', at_, name_, generics_};
+return {TConstructor: true, at_, name_, generics_};
 }
 export function TVariable(at_, index_) {
-return {_: 'TVariable', at_, index_};
+return {TVariable: true, at_, index_};
 }
 
 // type Instance
 export function IConstructor(at_, name_, arguments_) {
-return {_: 'IConstructor', at_, name_, arguments_};
+return {IConstructor: true, at_, name_, arguments_};
 }
 export function IField(at_, instance_, field_) {
-return {_: 'IField', at_, instance_, field_};
+return {IField: true, at_, instance_, field_};
 }
 export function IVariable(at_, index_) {
-return {_: 'IVariable', at_, index_};
+return {IVariable: true, at_, index_};
 }
 
 // type Safety
-const Safe$ = {_: 'Safe'};
+const Safe$ = {Safe: true};
 export function Safe() {
 return Safe$;
 }
-const Unsafe$ = {_: 'Unsafe'};
+const Unsafe$ = {Unsafe: true};
 export function Unsafe() {
 return Unsafe$;
 }
-const Trust$ = {_: 'Trust'};
+const Trust$ = {Trust: true};
 export function Trust() {
 return Trust$;
 }
@@ -265,7 +265,7 @@ export function Type_show(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const at_ = _1.at_
 const name_ = _1.name_
 const generics_ = _1.generics_
@@ -280,7 +280,7 @@ return
 }
 }
 {
-if(_1._ === 'TVariable') {
+if(_1.TVariable) {
 const at_ = _1.at_
 const index_ = _1.index_
 return ("$" + index_)

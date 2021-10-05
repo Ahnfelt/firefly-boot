@@ -267,13 +267,13 @@ ff.compiler.JsEmitter_.escapeKeyword_(word_ = _w1.name_)
 }), separator_ = ", ");
 ff.core.Option_.Option_else(self_ = definition_.targets_.javaScript_, body_ = {() =>
 ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_elseIf(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = ff.core.List_.List_isEmpty[ff.compiler.Syntax_.Parameter](self_ = allFields_), body_ = {() =>
-((((((((((((("const " + definition_.name_) + "$ = {_: '") + definition_.name_) + "'};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
+((((((((((((("const " + definition_.name_) + "$ = {") + definition_.name_) + ": true};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
 }), condition_ = {() =>
 (ff.core.List_.List_size[ff.compiler.Syntax_.Variant](self_ = typeDefinition_.variants_) == 1)
 }, body_ = {() =>
 (((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + fields_) + "};\n") + "}")
 }), body_ = {() =>
-(((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {_: '") + definition_.name_) + "', ") + fields_) + "};\n") + "}")
+(((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + definition_.name_) + ": true, ") + fields_) + "};\n") + "}")
 })
 })
 }
@@ -318,7 +318,10 @@ case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) if (name_ == "ff:cor
 case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) if (name_ == "ff:core/Unit.Unit") =>
 "function(_v) { return ff_core_Option.Some(_v); }"
 case (self_, ff.compiler.Syntax_.EVariantIs(at_, name_, _)) =>
-(((("(function(_v) { " + "return _v._ === '") + ff.compiler.JsEmitter_.escapeResolved_(word_ = name_)) + "' ? ff_core_Option.Some(_v) : ff_core_Option.None();") + "})")
+val n_ : ff.core.String_.String = ff.core.String_.String_reverse(self_ = ff.core.String_.String_takeWhile(self_ = ff.core.String_.String_reverse(self_ = name_), p_ = {(_w1) =>
+(_w1 != '.')
+}));
+(((("(function(_v) { " + "return _v.") + ff.compiler.JsEmitter_.escapeResolved_(word_ = n_)) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();") + "})")
 case (self_, ff.compiler.Syntax_.ECopy(at_, name_, record_, fields_)) =>
 val fieldCode_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.compiler.Syntax_.Field, ff.core.String_.String](self_ = fields_, body_ = {(f_) =>
 ((ff.compiler.JsEmitter_.escapeKeyword_(word_ = f_.name_) + " = ") + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = f_.value_))
@@ -518,7 +521,7 @@ ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = ff.core.List_.List_addAl
 ((ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = processed_.loneVariant_, body_ = {() =>
 ""
 }), body_ = {() =>
-(((("if(" + argument_) + "._ === '") + processed_.variantName_) + "') {\n")
+(((("if(" + argument_) + ".") + processed_.variantName_) + ") {\n")
 }) + ff.compiler.JsEmitter_.JsEmitter_emitCase(self_ = self_, arguments_ = ff.core.List_.List_addAll[ff.core.String_.String](self_ = processed_.arguments_, list_ = arguments_), matchCase_ = newMatchCase_, last_ = last_)) + ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = processed_.loneVariant_, body_ = {() =>
 ""
 }), body_ = {() =>
@@ -529,7 +532,7 @@ val processed_ : ff.compiler.JsEmitter_.ProcessedVariantCase = ff.compiler.JsEmi
 (((ff.core.Option_.Option_else(self_ = ff.core.Core_.if_[ff.core.String_.String](condition_ = processed_.loneVariant_, body_ = {() =>
 ""
 }), body_ = {() =>
-(((("if(" + argument_) + "._ === '") + processed_.variantName_) + "') {\n")
+(((("if(" + argument_) + ".") + processed_.variantName_) + ") {\n")
 }) + ff.core.Option_.Option_else(self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = ff.core.Option_.Option_filter[ff.core.String_.String](self_ = ff.core.Option_.Option_map[ff.core.String_.String, ff.core.String_.String](self_ = variable_, body_ = {(word_) =>
 ff.compiler.JsEmitter_.escapeKeyword_(word_ = word_)
 }), body_ = {(_w1) =>

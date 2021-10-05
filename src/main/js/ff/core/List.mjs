@@ -35,12 +35,12 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type List
-const Empty$ = {_: 'Empty'};
+const Empty$ = {Empty: true};
 export function Empty() {
 return Empty$;
 }
 export function Link(head_, tail_) {
-return {_: 'Link', head_, tail_};
+return {Link: true, head_, tail_};
 }
 
 
@@ -51,13 +51,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return result_
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
@@ -97,7 +97,7 @@ export function List_toArray(self_) {
 
             let current = self_;
             let result = [];
-            while(current._ === 'Link') {
+            while(current.Link) {
                 result.push(current.head_);
                 current = current.tail_;
             }
@@ -117,13 +117,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_Core.panic_(((("expect(" + index_) + ") on list of size ") + ff_core_List.List_size(self_)))
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 if((i_ == 0)) {
 return head_
@@ -132,7 +132,7 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const tail_ = _1.tail_
 {
 const list_r_ = tail_
@@ -156,13 +156,13 @@ export function List_first(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 return ff_core_Option.Some(head_)
 return
@@ -177,22 +177,22 @@ _tailcall: for(;;) {
 {
 const _1 = self_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
-if(_1.tail_._ === 'Empty') {
+if(_1.tail_.Empty) {
 return ff_core_Option.Some(head_)
 return
 }
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const tail_ = _1.tail_
 {
 const self_r_ = tail_
@@ -231,13 +231,13 @@ return
 }
 }
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return self_
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const tail_ = _1.tail_
 {
 const self_r_ = tail_
@@ -271,13 +271,13 @@ return
 }
 }
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_List.List_reverse(result_)
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
@@ -321,7 +321,7 @@ export function List_isEmpty(self_) {
 {
 const _1 = self_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return true
 return
 }
@@ -340,13 +340,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return result_
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const tail_ = _1.tail_
 {
 const list_r_ = tail_
@@ -371,13 +371,13 @@ _tailcall: for(;;) {
 for(;;) {
 const _1 = self_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 
 break
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 body_(head_)
@@ -402,13 +402,13 @@ _tailcall: for(;;) {
 {
 const _1 = self_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return true
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 if((!body_(head_))) {
 return false
@@ -417,7 +417,7 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const tail_ = _1.tail_
 {
 const self_r_ = tail_
@@ -440,13 +440,13 @@ _tailcall: for(;;) {
 {
 const _1 = self_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return false
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 if(body_(head_)) {
 return true
@@ -455,7 +455,7 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const tail_ = _1.tail_
 {
 const self_r_ = tail_
@@ -478,13 +478,13 @@ _tailcall: for(;;) {
 {
 const _1 = self_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 if(body_(head_)) {
 return ff_core_Option.Some(head_)
@@ -493,7 +493,7 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const tail_ = _1.tail_
 {
 const self_r_ = tail_
@@ -517,13 +517,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_List.List_reverse(result_)
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 if(body_(head_)) {
@@ -539,7 +539,7 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const tail_ = _1.tail_
 {
 const list_r_ = tail_
@@ -565,13 +565,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_List.List_reverse(result_)
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
@@ -598,13 +598,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_List.List_flatten(ff_core_List.List_reverse(result_))
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
@@ -631,19 +631,19 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_List.List_reverse(result_)
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
 const _1 = body_(head_)
 {
-if(_1._ === 'None') {
+if(_1.None) {
 {
 const list_r_ = tail_
 const result_r_ = result_
@@ -655,7 +655,7 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const value_ = _1.value_
 {
 const list_r_ = tail_
@@ -685,19 +685,19 @@ _tailcall: for(;;) {
 {
 const _1 = self_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
 const _1 = body_(head_)
 {
-if(_1._ === 'None') {
+if(_1.None) {
 {
 const self_r_ = tail_
 const body_r_ = body_
@@ -709,7 +709,7 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const value_ = _1.value_
 return ff_core_Option.Some(value_)
 return
@@ -733,13 +733,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return state_
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
@@ -767,13 +767,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_List.List_reverse(result_)
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 if((i_ == 0)) {
@@ -791,7 +791,7 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
@@ -820,13 +820,13 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_List.List_reverse(result_)
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 if((i_ == 0)) {
@@ -844,7 +844,7 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
 {
@@ -873,10 +873,10 @@ _tailcall: for(;;) {
 {
 const _1 = ff_core_Pair.Pair(list1_, list2_)
 {
-if(_1.first_._ === 'Link') {
+if(_1.first_.Link) {
 const x_ = _1.first_.head_
 const xs_ = _1.first_.tail_
-if(_1.second_._ === 'Link') {
+if(_1.second_.Link) {
 const y_ = _1.second_.head_
 const ys_ = _1.second_.tail_
 {
@@ -913,24 +913,24 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_Pair.Pair(xs_, ys_)
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const x_ = _1.head_
-if(_1.tail_._ === 'Empty') {
+if(_1.tail_.Empty) {
 return ff_core_Pair.Pair(ff_core_List.Link(x_, xs_), ys_)
 return
 }
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const x_ = _1.head_
-if(_1.tail_._ === 'Link') {
+if(_1.tail_.Link) {
 const y_ = _1.tail_.head_
 const tail_ = _1.tail_.tail_
 {
@@ -956,10 +956,10 @@ _tailcall: for(;;) {
 {
 const _1 = ff_core_Pair.Pair(xs_, ys_)
 {
-if(_1.first_._ === 'Link') {
+if(_1.first_.Link) {
 const x_ = _1.first_.head_
 const xs2_ = _1.first_.tail_
-if(_1.second_._ === 'Link') {
+if(_1.second_.Link) {
 const y_ = _1.second_.head_
 if((body_(x_) < body_(y_))) {
 {
@@ -977,9 +977,9 @@ return
 }
 }
 {
-if(_1.first_._ === 'Link') {
+if(_1.first_.Link) {
 const x_ = _1.first_.head_
-if(_1.second_._ === 'Link') {
+if(_1.second_.Link) {
 const y_ = _1.second_.head_
 const ys2_ = _1.second_.tail_
 {
@@ -996,10 +996,10 @@ return
 }
 }
 {
-if(_1.first_._ === 'Link') {
+if(_1.first_.Link) {
 const x_ = _1.first_.head_
 const xs2_ = _1.first_.tail_
-if(_1.second_._ === 'Empty') {
+if(_1.second_.Empty) {
 {
 const xs_r_ = xs2_
 const ys_r_ = ff_core_List.Empty()
@@ -1014,8 +1014,8 @@ return
 }
 }
 {
-if(_1.first_._ === 'Empty') {
-if(_1.second_._ === 'Link') {
+if(_1.first_.Empty) {
+if(_1.second_.Link) {
 const y_ = _1.second_.head_
 const ys2_ = _1.second_.tail_
 {
@@ -1032,8 +1032,8 @@ return
 }
 }
 {
-if(_1.first_._ === 'Empty') {
-if(_1.second_._ === 'Empty') {
+if(_1.first_.Empty) {
+if(_1.second_.Empty) {
 return ff_core_List.List_reverse(result_)
 return
 }
@@ -1059,14 +1059,14 @@ _tailcall: for(;;) {
 {
 const _1 = lists_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_List.List_reverse(result_)
 return
 }
 }
 {
-if(_1._ === 'Link') {
-if(_1.head_._ === 'Empty') {
+if(_1.Link) {
+if(_1.head_.Empty) {
 const aas_ = _1.tail_
 {
 const lists_r_ = aas_
@@ -1080,8 +1080,8 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
-if(_1.head_._ === 'Link') {
+if(_1.Link) {
+if(_1.head_.Link) {
 const a_ = _1.head_.head_
 const as_ = _1.head_.tail_
 const aas_ = _1.tail_
@@ -1120,13 +1120,13 @@ _tailcall: for(;;) {
 {
 const _1 = pairs_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return ff_core_Pair.Pair(ff_core_List.List_reverse(ks_), ff_core_List.List_reverse(vs_))
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const k_ = _1.head_.first_
 const v_ = _1.head_.second_
 const tail_ = _1.tail_

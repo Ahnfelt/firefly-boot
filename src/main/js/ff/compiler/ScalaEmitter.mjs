@@ -77,7 +77,7 @@ return ff_compiler_ScalaEmitter.emitInstanceDefinition_(definition_)
 })), ff_core_List.Link(ff_core_List.Link("}", ff_core_List.Empty()), ff_core_List.Empty())))))))))))
 ff_core_Option.Option_each(ff_core_List.List_find(ff_core_List.List_collect(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return _w1.type_
-})), (function(_v) { return _v._ === 'ff_compiler_Syntax.TConstructor' ? ff_core_Option.Some(_v) : ff_core_Option.None();})), ((t_) => {
+})), (function(_v) { return _v.TConstructor ? ff_core_Option.Some(_v) : ff_core_Option.None();})), ((t_) => {
 return (!ff_core_List.List_any(module_.types_, ((_w1) => {
 return ((modulePrefix_ + _w1.name_) == t_.name_)
 })))
@@ -158,13 +158,13 @@ return (((signature_ + " = {\n") + code_) + "\n}")
 {
 const _1 = definition_.body_
 {
-if(_1.cases_._ === 'Link') {
+if(_1.cases_.Link) {
 const matchCase_ = _1.cases_.head_
-if(_1.cases_.tail_._ === 'Empty') {
+if(_1.cases_.tail_.Empty) {
 if(ff_core_List.List_all(matchCase_.patterns_, ((_1) => {
 {
-if(_1._ === 'PVariable') {
-if(_1.name_._ === 'None') {
+if(_1.PVariable) {
+if(_1.name_.None) {
 return true
 return
 }
@@ -366,13 +366,13 @@ return (("[" + ff_core_List.List_join(generics_, ", ")) + "]")
 export function emitTypeAnnotation_(t_){
 const t_a = t_
 {
-if(t_a._ === 'TVariable') {
+if(t_a.TVariable) {
 return ""
 return
 }
 }
 {
-if(t_a._ === 'TConstructor') {
+if(t_a.TConstructor) {
 return (" : " + ff_compiler_ScalaEmitter.emitType_(t_))
 return
 }
@@ -383,14 +383,14 @@ throw new Error('Unexhaustive pattern match')
 export function emitType_(type_){
 const type_a = type_
 {
-if(type_a._ === 'TVariable') {
+if(type_a.TVariable) {
 const index_ = type_a.index_
 return ("$" + index_)
 return
 }
 }
 {
-if(type_a._ === 'TConstructor') {
+if(type_a.TConstructor) {
 const t_ = type_a
 if(ff_core_String.String_startsWith(t_.name_, "Function$", 0)) {
 return ff_compiler_ScalaEmitter.emitType_((((_c) => {
@@ -423,7 +423,7 @@ throw new Error('Unexhaustive pattern match')
 export function emitStatements_(term_){
 const term_a = term_
 {
-if(term_a._ === 'EFunctions') {
+if(term_a.EFunctions) {
 const at_ = term_a.at_
 const functions_ = term_a.functions_
 const body_ = term_a.body_
@@ -435,7 +435,7 @@ return
 }
 }
 {
-if(term_a._ === 'ELet') {
+if(term_a.ELet) {
 const at_ = term_a.at_
 const mutable_ = term_a.mutable_
 const name_ = term_a.name_
@@ -447,7 +447,7 @@ return
 }
 }
 {
-if(term_a._ === 'ESequential') {
+if(term_a.ESequential) {
 const at_ = term_a.at_
 const before_ = term_a.before_
 const after_ = term_a.after_
@@ -456,7 +456,7 @@ return
 }
 }
 {
-if(term_a._ === 'EAssign') {
+if(term_a.EAssign) {
 const at_ = term_a.at_
 const operator_ = term_a.operator_
 const name_ = term_a.variable_
@@ -466,7 +466,7 @@ return
 }
 }
 {
-if(term_a._ === 'EAssignField') {
+if(term_a.EAssignField) {
 const at_ = term_a.at_
 const operator_ = term_a.operator_
 const record_ = term_a.record_
@@ -486,7 +486,7 @@ throw new Error('Unexhaustive pattern match')
 export function emitTerm_(term_){
 const term_a = term_
 {
-if(term_a._ === 'EString') {
+if(term_a.EString) {
 const at_ = term_a.at_
 const value_ = term_a.value_
 return value_
@@ -494,7 +494,7 @@ return
 }
 }
 {
-if(term_a._ === 'EChar') {
+if(term_a.EChar) {
 const at_ = term_a.at_
 const value_ = term_a.value_
 return value_
@@ -502,7 +502,7 @@ return
 }
 }
 {
-if(term_a._ === 'EInt') {
+if(term_a.EInt) {
 const at_ = term_a.at_
 const value_ = term_a.value_
 return value_
@@ -510,7 +510,7 @@ return
 }
 }
 {
-if(term_a._ === 'EFloat') {
+if(term_a.EFloat) {
 const at_ = term_a.at_
 const value_ = term_a.value_
 return value_
@@ -518,7 +518,7 @@ return
 }
 }
 {
-if(term_a._ === 'EVariable') {
+if(term_a.EVariable) {
 const at_ = term_a.at_
 const name_ = term_a.name_
 return ff_compiler_ScalaEmitter.escapeResolved_(name_)
@@ -526,7 +526,7 @@ return
 }
 }
 {
-if(term_a._ === 'EList') {
+if(term_a.EList) {
 const at_ = term_a.at_
 const items_ = term_a.items_
 if(ff_core_List.List_all(items_, ((_w1) => {
@@ -540,7 +540,7 @@ return
 }
 }
 {
-if(term_a._ === 'EList') {
+if(term_a.EList) {
 const at_ = term_a.at_
 const items_ = term_a.items_
 return (("(List(" + ff_core_List.List_join(ff_core_List.List_map(items_, ((_1) => {
@@ -564,7 +564,7 @@ return
 }
 }
 {
-if(term_a._ === 'EVariant') {
+if(term_a.EVariant) {
 const at_ = term_a.at_
 const name_ = term_a.name_
 const typeArguments_ = term_a.typeArguments_
@@ -581,7 +581,7 @@ return
 }
 }
 {
-if(term_a._ === 'EVariantIs') {
+if(term_a.EVariantIs) {
 const at_ = term_a.at_
 const name_ = term_a.name_
 const typeArguments_ = term_a.typeArguments_
@@ -595,7 +595,7 @@ return
 }
 }
 {
-if(term_a._ === 'ECopy') {
+if(term_a.ECopy) {
 const at_ = term_a.at_
 const name_ = term_a.name_
 const record_ = term_a.record_
@@ -608,7 +608,7 @@ return
 }
 }
 {
-if(term_a._ === 'EField') {
+if(term_a.EField) {
 const at_ = term_a.at_
 const record_ = term_a.record_
 const field_ = term_a.field_
@@ -617,16 +617,16 @@ return
 }
 }
 {
-if(term_a._ === 'ELambda') {
+if(term_a.ELambda) {
 const at_ = term_a.at_
-if(term_a.lambda_.cases_._ === 'Link') {
+if(term_a.lambda_.cases_.Link) {
 const patterns_ = term_a.lambda_.cases_.head_.patterns_
-if(term_a.lambda_.cases_.head_.condition_._ === 'None') {
+if(term_a.lambda_.cases_.head_.condition_.None) {
 const body_ = term_a.lambda_.cases_.head_.body_
-if(term_a.lambda_.cases_.tail_._ === 'Empty') {
+if(term_a.lambda_.cases_.tail_.Empty) {
 if(ff_core_List.List_all(patterns_, ((_1) => {
 {
-if(_1._ === 'PVariable') {
+if(_1.PVariable) {
 return true
 return
 }
@@ -639,7 +639,7 @@ throw new Error('Unexhaustive pattern match')
 }))) {
 const parameters_ = ff_core_List.List_join(ff_core_List.List_map(patterns_, ((_1) => {
 {
-if(_1._ === 'PVariable') {
+if(_1.PVariable) {
 const p_ = _1
 return ff_core_Option.Option_else(ff_core_Option.Option_map(p_.name_, ((word_) => {
 return ff_compiler_ScalaEmitter.escapeKeyword_(word_)
@@ -664,7 +664,7 @@ return
 }
 }
 {
-if(term_a._ === 'ELambda') {
+if(term_a.ELambda) {
 const at_ = term_a.at_
 const cases_ = term_a.lambda_.cases_
 const casesString_ = ff_core_List.List_join(ff_core_List.List_map(cases_, ((matchCase_) => {
@@ -675,7 +675,7 @@ return
 }
 }
 {
-if(term_a._ === 'EPipe') {
+if(term_a.EPipe) {
 const at_ = term_a.at_
 const value_ = term_a.value_
 const function_ = term_a.function_
@@ -684,14 +684,14 @@ return
 }
 }
 {
-if(term_a._ === 'ECall') {
+if(term_a.ECall) {
 const at_ = term_a.at_
-if(term_a.function_._ === 'EVariable') {
+if(term_a.function_.EVariable) {
 const operator_ = term_a.function_.name_
-if(term_a.typeArguments_._ === 'Empty') {
-if(term_a.arguments_._ === 'Link') {
+if(term_a.typeArguments_.Empty) {
+if(term_a.arguments_.Link) {
 const value_ = term_a.arguments_.head_
-if(term_a.arguments_.tail_._ === 'Empty') {
+if(term_a.arguments_.tail_.Empty) {
 if((!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)))) {
 return ((("(" + operator_) + ff_compiler_ScalaEmitter.emitArgument_(value_)) + ")")
 return
@@ -703,16 +703,16 @@ return
 }
 }
 {
-if(term_a._ === 'ECall') {
+if(term_a.ECall) {
 const at_ = term_a.at_
-if(term_a.function_._ === 'EVariable') {
+if(term_a.function_.EVariable) {
 const operator_ = term_a.function_.name_
-if(term_a.typeArguments_._ === 'Empty') {
-if(term_a.arguments_._ === 'Link') {
+if(term_a.typeArguments_.Empty) {
+if(term_a.arguments_.Link) {
 const left_ = term_a.arguments_.head_
-if(term_a.arguments_.tail_._ === 'Link') {
+if(term_a.arguments_.tail_.Link) {
 const right_ = term_a.arguments_.tail_.head_
-if(term_a.arguments_.tail_.tail_._ === 'Empty') {
+if(term_a.arguments_.tail_.tail_.Empty) {
 if((!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)))) {
 return (((((("(" + ff_compiler_ScalaEmitter.emitArgument_(left_)) + " ") + operator_) + " ") + ff_compiler_ScalaEmitter.emitArgument_(right_)) + ")")
 return
@@ -725,10 +725,10 @@ return
 }
 }
 {
-if(term_a._ === 'ECall') {
+if(term_a.ECall) {
 const at_ = term_a.at_
 const function_ = term_a.function_
-if(term_a.function_._ === 'EVariable') {
+if(term_a.function_.EVariable) {
 const name_ = term_a.function_.name_
 const arguments_ = term_a.arguments_
 if((((name_ == "ff:core/Option.Option_else") || (name_ == "ff:core/Option.Option_elseIf")) || (name_ == "ff:core/Option.Option_orElse"))) {
@@ -741,7 +741,7 @@ return
 }
 }
 {
-if(term_a._ === 'ECall') {
+if(term_a.ECall) {
 const at_ = term_a.at_
 const function_ = term_a.function_
 const typeArguments_ = term_a.typeArguments_
@@ -758,7 +758,7 @@ return
 }
 }
 {
-if(term_a._ === 'ERecord') {
+if(term_a.ERecord) {
 const at_ = term_a.at_
 const fields_ = term_a.fields_
 if(ff_core_List.List_isEmpty(fields_)) {
@@ -773,7 +773,7 @@ return
 }
 }
 {
-if(term_a._ === 'EWildcard') {
+if(term_a.EWildcard) {
 const at_ = term_a.at_
 const index_ = term_a.index_
 if((index_ == 0)) {
@@ -815,7 +815,7 @@ return (((((("case (" + patterns_) + ") ") + condition_) + "=>\n") + toLists_) +
 export function emitPattern_(pattern_){
 const pattern_a = pattern_
 {
-if(pattern_a._ === 'PVariable') {
+if(pattern_a.PVariable) {
 const at_ = pattern_a.at_
 const name_ = pattern_a.name_
 return ff_core_Pair.Pair(ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((word_) => {
@@ -827,7 +827,7 @@ return
 }
 }
 {
-if(pattern_a._ === 'PVariant') {
+if(pattern_a.PVariant) {
 const at_ = pattern_a.at_
 const name_ = pattern_a.name_
 const patterns_ = pattern_a.patterns_
@@ -843,7 +843,7 @@ return
 }
 }
 {
-if(pattern_a._ === 'PVariantAs') {
+if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_
 const name_ = pattern_a.name_
 const variable_ = pattern_a.variable_
@@ -856,7 +856,7 @@ return
 }
 }
 {
-if(pattern_a._ === 'PAlias') {
+if(pattern_a.PAlias) {
 const at_ = pattern_a.at_
 const p_ = pattern_a.pattern_
 const variable_ = pattern_a.variable_
@@ -866,7 +866,7 @@ return
 }
 }
 {
-if(pattern_a._ === 'PList') {
+if(pattern_a.PList) {
 const at_ = pattern_a.at_
 const items_ = pattern_a.items_
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_map(items_, ((_1) => {
@@ -897,7 +897,7 @@ throw new Error('Unexhaustive pattern match')
 export function extractTypeName_(type_){
 const type_a = type_
 {
-if(type_a._ === 'TVariable') {
+if(type_a.TVariable) {
 const at_ = type_a.at_
 const index_ = type_a.index_
 return ff_compiler_ScalaEmitter.fail_(at_, ("Unexpected type variable: $" + index_))
@@ -905,7 +905,7 @@ return
 }
 }
 {
-if(type_a._ === 'TConstructor') {
+if(type_a.TConstructor) {
 const t_ = type_a
 return t_.name_
 return

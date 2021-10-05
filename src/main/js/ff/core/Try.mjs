@@ -42,7 +42,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function Try_else(self_, body_) {
-return self_._ === 'Success' ? self_.value_ : body_()
+return self_.Success ? self_.value_ : body_()
 }
 
 

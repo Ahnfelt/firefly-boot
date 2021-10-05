@@ -54,7 +54,7 @@ const self_a = self_
 const term_a = term_
 {
 const self_ = self_a
-if(term_a._ === 'ELet') {
+if(term_a.ELet) {
 const e_ = term_a
 {
 const _1 = e_
@@ -70,7 +70,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ESequential') {
+if(term_a.ESequential) {
 const e_ = term_a
 {
 const _1 = e_
@@ -86,7 +86,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EAssign') {
+if(term_a.EAssign) {
 const e_ = term_a
 {
 const _1 = e_
@@ -102,7 +102,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EAssignField') {
+if(term_a.EAssignField) {
 const e_ = term_a
 {
 const _1 = e_
@@ -118,7 +118,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EPipe') {
+if(term_a.EPipe) {
 const e_ = term_a
 {
 const _1 = e_
@@ -134,7 +134,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ECall') {
+if(term_a.ECall) {
 const e_ = term_a
 {
 const _1 = e_
@@ -160,7 +160,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EList') {
+if(term_a.EList) {
 const e_ = term_a
 {
 const _1 = e_
@@ -184,7 +184,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ECopy') {
+if(term_a.ECopy) {
 const e_ = term_a
 {
 const _1 = e_
@@ -210,7 +210,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EVariant') {
+if(term_a.EVariant) {
 const e_ = term_a
 {
 const _1 = e_
@@ -238,7 +238,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'ERecord') {
+if(term_a.ERecord) {
 const e_ = term_a
 {
 const _1 = e_
@@ -264,7 +264,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EField') {
+if(term_a.EField) {
 const e_ = term_a
 {
 const _1 = e_
@@ -280,7 +280,7 @@ return
 }
 {
 const self_ = self_a
-if(term_a._ === 'EWildcard') {
+if(term_a.EWildcard) {
 const e_ = term_a
 self_.seenWildcards_ += 1
 {

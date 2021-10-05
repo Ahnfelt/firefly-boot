@@ -136,31 +136,31 @@ export function Substitution_substituteTerm(self_, term_) {
 {
 const _1 = term_
 {
-if(_1._ === 'EString') {
+if(_1.EString) {
 return term_
 return
 }
 }
 {
-if(_1._ === 'EChar') {
+if(_1.EChar) {
 return term_
 return
 }
 }
 {
-if(_1._ === 'EInt') {
+if(_1.EInt) {
 return term_
 return
 }
 }
 {
-if(_1._ === 'EFloat') {
+if(_1.EFloat) {
 return term_
 return
 }
 }
 {
-if(_1._ === 'EVariable') {
+if(_1.EVariable) {
 const e_ = _1
 {
 const _1 = e_
@@ -177,7 +177,7 @@ return
 }
 }
 {
-if(_1._ === 'EField') {
+if(_1.EField) {
 const e_ = _1
 {
 const _1 = e_
@@ -192,14 +192,14 @@ return
 }
 }
 {
-if(_1._ === 'EWildcard') {
+if(_1.EWildcard) {
 const e_ = _1
 return term_
 return
 }
 }
 {
-if(_1._ === 'EList') {
+if(_1.EList) {
 const e_ = _1
 {
 const _1 = e_
@@ -222,7 +222,7 @@ return
 }
 }
 {
-if(_1._ === 'ESequential') {
+if(_1.ESequential) {
 const e_ = _1
 {
 const _1 = e_
@@ -237,7 +237,7 @@ return
 }
 }
 {
-if(_1._ === 'ELet') {
+if(_1.ELet) {
 const e_ = _1
 {
 const _1 = e_
@@ -252,7 +252,7 @@ return
 }
 }
 {
-if(_1._ === 'ELambda') {
+if(_1.ELambda) {
 const e_ = _1
 {
 const _1 = e_
@@ -267,7 +267,7 @@ return
 }
 }
 {
-if(_1._ === 'EVariant') {
+if(_1.EVariant) {
 const e_ = _1
 {
 const _1 = e_
@@ -288,7 +288,7 @@ return
 }
 }
 {
-if(_1._ === 'EVariantIs') {
+if(_1.EVariantIs) {
 const e_ = _1
 {
 const _1 = e_
@@ -305,7 +305,7 @@ return
 }
 }
 {
-if(_1._ === 'ECopy') {
+if(_1.ECopy) {
 const e_ = _1
 {
 const _1 = e_
@@ -322,7 +322,7 @@ return
 }
 }
 {
-if(_1._ === 'EPipe') {
+if(_1.EPipe) {
 const e_ = _1
 {
 const _1 = e_
@@ -337,7 +337,7 @@ return
 }
 }
 {
-if(_1._ === 'ECall') {
+if(_1.ECall) {
 const e_ = _1
 {
 const _1 = e_
@@ -356,7 +356,7 @@ return
 }
 }
 {
-if(_1._ === 'ERecord') {
+if(_1.ERecord) {
 const e_ = _1
 {
 const _1 = e_
@@ -373,7 +373,7 @@ return
 }
 }
 {
-if(_1._ === 'EFunctions') {
+if(_1.EFunctions) {
 const e_ = _1
 {
 const _1 = e_
@@ -390,7 +390,7 @@ return
 }
 }
 {
-if(_1._ === 'EAssign') {
+if(_1.EAssign) {
 const e_ = _1
 {
 const _1 = e_
@@ -405,7 +405,7 @@ return
 }
 }
 {
-if(_1._ === 'EAssignField') {
+if(_1.EAssignField) {
 const e_ = _1
 {
 const _1 = e_
@@ -452,7 +452,7 @@ const self_a = self_
 const type_a = type_
 {
 const self_ = self_a
-if(type_a._ === 'TVariable') {
+if(type_a.TVariable) {
 const at_ = type_a.at_
 const i_ = type_a.index_
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
@@ -465,7 +465,7 @@ return
 }
 {
 const self_ = self_a
-if(type_a._ === 'TConstructor') {
+if(type_a.TConstructor) {
 const t_ = type_a
 {
 const _1 = t_
@@ -488,7 +488,7 @@ export function Substitution_get(self_, index_) {
 {
 const _1 = ff_core_Map.Map_expect(self_.substitution_, index_)
 {
-if(_1._ === 'TVariable') {
+if(_1.TVariable) {
 const i_ = _1.index_
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
 const t_ = ff_compiler_Substitution.Substitution_get(self_, i_)
@@ -499,7 +499,7 @@ return
 }
 }
 {
-if(_1._ === 'TVariable') {
+if(_1.TVariable) {
 const at_ = _1.at_
 return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_List.Empty())
 return

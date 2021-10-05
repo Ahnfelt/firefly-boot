@@ -21,7 +21,7 @@ extend self[T]: List[T] {
         javascript """
             let current = self_;
             let result = [];
-            while(current._ === 'Link') {
+            while(current.Link) {
                 result.push(current.head_);
                 current = current.tail_;
             }

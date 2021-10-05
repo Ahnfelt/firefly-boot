@@ -156,16 +156,16 @@ export function Inference_inferLambda(self_, environment_, expected_, lambda_) {
 const unitName_ = ff_compiler_Inference.core_("Unit")
 const returnsUnit_ = (((_1) => {
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
 const ts_ = _1.generics_
 if(ff_core_String.String_startsWith(name_, "Function$", 0)) {
 {
 const _1 = ff_core_List.List_expectLast(ts_)
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const n_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 return (n_ == unitName_)
 return
 }
@@ -258,18 +258,18 @@ export function Inference_inferPattern(self_, environment_, expected_, pattern_)
 {
 const _1 = pattern_
 {
-if(_1._ === 'PVariable') {
+if(_1.PVariable) {
 const at_ = _1.at_
-if(_1.name_._ === 'None') {
+if(_1.name_.None) {
 return ff_core_Map.empty_()
 return
 }
 }
 }
 {
-if(_1._ === 'PVariable') {
+if(_1.PVariable) {
 const at_ = _1.at_
-if(_1.name_._ === 'Some') {
+if(_1.name_.Some) {
 const name_ = _1.name_.value_
 return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, expected_), ff_core_List.Empty()))
 return
@@ -277,7 +277,7 @@ return
 }
 }
 {
-if(_1._ === 'PAlias') {
+if(_1.PAlias) {
 const at_ = _1.at_
 const pattern_ = _1.pattern_
 const variable_ = _1.variable_
@@ -286,7 +286,7 @@ return
 }
 }
 {
-if(_1._ === 'PList') {
+if(_1.PList) {
 const at_ = _1.at_
 const t_ = _1.itemType_
 const items_ = _1.items_
@@ -315,10 +315,10 @@ return
 }
 }
 {
-if(_1._ === 'PVariantAs') {
+if(_1.PVariantAs) {
 const at_ = _1.at_
 const name_ = _1.name_
-if(_1.variable_._ === 'None') {
+if(_1.variable_.None) {
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }))
@@ -328,10 +328,10 @@ return
 }
 }
 {
-if(_1._ === 'PVariantAs') {
+if(_1.PVariantAs) {
 const at_ = _1.at_
 const name_ = _1.name_
-if(_1.variable_._ === 'Some') {
+if(_1.variable_.Some) {
 const variable_ = _1.variable_.value_
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
@@ -351,7 +351,7 @@ return
 }
 }
 {
-if(_1._ === 'PVariant') {
+if(_1.PVariant) {
 const at_ = _1.at_
 const name_ = _1.name_
 const patterns_ = _1.patterns_
@@ -385,31 +385,31 @@ return term_
 {
 const _1 = term_
 {
-if(_1._ === 'EString') {
+if(_1.EString) {
 return literal_("String")
 return
 }
 }
 {
-if(_1._ === 'EChar') {
+if(_1.EChar) {
 return literal_("Char")
 return
 }
 }
 {
-if(_1._ === 'EInt') {
+if(_1.EInt) {
 return literal_("Int")
 return
 }
 }
 {
-if(_1._ === 'EFloat') {
+if(_1.EFloat) {
 return literal_("Float")
 return
 }
 }
 {
-if(_1._ === 'EVariable') {
+if(_1.EVariable) {
 const e_ = _1
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.generics_), ((instantiated_) => {
 if(instantiated_.scheme_.isVariable_) {
@@ -425,7 +425,7 @@ return
 }
 }
 {
-if(_1._ === 'EField') {
+if(_1.EField) {
 const e_ = _1
 const recordType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_)
@@ -436,7 +436,7 @@ return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_)
 {
 const t_ = _1
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
 const typeArguments_ = _1.generics_
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
@@ -458,14 +458,14 @@ return
 }
 {
 const t_ = _1
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
 const typeArguments_ = _1.generics_
 const methodName_ = ((name_ + "_") + e_.field_)
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, methodName_, typeArguments_)
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const instantiated_ = _1.value_
 if((!instantiated_.scheme_.isVariable_)) {
 const signature_ = (((_c) => {
@@ -478,7 +478,7 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const instantiated_ = _1.value_
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_)
 {
@@ -494,7 +494,7 @@ return
 }
 }
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
 return
 }
@@ -505,7 +505,7 @@ return
 }
 }
 {
-if(_1._ === 'TVariable') {
+if(_1.TVariable) {
 const index_ = _1.index_
 return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
 return
@@ -517,7 +517,7 @@ return
 }
 }
 {
-if(_1._ === 'EWildcard') {
+if(_1.EWildcard) {
 const e_ = _1
 return ff_core_Option.Option_expect(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_) => {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_)
@@ -527,7 +527,7 @@ return
 }
 }
 {
-if(_1._ === 'EList') {
+if(_1.EList) {
 const at_ = _1.at_
 const t_ = _1.elementType_
 const items_ = _1.items_
@@ -548,7 +548,7 @@ return
 }
 }
 {
-if(_1._ === 'ESequential') {
+if(_1.ESequential) {
 const at_ = _1.at_
 const before_ = _1.before_
 const after_ = _1.after_
@@ -557,7 +557,7 @@ return
 }
 }
 {
-if(_1._ === 'ELet') {
+if(_1.ELet) {
 const e_ = _1
 const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_))
 const environment2_ = (((_c) => {
@@ -576,7 +576,7 @@ return
 }
 }
 {
-if(_1._ === 'ELambda') {
+if(_1.ELambda) {
 const at_ = _1.at_
 const l_ = _1.lambda_
 const lambda_ = ff_compiler_Inference.Inference_inferLambda(self_, environment_, expected_, l_)
@@ -585,7 +585,7 @@ return
 }
 }
 {
-if(_1._ === 'EVariant') {
+if(_1.EVariant) {
 const e_ = _1
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
@@ -609,7 +609,7 @@ return
 }
 }
 {
-if(_1._ === 'EVariantIs') {
+if(_1.EVariantIs) {
 const e_ = _1
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
@@ -639,7 +639,7 @@ return
 }
 }
 {
-if(_1._ === 'ECopy') {
+if(_1.ECopy) {
 const e_ = _1
 const signature_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
@@ -683,7 +683,7 @@ return
 }
 }
 {
-if(_1._ === 'EPipe') {
+if(_1.EPipe) {
 const e_ = _1
 const valueType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty())))
@@ -702,16 +702,16 @@ return
 }
 }
 {
-if(_1._ === 'ECall') {
+if(_1.ECall) {
 const e_ = _1
 {
 const _1 = e_.function_
 {
-if(_1._ === 'EVariable') {
+if(_1.EVariable) {
 const variableAt_ = _1.at_
 const x_ = _1.name_
-if(_1.generics_._ === 'Empty') {
-if(_1.instances_._ === 'Empty') {
+if(_1.generics_.Empty) {
+if(_1.instances_.Empty) {
 if(ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
 return ((c_ != 95) && (!ff_core_Char.Char_isAsciiLetter(c_)))
 }))) {
@@ -720,7 +720,7 @@ return ff_compiler_Inference.Inference_inferOperator(self_, environment_, expect
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, x_, e_.typeArguments_)
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const instantiated_ = _1.value_
 if(instantiated_.scheme_.isVariable_) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
@@ -732,7 +732,7 @@ return
 }
 }
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_compiler_Inference.fail_(variableAt_, ("No such function: " + x_))
 return
 }
@@ -746,7 +746,7 @@ return
 }
 }
 {
-if(_1._ === 'EField') {
+if(_1.EField) {
 const f_ = _1
 const recordType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, f_.at_)
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, f_.record_)
@@ -759,14 +759,14 @@ return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_)
 {
 const t_ = _1
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
 const typeParameters_ = _1.generics_
 const methodName_ = ((name_ + "_") + f_.field_)
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, f_.at_, methodName_, ff_core_List.Empty())
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const instantiated_ = _1.value_
 if((!instantiated_.scheme_.isVariable_)) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, methodName_)
@@ -775,14 +775,14 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const instantiated_ = _1.value_
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 return
 }
 }
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_compiler_Inference.fail_(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
 return
 }
@@ -793,7 +793,7 @@ return
 }
 }
 {
-if(_1._ === 'TVariable') {
+if(_1.TVariable) {
 const index_ = _1.index_
 return ff_compiler_Inference.fail_(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_))
 return
@@ -814,7 +814,7 @@ return
 }
 }
 {
-if(_1._ === 'ERecord') {
+if(_1.ERecord) {
 const e_ = _1
 const fields_ = ff_core_List.List_sortBy(e_.fields_, ((_w1) => {
 return _w1.name_
@@ -856,7 +856,7 @@ return
 }
 }
 {
-if(_1._ === 'EFunctions') {
+if(_1.EFunctions) {
 const at_ = _1.at_
 const functions_ = _1.functions_
 const body_ = _1.body_
@@ -876,7 +876,7 @@ return
 }
 }
 {
-if(_1._ === 'EAssign') {
+if(_1.EAssign) {
 const e_ = _1
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.variable_, ff_core_List.Empty()), ((instantiated_) => {
 if(instantiated_.scheme_.isMutable_) {
@@ -900,7 +900,7 @@ return
 }
 }
 {
-if(_1._ === 'EAssignField') {
+if(_1.EAssignField) {
 const e_ = _1
 const recordType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_)
@@ -908,7 +908,7 @@ const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, r
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_)
 {
 const t_ = _1
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
 const typeArguments_ = _1.generics_
 if(ff_core_String.String_startsWith(name_, "Record$", 0)) {
@@ -919,14 +919,14 @@ return
 }
 {
 const t_ = _1
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
 const typeArguments_ = _1.generics_
 const methodName_ = ((name_ + "_") + e_.field_)
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, methodName_, typeArguments_)
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const instantiated_ = _1.value_
 if(instantiated_.scheme_.isMutable_) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_)
@@ -944,14 +944,14 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const instantiated_ = _1.value_
 return ff_compiler_Inference.fail_(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
 return
 }
 }
 {
-if(_1._ === 'None') {
+if(_1.None) {
 return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
 return
 }
@@ -962,7 +962,7 @@ return
 }
 }
 {
-if(_1._ === 'TVariable') {
+if(_1.TVariable) {
 const index_ = _1.index_
 return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
 return
@@ -992,7 +992,7 @@ return newValue_
 export function Inference_inferMethodCall(self_, environment_, expected_, signature_, instantiation_, term_, record_, name_) {
 const e_ = (((_1) => {
 {
-if(_1._ === 'ECall') {
+if(_1.ECall) {
 const e_ = _1
 return e_
 return
@@ -1013,7 +1013,7 @@ return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, ex
 export function Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiation_, term_, name_) {
 const e_ = (((_1) => {
 {
-if(_1._ === 'ECall') {
+if(_1.ECall) {
 const e_ = _1
 return e_
 return
@@ -1043,7 +1043,7 @@ throw new Error('Unexhaustive pattern match')
 export function Inference_inferLambdaCall(self_, environment_, expected_, term_) {
 const e_ = (((_1) => {
 {
-if(_1._ === 'ECall') {
+if(_1.ECall) {
 const e_ = _1
 return e_
 return
@@ -1097,7 +1097,7 @@ throw new Error('Unexhaustive pattern match')
 export function Inference_inferOperator(self_, environment_, expected_, operator_, term_) {
 const e_ = (((_1) => {
 {
-if(_1._ === 'ECall') {
+if(_1.ECall) {
 const e_ = _1
 return e_
 return
@@ -1112,9 +1112,9 @@ throw new Error('Unexhaustive pattern match')
 {
 const _1 = e_.arguments_
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const a1_ = _1.head_
-if(_1.tail_._ === 'Empty') {
+if(_1.tail_.Empty) {
 if((operator_ == "!")) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
@@ -1136,18 +1136,18 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const a1_ = _1.head_
-if(_1.tail_._ === 'Empty') {
+if(_1.tail_.Empty) {
 if((operator_ == "-")) {
 const t1_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_)
 for(;;) {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1_)
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if((name_ == ff_compiler_Inference.core_("Float"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
@@ -1156,9 +1156,9 @@ break
 }
 }
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if((name_ == ff_compiler_Inference.core_("Int"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
@@ -1189,11 +1189,11 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const a1_ = _1.head_
-if(_1.tail_._ === 'Link') {
+if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_
-if(_1.tail_.tail_._ === 'Empty') {
+if(_1.tail_.tail_.Empty) {
 if((operator_ == "++")) {
 const t_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
@@ -1201,7 +1201,7 @@ const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 const name_ = (((_1) => {
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
 return name_
 return
@@ -1236,11 +1236,11 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const a1_ = _1.head_
-if(_1.tail_._ === 'Link') {
+if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_
-if(_1.tail_.tail_._ === 'Empty') {
+if(_1.tail_.tail_.Empty) {
 if(((operator_ == "||") || (operator_ == "&&"))) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
@@ -1266,11 +1266,11 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const a1_ = _1.head_
-if(_1.tail_._ === 'Link') {
+if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_
-if(_1.tail_.tail_._ === 'Empty') {
+if(_1.tail_.tail_.Empty) {
 if(((((((operator_ == "<") || (operator_ == ">")) || (operator_ == "<=")) || (operator_ == ">=")) || (operator_ == "==")) || (operator_ == "!="))) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
 const t1_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
@@ -1281,9 +1281,9 @@ const magic_ = ((t_) => {
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_)
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if((name_ == ff_compiler_Inference.core_("String"))) {
 return ff_core_Option.Some("String")
 return
@@ -1292,9 +1292,9 @@ return
 }
 }
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if((name_ == ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 return
@@ -1303,9 +1303,9 @@ return
 }
 }
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if((name_ == ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
 return
@@ -1314,9 +1314,9 @@ return
 }
 }
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if((name_ == ff_compiler_Inference.core_("Char"))) {
 return ff_core_Option.Some("Char")
 return
@@ -1333,14 +1333,14 @@ throw new Error('Unexhaustive pattern match')
 })
 const chooseType_ = ((_1, _2) => {
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
 }
 }
 {
-if(_2._ === 'Some') {
+if(_2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
@@ -1354,8 +1354,8 @@ return
 }
 }
 {
-if(_1._ === 'None') {
-if(_2._ === 'None') {
+if(_1.None) {
+if(_2.None) {
 ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
 }
@@ -1384,11 +1384,11 @@ return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const a1_ = _1.head_
-if(_1.tail_._ === 'Link') {
+if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_
-if(_1.tail_.tail_._ === 'Empty') {
+if(_1.tail_.tail_.Empty) {
 if(((((((operator_ == "+") || (operator_ == "-")) || (operator_ == "*")) || (operator_ == "/")) || (operator_ == "%")) || (operator_ == "^"))) {
 const t1_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const t2_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
@@ -1398,9 +1398,9 @@ const magic_ = ((t_) => {
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_)
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if((name_ == ff_compiler_Inference.core_("Float"))) {
 return ff_core_Option.Some("Float")
 return
@@ -1409,9 +1409,9 @@ return
 }
 }
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if((name_ == ff_compiler_Inference.core_("Int"))) {
 return ff_core_Option.Some("Int")
 return
@@ -1420,9 +1420,9 @@ return
 }
 }
 {
-if(_1._ === 'TConstructor') {
+if(_1.TConstructor) {
 const name_ = _1.name_
-if(_1.generics_._ === 'Empty') {
+if(_1.generics_.Empty) {
 if(((operator_ == "+") && (name_ == ff_compiler_Inference.core_("String")))) {
 return ff_core_Option.Some("String")
 return
@@ -1439,9 +1439,9 @@ throw new Error('Unexhaustive pattern match')
 })
 const chooseType_ = ((_1, _2) => {
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const n_ = _1.value_
-if(_2._ === 'Some') {
+if(_2.Some) {
 if((n_ == "String")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -1450,8 +1450,8 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
-if(_2._ === 'Some') {
+if(_1.Some) {
+if(_2.Some) {
 const n_ = _2.value_
 if((n_ == "String")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
@@ -1461,9 +1461,9 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const n_ = _1.value_
-if(_2._ === 'Some') {
+if(_2.Some) {
 if((n_ == "Float")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -1472,8 +1472,8 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
-if(_2._ === 'Some') {
+if(_1.Some) {
+if(_2.Some) {
 const n_ = _2.value_
 if((n_ == "Float")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
@@ -1483,9 +1483,9 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
+if(_1.Some) {
 const n_ = _1.value_
-if(_2._ === 'Some') {
+if(_2.Some) {
 if((n_ == "Int")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -1494,8 +1494,8 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
-if(_2._ === 'Some') {
+if(_1.Some) {
+if(_2.Some) {
 const n_ = _2.value_
 if((n_ == "Int")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
@@ -1505,8 +1505,8 @@ return
 }
 }
 {
-if(_1._ === 'Some') {
-if(_2._ === 'None') {
+if(_1.Some) {
+if(_2.None) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
@@ -1514,8 +1514,8 @@ return
 }
 }
 {
-if(_1._ === 'None') {
-if(_2._ === 'Some') {
+if(_1.None) {
+if(_2.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
@@ -1523,8 +1523,8 @@ return
 }
 }
 {
-if(_1._ === 'None') {
-if(_2._ === 'None') {
+if(_1.None) {
+if(_2.None) {
 ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 return
 }
@@ -1590,15 +1590,15 @@ return ff_compiler_Inference.fail_(at_, ("Missing argument: " + p_.name_))
 {
 const _1 = remainingArguments_
 {
-if(_1._ === 'Empty') {
+if(_1.Empty) {
 return defaultArgument_()
 return
 }
 }
 {
-if(_1._ === 'Link') {
+if(_1.Link) {
 const at_ = _1.head_.at_
-if(_1.head_.name_._ === 'None') {
+if(_1.head_.name_.None) {
 const e_ = _1.head_.value_
 const remaining_ = _1.tail_
 remainingArguments_ = remaining_
@@ -1634,14 +1634,14 @@ throw new Error('Unexhaustive pattern match')
 ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) => {
 {
 const at_ = _1.at_
-if(_1.name_._ === 'None') {
+if(_1.name_.None) {
 ff_compiler_Inference.fail_(at_, "Too many arguments")
 return
 }
 }
 {
 const at_ = _1.at_
-if(_1.name_._ === 'Some') {
+if(_1.name_.Some) {
 const name_ = _1.name_.value_
 ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
 return

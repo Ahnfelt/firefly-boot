@@ -82,9 +82,9 @@ throw new Error('Unexhaustive pattern match')
 export function try_(body_) {
 
         try {
-            return {_: 'Success', value_: body_()}
+            return {Success: true, value_: body_()}
         } catch(e) {
-            return {_: 'Failure', exception_: e.message}
+            return {Failure: true, exception_: e.message}
         }
     
 }

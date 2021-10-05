@@ -134,7 +134,7 @@ extend self: JsEmitter {
         let fields = allFields.map { escapeKeyword(_.name) }.join(", ")
         definition.targets.javaScript.else {
             if(allFields.isEmpty()) {
-                "const " + definition.name + "$ = {_: '" + definition.name + "'};\n" +
+                "const " + definition.name + "$ = {" + definition.name + ": true};\n" +
                 "export function " + definition.name + "(" + fields + ") {\n" +
                 "return " + definition.name + "$;\n" +
                 "}"
@@ -144,7 +144,7 @@ extend self: JsEmitter {
                 "}"
             } else {
                 "export function " + definition.name + "(" + fields + ") {\n" +
-                "return {_: '" + definition.name + "', " + fields + "};\n" +
+                "return {" + definition.name + ": true, " + fields + "};\n" +
                 "}"
             }
         }
@@ -178,8 +178,9 @@ extend self: JsEmitter {
         | EVariantIs(at, name, _) { name == "ff:core/Unit.Unit" } =>
             "function(_v) { return ff_core_Option.Some(_v); }"
         | EVariantIs(at, name, _) =>
+            let n = name.reverse().takeWhile { _ != '.' }.reverse()
             "(function(_v) { " +
-            "return _v._ === '" + escapeResolved(name) + "' ? ff_core_Option.Some(_v) : ff_core_Option.None();" +
+            "return _v." + escapeResolved(n) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();" +
             "})"
         | ECopy(at, name, record, fields) =>
             let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + self.emitTerm(f.value) }.join(", ")
@@ -347,14 +348,14 @@ extend self: JsEmitter {
                 let processed = self.processVariantCase(name, argument)
                 let newMatchCase = matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)
                 if(processed.loneVariant) { "" } else {
-                    "if(" + argument + "._ === '" + processed.variantName + "') {\n"
+                    "if(" + argument + "." + processed.variantName + ") {\n"
                 } +
                 self.emitCase(processed.arguments ++ arguments, newMatchCase, last) +
                 if(processed.loneVariant) { "" } else { "\n}" }
             | PVariantAs(at, name, variable) =>
                 let processed = self.processVariantCase(name, argument)
                 if(processed.loneVariant) { "" } else {
-                    "if(" + argument + "._ === '" + processed.variantName + "') {\n"
+                    "if(" + argument + "." + processed.variantName + ") {\n"
                 } +
                 variable.map(escapeKeyword).filter { _ != argument }.map {
                     "const " + _ + " = " + argument + "\n"
