@@ -194,7 +194,7 @@ for(;;) {
 const _1 = ff_core_Map.Map_get(self_.constraints_, i_)
 {
 if(_1._ === 'None') {
-self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_Array.Array_toList([ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))])))
+self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_)), ff_core_List.Empty())))
 break
 }
 }
@@ -261,7 +261,7 @@ return ff_compiler_Unification.Unification_freshTypeVariable(self_, at_)
 }))
 const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, typeVariables_))
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, definition_.traitType_)
-const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_Array.Array_toList([type_, ...ff_core_List.List_toArray(generics_)]))
+const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_))
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
 ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
 for(;;) {

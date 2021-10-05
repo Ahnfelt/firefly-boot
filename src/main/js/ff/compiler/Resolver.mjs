@@ -46,7 +46,7 @@ return {_: 'Resolver', variables_, variants_, types_, traits_};
 
 
 export function make_() {
-return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap(ff_core_Array.Array_toList([])), ff_core_List.List_toMap(ff_core_Array.Array_toList([])), ff_core_List.List_toMap(ff_core_Array.Array_toList([])), ff_core_List.List_toMap(ff_core_Array.Array_toList([])))
+return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap(ff_core_List.Empty()), ff_core_List.List_toMap(ff_core_List.Empty()), ff_core_List.List_toMap(ff_core_List.Empty()), ff_core_List.List_toMap(ff_core_List.Empty()))
 }
 
 export function fail_(at_, message_) {
@@ -117,7 +117,7 @@ const full_ = ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.se
 const _1 = importAlias_
 {
 if(_1._ === 'None') {
-return ff_core_Array.Array_toList([ff_core_Pair.Pair(name_, full_)])
+return ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Empty())
 return
 }
 }
@@ -125,7 +125,7 @@ return
 if(_1._ === 'Some') {
 const alias_ = _1.value_
 if(unqualified_) {
-return ff_core_Array.Array_toList([ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_Pair.Pair(name_, full_)])
+return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Empty()))
 return
 }
 }
@@ -133,7 +133,7 @@ return
 {
 if(_1._ === 'Some') {
 const alias_ = _1.value_
-return ff_core_Array.Array_toList([ff_core_Pair.Pair(((alias_ + ".") + name_), full_)])
+return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Empty())
 return
 }
 }
@@ -677,7 +677,7 @@ const pattern_a = pattern_
 if(pattern_a._ === 'PVariable') {
 if(pattern_a.name_._ === 'Some') {
 const name_ = pattern_a.name_.value_
-return ff_core_List.List_toMap(ff_core_Array.Array_toList([ff_core_Pair.Pair(name_, name_)]))
+return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, name_), ff_core_List.Empty()))
 return
 }
 }
@@ -714,7 +714,7 @@ return
 if(pattern_a._ === 'PAlias') {
 const pattern_ = pattern_a.pattern_
 const variable_ = pattern_a.variable_
-return ff_core_Map.Map_addAll(ff_core_List.List_toMap(ff_core_Array.Array_toList([ff_core_Pair.Pair(variable_, variable_)])), findVariables_(pattern_))
+return ff_core_Map.Map_addAll(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(variable_, variable_), ff_core_List.Empty())), findVariables_(pattern_))
 return
 }
 }

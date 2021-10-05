@@ -296,12 +296,7 @@ value_
 case (self_, ff.compiler.Syntax_.EVariable(at_, name_, _, _)) =>
 ff.compiler.JsEmitter_.escapeResolved_(word_ = name_)
 case (self_, ff.compiler.Syntax_.EList(at_, _, items_)) =>
-(("ff_core_Array.Array_toList([" + ff.core.List_.List_join(self_ = ff.core.List_.List_map[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool], ff.core.String_.String](self_ = items_, body_ = {
-case (ff.core.Pair_.Pair(item_, ff.core.Bool_.False())) =>
-ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = item_)
-case (ff.core.Pair_.Pair(item_, ff.core.Bool_.True())) =>
-(("...ff_core_List.List_toArray(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = item_)) + ")")
-}), separator_ = ", ")) + "])")
+ff.compiler.JsEmitter_.JsEmitter_emitList(self_ = self_, items_ = items_)
 case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:core/Bool.False") =>
 "false"
 case (self_, ff.compiler.Syntax_.EVariant(at_, name_, _, _)) if (name_ == "ff:core/Bool.True") =>
@@ -573,6 +568,19 @@ case (ff.compiler.Syntax_.PList(at_, t_, List(ff.core.Pair_.Pair(p_, ff.core.Boo
 val _ = __seq.toList;
 "throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"
 })
+}
+
+def JsEmitter_emitList(self_ : ff.compiler.JsEmitter_.JsEmitter, items_ : ff.core.List_.List[ff.core.Pair_.Pair[ff.compiler.Syntax_.Term, ff.core.Bool_.Bool]]) : ff.core.String_.String = (self_, items_) match {
+case (self_, List()) =>
+"ff_core_List.Empty()"
+case (self_, List(ff.core.Pair_.Pair(e_, ff.core.Bool_.True()))) =>
+ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = e_)
+case (self_, List(ff.core.Pair_.Pair(e_, ff.core.Bool_.False()), list__seq @ _*)) =>
+val list_ = list__seq.toList;
+(((("ff_core_List.Link(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = e_)) + ", ") + ff.compiler.JsEmitter_.JsEmitter_emitList(self_ = self_, items_ = list_)) + ")")
+case (self_, List(ff.core.Pair_.Pair(e_, ff.core.Bool_.True()), list__seq @ _*)) =>
+val list_ = list__seq.toList;
+(((("ff_core_List.List_addAll(" + ff.compiler.JsEmitter_.JsEmitter_emitTerm(self_ = self_, term_ = e_)) + ", ") + ff.compiler.JsEmitter_.JsEmitter_emitList(self_ = self_, items_ = list_)) + ")")
 }
 
 def JsEmitter_processVariantCase(self_ : ff.compiler.JsEmitter_.JsEmitter, name_ : ff.core.String_.String, argument_ : ff.core.String_.String) : ff.compiler.JsEmitter_.ProcessedVariantCase = (self_, name_, argument_) match {

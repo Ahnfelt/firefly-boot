@@ -96,14 +96,14 @@ return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_.redBlack_), ((_
 const k_ = _1.first_
 if(_1.second_._ === 'Some') {
 const v_ = _1.second_.value_
-return ff_core_Array.Array_toList([ff_core_Pair.Pair(k_, v_)])
+return ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_List.Empty())
 return
 }
 }
 {
 const k_ = _1.first_
 if(_1.second_._ === 'None') {
-return ff_core_Array.Array_toList([])
+return ff_core_List.Empty()
 return
 }
 }
@@ -161,9 +161,9 @@ throw new Error('Unexhaustive pattern match')
 
 export function Map_addToList(self_, key_, value_) {
 return ff_core_Map.Map_updateOrInsert(self_, key_, ((_w1) => {
-return ff_core_Array.Array_toList([value_, ...ff_core_List.List_toArray(_w1)])
+return ff_core_List.Link(value_, _w1)
 }), (() => {
-return ff_core_Array.Array_toList([value_])
+return ff_core_List.Link(value_, ff_core_List.Empty())
 }))
 }
 

@@ -458,7 +458,7 @@ const i_ = type_a.index_
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
 return ff_compiler_Substitution.Substitution_substituteType(self_, ff_compiler_Substitution.Substitution_get(self_, i_))
 } else {
-return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_Array.Array_toList([]))
+return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_List.Empty())
 }
 return
 }
@@ -501,7 +501,7 @@ return
 {
 if(_1._ === 'TVariable') {
 const at_ = _1.at_
-return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_Array.Array_toList([]))
+return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_List.Empty())
 return
 }
 }

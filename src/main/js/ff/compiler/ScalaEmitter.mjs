@@ -40,7 +40,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export const keywords_ = ff_core_List.List_toSet(ff_core_Array.Array_toList(["abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "true", "try", "type", "val", "var", "while", "with", "yield", "scala", "java"]))
+export const keywords_ = ff_core_List.List_toSet(ff_core_List.Link("abstract", ff_core_List.Link("case", ff_core_List.Link("catch", ff_core_List.Link("class", ff_core_List.Link("def", ff_core_List.Link("do", ff_core_List.Link("else", ff_core_List.Link("extends", ff_core_List.Link("false", ff_core_List.Link("final", ff_core_List.Link("finally", ff_core_List.Link("for", ff_core_List.Link("forSome", ff_core_List.Link("if", ff_core_List.Link("implicit", ff_core_List.Link("import", ff_core_List.Link("lazy", ff_core_List.Link("match", ff_core_List.Link("new", ff_core_List.Link("null", ff_core_List.Link("object", ff_core_List.Link("override", ff_core_List.Link("package", ff_core_List.Link("private", ff_core_List.Link("protected", ff_core_List.Link("return", ff_core_List.Link("sealed", ff_core_List.Link("super", ff_core_List.Link("this", ff_core_List.Link("throw", ff_core_List.Link("trait", ff_core_List.Link("true", ff_core_List.Link("try", ff_core_List.Link("type", ff_core_List.Link("val", ff_core_List.Link("var", ff_core_List.Link("while", ff_core_List.Link("with", ff_core_List.Link("yield", ff_core_List.Link("scala", ff_core_List.Link("java", ff_core_List.Empty()))))))))))))))))))))))))))))))))))))))))))
 
 export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
@@ -54,27 +54,27 @@ return (_w1 != 46)
 }))
 const modulePrefix_ = (((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".")
 const package_ = ((packagePair_.first_ + ".") + packagePair_.second_)
-const parts_ = ff_core_Array.Array_toList([ff_core_Array.Array_toList([("package " + package_)]), ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
+const parts_ = ff_core_List.Link(ff_core_List.Link(("package " + package_), ff_core_List.Empty()), ff_core_List.Link(ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
 return ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 })), ((i_) => {
 return (((((("import " + i_.package_.first_) + ".") + i_.package_.second_) + ".") + i_.file_) + "_._")
-})), ff_core_Array.Array_toList([(("object " + moduleNamespace_) + "_ {")]), (ff_core_List.List_any(module_.functions_, ((_w1) => {
+})), ff_core_List.Link(ff_core_List.Link((("object " + moduleNamespace_) + "_ {"), ff_core_List.Empty()), ff_core_List.Link((ff_core_List.List_any(module_.functions_, ((_w1) => {
 return (_w1.signature_.name_ == "main")
 }))
-? ff_core_Array.Array_toList([ff_compiler_ScalaEmitter.emitMain_()])
-: ff_core_Array.Array_toList([])), ff_core_List.List_map(module_.types_, ((definition_) => {
+? ff_core_List.Link(ff_compiler_ScalaEmitter.emitMain_(), ff_core_List.Empty())
+: ff_core_List.Empty()), ff_core_List.Link(ff_core_List.List_map(module_.types_, ((definition_) => {
 return ff_compiler_ScalaEmitter.emitTypeDefinition_(definition_)
-})), ff_core_List.List_map(module_.lets_, ((_w1) => {
+})), ff_core_List.Link(ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitLetDefinition_(_w1, false)
-})), ff_core_List.List_map(module_.functions_, ((_w1) => {
+})), ff_core_List.Link(ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitFunctionDefinition_(_w1, "")
-})), ff_core_List.List_map(module_.extends_, ((_w1) => {
+})), ff_core_List.Link(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitExtendsDefinition_(_w1)
-})), ff_core_List.List_map(module_.traits_, ((definition_) => {
+})), ff_core_List.Link(ff_core_List.List_map(module_.traits_, ((definition_) => {
 return ff_compiler_ScalaEmitter.emitTraitDefinition_(definition_)
-})), ff_core_List.List_map(module_.instances_, ((definition_) => {
+})), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((definition_) => {
 return ff_compiler_ScalaEmitter.emitInstanceDefinition_(definition_)
-})), ff_core_Array.Array_toList(["}"])])
+})), ff_core_List.Link(ff_core_List.Link("}", ff_core_List.Empty()), ff_core_List.Empty())))))))))))
 ff_core_Option.Option_each(ff_core_List.List_find(ff_core_List.List_collect(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return _w1.type_
 })), (function(_v) { return _v._ === 'ff_compiler_Syntax.TConstructor' ? ff_core_Option.Some(_v) : ff_core_Option.None();})), ((t_) => {
@@ -260,10 +260,10 @@ const methodWrappers_ = (ff_core_List.List_isEmpty(definition_.methods_)
 ? ""
 : ((" \n\n" + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((signature_) => {
 const t_ = ff_compiler_Syntax.TConstructor(definition_.at_, definition_.name_, ff_core_List.List_map(definition_.generics_, ((_w1) => {
-return ff_compiler_Syntax.TConstructor(definition_.at_, _w1, ff_core_Array.Array_toList([]))
+return ff_compiler_Syntax.TConstructor(definition_.at_, _w1, ff_core_List.Empty())
 })))
 return (((((((ff_compiler_ScalaEmitter.emitSignature_((((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, signature_.generics_), ff_core_Array.Array_toList([ff_compiler_Syntax.Constraint(t_), ...ff_core_List.List_toArray(definition_.constraints_), ...ff_core_List.List_toArray(signature_.constraints_)]), _c.parameters_, _c.returnType_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, signature_.generics_), ff_core_List.Link(ff_compiler_Syntax.Constraint(t_), ff_core_List.List_addAll(definition_.constraints_, signature_.constraints_)), _c.parameters_, _c.returnType_)
 }))(signature_), "") + " =\n    scala.Predef.implicitly[") + ff_compiler_ScalaEmitter.emitType_(t_)) + "].") + ff_compiler_ScalaEmitter.escapeKeyword_(signature_.name_)) + "_m(") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
 })), ((word_) => {
@@ -274,7 +274,7 @@ return ((((((((((("abstract class " + definition_.name_) + generics_) + paramete
 }
 
 export function emitInstanceDefinition_(definition_) {
-const signature_ = ff_compiler_ScalaEmitter.emitSignature_(ff_compiler_Syntax.Signature(definition_.at_, ((ff_compiler_ScalaEmitter.extractTypeName_(definition_.traitType_) + "_") + ff_core_Int.Int_abs(ff_core_Core.magicHashCode_(definition_))), definition_.generics_, definition_.constraints_, ff_core_Array.Array_toList([]), definition_.traitType_), "")
+const signature_ = ff_compiler_ScalaEmitter.emitSignature_(ff_compiler_Syntax.Signature(definition_.at_, ((ff_compiler_ScalaEmitter.extractTypeName_(definition_.traitType_) + "_") + ff_core_Int.Int_abs(ff_core_Core.magicHashCode_(definition_))), definition_.generics_, definition_.constraints_, ff_core_List.Empty(), definition_.traitType_), "")
 const methods_ = ((((" {\n\nimport " + ff_compiler_ScalaEmitter.extractTypeName_(definition_.traitType_)) + "._\n\n") + ff_core_List.List_join(ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_ScalaEmitter.emitFunctionDefinition_(_w1, "_m")
 })), "\n\n")) + "\n\n}")
@@ -822,7 +822,7 @@ return ff_core_Pair.Pair(ff_core_Option.Option_else(ff_core_Option.Option_map(na
 return ff_compiler_ScalaEmitter.escapeKeyword_(word_)
 })), (() => {
 return "_"
-})), ff_core_Array.Array_toList([]))
+})), ff_core_List.Empty())
 return
 }
 }
@@ -851,7 +851,7 @@ return ff_core_Pair.Pair(((ff_core_Option.Option_else(ff_core_Option.Option_map(
 return ff_compiler_ScalaEmitter.escapeKeyword_(word_)
 })), (() => {
 return "_"
-})) + " : ") + ff_compiler_ScalaEmitter.escapeResolved_(name_)), ff_core_Array.Array_toList([]))
+})) + " : ") + ff_compiler_ScalaEmitter.escapeResolved_(name_)), ff_core_List.Empty())
 return
 }
 }
@@ -881,7 +881,7 @@ return
 const item_ = _1.first_
 if(_1.second_) {
 const pair_ = ff_compiler_ScalaEmitter.emitPattern_(item_)
-return ff_core_Pair.Pair((pair_.first_ + "_seq @ _*"), ff_core_Array.Array_toList([(((("val " + pair_.first_) + " = ") + pair_.first_) + "_seq.toList;\n"), ...ff_core_List.List_toArray(pair_.second_)]))
+return ff_core_Pair.Pair((pair_.first_ + "_seq @ _*"), ff_core_List.Link((((("val " + pair_.first_) + " = ") + pair_.first_) + "_seq.toList;\n"), pair_.second_))
 return
 }
 }

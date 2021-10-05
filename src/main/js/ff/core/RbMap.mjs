@@ -75,7 +75,7 @@ export function RbMap_pairs(self_) {
 const _1 = self_
 {
 if(_1._ === 'RbLeaf') {
-return ff_core_Array.Array_toList([])
+return ff_core_List.Empty()
 return
 }
 }
@@ -85,7 +85,7 @@ const l_ = _1.left_
 const k_ = _1.key_
 const v_ = _1.value_
 const r_ = _1.right_
-return ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_RbMap.RbMap_pairs(l_), ff_core_Array.Array_toList([ff_core_Pair.Pair(k_, v_)])), ff_core_RbMap.RbMap_pairs(r_))
+return ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_RbMap.RbMap_pairs(l_), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_List.Empty())), ff_core_RbMap.RbMap_pairs(r_))
 return
 }
 }

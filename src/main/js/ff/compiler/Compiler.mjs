@@ -55,8 +55,8 @@ export function Compiler(files_, scalaOutputPath_, jsOutputPath_, packagePaths_,
 return {_: 'Compiler', files_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_};
 }
 
-export const coreImports_ = ff_core_List.List_map(ff_core_Array.Array_toList(["Array", "ArrayBuilder", "Bool", "Char", "Core", "FileSystem", "Int", "List", "Log", "Map", "Nothing", "Option", "Pair", "Set", "String", "System", "Try", "Unit"]), ((moduleName_) => {
-return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_core_Pair.Pair("ff", "core"), ff_core_Array.Array_toList([]), moduleName_)
+export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Array", ff_core_List.Link("ArrayBuilder", ff_core_List.Link("Bool", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("FileSystem", ff_core_List.Link("Int", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Pair", ff_core_List.Link("Set", ff_core_List.Link("String", ff_core_List.Link("System", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty())))))))))))))))))), ((moduleName_) => {
+return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_core_Pair.Pair("ff", "core"), ff_core_List.Empty(), moduleName_)
 }))
 
 export function make_(files_, scalaOutputPath_, jsOutputPath_, packagePaths_) {
@@ -139,7 +139,7 @@ const scalaPath_ = ((self_.scalaOutputPath_ + "/") + ff_core_String.String_repla
 const scalaFile_ = (((scalaPath_ + "/") + moduleName_) + ".scala")
 ff_core_FileSystem.FileSystem_createDirectories(self_.files_, scalaPath_)
 ff_core_FileSystem.FileSystem_writeText(self_.files_, scalaFile_, scala_)
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_Array.Array_toList([module_, ...ff_core_List.List_toArray(otherModules_)])), packagePair_, module_)
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_)), packagePair_, module_)
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"))
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs")
 ff_core_FileSystem.FileSystem_createDirectories(self_.files_, jsPath_)

@@ -144,14 +144,14 @@ export function Option_toList(self_) {
 const _1 = self_
 {
 if(_1._ === 'None') {
-return ff_core_Array.Array_toList([])
+return ff_core_List.Empty()
 return
 }
 }
 {
 if(_1._ === 'Some') {
 const v_ = _1.value_
-return ff_core_Array.Array_toList([v_])
+return ff_core_List.Link(v_, ff_core_List.Empty())
 return
 }
 }

@@ -67,7 +67,7 @@ const scalaPathFile_ = (tempPath_ + "/src/main/scala")
 ff_core_FileSystem.FileSystem_createDirectories(fs_, scalaPathFile_)
 const jsPathFile_ = (tempPath_ + "/src/main/js")
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_)
-const packagePaths_ = ff_core_List.List_toMap(ff_core_Array.Array_toList([ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_Pair.Pair("ff:core", "core")]))
+const packagePaths_ = ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())))
 const success_ = ff_core_Core.do_((() => {
 ff_compiler_Compiler.Compiler_emit(ff_compiler_Compiler.make_(fs_, scalaPathFile_, jsPathFile_, packagePaths_), "ff:compiler", "Main")
 return true

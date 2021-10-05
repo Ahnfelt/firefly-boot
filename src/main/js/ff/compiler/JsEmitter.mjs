@@ -74,7 +74,7 @@ if(term_a.arguments_.tail_._ === 'Link') {
 const body_ = term_a.arguments_.tail_.head_
 if(term_a.arguments_.tail_.tail_._ === 'Empty') {
 if((word_ == "ff:core/Core.if")) {
-return ff_core_Array.Array_toList([ff_core_Pair.Pair(condition_.value_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_))])
+return ff_core_List.Link(ff_core_Pair.Pair(condition_.value_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_)), ff_core_List.Empty())
 return
 }
 }
@@ -98,9 +98,9 @@ if(term_a.arguments_.tail_.tail_.tail_._ === 'Empty') {
 if((word_ == "ff:core/Option.Option_elseIf")) {
 const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_)
 if(ff_core_List.List_isEmpty(list_)) {
-return ff_core_Array.Array_toList([])
+return ff_core_List.Empty()
 } else {
-return ff_core_Array.Array_toList([ff_core_Pair.Pair(ff_compiler_JsEmitter.invokeImmediately_(condition_.value_), ff_compiler_JsEmitter.invokeImmediately_(body_.value_)), ...ff_core_List.List_toArray(list_)])
+return ff_core_List.Link(ff_core_Pair.Pair(ff_compiler_JsEmitter.invokeImmediately_(condition_.value_), ff_compiler_JsEmitter.invokeImmediately_(body_.value_)), list_)
 }
 return
 }
@@ -124,9 +124,9 @@ if(term_a.arguments_.tail_.tail_._ === 'Empty') {
 if((word_ == "ff:core/Option.Option_else")) {
 const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_)
 if(ff_core_List.List_isEmpty(list_)) {
-return ff_core_Array.Array_toList([])
+return ff_core_List.Empty()
 } else {
-return ff_core_Array.Array_toList([ff_core_Pair.Pair(ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", ff_core_Array.Array_toList([]), ff_core_Option.None()), ff_compiler_JsEmitter.invokeImmediately_(body_.value_)), ...ff_core_List.List_toArray(list_)])
+return ff_core_List.Link(ff_core_Pair.Pair(ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.True", ff_core_List.Empty(), ff_core_Option.None()), ff_compiler_JsEmitter.invokeImmediately_(body_.value_)), list_)
 }
 return
 }
@@ -137,7 +137,7 @@ return
 }
 }
 {
-return ff_core_Array.Array_toList([])
+return ff_core_List.Empty()
 return
 }
 throw new Error('Unexhaustive pattern match')
@@ -161,7 +161,7 @@ return
 }
 }
 {
-return ff_compiler_Syntax.ECall(function_.at_, false, function_, ff_core_Array.Array_toList([]), ff_core_Array.Array_toList([]))
+return ff_compiler_Syntax.ECall(function_.at_, false, function_, ff_core_List.Empty(), ff_core_List.Empty())
 return
 }
 throw new Error('Unexhaustive pattern match')
@@ -212,23 +212,23 @@ return ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
 })), ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitImportDefinition(self_, _w1)
 }))
-const parts_ = ff_core_Array.Array_toList([(ff_core_List.List_any(imports_, ((_w1) => {
+const parts_ = ff_core_List.Link((ff_core_List.List_any(imports_, ((_w1) => {
 return (_w1 == selfImport_)
 }))
 ? imports_
-: ff_core_Array.Array_toList([selfImport_, ...ff_core_List.List_toArray(imports_)])), ff_core_List.List_map(module_.types_, ((_w1) => {
+: ff_core_List.Link(selfImport_, imports_)), ff_core_List.Link(ff_core_List.List_map(module_.types_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitTypeDefinition(self_, _w1)
-})), ff_core_List.List_map(module_.lets_, ((_w1) => {
+})), ff_core_List.Link(ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, _w1, false))
-})), ff_core_List.List_map(module_.functions_, ((_w1) => {
+})), ff_core_List.Link(ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, ""))
-})), ff_core_List.List_map(module_.extends_, ((_w1) => {
+})), ff_core_List.Link(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
-})), (((module_.file_ == "Main.ff") && ff_core_List.List_any(module_.functions_, ((_w1) => {
+})), ff_core_List.Link((((module_.file_ == "Main.ff") && ff_core_List.List_any(module_.functions_, ((_w1) => {
 return (_w1.signature_.name_ == "main")
 })))
-? ff_core_Array.Array_toList([ff_compiler_JsEmitter.JsEmitter_emitMain(self_)])
-: ff_core_Array.Array_toList([]))])
+? ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_), ff_core_List.Empty())
+: ff_core_List.Empty()), ff_core_List.Empty()))))))
 return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
@@ -503,23 +503,7 @@ const self_ = self_a
 if(term_a._ === 'EList') {
 const at_ = term_a.at_
 const items_ = term_a.items_
-return (("ff_core_Array.Array_toList([" + ff_core_List.List_join(ff_core_List.List_map(items_, ((_1) => {
-{
-const item_ = _1.first_
-if(!_1.second_) {
-return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_)
-return
-}
-}
-{
-const item_ = _1.first_
-if(_1.second_) {
-return (("...ff_core_List.List_toArray(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, item_)) + ")")
-return
-}
-}
-throw new Error('Unexhaustive pattern match')
-})), ", ")) + "])")
+return ff_compiler_JsEmitter.JsEmitter_emitList(self_, items_)
 return
 }
 }
@@ -1009,7 +993,7 @@ const cases_ = _1.function_.lambda_.cases_
 return (((((((!last_)
 ? "for(;;) "
 : "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_)) + "\n") + ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
-return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toList(["_1"]), _w1, last_)) + "\n}")
+return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link("_1", ff_core_List.Empty()), _w1, last_)) + "\n}")
 })), "\n")) + "\nthrow new Error('Unexhaustive pattern match')\n}")
 return
 }
@@ -1225,11 +1209,11 @@ return
 if(_1._ === 'PList') {
 const at_ = _1.at_
 if(_1.items_._ === 'Empty') {
-const p_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Empty", ff_core_Array.Array_toList([]))
+const p_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Empty", ff_core_List.Empty())
 const newMatchCase_ = (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([p_, ...ff_core_List.List_toArray(matchCase_.patterns_)]), _c.condition_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(p_, matchCase_.patterns_), _c.condition_, _c.body_)
 }))(matchCase_)
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toList([argument_, ...ff_core_List.List_toArray(arguments_)]), newMatchCase_, last_)
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(argument_, arguments_), newMatchCase_, last_)
 return
 }
 }
@@ -1242,11 +1226,11 @@ if(_1.items_._ === 'Link') {
 const p_ = _1.items_.head_.first_
 if(!_1.items_.head_.second_) {
 const ps_ = _1.items_.tail_
-const p2_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Link", ff_core_Array.Array_toList([p_, ff_compiler_Syntax.PList(at_, t_, ps_)]))
+const p2_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Link", ff_core_List.Link(p_, ff_core_List.Link(ff_compiler_Syntax.PList(at_, t_, ps_), ff_core_List.Empty())))
 const newMatchCase_ = (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([p2_, ...ff_core_List.List_toArray(matchCase_.patterns_)]), _c.condition_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(p2_, matchCase_.patterns_), _c.condition_, _c.body_)
 }))(matchCase_)
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toList([argument_, ...ff_core_List.List_toArray(arguments_)]), newMatchCase_, last_)
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(argument_, arguments_), newMatchCase_, last_)
 return
 }
 }
@@ -1261,9 +1245,9 @@ const p_ = _1.items_.head_.first_
 if(_1.items_.head_.second_) {
 if(_1.items_.tail_._ === 'Empty') {
 const newMatchCase_ = (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_Array.Array_toList([p_, ...ff_core_List.List_toArray(matchCase_.patterns_)]), _c.condition_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(p_, matchCase_.patterns_), _c.condition_, _c.body_)
 }))(matchCase_)
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_Array.Array_toList([argument_, ...ff_core_List.List_toArray(arguments_)]), newMatchCase_, last_)
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(argument_, arguments_), newMatchCase_, last_)
 return
 }
 }
@@ -1285,6 +1269,53 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
+
+export function JsEmitter_emitList(self_, items_){
+const self_a = self_
+const items_a = items_
+{
+const self_ = self_a
+if(items_a._ === 'Empty') {
+return "ff_core_List.Empty()"
+return
+}
+}
+{
+const self_ = self_a
+if(items_a._ === 'Link') {
+const e_ = items_a.head_.first_
+if(items_a.head_.second_) {
+if(items_a.tail_._ === 'Empty') {
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_)
+return
+}
+}
+}
+}
+{
+const self_ = self_a
+if(items_a._ === 'Link') {
+const e_ = items_a.head_.first_
+if(!items_a.head_.second_) {
+const list_ = items_a.tail_
+return (((("ff_core_List.Link(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitList(self_, list_)) + ")")
+return
+}
+}
+}
+{
+const self_ = self_a
+if(items_a._ === 'Link') {
+const e_ = items_a.head_.first_
+if(items_a.head_.second_) {
+const list_ = items_a.tail_
+return (((("ff_core_List.List_addAll(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, e_)) + ", ") + ff_compiler_JsEmitter.JsEmitter_emitList(self_, list_)) + ")")
+return
+}
+}
+}
+throw new Error('Unexhaustive pattern match')
 }
 
 export function JsEmitter_processVariantCase(self_, name_, argument_) {
