@@ -102,4 +102,4 @@ ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
 
 
 
-queueMicrotask(() => main_({array_: process.argv.slice(2)}))
+if(!globalThis.$ffSkipMain) queueMicrotask(() => main_({array_: process.argv.slice(2)}))

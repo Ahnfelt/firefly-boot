@@ -43,7 +43,7 @@ extend self: JsEmitter {
     }
 
     emitMain(): String {
-        "queueMicrotask(() => main_({array_: process.argv.slice(2)}))"
+        "if(!globalThis.$ffSkipMain) queueMicrotask(() => main_({array_: process.argv.slice(2)}))"
     }
 
     emitImportDefinition(definition: DImport): String {

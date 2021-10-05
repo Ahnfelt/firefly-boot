@@ -235,7 +235,7 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export function JsEmitter_emitMain(self_) {
-return "queueMicrotask(() => main_({array_: process.argv.slice(2)}))"
+return "if(!globalThis.$ffSkipMain) queueMicrotask(() => main_({array_: process.argv.slice(2)}))"
 }
 
 export function JsEmitter_emitImportDefinition(self_, definition_) {
