@@ -111,7 +111,8 @@ self_.nextTypeVariableIndex_ += 2
 return result_
 }
 
-export function Unification_instantiate(self_, instantiation_, type_){
+export function Unification_instantiate(self_, instantiation_, type_) {
+{
 const self_a = self_
 const instantiation_a = instantiation_
 const type_a = type_
@@ -173,6 +174,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Unification_constrain(self_, at_, type_, constraintName_, generics_) {
@@ -323,7 +325,8 @@ export function Unification_has(self_, index_) {
 return ff_core_Map.Map_contains(self_.substitution_, index_)
 }
 
-export function Unification_substitute(self_, type_){
+export function Unification_substitute(self_, type_) {
+{
 const self_a = self_
 const type_a = type_
 {
@@ -358,8 +361,10 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
-export function Unification_unify(self_, at_, t1_, t2_){
+export function Unification_unify(self_, at_, t1_, t2_) {
+{
 const self_a = self_
 const at_a = at_
 const t1_a = t1_
@@ -439,6 +444,7 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
 export function Unification_bind(self_, at_, index_, type_) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
@@ -460,7 +466,8 @@ throw new Error('Unexhaustive pattern match')
 }))
 }
 
-export function Unification_occursIn(self_, index_, t_){
+export function Unification_occursIn(self_, index_, t_) {
+{
 const self_a = self_
 const index_a = index_
 const t_a = t_
@@ -493,6 +500,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 

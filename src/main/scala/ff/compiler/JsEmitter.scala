@@ -215,7 +215,7 @@ val casesString_ : ff.core.String_.String = ff.core.List_.List_join(self_ = ff.c
 }), separator_ = "\n");
 (((("{\n" + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
 });
-(signature_ + body_)
+(((signature_ + " {\n") + body_) + "\n}")
 })
 })
 }

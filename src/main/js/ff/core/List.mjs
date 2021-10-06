@@ -102,7 +102,7 @@ export function List_toArray(self_) {
                 current = current.tail_;
             }
             return result;
-        
+
 }
 
 export function List_toSet(self_) {
@@ -1054,14 +1054,55 @@ return ff_core_List.reverseList_(self_)
 }
 
 export function List_flatten(self_) {
+function finish_(list_, result_) {
+_tailcall: for(;;) {
+{
+const list_a = list_
+const result_a = result_
+{
+const as_ = list_a
+if(result_a.Empty) {
+return as_
+return
+}
+}
+{
+const as_ = list_a
+if(result_a.Link) {
+const x_ = result_a.head_
+const xs_ = result_a.tail_
+{
+const list_r_ = ff_core_List.Link(x_, as_)
+const result_r_ = xs_
+list_ = list_r_
+result_ = result_r_
+continue _tailcall
+}
+return
+}
+}
+throw new Error('Unexhaustive pattern match')
+}
+return
+}
+}
 function go_(lists_, result_) {
 _tailcall: for(;;) {
 {
 const _1 = lists_
 {
 if(_1.Empty) {
-return ff_core_List.List_reverse(result_)
+return ff_core_List.Empty()
 return
+}
+}
+{
+if(_1.Link) {
+const as_ = _1.head_
+if(_1.tail_.Empty) {
+return finish_(as_, result_)
+return
+}
 }
 }
 {

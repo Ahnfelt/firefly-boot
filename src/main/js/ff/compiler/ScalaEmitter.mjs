@@ -363,7 +363,8 @@ return (("[" + ff_core_List.List_join(generics_, ", ")) + "]")
 }
 }
 
-export function emitTypeAnnotation_(t_){
+export function emitTypeAnnotation_(t_) {
+{
 const t_a = t_
 {
 if(t_a.TVariable) {
@@ -379,8 +380,10 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
-export function emitType_(type_){
+export function emitType_(type_) {
+{
 const type_a = type_
 {
 if(type_a.TVariable) {
@@ -419,8 +422,10 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
-export function emitStatements_(term_){
+export function emitStatements_(term_) {
+{
 const term_a = term_
 {
 if(term_a.EFunctions) {
@@ -482,8 +487,10 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
-export function emitTerm_(term_){
+export function emitTerm_(term_) {
+{
 const term_a = term_
 {
 if(term_a.EString) {
@@ -789,6 +796,7 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
 export function emitArgument_(argument_) {
 return (ff_core_Option.Option_else(ff_core_Option.Option_map(argument_.name_, ((name_) => {
@@ -812,7 +820,8 @@ const toLists_ = ff_core_List.List_join(ff_core_List.List_flatten(pair_.second_)
 return (((((("case (" + patterns_) + ") ") + condition_) + "=>\n") + toLists_) + ff_compiler_ScalaEmitter.emitStatements_(matchCase_.body_))
 }
 
-export function emitPattern_(pattern_){
+export function emitPattern_(pattern_) {
+{
 const pattern_a = pattern_
 {
 if(pattern_a.PVariable) {
@@ -893,8 +902,10 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
-export function extractTypeName_(type_){
+export function extractTypeName_(type_) {
+{
 const type_a = type_
 {
 if(type_a.TVariable) {
@@ -912,6 +923,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function escapeResolved_(word_) {

@@ -281,7 +281,8 @@ throw new Error('Unexhaustive pattern match')
 }
 }
 
-export function Resolver_resolveTerm(self_, term_){
+export function Resolver_resolveTerm(self_, term_) {
+{
 const self_a = self_
 const term_a = term_
 {
@@ -596,8 +597,10 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
-export function Resolver_resolveType(self_, type_){
+export function Resolver_resolveType(self_, type_) {
+{
 const self_a = self_
 const type_a = type_
 {
@@ -631,6 +634,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Resolver_resolveFunctionDefinition(self_, definition_) {
@@ -671,7 +675,8 @@ return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_, definiti
 }
 
 export function Resolver_resolveCase(self_, case_) {
-function findVariables_(pattern_){
+function findVariables_(pattern_) {
+{
 const pattern_a = pattern_
 {
 if(pattern_a.PVariable) {
@@ -736,6 +741,7 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 const variableMap_ = ff_core_List.List_foldLeft(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
 return findVariables_(pattern_)
 })), ff_core_Map.empty_())(((_w1, _w2) => {
@@ -751,7 +757,8 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
 })), ff_compiler_Resolver.Resolver_resolveTerm(self2_, case_.body_))
 }
 
-export function Resolver_resolvePattern(self_, pattern_){
+export function Resolver_resolvePattern(self_, pattern_) {
+{
 const self_a = self_
 const pattern_a = pattern_
 {
@@ -823,6 +830,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 

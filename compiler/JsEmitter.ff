@@ -97,7 +97,7 @@ extend self: JsEmitter {
                     let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _, True) + "\n}" }.join("\n")
                     "{\n" + shadowingWorkaround + "\n" + casesString + "\nthrow new Error('Unexhaustive pattern match')\n}"
                 }
-                signature + body
+                signature + " {\n" + body + "\n}"
         }
     }
 

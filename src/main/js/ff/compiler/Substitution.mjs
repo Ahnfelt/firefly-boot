@@ -447,7 +447,8 @@ throw new Error('Unexhaustive pattern match')
 }
 }
 
-export function Substitution_substituteType(self_, type_){
+export function Substitution_substituteType(self_, type_) {
+{
 const self_a = self_
 const type_a = type_
 {
@@ -482,6 +483,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function Substitution_get(self_, index_) {

@@ -61,7 +61,8 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export function detectIfElse_(term_){
+export function detectIfElse_(term_) {
+{
 const term_a = term_
 {
 if(term_a.ECall) {
@@ -142,8 +143,10 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
-export function invokeImmediately_(function_){
+export function invokeImmediately_(function_) {
+{
 const function_a = function_
 {
 if(function_a.ELambda) {
@@ -166,8 +169,10 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }
+}
 
-export function extractTypeName_(type_){
+export function extractTypeName_(type_) {
+{
 const type_a = type_
 {
 if(type_a.TVariable) {
@@ -185,6 +190,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function escapeResolved_(word_) {
@@ -338,7 +344,7 @@ return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArgument
 })), "\n")
 return (((("{\n" + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
 }))
-return (signature_ + body_)
+return (((signature_ + " {\n") + body_) + "\n}")
 return
 }
 throw new Error('Unexhaustive pattern match')
@@ -397,7 +403,8 @@ return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") 
 }))
 }
 
-export function JsEmitter_emitTerm(self_, term_){
+export function JsEmitter_emitTerm(self_, term_) {
+{
 const self_a = self_
 const term_a = term_
 {
@@ -833,6 +840,7 @@ return (("(function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self
 return
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function JsEmitter_emitStatements(self_, term_, last_) {
@@ -1276,7 +1284,8 @@ throw new Error('Unexhaustive pattern match')
 }
 }
 
-export function JsEmitter_emitList(self_, items_){
+export function JsEmitter_emitList(self_, items_) {
+{
 const self_a = self_
 const items_a = items_
 {
@@ -1321,6 +1330,7 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 export function JsEmitter_processVariantCase(self_, name_, argument_) {

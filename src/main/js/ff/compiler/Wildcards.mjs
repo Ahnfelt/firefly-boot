@@ -49,7 +49,8 @@ export function make_() {
 return ff_compiler_Wildcards.Wildcards(0)
 }
 
-export function Wildcards_fixWildcards(self_, term_){
+export function Wildcards_fixWildcards(self_, term_) {
+{
 const self_a = self_
 const term_a = term_
 {
@@ -301,6 +302,7 @@ return term_
 return
 }
 throw new Error('Unexhaustive pattern match')
+}
 }
 
 

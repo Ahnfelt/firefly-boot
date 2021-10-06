@@ -306,14 +306,16 @@ extend self[T]: List[T] {
 extend self[T]: List[List[T]] {
 
     flatten(): List[T] {
+        function finish(list: List[T], result: List[T]): List[T] {
+            | as, [] => as
+            | as, [x, ...xs] => tailcall finish([x, ...as], xs)
+        }
         function go(lists: List[List[T]], result: List[T]): List[T] {
             lists.{
-                | [] =>
-                    result.reverse()
-                | [[], ...aas] =>
-                    tailcall go(aas, result)
-                | [[a, ...as], ...aas] =>
-                    tailcall go(Link(as, aas), [a, ...result])
+                | [] => []
+                | [as] => finish(as, result)
+                | [[], ...aas] => tailcall go(aas, result)
+                | [[a, ...as], ...aas] => tailcall go(Link(as, aas), [a, ...result])
             }
         }
         go(self, [])

@@ -464,10 +464,19 @@ ff.core.List_.reverseList_[T](list_ = self_)
 
 def List_flatten[T](self_ : ff.core.List_.List[ff.core.List_.List[T]]) : ff.core.List_.List[T] = (self_) match {
 case (self_) =>
+def finish_(list_ : ff.core.List_.List[T], result_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = (list_, result_) match {
+case (as_, List()) =>
+as_
+case (as_, List(x_, xs__seq @ _*)) =>
+val xs_ = xs__seq.toList;
+finish_(list_ = (List(List(x_), as_).flatten), result_ = xs_)
+}
 def go_(lists_ : ff.core.List_.List[ff.core.List_.List[T]], result_ : ff.core.List_.List[T]) : ff.core.List_.List[T] = {
 pipe_dot(lists_)({
 case (List()) =>
-ff.core.List_.List_reverse[T](self_ = result_)
+List()
+case (List(as_)) =>
+finish_(list_ = as_, result_ = result_)
 case (List(List(), aas__seq @ _*)) =>
 val aas_ = aas__seq.toList;
 go_(lists_ = aas_, result_ = result_)
