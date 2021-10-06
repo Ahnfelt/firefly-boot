@@ -411,6 +411,14 @@ case (ff.compiler.Syntax_.ELet(at_, mutable_, name_, valueType_, value_, body_))
 ((ff.compiler.JsEmitter_.JsEmitter_emitLetDefinition(self_ = self_, definition_ = ff.compiler.Syntax_.DLet(at_ = at_, name_ = name_, variableType_ = valueType_, value_ = value_, targets_ = ff.compiler.Syntax_.Targets(scala_ = ff.core.Option_.None[ff.core.String_.String](), javaScript_ = ff.core.Option_.None[ff.core.String_.String]())), mutable_ = mutable_) + "\n") + ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = body_, last_ = last_))
 case (ff.compiler.Syntax_.EVariant(at_, word_, _, _)) if (word_ == "ff:core/Unit.Unit") =>
 ""
+case (ff.compiler.Syntax_.ESequential(at0_, ff.compiler.Syntax_.EPipe(at1_, value_, ff.compiler.Syntax_.ELambda(at2_, ff.compiler.Syntax_.Lambda(at3_, cases_))), e_ @ (ff.compiler.Syntax_.EVariant(at_, word_, _, _)))) if (last_ && (word_ == "ff:core/Unit.Unit")) =>
+val newCases_ : ff.core.List_.List[ff.compiler.Syntax_.MatchCase] = ff.core.List_.List_map[ff.compiler.Syntax_.MatchCase, ff.compiler.Syntax_.MatchCase](self_ = cases_, body_ = {(case_) =>
+pipe_dot(case_)({(_c) =>
+ff.compiler.Syntax_.MatchCase(at_ = _c.at_, patterns_ = _c.patterns_, condition_ = _c.condition_, body_ = ff.compiler.Syntax_.ESequential(at_ = at0_, before_ = case_.body_, after_ = e_))
+})
+});
+val newPipe_ : ff.compiler.Syntax_.Term = ff.compiler.Syntax_.EPipe(at_ = at1_, value_ = value_, function_ = ff.compiler.Syntax_.ELambda(at_ = at2_, lambda_ = ff.compiler.Syntax_.Lambda(at_ = at3_, cases_ = newCases_)));
+ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = newPipe_, last_ = last_)
 case (ff.compiler.Syntax_.ESequential(at_, ff.compiler.Syntax_.EVariant(at_, word_, _, _), after_)) if (word_ == "ff:core/Unit.Unit") =>
 ff.compiler.JsEmitter_.JsEmitter_emitStatements(self_ = self_, term_ = after_, last_ = last_)
 case (ff.compiler.Syntax_.ESequential(at_, before_, ff.compiler.Syntax_.EVariant(at_, word_, _, _))) if (word_ == "ff:core/Unit.Unit") =>

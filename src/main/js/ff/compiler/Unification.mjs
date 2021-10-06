@@ -178,26 +178,26 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Unification_constrain(self_, at_, type_, constraintName_, generics_) {
-for(;;) {
+{
 const _1 = type_
 {
 if(_1.TVariable) {
 const i_ = _1.index_
 if(ff_compiler_Unification.Unification_has(self_, i_)) {
 ff_compiler_Unification.Unification_constrain(self_, at_, ff_compiler_Unification.Unification_get(self_, i_), constraintName_, generics_)
-break
+return
 }
 }
 }
 {
 if(_1.TVariable) {
 const i_ = _1.index_
-for(;;) {
+{
 const _1 = ff_core_Map.Map_get(self_.constraints_, i_)
 {
 if(_1.None) {
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_)), ff_core_List.Empty())))
-break
+return
 }
 }
 {
@@ -229,19 +229,19 @@ break
 }
 throw new Error('Unexhaustive pattern match')
 }
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')
 }
-break
+return
 }
 }
 {
 if(_1.TConstructor) {
 const name_ = _1.name_
 const generics2_ = _1.generics_
-for(;;) {
+{
 const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraintName_, name_))
 {
 if(_1.None) {
@@ -252,7 +252,7 @@ const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]")
 ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
-break
+return
 }
 }
 {
@@ -266,32 +266,32 @@ const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, insta
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_))
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
 ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
-for(;;) {
+{
 const _1 = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, constraint_.representation_)
 {
 if(_1.TConstructor) {
 const newConstraintName_ = _1.name_
 const newGenerics_ = _1.generics_
 ff_compiler_Unification.Unification_constrain(self_, at_, type_, newConstraintName_, newGenerics_)
-break
+return
 }
 }
 {
 if(_1.TVariable) {
 const i_ = _1.index_
 ff_compiler_Unification.Unification_fail(self_, at_, ("Constraint can't be a type variable: $" + i_))
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')
 }
 }))
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')
 }
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')

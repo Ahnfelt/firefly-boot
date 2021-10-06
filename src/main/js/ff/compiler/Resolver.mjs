@@ -87,7 +87,7 @@ throw new Error('Unexhaustive pattern match')
 export function Resolver_processImports(self_, imports_, modules_) {
 let resolver_ = self_
 ff_core_List.List_each(imports_, ((import_) => {
-for(;;) {
+{
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
 return (ff_core_String.String_dropLast(_w1.file_, 3) == import_.file_)
 }))
@@ -95,13 +95,13 @@ return (ff_core_String.String_dropLast(_w1.file_, 3) == import_.file_)
 if(_1.Some) {
 const module_ = _1.value_
 resolver_ = ff_compiler_Resolver.Resolver_processDefinitions(resolver_, module_, ff_core_Option.Some(import_.alias_))
-break
+return
 }
 }
 {
 if(_1.None) {
 ff_compiler_Resolver.fail_(import_.at_, ("No such module: " + import_.file_))
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')

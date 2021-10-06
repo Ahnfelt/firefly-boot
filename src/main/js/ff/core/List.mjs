@@ -102,7 +102,7 @@ export function List_toArray(self_) {
                 current = current.tail_;
             }
             return result;
-
+        
 }
 
 export function List_toSet(self_) {
@@ -368,12 +368,12 @@ return go_(self_, 0)
 
 export function List_each(self_, body_) {
 _tailcall: for(;;) {
-for(;;) {
+{
 const _1 = self_
 {
 if(_1.Empty) {
 
-break
+return
 }
 }
 {
@@ -388,7 +388,7 @@ self_ = self_r_
 body_ = body_r_
 continue _tailcall
 }
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')

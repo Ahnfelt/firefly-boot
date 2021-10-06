@@ -94,12 +94,12 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function RbMap_each(self_, body_) {
-for(;;) {
+{
 const _1 = self_
 {
 if(_1.RbLeaf) {
 
-break
+return
 }
 }
 {
@@ -111,7 +111,7 @@ const r_ = _1.right_
 ff_core_RbMap.RbMap_each(l_, body_)
 body_(k_, v_)
 ff_core_RbMap.RbMap_each(r_, body_)
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')
