@@ -3,7 +3,6 @@ import Tokenizer
 import Parser
 import Resolver
 import Inference
-import ScalaEmitter
 import JsEmitter
 
 type Compiler(
@@ -137,12 +136,6 @@ extend self: Compiler {
             let array = packageName.split(':')
             Pair(array.expect(0), array.expect(1))
         }
-
-        let scala = ScalaEmitter.emitModule(packagePair, module)
-        let scalaPath = self.scalaOutputPath + "/" + packageName.replace(":", "/")
-        let scalaFile = scalaPath + "/" + moduleName + ".scala"
-        self.files.createDirectories(scalaPath)
-        self.files.writeText(scalaFile, scala)
 
         let js = JsEmitter.make([module, ...otherModules]).emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")

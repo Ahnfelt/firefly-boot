@@ -8,8 +8,6 @@ import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
 
 import * as ff_compiler_Resolver from "../../ff/compiler/Resolver.mjs"
 
-import * as ff_compiler_ScalaEmitter from "../../ff/compiler/ScalaEmitter.mjs"
-
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
@@ -134,11 +132,6 @@ const packagePair_ = ff_core_Core.do_((() => {
 const array_ = ff_core_String.String_split(packageName_, 58)
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(array_, 0), ff_core_Array.Array_expect(array_, 1))
 }))
-const scala_ = ff_compiler_ScalaEmitter.emitModule_(packagePair_, module_)
-const scalaPath_ = ((self_.scalaOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"))
-const scalaFile_ = (((scalaPath_ + "/") + moduleName_) + ".scala")
-ff_core_FileSystem.FileSystem_createDirectories(self_.files_, scalaPath_)
-ff_core_FileSystem.FileSystem_writeText(self_.files_, scalaFile_, scala_)
 const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_)), packagePair_, module_)
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"))
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs")
