@@ -1,10 +1,7 @@
 type List[T] {
     Empty
-        scala "scala.collection.immutable.Nil"
     Link(head: T, tail: List[T])
-        scala "scala.collection.immutable.::"
 }
-    scala "#type List[+T] = scala.collection.immutable.List[T]"
 
 extend self[T]: List[T] {
 
@@ -17,7 +14,6 @@ extend self[T]: List[T] {
     }
 
     toArray(): Array[T] { panic("magic") }
-        scala "ArrayBuilder_toArray(new scala.collection.mutable.ArrayBuffer[T]() ++ self_)"
         javascript """
             let current = self_;
             let result = [];
@@ -350,7 +346,6 @@ extend self[K, V]: List[Pair[K, V]] {
 extend self: List[String] {
 
     join(separator: String = ""): String { self.toArray().join(separator) }
-        scala "self_.mkString(separator_)"
 
 }
 

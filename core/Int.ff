@@ -1,10 +1,8 @@
 type Int {}
-    scala "scala.Int"
 
 extend self: Int {
 
     to(inclusive: Int): List[Int] { panic("magic") }
-        scala "self_.to(inclusive_).toList"
         javascript """
             let result = ff_core_List.Empty();
             for(let i = inclusive_; i >= self_; i--) {
@@ -14,14 +12,11 @@ extend self: Int {
         """
 
     until(exclusive: Int): List[Int] { self.to(exclusive - 1) }
-        scala "self_.until(exclusive_).toList"
 
     abs(): Int { panic("magic") }
-        scala "self_.abs"
         javascript "return Math.abs(self_)"
 
     toChar(): Char { panic("magic") }
-        scala "self_.toChar"
         javascript "return self_"
 
 }

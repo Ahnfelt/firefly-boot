@@ -1,5 +1,4 @@
 type Array[T] {}
-    scala "java.util.ArrayList[T]"
 
 extend self[T]: Array[T] {
 
@@ -7,15 +6,12 @@ extend self[T]: Array[T] {
         javascript "return self_.concat(that_)"
 
     isEmpty(): Bool { panic("magic") }
-        scala "self_.isEmpty()"
         javascript "return self_.length === 0"
 
     size(): Int { panic("magic") }
-        scala "self_.size()"
         javascript "return self_.length"
 
     expect(index: Int): T { panic("magic") }
-        scala "self_.get(index_)"
         javascript "return self_[index_]"
 
     expectFirst(): T { self.expect(0) }
@@ -23,19 +19,9 @@ extend self[T]: Array[T] {
     expectLast(): T { self.expect(self.size() - 1) }
 
     dropFirst(count: Int = 1): Array[T] { panic("magic") }
-        scala """
-            val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_))
-            for(i <- count_.until(self_.size())) r.add(self_.get(i))
-            r
-        """
         javascript "return self_.slice(count_)"
 
     dropLast(count: Int = 1): Array[T] { panic("magic") }
-        scala """
-            val r = new java.util.ArrayList[T](Math.max(0, self_.size() - count_))
-            for(i <- 0.until(self_.size() - count_)) r.add(self_.get(i))
-            r
-        """
         javascript "return self_.slice(0, self_.length - count_)"
 
     update(index: Int, body: T => T): Array[T] { panic("magic") }
@@ -46,10 +32,6 @@ extend self[T]: Array[T] {
         """
 
     toList(): List[T] { panic("magic") }
-        scala """
-            import scala.collection.JavaConverters._
-            self_.asScala.toList
-        """
         javascript """
             let result = ff_core_List.Empty();
             for(let i = self_.length - 1; i >= 0; i--) {

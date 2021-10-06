@@ -1,38 +1,29 @@
 type ArrayBuilder[T] {}
-    scala "scala.collection.mutable.ArrayBuffer[T]"
 
 empty[T](): ArrayBuilder[T] { panic("magic") }
-    scala "scala.collection.mutable.ArrayBuffer[T]()"
     javascript "return {array: []}"
 
 extend self[T]: ArrayBuilder[T] {
 
     toArray(): Array[T] { panic("magic") }
-        scala "val r = new java.util.ArrayList[T](self_.length); for(i <- 0.until(self_.length)) r.add(self_(i)); r"
         javascript "return self_.array.slice()"
 
     isEmpty(): Bool { panic("magic") }
-        scala "self_.isEmpty"
         javascript "return self_.array.length === 0"
 
     size(): Int { panic("magic") }
-        scala "self_.size"
         javascript "return self_.array.length"
 
     append(value: T): Unit { panic("magic") }
-        scala "self_.append(value_)"
         javascript "self_.array.push(value_)"
 
     modify(index: Int, body: T => T): Unit { panic("magic") }
-        scala "self_.update(index_, body_(self_(index_)))"
         javascript "self_.array[index_] = body_(self_.array[index_])"
 
     drain(): Array[T] { panic("magic") }
-        scala "val result = ArrayBuilder_toArray(self_); self_.clear(); result"
         javascript "const result = self_.array; self_.array = []; return result"
 
     toList(): List[T] { panic("magic") }
-        scala "self_.toList"
         javascript """
             let result = ff_core_List.Empty();
             for(let i = self_.array.length - 1; i >= 0; i--) {
@@ -42,7 +33,6 @@ extend self[T]: ArrayBuilder[T] {
         """
 
     last(): Option[T] { panic("magic") }
-        scala "self_.lastOption"
         javascript """
             return self_.array.length > 0
                 ? ff_core_Option.Some(self_.array[self_.array.length - 1])
@@ -50,7 +40,6 @@ extend self[T]: ArrayBuilder[T] {
         """
 
     expectLast(): T { panic("magic") }
-        scala "self_.last"
         javascript "return self_.array[self_.array.length - 1]"
 
 }

@@ -1,9 +1,6 @@
 type Bool {
     False
-        scala "false"
         javascript "false"
     True
-        scala "true"
         javascript "true"
 }
-    scala "scala.Boolean"

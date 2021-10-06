@@ -1,22 +1,16 @@
 type Char {}
-    scala "scala.Char"
 
 extend self: Char {
 
     isAsciiLetter(): Bool { self.isAsciiUpper() || self.isAsciiLower() }
-        scala "self_.isLetter"
 
     isAsciiUpper(): Bool { self >= 'A' && self <= 'Z' }
-        scala "self_.isUpper"
 
     isAsciiLower(): Bool { self >= 'a' && self <= 'z' }
-        scala "self_.isLower"
 
     isAsciiDigit(): Bool { self >= '0' && self <= '9' }
-        scala "self_.isDigit"
 
     toInt(): Int { panic("magic") }
-        scala "self_.toInt"
         javascript "return self_"
 
 }

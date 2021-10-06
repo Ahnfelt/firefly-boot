@@ -101,16 +101,8 @@ export function magicShow_(value_) {
 return ('' + value_)
 }
 
-export function magicHashCode_(value_) {
-return ff_core_Core.panic_("magic")
-}
-
 export function magicLess_(x_, y_) {
 return x_ < y_
-}
-
-export function pipeDot_() {
-
 }
 
 

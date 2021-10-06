@@ -1,24 +1,19 @@
 type Pair[A, B](first: A, second: B) {
     Pair()
-        scala "scala.Tuple2"
 }
-    scala "scala.Tuple2[A, B]"
 
 extend self[A, B]: Pair[A, B] {
 
     mapFirst[C](body: A => C): Pair[C, B] {
         self.Pair(first = body(self.first))
     }
-        scala "self_.copy(_1 = body_(self_._1))}; implicit class Pair_first_implicit[A, B](self_ : Pair[A, B]) { def first_ = { self_._1 }" // hack
 
     mapSecond[C](body: B => C): Pair[A, C] {
         self.Pair(second = body(self.second))
     }
-        scala "self_.copy(_2 = body_(self_._2))}; implicit class Pair_second_implicit[A, B](self_ : Pair[A, B]) { def second_ = { self_._2 }" // hack
 
     swap(): Pair[B, A] {
         Pair(self.second, self.first)
     }
-        scala "(self_._2, self_._1)"
 
 }

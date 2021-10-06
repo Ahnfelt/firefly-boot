@@ -4,7 +4,6 @@ type RbMap[K, V] {
     RbLeaf
     RbNode(isRed: Bool, left: RbMap[K, V], key: K, value: V, right: RbMap[K, V])
 }
-    scala "#sealed abstract class RbMap[K, +V] extends Product with Serializable"
 
 extend self[K, V]: RbMap[K, V] {
 

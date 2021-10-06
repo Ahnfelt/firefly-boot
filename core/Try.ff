@@ -1,10 +1,8 @@
 type Try[T] {}
-    scala "#type Try[+T] = scala.util.Try[T]"
 
 extend self[T]: Try[T] {
 
     else(body: () => T): T { panic("magic") }
-        scala "self_.getOrElse(body_())"
         javascript "return self_.Success ? self_.value_ : body_()"
 
 }
