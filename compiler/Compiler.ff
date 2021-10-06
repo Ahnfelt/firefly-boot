@@ -143,7 +143,6 @@ extend self: Compiler {
         let jsFile = jsPath + "/" + moduleName + ".mjs"
         self.files.createDirectories(jsPath)
         self.files.writeText(jsFile, js)
-
     }
 
 }

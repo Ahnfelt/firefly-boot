@@ -56,9 +56,9 @@ extend self: Resolver {
                 module.packagePair.first + ":" + module.packagePair.second + "/" +
                 module.file.dropLast(3) + "." + name
             importAlias.{
-                | None => [Pair(name, full)]
-                | Some(alias) { unqualified } => [Pair(alias + "." + name, full), Pair(name, full)]
-                | Some(alias) => [Pair(alias + "." + name, full)]
+                | None => [Pair(name, full), Pair(full, full)]
+                | Some(alias) { unqualified } => [Pair(alias + "." + name, full), Pair(name, full), Pair(full, full)]
+                | Some(alias) => [Pair(alias + "." + name, full), Pair(full, full)]
             }
         }
         let isCore = // TODO: Extend imports to list unqualified symbols instead of this

@@ -119,7 +119,7 @@ const full_ = ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.se
 const _1 = importAlias_
 {
 if(_1.None) {
-return ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Empty())
+return ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Link(ff_core_Pair.Pair(full_, full_), ff_core_List.Empty()))
 return
 }
 }
@@ -127,7 +127,7 @@ return
 if(_1.Some) {
 const alias_ = _1.value_
 if(unqualified_) {
-return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Empty()))
+return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Link(ff_core_Pair.Pair(full_, full_), ff_core_List.Empty())))
 return
 }
 }
@@ -135,7 +135,7 @@ return
 {
 if(_1.Some) {
 const alias_ = _1.value_
-return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Empty())
+return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Link(ff_core_Pair.Pair(full_, full_), ff_core_List.Empty()))
 return
 }
 }
