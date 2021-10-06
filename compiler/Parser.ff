@@ -168,10 +168,8 @@ extend self: Parser {
                     .replace("\\\\", "\\")
             }
         }
-        let scala1 = parseTargetOption("scala")
         let javaScript = parseTargetOption("javascript")
-        let scala = scala1.orElse { parseTargetOption("scala") }
-        Targets(scala = scala, javaScript = javaScript)
+        Targets(javaScript = javaScript)
     }
 
     parseSignature(): Signature {
@@ -283,7 +281,7 @@ extend self: Parser {
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
         let variants = if(!self.current().rawIs("{")) {
-            [Variant(nameToken.at(), nameToken.raw(), [], Targets(None, None))]
+            [Variant(nameToken.at(), nameToken.raw(), [], Targets(None))]
         } else {
             self.rawSkip(LBracketLeft, "{")
             let variantsBuilder = ArrayBuilder.empty[Variant]()
@@ -647,7 +645,7 @@ extend self: Parser {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
             let body = self.parseLambda(defaultParameterCount = signature.parameters.size())
-            functions.append(DFunction(functionAt, signature, body, Targets(None, None)))
+            functions.append(DFunction(functionAt, signature, body, Targets(None)))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()

@@ -196,12 +196,8 @@ return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_Strin
 })())
 } else return ff_core_Option.None()
 }
-const scala1_ = parseTargetOption_("scala")
 const javaScript_ = parseTargetOption_("javascript")
-const scala_ = ff_core_Option.Option_orElse(scala1_, (() => {
-return parseTargetOption_("scala")
-}))
-return ff_compiler_Syntax.Targets(scala_, javaScript_)
+return ff_compiler_Syntax.Targets(javaScript_)
 }
 
 export function Parser_parseSignature(self_) {
@@ -325,7 +321,7 @@ const commonFields_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseFunctionParameters(self_, true))
 const variants_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"))
-? ff_core_List.Link(ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), ff_core_List.Empty(), ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), ff_core_List.Empty())
+? ff_core_List.Link(ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), ff_core_List.Empty(), ff_compiler_Syntax.Targets(ff_core_Option.None())), ff_core_List.Empty())
 : (function() {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "{")
 const variantsBuilder_ = ff_core_ArrayBuilder.empty_()
@@ -827,7 +823,7 @@ while(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "f
 const functionAt_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "function"))
 const signature_ = ff_compiler_Parser.Parser_parseSignature(self_)
 const body_ = ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), false, false)
-ff_core_ArrayBuilder.ArrayBuilder_append(functions_, ff_compiler_Syntax.DFunction(functionAt_, signature_, body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())))
+ff_core_ArrayBuilder.ArrayBuilder_append(functions_, ff_compiler_Syntax.DFunction(functionAt_, signature_, body_, ff_compiler_Syntax.Targets(ff_core_Option.None())))
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }
 const body_ = ff_compiler_Parser.Parser_parseStatements(self_)

@@ -145,7 +145,6 @@ type Field(at: Location, name: String, value: Term)
 type Constraint(representation: Type)
 
 type Targets(
-    scala: Option[String]
     javaScript: Option[String]
 )
 

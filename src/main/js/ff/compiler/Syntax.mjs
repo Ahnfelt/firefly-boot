@@ -211,8 +211,8 @@ return {representation_};
 }
 
 // type Targets
-export function Targets(scala_, javaScript_) {
-return {scala_, javaScript_};
+export function Targets(javaScript_) {
+return {javaScript_};
 }
 
 // type Type

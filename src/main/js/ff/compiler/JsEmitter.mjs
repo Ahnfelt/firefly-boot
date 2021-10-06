@@ -252,7 +252,7 @@ export function JsEmitter_emitLetDefinition(self_, definition_, mutable_ = false
 const mutability_ = (mutable_
 ? "let"
 : "const")
-const valueCode_ = ff_core_Option.Option_else(definition_.targets_.scala_, (() => {
+const valueCode_ = ff_core_Option.Option_else(definition_.targets_.javaScript_, (() => {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_)
 }))
 return ((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + " = ") + valueCode_)
@@ -852,7 +852,7 @@ const at_ = _1.at_
 const functions_ = _1.functions_
 const body_ = _1.body_
 const functionStrings_ = ff_core_List.List_map(functions_, ((f_) => {
-return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), "")
+return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_Syntax.Targets(ff_core_Option.None())), "")
 }))
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_))
 return
@@ -866,7 +866,7 @@ const name_ = _1.name_
 const valueType_ = _1.valueType_
 const value_ = _1.value_
 const body_ = _1.body_
-return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), mutable_) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_Syntax.Targets(ff_core_Option.None())), mutable_) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_))
 return
 }
 }

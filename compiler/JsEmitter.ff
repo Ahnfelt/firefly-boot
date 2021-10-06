@@ -53,7 +53,7 @@ extend self: JsEmitter {
 
     emitLetDefinition(definition: DLet, mutable: Bool = False): String {
         let mutability = if(mutable) {"let"} else {"const"}
-        let valueCode = definition.targets.scala.else { self.emitTerm(definition.value) }
+        let valueCode = definition.targets.javaScript.else { self.emitTerm(definition.value) }
         mutability + " " + escapeKeyword(definition.name) + " = " + valueCode
     }
 
@@ -236,11 +236,11 @@ extend self: JsEmitter {
         term.{
             | EFunctions(at, functions, body) =>
                 let functionStrings = functions.map { f =>
-                    self.emitFunctionDefinition(DFunction(at, f.signature, f.body, Targets(None, None)))
+                    self.emitFunctionDefinition(DFunction(at, f.signature, f.body, Targets(None)))
                 }
                 functionStrings.join("\n") + "\n" + self.emitStatements(body, last)
             | ELet(at, mutable, name, valueType, value, body) =>
-                self.emitLetDefinition(DLet(at, name, valueType, value, Targets(None, None)), mutable) + "\n" + self.emitStatements(body, last)
+                self.emitLetDefinition(DLet(at, name, valueType, value, Targets(None)), mutable) + "\n" + self.emitStatements(body, last)
             | EVariant(at, word, _, _) { word == "ff:core/Unit.Unit" } =>
                 ""
             | ESequential(at0, EPipe(at1, value, ELambda(at2, Lambda(at3, cases))), EVariant(at, word, _, _)@e) {
