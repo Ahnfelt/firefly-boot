@@ -42,6 +42,7 @@ coreImports: List[DImport] =
         "Char",
         "Core",
         "FileSystem",
+        "Float",
         "Int",
         "List",
         "Log",

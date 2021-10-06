@@ -1,0 +1,29 @@
+type Float {}
+
+extend self: Float {
+
+    toInt(): Int { panic("magic") }
+        javascript "return Math.trunc(Math.abs(self_))"
+
+    round(): Float { panic("magic") }
+        javascript "return Math.round(self_)"
+
+    floor(): Float { panic("magic") }
+        javascript "return Math.floor(self_)"
+
+    ceil(): Float { panic("magic") }
+        javascript "return Math.ceil(self_)"
+
+    truncate(): Float { panic("magic") }
+        javascript "return Math.trunc(self_)"
+
+    sign(): Float { panic("magic") }
+        javascript "return Math.sign(self_)"
+
+    abs(): Float { panic("magic") }
+        javascript "return Math.abs(self_)"
+
+    toFixed(digits: Int): String { panic("magic") }
+        javascript "return self_.toFixed(digits_)"
+
+}
