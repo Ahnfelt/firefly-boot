@@ -10,16 +10,12 @@ main(system: System): Unit {
     let corePath = system.arguments().expect(0)
     let inputPath = system.arguments().expect(1)
     let tempPath = system.arguments().expect(2)
-    let scalaOutputPath = system.arguments().expect(3)
-    let jsOutputPath = system.arguments().expect(4)
+    let jsOutputPath = system.arguments().expect(3)
 
     let fs = system.files()
 
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)
-
-    let scalaPathFile = tempPath + "/src/main/scala"
-    fs.createDirectories(scalaPathFile)
 
     let jsPathFile = tempPath + "/src/main/js"
     fs.createDirectories(jsPathFile)
@@ -27,7 +23,7 @@ main(system: System): Unit {
     let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].toMap()
 
     let success = do { //try {
-        let compiler = Compiler.make(fs, system.time(), scalaPathFile, jsPathFile, packagePaths)
+        let compiler = Compiler.make(fs, system.time(), jsPathFile, packagePaths)
         compiler.emit("ff:compiler", "Main")
         compiler.printMeasurements()
         True
@@ -38,17 +34,10 @@ main(system: System): Unit {
     }*/
 
     if(success) {
-        writeExtraFiles(fs, inputPath, corePath, tempPath, scalaPathFile)
-        if(fs.exists(scalaOutputPath)) { deleteDirectory(fs, scalaOutputPath) }
         if(fs.exists(jsOutputPath)) { deleteDirectory(fs, jsOutputPath) }
-        fs.rename(scalaPathFile, scalaOutputPath)
         fs.rename(jsPathFile, jsOutputPath)
     }
 
-}
-
-writeExtraFiles(fs: FileSystem, package: String, corePath: String, outputFile: String, scalaFile: String): Unit {
-    fs.writeText(outputFile + "/build.sbt", "scalaVersion := \"2.13.3\"")
 }
 
 deleteDirectory(fs: FileSystem, outputFile: String): Unit {

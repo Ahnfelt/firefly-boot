@@ -8,7 +8,6 @@ import JsEmitter
 type Compiler(
     files: FileSystem
     time: TimeSystem
-    scalaOutputPath: String
     jsOutputPath: String
     packagePaths: Map[String, String]
     mutable parsedModules: Map[String, Module]
@@ -22,14 +21,12 @@ type Compiler(
 make(
     files: FileSystem
     time: TimeSystem
-    scalaOutputPath: String
     jsOutputPath: String
     packagePaths: Map[String, String]
 ): Compiler {
     Compiler(
         files = files
         time = time
-        scalaOutputPath = scalaOutputPath
         jsOutputPath = jsOutputPath
         packagePaths = packagePaths
         parsedModules = Map.empty()
