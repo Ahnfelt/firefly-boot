@@ -55,8 +55,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_) {
-return {files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_};
+export function Compiler(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_) {
+return {files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
 }
 
 export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Array", ff_core_List.Link("ArrayBuilder", ff_core_List.Link("Bool", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("FileSystem", ff_core_List.Link("Float", ff_core_List.Link("Int", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Pair", ff_core_List.Link("Set", ff_core_List.Link("String", ff_core_List.Link("System", ff_core_List.Link("TimeSystem", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty()))))))))))))))))))))), ((moduleName_) => {
@@ -64,14 +64,18 @@ return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1)
 }))
 
 export function make_(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_) {
-return ff_compiler_Compiler.Compiler(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty())
+return ff_compiler_Compiler.Compiler(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
 }
 
 export function Compiler_measure(self_, phase_, packageName_, moduleName_, body_) {
-const pair_ = ff_core_TimeSystem.TimeSystem_measure(self_.time_, body_)
+const start_ = (ff_core_TimeSystem.TimeSystem_elapsed(self_.time_) - self_.phaseDurationDelta_)
+const result_ = body_()
+const stop_ = (ff_core_TimeSystem.TimeSystem_elapsed(self_.time_) - self_.phaseDurationDelta_)
+const duration_ = (stop_ - start_)
+self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_)
 const text_ = ((((phase_ + " ") + packageName_) + "/") + moduleName_)
-self_.phaseDurations_ = ff_core_List.Link(ff_core_Pair.Pair(text_, pair_.second_), self_.phaseDurations_)
-return pair_.first_
+self_.phaseDurations_ = ff_core_List.Link(ff_core_Pair.Pair(text_, duration_), self_.phaseDurations_)
+return result_
 }
 
 export function Compiler_printMeasurements(self_) {
@@ -122,16 +126,19 @@ return ff_compiler_Compiler.Compiler_parse(self_, newPackageName_, newModuleName
 
 export function Compiler_resolve(self_, packageName_, moduleName_) {
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.resolvedModules_, ((packageName_ + ":") + moduleName_)), (() => {
+return ff_compiler_Compiler.Compiler_measure(self_, "Resolve", packageName_, moduleName_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_parse(self_, packageName_, moduleName_)
 const otherModules_ = ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_)
 const result_ = ff_compiler_Resolver.Resolver_resolveModule(ff_compiler_Resolver.make_(), module_, otherModules_)
 self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), result_)
 return result_
 }))
+}))
 }
 
 export function Compiler_infer(self_, packageName_, moduleName_) {
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.inferredModules_, ((packageName_ + ":") + moduleName_)), (() => {
+return ff_compiler_Compiler.Compiler_measure(self_, "Infer", packageName_, moduleName_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_resolve(self_, packageName_, moduleName_)
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_), ((i_) => {
 const newPackageName_ = ((i_.packagePair_.first_ + ":") + i_.packagePair_.second_)
@@ -144,12 +151,14 @@ const result_ = ff_compiler_Inference.Inference_inferModule(ff_compiler_Inferenc
 self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ((packageName_ + ":") + moduleName_), result_)
 return result_
 }))
+}))
 }
 
 export function Compiler_emit(self_, packageName_, moduleName_) {
 if(ff_core_Set.Set_contains(self_.emittedModules_, ((packageName_ + ":") + moduleName_))) {
 
 } else {
+ff_compiler_Compiler.Compiler_measure(self_, "Emit", packageName_, moduleName_, (() => {
 self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ((packageName_ + ":") + moduleName_))
 const module_ = ff_compiler_Compiler.Compiler_infer(self_, packageName_, moduleName_)
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_), ((i_) => {
@@ -166,7 +175,8 @@ const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.mak
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"))
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs")
 ff_core_FileSystem.FileSystem_createDirectories(self_.files_, jsPath_)
-ff_core_FileSystem.FileSystem_writeText(self_.files_, jsFile_, js_)
+return ff_core_FileSystem.FileSystem_writeText(self_.files_, jsFile_, js_)
+}))
 }
 }
 

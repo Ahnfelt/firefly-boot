@@ -16,6 +16,7 @@ type Compiler(
     mutable inferredModules: Map[String, Module]
     mutable emittedModules: Set[String]
     mutable phaseDurations: List[Pair[String, Duration]]
+    mutable phaseDurationDelta: Duration
 )
 
 make(
@@ -35,7 +36,8 @@ make(
         resolvedModules = Map.empty()
         inferredModules = Map.empty()
         emittedModules = Set.empty()
-        phaseDurations = []
+        phaseDurations = [],
+        phaseDurationDelta = Duration(0.0)
     )
 }
 
@@ -75,10 +77,14 @@ coreImports: List[DImport] =
 extend self: Compiler {
 
     measure[T](phase: String, packageName: String, moduleName: String, body: () => T): T {
-        let pair = self.time.measure(body)
+        let start = Duration(self.time.elapsed().seconds - self.phaseDurationDelta.seconds)
+        let result = body()
+        let stop = Duration(self.time.elapsed().seconds - self.phaseDurationDelta.seconds)
+        let duration = Duration(stop.seconds - start.seconds)
+        self.phaseDurationDelta = Duration(self.phaseDurationDelta.seconds + duration.seconds)
         let text = phase + " " + packageName + "/" + moduleName
-        self.phaseDurations = [Pair(text, pair.second), ...self.phaseDurations]
-        pair.first
+        self.phaseDurations = [Pair(text, duration), ...self.phaseDurations]
+        result
     }
 
     printMeasurements(): Unit {
@@ -119,6 +125,7 @@ extend self: Compiler {
 
     resolve(packageName: String, moduleName: String): Module {
         self.resolvedModules.get(packageName + ":" + moduleName).else:
+        self.measure("Resolve", packageName, moduleName):
 
         let module = self.parse(packageName, moduleName)
         let otherModules = self.imports(packageName, module)
@@ -130,6 +137,7 @@ extend self: Compiler {
 
     infer(packageName: String, moduleName: String): Module {
         self.inferredModules.get(packageName + ":" + moduleName).else:
+        self.measure("Infer", packageName, moduleName):
 
         let module = self.resolve(packageName, moduleName)
         let otherModules = self.imports(packageName, module).map { i =>
@@ -145,6 +153,7 @@ extend self: Compiler {
 
     emit(packageName: String, moduleName: String): Unit {
         if(self.emittedModules.contains(packageName + ":" + moduleName)) {} else:
+        self.measure("Emit", packageName, moduleName):
         self.emittedModules = self.emittedModules.add(packageName + ":" + moduleName)
 
         let module = self.infer(packageName, moduleName)
