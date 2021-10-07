@@ -60,7 +60,7 @@ export function System_files(self_) {
 return null
 }
 
-export function System_timeSystem(self_) {
+export function System_time(self_) {
 return null
 }
 

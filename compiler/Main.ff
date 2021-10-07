@@ -27,7 +27,9 @@ main(system: System): Unit {
     let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].toMap()
 
     let success = do { //try {
-        Compiler.make(fs, scalaPathFile, jsPathFile, packagePaths).emit("ff:compiler", "Main")
+        let compiler = Compiler.make(fs, system.time(), scalaPathFile, jsPathFile, packagePaths)
+        compiler.emit("ff:compiler", "Main")
+        compiler.printMeasurements()
         True
     }
     /*} else {

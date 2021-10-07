@@ -55,20 +55,43 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(files_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_) {
-return {files_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_};
+export function Compiler(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_) {
+return {files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_};
 }
 
 export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Array", ff_core_List.Link("ArrayBuilder", ff_core_List.Link("Bool", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("FileSystem", ff_core_List.Link("Float", ff_core_List.Link("Int", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Pair", ff_core_List.Link("Set", ff_core_List.Link("String", ff_core_List.Link("System", ff_core_List.Link("TimeSystem", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty()))))))))))))))))))))), ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_core_Pair.Pair("ff", "core"), ff_core_List.Empty(), moduleName_)
 }))
 
-export function make_(files_, scalaOutputPath_, jsOutputPath_, packagePaths_) {
-return ff_compiler_Compiler.Compiler(files_, scalaOutputPath_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_())
+export function make_(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_) {
+return ff_compiler_Compiler.Compiler(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty())
+}
+
+export function Compiler_measure(self_, phase_, packageName_, moduleName_, body_) {
+const pair_ = ff_core_TimeSystem.TimeSystem_measure(self_.time_, body_)
+const text_ = ((((phase_ + " ") + packageName_) + "/") + moduleName_)
+self_.phaseDurations_ = ff_core_List.Link(ff_core_Pair.Pair(text_, pair_.second_), self_.phaseDurations_)
+return pair_.first_
+}
+
+export function Compiler_printMeasurements(self_) {
+const worst_ = ff_core_List.List_reverse(ff_core_List.List_takeLast(ff_core_List.List_sortBy(self_.phaseDurations_, ((_w1) => {
+return ((_w1.second_ + 1000000.0) + "")
+})), 5))
+ff_core_List.List_each(worst_, ((_1) => {
+{
+const text_ = _1.first_
+const duration_ = _1.second_
+ff_core_Log.debug_(((text_ + ":\t") + ff_core_Duration.Duration_show(duration_)))
+return
+}
+throw new Error('Unexhaustive pattern match')
+}))
 }
 
 export function Compiler_parse(self_, packageName_, moduleName_) {
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_)), (() => {
+return ff_compiler_Compiler.Compiler_measure(self_, "Parse", packageName_, moduleName_, (() => {
 const packagePair_ = ff_core_Core.do_((() => {
 const array_ = ff_core_String.String_split(packageName_, 58)
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(array_, 0), ff_core_Array.Array_expect(array_, 1))
@@ -83,6 +106,7 @@ return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, ff
 }))(module_)
 self_.parsedModules_ = ff_core_Map.Map_add(self_.parsedModules_, ((packageName_ + ":") + moduleName_), result_)
 return result_
+}))
 }))
 }
 

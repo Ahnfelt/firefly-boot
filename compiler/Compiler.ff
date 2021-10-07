@@ -7,6 +7,7 @@ import JsEmitter
 
 type Compiler(
     files: FileSystem
+    time: TimeSystem
     scalaOutputPath: String
     jsOutputPath: String
     packagePaths: Map[String, String]
@@ -14,16 +15,19 @@ type Compiler(
     mutable resolvedModules: Map[String, Module]
     mutable inferredModules: Map[String, Module]
     mutable emittedModules: Set[String]
+    mutable phaseDurations: List[Pair[String, Duration]]
 )
 
 make(
     files: FileSystem
+    time: TimeSystem
     scalaOutputPath: String
     jsOutputPath: String
     packagePaths: Map[String, String]
 ): Compiler {
     Compiler(
         files = files
+        time = time
         scalaOutputPath = scalaOutputPath
         jsOutputPath = jsOutputPath
         packagePaths = packagePaths
@@ -31,6 +35,7 @@ make(
         resolvedModules = Map.empty()
         inferredModules = Map.empty()
         emittedModules = Set.empty()
+        phaseDurations = []
     )
 }
 
@@ -69,8 +74,23 @@ coreImports: List[DImport] =
 
 extend self: Compiler {
 
+    measure[T](phase: String, packageName: String, moduleName: String, body: () => T): T {
+        let pair = self.time.measure(body)
+        let text = phase + " " + packageName + "/" + moduleName
+        self.phaseDurations = [Pair(text, pair.second), ...self.phaseDurations]
+        pair.first
+    }
+
+    printMeasurements(): Unit {
+        let worst = self.phaseDurations.sortBy { (_.second.seconds + 1000000.0) + "" }.takeLast(5).reverse()
+        worst.each {| Pair(text, duration) =>
+            Log.debug(text + ":\t" + duration.show())
+        }
+    }
+
     parse(packageName: String, moduleName: String): Module {
         self.parsedModules.get(packageName + ":" + moduleName).else:
+        self.measure("Parse", packageName, moduleName):
 
         let packagePair = do {
             let array = packageName.split(':')
