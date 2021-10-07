@@ -7,6 +7,7 @@ type Environment(
 type Scheme(
     isVariable: Bool
     isMutable: Bool
+    isNewtype: Bool
     signature: Signature
 )
 
@@ -36,13 +37,13 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
     let functions =
         module.functions.map { d => Pair(
             full(module, d.signature.name),
-            Scheme(False, False, d.signature)
+            Scheme(False, False, False, d.signature)
         )}
 
     let lets =
         module.lets.map { d => Pair(
             full(module, d.name),
-            Scheme(True, False, Signature(d.at, d.name, [], [], [], d.variableType))
+            Scheme(True, False, False, Signature(d.at, d.name, [], [], [], d.variableType))
         )}
 
     let extends =
@@ -56,7 +57,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                     d.methods.map { method =>
                         Pair(
                             prefix + method.signature.name,
-                            Scheme(False, False, method.signature.Signature(
+                            Scheme(False, False, False, method.signature.Signature(
                                 generics = d.generics ++ method.signature.generics
                                 constraints = d.constraints ++ method.signature.constraints
                                 parameters = [selfParameter, ...method.signature.parameters]
@@ -74,7 +75,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             d.commonFields.map { f =>
                 Pair(
                     full(module, prefix + f.name),
-                    Scheme(True, f.mutable, Signature(
+                    Scheme(True, f.mutable, d.newtype, Signature(
                         at = f.at
                         name = f.name
                         generics = d.generics
@@ -94,7 +95,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             d.variants.map { variant =>
                 Pair(
                     full(module, variant.name),
-                    Scheme(False, False, Signature(
+                    Scheme(False, False, d.newtype, Signature(
                         variant.at,
                         variant.name,
                         generics = d.generics,

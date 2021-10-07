@@ -58,12 +58,13 @@ type DExtend(
     methods: List[DFunction],
 )
 type DType(
-    at: Location,
-    name: String,
-    generics: List[String],
-    constraints: List[Constraint],
-    commonFields: List[Parameter],
-    variants: List[Variant],
+    at: Location
+    newtype: Bool
+    name: String
+    generics: List[String]
+    constraints: List[Constraint]
+    commonFields: List[Parameter]
+    variants: List[Variant]
     targets: Targets
 )
 type DTrait(
@@ -104,7 +105,7 @@ type Term(at: Location) {
     EVariant(name: String, typeArguments: List[Type], arguments: Option[List[Argument]])
     EVariantIs(name: String, typeArguments: List[Type])
     ERecord(fields: List[Field])
-    EField(record: Term, field: String)
+    EField(newtype: Bool, record: Term, field: String)
     EWildcard(index: Int)
 }
 

@@ -12,6 +12,8 @@ import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
 
+import * as ff_core_Duration from "../../ff/core/Duration.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
@@ -179,7 +181,7 @@ return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Ma
 const _1 = definition_
 {
 const _c = _1
-return ff_compiler_Syntax.DType(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((c_) => {
+return ff_compiler_Syntax.DType(_c.at_, _c.newtype_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((c_) => {
 {
 const _1 = c_
 {
@@ -431,7 +433,7 @@ const e_ = term_a
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.EField(_c.at_, ff_compiler_Resolver.Resolver_resolveTerm(self_, e_.record_), _c.field_)
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Resolver.Resolver_resolveTerm(self_, e_.record_), _c.field_)
 return
 }
 throw new Error('Unexhaustive pattern match')

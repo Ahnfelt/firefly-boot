@@ -83,7 +83,7 @@ extend self: Inference {
 
     inferFunctionDefinition(environment: Environment, definition: DFunction): DFunction {
         let parameters = definition.signature.parameters.map { p =>
-            let scheme = Scheme(True, False, Signature(p.at, p.name, [], [], [], p.valueType))
+            let scheme = Scheme(True, False, False, Signature(p.at, p.name, [], [], [], p.valueType))
             Pair(p.name, scheme)
         }
         let parameterMap = parameters.toMap()
@@ -127,7 +127,7 @@ extend self: Inference {
         self.unification.unify(case.at, expected, functionType)
         let newEnvironment = (parameterTypes.zip(case.patterns).foldLeft(environment)) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
-                Pair(name, Scheme(True, False, Signature(c.at, name, [], [], [], type)))
+                Pair(name, Scheme(True, False, False, Signature(c.at, name, [], [], [], type)))
             }
             Environment(environment1.symbols ++ symbols)
         }
@@ -160,10 +160,16 @@ extend self: Inference {
                 let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
                 }
+                if(instantiated.scheme.isNewtype) {
+                    fail(at, "This kind of pattern is not allowed for newtypes")
+                }
                 Map.empty()
             | PVariantAs(at, name, Some(variable)) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)
+                }
+                if(instantiated.scheme.isNewtype) {
+                     fail(at, "This kind of pattern is not allowed for newtypes")
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
@@ -237,7 +243,7 @@ extend self: Inference {
                                     instantiated.scheme.signature.parameters.expect(0).valueType
                                 )*/
                                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
-                                e.EField(record = record)
+                                e.EField(newtype = instantiated.scheme.isNewtype, record = record)
                             | None =>
                                 fail(e.at, "No such field " + e.field + " on type: " + t.show())
                         }
@@ -262,7 +268,7 @@ extend self: Inference {
                     after = self.inferTerm(environment, expected, after)
                 )
             | ELet e =>
-                let scheme = Scheme(True, e.mutable, Signature(e.at, e.name, [], [], [], e.valueType))
+                let scheme = Scheme(True, e.mutable, False, Signature(e.at, e.name, [], [], [], e.valueType))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
@@ -299,9 +305,13 @@ extend self: Inference {
                     typeArguments = instantiated.typeArguments.map { _.second }
                 )
             | ECopy e =>
-                let signature = self.lookup(environment, e.at, e.name, []).else {
+                let scheme = self.lookup(environment, e.at, e.name, []).else {
                     fail(e.at, "Symbol not in scope: " + e.name)
-                }.scheme.signature
+                }.scheme
+                if(scheme.isNewtype) {
+                    fail(e.at, "Newtypes can't be copied")
+                }
+                let signature = scheme.signature
                 let parameterNames = signature.parameters.map { _.name }
                 e.arguments.find { a => !parameterNames.any { _ == a.name } }.each {
                     | Field(at, name, value) => fail(at, "Unknown parameter: " + name)
@@ -310,7 +320,7 @@ extend self: Inference {
                     e.arguments.find { _.name == name }.map {
                         | Field(at, _, value) => Argument(at, Some(name), value)
                     }.else {
-                        Argument(e.at, Some(name), EField(e.at, EVariable(e.at, "_c", [], []), name))
+                        Argument(e.at, Some(name), EField(e.at, False, EVariable(e.at, "_c", [], []), name))
                     }
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
@@ -395,7 +405,7 @@ extend self: Inference {
                 )
             | EFunctions(at, functions, body) =>
                 let functionMap = functions.map { f =>
-                    let scheme = Scheme(False, False, f.signature)
+                    let scheme = Scheme(False, False, False, f.signature)
                     Pair(f.signature.name, scheme)
                 }.toMap()
                 let environment2 = environment.Environment(symbols = environment.symbols ++ functionMap)

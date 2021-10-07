@@ -101,7 +101,7 @@ extend self: Parser {
                 traits.append(self.parseTraitDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("instance")} {
                 instances.append(self.parseInstanceDefinition())
-            } elseIf {self.current().is(LKeyword) && self.current().rawIs("type")} {
+            } elseIf {self.current().is(LKeyword) && (self.current().rawIs("type") || self.current().rawIs("newtype"))} {
                 types.append(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
                 imports.append(self.parseImportDefinition())
@@ -276,11 +276,12 @@ extend self: Parser {
     }
 
     parseTypeDefinition(): DType {
-        self.rawSkip(LKeyword, "type")
+        let newtype = self.current().rawIs("newtype")
+        if(newtype) { self.rawSkip(LKeyword, "newtype") } else { self.rawSkip(LKeyword, "type") }
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-        let variants = if(!self.current().rawIs("{")) {
+        let variants = if(newtype || !self.current().rawIs("{")) {
             [Variant(nameToken.at(), nameToken.raw(), [], Targets(None))]
         } else {
             self.rawSkip(LBracketLeft, "{")
@@ -298,7 +299,13 @@ extend self: Parser {
             variantsBuilder.toList()
         }
         let targets = self.parseTargets()
-        DType(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, targets)
+        if(newtype && commonFields.size() != 1) {
+            self.fail(nameToken.at(), "Newtypes must have exactly one field")
+        }
+        if(newtype && commonFields.expect(0).mutable) {
+            self.fail(commonFields.expect(0).at, "Newtypes can't have mutable fields")
+        }
+        DType(nameToken.at(), newtype, nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, targets)
     }
     
     parseImportDefinition(): DImport {
@@ -666,7 +673,7 @@ extend self: Parser {
                 let right = self.parseBinary(level + 1)
                 if(token.rawIs("++")) {
                     let arguments = [Argument(right.at, None, right)]
-                    result = ECall(token.at(), False, EField(token.at(), result, "addAll"), [], arguments)
+                    result = ECall(token.at(), False, EField(token.at(), False, result, "addAll"), [], arguments)
                 } else {
                     let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
                     result = ECall(token.at(), False, EVariable(token.at(), token.raw(), [], []), [], arguments)
@@ -702,7 +709,7 @@ extend self: Parser {
                     result = self.parseCopy(result)
                 } else {
                     let token = self.skip(LLower)
-                    result = EField(token.at(), result, token.raw())
+                    result = EField(token.at(), False, result, token.raw())
                 }
             } else {
                 let at = self.current().at()
@@ -718,7 +725,7 @@ extend self: Parser {
                 result = ECall(at, tailCall, result, typeArguments, [...arguments, ...moreArguments.toList()])
                 if(lastWasCurly && self.current().is(LLower)) {
                     let token = self.skip(LLower)
-                    result = EField(token.at(), result, token.raw())
+                    result = EField(token.at(), False, result, token.raw())
                 }
             }
         }

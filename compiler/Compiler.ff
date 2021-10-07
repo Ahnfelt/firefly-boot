@@ -41,6 +41,7 @@ coreImports: List[DImport] =
         "Bool",
         "Char",
         "Core",
+        "Duration",
         "FileSystem",
         "Float",
         "Int",

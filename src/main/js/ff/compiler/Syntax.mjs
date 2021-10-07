@@ -10,6 +10,8 @@ import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
 
+import * as ff_core_Duration from "../../ff/core/Duration.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
@@ -79,8 +81,8 @@ return {at_, name_, generics_, constraints_, type_, methods_};
 }
 
 // type DType
-export function DType(at_, name_, generics_, constraints_, commonFields_, variants_, targets_) {
-return {at_, name_, generics_, constraints_, commonFields_, variants_, targets_};
+export function DType(at_, newtype_, name_, generics_, constraints_, commonFields_, variants_, targets_) {
+return {at_, newtype_, name_, generics_, constraints_, commonFields_, variants_, targets_};
 }
 
 // type DTrait
@@ -148,8 +150,8 @@ return {EVariantIs: true, at_, name_, typeArguments_};
 export function ERecord(at_, fields_) {
 return {ERecord: true, at_, fields_};
 }
-export function EField(at_, record_, field_) {
-return {EField: true, at_, record_, field_};
+export function EField(at_, newtype_, record_, field_) {
+return {EField: true, at_, newtype_, record_, field_};
 }
 export function EWildcard(at_, index_) {
 return {EWildcard: true, at_, index_};

@@ -18,6 +18,8 @@ import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
 
+import * as ff_core_Duration from "../../ff/core/Duration.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
@@ -133,7 +135,7 @@ throw new Error('Unexhaustive pattern match')
 
 export function Inference_inferFunctionDefinition(self_, environment_, definition_) {
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
-const scheme_ = ff_compiler_Environment.Scheme(true, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_))
+const scheme_ = ff_compiler_Environment.Scheme(true, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_))
 return ff_core_Pair.Pair(p_.name_, scheme_)
 }))
 const parameterMap_ = ff_core_List.List_toMap(parameters_)
@@ -231,7 +233,7 @@ const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPatter
 {
 const name_ = _1.first_
 const type_ = _1.second_
-return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_)))
+return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_)))
 return
 }
 throw new Error('Unexhaustive pattern match')
@@ -324,6 +326,9 @@ if(_1.variable_.None) {
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }))
+if(instantiated_.scheme_.isNewtype_) {
+ff_compiler_Inference.fail_(at_, "This kind of pattern is not allowed for newtypes")
+}
 return ff_core_Map.empty_()
 return
 }
@@ -338,6 +343,9 @@ const variable_ = _1.variable_.value_
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }))
+if(instantiated_.scheme_.isNewtype_) {
+ff_compiler_Inference.fail_(at_, "This kind of pattern is not allowed for newtypes")
+}
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_)
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
@@ -432,7 +440,7 @@ const e_ = _1
 const recordType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, e_.at_)
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_)
 const e2_ = (((_c) => {
-return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
 }))(e_)
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_)
@@ -487,7 +495,7 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
+return ff_compiler_Syntax.EField(_c.at_, instantiated_.scheme_.isNewtype_, record_, _c.field_)
 return
 }
 throw new Error('Unexhaustive pattern match')
@@ -561,7 +569,7 @@ return
 {
 if(_1.ELet) {
 const e_ = _1
-const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_))
+const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_))
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_))
 }))(environment_)
@@ -643,9 +651,13 @@ return
 {
 if(_1.ECopy) {
 const e_ = _1
-const signature_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), (() => {
+const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
-})).scheme_.signature_
+})).scheme_
+if(scheme_.isNewtype_) {
+ff_compiler_Inference.fail_(e_.at_, "Newtypes can't be copied")
+}
+const signature_ = scheme_.signature_
 const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
 }))
@@ -675,7 +687,7 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 })), (() => {
-return ff_compiler_Syntax.Argument(e_.at_, ff_core_Option.Some(name_), ff_compiler_Syntax.EField(e_.at_, ff_compiler_Syntax.EVariable(e_.at_, "_c", ff_core_List.Empty(), ff_core_List.Empty()), name_))
+return ff_compiler_Syntax.Argument(e_.at_, ff_core_Option.Some(name_), ff_compiler_Syntax.EField(e_.at_, false, ff_compiler_Syntax.EVariable(e_.at_, "_c", ff_core_List.Empty(), ff_core_List.Empty()), name_))
 }))
 }))
 const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.Some(arguments_))
@@ -754,7 +766,7 @@ const recordType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, f_.record_)
 const e2_ = (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, (((_c) => {
-return ff_compiler_Syntax.EField(_c.at_, record_, _c.field_)
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
 }))(f_), _c.typeArguments_, _c.arguments_)
 }))(e_)
 {
@@ -863,7 +875,7 @@ const at_ = _1.at_
 const functions_ = _1.functions_
 const body_ = _1.body_
 const functionMap_ = ff_core_List.List_toMap(ff_core_List.List_map(functions_, ((f_) => {
-const scheme_ = ff_compiler_Environment.Scheme(false, false, f_.signature_)
+const scheme_ = ff_compiler_Environment.Scheme(false, false, false, f_.signature_)
 return ff_core_Pair.Pair(f_.signature_.name_, scheme_)
 })))
 const environment2_ = (((_c) => {
@@ -1683,7 +1695,7 @@ const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_)
 }))(scheme_.signature_)
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
-return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, signature_)
+return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, signature_)
 }))(scheme_))
 }))
 }

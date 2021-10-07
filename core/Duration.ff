@@ -1,0 +1,13 @@
+newtype Duration(seconds: Float)
+
+extend self: Duration {
+
+    show(): String {
+        self.seconds.toFixed(3) + " s"
+    }
+
+}
+
+foo(duration: Duration): Float {
+    | Duration(s) => s
+}

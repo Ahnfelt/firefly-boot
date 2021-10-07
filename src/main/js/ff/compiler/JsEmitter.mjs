@@ -12,6 +12,8 @@ import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
 
+import * as ff_core_Duration from "../../ff/core/Duration.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
@@ -46,8 +48,8 @@ return {otherModules_, tailCallUsed_};
 }
 
 // type ProcessedVariantCase
-export function ProcessedVariantCase(variantName_, loneVariant_, arguments_) {
-return {variantName_, loneVariant_, arguments_};
+export function ProcessedVariantCase(variantName_, newtype_, loneVariant_, arguments_) {
+return {variantName_, newtype_, loneVariant_, arguments_};
 }
 
 
@@ -384,9 +386,13 @@ return (ff_compiler_JsEmitter.escapeKeyword_(parameter_.name_) + defaultValue_)
 }
 
 export function JsEmitter_emitTypeDefinition(self_, definition_) {
+if(definition_.newtype_) {
+return ("// newtype " + definition_.name_)
+} else {
 return ((("// type " + definition_.name_) + "\n") + ff_core_List.List_join(ff_core_List.List_map(definition_.variants_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitVariantDefinition(self_, definition_, _w1)
 })), "\n"))
+}
 }
 
 export function JsEmitter_emitVariantDefinition(self_, typeDefinition_, definition_) {
@@ -626,9 +632,14 @@ return
 const self_ = self_a
 if(term_a.EField) {
 const at_ = term_a.at_
+const newtype_ = term_a.newtype_
 const record_ = term_a.record_
 const field_ = term_a.field_
+if(newtype_) {
+return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_)
+} else {
 return ((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, record_) + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
+}
 return
 }
 }
@@ -1377,11 +1388,13 @@ return (_w1 != 46)
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
 const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
+let newtype_ = false
 let loneVariant_ = false
 const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ == variantName_)
 })), ((variant_) => {
+newtype_ = definition_.newtype_
 loneVariant_ = (ff_core_List.List_size(definition_.variants_) == 1)
 return ff_core_List.List_addAll(ff_core_List.List_map(definition_.commonFields_, ((_w1) => {
 return _w1.name_
@@ -1389,10 +1402,14 @@ return _w1.name_
 return _w1.name_
 })))
 }))
-}))), ((_w1) => {
-return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(_w1))
+}))), ((field_) => {
+if(newtype_) {
+return argument_
+} else {
+return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
+}
 }))
-return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, loneVariant_, newArguments_)
+return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, newtype_, loneVariant_, newArguments_)
 }
 
 export function JsEmitter_emitArgument(self_, argument_) {

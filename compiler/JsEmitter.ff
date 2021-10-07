@@ -125,6 +125,7 @@ extend self: JsEmitter {
     }
 
     emitTypeDefinition(definition: DType): String {
+        if(definition.newtype) { "// newtype " + definition.name } else:
         "// type " + definition.name + "\n" +
         definition.variants.map { self.emitVariantDefinition(definition, _) }.join("\n")
     }
@@ -185,7 +186,8 @@ extend self: JsEmitter {
         | ECopy(at, name, record, fields) =>
             let fieldCode = fields.map { f => escapeKeyword(f.name) + " = " + self.emitTerm(f.value) }.join(", ")
             "{..." + self.emitTerm(record) + ", " + fieldCode + "}"
-        | EField(at, record, field) =>
+        | EField(at, newtype, record, field) =>
+            if(newtype) { self.emitTerm(record) } else:
             self.emitTerm(record) + "." + escapeKeyword(field)
         | ELambda(at, Lambda(_, [MatchCase(_, patterns, None, body)])) {
             patterns.all {| PVariable _ => True | _ => False }
@@ -400,14 +402,16 @@ extend self: JsEmitter {
         let variantName = escapeKeyword(variantNameUnqualified)
         let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
         let variantModule = self.otherModules.expect(moduleName)
+        mutable newtype = False
         mutable loneVariant = False
         let newArguments = variantModule.types.collectFirst { definition =>
             definition.variants.find { _.name == variantName }.map { variant =>
+                newtype = definition.newtype
                 loneVariant = definition.variants.size() == 1
                 definition.commonFields.map { _.name} ++ variant.fields.map {_.name}
             }
-        }.expect().map { argument + "." + escapeKeyword(_) }
-        ProcessedVariantCase(variantName, loneVariant, newArguments)
+        }.expect().map { field => if(newtype) { argument } else { argument + "." + escapeKeyword(field) } }
+        ProcessedVariantCase(variantName, newtype, loneVariant, newArguments)
     }
 
     emitArgument(argument: Argument): String {
@@ -418,6 +422,7 @@ extend self: JsEmitter {
 
 type ProcessedVariantCase(
     variantName: String
+    newtype: Bool
     loneVariant: Bool
     arguments: List[String]
 )

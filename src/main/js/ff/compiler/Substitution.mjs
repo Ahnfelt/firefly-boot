@@ -12,6 +12,8 @@ import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
 
+import * as ff_core_Duration from "../../ff/core/Duration.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
@@ -185,7 +187,7 @@ const e_ = _1
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.EField(_c.at_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), _c.field_)
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), _c.field_)
 return
 }
 throw new Error('Unexhaustive pattern match')
