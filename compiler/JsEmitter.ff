@@ -171,7 +171,10 @@ extend self: JsEmitter {
         | EVariant(at, name, _, _) { name == "ff:core/Unit.Unit" } =>
             "(void 0)"
         | EVariant(at, name, _, arguments) =>
-            escapeResolved(name) + "(" + arguments.toList().flatten().map(self.emitArgument).join(", ") + ")"
+            let argumentsString = arguments.toList().flatten().map(self.emitArgument).join(", ")
+            let newtype = self.processVariant(name)
+            if(newtype) { argumentsString } else:
+            escapeResolved(name) + "(" + argumentsString + ")"
         | EVariantIs(at, name, _) { name == "ff:core/Bool.False" } =>
             "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
         | EVariantIs(at, name, _) { name == "ff:core/Bool.True" } =>
@@ -412,6 +415,20 @@ extend self: JsEmitter {
             }
         }.expect().map { field => if(newtype) { argument } else { argument + "." + escapeKeyword(field) } }
         ProcessedVariantCase(variantName, newtype, loneVariant, newArguments)
+    }
+
+    processVariant(name: String): Bool {
+        let variantNameUnqualified = name.reverse().takeWhile { _ != '.' }.reverse()
+        let variantName = escapeKeyword(variantNameUnqualified)
+        let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
+        let variantModule = self.otherModules.expect(moduleName)
+        mutable newtype = False
+        let newArguments = variantModule.types.collectFirst { definition =>
+            definition.variants.find { _.name == variantName }.map { variant =>
+                newtype = definition.newtype
+            }
+        }.expect()
+        newtype
     }
 
     emitArgument(argument: Argument): String {

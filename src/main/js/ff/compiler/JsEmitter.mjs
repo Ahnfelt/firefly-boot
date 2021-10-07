@@ -563,9 +563,15 @@ if(term_a.EVariant) {
 const at_ = term_a.at_
 const name_ = term_a.name_
 const arguments_ = term_a.arguments_
-return (((ff_compiler_JsEmitter.escapeResolved_(name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_flatten(ff_core_Option.Option_toList(arguments_)), ((argument_) => {
+const argumentsString_ = ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_flatten(ff_core_Option.Option_toList(arguments_)), ((argument_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
-})), ", ")) + ")")
+})), ", ")
+const newtype_ = ff_compiler_JsEmitter.JsEmitter_processVariant(self_, name_)
+if(newtype_) {
+return argumentsString_
+} else {
+return (((ff_compiler_JsEmitter.escapeResolved_(name_) + "(") + argumentsString_) + ")")
+}
 return
 }
 }
@@ -1410,6 +1416,24 @@ return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
 }
 }))
 return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, newtype_, loneVariant_, newArguments_)
+}
+
+export function JsEmitter_processVariant(self_, name_) {
+const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
+return (_w1 != 46)
+})))
+const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
+const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
+const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
+let newtype_ = false
+const newArguments_ = ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
+return (_w1.name_ == variantName_)
+})), ((variant_) => {
+newtype_ = definition_.newtype_
+}))
+})))
+return newtype_
 }
 
 export function JsEmitter_emitArgument(self_, argument_) {
