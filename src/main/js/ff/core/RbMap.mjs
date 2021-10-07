@@ -125,6 +125,7 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function RbMap_get(self_, key_) {
+_tailcall: for(;;) {
 {
 const _1 = self_
 {
@@ -138,7 +139,13 @@ if(_1.RbNode) {
 const l_ = _1.left_
 const k_ = _1.key_
 if(ff_core_Core.magicLess_(key_, k_)) {
-return ff_core_RbMap.RbMap_get(l_, key_)
+{
+const self_r_ = l_
+const key_r_ = key_
+self_ = self_r_
+key_ = key_r_
+continue _tailcall
+}
 return
 }
 }
@@ -148,7 +155,13 @@ if(_1.RbNode) {
 const k_ = _1.key_
 const r_ = _1.right_
 if(ff_core_Core.magicLess_(k_, key_)) {
-return ff_core_RbMap.RbMap_get(r_, key_)
+{
+const self_r_ = r_
+const key_r_ = key_
+self_ = self_r_
+key_ = key_r_
+continue _tailcall
+}
 return
 }
 }
@@ -161,6 +174,8 @@ return
 }
 }
 throw new Error('Unexhaustive pattern match')
+}
+return
 }
 }
 
