@@ -7,7 +7,3 @@ extend self: Duration {
     }
 
 }
-
-foo(duration: Duration): Float {
-    | Duration(s) => s
-}
