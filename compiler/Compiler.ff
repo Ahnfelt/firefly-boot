@@ -54,6 +54,7 @@ coreImports: List[DImport] =
         "Set",
         "String",
         "System",
+        "TimeSystem",
         "Try",
         "Unit"
     ].map { moduleName =>

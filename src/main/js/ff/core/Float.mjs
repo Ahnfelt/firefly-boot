@@ -40,31 +40,43 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Set
-export function Set(map_) {
-return {map_};
+// type Float
+
+
+
+
+
+
+export function Float_toInt(self_) {
+return Math.trunc(Math.abs(self_))
 }
 
-
-
-export function empty_() {
-return ff_core_Set.Set(ff_core_Map.empty_())
+export function Float_round(self_) {
+return Math.round(self_)
 }
 
-export function Set_add(self_, value_) {
-return ff_core_Set.Set(ff_core_Map.Map_add(self_.map_, value_, (void 0)))
+export function Float_floor(self_) {
+return Math.floor(self_)
 }
 
-export function Set_addAll(self_, that_) {
-return ff_core_Set.Set(ff_core_Map.Map_addAll(self_.map_, that_.map_))
+export function Float_ceil(self_) {
+return Math.ceil(self_)
 }
 
-export function Set_remove(self_, value_) {
-return ff_core_Set.Set(ff_core_Map.Map_remove(self_.map_, value_))
+export function Float_truncate(self_) {
+return Math.trunc(self_)
 }
 
-export function Set_contains(self_, value_) {
-return ff_core_Map.Map_contains(self_.map_, value_)
+export function Float_sign(self_) {
+return Math.sign(self_)
+}
+
+export function Float_abs(self_) {
+return Math.abs(self_)
+}
+
+export function Float_toFixed(self_, digits_) {
+return self_.toFixed(digits_)
 }
 
 

@@ -34,6 +34,8 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
 
+import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
+
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
@@ -55,6 +57,10 @@ return ff_core_Array.Array_toList(self_.array_)
 }
 
 export function System_files(self_) {
+return null
+}
+
+export function System_timeSystem(self_) {
 return null
 }
 
