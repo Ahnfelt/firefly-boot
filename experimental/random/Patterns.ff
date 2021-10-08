@@ -48,7 +48,7 @@ type Decision {
     Failure
     Success(body: Body)
     IfEqual(
-        access: List[Int]
+        access: Access
         constructor: Constructor
         left: Decision
         right: Decision
@@ -56,19 +56,19 @@ type Decision {
 }
 
 type Work(
-    pattern: Pattern
-    object: List[Int]
-    description: TermDescription
+    patterns: List[Pattern]
+    objects: List[Access]
+    descriptions: List[TermDescription]
 )
 
 staticMatch(
-    constructor: Constructor,
+    constructor: Constructor
     description: TermDescription
 ) : MatchResult {
     | c1, Positive(c2, _) { c1 == c2 } => Yes
     | c1, Positive(_, _) => No
-    | c1, Negative(noneOf) { noneOf.contains(c1) } => No
-    | c1, Negative(noneOf) { c1.span == 1 + noneOf.size() } => Yes
+    | c1, Negative(noneSet) { noneSet.contains(c1) } => No
+    | c1, Negative(noneSet) { c1.span == 1 + noneSet.size() } => Yes
     | _, Negative(_) => Maybe
 }
 
@@ -78,19 +78,118 @@ augment(context: Context, description: TermDescription): Context {
 }
 
 norm(context: Context): Context {
-    | Context([Pair[c, ds], ..rest]) => augment(rest, Pos(c, ds.reverse()))
+    | Context([Pair(c, ds), ...rest]) => augment(Context(rest), Positive(c, ds.reverse()))
     | _ => panic("Norm is unexhaustive(!)")
 }
 
-compile(input: Match): Decision {
-
-    function fail(description: Description, match: Match): Decision {
-    }
-
-    function succeed(context: Context, works: List[Work], body: Body, match: Match): Decision {
-    }
-
-    function match(pattern: Pattern, )
-
-    fail(Negative([]), input)
+buildDescription(
+    context: Context
+    description: TermDescription
+    works: List[Work]
+): TermDescription {
+    | Context([]), d, [] => d
+    | Context([Pair(c, ds1), ...rest]), d, [Work(_, _, ds2), ...works] =>
+        buildDescription(Context(rest), Positive(c, (ds1++[d, ...ds2]).reverse()), works)
 }
+
+addNegative(description : TermDescription, constructor : Constructor) : TermDescription {
+    | Negative(noneSet), _ => Negative(noneSet.add(constructor))
+    | _, _ => panic("Negative TermDescription expected, got " + magicShow(description))
+}
+
+fail(
+    description: TermDescription
+    rules: List[Pair[Pattern, Body]]
+): Decision {
+    | _, [] => Failure
+    | d, [Pair(p, body), ...rules] =>
+        match(
+            pattern = p
+            object = Object
+            description = d
+            context = Context([])
+            works = []
+            body = body
+            rules = []
+        )
+}
+
+succeed(
+    context: Context
+    works: List[Work]
+    body: Body
+    rules: List[Pair[Pattern, Body]]
+): Decision {
+    works.{
+        | [] => Success(body)
+        | [Work([], [], []), ...ws] => succeed(norm(context), ws, body, rules)
+        | [Work([p, ...ps], [o, ...os], [d, ...ds]), ...ws] =>
+            match(
+               pattern = p
+               object = o
+               description = d
+               context = context
+               works = ws
+               body = body
+               rules = rules
+           )
+    }
+}
+
+match(
+    pattern: Pattern
+    object: Access
+    description: TermDescription
+    context: Context
+    works : List[Work]
+    body: Body
+    rules: List[Pair[Pattern, Body]]
+): Decision {
+    pattern.{
+        | PVariable(_) =>
+            succeed(augment(context, description), works, body, rules)
+        | PConstructor(c, ps) =>
+            function args[R](f: Int => R): List[R] {
+                0.until(c.arity).map(f)
+            }
+
+            function getDescriptionArguments(description: TermDescription) : List[TermDescription] {
+                | Negative(_) => args {|_ => Negative(Set.empty())}
+                | Positive(c, ps) => ps
+            }
+
+            function getoargs(): List[Access] {
+                args {i => Select(i + 1, object)}
+            }
+
+            function doSucceed() : Decision {
+                let work = Work(ps, getoargs(), getDescriptionArguments(description))
+                succeed(
+                    Context([Pair(c, []), ...context.list]),
+                    [work, ...works],
+                    body,
+                    rules
+                )
+            }
+
+            function doFail(newDescription : TermDescription): Decision {
+                fail(buildDescription(context, newDescription, works), rules)
+            }
+
+            staticMatch(c, description).{
+                | Yes => doSucceed()
+                | No => doFail(description)
+                | Maybe => IfEqual(
+                    access = object,
+                    constructor = c,
+                    left = doSucceed(),
+                    right = doFail(addNegative(description, c))
+                )
+            }
+    }
+}
+
+compile(input: Match): Decision {
+    fail(Negative(Set.empty()), input.rules)
+}
+

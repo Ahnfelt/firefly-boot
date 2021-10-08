@@ -67,4 +67,8 @@ export function Set_contains(self_, value_) {
 return ff_core_Map.Map_contains(self_.map_, value_)
 }
 
+export function Set_size(self_) {
+return ff_core_Map.Map_size(self_.map_)
+}
+
 

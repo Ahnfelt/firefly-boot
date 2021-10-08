@@ -9,4 +9,5 @@ extend self[T]: Set[T] {
     addAll(that: Set[T]): Set[T] { Set(self.map.addAll(that.map)) }
     remove(value: T) : Set[T] { Set(self.map.remove(value)) }
     contains(value: T): Bool { self.map.contains(value) }
+    size() : Int {self.map.size()}
 }
