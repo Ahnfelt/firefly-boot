@@ -193,3 +193,18 @@ compile(input: Match): Decision {
     fail(Negative(Set.empty()), input.rules)
 }
 
+main(system: System): Unit {
+    //type Color {Red, Green, Blue}
+    let red = PConstructor(Constructor("Red", 0, 3), [])
+    let green = PConstructor(Constructor("Green", 0, 3), [])
+    let blue = PConstructor(Constructor("Blue", 0, 3), [])
+    function pair(first : Pattern, second : Pattern) : Pattern {
+        PConstructor(Constructor("()", 2, 1), [first, second])
+    }
+    let match = Match(rules = [
+        Pair(pair(red, blue), Body(1)),
+        Pair(pair(green, blue), Body(2))
+    ])
+
+    Log.debug(magicShow(compile(match)))
+}
