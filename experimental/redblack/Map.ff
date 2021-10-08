@@ -1,32 +1,13 @@
 import RbMap
 
-type Map[K, V](redBlack: RbMap[K, Option[V]]) {
-    MapOf()
-}
+type Map[K, V](redBlack: RbMap[K, Option[V]])
 
-empty[K, V](): Map[K, V] { MapOf(RbLeaf) }
-
-append[K, V](self: Map[K, V], that: Map[K, V]): Map[K, V] {
-    mutable result = self.redBlack
-    that.redBlack.each {
-        | k, Some(_)@v => result = result.add(k, v)
-        | k, None =>
-    }
-    MapOf(result)
-}
+//empty = Map(RbLeaf)
 
 extend self[K, V]: Map[K, V] {
 
     add(key : K, value : V): Map[K, V] {
-        MapOf(self.redBlack.add(key, Some(value)))
-    }
-
-    append(that: Map[K, V]): Map[K, V] { // TODO: Delete
-        append(self, that)
-    }
-
-    addAll(that: Map[K, V]) : Map[K, V] {
-        append(self, that)
+        Map(self.redBlack.add(key, Some(value)))
     }
 
     get(key : K): Option[V] {
@@ -34,7 +15,7 @@ extend self[K, V]: Map[K, V] {
     }
 
     remove(key : K): Map[K, V] {
-        MapOf(self.redBlack.add(key, None))
+        Map(self.redBlack.add(key, None))
     }
 
     pairs(): List[Pair[K, V]] {
@@ -49,8 +30,7 @@ extend self[K, V]: Map[K, V] {
     }
 
     map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
-        let initial: Map[K1, V1] = MapOf[K1, V1](RbLeaf)
-        (self.pairs().foldLeft(initial)) { tree, pair =>
+        (self.pairs().foldLeft(Map(RbLeaf))) { tree, pair =>
             body(pair).{
                 | Pair(k, v) => tree.add(k, v)
             }
