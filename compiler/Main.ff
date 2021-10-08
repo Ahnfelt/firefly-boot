@@ -7,22 +7,23 @@ import Unification
 
 main(system: System): Unit {
 
-    let tempPath = system.arguments().expect(0)
-    let jsOutputPath = system.arguments().expect(1)
+    let mainPackage = system.arguments().expect(0)
+    let mainModule = system.arguments().expect(1)
+    let packagePaths = parsePackageLocations(system.arguments().expect(2))
+    let tempPath = system.arguments().expect(3)
+    let jsOutputPath = system.arguments().expect(4)
 
     let fs = system.files()
 
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)
 
-    let jsPathFile = tempPath + "/src/main/js"
+    let jsPathFile = tempPath + "/js"
     fs.createDirectories(jsPathFile)
-
-    let packagePaths = [Pair("ff:compiler", "compiler"), Pair("ff:core", "core")].toMap()
 
     let success = do { //try {
         let compiler = Compiler.make(fs, system.time(), jsPathFile, packagePaths)
-        compiler.emit("ff:compiler", "Main")
+        compiler.emit(mainPackage, mainModule)
         compiler.printMeasurements()
         True
     }
@@ -47,4 +48,11 @@ deleteDirectory(fs: FileSystem, outputFile: String): Unit {
         }
     }
     fs.delete(outputFile)
+}
+
+parsePackageLocations(text: String): Map[String, String] {
+    text.split(',').toList().map { item =>
+        let parts = item.split('@')
+        Pair(parts.expect(0), parts.expect(1))
+    }.toMap()
 }

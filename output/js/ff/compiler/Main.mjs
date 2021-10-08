@@ -59,19 +59,21 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function main_(system_) {
-const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0)
-const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1)
+const mainPackage_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0)
+const mainModule_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1)
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2))
+const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3)
+const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4)
 const fs_ = ff_core_System.System_files(system_)
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
 }
 ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_)
-const jsPathFile_ = (tempPath_ + "/src/main/js")
+const jsPathFile_ = (tempPath_ + "/js")
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_)
-const packagePaths_ = ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())))
 const success_ = ff_core_Core.do_((() => {
 const compiler_ = ff_compiler_Compiler.make_(fs_, ff_core_System.System_time(system_), jsPathFile_, packagePaths_)
-ff_compiler_Compiler.Compiler_emit(compiler_, "ff:compiler", "Main")
+ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_)
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
 return true
 }))
@@ -92,6 +94,13 @@ ff_core_FileSystem.FileSystem_delete(fs_, file_)
 }
 }))
 ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
+}
+
+export function parsePackageLocations_(text_) {
+return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 44)), ((item_) => {
+const parts_ = ff_core_String.String_split(item_, 64)
+return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Array_expect(parts_, 1))
+})))
 }
 
 
