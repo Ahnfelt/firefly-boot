@@ -62,39 +62,27 @@ export function main_(system_) {
 const corePath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0)
 const inputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1)
 const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2)
-const scalaOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3)
-const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4)
+const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3)
 const fs_ = ff_core_System.System_files(system_)
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
 }
 ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_)
-const scalaPathFile_ = (tempPath_ + "/src/main/scala")
-ff_core_FileSystem.FileSystem_createDirectories(fs_, scalaPathFile_)
 const jsPathFile_ = (tempPath_ + "/src/main/js")
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_)
 const packagePaths_ = ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())))
 const success_ = ff_core_Core.do_((() => {
-const compiler_ = ff_compiler_Compiler.make_(fs_, ff_core_System.System_time(system_), scalaPathFile_, jsPathFile_, packagePaths_)
+const compiler_ = ff_compiler_Compiler.make_(fs_, ff_core_System.System_time(system_), jsPathFile_, packagePaths_)
 ff_compiler_Compiler.Compiler_emit(compiler_, "ff:compiler", "Main")
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
 return true
 }))
 if(success_) {
-ff_compiler_Main.writeExtraFiles_(fs_, inputPath_, corePath_, tempPath_, scalaPathFile_)
-if(ff_core_FileSystem.FileSystem_exists(fs_, scalaOutputPath_)) {
-ff_compiler_Main.deleteDirectory_(fs_, scalaOutputPath_)
-}
 if(ff_core_FileSystem.FileSystem_exists(fs_, jsOutputPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, jsOutputPath_)
 }
-ff_core_FileSystem.FileSystem_rename(fs_, scalaPathFile_, scalaOutputPath_)
 ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
 }
-}
-
-export function writeExtraFiles_(fs_, package_, corePath_, outputFile_, scalaFile_) {
-ff_core_FileSystem.FileSystem_writeText(fs_, (outputFile_ + "/build.sbt"), "scalaVersion := \"2.13.3\"")
 }
 
 export function deleteDirectory_(fs_, outputFile_) {

@@ -34,8 +34,8 @@ extend self[K, V]: RbMap[K, V] {
     get(key: K): Option[V] {
         self.{
             | RbLeaf => None
-            | RbNode(_, l, k, _, _) {magicLess(key, k)} => l.get(key)
-            | RbNode(_, _, k, _, r) {magicLess(k, key)} => r.get(key)
+            | RbNode(_, l, k, _, _) {magicLess(key, k)} => tailcall l.get(key)
+            | RbNode(_, _, k, _, r) {magicLess(k, key)} => tailcall r.get(key)
             | RbNode(_, _, _, v, _) => Some(v)
         }
     }

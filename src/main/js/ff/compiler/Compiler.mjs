@@ -55,16 +55,16 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_) {
-return {files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
+export function Compiler(files_, time_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_) {
+return {files_, time_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
 }
 
 export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Array", ff_core_List.Link("ArrayBuilder", ff_core_List.Link("Bool", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("FileSystem", ff_core_List.Link("Float", ff_core_List.Link("Int", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Pair", ff_core_List.Link("Set", ff_core_List.Link("String", ff_core_List.Link("System", ff_core_List.Link("TimeSystem", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty()))))))))))))))))))))), ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_core_Pair.Pair("ff", "core"), ff_core_List.Empty(), moduleName_)
 }))
 
-export function make_(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_) {
-return ff_compiler_Compiler.Compiler(files_, time_, scalaOutputPath_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
+export function make_(files_, time_, jsOutputPath_, packagePaths_) {
+return ff_compiler_Compiler.Compiler(files_, time_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
 }
 
 export function Compiler_measure(self_, phase_, packageName_, moduleName_, body_) {
