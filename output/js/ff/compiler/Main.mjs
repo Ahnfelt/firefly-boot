@@ -59,10 +59,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function main_(system_) {
-const corePath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0)
-const inputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1)
-const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2)
-const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3)
+const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0)
+const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1)
 const fs_ = ff_core_System.System_files(system_)
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, tempPath_)

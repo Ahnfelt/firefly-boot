@@ -40,77 +40,65 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+// type Array
 
 
 
 
-export function if_(condition_, body_) {
-{
-const _1 = condition_
-{
-if(!_1) {
-return ff_core_Option.None()
-return
-}
-}
-{
-if(_1) {
-return ff_core_Option.Some(body_())
-return
-}
-}
-throw new Error('Unexhaustive pattern match')
-}
-}
-
-export function while_(condition_, body_) {
-{
-const _1 = condition_()
-{
-if(!_1) {
-
-return
-}
-}
-{
-if(_1) {
-body_()
-while(condition_()) {
-body_()
-}
-return
-}
-}
-throw new Error('Unexhaustive pattern match')
-}
-}
-
-export function try_(body_) {
-
-        try {
-            return {Success: true, value_: body_()}
-        } catch(e) {
-            return {Failure: true, exception_: e.message}
-        }
-    
-}
-
-export function do_(body_) {
-return body_()
-}
-
-export function panic_(message_) {
-throw new Error(message_)
-}
-
-export function magicShow_(value_) {
-return ('' + value_)
-}
-
-export function magicLess_(x_, y_) {
-return x_ < y_
-}
 
 
+export function Array_addAll(self_, that_) {
+return self_.concat(that_)
+}
+
+export function Array_isEmpty(self_) {
+return self_.length === 0
+}
+
+export function Array_size(self_) {
+return self_.length
+}
+
+export function Array_expect(self_, index_) {
+return self_[index_]
+}
+
+export function Array_expectFirst(self_) {
+return ff_core_Array.Array_expect(self_, 0)
+}
+
+export function Array_expectLast(self_) {
+return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
+}
+
+export function Array_dropFirst(self_, count_ = 1) {
+return self_.slice(count_)
+}
+
+export function Array_dropLast(self_, count_ = 1) {
+return self_.slice(0, self_.length - count_)
+}
+
+export function Array_update(self_, index_, body_) {
+
+            let result = self_.slice();
+            result[index_] = body_(result[index_]);
+            return result;
+        
+}
+
+export function Array_toList(self_) {
+
+            let result = ff_core_List.Empty();
+            for(let i = self_.length - 1; i >= 0; i--) {
+                result = ff_core_List.Link(self_[i], result);
+            }
+            return result;
+        
+}
+
+export function Array_join(self_, separator_ = "") {
+return self_.join(separator_)
+}
 
 

@@ -7,10 +7,8 @@ import Unification
 
 main(system: System): Unit {
 
-    let corePath = system.arguments().expect(0)
-    let inputPath = system.arguments().expect(1)
-    let tempPath = system.arguments().expect(2)
-    let jsOutputPath = system.arguments().expect(3)
+    let tempPath = system.arguments().expect(0)
+    let jsOutputPath = system.arguments().expect(1)
 
     let fs = system.files()
 
