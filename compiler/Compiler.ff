@@ -48,6 +48,7 @@ coreImports: List[DImport] =
         "Duration",
         "FileSystem",
         "Float",
+        "Instant",
         "Int",
         "List",
         "Log",
