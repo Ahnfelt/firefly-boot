@@ -1,0 +1,1 @@
+newtype Instant(since1970: Duration)
