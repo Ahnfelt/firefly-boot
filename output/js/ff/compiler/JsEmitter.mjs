@@ -236,9 +236,9 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, _w1
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, ""))
 })), ff_core_List.Link(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
-})), ff_core_List.Link((((module_.file_ == "Main.ff") && ff_core_List.List_any(module_.functions_, ((_w1) => {
+})), ff_core_List.Link((ff_core_List.List_any(module_.functions_, ((_w1) => {
 return (_w1.signature_.name_ == "main")
-})))
+}))
 ? ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_), ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.Empty()))))))
 return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
@@ -247,7 +247,7 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export function JsEmitter_emitMain(self_) {
-return "if(!globalThis.$ffSkipMain) queueMicrotask(() => main_({array_: process.argv.slice(2)}))"
+return "queueMicrotask(() => main_({array_: process.argv.slice(2)}))"
 }
 
 export function JsEmitter_emitImportDefinition(self_, definition_) {

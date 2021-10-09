@@ -194,6 +194,7 @@ compile(input: Match): Decision {
 }
 
 main(system: System): Unit {
+    Log.debug("aflkjnsfd")
     //type Color {Red, Green, Blue}
     let red = PConstructor(Constructor("Red", 0, 3), [])
     let green = PConstructor(Constructor("Green", 0, 3), [])
