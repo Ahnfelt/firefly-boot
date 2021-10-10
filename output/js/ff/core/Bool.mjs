@@ -43,8 +43,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Bool
-false
-true
+const False$ = {False: true};
+export function False() {
+return False$;
+}
+const True$ = {True: true};
+export function True() {
+return True$;
+}
 
 
 
