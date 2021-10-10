@@ -44,24 +44,21 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Map
-export function MapOf(redBlack_) {
-return {redBlack_};
-}
+// newtype Map
 
 
 
 export function empty_() {
-return ff_core_Map.MapOf(ff_core_RbMap.RbLeaf())
+return ff_core_RbMap.RbLeaf()
 }
 
 export function Map_add(self_, key_, value_) {
-return ff_core_Map.MapOf(ff_core_RbMap.RbMap_add(self_.redBlack_, key_, ff_core_Option.Some(value_)))
+return ff_core_RbMap.RbMap_add(self_, key_, ff_core_Option.Some(value_))
 }
 
 export function Map_addAll(self_, that_) {
-let result_ = self_.redBlack_
-ff_core_RbMap.RbMap_each(that_.redBlack_, ((_1, _2) => {
+let result_ = self_
+ff_core_RbMap.RbMap_each(that_, ((_1, _2) => {
 {
 const k_ = _1
 const v_ = _2
@@ -79,19 +76,19 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))
-return ff_core_Map.MapOf(result_)
+return result_
 }
 
 export function Map_get(self_, key_) {
-return ff_core_Option.Option_flatten(ff_core_RbMap.RbMap_get(self_.redBlack_, key_))
+return ff_core_Option.Option_flatten(ff_core_RbMap.RbMap_get(self_, key_))
 }
 
 export function Map_remove(self_, key_) {
-return ff_core_Map.MapOf(ff_core_RbMap.RbMap_add(self_.redBlack_, key_, ff_core_Option.None()))
+return ff_core_RbMap.RbMap_add(self_, key_, ff_core_Option.None())
 }
 
 export function Map_pairs(self_) {
-return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_.redBlack_), ((_1) => {
+return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_), ((_1) => {
 {
 const k_ = _1.first_
 if(_1.second_.Some) {
@@ -112,11 +109,11 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Map_size(self_) {
-return ff_core_RbMap.RbMap_size(self_.redBlack_)
+return ff_core_RbMap.RbMap_size(self_)
 }
 
 export function Map_map(self_, body_) {
-const initial_ = ff_core_Map.MapOf(ff_core_RbMap.RbLeaf())
+const initial_ = ff_core_RbMap.RbLeaf()
 return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_), initial_)(((tree_, pair_) => {
 {
 const _1 = body_(pair_)

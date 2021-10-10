@@ -88,7 +88,7 @@ ff_core_List.List_each(worst_, ((_1) => {
 {
 const text_ = _1.first_
 const duration_ = _1.second_
-ff_core_Log.debug_(((text_ + ":\t") + ff_core_Duration.Duration_show(duration_)))
+ff_core_Log.debug_(((text_ + ":\t") + ff_core_Duration.Duration_toString(duration_, 3)))
 return
 }
 throw new Error('Unexhaustive pattern match')
