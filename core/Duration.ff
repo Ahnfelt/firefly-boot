@@ -2,8 +2,8 @@ newtype Duration(seconds: Float)
 
 extend self: Duration {
 
-    show(): String {
-        self.seconds.toFixed(3) + " s"
+    toString(digits: Int = 3): String {
+        self.seconds.toFixed(digits) + " s"
     }
 
 }
