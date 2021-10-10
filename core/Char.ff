@@ -13,4 +13,7 @@ extend self: Char {
     toInt(): Int { panic("magic") }
         javascript "return self_"
 
+    toString(): String { panic("magic") }
+        javascript "return String.fromCharCode(self_)"
+
 }
