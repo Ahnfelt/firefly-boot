@@ -1,4 +1,4 @@
-type Set[T](map: Map[T, Unit])
+newtype Set[T](map: Map[T, Unit])
 
 empty[T](): Set[T] {
     Set(Map.empty())
