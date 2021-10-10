@@ -52,6 +52,18 @@ extend self: HashMap[K, V] {
         list.reverse()
     }
 
+    keys(): Set[K] {
+        let keys = Set.empty()
+        self.each { k, v => keys = keys.add(k, v) }
+        keys
+    }
+
+    values(): List[K] {
+        let list = []
+        self.each { k, v => list = [v, ...list] }
+        list.reverse()
+    }
+
     clear(): Unit { panic("magic") }
         javascript """
             self_.clear()
