@@ -14,7 +14,7 @@ extend self[T]: ArrayBuilder[T] {
     size(): Int { panic("magic") }
         javascript "return self_.array.length"
 
-    append(value: T): Unit { panic("magic") }
+    add(value: T): Unit { panic("magic") }
         javascript "self_.array.push(value_)"
 
     modify(index: Int, body: T => T): Unit { panic("magic") }

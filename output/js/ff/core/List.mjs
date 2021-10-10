@@ -93,10 +93,6 @@ return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.s
 }))
 }
 
-export function List_append(self_, list_) {
-return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
-}
-
 export function List_addAll(self_, list_) {
 return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }

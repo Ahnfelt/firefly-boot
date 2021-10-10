@@ -63,7 +63,7 @@ export function ArrayBuilder_size(self_) {
 return self_.array.length
 }
 
-export function ArrayBuilder_append(self_, value_) {
+export function ArrayBuilder_add(self_, value_) {
 self_.array.push(value_)
 }
 

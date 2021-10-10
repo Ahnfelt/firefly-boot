@@ -55,7 +55,11 @@ export function empty_() {
 return ff_core_Map.MapOf(ff_core_RbMap.RbLeaf())
 }
 
-export function append_(self_, that_) {
+export function Map_add(self_, key_, value_) {
+return ff_core_Map.MapOf(ff_core_RbMap.RbMap_add(self_.redBlack_, key_, ff_core_Option.Some(value_)))
+}
+
+export function Map_addAll(self_, that_) {
 let result_ = self_.redBlack_
 ff_core_RbMap.RbMap_each(that_.redBlack_, ((_1, _2) => {
 {
@@ -76,18 +80,6 @@ return
 throw new Error('Unexhaustive pattern match')
 }))
 return ff_core_Map.MapOf(result_)
-}
-
-export function Map_add(self_, key_, value_) {
-return ff_core_Map.MapOf(ff_core_RbMap.RbMap_add(self_.redBlack_, key_, ff_core_Option.Some(value_)))
-}
-
-export function Map_append(self_, that_) {
-return ff_core_Map.append_(self_, that_)
-}
-
-export function Map_addAll(self_, that_) {
-return ff_core_Map.append_(self_, that_)
 }
 
 export function Map_get(self_, key_) {

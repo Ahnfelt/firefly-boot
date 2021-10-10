@@ -6,27 +6,19 @@ type Map[K, V](redBlack: RbMap[K, Option[V]]) {
 
 empty[K, V](): Map[K, V] { MapOf(RbLeaf) }
 
-append[K, V](self: Map[K, V], that: Map[K, V]): Map[K, V] {
-    mutable result = self.redBlack
-    that.redBlack.each {
-        | k, Some(_)@v => result = result.add(k, v)
-        | k, None =>
-    }
-    MapOf(result)
-}
-
 extend self[K, V]: Map[K, V] {
 
     add(key : K, value : V): Map[K, V] {
         MapOf(self.redBlack.add(key, Some(value)))
     }
 
-    append(that: Map[K, V]): Map[K, V] { // TODO: Delete
-        append(self, that)
-    }
-
     addAll(that: Map[K, V]) : Map[K, V] {
-        append(self, that)
+        mutable result = self.redBlack
+        that.redBlack.each {
+            | k, Some(_)@v => result = result.add(k, v)
+            | k, None =>
+        }
+        MapOf(result)
     }
 
     get(key : K): Option[V] {
