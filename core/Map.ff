@@ -28,7 +28,7 @@ extend self[K, V]: Map[K, V] {
     }
 
     pairs(): List[Pair[K, V]] {
-        self.redBlack.pairs().flatMap{
+        self.redBlack.pairs().flatMap {
             | Pair(k, Some(v)) => [Pair(k, v)]
             | Pair(k, None) => []
         }
