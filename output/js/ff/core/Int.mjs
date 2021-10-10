@@ -67,10 +67,6 @@ export function Int_abs(self_) {
 return Math.abs(self_)
 }
 
-export function Int_toChar(self_) {
-return self_
-}
-
 export function Int_toFloat(self_) {
 return self_
 }

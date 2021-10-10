@@ -158,7 +158,7 @@ extend self: JsEmitter {
         | EChar(at, value) { value == "'\\r'" } => "13"
         | EChar(at, value) { value == "'\\\"'" } => "34"
         | EChar(at, value) { value == "'\\''" } => "39"
-        | EChar(at, value) => "" + value.expect(1).toInt()
+        | EChar(at, value) => "" + value.expect(1).codeUnit
         | EInt(at, value) => value
         | EFloat(at, value) => value
         | EVariable(at, name, _, _) => escapeResolved(name)

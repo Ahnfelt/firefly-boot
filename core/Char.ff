@@ -10,9 +10,6 @@ extend self: Char {
 
     isAsciiDigit(): Bool { self >= '0' && self <= '9' }
 
-    toInt(): Int { panic("magic") }
-        javascript "return self_"
-
     toString(): String { panic("magic") }
         javascript "return String.fromCharCode(self_)"
 

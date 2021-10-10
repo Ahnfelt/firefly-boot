@@ -488,7 +488,7 @@ const self_ = self_a
 if(term_a.EChar) {
 const at_ = term_a.at_
 const value_ = term_a.value_
-return ("" + ff_core_Char.Char_toInt(ff_core_String.String_expect(value_, 1)))
+return ("" + ff_core_String.String_expect(value_, 1))
 return
 }
 }

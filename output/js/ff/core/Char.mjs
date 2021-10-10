@@ -42,8 +42,7 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Char
-
+// newtype Char
 
 
 
@@ -63,10 +62,6 @@ return ((self_ >= 97) && (self_ <= 122))
 
 export function Char_isAsciiDigit(self_) {
 return ((self_ >= 48) && (self_ <= 57))
-}
-
-export function Char_toInt(self_) {
-return self_
 }
 
 export function Char_toString(self_) {
