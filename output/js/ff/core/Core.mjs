@@ -106,7 +106,7 @@ throw new Error(message_)
 }
 
 export function magicShow_(value_) {
-return ('' + value_)
+return JSON.stringify(value_)
 }
 
 export function magicLess_(x_, y_) {
