@@ -14,7 +14,7 @@ extend self: HashMap[K, V] {
             }
         """
 
-    get(key: K): Unit { panic("magic") }
+    get(key: K): Option[V] { panic("magic") }
         javascript """
             if(typeof key !== "object") {
                 return self_.has(key) ? ff_core_Option.Some(self_.get(key)) : ff_core_Option.None()
