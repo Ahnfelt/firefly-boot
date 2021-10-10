@@ -1,0 +1,44 @@
+type HashMap[K, V] {}
+
+empty() { panic("magic") }
+    javascript "return new Map()"
+
+extend self: HashMap[K, V] {
+
+    add(key: K, value: V): Unit { panic("magic") }
+        javascript """
+            if(typeof key !== "object") {
+                self_.set(key, value)
+            } else {
+                throw new Error('Key not hashable: ' + key)
+            }
+        """
+
+    get(key: K): Unit { panic("magic") }
+        javascript """
+            if(typeof key !== "object") {
+                return self_.has(key) ? ff_core_Option.Some(self_.get(key)) : ff_core_Option.None()
+            } else {
+                throw new Error('Key not hashable: ' + key)
+            }
+        """
+
+    remove(key: K): Bool { panic("magic") }
+        javascript """
+            if(typeof key !== "object") {
+                return self_.delete(key)
+            } else {
+                throw new Error('Key not hashable: ' + key)
+            }
+        """
+
+    contains(key: K): Bool { panic("magic") }
+        javascript """
+            if(typeof key !== "object") {
+                return self_.has(key)
+            } else {
+                throw new Error('Key not hashable: ' + key)
+            }
+        """
+
+}

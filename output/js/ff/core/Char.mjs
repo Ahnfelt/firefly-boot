@@ -69,4 +69,8 @@ export function Char_toInt(self_) {
 return self_
 }
 
+export function Char_toString(self_) {
+return String.fromCharCode(self_)
+}
+
 
