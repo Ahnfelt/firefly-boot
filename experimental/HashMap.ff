@@ -41,4 +41,20 @@ extend self: HashMap[K, V] {
             }
         """
 
+    each(body: (K, V) => Unit): Unit { panic("magic") }
+        javascript """
+            self_.forEach(body)
+        """
+
+    pairs(): List[Pair[K, V]] {
+        let list = []
+        self.each { k, v => list = [Pair(k, v), ...list] }
+        list.reverse()
+    }
+
+    clear(): Unit { panic("magic") }
+        javascript """
+            self_.clear()
+        """
+
 }
