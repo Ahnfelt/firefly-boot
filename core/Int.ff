@@ -16,9 +16,6 @@ extend self: Int {
     abs(): Int { panic("magic") }
         javascript "return Math.abs(self_)"
 
-    toChar(): Char { panic("magic") }
-        javascript "return self_"
-
     toFloat(): Float { panic("magic") }
         javascript "return self_"
 

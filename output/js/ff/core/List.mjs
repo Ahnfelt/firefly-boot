@@ -14,6 +14,8 @@ import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
+import * as ff_core_Instant from "../../ff/core/Instant.mjs"
+
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
@@ -89,10 +91,6 @@ const initial_ = ff_core_List.Empty()
 return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_))(((map_, pair_) => {
 return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.second"))
 }))
-}
-
-export function List_append(self_, list_) {
-return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }
 
 export function List_addAll(self_, list_) {

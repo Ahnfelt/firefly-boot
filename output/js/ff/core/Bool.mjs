@@ -14,6 +14,8 @@ import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
+import * as ff_core_Instant from "../../ff/core/Instant.mjs"
+
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
@@ -41,8 +43,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Bool
-false
-true
+const False$ = {False: true};
+export function False() {
+return False$;
+}
+const True$ = {True: true};
+export function True() {
+return True$;
+}
 
 
 

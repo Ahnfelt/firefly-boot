@@ -18,6 +18,8 @@ import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
+import * as ff_core_Instant from "../../ff/core/Instant.mjs"
+
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
@@ -76,10 +78,10 @@ throw new Error('Unexhaustive pattern match')
 }))
 }
 if((((last_.stopLine_ != startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_ArrayBuilder.ArrayBuilder_append(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
+ff_core_ArrayBuilder.ArrayBuilder_add(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
 }
 }
-ff_core_ArrayBuilder.ArrayBuilder_append(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
+ff_core_ArrayBuilder.ArrayBuilder_add(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0
 while((i_ < ff_core_String.String_size(code_))) {

@@ -48,6 +48,7 @@ coreImports: List[DImport] =
         "Duration",
         "FileSystem",
         "Float",
+        "Instant",
         "Int",
         "List",
         "Log",
@@ -87,7 +88,7 @@ extend self: Compiler {
     printMeasurements(): Unit {
         let worst = self.phaseDurations.sortBy { (_.second.seconds + 1000000.0) + "" }.takeLast(5).reverse()
         worst.each {| Pair(text, duration) =>
-            Log.debug(text + ":\t" + duration.show())
+            Log.debug(text + ":\t" + duration.toString())
         }
     }
 

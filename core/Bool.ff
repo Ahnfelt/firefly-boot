@@ -1,6 +1,4 @@
 type Bool {
     False
-        javascript "false"
     True
-        javascript "true"
 }

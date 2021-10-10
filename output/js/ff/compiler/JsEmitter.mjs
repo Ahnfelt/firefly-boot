@@ -18,6 +18,8 @@ import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
+import * as ff_core_Instant from "../../ff/core/Instant.mjs"
+
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
@@ -486,7 +488,7 @@ const self_ = self_a
 if(term_a.EChar) {
 const at_ = term_a.at_
 const value_ = term_a.value_
-return ("" + ff_core_Char.Char_toInt(ff_core_String.String_expect(value_, 1)))
+return ("" + ff_core_String.String_expect(value_, 1))
 return
 }
 }

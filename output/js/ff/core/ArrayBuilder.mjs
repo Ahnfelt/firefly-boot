@@ -14,6 +14,8 @@ import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
+import * as ff_core_Instant from "../../ff/core/Instant.mjs"
+
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
@@ -61,7 +63,7 @@ export function ArrayBuilder_size(self_) {
 return self_.array.length
 }
 
-export function ArrayBuilder_append(self_, value_) {
+export function ArrayBuilder_add(self_, value_) {
 self_.array.push(value_)
 }
 
