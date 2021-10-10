@@ -1,4 +1,4 @@
-type Char {}
+newtype Char(codeUnit: Int)
 
 extend self: Char {
 
