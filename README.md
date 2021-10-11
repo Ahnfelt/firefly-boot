@@ -1,7 +1,10 @@
 # firefly-boot
-This is a bootstrap trainspiler for converting Firefly code to Scala code.
+This is a bootstrap transpiler for converting Firefly code to JavaScript code.
 
-Status: Firefly has been bootstrapped and now transpiles itself into Scala.
+Status: Firefly has been bootstrapped and now transpiles itself into JavaScript.
 
-Sometimes you need to eta-expand to make the Scala type inference happy, and the semantics aren't 100% as they would be in a full implementation of Firefly. 
-I do belive it's close enough to rewrite the rest of the compiler in Firefly now though.
+## Compiling the compiler
+
+```
+node output/js/ff/compiler/Main.mjs ff:compiler Main ff:compiler@compiler,ff:core@core output/temporary output/js
+```

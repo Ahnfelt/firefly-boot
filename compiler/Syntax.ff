@@ -10,6 +10,7 @@ extend self: Location {
 }
 
 type Module(
+    packagePair: Pair[String, String],
     file: String,
     dependencies: List[DDependency],
     imports: List[DImport],
@@ -31,20 +32,22 @@ type DDependency(
 type DImport(
     at: Location,
     alias: String,
-    package: Option[Pair[String, String]],
+    package: Pair[String, String],
     directory: List[String],
     file: String
 )
 type DFunction(
     at: Location,
     signature: Signature,
-    body: Lambda
+    body: Lambda,
+    targets: Targets
 )
 type DLet(
     at: Location,
     name: String,
     variableType: Type,
-    value: Term
+    value: Term,
+    targets: Targets
 )
 type DExtend(
     at: Location,
@@ -55,12 +58,14 @@ type DExtend(
     methods: List[DFunction],
 )
 type DType(
-    at: Location,
-    name: String,
-    generics: List[String],
-    constraints: List[Constraint],
-    commonFields: List[Parameter],
+    at: Location
+    newtype: Bool
+    name: String
+    generics: List[String]
+    constraints: List[Constraint]
+    commonFields: List[Parameter]
     variants: List[Variant]
+    targets: Targets
 )
 type DTrait(
     at: Location,
@@ -94,13 +99,13 @@ type Term(at: Location) {
     EAssign(operator: String, variable: String, value: Term)
     EAssignField(operator: String, record: Term, field: String, value: Term)
     EPipe(value: Term, function: Term)
-    ECall(function: Term, typeArguments: List[Type], arguments: List[Argument])
+    ECall(tailCall: Bool, function: Term, typeArguments: List[Type], arguments: List[Argument])
     EList(elementType: Type, items: List[Pair[Term, Bool]])
     ECopy(name: String, record: Term, arguments: List[Field])
     EVariant(name: String, typeArguments: List[Type], arguments: Option[List[Argument]])
     EVariantIs(name: String, typeArguments: List[Type])
     ERecord(fields: List[Field])
-    EField(record: Term, field: String)
+    EField(newtype: Bool, record: Term, field: String)
     EWildcard(index: Int)
 }
 
@@ -130,7 +135,7 @@ type Signature(
 
 type Lambda(at: Location, cases: List[MatchCase])
 
-type Variant(at: Location, name: String, fields: List[Parameter])
+type Variant(at: Location, name: String, fields: List[Parameter], targets: Targets)
 
 type Parameter(at: Location, mutable: Bool, name: String, valueType: Type, default: Option[Term])
 
@@ -139,6 +144,10 @@ type Argument(at: Location, name: Option[String], value: Term)
 type Field(at: Location, name: String, value: Term)
 
 type Constraint(representation: Type)
+
+type Targets(
+    javaScript: Option[String]
+)
 
 type Type(at: Location) {
     TConstructor(name: String, generics: List[Type])
@@ -163,7 +172,7 @@ extend self: Type {
     show(): String {
         self.{
             | TConstructor(at, name, generics) =>
-                if(generics.getEmpty()) { name } else {
+                if(generics.isEmpty()) { name } else {
                     name + "[" + generics.map { _.show() }.join(", ") + "]"
                 }
             | TVariable(at, index) =>

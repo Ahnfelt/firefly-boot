@@ -1,0 +1,72 @@
+type HashMap[K, V] {}
+
+empty() { panic("magic") }
+    javascript "return new Map()"
+
+extend self: HashMap[K, V] {
+
+    add(key: K, value: V): Unit { panic("magic") }
+        javascript """
+            if(typeof key !== "object") {
+                self_.set(key, value)
+            } else {
+                throw new Error('Key not hashable: ' + key)
+            }
+        """
+
+    get(key: K): Option[V] { panic("magic") }
+        javascript """
+            if(typeof key !== "object") {
+                return self_.has(key) ? ff_core_Option.Some(self_.get(key)) : ff_core_Option.None()
+            } else {
+                throw new Error('Key not hashable: ' + key)
+            }
+        """
+
+    remove(key: K): Bool { panic("magic") }
+        javascript """
+            if(typeof key !== "object") {
+                return self_.delete(key)
+            } else {
+                throw new Error('Key not hashable: ' + key)
+            }
+        """
+
+    contains(key: K): Bool { panic("magic") }
+        javascript """
+            if(typeof key !== "object") {
+                return self_.has(key)
+            } else {
+                throw new Error('Key not hashable: ' + key)
+            }
+        """
+
+    each(body: (K, V) => Unit): Unit { panic("magic") }
+        javascript """
+            self_.forEach(body)
+        """
+
+    pairs(): List[Pair[K, V]] {
+        let list = []
+        self.each { k, v => list = [Pair(k, v), ...list] }
+        list.reverse()
+    }
+
+    keys(): Set[K] {
+        let keys = Set.empty()
+        self.each { k, v => keys = keys.add(k, v) }
+        keys
+    }
+
+    values(): List[K] {
+        let list = []
+        self.each { k, v => list = [v, ...list] }
+        list.reverse()
+    }
+
+    clear(): Unit { panic("magic") }
+        javascript """
+            self_.clear()
+        """
+
+}

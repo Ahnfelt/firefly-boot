@@ -19,30 +19,25 @@ extend self[T]: Option[T] {
                     | True => Some(body())
                     | False => None
                 }
-            | Some(value) => value
+            | Some(_) => self
         }
     }
 
-    // orElse
-    getElse(body: () => Option[T]): Option[T] {
+    orElse(body: () => Option[T]): Option[T] {
         self.{
             | None => body()
             | Some(_) => self
         }
     }
 
-    // getOrElse removed (use else)
-
-    // empty / isEmpty
-    getEmpty(): Bool {
+    isEmpty(): Bool {
         self.{
             | None => True
             | Some(_) => False
         }
     }
 
-    // list / toList
-    getList(): List[T] {
+    toList(): List[T] {
         self.{
             | None => []
             | Some(v) => [v]
@@ -72,7 +67,7 @@ extend self[T]: Option[T] {
 
     each(body: T => Unit): Unit {
         self.{
-            | None => None
+            | None =>
             | Some(v) => body(v)
         }
     }
@@ -103,6 +98,17 @@ extend self[T]: Option[T] {
         self.{
             | None => False
             | Some(v) => v == value
+        }
+    }
+
+}
+
+extend self[T]: Option[Option[T]] {
+
+    flatten() : Option[T] {
+        self.{
+            | None => None
+            | Some(v) => v
         }
     }
 

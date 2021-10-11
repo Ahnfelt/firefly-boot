@@ -1,0 +1,227 @@
+type Iterator[T](
+    next: () => Option[T]
+    close: () => Unit
+)
+
+extend self: Iterator[T] {
+
+    concat(that: Iterator[T]): Iterator[T] {
+        Iterator {
+            self.next().orElse(that.next())
+        } {
+            try {
+                self.close()
+            } finally {
+                that.close()
+            }
+        }
+    }
+
+    use[R](body: Iterator[T] => R): R {
+        try {
+            body(self)
+        } finally {
+            self.close()
+        }
+    }
+
+}
+
+type Stream[T](open: () => Iterator[T])
+
+extend self: Stream[A] {
+
+    map[B](body: A => B): Stream[B] {
+        Stream:
+        let a = self.open()
+        Iterator {
+            a.next().map(body)
+        } {
+            a.close()
+        }
+    }
+
+    flatMap[B](body: A => Stream[B]): Stream[B] {
+        Stream:
+        let a = self.open()
+        let b = None
+        Iterator {
+            function go() {
+                b.flatMap {_.next()}.{
+                    | Some(v) => body(v)
+                    | None =>
+                        b.each {_.close()}
+                        a.next().{
+                            | Some(s) =>
+                                b = Some(s.open())
+                                tailcall go()
+                            | None =>
+                                None
+                        }
+                }
+            }
+            go()
+        } {
+            try {
+                b.each {_.close()}
+            } finally {
+                a.close()
+            }
+        }
+    }
+
+    filter(body: A => Bool): Stream[A] {
+        Stream:
+        let a = self.open()
+        Iterator {
+            function go() {
+                a.next().{
+                    | None => None
+                    | Some(x) {body(x)} => Some(x)
+                    | Some(_) => tailcall go()
+                }
+            }
+            go()
+        } {
+            a.close()
+        }
+    }
+
+    zip[B](that: Stream[B]): Stream[Pair[A, B]] {
+        Stream:
+        let a = self.open()
+        let b = try { that.open() } onThrow { a.close() }
+        Iterator {
+            Pair(a.next(), b.next()).{
+                | Pair(Some(x), Some(y)) => Some(Pair(x, y))
+                | _ => None
+            }
+        } {
+            try { a.close() } finally { b.close() }
+        }
+    }
+
+    concat(that: Stream[T]): Stream[T] {
+        Stream:
+        mutable firstDone = False
+        mutable iterator = self.open()
+        Iterator {
+            iterator.next().orElse {
+                if(firstDone) {None} else {
+                    firstDone = True
+                    iterator.close()
+                    iterator = that.open()
+                    iterator.next()
+                }
+            }
+        } {
+            iterator.close()
+        }
+    }
+
+    parse[R](body: Iterator[T] => Iterator[R]): Stream[R] {
+        Stream:
+        let iterator = self.open()
+        let i = try {
+            body(iterator)
+        } onThrow {
+            iterator.close()
+        }
+        Iterator {
+            i.next()
+        } {
+            try {
+                i.close()
+            } finally {
+                iterator.close()
+            }
+        }
+    }
+
+    // Terminating methods
+
+    each(body: A => Unit): Unit {
+        let a = self.open()
+        try {
+            function go() {
+                a.next().{
+                    | None =>
+                    | Some(x) =>
+                        body(x)
+                        tailcall go()
+                }
+            }
+            go()
+        } finally {
+            a.close()
+        }
+    }
+
+}
+
+
+/*
+
+// Thanks to to Hiperion and MBones on /r/ProgrammingLanguages Discord for helpful discussion
+
+extend fs: FileSystem {
+
+    readFile(fileName: String, buffer: Buffer = Buffer.withCapacity(64 * 1024)): Stream[Buffer] {
+        Stream:
+        let handle = fs.openFileForReading(fileName)
+        Iterator {
+            handle.read(buffer)
+            if(buffer.size() > 0) {
+                Some(buffer)
+            } else {
+                None
+            }
+        } {
+            handle.close()
+        }
+    }
+
+    writeFile(fileName: String, stream: Stream[Buffer]): Unit {
+        let handle = fs.openFileForWriting(fileName)
+        try {
+            stream.each { buffer =>
+                handle.write(buffer)
+            }
+        } finally {
+            handle.close()
+        }
+    }
+
+}
+
+// Streaming copy, automatically and safely opens and closes the files
+fs.writeFile(toFileName, fs.readFile(fromFileName))
+
+// Parse HTTP request stream, emit HTTP response stream, replacing 'a' with 'b'
+requestStream.parse { requestIterator =>
+    let requestHeaders = parseHeaders(requestIterator)
+    let requestBodyIterator = parseBody(requestHeaders, requestIterator)
+    let responseBodyIterator = requestBodyIterator.map { _.replace('a'.toInt, 'b'.toInt) } // byte replacement
+    emitHeaders().concat(responseBodyIterator)
+}
+
+fs.readFile("test.tsv").lines().parse { lineIterator =>
+    let headers = lineIterator.next().expect().split("\t")
+    lineIterator.map { Pair(headers, _) }
+}.map {| Pair(headers, line) => headers.zip(line.split("\t")).toMap }
+
+fs.readFile("test.tsv").lines().parseFirst { _.split("\t") }.map {| Pair(headers, line) =>
+    headers.zip(line.split("\t")).toMap
+}
+
+
+
+val notifications = Iterator.iterate(List[FeedNotification]()) { feedNotifications =>
+    loadFeedNotifications(oldConnection, feedNotifications.lastOption.map(_.notificationNumber).orElse(mark))
+}.drop(1).takeWhile(_.nonEmpty).flatMap { feedNotifications =>
+    loadEntityIdsForFeeds(connection, feedNotifications)
+}.grouped(1000).flatMap { entityNotifications =>
+    loadEntities(connection, entityNotifications, countryCodes, fields)
+}.take(1000).toList
+
+*/

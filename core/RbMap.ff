@@ -1,0 +1,142 @@
+// Based on https://github.com/Abhiroop/okasaki/blob/master/src/RedBlackTree.hs
+
+type RbMap[K, V] {
+    RbLeaf
+    RbNode(isRed: Bool, left: RbMap[K, V], key: K, value: V, right: RbMap[K, V])
+}
+
+extend self[K, V]: RbMap[K, V] {
+
+    size(): Int {
+        self.{
+            | RbLeaf => 0
+            | RbNode(_, l, _, _, r) => l.size() + 1 + r.size()
+        }
+    }
+
+    pairs(): List[Pair[K, V]] {
+        self.{
+            | RbLeaf => []
+            | RbNode(_, l, k, v, r) => l.pairs() ++ [Pair(k, v)] ++ r.pairs()
+        }
+    }
+
+    each(body: (K, V) => Unit): Unit {
+        self.{
+            | RbLeaf =>
+            | RbNode(_, l, k, v, r) =>
+                l.each(body)
+                body(k, v)
+                r.each(body)
+        }
+    }
+
+    get(key: K): Option[V] {
+        self.{
+            | RbLeaf => None
+            | RbNode(_, l, k, _, _) {magicLess(key, k)} => tailcall l.get(key)
+            | RbNode(_, _, k, _, r) {magicLess(k, key)} => tailcall r.get(key)
+            | RbNode(_, _, _, v, _) => Some(v)
+        }
+    }
+
+    add(key: K, value: V): RbMap[K, V] {
+        function go(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbLeaf => RbNode(True, RbLeaf, key, value, RbLeaf)
+                | RbNode(c, l, k, v, r) {magicLess(key, k)} => RbNode(c, go(l), k, v, r).balance()
+                | RbNode(c, l, k, v, r) {magicLess(k, key)} => RbNode(c, l, k, v, go(r)).balance()
+                | RbNode(c, l, _, _, r) => RbNode(c, l, key, value, r)
+            }
+        }
+        go(self).{
+            | RbNode(True, l, k, v, r) => RbNode(False, l, k, v, r)
+            | n => n
+        }
+    }
+
+    // TODO: Remove does not work: E.g. add 1 2 3 then remove 2 breaks it. It hits a non-exhaustive case in Haskell.
+    remove(key: K): RbMap[K, V] {
+        function go(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbLeaf => self
+                | RbNode(_, _, k, _, _) {magicLess(key, k)} => goLeft(self)
+                | RbNode(_, _, k, _, _) {magicLess(k, key)} => goRight(self)
+                | RbNode(_, a, _, _, b) => fuse(a, b)
+            }
+        }
+        function goLeft(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbLeaf => self
+                | RbNode(_, RbNode(False, a, k1, v1, b), k2, v2, c) =>
+                    balanceLeft(RbNode(False, go(RbNode(False, a, k1, v1, b)), k2, v2, c))
+                | RbNode(_, a, k, v, b) => RbNode(True, go(a), k, v, b)
+            }
+        }
+        function balanceLeft(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c) =>
+                    RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, c)
+                | RbNode(False, a, k1, v1, RbNode(False, b, k2, v2, c)) =>
+                    RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, c)).balance()
+                | RbNode(False, a, k1, v1, RbNode(True, RbNode(False, b, k2, v2, c), k3, v3, RbNode(False, d, k4, v4, e))) =>
+                    RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, RbNode(True, d, k4, v4, e)).balance())
+            }
+        }
+        function goRight(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbLeaf => self
+                | RbNode(_, a, k1, v1, RbNode(False, b, k2, v2, c)) =>
+                    balanceRight(RbNode(False, a, k1, v1, go(RbNode(False, b, k2, v2, c))))
+                | RbNode(_, a, k, v, b) => RbNode(True, a, k, v, go(b))
+            }
+        }
+        function balanceRight(self: RbMap[K, V]): RbMap[K, V] {
+            self.{
+                | RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, c)) => RbNode(True, a, k1, v1, RbNode(False, b, k2, v2, c))
+                | RbNode(False, RbNode(False, a, k1, v1, b), k2, v2, c) => RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c).balance()
+                | RbNode(False, RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d)), k4, v4, e) =>
+                    RbNode(True, RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c).balance(), k3, v3, RbNode(False, d, k4, v4, e))
+            }
+        }
+        function fuse(x: RbMap[K, V], y: RbMap[K, V]): RbMap[K, V] {
+            Pair(x, y).{
+                | Pair(RbLeaf, a) => a
+                | Pair(a, RbLeaf) => a
+                | Pair(RbNode(False, a, k1, v1, b), RbNode(True, c, k2, v2, d)) =>
+                    RbNode(True, fuse(RbNode(False, a, k1, v1, b), c), k2, v2, d)
+                | Pair(RbNode(True, a, k1, v1, b), RbNode(False, c, k2, v2, d)) =>
+                    RbNode(True, a, k1, v1, fuse(b, RbNode(False, c, k2, v2, d)))
+                | Pair(RbNode(True, a, k1, v1, b), RbNode(True, c, k2, v2, d)) =>
+                    let e = fuse(b, c)
+                    e.{
+                        | RbNode(True, f, k3, v3, g) => RbNode(True, RbNode(True, a, k1, v1, f), k3, v3, RbNode(True, g, k2, v2, d))
+                        | RbNode(False, _, _, _, _) => RbNode(True, a, k1, v1, RbNode(True, e, k2, v2, d))
+                        | RbLeaf => RbLeaf
+                    }
+                | Pair(RbNode(False, a, k1, v1, b), RbNode(False, c, k2, v2, d)) =>
+                    let e = fuse(b, c)
+                    e.{
+                        | RbNode(True, f, k3, v3, g) => RbNode(True, RbNode(True, a, k1, v1, f), k3, v3, RbNode(True, g, k2, v2, d))
+                        | RbNode(False, _, _, _, _) => balanceLeft(RbNode(False, a, k1, v1, RbNode(False, e, k2, v2, d)))
+                        | RbLeaf => RbLeaf
+                    }
+            }
+        }
+        go(self).{
+            | RbNode(True, a, k1, v1, b) => RbNode(False, a, k1, v1, b)
+            | n => n
+        }
+    }
+
+    balance(): RbMap[K, V] {
+        self.{
+            | RbNode(False, RbNode(True, RbNode(True, a, k1, v1, b), k2, v2, c), k3, v3, d) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
+            | RbNode(False, RbNode(True, a, k1, v1, RbNode(True, b, k2, v2, c)), k3, v3, d) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
+            | RbNode(False, a, k1, v1, RbNode(True, RbNode(True, b, k2, v2, c), k3, v3, d)) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
+            | RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, RbNode(True, c, k3, v3, d))) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
+            | _ => self
+        }
+    }
+
+}

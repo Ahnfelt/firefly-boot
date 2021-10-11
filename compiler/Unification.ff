@@ -16,8 +16,8 @@ make(instances: List[DInstance]): Unification {
         panic(message + " " + at.show())
     }
     Unification(
-        mapOf()
-        mapOf()
+        Map.empty()
+        Map.empty()
         2 // Even type variables to avoid collision with the parser
         instances.map { definition =>
             definition.traitType.{
@@ -35,7 +35,7 @@ make(instances: List[DInstance]): Unification {
                 | TVariable(at, i) =>
                     fail(at, "Unexpected type variable: $" + i)
             }
-        }.getMap()
+        }.toMap()
     )
 }
 
@@ -73,7 +73,7 @@ extend self: Unification {
                 self.constraints.get(i).{
                     | None =>
                         self.constraints = self.constraints.add(
-                            i, [Pair(constraintName, ConstraintGenerics(at, generics))].getMap()
+                            i, [Pair(constraintName, ConstraintGenerics(at, generics))].toMap()
                         )
                     | Some(map) =>
                         map.get(constraintName).{
@@ -87,12 +87,12 @@ extend self: Unification {
             | TConstructor(_, name, generics2) =>
                 self.instances.get(InstanceKey(constraintName, name)).{
                     | None =>
-                        let g1 = if(generics.getEmpty()) { "" } else { "[...]" }
-                        let g2 = if(generics2.getEmpty()) { "" } else { "[...]" }
+                        let g1 = if(generics.isEmpty()) { "" } else { "[...]" }
+                        let g2 = if(generics2.isEmpty()) { "" } else { "[...]" }
                         self.fail(at, "No such instance: " + name + g2 + ": " + constraintName + g1)
                     | Some(definition) =>
                         let typeVariables = definition.generics.map {| _ => self.freshTypeVariable(at) }
-                        let instantiation = definition.generics.zip(typeVariables).getMap()
+                        let instantiation = definition.generics.zip(typeVariables).toMap()
                         let traitType1 = self.instantiate(instantiation, definition.traitType)
                         let traitType2 = TConstructor(at, constraintName, [type, ...generics])
                         self.unify(at, traitType1, traitType2)
@@ -134,7 +134,7 @@ extend self: Unification {
         | _, TVariable(_, i), _ => self.bind(at, i, t2)
         | _, _, TVariable(_, i) => self.bind(at, i, t1)
         | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
-            if(name1 != name2 || generics1.getSize() != generics2.getSize()) {
+            if(name1 != name2 || generics1.size() != generics2.size()) {
                 self.fail(at, "Type mismatch: " + self.substitute(t1).show() + " vs. " + self.substitute(t2).show())
             }
             generics1.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }

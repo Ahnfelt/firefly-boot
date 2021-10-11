@@ -1,18 +1,54 @@
 type FileSystem {}
 
 extend self: FileSystem {
-    readText(file: String): String {}
-    writeText(file: String, text: String): Unit {}
-    list(path: String): List[String] {}
-    exists(path: String): Bool {}
-    isDirectory(path: String): Bool {}
-    createDirectory(path: String): Unit {}
-    createDirectories(path: String): Unit {}
-    delete(path: String): Unit {}
-    rename(fromPath: String, toPath: String): Unit {}
-    getAbsolutePath(path: String): String {}
-    directoryName(path: String): String {}
-    baseName(path: String): String {}
-    prefixName(path: String): String {}
-    suffixName(path: String): String {}
+
+    jsFileSystemHack(): Nothing { panic("magic") }
+        javascript "#function jsFileSystemHack() {} import * as fs from 'fs'; import * as path from 'path';"
+
+    readText(file: String): String { panic("magic") }
+        javascript "return fs.readFileSync(file_, {encoding: 'UTF-8'})"
+
+    writeText(file: String, text: String): Unit { panic("magic") }
+        javascript "fs.writeFileSync(file_, text_, {encoding: 'UTF-8'})"
+
+    list(path: String): List[String] { panic("magic") }
+        javascript "return ff_core_Array.Array_toList(fs.readdirSync(path_).map(f => path_ + '/' + f))"
+
+    exists(path: String): Bool { panic("magic") }
+        javascript "return fs.existsSync(path_)"
+
+    isDirectory(path: String): Bool { panic("magic") }
+        javascript "return fs.lstatSync(path_).isDirectory()"
+
+    createDirectory(path: String): Unit { panic("magic") }
+        javascript "fs.mkdirSync(path_)"
+
+    createDirectories(path: String): Unit { panic("magic") }
+        javascript "fs.mkdirSync(path_, {recursive: true})"
+
+    delete(path: String): Unit { panic("magic") }
+        javascript "try { fs.rmdirSync(path_) } catch(_) { fs.rmSync(path_) }"
+
+    rename(fromPath: String, toPath: String): Unit { panic("magic") }
+        javascript "fs.renameSync(fromPath_, toPath_)"
+
+    getAbsolutePath(path: String): String { panic("magic") }
+        javascript "return path.resolve(path_)"
+
+    directoryName(path: String): String {
+        path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()
+    }
+
+    baseName(path: String): String {
+        path.reverse().takeWhile { _ != '/' }.reverse()
+    }
+
+    prefixName(path: String): String {
+        path.reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
+    }
+
+    suffixName(path: String): String {
+        path.reverse().takeWhile { _ != '/' }.takeWhile { _ != '.' }.reverse()
+    }
+
 }

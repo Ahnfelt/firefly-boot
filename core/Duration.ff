@@ -1,0 +1,9 @@
+newtype Duration(seconds: Float)
+
+extend self: Duration {
+
+    toString(digits: Int = 3): String {
+        self.seconds.toFixed(digits) + " s"
+    }
+
+}

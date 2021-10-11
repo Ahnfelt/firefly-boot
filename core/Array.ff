@@ -1,12 +1,50 @@
-type Array[T]() // (items: T...)
+type Array[T] {}
 
 extend self[T]: Array[T] {
-    getEmpty(): Bool { panic("build in") }
-    getSize(): Int { panic("build in") }
-    expect(index: Int): T { panic("build in") }
-    expectFirst(): T { panic("build in") }
-    expectLast(): T { panic("build in") }
-    dropFirst(count: Int = 1): Array[T] { panic("build in") }
-    dropLast(count: Int = 1): Array[T] { panic("build in") }
-    getList(): List[T] { panic("build in") }
+
+    addAll(that: Array[T]): Array[T] { panic("magic") }
+        javascript "return self_.concat(that_)"
+
+    isEmpty(): Bool { panic("magic") }
+        javascript "return self_.length === 0"
+
+    size(): Int { panic("magic") }
+        javascript "return self_.length"
+
+    expect(index: Int): T { panic("magic") }
+        javascript "return self_[index_]"
+
+    expectFirst(): T { self.expect(0) }
+
+    expectLast(): T { self.expect(self.size() - 1) }
+
+    dropFirst(count: Int = 1): Array[T] { panic("magic") }
+        javascript "return self_.slice(count_)"
+
+    dropLast(count: Int = 1): Array[T] { panic("magic") }
+        javascript "return self_.slice(0, self_.length - count_)"
+
+    update(index: Int, body: T => T): Array[T] { panic("magic") }
+        javascript """
+            let result = self_.slice();
+            result[index_] = body_(result[index_]);
+            return result;
+        """
+
+    toList(): List[T] { panic("magic") }
+        javascript """
+            let result = ff_core_List.Empty();
+            for(let i = self_.length - 1; i >= 0; i--) {
+                result = ff_core_List.Link(self_[i], result);
+            }
+            return result;
+        """
+
+}
+
+extend self: Array[String] {
+
+    join(separator: String = ""): String { panic("magic") }
+        javascript "return self_.join(separator_)"
+
 }

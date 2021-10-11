@@ -1,0 +1,131 @@
+type Stream[T](consume: (T => Bool) => Bool)
+
+extend self[T]: Stream[T] {
+
+    concat(that: Stream[T]): Stream[T] {
+        Stream: f =>
+        self.consume(f) &&
+        that.consume(f)
+    }
+
+    take(count: Int): Stream[T] {
+        Stream: f =>
+        mutable counter = count
+        self.consume: x =>
+        counter -= 1
+        counter >= 0 && f(x)
+    }
+
+    drop(count: Int): Stream[T] {
+        Stream: f =>
+        mutable counter = count
+        self.consume: x =>
+        counter -= 1
+        counter >= 0 || f(x)
+    }
+
+    takeWhile(body: T => Bool): Stream[T] {
+        Stream: f =>
+        self.consume: x =>
+        body(x) && f(x)
+    }
+
+    dropWhile(body: T => Bool): Stream[T] {
+        Stream: f =>
+        mutable dropping = True
+        self.consume: x =>
+        dropping = dropping && body(x)
+        dropping || f(x)
+    }
+
+    filter(body: T => Bool): Stream[T] {
+        Stream: f =>
+        self.consume: x =>
+        !body(x) || f(x)
+    }
+
+    map[R](body: T => R): Stream[R] {
+        Stream: f =>
+        self.consume: x =>
+        f(body(x))
+    }
+
+    flatMap[R](body: T => Stream[R]): Stream[R] {
+        Stream: f =>
+        self.consume: x =>
+        body(x).consume(f)
+    }
+
+    scan[R](initial: R, body: (R, T) => R): Stream[R] {
+        Stream: f =>
+        mutable state = initial
+        self.consume: x =>
+        state = body(state, x)
+        f(state)
+    }
+
+    // Terminating methods
+
+    fold[R](initial: R, body: (R, T) => R): R {
+        mutable state = initial
+        self.consume {x =>
+            state = body(state, x)
+        }
+        state
+    }
+
+    toList(): List[T] {
+        self.fold([]) {xs, x =>
+            [x, ...xs]
+        }.reverse()
+    }
+
+    each(body: T => Unit) {
+        self.consume: x =>
+        body(x)
+        True
+    }
+
+}
+
+extend self[T]: Stream[Stream[T]] {
+
+    flatten(): Stream[T] {
+        Stream: f =>
+        self.consume: x =>
+        x.consume(f)
+    }
+
+}
+
+
+/*
+
+extend fs: FileSystem {
+
+    readFile(fileName: String): Stream[Buffer] {
+        Stream: body =>
+        let handle = fs.openFileForReading(fileName)
+        mutable continue = True
+        try {
+            loop {
+                let buffer = handle.read()
+                if(buffer.isEmpty) {False} else {
+                    continue = body(buffer)
+                    continue
+                }
+            }
+            continue
+        } finally {
+            handle.close()
+        }
+    }
+
+}
+
+// Streaming copy
+fs.writeFile(toFileName, fs.readFile(fromFileName))
+
+// It's possible that the buffer has to be reused by default for performance
+
+*/

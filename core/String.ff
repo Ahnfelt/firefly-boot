@@ -1,25 +1,96 @@
 type String {}
 
 extend self: String {
-    getSize(): Int {}
-    expect(index: Int): Char {}
-    replace(needle: String, replacement: String): String {}
-    replaceFirst(needle: String, replacement: String): String {}
-    replace(needle: String, replacement: String): String {}
-    getReverse(): String {}
-    takeWhile(p: Char => Bool): String {}
-    slice(from: Int, until: Int): String {}
-    sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool {}
-    split(char: Char): Array[String] {}
-    drop(count: Int = 1): String {}
-    dropLast(count: Int = 1): String {}
-    expectInt(): Int {}
-    first(): Option[Char] {}
-    last(): Option[Char] {}
-    expectFirst(): Char {}
-    expectLast(): Char {}
-    getIsLetter(): Bool {}
-    contains(substring : String) : Bool {}
-    startsWith(prefix : String) : Bool {}
-    exists(p: Char => Bool): Bool {}
+
+    size(): Int { panic("magic") }
+        javascript "return self_.length"
+
+    expect(index: Int): Char { panic("magic") }
+        javascript "return self_.charCodeAt(index_)"
+
+    replace(needle: String, replacement: String): String { panic("magic") }
+        javascript "return self_.replaceAll(needle_, replacement_)"
+
+    replaceFirst(needle: String, replacement: String): String { panic("magic") }
+        javascript "return self_.replace(needle_, replacement_)"
+
+    reverse(): String { panic("magic") }
+        javascript "return [...self_].reverse().join('')"
+
+    dropWhile(p: Char => Bool): String { panic("magic") }
+        javascript """
+            let i = 0
+            for(; i < self_.length && p_(self_.codePointAt(i)); i++);
+            return self_.slice(i)
+        """
+
+    takeWhile(p: Char => Bool): String { panic("magic") }
+        javascript """
+            let i = 0
+            for(; i < self_.length && p_(self_.codePointAt(i)); i++);
+            return self_.slice(0, i)
+        """
+
+    slice(from: Int, until: Int): String { panic("magic") }
+        javascript "return self_.slice(from_, until_)"
+
+    split(char: Char): Array[String] { panic("magic") }
+        javascript "return self_.split(String.fromCharCode(char_))"
+
+    dropFirst(count: Int = 1): String { panic("magic") }
+        javascript "return self_.slice(count_)"
+
+    dropLast(count: Int = 1): String { panic("magic") }
+        javascript "return self_.slice(0, self_.length - count_)"
+
+    expectInt(): Int { panic("magic") }
+        javascript """
+            if(self_.array.length == 0) throw "expectInt on empty string"
+            for(let i = 0; i < self_.length; i++) {
+                let c = self_.codePointAt(i);
+                if(c < 48 || c > 57) throw "expectInt on non-digit string";
+            }
+            return parseInt(self_, 10);
+        """
+
+    first(): Option[Char] { panic("magic") }
+        javascript """
+            return self_.length > 0
+                ? ff_core_Option.Some(self_.charCodeAt(0))
+                : ff_core_Option.None()
+        """
+
+    last(): Option[Char] { panic("magic") }
+        javascript """
+            return self_.length > 0
+                ? ff_core_Option.Some(self_.charCodeAt(self_.length - 1))
+                : ff_core_Option.None()
+        """
+
+    expectFirst(): Char { self.first().else { panic("expectFirst() on empty string") } }
+
+    expectLast(): Char { self.last().else { panic("expectFirst() on empty string") } }
+
+    contains(substring: String) : Bool { panic("magic") }
+        javascript "return self_.includes(substring_)"
+
+    startsWith(prefix: String, offset: Int = 0) : Bool { panic("magic") }
+        javascript "return self_.startsWith(prefix_, offset_)"
+
+    any(body: Char => Bool): Bool { panic("magic") }
+        javascript """
+            for(let i = 0; i < self_.length; i++) {
+                if(body_(self_.charCodeAt(i))) return true;
+            }
+            return false;
+        """
+
+    all(body: Char => Bool): Bool { panic("magic") }
+        javascript """
+            for(let i = 0; i < self_.length; i++) {
+                if(!body_(self_.charCodeAt(i))) return false;
+            }
+            return true;
+        """
+
 }

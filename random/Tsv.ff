@@ -1,9 +1,0 @@
-parseTsv(fs: FileSystem, tsvFileName: String): Stream[Map[String, String]] {
-    fs.readFile(tsvFileName).lines().withFirst { first, rest =>
-        let headers = first.split("\t")
-        rest.map { line =>
-            let cells = line.split("\t")
-            headers.zip(cells).toMap()
-        }
-    }
-}

@@ -10,225 +10,29 @@ while(condition: () => Bool, body: () => Unit): Unit {
         | False =>
         | True =>
             body()
-            /*tailcall*/ while(condition, body)
+            tailcall while(condition, body)
     }
 }
+
+try[T](body: () => T): Try[T] { panic("magic") }
+    javascript """
+        try {
+            return {Success: true, value_: body_()}
+        } catch(e) {
+            return {Failure: true, exception_: e.message}
+        }
+    """
 
 do[T](body: () => T): T {
     body()
 }
 
-panic[T](message: String): T {}
-magicInstance[T](typeName: String): T {}
-magicShow[T](value: T): String {}
-magicHashCode[T](value: T): Int {}
-magicLess[T](x: T, y: T): Bool {}
+panic[T](message: String): T { panic("magic") }
+    javascript "throw new Error(message_)"
 
-arrayBuilderOf[T](): ArrayBuilder[T] {} // (items: T...)
-setOf[T](): Set[T] {} // (items: T...)
-mapOf[K, V](): Map[K, V] {} // (items: T...)
+magicShow[T](value: T): String { panic("magic") }
+    //javascript "return ('' + value_)"
+    javascript "return JSON.stringify(value_)"
 
-try[T](body: () => T): Try[T] {}
-
-type Try[T] {}
-
-extend self[T]: Try[T] {
-    else(body: () => T): T {}
-}
-
-log: Log = 1
-
-type Log {}
-
-extend self: Log {
-    debug[T](value: T): Unit {}
-}
-
-type Bool {
-    False
-    True
-}
-
-type Option[T] {
-    None
-    Some(value: T)
-}
-
-type Pair[A, B](first: A, second: B)
-
-type Array[T]() // (items: T...)
-
-type ArrayBuilder[T] {} // (items: T...)
-
-extend self[T]: ArrayBuilder[T] {
-    getArray(): Array[T] {}
-    getEmpty(): Bool {}
-    getSize(): Int {}
-    append(value: T): Unit {}
-    modify(index: Int, body: T => T): Unit {}
-    drain(): Array[T] {}
-    getList(): List[T] {}
-    getLast(): Option[T] {}
-    expectLast(): T {}
-}
-
-type List[T] {
-    Empty
-    Link(head: T, tail: List[T])
-}
-
-type Map[K, V] {}
-type Set[T] {} // (items: T...)
-
-type Int {}
-type String {}
-type Char {}
-type System {}
-type FileSystem {}
-type Unit()
-
-extend self: Int {
-    getTo(inclusive: Int): List[Int] {}
-    getUntil(exclusive: Int): List[Int] {}
-    getAbs(): Int {}
-}
-
-extend self: String {
-    getSize(): Int {}
-    expect(index: Int): Char {}
-    replace(needle: String, replacement: String): String {}
-    replaceFirst(needle: String, replacement: String): String {}
-    getReverse(): String {}
-    takeWhile(p: Char => Bool): String {}
-    slice(from: Int, until: Int): String {}
-    sliceEquals(offset: Int, that: String, thatOffset: Int, length: Int, ignoreCase: Bool = False): Bool {}
-    split(char: Char): Array[String] {}
-    drop(count: Int = 1): String {}
-    dropLast(count: Int = 1): String {}
-    expectInt(): Int {}
-    first(): Option[Char] {}
-    last(): Option[Char] {}
-    expectFirst(): Char {}
-    expectLast(): Char {}
-    getIsLetter(): Bool {}
-    contains(substring : String) : Bool {}
-    startsWith(prefix : String) : Bool {}
-    exists(p: Char => Bool): Bool {}
-}
-
-extend self: Char {
-    getIsLetter(): Bool {}
-    getIsUpper(): Bool {}
-    getIsLower(): Bool {}
-}
-
-extend self[T]: Option[T] {
-    else(body: () => T): T {}
-    elseIf(condition: () => Bool, body: () => T): Option[T] {}
-    getElse(body: () => Option[T]): Option[T] {}
-    getEmpty(): Bool {}
-    getList(): List[T] {}
-    filter(body: T => Bool): Option[T] {}
-    map[R](body: T => R): Option[R] {}
-    flatMap[R](body: T => Option[R]): Option[R] {}
-    getOrElse(fallback : T) : T {}
-    each(body: T => Unit): Unit {}
-    all(body: T => Bool): Bool {}
-    any(body: T => Bool): Bool {}
-    expect(): T {}
-    contains(value: T): Bool {}
-}
-
-extend self[T]: List[T] {
-    getArray(): Array[T] {}
-    getSet(): Set[T] {}
-    expect(index: Int): T {}
-    first(): Option[T] {}
-    last(): Option[T] {}
-    expectFirst(): T {}
-    expectLast(): T {}
-    exists(p: T => Bool): Bool {}
-    dropFirst(count: Int = 1): List[T] {}
-    dropLast(count: Int = 1): List[T] {}
-    modify(index: Int, body: T => T): List[T] {}
-    pairs(): List[Pair[Int, T]] {}
-    slice(from: Int, until: Int): List[T] {}
-    getEmpty(): Bool {}
-    getSize(): Int {}
-    each(body: T => Unit): Unit {}
-    all(body: T => Bool): Bool {}
-    any(body: T => Bool): Bool {}
-    find(body: T => Bool): Option[T] {}
-    filter(body: T => Bool): List[T] {}
-    map[R](body: T => R): List[R] {}
-    flatMap[R](body: T => List[R]): List[R] {}
-    getCollect[R](body: T => Option[R]): List[R] {}
-    getCollectFirst[R](body: T => Option[R]): Option[R] {}
-    foldLeft[R](initial: R): ((R, T) => R) => R {}
-    updated(index: Int, value: T): List[T] {}
-    zip[S](list: List[S]): List[Pair[T, S]] {}
-    sortBy(extract: T => String): List[T] {} // TODO generalize
-}
-
-extend self[T]: List[List[T]] {
-    getFlatten(): List[T] {}
-}
-
-extend self[K, V]: List[Pair[K, V]] {
-    getMap(): Map[K, V] {}
-    getUnzip(): Pair[List[K], List[V]] {}
-}
-
-extend self: List[String] {
-    join(separator: String = ""): String {}
-}
-
-extend self[K, V]: Map[K, V] {
-    pairs(): List[Pair[K, V]] {}
-    getSize(): Int {}
-    get(key: K): Option[V] {}
-    expect(key: K): V {}
-    add(key: K, value: V) : Map[K, V] {}
-    remove(key: K) : Map[K, V] {}
-    map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {}
-    contains(key: K): Bool {}
-}
-
-extend self[K]: Set[K] {
-    add(key: K): Set[K] {}
-    remove(key: K) : Set[K] {}
-    contains(key: K): Bool {}
-}
-
-extend self[T]: Array[T] {
-    getEmpty(): Bool {}
-    getSize(): Int {}
-    expect(index: Int): T {}
-    expectFirst(): T {}
-    expectLast(): T {}
-    dropFirst(count: Int = 1): Array[T] {}
-    dropLast(count: Int = 1): Array[T] {}
-    getList(): List[T] {}
-}
-
-extend self: System {
-    arguments(): List[String] {}
-    files(): FileSystem {}
-}
-
-extend self: FileSystem {
-    readText(file: String): String {}
-    writeText(file: String, text: String): Unit {}
-    list(path: String): List[String] {}
-    exists(path: String): Bool {}
-    isDirectory(path: String): Bool {}
-    createDirectory(path: String): Unit {}
-    createDirectories(path: String): Unit {}
-    delete(path: String): Unit {}
-    rename(fromPath: String, toPath: String): Unit {}
-    getAbsolutePath(path: String): String {}
-    directoryName(path: String): String {}
-    baseName(path: String): String {}
-    prefixName(path: String): String {}
-    suffixName(path: String): String {}
-}
+magicLess[T](x: T, y: T): Bool { panic("magic") }
+    javascript "return x_ < y_"

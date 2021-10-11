@@ -1,6 +1,16 @@
 type System {}
 
+type SystemArguments(array: Array[String])
+
 extend self: System {
-    arguments(): List[String] {}
-    files(): FileSystem {}
+
+    arguments(): List[String] { panic("magic") }
+        javascript "return ff_core_Array.Array_toList(self_.array_)"
+
+    files(): FileSystem { panic("magic") }
+        javascript "return null"
+
+    time(): TimeSystem { panic("magic") }
+        javascript "return null"
+
 }

@@ -1,9 +1,13 @@
-setOf[T](): Set[T] {} // (items: T...)
+newtype Set[T](map: Map[T, Unit])
 
-type Set[T] {} // (items: T...)
+empty[T](): Set[T] {
+    Set(Map.empty())
+}
 
-extend self[K]: Set[K] {
-    add(key: K): Set[K] {}
-    remove(key: K) : Set[K] {}
-    contains(key: K): Bool {}
+extend self[T]: Set[T] {
+    add(value: T): Set[T] { Set(self.map.add(value, Unit)) }
+    addAll(that: Set[T]): Set[T] { Set(self.map.addAll(that.map)) }
+    remove(value: T) : Set[T] { Set(self.map.remove(value)) }
+    contains(value: T): Bool { self.map.contains(value) }
+    size() : Int {self.map.size()}
 }

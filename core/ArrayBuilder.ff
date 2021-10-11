@@ -1,15 +1,45 @@
-arrayBuilderOf[T](): ArrayBuilder[T] {} // (items: T...)
+type ArrayBuilder[T] {}
 
-type ArrayBuilder[T] {} // (items: T...)
+empty[T](): ArrayBuilder[T] { panic("magic") }
+    javascript "return {array: []}"
 
 extend self[T]: ArrayBuilder[T] {
-    getArray(): Array[T] {}
-    getEmpty(): Bool {}
-    getSize(): Int {}
-    append(value: T): Unit {}
-    modify(index: Int, body: T => T): Unit {}
-    drain(): Array[T] {}
-    getList(): List[T] {}
-    getLast(): Option[T] {}
-    expectLast(): T {}
+
+    toArray(): Array[T] { panic("magic") }
+        javascript "return self_.array.slice()"
+
+    isEmpty(): Bool { panic("magic") }
+        javascript "return self_.array.length === 0"
+
+    size(): Int { panic("magic") }
+        javascript "return self_.array.length"
+
+    add(value: T): Unit { panic("magic") }
+        javascript "self_.array.push(value_)"
+
+    modify(index: Int, body: T => T): Unit { panic("magic") }
+        javascript "self_.array[index_] = body_(self_.array[index_])"
+
+    drain(): Array[T] { panic("magic") }
+        javascript "const result = self_.array; self_.array = []; return result"
+
+    toList(): List[T] { panic("magic") }
+        javascript """
+            let result = ff_core_List.Empty();
+            for(let i = self_.array.length - 1; i >= 0; i--) {
+                result = ff_core_List.Link(self_.array[i], result);
+            }
+            return result;
+        """
+
+    last(): Option[T] { panic("magic") }
+        javascript """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array[self_.array.length - 1])
+                : ff_core_Option.None()
+        """
+
+    expectLast(): T { panic("magic") }
+        javascript "return self_.array[self_.array.length - 1]"
+
 }

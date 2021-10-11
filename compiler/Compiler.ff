@@ -3,109 +3,175 @@ import Tokenizer
 import Parser
 import Resolver
 import Inference
-import Emitter
+import JsEmitter
 
 type Compiler(
     files: FileSystem
-    inputPath: String
-    outputPath: String
+    time: TimeSystem
+    jsOutputPath: String
     packagePaths: Map[String, String]
-    literalModuleNames: Map[String, List[String]]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable inferredModules: Map[String, Module]
     mutable emittedModules: Set[String]
+    mutable phaseDurations: List[Pair[String, Duration]]
+    mutable phaseDurationDelta: Duration
 )
 
 make(
     files: FileSystem
-    inputPath: String
-    outputPath: String
+    time: TimeSystem
+    jsOutputPath: String
     packagePaths: Map[String, String]
-    literalModuleNames: Map[String, List[String]]
 ): Compiler {
     Compiler(
         files = files
-        inputPath = inputPath
-        outputPath = outputPath
+        time = time
+        jsOutputPath = jsOutputPath
         packagePaths = packagePaths
-        literalModuleNames = literalModuleNames
-        parsedModules = mapOf()
-        resolvedModules = mapOf()
-        inferredModules = mapOf()
-        emittedModules = setOf()
+        parsedModules = Map.empty()
+        resolvedModules = Map.empty()
+        inferredModules = Map.empty()
+        emittedModules = Set.empty()
+        phaseDurations = [],
+        phaseDurationDelta = Duration(0.0)
     )
 }
 
-coreImports: List[DImport] = [
-/*    DImport(
-        at = Location("<prelude>", 1, 1),
-        alias = "Hello",
-        package = Some(Pair("ff", "core")),
-        directory = [],
-        file = "Hello"
-    )*/
-]
+coreImports: List[DImport] =
+    [
+        "Array",
+        "ArrayBuilder",
+        "Bool",
+        "Char",
+        "Core",
+        "Duration",
+        "FileSystem",
+        "Float",
+        "Instant",
+        "Int",
+        "List",
+        "Log",
+        "Map",
+        "Nothing",
+        "Option",
+        "Pair",
+        "Set",
+        "String",
+        "System",
+        "TimeSystem",
+        "Try",
+        "Unit"
+    ].map { moduleName =>
+        DImport(
+            at = Location("<prelude>", 1, 1),
+            alias = moduleName,
+            package = Pair("ff", "core"),
+            directory = [],
+            file = moduleName
+        )
+    }
 
 extend self: Compiler {
 
-    parse(moduleName: String): Module {
-        self.parsedModules.get(moduleName).else:
+    measure[T](phase: String, packageName: String, moduleName: String, body: () => T): T {
+        let start = Duration(self.time.elapsed().seconds - self.phaseDurationDelta.seconds)
+        let result = body()
+        let stop = Duration(self.time.elapsed().seconds - self.phaseDurationDelta.seconds)
+        let duration = Duration(stop.seconds - start.seconds)
+        self.phaseDurationDelta = Duration(self.phaseDurationDelta.seconds + duration.seconds)
+        let text = phase + " " + packageName + "/" + moduleName
+        self.phaseDurations = [Pair(text, duration), ...self.phaseDurations]
+        result
+    }
 
+    printMeasurements(): Unit {
+        let worst = self.phaseDurations.sortBy { (_.second.seconds + 1000000.0) + "" }.takeLast(5).reverse()
+        worst.each {| Pair(text, duration) =>
+            Log.debug(text + ":\t" + duration.toString())
+        }
+    }
+
+    parse(packageName: String, moduleName: String): Module {
+        self.parsedModules.get(packageName + ":" + moduleName).else:
+        self.measure("Parse", packageName, moduleName):
+
+        let packagePair = do {
+            let array = packageName.split(':')
+            Pair(array.expect(0), array.expect(1))
+        }
+        let packagePath = self.packagePaths.expect(packageName)
         let file = moduleName + ".ff"
-        let code = self.files.readText(self.inputPath + "/" + file)
+        let code = self.files.readText(packagePath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
-        let module = Parser.make(file, tokens).parseModule()
+        let module = Parser.make(packagePair, file, tokens).parseModule()
         let result = module.Module(
             imports = coreImports ++ module.imports
         )
 
-        self.parsedModules = self.parsedModules.add(moduleName, result)
+        self.parsedModules = self.parsedModules.add(packageName + ":" + moduleName, result)
         result
     }
 
-    imports(module: Module): List[Module] {
+    imports(packageName: String, module: Module): List[Module] {
         module.imports.map { import =>
-            let otherModuleName = import.directory.map { _ + "/" }.join("") + import.file
-            self.parse(otherModuleName)
+            let newPackageName = import.package.first + ":" + import.package.second
+            let newModuleName = import.directory.map { _ + "/" }.join("") + import.file
+            self.parse(newPackageName, newModuleName)
         }
     }
 
-    resolve(moduleName: String): Module {
-        self.resolvedModules.get(moduleName).else:
+    resolve(packageName: String, moduleName: String): Module {
+        self.resolvedModules.get(packageName + ":" + moduleName).else:
+        self.measure("Resolve", packageName, moduleName):
 
-        let coreModule = self.parse("../core/Core")
-        let module = self.parse(moduleName)
-        let otherModules = self.imports(module)
-        let result = Resolver.make(coreModule).resolveModule(module, otherModules)
+        let module = self.parse(packageName, moduleName)
+        let otherModules = self.imports(packageName, module)
+        let result = Resolver.make().resolveModule(module, otherModules)
 
-        self.resolvedModules = self.resolvedModules.add(moduleName, result)
+        self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)
         result
     }
 
-    infer(moduleName: String): Module {
-        self.inferredModules.get(moduleName).else:
+    infer(packageName: String, moduleName: String): Module {
+        self.inferredModules.get(packageName + ":" + moduleName).else:
+        self.measure("Infer", packageName, moduleName):
 
-        let coreModule = self.resolve("../core/Core")
-        let module = self.resolve(moduleName)
-        let otherModules = self.imports(module).map { self.resolve(self.files.prefixName(_.file)) }
-        let instances = coreModule.instances ++ module.instances ++ otherModules.flatMap { _.instances }
-        let result = Inference.make(instances).inferModule(coreModule, module, otherModules)
+        let module = self.resolve(packageName, moduleName)
+        let otherModules = self.imports(packageName, module).map { i =>
+            let newPackageName = i.packagePair.first + ":" + i.packagePair.second
+            self.resolve(newPackageName, self.files.prefixName(i.file))
+        }
+        let instances = module.instances ++ otherModules.flatMap { _.instances }
+        let result = Inference.make(instances).inferModule(module, otherModules)
 
-        self.inferredModules = self.inferredModules.add(moduleName, result)
-        module // result
+        self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)
+        result
     }
 
-    emit(moduleName: String): Unit {
-        if(self.emittedModules.contains(moduleName)) {} else:
-        self.emittedModules = self.emittedModules.add(moduleName)
+    emit(packageName: String, moduleName: String): Unit {
+        if(self.emittedModules.contains(packageName + ":" + moduleName)) {} else:
+        self.measure("Emit", packageName, moduleName):
+        self.emittedModules = self.emittedModules.add(packageName + ":" + moduleName)
 
-        let module = self.infer(moduleName)
-        self.imports(module).each { self.emit(self.files.prefixName(_.file)) }
+        let module = self.infer(packageName, moduleName)
+        let otherModules = self.imports(packageName, module).map { i =>
+            let newPackageName = i.packagePair.first + ":" + i.packagePair.second
+            let newModuleName = self.files.prefixName(i.file)
+            self.emit(newPackageName, newModuleName)
+            self.infer(newPackageName, newModuleName)
+        }
 
-        let emitted = Emitter.emitModule(self.inputPath, module)
-        let file = self.outputPath + "/" + moduleName + ".scala"
-        self.files.writeText(file, emitted)
+        let packagePair = do {
+            let array = packageName.split(':')
+            Pair(array.expect(0), array.expect(1))
+        }
+
+        let js = JsEmitter.make([module, ...otherModules]).emitModule(packagePair, module)
+        let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
+        let jsFile = jsPath + "/" + moduleName + ".mjs"
+        self.files.createDirectories(jsPath)
+        self.files.writeText(jsFile, js)
     }
 
 }

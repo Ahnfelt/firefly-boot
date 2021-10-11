@@ -1,7 +1,16 @@
-type Char {}
+newtype Char(codeUnit: Int)
 
 extend self: Char {
-    getIsLetter(): Bool {}
-    getIsUpper(): Bool {}
-    getIsLower(): Bool {}
+
+    isAsciiLetter(): Bool { self.isAsciiUpper() || self.isAsciiLower() }
+
+    isAsciiUpper(): Bool { self >= 'A' && self <= 'Z' }
+
+    isAsciiLower(): Bool { self >= 'a' && self <= 'z' }
+
+    isAsciiDigit(): Bool { self >= '0' && self <= '9' }
+
+    toString(): String { panic("magic") }
+        javascript "return String.fromCharCode(self_)"
+
 }

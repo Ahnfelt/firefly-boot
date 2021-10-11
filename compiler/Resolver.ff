@@ -7,17 +7,12 @@ type Resolver(
     traits: Map[String, String]
 )
 
-make(coreModule: Module): Resolver {
-    function core(name: String): Pair[String, String] {
-        Pair(name, "ff:core/Core." + name)
-    }
+make(): Resolver {
     Resolver(
-        variables =
-            coreModule.lets.map { _.name }.map(core).getMap() ++
-            coreModule.functions.map { _.signature.name }.map(core).getMap()
-        variants = coreModule.types.flatMap { _.variants }.map { _.name }.map(core).getMap()
-        types = coreModule.types.map { _.name }.map(core).getMap()
-        traits = mapOf()
+        variables = [].toMap()
+        variants = [].toMap()
+        types = [].toMap()
+        traits = [].toMap()
     )
 }
 
@@ -29,7 +24,7 @@ extend self: Resolver {
 
     resolveModule(module: Module, otherModules: List[Module]): Module {
         let moduleNamespace =
-            module.file.replace("\\", "/").getReverse().takeWhile { _ != '/' }.getReverse().takeWhile { _ != '.' }
+            module.file.replace("\\", "/").reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
         let self2 = self.processImports(module.imports, otherModules)
         let self3 = self2.processDefinitions(module, None)
         module.Module(
@@ -57,19 +52,25 @@ extend self: Resolver {
 
     processDefinitions(module: Module, importAlias: Option[String]): Resolver {
         function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
-            let full = module.file.dropLast(3) + "." + name
+            let full =
+                module.packagePair.first + ":" + module.packagePair.second + "/" +
+                module.file.dropLast(3) + "." + name
             importAlias.{
-                | None => [Pair(name, full)]
-                | Some(alias) { unqualified } => [Pair(alias + "." + name, full), Pair(name, full)]
-                | Some(alias) => [Pair(alias + "." + name, full)]
+                | None => [Pair(name, full), Pair(full, full)]
+                | Some(alias) { unqualified } => [Pair(alias + "." + name, full), Pair(name, full), Pair(full, full)]
+                | Some(alias) => [Pair(alias + "." + name, full), Pair(full, full)]
             }
         }
-        let lets = module.lets.flatMap { entry(_.name, False) }.getMap()
-        let functions = module.functions.flatMap { entry(_.signature.name, False) }.getMap()
-        let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.getMap()
-        let traits = module.traits.flatMap { entry(_.name, True) }.getMap()
-        let types = module.types.flatMap { entry(_.name, True) }.getMap()
-        let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.getMap()
+        let isCore = // TODO: Extend imports to list unqualified symbols instead of this
+            module.packagePair.first == "ff" &&
+            module.packagePair.second == "core" &&
+            module.file == "Core.ff"
+        let lets = module.lets.flatMap { entry(_.name, isCore) }.toMap()
+        let functions = module.functions.flatMap { entry(_.signature.name, isCore) }.toMap()
+        let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.toMap()
+        let traits = module.traits.flatMap { entry(_.name, True) }.toMap()
+        let types = module.types.flatMap { entry(_.name, True) }.toMap()
+        let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap()
         Resolver(
             variables = self.variables ++ lets ++ functions ++ traitMethods
             variants = self.variants ++ variants
@@ -79,7 +80,7 @@ extend self: Resolver {
     }
 
     resolveTypeDefinition(definition: DType): DType {
-        let generics = definition.generics.map { g => Pair(g, g) }.getMap()
+        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(types = self.types ++ generics)
         definition.DType(
             constraints = definition.constraints.map { c =>
@@ -111,7 +112,7 @@ extend self: Resolver {
     }
 
     resolveExtendDefinition(definition: DExtend): DExtend {
-        let generics = definition.generics.map { g => Pair(g, g) }.getMap()
+        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
             types = self.types ++ generics
             variables = self.variables.add(definition.name, definition.name)
@@ -140,7 +141,7 @@ extend self: Resolver {
         | EFloat _ => term
         | EVariable e =>
             self.variables.get(e.name).map { e.EVariable(name = _) }.else {
-                if(e.name.first().any { _.getIsLetter() }) {
+                if(e.name.first().any { _.isAsciiLetter() }) {
                     fail(e.at, "No such variable: " + e.name)
                 } else {
                     term
@@ -180,9 +181,10 @@ extend self: Resolver {
                 value = self.resolveTerm(value)
                 function = self.resolveTerm(function)
             )
-        | ECall(at, function, typeArguments, arguments) =>
+        | ECall(at, tailCall, function, typeArguments, arguments) =>
             ECall(
                 at = at
+                tailCall = tailCall
                 function = self.resolveTerm(function)
                 typeArguments = typeArguments.map { self.resolveType(_) }
                 arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }
@@ -196,7 +198,7 @@ extend self: Resolver {
             if(e.index == 0) { fail(e.at, "Unbound wildcard") }
             e.EWildcard()
         | EFunctions(at, functions, body) =>
-            let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.getMap()
+            let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap()
             let self2 = self.Resolver(variables = self.variables ++ functionMap)
             EFunctions(
                 at = at,
@@ -249,8 +251,8 @@ extend self: Resolver {
     }
 
     resolveFunctionDefinition(definition: DFunction): DFunction {
-        let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.getMap()
-        let typeMap = definition.signature.generics.map { name => Pair(name, name) }.getMap()
+        let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
+        let typeMap = definition.signature.generics.map { name => Pair(name, name) }.toMap()
         let self2 = self.Resolver(
             variables = self.variables ++ variableMap
             types = self.types ++ typeMap
@@ -268,25 +270,25 @@ extend self: Resolver {
             returnType = self2.resolveType(definition.signature.returnType)
         )
         let body = definition.body.Lambda(cases = definition.body.cases.map { self2.resolveCase(_) })
-        DFunction(definition.at, signature, body)
+        DFunction(definition.at, signature, body, definition.targets)
     }
 
     resolveCase(case: MatchCase): MatchCase {
         function findVariables(pattern: MatchPattern): Map[String, String] {
             | PVariable(_, Some(name)) =>
-                [Pair(name, name)].getMap()
+                [Pair(name, name)].toMap()
             | PVariable(_, None) =>
-                mapOf()
+                Map.empty()
             | PVariant(_, _, patterns) =>
-                patterns.map(findVariables).foldLeft(mapOf[String, String]())({_ ++ _})
+                patterns.map(findVariables).foldLeft(Map.empty[String, String]())({_ ++ _})
             | PVariantAs(_, _, variable) =>
-                variable.getList().map { x => Pair(x, x) }.getMap()
+                variable.toList().map { x => Pair(x, x) }.toMap()
             | PAlias(_, pattern, variable) =>
-                [Pair(variable, variable)].getMap() ++ findVariables(pattern)
+                [Pair(variable, variable)].toMap() ++ findVariables(pattern)
             | PList(_, _, items) =>
-                items.map { | Pair(item, _) => findVariables(item) }.foldLeft(mapOf[String, String]())({_ ++ _})
+                items.map { | Pair(item, _) => findVariables(item) }.foldLeft(Map.empty[String, String]())({_ ++ _})
         }
-        let variableMap = case.patterns.map(findVariables).foldLeft(mapOf[String, String]())({_ ++ _})
+        let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty[String, String]())({_ ++ _})
         let self2 = self.Resolver(
             variables = self.variables ++ variableMap
         )

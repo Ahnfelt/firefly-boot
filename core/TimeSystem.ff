@@ -1,0 +1,19 @@
+type TimeSystem {}
+
+extend self: TimeSystem {
+
+    now(): Instant { panic("magic") }
+        javascript "return Date.now() * 0.001"
+
+    elapsed(): Duration { panic("magic") }
+        javascript "return performance.now() * 0.001"
+
+    measure[R](body: () => R): Pair[R, Duration] {
+        let start = self.elapsed()
+        let result = body()
+        let stop = self.elapsed()
+        let duration = Duration(stop.seconds - start.seconds)
+        Pair(result, duration)
+    }
+
+}
