@@ -89,7 +89,7 @@ buildDescription(
 ): TermDescription {
     | Context([]), d, [] => d
     | Context([Pair(c, ds1), ...rest]), d, [Work(_, _, ds2), ...works] =>
-        buildDescription(Context(rest), Positive(c, (ds1++[d, ...ds2]).reverse()), works)
+        buildDescription(Context(rest), Positive(c, ds1.reverse() ++ [d, ...ds2]), works)
     | _, _, _ =>  panic("buildDescription is unexhaustive: buildDescription(\n" +
          "    context = " + magicShow(context) + "\n" +
          "    description = " + magicShow(description) + "\n" +
@@ -98,7 +98,7 @@ buildDescription(
 }
 
 addNegative(description : TermDescription, constructor : Constructor) : TermDescription {
-    | Negative(noneSet), _ => Negative(noneSet.add(constructor))
+    | Negative(noneSet), c { !noneSet.contains(c) } => Negative(noneSet.add(constructor))
     | _, _ => panic("Negative TermDescription expected, got " + magicShow(description))
 }
 
@@ -115,7 +115,7 @@ fail(
             context = Context([])
             works = []
             body = body
-            rules = []
+            rules = rules
         )
    | _, rs => panic("fail is unexhaustive:: rs=" + magicShow(rs))
 
@@ -136,7 +136,7 @@ succeed(
                object = o
                description = d
                context = context
-               works = ws
+               works = [Work(ps, os, ds), ...ws]
                body = body
                rules = rules
            )
@@ -211,9 +211,13 @@ main(system: System): Unit {
         PConstructor(Constructor("()", 2, 1), [first, second])
     }
     let match = Match(rules = [
-        Pair(red, Body(1))
+        //Pair(red, Body(1))
         //Pair(pair(red, blue), Body(1)),
         //Pair(pair(green, blue), Body(2))
+        Pair(pair(blue, blue), Body(3)),
+        Pair(pair(PVariable("x"), PVariable("y")), Body(4))
+        //Pair(red, Body(1)),
+        //Pair(PVariable("x"), Body(2))
     ])
 
     Log.debug(magicShow(compile(match)))

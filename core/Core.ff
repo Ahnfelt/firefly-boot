@@ -32,7 +32,7 @@ panic[T](message: String): T { panic("magic") }
 
 magicShow[T](value: T): String { panic("magic") }
     //javascript "return ('' + value_)"
-    javascript "return JSON.stringify(value_)"
+    javascript "return JSON.stringify(value_, undefined, 4)"
 
 magicLess[T](x: T, y: T): Bool { panic("magic") }
     javascript "return x_ < y_"
