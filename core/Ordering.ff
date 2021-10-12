@@ -1,0 +1,28 @@
+type Ordering {
+    OrderingBefore
+    OrderingSame
+    OrderingAfter
+}
+
+fromInt(order: Int): Ordering {
+    if(order < 0) {
+        OrderingBefore
+    } elseIf { Ordering == 0 } {
+        OrderingSame
+    } else {
+        OrderingAfter
+    }
+}
+
+extend Ordering {
+    toInt(): Int {
+        | OrderingBefore => -1
+        | OrderingSame => 0
+        | OrderingAfter => 1
+    }
+    reverse(): Ordering {
+        | OrderingBefore => OrderingAfter
+        | OrderingSame => OrderingSame
+        | OrderingAfter => OrderingBefore
+    }
+}
