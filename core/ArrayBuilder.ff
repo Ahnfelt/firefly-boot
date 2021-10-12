@@ -42,4 +42,7 @@ extend self[T]: ArrayBuilder[T] {
     expectLast(): T { panic("magic") }
         javascript "return self_.array[self_.array.length - 1]"
 
+    sortBy(lessThan: (T, T) => Bool): Unit { panic("magic") }
+        javascript "self_.array.sort((x, y) => lessThan_(x, y) ? -1 : lessThan_(y, x) ? 1 : 0)"
+
 }

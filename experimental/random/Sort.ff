@@ -1,0 +1,8 @@
+main(system: System) {
+    let builder = ArrayBuilder.empty()
+    builder.add(5)
+    builder.add(1)
+    builder.add(20)
+    builder.sortBy { _ < _ }
+    Log.debug(builder)
+}
