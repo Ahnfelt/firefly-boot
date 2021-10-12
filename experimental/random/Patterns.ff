@@ -23,7 +23,7 @@ type TermDescription {
         constructor: Constructor
         descriptions: List[TermDescription]
     )
-    Negative(constructors: Set[Constructor])
+    Negative(constructors: Set[String])
 }
 
 type Context(
@@ -67,7 +67,7 @@ staticMatch(
 ) : MatchResult {
     | c1, Positive(c2, _) { c1 == c2 } => Yes
     | c1, Positive(_, _) => No
-    | c1, Negative(noneSet) { noneSet.contains(c1) } => No
+    | c1, Negative(noneSet) { noneSet.contains(c1.name) } => No
     | c1, Negative(noneSet) { c1.span == 1 + noneSet.size() } => Yes
     | _, Negative(_) => Maybe
 }
@@ -98,7 +98,9 @@ buildDescription(
 }
 
 addNegative(description : TermDescription, constructor : Constructor) : TermDescription {
-    | Negative(noneSet), c { !noneSet.contains(c) } => Negative(noneSet.add(constructor))
+    | Negative(noneSet), c {
+        !noneSet.contains(c.name) && noneSet.add(c.name).size() < c.span
+    } => Negative(noneSet.add(constructor.name))
     | _, _ => panic("Negative TermDescription expected, got " + magicShow(description))
 }
 
@@ -181,6 +183,7 @@ match(
             }
 
             function doFail(newDescription : TermDescription): Decision {
+                Log.debug("doFail: " + magicShow(newDescription))
                 fail(buildDescription(context, newDescription, works), rules)
             }
 
@@ -202,7 +205,6 @@ compile(input: Match): Decision {
 }
 
 main(system: System): Unit {
-    Log.debug("aflkjnsfd")
     //type Color {Red, Green, Blue}
     let red = PConstructor(Constructor("Red", 0, 3), [])
     let green = PConstructor(Constructor("Green", 0, 3), [])
@@ -214,7 +216,7 @@ main(system: System): Unit {
         //Pair(red, Body(1))
         //Pair(pair(red, blue), Body(1)),
         //Pair(pair(green, blue), Body(2))
-        Pair(pair(blue, blue), Body(3)),
+        Pair(pair(blue, green), Body(3)),
         Pair(pair(PVariable("x"), PVariable("y")), Body(4))
         //Pair(red, Body(1)),
         //Pair(PVariable("x"), Body(2))
