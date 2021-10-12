@@ -28,6 +28,8 @@ import * as ff_core_Nothing from "../../ff/core/Nothing.mjs"
 
 import * as ff_core_Option from "../../ff/core/Option.mjs"
 
+import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
+
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -95,6 +97,10 @@ export function ArrayBuilder_last(self_) {
 
 export function ArrayBuilder_expectLast(self_) {
 return self_.array[self_.array.length - 1]
+}
+
+export function ArrayBuilder_sortBy(self_, ordering_) {
+self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
 

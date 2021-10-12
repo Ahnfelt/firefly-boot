@@ -55,6 +55,7 @@ coreImports: List[DImport] =
         "Map",
         "Nothing",
         "Option",
+        "Ordering",
         "Pair",
         "Set",
         "String",

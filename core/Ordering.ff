@@ -7,22 +7,34 @@ type Ordering {
 fromInt(order: Int): Ordering {
     if(order < 0) {
         OrderingBefore
-    } elseIf { Ordering == 0 } {
+    } elseIf { order == 0 } {
         OrderingSame
     } else {
         OrderingAfter
     }
 }
 
-extend Ordering {
+fromLessThan[T](lessThan: (T, T) => Bool): (T, T) => Ordering {
+    {
+        | x, y { lessThan(x, y) } => OrderingBefore
+        | x, y { lessThan(y, x) } => OrderingAfter
+        | _, _ => OrderingSame
+    }
+}
+
+extend self: Ordering {
     toInt(): Int {
-        | OrderingBefore => -1
-        | OrderingSame => 0
-        | OrderingAfter => 1
+        self.{
+            | OrderingBefore => -1
+            | OrderingSame => 0
+            | OrderingAfter => 1
+        }
     }
     reverse(): Ordering {
-        | OrderingBefore => OrderingAfter
-        | OrderingSame => OrderingSame
-        | OrderingAfter => OrderingBefore
+        self.{
+            | OrderingBefore => OrderingAfter
+            | OrderingSame => OrderingSame
+            | OrderingAfter => OrderingBefore
+        }
     }
 }

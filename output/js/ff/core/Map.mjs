@@ -28,6 +28,8 @@ import * as ff_core_Nothing from "../../ff/core/Nothing.mjs"
 
 import * as ff_core_Option from "../../ff/core/Option.mjs"
 
+import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
+
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_RbMap from "../../ff/core/RbMap.mjs"

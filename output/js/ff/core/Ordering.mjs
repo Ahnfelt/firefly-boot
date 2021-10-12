@@ -44,22 +44,76 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+// type Ordering
+const OrderingBefore$ = {OrderingBefore: true};
+export function OrderingBefore() {
+return OrderingBefore$;
+}
+const OrderingSame$ = {OrderingSame: true};
+export function OrderingSame() {
+return OrderingSame$;
+}
+const OrderingAfter$ = {OrderingAfter: true};
+export function OrderingAfter() {
+return OrderingAfter$;
+}
 
 
 
+export function fromInt_(order_) {
+if((order_ < 0)) {
+return ff_core_Ordering.OrderingBefore()
+} else if((order_ == 0)) {
+return ff_core_Ordering.OrderingSame()
+} else {
+return ff_core_Ordering.OrderingAfter()
+}
+}
 
-export function if_(condition_, body_) {
+export function fromLessThan_(lessThan_) {
+return ((_1, _2) => {
 {
-const _1 = condition_
-{
-if(!_1) {
-return ff_core_Option.None()
+const x_ = _1
+const y_ = _2
+if(lessThan_(x_, y_)) {
+return ff_core_Ordering.OrderingBefore()
 return
 }
 }
 {
-if(_1) {
-return ff_core_Option.Some(body_())
+const x_ = _1
+const y_ = _2
+if(lessThan_(y_, x_)) {
+return ff_core_Ordering.OrderingAfter()
+return
+}
+}
+{
+return ff_core_Ordering.OrderingSame()
+return
+}
+throw new Error('Unexhaustive pattern match')
+})
+}
+
+export function Ordering_toInt(self_) {
+{
+const _1 = self_
+{
+if(_1.OrderingBefore) {
+return (-1)
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return 0
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return 1
 return
 }
 }
@@ -67,54 +121,29 @@ throw new Error('Unexhaustive pattern match')
 }
 }
 
-export function while_(condition_, body_) {
+export function Ordering_reverse(self_) {
 {
-const _1 = condition_()
+const _1 = self_
 {
-if(!_1) {
-
+if(_1.OrderingBefore) {
+return ff_core_Ordering.OrderingAfter()
 return
 }
 }
 {
-if(_1) {
-body_()
-while(condition_()) {
-body_()
+if(_1.OrderingSame) {
+return ff_core_Ordering.OrderingSame()
+return
 }
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_Ordering.OrderingBefore()
 return
 }
 }
 throw new Error('Unexhaustive pattern match')
 }
 }
-
-export function try_(body_) {
-
-        try {
-            return {Success: true, value_: body_()}
-        } catch(e) {
-            return {Failure: true, exception_: e.message}
-        }
-    
-}
-
-export function do_(body_) {
-return body_()
-}
-
-export function panic_(message_) {
-throw new Error(message_)
-}
-
-export function magicShow_(value_) {
-return JSON.stringify(value_, undefined, 4)
-}
-
-export function magicLess_(x_, y_) {
-return x_ < y_
-}
-
-
 
 
