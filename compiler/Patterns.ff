@@ -1,0 +1,116 @@
+type PatternInfo(
+    variant: String
+    otherVariants: Set[String]
+    fields: List[Pair[String, PatternInfo]]
+)
+
+type PatternCaseInfo(
+    fields: List[Pair[String, PatternInfo]]
+)
+
+process(
+    variants: Map[String, Set[String]]
+    fields: List[Pair[String, PatternInfo]]
+    cases: List[PatternCaseInfo]
+    success: Bool
+): Unit {
+    Pair(fields, cases).{
+        | Pair([Pair(f, PatternInfo p), ...fs], cs) =>
+            let vs = variants.get(f).else { p.otherVariants.add(p.variant) }
+            if(vs.contains(p.variant)) {
+                let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
+                if(vs.size() == 1) {
+                    Log.debug("Always true that " + f + " is " + p.variant)
+                    process(variants.add(f, vs), newFields ++ fs, cs, True)
+                } else {
+                    Log.debug("If " + f + " is " + p.variant)
+                    process(variants.add(f, [p.variant].toSet()), newFields ++ fs, cs, True)
+                    Log.debug("Else if not " + f + " is " + p.variant)
+                    process(variants.add(f, vs.remove(p.variant)), [], cs, False)
+                    Log.debug("End if " + f + " is " + p.variant)
+                }
+            } else {
+                Log.debug("Never true that " + f + " is " + p.variant)
+                process(variants, [], cs, False)
+            }
+        | _ { success } =>
+        | Pair([], [PatternCaseInfo(fs), ...cs]) =>
+            Log.debug("Begin rule")
+            process(variants, fs, cs, True)
+            Log.debug("End rule")
+        | Pair([], []) =>
+            let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
+                f + " could be " + magicShow(vs.toList().toArray())
+            }
+            if(remaining.size() != 0) {
+                panic("Unexhaustive match:\n" + remaining.join("\n"))
+            }
+            Unit // Fix the need for adding this to satisfy the type checker
+    }
+}
+
+convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseInfo] {
+    function convertPattern(pattern: MatchPattern): PatternInfo {
+    }
+    cases.map { c =>
+        let fields = c.patterns.map {
+            | PVariable p => None
+            | PVariant p =>
+            | PVariantAs p => 
+            | PAlias p => convertPattern(p.pattern)
+            | PList p =>
+        }
+        PatternCaseInfo(fields.collect {_})
+    }
+}
+
+mainTest(system: System): Unit {
+    let rulesOption = [
+        PatternCaseInfo([Pair("_1", PatternInfo("None", ["Some"].toSet(), []))])
+        PatternCaseInfo([Pair("_1", PatternInfo("Some", ["None"].toSet(), [
+            Pair("value", PatternInfo("True", ["False"].toSet(), []))
+        ]))]),
+        PatternCaseInfo([Pair("_1", PatternInfo("Some", ["None"].toSet(), [
+            Pair("value", PatternInfo("False", ["True"].toSet(), []))
+        ]))])
+    ]
+
+    let rulesColors = [
+        PatternCaseInfo([Pair("_1", PatternInfo("Tuple", Set.empty(), [
+            Pair("first", PatternInfo("Blue", ["Green", "Red"].toSet(), [])),
+            Pair("second", PatternInfo("Green", ["Blue", "Red"].toSet(), []))
+        ]))])
+        PatternCaseInfo([Pair("_1", PatternInfo("Tuple", Set.empty(), []))])
+    ]
+
+    let rulesColors2 = [
+        PatternCaseInfo([Pair("_1", PatternInfo("Tuple", Set.empty(), [
+            Pair("first", PatternInfo("Blue", ["Green"].toSet(), []))
+            Pair("second", PatternInfo("Blue", ["Green"].toSet(), []))
+        ]))])
+        PatternCaseInfo([Pair("_1", PatternInfo("Tuple", Set.empty(), [
+            Pair("first", PatternInfo("Green", ["Blue"].toSet(), []))
+            Pair("second", PatternInfo("Blue", ["Green"].toSet(), []))
+        ]))])
+        PatternCaseInfo([Pair("_1", PatternInfo("Tuple", Set.empty(), [
+            Pair("first", PatternInfo("Blue", ["Green"].toSet(), []))
+            Pair("second", PatternInfo("Green", ["Blue"].toSet(), []))
+        ]))])
+        PatternCaseInfo([Pair("_1", PatternInfo("Tuple", Set.empty(), [
+            Pair("first", PatternInfo("Green", ["Blue"].toSet(), []))
+            Pair("second", PatternInfo("Green", ["Blue"].toSet(), []))
+        ]))])
+    ]
+
+    let rulesOption2 = [
+        PatternCaseInfo([Pair("_1", PatternInfo("Pair", Set.empty(), [
+            Pair("first", PatternInfo("None", ["Some"].toSet(), []))
+            Pair("second", PatternInfo("None", ["Some"].toSet(), []))
+        ]))])
+        PatternCaseInfo([Pair("_1", PatternInfo("Pair", Set.empty(), [
+            Pair("second", PatternInfo("Some", ["None"].toSet(), []))
+        ]))])
+    ]
+
+    process([].toMap(), [], rulesOption2, False)
+}
