@@ -2,6 +2,8 @@ import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
 
 import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
+import * as ff_compiler_Patterns from "../../ff/compiler/Patterns.mjs"
+
 import * as ff_compiler_Substitution from "../../ff/compiler/Substitution.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"

@@ -72,4 +72,10 @@ export function Set_size(self_) {
 return ff_core_Map.Map_size(self_)
 }
 
+export function Set_toList(self_) {
+return ff_core_List.List_map(ff_core_Map.Map_pairs(self_), ((_w1) => {
+return _w1.first_
+}))
+}
+
 

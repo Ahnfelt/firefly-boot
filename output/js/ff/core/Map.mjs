@@ -111,7 +111,9 @@ throw new Error('Unexhaustive pattern match')
 }
 
 export function Map_size(self_) {
-return ff_core_RbMap.RbMap_size(self_)
+return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_), 0)(((total_, _) => {
+return (total_ + 1)
+}))
 }
 
 export function Map_map(self_, body_) {

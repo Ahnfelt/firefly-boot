@@ -2,6 +2,7 @@ import Syntax
 import Unification
 import Environment
 import Substitution
+import Patterns
 
 type Inference(
     unification: Unification

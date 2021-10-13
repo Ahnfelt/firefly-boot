@@ -1,3 +1,5 @@
+import Syntax
+
 type PatternInfo(
     variant: String
     otherVariants: Set[String]
@@ -50,17 +52,38 @@ process(
 }
 
 convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseInfo] {
-    function convertPattern(pattern: MatchPattern): PatternInfo {
+    function otherVariants(name: String): Set[String] {
+        let variantName = name.reverse().takeWhile { _ != '.' }.reverse()
+        let moduleName = name.dropLast(variantName.size() + 1)
+        let variantModule = modules.expect(moduleName)
+        variantModule.types.collectFirst { definition =>
+            definition.variants.find { _.name == variantName }.map { variant =>
+                definition.variants.map { _.name }.filter { _ != variantName }.toSet()
+            }
+        }.expect()
+    }
+    function convertPattern(pattern: MatchPattern): Option[PatternInfo] {
+        | PVariable p =>
+            None
+        | PVariant p =>
+            let fields = p.patterns.map(convertPattern).pairs().collect {
+                | Pair(i, Some(p)) => Some(Pair("" + i, p))
+                | _ => None
+            }
+            Some(PatternInfo(p.name, otherVariants(p.name), fields))
+        | PVariantAs p =>
+            Some(PatternInfo(p.name, otherVariants(p.name), []))
+        | PAlias p =>
+            convertPattern(p.pattern)
+        | PList _ =>
+            panic("TODO: Remove list patterns from the ast")
     }
     cases.map { c =>
-        let fields = c.patterns.map {
-            | PVariable p => None
-            | PVariant p =>
-            | PVariantAs p => 
-            | PAlias p => convertPattern(p.pattern)
-            | PList p =>
+        let fields = c.patterns.map(convertPattern).pairs().collect {
+            | Pair(i, Some(p)) => Some(Pair("" + i, p))
+            | _ => None
         }
-        PatternCaseInfo(fields.collect {_})
+        PatternCaseInfo(fields)
     }
 }
 
