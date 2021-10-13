@@ -13,27 +13,29 @@ process(
     Pair(fields, rules).{
         | Pair([Pair(f, PatternInfo p), ...fs], rs) =>
             let vs = variants.get(f).else { p.otherVariants.add(p.variant) }
+            Log.debug(vs)
             if(vs.contains(p.variant)) {
                 let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
                 if(vs.size() == 1) {
-                    Log.debug("Can only be " + p.variant)
+                    Log.debug("Can only be " + f + " " + p.variant)
                     process(variants.add(f, vs), newFields ++ fs, rs, True)
                 } else {
-                    Log.debug("If " + p.variant)
+                    Log.debug("If " + f + " " + p.variant)
                     process(variants.add(f, [p.variant].toSet()), newFields ++ fs, rs, True)
-                    Log.debug("Else if not " + p.variant)
+                    Log.debug("Else if not " + f + " " + p.variant)
                     process(variants.add(f, vs.remove(p.variant)), [], rs, False)
-                    Log.debug("End if " + p.variant)
+                    Log.debug("End if " + f + " " + p.variant)
                 }
             } else {
-                Log.debug("Can't be " + p.variant)
+                Log.debug("Can't be " + f + " " + p.variant)
                 process(variants, [], rs, False)
             }
+        | _ { success } =>
         | Pair([], [r, ...rs]) =>
             Log.debug("Begin rule")
             process(variants, r, rs, True)
             Log.debug("End rule")
-        | Pair([], []) { !success } =>
+        | Pair([], []) =>
             let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
                 f + " could be " + magicShow(vs.toList().toArray())
             }
@@ -41,7 +43,6 @@ process(
                 panic("Unexhaustive match:\n" + remaining.join("\n"))
             }
             Unit // Fix the need for adding this to satisfy the type checker
-        | Pair([], []) =>
     }
 }
 
