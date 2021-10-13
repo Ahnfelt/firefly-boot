@@ -14,18 +14,25 @@ process(
         | Pair([Pair(f, PatternInfo p), ...fs], rs) =>
             let vs = variants.get(f).else { p.otherVariants.add(p.variant) }
             if(vs.contains(p.variant)) {
-                let newFields = p.fields.map { _.mapFirst { f + "." + _ } }
+                let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
                 if(vs.size() == 1) {
+                    Log.debug("Can only be " + p.variant)
                     process(variants.add(f, vs), newFields ++ fs, rs, True)
                 } else {
+                    Log.debug("If " + p.variant)
                     process(variants.add(f, [p.variant].toSet()), newFields ++ fs, rs, True)
+                    Log.debug("Else if not " + p.variant)
                     process(variants.add(f, vs.remove(p.variant)), [], rs, False)
+                    Log.debug("End if " + p.variant)
                 }
             } else {
+                Log.debug("Can't be " + p.variant)
                 process(variants, [], rs, False)
             }
         | Pair([], [r, ...rs]) =>
+            Log.debug("Begin rule")
             process(variants, r, rs, True)
+            Log.debug("End rule")
         | Pair([], []) { !success } =>
             let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
                 f + " could be " + magicShow(vs.toList().toArray())
