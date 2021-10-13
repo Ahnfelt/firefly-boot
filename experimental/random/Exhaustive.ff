@@ -1,16 +1,16 @@
-type Pattern(
-    variant: String,
-    otherVariants: Set[String],
-    fields: List[Pair[String, Pattern]]
+type PatternInfo(
+    variant: String
+    otherVariants: Set[String]
+    fields: List[Pair[String, PatternInfo]]
 )
 
 process(
-    variants: Map[String, Set[String]],
-    fields: List[Pair[String, Pattern]]
-    rules: List[List[Pair[String, Pattern]]]
+    variants: Map[String, Set[String]]
+    fields: List[Pair[String, PatternInfo]]
+    rules: List[List[Pair[String, PatternInfo]]]
 ): Unit {
     Pair(fields, rules).{
-        | Pair([Pair(f, Pattern p), ...fs], rs) =>
+        | Pair([Pair(f, PatternInfo p), ...fs], rs) =>
             let vs = variants.get(f).else { p.otherVariants.add(p.variant) }
             if(vs.contains(p.variant)) {
                 let newFields = p.fields.map { _.mapFirst { f + "." + _ } }
@@ -40,6 +40,6 @@ main(system: System): Unit {
     process(
         [].toMap()
         []
-        [[Pair("_1", Pattern("False", ["True"].toSet(), []))]]
+        [[Pair("_1", PatternInfo("False", ["True"].toSet(), []))]]
     )
 }
