@@ -1,0 +1,45 @@
+type Pattern(
+    variant: String,
+    otherVariants: Set[String],
+    fields: List[Pair[String, Pattern]]
+)
+
+process(
+    variants: Map[String, Set[String]],
+    fields: List[Pair[String, Pattern]]
+    rules: List[List[Pair[String, Pattern]]]
+): Unit {
+    Pair(fields, rules).{
+        | Pair([Pair(f, Pattern p), ...fs], rs) =>
+            let vs = variants.get(f).else { p.otherVariants.add(p.variant) }
+            if(vs.contains(p.variant)) {
+                let newFields = p.fields.map { _.mapFirst { f + "." + _ } }
+                if(vs.size() == 1) {
+                    process(variants.add(f, vs), newFields ++ fs, rs)
+                } else {
+                    process(variants.add(f, [p.variant].toSet()), newFields ++ fs, rs)
+                    process(variants.add(f, vs.remove(p.variant)), [], rs)
+                }
+            } else {
+                process(variants, [], rs)
+            }
+        | Pair([], [r, ...rs]) =>
+            process(variants, r, rs)
+        | Pair([], []) =>
+            let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
+                f + " could be " + magicShow(vs.toList().toArray())
+            }
+            if(remaining.size() != 0) {
+                panic("Unexhaustive match:\n" + remaining.join("\n"))
+            }
+            Unit
+    }
+}
+
+main(system: System): Unit {
+    process(
+        [].toMap()
+        []
+        [[Pair("_1", Pattern("False", ["True"].toSet(), []))]]
+    )
+}
