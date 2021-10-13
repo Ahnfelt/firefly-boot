@@ -8,6 +8,7 @@ process(
     variants: Map[String, Set[String]]
     fields: List[Pair[String, PatternInfo]]
     rules: List[List[Pair[String, PatternInfo]]]
+    success: Bool
 ): Unit {
     Pair(fields, rules).{
         | Pair([Pair(f, PatternInfo p), ...fs], rs) =>
@@ -15,31 +16,32 @@ process(
             if(vs.contains(p.variant)) {
                 let newFields = p.fields.map { _.mapFirst { f + "." + _ } }
                 if(vs.size() == 1) {
-                    process(variants.add(f, vs), newFields ++ fs, rs)
+                    process(variants.add(f, vs), newFields ++ fs, rs, True)
                 } else {
-                    process(variants.add(f, [p.variant].toSet()), newFields ++ fs, rs)
-                    process(variants.add(f, vs.remove(p.variant)), [], rs)
+                    process(variants.add(f, [p.variant].toSet()), newFields ++ fs, rs, True)
+                    process(variants.add(f, vs.remove(p.variant)), [], rs, False)
                 }
             } else {
-                process(variants, [], rs)
+                process(variants, [], rs, False)
             }
         | Pair([], [r, ...rs]) =>
-            process(variants, r, rs)
-        | Pair([], []) =>
+            process(variants, r, rs, True)
+        | Pair([], []) { !success } =>
             let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
                 f + " could be " + magicShow(vs.toList().toArray())
             }
             if(remaining.size() != 0) {
                 panic("Unexhaustive match:\n" + remaining.join("\n"))
             }
-            Unit
+            Unit // Fix the need for adding this to satisfy the type checker
+        | Pair([], []) =>
     }
 }
 
 main(system: System): Unit {
-    process(
-        [].toMap()
-        []
-        [[Pair("_1", PatternInfo("False", ["True"].toSet(), []))]]
-    )
+    let rules = [
+        [Pair("_1", PatternInfo("False", ["True"].toSet(), []))]
+        [Pair("_1", PatternInfo("True", ["False"].toSet(), []))]
+    ]
+    process([].toMap(), [], rules, False)
 }
