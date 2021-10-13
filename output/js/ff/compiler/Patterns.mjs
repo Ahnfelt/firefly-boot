@@ -54,13 +54,13 @@ return {variant_, otherVariants_, fields_};
 }
 
 // type PatternCaseInfo
-export function PatternCaseInfo(fields_) {
-return {fields_};
+export function PatternCaseInfo(fields_, guard_) {
+return {fields_, guard_};
 }
 
 
 
-export function check_(variants_, fields_, cases_, success_) {
+export function check_(variants_, fields_, cases_, success_, guard_) {
 {
 const _1 = ff_core_Pair.Pair(fields_, cases_)
 {
@@ -79,19 +79,19 @@ return ((((f_ + ".") + p_.variant_) + "_") + _w1)
 }))
 }))
 if((ff_core_Set.Set_size(vs_) == 1)) {
-ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_), ff_core_List.List_addAll(newFields_, fs_), cs_, true)
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
 } else {
-ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()))), ff_core_List.List_addAll(newFields_, fs_), cs_, true)
-ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_Set.Set_remove(vs_, p_.variant_)), ff_core_List.Empty(), cs_, false)
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()))), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_Set.Set_remove(vs_, p_.variant_)), ff_core_List.Empty(), cs_, false, guard_)
 }
 } else {
-ff_compiler_Patterns.check_(variants_, ff_core_List.Empty(), cs_, false)
+ff_compiler_Patterns.check_(variants_, ff_core_List.Empty(), cs_, false, guard_)
 }
 return
 }
 }
 {
-if(success_) {
+if((success_ && (!guard_))) {
 
 return
 }
@@ -100,8 +100,9 @@ return
 if(_1.first_.Empty) {
 if(_1.second_.Link) {
 const fs_ = _1.second_.head_.fields_
+const g_ = _1.second_.head_.guard_
 const cs_ = _1.second_.tail_
-ff_compiler_Patterns.check_(variants_, fs_, cs_, true)
+ff_compiler_Patterns.check_(variants_, fs_, cs_, true, g_)
 return
 }
 }
@@ -121,6 +122,7 @@ return
 throw new Error('Unexhaustive pattern match')
 }))
 if((ff_core_List.List_size(remaining_) != 0)) {
+ff_core_Log.debug_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 }
 return
@@ -231,12 +233,7 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))
-if((!ff_core_Option.Option_isEmpty(case_.condition_))) {
-const guardField_ = ff_core_Pair.Pair((("(guard " + caseIndex_) + ")"), ff_compiler_Patterns.PatternInfo("(condition)", ff_core_List.List_toSet(ff_core_List.Link("(otherwise)", ff_core_List.Empty())), ff_core_List.Empty()))
-return ff_compiler_Patterns.PatternCaseInfo(ff_core_List.List_addAll(fields_, ff_core_List.Link(guardField_, ff_core_List.Empty())))
-} else {
-return ff_compiler_Patterns.PatternCaseInfo(fields_)
-}
+return ff_compiler_Patterns.PatternCaseInfo(fields_, (!ff_core_Option.Option_isEmpty(case_.condition_)))
 return
 }
 throw new Error('Unexhaustive pattern match')
@@ -246,7 +243,7 @@ throw new Error('Unexhaustive pattern match')
 export function convertAndCheck_(modules_, cases_) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_)
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
-ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty()), ff_core_List.Empty(), converted_, false)
+ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty()), ff_core_List.Empty(), converted_, false, false)
 })), (() => {
 ff_core_Log.debug_(("Warning: Unexhaustive match " + ff_compiler_Syntax.Location_show(ff_core_List.List_expect(cases_, 0).at_)))
 }))
@@ -254,14 +251,6 @@ ff_core_Log.debug_(("Warning: Unexhaustive match " + ff_compiler_Syntax.Location
 
 export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
-}
-
-export function mainTest_(system_) {
-const rulesOption_ = ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("None", ff_core_List.List_toSet(ff_core_List.Link("Some", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Some", ff_core_List.List_toSet(ff_core_List.Link("None", ff_core_List.Empty())), ff_core_List.Link(ff_core_Pair.Pair("value", ff_compiler_Patterns.PatternInfo("True", ff_core_List.List_toSet(ff_core_List.Link("False", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty()))), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Some", ff_core_List.List_toSet(ff_core_List.Link("None", ff_core_List.Empty())), ff_core_List.Link(ff_core_Pair.Pair("value", ff_compiler_Patterns.PatternInfo("False", ff_core_List.List_toSet(ff_core_List.Link("True", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty()))), ff_core_List.Empty())), ff_core_List.Empty())))
-const rulesColors_ = ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Tuple", ff_core_Set.empty_(), ff_core_List.Link(ff_core_Pair.Pair("first", ff_compiler_Patterns.PatternInfo("Blue", ff_core_List.List_toSet(ff_core_List.Link("Green", ff_core_List.Link("Red", ff_core_List.Empty()))), ff_core_List.Empty())), ff_core_List.Link(ff_core_Pair.Pair("second", ff_compiler_Patterns.PatternInfo("Green", ff_core_List.List_toSet(ff_core_List.Link("Blue", ff_core_List.Link("Red", ff_core_List.Empty()))), ff_core_List.Empty())), ff_core_List.Empty())))), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Tuple", ff_core_Set.empty_(), ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty()))
-const rulesColors2_ = ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Tuple", ff_core_Set.empty_(), ff_core_List.Link(ff_core_Pair.Pair("first", ff_compiler_Patterns.PatternInfo("Blue", ff_core_List.List_toSet(ff_core_List.Link("Green", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Link(ff_core_Pair.Pair("second", ff_compiler_Patterns.PatternInfo("Blue", ff_core_List.List_toSet(ff_core_List.Link("Green", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty())))), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Tuple", ff_core_Set.empty_(), ff_core_List.Link(ff_core_Pair.Pair("first", ff_compiler_Patterns.PatternInfo("Green", ff_core_List.List_toSet(ff_core_List.Link("Blue", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Link(ff_core_Pair.Pair("second", ff_compiler_Patterns.PatternInfo("Blue", ff_core_List.List_toSet(ff_core_List.Link("Green", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty())))), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Tuple", ff_core_Set.empty_(), ff_core_List.Link(ff_core_Pair.Pair("first", ff_compiler_Patterns.PatternInfo("Blue", ff_core_List.List_toSet(ff_core_List.Link("Green", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Link(ff_core_Pair.Pair("second", ff_compiler_Patterns.PatternInfo("Green", ff_core_List.List_toSet(ff_core_List.Link("Blue", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty())))), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Tuple", ff_core_Set.empty_(), ff_core_List.Link(ff_core_Pair.Pair("first", ff_compiler_Patterns.PatternInfo("Green", ff_core_List.List_toSet(ff_core_List.Link("Blue", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Link(ff_core_Pair.Pair("second", ff_compiler_Patterns.PatternInfo("Green", ff_core_List.List_toSet(ff_core_List.Link("Blue", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty())))), ff_core_List.Empty())), ff_core_List.Empty()))))
-const rulesOption2_ = ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Pair", ff_core_Set.empty_(), ff_core_List.Link(ff_core_Pair.Pair("first", ff_compiler_Patterns.PatternInfo("None", ff_core_List.List_toSet(ff_core_List.Link("Some", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Link(ff_core_Pair.Pair("second", ff_compiler_Patterns.PatternInfo("None", ff_core_List.List_toSet(ff_core_List.Link("Some", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty())))), ff_core_List.Empty())), ff_core_List.Link(ff_compiler_Patterns.PatternCaseInfo(ff_core_List.Link(ff_core_Pair.Pair("_1", ff_compiler_Patterns.PatternInfo("Pair", ff_core_Set.empty_(), ff_core_List.Link(ff_core_Pair.Pair("second", ff_compiler_Patterns.PatternInfo("Some", ff_core_List.List_toSet(ff_core_List.Link("None", ff_core_List.Empty())), ff_core_List.Empty())), ff_core_List.Empty()))), ff_core_List.Empty())), ff_core_List.Empty()))
-ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty()), ff_core_List.Empty(), rulesOption2_, false)
 }
 
 

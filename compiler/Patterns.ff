@@ -8,6 +8,7 @@ type PatternInfo(
 
 type PatternCaseInfo(
     fields: List[Pair[String, PatternInfo]]
+    guard: Bool
 )
 
 check(
@@ -15,6 +16,7 @@ check(
     fields: List[Pair[String, PatternInfo]]
     cases: List[PatternCaseInfo]
     success: Bool
+    guard: Bool
 ): Unit {
     Pair(fields, cases).{
         | Pair([Pair(f, PatternInfo p), ...fs], cs) =>
@@ -23,28 +25,29 @@ check(
                 let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
                 if(vs.size() == 1) {
                     //Log.debug("Always true that " + f + " is " + p.variant)
-                    check(variants.add(f, vs), newFields ++ fs, cs, True)
+                    check(variants.add(f, vs), newFields ++ fs, cs, True, guard)
                 } else {
                     //Log.debug("If " + f + " is " + p.variant)
-                    check(variants.add(f, [p.variant].toSet()), newFields ++ fs, cs, True)
+                    check(variants.add(f, [p.variant].toSet()), newFields ++ fs, cs, True, guard)
                     //Log.debug("Else if not " + f + " is " + p.variant)
-                    check(variants.add(f, vs.remove(p.variant)), [], cs, False)
+                    check(variants.add(f, vs.remove(p.variant)), [], cs, False, guard)
                     //Log.debug("End if " + f + " is " + p.variant)
                 }
             } else {
                 //Log.debug("Never true that " + f + " is " + p.variant)
-                check(variants, [], cs, False)
+                check(variants, [], cs, False, guard)
             }
-        | _ { success } =>
-        | Pair([], [PatternCaseInfo(fs), ...cs]) =>
+        | _ { success && !guard } =>
+        | Pair([], [PatternCaseInfo(fs, g), ...cs]) =>
             //Log.debug("Begin rule")
-            check(variants, fs, cs, True)
+            check(variants, fs, cs, True, g)
             //Log.debug("End rule")
         | Pair([], []) =>
             let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
                 f + " could be " + magicShow(vs.toList().toArray())
             }
             if(remaining.size() != 0) {
+                Log.debug("Unexhaustive match:\n" + remaining.join("\n"))
                 panic("Unexhaustive match:\n" + remaining.join("\n"))
             }
             Unit // Fix the need for adding this to satisfy the type checker
@@ -86,19 +89,14 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
             | Pair(i, Some(p)) => Some(Pair("" + i, p))
             | _ => None
         }
-        if(!case.condition.isEmpty()) {
-            let guardField = Pair("(guard " + caseIndex + ")", PatternInfo("(condition)", ["(otherwise)"].toSet(), []))
-            PatternCaseInfo([...fields, guardField])
-        } else {
-            PatternCaseInfo(fields)
-        }
+        PatternCaseInfo(fields, !case.condition.isEmpty())
     }
 }
 
 convertAndCheck(modules: Map[String, Module], cases: List[MatchCase]): Unit {
     let converted = convert(modules, cases)
     try {
-        check([].toMap(), [], converted, False)
+        check([].toMap(), [], converted, False, False)
     } else {
         //fail(cases.expect(0).at, "Unexhaustive match")
         Log.debug("Warning: Unexhaustive match " + cases.expect(0).at.show())
@@ -109,6 +107,7 @@ fail[T](at: Location, message: String): T {
     panic(message + " " + at.show())
 }
 
+/*
 mainTest(system: System): Unit {
     let rulesOption = [
         PatternCaseInfo([Pair("_1", PatternInfo("None", ["Some"].toSet(), []))])
@@ -159,3 +158,4 @@ mainTest(system: System): Unit {
 
     check([].toMap(), [], rulesOption2, False)
 }
+*/
