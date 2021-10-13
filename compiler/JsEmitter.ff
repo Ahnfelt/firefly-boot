@@ -1,4 +1,5 @@
 import Syntax
+import Patterns
 
 type JsEmitter(
     otherModules: Map[String, Module]
@@ -89,6 +90,7 @@ extend self: JsEmitter {
                 let body = self.emitTailCall { self.emitStatements(matchCase.body, True) }
                 signature + " {\n" + body + "\n}"
             | Lambda(_, cases) =>
+                Patterns.convertAndCheck(self.otherModules, cases)
                 let escapedArguments = definition.signature.parameters.map { _.name + "_a" }
                 let shadowingWorkaround = definition.signature.parameters.map { p =>
                     "const " + p.name + "_a = " + escapeKeyword(p.name)
@@ -199,6 +201,7 @@ extend self: JsEmitter {
                 patterns.map {| PVariable p => p.name.map(escapeKeyword).else{"_"} | _ => panic("!") }.join(", ")
             "((" + parameters + ") => {\n" + self.emitStatements(body, True) + "\n})"
         | ELambda(at, Lambda(_, cases)) =>
+            Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
             let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _, True) + "\n}" }.join("\n")
@@ -285,6 +288,7 @@ extend self: JsEmitter {
                 }.collect {_}.unzip()
                 "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
             | EPipe(at, value, ELambda(_, Lambda(_, cases))) =>
+                Patterns.convertAndCheck(self.otherModules, cases)
                 if(!last) { "for(;;) " }.else { "" } +
                 "{\nconst _1 = " + self.emitTerm(value) + "\n" +
                 cases.map { "{\n" + self.emitCase(["_1"], _, last) + "\n}" }.join("\n") +

@@ -1,5 +1,7 @@
 import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
 
+import * as ff_compiler_Patterns from "../../ff/compiler/Patterns.mjs"
+
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -342,6 +344,7 @@ return
 }
 {
 const cases_ = _1.cases_
+ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_)
 const escapedArguments_ = ff_core_List.List_map(definition_.signature_.parameters_, ((_w1) => {
 return (_w1.name_ + "_a")
 }))
@@ -708,6 +711,7 @@ const self_ = self_a
 if(term_a.ELambda) {
 const at_ = term_a.at_
 const cases_ = term_a.lambda_.cases_
+ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_)
 const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_expect(cases_, 0).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
 }))
@@ -1063,6 +1067,7 @@ const at_ = _1.at_
 const value_ = _1.value_
 if(_1.function_.ELambda) {
 const cases_ = _1.function_.lambda_.cases_
+ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_)
 return (((((((!last_)
 ? "for(;;) "
 : "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_)) + "\n") + ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {

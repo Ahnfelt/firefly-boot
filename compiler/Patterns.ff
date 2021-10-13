@@ -10,7 +10,7 @@ type PatternCaseInfo(
     fields: List[Pair[String, PatternInfo]]
 )
 
-process(
+check(
     variants: Map[String, Set[String]]
     fields: List[Pair[String, PatternInfo]]
     cases: List[PatternCaseInfo]
@@ -22,24 +22,24 @@ process(
             if(vs.contains(p.variant)) {
                 let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
                 if(vs.size() == 1) {
-                    Log.debug("Always true that " + f + " is " + p.variant)
-                    process(variants.add(f, vs), newFields ++ fs, cs, True)
+                    //Log.debug("Always true that " + f + " is " + p.variant)
+                    check(variants.add(f, vs), newFields ++ fs, cs, True)
                 } else {
-                    Log.debug("If " + f + " is " + p.variant)
-                    process(variants.add(f, [p.variant].toSet()), newFields ++ fs, cs, True)
-                    Log.debug("Else if not " + f + " is " + p.variant)
-                    process(variants.add(f, vs.remove(p.variant)), [], cs, False)
-                    Log.debug("End if " + f + " is " + p.variant)
+                    //Log.debug("If " + f + " is " + p.variant)
+                    check(variants.add(f, [p.variant].toSet()), newFields ++ fs, cs, True)
+                    //Log.debug("Else if not " + f + " is " + p.variant)
+                    check(variants.add(f, vs.remove(p.variant)), [], cs, False)
+                    //Log.debug("End if " + f + " is " + p.variant)
                 }
             } else {
-                Log.debug("Never true that " + f + " is " + p.variant)
-                process(variants, [], cs, False)
+                //Log.debug("Never true that " + f + " is " + p.variant)
+                check(variants, [], cs, False)
             }
         | _ { success } =>
         | Pair([], [PatternCaseInfo(fs), ...cs]) =>
-            Log.debug("Begin rule")
-            process(variants, fs, cs, True)
-            Log.debug("End rule")
+            //Log.debug("Begin rule")
+            check(variants, fs, cs, True)
+            //Log.debug("End rule")
         | Pair([], []) =>
             let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
                 f + " could be " + magicShow(vs.toList().toArray())
@@ -52,8 +52,11 @@ process(
 }
 
 convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseInfo] {
+    function unqualifiedName(name: String): String {
+        name.reverse().takeWhile { _ != '.' }.reverse()
+    }
     function otherVariants(name: String): Set[String] {
-        let variantName = name.reverse().takeWhile { _ != '.' }.reverse()
+        let variantName = unqualifiedName(name)
         let moduleName = name.dropLast(variantName.size() + 1)
         let variantModule = modules.expect(moduleName)
         variantModule.types.collectFirst { definition =>
@@ -70,13 +73,13 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
                 | Pair(i, Some(p)) => Some(Pair("" + i, p))
                 | _ => None
             }
-            Some(PatternInfo(p.name, otherVariants(p.name), fields))
+            Some(PatternInfo(unqualifiedName(p.name), otherVariants(p.name), fields))
         | PVariantAs p =>
-            Some(PatternInfo(p.name, otherVariants(p.name), []))
+            Some(PatternInfo(unqualifiedName(p.name), otherVariants(p.name), []))
         | PAlias p =>
             convertPattern(p.pattern)
         | PList _ =>
-            panic("TODO: Remove list patterns from the ast")
+            None // TODO: Remove list patterns from the ast
     }
     cases.map { c =>
         let fields = c.patterns.map(convertPattern).pairs().collect {
@@ -85,6 +88,20 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
         }
         PatternCaseInfo(fields)
     }
+}
+
+convertAndCheck(modules: Map[String, Module], cases: List[MatchCase]): Unit {
+    let converted = convert(modules, cases)
+    try {
+        check([].toMap(), [], converted, False)
+    } else {
+        Log.debug(magicShow(converted))
+        fail(cases.expect(0).at, "Unexhaustive match")
+    }
+}
+
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show())
 }
 
 mainTest(system: System): Unit {
@@ -135,5 +152,5 @@ mainTest(system: System): Unit {
         ]))])
     ]
 
-    process([].toMap(), [], rulesOption2, False)
+    check([].toMap(), [], rulesOption2, False)
 }
