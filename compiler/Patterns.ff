@@ -81,12 +81,17 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
         | PList _ =>
             None // TODO: Remove list patterns from the ast
     }
-    cases.map { c =>
-        let fields = c.patterns.map(convertPattern).pairs().collect {
+    cases.pairs().map {| Pair(caseIndex, case) =>
+        let fields = case.patterns.map(convertPattern).pairs().collect {
             | Pair(i, Some(p)) => Some(Pair("" + i, p))
             | _ => None
         }
-        PatternCaseInfo(fields)
+        if(!case.condition.isEmpty()) {
+            let guardField = Pair("(guard " + caseIndex + ")", PatternInfo("(condition)", ["(otherwise)"].toSet(), []))
+            PatternCaseInfo([...fields, guardField])
+        } else {
+            PatternCaseInfo(fields)
+        }
     }
 }
 

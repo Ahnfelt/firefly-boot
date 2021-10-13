@@ -210,8 +210,11 @@ return
 throw new Error('Unexhaustive pattern match')
 }
 }
-return ff_core_List.List_map(cases_, ((c_) => {
-const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(c_.patterns_, ((pattern_) => {
+return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
+{
+const caseIndex_ = _1.first_
+const case_ = _1.second_
+const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
 {
@@ -228,7 +231,15 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))
+if((!ff_core_Option.Option_isEmpty(case_.condition_))) {
+const guardField_ = ff_core_Pair.Pair((("(guard " + caseIndex_) + ")"), ff_compiler_Patterns.PatternInfo("(condition)", ff_core_List.List_toSet(ff_core_List.Link("(otherwise)", ff_core_List.Empty())), ff_core_List.Empty()))
+return ff_compiler_Patterns.PatternCaseInfo(ff_core_List.List_addAll(fields_, ff_core_List.Link(guardField_, ff_core_List.Empty())))
+} else {
 return ff_compiler_Patterns.PatternCaseInfo(fields_)
+}
+return
+}
+throw new Error('Unexhaustive pattern match')
 }))
 }
 
