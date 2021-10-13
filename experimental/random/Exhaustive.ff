@@ -16,17 +16,17 @@ process(
             if(vs.contains(p.variant)) {
                 let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
                 if(vs.size() == 1) {
-                    Log.debug("Can only be " + f + " " + p.variant)
+                    Log.debug("Always true that " + f + " is " + p.variant)
                     process(variants.add(f, vs), newFields ++ fs, rs, True)
                 } else {
-                    Log.debug("If " + f + " " + p.variant)
+                    Log.debug("If " + f + " is " + p.variant)
                     process(variants.add(f, [p.variant].toSet()), newFields ++ fs, rs, True)
-                    Log.debug("Else if not " + f + " " + p.variant)
+                    Log.debug("Else if not " + f + " is " + p.variant)
                     process(variants.add(f, vs.remove(p.variant)), [], rs, False)
-                    Log.debug("End if " + f + " " + p.variant)
+                    Log.debug("End if " + f + " is " + p.variant)
                 }
             } else {
-                Log.debug("Can't be " + f + " " + p.variant)
+                Log.debug("Never true that " + f + " is " + p.variant)
                 process(variants, [], rs, False)
             }
         | _ { success } =>
