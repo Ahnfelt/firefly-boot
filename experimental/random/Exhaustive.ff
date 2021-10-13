@@ -13,7 +13,6 @@ process(
     Pair(fields, rules).{
         | Pair([Pair(f, PatternInfo p), ...fs], rs) =>
             let vs = variants.get(f).else { p.otherVariants.add(p.variant) }
-            Log.debug(vs)
             if(vs.contains(p.variant)) {
                 let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
                 if(vs.size() == 1) {
@@ -48,8 +47,13 @@ process(
 
 main(system: System): Unit {
     let rules = [
-        [Pair("_1", PatternInfo("False", ["True"].toSet(), []))]
-        [Pair("_1", PatternInfo("True", ["False"].toSet(), []))]
+        [Pair("_1", PatternInfo("None", ["Some"].toSet(), []))]
+        [Pair("_1", PatternInfo("Some", ["None"].toSet(), [
+            Pair("value", PatternInfo("True", ["False"].toSet(), []))
+        ]))],
+        [Pair("_1", PatternInfo("Some", ["None"].toSet(), [
+            Pair("value", PatternInfo("False", ["True"].toSet(), []))
+        ]))]
     ]
     process([].toMap(), [], rules, False)
 }
