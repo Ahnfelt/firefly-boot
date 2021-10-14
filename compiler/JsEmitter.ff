@@ -251,12 +251,6 @@ extend self: JsEmitter {
                 self.emitLetDefinition(DLet(at, name, valueType, value, Targets(None)), mutable) + "\n" + self.emitStatements(body, last)
             | EVariant(at, word, _, _) { word == "ff:core/Unit.Unit" } =>
                 ""
-            | ESequential(at0, EPipe(at1, value, ELambda(at2, Lambda(at3, cases))), EVariant(at, word, _, _)@e) {
-                last && word == "ff:core/Unit.Unit"
-            } =>
-                let newCases = cases.map { case => case.MatchCase(body = ESequential(at0, case.body, e)) }
-                let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, newCases)))
-                self.emitStatements(newPipe, last)
             | ESequential(at, EVariant(at, word, _, _), after) { word == "ff:core/Unit.Unit" } =>
                 self.emitStatements(after, last)
             | ESequential(at, before, EVariant(at, word, _, _)) { word == "ff:core/Unit.Unit" } =>

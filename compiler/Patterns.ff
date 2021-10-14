@@ -42,7 +42,6 @@ check(
             if(remaining.size() != 0) {
                 panic("Unexhaustive match:\n" + remaining.join("\n"))
             }
-            Unit // Fix the need for adding this to satisfy the type checker
     }
 }
 

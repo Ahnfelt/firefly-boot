@@ -911,41 +911,6 @@ return
 }
 {
 if(_1.ESequential) {
-const at0_ = _1.at_
-if(_1.before_.EPipe) {
-const at1_ = _1.before_.at_
-const value_ = _1.before_.value_
-if(_1.before_.function_.ELambda) {
-const at2_ = _1.before_.function_.at_
-const at3_ = _1.before_.function_.lambda_.at_
-const cases_ = _1.before_.function_.lambda_.cases_
-const e_ = _1.after_
-if(_1.after_.EVariant) {
-const at_ = _1.after_.at_
-const word_ = _1.after_.name_
-if((last_ && (word_ == "ff:core/Unit.Unit"))) {
-const newCases_ = ff_core_List.List_map(cases_, ((case_) => {
-{
-const _1 = case_
-{
-const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.condition_, ff_compiler_Syntax.ESequential(at0_, case_.body_, e_))
-return
-}
-throw new Error('Unexhaustive pattern match')
-}
-}))
-const newPipe_ = ff_compiler_Syntax.EPipe(at1_, value_, ff_compiler_Syntax.ELambda(at2_, ff_compiler_Syntax.Lambda(at3_, newCases_)))
-return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, newPipe_, last_)
-return
-}
-}
-}
-}
-}
-}
-{
-if(_1.ESequential) {
 const at_ = _1.at_
 if(_1.before_.EVariant) {
 const at_ = _1.before_.at_
