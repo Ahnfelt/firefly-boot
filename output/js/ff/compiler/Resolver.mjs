@@ -733,22 +733,6 @@ return ff_core_Map.Map_addAll(ff_core_List.List_toMap(ff_core_List.Link(ff_core_
 return
 }
 }
-{
-if(pattern_a.PList) {
-const items_ = pattern_a.items_
-return ff_core_List.List_foldLeft(ff_core_List.List_map(items_, ((_1) => {
-{
-const item_ = _1.first_
-return findVariables_(item_)
-return
-}
-throw new Error('Unexhaustive pattern match')
-})), ff_core_Map.empty_())(((_w1, _w2) => {
-return ff_core_Map.Map_addAll(_w1, _w2)
-}))
-return
-}
-}
 throw new Error('Unexhaustive pattern match')
 }
 }
@@ -816,26 +800,6 @@ const pattern_ = pattern_a.pattern_
 const variable_ = pattern_a.variable_
 const newPattern_ = ff_compiler_Resolver.Resolver_resolvePattern(self_, pattern_)
 return ff_compiler_Syntax.PAlias(at_, newPattern_, variable_)
-return
-}
-}
-{
-const self_ = self_a
-if(pattern_a.PList) {
-const at_ = pattern_a.at_
-const t_ = pattern_a.itemType_
-const items_ = pattern_a.items_
-const newType_ = ff_compiler_Resolver.Resolver_resolveType(self_, t_)
-const newPatterns_ = ff_core_List.List_map(items_, ((_1) => {
-{
-const pattern_ = _1.first_
-const spread_ = _1.second_
-return ff_core_Pair.Pair(ff_compiler_Resolver.Resolver_resolvePattern(self_, pattern_), spread_)
-return
-}
-throw new Error('Unexhaustive pattern match')
-}))
-return ff_compiler_Syntax.PList(at_, newType_, newPatterns_)
 return
 }
 }

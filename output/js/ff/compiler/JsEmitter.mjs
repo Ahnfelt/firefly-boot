@@ -1283,68 +1283,6 @@ return (((escaped_ != argument_)
 return
 }
 }
-{
-if(_1.PList) {
-const at_ = _1.at_
-if(_1.items_.Empty) {
-const p_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Empty", ff_core_List.Empty())
-const newMatchCase_ = (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(p_, matchCase_.patterns_), _c.condition_, _c.body_)
-}))(matchCase_)
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(argument_, arguments_), newMatchCase_, last_)
-return
-}
-}
-}
-{
-if(_1.PList) {
-const at_ = _1.at_
-const t_ = _1.itemType_
-if(_1.items_.Link) {
-const p_ = _1.items_.head_.first_
-if(!_1.items_.head_.second_) {
-const ps_ = _1.items_.tail_
-const p2_ = ff_compiler_Syntax.PVariant(at_, "ff:core/List.Link", ff_core_List.Link(p_, ff_core_List.Link(ff_compiler_Syntax.PList(at_, t_, ps_), ff_core_List.Empty())))
-const newMatchCase_ = (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(p2_, matchCase_.patterns_), _c.condition_, _c.body_)
-}))(matchCase_)
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(argument_, arguments_), newMatchCase_, last_)
-return
-}
-}
-}
-}
-{
-if(_1.PList) {
-const at_ = _1.at_
-const t_ = _1.itemType_
-if(_1.items_.Link) {
-const p_ = _1.items_.head_.first_
-if(_1.items_.head_.second_) {
-if(_1.items_.tail_.Empty) {
-const newMatchCase_ = (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(p_, matchCase_.patterns_), _c.condition_, _c.body_)
-}))(matchCase_)
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(argument_, arguments_), newMatchCase_, last_)
-return
-}
-}
-}
-}
-}
-{
-if(_1.PList) {
-const at_ = _1.at_
-const t_ = _1.itemType_
-if(_1.items_.Link) {
-const p_ = _1.items_.head_.first_
-if(_1.items_.head_.second_) {
-return "throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"
-return
-}
-}
-}
-}
 throw new Error('Unexhaustive pattern match')
 }
 }

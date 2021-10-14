@@ -122,7 +122,6 @@ return
 throw new Error('Unexhaustive pattern match')
 }))
 if((ff_core_List.List_size(remaining_) != 0)) {
-ff_core_Log.debug_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 }
 return
@@ -200,12 +199,6 @@ return
 if(pattern_a.PAlias) {
 const p_ = pattern_a
 return convertPattern_(p_.pattern_)
-return
-}
-}
-{
-if(pattern_a.PList) {
-return ff_core_Option.None()
 return
 }
 }

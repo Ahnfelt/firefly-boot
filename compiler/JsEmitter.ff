@@ -381,19 +381,6 @@ extend self: JsEmitter {
                 let escaped = escapeKeyword(variable)
                 if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +
                 self.emitPattern(argument, pattern, arguments, matchCase, last)
-            | PList(at, _, []) =>
-                let p = PVariant(at, "ff:core/List.Empty", [])
-                let newMatchCase = matchCase.MatchCase(patterns = [p, ...matchCase.patterns])
-                self.emitCase([argument, ...arguments], newMatchCase, last)
-            | PList(at, t, [Pair(p, False), ...ps]) =>
-                let p2 = PVariant(at, "ff:core/List.Link", [p, PList(at, t, ps)])
-                let newMatchCase = matchCase.MatchCase(patterns = [p2, ...matchCase.patterns])
-                self.emitCase([argument, ...arguments], newMatchCase, last)
-            | PList(at, t, [Pair(p, True)]) =>
-                let newMatchCase = matchCase.MatchCase(patterns = [p, ...matchCase.patterns])
-                self.emitCase([argument, ...arguments], newMatchCase, last)
-            | PList(at, t, [Pair(p, True), ..._]) =>
-                "throw 'Invalid pattern: ... is only allowed for the last element in a list'\n"
         }
     }
 

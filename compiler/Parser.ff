@@ -839,6 +839,14 @@ extend self: Parser {
     }
 
     parseListPattern(): MatchPattern {
+        function convertListPattern(at : Location, items : List[Pair[MatchPattern, Bool]]) : MatchPattern {
+            | _, [] => PVariant(at, "ff:core/List.Empty", [])
+            | _, [Pair(p, False), ...ps] =>
+                PVariant(p.at, "ff:core/List.Link", [p, convertListPattern(p.at, ps)])
+            | _, [Pair(p, True)] => p
+            | _, [Pair(p, True), ..._] =>
+                self.fail(p.at, "Invalid pattern: ... is only allowed for the last element in a list")
+        }
         let items = ArrayBuilder.empty[Pair[MatchPattern, Bool]]()
         let at = self.rawSkip(LBracketLeft, "[").at()
         while {!self.current().rawIs("]")} {
@@ -853,7 +861,7 @@ extend self: Parser {
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
-        PList(at, self.freshTypeVariable(at), items.toList())
+        convertListPattern(at, items.toList())
     }
 
     parseList(): Term {

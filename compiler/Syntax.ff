@@ -121,7 +121,6 @@ type MatchPattern(at: Location) {
     PVariant(name: String, patterns: List[MatchPattern])
     PVariantAs(name: String, variable: Option[String])
     PAlias(pattern: MatchPattern, variable: String)
-    PList(itemType: Type, items: List[Pair[MatchPattern, Bool]])
 }
 
 type Signature(

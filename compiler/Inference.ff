@@ -149,13 +149,6 @@ extend self: Inference {
                 [Pair(name, expected)].toMap()
             | PAlias(at, pattern, variable) =>
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
-            | PList(at, t, items) =>
-                let listType = TConstructor(at, core("List"), [t])
-                self.unification.unify(at, expected, listType)
-                (items.map {
-                    | Pair(item, False) => self.inferPattern(environment, t, item)
-                    | Pair(item, True) => self.inferPattern(environment, listType, item)
-                }.foldLeft(Map.empty[String, Type]())) { _ ++ _ }
             | PVariantAs(at, name, None) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
                     fail(at, "No such variant: " + name)

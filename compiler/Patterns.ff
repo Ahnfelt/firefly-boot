@@ -47,7 +47,7 @@ check(
                 f + " could be " + magicShow(vs.toList().toArray())
             }
             if(remaining.size() != 0) {
-                Log.debug("Unexhaustive match:\n" + remaining.join("\n"))
+                //Log.debug("Unexhaustive match:\n" + remaining.join("\n"))
                 panic("Unexhaustive match:\n" + remaining.join("\n"))
             }
             Unit // Fix the need for adding this to satisfy the type checker
@@ -81,8 +81,6 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
             Some(PatternInfo(unqualifiedName(p.name), otherVariants(p.name), []))
         | PAlias p =>
             convertPattern(p.pattern)
-        | PList _ =>
-            None // TODO: Remove list patterns from the ast
     }
     cases.pairs().map {| Pair(caseIndex, case) =>
         let fields = case.patterns.map(convertPattern).pairs().collect {

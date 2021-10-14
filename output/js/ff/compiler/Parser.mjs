@@ -1068,6 +1068,49 @@ return _w1.first_
 }
 
 export function Parser_parseListPattern(self_) {
+function convertListPattern_(at_, items_) {
+{
+const at_a = at_
+const items_a = items_
+{
+if(items_a.Empty) {
+return ff_compiler_Syntax.PVariant(at_, "ff:core/List.Empty", ff_core_List.Empty())
+return
+}
+}
+{
+if(items_a.Link) {
+const p_ = items_a.head_.first_
+if(!items_a.head_.second_) {
+const ps_ = items_a.tail_
+return ff_compiler_Syntax.PVariant(p_.at_, "ff:core/List.Link", ff_core_List.Link(p_, ff_core_List.Link(convertListPattern_(p_.at_, ps_), ff_core_List.Empty())))
+return
+}
+}
+}
+{
+if(items_a.Link) {
+const p_ = items_a.head_.first_
+if(items_a.head_.second_) {
+if(items_a.tail_.Empty) {
+return p_
+return
+}
+}
+}
+}
+{
+if(items_a.Link) {
+const p_ = items_a.head_.first_
+if(items_a.head_.second_) {
+return ff_compiler_Parser.Parser_fail(self_, p_.at_, "Invalid pattern: ... is only allowed for the last element in a list")
+return
+}
+}
+}
+throw new Error('Unexhaustive pattern match')
+}
+}
 const items_ = ff_core_ArrayBuilder.empty_()
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "["))
 while((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "]"))) {
@@ -1084,7 +1127,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }
 }
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]")
-return ff_compiler_Syntax.PList(at_, ff_compiler_Parser.Parser_freshTypeVariable(self_, at_), ff_core_ArrayBuilder.ArrayBuilder_toList(items_))
+return convertListPattern_(at_, ff_core_ArrayBuilder.ArrayBuilder_toList(items_))
 }
 
 export function Parser_parseList(self_) {

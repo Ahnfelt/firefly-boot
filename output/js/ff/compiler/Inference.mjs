@@ -296,35 +296,6 @@ return
 }
 }
 {
-if(_1.PList) {
-const at_ = _1.at_
-const t_ = _1.itemType_
-const items_ = _1.items_
-const listType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("List"), ff_core_List.Link(t_, ff_core_List.Empty()))
-ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_)
-return ff_core_List.List_foldLeft(ff_core_List.List_map(items_, ((_1) => {
-{
-const item_ = _1.first_
-if(!_1.second_) {
-return ff_compiler_Inference.Inference_inferPattern(self_, environment_, t_, item_)
-return
-}
-}
-{
-const item_ = _1.first_
-if(_1.second_) {
-return ff_compiler_Inference.Inference_inferPattern(self_, environment_, listType_, item_)
-return
-}
-}
-throw new Error('Unexhaustive pattern match')
-})), ff_core_Map.empty_())(((_w1, _w2) => {
-return ff_core_Map.Map_addAll(_w1, _w2)
-}))
-return
-}
-}
-{
 if(_1.PVariantAs) {
 const at_ = _1.at_
 const name_ = _1.name_

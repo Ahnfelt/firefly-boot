@@ -181,9 +181,6 @@ return {PVariantAs: true, at_, name_, variable_};
 export function PAlias(at_, pattern_, variable_) {
 return {PAlias: true, at_, pattern_, variable_};
 }
-export function PList(at_, itemType_, items_) {
-return {PList: true, at_, itemType_, items_};
-}
 
 // type Signature
 export function Signature(at_, name_, generics_, constraints_, parameters_, returnType_) {
