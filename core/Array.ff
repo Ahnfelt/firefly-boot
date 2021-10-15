@@ -1,13 +1,9 @@
 type Array[T] {}
 
-inclusive(from: Int, to: Int): Array[Int] { panic("magic") }
+range(size: Int): Array[Int] { panic("magic") }
     javascript """
-        return Array.from({length: 1 + to_ - from_}, (_, i) => from_ + i_);
+        return Array.from({length: size_}, (_, i) => i);
     """
-
-exclusive(from: Int, to: Int): Array[Int] {
-    inclusive(from, to - 1)
-}
 
 fill[T](size: Int, value: T): Array[T] { panic("magic") }
     javascript """

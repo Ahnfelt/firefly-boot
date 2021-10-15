@@ -160,7 +160,7 @@ match(
             succeed(augment(context, description), works, body, rules)
         | PConstructor(c, ps) =>
             function args[R](f: Int => R): List[R] {
-                List.exclusive(0, c.arity).map(f)
+                List.range(c.arity).map(f)
             }
 
             function getDescriptionArguments(description: TermDescription) : List[TermDescription] {

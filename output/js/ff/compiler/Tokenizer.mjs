@@ -60,7 +60,7 @@ let startLine_ = line_
 let startLineOffset_ = lineOffset_
 const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-,;"
 let operatorCharacters_ = ff_core_Set.empty_()
-ff_core_List.List_map(ff_core_List.exclusive_(0, ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
+ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_expect(operatorCharactersString_, j_))
 }))
 function emitToken_(kind_, startOffset_, stopOffset_) {
@@ -224,7 +224,7 @@ const column_ = ((i_ - startLineOffset_) + 1)
 ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Core.magicShow_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
 } else {}
 }
-ff_core_List.List_each(ff_core_List.inclusive_(1, 5), ((i_) => {
+ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 }))
 return ff_core_ArrayBuilder.ArrayBuilder_drain(tokens_)

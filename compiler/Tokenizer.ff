@@ -11,7 +11,7 @@ tokenize(file: String, code: String): Array[Token] {
 
     let operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;"
     mutable operatorCharacters = Set.empty[Char]()
-    List.exclusive(0, operatorCharactersString.size()).map { j =>
+    List.range(operatorCharactersString.size()).map { j =>
         operatorCharacters = operatorCharacters.add(operatorCharactersString.expect(j))
     }
 
@@ -209,7 +209,7 @@ tokenize(file: String, code: String): Array[Token] {
 
     }
 
-    List.inclusive(1, 5).each { i => emitToken(LEnd, i, i) }
+    List.range(5).each {| _ => emitToken(LEnd, i, i) }
 
     tokens.drain()
 

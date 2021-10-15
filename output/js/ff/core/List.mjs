@@ -55,18 +55,14 @@ return {Link: true, head_, tail_};
 
 
 
-export function inclusive_(from_, to_) {
+export function range_(size_) {
 
         let result = ff_core_List.Empty();
-        for(let i = to_; i >= from_; i--) {
+        for(let i = size_ - 1; i >= 0; i--) {
             result = ff_core_List.Link(i, result);
         }
         return result;
     
-}
-
-export function exclusive_(from_, to_) {
-return ff_core_List.inclusive_(from_, (to_ - 1))
 }
 
 export function reverseList_(list_) {

@@ -49,19 +49,15 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function inclusive_(from_, to_) {
+export function range_(size_) {
 
-        return Array.from({length: to_ - from_}, (_, i) => from_ + i_);
+        return Array.from({length: size_}, (_, i) => i);
     
 }
 
-export function exclusive_(from_, to_) {
-return ff_core_Array.inclusive_(from_, (to_ - 1))
-}
+export function fill_(size_, value_) {
 
-export function zeros_(size_ = 0) {
-
-        return new Array(size_).fill(0);
+        return new Array(size_).fill(value_);
     
 }
 

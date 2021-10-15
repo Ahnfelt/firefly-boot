@@ -508,9 +508,9 @@ extend self: Parser {
             let wildcards = Wildcards.make()
             let e = wildcards.fixWildcards(term)
             let arguments = if(wildcards.seenWildcards != 0) {
-                List.inclusive(1, wildcards.seenWildcards).map { i => PVariable(token.at(), Some("_w" + i)) }
+                List.range(wildcards.seenWildcards).map { i => PVariable(token.at(), Some("_w" + (i + 1))) }
             } else {
-                List.inclusive(1, defaultParameterCount).map { i => PVariable(token.at(), None) }
+                List.range(defaultParameterCount).map { i => PVariable(token.at(), None) }
             }
             [MatchCase(token.at(), arguments, None, e)]
         }
