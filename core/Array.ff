@@ -1,5 +1,14 @@
 type Array[T] {}
 
+inclusive(from: Int, to: Int): Array[Int] { panic("magic") }
+    javascript """
+        return Array.from({length: to_ - from_}, (_, i) => from_ + i_);
+    """
+
+exclusive(from: Int, to: Int): Array[Int] {
+    inclusive(from, to - 1)
+}
+
 extend self[T]: Array[T] {
 
     addAll(that: Array[T]): Array[T] { panic("magic") }

@@ -49,7 +49,15 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function inclusive_(from_, to_) {
 
+        return Array.from({length: to_ - from_}, (_, i) => from_ + i_);
+    
+}
+
+export function exclusive_(from_, to_) {
+return ff_core_Array.inclusive_(from_, (to_ - 1))
+}
 
 export function Array_addAll(self_, that_) {
 return self_.concat(that_)
