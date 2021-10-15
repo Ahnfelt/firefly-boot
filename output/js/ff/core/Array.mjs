@@ -59,6 +59,18 @@ export function exclusive_(from_, to_) {
 return ff_core_Array.inclusive_(from_, (to_ - 1))
 }
 
+export function zeros_(size_ = 0) {
+
+        return new Array(size_).fill(0);
+    
+}
+
+export function empty_() {
+
+        return [];
+    
+}
+
 export function Array_addAll(self_, that_) {
 return self_.concat(that_)
 }

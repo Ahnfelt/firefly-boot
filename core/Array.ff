@@ -9,6 +9,16 @@ exclusive(from: Int, to: Int): Array[Int] {
     inclusive(from, to - 1)
 }
 
+zeros(size: Int = 0): Array[Int] { panic("magic") }
+    javascript """
+        return new Array(size_).fill(0);
+    """
+
+empty[T](): Array[T] { panic("magic") }
+    javascript """
+        return [];
+    """
+
 extend self[T]: Array[T] {
 
     addAll(that: Array[T]): Array[T] { panic("magic") }
