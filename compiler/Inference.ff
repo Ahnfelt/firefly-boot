@@ -670,6 +670,8 @@ extend self: Inference {
                     | None, Some(_) =>
                         self.unification.unify(e.at, t2, t1)
                         self.unification.unify(e.at, expected, t2)
+                    | Some(_), Some(_) =>
+                        fail(e.at, "Operators on these types not currently supported")
                     | None, None =>
                         fail(e.at, "Operators on unknown types not currently supported")
                 }

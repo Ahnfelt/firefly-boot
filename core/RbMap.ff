@@ -81,6 +81,8 @@ extend self[K, V]: RbMap[K, V] {
                     RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, c)).balance()
                 | RbNode(False, a, k1, v1, RbNode(True, RbNode(False, b, k2, v2, c), k3, v3, RbNode(False, d, k4, v4, e))) =>
                     RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, RbNode(True, d, k4, v4, e)).balance())
+                | _ =>
+                    panic("Unexpected input to balanceLeft")
             }
         }
         function goRight(self: RbMap[K, V]): RbMap[K, V] {
@@ -97,6 +99,7 @@ extend self[K, V]: RbMap[K, V] {
                 | RbNode(False, RbNode(False, a, k1, v1, b), k2, v2, c) => RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c).balance()
                 | RbNode(False, RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d)), k4, v4, e) =>
                     RbNode(True, RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c).balance(), k3, v3, RbNode(False, d, k4, v4, e))
+                | _ => panic("Unexpected input to balanceRight")
             }
         }
         function fuse(x: RbMap[K, V], y: RbMap[K, V]): RbMap[K, V] {

@@ -406,6 +406,10 @@ return
 }
 }
 }
+{
+return ff_core_Core.panic_("Unexpected input to balanceLeft")
+return
+}
 throw new Error('Unexhaustive pattern match')
 }
 }
@@ -521,6 +525,10 @@ return
 }
 }
 }
+}
+{
+return ff_core_Core.panic_("Unexpected input to balanceRight")
+return
 }
 throw new Error('Unexhaustive pattern match')
 }

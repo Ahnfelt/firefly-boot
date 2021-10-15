@@ -87,7 +87,7 @@ convertAndCheck(modules: Map[String, Module], cases: List[MatchCase]): Unit {
     try {
         check([].toMap(), [], converted, False, False)
     } else {
-        Log.debug("Warning: Unexhaustive match " + cases.expect(0).at.show()) // TODO: Make error
+        fail(cases.expect(0).at, "Warning: Unexhaustive match")
     }
 }
 

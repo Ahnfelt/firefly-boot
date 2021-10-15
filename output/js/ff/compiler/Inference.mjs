@@ -1567,6 +1567,14 @@ return
 }
 }
 {
+if(_1.Some) {
+if(_2.Some) {
+ff_compiler_Inference.fail_(e_.at_, "Operators on these types not currently supported")
+return
+}
+}
+}
+{
 if(_1.None) {
 if(_2.None) {
 ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
