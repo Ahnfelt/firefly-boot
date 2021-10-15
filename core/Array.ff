@@ -2,7 +2,7 @@ type Array[T] {}
 
 inclusive(from: Int, to: Int): Array[Int] { panic("magic") }
     javascript """
-        return Array.from({length: to_ - from_}, (_, i) => from_ + i_);
+        return Array.from({length: 1 + to_ - from_}, (_, i) => from_ + i_);
     """
 
 exclusive(from: Int, to: Int): Array[Int] {
