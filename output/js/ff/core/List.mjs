@@ -65,6 +65,38 @@ export function range_(size_) {
     
 }
 
+export function build_(initial_, body_) {
+function go_(state_, result_) {
+_tailcall: for(;;) {
+{
+const _1 = body_(state_)
+{
+if(_1.None) {
+return ff_core_List.List_reverse(result_)
+return
+}
+}
+{
+if(_1.Some) {
+const s_ = _1.value_.first_
+const x_ = _1.value_.second_
+{
+const state_r_ = s_
+const result_r_ = ff_core_List.Link(x_, result_)
+state_ = state_r_
+result_ = result_r_
+continue _tailcall
+}
+return
+}
+}
+}
+return
+}
+}
+return go_(initial_, ff_core_List.Empty())
+}
+
 export function reverseList_(list_) {
 function go_(list_, result_) {
 _tailcall: for(;;) {

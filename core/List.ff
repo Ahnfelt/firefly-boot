@@ -12,6 +12,16 @@ range(size: Int): List[Int] { panic("magic") }
         return result;
     """
 
+build[A, B](initial: A, body: A => Option[Pair[A, B]]): List[B] {
+    function go(state: A, result: List[B]): List[B] {
+        body(state).{
+            | None => result.reverse()
+            | Some(Pair(s, x)) => tailcall go(s, [x, ...result])
+        }
+    }
+    go(initial, [])
+}
+
 extend self[T]: List[T] {
 
     addAll(list: List[T]) : List[T] {
