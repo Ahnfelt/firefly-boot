@@ -9,9 +9,9 @@ exclusive(from: Int, to: Int): Array[Int] {
     inclusive(from, to - 1)
 }
 
-zeros(size: Int = 0): Array[Int] { panic("magic") }
+fill[T](size: Int, value: T): Array[T] { panic("magic") }
     javascript """
-        return new Array(size_).fill(0);
+        return new Array(size_).fill(value_);
     """
 
 empty[T](): Array[T] { panic("magic") }
