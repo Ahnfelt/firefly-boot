@@ -55,6 +55,39 @@ export function range_(size_) {
     
 }
 
+export function build_(initial_, body_) {
+const builder_ = ff_core_ArrayBuilder.empty_()
+function go_(state_) {
+_tailcall: for(;;) {
+{
+const _1 = body_(state_)
+{
+if(_1.None) {
+
+return
+}
+}
+{
+if(_1.Some) {
+const s_ = _1.value_.first_
+const x_ = _1.value_.second_
+ff_core_ArrayBuilder.ArrayBuilder_add(builder_, x_)
+{
+const state_r_ = s_
+state_ = state_r_
+continue _tailcall
+}
+return
+}
+}
+}
+return
+}
+}
+go_(initial_)
+return ff_core_ArrayBuilder.ArrayBuilder_drain(builder_)
+}
+
 export function fill_(size_, value_) {
 
         return new Array(size_).fill(value_);

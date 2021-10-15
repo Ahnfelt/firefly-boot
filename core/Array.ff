@@ -5,6 +5,20 @@ range(size: Int): Array[Int] { panic("magic") }
         return Array.from({length: size_}, (_, i) => i);
     """
 
+build[A, B](initial: A, body: A => Option[Pair[A, B]]): Array[B] {
+    let builder = ArrayBuilder.empty()
+    function go(state: A): Unit {
+        body(state).{
+            | None =>
+            | Some(Pair(s, x)) =>
+                builder.add(x)
+                tailcall go(s)
+        }
+    }
+    go(initial)
+    builder.drain()
+}
+
 fill[T](size: Int, value: T): Array[T] { panic("magic") }
     javascript """
         return new Array(size_).fill(value_);
