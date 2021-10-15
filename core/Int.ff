@@ -2,17 +2,6 @@ type Int {}
 
 extend self: Int {
 
-    to(inclusive: Int): List[Int] { panic("magic") }
-        javascript """
-            let result = ff_core_List.Empty();
-            for(let i = inclusive_; i >= self_; i--) {
-                result = ff_core_List.Link(i, result);
-            }
-            return result;
-        """
-
-    until(exclusive: Int): List[Int] { self.to(exclusive - 1) }
-
     abs(): Int { panic("magic") }
         javascript "return Math.abs(self_)"
 

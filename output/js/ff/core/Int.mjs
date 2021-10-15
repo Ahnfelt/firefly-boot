@@ -51,20 +51,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function Int_to(self_, inclusive_) {
-
-            let result = ff_core_List.Empty();
-            for(let i = inclusive_; i >= self_; i--) {
-                result = ff_core_List.Link(i, result);
-            }
-            return result;
-        
-}
-
-export function Int_until(self_, exclusive_) {
-return ff_core_Int.Int_to(self_, (exclusive_ - 1))
-}
-
 export function Int_abs(self_) {
 return Math.abs(self_)
 }

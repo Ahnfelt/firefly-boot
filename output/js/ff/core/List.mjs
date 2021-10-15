@@ -55,6 +55,20 @@ return {Link: true, head_, tail_};
 
 
 
+export function inclusive_(from_, to_) {
+
+        let result = ff_core_List.Empty();
+        for(let i = to_; i >= from_; i--) {
+            result = ff_core_List.Link(i, result);
+        }
+        return result;
+    
+}
+
+export function exclusive_(from_, to_) {
+return ff_core_List.inclusive_(from_, (to_ - 1))
+}
+
 export function reverseList_(list_) {
 function go_(list_, result_) {
 _tailcall: for(;;) {

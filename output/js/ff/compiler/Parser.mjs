@@ -630,10 +630,10 @@ const term_ = ff_compiler_Parser.Parser_parseStatements(self_)
 const wildcards_ = ff_compiler_Wildcards.make_()
 const e_ = ff_compiler_Wildcards.Wildcards_fixWildcards(wildcards_, term_)
 const arguments_ = ((wildcards_.seenWildcards_ != 0)
-? ff_core_List.List_map(ff_core_Int.Int_to(1, wildcards_.seenWildcards_), ((i_) => {
+? ff_core_List.List_map(ff_core_List.inclusive_(1, wildcards_.seenWildcards_), ((i_) => {
 return ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(token_), ff_core_Option.Some(("_w" + i_)))
 }))
-: ff_core_List.List_map(ff_core_Int.Int_to(1, defaultParameterCount_), ((i_) => {
+: ff_core_List.List_map(ff_core_List.inclusive_(1, defaultParameterCount_), ((i_) => {
 return ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(token_), ff_core_Option.None())
 })))
 return ff_core_List.Link(ff_compiler_Syntax.MatchCase(ff_compiler_Token.Token_at(token_), arguments_, ff_core_Option.None(), e_), ff_core_List.Empty())

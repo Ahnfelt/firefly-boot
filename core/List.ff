@@ -3,6 +3,19 @@ type List[T] {
     Link(head: T, tail: List[T])
 }
 
+inclusive(from: Int, to: Int): List[Int] { panic("magic") }
+    javascript """
+        let result = ff_core_List.Empty();
+        for(let i = to_; i >= from_; i--) {
+            result = ff_core_List.Link(i, result);
+        }
+        return result;
+    """
+
+exclusive(from: Int, to: Int): List[Int] {
+    inclusive(from, to - 1)
+}
+
 extend self[T]: List[T] {
 
     addAll(list: List[T]) : List[T] {

@@ -441,9 +441,9 @@ extend Parser self:
             let wildcards = Wildcards.make()
             let e = wildcards.fixWildcards(term)
             let arguments = if(wildcards.seenWildcards != 0) {
-                1.to(wildcards.seenWildcards).toList.map { i => PVariable(token.at, Some("_w" + i)) }
+                List.inclusive(1, wildcards.seenWildcards).toList.map { i => PVariable(token.at, Some("_w" + i)) }
             } else {
-                1.to(defaultParameterCount).toList.map { i => PVariable(token.at, None) }
+                List.inclusive(1, defaultParameterCount).toList.map { i => PVariable(token.at, None) }
             }
             List(MatchCase(token.at, arguments, None, e))
         }
