@@ -63,7 +63,6 @@ return ff_core_Option.Some(body_())
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -85,7 +84,6 @@ body_()
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

@@ -294,7 +294,6 @@ return ("$" + index_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

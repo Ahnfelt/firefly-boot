@@ -153,7 +153,6 @@ return
 return ff_core_List.Empty()
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -179,7 +178,6 @@ return
 return ff_compiler_Syntax.ECall(function_.at_, false, function_, ff_core_List.Empty(), ff_core_List.Empty())
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -201,7 +199,6 @@ return t_.name_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -284,7 +281,6 @@ return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signatu
 }))(method_.signature_), _c.body_, _c.targets_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }))
 return ff_core_List.List_join(ff_core_List.List_map(methods_, ((_w1) => {
@@ -331,7 +327,6 @@ return
 return false
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))) {
 const body_ = ff_compiler_JsEmitter.JsEmitter_emitTailCall(self_, (() => {
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true)
@@ -355,12 +350,11 @@ const body_ = ff_compiler_JsEmitter.JsEmitter_emitTailCall(self_, (() => {
 const casesString_ = ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
 return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1, true)) + "\n}")
 })), "\n")
-return (((("{\n" + shadowingWorkaround_) + "\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n}")
+return (((("{\n" + shadowingWorkaround_) + "\n") + casesString_) + "\n}")
 }))
 return (((signature_ + " {\n") + body_) + "\n}")
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }))
 }
@@ -678,7 +672,6 @@ return
 return false
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))) {
 const parameters_ = ff_core_List.List_join(ff_core_List.List_map(patterns_, ((_1) => {
 {
@@ -696,7 +689,6 @@ return
 return ff_core_Core.panic_("!")
 return
 }
-throw new Error('Unexhaustive pattern match')
 })), ", ")
 return (((("((" + parameters_) + ") => {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, true)) + "\n})")
 return
@@ -721,7 +713,7 @@ return ff_compiler_JsEmitter.escapeKeyword_(word_)
 const casesString_ = ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
 return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, escapedArguments_, _w1, true)) + "\n}")
 })), "\n")
-return ((((("((" + ff_core_List.List_join(escapedArguments_, ", ")) + ") => ") + "{\n") + casesString_) + "\nthrow new Error('Unexhaustive pattern match')\n})")
+return ((((("((" + ff_core_List.List_join(escapedArguments_, ", ")) + ") => ") + "{\n") + casesString_) + "\n})")
 return
 }
 }
@@ -809,7 +801,6 @@ const body_ = _2.second_
 return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_) + "\n? ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_)) + "\n: ") + otherwise_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))) + ")")
 return
 }
@@ -826,11 +817,9 @@ const body_ = _2.second_
 return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_) + "\n? ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_)) + ")\n: ") + otherwise_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))) + ")")
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -868,7 +857,6 @@ const self_ = self_a
 return (("(function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true)) + "\n})()")
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -1037,7 +1025,7 @@ return (((((((!last_)
 ? "for(;;) "
 : "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_)) + "\n") + ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
 return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link("_1", ff_core_List.Empty()), _w1, last_)) + "\n}")
-})), "\n")) + "\nthrow new Error('Unexhaustive pattern match')\n}")
+})), "\n")) + "\n}")
 return
 }
 }
@@ -1071,7 +1059,6 @@ const body_ = _2.second_
 return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_)) + "\n} else ") + otherwise_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 return
 }
@@ -1089,7 +1076,6 @@ const body_ = _2.second_
 return ((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_)) + "\n} else ") + otherwise_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 return
 }
@@ -1104,15 +1090,12 @@ const body_ = _2.second_
 return (((((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_)) + ") {\n") + "return ff_core_Option.Some(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_)) + ")\n} else ") + otherwise_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -1150,7 +1133,6 @@ return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -1248,7 +1230,6 @@ return (((escaped_ != argument_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -1297,7 +1278,6 @@ return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

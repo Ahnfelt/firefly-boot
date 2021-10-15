@@ -505,7 +505,6 @@ return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.Link(ff_co
 break
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 }
@@ -809,7 +808,6 @@ return
 return ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable")
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 }
@@ -1108,7 +1106,6 @@ return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 const items_ = ff_core_ArrayBuilder.empty_()

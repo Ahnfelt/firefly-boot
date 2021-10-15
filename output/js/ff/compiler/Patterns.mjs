@@ -119,7 +119,6 @@ const vs_ = _1.second_
 return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_))))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 if((ff_core_List.List_size(remaining_) != 0)) {
 ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
@@ -128,7 +127,6 @@ return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -182,7 +180,6 @@ return
 return ff_core_Option.None()
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), fields_))
 return
@@ -202,7 +199,6 @@ return convertPattern_(p_.pattern_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
@@ -224,12 +220,10 @@ return
 return ff_core_Option.None()
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 return ff_compiler_Patterns.PatternCaseInfo(fields_, (!ff_core_Option.Option_isEmpty(case_.condition_)))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 }
 

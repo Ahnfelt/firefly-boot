@@ -80,7 +80,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -150,7 +149,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -174,7 +172,6 @@ return ff_core_Option.Some(head_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -208,7 +205,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -255,7 +251,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -298,7 +293,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -336,7 +330,6 @@ return
 return false
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -364,7 +357,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -397,7 +389,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -435,7 +426,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -473,7 +463,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -511,7 +500,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -557,7 +545,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -590,7 +577,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -623,7 +609,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -673,12 +658,10 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -721,12 +704,10 @@ return ff_core_Option.Some(value_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -758,7 +739,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -812,7 +792,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -865,7 +844,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -902,7 +880,6 @@ return
 return ff_core_List.reverseList_(result_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -952,7 +929,6 @@ return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -1045,7 +1021,6 @@ return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -1087,7 +1062,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -1143,7 +1117,6 @@ return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -1189,7 +1162,6 @@ continue _tailcall
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }

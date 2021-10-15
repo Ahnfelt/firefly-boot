@@ -76,7 +76,6 @@ if(_2.None) {
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }))
 return result_
 }
@@ -106,7 +105,6 @@ return ff_core_List.Empty()
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }))
 }
 
@@ -127,7 +125,6 @@ const v_ = _1.second_
 return ff_core_Map.Map_add(tree_, k_, v_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }))
 }
@@ -156,7 +153,6 @@ return ff_core_Map.Map_add(self_, key_, update_(v_))
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

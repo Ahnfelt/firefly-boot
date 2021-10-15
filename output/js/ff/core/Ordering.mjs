@@ -92,7 +92,6 @@ return
 return ff_core_Ordering.OrderingSame()
 return
 }
-throw new Error('Unexhaustive pattern match')
 })
 }
 
@@ -117,7 +116,6 @@ return 1
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -142,7 +140,6 @@ return ff_core_Ordering.OrderingBefore()
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

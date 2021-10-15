@@ -93,7 +93,6 @@ const duration_ = _1.second_
 ff_core_Log.debug_(((text_ + ":\t") + ff_core_Duration.Duration_toString(duration_, 3)))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 }
 

@@ -106,7 +106,6 @@ return fail_(at_, ("Unexpected type variable: $" + i_))
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }))))
 }
@@ -147,7 +146,6 @@ return type_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -183,7 +181,6 @@ return type_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -232,17 +229,14 @@ const t2_ = _1.second_
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -293,18 +287,15 @@ ff_compiler_Unification.Unification_fail(self_, at_, ("Constraint can't be a typ
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }))
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -327,7 +318,6 @@ const t_ = _1
 return t_
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -364,12 +354,10 @@ return ff_compiler_Unification.Unification_substitute(self_, t_)
 })))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -446,13 +434,11 @@ const t2_ = _1.second_
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -471,7 +457,6 @@ const generics_ = _1.second_.generics_
 ff_compiler_Unification.Unification_constrain(self_, at2_, type_, name_, generics_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }))
 }))
 }
@@ -509,7 +494,6 @@ return ff_compiler_Unification.Unification_occursIn(self_, index_, t_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

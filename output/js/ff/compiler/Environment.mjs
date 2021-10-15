@@ -110,7 +110,6 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(d
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }))
 const fields_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {

@@ -90,7 +90,6 @@ return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1)
 })))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -114,7 +113,6 @@ ff_compiler_Resolver.fail_(import_.at_, ("No such module: " + import_.file_))
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }))
 return resolver_
@@ -147,7 +145,6 @@ return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 const isCore_ = (((module_.packagePair_.first_ == "ff") && (module_.packagePair_.second_ == "core")) && (module_.file_ == "Core.ff"))
@@ -195,7 +192,6 @@ const _c = _1
 return ff_compiler_Syntax.Constraint(ff_compiler_Resolver.Resolver_resolveType(self2_, c_.representation_))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })), ff_core_List.List_map(definition_.commonFields_, ((f_) => {
 {
@@ -207,7 +203,6 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
 })))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })), ff_core_List.List_map(definition_.variants_, ((v_) => {
 {
@@ -224,17 +219,14 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
 })))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })), _c.targets_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })), _c.targets_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -265,14 +257,12 @@ const _c = _1
 return ff_compiler_Syntax.Constraint(ff_compiler_Resolver.Resolver_resolveType(self2_, c_.representation_))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })), ff_compiler_Resolver.Resolver_resolveType(self2_, definition_.type_), ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1)
 })))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -287,7 +277,6 @@ const _c = _1
 return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, definition_.variableType_), ff_compiler_Resolver.Resolver_resolveTerm(self_, definition_.value_), _c.targets_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -335,7 +324,6 @@ const _c = _1
 return ff_compiler_Syntax.EVariable(_c.at_, _w1, _c.generics_, _c.instances_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })), (() => {
 if(ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
@@ -362,7 +350,6 @@ const spread_ = _1.second_
 return ff_core_Pair.Pair(ff_compiler_Resolver.Resolver_resolveTerm(self_, item_), spread_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 })))
 return
 }
@@ -387,7 +374,6 @@ const _c = _1
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveTerm(self_, a_.value_))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }))
 })))
@@ -425,7 +411,6 @@ const _c = _1
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveTerm(self_, f_.value_))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })))
 return
@@ -442,7 +427,6 @@ const _c = _1
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Resolver.Resolver_resolveTerm(self_, e_.record_), _c.field_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -487,7 +471,6 @@ const _c = _1
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveTerm(self_, a_.value_))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })))
 return
@@ -506,7 +489,6 @@ const _c = _1
 return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveTerm(self_, f_.value_))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })))
 return
@@ -526,7 +508,6 @@ const _c = _1
 return ff_compiler_Syntax.EWildcard(_c.at_, _c.index_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -565,7 +546,6 @@ const _c = _1
 return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, e_.valueType_), ff_compiler_Resolver.Resolver_resolveTerm(self_, e_.value_), ff_compiler_Resolver.Resolver_resolveTerm(self2_, e_.body_))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -605,7 +585,6 @@ return ff_compiler_Syntax.EAssignField(at_, operator_, ff_compiler_Resolver.Reso
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -638,12 +617,10 @@ return ff_compiler_Resolver.Resolver_resolveType(self_, _w1)
 })))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -672,7 +649,6 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
 })))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 })), ff_compiler_Resolver.Resolver_resolveType(self2_, definition_.signature_.returnType_))
 }))(definition_.signature_)
@@ -733,7 +709,6 @@ return ff_core_Map.Map_addAll(ff_core_List.List_toMap(ff_core_List.Link(ff_core_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 const variableMap_ = ff_core_List.List_foldLeft(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
@@ -803,7 +778,6 @@ return ff_compiler_Syntax.PAlias(at_, newPattern_, variable_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

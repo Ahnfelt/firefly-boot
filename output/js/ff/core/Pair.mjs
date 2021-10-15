@@ -61,7 +61,6 @@ const _c = _1
 return ff_core_Pair.Pair(body_(self_.first_), _c.second_)
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -73,7 +72,6 @@ const _c = _1
 return ff_core_Pair.Pair(_c.first_, body_(self_.second_))
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

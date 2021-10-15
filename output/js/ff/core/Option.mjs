@@ -73,7 +73,6 @@ return value_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -96,7 +95,6 @@ return ff_core_Option.None()
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -107,7 +105,6 @@ return self_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -126,7 +123,6 @@ return self_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -145,7 +141,6 @@ return false
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -165,7 +160,6 @@ return ff_core_List.Link(v_, ff_core_List.Empty())
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -185,7 +179,6 @@ return
 return ff_core_Option.None()
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -205,7 +198,6 @@ return ff_core_Option.Some(body_(v_))
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -225,7 +217,6 @@ return body_(v_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -245,7 +236,6 @@ body_(v_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -265,7 +255,6 @@ return body_(v_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -285,7 +274,6 @@ return body_(v_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -305,7 +293,6 @@ return v_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -325,7 +312,6 @@ return (v_ == value_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -345,7 +331,6 @@ return v_
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

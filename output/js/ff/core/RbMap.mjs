@@ -76,7 +76,6 @@ return ((ff_core_RbMap.RbMap_size(l_) + 1) + ff_core_RbMap.RbMap_size(r_))
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -99,7 +98,6 @@ return ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_RbMap.RbMap_pai
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -124,7 +122,6 @@ ff_core_RbMap.RbMap_each(r_, body_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -177,7 +174,6 @@ return ff_core_Option.Some(v_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -228,7 +224,6 @@ return ff_core_RbMap.RbNode(c_, l_, key_, value_, r_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 {
@@ -250,7 +245,6 @@ const n_ = _1
 return n_
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -290,7 +284,6 @@ return fuse_(a_, b_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 function goLeft_(self_) {
@@ -329,7 +322,6 @@ return ff_core_RbMap.RbNode(true, go_(a_), k_, v_, b_)
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 function balanceLeft_(self_) {
@@ -410,7 +402,6 @@ return
 return ff_core_Core.panic_("Unexpected input to balanceLeft")
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 function goRight_(self_) {
@@ -449,7 +440,6 @@ return ff_core_RbMap.RbNode(true, a_, k_, v_, go_(b_))
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 function balanceRight_(self_) {
@@ -530,7 +520,6 @@ return
 return ff_core_Core.panic_("Unexpected input to balanceRight")
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 function fuse_(x_, y_) {
@@ -632,7 +621,6 @@ return ff_core_RbMap.RbLeaf()
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -682,7 +670,6 @@ return ff_core_RbMap.RbLeaf()
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 return
 }
@@ -690,7 +677,6 @@ return
 }
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 {
@@ -712,7 +698,6 @@ const n_ = _1
 return n_
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -827,7 +812,6 @@ return
 return self_
 return
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

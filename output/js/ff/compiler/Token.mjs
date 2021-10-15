@@ -336,7 +336,6 @@ return false
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -493,7 +492,6 @@ return false
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 
@@ -650,7 +648,6 @@ return false
 return
 }
 }
-throw new Error('Unexhaustive pattern match')
 }
 }
 

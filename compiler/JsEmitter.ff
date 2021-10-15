@@ -97,7 +97,7 @@ extend self: JsEmitter {
                 }.join("\n")
                 let body = self.emitTailCall {
                     let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _, True) + "\n}" }.join("\n")
-                    "{\n" + shadowingWorkaround + "\n" + casesString + "\nthrow new Error('Unexhaustive pattern match')\n}"
+                    "{\n" + shadowingWorkaround + "\n" + casesString + "\n}"
                 }
                 signature + " {\n" + body + "\n}"
         }
@@ -206,7 +206,7 @@ extend self: JsEmitter {
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
             let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _, True) + "\n}" }.join("\n")
             "((" + escapedArguments.join(", ") + ") => " +
-            "{\n" + casesString + "\nthrow new Error('Unexhaustive pattern match')\n})"
+            "{\n" + casesString + "\n})"
         | EPipe(at, value, function) =>
             "(" + self.emitTerm(function) + ")(" + self.emitTerm(value) + ")"
         | ECall(at, _, EVariable(_, operator, _, _), [], [value]) {!operator.expectFirst().isAsciiLetter()} =>
@@ -286,7 +286,7 @@ extend self: JsEmitter {
                 if(!last) { "for(;;) " }.else { "" } +
                 "{\nconst _1 = " + self.emitTerm(value) + "\n" +
                 cases.map { "{\n" + self.emitCase(["_1"], _, last) + "\n}" }.join("\n") +
-                "\nthrow new Error('Unexhaustive pattern match')\n}"
+                "\n}"
             | _ =>
                 detectIfElse(term).{
                     | [] =>
