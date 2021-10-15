@@ -202,24 +202,24 @@ return
 {
 if(_1.TVariable) {
 const i_ = _1.index_
-for(;;) {
+{
 const _1 = ff_core_Map.Map_get(self_.constraints_, i_)
 {
 if(_1.None) {
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_)), ff_core_List.Empty())))
-break
+return
 }
 }
 {
 if(_1.Some) {
 const map_ = _1.value_
-for(;;) {
+{
 const _1 = ff_core_Map.Map_get(map_, constraintName_)
 {
 if(_1.None) {
 const newMap_ = ff_core_Map.Map_add(map_, constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))
 self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, newMap_)
-break
+return
 }
 }
 {
@@ -234,12 +234,12 @@ return
 }
 throw new Error('Unexhaustive pattern match')
 }))
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')
 }
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')
@@ -251,7 +251,7 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_
 const generics2_ = _1.generics_
-for(;;) {
+{
 const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraintName_, name_))
 {
 if(_1.None) {
@@ -262,7 +262,7 @@ const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]")
 ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
-break
+return
 }
 }
 {
@@ -296,7 +296,7 @@ return
 throw new Error('Unexhaustive pattern match')
 }
 }))
-break
+return
 }
 }
 throw new Error('Unexhaustive pattern match')

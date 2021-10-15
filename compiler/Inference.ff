@@ -254,18 +254,32 @@ extend self: Inference {
                 EList(at, t, items.map { | Pair(item, spread) =>
                     Pair(self.inferTerm(environment, if(spread) { listType } else { t }, item), spread)
                 })
-            | ESequential(at0, EPipe(at1, value, ELambda(at2, Lambda(at3, cases))), EVariant(at, word, _, _)@e) {
-                word == "ff:core/Unit.Unit"
-            } =>
-                let newCases = cases.map { case => case.MatchCase(body = ESequential(at0, case.body, e)) }
-                let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, newCases)))
-                self.inferTerm(environment, expected, newPipe)
             | ESequential(at, before, after) =>
-                ESequential(
-                    at = at
-                    before = self.inferTerm(environment, self.unification.freshTypeVariable(at), before)
-                    after = self.inferTerm(environment, expected, after)
-                )
+                let newExpected = self.unification.freshTypeVariable(at)
+                before.{
+                    | EPipe(at1, value, ELambda(at2, Lambda(at3, cases))) =>
+                        let e = EVariant(at, "ff:core/Unit.Unit", [], None)
+                        let newCases = cases.map { case => case.MatchCase(body = ESequential(case.at, case.body, e)) }
+                        let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, newCases)))
+                        after.{
+                            | EVariant(at, word, _, _) { word == "ff:core/Unit.Unit" } =>
+                                let unitType = TConstructor(at, core("Unit"), [])
+                                self.unification.unify(at, expected, unitType)
+                                self.inferTerm(environment, newExpected, newPipe)
+                            | _ =>
+                                ESequential(
+                                    at = at
+                                    before = self.inferTerm(environment, newExpected, newPipe)
+                                    after = self.inferTerm(environment, expected, after)
+                                )
+                        }
+                    | _ =>
+                        ESequential(
+                            at = at
+                            before = self.inferTerm(environment, newExpected, before)
+                            after = self.inferTerm(environment, expected, after)
+                        )
+                }
             | ELet e =>
                 let scheme = Scheme(True, e.mutable, False, Signature(e.at, e.name, [], [], [], e.valueType))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))

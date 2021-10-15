@@ -536,45 +536,63 @@ return
 }
 {
 if(_1.ESequential) {
-const at0_ = _1.at_
-if(_1.before_.EPipe) {
-const at1_ = _1.before_.at_
-const value_ = _1.before_.value_
-if(_1.before_.function_.ELambda) {
-const at2_ = _1.before_.function_.at_
-const at3_ = _1.before_.function_.lambda_.at_
-const cases_ = _1.before_.function_.lambda_.cases_
-const e_ = _1.after_
-if(_1.after_.EVariant) {
-const at_ = _1.after_.at_
-const word_ = _1.after_.name_
-if((word_ == "ff:core/Unit.Unit")) {
+const at_ = _1.at_
+const before_ = _1.before_
+const after_ = _1.after_
+const newExpected_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, at_)
+{
+const _1 = before_
+{
+if(_1.EPipe) {
+const at1_ = _1.at_
+const value_ = _1.value_
+if(_1.function_.ELambda) {
+const at2_ = _1.function_.at_
+const at3_ = _1.function_.lambda_.at_
+const cases_ = _1.function_.lambda_.cases_
+const e_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Unit.Unit", ff_core_List.Empty(), ff_core_Option.None())
 const newCases_ = ff_core_List.List_map(cases_, ((case_) => {
 {
 const _1 = case_
 {
 const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.condition_, ff_compiler_Syntax.ESequential(at0_, case_.body_, e_))
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.condition_, ff_compiler_Syntax.ESequential(case_.at_, case_.body_, e_))
 return
 }
 throw new Error('Unexhaustive pattern match')
 }
 }))
 const newPipe_ = ff_compiler_Syntax.EPipe(at1_, value_, ff_compiler_Syntax.ELambda(at2_, ff_compiler_Syntax.Lambda(at3_, newCases_)))
-return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, newPipe_)
+{
+const _1 = after_
+{
+if(_1.EVariant) {
+const at_ = _1.at_
+const word_ = _1.name_
+if((word_ == "ff:core/Unit.Unit")) {
+const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty())
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_)
+return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
 return
 }
 }
 }
+{
+return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
+return
+}
+throw new Error('Unexhaustive pattern match')
+}
+return
 }
 }
 }
 {
-if(_1.ESequential) {
-const at_ = _1.at_
-const before_ = _1.before_
-const after_ = _1.after_
-return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, at_), before_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
+return ff_compiler_Syntax.ESequential(at_, ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, before_), ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, after_))
+return
+}
+throw new Error('Unexhaustive pattern match')
+}
 return
 }
 }
