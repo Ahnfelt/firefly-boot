@@ -35,14 +35,14 @@ extend self[K, V]: Map[K, V] {
     }
 
     size(): Int {
-        (self.pairs().foldLeft(0)) {
+        self.pairs().foldLeft(0) {
             | total, _ => total + 1
         }
     }
 
     map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
         let initial: Map[K1, V1] = Map[K1, V1](RbLeaf)
-        (self.pairs().foldLeft(initial)) { tree, pair =>
+        self.pairs().foldLeft(initial) { tree, pair =>
             body(pair).{
                 | Pair(k, v) => tree.add(k, v)
             }

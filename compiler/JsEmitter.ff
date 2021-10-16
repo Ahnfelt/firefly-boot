@@ -218,12 +218,12 @@ extend self: JsEmitter {
                 | [] =>
                     self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ")"
                 | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>
-                    "(" + (list.foldLeft(self.emitTerm(elseBody))) {| otherwise, Pair(condition, body) =>
+                    "(" + list.foldLeft(self.emitTerm(elseBody)) {| otherwise, Pair(condition, body) =>
                         self.emitTerm(condition) +
                         "\n? " + self.emitTerm(body) + "\n: " + otherwise
                     } + ")"
                 | list =>
-                    "(" + (list.foldLeft("ff_core_Option.None()")) {| otherwise, Pair(condition, body) =>
+                    "(" + list.foldLeft("ff_core_Option.None()") {| otherwise, Pair(condition, body) =>
                         self.emitTerm(condition) +
                         "\n? ff_core_Option.Some(" + self.emitTerm(body) + ")\n: " + otherwise
                     } + ")"
@@ -293,17 +293,17 @@ extend self: JsEmitter {
                         if(last) { "return " + self.emitTerm(term) } else { self.emitTerm(term) }
                     | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>
                         let initial = "{\n" + self.emitStatements(elseBody, last) + "\n}"
-                        (list.foldLeft(initial)) {| otherwise, Pair(condition, body) =>
+                        list.foldLeft(initial) {| otherwise, Pair(condition, body) =>
                             "if(" + self.emitTerm(condition) + ") {\n" +
                             self.emitStatements(body, last) + "\n} else " + otherwise
                         }
                     | list { !last } =>
-                        (list.foldLeft("{}")) {| otherwise, Pair(condition, body) =>
+                        list.foldLeft("{}") {| otherwise, Pair(condition, body) =>
                             "if(" + self.emitTerm(condition) + ") {\n" +
                             self.emitStatements(body, last) + "\n} else " + otherwise
                         }
                     | list =>
-                        (list.foldLeft("return ff_core_Option.None()")) {| otherwise, Pair(condition, body) =>
+                        list.foldLeft("return ff_core_Option.None()") {| otherwise, Pair(condition, body) =>
                             "if(" + self.emitTerm(condition) + ") {\n" +
                             "return ff_core_Option.Some(" + self.emitTerm(body) + ")\n} else " + otherwise
                         }

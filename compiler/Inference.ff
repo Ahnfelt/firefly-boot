@@ -125,7 +125,7 @@ extend self: Inference {
             [...parameterTypes, returnType]
         )
         self.unification.unify(case.at, expected, functionType)
-        let newEnvironment = (parameterTypes.zip(case.patterns).foldLeft(environment)) {| environment1, Pair(t, c) =>
+        let newEnvironment = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
                 Pair(name, Scheme(True, False, False, Signature(c.at, name, [], [], [], type)))
             }
@@ -174,9 +174,9 @@ extend self: Inference {
                     fail(at, "No such variant: " + name)
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
-                (patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
+                patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
-                }.foldLeft(Map.empty[String, Type]())) { _ ++ _ }
+                }.foldLeft(Map.empty[String, Type]()) { _ ++ _ }
         }
     }
 
