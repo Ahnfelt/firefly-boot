@@ -59,4 +59,28 @@ export function Int_toFloat(self_) {
 return self_
 }
 
+export function Int_bitNot(self_) {
+return ~self_;
+}
+
+export function Int_bitOr(self_, that_) {
+return self_ | that_;
+}
+
+export function Int_bitAnd(self_, that_) {
+return self_ & that_;
+}
+
+export function Int_bitXor(self_, that_) {
+return self_ ^ that_;
+}
+
+export function Int_bitLeft(self_, bits_ = 1) {
+return self_ << bits_;
+}
+
+export function Int_bitRight(self_, bits_ = 1, signed_ = true) {
+return signed_ ? self_ >> bits_ : self_ >>> bits_;
+}
+
 
