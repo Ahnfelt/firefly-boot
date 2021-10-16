@@ -8,28 +8,22 @@ extend self: Int {
     toFloat(): Float { panic("magic") }
         javascript "return self_"
 
-    bitNot(): Int {
+    bitNot(): Int { panic("magic") }
         javascript "return ~self_;"
-    }
 
-    bitOr(that: Int): Int {
+    bitOr(that: Int): Int { panic("magic") }
         javascript "return self_ | that_;"
-    }
 
-    bitAnd(that: Int): Int {
+    bitAnd(that: Int): Int { panic("magic") }
         javascript "return self_ & that_;"
-    }
 
-    bitXor(that: Int): Int {
+    bitXor(that: Int): Int { panic("magic") }
         javascript "return self_ ^ that_;"
-    }
 
-    bitLeft(bits: Int = 1): Int {
+    bitLeft(bits: Int = 1): Int { panic("magic") }
         javascript "return self_ << bits_;"
-    }
 
-    bitRight(bits: Int = 1, signed: Bool = True): Int {
+    bitRight(bits: Int = 1, signed: Bool = True): Int { panic("magic") }
         javascript "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
-    }
 
 }
