@@ -2,3 +2,12 @@ type Bool {
     False
     True
 }
+
+extend self: Bool {
+    toInt(): Int {
+        self.{
+            | False => 0
+            | True => 1
+        }
+    }
+}
