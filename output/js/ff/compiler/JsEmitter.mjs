@@ -793,7 +793,7 @@ const word_ = _1.head_.first_.name_
 const elseBody_ = _1.head_.second_
 const list_ = _1.tail_
 if((word_ == "ff:core/Bool.True")) {
-return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_))(((_1, _2) => {
+return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_), ((_1, _2) => {
 {
 const otherwise_ = _1
 const condition_ = _2.first_
@@ -809,7 +809,7 @@ return
 }
 {
 const list_ = _1
-return (("(" + ff_core_List.List_foldLeft(list_, "ff_core_Option.None()")(((_1, _2) => {
+return (("(" + ff_core_List.List_foldLeft(list_, "ff_core_Option.None()", ((_1, _2) => {
 {
 const otherwise_ = _1
 const condition_ = _2.first_
@@ -1051,7 +1051,7 @@ const elseBody_ = _1.head_.second_
 const list_ = _1.tail_
 if((word_ == "ff:core/Bool.True")) {
 const initial_ = (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, elseBody_, last_)) + "\n}")
-return ff_core_List.List_foldLeft(list_, initial_)(((_1, _2) => {
+return ff_core_List.List_foldLeft(list_, initial_, ((_1, _2) => {
 {
 const otherwise_ = _1
 const condition_ = _2.first_
@@ -1068,7 +1068,7 @@ return
 {
 const list_ = _1
 if((!last_)) {
-return ff_core_List.List_foldLeft(list_, "{}")(((_1, _2) => {
+return ff_core_List.List_foldLeft(list_, "{}", ((_1, _2) => {
 {
 const otherwise_ = _1
 const condition_ = _2.first_
@@ -1082,7 +1082,7 @@ return
 }
 {
 const list_ = _1
-return ff_core_List.List_foldLeft(list_, "return ff_core_Option.None()")(((_1, _2) => {
+return ff_core_List.List_foldLeft(list_, "return ff_core_Option.None()", ((_1, _2) => {
 {
 const otherwise_ = _1
 const condition_ = _2.first_

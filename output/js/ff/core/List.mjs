@@ -131,7 +131,7 @@ return go_(list_, ff_core_List.Empty())
 
 export function groupList_(list_) {
 const initial_ = ff_core_List.Empty()
-return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_))(((map_, pair_) => {
+return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_), ((map_, pair_) => {
 return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.second"))
 }))
 }
@@ -153,7 +153,7 @@ export function List_toArray(self_) {
 }
 
 export function List_toSet(self_) {
-return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_())(((set_, value_) => {
+return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((set_, value_) => {
 return ff_core_Set.Set_add(set_, value_)
 }))
 }
@@ -755,8 +755,7 @@ return
 }
 }
 
-export function List_foldLeft(self_, initial_) {
-return ((body_) => {
+export function List_foldLeft(self_, initial_, body_) {
 function go_(state_, list_) {
 _tailcall: for(;;) {
 {
@@ -786,7 +785,6 @@ return
 }
 }
 return go_(initial_, self_)
-})
 }
 
 export function List_updated(self_, index_, value_) {
@@ -1167,7 +1165,7 @@ return go_(self_, ff_core_List.Empty())
 }
 
 export function List_toMap(self_) {
-return ff_core_List.List_foldLeft(self_, ff_core_Map.empty_())(((map_, pair_) => {
+return ff_core_List.List_foldLeft(self_, ff_core_Map.empty_(), ((map_, pair_) => {
 return ff_core_Map.Map_add(map_, pair_.first_, pair_.second_)
 }))
 }

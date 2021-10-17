@@ -50,6 +50,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-
+export function Instant_add(self_, duration_) {
+return (self_ + duration_)
+}
 
 

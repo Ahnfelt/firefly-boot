@@ -1,1 +1,9 @@
 newtype Instant(since1970: Duration)
+
+extend self: Instant {
+
+    add(duration: Duration): Instant {
+        Instant(Duration(self.since1970.seconds + duration.seconds))
+    }
+
+}

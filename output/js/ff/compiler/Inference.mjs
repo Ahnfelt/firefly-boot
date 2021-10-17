@@ -222,7 +222,7 @@ return ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_,
 const returnType_ = ff_compiler_Unification.Unification_freshTypeVariable(self_.unification_, case_.at_)
 const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(returnType_, ff_core_List.Empty())))
 ff_compiler_Unification.Unification_unify(self_.unification_, case_.at_, expected_, functionType_)
-const newEnvironment_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_)(((_1, _2) => {
+const newEnvironment_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_, ((_1, _2) => {
 {
 const environment1_ = _1
 const t_ = _2.first_
@@ -342,7 +342,7 @@ const parameter_ = _1.second_
 return ff_compiler_Inference.Inference_inferPattern(self_, environment_, parameter_.valueType_, pattern_)
 return
 }
-})), ff_core_Map.empty_())(((_w1, _w2) => {
+})), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2)
 }))
 return

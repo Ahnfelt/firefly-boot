@@ -686,7 +686,7 @@ if(pattern_a.PVariant) {
 const patterns_ = pattern_a.patterns_
 return ff_core_List.List_foldLeft(ff_core_List.List_map(patterns_, ((pattern_) => {
 return findVariables_(pattern_)
-})), ff_core_Map.empty_())(((_w1, _w2) => {
+})), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2)
 }))
 return
@@ -713,7 +713,7 @@ return
 }
 const variableMap_ = ff_core_List.List_foldLeft(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
 return findVariables_(pattern_)
-})), ff_core_Map.empty_())(((_w1, _w2) => {
+})), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2)
 }))
 const self2_ = (((_c) => {

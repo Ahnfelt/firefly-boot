@@ -68,7 +68,7 @@ return {typeArguments_, scheme_};
 export function make_(module_, otherModules_) {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false).symbols_
-})), ff_core_Map.empty_())(((_w1, _w2) => {
+})), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2)
 }))))
 }
