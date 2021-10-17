@@ -1,0 +1,23 @@
+type IntMap[T] {}
+
+empty[T](): IntMap[T] { panic("magic") }
+    javascript "return new Map()"
+
+extend self[T]: IntMap[T] {
+
+    contains(key: Int): Bool { panic("magic") }
+        javascript "return self_.has(key_)"
+
+    expect(key: Int): T { panic("magic") }
+        javascript "return self_.get(key_)"
+
+    get(key: Int): Option[T] { panic("magic") }
+        javascript "return self_.has(key_) ? ff_core_Option.Some(self_.get(key_)) : ff_core_Option.None()"
+
+    set(key: Int, value: T): Unit { panic("magic") }
+        javascript "self_.set(key_, value_)"
+
+    size(): Int { panic("magic") }
+        javascript "return self_.size"
+
+}

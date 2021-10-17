@@ -1,6 +1,7 @@
 import Syntax
+import IntMap
 
-type Substitution(mutable substitution: Map[Int, Type])
+type Substitution(mutable substitution: IntMap[Type])
 
 core(name: String): String {
     "ff:core/" + name + "." + name
@@ -128,7 +129,7 @@ extend self: Substitution {
         self.substitution.expect(index).{
             | TVariable(_, i) { self.has(i) } =>
                 let t = self.get(i)
-                self.substitution = self.substitution.add(index, t)
+                self.substitution.set(index, t)
                 t
             | TVariable(at, _) =>
                 TConstructor(at, core("Nothing"), [])
