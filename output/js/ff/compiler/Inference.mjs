@@ -1317,6 +1317,28 @@ return
 }
 }
 {
+if(_1.TConstructor) {
+const name_ = _1.name_
+if(_1.generics_.Empty) {
+if((name_ == ff_compiler_Inference.core_("String"))) {
+return ff_core_Option.Some("Duration")
+return
+}
+}
+}
+}
+{
+if(_1.TConstructor) {
+const name_ = _1.name_
+if(_1.generics_.Empty) {
+if((name_ == ff_compiler_Inference.core_("String"))) {
+return ff_core_Option.Some("Instant")
+return
+}
+}
+}
+}
+{
 return ff_core_Option.None()
 return
 }

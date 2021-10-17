@@ -621,6 +621,8 @@ extend self: Inference {
                         | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
                         | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
                         | TConstructor(_, name, []) {name == core("Char")} => Some("Char")
+                        | TConstructor(_, name, []) {name == core("String")} => Some("Duration")
+                        | TConstructor(_, name, []) {name == core("String")} => Some("Instant")
                         | _ => None
                     }
                 }
