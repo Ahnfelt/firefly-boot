@@ -3,7 +3,7 @@ import Syntax
 type Unification(
     mutable substitution: Map[Int, Type],
     mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
-    mutable nextTypeVariableIndex: Int
+    mutable nextUnificationVariableIndex: Int
     instances: Map[InstanceKey, InstanceValue]
 )
 
@@ -45,9 +45,9 @@ extend self: Unification {
         panic(message + " " + at.show())
     }
 
-    freshTypeVariable(at: Location): Type {
-        let result = TVariable(at, self.nextTypeVariableIndex)
-        self.nextTypeVariableIndex += 2
+    freshUnificationVariable(at: Location): Type {
+        let result = TVariable(at, self.nextUnificationVariableIndex)
+        self.nextUnificationVariableIndex += 2
         result
     }
 
@@ -91,8 +91,8 @@ extend self: Unification {
                         let g2 = if(generics2.isEmpty()) { "" } else { "[...]" }
                         self.fail(at, "No such instance: " + name + g2 + ": " + constraintName + g1)
                     | Some(definition) =>
-                        let typeVariables = definition.generics.map {| _ => self.freshTypeVariable(at) }
-                        let instantiation = definition.generics.zip(typeVariables).toMap()
+                        let unificationVariables = definition.generics.map {| _ => self.freshUnificationVariable(at) }
+                        let instantiation = definition.generics.zip(unificationVariables).toMap()
                         let traitType1 = self.instantiate(instantiation, definition.traitType)
                         let traitType2 = TConstructor(at, constraintName, [type, ...generics])
                         self.unify(at, traitType1, traitType2)

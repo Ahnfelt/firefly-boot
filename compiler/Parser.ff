@@ -8,7 +8,7 @@ type Parser(
     tokens: Array[Token],
     end: Token,
     mutable offset: Int,
-    mutable nextTypeVariableIndex: Int
+    mutable nextUnificationVariableIndex: Int
 )
 
 type Poly(generics: List[String], constraints: List[Constraint])
@@ -63,9 +63,9 @@ extend self: Parser {
         c
     }
 
-    freshTypeVariable(at: Location): Type {
-        let result = TVariable(at, self.nextTypeVariableIndex)
-        self.nextTypeVariableIndex += 2
+    freshUnificationVariable(at: Location): Type {
+        let result = TVariable(at, self.nextUnificationVariableIndex)
+        self.nextUnificationVariableIndex += 2
         result
     }
     
@@ -134,7 +134,7 @@ extend self: Parser {
         let variableType = if(self.current().is(LColon)) {
             self.skip(LColon)
             self.parseType()
-        } else { self.freshTypeVariable(nameToken.at()) }
+        } else { self.freshUnificationVariable(nameToken.at()) }
         self.skip(LAssign)
         let value = self.parseTerm()
         let targets = self.parseTargets()
@@ -634,7 +634,7 @@ extend self: Parser {
         let mutable = self.current().rawIs("mutable")
         if(mutable) {self.rawSkip(LKeyword, "mutable")} else {self.rawSkip(LKeyword, "let")}
         let nameToken = self.skip(LLower)
-        let valueType = if(!self.current().is(LColon)) { self.freshTypeVariable(nameToken.at()) } else {
+        let valueType = if(!self.current().is(LColon)) { self.freshUnificationVariable(nameToken.at()) } else {
             self.skip(LColon)
             self.parseType()
         }
@@ -874,7 +874,7 @@ extend self: Parser {
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
-        EList(at, self.freshTypeVariable(at), items.toList())
+        EList(at, self.freshUnificationVariable(at), items.toList())
     }
 
 }

@@ -53,8 +53,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Parser
-export function Parser(packagePair_, file_, tokens_, end_, offset_, nextTypeVariableIndex_) {
-return {packagePair_, file_, tokens_, end_, offset_, nextTypeVariableIndex_};
+export function Parser(packagePair_, file_, tokens_, end_, offset_, nextUnificationVariableIndex_) {
+return {packagePair_, file_, tokens_, end_, offset_, nextUnificationVariableIndex_};
 }
 
 // type Poly
@@ -117,9 +117,9 @@ self_.offset_ += 1
 return c_
 }
 
-export function Parser_freshTypeVariable(self_, at_) {
-const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextTypeVariableIndex_)
-self_.nextTypeVariableIndex_ += 2
+export function Parser_freshUnificationVariable(self_, at_) {
+const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextUnificationVariableIndex_)
+self_.nextUnificationVariableIndex_ += 2
 return result_
 }
 
@@ -178,7 +178,7 @@ const variableType_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_curr
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 return ff_compiler_Parser.Parser_parseType(self_)
 })()
-: ff_compiler_Parser.Parser_freshTypeVariable(self_, ff_compiler_Token.Token_at(nameToken_)))
+: ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(nameToken_)))
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign())
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_)
 const targets_ = ff_compiler_Parser.Parser_parseTargets(self_)
@@ -823,7 +823,7 @@ ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "let")
 }
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 const valueType_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))
-? ff_compiler_Parser.Parser_freshTypeVariable(self_, ff_compiler_Token.Token_at(nameToken_))
+? ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(nameToken_))
 : (function() {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 return ff_compiler_Parser.Parser_parseType(self_)
@@ -1141,7 +1141,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }
 }
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]")
-return ff_compiler_Syntax.EList(at_, ff_compiler_Parser.Parser_freshTypeVariable(self_, at_), ff_core_ArrayBuilder.ArrayBuilder_toList(items_))
+return ff_compiler_Syntax.EList(at_, ff_compiler_Parser.Parser_freshUnificationVariable(self_, at_), ff_core_ArrayBuilder.ArrayBuilder_toList(items_))
 }
 
 

@@ -49,8 +49,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Unification
-export function Unification(substitution_, constraints_, nextTypeVariableIndex_, instances_) {
-return {substitution_, constraints_, nextTypeVariableIndex_, instances_};
+export function Unification(substitution_, constraints_, nextUnificationVariableIndex_, instances_) {
+return {substitution_, constraints_, nextUnificationVariableIndex_, instances_};
 }
 
 // type ConstraintGenerics
@@ -114,9 +114,9 @@ export function Unification_fail(self_, at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export function Unification_freshTypeVariable(self_, at_) {
-const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextTypeVariableIndex_)
-self_.nextTypeVariableIndex_ += 2
+export function Unification_freshUnificationVariable(self_, at_) {
+const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextUnificationVariableIndex_)
+self_.nextUnificationVariableIndex_ += 2
 return result_
 }
 
@@ -262,10 +262,10 @@ return
 {
 if(_1.Some) {
 const definition_ = _1.value_
-const typeVariables_ = ff_core_List.List_map(definition_.generics_, ((_) => {
-return ff_compiler_Unification.Unification_freshTypeVariable(self_, at_)
+const unificationVariables_ = ff_core_List.List_map(definition_.generics_, ((_) => {
+return ff_compiler_Unification.Unification_freshUnificationVariable(self_, at_)
 }))
-const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, typeVariables_))
+const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, unificationVariables_))
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, definition_.traitType_)
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_))
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
