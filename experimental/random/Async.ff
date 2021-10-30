@@ -1,0 +1,62 @@
+import Syntax
+
+type Async()
+
+make(): Async {
+    Async()
+}
+
+extend self: Async {
+
+    groupRecursive(functions: List[DFunction]) : List[List[DFunction]] {
+
+    }
+
+    checkRecursive(functions: List[List[DFunction]]) : List[DFunction] {
+        // function f(x) {}
+        f : $1 -> $2
+        --
+        f : forall a. a -> Unit
+
+        // function g() { f(42); h(False) }
+        // function h(y) { if(y) g() }
+        g : () -> $3
+        h : $4 -> $5
+        --
+        g : () -> Unit
+        h : Bool -> Unit
+    }
+
+    process(term: Term): Term {
+        | ELet e => e.ELet(value = self.fixWildcards(e.value), body = self.fixWildcards(e.body))
+        | ESequential e => e.ESequential(before = self.fixWildcards(e.before), after = self.fixWildcards(e.after))
+        | EAssign e => e.EAssign(value = self.fixWildcards(e.value))
+        | EAssignField e => e.EAssignField(record = self.fixWildcards(e.record), value = self.fixWildcards(e.value))
+        | EPipe e => e.EPipe(value = self.fixWildcards(e.value), function = self.fixWildcards(e.function))
+        | ECall e =>
+            e.ECall(
+                function = self.fixWildcards(e.function),
+                arguments = e.arguments.map { a => a.Argument(value = self.fixWildcards(a.value)) }
+            )
+        | EList e =>
+            e.EList(items = e.items.map { | Pair(item, spread) =>
+                Pair(self.fixWildcards(item), spread)
+            })
+        | ECopy e =>
+            e.ECopy(
+                record = self.fixWildcards(e.record),
+                arguments = e.arguments.map { a => a.Field(value = self.fixWildcards(a.value)) }
+            )
+        | EVariant e =>
+            e.EVariant(arguments = e.arguments.map { _.map { a =>
+                a.Argument(value = self.fixWildcards(a.value))
+            }})
+        | ERecord e => e.ERecord(fields = e.fields.map { a => a.Field(value = self.fixWildcards(a.value)) })
+        | EField e => e.EField(record = self.fixWildcards(e.record))
+        | EWildcard e =>
+            self.seenWildcards += 1
+            e.EWildcard(index = self.seenWildcards)
+        | _ => term
+    }
+
+}
