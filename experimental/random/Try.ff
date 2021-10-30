@@ -1,0 +1,56 @@
+
+try {
+    Parser.parse(code)
+} catch[ParseException] { e =>
+    e.rethrow()
+} orThrow()
+
+
+type Try[T] {
+    Ok(value: T)
+    NotOk(exception: DynamicException)
+}
+
+extend self[T]: Try[T] {
+
+    map[S](body: T => S): Try[S] {
+        | Ok(value) => try { body(value) }
+        | NotOk(exception) => NotOk(exception)
+    }
+
+    flatMap[S](body: T => Try[S]): Try[S] {
+        self.map(body).flatten()
+    }
+
+    else(body: () => T): T {
+        | Ok(value) => value
+        | NotOk(_) => body()
+    }
+
+    expect(): T {
+        | Ok(value) => value
+        | NotOk(exception) => exception.rethrow()
+    }
+
+    catch[E: Exception](body: E => T): Try[T] {
+        | NotOk(exception) {exception.as[E]() | Some(e)} => try { body(e) }
+        | _ => self
+    }
+
+    finally(body: () => Unit): Try[T] {
+        | Ok(value) => try { body(); value }
+        | NotOk(_) => body(); self
+    }
+
+}
+
+extend self[T]: Try[Try[T]] {
+
+    flatten(): Try[T] {
+        | Ok(Ok(value)) => value
+        | Ok(NotOk(_)@t) => t
+        | NotOk(_)@t => t
+    }
+
+}
+
