@@ -1,8 +1,66 @@
-type Try[T] {}
+type Try[T] {
+    Success(value: T)
+    Failure(exception: DynamicException)
+}
+
+type DynamicException {}
+
+extend self: DynamicException {
+
+    rethrow[T](): T { panic("magic") }
+        javascript "throw self_;"
+
+}
 
 extend self[T]: Try[T] {
 
-    else(body: () => T): T { panic("magic") }
-        javascript "return self_.Success ? self_.value_ : body_()"
+    map[S](body: T => S): Try[S] {
+        self.{
+            | Success(value) => try { body(value) }
+            | Failure(exception) => Failure(exception)
+        }
+    }
+
+    flatMap[S](body: T => Try[S]): Try[S] {
+        self.map(body).flatten()
+    }
+
+    else(body: () => T): T {
+        self.{
+            | Success(value) => value
+            | Failure(_) => body()
+        }
+    }
+
+    expect(): T {
+        self.{
+            | Success(value) => value
+            | Failure(exception) => exception.rethrow()
+        }
+    }
+
+    /*catch[E: Exception](body: E => T): Try[T] {
+        | Failure(exception) {exception.as[E]() | Some(e)} => try { body(e) }
+        | _ => self
+    }*/
+
+    finally(body: () => Unit): Try[T] {
+        self.{
+            | Success(value) => try { body(); value }
+            | Failure(_) => body(); self
+        }
+    }
+
+}
+
+extend self[T]: Try[Try[T]] {
+
+    flatten(): Try[T] {
+        self.{
+            | Success(Success(_)@t) => t
+            | Success(Failure(_)@t) => t
+            | Failure(e) => Failure(e)
+        }
+    }
 
 }

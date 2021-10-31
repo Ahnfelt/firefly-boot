@@ -92,7 +92,7 @@ export function try_(body_) {
         try {
             return {Success: true, value_: body_()}
         } catch(e) {
-            return {Failure: true, exception_: e.message}
+            return {Failure: true, exception_: e}
         }
     
 }
