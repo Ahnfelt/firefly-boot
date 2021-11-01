@@ -50,10 +50,15 @@ extend self[T]: Try[T] {
 
     /*
     catch[E: Exception](body: (Error, E) => T): Try[T] {
-        | Failure(error) {error.as[E]() | Some(e)} => try { body(e) }
+        | Failure(error) {error.as[E]() | Some(e)} => try { body(error, e) }
         | _ => self
     }
     */
+
+    catchAny(body: Error => T): Try[T] {
+        | Failure(error) => try { body(e) }
+        | _ => self
+    }
 
     finally(body: () => Unit): Try[T] {
         self.{
