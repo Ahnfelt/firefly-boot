@@ -48,19 +48,31 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function Success(value_) {
 return {Success: true, value_};
 }
-export function Failure(exception_) {
-return {Failure: true, exception_};
+export function Failure(error_) {
+return {Failure: true, error_};
 }
 
-// type DynamicException
+// type Error
 
 
 
 
 
 
-export function DynamicException_rethrow(self_) {
-throw self_;
+export function Error_rethrow(self_) {
+throw self_
+}
+
+export function Error_name(self_) {
+return self_.name || ''
+}
+
+export function Error_message(self_) {
+return self_.message || ''
+}
+
+export function Error_stack(self_) {
+return self_.stack || ''
 }
 
 export function Try_map(self_, body_) {
@@ -77,8 +89,8 @@ return
 }
 {
 if(_1.Failure) {
-const exception_ = _1.exception_
-return ff_core_Try.Failure(exception_)
+const error_ = _1.error_
+return ff_core_Try.Failure(error_)
 return
 }
 }
@@ -120,10 +132,29 @@ return
 }
 {
 if(_1.Failure) {
-const exception_ = _1.exception_
-return ff_core_Try.DynamicException_rethrow(exception_)
+const error_ = _1.error_
+return ff_core_Try.Error_rethrow(error_)
 return
 }
+}
+}
+}
+
+export function Try_catchAny(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.Failure) {
+const error_ = _1.error_
+return ff_core_Core.try_((() => {
+return body_(error_)
+}))
+return
+}
+}
+{
+return self_
+return
 }
 }
 }
@@ -143,8 +174,24 @@ return
 }
 {
 if(_1.Failure) {
-body_()
+{
+const _1 = ff_core_Core.try_((() => {
+return body_()
+}))
+{
+if(_1.Success) {
 return self_
+return
+}
+}
+{
+if(_1.Failure) {
+const error_ = _1.error_
+return ff_core_Try.Failure(error_)
+return
+}
+}
+}
 return
 }
 }
@@ -174,8 +221,8 @@ return
 }
 {
 if(_1.Failure) {
-const e_ = _1.exception_
-return ff_core_Try.Failure(e_)
+const error_ = _1.error_
+return ff_core_Try.Failure(error_)
 return
 }
 }
