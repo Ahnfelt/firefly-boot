@@ -3,24 +3,6 @@ type Try[T] {
     Failure(error: Error)
 }
 
-type Error {}
-
-extend self: Error {
-
-    rethrow[T](): T { panic("magic") }
-        javascript "throw self_"
-
-    name(): String { panic("magic") }
-        javascript "return self_.name || ''"
-
-    message(): String { panic("magic") }
-        javascript "return self_.message || ''"
-
-    stack(): String { panic("magic") }
-        javascript "return self_.stack || ''"
-
-}
-
 extend self[T]: Try[T] {
 
     map[S](body: T => S): Try[S] {
