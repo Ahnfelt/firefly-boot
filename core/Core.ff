@@ -19,7 +19,7 @@ try[T](body: () => T): Try[T] { panic("magic") }
         try {
             return {Success: true, value_: body_()}
         } catch(e) {
-            return {Failure: true, exception_: e}
+            return {Failure: true, error_: e}
         }
     """
 

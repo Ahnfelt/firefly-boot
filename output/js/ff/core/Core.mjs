@@ -10,6 +10,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Error from "../../ff/core/Error.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
@@ -92,7 +94,7 @@ export function try_(body_) {
         try {
             return {Success: true, value_: body_()}
         } catch(e) {
-            return {Failure: true, exception_: e}
+            return {Failure: true, error_: e}
         }
     
 }

@@ -10,6 +10,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Error from "../../ff/core/Error.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
@@ -52,28 +54,9 @@ export function Failure(error_) {
 return {Failure: true, error_};
 }
 
-// type Error
 
 
 
-
-
-
-export function Error_rethrow(self_) {
-throw self_
-}
-
-export function Error_name(self_) {
-return self_.name || ''
-}
-
-export function Error_message(self_) {
-return self_.message || ''
-}
-
-export function Error_stack(self_) {
-return self_.stack || ''
-}
 
 export function Try_map(self_, body_) {
 {
@@ -133,7 +116,7 @@ return
 {
 if(_1.Failure) {
 const error_ = _1.error_
-return ff_core_Try.Error_rethrow(error_)
+return ff_core_Error.Error_rethrow(error_)
 return
 }
 }
