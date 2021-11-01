@@ -1,14 +1,23 @@
 type Try[T] {
     Success(value: T)
-    Failure(exception: DynamicException)
+    Failure(error: Error)
 }
 
-type DynamicException {}
+type Error {}
 
-extend self: DynamicException {
+extend self: Error {
 
     rethrow[T](): T { panic("magic") }
-        javascript "throw self_;"
+        javascript "throw self_"
+
+    name(): String { panic("magic") }
+        javascript "return self_.name || ''"
+
+    message(): String { panic("magic") }
+        javascript "return self_.message || ''"
+
+    stack(): String { panic("magic") }
+        javascript "return self_.stack || ''"
 
 }
 
@@ -17,7 +26,7 @@ extend self[T]: Try[T] {
     map[S](body: T => S): Try[S] {
         self.{
             | Success(value) => try { body(value) }
-            | Failure(exception) => Failure(exception)
+            | Failure(error) => Failure(error)
         }
     }
 
@@ -35,14 +44,16 @@ extend self[T]: Try[T] {
     expect(): T {
         self.{
             | Success(value) => value
-            | Failure(exception) => exception.rethrow()
+            | Failure(error) => error.rethrow()
         }
     }
 
-    /*catch[E: Exception](body: E => T): Try[T] {
-        | Failure(exception) {exception.as[E]() | Some(e)} => try { body(e) }
+    /*
+    catch[E: Exception](body: (Error, E) => T): Try[T] {
+        | Failure(error) {error.as[E]() | Some(e)} => try { body(e) }
         | _ => self
-    }*/
+    }
+    */
 
     finally(body: () => Unit): Try[T] {
         self.{
@@ -59,7 +70,7 @@ extend self[T]: Try[Try[T]] {
         self.{
             | Success(Success(_)@t) => t
             | Success(Failure(_)@t) => t
-            | Failure(e) => Failure(e)
+            | Failure(error) => Failure(error)
         }
     }
 
