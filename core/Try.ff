@@ -63,7 +63,7 @@ extend self[T]: Try[T] {
     finally(body: () => Unit): Try[T] {
         self.{
             | Success(value) => try { body(); value }
-            | Failure(_) => body(); self
+            | Failure(_) => try { body(); self }
         }
     }
 
