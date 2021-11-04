@@ -1,0 +1,47 @@
+// Haskell-like Generic programming / Scrap Your Boilerplate. Thanks to nathanf for instructions.
+
+type GRecord[S, V, N](
+    value: V,
+    next: N
+)
+
+type GVariant[S, V, N] {
+    GConstructor(value: V)
+    GNext(next: N)
+)
+
+type GEnd()
+
+type GType[G](name: String, typeParameters: List[String], constructors: G)
+
+
+
+trait T: ShowMore {
+    showMore(value: T): String
+}
+
+instance GRecord[S: Symbol, V: Show, N: ShowMore]: ShowMore {
+    showMore(v) { ", " + show(v) }
+}
+
+instance GEnd: ShowMore {
+    showMore(v) { "" }
+}
+
+
+
+instance GRecord[S: Symbol, V: Show, N: ShowMore]: Show {
+    show(v) {
+        symbol[S]() + " = " + show(v.value) +
+        showMore(v.next)
+    }
+}
+
+instance GVariant[S: Symbol, V: Show, N: Show]: Show {
+    show(v) {
+        | GConstructor(name, value) =>
+            symbol[S]() + "(" + show(value) + ")"
+        | GNext(next) =>
+            show(next)
+    }
+}
