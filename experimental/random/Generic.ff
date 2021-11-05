@@ -44,6 +44,6 @@ instance GConstructors[A: Show, B: Show]: Show {
     }
 }
 
-instance GConstructor[S: Symbol, V: Show]: Show {
+instance GConstructor[S: GSymbol, V: Show]: Show {
     show(v) { symbol[S]() + "(" + show(v.value) + ")" }
 }
