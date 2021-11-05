@@ -19,6 +19,10 @@ type GNoConstructors {}
 
 type GConstructor[S, V](value: V)
 
+trait G: GSymbol {
+    symbol(): String
+}
+
 
 instance GFields[A: Show, B: Show]: Show {
     show(v) { show(v.first) + ", " + show(v.second) }
@@ -28,7 +32,7 @@ instance GNoFields: Show {
     show(v) { "" }
 }
 
-instance GField[S: Symbol, V: Show]: Show {
+instance GField[S: GSymbol, V: Show]: Show {
     show(v) { symbol[S]() + " = " + show(v.value) }
 }
 
