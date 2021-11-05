@@ -1,28 +1,33 @@
 // Haskell-like Generic programming / Scrap Your Boilerplate. Thanks to nathanf for instructions.
 
-type GFields[A, B](
-    first: A
-    second: B
+type GFields[First, Second](
+    first: First
+    second: Second
 )
 
 type GNoFields()
 
-type GField[S, V](value: V)
+type GField[Name, Value](value: Value)
 
 
-type GConstructors[A, B] {
-    GLeft(value: A)
-    GRight(value: B)
+type GConstructors[Left, Right] {
+    GLeft(value: Left)
+    GRight(value: Right)
 }
 
 type GNoConstructors {}
 
-type GConstructor[S, V](value: V)
+type GConstructor[Name, Value](value: Value)
 
-trait G: GSymbol {
+
+trait GType[Package, Module, Name, Constructors](constructors: Constructors)
+
+trait S: GSymbol {
     symbol(): String
 }
 
+
+// Example of implementing a generic instance of Show
 
 instance GFields[A: Show, B: Show]: Show {
     show(v) { show(v.first) + ", " + show(v.second) }
@@ -36,7 +41,6 @@ instance GField[S: GSymbol, V: Show]: Show {
     show(v) { symbol[S]() + " = " + show(v.value) }
 }
 
-
 instance GConstructors[A: Show, B: Show]: Show {
     show(v) {
         | GLeft(v) => show(v)
@@ -46,4 +50,10 @@ instance GConstructors[A: Show, B: Show]: Show {
 
 instance GConstructor[S: GSymbol, V: Show]: Show {
     show(v) { symbol[S]() + "(" + show(v.value) + ")" }
+}
+
+instance GType[P, M, N, C: Show] {
+    show(v) {
+        show(v.constructors)
+    }
 }
