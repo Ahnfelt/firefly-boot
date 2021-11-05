@@ -1,47 +1,45 @@
 // Haskell-like Generic programming / Scrap Your Boilerplate. Thanks to nathanf for instructions.
 
-type GRecord[S, V, N](
-    value: V,
-    next: N
+type GFields[A, B](
+    first: A
+    second: B
 )
 
-type GVariant[S, V, N] {
-    GConstructor(value: V)
-    GNext(next: N)
-)
+type GNoFields()
 
-type GEnd()
-
-type GType[G](name: String, typeParameters: List[String], constructors: G)
+type GField[S, V](value: V)
 
 
-
-trait T: ShowMore {
-    showMore(value: T): String
+type GConstructors[A, B] {
+    GLeft(value: A)
+    GRight(value: B)
 }
 
-instance GRecord[S: Symbol, V: Show, N: ShowMore]: ShowMore {
-    showMore(v) { ", " + show(v) }
+type GNoConstructors {}
+
+type GConstructor[S, V](value: V)
+
+
+instance GFields[A: Show, B: Show]: Show {
+    show(v) { show(v.first) + ", " + show(v.second) }
 }
 
-instance GEnd: ShowMore {
-    showMore(v) { "" }
+instance GNoFields: Show {
+    show(v) { "" }
+}
+
+instance GField[S: Symbol, V: Show]: Show {
+    show(v) { symbol[S]() + " = " + show(v.value) }
 }
 
 
-
-instance GRecord[S: Symbol, V: Show, N: ShowMore]: Show {
+instance GConstructors[A: Show, B: Show]: Show {
     show(v) {
-        symbol[S]() + " = " + show(v.value) +
-        showMore(v.next)
+        | GLeft(v) => show(v)
+        | GRight(v) => show(v)
     }
 }
 
-instance GVariant[S: Symbol, V: Show, N: Show]: Show {
-    show(v) {
-        | GConstructor(name, value) =>
-            symbol[S]() + "(" + show(value) + ")"
-        | GNext(next) =>
-            show(next)
-    }
+instance GConstructor[S: Symbol, V: Show]: Show {
+    show(v) { symbol[S]() + "(" + show(v.value) + ")" }
 }
