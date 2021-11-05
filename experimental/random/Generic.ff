@@ -52,7 +52,7 @@ instance GConstructor[S: GSymbol, V: Show]: Show {
     show(v) { symbol[S]() + "(" + show(v.value) + ")" }
 }
 
-instance GType[P, M, N, C: Show] {
+instance GType[P, M, N, C: Show]: Show {
     show(v) {
         show(v.constructors)
     }
