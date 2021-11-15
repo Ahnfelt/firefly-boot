@@ -215,8 +215,8 @@ return {at_, name_, value_};
 }
 
 // type Constraint
-export function Constraint(representation_) {
-return {representation_};
+export function Constraint(at_, name_, generics_) {
+return {at_, name_, generics_};
 }
 
 // type Targets

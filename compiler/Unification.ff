@@ -65,6 +65,11 @@ extend self: Unification {
             type
     }
     
+    instantiateConstraint(instantiation: Map[String, Type], constraint: Constraint): Constraint {
+        | _, Constraint(at, name, generics) =>
+            Constraint(at, name, generics.map { self.instantiate(instantiation, _) })
+    }
+
     constrain(at: Location, type: Type, constraintName: String, generics: List[Type]): Unit {
         type.{
             | TVariable(_, i) { self.has(i) } =>
@@ -97,11 +102,9 @@ extend self: Unification {
                         let traitType2 = TConstructor(at, constraintName, [type, ...generics])
                         self.unify(at, traitType1, traitType2)
                         definition.constraints.each { constraint =>
-                            self.instantiate(instantiation, constraint.representation).{
-                                | TConstructor(_, newConstraintName, newGenerics) =>
-                                    self.constrain(at, type, newConstraintName, newGenerics)
-                                | TVariable(_, i) =>
-                                    self.fail(at, "Constraint can't be a type variable: $" + i)
+                            self.instantiateConstraint(instantiation, constraint).{
+                                | Constraint(_, constraintName, newGenerics) =>
+                                    self.constrain(at, type, constraintName, newGenerics)
                             }
                         }
                 }

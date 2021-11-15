@@ -186,6 +186,24 @@ return
 }
 }
 
+export function Unification_instantiateConstraint(self_, instantiation_, constraint_) {
+{
+const self_a = self_
+const instantiation_a = instantiation_
+const constraint_a = constraint_
+{
+const self_ = self_a
+const at_ = constraint_a.at_
+const name_ = constraint_a.name_
+const generics_ = constraint_a.generics_
+return ff_compiler_Syntax.Constraint(at_, name_, ff_core_List.List_map(generics_, ((_w1) => {
+return ff_compiler_Unification.Unification_instantiate(self_, instantiation_, _w1)
+})))
+return
+}
+}
+}
+
 export function Unification_constrain(self_, at_, type_, constraintName_, generics_) {
 {
 const _1 = type_
@@ -273,21 +291,12 @@ const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_cor
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
 ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
 {
-const _1 = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, constraint_.representation_)
+const _1 = ff_compiler_Unification.Unification_instantiateConstraint(self_, instantiation_, constraint_)
 {
-if(_1.TConstructor) {
-const newConstraintName_ = _1.name_
+const constraintName_ = _1.name_
 const newGenerics_ = _1.generics_
-ff_compiler_Unification.Unification_constrain(self_, at_, type_, newConstraintName_, newGenerics_)
+ff_compiler_Unification.Unification_constrain(self_, at_, type_, constraintName_, newGenerics_)
 return
-}
-}
-{
-if(_1.TVariable) {
-const i_ = _1.index_
-ff_compiler_Unification.Unification_fail(self_, at_, ("Constraint can't be a type variable: $" + i_))
-return
-}
 }
 }
 }))

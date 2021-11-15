@@ -483,44 +483,20 @@ const parameters_ = ff_core_ArrayBuilder.empty_()
 const constraints_ = ff_core_ArrayBuilder.empty_()
 while(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight())) && (!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LSemicolon())))) {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LBracketLeft())) {
-ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, ff_compiler_Syntax.Constraint(ff_compiler_Parser.Parser_parseType(self_)))
+ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, ff_compiler_Parser.Parser_parseConstraint(self_))
 } else {
 const parameterNameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 ff_core_ArrayBuilder.ArrayBuilder_add(parameters_, ff_compiler_Token.Token_raw(parameterNameToken_))
 while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
-for(;;) {
-const _1 = ff_compiler_Parser.Parser_parseType(self_)
-{
-if(_1.TVariable) {
-const t_ = _1
-ff_compiler_Parser.Parser_fail(self_, t_.at_, ("Unexpected type variable: $" + t_.index_))
-break
-}
-}
-{
-if(_1.TConstructor) {
-const t_ = _1
-ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, ff_compiler_Syntax.Constraint((((_c) => {
-return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(t_.at_, ff_compiler_Token.Token_raw(parameterNameToken_), ff_core_List.Empty()), t_.generics_))
-}))(t_)))
-break
-}
-}
-}
+const constraint_ = ff_compiler_Parser.Parser_parseConstraint(self_)
+ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, (((_c) => {
+return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(parameterNameToken_), ff_compiler_Token.Token_raw(parameterNameToken_), ff_core_List.Empty()), constraint_.generics_))
+}))(constraint_))
 }
 }
 if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
-}
-}
-if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LSemicolon())) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LSemicolon())
-while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
-ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, ff_compiler_Syntax.Constraint(ff_compiler_Parser.Parser_parseType(self_)))
-if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
-}
 }
 }
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]")
@@ -747,6 +723,17 @@ const arrowToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArr
 const rightType_ = ff_compiler_Parser.Parser_parseType(self_)
 return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(arrowToken_), ("Function$" + ff_core_List.List_size(leftTypes_)), ff_core_List.List_addAll(leftTypes_, ff_core_List.Link(rightType_, ff_core_List.Empty())))
 }
+}
+
+export function Parser_parseConstraint(self_) {
+const namespace_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LNamespace())
+? ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LNamespace()))
+: "")
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
+const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
+? ff_core_List.Empty()
+: ff_compiler_Parser.Parser_parseTypeArguments(self_, false))
+return ff_compiler_Syntax.Constraint(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_)
 }
 
 export function Parser_parseStatements(self_) {

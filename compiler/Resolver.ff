@@ -83,15 +83,13 @@ extend self: Resolver {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(types = self.types ++ generics)
         definition.DType(
-            constraints = definition.constraints.map { c =>
-                c.Constraint(representation = self2.resolveType(c.representation))
-            },
+            constraints = definition.constraints.map(self2.resolveConstraint)
             commonFields = definition.commonFields.map { f =>
                 f.Parameter(
                     valueType = self2.resolveType(f.valueType)
                     default = f.default.map { self2.resolveTerm(_) }
                 )
-            },
+            }
             variants = definition.variants.map { v =>
                 v.Variant(fields = v.fields.map { f =>
                     f.Parameter(
@@ -118,10 +116,8 @@ extend self: Resolver {
             variables = self.variables.add(definition.name, definition.name)
         )
         definition.DExtend(
-            constraints = definition.constraints.map { c =>
-                c.Constraint(representation = self2.resolveType(c.representation))
-            },
-            type = self2.resolveType(definition.type),
+            constraints = definition.constraints.map(self2.resolveConstraint)
+            type = self2.resolveType(definition.type)
             methods = definition.methods.map { self2.resolveFunctionDefinition(_) }
         )
     }
@@ -250,6 +246,15 @@ extend self: Resolver {
             )
     }
 
+    resolveConstraint(constraint: Constraint): Constraint {
+        let name =
+            self.traits.get(constraint.name).else { fail(constraint.at, "No such trait: " + constraint.name) }
+        constraint.Constraint(
+            name = name
+            generics = constraint.generics.map { self.resolveType(_) }
+        )
+    }
+
     resolveFunctionDefinition(definition: DFunction): DFunction {
         let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
         let typeMap = definition.signature.generics.map { name => Pair(name, name) }.toMap()
@@ -258,9 +263,7 @@ extend self: Resolver {
             types = self.types ++ typeMap
         )
         let signature = definition.signature.Signature(
-            constraints = definition.signature.constraints.map { c =>
-                Constraint(self2.resolveType(c.representation))
-            }
+            constraints = definition.signature.constraints.map(self2.resolveConstraint)
             parameters = definition.signature.parameters.map { p =>
                 p.Parameter(
                     valueType = self2.resolveType(p.valueType)

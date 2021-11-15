@@ -403,29 +403,19 @@ extend self: Parser {
         let constraints = ArrayBuilder.empty[Constraint]()
         while {!self.current().is(LBracketRight) && !self.current().is(LSemicolon)} {
             if(self.ahead().is(LBracketLeft)) {
-                constraints.add(Constraint(self.parseType()))
+                constraints.add(self.parseConstraint())
             } else {
                 let parameterNameToken = self.skip(LUpper)
                 parameters.add(parameterNameToken.raw())
                 while {self.current().is(LColon)} {
                     self.skip(LColon)
-                    self.parseType().{
-                        | TVariable t => self.fail(t.at, "Unexpected type variable: $" + t.index)
-                        | TConstructor t =>
-                            constraints.add(Constraint(t.TConstructor(generics =
-                                [TConstructor(t.at, parameterNameToken.raw(), []), ...t.generics]
-                            )))
-                    }
+                    let constraint = self.parseConstraint()
+                    constraints.add(constraint.Constraint(generics =
+                        [TConstructor(parameterNameToken.at(), parameterNameToken.raw(), []), ...constraint.generics]
+                    ))
                 }
             }
             if(!self.current().is(LBracketRight)) { self.skip(LComma) }
-        }
-        if(self.current().is(LSemicolon)) {
-            self.skip(LSemicolon)
-            while {!self.current().is(LBracketRight)} {
-                constraints.add(Constraint(self.parseType()))
-                if(!self.current().is(LBracketRight)) { self.skip(LComma) }
-            }
         }
         self.rawSkip(LBracketRight, "]")
         Poly(parameters.toList(), constraints.toList())
@@ -598,7 +588,14 @@ extend self: Parser {
             TConstructor(arrowToken.at(), "Function$" + leftTypes.size(), [...leftTypes, rightType])
         }
     }
-    
+
+    parseConstraint(): Constraint {
+        let namespace = if(self.current().is(LNamespace)) {self.skip(LNamespace).raw()} else {""}
+        let token = self.skip(LUpper)
+        let arguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
+        Constraint(token.at(), namespace + token.raw(), arguments)
+    }
+
     parseStatements(): Term {
         if(self.current().is2(LBracketRight, LPipe)) {EVariant(self.current().at(), "Unit", [], None)} else {
             mutable result = self.parseStatement()

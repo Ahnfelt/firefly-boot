@@ -142,7 +142,7 @@ type Argument(at: Location, name: Option[String], value: Term)
 
 type Field(at: Location, name: String, value: Term)
 
-type Constraint(representation: Type)
+type Constraint(at: Location, name: String, generics: List[Type])
 
 type Targets(
     javaScript: Option[String]
