@@ -191,7 +191,7 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
-                self.lookup(environment, e.at, e.name, e.generics).map { instantiated =>
+                self.lookup(environment, e.at, e.name, []).map { instantiated =>
                     if(instantiated.scheme.isVariable) {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                         term
@@ -333,7 +333,7 @@ extend self: Inference {
                     e.arguments.find { _.name == name }.map {
                         | Field(at, _, value) => Argument(at, Some(name), value)
                     }.else {
-                        Argument(e.at, Some(name), EField(e.at, False, EVariable(e.at, "_c", [], []), name))
+                        Argument(e.at, Some(name), EField(e.at, False, EVariable(e.at, "_c"), name))
                     }
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
@@ -352,7 +352,7 @@ extend self: Inference {
                 )
             | ECall e =>
                 e.function.{
-                    | EVariable(variableAt, x, [], []) =>
+                    | EVariable(variableAt, x) =>
                         if(x.first().any { c => c != '_' && !c.isAsciiLetter() }) {
                             self.inferOperator(environment, expected, x, term)
                         } else {
@@ -512,7 +512,7 @@ extend self: Inference {
     ): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         let e2 = e.ECall(
-            function = EVariable(e.at, name, [], [])
+            function = EVariable(e.at, name)
             arguments = [Argument(record.at, None, record), ...e.arguments]
         )
         self.inferFunctionCall(environment, expected, signature, instantiation, e2, name)
@@ -695,7 +695,7 @@ extend self: Inference {
             p.name
         }
         let body = ECall(at, False, term, [], parameters.map { x =>
-            Argument(at, Some(x), EVariable(at, x, [], []))
+            Argument(at, Some(x), EVariable(at, x))
         })
         let lambda = ELambda(at, Lambda(at, [MatchCase(
             at = at,

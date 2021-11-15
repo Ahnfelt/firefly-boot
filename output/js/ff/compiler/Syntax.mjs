@@ -116,8 +116,8 @@ return {EInt: true, at_, value_};
 export function EFloat(at_, value_) {
 return {EFloat: true, at_, value_};
 }
-export function EVariable(at_, name_, generics_, instances_) {
-return {EVariable: true, at_, name_, generics_, instances_};
+export function EVariable(at_, name_) {
+return {EVariable: true, at_, name_};
 }
 export function ELambda(at_, lambda_) {
 return {ELambda: true, at_, lambda_};

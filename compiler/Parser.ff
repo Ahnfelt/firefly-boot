@@ -624,7 +624,7 @@ extend self: Parser {
         let operator = token.raw().dropLast(1)
         let value = self.parseTerm()
         term.{
-            | EVariable(_, name, _, _) => EAssign(token.at(), operator, name, value)
+            | EVariable(_, name) => EAssign(token.at(), operator, name, value)
             | EField e => EAssignField(token.at(), operator, e.record, e.field, value)
             | _ => self.fail(token.at(), "Only variables and fields are assignable")
         }
@@ -676,7 +676,7 @@ extend self: Parser {
                     result = ECall(token.at(), False, EField(token.at(), False, result, "addAll"), [], arguments)
                 } else {
                     let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
-                    result = ECall(token.at(), False, EVariable(token.at(), token.raw(), [], []), [], arguments)
+                    result = ECall(token.at(), False, EVariable(token.at(), token.raw()), [], arguments)
                 }
             }
         }
@@ -687,7 +687,7 @@ extend self: Parser {
         if(self.current().is(LOperator)) {
             let token = self.skip(LOperator)
             let term = self.parseUnary()
-            ECall(token.at(), False, EVariable(token.at(), token.raw(), [], []), [], [Argument(term.at, None, term)])
+            ECall(token.at(), False, EVariable(token.at(), token.raw()), [], [Argument(term.at, None, term)])
         } else {
             self.parseFieldsAndCalls()
         }
@@ -747,14 +747,14 @@ extend self: Parser {
             EFloat(token.at(), token.raw())
         } elseIf {self.current().is(LLower)} {
             let token = self.skip(LLower)
-            EVariable(token.at(), token.raw(), [], [])
+            EVariable(token.at(), token.raw())
         } elseIf {self.current().is(LNamespace)} {
             let namespaceToken = self.skip(LNamespace)
             let extraNamespace = if(!self.current().is(LNamespace)) {None} else {Some(self.skip(LNamespace).raw())}
             let prefix = namespaceToken.raw() + extraNamespace.else{""}
             if(self.current().is(LLower)) {
                 let token = self.skip(LLower)
-                EVariable(token.at(), prefix + token.raw(), [], [])
+                EVariable(token.at(), prefix + token.raw())
             } else {
                 self.parseVariant(prefix)
             }

@@ -27,6 +27,12 @@ extend self: Async {
         h : Bool -> Unit
     }
 
+    type Quux[A, B, s](f: A =s> B)
+    type Baz[s1, s2](quux: Quux[String, Int =s1> Bool, s2])
+
+    type Foo[s](f: Int =s> String)
+    type Bar[s](foo: Foo[s])
+
     process(term: Term): Term {
         | ELet e => e.ELet(value = self.fixWildcards(e.value), body = self.fixWildcards(e.body))
         | ESequential e => e.ESequential(before = self.fixWildcards(e.before), after = self.fixWildcards(e.after))

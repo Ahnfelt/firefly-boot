@@ -777,6 +777,7 @@ const self_ = self_a
 if(term_a.ECall) {
 const at_ = term_a.at_
 const function_ = term_a.function_
+const typeArguments_ = term_a.typeArguments_
 const arguments_ = term_a.arguments_
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_)

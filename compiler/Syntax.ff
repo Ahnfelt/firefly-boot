@@ -91,7 +91,7 @@ type Term(at: Location) {
     EChar(value: String)
     EInt(value: String)
     EFloat(value: String)
-    EVariable(name: String, generics: List[Type], instances: List[Instance])
+    EVariable(name: String)
     ELambda(lambda: Lambda)
     EFunctions(functions: List[DFunction], body: Term)
     ELet(mutable: Bool, name: String, valueType: Type, value: Term, body: Term)

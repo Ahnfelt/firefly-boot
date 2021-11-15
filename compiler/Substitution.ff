@@ -59,7 +59,7 @@ extend self: Substitution {
             | EChar _ => term
             | EInt _ => term
             | EFloat _ => term
-            | EVariable e => e.EVariable(generics = e.generics.map(self.substituteType))
+            | EVariable _ => term
             | EField e => e.EField(record = self.substituteTerm(e.record))
             | EWildcard e => term
             | EList e => e.EList(

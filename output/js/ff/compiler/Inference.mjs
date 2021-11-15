@@ -387,7 +387,7 @@ return
 {
 if(_1.EVariable) {
 const e_ = _1
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.generics_), ((instantiated_) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), ((instantiated_) => {
 if(instantiated_.scheme_.isVariable_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_)
 return term_
@@ -694,7 +694,7 @@ return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(name_), value_)
 return
 }
 })), (() => {
-return ff_compiler_Syntax.Argument(e_.at_, ff_core_Option.Some(name_), ff_compiler_Syntax.EField(e_.at_, false, ff_compiler_Syntax.EVariable(e_.at_, "_c", ff_core_List.Empty(), ff_core_List.Empty()), name_))
+return ff_compiler_Syntax.Argument(e_.at_, ff_core_Option.Some(name_), ff_compiler_Syntax.EField(e_.at_, false, ff_compiler_Syntax.EVariable(e_.at_, "_c"), name_))
 }))
 }))
 const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.Some(arguments_))
@@ -730,8 +730,6 @@ const _1 = e_.function_
 if(_1.EVariable) {
 const variableAt_ = _1.at_
 const x_ = _1.name_
-if(_1.generics_.Empty) {
-if(_1.instances_.Empty) {
 if(ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
 return ((c_ != 95) && (!ff_core_Char.Char_isAsciiLetter(c_)))
 }))) {
@@ -760,8 +758,6 @@ return
 }
 }
 return
-}
-}
 }
 }
 {
@@ -1012,7 +1008,7 @@ return
 }
 }))(term_)
 const e2_ = (((_c) => {
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Syntax.EVariable(e_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty()), _c.typeArguments_, ff_core_List.Link(ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.None(), record_), e_.arguments_))
+return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Syntax.EVariable(e_.at_, name_), _c.typeArguments_, ff_core_List.Link(ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.None(), record_), e_.arguments_))
 }))(e_)
 return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiation_, e2_, name_)
 }
@@ -1584,7 +1580,7 @@ return ff_core_Option.Option_isEmpty(_w1.default_)
 return p_.name_
 }))
 const body_ = ff_compiler_Syntax.ECall(at_, false, term_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
-return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syntax.EVariable(at_, x_, ff_core_List.Empty(), ff_core_List.Empty()))
+return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syntax.EVariable(at_, x_))
 })))
 const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))

@@ -323,7 +323,7 @@ return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.EVariable(_c.at_, _w1, _c.generics_, _c.instances_)
+return ff_compiler_Syntax.EVariable(_c.at_, _w1)
 return
 }
 }

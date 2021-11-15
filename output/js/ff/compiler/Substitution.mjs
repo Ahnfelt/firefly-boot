@@ -167,17 +167,7 @@ return
 }
 {
 if(_1.EVariable) {
-const e_ = _1
-{
-const _1 = e_
-{
-const _c = _1
-return ff_compiler_Syntax.EVariable(_c.at_, _c.name_, ff_core_List.List_map(e_.generics_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
-})), _c.instances_)
-return
-}
-}
+return term_
 return
 }
 }
