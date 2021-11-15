@@ -153,12 +153,6 @@ type Type(at: Location) {
     TVariable(index: Int)
 }
 
-type Instance(at: Location) {
-    IConstructor(name: String, arguments: List[Instance])
-    IField(instance: Instance, field: String)
-    IVariable(index: Int)
-}
-
 type Safety {
     Safe
     Unsafe

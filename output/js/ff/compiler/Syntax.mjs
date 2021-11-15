@@ -232,17 +232,6 @@ export function TVariable(at_, index_) {
 return {TVariable: true, at_, index_};
 }
 
-// type Instance
-export function IConstructor(at_, name_, arguments_) {
-return {IConstructor: true, at_, name_, arguments_};
-}
-export function IField(at_, instance_, field_) {
-return {IField: true, at_, instance_, field_};
-}
-export function IVariable(at_, index_) {
-return {IVariable: true, at_, index_};
-}
-
 // type Safety
 const Safe$ = {Safe: true};
 export function Safe() {
