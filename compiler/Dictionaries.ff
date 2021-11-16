@@ -1,9 +1,9 @@
 import Syntax
 
-type Traits(
+type Dictionaries(
 )
 
-extend self: Traits {
+extend self: Dictionaries {
 
     processModule(module: Module): Module {
         let lets = module.lets.map { self.substituteLetDefinition(_) }
