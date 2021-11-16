@@ -177,13 +177,14 @@ extend self: Resolver {
                 value = self.resolveTerm(value)
                 function = self.resolveTerm(function)
             )
-        | ECall(at, tailCall, function, typeArguments, arguments) =>
+        | ECall(at, tailCall, function, typeArguments, arguments, dictionaries) =>
             ECall(
                 at = at
                 tailCall = tailCall
                 function = self.resolveTerm(function)
                 typeArguments = typeArguments.map { self.resolveType(_) }
                 arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }
+                dictionaries = dictionaries
             )
         | ERecord(at, fields) =>
             ERecord(

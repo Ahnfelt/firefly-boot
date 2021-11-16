@@ -768,7 +768,7 @@ const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, r
 const e2_ = (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, (((_c) => {
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
-}))(f_), _c.typeArguments_, _c.arguments_)
+}))(f_), _c.typeArguments_, _c.arguments_, _c.dictionaries_)
 }))(e_)
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_)
@@ -1008,7 +1008,7 @@ return
 }
 }))(term_)
 const e2_ = (((_c) => {
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Syntax.EVariable(e_.at_, name_), _c.typeArguments_, ff_core_List.Link(ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.None(), record_), e_.arguments_))
+return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Syntax.EVariable(e_.at_, name_), _c.typeArguments_, ff_core_List.Link(ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.None(), record_), e_.arguments_), _c.dictionaries_)
 }))(e_)
 return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiation_, e2_, name_)
 }
@@ -1035,7 +1035,7 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, e_.function_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
-})), arguments_)
+})), arguments_, _c.dictionaries_)
 return
 }
 }
@@ -1085,7 +1085,7 @@ ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here"
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, function_, ff_core_List.Empty(), arguments_)
+return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, function_, ff_core_List.Empty(), arguments_, _c.dictionaries_)
 return
 }
 }
@@ -1121,7 +1121,7 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Empty()))
+}))(a1_), ff_core_List.Empty()), _c.dictionaries_)
 return
 }
 }
@@ -1172,7 +1172,7 @@ const _1 = e_
 const _c = _1
 return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Empty()))
+}))(a1_), ff_core_List.Empty()), _c.dictionaries_)
 return
 }
 }
@@ -1216,7 +1216,7 @@ return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArgum
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())))
+}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
 return
 }
 }
@@ -1245,7 +1245,7 @@ return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArgum
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())))
+}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
 return
 }
 }
@@ -1382,7 +1382,7 @@ return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArgum
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())))
+}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
 return
 }
 }
@@ -1556,7 +1556,7 @@ return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArgum
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())))
+}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
 return
 }
 }
@@ -1581,7 +1581,7 @@ return p_.name_
 }))
 const body_ = ff_compiler_Syntax.ECall(at_, false, term_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syntax.EVariable(at_, x_))
-})))
+})), ff_core_List.Empty())
 const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
 })), ff_core_Option.None(), body_), ff_core_List.Empty())))

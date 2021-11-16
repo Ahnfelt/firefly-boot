@@ -856,10 +856,10 @@ const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator
 const right_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1))
 if(ff_compiler_Token.Token_rawIs(token_, "++")) {
 const arguments_ = ff_core_List.Link(ff_compiler_Syntax.Argument(right_.at_, ff_core_Option.None(), right_), ff_core_List.Empty())
-result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "addAll"), ff_core_List.Empty(), arguments_)
+result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "addAll"), ff_core_List.Empty(), arguments_, ff_core_List.Empty())
 } else {
 const arguments_ = ff_core_List.Link(ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_), ff_core_List.Link(ff_compiler_Syntax.Argument(right_.at_, ff_core_Option.None(), right_), ff_core_List.Empty()))
-result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), ff_core_List.Empty(), arguments_)
+result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), ff_core_List.Empty(), arguments_, ff_core_List.Empty())
 }
 }
 }
@@ -871,7 +871,7 @@ export function Parser_parseUnary(self_) {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator())
 const term_ = ff_compiler_Parser.Parser_parseUnary(self_)
-return ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Argument(term_.at_, ff_core_Option.None(), term_), ff_core_List.Empty()))
+return ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Argument(term_.at_, ff_core_Option.None(), term_), ff_core_List.Empty()), ff_core_List.Empty())
 } else {
 return ff_compiler_Parser.Parser_parseFieldsAndCalls(self_)
 }
@@ -912,7 +912,7 @@ lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true)
 ff_core_ArrayBuilder.ArrayBuilder_add(moreArguments_, ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_)))
 }
-result_ = ff_compiler_Syntax.ECall(at_, tailCall_, result_, typeArguments_, ff_core_List.List_addAll(arguments_, ff_core_ArrayBuilder.ArrayBuilder_toList(moreArguments_)))
+result_ = ff_compiler_Syntax.ECall(at_, tailCall_, result_, typeArguments_, ff_core_List.List_addAll(arguments_, ff_core_ArrayBuilder.ArrayBuilder_toList(moreArguments_)), ff_core_List.Empty())
 if((lastWasCurly_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()))) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, ff_compiler_Token.Token_raw(token_))

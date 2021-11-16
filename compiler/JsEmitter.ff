@@ -209,11 +209,12 @@ extend self: JsEmitter {
             "{\n" + casesString + "\n})"
         | EPipe(at, value, function) =>
             "(" + self.emitTerm(function) + ")(" + self.emitTerm(value) + ")"
-        | ECall(at, _, EVariable(_, operator), [], [value]) {!operator.expectFirst().isAsciiLetter()} =>
+        | ECall(at, _, EVariable(_, operator), [], [value], _) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + operator + self.emitArgument(value) + ")"
-        | ECall(at, _, EVariable(_, operator), [], [left, right]) {!operator.expectFirst().isAsciiLetter()} =>
+        | ECall(at, _, EVariable(_, operator), [], [left, right], _) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + self.emitArgument(left) + " " + operator + " " + self.emitArgument(right) + ")"
-        | ECall(at, _, function, typeArguments, arguments) =>
+        | ECall(at, _, function, typeArguments, arguments, dictionaries) =>
+            // TODO: Use dictionaries
             detectIfElse(term).{
                 | [] =>
                     self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ")"
@@ -261,10 +262,10 @@ extend self: JsEmitter {
                 escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value)
             | EAssignField(at, operator, record, field, value) =>
                 self.emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + self.emitTerm(value)
-            | ECall(at, _, EVariable(_, word), _, [condition, body]) { word == "ff:core/Core.while" } =>
+            | ECall(at, _, EVariable(_, word), _, [condition, body], _) { word == "ff:core/Core.while" } =>
                 "while(" + self.emitTerm(invokeImmediately(condition.value)) + ") {\n" +
                 self.emitStatements(invokeImmediately(body.value), False) + "\n}"
-            | ECall(at, _, EVariable(_, word), _, [condition, body]) { word == "ff:core/Core.if" } =>
+            | ECall(at, _, EVariable(_, word), _, [condition, body], _) { word == "ff:core/Core.if" } =>
                 "if(" + self.emitTerm(condition.value) + ") {\n" +
                 if(last) {
                     "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body.value)) +
@@ -272,7 +273,7 @@ extend self: JsEmitter {
                 } else {
                     self.emitStatements(invokeImmediately(body.value), False) + "\n}"
                 }
-            | ECall(at, True, function, _, arguments) =>
+            | ECall(at, True, function, _, arguments, _) =>
                 self.tailCallUsed = True
                 let pair = arguments.map { a =>
                     Some(Pair(
@@ -430,13 +431,13 @@ type ProcessedVariantCase(
 )
 
 detectIfElse(term: Term): List[Pair[Term, Term]] {
-    | ECall(at, _, EVariable(_, word), _, [condition, body]) { word == "ff:core/Core.if" } =>
+    | ECall(at, _, EVariable(_, word), _, [condition, body], _) { word == "ff:core/Core.if" } =>
         [Pair(condition.value, invokeImmediately(body.value))]
-    | ECall(at, _, EVariable(_, word), _, [option, condition, body]) { word == "ff:core/Option.Option_elseIf" } =>
+    | ECall(at, _, EVariable(_, word), _, [option, condition, body], _) { word == "ff:core/Option.Option_elseIf" } =>
         let list = detectIfElse(option.value)
         if(list.isEmpty()) { [] } else:
         [Pair(invokeImmediately(condition.value), invokeImmediately(body.value)), ...list]
-    | ECall(at, _, EVariable(_, word), _, [option, body]) { word == "ff:core/Option.Option_else" } =>
+    | ECall(at, _, EVariable(_, word), _, [option, body], _) { word == "ff:core/Option.Option_else" } =>
         let list = detectIfElse(option.value)
         if(list.isEmpty()) { [] } else:
         [Pair(EVariant(at, "ff:core/Bool.True", [], None), invokeImmediately(body.value)), ...list]
@@ -446,7 +447,7 @@ detectIfElse(term: Term): List[Pair[Term, Term]] {
 
 invokeImmediately(function: Term): Term {
     | ELambda(_, Lambda(_, [MatchCase(_, [], None, body)])) => body
-    | _ => ECall(function.at, False, function, [], [])
+    | _ => ECall(function.at, False, function, [], [], [])
 }
 
 extractTypeName(type: Type): String {

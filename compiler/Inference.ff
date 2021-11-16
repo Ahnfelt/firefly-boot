@@ -696,7 +696,7 @@ extend self: Inference {
         }
         let body = ECall(at, False, term, [], parameters.map { x =>
             Argument(at, Some(x), EVariable(at, x))
-        })
+        }, [])
         let lambda = ELambda(at, Lambda(at, [MatchCase(
             at = at,
             patterns = parameters.map { PVariable(at, Some(_)) },

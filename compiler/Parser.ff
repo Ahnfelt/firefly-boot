@@ -670,10 +670,10 @@ extend self: Parser {
                 let right = self.parseBinary(level + 1)
                 if(token.rawIs("++")) {
                     let arguments = [Argument(right.at, None, right)]
-                    result = ECall(token.at(), False, EField(token.at(), False, result, "addAll"), [], arguments)
+                    result = ECall(token.at(), False, EField(token.at(), False, result, "addAll"), [], arguments, [])
                 } else {
                     let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
-                    result = ECall(token.at(), False, EVariable(token.at(), token.raw()), [], arguments)
+                    result = ECall(token.at(), False, EVariable(token.at(), token.raw()), [], arguments, [])
                 }
             }
         }
@@ -684,7 +684,7 @@ extend self: Parser {
         if(self.current().is(LOperator)) {
             let token = self.skip(LOperator)
             let term = self.parseUnary()
-            ECall(token.at(), False, EVariable(token.at(), token.raw()), [], [Argument(term.at, None, term)])
+            ECall(token.at(), False, EVariable(token.at(), token.raw()), [], [Argument(term.at, None, term)], [])
         } else {
             self.parseFieldsAndCalls()
         }
@@ -719,7 +719,7 @@ extend self: Parser {
                     let lambda = self.parseLambda(allowColon = True)
                     moreArguments.add(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
                 }
-                result = ECall(at, tailCall, result, typeArguments, [...arguments, ...moreArguments.toList()])
+                result = ECall(at, tailCall, result, typeArguments, [...arguments, ...moreArguments.toList()], [])
                 if(lastWasCurly && self.current().is(LLower)) {
                     let token = self.skip(LLower)
                     result = EField(token.at(), False, result, token.raw())

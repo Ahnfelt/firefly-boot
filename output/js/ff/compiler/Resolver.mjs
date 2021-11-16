@@ -449,6 +449,7 @@ const tailCall_ = term_a.tailCall_
 const function_ = term_a.function_
 const typeArguments_ = term_a.typeArguments_
 const arguments_ = term_a.arguments_
+const dictionaries_ = term_a.dictionaries_
 return ff_compiler_Syntax.ECall(at_, tailCall_, ff_compiler_Resolver.Resolver_resolveTerm(self_, function_), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1)
 })), ff_core_List.List_map(arguments_, ((a_) => {
@@ -460,7 +461,7 @@ return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Resolver.Resolv
 return
 }
 }
-})))
+})), dictionaries_)
 return
 }
 }

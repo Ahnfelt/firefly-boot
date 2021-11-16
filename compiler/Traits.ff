@@ -1,0 +1,140 @@
+import Syntax
+
+type Traits(
+)
+
+extend self: Traits {
+
+    processModule(module: Module): Module {
+        let lets = module.lets.map { self.substituteLetDefinition(_) }
+        let functions = module.functions.map { self.substituteFunctionDefinition(_) }
+        let extends = module.extends.map { self.substituteExtendDefinition(_) }
+        //let traits = module.traits.map { self.substituteTraitDefinition(_) }
+        //let instances = module.instances.map { self.substituteInstanceDefinition(_) }
+        module.Module(
+            //traits = traits,
+            //instances = instances,
+            extends = extends,
+            lets = lets,
+            functions = functions,
+        )
+    }
+
+    substituteLetDefinition(definition: DLet): DLet {
+        definition.DLet(
+            variableType = self.substituteType(definition.variableType)
+            value = self.substituteTerm(definition.value)
+        )
+    }
+
+    substituteExtendDefinition(definition: DExtend): DExtend {
+        definition.DExtend(
+            methods = definition.methods.map { self.substituteFunctionDefinition(_) }
+        )
+    }
+
+    substituteFunctionDefinition(definition: DFunction): DFunction {
+        definition.DFunction(
+            body = self.substituteLambda(definition.body)
+        )
+    }
+
+    substituteLambda(definition: Lambda): Lambda {
+        definition.Lambda(
+            cases = definition.cases.map { case =>
+                case.MatchCase(
+                    condition = case.condition.map(self.substituteTerm)
+                    body = self.substituteTerm(case.body)
+                )
+            }
+        )
+    }
+
+    substituteTerm(term: Term): Term {
+        term.{
+            | EString _ => term
+            | EChar _ => term
+            | EInt _ => term
+            | EFloat _ => term
+            | EVariable _ => term
+            | EField e => e.EField(record = self.substituteTerm(e.record))
+            | EWildcard e => term
+            | EList e => e.EList(
+                elementType = self.substituteType(e.elementType)
+                items = e.items.map {| Pair(item, b) => Pair(self.substituteTerm(item), b) }
+            )
+            | ESequential e => e.ESequential(
+                before = self.substituteTerm(e.before)
+                after = self.substituteTerm(e.after)
+            )
+            | ELet e => e.ELet(
+                valueType = self.substituteType(e.valueType)
+                value = self.substituteTerm(e.value)
+                body = self.substituteTerm(e.body)
+            )
+            | ELambda e => e.ELambda(lambda = self.substituteLambda(e.lambda))
+            | EVariant e => e.EVariant(
+                typeArguments = e.typeArguments.map(self.substituteType)
+                arguments = e.arguments.map { _.map(self.substituteArgument) }
+            )
+            | EVariantIs e => e.EVariantIs(
+                typeArguments = e.typeArguments.map(self.substituteType)
+            )
+            | ECopy e => e.ECopy(
+                record = self.substituteTerm(e.record)
+                arguments = e.arguments.map(self.substituteField)
+            )
+            | EPipe e => e.EPipe(
+                value = self.substituteTerm(e.value)
+                function = self.substituteTerm(e.function)
+            )
+            | ECall e => e.ECall(
+                function = self.substituteTerm(e.function)
+                typeArguments = e.typeArguments.map(self.substituteType)
+                arguments = e.arguments.map(self.substituteArgument)
+            )
+            | ERecord e => e.ERecord(fields = e.fields.map(self.substituteField))
+            | EFunctions e => e.EFunctions(
+                functions = e.functions.map(self.substituteFunctionDefinition)
+                body = self.substituteTerm(e.body)
+            )
+            | EAssign e => e.EAssign(value = self.substituteTerm(e.value))
+            | EAssignField e => e.EAssignField(
+                record = self.substituteTerm(e.record)
+                value = self.substituteTerm(e.value)
+            )
+        }
+    }
+
+    substituteArgument(argument: Argument): Argument {
+        argument.Argument(value = self.substituteTerm(argument.value))
+    }
+
+    substituteField(field: Field): Field {
+        field.Field(value = self.substituteTerm(field.value))
+    }
+
+    substituteType(type: Type): Type {
+        | TVariable(at, i) =>
+            if(self.has(i)) { self.substituteType(self.get(i)) } else { TConstructor(at, core("Nothing"), []) }
+        | TConstructor t =>
+            t.TConstructor(generics = t.generics.map { t => self.substituteType(t) })
+    }
+
+    get(index: Int): Type {
+        self.substitution.expect(index).{
+            | TVariable(_, i) { self.has(i) } =>
+                let t = self.get(i)
+                self.substitution = self.substitution.add(index, t)
+                t
+            | TVariable(at, _) =>
+                TConstructor(at, core("Nothing"), [])
+            | t => t
+        }
+    }
+
+    has(index: Int): Bool {
+        self.substitution.contains(index)
+    }
+
+}

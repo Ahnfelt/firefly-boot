@@ -140,8 +140,8 @@ return {EAssignField: true, at_, operator_, record_, field_, value_};
 export function EPipe(at_, value_, function_) {
 return {EPipe: true, at_, value_, function_};
 }
-export function ECall(at_, tailCall_, function_, typeArguments_, arguments_) {
-return {ECall: true, at_, tailCall_, function_, typeArguments_, arguments_};
+export function ECall(at_, tailCall_, function_, typeArguments_, arguments_, dictionaries_) {
+return {ECall: true, at_, tailCall_, function_, typeArguments_, arguments_, dictionaries_};
 }
 export function EList(at_, elementType_, items_) {
 return {EList: true, at_, elementType_, items_};
@@ -182,6 +182,11 @@ return {PVariantAs: true, at_, name_, variable_};
 }
 export function PAlias(at_, pattern_, variable_) {
 return {PAlias: true, at_, pattern_, variable_};
+}
+
+// type Dictionary
+export function Dictionary(traitName_, typeName_, dictionaries_) {
+return {traitName_, typeName_, dictionaries_};
 }
 
 // type Signature

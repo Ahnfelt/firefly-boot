@@ -99,7 +99,13 @@ type Term(at: Location) {
     EAssign(operator: String, variable: String, value: Term)
     EAssignField(operator: String, record: Term, field: String, value: Term)
     EPipe(value: Term, function: Term)
-    ECall(tailCall: Bool, function: Term, typeArguments: List[Type], arguments: List[Argument])
+    ECall(
+        tailCall: Bool
+        function: Term
+        typeArguments: List[Type]
+        arguments: List[Argument]
+        dictionaries: List[Dictionary]
+    )
     EList(elementType: Type, items: List[Pair[Term, Bool]])
     ECopy(name: String, record: Term, arguments: List[Field])
     EVariant(name: String, typeArguments: List[Type], arguments: Option[List[Argument]])
@@ -122,6 +128,8 @@ type MatchPattern(at: Location) {
     PVariantAs(name: String, variable: Option[String])
     PAlias(pattern: MatchPattern, variable: String)
 }
+
+type Dictionary(traitName: String, typeName: String, dictionaries: List[Dictionary])
 
 type Signature(
     at: Location,
