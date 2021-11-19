@@ -780,6 +780,11 @@ const function_ = term_a.function_
 const typeArguments_ = term_a.typeArguments_
 const arguments_ = term_a.arguments_
 const dictionaries_ = term_a.dictionaries_
+if((ff_core_List.List_size(dictionaries_) > 0)) {
+ff_compiler_JsEmitter.fail_(at_, ("Wow, dictionaries: " + ff_core_List.List_join(ff_core_List.List_map(dictionaries_, ((value_) => {
+return ff_core_Core.magicShow_(value_)
+})), ", ")))
+}
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_)
 {

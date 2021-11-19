@@ -215,6 +215,7 @@ extend self: JsEmitter {
             "(" + self.emitArgument(left) + " " + operator + " " + self.emitArgument(right) + ")"
         | ECall(at, _, function, typeArguments, arguments, dictionaries) =>
             // TODO: Use dictionaries
+            if(dictionaries.size() > 0) { fail(at, "Wow, dictionaries: " + dictionaries.map(magicShow).join(", ")) }
             detectIfElse(term).{
                 | [] =>
                     self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ")"

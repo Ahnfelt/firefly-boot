@@ -4,6 +4,7 @@ import Parser
 import Resolver
 import Inference
 import JsEmitter
+import Dictionaries
 
 type Compiler(
     files: FileSystem
@@ -145,7 +146,8 @@ extend self: Compiler {
             self.resolve(newPackageName, self.files.prefixName(i.file))
         }
         let instances = module.instances ++ otherModules.flatMap { _.instances }
-        let result = Inference.make(instances).inferModule(module, otherModules)
+        let inferredModule = Inference.make(instances).inferModule(module, otherModules)
+        let result = Dictionaries.make(instances).processModule(inferredModule, otherModules)
 
         self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)
         result

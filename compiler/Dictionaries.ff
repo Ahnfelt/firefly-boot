@@ -1,16 +1,33 @@
 import Syntax
+import Unification
+import Environment
 
 type Dictionaries(
+    instances: Map[InstanceKey, InstanceValue]
 )
+
+make(instances: List[DInstance]): Dictionaries {
+    Dictionaries(Unification.make(instances).instances)
+}
+
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show())
+}
 
 extend self: Dictionaries {
 
-    processModule(module: Module): Module {
-        let lets = module.lets.map { self.substituteLetDefinition(_) }
-        let functions = module.functions.map { self.substituteFunctionDefinition(_) }
-        let extends = module.extends.map { self.substituteExtendDefinition(_) }
-        //let traits = module.traits.map { self.substituteTraitDefinition(_) }
-        //let instances = module.instances.map { self.substituteInstanceDefinition(_) }
+    processModule(module: Module, otherModules: List[Module]): Module {
+        let environment = Environment.make(module, otherModules)
+        let functionSignatures = environment.symbols.pairs().collect {
+            | Pair(name, s) {!s.isVariable} => Some(Pair(name, s.signature))
+            | _ => None
+        }.toMap()
+
+        let lets = module.lets.map { self.processLetDefinition(functionSignatures, _) }
+        let functions = module.functions.map { self.processFunctionDefinition(functionSignatures, _) }
+        let extends = module.extends.map { self.processExtendDefinition(functionSignatures, _) }
+        //let traits = module.traits.map { self.processTraitDefinition(functionSignatures, _) }
+        //let instances = module.instances.map { self.processInstanceDefinition(functionSignatures, _) }
         module.Module(
             //traits = traits,
             //instances = instances,
@@ -20,121 +37,129 @@ extend self: Dictionaries {
         )
     }
 
-    substituteLetDefinition(definition: DLet): DLet {
+    processLetDefinition(functions: Map[String, Signature], definition: DLet): DLet {
         definition.DLet(
-            variableType = self.substituteType(definition.variableType)
-            value = self.substituteTerm(definition.value)
+            value = self.processTerm(functions, definition.value)
         )
     }
 
-    substituteExtendDefinition(definition: DExtend): DExtend {
+    processExtendDefinition(functions: Map[String, Signature], definition: DExtend): DExtend {
         definition.DExtend(
-            methods = definition.methods.map { self.substituteFunctionDefinition(_) }
+            methods = definition.methods.map { self.processFunctionDefinition(functions, _) }
         )
     }
 
-    substituteFunctionDefinition(definition: DFunction): DFunction {
+    processFunctionDefinition(functions: Map[String, Signature], definition: DFunction): DFunction {
         definition.DFunction(
-            body = self.substituteLambda(definition.body)
+            body = self.processLambda(functions, definition.body)
         )
     }
 
-    substituteLambda(definition: Lambda): Lambda {
+    processLambda(functions: Map[String, Signature], definition: Lambda): Lambda {
         definition.Lambda(
             cases = definition.cases.map { case =>
+                // TODO: Remove the case variables from the functions
                 case.MatchCase(
-                    condition = case.condition.map(self.substituteTerm)
-                    body = self.substituteTerm(case.body)
+                    condition = case.condition.map { self.processTerm(functions, _) }
+                    body = self.processTerm(functions, case.body)
                 )
             }
         )
     }
 
-    substituteTerm(term: Term): Term {
+    processTerm(functions: Map[String, Signature], term: Term): Term {
         term.{
             | EString _ => term
             | EChar _ => term
             | EInt _ => term
             | EFloat _ => term
             | EVariable _ => term
-            | EField e => e.EField(record = self.substituteTerm(e.record))
+            | EField e => e.EField(record = self.processTerm(functions, e.record))
             | EWildcard e => term
             | EList e => e.EList(
-                elementType = self.substituteType(e.elementType)
-                items = e.items.map {| Pair(item, b) => Pair(self.substituteTerm(item), b) }
+                items = e.items.map {| Pair(item, b) => Pair(self.processTerm(functions, item), b) }
             )
             | ESequential e => e.ESequential(
-                before = self.substituteTerm(e.before)
-                after = self.substituteTerm(e.after)
+                before = self.processTerm(functions, e.before)
+                after = self.processTerm(functions, e.after)
             )
-            | ELet e => e.ELet(
-                valueType = self.substituteType(e.valueType)
-                value = self.substituteTerm(e.value)
-                body = self.substituteTerm(e.body)
-            )
-            | ELambda e => e.ELambda(lambda = self.substituteLambda(e.lambda))
+            | ELet e =>
+                let newFunctions = functions.remove(e.name)
+                e.ELet(
+                    value = self.processTerm(functions, e.value)
+                    body = self.processTerm(newFunctions, e.body)
+                )
+            | ELambda e => e.ELambda(lambda = self.processLambda(functions, e.lambda))
             | EVariant e => e.EVariant(
-                typeArguments = e.typeArguments.map(self.substituteType)
-                arguments = e.arguments.map { _.map(self.substituteArgument) }
+                arguments = e.arguments.map { _.map { self.processArgument(functions, _) } }
             )
-            | EVariantIs e => e.EVariantIs(
-                typeArguments = e.typeArguments.map(self.substituteType)
-            )
+            | EVariantIs e => term
             | ECopy e => e.ECopy(
-                record = self.substituteTerm(e.record)
-                arguments = e.arguments.map(self.substituteField)
+                record = self.processTerm(functions, e.record)
+                arguments = e.arguments.map { self.processField(functions, _) }
             )
             | EPipe e => e.EPipe(
-                value = self.substituteTerm(e.value)
-                function = self.substituteTerm(e.function)
+                value = self.processTerm(functions, e.value)
+                function = self.processTerm(functions, e.function)
             )
-            | ECall e => e.ECall(
-                function = self.substituteTerm(e.function)
-                typeArguments = e.typeArguments.map(self.substituteType)
-                arguments = e.arguments.map(self.substituteArgument)
-            )
-            | ERecord e => e.ERecord(fields = e.fields.map(self.substituteField))
-            | EFunctions e => e.EFunctions(
-                functions = e.functions.map(self.substituteFunctionDefinition)
-                body = self.substituteTerm(e.body)
-            )
-            | EAssign e => e.EAssign(value = self.substituteTerm(e.value))
+            | ECall(at, tailCall, EVariable(_, functionName)@x, typeArguments, arguments, _) {
+                functions.contains(functionName)
+            } =>
+                let signature = functions.expect(functionName)
+                let dictionaries = signature.constraints.map {
+                    self.makeDictionary(signature.generics, typeArguments, _)
+                }
+                ECall(
+                    at = at
+                    tailCall = tailCall
+                    function = x
+                    typeArguments = typeArguments
+                    arguments = arguments.map { self.processArgument(functions, _) }
+                    dictionaries = dictionaries
+                )
+            | ECall e =>
+                e.ECall(
+                    function = self.processTerm(functions, e.function)
+                    arguments = e.arguments.map { self.processArgument(functions, _) }
+                )
+            | ERecord e => e.ERecord(fields = e.fields.map { self.processField(functions, _) })
+            | EFunctions e =>
+                let newFunctions = functions.addAll(e.functions.map { f =>
+                    Pair(f.signature.name, f.signature)
+                }.toMap())
+                e.EFunctions(
+                    functions = e.functions.map { self.processFunctionDefinition(newFunctions, _) }
+                    body = self.processTerm(newFunctions, e.body)
+                )
+            | EAssign e => e.EAssign(value = self.processTerm(functions, e.value))
             | EAssignField e => e.EAssignField(
-                record = self.substituteTerm(e.record)
-                value = self.substituteTerm(e.value)
+                record = self.processTerm(functions, e.record)
+                value = self.processTerm(functions, e.value)
             )
         }
     }
 
-    substituteArgument(argument: Argument): Argument {
-        argument.Argument(value = self.substituteTerm(argument.value))
+    processArgument(functions: Map[String, Signature], argument: Argument): Argument {
+        argument.Argument(value = self.processTerm(functions, argument.value))
     }
 
-    substituteField(field: Field): Field {
-        field.Field(value = self.substituteTerm(field.value))
+    processField(functions: Map[String, Signature], field: Field): Field {
+        field.Field(value = self.processTerm(functions, field.value))
     }
 
-    substituteType(type: Type): Type {
-        | TVariable(at, i) =>
-            if(self.has(i)) { self.substituteType(self.get(i)) } else { TConstructor(at, core("Nothing"), []) }
-        | TConstructor t =>
-            t.TConstructor(generics = t.generics.map { t => self.substituteType(t) })
-    }
-
-    get(index: Int): Type {
-        self.substitution.expect(index).{
-            | TVariable(_, i) { self.has(i) } =>
-                let t = self.get(i)
-                self.substitution = self.substitution.add(index, t)
-                t
-            | TVariable(at, _) =>
-                TConstructor(at, core("Nothing"), [])
-            | t => t
+    makeDictionary(typeParameters: List[String], typeArguments: List[Type], constraint: Constraint): Dictionary {
+        let instantiationMap = typeParameters.zip(typeArguments).toMap()
+        let unification = Unification.make([])
+        let newGenerics = constraint.generics.map { unification.instantiate(instantiationMap, _) }
+        let firstType = newGenerics.expectFirst().{
+            | TConstructor t => t
+            | TVariable t => fail(t.at, " is still a unification variable")
         }
-    }
-
-    has(index: Int): Bool {
-        self.substitution.contains(index)
+        let instance = self.instances.expect(InstanceKey(constraint.name, firstType.name))
+        let dictionaries = instance.constraints.map { c =>
+            self.makeDictionary(instance.generics, firstType.generics, c)
+        }
+        Dictionary(constraint.name, firstType.name, dictionaries)
     }
 
 }

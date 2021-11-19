@@ -1,5 +1,7 @@
 import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
 
+import * as ff_compiler_Dictionaries from "../../ff/compiler/Dictionaries.mjs"
+
 import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
 
 import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
@@ -152,7 +154,8 @@ return ff_compiler_Compiler.Compiler_resolve(self_, newPackageName_, ff_core_Fil
 const instances_ = ff_core_List.List_addAll(module_.instances_, ff_core_List.List_flatMap(otherModules_, ((_w1) => {
 return _w1.instances_
 })))
-const result_ = ff_compiler_Inference.Inference_inferModule(ff_compiler_Inference.make_(instances_), module_, otherModules_)
+const inferredModule_ = ff_compiler_Inference.Inference_inferModule(ff_compiler_Inference.make_(instances_), module_, otherModules_)
+const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(instances_), inferredModule_, otherModules_)
 self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ((packageName_ + ":") + moduleName_), result_)
 return result_
 }))
