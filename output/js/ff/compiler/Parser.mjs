@@ -319,8 +319,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}")
 return ff_core_ArrayBuilder.ArrayBuilder_toList(definitions_)
 })())
-const traitType_ = ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), ff_core_ArrayBuilder.ArrayBuilder_toList(typeArguments_))
-return ff_compiler_Syntax.DInstance(ff_compiler_Token.Token_at(nameToken_), poly_.generics_, poly_.constraints_, traitType_, generatorArguments_, methods_)
+return ff_compiler_Syntax.DInstance(ff_compiler_Token.Token_at(nameToken_), poly_.generics_, poly_.constraints_, ff_compiler_Token.Token_raw(nameToken_), ff_core_ArrayBuilder.ArrayBuilder_toList(typeArguments_), generatorArguments_, methods_)
 }
 
 export function Parser_parseTypeDefinition(self_) {

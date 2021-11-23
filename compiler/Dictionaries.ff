@@ -3,7 +3,7 @@ import Unification
 import Environment
 
 type Dictionaries(
-    instances: Map[InstanceKey, InstanceValue]
+    instances: Map[String, InstanceValue]
 )
 
 make(instances: List[DInstance]): Dictionaries {
@@ -155,7 +155,7 @@ extend self: Dictionaries {
             | TConstructor t => t
             | TVariable t => fail(t.at, " is still a unification variable")
         }
-        let instance = self.instances.expect(InstanceKey(constraint.name, firstType.name))
+        let instance = self.instances.expect(InstanceKey(constraint.name, firstType.name).toStringKey())
         let dictionaries = instance.constraints.map { c =>
             self.makeDictionary(instance.generics, firstType.generics, c)
         }

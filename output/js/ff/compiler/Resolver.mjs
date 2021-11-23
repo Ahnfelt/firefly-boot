@@ -226,11 +226,50 @@ return
 }
 
 export function Resolver_resolveTraitDefinition(self_, definition_) {
-return definition_
+const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
+return ff_core_Pair.Pair(g_, g_)
+})))
+const self2_ = (((_c) => {
+return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_), _c.traits_)
+}))(self_)
+{
+const _1 = definition_
+{
+const _c = _1
+return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((constraint_) => {
+return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, constraint_)
+})), _c.generatorParameters_, ff_core_List.List_map(definition_.methods_, ((signature_) => {
+return ff_compiler_Resolver.Resolver_resolveSignature(self2_, signature_)
+})), definition_.methodDefaults_, _c.methodGenerators_)
+return
+}
+}
 }
 
 export function Resolver_resolveInstanceDefinition(self_, definition_) {
-return definition_
+const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
+return ff_core_Pair.Pair(g_, g_)
+})))
+const self2_ = (((_c) => {
+return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_), _c.traits_)
+}))(self_)
+const traitName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self2_.traits_, definition_.traitName_), (() => {
+return ff_compiler_Resolver.fail_(definition_.at_, ("No such trait: " + definition_.traitName_))
+}))
+{
+const _1 = definition_
+{
+const _c = _1
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((constraint_) => {
+return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, constraint_)
+})), traitName_, ff_core_List.List_map(definition_.typeArguments_, ((type_) => {
+return ff_compiler_Resolver.Resolver_resolveType(self2_, type_)
+})), _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((definition_) => {
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, definition_)
+})))
+return
+}
+}
 }
 
 export function Resolver_resolveExtendDefinition(self_, definition_) {
@@ -641,28 +680,37 @@ return ff_core_Pair.Pair(name_, name_)
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, variableMap_), _c.variants_, ff_core_Map.Map_addAll(self_.types_, typeMap_), _c.traits_)
 }))(self_)
-const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.signature_.constraints_, ((constraint_) => {
-return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, constraint_)
-})), ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
-{
-const _1 = p_
-{
-const _c = _1
-return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self2_, p_.valueType_), ff_core_Option.Option_map(p_.default_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
-})))
-return
-}
-}
-})), ff_compiler_Resolver.Resolver_resolveType(self2_, definition_.signature_.returnType_))
-}))(definition_.signature_)
+const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self2_, definition_.signature_)
 const body_ = (((_c) => {
 return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(definition_.body_.cases_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1)
 })))
 }))(definition_.body_)
 return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_, definition_.targets_)
+}
+
+export function Resolver_resolveSignature(self_, signature_) {
+{
+const _1 = signature_
+{
+const _c = _1
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((constraint_) => {
+return ff_compiler_Resolver.Resolver_resolveConstraint(self_, constraint_)
+})), ff_core_List.List_map(signature_.parameters_, ((p_) => {
+{
+const _1 = p_
+{
+const _c = _1
+return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, p_.valueType_), ff_core_Option.Option_map(p_.default_, ((_w1) => {
+return ff_compiler_Resolver.Resolver_resolveTerm(self_, _w1)
+})))
+return
+}
+}
+})), ff_compiler_Resolver.Resolver_resolveType(self_, signature_.returnType_))
+return
+}
+}
 }
 
 export function Resolver_resolveCase(self_, case_) {

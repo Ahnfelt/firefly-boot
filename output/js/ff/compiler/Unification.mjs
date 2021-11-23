@@ -66,8 +66,8 @@ return {traitName_, typeName_};
 }
 
 // type InstanceValue
-export function InstanceValue(generics_, constraints_, traitType_) {
-return {generics_, constraints_, traitType_};
+export function InstanceValue(generics_, constraints_, traitName_, typeArguments_) {
+return {generics_, constraints_, traitName_, typeArguments_};
 }
 
 
@@ -77,39 +77,28 @@ function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 2, ff_core_List.List_toMap(ff_core_List.List_map(instances_, ((definition_) => {
-{
-const _1 = definition_.traitType_
-{
-if(_1.TConstructor) {
-const at_ = _1.at_
-const name_ = _1.name_
-if(_1.generics_.Link) {
-if(_1.generics_.head_.TConstructor) {
-const typeName_ = _1.generics_.head_.name_
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(name_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, definition_.traitType_))
-return
-}
-}
-}
-}
+const typeName_ = (((_1) => {
 {
 if(_1.TConstructor) {
-const at_ = _1.at_
 const name_ = _1.name_
-return fail_(at_, (("Instance requires type arguments: " + name_) + "[]"))
+return name_
 return
 }
 }
 {
 if(_1.TVariable) {
-const at_ = _1.at_
 const i_ = _1.index_
-return fail_(at_, ("Unexpected type variable: $" + i_))
+return fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
 return
 }
 }
-}
+}))(ff_core_List.List_expectFirst(definition_.typeArguments_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_)), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, definition_.traitName_, definition_.typeArguments_))
 }))))
+}
+
+export function InstanceKey_toStringKey(self_) {
+return ((self_.traitName_ + "|") + self_.typeName_)
 }
 
 export function Unification_fail(self_, at_, message_) {
@@ -266,7 +255,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_
 const generics2_ = _1.generics_
 {
-const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraintName_, name_))
+const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(constraintName_, name_)))
 {
 if(_1.None) {
 const g1_ = (ff_core_List.List_isEmpty(generics_)
@@ -286,7 +275,7 @@ const unificationVariables_ = ff_core_List.List_map(definition_.generics_, ((_) 
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_, at_)
 }))
 const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, unificationVariables_))
-const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, definition_.traitType_)
+const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_))
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_))
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
 ff_core_List.List_each(definition_.constraints_, ((constraint_) => {

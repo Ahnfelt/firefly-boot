@@ -4,12 +4,16 @@ type Unification(
     mutable substitution: Map[Int, Type],
     mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
     mutable nextUnificationVariableIndex: Int
-    instances: Map[InstanceKey, InstanceValue]
+    instances: Map[String, InstanceValue]
 )
 
 type ConstraintGenerics(at: Location, generics: List[Type])
 type InstanceKey(traitName: String, typeName: String)
-type InstanceValue(generics: List[String], constraints: List[Constraint], traitType: Type)
+type InstanceValue(generics: List[String], constraints: List[Constraint], traitName: String, typeArguments: List[Type])
+
+extend self: InstanceKey {
+    toStringKey(): String { self.traitName + "|" + self.typeName }
+}
 
 make(instances: List[DInstance]): Unification {
     function fail[T](at: Location, message: String): T {
@@ -20,21 +24,19 @@ make(instances: List[DInstance]): Unification {
         Map.empty()
         2 // Even type variables to avoid collision with the parser
         instances.map { definition =>
-            definition.traitType.{
-                | TConstructor(at, name, [TConstructor(_, typeName, _), ...]) =>
-                     Pair(
-                        InstanceKey(name, typeName)
-                        InstanceValue(
-                            generics = definition.generics
-                            constraints = definition.constraints
-                            traitType = definition.traitType
-                        )
-                    )
-                | TConstructor(at, name, _) =>
-                    fail(at, "Instance requires type arguments: " + name + "[]")
-                | TVariable(at, i) =>
-                    fail(at, "Unexpected type variable: $" + i)
+            let typeName = definition.typeArguments.expectFirst().{
+                | TConstructor(_, name, _) => name
+                | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
             }
+            Pair(
+                InstanceKey(definition.traitName, typeName).toStringKey()
+                InstanceValue(
+                    generics = definition.generics
+                    constraints = definition.constraints
+                    traitName = definition.traitName
+                    typeArguments = definition.typeArguments
+                )
+            )
         }.toMap()
     )
 }
@@ -90,7 +92,7 @@ extend self: Unification {
                         }
                 }
             | TConstructor(_, name, generics2) =>
-                self.instances.get(InstanceKey(constraintName, name)).{
+                self.instances.get(InstanceKey(constraintName, name).toStringKey()).{
                     | None =>
                         let g1 = if(generics.isEmpty()) { "" } else { "[...]" }
                         let g2 = if(generics2.isEmpty()) { "" } else { "[...]" }
@@ -98,7 +100,9 @@ extend self: Unification {
                     | Some(definition) =>
                         let unificationVariables = definition.generics.map {| _ => self.freshUnificationVariable(at) }
                         let instantiation = definition.generics.zip(unificationVariables).toMap()
-                        let traitType1 = self.instantiate(instantiation, definition.traitType)
+                        let traitType1 = self.instantiate(instantiation,
+                            TConstructor(at, definition.traitName, definition.typeArguments)
+                        )
                         let traitType2 = TConstructor(at, constraintName, [type, ...generics])
                         self.unify(at, traitType1, traitType2)
                         definition.constraints.each { constraint =>

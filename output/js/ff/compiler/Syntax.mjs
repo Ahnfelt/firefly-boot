@@ -99,8 +99,8 @@ return {at_, name_, generics_, constraints_, generatorParameters_, methods_, met
 }
 
 // type DInstance
-export function DInstance(at_, generics_, constraints_, traitType_, generatorArguments_, methods_) {
-return {at_, generics_, constraints_, traitType_, generatorArguments_, methods_};
+export function DInstance(at_, generics_, constraints_, traitName_, typeArguments_, generatorArguments_, methods_) {
+return {at_, generics_, constraints_, traitName_, typeArguments_, generatorArguments_, methods_};
 }
 
 // type Term

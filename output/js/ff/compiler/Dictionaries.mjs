@@ -482,7 +482,7 @@ return
 }
 }
 }))(ff_core_List.List_expectFirst(newGenerics_))
-const instance_ = ff_core_Map.Map_expect(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_))
+const instance_ = ff_core_Map.Map_expect(self_.instances_, ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_)))
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.generics_, firstType_.generics_, c_)
 }))

@@ -102,11 +102,27 @@ extend self: Resolver {
     }
 
     resolveTraitDefinition(definition: DTrait): DTrait {
-        definition
+        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
+        let self2 = self.Resolver(types = self.types ++ generics)
+        definition.DTrait(
+            constraints = definition.constraints.map(self2.resolveConstraint),
+            methods = definition.methods.map(self2.resolveSignature),
+            methodDefaults = definition.methodDefaults // TODO
+        )
     }
 
     resolveInstanceDefinition(definition: DInstance): DInstance {
-        definition
+        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
+        let self2 = self.Resolver(types = self.types ++ generics)
+        let traitName = self2.traits.get(definition.traitName).else {
+            fail(definition.at, "No such trait: " + definition.traitName)
+        }
+        definition.DInstance(
+            constraints = definition.constraints.map(self2.resolveConstraint)
+            traitName = traitName
+            typeArguments = definition.typeArguments.map(self2.resolveType)
+            methods = definition.methods.map(self2.resolveFunctionDefinition)
+        )
     }
 
     resolveExtendDefinition(definition: DExtend): DExtend {
@@ -263,18 +279,22 @@ extend self: Resolver {
             variables = self.variables ++ variableMap
             types = self.types ++ typeMap
         )
-        let signature = definition.signature.Signature(
-            constraints = definition.signature.constraints.map(self2.resolveConstraint)
-            parameters = definition.signature.parameters.map { p =>
-                p.Parameter(
-                    valueType = self2.resolveType(p.valueType)
-                    default = p.default.map { self2.resolveTerm(_) }
-                )
-            }
-            returnType = self2.resolveType(definition.signature.returnType)
-        )
+        let signature = self2.resolveSignature(definition.signature)
         let body = definition.body.Lambda(cases = definition.body.cases.map { self2.resolveCase(_) })
         DFunction(definition.at, signature, body, definition.targets)
+    }
+
+    resolveSignature(signature: Signature): Signature {
+        signature.Signature(
+            constraints = signature.constraints.map(self.resolveConstraint)
+            parameters = signature.parameters.map { p =>
+                p.Parameter(
+                    valueType = self.resolveType(p.valueType)
+                    default = p.default.map { self.resolveTerm(_) }
+                )
+            }
+            returnType = self.resolveType(signature.returnType)
+        )
     }
 
     resolveCase(case: MatchCase): MatchCase {

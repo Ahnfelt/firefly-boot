@@ -81,7 +81,8 @@ type DInstance(
     at: Location,
     generics: List[String],
     constraints: List[Constraint],
-    traitType: Type,
+    traitName: String,
+    typeArguments: List[Type],
     generatorArguments: List[Argument],
     methods: List[DFunction],
 )

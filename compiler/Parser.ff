@@ -271,8 +271,15 @@ extend self: Parser {
             self.rawSkip(LBracketRight, "}")
             definitions.toList()
         }
-        let traitType = TConstructor(nameToken.at(), nameToken.raw(), typeArguments.toList())
-        DInstance(nameToken.at(), poly.generics, poly.constraints, traitType, generatorArguments, methods)
+        DInstance(
+            at = nameToken.at()
+            generics = poly.generics
+            constraints = poly.constraints
+            traitName = nameToken.raw()
+            typeArguments = typeArguments.toList()
+            generatorArguments = generatorArguments
+            methods = methods
+        )
     }
 
     parseTypeDefinition(): DType {
