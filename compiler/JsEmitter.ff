@@ -220,7 +220,6 @@ extend self: JsEmitter {
                     let ds = if(dictionaries.isEmpty()) {""} else {
                         "/* Dictionaries: " + dictionaries.map(self.emitDictionary).join(", ") + " */"
                     }
-                    if(ds.size() > 0) { Log.debug(self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")") }
                     self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")"
                 | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>
                     "(" + list.foldLeft(self.emitTerm(elseBody)) {| otherwise, Pair(condition, body) =>

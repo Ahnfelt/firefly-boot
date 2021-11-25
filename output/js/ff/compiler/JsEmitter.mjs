@@ -789,11 +789,6 @@ const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
 : (("/* Dictionaries: " + ff_core_List.List_join(ff_core_List.List_map(dictionaries_, ((d_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, d_)
 })), ", ")) + " */"))
-if((ff_core_String.String_size(ds_) > 0)) {
-ff_core_Log.debug_(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
-return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
-})), ", ")) + ds_) + ")"))
-}
 return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
 })), ", ")) + ds_) + ")")
