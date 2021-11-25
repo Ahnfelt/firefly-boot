@@ -772,9 +772,15 @@ extend self: Inference {
             p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
         }
         let returnType = self.unification.instantiate(instantiationMap, scheme.signature.returnType)
+
+        scheme.signature.constraints.each { c =>
+            let generics = c.generics.map { self.unification.instantiate(instantiationMap, _) }
+            self.unification.constrain(at, generics.expectFirst(), c.name, generics.dropFirst())
+        }
+
         let signature = scheme.signature.Signature(
             generics = []
-            constraints = [] // TODO: Emit the constraints
+            constraints = []
             parameters = parameters
             returnType = returnType
         )

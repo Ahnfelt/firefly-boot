@@ -108,7 +108,7 @@ extend self: Unification {
                         definition.constraints.each { constraint =>
                             self.instantiateConstraint(instantiation, constraint).{
                                 | Constraint(_, constraintName, newGenerics) =>
-                                    self.constrain(at, type, constraintName, newGenerics)
+                                    self.constrain(at, newGenerics.expectFirst(), constraintName, newGenerics.dropFirst())
                             }
                         }
                 }

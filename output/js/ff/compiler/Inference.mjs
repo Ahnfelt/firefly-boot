@@ -1686,6 +1686,12 @@ return
 }
 }))
 const returnType_ = ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, scheme_.signature_.returnType_)
+ff_core_List.List_each(scheme_.signature_.constraints_, ((c_) => {
+const generics_ = ff_core_List.List_map(c_.generics_, ((_w1) => {
+return ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, _w1)
+}))
+ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_List.List_expectFirst(generics_), c_.name_, ff_core_List.List_dropFirst(generics_, 1))
+}))
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_)
 }))(scheme_.signature_)

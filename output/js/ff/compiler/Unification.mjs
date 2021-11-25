@@ -284,7 +284,7 @@ const _1 = ff_compiler_Unification.Unification_instantiateConstraint(self_, inst
 {
 const constraintName_ = _1.name_
 const newGenerics_ = _1.generics_
-ff_compiler_Unification.Unification_constrain(self_, at_, type_, constraintName_, newGenerics_)
+ff_compiler_Unification.Unification_constrain(self_, at_, ff_core_List.List_expectFirst(newGenerics_), constraintName_, ff_core_List.List_dropFirst(newGenerics_, 1))
 return
 }
 }
