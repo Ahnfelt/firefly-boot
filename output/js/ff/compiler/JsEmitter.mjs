@@ -780,18 +780,23 @@ const function_ = term_a.function_
 const typeArguments_ = term_a.typeArguments_
 const arguments_ = term_a.arguments_
 const dictionaries_ = term_a.dictionaries_
-if((ff_core_List.List_size(dictionaries_) > 0)) {
-ff_compiler_JsEmitter.fail_(at_, ("Wow, dictionaries: " + ff_core_List.List_join(ff_core_List.List_map(dictionaries_, ((value_) => {
-return ff_core_Core.magicShow_(value_)
-})), ", ")))
-}
 {
 const _1 = ff_compiler_JsEmitter.detectIfElse_(term_)
 {
 if(_1.Empty) {
-return (((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
+const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
+? ""
+: (("/* Dictionaries: " + ff_core_List.List_join(ff_core_List.List_map(dictionaries_, ((d_) => {
+return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, d_)
+})), ", ")) + " */"))
+if((ff_core_String.String_size(ds_) > 0)) {
+ff_core_Log.debug_(((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
-})), ", ")) + ")")
+})), ", ")) + ds_) + ")"))
+}
+return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
+return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
+})), ", ")) + ds_) + ")")
 return
 }
 }
@@ -866,6 +871,17 @@ const self_ = self_a
 return (("(function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true)) + "\n})()")
 return
 }
+}
+}
+
+export function JsEmitter_emitDictionary(self_, d_) {
+const c_ = ((d_.traitName_ + "_") + d_.typeName_)
+if(ff_core_List.List_isEmpty(d_.dictionaries_)) {
+return c_
+} else {
+return (((c_ + "(") + ff_core_List.List_join(ff_core_List.List_map(d_.dictionaries_, ((d_) => {
+return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, d_)
+})), ", ")) + ")")
 }
 }
 

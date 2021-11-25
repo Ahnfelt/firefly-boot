@@ -215,10 +215,13 @@ extend self: JsEmitter {
             "(" + self.emitArgument(left) + " " + operator + " " + self.emitArgument(right) + ")"
         | ECall(at, _, function, typeArguments, arguments, dictionaries) =>
             // TODO: Use dictionaries
-            if(dictionaries.size() > 0) { fail(at, "Wow, dictionaries: " + dictionaries.map(magicShow).join(", ")) }
             detectIfElse(term).{
                 | [] =>
-                    self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ")"
+                    let ds = if(dictionaries.isEmpty()) {""} else {
+                        "/* Dictionaries: " + dictionaries.map(self.emitDictionary).join(", ") + " */"
+                    }
+                    if(ds.size() > 0) { Log.debug(self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")") }
+                    self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")"
                 | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>
                     "(" + list.foldLeft(self.emitTerm(elseBody)) {| otherwise, Pair(condition, body) =>
                         self.emitTerm(condition) +
@@ -240,6 +243,15 @@ extend self: JsEmitter {
             "_w" + index
         | _ =>
             "(function() {\n" + self.emitStatements(term, True) + "\n})()"
+    }
+
+    emitDictionary(d : Dictionary): String {
+        let c = d.traitName + "_" + d.typeName
+        if(d.dictionaries.isEmpty()) {
+            c
+        } else {
+            c + "(" + d.dictionaries.map(self.emitDictionary).join(", ") + ")"
+        }
     }
 
     emitStatements(term: Term, last: Bool): String {

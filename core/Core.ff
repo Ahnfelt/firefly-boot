@@ -30,14 +30,14 @@ do[T](body: () => T): T {
 panic[T](message: String): T { panic("magic") }
     javascript "throw new Error(message_)"
 
-magicShow[T: Show](value: T): String { panic("magic") }
+magicShow[T](value: T): String { panic("magic") }
     //javascript "return ('' + value_)"
     javascript "return JSON.stringify(value_, undefined, 4)"
 
 magicLess[T](x: T, y: T): Bool { panic("magic") }
     javascript "return x_ < y_"
 
-
+/*
 trait Show[T] {
     show(value: T): String
 }
@@ -53,4 +53,4 @@ instance Show[List[T: Show]] {
 foobar() {
     magicShow([42])
 }
-
+*/
