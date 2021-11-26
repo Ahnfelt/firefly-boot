@@ -60,6 +60,7 @@ coreImports: List[DImport] =
         "Ordering",
         "Pair",
         "Set",
+        "Show",
         "String",
         "System",
         "TimeSystem",

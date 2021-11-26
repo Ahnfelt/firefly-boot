@@ -36,26 +36,3 @@ magicShow[T](value: T): String { panic("magic") }
 
 magicLess[T](x: T, y: T): Bool { panic("magic") }
     javascript "return x_ < y_"
-
-
-/*
-trait Show[T] {
-    show(value: T): String
-}
-
-instance Show[Char] {
-    show(value: Char): String { value.toString() }
-}
-
-instance Show[Int] {
-    show(value: Int): String { value.toString() }
-}
-
-instance Show[List[T: Show]] {
-    show(value: Int): String { value.toString() }
-}
-
-foobar() {
-    magicShow([42])
-}
-*/

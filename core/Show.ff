@@ -1,0 +1,52 @@
+trait Show[T] {
+    show(value: T): String
+}
+
+instance Show[Bool] {
+    show(value: Bool): String {
+        | False => "False"
+        | True => "True"
+    }
+}
+
+instance Show[Char] {
+    show(value: Char): String { value.toString() }
+}
+
+instance Show[Int] {
+    show(value: Int): String { value.toString() }
+}
+
+instance Show[String] {
+    show(value: String): String { panic("magic") }
+        javascript "return JSON.stringify(value_);"
+}
+
+instance Show[List[T: Show]] {
+    show(value: Int): String { value.toString() }
+}
+
+/*
+
+show[T: Show](value: T): String {
+    show#(value)
+}
+
+show[T: Show](value: T, Show_T): String {
+    show#(value, Show_T)
+}
+
+Show_T.show(value_)
+
+show[T: Show](value: T): String { panic("magic") }
+    javascript "Show_T.show(value_)"
+
+showStuff() {
+    //show([42])
+}
+
+instance Indexable[K] {
+    show[A: Foo](value: Int): String { value.toString() }
+}
+
+*/
