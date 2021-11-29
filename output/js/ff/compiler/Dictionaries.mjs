@@ -44,6 +44,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
+import * as ff_core_Show from "../../ff/core/Show.mjs"
+
 import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
@@ -337,6 +339,7 @@ return
 {
 if(_1.ECall) {
 const at_ = _1.at_
+const instanceCall_ = _1.instanceCall_
 const tailCall_ = _1.tailCall_
 const x_ = _1.function_
 if(_1.function_.EVariable) {
@@ -348,7 +351,7 @@ const signature_ = ff_core_Map.Map_expect(functions_, functionName_)
 const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, signature_.generics_, typeArguments_, _w1)
 }))
-return ff_compiler_Syntax.ECall(at_, tailCall_, x_, typeArguments_, ff_core_List.List_map(arguments_, ((_w1) => {
+return ff_compiler_Syntax.ECall(at_, instanceCall_, tailCall_, x_, typeArguments_, ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, _w1)
 })), dictionaries_)
 return
@@ -363,7 +366,7 @@ const e_ = _1
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_), _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_), _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, _w1)
 })), _c.dictionaries_)
 return

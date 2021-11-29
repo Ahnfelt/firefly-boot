@@ -40,6 +40,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
+import * as ff_core_Show from "../../ff/core/Show.mjs"
+
 import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
@@ -328,7 +330,7 @@ const e_ = _1
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.function_), ff_core_List.List_map(e_.typeArguments_, ((type_) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.function_), ff_core_List.List_map(e_.typeArguments_, ((type_) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
 })), ff_core_List.List_map(e_.arguments_, ((argument_) => {
 return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)

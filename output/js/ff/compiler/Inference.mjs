@@ -46,6 +46,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
+import * as ff_core_Show from "../../ff/core/Show.mjs"
+
 import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
@@ -140,7 +142,7 @@ return
 
 export function Inference_inferFunctionDefinition(self_, environment_, definition_) {
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
-const scheme_ = ff_compiler_Environment.Scheme(true, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_))
+const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_))
 return ff_core_Pair.Pair(p_.name_, scheme_)
 }))
 const parameterMap_ = ff_core_List.List_toMap(parameters_)
@@ -233,7 +235,7 @@ const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPatter
 {
 const name_ = _1.first_
 const type_ = _1.second_
-return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_)))
+return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_)))
 return
 }
 }))
@@ -392,7 +394,7 @@ if(instantiated_.scheme_.isVariable_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_)
 return term_
 } else {
-return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_)
+return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.isTraitMethod_, instantiated_.scheme_.signature_, term_)
 }
 })), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
@@ -448,7 +450,7 @@ const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_)
 }))(instantiated_.scheme_.signature_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_expect(instantiated_.scheme_.signature_.parameters_, 0).valueType_)
-return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, e2_)
+return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, false, signature_, e2_)
 return
 }
 }
@@ -581,7 +583,7 @@ return
 {
 if(_1.ELet) {
 const e_ = _1
-const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_))
+const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_))
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_))
 }))(environment_)
@@ -766,7 +768,7 @@ const f_ = _1
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, f_.at_)
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, f_.record_)
 const e2_ = (((_c) => {
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, (((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, (((_c) => {
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
 }))(f_), _c.typeArguments_, _c.arguments_, _c.dictionaries_)
 }))(e_)
@@ -870,7 +872,7 @@ const at_ = _1.at_
 const functions_ = _1.functions_
 const body_ = _1.body_
 const functionMap_ = ff_core_List.List_toMap(ff_core_List.List_map(functions_, ((f_) => {
-const scheme_ = ff_compiler_Environment.Scheme(false, false, false, f_.signature_)
+const scheme_ = ff_compiler_Environment.Scheme(false, false, false, false, f_.signature_)
 return ff_core_Pair.Pair(f_.signature_.name_, scheme_)
 })))
 const environment2_ = (((_c) => {
@@ -1008,7 +1010,7 @@ return
 }
 }))(term_)
 const e2_ = (((_c) => {
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, ff_compiler_Syntax.EVariable(e_.at_, name_), _c.typeArguments_, ff_core_List.Link(ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.None(), record_), e_.arguments_), _c.dictionaries_)
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Syntax.EVariable(e_.at_, name_), _c.typeArguments_, ff_core_List.Link(ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.None(), record_), e_.arguments_), _c.dictionaries_)
 }))(e_)
 return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiation_, e2_, name_)
 }
@@ -1033,7 +1035,7 @@ const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_,
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, e_.function_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, e_.function_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_, _c.dictionaries_)
 return
@@ -1085,7 +1087,7 @@ ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here"
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, function_, ff_core_List.Empty(), arguments_, _c.dictionaries_)
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, function_, ff_core_List.Empty(), arguments_, _c.dictionaries_)
 return
 }
 }
@@ -1119,7 +1121,7 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Empty()), _c.dictionaries_)
 return
@@ -1170,7 +1172,7 @@ break
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Empty()), _c.dictionaries_)
 return
@@ -1212,7 +1214,7 @@ ff_compiler_Inference.fail_(e_.at_, ("Operator ++ not currently supported for " 
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
@@ -1241,7 +1243,7 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
@@ -1378,7 +1380,7 @@ chooseType_(magic_(t1_), magic_(t2_))
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
@@ -1552,7 +1554,7 @@ chooseType_(magic_(t1_), magic_(t2_))
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
@@ -1573,13 +1575,13 @@ return
 }
 }
 
-export function Inference_inferEtaExpansion(self_, environment_, expected_, at_, signature_, term_) {
+export function Inference_inferEtaExpansion(self_, environment_, expected_, at_, instanceCall_, signature_, term_) {
 const parameters_ = ff_core_List.List_map(ff_core_List.List_filter(signature_.parameters_, ((_w1) => {
 return ff_core_Option.Option_isEmpty(_w1.default_)
 })), ((p_) => {
 return p_.name_
 }))
-const body_ = ff_compiler_Syntax.ECall(at_, false, term_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
+const body_ = ff_compiler_Syntax.ECall(at_, instanceCall_, false, term_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syntax.EVariable(at_, x_))
 })), ff_core_List.Empty())
 const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
@@ -1696,7 +1698,7 @@ const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_)
 }))(scheme_.signature_)
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
-return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, signature_)
+return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)
 }))(scheme_))
 }))
 }

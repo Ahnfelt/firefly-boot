@@ -8,6 +8,7 @@ type Scheme(
     isVariable: Bool
     isMutable: Bool
     isNewtype: Bool
+    isTraitMethod: Bool
     signature: Signature
 )
 
@@ -37,14 +38,30 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
     let functions =
         module.functions.map { d => Pair(
             full(module, d.signature.name),
-            Scheme(False, False, False, d.signature)
+            Scheme(False, False, False, False, d.signature)
         )}
 
     let lets =
         module.lets.map { d => Pair(
             full(module, d.name),
-            Scheme(True, False, False, Signature(d.at, d.name, [], [], [], d.variableType))
+            Scheme(True, False, False, False, Signature(d.at, d.name, [], [], [], d.variableType))
         )}
+
+    let traitMethods =
+        module.traits.flatMap { definition =>
+            let generics = definition.generics.map { name => TConstructor(definition.at, name, []) }
+            let constraint = Constraint(definition.at, definition.name, generics)
+            definition.methods.map { methodSignature =>
+                let signature = methodSignature.Signature(
+                    generics = definition.generics ++ methodSignature.generics
+                    constraints = [constraint, ...definition.constraints, ...methodSignature.constraints]
+                )
+                Pair(
+                    full(module, signature.name),
+                    Scheme(False, False, False, True, signature)
+                )
+            }
+        }
 
     let extends =
         module.extends.flatMap { d =>
@@ -57,7 +74,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                     d.methods.map { method =>
                         Pair(
                             prefix + method.signature.name,
-                            Scheme(False, False, False, method.signature.Signature(
+                            Scheme(False, False, False, False, method.signature.Signature(
                                 generics = d.generics ++ method.signature.generics
                                 constraints = d.constraints ++ method.signature.constraints
                                 parameters = [selfParameter, ...method.signature.parameters]
@@ -75,7 +92,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             d.commonFields.map { f =>
                 Pair(
                     full(module, prefix + f.name),
-                    Scheme(True, f.mutable, d.newtype, Signature(
+                    Scheme(True, f.mutable, d.newtype, False, Signature(
                         at = f.at
                         name = f.name
                         generics = d.generics
@@ -95,7 +112,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             d.variants.map { variant =>
                 Pair(
                     full(module, variant.name),
-                    Scheme(False, False, d.newtype, Signature(
+                    Scheme(False, False, d.newtype, False, Signature(
                         variant.at,
                         variant.name,
                         generics = d.generics,
@@ -107,5 +124,5 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             }
         }
 
-    Environment((functions ++ lets ++ fields ++ extends ++ variants).toMap())
+    Environment((functions ++ lets ++ fields ++ extends ++ variants ++ traitMethods).toMap())
 }

@@ -42,6 +42,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
+import * as ff_core_Show from "../../ff/core/Show.mjs"
+
 import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
@@ -177,7 +179,7 @@ return
 }
 }
 {
-return ff_compiler_Syntax.ECall(function_.at_, false, function_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty())
+return ff_compiler_Syntax.ECall(function_.at_, false, false, function_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty())
 return
 }
 }
@@ -776,6 +778,31 @@ return
 const self_ = self_a
 if(term_a.ECall) {
 const at_ = term_a.at_
+if(term_a.instanceCall_) {
+if(term_a.function_.EVariable) {
+const name_ = term_a.function_.name_
+const typeArguments_ = term_a.typeArguments_
+const arguments_ = term_a.arguments_
+const dictionaries_ = term_a.dictionaries_
+const dictionaryStrings_ = ff_core_List.List_map(dictionaries_, ((d_) => {
+return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, d_)
+}))
+const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
+? ""
+: (("/* Dictionaries: " + ff_core_List.List_join(dictionaryStrings_, ", ")) + " */"))
+const d_ = ff_core_List.List_expectFirst(dictionaryStrings_)
+return ((((((d_ + ".") + name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
+return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
+})), ", ")) + ds_) + ")")
+return
+}
+}
+}
+}
+{
+const self_ = self_a
+if(term_a.ECall) {
+const at_ = term_a.at_
 const function_ = term_a.function_
 const typeArguments_ = term_a.typeArguments_
 const arguments_ = term_a.arguments_
@@ -1020,9 +1047,13 @@ return
 {
 if(_1.ECall) {
 const at_ = _1.at_
+const instanceCall_ = _1.instanceCall_
 if(_1.tailCall_) {
 const function_ = _1.function_
 const arguments_ = _1.arguments_
+if(instanceCall_) {
+ff_compiler_JsEmitter.fail_(at_, "Not yet implemented: Tail calls on trait methods.")
+}
 self_.tailCallUsed_ = true
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((a_) => {
 return ff_core_Option.Some(ff_core_Pair.Pair(((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_)), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_expect(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r")))))

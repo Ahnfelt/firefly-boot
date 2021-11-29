@@ -27,6 +27,9 @@ instance Show[List[T: Show]] {
 }
 
 /*
+foobar() {
+    show([42])
+}
 
 show[T: Show](value: T): String {
     show#(value)

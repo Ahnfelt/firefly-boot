@@ -101,6 +101,7 @@ type Term(at: Location) {
     EAssignField(operator: String, record: Term, field: String, value: Term)
     EPipe(value: Term, function: Term)
     ECall(
+        instanceCall: Bool
         tailCall: Bool
         function: Term
         typeArguments: List[Type]

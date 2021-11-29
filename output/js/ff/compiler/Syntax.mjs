@@ -38,6 +38,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
+import * as ff_core_Show from "../../ff/core/Show.mjs"
+
 import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
@@ -140,8 +142,8 @@ return {EAssignField: true, at_, operator_, record_, field_, value_};
 export function EPipe(at_, value_, function_) {
 return {EPipe: true, at_, value_, function_};
 }
-export function ECall(at_, tailCall_, function_, typeArguments_, arguments_, dictionaries_) {
-return {ECall: true, at_, tailCall_, function_, typeArguments_, arguments_, dictionaries_};
+export function ECall(at_, instanceCall_, tailCall_, function_, typeArguments_, arguments_, dictionaries_) {
+return {ECall: true, at_, instanceCall_, tailCall_, function_, typeArguments_, arguments_, dictionaries_};
 }
 export function EList(at_, elementType_, items_) {
 return {EList: true, at_, elementType_, items_};

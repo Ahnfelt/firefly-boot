@@ -193,9 +193,10 @@ extend self: Resolver {
                 value = self.resolveTerm(value)
                 function = self.resolveTerm(function)
             )
-        | ECall(at, tailCall, function, typeArguments, arguments, dictionaries) =>
+        | ECall(at, instanceCall, tailCall, function, typeArguments, arguments, dictionaries) =>
             ECall(
                 at = at
+                instanceCall = instanceCall
                 tailCall = tailCall
                 function = self.resolveTerm(function)
                 typeArguments = typeArguments.map { self.resolveType(_) }

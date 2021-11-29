@@ -83,7 +83,7 @@ extend self: Inference {
 
     inferFunctionDefinition(environment: Environment, definition: DFunction): DFunction {
         let parameters = definition.signature.parameters.map { p =>
-            let scheme = Scheme(True, False, False, Signature(p.at, p.name, [], [], [], p.valueType))
+            let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType))
             Pair(p.name, scheme)
         }
         let parameterMap = parameters.toMap()
@@ -127,7 +127,7 @@ extend self: Inference {
         self.unification.unify(case.at, expected, functionType)
         let newEnvironment = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
-                Pair(name, Scheme(True, False, False, Signature(c.at, name, [], [], [], type)))
+                Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type)))
             }
             Environment(environment1.symbols ++ symbols)
         }
@@ -196,7 +196,14 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                         term
                     } else {
-                        self.inferEtaExpansion(environment, expected, e.at, instantiated.scheme.signature, term)
+                        self.inferEtaExpansion(
+                            environment,
+                            expected,
+                            e.at,
+                            instantiated.scheme.isTraitMethod,
+                            instantiated.scheme.signature,
+                            term
+                        )
                     }
                 } else {
                     fail(e.at, "Symbol not in scope: " + e.name)
@@ -228,7 +235,7 @@ extend self: Inference {
                                     recordType,
                                     instantiated.scheme.signature.parameters.expect(0).valueType
                                 )
-                                self.inferEtaExpansion(environment, expected, e.at, signature, e2)
+                                self.inferEtaExpansion(environment, expected, e.at, False, signature, e2)
                             | Some(instantiated) =>
                                 /*self.unification.unify(
                                     e.at,
@@ -281,7 +288,7 @@ extend self: Inference {
                         )
                 }
             | ELet e =>
-                let scheme = Scheme(True, e.mutable, False, Signature(e.at, e.name, [], [], [], e.valueType))
+                let scheme = Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
@@ -418,7 +425,7 @@ extend self: Inference {
                 )
             | EFunctions(at, functions, body) =>
                 let functionMap = functions.map { f =>
-                    let scheme = Scheme(False, False, False, f.signature)
+                    let scheme = Scheme(False, False, False, False, f.signature)
                     Pair(f.signature.name, scheme)
                 }.toMap()
                 let environment2 = environment.Environment(symbols = environment.symbols ++ functionMap)
@@ -688,13 +695,14 @@ extend self: Inference {
         environment: Environment
         expected: Type
         at: Location
+        instanceCall: Bool
         signature: Signature
         term: Term
     ): Term {
         let parameters = signature.parameters.filter { _.default.isEmpty() }.map { p =>
             p.name
         }
-        let body = ECall(at, False, term, [], parameters.map { x =>
+        let body = ECall(at, instanceCall, False, term, [], parameters.map { x =>
             Argument(at, Some(x), EVariable(at, x))
         }, [])
         let lambda = ELambda(at, Lambda(at, [MatchCase(

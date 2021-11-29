@@ -40,6 +40,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
+import * as ff_core_Show from "../../ff/core/Show.mjs"
+
 import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
@@ -484,12 +486,13 @@ return
 const self_ = self_a
 if(term_a.ECall) {
 const at_ = term_a.at_
+const instanceCall_ = term_a.instanceCall_
 const tailCall_ = term_a.tailCall_
 const function_ = term_a.function_
 const typeArguments_ = term_a.typeArguments_
 const arguments_ = term_a.arguments_
 const dictionaries_ = term_a.dictionaries_
-return ff_compiler_Syntax.ECall(at_, tailCall_, ff_compiler_Resolver.Resolver_resolveTerm(self_, function_), ff_core_List.List_map(typeArguments_, ((_w1) => {
+return ff_compiler_Syntax.ECall(at_, instanceCall_, tailCall_, ff_compiler_Resolver.Resolver_resolveTerm(self_, function_), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1)
 })), ff_core_List.List_map(arguments_, ((a_) => {
 {
