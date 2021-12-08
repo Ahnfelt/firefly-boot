@@ -1,34 +1,43 @@
 // Haskell-like Generic programming. Thanks to nathanf for instructions.
 
-type GFields[First, Second](
-    first: First
-    second: Second
+// Two fields, zero fields and a particular field
+
+type GFields[A, B](
+    first: A
+    second: B
 )
 
 type GNoFields()
 
-type GField[Symbol, Value](value: Value)
+type GField[S, V](value: V)
+
+
+// Two constructors, zero constructors and a particular constructor
+
+type GConstructors[L, R] {
+    GLeft(value: L)
+    GRight(value: R)
+}
+
+type GNoConstructors {}
+
+type GConstructor[S, V](value: V)
+
+
+// Type declarations
+
+type GType[S, C](constructors: C)
+
+
+// Names and such
 
 trait S: GFieldSymbol {
     fieldName(): String
 }
 
-
-type GConstructors[Left, Right] {
-    GLeft(value: Left)
-    GRight(value: Right)
-}
-
-type GNoConstructors {}
-
-type GConstructor[Symbol, Value](value: Value)
-
 trait S: GConstructorSymbol {
     constructorName(): String
 }
-
-
-trait GType[Symbol, Constructors](constructors: Constructors)
 
 trait S: GTypeSymbol {
     typeName(): String
@@ -36,6 +45,8 @@ trait S: GTypeSymbol {
     moduleName(): String
 }
 
+
+// The type class that converts from/to the generic representation
 
 trait T: Generic[R] {
     toGeneric(value: T): R
