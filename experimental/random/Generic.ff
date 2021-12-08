@@ -85,6 +85,7 @@ instance GType[S, C: Show]: Show {
     }
 }
 
+
 // Example of using the generic instance of Show above
 
 trait T: Show {
