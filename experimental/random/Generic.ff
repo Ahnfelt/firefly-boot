@@ -98,3 +98,5 @@ type User(id: Int, email: String)
 
 instance User: Show
 
+
+// Perhaps instance Foo: Generic is automatic, and the instance is only in scope where the constructors are accessible.
