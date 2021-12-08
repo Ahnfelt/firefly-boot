@@ -1,4 +1,4 @@
-// Haskell-like Generic programming / Scrap Your Boilerplate. Thanks to nathanf for instructions.
+// Haskell-like Generic programming. Thanks to nathanf for instructions.
 
 type GFields[First, Second](
     first: First
@@ -24,6 +24,12 @@ trait GType[Package, Module, Name, Constructors](constructors: Constructors)
 
 trait S: GSymbol {
     symbol(): String
+}
+
+
+trait T: Generic[R] {
+    toGeneric(value: T): R
+    fromGeneric(generic: R): T
 }
 
 
@@ -57,3 +63,16 @@ instance GType[P, M, N, C: Show]: Show {
         show(v.constructors)
     }
 }
+
+// Example of using the generic instance of Show above
+
+trait T: Show {
+    show(value: T): String {
+        show(toGeneric(value)) // Type checked at each instance, not in the trait (to allow T: Generic[R])
+    }
+}
+
+type User(id: Int, email: String)
+
+instance User: Show
+
