@@ -7,7 +7,11 @@ type GFields[First, Second](
 
 type GNoFields()
 
-type GField[Name, Value](value: Value)
+type GField[Symbol, Value](value: Value)
+
+trait S: GFieldSymbol {
+    fieldName(): String
+}
 
 
 type GConstructors[Left, Right] {
@@ -17,13 +21,19 @@ type GConstructors[Left, Right] {
 
 type GNoConstructors {}
 
-type GConstructor[Name, Value](value: Value)
+type GConstructor[Symbol, Value](value: Value)
+
+trait S: GConstructorSymbol {
+    constructorName(): String
+}
 
 
-trait GType[Package, Module, Name, Constructors](constructors: Constructors)
+trait GType[Symbol, Constructors](constructors: Constructors)
 
-trait S: GSymbol {
-    symbol(): String
+trait S: GTypeSymbol {
+    typeName(): String
+    packageName(): String
+    moduleName(): String
 }
 
 
@@ -43,8 +53,8 @@ instance GNoFields: Show {
     show(v) { "" }
 }
 
-instance GField[S: GSymbol, V: Show]: Show {
-    show(v) { symbol[S]() + " = " + show(v.value) }
+instance GField[S: GFieldSymbol, V: Show]: Show {
+    show(v) { fieldName[S]() + " = " + show(v.value) }
 }
 
 instance GConstructors[A: Show, B: Show]: Show {
@@ -54,11 +64,11 @@ instance GConstructors[A: Show, B: Show]: Show {
     }
 }
 
-instance GConstructor[S: GSymbol, V: Show]: Show {
-    show(v) { symbol[S]() + "(" + show(v.value) + ")" }
+instance GConstructor[S: GConstructorSymbol, V: Show]: Show {
+    show(v) { constructorName[S]() + "(" + show(v.value) + ")" }
 }
 
-instance GType[P, M, N, C: Show]: Show {
+instance GType[S, C: Show]: Show {
     show(v) {
         show(v.constructors)
     }
