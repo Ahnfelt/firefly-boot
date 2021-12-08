@@ -26,11 +26,11 @@ instance Show[List[T: Show]] {
     show(value: Int): String { value.toString() }
 }
 
-/*
 foobar() {
     show([42])
 }
 
+/*
 show[T: Show](value: T): String {
     show#(value)
 }

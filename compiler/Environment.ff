@@ -50,7 +50,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
     let traitMethods =
         module.traits.flatMap { definition =>
             let generics = definition.generics.map { name => TConstructor(definition.at, name, []) }
-            let constraint = Constraint(definition.at, definition.name, generics)
+            let constraint = Constraint(definition.at, full(module, definition.name), generics)
             definition.methods.map { methodSignature =>
                 let signature = methodSignature.Signature(
                     generics = definition.generics ++ methodSignature.generics

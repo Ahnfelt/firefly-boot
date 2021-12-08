@@ -95,7 +95,7 @@ const traitMethods_ = ff_core_List.List_flatMap(module_.traits_, ((definition_) 
 const generics_ = ff_core_List.List_map(definition_.generics_, ((name_) => {
 return ff_compiler_Syntax.TConstructor(definition_.at_, name_, ff_core_List.Empty())
 }))
-const constraint_ = ff_compiler_Syntax.Constraint(definition_.at_, definition_.name_, generics_)
+const constraint_ = ff_compiler_Syntax.Constraint(definition_.at_, full_(module_, definition_.name_), generics_)
 return ff_core_List.List_map(definition_.methods_, ((methodSignature_) => {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, methodSignature_.generics_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(definition_.constraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_)
