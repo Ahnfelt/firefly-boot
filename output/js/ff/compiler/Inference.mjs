@@ -65,8 +65,8 @@ return {unification_};
 
 
 
-export function make_(instances_) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(instances_))
+export function make_(modules_) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_))
 }
 
 export function fail_(at_, message_) {

@@ -9,34 +9,48 @@ type Unification(
 
 type ConstraintGenerics(at: Location, generics: List[Type])
 type InstanceKey(traitName: String, typeName: String)
-type InstanceValue(generics: List[String], constraints: List[Constraint], traitName: String, typeArguments: List[Type])
+type InstanceValue(
+    generics: List[String],
+    constraints: List[Constraint],
+    packageName: String,
+    moduleName: String,
+    traitName: String,
+    typeArguments: List[Type]
+)
 
 extend self: InstanceKey {
     toStringKey(): String { self.traitName + "|" + self.typeName }
 }
 
-make(instances: List[DInstance]): Unification {
+make(modules: List[Module]): Unification {
     function fail[T](at: Location, message: String): T {
         panic(message + " " + at.show())
     }
+
     Unification(
         Map.empty()
         Map.empty()
         2 // Even type variables to avoid collision with the parser
-        instances.map { definition =>
-            let typeName = definition.typeArguments.expectFirst().{
-                | TConstructor(_, name, _) => name
-                | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
-            }
-            Pair(
-                InstanceKey(definition.traitName, typeName).toStringKey()
-                InstanceValue(
-                    generics = definition.generics
-                    constraints = definition.constraints
-                    traitName = definition.traitName
-                    typeArguments = definition.typeArguments
+        modules.flatMap { module =>
+            let packageName = module.packagePair.first + ":" + module.packagePair.second
+            let moduleName = module.file.dropLast(".ff".size())
+            module.instances.map { definition =>
+                let typeName = definition.typeArguments.expectFirst().{
+                    | TConstructor(_, name, _) => name
+                    | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
+                }
+                Pair(
+                    InstanceKey(definition.traitName, typeName).toStringKey()
+                    InstanceValue(
+                        generics = definition.generics
+                        constraints = definition.constraints
+                        packageName = packageName
+                        moduleName = moduleName
+                        traitName = definition.traitName
+                        typeArguments = definition.typeArguments
+                    )
                 )
-            )
+            }
         }.toMap()
     )
 }

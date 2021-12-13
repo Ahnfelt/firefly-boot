@@ -53,7 +53,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function foobar_() {
-ff_core_Show.show_(ff_core_List.Link(42, ff_core_List.Empty())/* Dictionaries: ff:core/Show.Show_ff:core/List.List(ff:core/Show.Show_ff:core/Int.Int) */)
+ff_core_Show.show_(ff_core_List.Link(42, ff_core_List.Empty())/* Dictionaries: ff:core/Show_ff:core/Show.Show_ff:core/List.List(ff:core/Show_ff:core/Show.Show_ff:core/Int.Int) */)
 }
 
 

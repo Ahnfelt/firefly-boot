@@ -7,9 +7,9 @@ type Inference(
     unification: Unification
 )
 
-make(instances: List[DInstance]): Inference {
+make(modules: List[Module]): Inference {
     Inference(
-        unification = Unification.make(instances)
+        unification = Unification.make(modules)
     )
 }
 

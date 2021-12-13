@@ -897,7 +897,7 @@ return
 }
 
 export function JsEmitter_emitDictionary(self_, d_) {
-const c_ = ((d_.traitName_ + "_") + d_.typeName_)
+const c_ = ((((((d_.packageName_ + "/") + d_.moduleName_) + "_") + d_.traitName_) + "_") + d_.typeName_)
 if(ff_core_List.List_isEmpty(d_.dictionaries_)) {
 return c_
 } else {

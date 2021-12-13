@@ -131,7 +131,13 @@ type MatchPattern(at: Location) {
     PAlias(pattern: MatchPattern, variable: String)
 }
 
-type Dictionary(traitName: String, typeName: String, dictionaries: List[Dictionary])
+type Dictionary(
+    packageName: String
+    moduleName: String
+    traitName: String
+    typeName: String
+    dictionaries: List[Dictionary]
+)
 
 type Signature(
     at: Location,

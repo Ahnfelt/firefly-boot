@@ -63,8 +63,8 @@ return {instances_};
 
 
 
-export function make_(instances_) {
-return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(instances_).instances_)
+export function make_(modules_) {
+return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_).instances_)
 }
 
 export function fail_(at_, message_) {
@@ -489,7 +489,7 @@ const instance_ = ff_core_Map.Map_expect(self_.instances_, ff_compiler_Unificati
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.generics_, firstType_.generics_, c_)
 }))
-return ff_compiler_Syntax.Dictionary(constraint_.name_, firstType_.name_, dictionaries_)
+return ff_compiler_Syntax.Dictionary(instance_.packageName_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
 
 

@@ -68,17 +68,20 @@ return {traitName_, typeName_};
 }
 
 // type InstanceValue
-export function InstanceValue(generics_, constraints_, traitName_, typeArguments_) {
-return {generics_, constraints_, traitName_, typeArguments_};
+export function InstanceValue(generics_, constraints_, packageName_, moduleName_, traitName_, typeArguments_) {
+return {generics_, constraints_, packageName_, moduleName_, traitName_, typeArguments_};
 }
 
 
 
-export function make_(instances_) {
+export function make_(modules_) {
 function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
-return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 2, ff_core_List.List_toMap(ff_core_List.List_map(instances_, ((definition_) => {
+return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 2, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
+const packageName_ = ((module_.packagePair_.first_ + ":") + module_.packagePair_.second_)
+const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"))
+return ff_core_List.List_map(module_.instances_, ((definition_) => {
 const typeName_ = (((_1) => {
 {
 if(_1.TConstructor) {
@@ -95,7 +98,8 @@ return
 }
 }
 }))(ff_core_List.List_expectFirst(definition_.typeArguments_))
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_)), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, definition_.traitName_, definition_.typeArguments_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_)), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, packageName_, moduleName_, definition_.traitName_, definition_.typeArguments_))
+}))
 }))))
 }
 

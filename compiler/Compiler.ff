@@ -146,9 +146,8 @@ extend self: Compiler {
             let newPackageName = i.packagePair.first + ":" + i.packagePair.second
             self.resolve(newPackageName, self.files.prefixName(i.file))
         }
-        let instances = module.instances ++ otherModules.flatMap { _.instances }
-        let inferredModule = Inference.make(instances).inferModule(module, otherModules)
-        let result = Dictionaries.make(instances).processModule(inferredModule, otherModules)
+        let inferredModule = Inference.make([module, ...otherModules]).inferModule(module, otherModules)
+        let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
 
         self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)
         result

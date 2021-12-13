@@ -251,7 +251,7 @@ extend self: JsEmitter {
     }
 
     emitDictionary(d : Dictionary): String {
-        let c = d.traitName + "_" + d.typeName
+        let c = d.packageName + "/" + d.moduleName + "_" + d.traitName + "_" + d.typeName
         if(d.dictionaries.isEmpty()) {
             c
         } else {

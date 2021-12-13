@@ -187,8 +187,8 @@ return {PAlias: true, at_, pattern_, variable_};
 }
 
 // type Dictionary
-export function Dictionary(traitName_, typeName_, dictionaries_) {
-return {traitName_, typeName_, dictionaries_};
+export function Dictionary(packageName_, moduleName_, traitName_, typeName_, dictionaries_) {
+return {packageName_, moduleName_, traitName_, typeName_, dictionaries_};
 }
 
 // type Signature

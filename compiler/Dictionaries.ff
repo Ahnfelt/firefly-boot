@@ -6,8 +6,8 @@ type Dictionaries(
     instances: Map[String, InstanceValue]
 )
 
-make(instances: List[DInstance]): Dictionaries {
-    Dictionaries(Unification.make(instances).instances)
+make(modules: List[Module]): Dictionaries {
+    Dictionaries(Unification.make(modules).instances)
 }
 
 fail[T](at: Location, message: String): T {
@@ -160,7 +160,7 @@ extend self: Dictionaries {
         let dictionaries = instance.constraints.map { c =>
             self.makeDictionary(instance.generics, firstType.generics, c)
         }
-        Dictionary(constraint.name, firstType.name, dictionaries)
+        Dictionary(instance.packageName, instance.moduleName, constraint.name, firstType.name, dictionaries)
     }
 
 }
