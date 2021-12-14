@@ -4,7 +4,7 @@ type Unification(
     mutable substitution: Map[Int, Type],
     mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
     mutable nextUnificationVariableIndex: Int
-    instances: Map[String, InstanceValue]
+    mutable instances: Map[String, InstanceValue]
 )
 
 type ConstraintGenerics(at: Location, generics: List[Type])
@@ -59,6 +59,16 @@ extend self: Unification {
 
     fail[T](at: Location, message: String): T {
         panic(message + " " + at.show())
+    }
+
+    withLocalInstances[T](instances: Map[String, InstanceValue], body: () => T): T {
+        let oldInstances = self.instances
+        self.instances = self.instances.addAll(instances)
+        try {
+            body()
+        } finally {
+            self.instances = oldInstances
+        } expect()
     }
 
     freshUnificationVariable(at: Location): Type {

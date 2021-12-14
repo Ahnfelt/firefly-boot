@@ -48,9 +48,28 @@ extend self: Inference {
     }
 
     inferInstanceDefinition(environment: Environment, definition: DInstance): DInstance {
-        definition.DInstance(
-            methods = definition.methods.map { self.inferFunctionDefinition(environment, _) }
-        )
+        let instances = definition.constraints.map { c =>
+            let typeName = c.generics.expectFirst().{
+                | TConstructor(_, name, _) => name
+                | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
+            }
+            Pair(
+                InstanceKey(c.name, typeName).toStringKey()
+                InstanceValue(
+                    generics = []
+                    constraints = []
+                    packageName = ""
+                    moduleName = ""
+                    traitName = c.name
+                    typeArguments = c.generics
+                )
+            )
+        }.toMap()
+        self.unification.withLocalInstances(instances) {
+            definition.DInstance(
+                methods = definition.methods.map { self.inferFunctionDefinition(environment, _) }
+            )
+        }
     }
 
     inferLetDefinition(environment: Environment, definition: DLet): DLet {

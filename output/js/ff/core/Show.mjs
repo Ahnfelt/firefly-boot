@@ -86,7 +86,7 @@ return value_.toString_()
 
 export const ff_core_Show_Show$ff_core_Int_Int = {
 show_(value_) {
-return value_.toString_()
+return ("" + value_)
 }
 };
 

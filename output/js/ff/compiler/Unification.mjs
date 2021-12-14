@@ -111,6 +111,16 @@ export function Unification_fail(self_, at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
+export function Unification_withLocalInstances(self_, instances_, body_) {
+const oldInstances_ = self_.instances_
+self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_)
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return body_()
+})), (() => {
+self_.instances_ = oldInstances_
+})))
+}
+
 export function Unification_freshUnificationVariable(self_, at_) {
 const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextUnificationVariableIndex_)
 self_.nextUnificationVariableIndex_ += 2

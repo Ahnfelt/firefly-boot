@@ -841,7 +841,8 @@ return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, d_)
 const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
 ? ""
 : (("/* Dictionaries: " + ff_core_List.List_join(dictionaryStrings_, ", ")) + " */"))
-const d_ = ff_core_List.List_expectFirst(dictionaryStrings_)
+console.log(at_);
+    const d_ = ff_core_List.List_expectFirst(dictionaryStrings_)
 return ((((((d_ + ".") + name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
 })), ", ")) + ds_) + ")")
@@ -948,7 +949,10 @@ return
 }
 
 export function JsEmitter_emitDictionary(self_, d_) {
-const c_ = ((((((d_.packageName_ + "/") + d_.moduleName_) + "_") + d_.traitName_) + "_") + d_.typeName_)
+const m_ = ((d_.moduleName_ != "")
+? (((d_.packageName_ + "/") + d_.moduleName_) + "_")
+: "")
+const c_ = (((m_ + d_.traitName_) + "_") + d_.typeName_)
 if(ff_core_List.List_isEmpty(d_.dictionaries_)) {
 return c_
 } else {
