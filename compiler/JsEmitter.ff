@@ -87,15 +87,15 @@ extend self: JsEmitter {
         let name = self.makeDictionaryName(definition.traitName, firstTypeName(definition.typeArguments))
         let methods = definition.methods.map(self.emitFunctionDefinition).map { _.dropFirst("function ".size()) } // TODO
         let body = "{\n" + methods.join("\n") + "\n}"
-        let wrappedBody = definition.constraints.{
-            | [] => body
+        definition.constraints.{
+            | [] =>
+                "export const " + name + " = " + body + ";"
             | constraints =>
                 let dictionaries = constraints.map { c =>
                     self.makeDictionaryName(c.name, firstTypeName(c.generics))
                 }
-                "function(" + dictionaries.join(", ") + ") { return " + body + " }"
+                "export function " + name + "(" + dictionaries.join(", ") + ") { return " + body + "}"
         }
-        "export const " + name + " = " + wrappedBody + ";"
     }
 
     emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {

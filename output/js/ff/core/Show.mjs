@@ -96,10 +96,10 @@ return JSON.stringify(value_);
 }
 };
 
-export const ff_core_Show_Show$ff_core_List_List = function(ff_core_Show_Show$T) { return {
+export function ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T) { return {
 show_(value_) {
 return (("[" + value_.map_(ff_core_Show.show_).join_(", ")) + "]")
 }
-} };
+}}
 
 
