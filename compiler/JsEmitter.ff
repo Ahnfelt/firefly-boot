@@ -36,6 +36,7 @@ extend self: JsEmitter {
             module.lets.map { "export " + self.emitLetDefinition(_) }
             module.functions.map { "export " + self.emitFunctionDefinition(_) }
             module.extends.map { self.emitExtendsDefinition(_) }
+            module.instances.map { self.emitInstanceDefinition(_) }
             if(module.functions.any { _.signature.name == "main" }) {
                 [self.emitMain()]
             } else { [] }
@@ -68,6 +69,33 @@ extend self: JsEmitter {
             )
         }
         methods.map { "export " + self.emitFunctionDefinition(_) }.join("\n\n")
+    }
+
+    makeDictionaryName(traitName: String, typeName: String): String {
+        traitName.replace(".", "_").replace(":", "_").replace("/", "_") + "$" +
+        typeName.replace(".", "_").replace(":", "_").replace("/", "_")
+    }
+
+    emitInstanceDefinition(definition: DInstance): String {
+        function firstTypeName(types: List[Type]): String {
+            types.expectFirst().{
+                | TConstructor t => t
+                | TVariable t => fail(t.at, " is still a unification variable")
+            }.name
+        }
+
+        let name = self.makeDictionaryName(definition.traitName, firstTypeName(definition.typeArguments))
+        let methods = definition.methods.map(self.emitFunctionDefinition).map { _.dropFirst("function ".size()) } // TODO
+        let body = "{\n" + methods.join("\n") + "\n}"
+        let wrappedBody = definition.constraints.{
+            | [] => body
+            | constraints =>
+                let dictionaries = constraints.map { c =>
+                    self.makeDictionaryName(c.name, firstTypeName(c.generics))
+                }
+                "function(" + dictionaries.join(", ") + ") { return " + body + " }"
+        }
+        "export const " + name + " = " + wrappedBody + ";"
     }
 
     emitFunctionDefinition(definition: DFunction, suffix: String = ""): String {

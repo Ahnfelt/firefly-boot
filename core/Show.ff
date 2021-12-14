@@ -23,7 +23,9 @@ instance Show[String] {
 }
 
 instance Show[List[T: Show]] {
-    show(value: Int): String { value.toString() }
+    show(value: List[T]): String {
+        "[" + value.map(show).join(", ") + "]"
+    }
 }
 
 foobar() {

@@ -58,4 +58,48 @@ ff_core_Show.show_(ff_core_List.Link(42, ff_core_List.Empty())/* Dictionaries: f
 
 
 
+export const ff_core_Show_Show$ff_core_Bool_Bool = {
+show_(value_) {
+{
+const value_a = value_
+{
+if(!value_a) {
+return "False"
+return
+}
+}
+{
+if(value_a) {
+return "True"
+return
+}
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_core_Char_Char = {
+show_(value_) {
+return value_.toString_()
+}
+};
+
+export const ff_core_Show_Show$ff_core_Int_Int = {
+show_(value_) {
+return value_.toString_()
+}
+};
+
+export const ff_core_Show_Show$ff_core_String_String = {
+show_(value_) {
+return JSON.stringify(value_);
+}
+};
+
+export const ff_core_Show_Show$ff_core_List_List = function(ff_core_Show_Show$T) { return {
+show_(value_) {
+return (("[" + value_.map_(ff_core_Show.show_).join_(", ")) + "]")
+}
+} };
+
 

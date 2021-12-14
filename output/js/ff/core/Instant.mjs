@@ -59,3 +59,5 @@ return (self_ + duration_)
 }
 
 
+
+

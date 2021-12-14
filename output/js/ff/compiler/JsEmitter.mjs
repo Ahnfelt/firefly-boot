@@ -243,11 +243,13 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, _w1
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, ""))
 })), ff_core_List.Link(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
+})), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
+return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 })), ff_core_List.Link((ff_core_List.List_any(module_.functions_, ((_w1) => {
 return (_w1.signature_.name_ == "main")
 }))
 ? ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_), ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Empty()))))))
+: ff_core_List.Empty()), ff_core_List.Empty())))))))
 return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
@@ -290,6 +292,55 @@ return
 return ff_core_List.List_join(ff_core_List.List_map(methods_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, ""))
 })), "\n\n")
+}
+
+export function JsEmitter_makeDictionaryName(self_, traitName_, typeName_) {
+return ((ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(traitName_, ".", "_"), ":", "_"), "/", "_") + "$") + ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(typeName_, ".", "_"), ":", "_"), "/", "_"))
+}
+
+export function JsEmitter_emitInstanceDefinition(self_, definition_) {
+function firstTypeName_(types_) {
+return (((_1) => {
+{
+if(_1.TConstructor) {
+const t_ = _1
+return t_
+return
+}
+}
+{
+if(_1.TVariable) {
+const t_ = _1
+return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
+return
+}
+}
+}))(ff_core_List.List_expectFirst(types_)).name_
+}
+const name_ = ff_compiler_JsEmitter.JsEmitter_makeDictionaryName(self_, definition_.traitName_, firstTypeName_(definition_.typeArguments_))
+const methods_ = ff_core_List.List_map(ff_core_List.List_map(definition_.methods_, ((definition_) => {
+return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, definition_, "")
+})), ((_w1) => {
+return ff_core_String.String_dropFirst(_w1, ff_core_String.String_size("function "))
+}))
+const body_ = (("{\n" + ff_core_List.List_join(methods_, "\n")) + "\n}")
+const wrappedBody_ = (((_1) => {
+{
+if(_1.Empty) {
+return body_
+return
+}
+}
+{
+const constraints_ = _1
+const dictionaries_ = ff_core_List.List_map(constraints_, ((c_) => {
+return ff_compiler_JsEmitter.JsEmitter_makeDictionaryName(self_, c_.name_, firstTypeName_(c_.generics_))
+}))
+return (((("function(" + ff_core_List.List_join(dictionaries_, ", ")) + ") { return ") + body_) + " }")
+return
+}
+}))(definition_.constraints_)
+return (((("export const " + name_) + " = ") + wrappedBody_) + ";")
 }
 
 export function JsEmitter_emitFunctionDefinition(self_, definition_, suffix_ = "") {
@@ -1384,5 +1435,7 @@ return newtype_
 export function JsEmitter_emitArgument(self_, argument_) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_)
 }
+
+
 
 
