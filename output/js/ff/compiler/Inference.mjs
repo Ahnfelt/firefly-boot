@@ -88,10 +88,41 @@ return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environmen
 const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferExtendDefinition(self_, environment_, _w1)
 }))
+const traits_ = ff_core_List.List_map(module_.traits_, ((_w1) => {
+return ff_compiler_Inference.Inference_inferTraitDefinition(self_, environment_, _w1)
+}))
+const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
+return ff_compiler_Inference.Inference_inferInstanceDefinition(self_, environment_, _w1)
+}))
 const result_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, _c.instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
 }))(module_)
 return ff_compiler_Substitution.Substitution_substituteModule(ff_compiler_Substitution.Substitution(self_.unification_.substitution_), result_)
+}
+
+export function Inference_inferTraitDefinition(self_, environment_, definition_) {
+{
+const _1 = definition_
+{
+const _c = _1
+return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.generatorParameters_, _c.methods_, _c.methodDefaults_, _c.methodGenerators_)
+return
+}
+}
+}
+
+export function Inference_inferInstanceDefinition(self_, environment_, definition_) {
+const newEnvironment_ = environment_
+{
+const _1 = definition_
+{
+const _c = _1
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, newEnvironment_, _w1)
+})))
+return
+}
+}
 }
 
 export function Inference_inferLetDefinition(self_, environment_, definition_) {

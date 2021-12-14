@@ -14,7 +14,7 @@ instance Show[Char] {
 }
 
 instance Show[Int] {
-    show(value: Int): String { value.toString() }
+    show(value: Int): String { "" + value }
 }
 
 instance Show[String] {

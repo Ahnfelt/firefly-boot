@@ -29,16 +29,28 @@ extend self: Inference {
         let lets = module.lets.map { self.inferLetDefinition(environment, _) }
         let functions = module.functions.map { self.inferFunctionDefinition(environment, _) }
         let extends = module.extends.map { self.inferExtendDefinition(environment, _) }
-        //let traits = module.traits.map { self.inferTraitDefinition(_) }
-        //let instances = module.instances.map { self.inferInstanceDefinition(_) }
+        let traits = module.traits.map { self.inferTraitDefinition(environment, _) }
+        let instances = module.instances.map { self.inferInstanceDefinition(environment, _) }
         let result = module.Module(
-            //traits = traits,
-            //instances = instances,
+            traits = traits,
+            instances = instances,
             extends = extends,
             lets = lets,
             functions = functions,
         )
         Substitution(self.unification.substitution).substituteModule(result)
+    }
+
+    inferTraitDefinition(environment: Environment, definition: DTrait): DTrait {
+        definition.DTrait(
+
+        )
+    }
+
+    inferInstanceDefinition(environment: Environment, definition: DInstance): DInstance {
+        definition.DInstance(
+            methods = definition.methods.map { self.inferFunctionDefinition(environment, _) }
+        )
     }
 
     inferLetDefinition(environment: Environment, definition: DLet): DLet {
