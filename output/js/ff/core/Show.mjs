@@ -49,57 +49,59 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
+
+
+
 export function foobar_() {
-    ff_core_Show.show_(ff_core_List.Link(42, ff_core_List.Empty())/* Dictionaries: ff_core_Show_ff_core_Show_Show$ff_core_List_List(ff_core_Show_ff_core_Show_Show$ff_core_Int_Int) */)
+
 }
+
 
 
 export const ff_core_Show_Show$ff_core_Bool_Bool = {
-    show_(value_) {
-        {
-            const value_a = value_
-            {
-                if (!value_a) {
-                    return "False"
-                    return
-                }
-            }
-            {
-                if (value_a) {
-                    return "True"
-                    return
-                }
-            }
-        }
-    }
+show_(value_) {
+{
+const value_a = value_
+{
+if(!value_a) {
+return "False"
+return
+}
+}
+{
+if(value_a) {
+return "True"
+return
+}
+}
+}
+}
 };
 
 export const ff_core_Show_Show$ff_core_Char_Char = {
-    show_(value_) {
-        return ff_core_Char.Char_toString(value_)
-    }
+show_(value_) {
+return ff_core_Char.Char_toString(value_)
+}
 };
 
 export const ff_core_Show_Show$ff_core_Int_Int = {
-    show_(value_) {
-        return ("" + value_)
-    }
+show_(value_) {
+return ("" + value_)
+}
 };
 
 export const ff_core_Show_Show$ff_core_String_String = {
-    show_(value_) {
-        return JSON.stringify(value_);
-    }
+show_(value_) {
+return JSON.stringify(value_);
+}
 };
 
-export function ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T) {
-    return {
-        show_(value_) {
-            return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) => {
-                return ff_core_Show_Show$T.show_(value_/* Dictionaries: ff_core_Show_Show$T */)
-            })), ", ")) + "]")
-        }
-    }
+export function ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T) { return {
+show_(value_) {
+return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) => {
+return ff_core_Show_Show$T.show_(value_/* Dictionaries: ff_core_Show_Show$T */)
+})), ", ")) + "]")
 }
+}}
 
 

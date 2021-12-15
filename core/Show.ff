@@ -29,29 +29,5 @@ instance Show[List[T: Show]] {
 }
 
 foobar() {
-    show([42])
-}
-
-/*
-show[T: Show](value: T): String {
-    show#(value)
-}
-
-show[T: Show](value: T, Show_T): String {
-    show#(value, Show_T)
-}
-
-Show_T.show(value_)
-
-show[T: Show](value: T): String { panic("magic") }
-    javascript "Show_T.show(value_)"
-
-showStuff() {
     //show([42])
 }
-
-instance Indexable[K] {
-    show[A: Foo](value: Int): String { value.toString() }
-}
-
-*/
