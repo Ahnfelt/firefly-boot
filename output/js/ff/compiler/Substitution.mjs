@@ -73,11 +73,14 @@ return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_,
 const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteExtendDefinition(self_, _w1)
 }))
+const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteInstanceDefinition(self_, _w1)
+}))
 {
 const _1 = module_
 {
 const _c = _1
-return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, _c.instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
 return
 }
 }
@@ -113,6 +116,19 @@ const _1 = definition_
 {
 const _c = _1
 return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_.body_), _c.targets_)
+return
+}
+}
+}
+
+export function Substitution_substituteInstanceDefinition(self_, definition_) {
+{
+const _1 = definition_
+{
+const _c = _1
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
+})))
 return
 }
 }

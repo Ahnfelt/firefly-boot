@@ -13,10 +13,10 @@ extend self: Substitution {
         let functions = module.functions.map { self.substituteFunctionDefinition(_) }
         let extends = module.extends.map { self.substituteExtendDefinition(_) }
         //let traits = module.traits.map { self.substituteTraitDefinition(_) }
-        //let instances = module.instances.map { self.substituteInstanceDefinition(_) }
+        let instances = module.instances.map { self.substituteInstanceDefinition(_) }
         module.Module(
             //traits = traits,
-            //instances = instances,
+            instances = instances,
             extends = extends,
             lets = lets,
             functions = functions,
@@ -39,6 +39,12 @@ extend self: Substitution {
     substituteFunctionDefinition(definition: DFunction): DFunction {
         definition.DFunction(
             body = self.substituteLambda(definition.body)
+        )
+    }
+
+    substituteInstanceDefinition(definition: DInstance): DInstance {
+        definition.DInstance(
+            methods = definition.methods.map { self.substituteFunctionDefinition(_) }
         )
     }
 
