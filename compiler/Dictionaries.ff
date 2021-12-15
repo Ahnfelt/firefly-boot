@@ -27,10 +27,10 @@ extend self: Dictionaries {
         let functions = module.functions.map { self.processFunctionDefinition(functionSignatures, _) }
         let extends = module.extends.map { self.processExtendDefinition(functionSignatures, _) }
         //let traits = module.traits.map { self.processTraitDefinition(functionSignatures, _) }
-        //let instances = module.instances.map { self.processInstanceDefinition(functionSignatures, _) }
+        let instances = module.instances.map { self.processInstanceDefinition(functionSignatures, _) }
         module.Module(
             //traits = traits,
-            //instances = instances,
+            instances = instances,
             extends = extends,
             lets = lets,
             functions = functions,
@@ -52,6 +52,12 @@ extend self: Dictionaries {
     processFunctionDefinition(functions: Map[String, Signature], definition: DFunction): DFunction {
         definition.DFunction(
             body = self.processLambda(functions, definition.body)
+        )
+    }
+
+    processInstanceDefinition(functions: Map[String, Signature], definition: DInstance): DInstance {
+        definition.DInstance(
+            methods = definition.methods.map { self.processFunctionDefinition(functions, _) }
         )
     }
 

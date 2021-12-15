@@ -96,11 +96,14 @@ return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self_, fu
 const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processExtendDefinition(self_, functionSignatures_, _w1)
 }))
+const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
+return ff_compiler_Dictionaries.Dictionaries_processInstanceDefinition(self_, functionSignatures_, _w1)
+}))
 {
 const _1 = module_
 {
 const _c = _1
-return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, _c.instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
 return
 }
 }
@@ -136,6 +139,19 @@ const _1 = definition_
 {
 const _c = _1
 return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Dictionaries.Dictionaries_processLambda(self_, functions_, definition_.body_), _c.targets_)
+return
+}
+}
+}
+
+export function Dictionaries_processInstanceDefinition(self_, functions_, definition_) {
+{
+const _1 = definition_
+{
+const _c = _1
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self_, functions_, _w1)
+})))
 return
 }
 }
