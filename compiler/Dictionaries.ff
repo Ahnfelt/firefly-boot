@@ -50,29 +50,15 @@ extend self: Dictionaries {
     }
 
     processFunctionDefinition(functions: Map[String, Signature], definition: DFunction): DFunction {
+        let instances = constraintsToInstances(definition.signature.constraints)
+        let self2 = self.Dictionaries(instances = self.instances.addAll(instances))
         definition.DFunction(
-            body = self.processLambda(functions, definition.body)
+            body = self2.processLambda(functions, definition.body)
         )
     }
 
     processInstanceDefinition(functions: Map[String, Signature], definition: DInstance): DInstance {
-        let instances = definition.constraints.map { c =>
-            let typeName = c.generics.expectFirst().{
-                | TConstructor(_, name, _) => name
-                | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
-            }
-            Pair(
-                InstanceKey(c.name, typeName).toStringKey()
-                InstanceValue(
-                    generics = []
-                    constraints = []
-                    packageName = ""
-                    moduleName = ""
-                    traitName = c.name
-                    typeArguments = c.generics
-                )
-            )
-        }.toMap()
+        let instances = constraintsToInstances(definition.constraints)
         let self2 = self.Dictionaries(instances = self.instances.addAll(instances))
         definition.DInstance(
             methods = definition.methods.map { self2.processFunctionDefinition(functions, _) }
@@ -187,4 +173,24 @@ extend self: Dictionaries {
         Dictionary(instance.packageName, instance.moduleName, constraint.name, firstType.name, dictionaries)
     }
 
+}
+
+constraintsToInstances(constraints: List[Constraint]): Map[String, InstanceValue] {
+    constraints.map { c =>
+        let typeName = c.generics.expectFirst().{
+            | TConstructor(_, name, _) => name
+            | TVariable(_, i) => fail(c.at, "Unexpected unification variable: $" + i)
+        }
+        Pair(
+            InstanceKey(c.name, typeName).toStringKey()
+            InstanceValue(
+                generics = []
+                constraints = []
+                packageName = ""
+                moduleName = ""
+                traitName = c.name
+                typeArguments = c.generics
+            )
+        )
+    }.toMap()
 }

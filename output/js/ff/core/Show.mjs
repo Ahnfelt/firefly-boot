@@ -52,8 +52,12 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function baz_(value_, ff_core_Show_Show$T) {
+return ff_core_Show_Show$T.show_(value_)
+}
+
 export function foobar_() {
-return ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int).show_(ff_core_List.Link(42, ff_core_List.Empty()))
+return ff_core_Show.baz_(ff_core_List.Link(42, ff_core_List.Empty()), ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int))
 }
 
 

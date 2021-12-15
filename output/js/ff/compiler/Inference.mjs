@@ -77,6 +77,29 @@ export function core_(name_) {
 return ((("ff:core/" + name_) + ".") + name_)
 }
 
+export function constraintsToInstances_(constraints_) {
+return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
+const typeName_ = (((_1) => {
+{
+if(_1.TConstructor) {
+const name_ = _1.name_
+return name_
+return
+}
+}
+{
+if(_1.TVariable) {
+const at_ = _1.at_
+const i_ = _1.index_
+return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $" + i_))
+return
+}
+}
+}))(ff_core_List.List_expectFirst(c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(c_.name_, typeName_)), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), "", "", c_.name_, c_.generics_))
+})))
+}
+
 export function Inference_inferModule(self_, module_, otherModules_) {
 const environment_ = ff_compiler_Environment.make_(module_, otherModules_)
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
@@ -112,25 +135,7 @@ return
 }
 
 export function Inference_inferInstanceDefinition(self_, environment_, definition_) {
-const instances_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.constraints_, ((c_) => {
-const typeName_ = (((_1) => {
-{
-if(_1.TConstructor) {
-const name_ = _1.name_
-return name_
-return
-}
-}
-{
-if(_1.TVariable) {
-const i_ = _1.index_
-return ff_compiler_Inference.fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
-return
-}
-}
-}))(ff_core_List.List_expectFirst(c_.generics_))
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(c_.name_, typeName_)), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), "", "", c_.name_, c_.generics_))
-})))
+const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.constraints_)
 return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 {
 const _1 = definition_
@@ -203,6 +208,8 @@ return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.s
 const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameters_)), ff_core_List.List_addAll(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
 })), ff_core_List.Link(definition_.signature_.returnType_, ff_core_List.Empty())))
+const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.signature_.constraints_)
+return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 {
 const _1 = definition_
 {
@@ -211,6 +218,7 @@ return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Inference
 return
 }
 }
+}))
 }
 
 export function Inference_inferLambda(self_, environment_, expected_, lambda_) {

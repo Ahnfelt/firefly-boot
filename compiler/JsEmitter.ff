@@ -72,13 +72,6 @@ extend self: JsEmitter {
     }
 
     emitInstanceDefinition(definition: DInstance): String {
-        function firstTypeName(types: List[Type]): String {
-            types.expectFirst().{
-                | TConstructor t => t
-                | TVariable t => fail(t.at, " is still a unification variable")
-            }.name
-        }
-
         let name = makeDictionaryName(definition.traitName, firstTypeName(definition.typeArguments))
         let methods = definition.methods.map(self.emitFunctionDefinition).map { _.dropFirst("function ".size()) } // TODO
         let body = "{\n" + methods.join("\n") + "\n}"
@@ -140,7 +133,11 @@ extend self: JsEmitter {
     }
 
     emitSignature(signature: Signature, suffix: String = ""): String {
-        let parameters = "(" + signature.parameters.map(self.emitParameter).join(", ") + ")"
+        let parameterStrings = signature.parameters.map(self.emitParameter)
+        let dictionaryStrings = signature.constraints.map { c =>
+            makeDictionaryName(c.name, firstTypeName(c.generics))
+        }
+        let parameters = "(" + [...parameterStrings, ...dictionaryStrings].join(", ") + ")"
         "function " + escapeKeyword(signature.name) + suffix + parameters
     }
 
@@ -503,6 +500,13 @@ extractTypeName(type: Type): String {
         fail(at, "Unexpected type variable: $" + index)
     | TConstructor t =>
         t.name
+}
+
+firstTypeName(types: List[Type]): String {
+    types.expectFirst().{
+        | TConstructor t => t
+        | TVariable t => fail(t.at, " is still a unification variable")
+    }.name
 }
 
 makeDictionaryName(traitName: String, typeName: String): String {

@@ -48,23 +48,7 @@ extend self: Inference {
     }
 
     inferInstanceDefinition(environment: Environment, definition: DInstance): DInstance {
-        let instances = definition.constraints.map { c =>
-            let typeName = c.generics.expectFirst().{
-                | TConstructor(_, name, _) => name
-                | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
-            }
-            Pair(
-                InstanceKey(c.name, typeName).toStringKey()
-                InstanceValue(
-                    generics = []
-                    constraints = []
-                    packageName = ""
-                    moduleName = ""
-                    traitName = c.name
-                    typeArguments = c.generics
-                )
-            )
-        }.toMap()
+        let instances = constraintsToInstances(definition.constraints)
         self.unification.withLocalInstances(instances) {
             definition.DInstance(
                 methods = definition.methods.map { self.inferFunctionDefinition(environment, _) }
@@ -124,7 +108,10 @@ extend self: Inference {
             "Function$" + parameters.size(),
             [...parameters.map { _.second.signature.returnType }, definition.signature.returnType]
         )
-        definition.DFunction(body = self.inferLambda(environment2, functionType, definition.body))
+        let instances = constraintsToInstances(definition.signature.constraints)
+        self.unification.withLocalInstances(instances) {
+            definition.DFunction(body = self.inferLambda(environment2, functionType, definition.body))
+        }
     }
 
     inferLambda(environment: Environment, expected: Type, lambda: Lambda): Lambda {
@@ -834,4 +821,24 @@ extend self: Inference {
 
     }
 
+}
+
+constraintsToInstances(constraints: List[Constraint]): Map[String, InstanceValue] {
+    constraints.map { c =>
+        let typeName = c.generics.expectFirst().{
+            | TConstructor(_, name, _) => name
+            | TVariable(at, i) => fail(c.at, "Unexpected unification variable: $" + i)
+        }
+        Pair(
+            InstanceKey(c.name, typeName).toStringKey()
+            InstanceValue(
+                generics = []
+                constraints = []
+                packageName = ""
+                moduleName = ""
+                traitName = c.name
+                typeArguments = c.generics
+            )
+        )
+    }.toMap()
 }

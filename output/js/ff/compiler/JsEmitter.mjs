@@ -206,6 +206,25 @@ return
 }
 }
 
+export function firstTypeName_(types_) {
+return (((_1) => {
+{
+if(_1.TConstructor) {
+const t_ = _1
+return t_
+return
+}
+}
+{
+if(_1.TVariable) {
+const t_ = _1
+return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
+return
+}
+}
+}))(ff_core_List.List_expectFirst(types_)).name_
+}
+
 export function makeDictionaryName_(traitName_, typeName_) {
 return ((ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(traitName_, ".", "_"), ":", "_"), "/", "_") + "$") + ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(typeName_, ".", "_"), ":", "_"), "/", "_"))
 }
@@ -299,25 +318,7 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 }
 
 export function JsEmitter_emitInstanceDefinition(self_, definition_) {
-function firstTypeName_(types_) {
-return (((_1) => {
-{
-if(_1.TConstructor) {
-const t_ = _1
-return t_
-return
-}
-}
-{
-if(_1.TVariable) {
-const t_ = _1
-return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
-return
-}
-}
-}))(ff_core_List.List_expectFirst(types_)).name_
-}
-const name_ = ff_compiler_JsEmitter.makeDictionaryName_(definition_.traitName_, firstTypeName_(definition_.typeArguments_))
+const name_ = ff_compiler_JsEmitter.makeDictionaryName_(definition_.traitName_, ff_compiler_JsEmitter.firstTypeName_(definition_.typeArguments_))
 const methods_ = ff_core_List.List_map(ff_core_List.List_map(definition_.methods_, ((definition_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, definition_, "")
 })), ((_w1) => {
@@ -335,7 +336,7 @@ return
 {
 const constraints_ = _1
 const dictionaries_ = ff_core_List.List_map(constraints_, ((c_) => {
-return ff_compiler_JsEmitter.makeDictionaryName_(c_.name_, firstTypeName_(c_.generics_))
+return ff_compiler_JsEmitter.makeDictionaryName_(c_.name_, ff_compiler_JsEmitter.firstTypeName_(c_.generics_))
 }))
 return (((((("export function " + name_) + "(") + ff_core_List.List_join(dictionaries_, ", ")) + ") { return ") + body_) + "}")
 return
@@ -428,9 +429,13 @@ return result_
 }
 
 export function JsEmitter_emitSignature(self_, signature_, suffix_ = "") {
-const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_map(signature_.parameters_, ((parameter_) => {
+const parameterStrings_ = ff_core_List.List_map(signature_.parameters_, ((parameter_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitParameter(self_, parameter_)
-})), ", ")) + ")")
+}))
+const dictionaryStrings_ = ff_core_List.List_map(signature_.constraints_, ((c_) => {
+return ff_compiler_JsEmitter.makeDictionaryName_(c_.name_, ff_compiler_JsEmitter.firstTypeName_(c_.generics_))
+}))
+const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_addAll(parameterStrings_, dictionaryStrings_), ", ")) + ")")
 return ((("function " + ff_compiler_JsEmitter.escapeKeyword_(signature_.name_)) + suffix_) + parameters_)
 }
 
