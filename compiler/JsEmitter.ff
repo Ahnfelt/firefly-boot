@@ -71,11 +71,6 @@ extend self: JsEmitter {
         methods.map { "export " + self.emitFunctionDefinition(_) }.join("\n\n")
     }
 
-    makeDictionaryName(traitName: String, typeName: String): String {
-        traitName.replace(".", "_").replace(":", "_").replace("/", "_") + "$" +
-        typeName.replace(".", "_").replace(":", "_").replace("/", "_")
-    }
-
     emitInstanceDefinition(definition: DInstance): String {
         function firstTypeName(types: List[Type]): String {
             types.expectFirst().{
@@ -84,7 +79,7 @@ extend self: JsEmitter {
             }.name
         }
 
-        let name = self.makeDictionaryName(definition.traitName, firstTypeName(definition.typeArguments))
+        let name = makeDictionaryName(definition.traitName, firstTypeName(definition.typeArguments))
         let methods = definition.methods.map(self.emitFunctionDefinition).map { _.dropFirst("function ".size()) } // TODO
         let body = "{\n" + methods.join("\n") + "\n}"
         definition.constraints.{
@@ -92,7 +87,7 @@ extend self: JsEmitter {
                 "export const " + name + " = " + body + ";"
             | constraints =>
                 let dictionaries = constraints.map { c =>
-                    self.makeDictionaryName(c.name, firstTypeName(c.generics))
+                    makeDictionaryName(c.name, firstTypeName(c.generics))
                 }
                 "export function " + name + "(" + dictionaries.join(", ") + ") { return " + body + "}"
         }
@@ -247,7 +242,8 @@ extend self: JsEmitter {
                 "/* Dictionaries: " + dictionaryStrings.join(", ") + " */"
             }
             let d = dictionaryStrings.expectFirst()
-            d + "." + name + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")"
+            let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse())
+            d + "." + n + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")"
         | ECall(at, _, _, function, typeArguments, arguments, dictionaries) =>
             detectIfElse(term).{
                 | [] =>
@@ -279,8 +275,10 @@ extend self: JsEmitter {
     }
 
     emitDictionary(d : Dictionary): String {
-        let m = if(d.moduleName != "") { d.packageName + "/" + d.moduleName + "_" } else { "" }
-        let c = m + d.traitName + "_" + d.typeName
+        let m = if(d.moduleName != "") {
+            d.packageName.replace(":", "_") + "_" + d.moduleName.replace("/", "_") + "_"
+        } else { "" }
+        let c = m + makeDictionaryName(d.traitName, d.typeName)
         if(d.dictionaries.isEmpty()) {
             c
         } else {
@@ -503,6 +501,11 @@ extractTypeName(type: Type): String {
         fail(at, "Unexpected type variable: $" + index)
     | TConstructor t =>
         t.name
+}
+
+makeDictionaryName(traitName: String, typeName: String): String {
+    traitName.replace(".", "_").replace(":", "_").replace("/", "_") + "$" +
+    typeName.replace(".", "_").replace(":", "_").replace("/", "_")
 }
 
 escapeResolved(word: String): String {

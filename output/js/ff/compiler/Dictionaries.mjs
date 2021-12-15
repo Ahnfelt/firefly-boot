@@ -145,12 +145,34 @@ return
 }
 
 export function Dictionaries_processInstanceDefinition(self_, functions_, definition_) {
+const instances_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.constraints_, ((c_) => {
+const typeName_ = (((_1) => {
+{
+if(_1.TConstructor) {
+const name_ = _1.name_
+return name_
+return
+}
+}
+{
+if(_1.TVariable) {
+const i_ = _1.index_
+return ff_compiler_Dictionaries.fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
+return
+}
+}
+}))(ff_core_List.List_expectFirst(c_.generics_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(c_.name_, typeName_)), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), "", "", c_.name_, c_.generics_))
+})))
+const self2_ = (((_c) => {
+return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_))
+}))(self_)
 {
 const _1 = definition_
 {
 const _c = _1
 return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self_, functions_, _w1)
+return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self2_, functions_, _w1)
 })))
 return
 }

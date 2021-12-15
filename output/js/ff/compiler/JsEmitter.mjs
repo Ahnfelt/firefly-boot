@@ -206,6 +206,10 @@ return
 }
 }
 
+export function makeDictionaryName_(traitName_, typeName_) {
+return ((ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(traitName_, ".", "_"), ":", "_"), "/", "_") + "$") + ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(typeName_, ".", "_"), ":", "_"), "/", "_"))
+}
+
 export function escapeResolved_(word_) {
 const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46))
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1)
@@ -294,10 +298,6 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 })), "\n\n")
 }
 
-export function JsEmitter_makeDictionaryName(self_, traitName_, typeName_) {
-return ((ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(traitName_, ".", "_"), ":", "_"), "/", "_") + "$") + ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(typeName_, ".", "_"), ":", "_"), "/", "_"))
-}
-
 export function JsEmitter_emitInstanceDefinition(self_, definition_) {
 function firstTypeName_(types_) {
 return (((_1) => {
@@ -317,7 +317,7 @@ return
 }
 }))(ff_core_List.List_expectFirst(types_)).name_
 }
-const name_ = ff_compiler_JsEmitter.JsEmitter_makeDictionaryName(self_, definition_.traitName_, firstTypeName_(definition_.typeArguments_))
+const name_ = ff_compiler_JsEmitter.makeDictionaryName_(definition_.traitName_, firstTypeName_(definition_.typeArguments_))
 const methods_ = ff_core_List.List_map(ff_core_List.List_map(definition_.methods_, ((definition_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, definition_, "")
 })), ((_w1) => {
@@ -335,7 +335,7 @@ return
 {
 const constraints_ = _1
 const dictionaries_ = ff_core_List.List_map(constraints_, ((c_) => {
-return ff_compiler_JsEmitter.JsEmitter_makeDictionaryName(self_, c_.name_, firstTypeName_(c_.generics_))
+return ff_compiler_JsEmitter.makeDictionaryName_(c_.name_, firstTypeName_(c_.generics_))
 }))
 return (((((("export function " + name_) + "(") + ff_core_List.List_join(dictionaries_, ", ")) + ") { return ") + body_) + "}")
 return
@@ -842,7 +842,10 @@ const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
 ? ""
 : (("/* Dictionaries: " + ff_core_List.List_join(dictionaryStrings_, ", ")) + " */"))
 const d_ = ff_core_List.List_expectFirst(dictionaryStrings_)
-return ((((((d_ + ".") + name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
+const n_ = ff_compiler_JsEmitter.escapeKeyword_(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
+return (_w1 != 46)
+}))))
+return ((((((d_ + ".") + n_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
 })), ", ")) + ds_) + ")")
 return
@@ -949,9 +952,9 @@ return
 
 export function JsEmitter_emitDictionary(self_, d_) {
 const m_ = ((d_.moduleName_ != "")
-? (((d_.packageName_ + "/") + d_.moduleName_) + "_")
+? (((ff_core_String.String_replace(d_.packageName_, ":", "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + "_")
 : "")
-const c_ = (((m_ + d_.traitName_) + "_") + d_.typeName_)
+const c_ = (m_ + ff_compiler_JsEmitter.makeDictionaryName_(d_.traitName_, d_.typeName_))
 if(ff_core_List.List_isEmpty(d_.dictionaries_)) {
 return c_
 } else {

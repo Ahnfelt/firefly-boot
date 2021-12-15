@@ -56,8 +56,26 @@ extend self: Dictionaries {
     }
 
     processInstanceDefinition(functions: Map[String, Signature], definition: DInstance): DInstance {
+        let instances = definition.constraints.map { c =>
+            let typeName = c.generics.expectFirst().{
+                | TConstructor(_, name, _) => name
+                | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
+            }
+            Pair(
+                InstanceKey(c.name, typeName).toStringKey()
+                InstanceValue(
+                    generics = []
+                    constraints = []
+                    packageName = ""
+                    moduleName = ""
+                    traitName = c.name
+                    typeArguments = c.generics
+                )
+            )
+        }.toMap()
+        let self2 = self.Dictionaries(instances = self.instances.addAll(instances))
         definition.DInstance(
-            methods = definition.methods.map { self.processFunctionDefinition(functions, _) }
+            methods = definition.methods.map { self2.processFunctionDefinition(functions, _) }
         )
     }
 
