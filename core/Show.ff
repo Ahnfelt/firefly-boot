@@ -27,7 +27,12 @@ instance Show[List[T: Show]] {
         "[" + value.map(show).join(", ") + "]"
     }
 }
+/*
+baz[T: Show](value: T): String {
+    show(value)
+}
 
 foobar(): String {
-    show([42])
+    baz([42])
 }
+*/
