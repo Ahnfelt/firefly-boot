@@ -28,6 +28,6 @@ instance Show[List[T: Show]] {
     }
 }
 
-foobar() {
-    //show([42])
+foobar(): String {
+    show([42])
 }

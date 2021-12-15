@@ -404,6 +404,7 @@ extend self: Inference {
                                             environment,
                                             expected,
                                             signature,
+                                            instantiated.scheme.isTraitMethod
                                             instantiated.typeArguments,
                                             term,
                                             x
@@ -553,13 +554,14 @@ extend self: Inference {
             function = EVariable(e.at, name)
             arguments = [Argument(record.at, None, record), ...e.arguments]
         )
-        self.inferFunctionCall(environment, expected, signature, instantiation, e2, name)
+        self.inferFunctionCall(environment, expected, signature, False, instantiation, e2, name)
     }
 
     inferFunctionCall(
         environment: Environment,
         expected: Type,
         signature: Signature,
+        instanceCall: Bool
         instantiation: List[Pair[String, Type]],
         term: Term,
         name: String
@@ -569,6 +571,7 @@ extend self: Inference {
         // TODO: Varargs
         let arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments)
         e.ECall(
+            instanceCall = instanceCall
             function = e.function, // It's always a function name - should we propagate that information?
             typeArguments = instantiation.map { _.second }
             arguments = arguments

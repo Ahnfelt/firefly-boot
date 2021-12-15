@@ -952,7 +952,7 @@ return
 
 export function JsEmitter_emitDictionary(self_, d_) {
 const m_ = ((d_.moduleName_ != "")
-? (((ff_core_String.String_replace(d_.packageName_, ":", "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + "_")
+? (((ff_core_String.String_replace(d_.packageName_, ":", "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + ".")
 : "")
 const c_ = (m_ + ff_compiler_JsEmitter.makeDictionaryName_(d_.traitName_, d_.typeName_))
 if(ff_core_List.List_isEmpty(d_.dictionaries_)) {

@@ -797,7 +797,7 @@ if(instantiated_.scheme_.isVariable_) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, term_)
 } else {
 const signature_ = instantiated_.scheme_.signature_
-return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiated_.typeArguments_, term_, x_)
+return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiated_.scheme_.isTraitMethod_, instantiated_.typeArguments_, term_, x_)
 }
 return
 }
@@ -1063,10 +1063,10 @@ return
 const e2_ = (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Syntax.EVariable(e_.at_, name_), _c.typeArguments_, ff_core_List.Link(ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.None(), record_), e_.arguments_), _c.dictionaries_)
 }))(e_)
-return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiation_, e2_, name_)
+return ff_compiler_Inference.Inference_inferFunctionCall(self_, environment_, expected_, signature_, false, instantiation_, e2_, name_)
 }
 
-export function Inference_inferFunctionCall(self_, environment_, expected_, signature_, instantiation_, term_, name_) {
+export function Inference_inferFunctionCall(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_) {
 const e_ = (((_1) => {
 {
 if(_1.ECall) {
@@ -1086,7 +1086,7 @@ const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_,
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, e_.function_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, instanceCall_, _c.tailCall_, e_.function_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_, _c.dictionaries_)
 return
