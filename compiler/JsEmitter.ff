@@ -238,8 +238,9 @@ extend self: JsEmitter {
             "(" + self.emitArgument(left) + " " + operator + " " + self.emitArgument(right) + ")"
         | ECall(at, True, _, EVariable(_, name), typeArguments, arguments, dictionaries) =>
             let dictionaryStrings = dictionaries.map(self.emitDictionary)
-            let ds = if(dictionaries.isEmpty()) {""} else {
-                "/* Dictionaries: " + dictionaryStrings.join(", ") + " */"
+            let ds = if(dictionaries.size() <= 1) {""} else {
+                if(arguments.isEmpty()) {""} else {", "} +
+                dictionaryStrings.dropFirst().join(", ")
             }
             let d = dictionaryStrings.expectFirst()
             let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse())
@@ -248,7 +249,8 @@ extend self: JsEmitter {
             detectIfElse(term).{
                 | [] =>
                     let ds = if(dictionaries.isEmpty()) {""} else {
-                        "/* Dictionaries: " + dictionaries.map(self.emitDictionary).join(", ") + " */"
+                        if(arguments.isEmpty()) {""} else {", "} +
+                        dictionaries.map(self.emitDictionary).join(", ")
                     }
                     self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")"
                 | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>

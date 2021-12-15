@@ -838,9 +838,11 @@ const dictionaries_ = term_a.dictionaries_
 const dictionaryStrings_ = ff_core_List.List_map(dictionaries_, ((d_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, d_)
 }))
-const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
+const ds_ = ((ff_core_List.List_size(dictionaries_) <= 1)
 ? ""
-: (("/* Dictionaries: " + ff_core_List.List_join(dictionaryStrings_, ", ")) + " */"))
+: ((ff_core_List.List_isEmpty(arguments_)
+? ""
+: ", ") + ff_core_List.List_join(ff_core_List.List_dropFirst(dictionaryStrings_, 1), ", ")))
 const d_ = ff_core_List.List_expectFirst(dictionaryStrings_)
 const n_ = ff_compiler_JsEmitter.escapeKeyword_(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
@@ -867,9 +869,11 @@ const _1 = ff_compiler_JsEmitter.detectIfElse_(term_)
 if(_1.Empty) {
 const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
 ? ""
-: (("/* Dictionaries: " + ff_core_List.List_join(ff_core_List.List_map(dictionaries_, ((d_) => {
+: ((ff_core_List.List_isEmpty(arguments_)
+? ""
+: ", ") + ff_core_List.List_join(ff_core_List.List_map(dictionaries_, ((d_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, d_)
-})), ", ")) + " */"))
+})), ", ")))
 return ((((ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((argument_) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_)
 })), ", ")) + ds_) + ")")
