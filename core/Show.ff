@@ -1,28 +1,28 @@
-trait Show[T] {
+trait T: Show {
     show(value: T): String
 }
 
-instance Show[Bool] {
+instance Bool: Show {
     show(value: Bool): String {
         | False => "False"
         | True => "True"
     }
 }
 
-instance Show[Char] {
+instance Char: Show {
     show(value: Char): String { value.toString() }
 }
 
-instance Show[Int] {
+instance Int: Show {
     show(value: Int): String { "" + value }
 }
 
-instance Show[String] {
+instance String: Show {
     show(value: String): String { panic("magic") }
         javascript "return JSON.stringify(value_);"
 }
 
-instance Show[List[T: Show]] {
+instance List[T: Show]: Show {
     show(value: List[T]): String {
         "[" + value.map(show).join(", ") + "]"
     }
@@ -41,9 +41,13 @@ type Tree[T] {
     Leaf(value: T)
 }
 
-instance Show[Tree[T: Show]] {
+instance Tree[T: Show]: Show {
     show(value: Tree[T]): String {
         | Branch(l, r) => "Branch(" + show(l) + ", " + show(r) + ")"
         | Leaf(v) => "Leaf(" + show(v) + ")"
     }
+}
+
+quux(): String {
+    show(Branch(Branch(Leaf(7), Leaf(8)), Leaf(9)))
 }

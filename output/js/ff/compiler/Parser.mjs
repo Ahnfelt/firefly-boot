@@ -251,10 +251,20 @@ return ff_compiler_Syntax.DExtend(ff_compiler_Token.Token_at(nameToken_), ff_com
 
 export function Parser_parseTraitDefinition(self_) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "trait")
+const typeParameterToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 const poly_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
 ? ff_compiler_Parser.Poly(ff_core_List.Empty(), ff_core_List.Empty())
 : ff_compiler_Parser.Parser_parseTypeParameters(self_))
+const constraints_ = ff_core_ArrayBuilder.empty_()
+while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon())) {
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
+const constraint_ = ff_compiler_Parser.Parser_parseConstraint(self_)
+ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, (((_c) => {
+return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(typeParameterToken_), ff_compiler_Token.Token_raw(typeParameterToken_), ff_core_List.Empty()), constraint_.generics_))
+}))(constraint_))
+}
 const generatorParameters_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseFunctionParameters(self_, false))
@@ -284,26 +294,29 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}")
 return ff_core_ArrayBuilder.ArrayBuilder_toList(signatures_)
 })())
-return ff_compiler_Syntax.DTrait(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, generatorParameters_, methodSignatures_, ff_core_ArrayBuilder.ArrayBuilder_toList(methodDefaults_), ff_core_ArrayBuilder.ArrayBuilder_toList(methodGenerators_))
+return ff_compiler_Syntax.DTrait(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), ff_core_List.Link(ff_compiler_Token.Token_raw(typeParameterToken_), poly_.generics_), ff_core_List.List_addAll(ff_core_ArrayBuilder.ArrayBuilder_toList(constraints_), poly_.constraints_), generatorParameters_, methodSignatures_, ff_core_ArrayBuilder.ArrayBuilder_toList(methodDefaults_), ff_core_ArrayBuilder.ArrayBuilder_toList(methodGenerators_))
 }
 
 export function Parser_parseInstanceDefinition(self_) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "instance")
-const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
-const typeArguments_ = ff_core_ArrayBuilder.empty_()
-ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "[")
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 const poly_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
 ? ff_compiler_Parser.Poly(ff_core_List.Empty(), ff_core_List.Empty())
 : ff_compiler_Parser.Parser_parseTypeParameters(self_))
+const typeArguments_ = ff_core_ArrayBuilder.empty_()
 ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_List.List_map(poly_.generics_, ((_w1) => {
 return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), _w1, ff_core_List.Empty())
 }))))
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
+const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
+if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "[")) {
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "[")
 while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LComma())) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Parser.Parser_parseType(self_))
 }
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]")
+}
 const generatorArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseFunctionArguments(self_))

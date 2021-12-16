@@ -210,8 +210,18 @@ extend self: Parser {
     
     parseTraitDefinition(): DTrait {
         self.rawSkip(LKeyword, "trait")
+        let typeParameterToken = self.skip(LUpper)
+        self.skip(LColon)
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
+        let constraints = ArrayBuilder.empty[Constraint]()
+        while {self.current().is(LColon)} {
+            self.skip(LColon)
+            let constraint = self.parseConstraint()
+            constraints.add(constraint.Constraint(generics =
+                [TConstructor(typeParameterToken.at(), typeParameterToken.raw(), []), ...constraint.generics]
+            ))
+        }
         let generatorParameters = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters()}
         let methodGenerators = ArrayBuilder.empty[Pair[String, Lambda]]()
         let methodDefaults = ArrayBuilder.empty[Pair[String, Lambda]]()
@@ -238,28 +248,31 @@ extend self: Parser {
         DTrait(
             nameToken.at(),
             nameToken.raw(),
-            poly.generics,
-            poly.constraints,
+            [typeParameterToken.raw(), ...poly.generics],
+            [...constraints.toList(), ...poly.constraints],
             generatorParameters,
             methodSignatures,
             methodDefaults.toList(),
             methodGenerators.toList()
         )
     }
-    
+
     parseInstanceDefinition(): DInstance {
         self.rawSkip(LKeyword, "instance")
-        let nameToken = self.skip(LUpper)
-        let typeArguments = ArrayBuilder.empty[Type]()
-        self.rawSkip(LBracketLeft, "[")
         let token = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
+        let typeArguments = ArrayBuilder.empty[Type]()
         typeArguments.add(TConstructor(token.at(), token.raw(), poly.generics.map { TConstructor(token.at(), _, []) }))
-        while {self.current().is(LComma)} {
-            self.skip(LComma)
-            typeArguments.add(self.parseType())
+        self.skip(LColon)
+        let nameToken = self.skip(LUpper)
+        if(self.current().rawIs("[")) {
+            self.rawSkip(LBracketLeft, "[")
+            while {self.current().is(LComma)} {
+                self.skip(LComma)
+                typeArguments.add(self.parseType())
+            }
+            self.rawSkip(LBracketRight, "]")
         }
-        self.rawSkip(LBracketRight, "]")
         let generatorArguments = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionArguments()}
         let methods = if(!self.current().rawIs("{")) {[]} else {
             let definitions = ArrayBuilder.empty[DFunction]()

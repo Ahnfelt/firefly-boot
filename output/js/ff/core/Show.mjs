@@ -66,6 +66,10 @@ export function foobar_() {
 return ff_core_Show.baz_(ff_core_List.Link(42, ff_core_List.Empty()), ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int))
 }
 
+export function quux_() {
+return ff_core_Show.ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int).show_(ff_core_Show.Branch(ff_core_Show.Branch(ff_core_Show.Leaf(7), ff_core_Show.Leaf(8)), ff_core_Show.Leaf(9)))
+}
+
 
 
 export const ff_core_Show_Show$ff_core_Bool_Bool = {
