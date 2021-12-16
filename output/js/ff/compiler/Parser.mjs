@@ -259,6 +259,7 @@ const poly_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current
 : ff_compiler_Parser.Parser_parseTypeParameters(self_))
 const constraints_ = ff_core_ArrayBuilder.empty_()
 while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon())) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Trait constraints is not yet implemented")
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 const constraint_ = ff_compiler_Parser.Parser_parseConstraint(self_)
 ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, (((_c) => {

@@ -216,6 +216,7 @@ extend self: Parser {
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let constraints = ArrayBuilder.empty[Constraint]()
         while {self.current().is(LColon)} {
+            self.fail(self.current().at(), "Trait constraints is not yet implemented")
             self.skip(LColon)
             let constraint = self.parseConstraint()
             constraints.add(constraint.Constraint(generics =
