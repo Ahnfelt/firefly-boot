@@ -48,7 +48,13 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-
+// type Tree
+export function Branch(left_, right_) {
+return {Branch: true, left_, right_};
+}
+export function Leaf(value_) {
+return {Leaf: true, value_};
+}
 
 
 
@@ -105,6 +111,29 @@ show_(value_) {
 return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) => {
 return ff_core_Show_Show$T.show_(value_)
 })), ", ")) + "]")
+}
+}}
+
+export function ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show_Show$T) { return {
+show_(value_) {
+{
+const value_a = value_
+{
+if(value_a.Branch) {
+const l_ = value_a.left_
+const r_ = value_a.right_
+return (((("Branch(" + ff_core_Show.ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show_Show$T).show_(l_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show_Show$T).show_(r_)) + ")")
+return
+}
+}
+{
+if(value_a.Leaf) {
+const v_ = value_a.value_
+return (("Leaf(" + ff_core_Show_Show$T.show_(v_)) + ")")
+return
+}
+}
+}
 }
 }}
 

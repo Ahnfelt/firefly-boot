@@ -35,3 +35,15 @@ baz[T: Show](value: T): String {
 foobar(): String {
     baz([42])
 }
+
+type Tree[T] {
+    Branch(left: Tree[T], right: Tree[T])
+    Leaf(value: T)
+}
+
+instance Show[Tree[T: Show]] {
+    show(value: Tree[T]): String {
+        | Branch(l, r) => "Branch(" + show(l) + ", " + show(r) + ")"
+        | Leaf(v) => "Leaf(" + show(v) + ")"
+    }
+}
