@@ -931,7 +931,7 @@ return
 return go_(self_, that_, ff_core_List.Empty())
 }
 
-export function List_sortBy(self_, body_) {
+export function List_sortBy(self_, body_, ff_core_Ordering_Order$O) {
 if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
@@ -987,7 +987,7 @@ const x_ = _1.first_.head_
 const xs2_ = _1.first_.tail_
 if(_1.second_.Link) {
 const y_ = _1.second_.head_
-if((body_(x_) < body_(y_))) {
+if((ff_core_Ordering_Order$O.compare_(body_(x_), body_(y_)) == ff_core_Ordering.OrderingBefore())) {
 {
 const xs_r_ = xs2_
 const ys_r_ = ys_
@@ -1070,7 +1070,7 @@ return
 }
 }
 const pair_ = divide_(self_, ff_core_List.Empty(), ff_core_List.Empty())
-return merge_(ff_core_List.List_sortBy(pair_.first_, body_), ff_core_List.List_sortBy(pair_.second_, body_), ff_core_List.Empty())
+return merge_(ff_core_List.List_sortBy(pair_.first_, body_, ff_core_Ordering_Order$O), ff_core_List.List_sortBy(pair_.second_, body_, ff_core_Ordering_Order$O), ff_core_List.Empty())
 }
 }
 

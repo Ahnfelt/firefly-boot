@@ -147,6 +147,130 @@ return
 }
 }
 
+export const ff_core_Ordering_Order$ff_core_Bool_Bool = {
+compare_(x_, y_) {
+{
+const x_a = x_
+const y_a = y_
+{
+if(!x_a) {
+if(y_a) {
+return ff_core_Ordering.OrderingBefore()
+return
+}
+}
+}
+{
+if(x_a) {
+if(!y_a) {
+return ff_core_Ordering.OrderingAfter()
+return
+}
+}
+}
+{
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+};
 
+export const ff_core_Ordering_Order$ff_core_Char_Char = {
+compare_(x_, y_) {
+return ff_core_Ordering.fromInt_((x_ - y_))
+}
+};
+
+export const ff_core_Ordering_Order$ff_core_Int_Int = {
+compare_(x_, y_) {
+return ff_core_Ordering.fromInt_((x_ - y_))
+}
+};
+
+export const ff_core_Ordering_Order$ff_core_String_String = {
+compare_(x_, y_) {
+if((x_ < y_)) {
+return ff_core_Ordering.OrderingBefore()
+} else if((x_ > y_)) {
+return ff_core_Ordering.OrderingAfter()
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+};
+
+export function ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering_Order$A, ff_core_Ordering_Order$B) { return {
+compare_(x_, y_) {
+{
+const _1 = ff_core_Ordering_Order$A.compare_(x_.first_, y_.first_)
+{
+if(_1.OrderingSame) {
+return ff_core_Ordering_Order$B.compare_(x_.second_, y_.second_)
+return
+}
+}
+{
+const o_ = _1
+return o_
+return
+}
+}
+}
+}}
+
+export function ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T) { return {
+compare_(x_, y_) {
+{
+const x_a = x_
+const y_a = y_
+{
+if(x_a.Empty) {
+if(y_a.Empty) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.Empty) {
+return ff_core_Ordering.OrderingBefore()
+return
+}
+}
+{
+if(y_a.Empty) {
+return ff_core_Ordering.OrderingAfter()
+return
+}
+}
+{
+if(x_a.Link) {
+const a_ = x_a.head_
+const as_ = x_a.tail_
+if(y_a.Link) {
+const b_ = y_a.head_
+const bs_ = y_a.tail_
+{
+const _1 = ff_core_Ordering_Order$T.compare_(a_, b_)
+{
+if(_1.OrderingSame) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$T).compare_(as_, bs_)
+return
+}
+}
+{
+const o_ = _1
+return o_
+return
+}
+}
+return
+}
+}
+}
+}
+}
+}}
 
 

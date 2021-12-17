@@ -284,7 +284,7 @@ extend self[T]: List[T] {
         go(self, that, [])
     }
 
-    sortBy(body: T => String): List[T] { // TODO generalize to non-strings
+    sortBy[O: Order](body: T => O): List[T] {
         if(self.size() <= 1) {self} else:
 
         function divide(list: List[T], xs: List[T], ys: List[T]): Pair[List[T], List[T]] {
@@ -296,7 +296,8 @@ extend self[T]: List[T] {
         }
         function merge(xs: List[T], ys: List[T], result: List[T]): List[T] {
             Pair(xs, ys).{
-                | Pair([x, ...xs2], [y, ..._]) {body(x) < body(y)} => tailcall merge(xs2, ys, [x, ...result])
+                | Pair([x, ...xs2], [y, ..._]) {Ordering.compare(body(x), body(y)) == OrderingBefore} =>
+                    tailcall merge(xs2, ys, [x, ...result])
                 | Pair([x, ..._], [y, ...ys2]) => tailcall merge(xs, ys2, [y, ...result])
                 | Pair([x, ...xs2], []) => tailcall merge(xs2, [], [x, ...result])
                 | Pair([], [y, ...ys2]) => tailcall merge([], ys2, [y, ...result])

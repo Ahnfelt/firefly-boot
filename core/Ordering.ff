@@ -1,3 +1,58 @@
+trait T: Order {
+    compare(x: T, y: T): Ordering
+}
+
+instance Bool: Order {
+    compare(x: Bool, y: Bool): Ordering {
+        | False, True => OrderingBefore
+        | True, False => OrderingAfter
+        | _, _ => OrderingSame
+    }
+}
+
+instance Char: Order {
+    compare(x: Char, y: Char): Ordering {
+        fromInt(x.codeUnit - y.codeUnit)
+    }
+}
+
+instance Int: Order {
+    compare(x: Int, y: Int): Ordering { fromInt(x - y) }
+}
+
+instance String: Order {
+    compare(x: String, y: String): Ordering {
+        if(x < y) {
+            OrderingBefore
+        } elseIf { x > y } {
+            OrderingAfter
+        } else {
+            OrderingSame
+        }
+    }
+}
+
+instance Pair[A: Order, B: Order]: Order {
+    compare(x: Pair[A, B], y: Pair[A, B]): Ordering {
+        compare(x.first, y.first).{
+            | OrderingSame => compare(x.second, y.second)
+            | o => o
+        }
+    }
+}
+
+instance List[T: Order]: Order {
+    compare(x: List[T], y: List[T]): Ordering {
+        | [], [] => OrderingSame
+        | [], _ => OrderingBefore
+        | _, [] => OrderingAfter
+        | [a, ...as], [b, ...bs] => compare(a, b).{
+            | OrderingSame => compare(as, bs)
+            | o => o
+        }
+    }
+}
+
 type Ordering {
     OrderingBefore
     OrderingSame

@@ -1049,7 +1049,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")")
 return ff_core_List.List_sortBy(ff_core_ArrayBuilder.ArrayBuilder_toList(fields_), ((_w1) => {
 return _w1.first_
-}))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
 export function Parser_parseRecordPattern(self_) {
@@ -1066,7 +1066,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")")
 return ff_core_List.List_sortBy(ff_core_ArrayBuilder.ArrayBuilder_toList(fields_), ((_w1) => {
 return _w1.first_
-}))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
 export function Parser_parseListPattern(self_) {

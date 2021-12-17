@@ -27,9 +27,7 @@ extend self: JsEmitter {
             "import * as " + packagePair.first + "_" + packagePair.second + "_" + module.file.dropLast(3) + " " +
             "from \"../../" + packagePair.first + "/" + packagePair.second + "/" + module.file.dropLast(3) + ".mjs\""
         let imports =
-            module.imports.sortBy { i =>
-                i.package.first + "." + i.package.second + "." + i.file
-            }.map { self.emitImportDefinition(_) }
+            module.imports.sortBy { i => Pair(i.package, i.file) }.map { self.emitImportDefinition(_) }
         let parts = [
             if(imports.any { _ == selfImport }) { imports } else { [selfImport, ...imports] }
             module.types.map { self.emitTypeDefinition(_) }

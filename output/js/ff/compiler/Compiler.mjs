@@ -91,7 +91,7 @@ return result_
 export function Compiler_printMeasurements(self_) {
 const worst_ = ff_core_List.List_reverse(ff_core_List.List_takeLast(ff_core_List.List_sortBy(self_.phaseDurations_, ((_w1) => {
 return ((_w1.second_ + 1000000.0) + "")
-})), 5))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), 5))
 ff_core_List.List_each(worst_, ((_1) => {
 {
 const text_ = _1.first_

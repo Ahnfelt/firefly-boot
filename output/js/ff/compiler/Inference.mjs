@@ -378,7 +378,7 @@ ff_compiler_Inference.fail_(at_, "This kind of pattern is not allowed for newtyp
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_)
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
-}))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const recordType_ = ff_compiler_Syntax.TConstructor(at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
@@ -697,7 +697,7 @@ return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
 }))
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
-}))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const recordType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
@@ -891,7 +891,7 @@ if(_1.ERecord) {
 const e_ = _1
 const fields_ = ff_core_List.List_sortBy(e_.fields_, ((_w1) => {
 return _w1.name_
-}))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const fieldTypes_ = ff_core_List.List_map(fields_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }))

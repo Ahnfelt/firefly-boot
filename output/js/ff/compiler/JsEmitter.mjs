@@ -250,8 +250,8 @@ return word_
 export function JsEmitter_emitModule(self_, packagePair_, module_) {
 const selfImport_ = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"")
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
-return ((((i_.package_.first_ + ".") + i_.package_.second_) + ".") + i_.file_)
-})), ((_w1) => {
+return ff_core_Pair.Pair(i_.package_, i_.file_)
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitImportDefinition(self_, _w1)
 }))
 const parts_ = ff_core_List.Link((ff_core_List.List_any(imports_, ((_w1) => {
