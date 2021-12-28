@@ -5,7 +5,7 @@ type RbMap[K, V] {
     RbNode(isRed: Bool, left: RbMap[K, V], key: K, value: V, right: RbMap[K, V])
 }
 
-extend self[K, V]: RbMap[K, V] {
+extend self[K: Order, V]: RbMap[K, V] {
 
     size(): Int {
         self.{
@@ -31,7 +31,7 @@ extend self[K, V]: RbMap[K, V] {
         }
     }
 
-    get[K: Order](key: K): Option[V] {
+    get(key: K): Option[V] {
         self.{
             | RbLeaf => None
             | RbNode(_, l, k, v, r) => Ordering.compare(key, k).{
@@ -42,7 +42,7 @@ extend self[K, V]: RbMap[K, V] {
         }
     }
 
-    add[K: Order](key: K, value: V): RbMap[K, V] {
+    add(key: K, value: V): RbMap[K, V] {
         function go(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => RbNode(True, RbLeaf, key, value, RbLeaf)
@@ -60,7 +60,7 @@ extend self[K, V]: RbMap[K, V] {
     }
 
     // TODO: Remove does not work: E.g. add 1 2 3 then remove 2 breaks it. It hits a non-exhaustive case in Haskell.
-    remove[K: Order](key: K): RbMap[K, V] {
+    remove(key: K): RbMap[K, V] {
         function go(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => self

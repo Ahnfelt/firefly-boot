@@ -274,6 +274,9 @@ extend self: Resolver {
     }
 
     resolveFunctionDefinition(definition: DFunction): DFunction {
+        definition.signature.generics.find { name => self.types.contains(name) }.each { name =>
+            fail(definition.at, "Type " + name + " is already in scope")
+        }
         let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
         let typeMap = definition.signature.generics.map { name => Pair(name, name) }.toMap()
         let self2 = self.Resolver(

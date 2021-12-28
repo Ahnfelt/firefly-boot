@@ -672,6 +672,11 @@ return
 }
 
 export function Resolver_resolveFunctionDefinition(self_, definition_) {
+ff_core_Option.Option_each(ff_core_List.List_find(definition_.signature_.generics_, ((name_) => {
+return ff_core_Map.Map_contains(self_.types_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+})), ((name_) => {
+ff_compiler_Resolver.fail_(definition_.at_, (("Type " + name_) + " is already in scope"))
+}))
 const variableMap_ = ff_core_List.List_toMap(ff_core_List.List_map(ff_core_List.List_map(definition_.signature_.parameters_, ((_w1) => {
 return _w1.name_
 })), ((name_) => {

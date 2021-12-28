@@ -39,10 +39,6 @@ extend self[T]: List[T] {
             return result;
         """
 
-    toSet[T: Order](): Set[T] {
-        self.foldLeft(Set.empty[T]()) { set, value => set.add(value) }
-    }
-
     expect(index: Int): T {
         function go(list: List[T], i: Int): T {
             list.{
@@ -313,6 +309,14 @@ extend self[T]: List[T] {
     }
 }
 
+extend self[T: Order]: List[T] {
+
+    toSet(): Set[T] {
+        self.foldLeft(Set.empty[T]()) { set, value => set.add(value) }
+    }
+
+}
+
 extend self[T]: List[List[T]] {
 
     flatten(): List[T] {
@@ -333,15 +337,19 @@ extend self[T]: List[List[T]] {
 
 }
 
-extend self[K, V]: List[Pair[K, V]] {
+extend self[K: Order, V]: List[Pair[K, V]] {
 
-    toMap[K: Order](): Map[K, V] {
+    toMap(): Map[K, V] {
         self.foldLeft(Map.empty[K, V]()) { map, pair => map.add(pair.first, pair.second) }
     }
 
-    group[K: Order](): Map[K, List[V]] {
+    group(): Map[K, List[V]] {
         groupList(self)
     }
+
+}
+
+extend self[K, V]: List[Pair[K, V]] {
 
     unzip(): Pair[List[K], List[V]] {
         function go(pairs: List[Pair[K, V]], ks: List[K], vs: List[V]): Pair[List[K], List[V]] {

@@ -156,12 +156,6 @@ export function List_toArray(self_) {
         
 }
 
-export function List_toSet(self_, ff_core_Ordering_Order$T) {
-return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((set_, value_) => {
-return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
-}))
-}
-
 export function List_expect(self_, index_) {
 function go_(list_, i_) {
 _tailcall: for(;;) {
@@ -1076,6 +1070,12 @@ return merge_(ff_core_List.List_sortBy(pair_.first_, body_, ff_core_Ordering_Ord
 
 export function List_reverse(self_) {
 return ff_core_List.reverseList_(self_)
+}
+
+export function List_toSet(self_, ff_core_Ordering_Order$T) {
+return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((set_, value_) => {
+return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
+}))
 }
 
 export function List_flatten(self_) {

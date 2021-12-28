@@ -63,7 +63,7 @@ return {RbNode: true, isRed_, left_, key_, value_, right_};
 
 
 
-export function RbMap_size(self_) {
+export function RbMap_size(self_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_
 {
@@ -76,14 +76,14 @@ return
 if(_1.RbNode) {
 const l_ = _1.left_
 const r_ = _1.right_
-return ((ff_core_RbMap.RbMap_size(l_) + 1) + ff_core_RbMap.RbMap_size(r_))
+return ((ff_core_RbMap.RbMap_size(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RbMap_size(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
 return
 }
 }
 }
 }
 
-export function RbMap_pairs(self_) {
+export function RbMap_pairs(self_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_
 {
@@ -98,14 +98,14 @@ const l_ = _1.left_
 const k_ = _1.key_
 const v_ = _1.value_
 const r_ = _1.right_
-return ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_RbMap.RbMap_pairs(l_), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_List.Empty())), ff_core_RbMap.RbMap_pairs(r_))
+return ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_RbMap.RbMap_pairs(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_List.Empty())), ff_core_RbMap.RbMap_pairs(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
 return
 }
 }
 }
 }
 
-export function RbMap_each(self_, body_) {
+export function RbMap_each(self_, body_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_
 {
@@ -120,9 +120,9 @@ const l_ = _1.left_
 const k_ = _1.key_
 const v_ = _1.value_
 const r_ = _1.right_
-ff_core_RbMap.RbMap_each(l_, body_)
+ff_core_RbMap.RbMap_each(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 body_(k_, v_)
-ff_core_RbMap.RbMap_each(r_, body_)
+ff_core_RbMap.RbMap_each(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 return
 }
 }
@@ -207,13 +207,13 @@ const r_ = _1.right_
 const _1 = ff_core_Ordering_Order$K.compare_(key_, k_)
 {
 if(_1.OrderingBefore) {
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, go_(l_), k_, v_, r_))
+return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, go_(l_), k_, v_, r_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 return
 }
 }
 {
 if(_1.OrderingAfter) {
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, l_, k_, v_, go_(r_)))
+return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, l_, k_, v_, go_(r_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 return
 }
 }
@@ -364,7 +364,7 @@ const b_ = _1.right_.left_
 const k2_ = _1.right_.key_
 const v2_ = _1.right_.value_
 const c_ = _1.right_.right_
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, a_, k1_, v1_, ff_core_RbMap.RbNode(true, b_, k2_, v2_, c_)))
+return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, a_, k1_, v1_, ff_core_RbMap.RbNode(true, b_, k2_, v2_, c_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 return
 }
 }
@@ -393,7 +393,7 @@ const d_ = _1.right_.right_.left_
 const k4_ = _1.right_.right_.key_
 const v4_ = _1.right_.right_.value_
 const e_ = _1.right_.right_.right_
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, c_, k3_, v3_, ff_core_RbMap.RbNode(true, d_, k4_, v4_, e_))))
+return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, c_, k3_, v3_, ff_core_RbMap.RbNode(true, d_, k4_, v4_, e_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
 return
 }
 }
@@ -482,7 +482,7 @@ const b_ = _1.left_.right_
 const k2_ = _1.key_
 const v2_ = _1.value_
 const c_ = _1.right_
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_))
+return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 return
 }
 }
@@ -511,7 +511,7 @@ const d_ = _1.left_.right_.right_
 const k4_ = _1.key_
 const v4_ = _1.value_
 const e_ = _1.right_
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_)), k3_, v3_, ff_core_RbMap.RbNode(false, d_, k4_, v4_, e_))
+return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), k3_, v3_, ff_core_RbMap.RbNode(false, d_, k4_, v4_, e_))
 return
 }
 }
@@ -707,7 +707,7 @@ return
 }
 }
 
-export function RbMap_balance(self_) {
+export function RbMap_balance(self_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_
 {

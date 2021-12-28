@@ -80,7 +80,7 @@ if(_2.None) {
 return
 }
 }
-}))
+}), ff_core_Ordering_Order$K)
 return result_
 }
 
@@ -93,7 +93,7 @@ return ff_core_RbMap.RbMap_add(self_, key_, ff_core_Option.None(), ff_core_Order
 }
 
 export function Map_pairs(self_, ff_core_Ordering_Order$K) {
-return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_), ((_1) => {
+return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_, ff_core_Ordering_Order$K), ((_1) => {
 {
 const k_ = _1.first_
 if(_1.second_.Some) {
