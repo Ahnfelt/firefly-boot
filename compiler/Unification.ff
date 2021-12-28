@@ -4,11 +4,22 @@ type Unification(
     mutable substitution: Map[Int, Type],
     mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
     mutable nextUnificationVariableIndex: Int
-    mutable instances: Map[String, InstanceValue]
+    mutable instances: Map[InstanceKey, InstanceValue]
 )
 
 type ConstraintGenerics(at: Location, generics: List[Type])
+
 type InstanceKey(traitName: String, typeName: String)
+
+instance InstanceKey: Order {
+    compare(x: InstanceKey, y: InstanceKey): Ordering {
+        Ordering.compare(x.traitName, y.traitName).{
+            | OrderingSame => Ordering.compare(x.typeName, y.typeName)
+            | o => o
+        }
+    }
+}
+
 type InstanceValue(
     generics: List[String],
     constraints: List[Constraint],
@@ -17,10 +28,6 @@ type InstanceValue(
     traitName: String,
     typeArguments: List[Type]
 )
-
-extend self: InstanceKey {
-    toStringKey(): String { self.traitName + "|" + self.typeName }
-}
 
 make(modules: List[Module]): Unification {
     function fail[T](at: Location, message: String): T {
@@ -40,7 +47,7 @@ make(modules: List[Module]): Unification {
                     | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
                 }
                 Pair(
-                    InstanceKey(definition.traitName, typeName).toStringKey()
+                    InstanceKey(definition.traitName, typeName)
                     InstanceValue(
                         generics = definition.generics
                         constraints = definition.constraints
@@ -61,7 +68,7 @@ extend self: Unification {
         panic(message + " " + at.show())
     }
 
-    withLocalInstances[T](instances: Map[String, InstanceValue], body: () => T): T {
+    withLocalInstances[T](instances: Map[InstanceKey, InstanceValue], body: () => T): T {
         let oldInstances = self.instances
         self.instances = self.instances.addAll(instances)
         try {
@@ -116,7 +123,7 @@ extend self: Unification {
                         }
                 }
             | TConstructor(_, name, generics2) =>
-                self.instances.get(InstanceKey(constraintName, name).toStringKey()).{
+                self.instances.get(InstanceKey(constraintName, name)).{
                     | None =>
                         let g1 = if(generics.isEmpty()) { "" } else { "[...]" }
                         let g2 = if(generics2.isEmpty()) { "" } else { "[...]" }

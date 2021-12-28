@@ -823,14 +823,14 @@ extend self: Inference {
 
 }
 
-constraintsToInstances(constraints: List[Constraint]): Map[String, InstanceValue] {
+constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, InstanceValue] {
     constraints.map { c =>
         let typeName = c.generics.expectFirst().{
             | TConstructor(_, name, _) => name
             | TVariable(at, i) => fail(c.at, "Unexpected unification variable: $" + i)
         }
         Pair(
-            InstanceKey(c.name, typeName).toStringKey()
+            InstanceKey(c.name, typeName)
             InstanceValue(
                 generics = []
                 constraints = []

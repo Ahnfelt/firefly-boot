@@ -98,13 +98,9 @@ return
 }
 }
 }))(ff_core_List.List_expectFirst(definition_.typeArguments_))
-return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_)), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, packageName_, moduleName_, definition_.traitName_, definition_.typeArguments_))
+return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, packageName_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
-}
-
-export function InstanceKey_toStringKey(self_) {
-return ((self_.traitName_ + "|") + self_.typeName_)
+})), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey))
 }
 
 export function Unification_fail(self_, at_, message_) {
@@ -113,7 +109,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export function Unification_withLocalInstances(self_, instances_, body_) {
 const oldInstances_ = self_.instances_
-self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return body_()
 })), (() => {
@@ -271,7 +267,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_
 const generics2_ = _1.generics_
 {
-const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(constraintName_, name_)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraintName_, name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 {
 if(_1.None) {
 const g1_ = (ff_core_List.List_isEmpty(generics_)
@@ -513,6 +509,23 @@ return
 }
 }
 
-
+export const ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey = {
+compare_(x_, y_) {
+{
+const _1 = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.traitName_, y_.traitName_)
+{
+if(_1.OrderingSame) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.typeName_, y_.typeName_)
+return
+}
+}
+{
+const o_ = _1
+return o_
+return
+}
+}
+}
+};
 
 

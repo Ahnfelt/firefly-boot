@@ -3,7 +3,7 @@ import Unification
 import Environment
 
 type Dictionaries(
-    instances: Map[String, InstanceValue]
+    instances: Map[InstanceKey, InstanceValue]
 )
 
 make(modules: List[Module]): Dictionaries {
@@ -166,7 +166,7 @@ extend self: Dictionaries {
             | TConstructor t => t
             | TVariable t => fail(t.at, " is still a unification variable")
         }
-        let instance = self.instances.expect(InstanceKey(constraint.name, firstType.name).toStringKey())
+        let instance = self.instances.expect(InstanceKey(constraint.name, firstType.name))
         let dictionaries = instance.constraints.map { c =>
             self.makeDictionary(instance.generics, firstType.generics, c)
         }
@@ -175,14 +175,14 @@ extend self: Dictionaries {
 
 }
 
-constraintsToInstances(constraints: List[Constraint]): Map[String, InstanceValue] {
+constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, InstanceValue] {
     constraints.map { c =>
         let typeName = c.generics.expectFirst().{
             | TConstructor(_, name, _) => name
             | TVariable(_, i) => fail(c.at, "Unexpected unification variable: $" + i)
         }
         Pair(
-            InstanceKey(c.name, typeName).toStringKey()
+            InstanceKey(c.name, typeName)
             InstanceValue(
                 generics = []
                 constraints = []
