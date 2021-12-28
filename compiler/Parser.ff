@@ -864,7 +864,7 @@ extend self: Parser {
             | _, [Pair(p, False), ...ps] =>
                 PVariant(p.at, "ff:core/List.Link", [p, convertListPattern(p.at, ps)])
             | _, [Pair(p, True)] => p
-            | _, [Pair(p, True), ..._] =>
+            | _, [Pair(p, True), ...] =>
                 self.fail(p.at, "Invalid pattern: ... is only allowed for the last element in a list")
         }
         let items = ArrayBuilder.empty[Pair[MatchPattern, Bool]]()

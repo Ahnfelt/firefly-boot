@@ -142,7 +142,7 @@ extend self[T]: List[T] {
     all(body: T => Bool): Bool {
         self.{
             | [] => True
-            | [head, ..._] {!body(head)} => False
+            | [head, ...] {!body(head)} => False
             | [_, ...tail] => tailcall tail.all(body)
         }
     }
@@ -150,7 +150,7 @@ extend self[T]: List[T] {
     any(body: T => Bool): Bool {
         self.{
             | [] => False
-            | [head, ..._] {body(head)} => True
+            | [head, ...] {body(head)} => True
             | [_, ...tail] => tailcall tail.any(body)
         }
     }
@@ -158,7 +158,7 @@ extend self[T]: List[T] {
     find(body: T => Bool): Option[T] {
         self.{
             | [] => None
-            | [head, ..._] {body(head)} => Some(head)
+            | [head, ...] {body(head)} => Some(head)
             | [_, ...tail] => tailcall tail.find(body)
         }
     }
@@ -292,9 +292,9 @@ extend self[T]: List[T] {
         }
         function merge(xs: List[T], ys: List[T], result: List[T]): List[T] {
             Pair(xs, ys).{
-                | Pair([x, ...xs2], [y, ..._]) {Ordering.compare(body(x), body(y)) == OrderingBefore} =>
+                | Pair([x, ...xs2], [y, ...]) {Ordering.compare(body(x), body(y)) == OrderingBefore} =>
                     tailcall merge(xs2, ys, [x, ...result])
-                | Pair([x, ..._], [y, ...ys2]) => tailcall merge(xs, ys2, [y, ...result])
+                | Pair([x, ...], [y, ...ys2]) => tailcall merge(xs, ys2, [y, ...result])
                 | Pair([x, ...xs2], []) => tailcall merge(xs2, [], [x, ...result])
                 | Pair([], [y, ...ys2]) => tailcall merge([], ys2, [y, ...result])
                 | Pair([], []) => result.reverse()
