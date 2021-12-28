@@ -82,7 +82,7 @@ return ff_core_Pair.Pair_mapFirst(_w1, ((_w1) => {
 return ((((f_ + ".") + p_.variant_) + "_") + _w1)
 }))
 }))
-if((ff_core_Set.Set_size(vs_) == 1)) {
+if((ff_core_Set.Set_size(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) == 1)) {
 ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
 } else {
 ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
@@ -114,13 +114,13 @@ return
 {
 if(_1.first_.Empty) {
 if(_1.second_.Empty) {
-const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_), ((_w1) => {
-return (ff_core_Set.Set_size(_w1.second_) != 0)
+const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) != 0)
 })), ((_1) => {
 {
 const f_ = _1.first_
 const vs_ = _1.second_
-return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_))))
+return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))))
 return
 }
 }))

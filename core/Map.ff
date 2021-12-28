@@ -4,13 +4,13 @@ newtype Map[K, V](redBlack: RbMap[K, Option[V]])
 
 empty[K, V](): Map[K, V] { Map(RbLeaf) }
 
-extend self[K, V]: Map[K, V] {
+extend self[K: Order, V]: Map[K, V] {
 
-    add[K: Order](key : K, value : V): Map[K, V] {
+    add(key: K, value: V): Map[K, V] {
         Map(self.redBlack.add(key, Some(value)))
     }
 
-    addAll[K: Order](that: Map[K, V]) : Map[K, V] {
+    addAll(that: Map[K, V]) : Map[K, V] {
         mutable result = self.redBlack
         that.redBlack.each {
             | k, Some(_)@v => result = result.add(k, v)
@@ -19,11 +19,11 @@ extend self[K, V]: Map[K, V] {
         Map(result)
     }
 
-    get[K: Order](key : K): Option[V] {
+    get(key: K): Option[V] {
         self.redBlack.get(key).flatten()
     }
 
-    remove[K: Order](key : K): Map[K, V] {
+    remove(key: K): Map[K, V] {
         Map(self.redBlack.add(key, None))
     }
 
@@ -49,15 +49,15 @@ extend self[K, V]: Map[K, V] {
         }
     }
 
-    contains[K: Order](key: K): Bool {
+    contains(key: K): Bool {
         !self.get(key).isEmpty()
     }
 
-    expect[K: Order](key: K): V {
+    expect(key: K): V {
         self.get(key).expect()
     }
 
-    updateOrInsert[K: Order](key: K, update: V => V, default: () => V): Map[K, V] {
+    updateOrInsert(key: K, update: V => V, default: () => V): Map[K, V] {
         self.get(key).{
             | None => self.add(key, default())
             | Some(v) => self.add(key, update(v))
@@ -66,9 +66,9 @@ extend self[K, V]: Map[K, V] {
 
 }
 
-extend self[K, V]: Map[K, List[V]] {
+extend self[K: Order, V]: Map[K, List[V]] {
 
-    addToList[K: Order](key : K, value : V): Map[K, List[V]] {
+    addToList(key: K, value: V): Map[K, List[V]] {
         self.updateOrInsert(key, {[value, ... _]}, {[value]})
     }
 

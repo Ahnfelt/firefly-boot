@@ -297,7 +297,7 @@ const type_ = _1.second_
 return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_)))
 return
 }
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment1_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 return
 }

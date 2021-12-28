@@ -92,7 +92,7 @@ export function Map_remove(self_, key_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RbMap_add(self_, key_, ff_core_Option.None(), ff_core_Ordering_Order$K)
 }
 
-export function Map_pairs(self_) {
+export function Map_pairs(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_), ((_1) => {
 {
 const k_ = _1.first_
@@ -112,15 +112,15 @@ return
 }))
 }
 
-export function Map_size(self_) {
-return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_), 0, ((total_, _) => {
+export function Map_size(self_, ff_core_Ordering_Order$K) {
+return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), 0, ((total_, _) => {
 return (total_ + 1)
 }))
 }
 
-export function Map_map(self_, body_, ff_core_Ordering_Order$K1) {
+export function Map_map(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1) {
 const initial_ = ff_core_RbMap.RbLeaf()
-return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_), initial_, ((tree_, pair_) => {
+return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), initial_, ((tree_, pair_) => {
 {
 const _1 = body_(pair_)
 {

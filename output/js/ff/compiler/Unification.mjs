@@ -461,7 +461,7 @@ ff_compiler_Unification.Unification_fail(self_, at_, ((("Infinite type: $" + ind
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
 self_.constraints_ = ff_core_Map.Map_remove(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
-ff_core_List.List_each(ff_core_Map.Map_pairs(map_), ((_1) => {
+ff_core_List.List_each(ff_core_Map.Map_pairs(map_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const name_ = _1.first_
 const at2_ = _1.second_.at_
