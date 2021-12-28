@@ -42,9 +42,9 @@ extend self[T]: List[T] {
     expect(index: Int): T {
         function go(list: List[T], i: Int): T {
             list.{
-                | Empty => panic("expect(" + index + ") on list of size " + self.size())
-                | Link(head, _) {i == 0} => head
-                | Link(_, tail) => tailcall go(tail, i - 1)
+                | [] => panic("expect(" + index + ") on list of size " + self.size())
+                | [head, ...] {i == 0} => head
+                | [_, ...tail] => tailcall go(tail, i - 1)
             }
         }
         go(self, index)
@@ -52,16 +52,16 @@ extend self[T]: List[T] {
 
     first(): Option[T] {
         self.{
-            | Empty => None
-            | Link(head, _) => Some(head)
+            | [] => None
+            | [head, ...] => Some(head)
         }
     }
 
     last(): Option[T] {
         self.{
-            | Empty => None
-            | Link(head, Empty) => Some(head)
-            | Link(_, tail) => tailcall tail.last()
+            | [] => None
+            | [head] => Some(head)
+            | [_, ...tail] => tailcall tail.last()
         }
     }
 
@@ -329,7 +329,7 @@ extend self[T]: List[List[T]] {
                 | [] => []
                 | [as] => finish(as, result)
                 | [[], ...aas] => tailcall go(aas, result)
-                | [[a, ...as], ...aas] => tailcall go(Link(as, aas), [a, ...result])
+                | [[a, ...as], ...aas] => tailcall go([as, ...aas], [a, ...result])
             }
         }
         go(self, [])
