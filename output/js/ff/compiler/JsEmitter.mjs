@@ -70,7 +70,7 @@ export function make_(otherModules_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3))
 return ff_core_Pair.Pair(moduleName_, m_)
-}))), false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), false)
 }
 
 export function fail_(at_, message_) {
@@ -1404,7 +1404,7 @@ return (_w1 != 46)
 })))
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
+const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 let newtype_ = false
 let loneVariant_ = false
 const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
@@ -1435,7 +1435,7 @@ return (_w1 != 46)
 })))
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_)
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1))
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_)
+const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 let newtype_ = false
 const newArguments_ = ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {

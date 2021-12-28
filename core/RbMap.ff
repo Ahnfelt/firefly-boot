@@ -31,22 +31,26 @@ extend self[K, V]: RbMap[K, V] {
         }
     }
 
-    get(key: K): Option[V] {
+    get[K: Order](key: K): Option[V] {
         self.{
             | RbLeaf => None
-            | RbNode(_, l, k, _, _) {magicLess(key, k)} => tailcall l.get(key)
-            | RbNode(_, _, k, _, r) {magicLess(k, key)} => tailcall r.get(key)
-            | RbNode(_, _, _, v, _) => Some(v)
+            | RbNode(_, l, k, v, r) => Ordering.compare(key, k).{
+                | OrderingBefore => tailcall l.get(key)
+                | OrderingAfter => tailcall r.get(key)
+                | OrderingSame => Some(v)
+            }
         }
     }
 
-    add(key: K, value: V): RbMap[K, V] {
+    add[K: Order](key: K, value: V): RbMap[K, V] {
         function go(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => RbNode(True, RbLeaf, key, value, RbLeaf)
-                | RbNode(c, l, k, v, r) {magicLess(key, k)} => RbNode(c, go(l), k, v, r).balance()
-                | RbNode(c, l, k, v, r) {magicLess(k, key)} => RbNode(c, l, k, v, go(r)).balance()
-                | RbNode(c, l, _, _, r) => RbNode(c, l, key, value, r)
+                | RbNode(c, l, k, v, r) => Ordering.compare(key, k).{
+                    | OrderingBefore => RbNode(c, go(l), k, v, r).balance()
+                    | OrderingAfter => RbNode(c, l, k, v, go(r)).balance()
+                    | OrderingSame => RbNode(c, l, key, value, r)
+                }
             }
         }
         go(self).{
@@ -56,13 +60,15 @@ extend self[K, V]: RbMap[K, V] {
     }
 
     // TODO: Remove does not work: E.g. add 1 2 3 then remove 2 breaks it. It hits a non-exhaustive case in Haskell.
-    remove(key: K): RbMap[K, V] {
+    remove[K: Order](key: K): RbMap[K, V] {
         function go(self: RbMap[K, V]): RbMap[K, V] {
             self.{
                 | RbLeaf => self
-                | RbNode(_, _, k, _, _) {magicLess(key, k)} => goLeft(self)
-                | RbNode(_, _, k, _, _) {magicLess(k, key)} => goRight(self)
-                | RbNode(_, a, _, _, b) => fuse(a, b)
+                | RbNode(_, l, k, _, r) => Ordering.compare(key, k).{
+                    | OrderingBefore => goLeft(self)
+                    | OrderingAfter => goRight(self)
+                    | OrderingSame => fuse(l, r)
+                }
             }
         }
         function goLeft(self: RbMap[K, V]): RbMap[K, V] {

@@ -6,11 +6,11 @@ empty[K, V](): Map[K, V] { Map(RbLeaf) }
 
 extend self[K, V]: Map[K, V] {
 
-    add(key : K, value : V): Map[K, V] {
+    add[K: Order](key : K, value : V): Map[K, V] {
         Map(self.redBlack.add(key, Some(value)))
     }
 
-    addAll(that: Map[K, V]) : Map[K, V] {
+    addAll[K: Order](that: Map[K, V]) : Map[K, V] {
         mutable result = self.redBlack
         that.redBlack.each {
             | k, Some(_)@v => result = result.add(k, v)
@@ -19,11 +19,11 @@ extend self[K, V]: Map[K, V] {
         Map(result)
     }
 
-    get(key : K): Option[V] {
+    get[K: Order](key : K): Option[V] {
         self.redBlack.get(key).flatten()
     }
 
-    remove(key : K): Map[K, V] {
+    remove[K: Order](key : K): Map[K, V] {
         Map(self.redBlack.add(key, None))
     }
 
@@ -40,7 +40,7 @@ extend self[K, V]: Map[K, V] {
         }
     }
 
-    map[K1, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
+    map[K1: Order, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
         let initial: Map[K1, V1] = Map[K1, V1](RbLeaf)
         self.pairs().foldLeft(initial) { tree, pair =>
             body(pair).{
@@ -49,15 +49,15 @@ extend self[K, V]: Map[K, V] {
         }
     }
 
-    contains(key: K): Bool {
+    contains[K: Order](key: K): Bool {
         !self.get(key).isEmpty()
     }
 
-    expect(key: K): V {
+    expect[K: Order](key: K): V {
         self.get(key).expect()
     }
 
-    updateOrInsert(key: K, update: V => V, default: () => V): Map[K, V] {
+    updateOrInsert[K: Order](key: K, update: V => V, default: () => V): Map[K, V] {
         self.get(key).{
             | None => self.add(key, default())
             | Some(v) => self.add(key, update(v))
@@ -68,7 +68,7 @@ extend self[K, V]: Map[K, V] {
 
 extend self[K, V]: Map[K, List[V]] {
 
-    addToList(key : K, value : V): Map[K, List[V]] {
+    addToList[K: Order](key : K, value : V): Map[K, List[V]] {
         self.updateOrInsert(key, {[value, ... _]}, {[value]})
     }
 

@@ -65,7 +65,7 @@ let startLineOffset_ = lineOffset_
 const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-,;"
 let operatorCharacters_ = ff_core_Set.empty_()
 ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
-operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_expect(operatorCharactersString_, j_))
+operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_expect(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }))
 function emitToken_(kind_, startOffset_, stopOffset_) {
 if((!ff_core_ArrayBuilder.ArrayBuilder_isEmpty(tokens_))) {
@@ -188,9 +188,9 @@ emitToken_(((dot_ || exponent_)
 } else if((ff_core_String.String_expect(code_, i_) == 95)) {
 i_ += 1
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
-} else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_))) {
+} else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1
-while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_)))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char))) {
 i_ += 1
 }
 const o_ = ((((i_ - start_) == 1) && (ff_core_String.String_expect(code_, (i_ - 1)) == 46))

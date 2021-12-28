@@ -73,20 +73,20 @@ const f_ = _1.first_.head_.first_
 const p_ = _1.first_.head_.second_
 const fs_ = _1.first_.tail_
 const cs_ = _1.second_
-const vs_ = ff_core_Option.Option_else(ff_core_Map.Map_get(variants_, f_), (() => {
-return ff_core_Set.Set_add(p_.otherVariants_, p_.variant_)
+const vs_ = ff_core_Option.Option_else(ff_core_Map.Map_get(variants_, f_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+return ff_core_Set.Set_add(p_.otherVariants_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
-if(ff_core_Set.Set_contains(vs_, p_.variant_)) {
+if(ff_core_Set.Set_contains(vs_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 const newFields_ = ff_core_List.List_map(p_.fields_, ((_w1) => {
 return ff_core_Pair.Pair_mapFirst(_w1, ((_w1) => {
 return ((((f_ + ".") + p_.variant_) + "_") + _w1)
 }))
 }))
 if((ff_core_Set.Set_size(vs_) == 1)) {
-ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
 } else {
-ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()))), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
-ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_Set.Set_remove(vs_, p_.variant_)), ff_core_List.Empty(), cs_, false, guard_)
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_Set.Set_remove(vs_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), cs_, false, guard_)
 }
 } else {
 ff_compiler_Patterns.check_(variants_, ff_core_List.Empty(), cs_, false, guard_)
@@ -143,7 +143,7 @@ return (_w1 != 46)
 function otherVariants_(name_) {
 const variantName_ = unqualifiedName_(name_)
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantName_) + 1))
-const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_)
+const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ == variantName_)
@@ -152,7 +152,7 @@ return ff_core_List.List_toSet(ff_core_List.List_filter(ff_core_List.List_map(de
 return _w1.name_
 })), ((_w1) => {
 return (_w1 != variantName_)
-})))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 })))
 }
@@ -234,7 +234,7 @@ return
 export function convertAndCheck_(modules_, cases_) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_)
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
-ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty()), ff_core_List.Empty(), converted_, false, false)
+ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
 })), (() => {
 ff_compiler_Patterns.fail_(ff_core_List.List_expect(cases_, 0).at_, "Unexhaustive match")
 }))

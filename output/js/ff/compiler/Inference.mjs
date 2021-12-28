@@ -97,7 +97,7 @@ return
 }
 }))(ff_core_List.List_expectFirst(c_.generics_))
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(c_.name_, typeName_)), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), "", "", c_.name_, c_.generics_))
-})))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
 export function Inference_inferModule(self_, module_, otherModules_) {
@@ -201,9 +201,9 @@ const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((
 const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_))
 return ff_core_Pair.Pair(p_.name_, scheme_)
 }))
-const parameterMap_ = ff_core_List.List_toMap(parameters_)
+const parameterMap_ = ff_core_List.List_toMap(parameters_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, parameterMap_))
+return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, parameterMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }))(environment_)
 const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameters_)), ff_core_List.List_addAll(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
@@ -297,8 +297,8 @@ const type_ = _1.second_
 return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_)))
 return
 }
-}))
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment1_.symbols_, symbols_))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment1_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 return
 }
 }))
@@ -333,7 +333,7 @@ if(_1.PVariable) {
 const at_ = _1.at_
 if(_1.name_.Some) {
 const name_ = _1.name_.value_
-return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, expected_), ff_core_List.Empty()))
+return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, expected_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
@@ -343,7 +343,7 @@ if(_1.PAlias) {
 const at_ = _1.at_
 const pattern_ = _1.pattern_
 const variable_ = _1.variable_
-return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, expected_)
+return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, expected_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
@@ -384,7 +384,7 @@ return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
 })))
-return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(variable_, recordType_), ff_core_List.Empty()))
+return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(variable_, recordType_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
@@ -406,7 +406,7 @@ return ff_compiler_Inference.Inference_inferPattern(self_, environment_, paramet
 return
 }
 })), ff_core_Map.empty_(), ((_w1, _w2) => {
-return ff_core_Map.Map_addAll(_w1, _w2)
+return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 return
 }
@@ -644,7 +644,7 @@ if(_1.ELet) {
 const e_ = _1
 const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_))
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_))
+return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }))(environment_)
 {
 const _1 = e_
@@ -933,9 +933,9 @@ const body_ = _1.body_
 const functionMap_ = ff_core_List.List_toMap(ff_core_List.List_map(functions_, ((f_) => {
 const scheme_ = ff_compiler_Environment.Scheme(false, false, false, false, f_.signature_)
 return ff_core_Pair.Pair(f_.signature_.name_, scheme_)
-})))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, functionMap_))
+return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }))(environment_)
 const newFunctions_ = ff_core_List.List_map(functions_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment2_, _w1)
@@ -1724,7 +1724,7 @@ return newArguments_
 }
 
 export function Inference_lookup(self_, environment_, at_, symbol_, typeArguments_) {
-return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_), ((scheme_) => {
+return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((scheme_) => {
 const instantiation_ = ((!ff_core_List.List_isEmpty(typeArguments_))
 ? (function() {
 if((ff_core_List.List_size(scheme_.signature_.generics_) != ff_core_List.List_size(typeArguments_))) {
@@ -1735,7 +1735,7 @@ return ff_core_List.List_zip(scheme_.signature_.generics_, typeArguments_)
 : ff_core_List.List_map(scheme_.signature_.generics_, ((name_) => {
 return ff_core_Pair.Pair(name_, ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_))
 })))
-const instantiationMap_ = ff_core_List.List_toMap(instantiation_)
+const instantiationMap_ = ff_core_List.List_toMap(instantiation_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const parameters_ = ff_core_List.List_map(scheme_.signature_.parameters_, ((p_) => {
 {
 const _1 = p_

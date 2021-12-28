@@ -129,7 +129,7 @@ return
 }
 }
 
-export function RbMap_get(self_, key_) {
+export function RbMap_get(self_, key_, ff_core_Ordering_Order$K) {
 _tailcall: for(;;) {
 {
 const _1 = self_
@@ -143,7 +143,12 @@ return
 if(_1.RbNode) {
 const l_ = _1.left_
 const k_ = _1.key_
-if(ff_core_Core.magicLess_(key_, k_)) {
+const v_ = _1.value_
+const r_ = _1.right_
+{
+const _1 = ff_core_Ordering_Order$K.compare_(key_, k_)
+{
+if(_1.OrderingBefore) {
 {
 const self_r_ = l_
 const key_r_ = key_
@@ -154,12 +159,8 @@ continue _tailcall
 return
 }
 }
-}
 {
-if(_1.RbNode) {
-const k_ = _1.key_
-const r_ = _1.right_
-if(ff_core_Core.magicLess_(k_, key_)) {
+if(_1.OrderingAfter) {
 {
 const self_r_ = r_
 const key_r_ = key_
@@ -170,10 +171,8 @@ continue _tailcall
 return
 }
 }
-}
 {
-if(_1.RbNode) {
-const v_ = _1.value_
+if(_1.OrderingSame) {
 return ff_core_Option.Some(v_)
 return
 }
@@ -182,8 +181,12 @@ return
 return
 }
 }
+}
+return
+}
+}
 
-export function RbMap_add(self_, key_, value_) {
+export function RbMap_add(self_, key_, value_, ff_core_Ordering_Order$K) {
 function go_(self_) {
 {
 const _1 = self_
@@ -200,31 +203,27 @@ const l_ = _1.left_
 const k_ = _1.key_
 const v_ = _1.value_
 const r_ = _1.right_
-if(ff_core_Core.magicLess_(key_, k_)) {
+{
+const _1 = ff_core_Ordering_Order$K.compare_(key_, k_)
+{
+if(_1.OrderingBefore) {
 return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, go_(l_), k_, v_, r_))
 return
 }
 }
-}
 {
-if(_1.RbNode) {
-const c_ = _1.isRed_
-const l_ = _1.left_
-const k_ = _1.key_
-const v_ = _1.value_
-const r_ = _1.right_
-if(ff_core_Core.magicLess_(k_, key_)) {
+if(_1.OrderingAfter) {
 return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, l_, k_, v_, go_(r_)))
 return
 }
 }
-}
 {
-if(_1.RbNode) {
-const c_ = _1.isRed_
-const l_ = _1.left_
-const r_ = _1.right_
+if(_1.OrderingSame) {
 return ff_core_RbMap.RbNode(c_, l_, key_, value_, r_)
+return
+}
+}
+}
 return
 }
 }
@@ -252,7 +251,7 @@ return
 }
 }
 
-export function RbMap_remove(self_, key_) {
+export function RbMap_remove(self_, key_, ff_core_Ordering_Order$K) {
 function go_(self_) {
 {
 const _1 = self_
@@ -264,27 +263,30 @@ return
 }
 {
 if(_1.RbNode) {
+const l_ = _1.left_
 const k_ = _1.key_
-if(ff_core_Core.magicLess_(key_, k_)) {
+const r_ = _1.right_
+{
+const _1 = ff_core_Ordering_Order$K.compare_(key_, k_)
+{
+if(_1.OrderingBefore) {
 return goLeft_(self_)
 return
 }
 }
-}
 {
-if(_1.RbNode) {
-const k_ = _1.key_
-if(ff_core_Core.magicLess_(k_, key_)) {
+if(_1.OrderingAfter) {
 return goRight_(self_)
 return
 }
 }
-}
 {
-if(_1.RbNode) {
-const a_ = _1.left_
-const b_ = _1.right_
-return fuse_(a_, b_)
+if(_1.OrderingSame) {
+return fuse_(l_, r_)
+return
+}
+}
+}
 return
 }
 }

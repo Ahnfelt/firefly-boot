@@ -113,10 +113,6 @@ export function magicShow_(value_) {
 return JSON.stringify(value_, undefined, 4)
 }
 
-export function magicLess_(x_, y_) {
-return x_ < y_
-}
-
 
 
 

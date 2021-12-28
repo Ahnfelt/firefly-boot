@@ -481,13 +481,13 @@ return
 
 export function Substitution_get(self_, index_) {
 {
-const _1 = ff_core_Map.Map_expect(self_.substitution_, index_)
+const _1 = ff_core_Map.Map_expect(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 {
 if(_1.TVariable) {
 const i_ = _1.index_
 if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
 const t_ = ff_compiler_Substitution.Substitution_get(self_, i_)
-self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_)
+self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return t_
 return
 }
@@ -509,7 +509,7 @@ return
 }
 
 export function Substitution_has(self_, index_) {
-return ff_core_Map.Map_contains(self_.substitution_, index_)
+return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
 

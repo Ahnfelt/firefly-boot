@@ -5,10 +5,10 @@ empty[T](): Set[T] {
 }
 
 extend self[T]: Set[T] {
-    add(value: T): Set[T] { Set(self.map.add(value, Unit)) }
-    addAll(that: Set[T]): Set[T] { Set(self.map.addAll(that.map)) }
-    remove(value: T) : Set[T] { Set(self.map.remove(value)) }
-    contains(value: T): Bool { self.map.contains(value) }
+    add[T: Order](value: T): Set[T] { Set(self.map.add(value, Unit)) }
+    addAll[T: Order](that: Set[T]): Set[T] { Set(self.map.addAll(that.map)) }
+    remove[T: Order](value: T) : Set[T] { Set(self.map.remove(value)) }
+    contains[T: Order](value: T): Bool { self.map.contains(value) }
     size() : Int { self.map.size() }
     toList(): List[T] { self.map.pairs().map { _.first } }
 }

@@ -100,7 +100,7 @@ return
 }))(ff_core_List.List_expectFirst(definition_.typeArguments_))
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_)), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, packageName_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
-}))))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 export function InstanceKey_toStringKey(self_) {
@@ -113,7 +113,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export function Unification_withLocalInstances(self_, instances_, body_) {
 const oldInstances_ = self_.instances_
-self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_)
+self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return body_()
 })), (() => {
@@ -139,7 +139,7 @@ const at_ = type_a.at_
 const name_ = type_a.name_
 if(type_a.generics_.Empty) {
 {
-const _1 = ff_core_Map.Map_get(instantiation_, name_)
+const _1 = ff_core_Map.Map_get(instantiation_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 {
 if(_1.Some) {
 const t_ = _1.value_
@@ -225,10 +225,10 @@ return
 if(_1.TVariable) {
 const i_ = _1.index_
 {
-const _1 = ff_core_Map.Map_get(self_.constraints_, i_)
+const _1 = ff_core_Map.Map_get(self_.constraints_, i_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 {
 if(_1.None) {
-self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_)), ff_core_List.Empty())))
+self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_)), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
 }
 }
@@ -236,11 +236,11 @@ return
 if(_1.Some) {
 const map_ = _1.value_
 {
-const _1 = ff_core_Map.Map_get(map_, constraintName_)
+const _1 = ff_core_Map.Map_get(map_, constraintName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 {
 if(_1.None) {
-const newMap_ = ff_core_Map.Map_add(map_, constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_))
-self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, newMap_)
+const newMap_ = ff_core_Map.Map_add(map_, constraintName_, ff_compiler_Unification.ConstraintGenerics(at_, generics_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+self_.constraints_ = ff_core_Map.Map_add(self_.constraints_, i_, newMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return
 }
 }
@@ -271,7 +271,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_
 const generics2_ = _1.generics_
 {
-const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(constraintName_, name_)))
+const _1 = ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(constraintName_, name_)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 {
 if(_1.None) {
 const g1_ = (ff_core_List.List_isEmpty(generics_)
@@ -290,7 +290,7 @@ const definition_ = _1.value_
 const unificationVariables_ = ff_core_List.List_map(definition_.generics_, ((_) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_, at_)
 }))
-const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, unificationVariables_))
+const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, unificationVariables_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_))
 const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_))
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
@@ -317,13 +317,13 @@ return
 
 export function Unification_get(self_, index_) {
 {
-const _1 = ff_core_Map.Map_expect(self_.substitution_, index_)
+const _1 = ff_core_Map.Map_expect(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 {
 if(_1.TVariable) {
 const i_ = _1.index_
 if(ff_compiler_Unification.Unification_has(self_, i_)) {
 const t_ = ff_compiler_Unification.Unification_get(self_, i_)
-self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_)
+self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return t_
 return
 }
@@ -338,7 +338,7 @@ return
 }
 
 export function Unification_has(self_, index_) {
-return ff_core_Map.Map_contains(self_.substitution_, index_)
+return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
 export function Unification_substitute(self_, type_) {
@@ -462,9 +462,9 @@ export function Unification_bind(self_, at_, index_, type_) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
 ff_compiler_Unification.Unification_fail(self_, at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
 }
-self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_)
-ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_), ((map_) => {
-self_.constraints_ = ff_core_Map.Map_remove(self_.constraints_, index_)
+self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
+self_.constraints_ = ff_core_Map.Map_remove(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 ff_core_List.List_each(ff_core_Map.Map_pairs(map_), ((_1) => {
 {
 const name_ = _1.first_

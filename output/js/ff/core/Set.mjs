@@ -56,20 +56,20 @@ export function empty_() {
 return ff_core_Map.empty_()
 }
 
-export function Set_add(self_, value_) {
-return ff_core_Map.Map_add(self_, value_, (void 0))
+export function Set_add(self_, value_, ff_core_Ordering_Order$T) {
+return ff_core_Map.Map_add(self_, value_, (void 0), ff_core_Ordering_Order$T)
 }
 
-export function Set_addAll(self_, that_) {
-return ff_core_Map.Map_addAll(self_, that_)
+export function Set_addAll(self_, that_, ff_core_Ordering_Order$T) {
+return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
 }
 
-export function Set_remove(self_, value_) {
-return ff_core_Map.Map_remove(self_, value_)
+export function Set_remove(self_, value_, ff_core_Ordering_Order$T) {
+return ff_core_Map.Map_remove(self_, value_, ff_core_Ordering_Order$T)
 }
 
-export function Set_contains(self_, value_) {
-return ff_core_Map.Map_contains(self_, value_)
+export function Set_contains(self_, value_, ff_core_Ordering_Order$T) {
+return ff_core_Map.Map_contains(self_, value_, ff_core_Ordering_Order$T)
 }
 
 export function Set_size(self_) {

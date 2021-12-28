@@ -90,7 +90,7 @@ return
 }
 }))(ff_core_List.List_expectFirst(c_.generics_))
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(c_.name_, typeName_)), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), "", "", c_.name_, c_.generics_))
-})))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
 export function Dictionaries_processModule(self_, module_, otherModules_) {
@@ -108,7 +108,7 @@ return
 return ff_core_Option.None()
 return
 }
-})))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processLetDefinition(self_, functionSignatures_, _w1)
 }))
@@ -158,7 +158,7 @@ return
 export function Dictionaries_processFunctionDefinition(self_, functions_, definition_) {
 const instances_ = ff_compiler_Dictionaries.constraintsToInstances_(definition_.signature_.constraints_)
 const self2_ = (((_c) => {
-return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_))
+return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }))(self_)
 {
 const _1 = definition_
@@ -173,7 +173,7 @@ return
 export function Dictionaries_processInstanceDefinition(self_, functions_, definition_) {
 const instances_ = ff_compiler_Dictionaries.constraintsToInstances_(definition_.constraints_)
 const self2_ = (((_c) => {
-return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_))
+return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }))(self_)
 {
 const _1 = definition_
@@ -301,7 +301,7 @@ return
 {
 if(_1.ELet) {
 const e_ = _1
-const newFunctions_ = ff_core_Map.Map_remove(functions_, e_.name_)
+const newFunctions_ = ff_core_Map.Map_remove(functions_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 {
 const _1 = e_
 {
@@ -392,8 +392,8 @@ if(_1.function_.EVariable) {
 const functionName_ = _1.function_.name_
 const typeArguments_ = _1.typeArguments_
 const arguments_ = _1.arguments_
-if(ff_core_Map.Map_contains(functions_, functionName_)) {
-const signature_ = ff_core_Map.Map_expect(functions_, functionName_)
+if(ff_core_Map.Map_contains(functions_, functionName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
+const signature_ = ff_core_Map.Map_expect(functions_, functionName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, signature_.generics_, typeArguments_, _w1)
 }))
@@ -442,7 +442,7 @@ if(_1.EFunctions) {
 const e_ = _1
 const newFunctions_ = ff_core_Map.Map_addAll(functions_, ff_core_List.List_toMap(ff_core_List.List_map(e_.functions_, ((f_) => {
 return ff_core_Pair.Pair(f_.signature_.name_, f_.signature_)
-}))))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 {
 const _1 = e_
 {
@@ -510,7 +510,7 @@ return
 }
 
 export function Dictionaries_makeDictionary(self_, typeParameters_, typeArguments_, constraint_) {
-const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_))
+const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty())
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
@@ -531,7 +531,7 @@ return
 }
 }
 }))(ff_core_List.List_expectFirst(newGenerics_))
-const instance_ = ff_core_Map.Map_expect(self_.instances_, ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_)))
+const instance_ = ff_core_Map.Map_expect(self_.instances_, ff_compiler_Unification.InstanceKey_toStringKey(ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.generics_, firstType_.generics_, c_)
 }))
