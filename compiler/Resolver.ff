@@ -74,19 +74,19 @@ extend self: Resolver {
         let types = module.types.flatMap { entry(_.name, True) }.toMap()
         let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap()
         Resolver(
-            variables = self.variables ++ lets ++ functions ++ traitMethods
-            variants = self.variants ++ variants
-            types = self.types ++ types
+            variables = self.variables.addAll(lets).addAll(functions).addAll(traitMethods)
+            variants = self.variants.addAll(variants)
+            types = self.types.addAll(types)
             typeParameters = [].toSet()
-            traits = self.traits ++ traits
+            traits = self.traits.addAll(traits)
         )
     }
 
     resolveTypeDefinition(definition: DType): DType {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
-            types = self.types ++ generics
-            typeParameters = self.typeParameters ++ definition.generics.toSet()
+            types = self.types.addAll(generics)
+            typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         definition.DType(
             constraints = definition.constraints.map(self2.resolveConstraint)
@@ -110,8 +110,8 @@ extend self: Resolver {
     resolveTraitDefinition(definition: DTrait): DTrait {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
-            types = self.types ++ generics
-            typeParameters = self.typeParameters ++ definition.generics.toSet()
+            types = self.types.addAll(generics)
+            typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         definition.DTrait(
             constraints = definition.constraints.map(self2.resolveConstraint),
@@ -123,8 +123,8 @@ extend self: Resolver {
     resolveInstanceDefinition(definition: DInstance): DInstance {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
-            types = self.types ++ generics
-            typeParameters = self.typeParameters ++ definition.generics.toSet()
+            types = self.types.addAll(generics)
+            typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         let traitName = self2.traits.get(definition.traitName).else {
             fail(definition.at, "No such trait: " + definition.traitName)
@@ -140,8 +140,8 @@ extend self: Resolver {
     resolveExtendDefinition(definition: DExtend): DExtend {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
-            types = self.types ++ generics
-            typeParameters = self.typeParameters ++ definition.generics.toSet()
+            types = self.types.addAll(generics)
+            typeParameters = self.typeParameters.addAll(definition.generics.toSet())
             variables = self.variables.add(definition.name, definition.name)
         )
         definition.DExtend(
@@ -226,7 +226,7 @@ extend self: Resolver {
             e.EWildcard()
         | EFunctions(at, functions, body) =>
             let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap()
-            let self2 = self.Resolver(variables = self.variables ++ functionMap)
+            let self2 = self.Resolver(variables = self.variables.addAll(functionMap))
             EFunctions(
                 at = at,
                 functions = functions.map { self2.resolveFunctionDefinition(_) },
@@ -293,9 +293,9 @@ extend self: Resolver {
         let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
         let typeMap = definition.signature.generics.map { name => Pair(name, name) }.toMap()
         let self2 = self.Resolver(
-            variables = self.variables ++ variableMap
-            typeParameters = self.typeParameters ++ definition.signature.generics.toSet()
-            types = self.types ++ typeMap
+            variables = self.variables.addAll(variableMap)
+            typeParameters = self.typeParameters.addAll(definition.signature.generics.toSet())
+            types = self.types.addAll(typeMap)
         )
         let signature = self2.resolveSignature(definition.signature)
         let body = definition.body.Lambda(cases = definition.body.cases.map { self2.resolveCase(_) })
@@ -322,15 +322,15 @@ extend self: Resolver {
             | PVariable(_, None) =>
                 Map.empty()
             | PVariant(_, _, patterns) =>
-                patterns.map(findVariables).foldLeft(Map.empty[String, String]()) {_ ++ _}
+                patterns.map(findVariables).foldLeft(Map.empty[String, String]()) {_.addAll(_)}
             | PVariantAs(_, _, variable) =>
                 variable.toList().map { x => Pair(x, x) }.toMap()
             | PAlias(_, pattern, variable) =>
-                [Pair(variable, variable)].toMap() ++ findVariables(pattern)
+                [Pair(variable, variable)].toMap().addAll(findVariables(pattern))
         }
-        let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty[String, String]()) {_ ++ _}
+        let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty[String, String]()) {_.addAll(_)}
         let self2 = self.Resolver(
-            variables = self.variables ++ variableMap
+            variables = self.variables.addAll(variableMap)
         )
         MatchCase(
             at = case.at,

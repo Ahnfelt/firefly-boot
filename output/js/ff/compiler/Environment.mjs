@@ -146,7 +146,7 @@ return ff_core_List.List_map(d_.variants_, ((variant_) => {
 return ff_core_Pair.Pair(full_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, d_.generics_, d_.constraints_, ff_core_List.List_addAll(d_.commonFields_, variant_.fields_), returnType_)))
 }))
 }))
-return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_List.List_addAll(ff_core_List.List_addAll(functions_, lets_), fields_), extends_), variants_), traitMethods_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
 

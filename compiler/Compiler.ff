@@ -110,7 +110,7 @@ extend self: Compiler {
         let tokens = Tokenizer.tokenize(file, code)
         let module = Parser.make(packagePair, file, tokens).parseModule()
         let result = module.Module(
-            imports = coreImports ++ module.imports
+            imports = [...coreImports, ...module.imports]
         )
 
         self.parsedModules = self.parsedModules.add(packageName + ":" + moduleName, result)

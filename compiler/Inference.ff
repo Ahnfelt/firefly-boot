@@ -73,8 +73,8 @@ extend self: Inference {
         )
         let functions = definition.methods.map { method =>
             let signature = method.signature.Signature(
-                generics = definition.generics ++ method.signature.generics
-                constraints = definition.constraints ++ method.signature.constraints
+                generics = [...definition.generics, ...method.signature.generics]
+                constraints = [...definition.constraints, ...method.signature.constraints]
                 parameters = [selfParameter, ...method.signature.parameters]
             )
             let lambda = method.body.Lambda(
@@ -102,7 +102,7 @@ extend self: Inference {
             Pair(p.name, scheme)
         }
         let parameterMap = parameters.toMap()
-        let environment2 = environment.Environment(symbols = environment.symbols ++ parameterMap)
+        let environment2 = environment.Environment(symbols = environment.symbols.addAll(parameterMap))
         let functionType = TConstructor(
             definition.at,
             "Function$" + parameters.size(),
@@ -147,7 +147,7 @@ extend self: Inference {
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
                 Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type)))
             }
-            Environment(environment1.symbols ++ symbols)
+            Environment(environment1.symbols.addAll(symbols))
         }
         let condition = case.condition.map { e =>
             self.inferTerm(newEnvironment, TConstructor(e.at, core("Bool"), []), e)
@@ -194,7 +194,7 @@ extend self: Inference {
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
                 patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
-                }.foldLeft(Map.empty[String, Type]()) { _ ++ _ }
+                }.foldLeft(Map.empty[String, Type]()) { _.addAll(_) }
         }
     }
 
@@ -447,7 +447,7 @@ extend self: Inference {
                     let scheme = Scheme(False, False, False, False, f.signature)
                     Pair(f.signature.name, scheme)
                 }.toMap()
-                let environment2 = environment.Environment(symbols = environment.symbols ++ functionMap)
+                let environment2 = environment.Environment(symbols = environment.symbols.addAll(functionMap))
                 let newFunctions = functions.map { self.inferFunctionDefinition(environment2, _) }
                 let newBody = self.inferTerm(environment2, expected, body)
                 EFunctions(
@@ -610,21 +610,6 @@ extend self: Inference {
                         fail(e.at, "Operators on unknown types not currently supported")
                 }
                 e.ECall(arguments = [a1.Argument(value = e1)])
-            | [a1, a2] {
-                operator == "++"
-            } =>
-                let t = self.unification.freshUnificationVariable(e.at)
-                let e1 = self.inferTerm(environment, t, a1.value)
-                let e2 = self.inferTerm(environment, t, a2.value)
-                self.unification.unify(e.at, expected, t)
-                let name = self.unification.substitute(t).{
-                    | TConstructor(_, name, _) => name
-                    | _ => fail(e.at, "Operators on unknown types not currently supported")
-                }
-                if(name != core("List") && name != core("Array") && name != core("Set") && name != core("Map")) {
-                    fail(e.at, "Operator ++ not currently supported for " + name)
-                }
-                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | [a1, a2] {
                 operator == "||" || operator == "&&"
             } =>

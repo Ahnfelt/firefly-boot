@@ -689,14 +689,8 @@ extend self: Parser {
             while {operators.any(self.current().rawIs)} {
                 let token = self.skip(LOperator)
                 let right = self.parseBinary(level + 1)
-                if(token.rawIs("++")) {
-                    let arguments = [Argument(right.at, None, right)]
-                    result =
-                        ECall(token.at(), False, False, EField(token.at(), False, result, "addAll"), [], arguments, [])
-                } else {
-                    let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
-                    result = ECall(token.at(), False, False, EVariable(token.at(), token.raw()), [], arguments, [])
-                }
+                let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
+                result = ECall(token.at(), False, False, EVariable(token.at(), token.raw()), [], arguments, [])
             }
         }
         result
@@ -904,7 +898,6 @@ binaryOperators = [
     ["&&"]
     ["!=", "=="]
     ["<=", ">=", "<", ">"]
-    ["++"]
     ["+", "-"]
     ["*", "/", "%"]
     ["^"]

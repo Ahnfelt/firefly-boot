@@ -24,9 +24,9 @@ check(
             if(vs.contains(p.variant)) {
                 let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
                 if(vs.size() == 1) {
-                    check(variants.add(f, vs), newFields ++ fs, cs, True, guard)
+                    check(variants.add(f, vs), [...newFields, ...fs], cs, True, guard)
                 } else {
-                    check(variants.add(f, [p.variant].toSet()), newFields ++ fs, cs, True, guard)
+                    check(variants.add(f, [p.variant].toSet()), [...newFields, ...fs], cs, True, guard)
                     check(variants.add(f, vs.remove(p.variant)), [], cs, False, guard)
                 }
             } else {

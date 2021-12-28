@@ -1248,51 +1248,6 @@ const a1_ = _1.head_
 if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_
 if(_1.tail_.tail_.Empty) {
-if((operator_ == "++")) {
-const t_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
-const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
-const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a2_.value_)
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
-const name_ = (((_1) => {
-{
-if(_1.TConstructor) {
-const name_ = _1.name_
-return name_
-return
-}
-}
-{
-return ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
-return
-}
-}))(ff_compiler_Unification.Unification_substitute(self_.unification_, t_))
-if(((((name_ != ff_compiler_Inference.core_("List")) && (name_ != ff_compiler_Inference.core_("Array"))) && (name_ != ff_compiler_Inference.core_("Set"))) && (name_ != ff_compiler_Inference.core_("Map")))) {
-ff_compiler_Inference.fail_(e_.at_, ("Operator ++ not currently supported for " + name_))
-}
-{
-const _1 = e_
-{
-const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, _c.function_, _c.typeArguments_, ff_core_List.Link((((_c) => {
-return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link((((_c) => {
-return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
-}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
-return
-}
-}
-return
-}
-}
-}
-}
-}
-{
-if(_1.Link) {
-const a1_ = _1.head_
-if(_1.tail_.Link) {
-const a2_ = _1.tail_.head_
-if(_1.tail_.tail_.Empty) {
 if(((operator_ == "||") || (operator_ == "&&"))) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)

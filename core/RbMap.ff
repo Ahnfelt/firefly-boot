@@ -17,7 +17,7 @@ extend self[K: Order, V]: RbMap[K, V] {
     pairs(): List[Pair[K, V]] {
         self.{
             | RbLeaf => []
-            | RbNode(_, l, k, v, r) => l.pairs() ++ [Pair(k, v)] ++ r.pairs()
+            | RbNode(_, l, k, v, r) => [...l.pairs(), Pair(k, v), ...r.pairs()]
         }
     }
 

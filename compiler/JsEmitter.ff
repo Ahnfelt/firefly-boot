@@ -151,7 +151,7 @@ extend self: JsEmitter {
     }
 
     emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
-        let allFields = typeDefinition.commonFields ++ definition.fields
+        let allFields = [...typeDefinition.commonFields, ...definition.fields]
         let fields = allFields.map { escapeKeyword(_.name) }.join(", ")
         definition.targets.javaScript.else {
             if(allFields.isEmpty()) {
@@ -399,11 +399,11 @@ extend self: JsEmitter {
                 "\n}"
             | PVariant(_, name, patterns) =>
                 let processed = self.processVariantCase(name, argument)
-                let newMatchCase = matchCase.MatchCase(patterns = patterns ++ matchCase.patterns)
+                let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...matchCase.patterns])
                 if(processed.loneVariant) { "" } else {
                     "if(" + argument + "." + processed.variantName + ") {\n"
                 } +
-                self.emitCase(processed.arguments ++ arguments, newMatchCase, last) +
+                self.emitCase([...processed.arguments, ...arguments], newMatchCase, last) +
                 if(processed.loneVariant) { "" } else { "\n}" }
             | PVariantAs(at, name, variable) =>
                 let processed = self.processVariantCase(name, argument)
@@ -440,7 +440,7 @@ extend self: JsEmitter {
             definition.variants.find { _.name == variantName }.map { variant =>
                 newtype = definition.newtype
                 loneVariant = definition.variants.size() == 1
-                definition.commonFields.map { _.name} ++ variant.fields.map {_.name}
+                [...definition.commonFields.map { _.name}, ...variant.fields.map {_.name}]
             }
         }.expect().map { field => if(newtype) { argument } else { argument + "." + escapeKeyword(field) } }
         ProcessedVariantCase(variantName, newtype, loneVariant, newArguments)

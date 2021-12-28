@@ -66,7 +66,7 @@ export function Poly(generics_, constraints_) {
 return {generics_, constraints_};
 }
 
-export const binaryOperators_ = ff_core_List.List_toArray(ff_core_List.Link(ff_core_List.Link("||", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("&&", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("!=", ff_core_List.Link("==", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("<=", ff_core_List.Link(">=", ff_core_List.Link("<", ff_core_List.Link(">", ff_core_List.Empty())))), ff_core_List.Link(ff_core_List.Link("++", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("+", ff_core_List.Link("-", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("*", ff_core_List.Link("/", ff_core_List.Link("%", ff_core_List.Empty()))), ff_core_List.Link(ff_core_List.Link("^", ff_core_List.Empty()), ff_core_List.Empty())))))))))
+export const binaryOperators_ = ff_core_List.List_toArray(ff_core_List.Link(ff_core_List.Link("||", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("&&", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("!=", ff_core_List.Link("==", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("<=", ff_core_List.Link(">=", ff_core_List.Link("<", ff_core_List.Link(">", ff_core_List.Empty())))), ff_core_List.Link(ff_core_List.Link("+", ff_core_List.Link("-", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("*", ff_core_List.Link("/", ff_core_List.Link("%", ff_core_List.Empty()))), ff_core_List.Link(ff_core_List.Link("^", ff_core_List.Empty()), ff_core_List.Empty()))))))))
 
 export function make_(packagePair_, file_, tokens_) {
 return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), 0, 1)
@@ -869,13 +869,8 @@ return ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), v
 }))) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator())
 const right_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1))
-if(ff_compiler_Token.Token_rawIs(token_, "++")) {
-const arguments_ = ff_core_List.Link(ff_compiler_Syntax.Argument(right_.at_, ff_core_Option.None(), right_), ff_core_List.Empty())
-result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, false, ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, "addAll"), ff_core_List.Empty(), arguments_, ff_core_List.Empty())
-} else {
 const arguments_ = ff_core_List.Link(ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_), ff_core_List.Link(ff_compiler_Syntax.Argument(right_.at_, ff_core_Option.None(), right_), ff_core_List.Empty()))
 result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), ff_core_List.Empty(), arguments_, ff_core_List.Empty())
-}
 }
 }
 return result_

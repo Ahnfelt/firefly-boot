@@ -19,8 +19,9 @@ type Instantiated(
 
 make(module: Module, otherModules: List[Module]): Environment {
     Environment(
-        processModule(module, True).symbols ++
-        otherModules.map { processModule(_, False).symbols }.foldLeft(Map.empty()) { _ ++ _ }
+        processModule(module, True).symbols.addAll(
+            otherModules.map { processModule(_, False).symbols }.foldLeft(Map.empty()) { _.addAll(_) }
+        )
     )
 }
 
@@ -53,7 +54,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             let constraint = Constraint(definition.at, full(module, definition.name), generics)
             definition.methods.map { methodSignature =>
                 let signature = methodSignature.Signature(
-                    generics = definition.generics ++ methodSignature.generics
+                    generics = [...definition.generics, ...methodSignature.generics]
                     constraints = [constraint, ...definition.constraints, ...methodSignature.constraints]
                 )
                 Pair(
@@ -75,8 +76,8 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                         Pair(
                             prefix + method.signature.name,
                             Scheme(False, False, False, False, method.signature.Signature(
-                                generics = d.generics ++ method.signature.generics
-                                constraints = d.constraints ++ method.signature.constraints
+                                generics = [...d.generics, ...method.signature.generics]
+                                constraints = [...d.constraints, ...method.signature.constraints]
                                 parameters = [selfParameter, ...method.signature.parameters]
                             ))
                         )
@@ -117,12 +118,12 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                         variant.name,
                         generics = d.generics,
                         constraints = d.constraints,
-                        parameters = d.commonFields ++ variant.fields,
+                        parameters = [...d.commonFields, ...variant.fields],
                         returnType = returnType
                     ))
                 )
             }
         }
 
-    Environment((functions ++ lets ++ fields ++ extends ++ variants ++ traitMethods).toMap())
+    Environment([...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap())
 }
