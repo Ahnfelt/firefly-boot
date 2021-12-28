@@ -555,11 +555,10 @@ extend self: Inference {
     ): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         self.unification.unify(e.at, expected, signature.returnType)
-        // TODO: Varargs
         let arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments)
         e.ECall(
             instanceCall = instanceCall
-            function = e.function, // It's always a function name - should we propagate that information?
+            function = e.function // It's always a function name - should we propagate that information?
             typeArguments = instantiation.map { _.second }
             arguments = arguments
         )
