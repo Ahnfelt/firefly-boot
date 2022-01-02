@@ -901,6 +901,8 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot())
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 const term_ = ff_compiler_Parser.Parser_parseAtom(self_)
 result_ = ff_compiler_Syntax.EPipe(term_.at_, result_, term_)
+} else if(ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper(), ff_compiler_Token.LNamespace())) {
+result_ = ff_compiler_Parser.Parser_parseCopy(self_, result_)
 } else {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, ff_compiler_Token.Token_raw(token_))
@@ -1002,6 +1004,20 @@ const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_)
 return ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(token_), name_, typeArguments_, ff_core_Option.Some(arguments_))
 }
 }
+}
+
+export function Parser_parseCopy(self_, record_) {
+const namespace_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LNamespace()))
+? ""
+: ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LNamespace())))
+const extraNamespace_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LNamespace()))
+? ""
+: ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LNamespace())))
+const prefix_ = (namespace_ + extraNamespace_)
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
+const name_ = (prefix_ + ff_compiler_Token.Token_raw(token_))
+const fields_ = ff_compiler_Parser.Parser_parseRecord(self_, false).first_
+return ff_compiler_Syntax.ECopy(ff_compiler_Token.Token_at(token_), name_, record_, fields_)
 }
 
 export function Parser_parseRecord(self_, allowDotDotDot_) {
