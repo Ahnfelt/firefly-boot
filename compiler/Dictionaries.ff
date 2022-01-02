@@ -28,7 +28,7 @@ extend self: Dictionaries {
         let extends = module.extends.map { self.processExtendDefinition(functionSignatures, _) }
         //let traits = module.traits.map { self.processTraitDefinition(functionSignatures, _) }
         let instances = module.instances.map { self.processInstanceDefinition(functionSignatures, _) }
-        module.Module(
+        Module(...module,
             //traits = traits,
             instances = instances,
             extends = extends,
@@ -38,38 +38,38 @@ extend self: Dictionaries {
     }
 
     processLetDefinition(functions: Map[String, Signature], definition: DLet): DLet {
-        definition.DLet(
+        DLet(...definition,
             value = self.processTerm(functions, definition.value)
         )
     }
 
     processExtendDefinition(functions: Map[String, Signature], definition: DExtend): DExtend {
-        definition.DExtend(
+        DExtend(...definition,
             methods = definition.methods.map { self.processFunctionDefinition(functions, _) }
         )
     }
 
     processFunctionDefinition(functions: Map[String, Signature], definition: DFunction): DFunction {
         let instances = constraintsToInstances(definition.signature.constraints)
-        let self2 = self.Dictionaries(instances = self.instances.addAll(instances))
-        definition.DFunction(
+        let self2 = Dictionaries(...self, instances = self.instances.addAll(instances))
+        DFunction(...definition,
             body = self2.processLambda(functions, definition.body)
         )
     }
 
     processInstanceDefinition(functions: Map[String, Signature], definition: DInstance): DInstance {
         let instances = constraintsToInstances(definition.constraints)
-        let self2 = self.Dictionaries(instances = self.instances.addAll(instances))
-        definition.DInstance(
+        let self2 = Dictionaries(...self, instances = self.instances.addAll(instances))
+        DInstance(...definition,
             methods = definition.methods.map { self2.processFunctionDefinition(functions, _) }
         )
     }
 
     processLambda(functions: Map[String, Signature], definition: Lambda): Lambda {
-        definition.Lambda(
+        Lambda(...definition,
             cases = definition.cases.map { case =>
                 // TODO: Remove the case variables from the functions
-                case.MatchCase(
+                MatchCase(...case,
                     condition = case.condition.map { self.processTerm(functions, _) }
                     body = self.processTerm(functions, case.body)
                 )
@@ -84,31 +84,31 @@ extend self: Dictionaries {
             | EInt _ => term
             | EFloat _ => term
             | EVariable _ => term
-            | EField e => e.EField(record = self.processTerm(functions, e.record))
+            | EField e => EField(...e, record = self.processTerm(functions, e.record))
             | EWildcard e => term
-            | EList e => e.EList(
+            | EList e => EList(...e,
                 items = e.items.map {| Pair(item, b) => Pair(self.processTerm(functions, item), b) }
             )
-            | ESequential e => e.ESequential(
+            | ESequential e => ESequential(...e,
                 before = self.processTerm(functions, e.before)
                 after = self.processTerm(functions, e.after)
             )
             | ELet e =>
                 let newFunctions = functions.remove(e.name)
-                e.ELet(
+                ELet(...e,
                     value = self.processTerm(functions, e.value)
                     body = self.processTerm(newFunctions, e.body)
                 )
-            | ELambda e => e.ELambda(lambda = self.processLambda(functions, e.lambda))
-            | EVariant e => e.EVariant(
+            | ELambda e => ELambda(...e, lambda = self.processLambda(functions, e.lambda))
+            | EVariant e => EVariant(...e,
                 arguments = e.arguments.map { _.map { self.processArgument(functions, _) } }
             )
             | EVariantIs e => term
-            | ECopy e => e.ECopy(
+            | ECopy e => ECopy(...e,
                 record = self.processTerm(functions, e.record)
                 arguments = e.arguments.map { self.processField(functions, _) }
             )
-            | EPipe e => e.EPipe(
+            | EPipe e => EPipe(...e,
                 value = self.processTerm(functions, e.value)
                 function = self.processTerm(functions, e.function)
             )
@@ -129,21 +129,21 @@ extend self: Dictionaries {
                     dictionaries = dictionaries
                 )
             | ECall e =>
-                e.ECall(
+                ECall(...e,
                     function = self.processTerm(functions, e.function)
                     arguments = e.arguments.map { self.processArgument(functions, _) }
                 )
-            | ERecord e => e.ERecord(fields = e.fields.map { self.processField(functions, _) })
+            | ERecord e => ERecord(...e, fields = e.fields.map { self.processField(functions, _) })
             | EFunctions e =>
                 let newFunctions = functions.addAll(e.functions.map { f =>
                     Pair(f.signature.name, f.signature)
                 }.toMap())
-                e.EFunctions(
+                EFunctions(...e,
                     functions = e.functions.map { self.processFunctionDefinition(newFunctions, _) }
                     body = self.processTerm(newFunctions, e.body)
                 )
-            | EAssign e => e.EAssign(value = self.processTerm(functions, e.value))
-            | EAssignField e => e.EAssignField(
+            | EAssign e => EAssign(...e, value = self.processTerm(functions, e.value))
+            | EAssignField e => EAssignField(...e,
                 record = self.processTerm(functions, e.record)
                 value = self.processTerm(functions, e.value)
             )
@@ -151,11 +151,11 @@ extend self: Dictionaries {
     }
 
     processArgument(functions: Map[String, Signature], argument: Argument): Argument {
-        argument.Argument(value = self.processTerm(functions, argument.value))
+        Argument(...argument, value = self.processTerm(functions, argument.value))
     }
 
     processField(functions: Map[String, Signature], field: Field): Field {
-        field.Field(value = self.processTerm(functions, field.value))
+        Field(...field, value = self.processTerm(functions, field.value))
     }
 
     makeDictionary(typeParameters: List[String], typeArguments: List[Type], constraint: Constraint): Dictionary {

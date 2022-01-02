@@ -9,34 +9,34 @@ make(): Wildcards {
 extend self: Wildcards {
 
     fixWildcards(term: Term): Term {
-        | ELet e => e.ELet(value = self.fixWildcards(e.value), body = self.fixWildcards(e.body))
-        | ESequential e => e.ESequential(before = self.fixWildcards(e.before), after = self.fixWildcards(e.after))
-        | EAssign e => e.EAssign(value = self.fixWildcards(e.value))
-        | EAssignField e => e.EAssignField(record = self.fixWildcards(e.record), value = self.fixWildcards(e.value))
-        | EPipe e => e.EPipe(value = self.fixWildcards(e.value), function = self.fixWildcards(e.function))
+        | ELet e => ELet(...e, value = self.fixWildcards(e.value), body = self.fixWildcards(e.body))
+        | ESequential e => ESequential(...e, before = self.fixWildcards(e.before), after = self.fixWildcards(e.after))
+        | EAssign e => EAssign(...e, value = self.fixWildcards(e.value))
+        | EAssignField e => EAssignField(...e, record = self.fixWildcards(e.record), value = self.fixWildcards(e.value))
+        | EPipe e => EPipe(...e, value = self.fixWildcards(e.value), function = self.fixWildcards(e.function))
         | ECall e =>
-            e.ECall(
+            ECall(...e,
                 function = self.fixWildcards(e.function),
-                arguments = e.arguments.map { a => a.Argument(value = self.fixWildcards(a.value)) }
+                arguments = e.arguments.map { a => Argument(...a, value = self.fixWildcards(a.value)) }
             )
         | EList e =>
-            e.EList(items = e.items.map { | Pair(item, spread) =>
+            EList(...e, items = e.items.map { | Pair(item, spread) =>
                 Pair(self.fixWildcards(item), spread)
             })
         | ECopy e =>
-            e.ECopy(
+            ECopy(...e,
                 record = self.fixWildcards(e.record),
-                arguments = e.arguments.map { a => a.Field(value = self.fixWildcards(a.value)) }
+                arguments = e.arguments.map { a => Field(...a, value = self.fixWildcards(a.value)) }
             )
         | EVariant e =>
-            e.EVariant(arguments = e.arguments.map { _.map { a =>
-                a.Argument(value = self.fixWildcards(a.value))
+            EVariant(...e, arguments = e.arguments.map { _.map { a =>
+                Argument(...a, value = self.fixWildcards(a.value))
             }})
-        | ERecord e => e.ERecord(fields = e.fields.map { a => a.Field(value = self.fixWildcards(a.value)) })
-        | EField e => e.EField(record = self.fixWildcards(e.record))
+        | ERecord e => ERecord(...e, fields = e.fields.map { a => Field(...a, value = self.fixWildcards(a.value)) })
+        | EField e => EField(...e, record = self.fixWildcards(e.record))
         | EWildcard e =>
             self.seenWildcards += 1
-            e.EWildcard(index = self.seenWildcards)
+            EWildcard(...e, index = self.seenWildcards)
         | _ => term
     }
 

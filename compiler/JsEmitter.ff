@@ -60,8 +60,8 @@ extend self: JsEmitter {
     emitExtendsDefinition(definition: DExtend): String {
         let typeName = extractTypeName(definition.type).reverse().takeWhile { _ != '.' }.reverse()
         let methods = definition.methods.map { method =>
-            method.DFunction(
-                signature = method.signature.Signature(
+            DFunction(...method,
+                signature = Signature(...method.signature,
                     name = typeName + "_" + method.signature.name
                 )
             )
@@ -362,7 +362,7 @@ extend self: JsEmitter {
                     arguments.expect(0),
                     p,
                     arguments.dropFirst(),
-                    matchCase.MatchCase(patterns = ps),
+                    MatchCase(...matchCase, patterns = ps),
                     last
                 )
             | Pair([], Some(condition)) =>
@@ -399,7 +399,7 @@ extend self: JsEmitter {
                 "\n}"
             | PVariant(_, name, patterns) =>
                 let processed = self.processVariantCase(name, argument)
-                let newMatchCase = matchCase.MatchCase(patterns = [...patterns, ...matchCase.patterns])
+                let newMatchCase = MatchCase(...matchCase, patterns = [...patterns, ...matchCase.patterns])
                 if(processed.loneVariant) { "" } else {
                     "if(" + argument + "." + processed.variantName + ") {\n"
                 } +

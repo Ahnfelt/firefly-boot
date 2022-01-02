@@ -53,7 +53,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             let generics = definition.generics.map { name => TConstructor(definition.at, name, []) }
             let constraint = Constraint(definition.at, full(module, definition.name), generics)
             definition.methods.map { methodSignature =>
-                let signature = methodSignature.Signature(
+                let signature = Signature(...methodSignature,
                     generics = [...definition.generics, ...methodSignature.generics]
                     constraints = [constraint, ...definition.constraints, ...methodSignature.constraints]
                 )
@@ -75,7 +75,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                     d.methods.map { method =>
                         Pair(
                             prefix + method.signature.name,
-                            Scheme(False, False, False, False, method.signature.Signature(
+                            Scheme(False, False, False, False, Signature(...method.signature,
                                 generics = [...d.generics, ...method.signature.generics]
                                 constraints = [...d.constraints, ...method.signature.constraints]
                                 parameters = [selfParameter, ...method.signature.parameters]

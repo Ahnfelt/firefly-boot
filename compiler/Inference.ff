@@ -31,7 +31,7 @@ extend self: Inference {
         let extends = module.extends.map { self.inferExtendDefinition(environment, _) }
         let traits = module.traits.map { self.inferTraitDefinition(environment, _) }
         let instances = module.instances.map { self.inferInstanceDefinition(environment, _) }
-        let result = module.Module(
+        let result = Module(...module,
             traits = traits,
             instances = instances,
             extends = extends,
@@ -42,7 +42,7 @@ extend self: Inference {
     }
 
     inferTraitDefinition(environment: Environment, definition: DTrait): DTrait {
-        definition.DTrait(
+        DTrait(...definition,
 
         )
     }
@@ -50,7 +50,7 @@ extend self: Inference {
     inferInstanceDefinition(environment: Environment, definition: DInstance): DInstance {
         let instances = constraintsToInstances(definition.constraints)
         self.unification.withLocalInstances(instances) {
-            definition.DInstance(
+            DInstance(...definition,
                 methods = definition.methods.map { self.inferFunctionDefinition(environment, _) }
             )
         }
@@ -58,7 +58,7 @@ extend self: Inference {
 
     inferLetDefinition(environment: Environment, definition: DLet): DLet {
         let value = self.inferTerm(environment, definition.variableType, definition.value)
-        definition.DLet(
+        DLet(...definition,
             value = value
         )
     }
@@ -72,26 +72,26 @@ extend self: Inference {
             default = None
         )
         let functions = definition.methods.map { method =>
-            let signature = method.signature.Signature(
+            let signature = Signature(...method.signature,
                 generics = [...definition.generics, ...method.signature.generics]
                 constraints = [...definition.constraints, ...method.signature.constraints]
                 parameters = [selfParameter, ...method.signature.parameters]
             )
-            let lambda = method.body.Lambda(
+            let lambda = Lambda(...method.body,
                 cases = method.body.cases.map { case =>
                     let selfPattern = PVariable(method.at, Some(definition.name))
-                    case.MatchCase(
+                    MatchCase(...case,
                         patterns = [selfPattern, ...case.patterns]
                     )
                 }
             )
-            let function = method.DFunction(
+            let function = DFunction(...method,
                 signature = signature
                 body = lambda
             )
             self.inferFunctionDefinition(environment, function)
         }
-        definition.DExtend(
+        DExtend(...definition,
             methods = functions
         )
     }
@@ -102,7 +102,7 @@ extend self: Inference {
             Pair(p.name, scheme)
         }
         let parameterMap = parameters.toMap()
-        let environment2 = environment.Environment(symbols = environment.symbols.addAll(parameterMap))
+        let environment2 = Environment(...environment, symbols = environment.symbols.addAll(parameterMap))
         let functionType = TConstructor(
             definition.at,
             "Function$" + parameters.size(),
@@ -110,7 +110,7 @@ extend self: Inference {
         )
         let instances = constraintsToInstances(definition.signature.constraints)
         self.unification.withLocalInstances(instances) {
-            definition.DFunction(body = self.inferLambda(environment2, functionType, definition.body))
+            DFunction(...definition, body = self.inferLambda(environment2, functionType, definition.body))
         }
     }
 
@@ -126,10 +126,10 @@ extend self: Inference {
         }
         let cases = if(!returnsUnit) { lambda.cases } else {
             lambda.cases.map { c =>
-                c.MatchCase(body = ESequential(c.at, c.body, EVariant(c.at, unitName, [], None)))
+                MatchCase(...c, body = ESequential(c.at, c.body, EVariant(c.at, unitName, [], None)))
             }
         }
-        lambda.Lambda(
+        Lambda(...lambda,
             cases = cases.map { self.inferMatchCase(environment, expected, _) }
         )
     }
@@ -153,7 +153,7 @@ extend self: Inference {
             self.inferTerm(newEnvironment, TConstructor(e.at, core("Bool"), []), e)
         }
         let body = self.inferTerm(newEnvironment, returnType, case.body)
-        case.MatchCase(
+        MatchCase(...case,
             condition = condition
             body = body
         )
@@ -229,7 +229,7 @@ extend self: Inference {
             | EField e =>
                 let recordType = self.unification.freshUnificationVariable(e.at)
                 let record = self.inferTerm(environment, recordType, e.record)
-                let e2 = e.EField(record = record)
+                let e2 = EField(...e, record = record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
@@ -244,7 +244,7 @@ extend self: Inference {
                         let methodName = name + "_" + e.field
                         self.lookup(environment, e.at, methodName, typeArguments).{
                             | Some(instantiated) {!instantiated.scheme.isVariable} =>
-                                let signature = instantiated.scheme.signature.Signature(
+                                let signature = Signature(...instantiated.scheme.signature,
                                     // Drop self for eta expansion
                                     parameters = instantiated.scheme.signature.parameters.dropFirst(1)
                                 )
@@ -261,7 +261,7 @@ extend self: Inference {
                                     instantiated.scheme.signature.parameters.expect(0).valueType
                                 )*/
                                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
-                                e.EField(newtype = instantiated.scheme.isNewtype, record = record)
+                                EField(...e, newtype = instantiated.scheme.isNewtype, record = record)
                             | None =>
                                 fail(e.at, "No such field " + e.field + " on type: " + t.show())
                         }
@@ -284,7 +284,7 @@ extend self: Inference {
                 before.{
                     | EPipe(at1, value, ELambda(at2, Lambda(at3, cases))) =>
                         let e = EVariant(at, "ff:core/Unit.Unit", [], None)
-                        let newCases = cases.map { case => case.MatchCase(body = ESequential(case.at, case.body, e)) }
+                        let newCases = cases.map { case => MatchCase(...case, body = ESequential(case.at, case.body, e)) }
                         let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, newCases)))
                         after.{
                             | EVariant(at, word, _, _) { word == "ff:core/Unit.Unit" } =>
@@ -307,8 +307,8 @@ extend self: Inference {
                 }
             | ELet e =>
                 let scheme = Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType))
-                let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
-                e.ELet(
+                let environment2 = Environment(...environment, symbols = environment.symbols.add(e.name, scheme))
+                ELet(...e,
                     value = self.inferTerm(environment, e.valueType, e.value)
                     body = self.inferTerm(environment2, expected, e.body)
                 )
@@ -323,7 +323,7 @@ extend self: Inference {
                 let arguments = e.arguments.map {
                     self.inferArguments(e.at, environment, instantiated.scheme.signature.parameters, _)
                 }
-                e.EVariant(
+                EVariant(...e,
                     typeArguments = instantiated.typeArguments.map { _.second }
                     arguments = arguments
                 )
@@ -339,7 +339,7 @@ extend self: Inference {
                     TConstructor(e.at, core("Option"), [recordType])
                 ])
                 self.unification.unify(e.at, expected, functionType)
-                e.EVariantIs(
+                EVariantIs(...e,
                     typeArguments = instantiated.typeArguments.map { _.second }
                 )
             | ECopy e =>
@@ -371,7 +371,7 @@ extend self: Inference {
                 let functionType = TConstructor(e.at, "Function$1", [valueType, expected])
                 let value = self.inferTerm(environment, valueType, e.value)
                 let function = self.inferTerm(environment, functionType, e.function)
-                e.EPipe(
+                EPipe(...e,
                     value = value
                     function = function
                 )
@@ -404,7 +404,7 @@ extend self: Inference {
                     | EField f =>
                         let recordType = self.unification.freshUnificationVariable(f.at)
                         let record = self.inferTerm(environment, recordType, f.record)
-                        let e2 = e.ECall(function = f.EField(record = record))
+                        let e2 = ECall(...e, function = EField(...f, record = record))
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, typeParameters)@t =>
                                 let methodName = name + "_" + f.field
@@ -437,9 +437,9 @@ extend self: Inference {
                     TConstructor(e.at, "Record$" + fields.map {_.name}.join("$"), fieldTypes)
                 self.unification.unify(e.at, expected, recordType)
                 let newFields = fields.zip(fieldTypes).map {| Pair(field, t) =>
-                    field.Field(value = self.inferTerm(environment, t, field.value))
+                    Field(...field, value = self.inferTerm(environment, t, field.value))
                 }
-                e.ERecord(
+                ERecord(...e,
                     fields = newFields
                 )
             | EFunctions(at, functions, body) =>
@@ -447,7 +447,7 @@ extend self: Inference {
                     let scheme = Scheme(False, False, False, False, f.signature)
                     Pair(f.signature.name, scheme)
                 }.toMap()
-                let environment2 = environment.Environment(symbols = environment.symbols.addAll(functionMap))
+                let environment2 = Environment(...environment, symbols = environment.symbols.addAll(functionMap))
                 let newFunctions = functions.map { self.inferFunctionDefinition(environment2, _) }
                 let newBody = self.inferTerm(environment2, expected, body)
                 EFunctions(
@@ -466,7 +466,7 @@ extend self: Inference {
                             value = e.value
                             signature = instantiated.scheme.signature
                         )
-                        e.EAssign(
+                        EAssign(...e,
                             value = value
                         )
                     } else {
@@ -493,7 +493,7 @@ extend self: Inference {
                                     value = e.value
                                     signature = instantiated.scheme.signature
                                 )
-                                e.EAssignField(
+                                EAssignField(...e,
                                     record = record
                                     value = value
                                 )
@@ -537,7 +537,7 @@ extend self: Inference {
         name: String
     ): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
-        let e2 = e.ECall(
+        let e2 = ECall(...e,
             function = EVariable(e.at, name)
             arguments = [Argument(record.at, None, record), ...e.arguments]
         )
@@ -556,7 +556,7 @@ extend self: Inference {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         self.unification.unify(e.at, expected, signature.returnType)
         let arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments)
-        e.ECall(
+        ECall(...e,
             instanceCall = instanceCall
             function = e.function // It's always a function name - should we propagate that information?
             typeArguments = instantiation.map { _.second }
@@ -573,12 +573,12 @@ extend self: Inference {
             argument.name.each { name =>
                 fail(argument.at, "Named argument not allowed here: " + name)
             }
-            argument.Argument(value = self.inferTerm(environment, t, argument.value))
+            Argument(...argument, value = self.inferTerm(environment, t, argument.value))
         }
         e.typeArguments.first().each { typeArgument =>
             fail(typeArgument.at, "Type arguments not allowed here")
         }
-        e.ECall(
+        ECall(...e,
             function = function
             typeArguments = []
             arguments = arguments
@@ -594,7 +594,7 @@ extend self: Inference {
                 let t = TConstructor(e.at, core("Bool"), [])
                 let e1 = self.inferTerm(environment, t, a1.value)
                 self.unification.unify(e.at, expected, t)
-                e.ECall(arguments = [a1.Argument(value = e1)])
+                ECall(...e, arguments = [Argument(...a1, value = e1)])
             | [a1] {
                 operator == "-"
             } =>
@@ -608,7 +608,7 @@ extend self: Inference {
                     | _ =>
                         fail(e.at, "Operators on unknown types not currently supported")
                 }
-                e.ECall(arguments = [a1.Argument(value = e1)])
+                ECall(...e, arguments = [Argument(...a1, value = e1)])
             | [a1, a2] {
                 operator == "||" || operator == "&&"
             } =>
@@ -616,7 +616,7 @@ extend self: Inference {
                 let e1 = self.inferTerm(environment, t, a1.value)
                 let e2 = self.inferTerm(environment, t, a2.value)
                 self.unification.unify(e.at, expected, t)
-                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+                ECall(...e, arguments = [Argument(...a1, value = e1), Argument(...a2, value = e2)])
             | [a1, a2] {
                 operator == "<" || operator == ">" ||
                 operator == "<=" || operator == ">=" ||
@@ -653,7 +653,7 @@ extend self: Inference {
                         fail(e.at, "Operators on unknown types not currently supported")
                 }
                 chooseType(magic(t1), magic(t2))
-                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+                ECall(...e, arguments = [Argument(...a1, value = e1), Argument(...a2, value = e2)])
             | [a1, a2] {
                 operator == "+" || operator == "-" ||
                 operator == "*" || operator == "/" || operator == "%" ||
@@ -690,7 +690,7 @@ extend self: Inference {
                         fail(e.at, "Operators on unknown types not currently supported")
                 }
                 chooseType(magic(t1), magic(t2))
-                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+                ECall(...e, arguments = [Argument(...a1, value = e1), Argument(...a2, value = e2)])
             | _ =>
                 fail(e.at, "Unknown operator: " + operator)
         }
@@ -782,7 +782,7 @@ extend self: Inference {
 
         let instantiationMap = instantiation.toMap()
         let parameters = scheme.signature.parameters.map { p =>
-            p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
+            Parameter(...p, valueType = self.unification.instantiate(instantiationMap, p.valueType))
         }
         let returnType = self.unification.instantiate(instantiationMap, scheme.signature.returnType)
 
@@ -791,7 +791,7 @@ extend self: Inference {
             self.unification.constrain(at, generics.expectFirst(), c.name, generics.dropFirst())
         }
 
-        let signature = scheme.signature.Signature(
+        let signature = Signature(...scheme.signature,
             generics = []
             constraints = []
             parameters = parameters
@@ -800,7 +800,7 @@ extend self: Inference {
 
         Instantiated(
             typeArguments = instantiation
-            scheme = scheme.Scheme(signature = signature)
+            scheme = Scheme(...scheme, signature = signature)
         )
 
     }
