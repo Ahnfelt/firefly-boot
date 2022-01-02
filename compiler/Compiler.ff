@@ -109,7 +109,7 @@ extend self: Compiler {
         let code = self.files.readText(packagePath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
         let module = Parser.make(packagePair, file, tokens).parseModule()
-        let result = Module(...module,
+        let result = module.Module(
             imports = [...coreImports, ...module.imports]
         )
 

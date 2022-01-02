@@ -219,7 +219,7 @@ extend self: Parser {
             self.fail(self.current().at(), "Trait constraints is not yet implemented")
             self.skip(LColon)
             let constraint = self.parseConstraint()
-            constraints.add(Constraint(...constraint, generics =
+            constraints.add(constraint.Constraint(generics =
                 [TConstructor(typeParameterToken.at(), typeParameterToken.raw(), []), ...constraint.generics]
             ))
         }
@@ -431,7 +431,7 @@ extend self: Parser {
                 while {self.current().is(LColon)} {
                     self.skip(LColon)
                     let constraint = self.parseConstraint()
-                    constraints.add(Constraint(...constraint, generics =
+                    constraints.add(constraint.Constraint(generics =
                         [TConstructor(parameterNameToken.at(), parameterNameToken.raw(), []), ...constraint.generics]
                     ))
                 }
@@ -718,6 +718,8 @@ extend self: Parser {
                 if(self.current().rawIs("{")) {
                     let term = self.parseAtom()
                     result = EPipe(term.at, result, term)
+                } elseIf {self.current().is2(LUpper, LNamespace)} {
+                    result = self.parseCopy(result)
                 } else {
                     let token = self.skip(LLower)
                     result = EField(token.at(), False, result, token.raw())
@@ -778,7 +780,7 @@ extend self: Parser {
         } elseIf {self.current().rawIs("[")} {
             self.parseList()
         } elseIf {self.current().rawIs("(") && self.ahead().is(LLower) && self.aheadAhead().is(LAssign)} {
-            ERecord(self.current().at(), self.parseRecord(False).first)
+            ERecord(self.current().at(), self.parseRecord())
         } elseIf {self.current().rawIs("(")} {
             self.rawSkip(LBracketLeft, "(")
             let result = self.parseTerm()
@@ -797,28 +799,23 @@ extend self: Parser {
         let name = prefix + token.raw()
         let typeArguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
         if(self.current().rawIs("?")) { self.skip(LOperator); EVariantIs(token.at(), name, typeArguments) } else:
-        if(!self.current().rawIs("(")) {
-            EVariant(token.at(), name, typeArguments, None)
-        } elseIf {self.ahead().is(LDotDotDot)} {
-            let pair = self.parseRecord(True)
-            ECopy(token.at(), name, pair.second.expect(), pair.first)
-        } else {
-            let arguments = self.parseFunctionArguments()
-            EVariant(token.at(), name, typeArguments, Some(arguments))
-        }
+        let arguments = if(!self.current().rawIs("(")) {None} else {Some(self.parseFunctionArguments())}
+        EVariant(token.at(), name, typeArguments, arguments)
     }
     
-    parseRecord(allowDotDotDot: Bool): Pair[List[Field], Option[Term]] {
+    parseCopy(record: Term): Term {
+        let namespace = if(!self.current().is(LNamespace)) {""} else {self.skip(LNamespace).raw()}
+        let extraNamespace = if(!self.current().is(LNamespace)) {""} else {self.skip(LNamespace).raw()}
+        let prefix = namespace + extraNamespace
+        let token = self.skip(LUpper)
+        let name = prefix + token.raw()
+        let fields = self.parseRecord()
+        ECopy(token.at(), name, record, fields)
+    }
+    
+    parseRecord(): List[Field] {
         let fields = ArrayBuilder.empty[Field]()
         self.rawSkip(LBracketLeft, "(")
-        let dotDotDot = if(allowDotDotDot && self.current().is(LDotDotDot)) {
-            self.skip(LDotDotDot)
-            let record = self.parseTerm()
-            if(!self.current().is(LBracketRight)) {
-                self.skipSeparator(LComma)
-            }
-            record
-        }
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
             self.skip(LAssign)
@@ -826,7 +823,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        Pair(fields.toList(), dotDotDot)
+        fields.toList()
     }
     
     parseRecordType(): List[Pair[String, Type]] {
