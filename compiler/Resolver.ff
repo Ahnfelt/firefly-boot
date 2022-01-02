@@ -223,7 +223,7 @@ extend self: Resolver {
             )
         | EWildcard e =>
             if(e.index == 0) { fail(e.at, "Unbound wildcard") }
-            EWildcard(...e, )
+            term
         | EFunctions(at, functions, body) =>
             let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap()
             let self2 = Resolver(...self, variables = self.variables.addAll(functionMap))

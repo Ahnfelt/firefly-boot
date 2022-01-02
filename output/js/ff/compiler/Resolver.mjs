@@ -532,14 +532,7 @@ const e_ = term_a
 if((e_.index_ == 0)) {
 ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
 }
-{
-const _1 = e_
-{
-const _c = _1
-return ff_compiler_Syntax.EWildcard(_c.at_, _c.index_)
-return
-}
-}
+return term_
 return
 }
 }

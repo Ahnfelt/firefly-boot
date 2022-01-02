@@ -19,7 +19,7 @@ tokenize(file: String, code: String): Array[Token] {
         if(!tokens.isEmpty()) {
             let last = tokens.expectLast()
             if(last.stopLine == startLine && last.kind == LLower && kind.afterKeyword()) {
-                tokens.modify(tokens.size() - 1) {_.Token(kind = LKeyword)}
+                tokens.modify(tokens.size() - 1) {Token(..._, kind = LKeyword)}
             }
             if(last.stopLine != startLine && last.kind.beforeSeparator() && kind.afterSeparator()) {
                 tokens.add(Token(
