@@ -4,6 +4,8 @@ extend self: Char {
 
     isAsciiLetter(): Bool { self.isAsciiUpper() || self.isAsciiLower() }
 
+    isAsciiLetterOrDigit(): Bool { self.isAsciiLetter() || self.isAsciiDigit() }
+
     isAsciiUpper(): Bool { self >= 'A' && self <= 'Z' }
 
     isAsciiLower(): Bool { self >= 'a' && self <= 'z' }

@@ -150,12 +150,12 @@ i_ += 1
 emitToken_(((endSign_ == 34)
 ? ff_compiler_Token.LString()
 : ff_compiler_Token.LChar()), start_, i_)
-} else if((((ff_core_String.String_expect(code_, i_) >= 97) && (ff_core_String.String_expect(code_, i_) <= 122)) || ((ff_core_String.String_expect(code_, i_) >= 65) && (ff_core_String.String_expect(code_, i_) <= 90)))) {
+} else if(ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expect(code_, i_))) {
 const kind_ = ((ff_core_String.String_expect(code_, i_) >= 97)
 ? ff_compiler_Token.LLower()
 : ff_compiler_Token.LUpper())
 i_ += 1
-while(((i_ < ff_core_String.String_size(code_)) && ((((ff_core_String.String_expect(code_, i_) >= 97) && (ff_core_String.String_expect(code_, i_) <= 122)) || ((ff_core_String.String_expect(code_, i_) >= 65) && (ff_core_String.String_expect(code_, i_) <= 90))) || ((ff_core_String.String_expect(code_, i_) >= 48) && (ff_core_String.String_expect(code_, i_) <= 57))))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_expect(code_, i_)))) {
 i_ += 1
 }
 if(((kind_ == ff_compiler_Token.LUpper()) && (ff_core_String.String_expect(code_, i_) == 46))) {
@@ -164,10 +164,10 @@ emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {
 emitToken_(kind_, start_, i_)
 }
-} else if(((ff_core_String.String_expect(code_, i_) >= 48) && (ff_core_String.String_expect(code_, i_) <= 57))) {
+} else if(ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, i_))) {
 let dot_ = false
 let exponent_ = false
-while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_expect(code_, i_) >= 48) && (ff_core_String.String_expect(code_, i_) <= 57)))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, i_)))) {
 i_ += 1
 if((((ff_core_String.String_expect(code_, i_) == 101) || (ff_core_String.String_expect(code_, i_) == 69)) && (!exponent_))) {
 i_ += 1
@@ -177,7 +177,7 @@ if(((ff_core_String.String_expect(code_, i_) == 43) || (ff_core_String.String_ex
 i_ += 1
 }
 }
-if((((((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) == 46)) && (ff_core_String.String_expect(code_, (i_ + 1)) >= 48)) && (ff_core_String.String_expect(code_, (i_ + 1)) <= 57)) && (!dot_)) && (!exponent_))) {
+if(((((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) == 46)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, (i_ + 1)))) && (!dot_)) && (!exponent_))) {
 i_ += 1
 dot_ = true
 }

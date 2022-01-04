@@ -109,15 +109,11 @@ tokenize(file: String, code: String): Array[Token] {
             i += 1
             emitToken(if(endSign == '"') {LString} else {LChar}, start, i)
 
-        } elseIf {(code.expect(i) >= 'a' && code.expect(i) <= 'z') || (code.expect(i) >= 'A' && code.expect(i) <= 'Z')} {
+        } elseIf { code.expect(i).isAsciiLetter() } {
 
             let kind = if(code.expect(i) >= 'a') {LLower} else {LUpper}
             i += 1
-            while {i < code.size() && (
-                (code.expect(i) >= 'a' && code.expect(i) <= 'z') ||
-                (code.expect(i) >= 'A' && code.expect(i) <= 'Z') ||
-                (code.expect(i) >= '0' && code.expect(i) <= '9')
-            )} { i += 1 }
+            while {i < code.size() && code.expect(i).isAsciiLetterOrDigit()} { i += 1 }
             if(kind == LUpper && code.expect(i) == '.') {
                 i += 1
                 emitToken(LNamespace, start, i)
@@ -125,11 +121,11 @@ tokenize(file: String, code: String): Array[Token] {
                 emitToken(kind, start, i)
             }
 
-        } elseIf { code.expect(i) >= '0' && code.expect(i) <= '9' } {
+        } elseIf { code.expect(i).isAsciiDigit() } {
 
             mutable dot = False
             mutable exponent = False
-            while { i < code.size() && (code.expect(i) >= '0' && code.expect(i) <= '9') } {
+            while { i < code.size() && code.expect(i).isAsciiDigit() } {
                 i += 1
                 if((code.expect(i) == 'e' || code.expect(i) == 'E') && !exponent) {
                     i += 1
@@ -139,7 +135,7 @@ tokenize(file: String, code: String): Array[Token] {
                 }
                 if(
                     i + 1 < code.size() && code.expect(i) == '.' &&
-                    code.expect(i + 1) >= '0' && code.expect(i + 1) <= '9' &&
+                    code.expect(i + 1).isAsciiDigit() &&
                     !dot && !exponent
                 ) {
                     i += 1

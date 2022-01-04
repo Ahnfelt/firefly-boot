@@ -58,6 +58,10 @@ export function Char_isAsciiLetter(self_) {
 return (ff_core_Char.Char_isAsciiUpper(self_) || ff_core_Char.Char_isAsciiLower(self_))
 }
 
+export function Char_isAsciiLetterOrDigit(self_) {
+return (ff_core_Char.Char_isAsciiLetter(self_) || ff_core_Char.Char_isAsciiDigit(self_))
+}
+
 export function Char_isAsciiUpper(self_) {
 return ((self_ >= 65) && (self_ <= 90))
 }

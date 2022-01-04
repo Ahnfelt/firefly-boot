@@ -519,14 +519,14 @@ makeDictionaryName(traitName: String, typeName: String): String {
     typeName.replace(".", "_").replace(":", "_").replace("/", "_")
 }
 
-charLiteralToNumber(charLiteral: String): String {
-    | "'\\t'" => "9"
-    | "'\\n'" => "10"
-    | "'\\r'" => "13"
-    | "'\\\"'" => "34"
-    | "'\\''" => "39"
-    | value => "" + value.expect(1).codeUnit
-}
+    charLiteralToNumber(charLiteral: String): String {
+        | "'\\t'" => "9"
+        | "'\\n'" => "10"
+        | "'\\r'" => "13"
+        | "'\\\"'" => "34"
+        | "'\\''" => "39"
+        | value => "" + value.expect(1).codeUnit
+    }
 
 escapeResolved(word: String): String {
     let parts = word.replace(":", ".").replace("/", ".").split('.').toList()
