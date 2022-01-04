@@ -229,6 +229,47 @@ export function makeDictionaryName_(traitName_, typeName_) {
 return ((ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(traitName_, ".", "_"), ":", "_"), "/", "_") + "$") + ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(typeName_, ".", "_"), ":", "_"), "/", "_"))
 }
 
+export function charLiteralToNumber_(charLiteral_) {
+{
+const charLiteral_a = charLiteral_
+{
+if(charLiteral_a == "'\\t'") {
+return "9"
+return
+}
+}
+{
+if(charLiteral_a == "'\\n'") {
+return "10"
+return
+}
+}
+{
+if(charLiteral_a == "'\\r'") {
+return "13"
+return
+}
+}
+{
+if(charLiteral_a == "'\\\"'") {
+return "34"
+return
+}
+}
+{
+if(charLiteral_a == "'\\''") {
+return "39"
+return
+}
+}
+{
+const value_ = charLiteral_a
+return ("" + ff_core_String.String_expect(value_, 1))
+return
+}
+}
+}
+
 export function escapeResolved_(word_) {
 const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46))
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1)
@@ -492,62 +533,7 @@ const self_ = self_a
 if(term_a.EChar) {
 const at_ = term_a.at_
 const value_ = term_a.value_
-if((value_ == "'\\t'")) {
-return "9"
-return
-}
-}
-}
-{
-const self_ = self_a
-if(term_a.EChar) {
-const at_ = term_a.at_
-const value_ = term_a.value_
-if((value_ == "'\\n'")) {
-return "10"
-return
-}
-}
-}
-{
-const self_ = self_a
-if(term_a.EChar) {
-const at_ = term_a.at_
-const value_ = term_a.value_
-if((value_ == "'\\r'")) {
-return "13"
-return
-}
-}
-}
-{
-const self_ = self_a
-if(term_a.EChar) {
-const at_ = term_a.at_
-const value_ = term_a.value_
-if((value_ == "'\\\"'")) {
-return "34"
-return
-}
-}
-}
-{
-const self_ = self_a
-if(term_a.EChar) {
-const at_ = term_a.at_
-const value_ = term_a.value_
-if((value_ == "'\\''")) {
-return "39"
-return
-}
-}
-}
-{
-const self_ = self_a
-if(term_a.EChar) {
-const at_ = term_a.at_
-const value_ = term_a.value_
-return ("" + ff_core_String.String_expect(value_, 1))
+return ff_compiler_JsEmitter.charLiteralToNumber_(value_)
 return
 }
 }
@@ -1256,6 +1242,27 @@ return
 export function JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_, last_) {
 {
 const _1 = pattern_
+{
+if(_1.PString) {
+const value_ = _1.value_
+return (((((("if(" + argument_) + " == ") + value_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, last_)) + "\n}")
+return
+}
+}
+{
+if(_1.PInt) {
+const value_ = _1.value_
+return (((((("if(" + argument_) + " == ") + value_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, last_)) + "\n}")
+return
+}
+}
+{
+if(_1.PChar) {
+const value_ = _1.value_
+return (((((("if(" + argument_) + " == ") + ff_compiler_JsEmitter.charLiteralToNumber_(value_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, last_)) + "\n}")
+return
+}
+}
 {
 if(_1.PVariable) {
 if(_1.name_.None) {

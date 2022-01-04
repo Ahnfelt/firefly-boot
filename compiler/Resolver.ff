@@ -317,6 +317,12 @@ extend self: Resolver {
 
     resolveCase(case: MatchCase): MatchCase {
         function findVariables(pattern: MatchPattern): Map[String, String] {
+            | PString _ =>
+                Map.empty()
+            | PInt _ =>
+                Map.empty()
+            | PChar _ =>
+                Map.empty()
             | PVariable(_, Some(name)) =>
                 [Pair(name, name)].toMap()
             | PVariable(_, None) =>
@@ -341,8 +347,14 @@ extend self: Resolver {
     }
 
     resolvePattern(pattern: MatchPattern): MatchPattern {
-        | PVariable _ @ p =>
-            p
+        | PString _ =>
+            pattern
+        | PInt _ =>
+            pattern
+        | PChar _ =>
+            pattern
+        | PVariable _ =>
+            pattern
         | PVariant(at, name, patterns) =>
             let newName = self.variants.get(name).else { fail(at, "No such variant: " + name) }
             let newPatterns = patterns.map { self.resolvePattern(_) }

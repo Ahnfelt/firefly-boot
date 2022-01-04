@@ -726,6 +726,24 @@ function findVariables_(pattern_) {
 {
 const pattern_a = pattern_
 {
+if(pattern_a.PString) {
+return ff_core_Map.empty_()
+return
+}
+}
+{
+if(pattern_a.PInt) {
+return ff_core_Map.empty_()
+return
+}
+}
+{
+if(pattern_a.PChar) {
+return ff_core_Map.empty_()
+return
+}
+}
+{
 if(pattern_a.PVariable) {
 if(pattern_a.name_.Some) {
 const name_ = pattern_a.name_.value_
@@ -793,9 +811,29 @@ const self_a = self_
 const pattern_a = pattern_
 {
 const self_ = self_a
-const p_ = pattern_a
+if(pattern_a.PString) {
+return pattern_
+return
+}
+}
+{
+const self_ = self_a
+if(pattern_a.PInt) {
+return pattern_
+return
+}
+}
+{
+const self_ = self_a
+if(pattern_a.PChar) {
+return pattern_
+return
+}
+}
+{
+const self_ = self_a
 if(pattern_a.PVariable) {
-return p_
+return pattern_
 return
 }
 }

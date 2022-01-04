@@ -678,6 +678,21 @@ return ff_compiler_Syntax.PVariant(at_, ("Record$" + ff_core_List.List_join(pair
 })()
 : ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "[")
 ? ff_compiler_Parser.Parser_parseListPattern(self_)
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LString())
+? (function() {
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString())
+return ff_compiler_Syntax.PString(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_))
+})()
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LInt())
+? (function() {
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt())
+return ff_compiler_Syntax.PInt(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_))
+})()
+: ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LChar())
+? (function() {
+const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LChar())
+return ff_compiler_Syntax.PChar(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_))
+})()
 : (function() {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {

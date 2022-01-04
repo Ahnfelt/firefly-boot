@@ -173,6 +173,15 @@ return {at_, patterns_, condition_, body_};
 }
 
 // type MatchPattern
+export function PString(at_, value_) {
+return {PString: true, at_, value_};
+}
+export function PInt(at_, value_) {
+return {PInt: true, at_, value_};
+}
+export function PChar(at_, value_) {
+return {PChar: true, at_, value_};
+}
 export function PVariable(at_, name_) {
 return {PVariable: true, at_, name_};
 }

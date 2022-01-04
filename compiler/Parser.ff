@@ -560,6 +560,15 @@ extend self: Parser {
             PVariant(at, "Record$" + pair.first.join("$"), pair.second)
         } elseIf {self.current().rawIs("[")} {
             self.parseListPattern()
+        } elseIf {self.current().is(LString)} {
+            let token = self.skip(LString)
+            PString(token.at(), token.raw())
+        } elseIf {self.current().is(LInt)} {
+            let token = self.skip(LInt)
+            PInt(token.at(), token.raw())
+        } elseIf {self.current().is(LChar)} {
+            let token = self.skip(LChar)
+            PChar(token.at(), token.raw())
         } else {
             let token = self.skip(LUpper)
             if(self.current().rawIs("(")) {

@@ -160,7 +160,17 @@ extend self: Inference {
     }
 
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
+        function literal(coreTypeName: String): Map[String, Type] {
+            self.unification.unify(pattern.at, expected, TConstructor(pattern.at, core(coreTypeName), []))
+            Map.empty()
+        }
         pattern.{
+            | PString _ =>
+                literal("String")
+            | PInt _ =>
+                literal("Int")
+            | PChar _ =>
+                literal("Char")
             | PVariable(at, None) =>
                 Map.empty()
             | PVariable(at, Some(name)) =>
@@ -672,12 +682,12 @@ extend self: Inference {
                     }
                 }
                 let chooseType: (Option[String], Option[String]) => Unit = {
-                    | Some(n), Some(_) {n == "String"} => self.unification.unify(e.at, expected, t1)
-                    | Some(_), Some(n) {n == "String"} => self.unification.unify(e.at, expected, t2)
-                    | Some(n), Some(_) {n == "Float"} => self.unification.unify(e.at, expected, t1)
-                    | Some(_), Some(n) {n == "Float"} => self.unification.unify(e.at, expected, t2)
-                    | Some(n), Some(_) {n == "Int"} => self.unification.unify(e.at, expected, t1)
-                    | Some(_), Some(n) {n == "Int"} => self.unification.unify(e.at, expected, t2)
+                    | Some("String"), Some(_) => self.unification.unify(e.at, expected, t1)
+                    | Some(_), Some("String") => self.unification.unify(e.at, expected, t2)
+                    | Some("Float"), Some(_) => self.unification.unify(e.at, expected, t1)
+                    | Some(_), Some("Float") => self.unification.unify(e.at, expected, t2)
+                    | Some("Int"), Some(_) => self.unification.unify(e.at, expected, t1)
+                    | Some(_), Some("Int") => self.unification.unify(e.at, expected, t2)
                     | Some(_), None =>
                         self.unification.unify(e.at, t1, t2)
                         self.unification.unify(e.at, expected, t1)

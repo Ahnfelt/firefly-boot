@@ -60,6 +60,12 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
         }.expect()
     }
     function convertPattern(pattern: MatchPattern): Option[PatternInfo] {
+        | PString _ =>
+            Some(PatternInfo("String literal", ["Any other String literal"].toSet(), []))
+        | PInt _ =>
+            Some(PatternInfo("Int literal", ["Any other Int literal"].toSet(), []))
+        | PChar _ =>
+            Some(PatternInfo("Char literal", ["Any other Char literal"].toSet(), []))
         | PVariable p =>
             None
         | PVariant p =>

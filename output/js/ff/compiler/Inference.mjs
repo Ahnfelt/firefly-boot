@@ -317,8 +317,30 @@ return
 }
 
 export function Inference_inferPattern(self_, environment_, expected_, pattern_) {
+function literal_(coreTypeName_) {
+ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()))
+return ff_core_Map.empty_()
+}
 {
 const _1 = pattern_
+{
+if(_1.PString) {
+return literal_("String")
+return
+}
+}
+{
+if(_1.PInt) {
+return literal_("Int")
+return
+}
+}
+{
+if(_1.PChar) {
+return literal_("Char")
+return
+}
+}
 {
 if(_1.PVariable) {
 const at_ = _1.at_
@@ -1464,9 +1486,8 @@ return
 const chooseType_ = ((_1, _2) => {
 {
 if(_1.Some) {
-const n_ = _1.value_
+if(_1.value_ == "String") {
 if(_2.Some) {
-if((n_ == "String")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
@@ -1476,8 +1497,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-const n_ = _2.value_
-if((n_ == "String")) {
+if(_2.value_ == "String") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
@@ -1486,9 +1506,8 @@ return
 }
 {
 if(_1.Some) {
-const n_ = _1.value_
+if(_1.value_ == "Float") {
 if(_2.Some) {
-if((n_ == "Float")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
@@ -1498,8 +1517,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-const n_ = _2.value_
-if((n_ == "Float")) {
+if(_2.value_ == "Float") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }
@@ -1508,9 +1526,8 @@ return
 }
 {
 if(_1.Some) {
-const n_ = _1.value_
+if(_1.value_ == "Int") {
 if(_2.Some) {
-if((n_ == "Int")) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 return
 }
@@ -1520,8 +1537,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-const n_ = _2.value_
-if((n_ == "Int")) {
+if(_2.value_ == "Int") {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t2_)
 return
 }

@@ -160,6 +160,24 @@ function convertPattern_(pattern_) {
 {
 const pattern_a = pattern_
 {
+if(pattern_a.PString) {
+return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("String literal", ff_core_List.List_toSet(ff_core_List.Link("Any other String literal", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty()))
+return
+}
+}
+{
+if(pattern_a.PInt) {
+return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("Int literal", ff_core_List.List_toSet(ff_core_List.Link("Any other Int literal", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty()))
+return
+}
+}
+{
+if(pattern_a.PChar) {
+return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("Char literal", ff_core_List.List_toSet(ff_core_List.Link("Any other Char literal", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty()))
+return
+}
+}
+{
 if(pattern_a.PVariable) {
 const p_ = pattern_a
 return ff_core_Option.None()

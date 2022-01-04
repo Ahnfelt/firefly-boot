@@ -125,6 +125,9 @@ type MatchCase(
 )
 
 type MatchPattern(at: Location) {
+    PString(value: String)
+    PInt(value: String)
+    PChar(value: String)
     PVariable(name: Option[String])
     PVariant(name: String, patterns: List[MatchPattern])
     PVariantAs(name: String, variable: Option[String])
