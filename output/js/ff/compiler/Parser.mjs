@@ -646,17 +646,23 @@ if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_co
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }
 }
-const condition_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"))
+const guard_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"))
 ? ff_core_Option.None()
 : (function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketLeft())
+const guardToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketLeft())
 const term_ = ff_compiler_Parser.Parser_parseStatements(self_)
+const p_ = ((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LPipe()))
+? ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(guardToken_), "True", ff_core_List.Empty())
+: (function() {
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LPipe())
+return ff_compiler_Parser.Parser_parsePattern(self_)
+})())
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketRight())
-return ff_core_Option.Some(term_)
+return ff_core_Option.Some(ff_compiler_Syntax.MatchGuard(ff_compiler_Token.Token_at(guardToken_), term_, p_))
 })())
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick())
 const body_ = ff_compiler_Parser.Parser_parseStatements(self_)
-return ff_compiler_Syntax.MatchCase(ff_compiler_Token.Token_at(token_), ff_core_ArrayBuilder.ArrayBuilder_toList(patterns_), condition_, body_)
+return ff_compiler_Syntax.MatchCase(ff_compiler_Token.Token_at(token_), ff_core_ArrayBuilder.ArrayBuilder_toList(patterns_), guard_, body_)
 }
 
 export function Parser_parsePattern(self_) {

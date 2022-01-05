@@ -149,14 +149,26 @@ extend self: Inference {
             }
             Environment(environment1.symbols.addAll(symbols))
         }
-        let condition = case.condition.map { e =>
-            self.inferTerm(newEnvironment, TConstructor(e.at, core("Bool"), []), e)
+        case.guard.{
+            | Some(g) =>
+                let guardType = self.unification.freshUnificationVariable(g.at)
+                let guardTerm = self.inferTerm(newEnvironment, guardType, g.term)
+                let symbols = self.inferPattern(newEnvironment, guardType, g.pattern).map {| Pair(name, type) =>
+                    Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type)))
+                }
+                let newEnvironment2 = Environment(newEnvironment.symbols.addAll(symbols))
+                let guard = g.MatchGuard(term = guardTerm)
+                let body = self.inferTerm(newEnvironment2, returnType, case.body)
+                case.MatchCase(
+                    body = body
+                    guard = Some(guard)
+                )
+            | None =>
+                let body = self.inferTerm(newEnvironment, returnType, case.body)
+                case.MatchCase(
+                    body = body
+                )
         }
-        let body = self.inferTerm(newEnvironment, returnType, case.body)
-        case.MatchCase(
-            condition = condition
-            body = body
-        )
     }
 
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
@@ -723,7 +735,7 @@ extend self: Inference {
         let lambda = ELambda(at, Lambda(at, [MatchCase(
             at = at,
             patterns = parameters.map { PVariable(at, Some(_)) },
-            condition = None,
+            guard = None,
             body = body
         )]))
         self.inferTerm(environment, expected, lambda)

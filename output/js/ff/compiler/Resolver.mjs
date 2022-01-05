@@ -136,7 +136,8 @@ return
 {
 if(_1.Some) {
 const alias_ = _1.value_
-if(unqualified_) {
+const _guard = unqualified_
+if(_guard) {
 return ff_core_List.Link(ff_core_Pair.Pair(((alias_ + ".") + name_), full_), ff_core_List.Link(ff_core_Pair.Pair(name_, full_), ff_core_List.Link(ff_core_Pair.Pair(full_, full_), ff_core_List.Empty())))
 return
 }
@@ -800,8 +801,15 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, va
 }))(self_)
 return ff_compiler_Syntax.MatchCase(case_.at_, ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolvePattern(self2_, _w1)
-})), ff_core_Option.Option_map(case_.condition_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1)
+})), ff_core_Option.Option_map(case_.guard_, ((g_) => {
+{
+const _1 = g_
+{
+const _c = _1
+return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Resolver.Resolver_resolveTerm(self2_, g_.term_), ff_compiler_Resolver.Resolver_resolvePattern(self2_, g_.pattern_))
+return
+}
+}
 })), ff_compiler_Resolver.Resolver_resolveTerm(self2_, case_.body_))
 }
 

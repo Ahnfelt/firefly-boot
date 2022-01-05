@@ -536,15 +536,21 @@ extend self: Parser {
             patterns.add(self.parsePattern())
             if(!self.current().is(LArrowThick) && !self.current().rawIs("{")) {self.skip(LComma)}
         }
-        let condition = if(!self.current().rawIs("{")) {None} else {
-            self.skip(LBracketLeft)
+        let guard = if(!self.current().rawIs("{")) {None} else {
+            let guardToken = self.skip(LBracketLeft)
             let term = self.parseStatements()
+            let p = if(!self.current().is(LPipe)) {
+                PVariant(guardToken.at(), "True", [])
+            } else {
+                self.skip(LPipe)
+                self.parsePattern()
+            }
             self.skip(LBracketRight)
-            Some(term)
+            Some(MatchGuard(guardToken.at(), term, p))
         }
         self.skip(LArrowThick)
         let body = self.parseStatements()
-        MatchCase(token.at(), patterns.toList(), condition, body)
+        MatchCase(token.at(), patterns.toList(), guard, body)
     }
     
     parsePattern(): MatchPattern {

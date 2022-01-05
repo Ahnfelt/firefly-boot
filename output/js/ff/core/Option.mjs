@@ -173,7 +173,8 @@ const _1 = self_
 {
 if(_1.Some) {
 const v_ = _1.value_
-if(body_(v_)) {
+const _guard = body_(v_)
+if(_guard) {
 return ff_core_Option.Some(v_)
 return
 }
