@@ -170,7 +170,8 @@ return
 const self_ = self_a
 if(type_a.TVariable) {
 const i_ = type_a.index_
-if(ff_compiler_Unification.Unification_has(self_, i_)) {
+const _guard = ff_compiler_Unification.Unification_has(self_, i_)
+if(_guard) {
 return ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Unification.Unification_get(self_, i_))
 return
 }
@@ -211,7 +212,8 @@ const _1 = type_
 {
 if(_1.TVariable) {
 const i_ = _1.index_
-if(ff_compiler_Unification.Unification_has(self_, i_)) {
+const _guard = ff_compiler_Unification.Unification_has(self_, i_)
+if(_guard) {
 ff_compiler_Unification.Unification_constrain(self_, at_, ff_compiler_Unification.Unification_get(self_, i_), constraintName_, generics_)
 return
 }
@@ -317,7 +319,8 @@ const _1 = ff_core_Map.Map_expect(self_.substitution_, index_, ff_core_Ordering.
 {
 if(_1.TVariable) {
 const i_ = _1.index_
-if(ff_compiler_Unification.Unification_has(self_, i_)) {
+const _guard = ff_compiler_Unification.Unification_has(self_, i_)
+if(_guard) {
 const t_ = ff_compiler_Unification.Unification_get(self_, i_)
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return t_
@@ -385,7 +388,8 @@ if(t1_a.TVariable) {
 const i1_ = t1_a.index_
 if(t2_a.TVariable) {
 const i2_ = t2_a.index_
-if((i1_ == i2_)) {
+const _guard = (i1_ == i2_)
+if(_guard) {
 
 return
 }
@@ -396,7 +400,8 @@ return
 const self_ = self_a
 if(t1_a.TVariable) {
 const i_ = t1_a.index_
-if(ff_compiler_Unification.Unification_has(self_, i_)) {
+const _guard = ff_compiler_Unification.Unification_has(self_, i_)
+if(_guard) {
 ff_compiler_Unification.Unification_unify(self_, at_, ff_compiler_Unification.Unification_get(self_, i_), t2_)
 return
 }
@@ -406,7 +411,8 @@ return
 const self_ = self_a
 if(t2_a.TVariable) {
 const i_ = t2_a.index_
-if(ff_compiler_Unification.Unification_has(self_, i_)) {
+const _guard = ff_compiler_Unification.Unification_has(self_, i_)
+if(_guard) {
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, ff_compiler_Unification.Unification_get(self_, i_))
 return
 }
@@ -482,7 +488,8 @@ const t_a = t_
 const self_ = self_a
 if(t_a.TVariable) {
 const i_ = t_a.index_
-if(ff_compiler_Unification.Unification_has(self_, i_)) {
+const _guard = ff_compiler_Unification.Unification_has(self_, i_)
+if(_guard) {
 return ff_compiler_Unification.Unification_occursIn(self_, index_, ff_compiler_Unification.Unification_get(self_, i_))
 return
 }

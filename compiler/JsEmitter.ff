@@ -351,7 +351,7 @@ extend self: JsEmitter {
     }
 
     emitCase(arguments: List[String], matchCase: MatchCase, last: Bool): String {
-        Pair(matchCase.patterns, matchCase.condition).{
+        Pair(matchCase.patterns, matchCase.guard).{
             | Pair([p, ...ps], _) =>
                 self.emitPattern(
                     arguments.expect(0),
@@ -360,10 +360,9 @@ extend self: JsEmitter {
                     matchCase.MatchCase(patterns = ps),
                     last
                 )
-            | Pair([], Some(condition)) =>
-                "if(" + self.emitTerm(condition) + ") {\n" +
-                self.emitStatements(matchCase.body, last) +
-                if(last) { "\nreturn\n}" } else { "\nbreak\n}" }
+            | Pair([], Some(guard)) =>
+                "const _guard = " + self.emitTerm(guard.term) + "\n" +
+                self.emitCase(["_guard"], matchCase.MatchCase(patterns = [guard.pattern], guard = None), last)
             | Pair([], None) =>
                 self.emitStatements(matchCase.body, last) +
                 if(last) { "\nreturn" } else { "\nbreak" }

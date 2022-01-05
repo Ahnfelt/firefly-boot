@@ -79,7 +79,8 @@ return ((_1, _2) => {
 {
 const x_ = _1
 const y_ = _2
-if(lessThan_(x_, y_)) {
+const _guard = lessThan_(x_, y_)
+if(_guard) {
 return ff_core_Ordering.OrderingBefore()
 return
 }
@@ -87,7 +88,8 @@ return
 {
 const x_ = _1
 const y_ = _2
-if(lessThan_(y_, x_)) {
+const _guard = lessThan_(y_, x_)
+if(_guard) {
 return ff_core_Ordering.OrderingAfter()
 return
 }

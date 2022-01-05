@@ -170,7 +170,8 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_
-if((i_ == 0)) {
+const _guard = (i_ == 0)
+if(_guard) {
 return head_
 return
 }
@@ -267,7 +268,8 @@ _tailcall: for(;;) {
 {
 const _1 = self_
 {
-if((count_ <= 0)) {
+const _guard = (count_ <= 0)
+if(_guard) {
 return self_
 return
 }
@@ -306,7 +308,8 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-if((count_ <= 0)) {
+const _guard = (count_ <= 0)
+if(_guard) {
 return ff_core_List.List_reverse(result_)
 return
 }
@@ -447,7 +450,8 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_
-if((!body_(head_))) {
+const _guard = (!body_(head_))
+if(_guard) {
 return false
 return
 }
@@ -484,7 +488,8 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_
-if(body_(head_)) {
+const _guard = body_(head_)
+if(_guard) {
 return true
 return
 }
@@ -521,7 +526,8 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_
-if(body_(head_)) {
+const _guard = body_(head_)
+if(_guard) {
 return ff_core_Option.Some(head_)
 return
 }
@@ -560,7 +566,8 @@ return
 if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
-if(body_(head_)) {
+const _guard = body_(head_)
+if(_guard) {
 {
 const list_r_ = tail_
 const result_r_ = ff_core_List.Link(head_, result_)
@@ -800,7 +807,8 @@ return
 if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
-if((i_ == 0)) {
+const _guard = (i_ == 0)
+if(_guard) {
 {
 const list_r_ = tail_
 const i_r_ = (i_ - 1)
@@ -852,7 +860,8 @@ return
 if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
-if((i_ == 0)) {
+const _guard = (i_ == 0)
+if(_guard) {
 {
 const list_r_ = tail_
 const i_r_ = (i_ - 1)
@@ -981,7 +990,8 @@ const x_ = _1.first_.head_
 const xs2_ = _1.first_.tail_
 if(_1.second_.Link) {
 const y_ = _1.second_.head_
-if((ff_core_Ordering_Order$O.compare_(body_(x_), body_(y_)) == ff_core_Ordering.OrderingBefore())) {
+const _guard = (ff_core_Ordering_Order$O.compare_(body_(x_), body_(y_)) == ff_core_Ordering.OrderingBefore())
+if(_guard) {
 {
 const xs_r_ = xs2_
 const ys_r_ = ys_

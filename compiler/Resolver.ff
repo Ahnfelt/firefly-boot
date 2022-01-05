@@ -339,9 +339,11 @@ extend self: Resolver {
             variables = self.variables.addAll(variableMap)
         )
         MatchCase(
-            at = case.at,
-            patterns = case.patterns.map { self2.resolvePattern(_) },
-            condition = case.condition.map { self2.resolveTerm(_) },
+            at = case.at
+            patterns = case.patterns.map { self2.resolvePattern(_) }
+            guard = case.guard.map { g =>
+                g.MatchGuard(term = self2.resolveTerm(g.term), pattern = self2.resolvePattern(g.pattern))
+            }
             body = self2.resolveTerm(case.body)
         )
     }

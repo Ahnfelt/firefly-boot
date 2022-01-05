@@ -168,8 +168,8 @@ return {EWildcard: true, at_, index_};
 }
 
 // type MatchCase
-export function MatchCase(at_, patterns_, condition_, body_) {
-return {at_, patterns_, condition_, body_};
+export function MatchCase(at_, patterns_, guard_, body_) {
+return {at_, patterns_, guard_, body_};
 }
 
 // type MatchPattern
@@ -193,6 +193,11 @@ return {PVariantAs: true, at_, name_, variable_};
 }
 export function PAlias(at_, pattern_, variable_) {
 return {PAlias: true, at_, pattern_, variable_};
+}
+
+// type MatchGuard
+export function MatchGuard(at_, term_, pattern_) {
+return {at_, term_, pattern_};
 }
 
 // type Dictionary

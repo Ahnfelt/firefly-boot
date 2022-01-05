@@ -144,8 +144,15 @@ return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(definition_.cases
 const _1 = case_
 {
 const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Option.Option_map(case_.condition_, ((term_) => {
-return ff_compiler_Substitution.Substitution_substituteTerm(self_, term_)
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Option.Option_map(case_.guard_, ((g_) => {
+{
+const _1 = g_
+{
+const _c = _1
+return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Substitution.Substitution_substituteTerm(self_, g_.term_), _c.pattern_)
+return
+}
+}
 })), ff_compiler_Substitution.Substitution_substituteTerm(self_, case_.body_))
 return
 }
@@ -485,7 +492,8 @@ const _1 = ff_core_Map.Map_expect(self_.substitution_, index_, ff_core_Ordering.
 {
 if(_1.TVariable) {
 const i_ = _1.index_
-if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
+const _guard = ff_compiler_Substitution.Substitution_has(self_, i_)
+if(_guard) {
 const t_ = ff_compiler_Substitution.Substitution_get(self_, i_)
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return t_

@@ -120,7 +120,7 @@ type Term(at: Location) {
 type MatchCase(
     at: Location,
     patterns: List[MatchPattern],
-    condition: Option[Term],
+    guard : Option[MatchGuard]
     body: Term
 )
 
@@ -133,6 +133,12 @@ type MatchPattern(at: Location) {
     PVariantAs(name: String, variable: Option[String])
     PAlias(pattern: MatchPattern, variable: String)
 }
+
+type MatchGuard(
+    at: Location
+    term: Term
+    pattern: MatchPattern
+)
 
 type Dictionary(
     packageName: String
