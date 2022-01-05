@@ -672,9 +672,7 @@ const _1 = after_
 {
 if(_1.EVariant) {
 const at_ = _1.at_
-const word_ = _1.name_
-const _guard = (word_ == "ff:core/Unit.Unit")
-if(_guard) {
+if(_1.name_ == "ff:core/Unit.Unit") {
 const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty())
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_)
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)

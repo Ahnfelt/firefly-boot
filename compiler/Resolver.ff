@@ -338,13 +338,17 @@ extend self: Resolver {
         let self2 = self.Resolver(
             variables = self.variables.addAll(variableMap)
         )
+        let guardVariableMap = case.guard.map { findVariables(_.pattern) }.else { Map.empty[String, String]() }
+        let self3 = self2.Resolver(
+            variables = self2.variables.addAll(guardVariableMap)
+        )
         MatchCase(
             at = case.at
             patterns = case.patterns.map { self2.resolvePattern(_) }
             guard = case.guard.map { g =>
                 g.MatchGuard(term = self2.resolveTerm(g.term), pattern = self2.resolvePattern(g.pattern))
             }
-            body = self2.resolveTerm(case.body)
+            body = self3.resolveTerm(case.body)
         )
     }
 
