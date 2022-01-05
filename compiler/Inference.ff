@@ -297,7 +297,7 @@ extend self: Inference {
                         let newCases = cases.map { case => case.MatchCase(body = ESequential(case.at, case.body, e)) }
                         let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, newCases)))
                         after.{
-                            | EVariant(at, word, _, _) { word == "ff:core/Unit.Unit" } =>
+                            | EVariant(at, "ff:core/Unit.Unit", _, _) =>
                                 let unitType = TConstructor(at, core("Unit"), [])
                                 self.unification.unify(at, expected, unitType)
                                 self.inferTerm(environment, newExpected, newPipe)

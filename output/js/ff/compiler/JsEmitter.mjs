@@ -84,13 +84,12 @@ const term_a = term_
 if(term_a.ECall) {
 const at_ = term_a.at_
 if(term_a.function_.EVariable) {
-const word_ = term_a.function_.name_
+if(term_a.function_.name_ == "ff:core/Core.if") {
 if(term_a.arguments_.Link) {
 const condition_ = term_a.arguments_.head_
 if(term_a.arguments_.tail_.Link) {
 const body_ = term_a.arguments_.tail_.head_
 if(term_a.arguments_.tail_.tail_.Empty) {
-if((word_ == "ff:core/Core.if")) {
 return ff_core_List.Link(ff_core_Pair.Pair(condition_.value_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_)), ff_core_List.Empty())
 return
 }
@@ -104,7 +103,7 @@ return
 if(term_a.ECall) {
 const at_ = term_a.at_
 if(term_a.function_.EVariable) {
-const word_ = term_a.function_.name_
+if(term_a.function_.name_ == "ff:core/Option.Option_elseIf") {
 if(term_a.arguments_.Link) {
 const option_ = term_a.arguments_.head_
 if(term_a.arguments_.tail_.Link) {
@@ -112,7 +111,6 @@ const condition_ = term_a.arguments_.tail_.head_
 if(term_a.arguments_.tail_.tail_.Link) {
 const body_ = term_a.arguments_.tail_.tail_.head_
 if(term_a.arguments_.tail_.tail_.tail_.Empty) {
-if((word_ == "ff:core/Option.Option_elseIf")) {
 const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_)
 if(ff_core_List.List_isEmpty(list_)) {
 return ff_core_List.Empty()
@@ -132,13 +130,12 @@ return
 if(term_a.ECall) {
 const at_ = term_a.at_
 if(term_a.function_.EVariable) {
-const word_ = term_a.function_.name_
+if(term_a.function_.name_ == "ff:core/Option.Option_else") {
 if(term_a.arguments_.Link) {
 const option_ = term_a.arguments_.head_
 if(term_a.arguments_.tail_.Link) {
 const body_ = term_a.arguments_.tail_.head_
 if(term_a.arguments_.tail_.tail_.Empty) {
-if((word_ == "ff:core/Option.Option_else")) {
 const list_ = ff_compiler_JsEmitter.detectIfElse_(option_.value_)
 if(ff_core_List.List_isEmpty(list_)) {
 return ff_core_List.Empty()
@@ -577,8 +574,7 @@ return
 const self_ = self_a
 if(term_a.EVariant) {
 const at_ = term_a.at_
-const name_ = term_a.name_
-if((name_ == "ff:core/Bool.False")) {
+if(term_a.name_ == "ff:core/Bool.False") {
 return "false"
 return
 }
@@ -588,8 +584,7 @@ return
 const self_ = self_a
 if(term_a.EVariant) {
 const at_ = term_a.at_
-const name_ = term_a.name_
-if((name_ == "ff:core/Bool.True")) {
+if(term_a.name_ == "ff:core/Bool.True") {
 return "true"
 return
 }
@@ -599,8 +594,7 @@ return
 const self_ = self_a
 if(term_a.EVariant) {
 const at_ = term_a.at_
-const name_ = term_a.name_
-if((name_ == "ff:core/Unit.Unit")) {
+if(term_a.name_ == "ff:core/Unit.Unit") {
 return "(void 0)"
 return
 }
@@ -628,8 +622,7 @@ return
 const self_ = self_a
 if(term_a.EVariantIs) {
 const at_ = term_a.at_
-const name_ = term_a.name_
-if((name_ == "ff:core/Bool.False")) {
+if(term_a.name_ == "ff:core/Bool.False") {
 return "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 return
 }
@@ -639,8 +632,7 @@ return
 const self_ = self_a
 if(term_a.EVariantIs) {
 const at_ = term_a.at_
-const name_ = term_a.name_
-if((name_ == "ff:core/Bool.True")) {
+if(term_a.name_ == "ff:core/Bool.True") {
 return "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
 return
 }
@@ -650,8 +642,7 @@ return
 const self_ = self_a
 if(term_a.EVariantIs) {
 const at_ = term_a.at_
-const name_ = term_a.name_
-if((name_ == "ff:core/Unit.Unit")) {
+if(term_a.name_ == "ff:core/Unit.Unit") {
 return "function(_v) { return ff_core_Option.Some(_v); }"
 return
 }
@@ -874,10 +865,9 @@ return
 {
 if(_1.Link) {
 if(_1.head_.first_.EVariant) {
-const word_ = _1.head_.first_.name_
+if(_1.head_.first_.name_ == "ff:core/Bool.True") {
 const elseBody_ = _1.head_.second_
 const list_ = _1.tail_
-if((word_ == "ff:core/Bool.True")) {
 return (("(" + ff_core_List.List_foldLeft(list_, ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, elseBody_), ((_1, _2) => {
 {
 const otherwise_ = _1
@@ -989,8 +979,7 @@ return
 {
 if(_1.EVariant) {
 const at_ = _1.at_
-const word_ = _1.name_
-if((word_ == "ff:core/Unit.Unit")) {
+if(_1.name_ == "ff:core/Unit.Unit") {
 return ""
 return
 }
@@ -1001,9 +990,8 @@ if(_1.ESequential) {
 const at_ = _1.at_
 if(_1.before_.EVariant) {
 const at_ = _1.before_.at_
-const word_ = _1.before_.name_
+if(_1.before_.name_ == "ff:core/Unit.Unit") {
 const after_ = _1.after_
-if((word_ == "ff:core/Unit.Unit")) {
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, after_, last_)
 return
 }
@@ -1016,8 +1004,7 @@ const at_ = _1.at_
 const before_ = _1.before_
 if(_1.after_.EVariant) {
 const at_ = _1.after_.at_
-const word_ = _1.after_.name_
-if((word_ == "ff:core/Unit.Unit")) {
+if(_1.after_.name_ == "ff:core/Unit.Unit") {
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, before_, false)
 return
 }
@@ -1058,13 +1045,12 @@ return
 if(_1.ECall) {
 const at_ = _1.at_
 if(_1.function_.EVariable) {
-const word_ = _1.function_.name_
+if(_1.function_.name_ == "ff:core/Core.while") {
 if(_1.arguments_.Link) {
 const condition_ = _1.arguments_.head_
 if(_1.arguments_.tail_.Link) {
 const body_ = _1.arguments_.tail_.head_
 if(_1.arguments_.tail_.tail_.Empty) {
-if((word_ == "ff:core/Core.while")) {
 return (((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_.value_))) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false)) + "\n}")
 return
 }
@@ -1078,13 +1064,12 @@ return
 if(_1.ECall) {
 const at_ = _1.at_
 if(_1.function_.EVariable) {
-const word_ = _1.function_.name_
+if(_1.function_.name_ == "ff:core/Core.if") {
 if(_1.arguments_.Link) {
 const condition_ = _1.arguments_.head_
 if(_1.arguments_.tail_.Link) {
 const body_ = _1.arguments_.tail_.head_
 if(_1.arguments_.tail_.tail_.Empty) {
-if((word_ == "ff:core/Core.if")) {
 return ((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_.value_)) + ") {\n") + (last_
 ? (("return ff_core_Option.Some(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_))) + ")\n} else return ff_core_Option.None()")
 : (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false) + "\n}")))
@@ -1149,10 +1134,9 @@ return
 {
 if(_1.Link) {
 if(_1.head_.first_.EVariant) {
-const word_ = _1.head_.first_.name_
+if(_1.head_.first_.name_ == "ff:core/Bool.True") {
 const elseBody_ = _1.head_.second_
 const list_ = _1.tail_
-if((word_ == "ff:core/Bool.True")) {
 const initial_ = (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, elseBody_, last_)) + "\n}")
 return ff_core_List.List_foldLeft(list_, initial_, ((_1, _2) => {
 {
@@ -1285,9 +1269,8 @@ return
 }
 {
 if(_1.PVariant) {
-const name_ = _1.name_
+if(_1.name_ == "ff:core/Bool.False") {
 if(_1.patterns_.Empty) {
-if((name_ == "ff:core/Bool.False")) {
 return (((("if(!" + argument_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, last_)) + "\n}")
 return
 }
@@ -1296,9 +1279,8 @@ return
 }
 {
 if(_1.PVariant) {
-const name_ = _1.name_
+if(_1.name_ == "ff:core/Bool.True") {
 if(_1.patterns_.Empty) {
-if((name_ == "ff:core/Bool.True")) {
 return (((("if(" + argument_) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, last_)) + "\n}")
 return
 }
