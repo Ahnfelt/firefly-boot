@@ -335,13 +335,9 @@ extend self: Resolver {
                 [Pair(variable, variable)].toMap().addAll(findVariables(pattern))
         }
         let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty[String, String]()) {_.addAll(_)}
-        let self2 = self.Resolver(
-            variables = self.variables.addAll(variableMap)
-        )
-        let guardVariableMap = case.guard.map { findVariables(_.pattern) }.else { Map.empty[String, String]() }
-        let self3 = self2.Resolver(
-            variables = self2.variables.addAll(guardVariableMap)
-        )
+        let self2 = self.Resolver(variables = self.variables.addAll(variableMap))
+        let variableMap2 = case.guard.map { findVariables(_.pattern) }.else { Map.empty[String, String]() }
+        let self3 = self2.Resolver(variables = self2.variables.addAll(variableMap2))
         MatchCase(
             at = case.at
             patterns = case.patterns.map { self2.resolvePattern(_) }
