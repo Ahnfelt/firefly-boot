@@ -170,9 +170,9 @@ return
 const self_ = self_a
 if(type_a.TVariable) {
 const i_ = type_a.index_
-const _guard = ff_compiler_Unification.Unification_get(self_, i_)
-if(_guard.Some) {
-const t_ = _guard.value_
+const _guard1 = ff_compiler_Unification.Unification_get(self_, i_)
+if(_guard1.Some) {
+const t_ = _guard1.value_
 return ff_compiler_Unification.Unification_instantiate(self_, instantiation_, t_)
 return
 }
@@ -213,9 +213,9 @@ const _1 = type_
 {
 if(_1.TVariable) {
 const i_ = _1.index_
-const _guard = ff_compiler_Unification.Unification_get(self_, i_)
-if(_guard.Some) {
-const t_ = _guard.value_
+const _guard1 = ff_compiler_Unification.Unification_get(self_, i_)
+if(_guard1.Some) {
+const t_ = _guard1.value_
 ff_compiler_Unification.Unification_constrain(self_, at_, t_, constraintName_, generics_)
 return
 }
@@ -320,9 +320,9 @@ return ff_core_Option.Option_map(ff_core_Map.Map_get(self_.substitution_, index_
 {
 if(_1.TVariable) {
 const i_ = _1.index_
-const _guard = ff_core_Map.Map_get(self_.substitution_, i_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
-if(_guard.Some) {
-const t_ = _guard.value_
+const _guard1 = ff_core_Map.Map_get(self_.substitution_, i_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+if(_guard1.Some) {
+const t_ = _guard1.value_
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 return t_
 return
@@ -345,9 +345,9 @@ const type_a = type_
 const self_ = self_a
 if(type_a.TVariable) {
 const i_ = type_a.index_
-const _guard = ff_compiler_Unification.Unification_get(self_, i_)
-if(_guard.Some) {
-const t_ = _guard.value_
+const _guard1 = ff_compiler_Unification.Unification_get(self_, i_)
+if(_guard1.Some) {
+const t_ = _guard1.value_
 return ff_compiler_Unification.Unification_substitute(self_, t_)
 return
 }
@@ -392,8 +392,8 @@ if(t1_a.TVariable) {
 const i1_ = t1_a.index_
 if(t2_a.TVariable) {
 const i2_ = t2_a.index_
-const _guard = (i1_ == i2_)
-if(_guard) {
+const _guard1 = (i1_ == i2_)
+if(_guard1) {
 
 return
 }
@@ -404,9 +404,9 @@ return
 const self_ = self_a
 if(t1_a.TVariable) {
 const i_ = t1_a.index_
-const _guard = ff_compiler_Unification.Unification_get(self_, i_)
-if(_guard.Some) {
-const t_ = _guard.value_
+const _guard1 = ff_compiler_Unification.Unification_get(self_, i_)
+if(_guard1.Some) {
+const t_ = _guard1.value_
 ff_compiler_Unification.Unification_unify(self_, at_, t_, t2_)
 return
 }
@@ -416,9 +416,9 @@ return
 const self_ = self_a
 if(t2_a.TVariable) {
 const i_ = t2_a.index_
-const _guard = ff_compiler_Unification.Unification_get(self_, i_)
-if(_guard.Some) {
-const t_ = _guard.value_
+const _guard1 = ff_compiler_Unification.Unification_get(self_, i_)
+if(_guard1.Some) {
+const t_ = _guard1.value_
 ff_compiler_Unification.Unification_unify(self_, at_, t1_, t_)
 return
 }
@@ -494,10 +494,10 @@ const t_a = t_
 const self_ = self_a
 if(t_a.TVariable) {
 const i_ = t_a.index_
-const _guard = ff_compiler_Unification.Unification_get(self_, i_)
-if(_guard.Some) {
-const t_ = _guard.value_
-return ff_compiler_Unification.Unification_occursIn(self_, index_, t_)
+const _guard1 = ff_compiler_Unification.Unification_get(self_, i_)
+if(_guard1.Some) {
+const type_ = _guard1.value_
+return ff_compiler_Unification.Unification_occursIn(self_, index_, type_)
 return
 }
 }

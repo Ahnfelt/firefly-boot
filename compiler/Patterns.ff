@@ -84,16 +84,16 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
             | Pair(i, Some(p)) => Some(Pair("" + i, p))
             | _ => None
         }
-        let unexhaustiveGuard = case.guard.map { g =>
-            let guardConverted = convert(modules, [MatchCase(g.at, [g.pattern], None, case.body)])
+        let exhaustiveGuards = case.guards.all { g =>
+            let guardConverted = convert(modules, [MatchCase(g.at, [g.pattern], [], case.body)])
             try {
                 check([].toMap(), [], guardConverted, False, False)
-                False
-            } else {
                 True
+            } else {
+                False
             }
-        }.else { False }
-        PatternCaseInfo(fields, unexhaustiveGuard)
+        }
+        PatternCaseInfo(fields, !exhaustiveGuards)
     }
 }
 

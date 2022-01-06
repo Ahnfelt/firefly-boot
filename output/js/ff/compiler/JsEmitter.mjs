@@ -164,7 +164,7 @@ const function_a = function_
 if(function_a.ELambda) {
 if(function_a.lambda_.cases_.Link) {
 if(function_a.lambda_.cases_.head_.patterns_.Empty) {
-if(function_a.lambda_.cases_.head_.guard_.None) {
+if(function_a.lambda_.cases_.head_.guards_.Empty) {
 const body_ = function_a.lambda_.cases_.head_.body_
 if(function_a.lambda_.cases_.tail_.Empty) {
 return body_
@@ -397,7 +397,7 @@ const _1 = definition_.body_
 if(_1.cases_.Link) {
 const matchCase_ = _1.cases_.head_
 if(_1.cases_.tail_.Empty) {
-const _guard = ff_core_List.List_all(matchCase_.patterns_, ((_1) => {
+const _guard1 = ff_core_List.List_all(matchCase_.patterns_, ((_1) => {
 {
 if(_1.PVariable) {
 if(_1.name_.None) {
@@ -410,8 +410,8 @@ return
 if(_1.PVariable) {
 if(_1.name_.Some) {
 const x_ = _1.name_.value_
-const _guard = true
-if(_guard) {
+const _guard1 = true
+if(_guard1) {
 return true
 return
 }
@@ -423,7 +423,7 @@ return false
 return
 }
 }))
-if(_guard) {
+if(_guard1) {
 const body_ = ff_compiler_JsEmitter.JsEmitter_emitTailCall(self_, (() => {
 return ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, true)
 }))
@@ -697,10 +697,10 @@ if(term_a.ELambda) {
 const at_ = term_a.at_
 if(term_a.lambda_.cases_.Link) {
 const patterns_ = term_a.lambda_.cases_.head_.patterns_
-if(term_a.lambda_.cases_.head_.guard_.None) {
+if(term_a.lambda_.cases_.head_.guards_.Empty) {
 const body_ = term_a.lambda_.cases_.head_.body_
 if(term_a.lambda_.cases_.tail_.Empty) {
-const _guard = ff_core_List.List_all(patterns_, ((_1) => {
+const _guard1 = ff_core_List.List_all(patterns_, ((_1) => {
 {
 if(_1.PVariable) {
 return true
@@ -712,7 +712,7 @@ return false
 return
 }
 }))
-if(_guard) {
+if(_guard1) {
 const parameters_ = ff_core_List.List_join(ff_core_List.List_map(patterns_, ((_1) => {
 {
 if(_1.PVariable) {
@@ -777,8 +777,8 @@ if(term_a.typeArguments_.Empty) {
 if(term_a.arguments_.Link) {
 const value_ = term_a.arguments_.head_
 if(term_a.arguments_.tail_.Empty) {
-const _guard = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)))
-if(_guard) {
+const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)))
+if(_guard1) {
 return ((("(" + operator_) + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, value_)) + ")")
 return
 }
@@ -800,8 +800,8 @@ const left_ = term_a.arguments_.head_
 if(term_a.arguments_.tail_.Link) {
 const right_ = term_a.arguments_.tail_.head_
 if(term_a.arguments_.tail_.tail_.Empty) {
-const _guard = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)))
-if(_guard) {
+const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)))
+if(_guard1) {
 return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_)) + " ") + operator_) + " ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_)) + ")")
 return
 }
@@ -1159,8 +1159,8 @@ return
 }
 {
 const list_ = _1
-const _guard = (!last_)
-if(_guard) {
+const _guard1 = (!last_)
+if(_guard1) {
 return ff_core_List.List_foldLeft(list_, "{}", ((_1, _2) => {
 {
 const otherwise_ = _1
@@ -1194,23 +1194,25 @@ return
 
 export function JsEmitter_emitCase(self_, arguments_, matchCase_, last_) {
 {
-const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guard_)
+const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_)
 {
 if(_1.first_.Link) {
 const p_ = _1.first_.head_
 const ps_ = _1.first_.tail_
 return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_expect(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guard_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), last_)
 return
 }
 }
 {
 if(_1.first_.Empty) {
-if(_1.second_.Some) {
-const guard_ = _1.second_.value_
-return ((("const _guard = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_)) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link("_guard", ff_core_List.Empty()), (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(guard_.pattern_, ff_core_List.Empty()), ff_core_Option.None(), _c.body_)
+if(_1.second_.Link) {
+const guard_ = _1.second_.head_
+const guards_ = _1.second_.tail_
+const guardName_ = ("_guard" + (ff_core_List.List_size(guards_) + 1))
+return ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_)) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(guardName_, ff_core_List.Empty()), (((_c) => {
+return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(guard_.pattern_, ff_core_List.Empty()), guards_, _c.body_)
 }))(matchCase_), last_))
 return
 }
@@ -1218,7 +1220,7 @@ return
 }
 {
 if(_1.first_.Empty) {
-if(_1.second_.None) {
+if(_1.second_.Empty) {
 return (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, matchCase_.body_, last_) + (last_
 ? "\nreturn"
 : "\nbreak"))
@@ -1299,7 +1301,7 @@ const name_ = _1.name_
 const patterns_ = _1.patterns_
 const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, name_, argument_)
 const newMatchCase_ = (((_c) => {
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.List_addAll(patterns_, matchCase_.patterns_), _c.guard_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.List_addAll(patterns_, matchCase_.patterns_), _c.guards_, _c.body_)
 }))(matchCase_)
 return (((processed_.loneVariant_
 ? ""

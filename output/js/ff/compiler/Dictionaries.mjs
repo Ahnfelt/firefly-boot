@@ -99,8 +99,8 @@ const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff
 {
 const name_ = _1.first_
 const s_ = _1.second_
-const _guard = (!s_.isVariable_)
-if(_guard) {
+const _guard1 = (!s_.isVariable_)
+if(_guard1) {
 return ff_core_Option.Some(ff_core_Pair.Pair(name_, s_.signature_))
 return
 }
@@ -198,7 +198,7 @@ return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(definition_.cases
 const _1 = case_
 {
 const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Option.Option_map(case_.guard_, ((g_) => {
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_List.List_map(case_.guards_, ((g_) => {
 {
 const _1 = g_
 {
@@ -400,8 +400,8 @@ if(_1.function_.EVariable) {
 const functionName_ = _1.function_.name_
 const typeArguments_ = _1.typeArguments_
 const arguments_ = _1.arguments_
-const _guard = ff_core_Map.Map_contains(functions_, functionName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-if(_guard) {
+const _guard1 = ff_core_Map.Map_contains(functions_, functionName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+if(_guard1) {
 const signature_ = ff_core_Map.Map_expect(functions_, functionName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, signature_.generics_, typeArguments_, _w1)

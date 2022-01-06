@@ -70,7 +70,7 @@ extend self: Dictionaries {
             cases = definition.cases.map { case =>
                 // TODO: Remove the case variables from the functions
                 case.MatchCase(
-                    guard = case.guard.map { g => g.MatchGuard(term = self.processTerm(functions, g.term)) }
+                    guards = case.guards.map { g => g.MatchGuard(term = self.processTerm(functions, g.term)) }
                     body = self.processTerm(functions, case.body)
                 )
             }

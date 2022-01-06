@@ -143,32 +143,26 @@ extend self: Inference {
             [...parameterTypes, returnType]
         )
         self.unification.unify(case.at, expected, functionType)
-        let newEnvironment = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
+        let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
                 Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type)))
             }
             Environment(environment1.symbols.addAll(symbols))
         }
-        case.guard.{
-            | Some(g) =>
-                let guardType = self.unification.freshUnificationVariable(g.at)
-                let guardTerm = self.inferTerm(newEnvironment, guardType, g.term)
-                let symbols = self.inferPattern(newEnvironment, guardType, g.pattern).map {| Pair(name, type) =>
-                    Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type)))
-                }
-                let newEnvironment2 = Environment(newEnvironment.symbols.addAll(symbols))
-                let guard = g.MatchGuard(term = guardTerm)
-                let body = self.inferTerm(newEnvironment2, returnType, case.body)
-                case.MatchCase(
-                    body = body
-                    guard = Some(guard)
-                )
-            | None =>
-                let body = self.inferTerm(newEnvironment, returnType, case.body)
-                case.MatchCase(
-                    body = body
-                )
+        mutable guards = []
+        let environment3 = case.guards.foldLeft(environment1) { environment2, g =>
+            let guardType = self.unification.freshUnificationVariable(g.at)
+            let guardTerm = self.inferTerm(environment2, guardType, g.term)
+            let symbols = self.inferPattern(environment2, guardType, g.pattern).map {| Pair(name, type) =>
+                Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type)))
+            }
+            guards = [g.MatchGuard(term = guardTerm), ...guards]
+            Environment(environment2.symbols.addAll(symbols))
         }
+        case.MatchCase(
+            body = self.inferTerm(environment3, returnType, case.body)
+            guards = guards.reverse()
+        )
     }
 
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
@@ -385,7 +379,7 @@ extend self: Inference {
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
                 let term = EPipe(e.at, e.record,
-                    ELambda(e.at, Lambda(e.at, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], None, body)]))
+                    ELambda(e.at, Lambda(e.at, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], [], body)]))
                 )
                 self.inferTerm(environment, expected, term)
             | EPipe e =>
@@ -735,7 +729,7 @@ extend self: Inference {
         let lambda = ELambda(at, Lambda(at, [MatchCase(
             at = at,
             patterns = parameters.map { PVariable(at, Some(_)) },
-            guard = None,
+            guards = [],
             body = body
         )]))
         self.inferTerm(environment, expected, lambda)

@@ -513,7 +513,7 @@ extend self: Parser {
             }
             self.skip(LArrowThick)
             let term = self.parseStatements()
-            [MatchCase(token.at(), parameters.toList(), None, term)]
+            [MatchCase(token.at(), parameters.toList(), [], term)]
         } else {
             let term = self.parseStatements()
             let wildcards = Wildcards.make()
@@ -523,7 +523,7 @@ extend self: Parser {
             } else {
                 List.range(defaultParameterCount).map { i => PVariable(token.at(), None) }
             }
-            [MatchCase(token.at(), arguments, None, e)]
+            [MatchCase(token.at(), arguments, [], e)]
         }
         if(!colon) {self.rawSkip(LBracketRight, "}")}
         Lambda(token.at(), result)
@@ -536,21 +536,26 @@ extend self: Parser {
             patterns.add(self.parsePattern())
             if(!self.current().is(LArrowThick) && !self.current().rawIs("{")) {self.skip(LComma)}
         }
-        let guard = if(!self.current().rawIs("{")) {None} else {
-            let guardToken = self.skip(LBracketLeft)
-            let term = self.parseStatements()
-            let p = if(!self.current().is(LPipe)) {
-                PVariant(guardToken.at(), "True", [])
-            } else {
-                self.skip(LPipe)
-                self.parsePattern()
-            }
-            self.skip(LBracketRight)
-            Some(MatchGuard(guardToken.at(), term, p))
+        let guards = ArrayBuilder.empty[MatchGuard]()
+        while {self.current().rawIs("{")} {
+            guards.add(self.parseCaseGuard())
         }
         self.skip(LArrowThick)
         let body = self.parseStatements()
-        MatchCase(token.at(), patterns.toList(), guard, body)
+        MatchCase(token.at(), patterns.toList(), guards.toList(), body)
+    }
+
+    parseCaseGuard(): MatchGuard {
+        let guardToken = self.skip(LBracketLeft)
+        let term = self.parseStatements()
+        let p = if(!self.current().is(LPipe)) {
+            PVariant(guardToken.at(), "True", [])
+        } else {
+            self.skip(LPipe)
+            self.parsePattern()
+        }
+        self.skip(LBracketRight)
+        MatchGuard(guardToken.at(), term, p)
     }
     
     parsePattern(): MatchPattern {

@@ -52,7 +52,7 @@ extend self: Substitution {
         definition.Lambda(
             cases = definition.cases.map { case =>
                 case.MatchCase(
-                    guard = case.guard.map { g => g.MatchGuard(term = self.substituteTerm(g.term)) }
+                    guards = case.guards.map { g => g.MatchGuard(term = self.substituteTerm(g.term)) }
                     body = self.substituteTerm(case.body)
                 )
             }

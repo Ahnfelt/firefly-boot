@@ -207,7 +207,7 @@ extend self: JsEmitter {
         | EField(at, newtype, record, field) =>
             if(newtype) { self.emitTerm(record) } else:
             self.emitTerm(record) + "." + escapeKeyword(field)
-        | ELambda(at, Lambda(_, [MatchCase(_, patterns, None, body)])) {
+        | ELambda(at, Lambda(_, [MatchCase(_, patterns, [], body)])) {
             patterns.all {| PVariable _ => True | _ => False }
         } =>
             let parameters =
@@ -351,7 +351,7 @@ extend self: JsEmitter {
     }
 
     emitCase(arguments: List[String], matchCase: MatchCase, last: Bool): String {
-        Pair(matchCase.patterns, matchCase.guard).{
+        Pair(matchCase.patterns, matchCase.guards).{
             | Pair([p, ...ps], _) =>
                 self.emitPattern(
                     arguments.expect(0),
@@ -360,10 +360,11 @@ extend self: JsEmitter {
                     matchCase.MatchCase(patterns = ps),
                     last
                 )
-            | Pair([], Some(guard)) =>
-                "const _guard = " + self.emitTerm(guard.term) + "\n" +
-                self.emitCase(["_guard"], matchCase.MatchCase(patterns = [guard.pattern], guard = None), last)
-            | Pair([], None) =>
+            | Pair([], [guard, ...guards]) =>
+                let guardName = "_guard" + (guards.size() + 1)
+                "const " + guardName + " = " + self.emitTerm(guard.term) + "\n" +
+                self.emitCase([guardName], matchCase.MatchCase(patterns = [guard.pattern], guards = guards), last)
+            | Pair([], []) =>
                 self.emitStatements(matchCase.body, last) +
                 if(last) { "\nreturn" } else { "\nbreak" }
         }
@@ -495,7 +496,7 @@ detectIfElse(term: Term): List[Pair[Term, Term]] {
 }
 
 invokeImmediately(function: Term): Term {
-    | ELambda(_, Lambda(_, [MatchCase(_, [], None, body)])) => body
+    | ELambda(_, Lambda(_, [MatchCase(_, [], [], body)])) => body
     | _ => ECall(function.at, False, False, function, [], [], [])
 }
 

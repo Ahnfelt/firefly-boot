@@ -168,8 +168,8 @@ return {EWildcard: true, at_, index_};
 }
 
 // type MatchCase
-export function MatchCase(at_, patterns_, guard_, body_) {
-return {at_, patterns_, guard_, body_};
+export function MatchCase(at_, patterns_, guards_, body_) {
+return {at_, patterns_, guards_, body_};
 }
 
 // type MatchPattern
