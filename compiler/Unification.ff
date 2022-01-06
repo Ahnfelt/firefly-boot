@@ -188,7 +188,7 @@ extend self: Unification {
     }
 
     occursIn(index: Int, t: Type): Bool {
-        | _, TVariable(_, i) { self.get(i) | Some(t) } => self.occursIn(index, t)
+        | _, TVariable(_, i) { self.get(i) | Some(type) } => self.occursIn(index, type)
         | _, TVariable(_, i) => i == index
         | _, TConstructor(_, _, generics) => generics.any { t => self.occursIn(index, t) }
     }
