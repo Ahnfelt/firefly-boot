@@ -799,6 +799,14 @@ return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, variableMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeParameters_, _c.traits_)
 }))(self_)
+const variableMap2_ = ff_core_Option.Option_else(ff_core_Option.Option_map(case_.guard_, ((_w1) => {
+return findVariables_(_w1.pattern_)
+})), (() => {
+return ff_core_Map.empty_()
+}))
+const self3_ = (((_c) => {
+return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self2_.variables_, variableMap2_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeParameters_, _c.traits_)
+}))(self2_)
 return ff_compiler_Syntax.MatchCase(case_.at_, ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolvePattern(self2_, _w1)
 })), ff_core_Option.Option_map(case_.guard_, ((g_) => {
@@ -810,7 +818,7 @@ return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Resolver.Resolver_resol
 return
 }
 }
-})), ff_compiler_Resolver.Resolver_resolveTerm(self2_, case_.body_))
+})), ff_compiler_Resolver.Resolver_resolveTerm(self3_, case_.body_))
 }
 
 export function Resolver_resolvePattern(self_, pattern_) {

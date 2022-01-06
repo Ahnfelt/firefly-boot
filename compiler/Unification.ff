@@ -92,8 +92,8 @@ extend self: Unification {
             }
         | _, TConstructor(at, name, generics) =>
             TConstructor(at, name, generics.map { self.instantiate(instantiation, _) })
-        | _, TVariable(_, i) { self.has(i) } =>
-            self.instantiate(instantiation, self.get(i))
+        | _, TVariable(_, i) { self.get(i) | Some(t) } =>
+            self.instantiate(instantiation, t)
         | _, TVariable(_, i) =>
             type
     }
@@ -105,8 +105,8 @@ extend self: Unification {
 
     constrain(at: Location, type: Type, constraintName: String, generics: List[Type]): Unit {
         type.{
-            | TVariable(_, i) { self.has(i) } =>
-                self.constrain(at, self.get(i), constraintName, generics)
+            | TVariable(_, i) { self.get(i) | Some(t) } =>
+                self.constrain(at, t, constraintName, generics)
             | TVariable(_, i) =>
                 self.constraints.get(i).{
                     | None =>
@@ -146,29 +146,25 @@ extend self: Unification {
         }
     }
 
-    get(index: Int): Type {
-        self.substitution.expect(index).{
-            | TVariable(_, i) { self.has(i) } =>
-                let t = self.get(i)
+    get(index: Int): Option[Type] {
+        self.substitution.get(index).map {
+            | TVariable(_, i) { self.substitution.get(i) | Some(t) } =>
                 self.substitution = self.substitution.add(index, t)
                 t
             | t => t
         }
     }
 
-    has(index: Int): Bool {
-        self.substitution.contains(index)
-    }
-
     substitute(type: Type): Type {
-        | TVariable(_, i) => if(self.has(i)) { self.substitute(self.get(i)) } else { type }
+        | TVariable(_, i) { self.get(i) | Some(t) } => self.substitute(t)
+        | TVariable(_, _) => type
         | TConstructor t => t.TConstructor(generics = t.generics.map { t => self.substitute(t) })
     }
 
     unify(at: Location, t1: Type, t2: Type): Unit {
         | _, TVariable(_, i1), TVariable(_, i2) { i1 == i2 } =>
-        | _, TVariable(_, i), _ { self.has(i) } => self.unify(at, self.get(i), t2)
-        | _, _, TVariable(_, i) { self.has(i) } => self.unify(at, t1, self.get(i))
+        | _, TVariable(_, i), _ { self.get(i) | Some(t) } => self.unify(at, t, t2)
+        | _, _, TVariable(_, i) { self.get(i) | Some(t) } => self.unify(at, t1, t)
         | _, TVariable(_, i), _ => self.bind(at, i, t2)
         | _, _, TVariable(_, i) => self.bind(at, i, t1)
         | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
@@ -192,7 +188,7 @@ extend self: Unification {
     }
 
     occursIn(index: Int, t: Type): Bool {
-        | _, TVariable(_, i) { self.has(i) } => self.occursIn(index, self.get(i))
+        | _, TVariable(_, i) { self.get(i) | Some(t) } => self.occursIn(index, t)
         | _, TVariable(_, i) => i == index
         | _, TConstructor(_, _, generics) => generics.any { t => self.occursIn(index, t) }
     }
