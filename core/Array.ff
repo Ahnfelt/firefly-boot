@@ -41,7 +41,12 @@ extend self[T]: Array[T] {
         javascript "return self_.length"
 
     expect(index: Int): T { panic("magic") }
-        javascript "return self_[index_]"
+        javascript """
+            if(index_ < 0 || index_ >= self_.length) {
+                throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.length)
+            }
+            return self_[index_]
+        """
 
     expectFirst(): T { self.expect(0) }
 

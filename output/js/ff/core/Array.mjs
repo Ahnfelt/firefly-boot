@@ -117,7 +117,12 @@ return self_.length
 }
 
 export function Array_expect(self_, index_) {
-return self_[index_]
+
+            if(index_ < 0 || index_ >= self_.length) {
+                throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.length)
+            }
+            return self_[index_]
+        
 }
 
 export function Array_expectFirst(self_) {

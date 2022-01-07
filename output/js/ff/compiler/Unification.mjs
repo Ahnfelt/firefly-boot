@@ -496,8 +496,8 @@ if(t_a.TVariable) {
 const i_ = t_a.index_
 const _guard = ff_compiler_Unification.Unification_get(self_, i_)
 if(_guard.Some) {
-const t_ = _guard.value_
-return ff_compiler_Unification.Unification_occursIn(self_, index_, t_)
+const type_ = _guard.value_
+return ff_compiler_Unification.Unification_occursIn(self_, index_, type_)
 return
 }
 }
