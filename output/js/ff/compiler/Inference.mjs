@@ -175,7 +175,7 @@ const selfPattern_ = ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.So
 const _1 = case_
 {
 const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(selfPattern_, case_.patterns_), _c.guard_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(selfPattern_, case_.patterns_), _c.guards_, _c.body_)
 return
 }
 }
@@ -228,8 +228,8 @@ const returnsUnit_ = (((_1) => {
 if(_1.TConstructor) {
 const name_ = _1.name_
 const ts_ = _1.generics_
-const _guard = ff_core_String.String_startsWith(name_, "Function$", 0)
-if(_guard) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0)
+if(_guard1) {
 {
 const _1 = ff_core_List.List_expectLast(ts_)
 {
@@ -262,7 +262,7 @@ const cases_ = ((!returnsUnit_)
 const _1 = c_
 {
 const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guard_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, ff_core_List.Empty(), ff_core_Option.None())))
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(c_.at_, c_.body_, ff_compiler_Syntax.EVariant(c_.at_, unitName_, ff_core_List.Empty(), ff_core_Option.None())))
 return
 }
 }
@@ -286,7 +286,7 @@ return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unific
 const returnType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, case_.at_)
 const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(returnType_, ff_core_List.Empty())))
 ff_compiler_Unification.Unification_unify(self_.unification_, case_.at_, expected_, functionType_)
-const newEnvironment_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_, ((_1, _2) => {
+const environment1_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_, ((_1, _2) => {
 {
 const environment1_ = _1
 const t_ = _2.first_
@@ -303,14 +303,11 @@ return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment1_.
 return
 }
 }))
-{
-const _1 = case_.guard_
-{
-if(_1.Some) {
-const g_ = _1.value_
+let guards_ = ff_core_List.Empty()
+const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_) => {
 const guardType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, g_.at_)
-const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, newEnvironment_, guardType_, g_.term_)
-const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPattern(self_, newEnvironment_, guardType_, g_.pattern_), ((_1) => {
+const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, guardType_, g_.term_)
+const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPattern(self_, environment2_, guardType_, g_.pattern_), ((_1) => {
 {
 const name_ = _1.first_
 const type_ = _1.second_
@@ -318,35 +315,17 @@ return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, fals
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-const newEnvironment2_ = ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(newEnvironment_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
-const guard_ = (((_c) => {
+guards_ = ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
-}))(g_)
-const body_ = ff_compiler_Inference.Inference_inferTerm(self_, newEnvironment2_, returnType_, case_.body_)
+}))(g_), guards_)
+return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment2_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+}))
 {
 const _1 = case_
 {
 const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_Option.Some(guard_), body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_List.List_reverse(guards_), ff_compiler_Inference.Inference_inferTerm(self_, environment3_, returnType_, case_.body_))
 return
-}
-}
-return
-}
-}
-{
-if(_1.None) {
-const body_ = ff_compiler_Inference.Inference_inferTerm(self_, newEnvironment_, returnType_, case_.body_)
-{
-const _1 = case_
-{
-const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guard_, body_)
-return
-}
-}
-return
-}
 }
 }
 }
@@ -533,8 +512,8 @@ const t_ = _1
 if(_1.TConstructor) {
 const name_ = _1.name_
 const typeArguments_ = _1.generics_
-const _guard = ff_core_String.String_startsWith(name_, "Record$", 0)
-if(_guard) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0)
+if(_guard1) {
 const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1)
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ == e_.field_)
@@ -562,8 +541,8 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, m
 {
 if(_1.Some) {
 const instantiated_ = _1.value_
-const _guard = (!instantiated_.scheme_.isVariable_)
-if(_guard) {
+const _guard1 = (!instantiated_.scheme_.isVariable_)
+if(_guard1) {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_)
 }))(instantiated_.scheme_.signature_)
@@ -661,7 +640,7 @@ const newCases_ = ff_core_List.List_map(cases_, ((case_) => {
 const _1 = case_
 {
 const _c = _1
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guard_, ff_compiler_Syntax.ESequential(case_.at_, case_.body_, e_))
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, _c.guards_, ff_compiler_Syntax.ESequential(case_.at_, case_.body_, e_))
 return
 }
 }
@@ -672,9 +651,7 @@ const _1 = after_
 {
 if(_1.EVariant) {
 const at_ = _1.at_
-const word_ = _1.name_
-const _guard = (word_ == "ff:core/Unit.Unit")
-if(_guard) {
+if(_1.name_ == "ff:core/Unit.Unit") {
 const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty())
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_)
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
@@ -819,7 +796,7 @@ return ff_compiler_Syntax.Argument(e_.at_, ff_core_Option.Some(name_), ff_compil
 }))
 }))
 const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.Some(arguments_))
-const term_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(e_.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c")), ff_core_List.Empty()), ff_core_Option.None(), body_), ff_core_List.Empty()))))
+const term_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(e_.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c")), ff_core_List.Empty()), ff_core_List.Empty(), body_), ff_core_List.Empty()))))
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, term_)
 return
 }
@@ -904,8 +881,8 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, f_.at_, m
 {
 if(_1.Some) {
 const instantiated_ = _1.value_
-const _guard = (!instantiated_.scheme_.isVariable_)
-if(_guard) {
+const _guard1 = (!instantiated_.scheme_.isVariable_)
+if(_guard1) {
 return ff_compiler_Inference.Inference_inferMethodCall(self_, environment_, expected_, instantiated_.scheme_.signature_, instantiated_.typeArguments_, e2_, record_, methodName_)
 return
 }
@@ -1041,8 +1018,8 @@ const t_ = _1
 if(_1.TConstructor) {
 const name_ = _1.name_
 const typeArguments_ = _1.generics_
-const _guard = ff_core_String.String_startsWith(name_, "Record$", 0)
-if(_guard) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0)
+if(_guard1) {
 return ff_compiler_Inference.fail_(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_))
 return
 }
@@ -1059,8 +1036,8 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, m
 {
 if(_1.Some) {
 const instantiated_ = _1.value_
-const _guard = instantiated_.scheme_.isMutable_
-if(_guard) {
+const _guard1 = instantiated_.scheme_.isMutable_
+if(_guard1) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_)
 {
 const _1 = e_
@@ -1235,8 +1212,8 @@ const _1 = e_.arguments_
 if(_1.Link) {
 const a1_ = _1.head_
 if(_1.tail_.Empty) {
-const _guard = (operator_ == "!")
-if(_guard) {
+const _guard1 = (operator_ == "!")
+if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
@@ -1259,8 +1236,8 @@ return
 if(_1.Link) {
 const a1_ = _1.head_
 if(_1.tail_.Empty) {
-const _guard = (operator_ == "-")
-if(_guard) {
+const _guard1 = (operator_ == "-")
+if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_)
 for(;;) {
@@ -1269,8 +1246,8 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Float"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Float"))
+if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
@@ -1281,8 +1258,8 @@ break
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Int"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Int"))
+if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_)
 break
 }
@@ -1315,8 +1292,8 @@ const a1_ = _1.head_
 if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_
 if(_1.tail_.tail_.Empty) {
-const _guard = ((operator_ == "||") || (operator_ == "&&"))
-if(_guard) {
+const _guard1 = ((operator_ == "||") || (operator_ == "&&"))
+if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a2_.value_)
@@ -1345,8 +1322,8 @@ const a1_ = _1.head_
 if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_
 if(_1.tail_.tail_.Empty) {
-const _guard = ((((((operator_ == "<") || (operator_ == ">")) || (operator_ == "<=")) || (operator_ == ">=")) || (operator_ == "==")) || (operator_ == "!="))
-if(_guard) {
+const _guard1 = ((((((operator_ == "<") || (operator_ == ">")) || (operator_ == "<=")) || (operator_ == ">=")) || (operator_ == "==")) || (operator_ == "!="))
+if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
@@ -1359,8 +1336,8 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("String"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("String"))
+if(_guard1) {
 return ff_core_Option.Some("String")
 return
 }
@@ -1371,8 +1348,8 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Float"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Float"))
+if(_guard1) {
 return ff_core_Option.Some("Float")
 return
 }
@@ -1383,8 +1360,8 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Int"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Int"))
+if(_guard1) {
 return ff_core_Option.Some("Int")
 return
 }
@@ -1395,8 +1372,8 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Char"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Char"))
+if(_guard1) {
 return ff_core_Option.Some("Char")
 return
 }
@@ -1407,8 +1384,8 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Duration"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Duration"))
+if(_guard1) {
 return ff_core_Option.Some("Duration")
 return
 }
@@ -1419,8 +1396,8 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Instant"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Instant"))
+if(_guard1) {
 return ff_core_Option.Some("Instant")
 return
 }
@@ -1449,8 +1426,8 @@ return
 }
 }
 {
-const _guard = ((operator_ == "==") || (operator_ == "!="))
-if(_guard) {
+const _guard1 = ((operator_ == "==") || (operator_ == "!="))
+if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
@@ -1490,8 +1467,8 @@ const a1_ = _1.head_
 if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_
 if(_1.tail_.tail_.Empty) {
-const _guard = ((((((operator_ == "+") || (operator_ == "-")) || (operator_ == "*")) || (operator_ == "/")) || (operator_ == "%")) || (operator_ == "^"))
-if(_guard) {
+const _guard1 = ((((((operator_ == "+") || (operator_ == "-")) || (operator_ == "*")) || (operator_ == "/")) || (operator_ == "%")) || (operator_ == "^"))
+if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_)
@@ -1503,8 +1480,8 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Float"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Float"))
+if(_guard1) {
 return ff_core_Option.Some("Float")
 return
 }
@@ -1515,8 +1492,8 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = (name_ == ff_compiler_Inference.core_("Int"))
-if(_guard) {
+const _guard1 = (name_ == ff_compiler_Inference.core_("Int"))
+if(_guard1) {
 return ff_core_Option.Some("Int")
 return
 }
@@ -1527,8 +1504,8 @@ return
 if(_1.TConstructor) {
 const name_ = _1.name_
 if(_1.generics_.Empty) {
-const _guard = ((operator_ == "+") && (name_ == ff_compiler_Inference.core_("String")))
-if(_guard) {
+const _guard1 = ((operator_ == "+") && (name_ == ff_compiler_Inference.core_("String")))
+if(_guard1) {
 return ff_core_Option.Some("String")
 return
 }
@@ -1674,7 +1651,7 @@ return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syn
 })), ff_core_List.Empty())
 const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
-})), ff_core_Option.None(), body_), ff_core_List.Empty())))
+})), ff_core_List.Empty(), body_), ff_core_List.Empty())))
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, lambda_)
 }
 

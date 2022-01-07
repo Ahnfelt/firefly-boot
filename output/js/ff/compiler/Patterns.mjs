@@ -95,8 +95,8 @@ return
 }
 }
 {
-const _guard = (success_ && (!guard_))
-if(_guard) {
+const _guard1 = (success_ && (!guard_))
+if(_guard1) {
 
 return
 }
@@ -244,18 +244,16 @@ return ff_core_Option.None()
 return
 }
 }))
-const unexhaustiveGuard_ = ff_core_Option.Option_else(ff_core_Option.Option_map(case_.guard_, ((g_) => {
-const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_Option.None(), case_.body_), ff_core_List.Empty()))
+const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
+const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()))
 return ff_core_Try.Try_else(ff_core_Core.try_((() => {
 ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), guardConverted_, false, false)
-return false
-})), (() => {
 return true
-}))
 })), (() => {
 return false
 }))
-return ff_compiler_Patterns.PatternCaseInfo(fields_, unexhaustiveGuard_)
+}))
+return ff_compiler_Patterns.PatternCaseInfo(fields_, (!exhaustiveGuards_))
 return
 }
 }))

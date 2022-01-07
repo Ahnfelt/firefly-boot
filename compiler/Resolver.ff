@@ -335,15 +335,18 @@ extend self: Resolver {
                 [Pair(variable, variable)].toMap().addAll(findVariables(pattern))
         }
         let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty[String, String]()) {_.addAll(_)}
-        let self2 = self.Resolver(variables = self.variables.addAll(variableMap))
-        let variableMap2 = case.guard.map { findVariables(_.pattern) }.else { Map.empty[String, String]() }
-        let self3 = self2.Resolver(variables = self2.variables.addAll(variableMap2))
+        mutable guards = []
+        let variableMap2 = case.guards.foldLeft(variableMap) { variableMap1, g =>
+            let self2 = self.Resolver(variables = self.variables.addAll(variableMap1))
+            let guard = g.MatchGuard(term = self2.resolveTerm(g.term), pattern = self2.resolvePattern(g.pattern))
+            guards = [guard, ...guards]
+            variableMap1.addAll(findVariables(guard.pattern))
+        }
+        let self3 = self.Resolver(variables = self.variables.addAll(variableMap2))
         MatchCase(
             at = case.at
-            patterns = case.patterns.map { self2.resolvePattern(_) }
-            guard = case.guard.map { g =>
-                g.MatchGuard(term = self2.resolveTerm(g.term), pattern = self2.resolvePattern(g.pattern))
-            }
+            patterns = case.patterns.map { self.resolvePattern(_) }
+            guards = guards.reverse()
             body = self3.resolveTerm(case.body)
         )
     }

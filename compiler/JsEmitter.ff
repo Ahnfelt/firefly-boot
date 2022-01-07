@@ -179,22 +179,22 @@ extend self: JsEmitter {
         | EVariable(at, name) => escapeResolved(name)
         | EList(at, _, items) =>
             self.emitList(items)
-        | EVariant(at, name, _, _) { name == "ff:core/Bool.False" } =>
+        | EVariant(at, "ff:core/Bool.False", _, _) =>
             "false"
-        | EVariant(at, name, _, _) { name == "ff:core/Bool.True" } =>
+        | EVariant(at, "ff:core/Bool.True", _, _) =>
             "true"
-        | EVariant(at, name, _, _) { name == "ff:core/Unit.Unit" } =>
+        | EVariant(at, "ff:core/Unit.Unit", _, _) =>
             "(void 0)"
         | EVariant(at, name, _, arguments) =>
             let argumentsString = arguments.toList().flatten().map(self.emitArgument).join(", ")
             let newtype = self.processVariant(name)
             if(newtype) { argumentsString } else:
             escapeResolved(name) + "(" + argumentsString + ")"
-        | EVariantIs(at, name, _) { name == "ff:core/Bool.False" } =>
+        | EVariantIs(at, "ff:core/Bool.False", _) =>
             "function(_v) { return !_v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
-        | EVariantIs(at, name, _) { name == "ff:core/Bool.True" } =>
+        | EVariantIs(at, "ff:core/Bool.True", _) =>
             "function(_v) { return _v ? ff_core_Option.Some(_v) : ff_core_Option.None(); }"
-        | EVariantIs(at, name, _) { name == "ff:core/Unit.Unit" } =>
+        | EVariantIs(at, "ff:core/Unit.Unit", _) =>
             "function(_v) { return ff_core_Option.Some(_v); }"
         | EVariantIs(at, name, _) =>
             let n = name.reverse().takeWhile { _ != '.' }.reverse()
@@ -207,7 +207,7 @@ extend self: JsEmitter {
         | EField(at, newtype, record, field) =>
             if(newtype) { self.emitTerm(record) } else:
             self.emitTerm(record) + "." + escapeKeyword(field)
-        | ELambda(at, Lambda(_, [MatchCase(_, patterns, None, body)])) {
+        | ELambda(at, Lambda(_, [MatchCase(_, patterns, [], body)])) {
             patterns.all {| PVariable _ => True | _ => False }
         } =>
             let parameters =
@@ -243,7 +243,7 @@ extend self: JsEmitter {
                         dictionaries.map(self.emitDictionary).join(", ")
                     }
                     self.emitTerm(function) + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")"
-                | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>
+                | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
                     "(" + list.foldLeft(self.emitTerm(elseBody)) {| otherwise, Pair(condition, body) =>
                         self.emitTerm(condition) +
                         "\n? " + self.emitTerm(body) + "\n: " + otherwise
@@ -287,11 +287,11 @@ extend self: JsEmitter {
                 functionStrings.join("\n") + "\n" + self.emitStatements(body, last)
             | ELet(at, mutable, name, valueType, value, body) =>
                 self.emitLetDefinition(DLet(at, name, valueType, value, Targets(None)), mutable) + "\n" + self.emitStatements(body, last)
-            | EVariant(at, word, _, _) { word == "ff:core/Unit.Unit" } =>
+            | EVariant(at, "ff:core/Unit.Unit", _, _) =>
                 ""
-            | ESequential(at, EVariant(at, word, _, _), after) { word == "ff:core/Unit.Unit" } =>
+            | ESequential(at, EVariant(at, "ff:core/Unit.Unit", _, _), after) =>
                 self.emitStatements(after, last)
-            | ESequential(at, before, EVariant(at, word, _, _)) { word == "ff:core/Unit.Unit" } =>
+            | ESequential(at, before, EVariant(at, "ff:core/Unit.Unit", _, _)) =>
                 self.emitStatements(before, False)
             | ESequential(at, before, after) =>
                 self.emitStatements(before, False) + "\n" + self.emitStatements(after, last)
@@ -299,10 +299,10 @@ extend self: JsEmitter {
                 escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value)
             | EAssignField(at, operator, record, field, value) =>
                 self.emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + self.emitTerm(value)
-            | ECall(at, _, _, EVariable(_, word), _, [condition, body], _) { word == "ff:core/Core.while" } =>
+            | ECall(at, _, _, EVariable(_, "ff:core/Core.while"), _, [condition, body], _) =>
                 "while(" + self.emitTerm(invokeImmediately(condition.value)) + ") {\n" +
                 self.emitStatements(invokeImmediately(body.value), False) + "\n}"
-            | ECall(at, _, _, EVariable(_, word), _, [condition, body], _) { word == "ff:core/Core.if" } =>
+            | ECall(at, _, _, EVariable(_, "ff:core/Core.if"), _, [condition, body], _) =>
                 "if(" + self.emitTerm(condition.value) + ") {\n" +
                 if(last) {
                     "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body.value)) +
@@ -330,7 +330,7 @@ extend self: JsEmitter {
                 detectIfElse(term).{
                     | [] =>
                         if(last) { "return " + self.emitTerm(term) } else { self.emitTerm(term) }
-                    | [Pair(EVariant(_, word, _, _), elseBody), ...list] { word == "ff:core/Bool.True" } =>
+                    | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
                         let initial = "{\n" + self.emitStatements(elseBody, last) + "\n}"
                         list.foldLeft(initial) {| otherwise, Pair(condition, body) =>
                             "if(" + self.emitTerm(condition) + ") {\n" +
@@ -351,7 +351,7 @@ extend self: JsEmitter {
     }
 
     emitCase(arguments: List[String], matchCase: MatchCase, last: Bool): String {
-        Pair(matchCase.patterns, matchCase.guard).{
+        Pair(matchCase.patterns, matchCase.guards).{
             | Pair([p, ...ps], _) =>
                 self.emitPattern(
                     arguments.expect(0),
@@ -360,10 +360,11 @@ extend self: JsEmitter {
                     matchCase.MatchCase(patterns = ps),
                     last
                 )
-            | Pair([], Some(guard)) =>
-                "const _guard = " + self.emitTerm(guard.term) + "\n" +
-                self.emitCase(["_guard"], matchCase.MatchCase(patterns = [guard.pattern], guard = None), last)
-            | Pair([], None) =>
+            | Pair([], [guard, ...guards]) =>
+                let guardName = "_guard" + (guards.size() + 1)
+                "const " + guardName + " = " + self.emitTerm(guard.term) + "\n" +
+                self.emitCase([guardName], matchCase.MatchCase(patterns = [guard.pattern], guards = guards), last)
+            | Pair([], []) =>
                 self.emitStatements(matchCase.body, last) +
                 if(last) { "\nreturn" } else { "\nbreak" }
         }
@@ -395,11 +396,11 @@ extend self: JsEmitter {
                 let escaped = escapeKeyword(name)
                 if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +
                 self.emitCase(arguments, matchCase, last)
-            | PVariant(_, name, []) { name == "ff:core/Bool.False" } =>
+            | PVariant(_, "ff:core/Bool.False", []) =>
                 "if(!" + argument + ") {\n" +
                 self.emitCase(arguments, matchCase, last) +
                 "\n}"
-            | PVariant(_, name, []) { name == "ff:core/Bool.True" } =>
+            | PVariant(_, "ff:core/Bool.True", []) =>
                 "if(" + argument + ") {\n" +
                 self.emitCase(arguments, matchCase, last) +
                 "\n}"
@@ -480,13 +481,13 @@ type ProcessedVariantCase(
 )
 
 detectIfElse(term: Term): List[Pair[Term, Term]] {
-    | ECall(at, _, _, EVariable(_, word), _, [condition, body], _) { word == "ff:core/Core.if" } =>
+    | ECall(at, _, _, EVariable(_, "ff:core/Core.if"), _, [condition, body], _) =>
         [Pair(condition.value, invokeImmediately(body.value))]
-    | ECall(at, _, _, EVariable(_, word), _, [option, condition, body], _) { word == "ff:core/Option.Option_elseIf" } =>
+    | ECall(at, _, _, EVariable(_, "ff:core/Option.Option_elseIf"), _, [option, condition, body], _) =>
         let list = detectIfElse(option.value)
         if(list.isEmpty()) { [] } else:
         [Pair(invokeImmediately(condition.value), invokeImmediately(body.value)), ...list]
-    | ECall(at, _, _, EVariable(_, word), _, [option, body], _) { word == "ff:core/Option.Option_else" } =>
+    | ECall(at, _, _, EVariable(_, "ff:core/Option.Option_else"), _, [option, body], _) =>
         let list = detectIfElse(option.value)
         if(list.isEmpty()) { [] } else:
         [Pair(EVariant(at, "ff:core/Bool.True", [], None), invokeImmediately(body.value)), ...list]
@@ -495,7 +496,7 @@ detectIfElse(term: Term): List[Pair[Term, Term]] {
 }
 
 invokeImmediately(function: Term): Term {
-    | ELambda(_, Lambda(_, [MatchCase(_, [], None, body)])) => body
+    | ELambda(_, Lambda(_, [MatchCase(_, [], [], body)])) => body
     | _ => ECall(function.at, False, False, function, [], [], [])
 }
 

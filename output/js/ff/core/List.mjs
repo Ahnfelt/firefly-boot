@@ -170,8 +170,8 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_
-const _guard = (i_ == 0)
-if(_guard) {
+const _guard1 = (i_ == 0)
+if(_guard1) {
 return head_
 return
 }
@@ -268,8 +268,8 @@ _tailcall: for(;;) {
 {
 const _1 = self_
 {
-const _guard = (count_ <= 0)
-if(_guard) {
+const _guard1 = (count_ <= 0)
+if(_guard1) {
 return self_
 return
 }
@@ -308,8 +308,8 @@ _tailcall: for(;;) {
 {
 const _1 = list_
 {
-const _guard = (count_ <= 0)
-if(_guard) {
+const _guard1 = (count_ <= 0)
+if(_guard1) {
 return ff_core_List.List_reverse(result_)
 return
 }
@@ -450,8 +450,8 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_
-const _guard = (!body_(head_))
-if(_guard) {
+const _guard1 = (!body_(head_))
+if(_guard1) {
 return false
 return
 }
@@ -488,8 +488,8 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_
-const _guard = body_(head_)
-if(_guard) {
+const _guard1 = body_(head_)
+if(_guard1) {
 return true
 return
 }
@@ -526,8 +526,8 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_
-const _guard = body_(head_)
-if(_guard) {
+const _guard1 = body_(head_)
+if(_guard1) {
 return ff_core_Option.Some(head_)
 return
 }
@@ -566,8 +566,8 @@ return
 if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
-const _guard = body_(head_)
-if(_guard) {
+const _guard1 = body_(head_)
+if(_guard1) {
 {
 const list_r_ = tail_
 const result_r_ = ff_core_List.Link(head_, result_)
@@ -807,8 +807,8 @@ return
 if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
-const _guard = (i_ == 0)
-if(_guard) {
+const _guard1 = (i_ == 0)
+if(_guard1) {
 {
 const list_r_ = tail_
 const i_r_ = (i_ - 1)
@@ -860,8 +860,8 @@ return
 if(_1.Link) {
 const head_ = _1.head_
 const tail_ = _1.tail_
-const _guard = (i_ == 0)
-if(_guard) {
+const _guard1 = (i_ == 0)
+if(_guard1) {
 {
 const list_r_ = tail_
 const i_r_ = (i_ - 1)
@@ -990,8 +990,8 @@ const x_ = _1.first_.head_
 const xs2_ = _1.first_.tail_
 if(_1.second_.Link) {
 const y_ = _1.second_.head_
-const _guard = (ff_core_Ordering_Order$O.compare_(body_(x_), body_(y_)) == ff_core_Ordering.OrderingBefore())
-if(_guard) {
+const _guard1 = (ff_core_Ordering_Order$O.compare_(body_(x_), body_(y_)) == ff_core_Ordering.OrderingBefore())
+if(_guard1) {
 {
 const xs_r_ = xs2_
 const ys_r_ = ys_

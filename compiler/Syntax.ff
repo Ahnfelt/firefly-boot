@@ -120,7 +120,7 @@ type Term(at: Location) {
 type MatchCase(
     at: Location,
     patterns: List[MatchPattern],
-    guard : Option[MatchGuard]
+    guards : List[MatchGuard]
     body: Term
 )
 
