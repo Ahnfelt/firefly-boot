@@ -62,6 +62,7 @@ type DType(
     newtype: Bool
     name: String
     generics: List[String]
+    effectParameters: List[EffectParameter]
     constraints: List[Constraint]
     commonFields: List[Parameter]
     variants: List[Variant]
@@ -149,11 +150,13 @@ type Dictionary(
 )
 
 type Signature(
-    at: Location,
-    name: String,
-    generics: List[String],
-    constraints: List[Constraint],
-    parameters: List[Parameter],
+    at: Location
+    name: String
+    generics: List[String]
+    effectParameters: List[EffectParameter]
+    constraints: List[Constraint]
+    parameters: List[Parameter]
+    effect: Effect
     returnType: Type
 )
 
@@ -174,9 +177,21 @@ type Targets(
 )
 
 type Type(at: Location) {
-    TConstructor(name: String, generics: List[Type])
+    TConstructor(name: String, generics: List[Type], effectArguments: List[Effect])
     TVariable(index: Int)
 }
+
+type Effect {
+    SUnknown
+    SSync
+    SAsync
+    SUnion(s1: Effect, s2: Effect)
+    SVariable(variable: EffectVariable)
+    SParameter(parameter: EffectParameter)
+}
+
+newtype EffectVariable(index: Int)
+newtype EffectParameter(name: String)
 
 type Safety {
     Safe
@@ -189,12 +204,28 @@ type Version(at: Location, major: Int, minor: Int, patch: Int)
 extend self: Type {
     show(): String {
         self.{
-            | TConstructor(at, name, generics) =>
-                if(generics.isEmpty()) { name } else {
+            | TConstructor(at, name, generics, effectArguments) =>
+                let result = if(generics.isEmpty()) { name } else {
                     name + "[" + generics.map { _.show() }.join(", ") + "]"
+                }
+                if(effectArguments.isEmpty()) { result } else {
+                    result + "<" + effectArguments.map { _.show() }.join(", ") + ">"
                 }
             | TVariable(at, index) =>
                 "$" + index
+        }
+    }
+}
+
+extend self: Effect {
+    show(): String {
+        self.{
+            | SUnknown => "?"
+            | SSync => "Sync"
+            | SAsync => "Async"
+            | SUnion(s1, s2) => s1.show() + "|" + s2.show()
+            | SVariable(variable) => "#" + variable.index
+            | SParameter(parameter) => parameter.name
         }
     }
 }

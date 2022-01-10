@@ -43,7 +43,7 @@ make(modules: List[Module]): Unification {
             let moduleName = module.file.dropLast(".ff".size())
             module.instances.map { definition =>
                 let typeName = definition.typeArguments.expectFirst().{
-                    | TConstructor(_, name, _) => name
+                    | TConstructor(_, name, _, _) => name
                     | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
                 }
                 Pair(
@@ -85,13 +85,13 @@ extend self: Unification {
     }
 
     instantiate(instantiation: Map[String, Type], type: Type): Type {
-        | _, TConstructor(at, name, []) =>
+        | _, TConstructor(at, name, [], _) =>
             instantiation.get(name).{
                 | Some(t) => t
                 | None => type
             }
-        | _, TConstructor(at, name, generics) =>
-            TConstructor(at, name, generics.map { self.instantiate(instantiation, _) })
+        | _, TConstructor t =>
+            t.TConstructor(generics = t.generics.map { self.instantiate(instantiation, _) })
         | _, TVariable(_, i) { self.get(i) | Some(t) } =>
             self.instantiate(instantiation, t)
         | _, TVariable(_, i) =>
@@ -122,7 +122,7 @@ extend self: Unification {
                                 generics.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
                         }
                 }
-            | TConstructor(_, name, generics2) =>
+            | TConstructor(_, name, generics2, _) =>
                 self.instances.get(InstanceKey(constraintName, name)).{
                     | None =>
                         let g1 = if(generics.isEmpty()) { "" } else { "[...]" }
@@ -132,9 +132,9 @@ extend self: Unification {
                         let unificationVariables = definition.generics.map {| _ => self.freshUnificationVariable(at) }
                         let instantiation = definition.generics.zip(unificationVariables).toMap()
                         let traitType1 = self.instantiate(instantiation,
-                            TConstructor(at, definition.traitName, definition.typeArguments)
+                            TConstructor(at, definition.traitName, definition.typeArguments, [])
                         )
-                        let traitType2 = TConstructor(at, constraintName, [type, ...generics])
+                        let traitType2 = TConstructor(at, constraintName, [type, ...generics], [])
                         self.unify(at, traitType1, traitType2)
                         definition.constraints.each { constraint =>
                             self.instantiateConstraint(instantiation, constraint).{
@@ -167,7 +167,7 @@ extend self: Unification {
         | _, _, TVariable(_, i) { self.get(i) | Some(t) } => self.unify(at, t1, t)
         | _, TVariable(_, i), _ => self.bind(at, i, t2)
         | _, _, TVariable(_, i) => self.bind(at, i, t1)
-        | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
+        | _, TConstructor(_, name1, generics1, _), TConstructor(_, name2, generics2, _) =>
             if(name1 != name2 || generics1.size() != generics2.size()) {
                 self.fail(at, "Type mismatch: " + self.substitute(t1).show() + " vs. " + self.substitute(t2).show())
             }
@@ -190,7 +190,7 @@ extend self: Unification {
     occursIn(index: Int, t: Type): Bool {
         | _, TVariable(_, i) { self.get(i) | Some(type) } => self.occursIn(index, type)
         | _, TVariable(_, i) => i == index
-        | _, TConstructor(_, _, generics) => generics.any { t => self.occursIn(index, t) }
+        | _, TConstructor(_, _, generics, _) => generics.any { t => self.occursIn(index, t) }
     }
     
 }

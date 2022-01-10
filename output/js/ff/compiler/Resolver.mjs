@@ -189,7 +189,7 @@ return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Ma
 const _1 = definition_
 {
 const _c = _1
-return ff_compiler_Syntax.DType(_c.at_, _c.newtype_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((constraint_) => {
+return ff_compiler_Syntax.DType(_c.at_, _c.newtype_, _c.name_, _c.generics_, _c.effectParameters_, ff_core_List.List_map(definition_.constraints_, ((constraint_) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, constraint_)
 })), ff_core_List.List_map(definition_.commonFields_, ((f_) => {
 {
@@ -646,7 +646,7 @@ const _1 = constructor_
 const _c = _1
 return ff_compiler_Syntax.TConstructor(_c.at_, name_, ff_core_List.List_map(constructor_.generics_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1)
-})))
+})), _c.effectArguments_)
 return
 }
 }
@@ -703,7 +703,7 @@ export function Resolver_resolveSignature(self_, signature_) {
 const _1 = signature_
 {
 const _c = _1
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((constraint_) => {
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.effectParameters_, ff_core_List.List_map(signature_.constraints_, ((constraint_) => {
 return ff_compiler_Resolver.Resolver_resolveConstraint(self_, constraint_)
 })), ff_core_List.List_map(signature_.parameters_, ((p_) => {
 {
@@ -716,7 +716,7 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self_, _w1)
 return
 }
 }
-})), ff_compiler_Resolver.Resolver_resolveType(self_, signature_.returnType_))
+})), _c.effect_, ff_compiler_Resolver.Resolver_resolveType(self_, signature_.returnType_))
 return
 }
 }

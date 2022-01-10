@@ -344,7 +344,7 @@ const _1 = method_
 {
 const _c = _1
 return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_)
+return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.effectParameters_, _c.constraints_, _c.parameters_, _c.effect_, _c.returnType_)
 }))(method_.signature_), _c.body_, _c.targets_)
 return
 }

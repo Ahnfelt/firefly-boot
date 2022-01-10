@@ -45,12 +45,12 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
     let lets =
         module.lets.map { d => Pair(
             full(module, d.name),
-            Scheme(True, False, False, False, Signature(d.at, d.name, [], [], [], d.variableType))
+            Scheme(True, False, False, False, Signature(d.at, d.name, [], [], [], [], SSync, d.variableType))
         )}
 
     let traitMethods =
         module.traits.flatMap { definition =>
-            let generics = definition.generics.map { name => TConstructor(definition.at, name, []) }
+            let generics = definition.generics.map { name => TConstructor(definition.at, name, [], []) }
             let constraint = Constraint(definition.at, full(module, definition.name), generics)
             definition.methods.map { methodSignature =>
                 let signature = methodSignature.Signature(
@@ -88,7 +88,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
     let fields =
         module.types.flatMap { d =>
             let prefix = d.name + "_"
-            let t = TConstructor(d.at, d.name, d.generics.map { g => TConstructor(d.at, g, []) })
+            let t = TConstructor(d.at, d.name, d.generics.map { g => TConstructor(d.at, g, [], []) }, [])
             let selfParameter = Parameter(d.at, False, d.name, t, None)
             d.commonFields.map { f =>
                 Pair(
@@ -97,8 +97,10 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                         at = f.at
                         name = f.name
                         generics = d.generics
+                        effectParameters = []
                         constraints = d.constraints
                         parameters = [selfParameter]
+                        effect = SUnknown
                         returnType = f.valueType
                     ))
                 )
@@ -108,17 +110,19 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
     let variants =
         module.types.flatMap { d =>
             let returnType = TConstructor(d.at, full(module, d.name), d.generics.map { typeParameter =>
-                TConstructor(d.at, typeParameter, [])
-            })
+                TConstructor(d.at, typeParameter, [], [])
+            }, [])
             d.variants.map { variant =>
                 Pair(
                     full(module, variant.name),
                     Scheme(False, False, d.newtype, False, Signature(
-                        variant.at,
-                        variant.name,
-                        generics = d.generics,
-                        constraints = d.constraints,
-                        parameters = [...d.commonFields, ...variant.fields],
+                        variant.at
+                        variant.name
+                        generics = d.generics
+                        effectParameters = []
+                        constraints = d.constraints
+                        parameters = [...d.commonFields, ...variant.fields]
+                        effect = SUnknown
                         returnType = returnType
                     ))
                 )

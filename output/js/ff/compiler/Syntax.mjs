@@ -91,8 +91,8 @@ return {at_, name_, generics_, constraints_, type_, methods_};
 }
 
 // type DType
-export function DType(at_, newtype_, name_, generics_, constraints_, commonFields_, variants_, targets_) {
-return {at_, newtype_, name_, generics_, constraints_, commonFields_, variants_, targets_};
+export function DType(at_, newtype_, name_, generics_, effectParameters_, constraints_, commonFields_, variants_, targets_) {
+return {at_, newtype_, name_, generics_, effectParameters_, constraints_, commonFields_, variants_, targets_};
 }
 
 // type DTrait
@@ -206,8 +206,8 @@ return {packageName_, moduleName_, traitName_, typeName_, dictionaries_};
 }
 
 // type Signature
-export function Signature(at_, name_, generics_, constraints_, parameters_, returnType_) {
-return {at_, name_, generics_, constraints_, parameters_, returnType_};
+export function Signature(at_, name_, generics_, effectParameters_, constraints_, parameters_, effect_, returnType_) {
+return {at_, name_, generics_, effectParameters_, constraints_, parameters_, effect_, returnType_};
 }
 
 // type Lambda
@@ -246,12 +246,39 @@ return {javaScript_};
 }
 
 // type Type
-export function TConstructor(at_, name_, generics_) {
-return {TConstructor: true, at_, name_, generics_};
+export function TConstructor(at_, name_, generics_, effectArguments_) {
+return {TConstructor: true, at_, name_, generics_, effectArguments_};
 }
 export function TVariable(at_, index_) {
 return {TVariable: true, at_, index_};
 }
+
+// type Effect
+const SUnknown$ = {SUnknown: true};
+export function SUnknown() {
+return SUnknown$;
+}
+const SSync$ = {SSync: true};
+export function SSync() {
+return SSync$;
+}
+const SAsync$ = {SAsync: true};
+export function SAsync() {
+return SAsync$;
+}
+export function SUnion(s1_, s2_) {
+return {SUnion: true, s1_, s2_};
+}
+export function SVariable(variable_) {
+return {SVariable: true, variable_};
+}
+export function SParameter(parameter_) {
+return {SParameter: true, parameter_};
+}
+
+// newtype EffectVariable
+
+// newtype EffectParameter
 
 // type Safety
 const Safe$ = {Safe: true};
@@ -288,12 +315,18 @@ if(_1.TConstructor) {
 const at_ = _1.at_
 const name_ = _1.name_
 const generics_ = _1.generics_
-if(ff_core_List.List_isEmpty(generics_)) {
-return name_
-} else {
-return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+const effectArguments_ = _1.effectArguments_
+const result_ = (ff_core_List.List_isEmpty(generics_)
+? name_
+: (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
 return ff_compiler_Syntax.Type_show(_w1)
-})), ", ")) + "]")
+})), ", ")) + "]"))
+if(ff_core_List.List_isEmpty(effectArguments_)) {
+return result_
+} else {
+return (((result_ + "<") + ff_core_List.List_join(ff_core_List.List_map(effectArguments_, ((_w1) => {
+return ff_compiler_Syntax.Effect_show(_w1)
+})), ", ")) + ">")
 }
 return
 }
@@ -303,6 +336,52 @@ if(_1.TVariable) {
 const at_ = _1.at_
 const index_ = _1.index_
 return ("$" + index_)
+return
+}
+}
+}
+}
+
+export function Effect_show(self_) {
+{
+const _1 = self_
+{
+if(_1.SUnknown) {
+return "?"
+return
+}
+}
+{
+if(_1.SSync) {
+return "Sync"
+return
+}
+}
+{
+if(_1.SAsync) {
+return "Async"
+return
+}
+}
+{
+if(_1.SUnion) {
+const s1_ = _1.s1_
+const s2_ = _1.s2_
+return ((ff_compiler_Syntax.Effect_show(s1_) + "|") + ff_compiler_Syntax.Effect_show(s2_))
+return
+}
+}
+{
+if(_1.SVariable) {
+const variable_ = _1.variable_
+return ("#" + variable_)
+return
+}
+}
+{
+if(_1.SParameter) {
+const parameter_ = _1.parameter_
+return parameter_
 return
 }
 }

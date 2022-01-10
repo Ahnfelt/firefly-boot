@@ -157,12 +157,17 @@ return
 {
 const self_ = self_a
 if(type_a.TConstructor) {
-const at_ = type_a.at_
-const name_ = type_a.name_
-const generics_ = type_a.generics_
-return ff_compiler_Syntax.TConstructor(at_, name_, ff_core_List.List_map(generics_, ((_w1) => {
+const t_ = type_a
+{
+const _1 = t_
+{
+const _c = _1
+return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(self_, instantiation_, _w1)
-})))
+})), _c.effectArguments_)
+return
+}
+}
 return
 }
 }
@@ -291,8 +296,8 @@ const unificationVariables_ = ff_core_List.List_map(definition_.generics_, ((_) 
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_, at_)
 }))
 const instantiation_ = ff_core_List.List_toMap(ff_core_List.List_zip(definition_.generics_, unificationVariables_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_))
-const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_))
+const traitType1_ = ff_compiler_Unification.Unification_instantiate(self_, instantiation_, ff_compiler_Syntax.TConstructor(at_, definition_.traitName_, definition_.typeArguments_, ff_core_List.Empty()))
+const traitType2_ = ff_compiler_Syntax.TConstructor(at_, constraintName_, ff_core_List.Link(type_, generics_), ff_core_List.Empty())
 ff_compiler_Unification.Unification_unify(self_, at_, traitType1_, traitType2_)
 ff_core_List.List_each(definition_.constraints_, ((constraint_) => {
 {
@@ -370,7 +375,7 @@ const _1 = t_
 const _c = _1
 return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((t_) => {
 return ff_compiler_Unification.Unification_substitute(self_, t_)
-})))
+})), _c.effectArguments_)
 return
 }
 }

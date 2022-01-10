@@ -178,7 +178,7 @@ extend self: Dictionaries {
 constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, InstanceValue] {
     constraints.map { c =>
         let typeName = c.generics.expectFirst().{
-            | TConstructor(_, name, _) => name
+            | TConstructor(_, name, _, _) => name
             | TVariable(_, i) => fail(c.at, "Unexpected unification variable: $" + i)
         }
         Pair(

@@ -166,7 +166,7 @@ export function Inference_inferExtendDefinition(self_, environment_, definition_
 const selfParameter_ = ff_compiler_Syntax.Parameter(definition_.at_, false, definition_.name_, definition_.type_, ff_core_Option.None())
 const functions_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, method_.signature_.generics_), ff_core_List.List_addAll(definition_.constraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, method_.signature_.generics_), _c.effectParameters_, ff_core_List.List_addAll(definition_.constraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.effect_, _c.returnType_)
 }))(method_.signature_)
 const lambda_ = (((_c) => {
 return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(method_.body_.cases_, ((case_) => {
@@ -198,7 +198,7 @@ return
 
 export function Inference_inferFunctionDefinition(self_, environment_, definition_) {
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
-const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_))
+const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.SUnknown(), p_.valueType_))
 return ff_core_Pair.Pair(p_.name_, scheme_)
 }))
 const parameterMap_ = ff_core_List.List_toMap(parameters_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -207,7 +207,7 @@ return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.s
 }))(environment_)
 const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameters_)), ff_core_List.List_addAll(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
-})), ff_core_List.Link(definition_.signature_.returnType_, ff_core_List.Empty())))
+})), ff_core_List.Link(definition_.signature_.returnType_, ff_core_List.Empty())), ff_core_List.Empty())
 const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.signature_.constraints_)
 return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 {
@@ -284,7 +284,7 @@ const parameterTypes_ = ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }))
 const returnType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, case_.at_)
-const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(returnType_, ff_core_List.Empty())))
+const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(returnType_, ff_core_List.Empty())), ff_core_List.Empty())
 ff_compiler_Unification.Unification_unify(self_.unification_, case_.at_, expected_, functionType_)
 const environment1_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_, ((_1, _2) => {
 {
@@ -295,7 +295,7 @@ const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPatter
 {
 const name_ = _1.first_
 const type_ = _1.second_
-return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_)))
+return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.SSync(), type_)))
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -311,7 +311,7 @@ const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPatter
 {
 const name_ = _1.first_
 const type_ = _1.second_
-return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(g_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_)))
+return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(g_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.SSync(), type_)))
 return
 }
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -332,7 +332,7 @@ return
 
 export function Inference_inferPattern(self_, environment_, expected_, pattern_) {
 function literal_(coreTypeName_) {
-ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()))
+ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty(), ff_core_List.Empty()))
 return ff_core_Map.empty_()
 }
 {
@@ -419,7 +419,7 @@ const recordType_ = ff_compiler_Syntax.TConstructor(at_, ("Record$" + ff_core_Li
 return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
-})))
+})), ff_core_List.Empty())
 return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(variable_, recordType_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
@@ -452,7 +452,7 @@ return
 
 export function Inference_inferTerm(self_, environment_, expected_, term_) {
 function literal_(coreTypeName_) {
-ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()))
+ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty(), ff_core_List.Empty()))
 return term_
 }
 {
@@ -544,7 +544,7 @@ const instantiated_ = _1.value_
 const _guard1 = (!instantiated_.scheme_.isVariable_)
 if(_guard1) {
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.effectParameters_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.effect_, _c.returnType_)
 }))(instantiated_.scheme_.signature_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_expect(instantiated_.scheme_.signature_.parameters_, 0).valueType_)
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, false, signature_, e2_)
@@ -603,7 +603,7 @@ if(_1.EList) {
 const at_ = _1.at_
 const t_ = _1.elementType_
 const items_ = _1.items_
-const listType_ = ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_("List"), ff_core_List.Link(t_, ff_core_List.Empty()))
+const listType_ = ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_("List"), ff_core_List.Link(t_, ff_core_List.Empty()), ff_core_List.Empty())
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_)
 return ff_compiler_Syntax.EList(at_, t_, ff_core_List.List_map(items_, ((_1) => {
 {
@@ -652,7 +652,7 @@ const _1 = after_
 if(_1.EVariant) {
 const at_ = _1.at_
 if(_1.name_ == "ff:core/Unit.Unit") {
-const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty())
+const unitType_ = ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty(), ff_core_List.Empty())
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, unitType_)
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, newExpected_, newPipe_)
 return
@@ -679,7 +679,7 @@ return
 {
 if(_1.ELet) {
 const e_ = _1
-const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_))
+const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.SSync(), e_.valueType_))
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }))(environment_)
@@ -739,8 +739,8 @@ const recordType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Record$" + ff_core
 return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
-})))
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(instantiated_.scheme_.signature_.returnType_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Option"), ff_core_List.Link(recordType_, ff_core_List.Empty())), ff_core_List.Empty())))
+})), ff_core_List.Empty())
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(instantiated_.scheme_.signature_.returnType_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Option"), ff_core_List.Link(recordType_, ff_core_List.Empty()), ff_core_List.Empty()), ff_core_List.Empty())), ff_core_List.Empty())
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, functionType_)
 {
 const _1 = e_
@@ -805,7 +805,7 @@ return
 if(_1.EPipe) {
 const e_ = _1
 const valueType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty())))
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty())), ff_core_List.Empty())
 const value_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, valueType_, e_.value_)
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, e_.function_)
 {
@@ -935,7 +935,7 @@ return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unific
 }))
 const recordType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(fields_, ((_w1) => {
 return _w1.name_
-})), "$")), fieldTypes_)
+})), "$")), fieldTypes_, ff_core_List.Empty())
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, recordType_)
 const newFields_ = ff_core_List.List_map(ff_core_List.List_zip(fields_, fieldTypes_), ((_1) => {
 {
@@ -1085,12 +1085,12 @@ return
 export function Inference_inferAssignment(self_, environment_, expected_, at_, operator_, value_, signature_) {
 const t_ = signature_.returnType_
 if(((operator_ == "+") || (operator_ == "-"))) {
-ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_List.Empty()))
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_List.Empty(), ff_core_List.Empty()))
 } else if((operator_ != "")) {
 ff_compiler_Inference.fail_(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "="))
 } else {}
 const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_)
-ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty()))
+ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty(), ff_core_List.Empty()))
 return newValue_
 }
 
@@ -1159,7 +1159,7 @@ return
 const argumentTypes_ = ff_core_List.List_map(e_.arguments_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }))
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Function$" + ff_core_List.List_size(e_.arguments_)), ff_core_List.List_addAll(argumentTypes_, ff_core_List.Link(expected_, ff_core_List.Empty())))
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Function$" + ff_core_List.List_size(e_.arguments_)), ff_core_List.List_addAll(argumentTypes_, ff_core_List.Link(expected_, ff_core_List.Empty())), ff_core_List.Empty())
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, e_.function_)
 const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, argumentTypes_), ((_1) => {
 {
@@ -1214,7 +1214,7 @@ const a1_ = _1.head_
 if(_1.tail_.Empty) {
 const _guard1 = (operator_ == "!")
 if(_guard1) {
-const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
+const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty(), ff_core_List.Empty())
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 {
@@ -1294,7 +1294,7 @@ const a2_ = _1.tail_.head_
 if(_1.tail_.tail_.Empty) {
 const _guard1 = ((operator_ == "||") || (operator_ == "&&"))
 if(_guard1) {
-const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
+const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty(), ff_core_List.Empty())
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a1_.value_)
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, a2_.value_)
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
@@ -1324,7 +1324,7 @@ const a2_ = _1.tail_.head_
 if(_1.tail_.tail_.Empty) {
 const _guard1 = ((((((operator_ == "<") || (operator_ == ">")) || (operator_ == "<=")) || (operator_ == ">=")) || (operator_ == "==")) || (operator_ == "!="))
 if(_guard1) {
-const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty())
+const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty(), ff_core_List.Empty())
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_)
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_)
@@ -1760,7 +1760,7 @@ return ff_compiler_Unification.Unification_instantiate(self_.unification_, insta
 ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_List.List_expectFirst(generics_), c_.name_, ff_core_List.List_dropFirst(generics_, 1))
 }))
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), _c.effectParameters_, ff_core_List.Empty(), parameters_, _c.effect_, returnType_)
 }))(scheme_.signature_)
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)

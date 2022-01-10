@@ -225,8 +225,8 @@ const returnType_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_curren
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 return ff_compiler_Parser.Parser_parseType(self_)
 })()
-: ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "ff:core/Unit.Unit", ff_core_List.Empty()))
-return ff_compiler_Syntax.Signature(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, parameters_, returnType_)
+: ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "ff:core/Unit.Unit", ff_core_List.Empty(), ff_core_List.Empty()))
+return ff_compiler_Syntax.Signature(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, ff_core_List.Empty(), poly_.constraints_, parameters_, ff_compiler_Syntax.SUnknown(), returnType_)
 }
 
 export function Parser_parseExtendDefinition(self_) {
@@ -263,7 +263,7 @@ ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Par
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 const constraint_ = ff_compiler_Parser.Parser_parseConstraint(self_)
 ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, (((_c) => {
-return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(typeParameterToken_), ff_compiler_Token.Token_raw(typeParameterToken_), ff_core_List.Empty()), constraint_.generics_))
+return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(typeParameterToken_), ff_compiler_Token.Token_raw(typeParameterToken_), ff_core_List.Empty(), ff_core_List.Empty()), constraint_.generics_))
 }))(constraint_))
 }
 const generatorParameters_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
@@ -306,8 +306,8 @@ const poly_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current
 : ff_compiler_Parser.Parser_parseTypeParameters(self_))
 const typeArguments_ = ff_core_ArrayBuilder.empty_()
 ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_List.List_map(poly_.generics_, ((_w1) => {
-return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), _w1, ff_core_List.Empty())
-}))))
+return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), _w1, ff_core_List.Empty(), ff_core_List.Empty())
+})), ff_core_List.Empty()))
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "[")) {
@@ -378,7 +378,7 @@ ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(nameToken_), "N
 if((newtype_ && ff_core_List.List_expect(commonFields_, 0).mutable_)) {
 ff_compiler_Parser.Parser_fail(self_, ff_core_List.List_expect(commonFields_, 0).at_, "Newtypes can't have mutable fields")
 }
-return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, commonFields_, variants_, targets_)
+return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, ff_core_List.Empty(), poly_.constraints_, commonFields_, variants_, targets_)
 }
 
 export function Parser_parseImportDefinition(self_) {
@@ -506,7 +506,7 @@ while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_co
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 const constraint_ = ff_compiler_Parser.Parser_parseConstraint(self_)
 ff_core_ArrayBuilder.ArrayBuilder_add(constraints_, (((_c) => {
-return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(parameterNameToken_), ff_compiler_Token.Token_raw(parameterNameToken_), ff_core_List.Empty()), constraint_.generics_))
+return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(parameterNameToken_), ff_compiler_Token.Token_raw(parameterNameToken_), ff_core_List.Empty(), ff_core_List.Empty()), constraint_.generics_))
 }))(constraint_))
 }
 }
@@ -741,7 +741,7 @@ const leftTypes_ = (((ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_cu
 ? (function() {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_))
 const pair_ = ff_core_List.List_unzip(ff_compiler_Parser.Parser_parseRecordType(self_))
-return ff_core_List.Link(ff_compiler_Syntax.TConstructor(at_, ("Record$" + ff_core_List.List_join(pair_.first_, "$")), pair_.second_), ff_core_List.Empty())
+return ff_core_List.Link(ff_compiler_Syntax.TConstructor(at_, ("Record$" + ff_core_List.List_join(pair_.first_, "$")), pair_.second_, ff_core_List.Empty()), ff_core_List.Empty())
 })()
 : ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")
 ? ff_compiler_Parser.Parser_parseTypeArguments(self_, true)
@@ -753,14 +753,14 @@ const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
 const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseTypeArguments(self_, false))
-return ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_), ff_core_List.Empty())
+return ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_, ff_core_List.Empty()), ff_core_List.Empty())
 })())
 if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (ff_core_List.List_size(leftTypes_) == 1))) {
 return ff_core_List.List_expectFirst(leftTypes_)
 } else {
 const arrowToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick())
 const rightType_ = ff_compiler_Parser.Parser_parseType(self_)
-return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(arrowToken_), ("Function$" + ff_core_List.List_size(leftTypes_)), ff_core_List.List_addAll(leftTypes_, ff_core_List.Link(rightType_, ff_core_List.Empty())))
+return ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(arrowToken_), ("Function$" + ff_core_List.List_size(leftTypes_)), ff_core_List.List_addAll(leftTypes_, ff_core_List.Link(rightType_, ff_core_List.Empty())), ff_core_List.Empty())
 }
 }
 

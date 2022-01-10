@@ -180,9 +180,9 @@ extend self: Parser {
             self.skip(LColon)
             self.parseType()
         } else {
-            TConstructor(self.current().at(), "ff:core/Unit.Unit", [])
+            TConstructor(self.current().at(), "ff:core/Unit.Unit", [], [])
         }
-        Signature(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, parameters, returnType)
+        Signature(nameToken.at(), nameToken.raw(), poly.generics, [], poly.constraints, parameters, SUnknown, returnType)
     }
     
     parseExtendDefinition(): DExtend {
@@ -220,7 +220,7 @@ extend self: Parser {
             self.skip(LColon)
             let constraint = self.parseConstraint()
             constraints.add(constraint.Constraint(generics =
-                [TConstructor(typeParameterToken.at(), typeParameterToken.raw(), []), ...constraint.generics]
+                [TConstructor(typeParameterToken.at(), typeParameterToken.raw(), [], []), ...constraint.generics]
             ))
         }
         let generatorParameters = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters()}
@@ -263,7 +263,9 @@ extend self: Parser {
         let token = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let typeArguments = ArrayBuilder.empty[Type]()
-        typeArguments.add(TConstructor(token.at(), token.raw(), poly.generics.map { TConstructor(token.at(), _, []) }))
+        typeArguments.add(
+            TConstructor(token.at(), token.raw(), poly.generics.map { TConstructor(token.at(), _, [], []) }, [])
+        )
         self.skip(LColon)
         let nameToken = self.skip(LUpper)
         if(self.current().rawIs("[")) {
@@ -326,7 +328,7 @@ extend self: Parser {
         if(newtype && commonFields.expect(0).mutable) {
             self.fail(commonFields.expect(0).at, "Newtypes can't have mutable fields")
         }
-        DType(nameToken.at(), newtype, nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, targets)
+        DType(nameToken.at(), newtype, nameToken.raw(), poly.generics, [], poly.constraints, commonFields, variants, targets)
     }
     
     parseImportDefinition(): DImport {
@@ -432,7 +434,7 @@ extend self: Parser {
                     self.skip(LColon)
                     let constraint = self.parseConstraint()
                     constraints.add(constraint.Constraint(generics =
-                        [TConstructor(parameterNameToken.at(), parameterNameToken.raw(), []), ...constraint.generics]
+                        [TConstructor(parameterNameToken.at(), parameterNameToken.raw(), [], []), ...constraint.generics]
                     ))
                 }
             }
@@ -614,19 +616,19 @@ extend self: Parser {
         let leftTypes = if(self.current().rawIs("(") && self.ahead().is(LLower) && self.aheadAhead().is(LColon)) {
             let at = self.current().at()
             let pair = self.parseRecordType().unzip()
-            [TConstructor(at, "Record$" + pair.first.join("$"), pair.second)]
+            [TConstructor(at, "Record$" + pair.first.join("$"), pair.second, [])]
         } elseIf {self.current().rawIs("(")} {
             self.parseTypeArguments(parenthesis = True)
         } else {
             let namespace = if(self.current().is(LNamespace)) {self.skip(LNamespace).raw()} else {""}
             let token = self.skip(LUpper)
             let arguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
-            [TConstructor(token.at(), namespace + token.raw(), arguments)]
+            [TConstructor(token.at(), namespace + token.raw(), arguments, [])]
         }
         if(!self.current().is(LArrowThick) && leftTypes.size() == 1) {leftTypes.expectFirst()} else {
             let arrowToken = self.skip(LArrowThick)
             let rightType = self.parseType()
-            TConstructor(arrowToken.at(), "Function$" + leftTypes.size(), [...leftTypes, rightType])
+            TConstructor(arrowToken.at(), "Function$" + leftTypes.size(), [...leftTypes, rightType], [])
         }
     }
 

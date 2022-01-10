@@ -98,7 +98,8 @@ extend self: Inference {
 
     inferFunctionDefinition(environment: Environment, definition: DFunction): DFunction {
         let parameters = definition.signature.parameters.map { p =>
-            let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType))
+            let scheme =
+                Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], [], SUnknown, p.valueType))
             Pair(p.name, scheme)
         }
         let parameterMap = parameters.toMap()
@@ -106,7 +107,8 @@ extend self: Inference {
         let functionType = TConstructor(
             definition.at,
             "Function$" + parameters.size(),
-            [...parameters.map { _.second.signature.returnType }, definition.signature.returnType]
+            [...parameters.map { _.second.signature.returnType }, definition.signature.returnType],
+            []
         )
         let instances = constraintsToInstances(definition.signature.constraints)
         self.unification.withLocalInstances(instances) {
@@ -117,9 +119,9 @@ extend self: Inference {
     inferLambda(environment: Environment, expected: Type, lambda: Lambda): Lambda {
         let unitName = core("Unit")
         let returnsUnit = self.unification.substitute(expected).{
-            | TConstructor(_, name, ts) {name.startsWith("Function$")} =>
+            | TConstructor(_, name, ts, _) {name.startsWith("Function$")} =>
                 ts.expectLast().{
-                    | TConstructor(_, n, []) => n == unitName
+                    | TConstructor(_, n, [], _) => n == unitName
                     | _ => False
                 }
             | _ => False
@@ -140,12 +142,13 @@ extend self: Inference {
         let functionType = TConstructor(
             case.at,
             "Function$" + case.patterns.size(),
-            [...parameterTypes, returnType]
+            [...parameterTypes, returnType],
+            []
         )
         self.unification.unify(case.at, expected, functionType)
         let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
-                Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type)))
+                Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], [], SSync, type)))
             }
             Environment(environment1.symbols.addAll(symbols))
         }
@@ -154,7 +157,7 @@ extend self: Inference {
             let guardType = self.unification.freshUnificationVariable(g.at)
             let guardTerm = self.inferTerm(environment2, guardType, g.term)
             let symbols = self.inferPattern(environment2, guardType, g.pattern).map {| Pair(name, type) =>
-                Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type)))
+                Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], [], SSync, type)))
             }
             guards = [g.MatchGuard(term = guardTerm), ...guards]
             Environment(environment2.symbols.addAll(symbols))
@@ -167,7 +170,7 @@ extend self: Inference {
 
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
         function literal(coreTypeName: String): Map[String, Type] {
-            self.unification.unify(pattern.at, expected, TConstructor(pattern.at, core(coreTypeName), []))
+            self.unification.unify(pattern.at, expected, TConstructor(pattern.at, core(coreTypeName), [], []))
             Map.empty()
         }
         pattern.{
@@ -201,7 +204,7 @@ extend self: Inference {
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
                 let recordType =
-                    TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
+                    TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType }, [])
                 [Pair(variable, recordType)].toMap()
             | PVariant(at, name, patterns) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
@@ -216,7 +219,7 @@ extend self: Inference {
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
         function literal(coreTypeName: String): Term {
-            self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), []))
+            self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), [], []))
             term
         }
         term.{
@@ -247,7 +250,7 @@ extend self: Inference {
                 let record = self.inferTerm(environment, recordType, e.record)
                 let e2 = e.EField(record = record)
                 self.unification.substitute(recordType).{
-                    | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
+                    | TConstructor(_, name, typeArguments, _)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
                         fieldNames.pairs().find { _.second == e.field }.map { _.first }.map { index =>
                             let t1 = typeArguments.expect(index)
@@ -256,7 +259,7 @@ extend self: Inference {
                         }.else {
                             fail(e.at, "No such field " + e.field + " on type: " + t.show())
                         }
-                    | TConstructor(_, name, typeArguments)@t =>
+                    | TConstructor(_, name, typeArguments, _)@t =>
                         let methodName = name + "_" + e.field
                         self.lookup(environment, e.at, methodName, typeArguments).{
                             | Some(instantiated) {!instantiated.scheme.isVariable} =>
@@ -290,7 +293,7 @@ extend self: Inference {
                     term
                 }.expect()
             | EList(at, t, items) =>
-                let listType = TConstructor(term.at, core("List"), [t])
+                let listType = TConstructor(term.at, core("List"), [t], [])
                 self.unification.unify(at, expected, listType)
                 EList(at, t, items.map { | Pair(item, spread) =>
                     Pair(self.inferTerm(environment, if(spread) { listType } else { t }, item), spread)
@@ -304,7 +307,7 @@ extend self: Inference {
                         let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, newCases)))
                         after.{
                             | EVariant(at, "ff:core/Unit.Unit", _, _) =>
-                                let unitType = TConstructor(at, core("Unit"), [])
+                                let unitType = TConstructor(at, core("Unit"), [], [])
                                 self.unification.unify(at, expected, unitType)
                                 self.inferTerm(environment, newExpected, newPipe)
                             | _ =>
@@ -322,7 +325,8 @@ extend self: Inference {
                         )
                 }
             | ELet e =>
-                let scheme = Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType))
+                let scheme =
+                    Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], [], SSync, e.valueType))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
@@ -349,11 +353,11 @@ extend self: Inference {
                 }
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
                 let recordType =
-                    TConstructor(e.at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
+                    TConstructor(e.at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType }, [])
                 let functionType = TConstructor(e.at, "Function$1", [
                     instantiated.scheme.signature.returnType
-                    TConstructor(e.at, core("Option"), [recordType])
-                ])
+                    TConstructor(e.at, core("Option"), [recordType], [])
+                ], [])
                 self.unification.unify(e.at, expected, functionType)
                 e.EVariantIs(
                     typeArguments = instantiated.typeArguments.map { _.second }
@@ -384,7 +388,7 @@ extend self: Inference {
                 self.inferTerm(environment, expected, term)
             | EPipe e =>
                 let valueType = self.unification.freshUnificationVariable(e.at)
-                let functionType = TConstructor(e.at, "Function$1", [valueType, expected])
+                let functionType = TConstructor(e.at, "Function$1", [valueType, expected], [])
                 let value = self.inferTerm(environment, valueType, e.value)
                 let function = self.inferTerm(environment, functionType, e.function)
                 e.EPipe(
@@ -422,7 +426,7 @@ extend self: Inference {
                         let record = self.inferTerm(environment, recordType, f.record)
                         let e2 = e.ECall(function = f.EField(record = record))
                         self.unification.substitute(recordType).{
-                            | TConstructor(_, name, typeParameters)@t =>
+                            | TConstructor(_, name, typeParameters, _)@t =>
                                 let methodName = name + "_" + f.field
                                 self.lookup(environment, f.at, methodName, []).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
@@ -450,7 +454,7 @@ extend self: Inference {
                 let fields = e.fields.sortBy {_.name}
                 let fieldTypes = fields.map { self.unification.freshUnificationVariable(_.at) }
                 let recordType =
-                    TConstructor(e.at, "Record$" + fields.map {_.name}.join("$"), fieldTypes)
+                    TConstructor(e.at, "Record$" + fields.map {_.name}.join("$"), fieldTypes, [])
                 self.unification.unify(e.at, expected, recordType)
                 let newFields = fields.zip(fieldTypes).map {| Pair(field, t) =>
                     field.Field(value = self.inferTerm(environment, t, field.value))
@@ -495,9 +499,9 @@ extend self: Inference {
                 let recordType = self.unification.freshUnificationVariable(e.at)
                 let record = self.inferTerm(environment, recordType, e.record)
                 self.unification.substitute(recordType).{
-                    | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
+                    | TConstructor(_, name, typeArguments, _)@t {name.startsWith("Record$")} =>
                         fail(e.at, "Can't assign fields of anonymous records: " + e.field)
-                    | TConstructor(_, name, typeArguments)@t =>
+                    | TConstructor(_, name, typeArguments, _)@t =>
                         let methodName = name + "_" + e.field
                         self.lookup(environment, e.at, methodName, typeArguments).{
                             | Some(instantiated) {instantiated.scheme.isMutable} =>
@@ -534,12 +538,12 @@ extend self: Inference {
     ): Term {
         let t = signature.returnType
         if(operator == "+" || operator == "-") {
-            self.unification.unify(at, t, TConstructor(at, core("Int"), []))
+            self.unification.unify(at, t, TConstructor(at, core("Int"), [], []))
         } elseIf {operator != ""} {
             fail(at, "Only +=, -= and = assignments are supported. Got: " + operator + "=")
         }
         let newValue = self.inferTerm(environment, t, value)
-        self.unification.unify(at, expected, TConstructor(at, core("Unit"), []))
+        self.unification.unify(at, expected, TConstructor(at, core("Unit"), [], []))
         newValue
     }
 
@@ -583,7 +587,7 @@ extend self: Inference {
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         let argumentTypes = e.arguments.map { self.unification.freshUnificationVariable(_.at) }
-        let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [...argumentTypes, expected])
+        let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [...argumentTypes, expected], [])
         let function = self.inferTerm(environment, functionType, e.function)
         let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
             argument.name.each { name =>
@@ -607,7 +611,7 @@ extend self: Inference {
             | [a1] {
                 operator == "!"
             } =>
-                let t = TConstructor(e.at, core("Bool"), [])
+                let t = TConstructor(e.at, core("Bool"), [], [])
                 let e1 = self.inferTerm(environment, t, a1.value)
                 self.unification.unify(e.at, expected, t)
                 e.ECall(arguments = [a1.Argument(value = e1)])
@@ -617,9 +621,9 @@ extend self: Inference {
                 let t1 = self.unification.freshUnificationVariable(e.at)
                 let e1 = self.inferTerm(environment, t1, a1.value)
                 self.unification.substitute(t1).{
-                    | TConstructor(_, name, []) {name == core("Float")} =>
+                    | TConstructor(_, name, [], _) {name == core("Float")} =>
                         self.unification.unify(e.at, expected, t1)
-                    | TConstructor(_, name, []) {name == core("Int")} =>
+                    | TConstructor(_, name, [], _) {name == core("Int")} =>
                         self.unification.unify(e.at, expected, t1)
                     | _ =>
                         fail(e.at, "Operators on unknown types not currently supported")
@@ -628,7 +632,7 @@ extend self: Inference {
             | [a1, a2] {
                 operator == "||" || operator == "&&"
             } =>
-                let t = TConstructor(e.at, core("Bool"), [])
+                let t = TConstructor(e.at, core("Bool"), [], [])
                 let e1 = self.inferTerm(environment, t, a1.value)
                 let e2 = self.inferTerm(environment, t, a2.value)
                 self.unification.unify(e.at, expected, t)
@@ -638,19 +642,19 @@ extend self: Inference {
                 operator == "<=" || operator == ">=" ||
                 operator == "==" || operator == "!="
             } =>
-                let t = TConstructor(e.at, core("Bool"), [])
+                let t = TConstructor(e.at, core("Bool"), [], [])
                 let t1 = self.unification.freshUnificationVariable(e.at)
                 let t2 = self.unification.freshUnificationVariable(e.at)
                 let e1 = self.inferTerm(environment, t1, a1.value)
                 let e2 = self.inferTerm(environment, t2, a2.value)
                 let magic: Type => Option[String] = { t =>
                     self.unification.substitute(t).{
-                        | TConstructor(_, name, []) {name == core("String")} => Some("String")
-                        | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
-                        | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
-                        | TConstructor(_, name, []) {name == core("Char")} => Some("Char")
-                        | TConstructor(_, name, []) {name == core("Duration")} => Some("Duration")
-                        | TConstructor(_, name, []) {name == core("Instant")} => Some("Instant")
+                        | TConstructor(_, name, [], _) {name == core("String")} => Some("String")
+                        | TConstructor(_, name, [], _) {name == core("Float")} => Some("Float")
+                        | TConstructor(_, name, [], _) {name == core("Int")} => Some("Int")
+                        | TConstructor(_, name, [], _) {name == core("Char")} => Some("Char")
+                        | TConstructor(_, name, [], _) {name == core("Duration")} => Some("Duration")
+                        | TConstructor(_, name, [], _) {name == core("Instant")} => Some("Instant")
                         | _ => None
                     }
                 }
@@ -681,9 +685,9 @@ extend self: Inference {
                 let e2 = self.inferTerm(environment, t2, a2.value)
                 let magic: Type => Option[String] = { t =>
                     self.unification.substitute(t).{
-                        | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
-                        | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
-                        | TConstructor(_, name, []) {operator == "+" && name == core("String")} => Some("String")
+                        | TConstructor(_, name, [], _) {name == core("Float")} => Some("Float")
+                        | TConstructor(_, name, [], _) {name == core("Int")} => Some("Int")
+                        | TConstructor(_, name, [], _) {operator == "+" && name == core("String")} => Some("String")
                         | _ => None
                     }
                 }
@@ -826,7 +830,7 @@ extend self: Inference {
 constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, InstanceValue] {
     constraints.map { c =>
         let typeName = c.generics.expectFirst().{
-            | TConstructor(_, name, _) => name
+            | TConstructor(_, name, _, _) => name
             | TVariable(at, i) => fail(c.at, "Unexpected unification variable: $" + i)
         }
         Pair(
