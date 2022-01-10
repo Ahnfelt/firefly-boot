@@ -1,0 +1,52 @@
+type JsDictionary {}
+
+type Dictionary[K, V] {}
+
+trait K: DictionaryKey {
+    add[V](basic: JsDictionary, key: K, value: V): Unit
+    has[V](basic: JsDictionary, key: K, value: V): Bool
+    expect[V](basic: JsDictionary, key: K): V
+}
+
+instance Int: DictionaryKey {
+    add[V](basic: JsDictionary, key: Int, value: V): Unit
+        javascript "basic_.set(key_, value_)"
+    has(basic: JsDictionary, key: Int): Bool
+        javascript "return basic_.has(key_)"
+    get[V](basic: JsDictionary, key: Int): Option[V]
+        javascript "return basic_.has(key_) ? ff_core_Option.Some(basic_.get(key_)) : ff_core_Option.None()"
+}
+
+instance String: DictionaryKey {
+    add[V](basic: JsDictionary, key: String, value: V): Unit
+        javascript "basic_.set(key_, value_)"
+    has(basic: JsDictionary, key: String): Bool
+        javascript "return basic_.has(key_)"
+    get[V](basic: JsDictionary, key: String): Option[V]
+        javascript "return basic_.has(key_) ? ff_core_Option.Some(basic_.get(key_)) : ff_core_Option.None()"
+}
+
+instance Pair[A: DictionaryKey, B: DictionaryKey]: DictionaryKey {
+    add[V](basic: JsDictionary, key: Pair[A, B], value: V): Unit
+        javascript """
+            let inner = basic_.get(key_.first_)
+            if(inner === undefined) {
+                inner = new Map()
+            }
+            basic_.set(key_.first_, )
+        """
+    has(basic: JsDictionary, key: Pair[A, B]): Bool
+        javascript """
+            return basic_.has(key_)
+        """
+    get[V](basic: JsDictionary, key: Pair[A, B]): Option[V]
+        javascript """
+            return basic_.has(key_) ? ff_core_Option.Some(basic_.get(key_)) : ff_core_Option.None()
+        """
+}
+
+extend self[K: DictionaryKey, V]: Dictionary[K, V] {
+    add(key: K, value: V): Unit {
+
+    }
+}
