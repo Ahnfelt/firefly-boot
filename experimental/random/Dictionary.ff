@@ -1,29 +1,29 @@
-type JsDictionary {}
+type JsValue {}
 
 type Dictionary[K, V] {}
 
 trait K: DictionaryKey {
-    add[V](basic: JsDictionary, key: K, value: V): Unit
-    has[V](basic: JsDictionary, key: K, value: V): Bool
-    expect[V](basic: JsDictionary, key: K): V
+    add[V](js: JsValue, key: K, value: V): Unit
+    has(js: JsValue, key: K): Bool
+    expect[V](js: JsValue, key: K): V
 }
 
 instance Int: DictionaryKey {
-    add[V](basic: JsDictionary, key: Int, value: V): Unit
-        javascript "basic_.set(key_, value_)"
-    has(basic: JsDictionary, key: Int): Bool
-        javascript "return basic_.has(key_)"
-    get[V](basic: JsDictionary, key: Int): Option[V]
-        javascript "return basic_.has(key_) ? ff_core_Option.Some(basic_.get(key_)) : ff_core_Option.None()"
+    add[V](js: JsValue, key: Int, value: V): Unit
+        javascript "js_.set(key_, value_)"
+    has(js: JsValue, key: Int): Bool
+        javascript "return js_.has(key_)"
+    get[V](js: JsValue, key: Int): Option[V]
+        javascript "return js_.has(key_) ? ff_core_Option.Some(js_.get(key_)) : ff_core_Option.None()"
 }
 
 instance String: DictionaryKey {
-    add[V](basic: JsDictionary, key: String, value: V): Unit
-        javascript "basic_.set(key_, value_)"
-    has(basic: JsDictionary, key: String): Bool
-        javascript "return basic_.has(key_)"
-    get[V](basic: JsDictionary, key: String): Option[V]
-        javascript "return basic_.has(key_) ? ff_core_Option.Some(basic_.get(key_)) : ff_core_Option.None()"
+    add[V](js: JsValue, key: String, value: V): Unit
+        javascript "js_.set(key_, value_)"
+    has(js: JsValue, key: String): Bool
+        javascript "return js_.has(key_)"
+    get[V](js: JsValue, key: String): Option[V]
+        javascript "return js_.has(key_) ? ff_core_Option.Some(js_.get(key_)) : ff_core_Option.None()"
 }
 
 instance Pair[A: DictionaryKey, B: DictionaryKey]: DictionaryKey {
