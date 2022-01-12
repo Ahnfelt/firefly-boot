@@ -1,0 +1,21 @@
+import Syntax
+import Unification
+import Environment
+
+type Effects(
+    typeDeclarations: Map[String, DType]
+)
+
+make(modules: List[Module]): Effects {
+    Effects(modules.flatMap { m => m.types.map { d => Pair(d.name, d) } }.toMap())
+}
+
+extend self: Effects {
+
+    processModule(module: Module): Module {
+
+        module.Module(
+
+        )
+    }
+}

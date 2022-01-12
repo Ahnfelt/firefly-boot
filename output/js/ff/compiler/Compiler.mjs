@@ -2,6 +2,8 @@ import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
 
 import * as ff_compiler_Dictionaries from "../../ff/compiler/Dictionaries.mjs"
 
+import * as ff_compiler_Effects from "../../ff/compiler/Effects.mjs"
+
 import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
 
 import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"

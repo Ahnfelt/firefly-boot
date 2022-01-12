@@ -5,6 +5,7 @@ import Resolver
 import Inference
 import JsEmitter
 import Dictionaries
+import Effects
 
 type Compiler(
     files: FileSystem
