@@ -1,0 +1,67 @@
+type Effects(
+    mutable effectVariables: Map[Int, Effect]
+    mutable nextEffectVariableIndex: Int
+)
+
+type Effect(
+    at: Location
+    mutable alwaysAsync: Boolean
+    mutable unionVariables: Set[Int]
+    mutable unionParameters: Set[String]
+)
+
+extend self: Effect {
+    affectBy(source: Type): Unit {
+        | TConstructor(_, "Union$", [t1, t2]) =>
+            self.affectBy(t1)
+            self.affectBy(t2)
+        | TConstructor(_, "Async$", []) =>
+            self.alwaysAsync = True
+        | TConstructor(_, "Sync$", []) =>
+        | TConstructor(_, name, []) {name.startsWith("Q$")} =>
+            self.unionParameters = self.unionParameters.add(name)
+        | TConstructor _ =>
+            fail(source.at, "Not an effect: " + source.show())
+        | TVariable(_, index) =>
+            self.unionVariables = self.unionVariables.add(index)
+    }
+}
+
+make(): Effects {
+    Effects([].toMap(), 1)
+}
+
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show())
+}
+
+// Represent effects as types in the AST.
+// function foo[A, B, q1, q2](bar: Bar[A, q1], f: A =q1> B) =q1|q2> B
+// A =q1> B    is represented as   Function$1[A, Effect$[q1, B]]   which is   TConstructor(at, "Function$1", [...])
+// =q1|q2> B   is represented as   Effect$[B, q1|q2]               which is   TConstructor(at, "Effect$", [...])
+// q1|q2       is represented as   Union$[q1, q2]                  which is   TConstructor(at, "Union$", [...])
+// Async       is represented as   Async$[]                        which is   TConstructor(at, "Async$", [])
+// Sync        is represented as   Sync$[]                         which is   TConstructor(at, "Sync$", [])
+// q1          is represented as   Q$1[]                           which is   TConstructor(at, "Q$1", [])
+// #1          is represented as   $1                              which is   TVariable(at, 1)
+
+extend self: Effects {
+
+    freshEffectVariable(at: Location): Type {
+        let result = TVariable(at, self.nextEffectVariableIndex)
+        let effect = Effect(at, False, [].toSet(), [].toSet())
+        self.effectVariables = self.effectVariables.add(self.nextEffectVariableIndex, effect)
+        self.nextEffectVariableIndex += 1
+        result
+    }
+
+    affect(at: Location, target: Type, source: Type): Unit {
+        | _, TVariable(_, i), t => self.effectVariables.expect(i).affectBy(t)
+        | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
+            if(name1 != name2 || generics1.size() != generics2.size()) {
+                fail(at, "Type mismatch: " + t1.show() + " vs. " + t2.show())
+            }
+            generics1.zip(generics2).each {| Pair(t1, t2) => self.affect(at, t1, t2) }
+    }
+
+}
