@@ -64,4 +64,50 @@ extend self: Effects {
             generics1.zip(generics2).each {| Pair(t1, t2) => self.affect(at, t1, t2) }
     }
 
+    processTerm(target: Effect, term: Term): Unit {
+        term.{
+            | EString _ =>
+            | EChar _ =>
+            | EInt _ =>
+            | EFloat _ =>
+            | EVariable _ =>
+            | EField e => self.processTerm(target, e.record)
+            | EWildcard e =>
+            | EList e =>
+                e.items.each {| Pair(item, b) => self.processTerm(target, item) }
+            | ESequential e =>
+                self.processTerm(target, e.before)
+                self.processTerm(target, e.after)
+            )
+            | ELet e =>
+                self.processTerm(target, e.value)
+                self.processTerm(target, e.body)
+            | ELambda e =>
+                // Can never have an effect? self.processLambda(target, e.lambda)
+                // But obviously it should have an effect, when later called
+            | EVariant e =>
+                e.arguments.each { _.each { self.processTerm(target, _.value) } }
+            | EVariantIs e =>
+            | ECopy e =>
+                self.processTerm(Target, e.record)
+                e.arguments.each { self.processTerm(target, _.value) }
+            | EPipe e =>
+                self.processTerm(target, e.value)
+                self.processTerm(target, e.function)
+            | ECall e =>
+                self.processTerm(target, e.function)
+                e.arguments.each { self.processTerm(target, _.value) }
+            | ERecord e =>
+                e.fields.each { self.processTerm(target, value) }
+            | EFunctions e =>
+                e.functions.each { self.processFunctionDefinition(target, _) }
+                self.processTerm(target, e.body)
+            | EAssign e =>
+                self.processTerm(target, e.value)
+            | EAssignField e =>
+                self.processTerm(target, e.record)
+                self.processTerm(target, e.value)
+        }
+    }
+
 }
