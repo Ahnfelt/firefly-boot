@@ -120,3 +120,7 @@ extend self: Effects {
 // Sync      is represented as   Sync$[]                        which is   TConstructor(at, "Sync$", [])
 // q         is represented as   Q$[]                           which is   TConstructor(at, "Q$", [])
 // #1        is represented as   $1                             which is   TVariable(at, 1)
+
+// Hey! Could we just assume that the effect is always the effect parameter `q`? (when not explicitly Async)
+// This would mean that anything that has the "capability" to do async is considered async!
+// Lambdas would then be async only in the async version of the enclosing function.
