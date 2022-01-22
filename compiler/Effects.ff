@@ -36,8 +36,8 @@ fail[T](at: Location, message: String): T {
 }
 
 // Represent effects as types in the AST.
-// function foo[A, B, q1, q2](bar: Bar[A, q1], f: A =q1> B) =q1|q2> B
-// A =q1> B    is represented as   Function$1[A, Effect$[q1, B]]   which is   TConstructor(at, "Function$1", [...])
+// function foo[A, B, q1, q2](bar: Bar[A, q1], f: A =q2> B) =q1|q2> B
+// A =q1> B    is represented as   Function$1[A, Effect$[B, q1]]   which is   TConstructor(at, "Function$1", [...])
 // =q1|q2> B   is represented as   Effect$[B, q1|q2]               which is   TConstructor(at, "Effect$", [...])
 // q1|q2       is represented as   Union$[q1, q2]                  which is   TConstructor(at, "Union$", [...])
 // Async       is represented as   Async$[]                        which is   TConstructor(at, "Async$", [])
@@ -111,3 +111,12 @@ extend self: Effects {
     }
 
 }
+
+// What if there could only be one effect parameter in scope at any given point? Gets rid of the union?
+// function foo[A, B, q](bar: Bar[A, q], f: A =q> B) =q> B
+// A =q> B   is represented as   Function$1[A, Effect$[B, q]]   which is   TConstructor(at, "Function$1", [...])
+// =q> B     is represented as   Effect$[B, q]                  which is   TConstructor(at, "Effect$", [...])
+// Async     is represented as   Async$[]                       which is   TConstructor(at, "Async$", [])
+// Sync      is represented as   Sync$[]                        which is   TConstructor(at, "Sync$", [])
+// q         is represented as   Q$[]                           which is   TConstructor(at, "Q$", [])
+// #1        is represented as   $1                             which is   TVariable(at, 1)
