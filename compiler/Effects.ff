@@ -124,3 +124,12 @@ extend self: Effects {
 // Hey! Could we just assume that the effect is always the effect parameter `q`? (when not explicitly Async)
 // This would mean that anything that has the "capability" to do async is considered async!
 // Lambdas would then be async only in the async version of the enclosing function.
+
+
+
+// system.getStuff() becomes
+// System_getStuff[q](system: System[q]) =q> String[q]
+// Wut? String[q]? That is a problem for string.takeWhile { ... }
+// String_takeWhile[q](string: String[q], body: Char[q] =q> Bool[q]) =q> String[q]
+// Here it would really help if you knew that `String` needed no effect parameters.
+// If so, you could say that `q` meant "lambdas may hide in there".
