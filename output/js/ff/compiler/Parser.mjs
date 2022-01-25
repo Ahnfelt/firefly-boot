@@ -346,6 +346,12 @@ ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "newtype"
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "type")
 }
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper())
+const effectParameter_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "!"))
+? ff_core_List.Empty()
+: (function() {
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator())
+return ff_core_List.Link("Q$", ff_core_List.Empty())
+})())
 const poly_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
 ? ff_compiler_Parser.Poly(ff_core_List.Empty(), ff_core_List.Empty())
 : ff_compiler_Parser.Parser_parseTypeParameters(self_))
@@ -378,7 +384,8 @@ ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(nameToken_), "N
 if((newtype_ && ff_core_List.List_expect(commonFields_, 0).mutable_)) {
 ff_compiler_Parser.Parser_fail(self_, ff_core_List.List_expect(commonFields_, 0).at_, "Newtypes can't have mutable fields")
 }
-return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, commonFields_, variants_, targets_)
+const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_)
+return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_, targets_)
 }
 
 export function Parser_parseImportDefinition(self_) {

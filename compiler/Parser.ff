@@ -300,6 +300,7 @@ extend self: Parser {
         let newtype = self.current().rawIs("newtype")
         if(newtype) { self.rawSkip(LKeyword, "newtype") } else { self.rawSkip(LKeyword, "type") }
         let nameToken = self.skip(LUpper)
+        let effectParameter = if(!self.current().rawIs("!")) {[]} else {self.skip(LOperator); ["Q$"]}
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
         let variants = if(newtype || !self.current().rawIs("{")) {
@@ -326,7 +327,8 @@ extend self: Parser {
         if(newtype && commonFields.expect(0).mutable) {
             self.fail(commonFields.expect(0).at, "Newtypes can't have mutable fields")
         }
-        DType(nameToken.at(), newtype, nameToken.raw(), poly.generics, poly.constraints, commonFields, variants, targets)
+        let generics = [...effectParameter, ...poly.generics]
+        DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants, targets)
     }
     
     parseImportDefinition(): DImport {
