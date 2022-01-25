@@ -8,6 +8,7 @@ extend self[T: Order]: Set[T] {
     add(value: T): Set[T] { Set(self.map.add(value, Unit)) }
     addAll(that: Set[T]): Set[T] { Set(self.map.addAll(that.map)) }
     remove(value: T) : Set[T] { Set(self.map.remove(value)) }
+    removeAll(that: Set[T]) : Set[T] { Set(self.map.removeAll(that.map)) }
     contains(value: T): Bool { self.map.contains(value) }
     size() : Int { self.map.size() }
     toList(): List[T] { self.map.pairs().map { _.first } }

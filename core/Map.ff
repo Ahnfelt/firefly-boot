@@ -27,6 +27,15 @@ extend self[K: Order, V]: Map[K, V] {
         Map(self.redBlack.add(key, None))
     }
 
+    removeAll(that: Map[K, V]) : Map[K, V] {
+        mutable result = self.redBlack
+        that.redBlack.each {
+            | k, Some(_) => result = result.remove(k)
+            | k, None =>
+        }
+        Map(result)
+    }
+
     pairs(): List[Pair[K, V]] {
         self.redBlack.pairs().flatMap {
             | Pair(k, Some(v)) => [Pair(k, v)]

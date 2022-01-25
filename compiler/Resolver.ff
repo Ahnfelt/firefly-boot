@@ -4,6 +4,7 @@ type Resolver(
     variables: Map[String, String]
     variants: Map[String, String]
     types: Map[String, String]
+    asyncTypes: Set[String]
     typeParameters: Set[String]
     traits: Map[String, String]
 )
@@ -13,6 +14,7 @@ make(): Resolver {
         variables = [].toMap()
         variants = [].toMap()
         types = [].toMap()
+        asyncTypes = [].toSet()
         typeParameters = [].toSet()
         traits = [].toMap()
     )
@@ -34,8 +36,8 @@ extend self: Resolver {
             traits = module.traits.map { self3.resolveTraitDefinition(_) }
             instances = module.instances.map { self3.resolveInstanceDefinition(_) }
             extends = module.extends.map { self3.resolveExtendDefinition(_) }
-            lets = module.lets.map { self3.resolveLetDefinition(_) }
-            functions = module.functions.map { self3.resolveFunctionDefinition(_) }
+            lets = module.lets.map { self3.resolveLetDefinition(_, True) }
+            functions = module.functions.map { self3.resolveFunctionDefinition(_, True) }
         )
     }
 
@@ -72,11 +74,14 @@ extend self: Resolver {
         let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.toMap()
         let traits = module.traits.flatMap { entry(_.name, True) }.toMap()
         let types = module.types.flatMap { entry(_.name, True) }.toMap()
+        let asyncTypes = module.types.filter { _.generics.first().any {_ == "Q$"} }
+            .flatMap { entry(_.name, True).map {_.first} }.toSet()
         let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap()
         Resolver(
             variables = self.variables.addAll(lets).addAll(functions).addAll(traitMethods)
             variants = self.variants.addAll(variants)
             types = self.types.addAll(types)
+            asyncTypes = self.asyncTypes.addAll(asyncTypes)
             typeParameters = [].toSet()
             traits = self.traits.addAll(traits)
         )
@@ -86,20 +91,21 @@ extend self: Resolver {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
+            asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         definition.DType(
-            constraints = definition.constraints.map(self2.resolveConstraint)
+            constraints = definition.constraints.map { self2.resolveConstraint(_, True) }
             commonFields = definition.commonFields.map { f =>
                 f.Parameter(
-                    valueType = self2.resolveType(f.valueType)
+                    valueType = self2.resolveType(f.valueType, True)
                     default = f.default.map { self2.resolveTerm(_) }
                 )
             }
             variants = definition.variants.map { v =>
                 v.Variant(fields = v.fields.map { f =>
                     f.Parameter(
-                        valueType = self2.resolveType(f.valueType)
+                        valueType = self2.resolveType(f.valueType, True)
                         default = f.default.map { self2.resolveTerm(_) }
                     )
                 })
@@ -111,11 +117,12 @@ extend self: Resolver {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
+            asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         definition.DTrait(
-            constraints = definition.constraints.map(self2.resolveConstraint),
-            methods = definition.methods.map(self2.resolveSignature),
+            constraints = definition.constraints.map { self2.resolveConstraint(_, True) },
+            methods = definition.methods.map { self2.resolveSignature(_, True) },
             methodDefaults = definition.methodDefaults // TODO
         )
     }
@@ -124,16 +131,17 @@ extend self: Resolver {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
+            asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         let traitName = self2.traits.get(definition.traitName).else {
             fail(definition.at, "No such trait: " + definition.traitName)
         }
         definition.DInstance(
-            constraints = definition.constraints.map(self2.resolveConstraint)
+            constraints = definition.constraints.map { self2.resolveConstraint(_, True) }
             traitName = traitName
-            typeArguments = definition.typeArguments.map(self2.resolveType)
-            methods = definition.methods.map(self2.resolveFunctionDefinition)
+            typeArguments = definition.typeArguments.map { self2.resolveType(_, True) }
+            methods = definition.methods.map { self2.resolveFunctionDefinition(_, False) }
         )
     }
 
@@ -141,20 +149,21 @@ extend self: Resolver {
         let generics = definition.generics.map { g => Pair(g, g) }.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
+            asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
             variables = self.variables.add(definition.name, definition.name)
         )
         definition.DExtend(
-            constraints = definition.constraints.map(self2.resolveConstraint)
-            type = self2.resolveType(definition.type)
-            methods = definition.methods.map { self2.resolveFunctionDefinition(_) }
+            constraints = definition.constraints.map { self2.resolveConstraint(_, True) }
+            type = self2.resolveType(definition.type, True)
+            methods = definition.methods.map { self2.resolveFunctionDefinition(_, True) }
         )
     }
 
-    resolveLetDefinition(definition: DLet): DLet {
+    resolveLetDefinition(definition: DLet, topLevel: Bool): DLet {
         let self2 = self.Resolver(variables = self.variables.add(definition.name, definition.name))
         definition.DLet(
-            variableType = self.resolveType(definition.variableType)
+            variableType = self.resolveType(definition.variableType, topLevel)
             value = self.resolveTerm(definition.value)
         )
     }
@@ -173,21 +182,21 @@ extend self: Resolver {
                 }
             }
         | EList(at, t, items) =>
-            EList(at, self.resolveType(t), items.map { | Pair(item, spread) =>
+            EList(at, self.resolveType(t, False), items.map { | Pair(item, spread) =>
                 Pair(self.resolveTerm(item), spread)
             })
         | EVariant(at, name, typeArguments, arguments) =>
             EVariant(
                 at = at
                 name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
-                typeArguments = typeArguments.map { self.resolveType(_) }
+                typeArguments = typeArguments.map { self.resolveType(_, False) }
                 arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value)) }}
             )
         | EVariantIs(at, name, typeArguments) =>
             EVariantIs(
                 at = at
                 name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
-                typeArguments = typeArguments.map { self.resolveType(_) }
+                typeArguments = typeArguments.map { self.resolveType(_, False) }
             )
         | ECopy(at, name, record, arguments) =>
             ECopy(
@@ -212,7 +221,7 @@ extend self: Resolver {
                 instanceCall = instanceCall
                 tailCall = tailCall
                 function = self.resolveTerm(function)
-                typeArguments = typeArguments.map { self.resolveType(_) }
+                typeArguments = typeArguments.map { self.resolveType(_, False) }
                 arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }
                 dictionaries = dictionaries
             )
@@ -229,13 +238,13 @@ extend self: Resolver {
             let self2 = self.Resolver(variables = self.variables.addAll(functionMap))
             EFunctions(
                 at = at,
-                functions = functions.map { self2.resolveFunctionDefinition(_) },
+                functions = functions.map { self2.resolveFunctionDefinition(_, False) },
                 body = self2.resolveTerm(body)
             )
         | ELet e =>
             let self2 = self.Resolver(variables = self.variables.add(e.name, e.name))
             e.ELet(
-                valueType = self.resolveType(e.valueType)
+                valueType = self.resolveType(e.valueType, False)
                 value = self.resolveTerm(e.value)
                 body = self2.resolveTerm(e.body)
             )
@@ -262,31 +271,34 @@ extend self: Resolver {
             )
     }
 
-    resolveType(type: Type): Type {
-        | TVariable _ =>
+    resolveType(type: Type, topLevel: Bool): Type {
+        | TVariable _, _ =>
             type
-        | TConstructor constructor =>
+        | TConstructor constructor, _ =>
             let name = if(constructor.name.contains("$")) {
                 constructor.name
             } else {
                 self.types.get(constructor.name).else { fail(constructor.at, "No such type: " + constructor.name) }
             }
+            let effect = if(self.asyncTypes.contains(constructor.name)) {
+                if(topLevel) {[/* TODO: Fresh */]} else {[TConstructor(constructor.at, "Q$", [])]}
+            } else {[]}
             constructor.TConstructor(
                 name = name
-                generics = constructor.generics.map { self.resolveType(_) }
+                generics = [...effect, ...constructor.generics.map { self.resolveType(_, topLevel) }]
             )
     }
 
-    resolveConstraint(constraint: Constraint): Constraint {
+    resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
         let name =
             self.traits.get(constraint.name).else { fail(constraint.at, "No such trait: " + constraint.name) }
         constraint.Constraint(
             name = name
-            generics = constraint.generics.map { self.resolveType(_) }
+            generics = constraint.generics.map { self.resolveType(_, topLevel) }
         )
     }
 
-    resolveFunctionDefinition(definition: DFunction): DFunction {
+    resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
         definition.signature.generics.find { name => self.typeParameters.contains(name) }.each { name =>
             fail(definition.at, "Type parameter " + name + " is already in scope")
         }
@@ -296,22 +308,23 @@ extend self: Resolver {
             variables = self.variables.addAll(variableMap)
             typeParameters = self.typeParameters.addAll(definition.signature.generics.toSet())
             types = self.types.addAll(typeMap)
+            asyncTypes = self.asyncTypes.removeAll(definition.signature.generics.toSet())
         )
-        let signature = self2.resolveSignature(definition.signature)
+        let signature = self2.resolveSignature(definition.signature, topLevel)
         let body = definition.body.Lambda(cases = definition.body.cases.map { self2.resolveCase(_) })
         DFunction(definition.at, signature, body, definition.targets)
     }
 
-    resolveSignature(signature: Signature): Signature {
+    resolveSignature(signature: Signature, topLevel: Bool): Signature {
         signature.Signature(
-            constraints = signature.constraints.map(self.resolveConstraint)
+            constraints = signature.constraints.map { self.resolveConstraint(_, topLevel) }
             parameters = signature.parameters.map { p =>
                 p.Parameter(
-                    valueType = self.resolveType(p.valueType)
+                    valueType = self.resolveType(p.valueType, topLevel)
                     default = p.default.map { self.resolveTerm(_) }
                 )
             }
-            returnType = self.resolveType(signature.returnType)
+            returnType = self.resolveType(signature.returnType, True)
         )
     }
 
