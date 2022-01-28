@@ -105,7 +105,7 @@ extend self: Inference {
         let environment2 = environment.Environment(symbols = environment.symbols.addAll(parameterMap))
         let functionType = TConstructor(
             definition.at,
-            "Function$" + parameters.size(),
+            "Function$" + parameters.size() + 1,
             [...parameters.map { _.second.signature.returnType }, definition.signature.returnType]
         )
         let instances = constraintsToInstances(definition.signature.constraints)
