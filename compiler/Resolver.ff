@@ -7,6 +7,7 @@ type Resolver(
     asyncTypes: Set[String]
     typeParameters: Set[String]
     traits: Map[String, String]
+    mutable nextUnificationVariableIndex: Int
 )
 
 make(): Resolver {
@@ -17,6 +18,7 @@ make(): Resolver {
         asyncTypes = [].toSet()
         typeParameters = [].toSet()
         traits = [].toMap()
+        nextUnificationVariableIndex = 2 // To avoid collision with the parser and unification
     )
 }
 
@@ -25,6 +27,12 @@ fail[T](at: Location, message: String): T {
 }
 
 extend self: Resolver {
+
+    freshUnificationVariable(at: Location): Type {
+        let result = TVariable(at, self.nextUnificationVariableIndex)
+        self.nextUnificationVariableIndex += 3
+        result
+    }
 
     resolveModule(module: Module, otherModules: List[Module]): Module {
         let moduleNamespace =
@@ -281,7 +289,15 @@ extend self: Resolver {
                 self.types.get(constructor.name).else { fail(constructor.at, "No such type: " + constructor.name) }
             }
             let effect = if(self.asyncTypes.contains(constructor.name)) {
-                if(topLevel) {[/* TODO: Fresh */]} else {[TConstructor(constructor.at, "Q$", [])]}
+                if(topLevel) {
+                    if(!self.typeParameters.contains("Q$")) {
+                        TConstructor(constructor.at, "ff:core/Nothing.Nothing", [])
+                    } else {
+                        [TConstructor(constructor.at, "Q$", [])]
+                    }
+                } else {
+                    [self.freshUnificationVariable(constructor.at)]
+                }
             } else {[]}
             constructor.TConstructor(
                 name = name
@@ -299,20 +315,25 @@ extend self: Resolver {
     }
 
     resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
-        definition.signature.generics.find { name => self.typeParameters.contains(name) }.each { name =>
+        let signature = if(topLevel) {
+            definition.signature.Signature(
+                generics = [TConstructor(constructor.at, "Q$", []), ...definition.signature.generics]
+            )
+        } else { definition.signature }
+        signature.generics.find { name => self.typeParameters.contains(name) }.each { name =>
             fail(definition.at, "Type parameter " + name + " is already in scope")
         }
-        let variableMap = definition.signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
-        let typeMap = definition.signature.generics.map { name => Pair(name, name) }.toMap()
+        let variableMap = signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
+        let typeMap = signature.generics.map { name => Pair(name, name) }.toMap()
         let self2 = self.Resolver(
             variables = self.variables.addAll(variableMap)
-            typeParameters = self.typeParameters.addAll(definition.signature.generics.toSet())
+            typeParameters = self.typeParameters.addAll(signature.generics.toSet())
             types = self.types.addAll(typeMap)
-            asyncTypes = self.asyncTypes.removeAll(definition.signature.generics.toSet())
+            asyncTypes = self.asyncTypes.removeAll(signature.generics.toSet())
         )
-        let signature = self2.resolveSignature(definition.signature, topLevel)
+        let newSignature = self2.resolveSignature(signature, topLevel)
         let body = definition.body.Lambda(cases = definition.body.cases.map { self2.resolveCase(_) })
-        DFunction(definition.at, signature, body, definition.targets)
+        DFunction(definition.at, newSignature, body, definition.targets)
     }
 
     resolveSignature(signature: Signature, topLevel: Bool): Signature {
@@ -324,7 +345,7 @@ extend self: Resolver {
                     default = p.default.map { self.resolveTerm(_) }
                 )
             }
-            returnType = self.resolveType(signature.returnType, True)
+            returnType = self.resolveType(signature.returnType, topLevel)
         )
     }
 

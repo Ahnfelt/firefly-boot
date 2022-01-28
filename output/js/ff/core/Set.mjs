@@ -68,6 +68,10 @@ export function Set_remove(self_, value_, ff_core_Ordering_Order$T) {
 return ff_core_Map.Map_remove(self_, value_, ff_core_Ordering_Order$T)
 }
 
+export function Set_removeAll(self_, that_, ff_core_Ordering_Order$T) {
+return ff_core_Map.Map_removeAll(self_, that_, ff_core_Ordering_Order$T)
+}
+
 export function Set_contains(self_, value_, ff_core_Ordering_Order$T) {
 return ff_core_Map.Map_contains(self_, value_, ff_core_Ordering_Order$T)
 }

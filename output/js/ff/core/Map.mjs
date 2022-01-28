@@ -92,6 +92,27 @@ export function Map_remove(self_, key_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RbMap_add(self_, key_, ff_core_Option.None(), ff_core_Ordering_Order$K)
 }
 
+export function Map_removeAll(self_, that_, ff_core_Ordering_Order$K) {
+let result_ = self_
+ff_core_RbMap.RbMap_each(that_, ((_1, _2) => {
+{
+const k_ = _1
+if(_2.Some) {
+result_ = ff_core_RbMap.RbMap_remove(result_, k_, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+const k_ = _1
+if(_2.None) {
+
+return
+}
+}
+}), ff_core_Ordering_Order$K)
+return result_
+}
+
 export function Map_pairs(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_, ff_core_Ordering_Order$K), ((_1) => {
 {

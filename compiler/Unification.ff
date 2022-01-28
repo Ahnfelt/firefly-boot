@@ -37,7 +37,7 @@ make(modules: List[Module]): Unification {
     Unification(
         Map.empty()
         Map.empty()
-        2 // Even type variables to avoid collision with the parser
+        3 // To avoid collision with the parser and resolver
         modules.flatMap { module =>
             let packageName = module.packagePair.first + ":" + module.packagePair.second
             let moduleName = module.file.dropLast(".ff".size())
@@ -80,7 +80,7 @@ extend self: Unification {
 
     freshUnificationVariable(at: Location): Type {
         let result = TVariable(at, self.nextUnificationVariableIndex)
-        self.nextUnificationVariableIndex += 2
+        self.nextUnificationVariableIndex += 3
         result
     }
 

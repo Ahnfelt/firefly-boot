@@ -20,7 +20,7 @@ make(packagePair: Pair[String, String], file: String, tokens: Array[Token]): Par
         tokens,
         tokens.expectLast(),
         0,
-        1 // Odd type variables to avoid collision with the unification
+        1 // To avoid collision with the unification and resolver
     )
 }
 
@@ -65,7 +65,7 @@ extend self: Parser {
 
     freshUnificationVariable(at: Location): Type {
         let result = TVariable(at, self.nextUnificationVariableIndex)
-        self.nextUnificationVariableIndex += 2
+        self.nextUnificationVariableIndex += 3
         result
     }
     
