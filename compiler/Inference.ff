@@ -119,7 +119,7 @@ extend self: Inference {
         let returnsUnit = self.unification.substitute(expected).{
             | TConstructor(_, name, ts) {name.startsWith("Function$")} =>
                 ts.expectLast().{
-                    | TConstructor(_, n, []) => n == unitName
+                    | TConstructor(_, "Effect$", [_, TConstructor(_, n, [])]) => n == unitName
                     | _ => False
                 }
             | _ => False
