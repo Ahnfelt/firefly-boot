@@ -288,7 +288,7 @@ extend self: Resolver {
             } else {
                 self.types.get(constructor.name).else { fail(constructor.at, "No such type: " + constructor.name) }
             }
-            let effect = if(self.asyncTypes.contains(constructor.name)) {
+            let effect = if(self.asyncTypes.contains(constructor.name) || name.startsWith("Function$")) {
                 if(topLevel) {
                     if(!self.typeParameters.contains("Q$")) {
                         TConstructor(constructor.at, "ff:core/Nothing.Nothing", [])
