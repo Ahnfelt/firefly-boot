@@ -312,7 +312,7 @@ extend self: Resolver {
     makeEffectArgument(topLevel: Bool): Type {
         if(topLevel) {
             if(!self.typeParameters.contains("Q$")) {
-                TConstructor(constructor.at, "ff:core/Nothing.Nothing", [])
+                TConstructor(constructor.at, "ff:core/Nothing.Nothing", []) // Temporary workaround for top-level let
             } else {
                 TConstructor(constructor.at, "Q$", [])
             }

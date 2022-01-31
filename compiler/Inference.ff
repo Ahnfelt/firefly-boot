@@ -353,7 +353,7 @@ extend self: Inference {
                 let functionType = TConstructor(e.at, "Function$1", [
                     instantiated.scheme.signature.returnType
                     TConstructor(e.at, "Effect$", [
-                        TConstructor(e.at, "ff:core/Nothing.Nothing", [])
+                        self.freshUnificationVariable(e.at)
                         TConstructor(e.at, core("Option"), [recordType])
                     ])
                 ])
@@ -388,7 +388,10 @@ extend self: Inference {
                 self.inferTerm(environment, expected, term)
             | EPipe e =>
                 let valueType = self.unification.freshUnificationVariable(e.at)
-                let functionType = TConstructor(e.at, "Function$1", [valueType, expected])
+                let functionType = TConstructor(e.at, "Function$1", [
+                    valueType,
+                    TConstructor(e.at, "Effect$", [environment.effect, expected])
+                ])
                 let value = self.inferTerm(environment, valueType, e.value)
                 let function = self.inferTerm(environment, functionType, e.function)
                 e.EPipe(
@@ -587,7 +590,10 @@ extend self: Inference {
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         let argumentTypes = e.arguments.map { self.unification.freshUnificationVariable(_.at) }
-        let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [...argumentTypes, expected])
+        let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [
+            ...argumentTypes
+            TConstructor(e.at, "Effect$", [environment.effect, expected])
+        ])
         let function = self.inferTerm(environment, functionType, e.function)
         let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
             argument.name.each { name =>
