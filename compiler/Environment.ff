@@ -2,6 +2,7 @@ import Syntax
 
 type Environment(
     symbols: Map[String, Scheme]
+    effect: Type
 )
 
 type Scheme(
@@ -19,9 +20,10 @@ type Instantiated(
 
 make(module: Module, otherModules: List[Module]): Environment {
     Environment(
-        processModule(module, True).symbols.addAll(
+        symbols = processModule(module, True).symbols.addAll(
             otherModules.map { processModule(_, False).symbols }.foldLeft(Map.empty()) { _.addAll(_) }
         )
+        effect = TConstructor(constructor.at, "ff:core/Nothing.Nothing", [])
     )
 }
 

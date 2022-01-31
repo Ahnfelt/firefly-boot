@@ -50,6 +50,7 @@ extend self: Substitution {
 
     substituteLambda(definition: Lambda): Lambda {
         definition.Lambda(
+            effect = self.substituteType(definition.effect)
             cases = definition.cases.map { case =>
                 case.MatchCase(
                     guards = case.guards.map { g => g.MatchGuard(term = self.substituteTerm(g.term)) }

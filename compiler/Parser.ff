@@ -528,7 +528,8 @@ extend self: Parser {
             [MatchCase(token.at(), arguments, [], e)]
         }
         if(!colon) {self.rawSkip(LBracketRight, "}")}
-        Lambda(token.at(), result)
+        let temporaryEffect = TConstructor(token.at, "ff:core/Nothing.Nothing", [])
+        Lambda(token.at(), temporaryEffect, result)
     }
     
     parseCase(): MatchCase {

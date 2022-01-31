@@ -107,14 +107,14 @@ extend self: Resolver {
             commonFields = definition.commonFields.map { f =>
                 f.Parameter(
                     valueType = self2.resolveType(f.valueType, True)
-                    default = f.default.map { self2.resolveTerm(_) }
+                    default = f.default.map { self2.resolveTerm(_, True) }
                 )
             }
             variants = definition.variants.map { v =>
                 v.Variant(fields = v.fields.map { f =>
                     f.Parameter(
                         valueType = self2.resolveType(f.valueType, True)
-                        default = f.default.map { self2.resolveTerm(_) }
+                        default = f.default.map { self2.resolveTerm(_, True) }
                     )
                 })
             }
@@ -172,11 +172,11 @@ extend self: Resolver {
         let self2 = self.Resolver(variables = self.variables.add(definition.name, definition.name))
         definition.DLet(
             variableType = self.resolveType(definition.variableType, topLevel)
-            value = self.resolveTerm(definition.value)
+            value = self.resolveTerm(definition.value, True)
         )
     }
 
-    resolveTerm(term: Term): Term {
+    resolveTerm(term: Term, topLevel: Bool): Term {
         | EString _ => term
         | EChar _ => term
         | EInt _ => term
@@ -190,53 +190,54 @@ extend self: Resolver {
                 }
             }
         | EList(at, t, items) =>
-            EList(at, self.resolveType(t, False), items.map { | Pair(item, spread) =>
-                Pair(self.resolveTerm(item), spread)
+            EList(at, self.resolveType(t, topLevel), items.map { | Pair(item, spread) =>
+                Pair(self.resolveTerm(item, topLevel), spread)
             })
         | EVariant(at, name, typeArguments, arguments) =>
             EVariant(
                 at = at
                 name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
-                typeArguments = typeArguments.map { self.resolveType(_, False) }
-                arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value)) }}
+                typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
+                arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value, topLevel)) }}
             )
         | EVariantIs(at, name, typeArguments) =>
             EVariantIs(
                 at = at
                 name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
-                typeArguments = typeArguments.map { self.resolveType(_, False) }
+                typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
             )
         | ECopy(at, name, record, arguments) =>
             ECopy(
                 at = at
                 name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
-                record = self.resolveTerm(record)
-                arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value)) }
+                record = self.resolveTerm(record, topLevel)
+                arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value, topLevel)) }
             )
         | EField e =>
-            e.EField(record = self.resolveTerm(e.record))
-        | ELambda(at, Lambda(lambdaAt, cases)) =>
-            ELambda(at, Lambda(lambdaAt, cases.map { self.resolveCase(_) }))
+            e.EField(record = self.resolveTerm(e.record, topLevel))
+        | ELambda(at, Lambda(lambdaAt, _, cases)) =>
+            let effect = self.makeEffectArgument(topLevel)
+            ELambda(at, Lambda(lambdaAt, effect, cases.map { self.resolveCase(_, topLevel) }))
         | EPipe(at, value, function) =>
             EPipe(
                 at = at
-                value = self.resolveTerm(value)
-                function = self.resolveTerm(function)
+                value = self.resolveTerm(value, topLevel)
+                function = self.resolveTerm(function, topLevel)
             )
         | ECall(at, instanceCall, tailCall, function, typeArguments, arguments, dictionaries) =>
             ECall(
                 at = at
                 instanceCall = instanceCall
                 tailCall = tailCall
-                function = self.resolveTerm(function)
-                typeArguments = typeArguments.map { self.resolveType(_, False) }
-                arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value)) }
+                function = self.resolveTerm(function, topLevel)
+                typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
+                arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value, topLevel)) }
                 dictionaries = dictionaries
             )
         | ERecord(at, fields) =>
             ERecord(
                 at = at
-                fields = fields.map { f => f.Field(value = self.resolveTerm(f.value)) }
+                fields = fields.map { f => f.Field(value = self.resolveTerm(f.value, topLevel)) }
             )
         | EWildcard e =>
             if(e.index == 0) { fail(e.at, "Unbound wildcard") }
@@ -246,36 +247,36 @@ extend self: Resolver {
             let self2 = self.Resolver(variables = self.variables.addAll(functionMap))
             EFunctions(
                 at = at,
-                functions = functions.map { self2.resolveFunctionDefinition(_, False) },
-                body = self2.resolveTerm(body)
+                functions = functions.map { self2.resolveFunctionDefinition(_, topLevel) },
+                body = self2.resolveTerm(body, topLevel)
             )
         | ELet e =>
             let self2 = self.Resolver(variables = self.variables.add(e.name, e.name))
             e.ELet(
-                valueType = self.resolveType(e.valueType, False)
-                value = self.resolveTerm(e.value)
-                body = self2.resolveTerm(e.body)
+                valueType = self.resolveType(e.valueType, topLevel)
+                value = self.resolveTerm(e.value, topLevel)
+                body = self2.resolveTerm(e.body, topLevel)
             )
         | ESequential(at, before, after) =>
             ESequential(
                 at = at
-                before = self.resolveTerm(before)
-                after = self.resolveTerm(after)
+                before = self.resolveTerm(before, topLevel)
+                after = self.resolveTerm(after, topLevel)
             )
         | EAssign(at, operator, variable, value) =>
             EAssign(
                 at = at
                 operator = operator
                 variable = self.variables.get(variable).else { fail(at, "No such variable: " + variable) }
-                value = self.resolveTerm(value)
+                value = self.resolveTerm(value, topLevel)
             )
         | EAssignField(at, operator, record, field, value) =>
             EAssignField(
                 at = at
                 operator = operator
-                record = self.resolveTerm(record)
+                record = self.resolveTerm(record, topLevel)
                 field = field
-                value = self.resolveTerm(value)
+                value = self.resolveTerm(value, topLevel)
             )
     }
 
@@ -290,16 +291,7 @@ extend self: Resolver {
             }
             let isFunctionType = name.startsWith("Function$")
             let effect = if(isFunctionType || self.asyncTypes.contains(constructor.name)) {
-                let effectArgument = if(topLevel) {
-                    if(!self.typeParameters.contains("Q$")) {
-                        TConstructor(constructor.at, "ff:core/Nothing.Nothing", [])
-                    } else {
-                        TConstructor(constructor.at, "Q$", [])
-                    }
-                } else {
-                    self.freshUnificationVariable(constructor.at)
-                }
-                [effectArgument]
+                [self.makeEffectArgument(topLevel)]
             } else {[]}
             let generics = constructor.generics.map { self.resolveType(_, topLevel) }
             if(isFunctionType) {
@@ -317,6 +309,18 @@ extend self: Resolver {
             }
     }
 
+    makeEffectArgument(topLevel: Bool): Type {
+        if(topLevel) {
+            if(!self.typeParameters.contains("Q$")) {
+                TConstructor(constructor.at, "ff:core/Nothing.Nothing", [])
+            } else {
+                TConstructor(constructor.at, "Q$", [])
+            }
+        } else {
+            self.freshUnificationVariable(constructor.at)
+        }
+    }
+
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
         let name =
             self.traits.get(constraint.name).else { fail(constraint.at, "No such trait: " + constraint.name) }
@@ -328,22 +332,22 @@ extend self: Resolver {
 
     resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
         let oldReturnType = definition.signature.returnType
-        let signature = if(topLevel) {
-            definition.signature.Signature(
+        let pair = if(topLevel) {
+            let effect = TConstructor(oldReturnType.at, "Q$", [])
+            let signature = definition.signature.Signature(
                 generics = ["Q$", ...definition.signature.generics]
-                returnType = TConstructor(oldReturnType.at, "Effect$", [
-                    TConstructor(oldReturnType.at, "Q$", []),
-                    oldReturnType
-                ])
+                returnType = TConstructor(oldReturnType.at, "Effect$", [effect, oldReturnType])
             )
+            Pair(effect, signature)
         } else {
-            definition.signature.Signature(
-                returnType = TConstructor(oldReturnType.at, "Effect$", [
-                    self.freshUnificationVariable(oldReturnType.at),
-                    oldReturnType
-                ])
+            let effect = self.freshUnificationVariable(oldReturnType.at)
+            let signature = definition.signature.Signature(
+                returnType = TConstructor(oldReturnType.at, "Effect$", [effect, oldReturnType])
             )
+            Pair(effect, signature)
         }
+        let effect = pair.first
+        let signature = pair.second
         signature.generics.find { name => self.typeParameters.contains(name) }.each { name =>
             fail(definition.at, "Type parameter " + name + " is already in scope")
         }
@@ -356,7 +360,10 @@ extend self: Resolver {
             asyncTypes = self.asyncTypes.removeAll(signature.generics.toSet())
         )
         let newSignature = self2.resolveSignature(signature, topLevel)
-        let body = definition.body.Lambda(cases = definition.body.cases.map { self2.resolveCase(_) })
+        let body = definition.body.Lambda(
+            effect = effect
+            cases = definition.body.cases.map { self2.resolveCase(_, topLevel) }
+        )
         DFunction(definition.at, newSignature, body, definition.targets)
     }
 
@@ -366,14 +373,14 @@ extend self: Resolver {
             parameters = signature.parameters.map { p =>
                 p.Parameter(
                     valueType = self.resolveType(p.valueType, topLevel)
-                    default = p.default.map { self.resolveTerm(_) }
+                    default = p.default.map { self.resolveTerm(_, topLevel) }
                 )
             }
             returnType = self.resolveType(signature.returnType, topLevel)
         )
     }
 
-    resolveCase(case: MatchCase): MatchCase {
+    resolveCase(case: MatchCase, topLevel: Bool): MatchCase {
         function findVariables(pattern: MatchPattern): Map[String, String] {
             | PString _ =>
                 Map.empty()
@@ -396,7 +403,10 @@ extend self: Resolver {
         mutable guards = []
         let variableMap2 = case.guards.foldLeft(variableMap) { variableMap1, g =>
             let self2 = self.Resolver(variables = self.variables.addAll(variableMap1))
-            let guard = g.MatchGuard(term = self2.resolveTerm(g.term), pattern = self2.resolvePattern(g.pattern))
+            let guard = g.MatchGuard(
+                term = self2.resolveTerm(g.term, topLevel)
+                pattern = self2.resolvePattern(g.pattern)
+            )
             guards = [guard, ...guards]
             variableMap1.addAll(findVariables(guard.pattern))
         }
@@ -405,7 +415,7 @@ extend self: Resolver {
             at = case.at
             patterns = case.patterns.map { self.resolvePattern(_) }
             guards = guards.reverse()
-            body = self3.resolveTerm(case.body)
+            body = self3.resolveTerm(case.body, topLevel)
         )
     }
 

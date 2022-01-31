@@ -157,7 +157,7 @@ type Signature(
     returnType: Type
 )
 
-type Lambda(at: Location, cases: List[MatchCase])
+type Lambda(at: Location, effect: Type, cases: List[MatchCase])
 
 type Variant(at: Location, name: String, fields: List[Parameter], targets: Targets)
 

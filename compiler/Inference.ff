@@ -140,14 +140,14 @@ extend self: Inference {
         let functionType = TConstructor(
             case.at,
             "Function$" + case.patterns.size(),
-            [...parameterTypes, returnType]
+            [...parameterTypes, TConstructor(case.at, "Effect$", [environment.effect, returnType])]
         )
         self.unification.unify(case.at, expected, functionType)
         let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
                 Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type)))
             }
-            Environment(environment1.symbols.addAll(symbols))
+            environment.Environment(symbols = environment1.symbols.addAll(symbols))
         }
         mutable guards = []
         let environment3 = case.guards.foldLeft(environment1) { environment2, g =>
@@ -157,7 +157,7 @@ extend self: Inference {
                 Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type)))
             }
             guards = [g.MatchGuard(term = guardTerm), ...guards]
-            Environment(environment2.symbols.addAll(symbols))
+            environment2.Environment(symbols = environment2.symbols.addAll(symbols))
         }
         case.MatchCase(
             body = self.inferTerm(environment3, returnType, case.body)
@@ -298,10 +298,10 @@ extend self: Inference {
             | ESequential(at, before, after) =>
                 let newExpected = self.unification.freshUnificationVariable(at)
                 before.{
-                    | EPipe(at1, value, ELambda(at2, Lambda(at3, cases))) =>
+                    | EPipe(at1, value, ELambda(at2, Lambda(at3, effect, cases))) =>
                         let e = EVariant(at, "ff:core/Unit.Unit", [], None)
                         let newCases = cases.map { case => case.MatchCase(body = ESequential(case.at, case.body, e)) }
-                        let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, newCases)))
+                        let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, effect, newCases)))
                         after.{
                             | EVariant(at, "ff:core/Unit.Unit", _, _) =>
                                 let unitType = TConstructor(at, core("Unit"), [])
@@ -378,8 +378,9 @@ extend self: Inference {
                     }
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
+                let effect = self.freshUnificationVariable(e.at)
                 let term = EPipe(e.at, e.record,
-                    ELambda(e.at, Lambda(e.at, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], [], body)]))
+                    ELambda(e.at, Lambda(e.at, effect, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], [], body)]))
                 )
                 self.inferTerm(environment, expected, term)
             | EPipe e =>
@@ -726,7 +727,8 @@ extend self: Inference {
         let body = ECall(at, instanceCall, False, term, [], parameters.map { x =>
             Argument(at, Some(x), EVariable(at, x))
         }, [])
-        let lambda = ELambda(at, Lambda(at, [MatchCase(
+        let effect = self.freshUnificationVariable(e.at)
+        let lambda = ELambda(at, effect, Lambda(at, [MatchCase(
             at = at,
             patterns = parameters.map { PVariable(at, Some(_)) },
             guards = [],

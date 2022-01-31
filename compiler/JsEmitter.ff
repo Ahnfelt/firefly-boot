@@ -94,7 +94,7 @@ extend self: JsEmitter {
             }
         }.else:
         definition.body.{
-            | Lambda(_, [matchCase]) {
+            | Lambda(_, effect, [matchCase]) {
                 matchCase.patterns.all {
                     | PVariable(_, None) => True
                     | PVariable(_, Some(x)) {True /* TODO */} => True
@@ -103,7 +103,7 @@ extend self: JsEmitter {
             } =>
                 let body = self.emitTailCall { self.emitStatements(matchCase.body, True) }
                 signature + " {\n" + body + "\n}"
-            | Lambda(_, cases) =>
+            | Lambda(_, effect, cases) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
                 let escapedArguments = definition.signature.parameters.map { _.name + "_a" }
                 let shadowingWorkaround = definition.signature.parameters.map { p =>
@@ -207,13 +207,13 @@ extend self: JsEmitter {
         | EField(at, newtype, record, field) =>
             if(newtype) { self.emitTerm(record) } else:
             self.emitTerm(record) + "." + escapeKeyword(field)
-        | ELambda(at, Lambda(_, [MatchCase(_, patterns, [], body)])) {
+        | ELambda(at, Lambda(_, effect, [MatchCase(_, patterns, [], body)])) {
             patterns.all {| PVariable _ => True | _ => False }
         } =>
             let parameters =
                 patterns.map {| PVariable p => p.name.map(escapeKeyword).else{"_"} | _ => panic("!") }.join(", ")
             "((" + parameters + ") => {\n" + self.emitStatements(body, True) + "\n})"
-        | ELambda(at, Lambda(_, cases)) =>
+        | ELambda(at, Lambda(_, effect, cases)) =>
             Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
@@ -320,7 +320,7 @@ extend self: JsEmitter {
                     ))
                 }.collect {_}.unzip()
                 "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
-            | EPipe(at, value, ELambda(_, Lambda(_, cases))) =>
+            | EPipe(at, value, ELambda(_, effect, Lambda(_, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
                 if(!last) { "for(;;) " }.else { "" } +
                 "{\nconst _1 = " + self.emitTerm(value) + "\n" +
@@ -496,7 +496,7 @@ detectIfElse(term: Term): List[Pair[Term, Term]] {
 }
 
 invokeImmediately(function: Term): Term {
-    | ELambda(_, Lambda(_, [MatchCase(_, [], [], body)])) => body
+    | ELambda(_, Lambda(_, effect, [MatchCase(_, [], [], body)])) => body
     | _ => ECall(function.at, False, False, function, [], [], [])
 }
 
