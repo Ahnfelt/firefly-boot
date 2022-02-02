@@ -5,6 +5,7 @@ type Unification(
     mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
     mutable nextUnificationVariableIndex: Int
     mutable instances: Map[InstanceKey, InstanceValue]
+    mutable affects: Map[Int, Set[Int]]
 )
 
 type ConstraintGenerics(at: Location, generics: List[Type])
@@ -59,6 +60,7 @@ make(modules: List[Module]): Unification {
                 )
             }
         }.toMap()
+        [].toMap()
     )
 }
 
@@ -184,6 +186,24 @@ extend self: Unification {
             map.pairs().each {| Pair(name, ConstraintGenerics(at2, generics)) =>
                 self.constrain(at2, type, name, generics)
             }
+        }
+        self.affects.get(index).each { affected =>
+            self.affects.remove(index)
+            affected.each { i =>
+                self.bind(at, affected, type)
+            }
+        }
+    }
+
+    affect(at: Location, source: Type, target: Type): Unit {
+        Pair(self.substitute(source), self.substitute(target)).{
+            | Pair(TVariable(, i1), TVariable(, i2)) =>
+                let is = self.affects.get(i1).else([].toSet)
+                self.affects = self.affects.add(i1, is.add(i2))
+            | Pair(TConstructor(, "Q$", ), _) =>
+                self.unify(at, source, target)
+            | Pair(type1, type2) =>
+                self.fail(at, "Can't use " + type1.show() + " to affect " + type2.show())
         }
     }
 
