@@ -190,7 +190,7 @@ extend self: Unification {
         self.affects.get(index).each { affected =>
             self.affects.remove(index)
             affected.each { i =>
-                self.bind(at, affected, type)
+                self.bind(at, i, type)
             }
         }
     }
