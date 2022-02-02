@@ -181,16 +181,16 @@ extend self: Unification {
             self.fail(at, "Infinite type: $" + index + " = " + self.substitute(type).show())
         }
         self.substitution = self.substitution.add(index, type)
-        self.affects.get(index).each { affected =>
-            self.affects.remove(index)
-            affected.each { i =>
-                self.affect(at, type, TVariable(at, i))
-            }
-        }
         self.constraints.get(index).each { map =>
             self.constraints = self.constraints.remove(index)
             map.pairs().each {| Pair(name, ConstraintGenerics(at2, generics)) =>
                 self.constrain(at2, type, name, generics)
+            }
+        }
+        self.affects.get(index).each { affected =>
+            self.affects.remove(index)
+            affected.each { i =>
+                self.affect(at, type, TVariable(at, i))
             }
         }
     }
