@@ -206,6 +206,7 @@ extend self: Unification {
                 self.affects = self.affects.add(i1, is.add(i2))
             | Pair(TConstructor(_, "Q$", _)@t1, t2) =>
                 self.unify(at, t1, t2)
+            | Pair(_, TConstructor(_, "Q$", _)) =>
             | Pair(t1, t2) =>
                 self.fail(at, "Can't use " + t1.show() + " to affect " + t2.show())
         }
