@@ -197,10 +197,10 @@ extend self: Unification {
 
     affect(at: Location, source: Type, target: Type): Unit {
         Pair(self.substitute(source), self.substitute(target)).{
-            | Pair(TVariable(, i1), TVariable(, i2)) =>
+            | Pair(TVariable(_, i1), TVariable(_, i2)) =>
                 let is = self.affects.get(i1).else([].toSet)
                 self.affects = self.affects.add(i1, is.add(i2))
-            | Pair(TConstructor(, "Q$", ), _) =>
+            | Pair(TConstructor(_, "Q$", _), _) =>
                 self.unify(at, source, target)
             | Pair(type1, type2) =>
                 self.fail(at, "Can't use " + type1.show() + " to affect " + type2.show())
