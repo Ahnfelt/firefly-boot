@@ -180,11 +180,6 @@ extend self: Unification {
         if(self.occursIn(index, type)) {
             self.fail(at, "Infinite type: $" + index + " = " + self.substitute(type).show())
         }
-        self.substitution.get(index).each { t =>
-            self.fail(at, // Rebinding is an internal error, and the check is probably a bit expensive
-                "Can't rebind: $" + index + " = " + self.substitute(type).show() + " to " + self.substitute(t).show()
-            )
-        }
         self.substitution = self.substitution.add(index, type)
         self.constraints.get(index).each { map =>
             self.constraints = self.constraints.remove(index)
