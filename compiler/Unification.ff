@@ -182,6 +182,7 @@ extend self: Unification {
         }
         self.substitution = self.substitution.add(index, type)
         self.affects.get(index).each { affected =>
+            self.affects.remove(index)
             affected.each { i =>
                 self.affect(at, type, TVariable(at, i))
             }
