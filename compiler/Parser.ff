@@ -713,7 +713,8 @@ extend self: Parser {
                 let token = self.skip(LOperator)
                 let right = self.parseBinary(level + 1)
                 let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
-                result = ECall(token.at(), False, False, EVariable(token.at(), token.raw()), [], arguments, [])
+                let effect = self.freshUnificationVariable(token.at())
+                result = ECall(token.at(), False, False, EVariable(token.at(), token.raw()), effect, [], arguments, [])
             }
         }
         result
@@ -723,7 +724,9 @@ extend self: Parser {
         if(self.current().is(LOperator)) {
             let token = self.skip(LOperator)
             let term = self.parseUnary()
-            ECall(token.at(), False, False, EVariable(token.at(), token.raw()), [], [Argument(term.at, None, term)], [])
+            let effect = self.freshUnificationVariable(token.at())
+            let operator = EVariable(token.at(), token.raw())
+            ECall(token.at(), False, False, operator, effect, [], [Argument(term.at, None, term)], [])
         } else {
             self.parseFieldsAndCalls()
         }
@@ -758,8 +761,9 @@ extend self: Parser {
                     let lambda = self.parseLambda(allowColon = True)
                     moreArguments.add(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
                 }
-                result =
-                    ECall(at, False, tailCall, result, typeArguments, [...arguments, ...moreArguments.toList()], [])
+                let effect = self.freshUnificationVariable(at)
+                let allArguments = [...arguments, ...moreArguments.toList()]
+                result = ECall(at, False, tailCall, result, effect, typeArguments, allArguments, [])
                 if(lastWasCurly && self.current().is(LLower)) {
                     let token = self.skip(LLower)
                     result = EField(token.at(), False, result, token.raw())

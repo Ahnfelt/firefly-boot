@@ -112,7 +112,7 @@ extend self: Dictionaries {
                 value = self.processTerm(functions, e.value)
                 function = self.processTerm(functions, e.function)
             )
-            | ECall(at, instanceCall, tailCall, EVariable(_, functionName)@x, typeArguments, arguments, _) {
+            | ECall(at, instanceCall, tailCall, EVariable(_, functionName)@x, effect, typeArguments, arguments, _) {
                 functions.contains(functionName)
             } =>
                 let signature = functions.expect(functionName)
@@ -124,6 +124,7 @@ extend self: Dictionaries {
                     instanceCall = instanceCall
                     tailCall = tailCall
                     function = x
+                    effect = effect
                     typeArguments = typeArguments
                     arguments = arguments.map { self.processArgument(functions, _) }
                     dictionaries = dictionaries

@@ -104,6 +104,7 @@ type Term(at: Location) {
         instanceCall: Bool
         tailCall: Bool
         function: Term
+        effect: Type
         typeArguments: List[Type]
         arguments: List[Argument]
         dictionaries: List[Dictionary]

@@ -224,12 +224,13 @@ extend self: Resolver {
                 value = self.resolveTerm(value, topLevel)
                 function = self.resolveTerm(function, topLevel)
             )
-        | ECall(at, instanceCall, tailCall, function, typeArguments, arguments, dictionaries) =>
+        | ECall(at, instanceCall, tailCall, function, effect, typeArguments, arguments, dictionaries) =>
             ECall(
                 at = at
                 instanceCall = instanceCall
                 tailCall = tailCall
                 function = self.resolveTerm(function, topLevel)
+                effect = self.resolveType(effect, topLevel)
                 typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
                 arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value, topLevel)) }
                 dictionaries = dictionaries

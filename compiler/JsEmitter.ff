@@ -222,11 +222,11 @@ extend self: JsEmitter {
             "{\n" + casesString + "\n})"
         | EPipe(at, value, function) =>
             "(" + self.emitTerm(function) + ")(" + self.emitTerm(value) + ")"
-        | ECall(at, _, _, EVariable(_, operator), [], [value], _) {!operator.expectFirst().isAsciiLetter()} =>
+        | ECall(at, _, _, EVariable(_, operator), _, [], [value], _) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + operator + self.emitArgument(value) + ")"
-        | ECall(at, _, _, EVariable(_, operator), [], [left, right], _) {!operator.expectFirst().isAsciiLetter()} =>
+        | ECall(at, _, _, EVariable(_, operator), _, [], [left, right], _) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + self.emitArgument(left) + " " + operator + " " + self.emitArgument(right) + ")"
-        | ECall(at, True, _, EVariable(_, name), typeArguments, arguments, dictionaries) =>
+        | ECall(at, True, _, EVariable(_, name), _, typeArguments, arguments, dictionaries) =>
             let dictionaryStrings = dictionaries.map(self.emitDictionary)
             let ds = if(dictionaries.size() <= 1) {""} else {
                 if(arguments.isEmpty()) {""} else {", "} +
@@ -235,7 +235,7 @@ extend self: JsEmitter {
             let d = dictionaryStrings.expectFirst()
             let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse())
             d + "." + n + "(" + arguments.map(self.emitArgument).join(", ") + ds + ")"
-        | ECall(at, _, _, function, typeArguments, arguments, dictionaries) =>
+        | ECall(at, _, _, function, _, typeArguments, arguments, dictionaries) =>
             detectIfElse(term).{
                 | [] =>
                     let ds = if(dictionaries.isEmpty()) {""} else {
@@ -299,10 +299,10 @@ extend self: JsEmitter {
                 escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value)
             | EAssignField(at, operator, record, field, value) =>
                 self.emitTerm(record) + "." + escapeKeyword(field) + " " + operator + "= " + self.emitTerm(value)
-            | ECall(at, _, _, EVariable(_, "ff:core/Core.while"), _, [condition, body], _) =>
+            | ECall(at, _, _, EVariable(_, "ff:core/Core.while"), _, _, [condition, body], _) =>
                 "while(" + self.emitTerm(invokeImmediately(condition.value)) + ") {\n" +
                 self.emitStatements(invokeImmediately(body.value), False) + "\n}"
-            | ECall(at, _, _, EVariable(_, "ff:core/Core.if"), _, [condition, body], _) =>
+            | ECall(at, _, _, EVariable(_, "ff:core/Core.if"), _, _, [condition, body], _) =>
                 "if(" + self.emitTerm(condition.value) + ") {\n" +
                 if(last) {
                     "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body.value)) +
@@ -310,7 +310,7 @@ extend self: JsEmitter {
                 } else {
                     self.emitStatements(invokeImmediately(body.value), False) + "\n}"
                 }
-            | ECall(at, instanceCall, True, function, _, arguments, _) =>
+            | ECall(at, instanceCall, True, function, _, _, arguments, _) =>
                 if(instanceCall) { fail(at, "Not yet implemented: Tail calls on trait methods.") }
                 self.tailCallUsed = True
                 let pair = arguments.map { a =>
@@ -481,13 +481,13 @@ type ProcessedVariantCase(
 )
 
 detectIfElse(term: Term): List[Pair[Term, Term]] {
-    | ECall(at, _, _, EVariable(_, "ff:core/Core.if"), _, [condition, body], _) =>
+    | ECall(at, _, _, EVariable(_, "ff:core/Core.if"), _, _, [condition, body], _) =>
         [Pair(condition.value, invokeImmediately(body.value))]
-    | ECall(at, _, _, EVariable(_, "ff:core/Option.Option_elseIf"), _, [option, condition, body], _) =>
+    | ECall(at, _, _, EVariable(_, "ff:core/Option.Option_elseIf"), _, _, [option, condition, body], _) =>
         let list = detectIfElse(option.value)
         if(list.isEmpty()) { [] } else:
         [Pair(invokeImmediately(condition.value), invokeImmediately(body.value)), ...list]
-    | ECall(at, _, _, EVariable(_, "ff:core/Option.Option_else"), _, [option, body], _) =>
+    | ECall(at, _, _, EVariable(_, "ff:core/Option.Option_else"), _, _, [option, body], _) =>
         let list = detectIfElse(option.value)
         if(list.isEmpty()) { [] } else:
         [Pair(EVariant(at, "ff:core/Bool.True", [], None), invokeImmediately(body.value)), ...list]
@@ -496,8 +496,11 @@ detectIfElse(term: Term): List[Pair[Term, Term]] {
 }
 
 invokeImmediately(function: Term): Term {
-    | ELambda(_, Lambda(_, effect, [MatchCase(_, [], [], body)])) => body
-    | _ => ECall(function.at, False, False, function, [], [], [])
+    | ELambda(_, Lambda(_, effect, [MatchCase(_, [], [], body)])) =>
+        body
+    | _ =>
+        let noEffect = TConstructor(function.at, "ff:core/Nothing.Nothing", []) // TODO: Only valid in sync context
+        ECall(function.at, False, False, function, noEffect, [], [], [])
 }
 
 extractTypeName(type: Type): String {
