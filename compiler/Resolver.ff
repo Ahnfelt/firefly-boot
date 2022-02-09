@@ -300,7 +300,7 @@ extend self: Resolver {
                 let returnType = generics.expectLast()
                 constructor.TConstructor(
                     name = name
-                    generics = [...arguments, TConstructor(constructor.at, "Effect$", [...effect, returnType])]
+                    generics = [...effect, ...arguments, returnType]
                 )
             } else {
                 constructor.TConstructor(
@@ -332,18 +332,17 @@ extend self: Resolver {
     }
 
     resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
-        let oldReturnType = definition.signature.returnType
         let pair = if(topLevel) {
             let effect = TConstructor(oldReturnType.at, "Q$", [])
             let signature = definition.signature.Signature(
                 generics = ["Q$", ...definition.signature.generics]
-                returnType = TConstructor(oldReturnType.at, "Effect$", [effect, oldReturnType])
+                effect = effect
             )
             Pair(effect, signature)
         } else {
             let effect = self.freshUnificationVariable(oldReturnType.at)
             let signature = definition.signature.Signature(
-                returnType = TConstructor(oldReturnType.at, "Effect$", [effect, oldReturnType])
+                effect = effect
             )
             Pair(effect, signature)
         }
@@ -378,6 +377,7 @@ extend self: Resolver {
                 )
             }
             returnType = self.resolveType(signature.returnType, topLevel)
+            effect = self.resolveType(signature.effect, topLevel)
         )
     }
 

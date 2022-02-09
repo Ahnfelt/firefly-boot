@@ -45,10 +45,13 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
         )}
 
     let lets =
-        module.lets.map { d => Pair(
-            full(module, d.name),
-            Scheme(True, False, False, False, Signature(d.at, d.name, [], [], [], d.variableType))
-        )}
+        module.lets.map { d =>
+            let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
+            Pair(
+                full(module, d.name),
+                Scheme(True, False, False, False, Signature(d.at, d.name, [], [], [], d.variableType, noEffect))
+            )
+        }
 
     let traitMethods =
         module.traits.flatMap { definition =>
@@ -93,6 +96,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             let t = TConstructor(d.at, d.name, d.generics.map { g => TConstructor(d.at, g, []) })
             let selfParameter = Parameter(d.at, False, d.name, t, None)
             d.commonFields.map { f =>
+                let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
                 Pair(
                     full(module, prefix + f.name),
                     Scheme(True, f.mutable, d.newtype, False, Signature(
@@ -102,6 +106,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                         constraints = d.constraints
                         parameters = [selfParameter]
                         returnType = f.valueType
+                        effect = noEffect
                     ))
                 )
             }
@@ -113,6 +118,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                 TConstructor(d.at, typeParameter, [])
             })
             d.variants.map { variant =>
+                let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
                 Pair(
                     full(module, variant.name),
                     Scheme(False, False, d.newtype, False, Signature(
@@ -122,6 +128,7 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                         constraints = d.constraints,
                         parameters = [...d.commonFields, ...variant.fields],
                         returnType = returnType
+                        effect = noEffect
                     ))
                 )
             }

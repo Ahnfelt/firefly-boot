@@ -98,7 +98,8 @@ extend self: Inference {
 
     inferFunctionDefinition(environment: Environment, definition: DFunction): DFunction {
         let parameters = definition.signature.parameters.map { p =>
-            let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType))
+            let noEffect = TConstructor(p.at, "ff:core/Nothing.Nothing", [])
+            let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType, noEffect))
             Pair(p.name, scheme)
         }
         let parameterMap = parameters.toMap()
@@ -119,7 +120,7 @@ extend self: Inference {
         let returnsUnit = self.unification.substitute(expected).{
             | TConstructor(_, name, ts) {name.startsWith("Function$")} =>
                 ts.expectLast().{
-                    | TConstructor(_, "Effect$", [_, TConstructor(_, n, [])]) => n == unitName
+                    | TConstructor(_, n, []) => n == unitName
                     | _ => False
                 }
             | _ => False
@@ -140,12 +141,13 @@ extend self: Inference {
         let functionType = TConstructor(
             case.at,
             "Function$" + case.patterns.size(),
-            [...parameterTypes, TConstructor(case.at, "Effect$", [environment.effect, returnType])]
+            [environment.effect, ...parameterTypes, returnType]
         )
         self.unification.unify(case.at, expected, functionType)
         let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
-                Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type)))
+                let noEffect = TConstructor(c.at, "ff:core/Nothing.Nothing", [])
+                Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type, noEffect)))
             }
             environment.Environment(symbols = environment1.symbols.addAll(symbols))
         }
@@ -154,7 +156,8 @@ extend self: Inference {
             let guardType = self.unification.freshUnificationVariable(g.at)
             let guardTerm = self.inferTerm(environment2, guardType, g.term)
             let symbols = self.inferPattern(environment2, guardType, g.pattern).map {| Pair(name, type) =>
-                Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type)))
+                let noEffect = TConstructor(g.at, "ff:core/Nothing.Nothing", [])
+                Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type, noEffect)))
             }
             guards = [g.MatchGuard(term = guardTerm), ...guards]
             environment2.Environment(symbols = environment2.symbols.addAll(symbols))
@@ -322,7 +325,9 @@ extend self: Inference {
                         )
                 }
             | ELet e =>
-                let scheme = Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType))
+                let noEffect = TConstructor(e.at, "ff:core/Nothing.Nothing", [])
+                let scheme =
+                    Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType, noEffect))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
@@ -351,11 +356,9 @@ extend self: Inference {
                 let recordType =
                     TConstructor(e.at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
                 let functionType = TConstructor(e.at, "Function$1", [
+                    self.freshUnificationVariable(e.at),
                     instantiated.scheme.signature.returnType
-                    TConstructor(e.at, "Effect$", [
-                        self.freshUnificationVariable(e.at)
-                        TConstructor(e.at, core("Option"), [recordType])
-                    ])
+                    TConstructor(e.at, core("Option"), [recordType])
                 ])
                 self.unification.unify(e.at, expected, functionType)
                 e.EVariantIs(
@@ -389,8 +392,9 @@ extend self: Inference {
             | EPipe e =>
                 let valueType = self.unification.freshUnificationVariable(e.at)
                 let functionType = TConstructor(e.at, "Function$1", [
+                    environment.effect,
                     valueType,
-                    TConstructor(e.at, "Effect$", [environment.effect, expected])
+                    expected
                 ])
                 let value = self.inferTerm(environment, valueType, e.value)
                 let function = self.inferTerm(environment, functionType, e.function)
@@ -591,8 +595,9 @@ extend self: Inference {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         let argumentTypes = e.arguments.map { self.unification.freshUnificationVariable(_.at) }
         let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [
+            environment.effect
             ...argumentTypes
-            TConstructor(e.at, "Effect$", [environment.effect, expected])
+            expected
         ])
         let function = self.inferTerm(environment, functionType, e.function)
         let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
@@ -812,6 +817,7 @@ extend self: Inference {
             p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
         }
         let returnType = self.unification.instantiate(instantiationMap, scheme.signature.returnType)
+        let effect = self.unification.instantiate(instantiationMap, scheme.signature.effect)
 
         scheme.signature.constraints.each { c =>
             let generics = c.generics.map { self.unification.instantiate(instantiationMap, _) }
@@ -823,6 +829,7 @@ extend self: Inference {
             constraints = []
             parameters = parameters
             returnType = returnType
+            effect = effect
         )
 
         Instantiated(
