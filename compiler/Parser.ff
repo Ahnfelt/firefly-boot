@@ -182,8 +182,8 @@ extend self: Parser {
         } else {
             TConstructor(self.current().at(), "ff:core/Unit.Unit", [])
         }
-        let noEffect = TConstructor(nameToken.at(), "ff:core/Nothing.Nothing", []) // Fixed in resolver
-        Signature(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, parameters, returnType, noEffect)
+        let temporaryEffect = TConstructor(nameToken.at(), "ff:core/Nothing.Nothing", [])
+        Signature(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, parameters, returnType, temporaryEffect)
     }
     
     parseExtendDefinition(): DExtend {

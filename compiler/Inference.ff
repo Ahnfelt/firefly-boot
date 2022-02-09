@@ -130,8 +130,9 @@ extend self: Inference {
                 c.MatchCase(body = ESequential(c.at, c.body, EVariant(c.at, unitName, [], None)))
             }
         }
+        let newEnvironment = environment.Environment(effect = lambda.effect)
         lambda.Lambda(
-            cases = cases.map { self.inferMatchCase(environment, expected, _) }
+            cases = cases.map { self.inferMatchCase(newEnvironment, expected, _) }
         )
     }
 
@@ -583,6 +584,7 @@ extend self: Inference {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         self.unification.unify(e.at, expected, signature.returnType)
         let arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments)
+        self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
             instanceCall = instanceCall
             function = e.function // It's always a function name - should we propagate that information?
@@ -593,9 +595,10 @@ extend self: Inference {
 
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let effect = self.unification.freshUnificationVariable(term.at)
         let argumentTypes = e.arguments.map { self.unification.freshUnificationVariable(_.at) }
         let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [
-            environment.effect
+            effect
             ...argumentTypes
             expected
         ])
@@ -609,6 +612,7 @@ extend self: Inference {
         e.typeArguments.first().each { typeArgument =>
             fail(typeArgument.at, "Type arguments not allowed here")
         }
+        self.unification.affect(term.at, effect, environment.effect)
         e.ECall(
             function = function
             typeArguments = []
@@ -742,7 +746,7 @@ extend self: Inference {
             Argument(at, Some(x), EVariable(at, x))
         }, [])
         let effect = self.freshUnificationVariable(e.at)
-        let lambda = ELambda(at, effect, Lambda(at, [MatchCase(
+        let lambda = ELambda(at, Lambda(at, effect, [MatchCase(
             at = at,
             patterns = parameters.map { PVariable(at, Some(_)) },
             guards = [],

@@ -333,14 +333,14 @@ extend self: Resolver {
 
     resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
         let pair = if(topLevel) {
-            let effect = TConstructor(oldReturnType.at, "Q$", [])
+            let effect = TConstructor(definition.at, "Q$", [])
             let signature = definition.signature.Signature(
                 generics = ["Q$", ...definition.signature.generics]
                 effect = effect
             )
             Pair(effect, signature)
         } else {
-            let effect = self.freshUnificationVariable(oldReturnType.at)
+            let effect = self.freshUnificationVariable(definition.at)
             let signature = definition.signature.Signature(
                 effect = effect
             )
