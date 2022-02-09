@@ -78,10 +78,12 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                     let prefix = t.name + "_"
                     let selfParameter = Parameter(d.at, False, d.name, d.type, None)
                     d.methods.map { method =>
+                        let effect = method.signature.generics.filter {_ == "Q$"}
+                        let normalGenerics = method.signature.generics.filter {_ != "Q$"}
                         Pair(
                             prefix + method.signature.name,
                             Scheme(False, False, False, False, method.signature.Signature(
-                                generics = [...d.generics, ...method.signature.generics]
+                                generics = [...effect, ...d.generics, ...normalGenerics]
                                 constraints = [...d.constraints, ...method.signature.constraints]
                                 parameters = [selfParameter, ...method.signature.parameters]
                             ))
