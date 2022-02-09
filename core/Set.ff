@@ -12,4 +12,5 @@ extend self[T: Order]: Set[T] {
     contains(value: T): Bool { self.map.contains(value) }
     size() : Int { self.map.size() }
     toList(): List[T] { self.map.pairs().map { _.first } }
+    each(body: T => Unit): Unit { self.map.each {| k, _ => body(k)} }
 }

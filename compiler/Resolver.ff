@@ -92,6 +92,7 @@ extend self: Resolver {
             asyncTypes = self.asyncTypes.addAll(asyncTypes)
             typeParameters = [].toSet()
             traits = self.traits.addAll(traits)
+            nextUnificationVariableIndex = self.nextUnificationVariableIndex
         )
     }
 
@@ -177,11 +178,11 @@ extend self: Resolver {
     }
 
     resolveTerm(term: Term, topLevel: Bool): Term {
-        | EString _ => term
-        | EChar _ => term
-        | EInt _ => term
-        | EFloat _ => term
-        | EVariable e =>
+        | EString _, _ => term
+        | EChar _, _ => term
+        | EInt _, _ => term
+        | EFloat _, _ => term
+        | EVariable e, _ =>
             self.variables.get(e.name).map { e.EVariable(name = _) }.else {
                 if(e.name.first().any { _.isAsciiLetter() }) {
                     fail(e.at, "No such variable: " + e.name)
@@ -189,42 +190,42 @@ extend self: Resolver {
                     term
                 }
             }
-        | EList(at, t, items) =>
+        | EList(at, t, items), _ =>
             EList(at, self.resolveType(t, topLevel), items.map { | Pair(item, spread) =>
                 Pair(self.resolveTerm(item, topLevel), spread)
             })
-        | EVariant(at, name, typeArguments, arguments) =>
+        | EVariant(at, name, typeArguments, arguments), _ =>
             EVariant(
                 at = at
                 name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
                 typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
                 arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value, topLevel)) }}
             )
-        | EVariantIs(at, name, typeArguments) =>
+        | EVariantIs(at, name, typeArguments), _ =>
             EVariantIs(
                 at = at
                 name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
                 typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
             )
-        | ECopy(at, name, record, arguments) =>
+        | ECopy(at, name, record, arguments), _ =>
             ECopy(
                 at = at
                 name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
                 record = self.resolveTerm(record, topLevel)
                 arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value, topLevel)) }
             )
-        | EField e =>
+        | EField e, _ =>
             e.EField(record = self.resolveTerm(e.record, topLevel))
-        | ELambda(at, Lambda(lambdaAt, _, cases)) =>
-            let effect = self.makeEffectArgument(topLevel)
+        | ELambda(at, Lambda(lambdaAt, _, cases)), _ =>
+            let effect = self.makeEffectArgument(lambdaAt, topLevel)
             ELambda(at, Lambda(lambdaAt, effect, cases.map { self.resolveCase(_, topLevel) }))
-        | EPipe(at, value, function) =>
+        | EPipe(at, value, function), _ =>
             EPipe(
                 at = at
                 value = self.resolveTerm(value, topLevel)
                 function = self.resolveTerm(function, topLevel)
             )
-        | ECall(at, instanceCall, tailCall, function, effect, typeArguments, arguments, dictionaries) =>
+        | ECall(at, instanceCall, tailCall, function, effect, typeArguments, arguments, dictionaries), _ =>
             ECall(
                 at = at
                 instanceCall = instanceCall
@@ -235,15 +236,15 @@ extend self: Resolver {
                 arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value, topLevel)) }
                 dictionaries = dictionaries
             )
-        | ERecord(at, fields) =>
+        | ERecord(at, fields), _ =>
             ERecord(
                 at = at
                 fields = fields.map { f => f.Field(value = self.resolveTerm(f.value, topLevel)) }
             )
-        | EWildcard e =>
+        | EWildcard e, _ =>
             if(e.index == 0) { fail(e.at, "Unbound wildcard") }
             e.EWildcard()
-        | EFunctions(at, functions, body) =>
+        | EFunctions(at, functions, body), _ =>
             let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap()
             let self2 = self.Resolver(variables = self.variables.addAll(functionMap))
             EFunctions(
@@ -251,27 +252,27 @@ extend self: Resolver {
                 functions = functions.map { self2.resolveFunctionDefinition(_, topLevel) },
                 body = self2.resolveTerm(body, topLevel)
             )
-        | ELet e =>
+        | ELet e, _ =>
             let self2 = self.Resolver(variables = self.variables.add(e.name, e.name))
             e.ELet(
                 valueType = self.resolveType(e.valueType, topLevel)
                 value = self.resolveTerm(e.value, topLevel)
                 body = self2.resolveTerm(e.body, topLevel)
             )
-        | ESequential(at, before, after) =>
+        | ESequential(at, before, after), _ =>
             ESequential(
                 at = at
                 before = self.resolveTerm(before, topLevel)
                 after = self.resolveTerm(after, topLevel)
             )
-        | EAssign(at, operator, variable, value) =>
+        | EAssign(at, operator, variable, value), _ =>
             EAssign(
                 at = at
                 operator = operator
                 variable = self.variables.get(variable).else { fail(at, "No such variable: " + variable) }
                 value = self.resolveTerm(value, topLevel)
             )
-        | EAssignField(at, operator, record, field, value) =>
+        | EAssignField(at, operator, record, field, value), _ =>
             EAssignField(
                 at = at
                 operator = operator
@@ -292,7 +293,7 @@ extend self: Resolver {
             }
             let isFunctionType = name.startsWith("Function$")
             let effect = if(isFunctionType || self.asyncTypes.contains(constructor.name)) {
-                [self.makeEffectArgument(topLevel)]
+                [self.makeEffectArgument(constructor.at, topLevel)]
             } else {[]}
             let generics = constructor.generics.map { self.resolveType(_, topLevel) }
             if(isFunctionType) {
@@ -310,15 +311,15 @@ extend self: Resolver {
             }
     }
 
-    makeEffectArgument(topLevel: Bool): Type {
+    makeEffectArgument(at: Location, topLevel: Bool): Type {
         if(topLevel) {
             if(!self.typeParameters.contains("Q$")) {
-                TConstructor(constructor.at, "ff:core/Nothing.Nothing", []) // Temporary workaround for top-level let
+                TConstructor(at, "ff:core/Nothing.Nothing", []) // Temporary workaround for top-level let
             } else {
-                TConstructor(constructor.at, "Q$", [])
+                TConstructor(at, "Q$", [])
             }
         } else {
-            self.freshUnificationVariable(constructor.at)
+            self.freshUnificationVariable(at)
         }
     }
 
@@ -362,7 +363,7 @@ extend self: Resolver {
         let newSignature = self2.resolveSignature(signature, topLevel)
         let body = definition.body.Lambda(
             effect = effect
-            cases = definition.body.cases.map { self2.resolveCase(_, topLevel) }
+            cases = definition.body.cases.map { self2.resolveCase(_, False) }
         )
         DFunction(definition.at, newSignature, body, definition.targets)
     }

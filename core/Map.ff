@@ -73,6 +73,13 @@ extend self[K: Order, V]: Map[K, V] {
         }
     }
 
+    each(body: (K, V) => Unit): Unit {
+        self.redBlack.each {
+            | k, Some(v) => body(k, v)
+            | _, None =>
+        }
+    }
+
 }
 
 extend self[K: Order, V]: Map[K, List[V]] {

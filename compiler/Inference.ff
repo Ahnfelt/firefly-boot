@@ -104,10 +104,11 @@ extend self: Inference {
         }
         let parameterMap = parameters.toMap()
         let environment2 = environment.Environment(symbols = environment.symbols.addAll(parameterMap))
+        let parameterTypes = parameters.map { _.second.signature.returnType }
         let functionType = TConstructor(
             definition.at,
-            "Function$" + parameters.size() + 1,
-            [...parameters.map { _.second.signature.returnType }, definition.signature.returnType]
+            "Function$" + parameterTypes.size(),
+            [definition.signature.effect, ...parameterTypes, definition.signature.returnType]
         )
         let instances = constraintsToInstances(definition.signature.constraints)
         self.unification.withLocalInstances(instances) {
@@ -357,7 +358,7 @@ extend self: Inference {
                 let recordType =
                     TConstructor(e.at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
                 let functionType = TConstructor(e.at, "Function$1", [
-                    self.freshUnificationVariable(e.at),
+                    self.unification.freshUnificationVariable(e.at),
                     instantiated.scheme.signature.returnType
                     TConstructor(e.at, core("Option"), [recordType])
                 ])
@@ -385,7 +386,7 @@ extend self: Inference {
                     }
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
-                let effect = self.freshUnificationVariable(e.at)
+                let effect = self.unification.freshUnificationVariable(e.at)
                 let term = EPipe(e.at, e.record,
                     ELambda(e.at, Lambda(e.at, effect, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], [], body)]))
                 )
@@ -434,7 +435,7 @@ extend self: Inference {
                         let record = self.inferTerm(environment, recordType, f.record)
                         let e2 = e.ECall(function = f.EField(record = record))
                         self.unification.substitute(recordType).{
-                            | TConstructor(_, name, typeParameters)@t =>
+                            | TConstructor(_, name, _)@t =>
                                 let methodName = name + "_" + f.field
                                 self.lookup(environment, f.at, methodName, []).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
@@ -742,10 +743,10 @@ extend self: Inference {
         let parameters = signature.parameters.filter { _.default.isEmpty() }.map { p =>
             p.name
         }
-        let body = ECall(at, instanceCall, False, term, [], parameters.map { x =>
+        let body = ECall(at, instanceCall, False, term, signature.effect, [], parameters.map { x =>
             Argument(at, Some(x), EVariable(at, x))
         }, [])
-        let effect = self.freshUnificationVariable(e.at)
+        let effect = self.unification.freshUnificationVariable(at)
         let lambda = ELambda(at, Lambda(at, effect, [MatchCase(
             at = at,
             patterns = parameters.map { PVariable(at, Some(_)) },
@@ -802,14 +803,21 @@ extend self: Inference {
 
         let instantiation =
             if(!typeArguments.isEmpty()) {
-                if(scheme.signature.generics.size() != typeArguments.size()) {
+                let newTypeArguments = if(scheme.signature.generics.first().any {_ == "Q$"}) {
+                    [self.unification.freshUnificationVariable(at), ...typeArguments]
+                } else {
+                    typeArguments
+                }
+                if(scheme.signature.generics.size() != newTypeArguments.size()) {
+                    let extra = newTypeArguments.size() - typeArguments.size()
                     fail(at,
-                        "Wrong number of type parameters for " + symbol +
-                        ", expected " + scheme.signature.generics.size() +
-                        ", got " + typeArguments.size()
+                        "Wrong number of type arguments for " + symbol +
+                        ", expected " + (scheme.signature.generics.size() - extra) +
+                        ", got " + (newTypeArguments.size() - extra)
+                        + "... " + scheme.signature.generics.join(",") + " vs. " +  newTypeArguments.map{_.show()}.join(", ")
                     )
                 }
-                scheme.signature.generics.zip(typeArguments)
+                scheme.signature.generics.zip(newTypeArguments)
             } else {
                 scheme.signature.generics.map { name =>
                     Pair(name, self.unification.freshUnificationVariable(at))

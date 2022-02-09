@@ -256,7 +256,7 @@ extend self: JsEmitter {
             }
         | ERecord(at, fields) =>
             if(fields.isEmpty()) {"{}"} else {
-                let list = fields.map { f => escapeKeyword(f.name) + " = " + self.emitTerm(f.value) }
+                let list = fields.map { f => escapeKeyword(f.name) + ": " + self.emitTerm(f.value) }
                 "{\n" + list.join(",\n") + "\n}"
             }
         | EWildcard(at, index) =>
@@ -320,7 +320,7 @@ extend self: JsEmitter {
                     ))
                 }.collect {_}.unzip()
                 "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
-            | EPipe(at, value, ELambda(_, effect, Lambda(_, cases))) =>
+            | EPipe(at, value, ELambda(_, Lambda(_, effect, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
                 if(!last) { "for(;;) " }.else { "" } +
                 "{\nconst _1 = " + self.emitTerm(value) + "\n" +

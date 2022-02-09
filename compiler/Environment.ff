@@ -23,7 +23,7 @@ make(module: Module, otherModules: List[Module]): Environment {
         symbols = processModule(module, True).symbols.addAll(
             otherModules.map { processModule(_, False).symbols }.foldLeft(Map.empty()) { _.addAll(_) }
         )
-        effect = TConstructor(constructor.at, "ff:core/Nothing.Nothing", [])
+        effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
     )
 }
 
@@ -134,5 +134,6 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
             }
         }
 
-    Environment([...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap())
+    let effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
+    Environment([...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap(), effect)
 }
