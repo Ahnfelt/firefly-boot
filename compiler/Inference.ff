@@ -751,17 +751,18 @@ extend self: Inference {
         let parameters = signature.parameters.filter { _.default.isEmpty() }.map { p =>
             p.name
         }
-        let body = ECall(at, instanceCall, False, term, signature.effect, [], parameters.map { x =>
+        let effect1 = self.unification.freshUnificationVariable(at)
+        let body = ECall(at, instanceCall, False, term, effect1, [], parameters.map { x =>
             Argument(at, Some(x), EVariable(at, x))
         }, [])
-        let effect = self.unification.freshUnificationVariable(at)
-        let lambda = ELambda(at, Lambda(at, effect, [MatchCase(
+        let effect2 = self.unification.freshUnificationVariable(at)
+        let lambda = ELambda(at, Lambda(at, effect2, [MatchCase(
             at = at,
             patterns = parameters.map { PVariable(at, Some(_)) },
             guards = [],
             body = body
         )]))
-        self.inferTerm(environment, expected, lambda)
+        self.inferTerm(environment.Environment(effect = effect2), expected, lambda)
     }
 
     inferArguments(

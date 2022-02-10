@@ -283,7 +283,7 @@ return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
 })), traitName_, ff_core_List.List_map(definition_.typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self2_, _w1, true)
 })), _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, false)
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, true)
 })))
 return
 }

@@ -1688,14 +1688,17 @@ return ff_core_Option.Option_isEmpty(_w1.default_)
 })), ((p_) => {
 return p_.name_
 }))
-const body_ = ff_compiler_Syntax.ECall(at_, instanceCall_, false, term_, signature_.effect_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
+const effect1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_)
+const body_ = ff_compiler_Syntax.ECall(at_, instanceCall_, false, term_, effect1_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syntax.EVariable(at_, x_))
 })), ff_core_List.Empty())
-const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_)
-const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
+const effect2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_)
+const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect2_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
 })), ff_core_List.Empty(), body_), ff_core_List.Empty())))
-return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, lambda_)
+return ff_compiler_Inference.Inference_inferTerm(self_, (((_c) => {
+return ff_compiler_Environment.Environment(_c.symbols_, effect2_)
+}))(environment_), expected_, lambda_)
 }
 
 export function Inference_inferArguments(self_, at_, environment_, parameters_, arguments_) {

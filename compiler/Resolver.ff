@@ -150,7 +150,7 @@ extend self: Resolver {
             constraints = definition.constraints.map { self2.resolveConstraint(_, True) }
             traitName = traitName
             typeArguments = definition.typeArguments.map { self2.resolveType(_, True) }
-            methods = definition.methods.map { self2.resolveFunctionDefinition(_, False) }
+            methods = definition.methods.map { self2.resolveFunctionDefinition(_, True) }
         )
     }
 
