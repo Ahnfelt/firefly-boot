@@ -123,7 +123,7 @@ return c_
 
 export function Parser_freshUnificationVariable(self_, at_) {
 const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextUnificationVariableIndex_)
-self_.nextUnificationVariableIndex_ += 2
+self_.nextUnificationVariableIndex_ += 3
 return result_
 }
 
@@ -226,7 +226,8 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 return ff_compiler_Parser.Parser_parseType(self_)
 })()
 : ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "ff:core/Unit.Unit", ff_core_List.Empty()))
-return ff_compiler_Syntax.Signature(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, parameters_, returnType_)
+const temporaryEffect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(nameToken_), "ff:core/Nothing.Nothing", ff_core_List.Empty())
+return ff_compiler_Syntax.Signature(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, parameters_, returnType_, temporaryEffect_)
 }
 
 export function Parser_parseExtendDefinition(self_) {
@@ -641,7 +642,8 @@ return ff_core_List.Link(ff_compiler_Syntax.MatchCase(ff_compiler_Token.Token_at
 if((!colon_)) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}")
 }
-return ff_compiler_Syntax.Lambda(ff_compiler_Token.Token_at(token_), result_)
+const temporaryEffect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), "ff:core/Nothing.Nothing", ff_core_List.Empty())
+return ff_compiler_Syntax.Lambda(ff_compiler_Token.Token_at(token_), temporaryEffect_, result_)
 }
 
 export function Parser_parseCase(self_) {
@@ -901,7 +903,8 @@ return ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), v
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator())
 const right_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1))
 const arguments_ = ff_core_List.Link(ff_compiler_Syntax.Argument(result_.at_, ff_core_Option.None(), result_), ff_core_List.Link(ff_compiler_Syntax.Argument(right_.at_, ff_core_Option.None(), right_), ff_core_List.Empty()))
-result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), ff_core_List.Empty(), arguments_, ff_core_List.Empty())
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_))
+result_ = ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), effect_, ff_core_List.Empty(), arguments_, ff_core_List.Empty())
 }
 }
 return result_
@@ -912,7 +915,9 @@ export function Parser_parseUnary(self_) {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator())
 const term_ = ff_compiler_Parser.Parser_parseUnary(self_)
-return ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, false, ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_)), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Argument(term_.at_, ff_core_Option.None(), term_), ff_core_List.Empty()), ff_core_List.Empty())
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, ff_compiler_Token.Token_at(token_))
+const operator_ = ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_))
+return ff_compiler_Syntax.ECall(ff_compiler_Token.Token_at(token_), false, false, operator_, effect_, ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Argument(term_.at_, ff_core_Option.None(), term_), ff_core_List.Empty()), ff_core_List.Empty())
 } else {
 return ff_compiler_Parser.Parser_parseFieldsAndCalls(self_)
 }
@@ -953,7 +958,9 @@ lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true)
 ff_core_ArrayBuilder.ArrayBuilder_add(moreArguments_, ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_)))
 }
-result_ = ff_compiler_Syntax.ECall(at_, false, tailCall_, result_, typeArguments_, ff_core_List.List_addAll(arguments_, ff_core_ArrayBuilder.ArrayBuilder_toList(moreArguments_)), ff_core_List.Empty())
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, at_)
+const allArguments_ = ff_core_List.List_addAll(arguments_, ff_core_ArrayBuilder.ArrayBuilder_toList(moreArguments_))
+result_ = ff_compiler_Syntax.ECall(at_, false, tailCall_, result_, effect_, typeArguments_, allArguments_, ff_core_List.Empty())
 if((lastWasCurly_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()))) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, ff_compiler_Token.Token_raw(token_))

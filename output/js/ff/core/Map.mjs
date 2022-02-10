@@ -181,6 +181,25 @@ return
 }
 }
 
+export function Map_each(self_, body_, ff_core_Ordering_Order$K) {
+ff_core_RbMap.RbMap_each(self_, ((_1, _2) => {
+{
+const k_ = _1
+if(_2.Some) {
+const v_ = _2.value_
+body_(k_, v_)
+return
+}
+}
+{
+if(_2.None) {
+
+return
+}
+}
+}), ff_core_Ordering_Order$K)
+}
+
 export function Map_addToList(self_, key_, value_, ff_core_Ordering_Order$K) {
 return ff_core_Map.Map_updateOrInsert(self_, key_, ((_w1) => {
 return ff_core_List.Link(value_, _w1)

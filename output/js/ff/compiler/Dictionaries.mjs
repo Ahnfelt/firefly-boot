@@ -193,7 +193,7 @@ export function Dictionaries_processLambda(self_, functions_, definition_) {
 const _1 = definition_
 {
 const _c = _1
-return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(definition_.cases_, ((case_) => {
+return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(definition_.cases_, ((case_) => {
 {
 const _1 = case_
 {
@@ -398,6 +398,7 @@ const tailCall_ = _1.tailCall_
 const x_ = _1.function_
 if(_1.function_.EVariable) {
 const functionName_ = _1.function_.name_
+const effect_ = _1.effect_
 const typeArguments_ = _1.typeArguments_
 const arguments_ = _1.arguments_
 const _guard1 = ff_core_Map.Map_contains(functions_, functionName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -406,7 +407,7 @@ const signature_ = ff_core_Map.Map_expect(functions_, functionName_, ff_core_Ord
 const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, signature_.generics_, typeArguments_, _w1)
 }))
-return ff_compiler_Syntax.ECall(at_, instanceCall_, tailCall_, x_, typeArguments_, ff_core_List.List_map(arguments_, ((_w1) => {
+return ff_compiler_Syntax.ECall(at_, instanceCall_, tailCall_, x_, effect_, typeArguments_, ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, _w1)
 })), dictionaries_)
 return
@@ -421,7 +422,7 @@ const e_ = _1
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_), _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, _w1)
 })), _c.dictionaries_)
 return

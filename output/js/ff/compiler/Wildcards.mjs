@@ -150,7 +150,7 @@ const e_ = term_a
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_), _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
 {
 const _1 = a_
 {

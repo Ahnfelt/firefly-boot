@@ -86,6 +86,12 @@ return _w1.first_
 }))
 }
 
+export function Set_each(self_, body_, ff_core_Ordering_Order$T) {
+ff_core_Map.Map_each(self_, ((k_, _) => {
+body_(k_)
+}), ff_core_Ordering_Order$T)
+}
+
 
 
 

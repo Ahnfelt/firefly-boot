@@ -162,6 +162,7 @@ export function invokeImmediately_(function_) {
 const function_a = function_
 {
 if(function_a.ELambda) {
+const effect_ = function_a.lambda_.effect_
 if(function_a.lambda_.cases_.Link) {
 if(function_a.lambda_.cases_.head_.patterns_.Empty) {
 if(function_a.lambda_.cases_.head_.guards_.Empty) {
@@ -176,7 +177,8 @@ return
 }
 }
 {
-return ff_compiler_Syntax.ECall(function_.at_, false, false, function_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty())
+const noEffect_ = ff_compiler_Syntax.TConstructor(function_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty())
+return ff_compiler_Syntax.ECall(function_.at_, false, false, function_, noEffect_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty())
 return
 }
 }
@@ -344,7 +346,7 @@ const _1 = method_
 {
 const _c = _1
 return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_)
+return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, _c.effect_)
 }))(method_.signature_), _c.body_, _c.targets_)
 return
 }
@@ -394,6 +396,7 @@ return (((signature_ + " {\n") + code_) + "\n}")
 {
 const _1 = definition_.body_
 {
+const effect_ = _1.effect_
 if(_1.cases_.Link) {
 const matchCase_ = _1.cases_.head_
 if(_1.cases_.tail_.Empty) {
@@ -434,6 +437,7 @@ return
 }
 }
 {
+const effect_ = _1.effect_
 const cases_ = _1.cases_
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_)
 const escapedArguments_ = ff_core_List.List_map(definition_.signature_.parameters_, ((_w1) => {
@@ -695,6 +699,7 @@ return
 const self_ = self_a
 if(term_a.ELambda) {
 const at_ = term_a.at_
+const effect_ = term_a.lambda_.effect_
 if(term_a.lambda_.cases_.Link) {
 const patterns_ = term_a.lambda_.cases_.head_.patterns_
 if(term_a.lambda_.cases_.head_.guards_.Empty) {
@@ -742,6 +747,7 @@ return
 const self_ = self_a
 if(term_a.ELambda) {
 const at_ = term_a.at_
+const effect_ = term_a.lambda_.effect_
 const cases_ = term_a.lambda_.cases_
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_)
 const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_expect(cases_, 0).patterns_), ((_w1) => {
@@ -913,7 +919,7 @@ if(ff_core_List.List_isEmpty(fields_)) {
 return "{}"
 } else {
 const list_ = ff_core_List.List_map(fields_, ((f_) => {
-return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_))
+return ((ff_compiler_JsEmitter.escapeKeyword_(f_.name_) + ": ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, f_.value_))
 }))
 return (("{\n" + ff_core_List.List_join(list_, ",\n")) + "\n}")
 }
@@ -1112,6 +1118,7 @@ if(_1.EPipe) {
 const at_ = _1.at_
 const value_ = _1.value_
 if(_1.function_.ELambda) {
+const effect_ = _1.function_.lambda_.effect_
 const cases_ = _1.function_.lambda_.cases_
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_)
 return (((((((!last_)

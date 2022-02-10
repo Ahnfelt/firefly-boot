@@ -262,7 +262,7 @@ return
 export function convertAndCheck_(modules_, cases_) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_)
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
-ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
+return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
 })), (() => {
 ff_compiler_Patterns.fail_(ff_core_List.List_expect(cases_, 0).at_, "Unexhaustive match")
 }))

@@ -250,14 +250,13 @@ extend self: Inference {
             | EField e =>
                 let recordType = self.unification.freshUnificationVariable(e.at)
                 let record = self.inferTerm(environment, recordType, e.record)
-                let e2 = e.EField(record = record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
                         fieldNames.pairs().find { _.second == e.field }.map { _.first }.map { index =>
                             let t1 = typeArguments.expect(index)
                             self.unification.unify(e.at, expected, t1)
-                            e2
+                            e.EField(record = record)
                         }.else {
                             fail(e.at, "No such field " + e.field + " on type: " + t.show())
                         }
@@ -274,7 +273,7 @@ extend self: Inference {
                                     recordType,
                                     instantiated.scheme.signature.parameters.expect(0).valueType
                                 )
-                                self.inferEtaExpansion(environment, expected, e.at, False, signature, e2)
+                                self.inferEtaExpansion(environment, expected, e.at, False, signature, term)
                             | Some(instantiated) =>
                                 /*self.unification.unify(
                                     e.at,

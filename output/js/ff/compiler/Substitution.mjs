@@ -139,7 +139,7 @@ export function Substitution_substituteLambda(self_, definition_) {
 const _1 = definition_
 {
 const _c = _1
-return ff_compiler_Syntax.Lambda(_c.at_, ff_core_List.List_map(definition_.cases_, ((case_) => {
+return ff_compiler_Syntax.Lambda(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.effect_), ff_core_List.List_map(definition_.cases_, ((case_) => {
 {
 const _1 = case_
 {
@@ -353,7 +353,7 @@ const e_ = _1
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.function_), ff_core_List.List_map(e_.typeArguments_, ((type_) => {
+return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.function_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((type_) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
 })), ff_core_List.List_map(e_.arguments_, ((argument_) => {
 return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)

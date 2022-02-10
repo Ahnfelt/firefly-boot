@@ -142,8 +142,8 @@ return {EAssignField: true, at_, operator_, record_, field_, value_};
 export function EPipe(at_, value_, function_) {
 return {EPipe: true, at_, value_, function_};
 }
-export function ECall(at_, instanceCall_, tailCall_, function_, typeArguments_, arguments_, dictionaries_) {
-return {ECall: true, at_, instanceCall_, tailCall_, function_, typeArguments_, arguments_, dictionaries_};
+export function ECall(at_, instanceCall_, tailCall_, function_, effect_, typeArguments_, arguments_, dictionaries_) {
+return {ECall: true, at_, instanceCall_, tailCall_, function_, effect_, typeArguments_, arguments_, dictionaries_};
 }
 export function EList(at_, elementType_, items_) {
 return {EList: true, at_, elementType_, items_};
@@ -206,13 +206,13 @@ return {packageName_, moduleName_, traitName_, typeName_, dictionaries_};
 }
 
 // type Signature
-export function Signature(at_, name_, generics_, constraints_, parameters_, returnType_) {
-return {at_, name_, generics_, constraints_, parameters_, returnType_};
+export function Signature(at_, name_, generics_, constraints_, parameters_, returnType_, effect_) {
+return {at_, name_, generics_, constraints_, parameters_, returnType_, effect_};
 }
 
 // type Lambda
-export function Lambda(at_, cases_) {
-return {at_, cases_};
+export function Lambda(at_, effect_, cases_) {
+return {at_, effect_, cases_};
 }
 
 // type Variant

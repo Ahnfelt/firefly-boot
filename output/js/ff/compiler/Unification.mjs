@@ -53,8 +53,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Unification
-export function Unification(substitution_, constraints_, nextUnificationVariableIndex_, instances_) {
-return {substitution_, constraints_, nextUnificationVariableIndex_, instances_};
+export function Unification(substitution_, constraints_, nextUnificationVariableIndex_, instances_, affects_) {
+return {substitution_, constraints_, nextUnificationVariableIndex_, instances_, affects_};
 }
 
 // type ConstraintGenerics
@@ -78,7 +78,7 @@ export function make_(modules_) {
 function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
-return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 2, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
+return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
 const packageName_ = ((module_.packagePair_.first_ + ":") + module_.packagePair_.second_)
 const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"))
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
@@ -100,7 +100,7 @@ return
 }))(ff_core_List.List_expectFirst(definition_.typeArguments_))
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, packageName_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
-})), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey))
+})), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int))
 }
 
 export function Unification_fail(self_, at_, message_) {
@@ -119,7 +119,7 @@ self_.instances_ = oldInstances_
 
 export function Unification_freshUnificationVariable(self_, at_) {
 const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextUnificationVariableIndex_)
-self_.nextUnificationVariableIndex_ += 2
+self_.nextUnificationVariableIndex_ += 3
 return result_
 }
 
@@ -483,6 +483,53 @@ return
 }
 }))
 }))
+ff_core_Option.Option_each(ff_core_Map.Map_get(self_.affects_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((affected_) => {
+ff_core_Map.Map_remove(self_.affects_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+ff_core_Set.Set_each(affected_, ((i_) => {
+ff_compiler_Unification.Unification_affect(self_, at_, type_, ff_compiler_Syntax.TVariable(at_, i_))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+}))
+}
+
+export function Unification_affect(self_, at_, source_, target_) {
+{
+const _1 = ff_core_Pair.Pair(ff_compiler_Unification.Unification_substitute(self_, source_), ff_compiler_Unification.Unification_substitute(self_, target_))
+{
+if(_1.first_.TVariable) {
+const i1_ = _1.first_.index_
+if(_1.second_.TVariable) {
+const i2_ = _1.second_.index_
+const is_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.affects_, i1_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), (() => {
+return ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+}))
+self_.affects_ = ff_core_Map.Map_add(self_.affects_, i1_, ff_core_Set.Set_add(is_, i2_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
+return
+}
+}
+}
+{
+if(_1.second_.TConstructor) {
+if(_1.second_.name_ == "Q$") {
+
+return
+}
+}
+}
+{
+if(_1.first_.TConstructor) {
+if(_1.first_.name_ == "ff:core/Nothing.Nothing") {
+
+return
+}
+}
+}
+{
+const t1_ = _1.first_
+const t2_ = _1.second_
+ff_compiler_Unification.Unification_unify(self_, at_, t1_, t2_)
+return
+}
+}
 }
 
 export function Unification_occursIn(self_, index_, t_) {
