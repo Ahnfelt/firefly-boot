@@ -200,9 +200,9 @@ extend self: Unification {
             | Pair(TVariable(_, i1), TVariable(_, i2)) =>
                 let is = self.affects.get(i1).else([].toSet)
                 self.affects = self.affects.add(i1, is.add(i2))
+            | Pair(_, TConstructor(_, "Q$", _)) =>
             | Pair(TConstructor(_, "Q$", _)@t1, t2) =>
                 self.unify(at, t1, t2)
-            | Pair(_, TConstructor(_, "Q$", _)) =>
             | Pair(TConstructor(_, "ff:core/Nothing.Nothing", _), _) =>
             | Pair(t1, t2) =>
                 self.fail(at, "Can't use " + t1.show() + " to affect " + t2.show())
