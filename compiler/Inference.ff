@@ -440,12 +440,13 @@ extend self: Inference {
                                 self.lookup(environment, f.at, methodName, []).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                         self.inferMethodCall(
-                                            environment,
-                                            expected,
-                                            instantiated.scheme.signature,
-                                            instantiated.typeArguments,
-                                            e2,
-                                            record,
+                                            environment
+                                            expected
+                                            instantiated.scheme.signature
+                                            instantiated.typeArguments
+                                            e2
+                                            record
+                                            recordType
                                             methodName
                                         )
                                     | Some(instantiated) =>
@@ -563,14 +564,21 @@ extend self: Inference {
         instantiation: List[Pair[String, Type]],
         term: Term,
         record: Term,
+        recordType: Type
         name: String
     ): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
-        let e2 = e.ECall(
-            function = EVariable(e.at, name)
-            arguments = [Argument(record.at, None, record), ...e.arguments]
+        let selfArgument = Argument(record.at, None, record) // Already inferred
+        self.unification.unify(term.at, expected, signature.returnType)
+        self.unification.unify(term.at, signature.parameters.expectFirst().valueType, recordType)
+        let arguments = self.inferArguments(term.at, environment, signature.parameters.dropFirst(), e.arguments)
+        self.unification.affect(term.at, signature.effect, environment.effect)
+        e.ECall(
+            instanceCall = False
+            function = EVariable(term.at, name)
+            typeArguments = instantiation.map { _.second }
+            arguments = [selfArgument, ...arguments]
         )
-        self.inferFunctionCall(environment, expected, signature, False, instantiation, e2, name)
     }
 
     inferFunctionCall(
