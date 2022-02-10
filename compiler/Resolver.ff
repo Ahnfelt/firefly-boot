@@ -369,6 +369,11 @@ extend self: Resolver {
     }
 
     resolveSignature(signature: Signature, topLevel: Bool): Signature {
+        let effect = if(topLevel) {
+            TConstructor(signature.at, "Q$", [])
+        } else {
+            self.resolveType(signature.effect, topLevel)
+        }
         signature.Signature(
             constraints = signature.constraints.map { self.resolveConstraint(_, topLevel) }
             parameters = signature.parameters.map { p =>
@@ -378,7 +383,7 @@ extend self: Resolver {
                 )
             }
             returnType = self.resolveType(signature.returnType, topLevel)
-            effect = self.resolveType(signature.effect, topLevel)
+            effect = effect
         )
     }
 

@@ -765,6 +765,9 @@ return ff_compiler_Syntax.DFunction(definition_.at_, newSignature_, body_, defin
 }
 
 export function Resolver_resolveSignature(self_, signature_, topLevel_) {
+const effect_ = (topLevel_
+? ff_compiler_Syntax.TConstructor(signature_.at_, "Q$", ff_core_List.Empty())
+: ff_compiler_Resolver.Resolver_resolveType(self_, signature_.effect_, topLevel_))
 {
 const _1 = signature_
 {
@@ -782,7 +785,7 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self_, _w1, topLevel_)
 return
 }
 }
-})), ff_compiler_Resolver.Resolver_resolveType(self_, signature_.returnType_, topLevel_), ff_compiler_Resolver.Resolver_resolveType(self_, signature_.effect_, topLevel_))
+})), ff_compiler_Resolver.Resolver_resolveType(self_, signature_.returnType_, topLevel_), effect_)
 return
 }
 }
