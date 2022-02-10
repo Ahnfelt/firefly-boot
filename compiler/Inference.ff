@@ -568,7 +568,7 @@ extend self: Inference {
         name: String
     ): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
-        let selfArgument = Argument(record.at, None, record) // Already inferred
+        let selfArgument = Argument(record.at, None, record) // Already inferred, be careful not to infer again
         self.unification.unify(term.at, expected, signature.returnType)
         self.unification.unify(term.at, signature.parameters.expectFirst().valueType, recordType)
         let arguments = self.inferArguments(term.at, environment, signature.parameters.dropFirst(), e.arguments)
