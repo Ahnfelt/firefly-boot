@@ -171,6 +171,8 @@ extend self: Unification {
         | _, _, TVariable(_, i) => self.bind(at, i, t1)
         | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
             if(name1 != name2 || generics1.size() != generics2.size()) {
+                //Log.debug(t1.at.show())
+                //Log.debug(t2.at.show())
                 self.fail(at, "Type mismatch: " + self.substitute(t1).show() + " vs. " + self.substitute(t2).show())
             }
             generics1.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }

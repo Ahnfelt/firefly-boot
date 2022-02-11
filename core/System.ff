@@ -1,4 +1,4 @@
-type System {}
+type System! {}
 
 type SystemArguments(array: Array[String])
 

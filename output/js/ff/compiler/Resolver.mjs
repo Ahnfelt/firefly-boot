@@ -294,17 +294,20 @@ export function Resolver_resolveExtendDefinition(self_, definition_) {
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-const self2_ = (((_c) => {
+const selfWithNoQ_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.nextUnificationVariableIndex_)
 }))(self_)
+const selfWithQ_ = (((_c) => {
+return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_add(selfWithNoQ_.types_, "Q$", "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.asyncTypes_, ff_core_Set.Set_add(selfWithNoQ_.typeParameters_, "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.nextUnificationVariableIndex_)
+}))(selfWithNoQ_)
 {
 const _1 = definition_
 {
 const _c = _1
 return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(definition_.constraints_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
-})), ff_compiler_Resolver.Resolver_resolveType(self2_, definition_.type_, true), ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, true)
+return ff_compiler_Resolver.Resolver_resolveConstraint(selfWithQ_, _w1, true)
+})), ff_compiler_Resolver.Resolver_resolveType(selfWithQ_, definition_.type_, true), ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(selfWithNoQ_, _w1, true)
 })))
 return
 }
