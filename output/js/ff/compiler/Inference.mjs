@@ -1145,7 +1145,7 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signat
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, false, _c.tailCall_, ff_compiler_Syntax.EVariable(term_.at_, name_), _c.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, false, _c.tailCall_, ff_compiler_Syntax.EVariable(term_.at_, name_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), ff_core_List.Link(selfArgument_, arguments_), _c.dictionaries_)
 return
@@ -1174,7 +1174,7 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signat
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, instanceCall_, _c.tailCall_, e_.function_, _c.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, instanceCall_, _c.tailCall_, e_.function_, signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_, _c.dictionaries_)
 return
@@ -1777,9 +1777,6 @@ return newArguments_
 
 export function Inference_lookup(self_, environment_, at_, symbol_, typeArguments_) {
 return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((scheme_) => {
-if((symbol_ == "ff:core/System.System_arguments")) {
-ff_core_Log.debug_(("scheme.signature: " + ff_core_Core.magicShow_(scheme_.signature_)))
-}
 const instantiation_ = ((!ff_core_List.List_isEmpty(typeArguments_))
 ? (function() {
 const newTypeArguments_ = (ff_core_Option.Option_any(ff_core_List.List_first(scheme_.signature_.generics_), ((_w1) => {
@@ -1818,12 +1815,6 @@ ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_L
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
 }))(scheme_.signature_)
-if((symbol_ == "ff:core/System.System_arguments")) {
-ff_core_Log.debug_(("instantiation: " + ff_core_Core.magicShow_(instantiation_)))
-}
-if((symbol_ == "ff:core/System.System_arguments")) {
-ff_core_Log.debug_(("signature: " + ff_core_Core.magicShow_(signature_)))
-}
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)
 }))(scheme_))

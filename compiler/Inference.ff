@@ -578,6 +578,7 @@ extend self: Inference {
             function = EVariable(term.at, name)
             typeArguments = instantiation.map { _.second }
             arguments = [selfArgument, ...arguments]
+            effect = signature.effect
         )
     }
 
@@ -599,6 +600,7 @@ extend self: Inference {
             function = e.function // It's always a function name - should we propagate that information?
             typeArguments = instantiation.map { _.second }
             arguments = arguments
+            effect = signature.effect
         )
     }
 
@@ -810,8 +812,6 @@ extend self: Inference {
 
         environment.symbols.get(symbol).map: scheme =>
 
-        if(symbol == "ff:core/System.System_arguments") { Log.debug("scheme.signature: " + magicShow(scheme.signature)) }
-
         let instantiation =
             if(!typeArguments.isEmpty()) {
                 let newTypeArguments = if(scheme.signature.generics.first().any {_ == "Q$"}) {
@@ -853,9 +853,6 @@ extend self: Inference {
             returnType = returnType
             effect = effect
         )
-
-        if(symbol == "ff:core/System.System_arguments") { Log.debug("instantiation: " + magicShow(instantiation)) }
-        if(symbol == "ff:core/System.System_arguments") { Log.debug("signature: " + magicShow(signature)) }
 
         Instantiated(
             typeArguments = instantiation
