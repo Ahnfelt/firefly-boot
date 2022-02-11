@@ -77,6 +77,9 @@ extend self: String {
     startsWith(prefix: String, offset: Int = 0) : Bool { panic("magic") }
         javascript "return self_.startsWith(prefix_, offset_)"
 
+    endsWith(prefix: String) : Bool { panic("magic") }
+        javascript "return self_.endsWith(prefix_)"
+
     any(body: Char => Bool): Bool { panic("magic") }
         javascript """
             for(let i = 0; i < self_.length; i++) {

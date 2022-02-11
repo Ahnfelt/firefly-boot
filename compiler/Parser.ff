@@ -182,7 +182,7 @@ extend self: Parser {
         } else {
             TConstructor(self.current().at(), "ff:core/Unit.Unit", [])
         }
-        let temporaryEffect = TConstructor(nameToken.at(), "ff:core/Nothing.Nothing", [])
+        let temporaryEffect = TConstructor(nameToken.at(), "TemporaryEffect$", [])
         Signature(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, parameters, returnType, temporaryEffect)
     }
     
@@ -529,7 +529,7 @@ extend self: Parser {
             [MatchCase(token.at(), arguments, [], e)]
         }
         if(!colon) {self.rawSkip(LBracketRight, "}")}
-        let temporaryEffect = TConstructor(token.at(), "ff:core/Nothing.Nothing", [])
+        let temporaryEffect = TConstructor(token.at(), "TemporaryEffect$", [])
         Lambda(token.at(), temporaryEffect, result)
     }
     

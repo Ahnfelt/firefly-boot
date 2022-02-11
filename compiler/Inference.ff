@@ -810,6 +810,8 @@ extend self: Inference {
 
         environment.symbols.get(symbol).map: scheme =>
 
+        if(symbol == "ff:core/System.System_arguments") { Log.debug("scheme.signature: " + magicShow(scheme.signature)) }
+
         let instantiation =
             if(!typeArguments.isEmpty()) {
                 let newTypeArguments = if(scheme.signature.generics.first().any {_ == "Q$"}) {
@@ -823,7 +825,6 @@ extend self: Inference {
                         "Wrong number of type arguments for " + symbol +
                         ", expected " + (scheme.signature.generics.size() - extra) +
                         ", got " + (newTypeArguments.size() - extra)
-                        + "... " + scheme.signature.generics.join(",") + " vs. " +  newTypeArguments.map{_.show()}.join(", ")
                     )
                 }
                 scheme.signature.generics.zip(newTypeArguments)
@@ -852,6 +853,9 @@ extend self: Inference {
             returnType = returnType
             effect = effect
         )
+
+        if(symbol == "ff:core/System.System_arguments") { Log.debug("instantiation: " + magicShow(instantiation)) }
+        if(symbol == "ff:core/System.System_arguments") { Log.debug("signature: " + magicShow(signature)) }
 
         Instantiated(
             typeArguments = instantiation

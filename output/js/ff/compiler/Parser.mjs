@@ -226,7 +226,7 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon())
 return ff_compiler_Parser.Parser_parseType(self_)
 })()
 : ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "ff:core/Unit.Unit", ff_core_List.Empty()))
-const temporaryEffect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(nameToken_), "ff:core/Nothing.Nothing", ff_core_List.Empty())
+const temporaryEffect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(nameToken_), "TemporaryEffect$", ff_core_List.Empty())
 return ff_compiler_Syntax.Signature(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), poly_.generics_, poly_.constraints_, parameters_, returnType_, temporaryEffect_)
 }
 
@@ -642,7 +642,7 @@ return ff_core_List.Link(ff_compiler_Syntax.MatchCase(ff_compiler_Token.Token_at
 if((!colon_)) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}")
 }
-const temporaryEffect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), "ff:core/Nothing.Nothing", ff_core_List.Empty())
+const temporaryEffect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), "TemporaryEffect$", ff_core_List.Empty())
 return ff_compiler_Syntax.Lambda(ff_compiler_Token.Token_at(token_), temporaryEffect_, result_)
 }
 

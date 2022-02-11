@@ -1777,6 +1777,9 @@ return newArguments_
 
 export function Inference_lookup(self_, environment_, at_, symbol_, typeArguments_) {
 return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((scheme_) => {
+if((symbol_ == "ff:core/System.System_arguments")) {
+ff_core_Log.debug_(("scheme.signature: " + ff_core_Core.magicShow_(scheme_.signature_)))
+}
 const instantiation_ = ((!ff_core_List.List_isEmpty(typeArguments_))
 ? (function() {
 const newTypeArguments_ = (ff_core_Option.Option_any(ff_core_List.List_first(scheme_.signature_.generics_), ((_w1) => {
@@ -1786,9 +1789,7 @@ return (_w1 == "Q$")
 : typeArguments_)
 if((ff_core_List.List_size(scheme_.signature_.generics_) != ff_core_List.List_size(newTypeArguments_))) {
 const extra_ = (ff_core_List.List_size(newTypeArguments_) - ff_core_List.List_size(typeArguments_))
-ff_compiler_Inference.fail_(at_, ((((((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (ff_core_List.List_size(scheme_.signature_.generics_) - extra_)) + ", got ") + (ff_core_List.List_size(newTypeArguments_) - extra_)) + "... ") + ff_core_List.List_join(scheme_.signature_.generics_, ",")) + " vs. ") + ff_core_List.List_join(ff_core_List.List_map(newTypeArguments_, ((_w1) => {
-return ff_compiler_Syntax.Type_show(_w1)
-})), ", ")))
+ff_compiler_Inference.fail_(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (ff_core_List.List_size(scheme_.signature_.generics_) - extra_)) + ", got ") + (ff_core_List.List_size(newTypeArguments_) - extra_)))
 }
 return ff_core_List.List_zip(scheme_.signature_.generics_, newTypeArguments_)
 })()
@@ -1817,6 +1818,12 @@ ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_L
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
 }))(scheme_.signature_)
+if((symbol_ == "ff:core/System.System_arguments")) {
+ff_core_Log.debug_(("instantiation: " + ff_core_Core.magicShow_(instantiation_)))
+}
+if((symbol_ == "ff:core/System.System_arguments")) {
+ff_core_Log.debug_(("signature: " + ff_core_Core.magicShow_(signature_)))
+}
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)
 }))(scheme_))

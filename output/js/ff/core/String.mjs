@@ -154,6 +154,10 @@ export function String_startsWith(self_, prefix_, offset_ = 0) {
 return self_.startsWith(prefix_, offset_)
 }
 
+export function String_endsWith(self_, prefix_) {
+return self_.endsWith(prefix_)
+}
+
 export function String_any(self_, body_) {
 
             for(let i = 0; i < self_.length; i++) {
