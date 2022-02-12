@@ -105,6 +105,25 @@ return
 }
 }
 
+export function Try_else2(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.Success) {
+const value_ = _1.value_
+return value_
+return
+}
+}
+{
+if(_1.Failure) {
+return body_()
+return
+}
+}
+}
+}
+
 export function Try_expect(self_) {
 {
 const _1 = self_
