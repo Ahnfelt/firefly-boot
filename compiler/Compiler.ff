@@ -6,7 +6,7 @@ import Inference
 import JsEmitter
 import Dictionaries
 
-type Compiler(
+type Compiler!(
     files: FileSystem
     time: TimeSystem
     jsOutputPath: String

@@ -1779,9 +1779,9 @@ export function Inference_lookup(self_, environment_, at_, symbol_, typeArgument
 return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((scheme_) => {
 const instantiation_ = ((!ff_core_List.List_isEmpty(typeArguments_))
 ? (function() {
-const newTypeArguments_ = (ff_core_Option.Option_any(ff_core_List.List_first(scheme_.signature_.generics_), ((_w1) => {
+const newTypeArguments_ = (((!scheme_.isVariable_) && ff_core_Option.Option_any(ff_core_List.List_first(scheme_.signature_.generics_), ((_w1) => {
 return (_w1 == "Q$")
-}))
+})))
 ? ff_core_List.Link(ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), typeArguments_)
 : typeArguments_)
 if((ff_core_List.List_size(scheme_.signature_.generics_) != ff_core_List.List_size(newTypeArguments_))) {

@@ -815,7 +815,7 @@ extend self: Inference {
 
         let instantiation =
             if(!typeArguments.isEmpty()) {
-                let newTypeArguments = if(scheme.signature.generics.first().any {_ == "Q$"}) {
+                let newTypeArguments = if(!scheme.isVariable && scheme.signature.generics.first().any {_ == "Q$"}) {
                     [self.unification.freshUnificationVariable(at), ...typeArguments]
                 } else {
                     typeArguments
