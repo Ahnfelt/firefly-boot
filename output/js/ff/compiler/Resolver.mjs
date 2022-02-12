@@ -205,6 +205,17 @@ return ff_core_Pair.Pair(g_, g_)
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_)
+if((!ff_core_Option.Option_any(ff_core_List.List_first(definition_.generics_), ((_w1) => {
+return (_w1 == "Q$")
+})))) {
+ff_core_List.List_each(ff_core_List.List_addAll(definition_.commonFields_, ff_core_List.List_flatMap(definition_.variants_, ((_w1) => {
+return _w1.fields_
+}))), ((f_) => {
+if(ff_compiler_Resolver.Resolver_containsAsyncType(self2_, f_.valueType_)) {
+ff_compiler_Resolver.fail_(f_.at_, (((("Type '" + definition_.name_) + "' has to be marked with '!' due to the type of the '") + f_.name_) + "' field"))
+}
+}))
+}
 {
 const _1 = definition_
 {
@@ -961,6 +972,36 @@ const pattern_ = pattern_a.pattern_
 const variable_ = pattern_a.variable_
 const newPattern_ = ff_compiler_Resolver.Resolver_resolvePattern(self_, pattern_)
 return ff_compiler_Syntax.PAlias(at_, newPattern_, variable_)
+return
+}
+}
+}
+}
+
+export function Resolver_containsAsyncType(self_, type_) {
+{
+const self_a = self_
+const type_a = type_
+{
+const self_ = self_a
+if(type_a.TVariable) {
+return false
+return
+}
+}
+{
+const self_ = self_a
+if(type_a.TConstructor) {
+const constructor_ = type_a
+const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
+? constructor_.name_
+: ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+return ff_compiler_Resolver.fail_(constructor_.at_, ("No such type: " + constructor_.name_))
+})))
+const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0)
+return ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) || ff_core_List.List_any(constructor_.generics_, ((type_) => {
+return ff_compiler_Resolver.Resolver_containsAsyncType(self_, type_)
+})))
 return
 }
 }

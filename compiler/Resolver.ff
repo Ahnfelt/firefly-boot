@@ -105,6 +105,13 @@ extend self: Resolver {
             asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
+        if(!definition.generics.first().any {_ == "Q$"}) {
+            [...definition.commonFields, ...definition.variants.flatMap {_.fields}].each { f =>
+                if(self2.containsAsyncType(f.valueType)) {
+                    fail(f.at, "Type '" + definition.name + "' has to be marked with '!' due to the type of the '" + f.name + "' field")
+                }
+            }
+        }
         definition.DType(
             constraints = definition.constraints.map { self2.resolveConstraint(_, True) }
             commonFields = definition.commonFields.map { f =>
@@ -451,6 +458,20 @@ extend self: Resolver {
         | PAlias(at, pattern, variable) =>
             let newPattern = self.resolvePattern(pattern)
             PAlias(at, newPattern, variable)
+    }
+
+    containsAsyncType(type: Type): Bool {
+        | TVariable _ =>
+            False
+        | TConstructor constructor =>
+            let name = if(constructor.name.contains("$")) {
+                constructor.name
+            } else {
+                self.types.get(constructor.name).else { fail(constructor.at, "No such type: " + constructor.name) }
+            }
+            let isFunctionType = name.startsWith("Function$")
+            isFunctionType || self.asyncTypes.contains(constructor.name) ||
+            constructor.generics.any(self.containsAsyncType)
     }
 
 }
