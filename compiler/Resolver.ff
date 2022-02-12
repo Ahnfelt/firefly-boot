@@ -108,7 +108,7 @@ extend self: Resolver {
         if(!definition.generics.first().any {_ == "Q$"}) {
             [...definition.commonFields, ...definition.variants.flatMap {_.fields}].each { f =>
                 if(self2.containsAsyncType(f.valueType)) {
-                    fail(f.at, "Type '" + definition.name + "' has to be marked with '!' due to the type of the '" + f.name + "' field")
+                    fail(f.at, "Type '" + definition.name + "' has not been marked with '!', but is potentially async due to the type of the '" + f.name + "' field")
                 }
             }
         }

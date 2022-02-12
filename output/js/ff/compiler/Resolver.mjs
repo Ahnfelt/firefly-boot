@@ -212,7 +212,7 @@ ff_core_List.List_each(ff_core_List.List_addAll(definition_.commonFields_, ff_co
 return _w1.fields_
 }))), ((f_) => {
 if(ff_compiler_Resolver.Resolver_containsAsyncType(self2_, f_.valueType_)) {
-ff_compiler_Resolver.fail_(f_.at_, (((("Type '" + definition_.name_) + "' has to be marked with '!' due to the type of the '") + f_.name_) + "' field"))
+ff_compiler_Resolver.fail_(f_.at_, (((("Type '" + definition_.name_) + "' has not been marked with '!', but is potentially async due to the type of the '") + f_.name_) + "' field"))
 }
 }))
 }
