@@ -7,8 +7,10 @@ type Resolver(
     asyncTypes: Set[String]
     typeParameters: Set[String]
     traits: Map[String, String]
-    mutable nextUnificationVariableIndex: Int
+    state: ResolverState
 )
+
+type ResolverState(mutable nextUnificationVariableIndex: Int)
 
 make(): Resolver {
     Resolver(
@@ -18,7 +20,7 @@ make(): Resolver {
         asyncTypes = [].toSet()
         typeParameters = [].toSet()
         traits = [].toMap()
-        nextUnificationVariableIndex = 2 // To avoid collision with the parser and unification
+        state = ResolverState(nextUnificationVariableIndex = 2) // To avoid collision with the parser and unification
     )
 }
 
@@ -29,8 +31,8 @@ fail[T](at: Location, message: String): T {
 extend self: Resolver {
 
     freshUnificationVariable(at: Location): Type {
-        let result = TVariable(at, self.nextUnificationVariableIndex)
-        self.nextUnificationVariableIndex += 3
+        let result = TVariable(at, self.state.nextUnificationVariableIndex)
+        self.state.nextUnificationVariableIndex += 3
         result
     }
 
@@ -92,7 +94,7 @@ extend self: Resolver {
             asyncTypes = self.asyncTypes.addAll(asyncTypes)
             typeParameters = [].toSet()
             traits = self.traits.addAll(traits)
-            nextUnificationVariableIndex = self.nextUnificationVariableIndex
+            state = self.state
         )
     }
 

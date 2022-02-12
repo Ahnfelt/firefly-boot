@@ -792,8 +792,8 @@ extend self: Inference {
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
                 | _ =>
-                    remainingArguments.find { _.name.contains(p.name) }.map { | Argument(at, _, e) =>
-                        remainingArguments = remainingArguments.filter { !_.name.contains(p.name) }
+                    remainingArguments.find {_.name.contains(p.name)}.map {| Argument(at, _, e) =>
+                        remainingArguments = remainingArguments.filter {!_.name.contains(p.name)}
                         let e2 = self.inferTerm(environment, t, e)
                         Argument(at, Some(p.name), e2)
                     }.else {
