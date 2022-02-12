@@ -628,6 +628,7 @@ extend self: Inference {
             function = function
             typeArguments = []
             arguments = arguments
+            effect = effect
         )
     }
 
