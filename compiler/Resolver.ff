@@ -346,57 +346,50 @@ extend self: Resolver {
     }
 
     resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
-        let pair = if(topLevel) {
-            let effect = TConstructor(definition.at, "Q$", [])
-            let signature = definition.signature.Signature(
-                generics = ["Q$", ...definition.signature.generics]
-                effect = effect
+        let signature = self.resolveSignature(definition.signature, topLevel)
+        let self2 = self.withSignature(signature)
+        let body = definition.body.Lambda(
+            effect = signature.effect
+            cases = definition.body.cases.map { self2.resolveCase(_, False) }
+        )
+        DFunction(definition.at, signature, body, definition.targets)
+    }
+
+    resolveSignature(signature: Signature, topLevel: Bool): Signature {
+        let newSignature = if(topLevel) {
+            signature.Signature(
+                generics = ["Q$", ...signature.generics]
+                effect = TConstructor(signature.at, "Q$", [])
             )
-            Pair(effect, signature)
         } else {
-            let effect = self.freshUnificationVariable(definition.at)
-            let signature = definition.signature.Signature(
-                effect = effect
+            signature.Signature(
+                effect = self.freshUnificationVariable(signature.at)
             )
-            Pair(effect, signature)
         }
-        let effect = pair.first
-        let signature = pair.second
-        signature.generics.find { name => self.typeParameters.contains(name) }.each { name =>
-            fail(definition.at, "Type parameter " + name + " is already in scope")
+        newSignature.generics.find { name => self.typeParameters.contains(name) }.each { name =>
+            fail(signature.at, "Type parameter " + name + " is already in scope")
         }
+        let self2 = self.withSignature(newSignature)
+        newSignature.Signature(
+            constraints = newSignature.constraints.map { self2.resolveConstraint(_, topLevel) }
+            parameters = newSignature.parameters.map { p =>
+                p.Parameter(
+                    valueType = self2.resolveType(p.valueType, topLevel)
+                    default = p.default.map { self2.resolveTerm(_, topLevel) }
+                )
+            }
+            returnType = self2.resolveType(newSignature.returnType, topLevel)
+        )
+    }
+
+    withSignature(signature: Signature): Resolver {
         let variableMap = signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
         let typeMap = signature.generics.map { name => Pair(name, name) }.toMap()
-        let self2 = self.Resolver(
+        self.Resolver(
             variables = self.variables.addAll(variableMap)
             typeParameters = self.typeParameters.addAll(signature.generics.toSet())
             types = self.types.addAll(typeMap)
             asyncTypes = self.asyncTypes.removeAll(signature.generics.toSet())
-        )
-        let newSignature = self2.resolveSignature(signature, topLevel)
-        let body = definition.body.Lambda(
-            effect = effect
-            cases = definition.body.cases.map { self2.resolveCase(_, False) }
-        )
-        DFunction(definition.at, newSignature, body, definition.targets)
-    }
-
-    resolveSignature(signature: Signature, topLevel: Bool): Signature {
-        let effect = if(topLevel) {
-            TConstructor(signature.at, "Q$", [])
-        } else {
-            self.resolveType(signature.effect, topLevel)
-        }
-        signature.Signature(
-            constraints = signature.constraints.map { self.resolveConstraint(_, topLevel) }
-            parameters = signature.parameters.map { p =>
-                p.Parameter(
-                    valueType = self.resolveType(p.valueType, topLevel)
-                    default = p.default.map { self.resolveTerm(_, topLevel) }
-                )
-            }
-            returnType = self.resolveType(signature.returnType, topLevel)
-            effect = effect
         )
     }
 

@@ -741,28 +741,54 @@ return
 }
 
 export function Resolver_resolveFunctionDefinition(self_, definition_, topLevel_) {
-const pair_ = (topLevel_
-? (function() {
-const effect_ = ff_compiler_Syntax.TConstructor(definition_.at_, "Q$", ff_core_List.Empty())
-const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Link("Q$", definition_.signature_.generics_), _c.constraints_, _c.parameters_, _c.returnType_, effect_)
-}))(definition_.signature_)
-return ff_core_Pair.Pair(effect_, signature_)
-})()
-: (function() {
-const effect_ = ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, definition_.at_)
-const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, effect_)
-}))(definition_.signature_)
-return ff_core_Pair.Pair(effect_, signature_)
-})())
-const effect_ = pair_.first_
-const signature_ = pair_.second_
-ff_core_Option.Option_each(ff_core_List.List_find(signature_.generics_, ((name_) => {
+const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_)
+const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_)
+const body_ = (((_c) => {
+return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(definition_.body_.cases_, ((_w1) => {
+return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
+})))
+}))(definition_.body_)
+return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_, definition_.targets_)
+}
+
+export function Resolver_resolveSignature(self_, signature_, topLevel_) {
+const newSignature_ = (topLevel_
+? (((_c) => {
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Link("Q$", signature_.generics_), _c.constraints_, _c.parameters_, _c.returnType_, ff_compiler_Syntax.TConstructor(signature_.at_, "Q$", ff_core_List.Empty()))
+}))(signature_)
+: (((_c) => {
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, signature_.at_))
+}))(signature_))
+ff_core_Option.Option_each(ff_core_List.List_find(newSignature_.generics_, ((name_) => {
 return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ((name_) => {
-ff_compiler_Resolver.fail_(definition_.at_, (("Type parameter " + name_) + " is already in scope"))
+ff_compiler_Resolver.fail_(signature_.at_, (("Type parameter " + name_) + " is already in scope"))
 }))
+const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, newSignature_)
+{
+const _1 = newSignature_
+{
+const _c = _1
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(newSignature_.constraints_, ((_w1) => {
+return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, topLevel_)
+})), ff_core_List.List_map(newSignature_.parameters_, ((p_) => {
+{
+const _1 = p_
+{
+const _c = _1
+return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self2_, p_.valueType_, topLevel_), ff_core_Option.Option_map(p_.default_, ((_w1) => {
+return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1, topLevel_)
+})))
+return
+}
+}
+})), ff_compiler_Resolver.Resolver_resolveType(self2_, newSignature_.returnType_, topLevel_), _c.effect_)
+return
+}
+}
+}
+
+export function Resolver_withSignature(self_, signature_) {
 const variableMap_ = ff_core_List.List_toMap(ff_core_List.List_map(ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
 })), ((name_) => {
@@ -771,40 +797,11 @@ return ff_core_Pair.Pair(name_, name_)
 const typeMap_ = ff_core_List.List_toMap(ff_core_List.List_map(signature_.generics_, ((name_) => {
 return ff_core_Pair.Pair(name_, name_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-const self2_ = (((_c) => {
+{
+const _1 = self_
+{
+const _c = _1
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, variableMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, ff_core_Map.Map_addAll(self_.types_, typeMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(signature_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(signature_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
-}))(self_)
-const newSignature_ = ff_compiler_Resolver.Resolver_resolveSignature(self2_, signature_, topLevel_)
-const body_ = (((_c) => {
-return ff_compiler_Syntax.Lambda(_c.at_, effect_, ff_core_List.List_map(definition_.body_.cases_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
-})))
-}))(definition_.body_)
-return ff_compiler_Syntax.DFunction(definition_.at_, newSignature_, body_, definition_.targets_)
-}
-
-export function Resolver_resolveSignature(self_, signature_, topLevel_) {
-const effect_ = (topLevel_
-? ff_compiler_Syntax.TConstructor(signature_.at_, "Q$", ff_core_List.Empty())
-: ff_compiler_Resolver.Resolver_resolveType(self_, signature_.effect_, topLevel_))
-{
-const _1 = signature_
-{
-const _c = _1
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveConstraint(self_, _w1, topLevel_)
-})), ff_core_List.List_map(signature_.parameters_, ((p_) => {
-{
-const _1 = p_
-{
-const _c = _1
-return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, p_.valueType_, topLevel_), ff_core_Option.Option_map(p_.default_, ((_w1) => {
-return ff_compiler_Resolver.Resolver_resolveTerm(self_, _w1, topLevel_)
-})))
-return
-}
-}
-})), ff_compiler_Resolver.Resolver_resolveType(self_, signature_.returnType_, topLevel_), effect_)
 return
 }
 }
