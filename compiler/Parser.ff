@@ -169,7 +169,8 @@ extend self: Parser {
             }
         }
         let javaScript = parseTargetOption("javascript")
-        Targets(javaScript = javaScript)
+        let javaScriptAsync = parseTargetOption("javascriptasync")
+        Targets(javaScript = javaScript, javaScriptAsync = javaScriptAsync)
     }
 
     parseSignature(): Signature {
@@ -305,7 +306,7 @@ extend self: Parser {
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
         let variants = if(newtype || !self.current().rawIs("{")) {
-            [Variant(nameToken.at(), nameToken.raw(), [], Targets(None))]
+            [Variant(nameToken.at(), nameToken.raw(), [], Targets(None, None))]
         } else {
             self.rawSkip(LBracketLeft, "{")
             let variantsBuilder = ArrayBuilder.empty[Variant]()
@@ -694,7 +695,7 @@ extend self: Parser {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
             let body = self.parseLambda(defaultParameterCount = signature.parameters.size())
-            functions.add(DFunction(functionAt, signature, body, Targets(None)))
+            functions.add(DFunction(functionAt, signature, body, Targets(None, None)))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()

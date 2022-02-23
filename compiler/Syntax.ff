@@ -173,6 +173,7 @@ type Constraint(at: Location, name: String, generics: List[Type])
 
 type Targets(
     javaScript: Option[String]
+    javaScriptAsync: Option[String]
 )
 
 type Type(at: Location) {
