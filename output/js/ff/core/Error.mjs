@@ -55,6 +55,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+
+
 export function Error_rethrow(self_) {
 throw self_
 }
@@ -69,6 +71,22 @@ return self_.message || ''
 
 export function Error_stack(self_) {
 return self_.stack || ''
+}
+
+export async function Error_rethrow$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Error_name$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Error_message$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Error_stack$(self_) {
+return ff_core_Core.panic_("magic")
 }
 
 

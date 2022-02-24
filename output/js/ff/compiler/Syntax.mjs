@@ -142,8 +142,8 @@ return {EAssignField: true, at_, operator_, record_, field_, value_};
 export function EPipe(at_, value_, function_) {
 return {EPipe: true, at_, value_, function_};
 }
-export function ECall(at_, instanceCall_, tailCall_, function_, effect_, typeArguments_, arguments_, dictionaries_) {
-return {ECall: true, at_, instanceCall_, tailCall_, function_, effect_, typeArguments_, arguments_, dictionaries_};
+export function ECall(at_, target_, effect_, typeArguments_, arguments_, dictionaries_) {
+return {ECall: true, at_, target_, effect_, typeArguments_, arguments_, dictionaries_};
 }
 export function EList(at_, elementType_, items_) {
 return {EList: true, at_, elementType_, items_};
@@ -165,6 +165,14 @@ return {EField: true, at_, newtype_, record_, field_};
 }
 export function EWildcard(at_, index_) {
 return {EWildcard: true, at_, index_};
+}
+
+// type CallTarget
+export function DynamicCall(function_, tailCall_) {
+return {DynamicCall: true, function_, tailCall_};
+}
+export function StaticCall(name_, tailCall_, instanceCall_) {
+return {StaticCall: true, name_, tailCall_, instanceCall_};
 }
 
 // type MatchCase
@@ -241,8 +249,8 @@ return {at_, name_, generics_};
 }
 
 // type Targets
-export function Targets(javaScript_) {
-return {javaScript_};
+export function Targets(javaScript_, javaScriptAsync_) {
+return {javaScript_, javaScriptAsync_};
 }
 
 // type Type
@@ -276,11 +284,46 @@ return {at_, major_, minor_, patch_};
 
 
 
+
+
 export function Location_show(self_) {
 return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
 }
 
+export async function Location_show$(self_) {
+return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
+}
+
 export function Type_show(self_) {
+{
+const _1 = self_
+{
+if(_1.TConstructor) {
+const at_ = _1.at_
+const name_ = _1.name_
+const generics_ = _1.generics_
+if(ff_core_List.List_isEmpty(generics_)) {
+return name_
+} else {
+return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return ff_compiler_Syntax.Type_show(_w1)
+})), ", ")) + "]")
+}
+return
+}
+}
+{
+if(_1.TVariable) {
+const at_ = _1.at_
+const index_ = _1.index_
+return ("$" + index_)
+return
+}
+}
+}
+}
+
+export async function Type_show$(self_) {
 {
 const _1 = self_
 {

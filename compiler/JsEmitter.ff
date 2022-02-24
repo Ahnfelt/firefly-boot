@@ -55,7 +55,7 @@ extend self: JsEmitter {
     emitLetDefinition(definition: DLet, mutable: Bool, async: Bool): String {
         let mutability = if(mutable) {"let"} else {"const"}
         let valueCode = definition.targets.javaScript.else { self.emitTerm(definition.value, async) }
-        mutability + " " + escapeKeyword(definition.name) + " = " + valueCode
+        mutability + " " + escapeKeyword(definition.name) + " = " + valueCode + ";"
     }
 
     emitExtendsDefinition(definition: DExtend): String {
@@ -67,8 +67,9 @@ extend self: JsEmitter {
                 )
             )
         }
-        methods.map { "export " + self.emitFunctionDefinition(_, False) }.join("\n\n") +
-        methods.map { "export " + self.emitFunctionDefinition(_, True) }.join("\n\n")
+        let syncMethods = methods.map { "export " + self.emitFunctionDefinition(_, False) }
+        let asyncMethods = methods.map { "export " + self.emitFunctionDefinition(_, True) }
+        [...syncMethods, ...asyncMethods].join("\n\n")
     }
 
     emitInstanceDefinition(definition: DInstance): String {
@@ -235,11 +236,11 @@ extend self: JsEmitter {
         | EPipe(at, value, function) =>
             // TODO: Add effect to pipe
             "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + ")"
-        | ECall(at, _, _, EVariable(_, operator), _, [], [value], _) {!operator.expectFirst().isAsciiLetter()} =>
+        | ECall(at, StaticCall(operator, _, _), _, [], [value], _) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + operator + self.emitArgument(value, async) + ")"
-        | ECall(at, _, _, EVariable(_, operator), _, [], [left, right], _) {!operator.expectFirst().isAsciiLetter()} =>
+        | ECall(at, StaticCall(operator, _, _), _, [], [left, right], _) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + self.emitArgument(left, async) + " " + operator + " " + self.emitArgument(right, async) + ")"
-        | ECall(at, True, _, EVariable(_, name), effect, typeArguments, arguments, dictionaries) =>
+        | ECall(at, StaticCall(name, _, True), effect, typeArguments, arguments, dictionaries) =>
             let await = async && effectTypeIsAsync(effect)
             let dictionaryStrings = dictionaries.map(self.emitDictionary)
             let ds = if(dictionaries.size() <= 1) {""} else {
@@ -251,7 +252,7 @@ extend self: JsEmitter {
             let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse()) + asyncSuffix
             let call = d + "." + n + "(" + arguments.map{self.emitArgument(_, async)}.join(", ") + ds + ")"
             if(await) {"(await " + call + ")"} else {call}
-        | ECall(at, _, _, function, effect, typeArguments, arguments, dictionaries) =>
+        | ECall(at, StaticCall(name, _, _), effect, typeArguments, arguments, dictionaries) =>
             detectIfElse(term).{
                 | [] =>
                     let await = async && effectTypeIsAsync(effect)
@@ -259,10 +260,7 @@ extend self: JsEmitter {
                         if(arguments.isEmpty()) {""} else {", "} +
                         dictionaries.map(self.emitDictionary).join(", ")
                     }
-                    let functionCode = function.{
-                        | EVariable(_, name) {await} => self.emitTerm(function, async) + "$"
-                        | _ => self.emitTerm(function, async)
-                    }
+                    let functionCode = escapeResolved(name) + if(await) {"$"} else {""}
                     let call =
                         functionCode + "(" +
                         arguments.map {self.emitArgument(_, async)}.join(", ") +
@@ -279,6 +277,15 @@ extend self: JsEmitter {
                         "\n? ff_core_Option.Some(" + self.emitTerm(body, async) + ")\n: " + otherwise
                     } + ")"
             }
+        | ECall(at, DynamicCall(function, _), effect, typeArguments, arguments, dictionaries) =>
+            let await = async && effectTypeIsAsync(effect)
+            if(!dictionaries.isEmpty()) {fail(at, "Internal error: Dictionaries in lambda call")}
+            let functionCode = self.emitTerm(function, async)
+            let call =
+                functionCode + "(" +
+                arguments.map {self.emitArgument(_, async)}.join(", ") +
+                ")"
+            if(await) {"(await " + call + ")"} else {call}
         | ERecord(at, fields) =>
             if(fields.isEmpty()) {"{}"} else {
                 let list = fields.map { f => escapeKeyword(f.name) + ": " + self.emitTerm(f.value, async) }
@@ -321,16 +328,16 @@ extend self: JsEmitter {
             | ESequential(at, before, EVariant(at, "ff:core/Unit.Unit", _, _)) =>
                 self.emitStatements(before, False, async)
             | ESequential(at, before, after) =>
-                self.emitStatements(before, False, async) + "\n" + self.emitStatements(after, last, async)
+                self.emitStatements(before, False, async) + ";\n" + self.emitStatements(after, last, async)
             | EAssign(at, operator, name, value) =>
                 escapeKeyword(name) + " " + operator + "= " + self.emitTerm(value, async)
             | EAssignField(at, operator, record, field, value) =>
                 self.emitTerm(record, async) + "." + escapeKeyword(field) + " " + operator + "= " +
                 self.emitTerm(value, async)
-            | ECall(at, _, _, EVariable(_, "ff:core/Core.while"), _, _, [condition, body], _) =>
+            | ECall(at, StaticCall("ff:core/Core.while", _, _), _, _, [condition, body], _) =>
                 "while(" + self.emitTerm(invokeImmediately(condition.value), async) + ") {\n" +
                 self.emitStatements(invokeImmediately(body.value), False, async) + "\n}"
-            | ECall(at, _, _, EVariable(_, "ff:core/Core.if"), _, _, [condition, body], _) =>
+            | ECall(at, StaticCall("ff:core/Core.if", _, _), _, _, [condition, body], _) =>
                 "if(" + self.emitTerm(condition.value, async) + ") {\n" +
                 if(last) {
                     "return ff_core_Option.Some(" + self.emitTerm(invokeImmediately(body.value), async) +
@@ -338,7 +345,7 @@ extend self: JsEmitter {
                 } else {
                     self.emitStatements(invokeImmediately(body.value), False, async) + "\n}"
                 }
-            | ECall(at, instanceCall, True, function, effect, _, arguments, _) =>
+            | ECall(at, StaticCall(name, True, instanceCall), effect, _, arguments, _) =>
                 if(instanceCall) { fail(at, "Not yet implemented: Tail calls on trait methods.") }
                 self.tailCallUsed = True
                 let pair = arguments.map { a =>
@@ -516,13 +523,13 @@ type ProcessedVariantCase(
 )
 
 detectIfElse(term: Term): List[Pair[Term, Term]] {
-    | ECall(at, _, _, EVariable(_, "ff:core/Core.if"), _, _, [condition, body], _) =>
+    | ECall(at, StaticCall("ff:core/Core.if", _, _), _, _, [condition, body], _) =>
         [Pair(condition.value, invokeImmediately(body.value))]
-    | ECall(at, _, _, EVariable(_, "ff:core/Option.Option_elseIf"), _, _, [option, condition, body], _) =>
+    | ECall(at, StaticCall("ff:core/Option.Option_elseIf", _, _), _, _, [option, condition, body], _) =>
         let list = detectIfElse(option.value)
         if(list.isEmpty()) { [] } else:
         [Pair(invokeImmediately(condition.value), invokeImmediately(body.value)), ...list]
-    | ECall(at, _, _, EVariable(_, "ff:core/Option.Option_else"), _, _, [option, body], _) =>
+    | ECall(at, StaticCall("ff:core/Option.Option_else", _, _), _, _, [option, body], _) =>
         let list = detectIfElse(option.value)
         if(list.isEmpty()) { [] } else:
         [Pair(EVariant(at, "ff:core/Bool.True", [], None), invokeImmediately(body.value)), ...list]
@@ -535,7 +542,7 @@ invokeImmediately(function: Term): Term {
         body
     | _ =>
         let effect = TConstructor(function.at, "Q$", []) // Awaits more often than required in async context
-        ECall(function.at, False, False, function, effect, [], [], [])
+        ECall(function.at, DynamicCall(function, False), effect, [], [], [])
 }
 
 extractTypeName(type: Type): String {

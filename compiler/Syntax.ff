@@ -101,9 +101,7 @@ type Term(at: Location) {
     EAssignField(operator: String, record: Term, field: String, value: Term)
     EPipe(value: Term, function: Term)
     ECall(
-        instanceCall: Bool
-        tailCall: Bool
-        function: Term
+        target: CallTarget
         effect: Type
         typeArguments: List[Type]
         arguments: List[Argument]
@@ -116,6 +114,11 @@ type Term(at: Location) {
     ERecord(fields: List[Field])
     EField(newtype: Bool, record: Term, field: String)
     EWildcard(index: Int)
+}
+
+type CallTarget {
+    DynamicCall(function: Term, tailCall: Bool)
+    StaticCall(name: String, tailCall: Bool, instanceCall: Bool)
 }
 
 type MatchCase(

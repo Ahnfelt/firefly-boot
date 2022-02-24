@@ -239,7 +239,6 @@ extend self: Inference {
                             environment,
                             expected,
                             e.at,
-                            instantiated.scheme.isTraitMethod,
                             instantiated.scheme.signature,
                             term
                         )
@@ -273,7 +272,7 @@ extend self: Inference {
                                     recordType,
                                     instantiated.scheme.signature.parameters.expect(0).valueType
                                 )
-                                self.inferEtaExpansion(environment, expected, e.at, False, signature, term)
+                                self.inferEtaExpansion(environment, expected, e.at, signature, term)
                             | Some(instantiated) =>
                                 /*self.unification.unify(
                                     e.at,
@@ -404,7 +403,11 @@ extend self: Inference {
                     function = function
                 )
             | ECall e =>
-                e.function.{
+                let call = e.target.{
+                    | DynamicCall call => call
+                    | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in the Inference phase")
+                }
+                call.function.{
                     | EVariable(variableAt, x) =>
                         if(x.first().any { c => c != '_' && !c.isAsciiLetter() }) {
                             self.inferOperator(environment, expected, x, term)
@@ -432,7 +435,7 @@ extend self: Inference {
                     | EField f =>
                         let recordType = self.unification.freshUnificationVariable(f.at)
                         let record = self.inferTerm(environment, recordType, f.record)
-                        let e2 = e.ECall(function = f.EField(record = record))
+                        let e2 = e.ECall(target = call.DynamicCall(function = f.EField(record = record)))
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, _)@t =>
                                 let methodName = name + "_" + f.field
@@ -567,6 +570,10 @@ extend self: Inference {
         name: String
     ): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let call = e.target.{
+            | DynamicCall call => call
+            | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferMethodCall")
+        }
         let selfParameter = signature.parameters.expectFirst()
         let selfArgument = Argument(record.at, Some(selfParameter.name), record) // Be careful not to infer again
         self.unification.unify(term.at, expected, signature.returnType)
@@ -574,8 +581,7 @@ extend self: Inference {
         let arguments = self.inferArguments(term.at, environment, signature.parameters.dropFirst(), e.arguments)
         self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
-            instanceCall = False
-            function = EVariable(term.at, name)
+            target = StaticCall(name, instanceCall = False, tailCall = call.tailCall)
             typeArguments = instantiation.map { _.second }
             arguments = [selfArgument, ...arguments]
             effect = signature.effect
@@ -592,12 +598,15 @@ extend self: Inference {
         name: String
     ): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let call = e.target.{
+            | DynamicCall call => call
+            | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferFunctionCall")
+        }
         self.unification.unify(e.at, expected, signature.returnType)
         let arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments)
         self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
-            instanceCall = instanceCall
-            function = e.function // It's always a function name - should we propagate that information?
+            target = StaticCall(name, instanceCall = instanceCall, tailCall = call.tailCall)
             typeArguments = instantiation.map { _.second }
             arguments = arguments
             effect = signature.effect
@@ -606,6 +615,11 @@ extend self: Inference {
 
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let call = e.target.{
+            | DynamicCall call {!call.tailCall} => call
+            | DynamicCall _ => fail(e.at, "Tailcalls not supported on lambda functions")
+            | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferLambdaCall")
+        }
         let effect = self.unification.freshUnificationVariable(term.at)
         let argumentTypes = e.arguments.map { self.unification.freshUnificationVariable(_.at) }
         let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [
@@ -613,7 +627,7 @@ extend self: Inference {
             ...argumentTypes
             expected
         ])
-        let function = self.inferTerm(environment, functionType, e.function)
+        let function = self.inferTerm(environment, functionType, call.function)
         let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
             argument.name.each { name =>
                 fail(argument.at, "Named argument not allowed here: " + name)
@@ -625,7 +639,7 @@ extend self: Inference {
         }
         self.unification.affect(term.at, effect, environment.effect)
         e.ECall(
-            function = function
+            target = call.DynamicCall(function = function)
             typeArguments = []
             arguments = arguments
             effect = effect
@@ -634,6 +648,7 @@ extend self: Inference {
 
     inferOperator(environment: Environment, expected: Type, operator: String, term: Term): Term {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let target = StaticCall(operator, instanceCall = False, tailCall = False)
         e.arguments.{
             | [a1] {
                 operator == "!"
@@ -641,7 +656,7 @@ extend self: Inference {
                 let t = TConstructor(e.at, core("Bool"), [])
                 let e1 = self.inferTerm(environment, t, a1.value)
                 self.unification.unify(e.at, expected, t)
-                e.ECall(arguments = [a1.Argument(value = e1)])
+                e.ECall(target = target, arguments = [a1.Argument(value = e1)])
             | [a1] {
                 operator == "-"
             } =>
@@ -655,7 +670,7 @@ extend self: Inference {
                     | _ =>
                         fail(e.at, "Operators on unknown types not currently supported")
                 }
-                e.ECall(arguments = [a1.Argument(value = e1)])
+                e.ECall(target = target, arguments = [a1.Argument(value = e1)])
             | [a1, a2] {
                 operator == "||" || operator == "&&"
             } =>
@@ -663,7 +678,7 @@ extend self: Inference {
                 let e1 = self.inferTerm(environment, t, a1.value)
                 let e2 = self.inferTerm(environment, t, a2.value)
                 self.unification.unify(e.at, expected, t)
-                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+                e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | [a1, a2] {
                 operator == "<" || operator == ">" ||
                 operator == "<=" || operator == ">=" ||
@@ -700,7 +715,7 @@ extend self: Inference {
                         fail(e.at, "Operators on unknown types not currently supported")
                 }
                 chooseType(magic(t1), magic(t2))
-                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+                e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | [a1, a2] {
                 operator == "+" || operator == "-" ||
                 operator == "*" || operator == "/" || operator == "%" ||
@@ -737,7 +752,7 @@ extend self: Inference {
                         fail(e.at, "Operators on unknown types not currently supported")
                 }
                 chooseType(magic(t1), magic(t2))
-                e.ECall(arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+                e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | _ =>
                 fail(e.at, "Unknown operator: " + operator)
         }
@@ -747,7 +762,6 @@ extend self: Inference {
         environment: Environment
         expected: Type
         at: Location
-        instanceCall: Bool
         signature: Signature
         term: Term
     ): Term {
@@ -755,7 +769,7 @@ extend self: Inference {
             p.name
         }
         let effect1 = self.unification.freshUnificationVariable(at)
-        let body = ECall(at, instanceCall, False, term, effect1, [], parameters.map { x =>
+        let body = ECall(at, DynamicCall(term, False), effect1, [], parameters.map { x =>
             Argument(at, Some(x), EVariable(at, x))
         }, [])
         let effect2 = self.unification.freshUnificationVariable(at)

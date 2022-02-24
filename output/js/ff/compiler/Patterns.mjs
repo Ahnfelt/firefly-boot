@@ -75,17 +75,17 @@ const fs_ = _1.first_.tail_
 const cs_ = _1.second_
 const vs_ = ff_core_Option.Option_else(ff_core_Map.Map_get(variants_, f_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_core_Set.Set_add(p_.otherVariants_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-}))
+}));
 if(ff_core_Set.Set_contains(vs_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 const newFields_ = ff_core_List.List_map(p_.fields_, ((_w1) => {
 return ff_core_Pair.Pair_mapFirst(_w1, ((_w1) => {
 return ((((f_ + ".") + p_.variant_) + "_") + _w1)
 }))
-}))
+}));
 if((ff_core_Set.Set_size(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) == 1)) {
 ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
 } else {
-ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_);
 ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_Set.Set_remove(vs_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), cs_, false, guard_)
 }
 } else {
@@ -124,7 +124,7 @@ const vs_ = _1.second_
 return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))))
 return
 }
-}))
+}));
 if((ff_core_List.List_size(remaining_) != 0)) {
 ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 }
@@ -142,9 +142,9 @@ return (_w1 != 46)
 })))
 }
 function otherVariants_(name_) {
-const variantName_ = unqualifiedName_(name_)
-const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantName_) + 1))
-const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+const variantName_ = unqualifiedName_(name_);
+const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantName_) + 1));
+const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ == variantName_)
@@ -203,7 +203,7 @@ return
 return ff_core_Option.None()
 return
 }
-}))
+}));
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), fields_))
 return
 }
@@ -243,16 +243,16 @@ return
 return ff_core_Option.None()
 return
 }
-}))
+}));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
-const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()))
+const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()));
 return ff_core_Try.Try_else(ff_core_Core.try_((() => {
-ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), guardConverted_, false, false)
+ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), guardConverted_, false, false);
 return true
 })), (() => {
 return false
 }))
-}))
+}));
 return ff_compiler_Patterns.PatternCaseInfo(fields_, (!exhaustiveGuards_))
 return
 }
@@ -260,7 +260,7 @@ return
 }
 
 export function convertAndCheck_(modules_, cases_) {
-const converted_ = ff_compiler_Patterns.convert_(modules_, cases_)
+const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
 return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
 })), (() => {
@@ -269,6 +269,214 @@ ff_compiler_Patterns.fail_(ff_core_List.List_expect(cases_, 0).at_, "Unexhaustiv
 }
 
 export function fail_(at_, message_) {
+return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
+}
+
+export async function check_$(variants_, fields_, cases_, success_, guard_) {
+{
+const _1 = ff_core_Pair.Pair(fields_, cases_)
+{
+if(_1.first_.Link) {
+const f_ = _1.first_.head_.first_
+const p_ = _1.first_.head_.second_
+const fs_ = _1.first_.tail_
+const cs_ = _1.second_
+const vs_ = ff_core_Option.Option_else(ff_core_Map.Map_get(variants_, f_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+return ff_core_Set.Set_add(p_.otherVariants_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}));
+if(ff_core_Set.Set_contains(vs_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
+const newFields_ = ff_core_List.List_map(p_.fields_, ((_w1) => {
+return ff_core_Pair.Pair_mapFirst(_w1, ((_w1) => {
+return ((((f_ + ".") + p_.variant_) + "_") + _w1)
+}))
+}));
+if((ff_core_Set.Set_size(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) == 1)) {
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
+} else {
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_);
+ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_Set.Set_remove(vs_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), cs_, false, guard_)
+}
+} else {
+ff_compiler_Patterns.check_(variants_, ff_core_List.Empty(), cs_, false, guard_)
+}
+return
+}
+}
+{
+const _guard1 = (success_ && (!guard_))
+if(_guard1) {
+
+return
+}
+}
+{
+if(_1.first_.Empty) {
+if(_1.second_.Link) {
+const fs_ = _1.second_.head_.fields_
+const g_ = _1.second_.head_.guard_
+const cs_ = _1.second_.tail_
+ff_compiler_Patterns.check_(variants_, fs_, cs_, true, g_)
+return
+}
+}
+}
+{
+if(_1.first_.Empty) {
+if(_1.second_.Empty) {
+const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) != 0)
+})), ((_1) => {
+{
+const f_ = _1.first_
+const vs_ = _1.second_
+return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))))
+return
+}
+}));
+if((ff_core_List.List_size(remaining_) != 0)) {
+ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
+}
+return
+}
+}
+}
+}
+}
+
+export async function convert_$(modules_, cases_) {
+function unqualifiedName_(name_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
+return (_w1 != 46)
+})))
+}
+function otherVariants_(name_) {
+const variantName_ = unqualifiedName_(name_);
+const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantName_) + 1));
+const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
+return (_w1.name_ == variantName_)
+})), ((variant_) => {
+return ff_core_List.List_toSet(ff_core_List.List_filter(ff_core_List.List_map(definition_.variants_, ((_w1) => {
+return _w1.name_
+})), ((_w1) => {
+return (_w1 != variantName_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}))
+})))
+}
+function convertPattern_(pattern_) {
+{
+const pattern_a = pattern_
+{
+if(pattern_a.PString) {
+return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("String literal", ff_core_List.List_toSet(ff_core_List.Link("Any other String literal", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty()))
+return
+}
+}
+{
+if(pattern_a.PInt) {
+return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("Int literal", ff_core_List.List_toSet(ff_core_List.Link("Any other Int literal", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty()))
+return
+}
+}
+{
+if(pattern_a.PChar) {
+return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("Char literal", ff_core_List.List_toSet(ff_core_List.Link("Any other Char literal", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty()))
+return
+}
+}
+{
+if(pattern_a.PVariable) {
+const p_ = pattern_a
+return ff_core_Option.None()
+return
+}
+}
+{
+if(pattern_a.PVariant) {
+const p_ = pattern_a
+const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(p_.patterns_, ((pattern_) => {
+return convertPattern_(pattern_)
+}))), ((_1) => {
+{
+const i_ = _1.first_
+if(_1.second_.Some) {
+const p_ = _1.second_.value_
+return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
+return
+}
+}
+{
+return ff_core_Option.None()
+return
+}
+}));
+return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), fields_))
+return
+}
+}
+{
+if(pattern_a.PVariantAs) {
+const p_ = pattern_a
+return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), ff_core_List.Empty()))
+return
+}
+}
+{
+if(pattern_a.PAlias) {
+const p_ = pattern_a
+return convertPattern_(p_.pattern_)
+return
+}
+}
+}
+}
+return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
+{
+const caseIndex_ = _1.first_
+const case_ = _1.second_
+const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
+return convertPattern_(pattern_)
+}))), ((_1) => {
+{
+const i_ = _1.first_
+if(_1.second_.Some) {
+const p_ = _1.second_.value_
+return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
+return
+}
+}
+{
+return ff_core_Option.None()
+return
+}
+}));
+const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
+const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()));
+return ff_core_Try.Try_else(ff_core_Core.try_((() => {
+ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), guardConverted_, false, false);
+return true
+})), (() => {
+return false
+}))
+}));
+return ff_compiler_Patterns.PatternCaseInfo(fields_, (!exhaustiveGuards_))
+return
+}
+}))
+}
+
+export async function convertAndCheck_$(modules_, cases_) {
+const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
+ff_core_Try.Try_else(ff_core_Core.try_((() => {
+return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
+})), (() => {
+ff_compiler_Patterns.fail_(ff_core_List.List_expect(cases_, 0).at_, "Unexhaustive match")
+}))
+}
+
+export async function fail_$(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 

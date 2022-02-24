@@ -112,26 +112,27 @@ extend self: Dictionaries {
                 value = self.processTerm(functions, e.value)
                 function = self.processTerm(functions, e.function)
             )
-            | ECall(at, instanceCall, tailCall, EVariable(_, functionName)@x, effect, typeArguments, arguments, _) {
-                functions.contains(functionName)
+            | ECall(at, StaticCall target, effect, typeArguments, arguments, _) {
+                functions.get(target.name) | Some(signature)
             } =>
-                let signature = functions.expect(functionName)
                 let dictionaries = signature.constraints.map {
                     self.makeDictionary(signature.generics, typeArguments, _)
                 }
                 ECall(
                     at = at
-                    instanceCall = instanceCall
-                    tailCall = tailCall
-                    function = x
+                    target = target.StaticCall()
                     effect = effect
                     typeArguments = typeArguments
                     arguments = arguments.map { self.processArgument(functions, _) }
                     dictionaries = dictionaries
                 )
             | ECall e =>
+                let target = e.target.{
+                    | DynamicCall call => call.DynamicCall(function = self.processTerm(functions, call.function))
+                    | StaticCall _ => e.target
+                }
                 e.ECall(
-                    function = self.processTerm(functions, e.function)
+                    target = target
                     arguments = e.arguments.map { self.processArgument(functions, _) }
                 )
             | ERecord e => e.ERecord(fields = e.fields.map { self.processField(functions, _) })

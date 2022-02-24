@@ -61,6 +61,8 @@ return {Some: true, value_};
 
 
 
+
+
 export function Option_else(self_, body_) {
 {
 const _1 = self_
@@ -320,7 +322,285 @@ return
 }
 }
 
+export async function Option_else$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return (await body_())
+return
+}
+}
+{
+if(_1.Some) {
+const value_ = _1.value_
+return value_
+return
+}
+}
+}
+}
+
+export async function Option_elseIf$(self_, condition_, body_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+{
+const _1 = (await condition_())
+{
+if(_1) {
+return ff_core_Option.Some((await body_()))
+return
+}
+}
+{
+if(!_1) {
+return ff_core_Option.None()
+return
+}
+}
+}
+return
+}
+}
+{
+if(_1.Some) {
+return self_
+return
+}
+}
+}
+}
+
+export async function Option_orElse$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return (await body_())
+return
+}
+}
+{
+if(_1.Some) {
+return self_
+return
+}
+}
+}
+}
+
+export async function Option_isEmpty$(self_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return true
+return
+}
+}
+{
+if(_1.Some) {
+return false
+return
+}
+}
+}
+}
+
+export async function Option_toList$(self_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return ff_core_List.Empty()
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+return ff_core_List.Link(v_, ff_core_List.Empty())
+return
+}
+}
+}
+}
+
+export async function Option_filter$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.Some) {
+const v_ = _1.value_
+const _guard1 = (await body_(v_))
+if(_guard1) {
+return ff_core_Option.Some(v_)
+return
+}
+}
+}
+{
+return ff_core_Option.None()
+return
+}
+}
+}
+
+export async function Option_map$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+return ff_core_Option.Some((await body_(v_)))
+return
+}
+}
+}
+}
+
+export async function Option_flatMap$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+return (await body_(v_))
+return
+}
+}
+}
+}
+
+export async function Option_each$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+(await body_(v_))
+return
+}
+}
+}
+}
+
+export async function Option_all$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return true
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+return (await body_(v_))
+return
+}
+}
+}
+}
+
+export async function Option_any$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return false
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+return (await body_(v_))
+return
+}
+}
+}
+}
+
+export async function Option_expect$(self_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return ff_core_Core.panic_("None.expect()")
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+return v_
+return
+}
+}
+}
+}
+
+export async function Option_contains$(self_, value_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return false
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+return (v_ == value_)
+return
+}
+}
+}
+}
+
 export function Option_flatten(self_) {
+{
+const _1 = self_
+{
+if(_1.None) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_
+return v_
+return
+}
+}
+}
+}
+
+export async function Option_flatten$(self_) {
 {
 const _1 = self_
 {

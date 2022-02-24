@@ -716,7 +716,8 @@ extend self: Parser {
                 let right = self.parseBinary(level + 1)
                 let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
                 let effect = self.freshUnificationVariable(token.at())
-                result = ECall(token.at(), False, False, EVariable(token.at(), token.raw()), effect, [], arguments, [])
+                let target = DynamicCall(EVariable(token.at(), token.raw()), False)
+                result = ECall(token.at(), target, effect, [], arguments, [])
             }
         }
         result
@@ -727,8 +728,8 @@ extend self: Parser {
             let token = self.skip(LOperator)
             let term = self.parseUnary()
             let effect = self.freshUnificationVariable(token.at())
-            let operator = EVariable(token.at(), token.raw())
-            ECall(token.at(), False, False, operator, effect, [], [Argument(term.at, None, term)], [])
+            let target = DynamicCall(EVariable(token.at(), token.raw()), False)
+            ECall(token.at(), target, effect, [], [Argument(term.at, None, term)], [])
         } else {
             self.parseFieldsAndCalls()
         }
@@ -765,7 +766,8 @@ extend self: Parser {
                 }
                 let effect = self.freshUnificationVariable(at)
                 let allArguments = [...arguments, ...moreArguments.toList()]
-                result = ECall(at, False, tailCall, result, effect, typeArguments, allArguments, [])
+                let target = DynamicCall(result, tailCall)
+                result = ECall(at, target, effect, typeArguments, allArguments, [])
                 if(lastWasCurly && self.current().is(LLower)) {
                     let token = self.skip(LLower)
                     result = EField(token.at(), False, result, token.raw())

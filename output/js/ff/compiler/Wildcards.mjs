@@ -63,6 +63,18 @@ export function make_() {
 return ff_compiler_Wildcards.Wildcards(0)
 }
 
+export function fail_(at_, message_) {
+return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
+}
+
+export async function make_$() {
+return ff_compiler_Wildcards.Wildcards(0)
+}
+
+export async function fail_$(at_, message_) {
+return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
+}
+
 export function Wildcards_fixWildcards(self_, term_) {
 {
 const self_a = self_
@@ -150,7 +162,26 @@ const e_ = term_a
 const _1 = e_
 {
 const _c = _1
-return ff_compiler_Syntax.ECall(_c.at_, _c.instanceCall_, _c.tailCall_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
+return ff_compiler_Syntax.ECall(_c.at_, (((_1) => {
+{
+if(_1.DynamicCall) {
+const call_ = _1
+{
+const _1 = call_
+{
+const _c = _1
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, call_.function_), _c.tailCall_)
+return
+}
+}
+return
+}
+}
+{
+return ff_compiler_Wildcards.fail_(e_.at_, "Internal error: Static calls not expected in the Wildcards phase")
+return
+}
+}))(e_.target_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
 {
 const _1 = a_
 {
@@ -281,7 +312,264 @@ return
 const self_ = self_a
 if(term_a.EWildcard) {
 const e_ = term_a
-self_.seenWildcards_ += 1
+self_.seenWildcards_ += 1;
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.EWildcard(_c.at_, self_.seenWildcards_)
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+return term_
+return
+}
+}
+}
+
+export async function Wildcards_fixWildcards$(self_, term_) {
+{
+const self_a = self_
+const term_a = term_
+{
+const self_ = self_a
+if(term_a.ELet) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.body_))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.ESequential) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.before_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.after_))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.EAssign) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.EAssignField) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.EPipe) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.ECall) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.ECall(_c.at_, ((async (_1) => {
+{
+if(_1.DynamicCall) {
+const call_ = _1
+{
+const _1 = call_
+{
+const _c = _1
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, call_.function_), _c.tailCall_)
+return
+}
+}
+return
+}
+}
+{
+return ff_compiler_Wildcards.fail_(e_.at_, "Internal error: Static calls not expected in the Wildcards phase")
+return
+}
+}))(e_.target_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
+{
+const _1 = a_
+{
+const _c = _1
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
+return
+}
+}
+})), _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.EList) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e_.items_, ((_1) => {
+{
+const item_ = _1.first_
+const spread_ = _1.second_
+return ff_core_Pair.Pair(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, item_), spread_)
+return
+}
+})))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.ECopy) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((a_) => {
+{
+const _1 = a_
+{
+const _c = _1
+return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
+return
+}
+}
+})))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.EVariant) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, _c.typeArguments_, ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
+return ff_core_List.List_map(_w1, ((a_) => {
+{
+const _1 = a_
+{
+const _c = _1
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
+return
+}
+}
+}))
+})))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.ERecord) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((a_) => {
+{
+const _1 = a_
+{
+const _c = _1
+return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
+return
+}
+}
+})))
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.EField) {
+const e_ = term_a
+{
+const _1 = e_
+{
+const _c = _1
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_)
+return
+}
+}
+return
+}
+}
+{
+const self_ = self_a
+if(term_a.EWildcard) {
+const e_ = term_a
+self_.seenWildcards_ += 1;
 {
 const _1 = e_
 {

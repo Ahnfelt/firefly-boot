@@ -60,7 +60,7 @@ export function range_(size_) {
 }
 
 export function build_(initial_, body_) {
-const builder_ = ff_core_ArrayBuilder.empty_()
+const builder_ = ff_core_ArrayBuilder.empty_();
 function go_(state_) {
 _tailcall: for(;;) {
 {
@@ -75,7 +75,7 @@ return
 if(_1.Some) {
 const s_ = _1.value_.first_
 const x_ = _1.value_.second_
-ff_core_ArrayBuilder.ArrayBuilder_add(builder_, x_)
+ff_core_ArrayBuilder.ArrayBuilder_add(builder_, x_);
 {
 const state_r_ = s_
 state_ = state_r_
@@ -88,7 +88,7 @@ return
 return
 }
 }
-go_(initial_)
+go_(initial_);
 return ff_core_ArrayBuilder.ArrayBuilder_drain(builder_)
 }
 
@@ -102,6 +102,51 @@ export function empty_() {
 
         return [];
     
+}
+
+export async function range_$(size_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function build_$(initial_, body_) {
+const builder_ = ff_core_ArrayBuilder.empty_();
+function go_(state_) {
+_tailcall: for(;;) {
+{
+const _1 = body_(state_)
+{
+if(_1.None) {
+
+return
+}
+}
+{
+if(_1.Some) {
+const s_ = _1.value_.first_
+const x_ = _1.value_.second_
+ff_core_ArrayBuilder.ArrayBuilder_add(builder_, x_);
+{
+const state_r_ = s_
+state_ = state_r_
+continue _tailcall
+}
+return
+}
+}
+}
+return
+}
+}
+(await go_$(initial_));
+return ff_core_ArrayBuilder.ArrayBuilder_drain(builder_)
+}
+
+export async function fill_$(size_, value_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function empty_$() {
+return ff_core_Core.panic_("magic")
 }
 
 export function Array_addAll(self_, that_) {
@@ -159,8 +204,52 @@ export function Array_toList(self_) {
         
 }
 
+export async function Array_addAll$(self_, that_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Array_isEmpty$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Array_size$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Array_expect$(self_, index_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Array_expectFirst$(self_) {
+return ff_core_Array.Array_expect(self_, 0)
+}
+
+export async function Array_expectLast$(self_) {
+return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
+}
+
+export async function Array_dropFirst$(self_, count_ = 1) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Array_dropLast$(self_, count_ = 1) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Array_update$(self_, index_, body_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Array_toList$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
 export function Array_join(self_, separator_ = "") {
 return self_.join(separator_)
+}
+
+export async function Array_join$(self_, separator_ = "") {
+return ff_core_Core.panic_("magic")
 }
 
 

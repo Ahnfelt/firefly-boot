@@ -57,6 +57,10 @@ export function empty_() {
 return {array: []}
 }
 
+export async function empty_$() {
+return ff_core_Core.panic_("magic")
+}
+
 export function ArrayBuilder_toArray(self_) {
 return self_.array.slice()
 }
@@ -105,6 +109,46 @@ return self_.array[self_.array.length - 1]
 
 export function ArrayBuilder_sortBy(self_, ordering_) {
 self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
+}
+
+export async function ArrayBuilder_toArray$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_isEmpty$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_size$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_add$(self_, value_) {
+ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_modify$(self_, index_, body_) {
+ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_drain$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_toList$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_last$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_expectLast$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function ArrayBuilder_sortBy$(self_, ordering_) {
+ff_core_Core.panic_("magic")
 }
 
 

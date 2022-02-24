@@ -6,6 +6,10 @@ make(): Wildcards {
     Wildcards(0)
 }
 
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show())
+}
+
 extend self: Wildcards {
 
     fixWildcards(term: Term): Term {
@@ -16,7 +20,10 @@ extend self: Wildcards {
         | EPipe e => e.EPipe(value = self.fixWildcards(e.value), function = self.fixWildcards(e.function))
         | ECall e =>
             e.ECall(
-                function = self.fixWildcards(e.function),
+                target = e.target.{
+                    | DynamicCall call => call.DynamicCall(function = self.fixWildcards(call.function))
+                    | _ => fail(e.at, "Internal error: Static calls not expected in the Wildcards phase")
+                },
                 arguments = e.arguments.map { a => a.Argument(value = self.fixWildcards(a.value)) }
             )
         | EList e =>

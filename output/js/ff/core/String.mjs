@@ -55,6 +55,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+
+
 export function String_size(self_) {
 return self_.length
 }
@@ -174,6 +176,94 @@ export function String_all(self_, body_) {
             }
             return true;
         
+}
+
+export async function String_size$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_expect$(self_, index_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_replace$(self_, needle_, replacement_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_replaceFirst$(self_, needle_, replacement_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_reverse$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_dropWhile$(self_, p_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_takeWhile$(self_, p_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_slice$(self_, from_, until_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_split$(self_, char_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_dropFirst$(self_, count_ = 1) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_dropLast$(self_, count_ = 1) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_expectInt$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_first$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_last$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_expectFirst$(self_) {
+return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
+return ff_core_Core.panic_("expectFirst() on empty string")
+}))
+}
+
+export async function String_expectLast$(self_) {
+return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
+return ff_core_Core.panic_("expectFirst() on empty string")
+}))
+}
+
+export async function String_contains$(self_, substring_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_startsWith$(self_, prefix_, offset_ = 0) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_endsWith$(self_, prefix_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_any$(self_, body_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function String_all$(self_, body_) {
+return ff_core_Core.panic_("magic")
 }
 
 

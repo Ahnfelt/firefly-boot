@@ -55,6 +55,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+
+
 export function Int_abs(self_) {
 return Math.abs(self_)
 }
@@ -85,6 +87,38 @@ return self_ << bits_;
 
 export function Int_bitRight(self_, bits_ = 1, signed_ = true) {
 return signed_ ? self_ >> bits_ : self_ >>> bits_;
+}
+
+export async function Int_abs$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Int_toFloat$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Int_bitNot$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Int_bitOr$(self_, that_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Int_bitAnd$(self_, that_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Int_bitXor$(self_, that_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Int_bitLeft$(self_, bits_ = 1) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Int_bitRight$(self_, bits_ = 1, signed_ = true) {
+return ff_core_Core.panic_("magic")
 }
 
 

@@ -99,7 +99,10 @@ extend self: Substitution {
                 function = self.substituteTerm(e.function)
             )
             | ECall e => e.ECall(
-                function = self.substituteTerm(e.function)
+                target = e.target.{
+                    | DynamicCall call => call.DynamicCall(function = self.substituteTerm(call.function))
+                    | StaticCall _ => e.target
+                }
                 effect = self.substituteType(e.effect)
                 typeArguments = e.typeArguments.map(self.substituteType)
                 arguments = e.arguments.map(self.substituteArgument)

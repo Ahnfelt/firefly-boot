@@ -54,6 +54,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+
+
 export function Char_isAsciiLetter(self_) {
 return (ff_core_Char.Char_isAsciiUpper(self_) || ff_core_Char.Char_isAsciiLower(self_))
 }
@@ -76,6 +78,30 @@ return ((self_ >= 48) && (self_ <= 57))
 
 export function Char_toString(self_) {
 return String.fromCharCode(self_)
+}
+
+export async function Char_isAsciiLetter$(self_) {
+return (ff_core_Char.Char_isAsciiUpper(self_) || ff_core_Char.Char_isAsciiLower(self_))
+}
+
+export async function Char_isAsciiLetterOrDigit$(self_) {
+return (ff_core_Char.Char_isAsciiLetter(self_) || ff_core_Char.Char_isAsciiDigit(self_))
+}
+
+export async function Char_isAsciiUpper$(self_) {
+return ((self_ >= 65) && (self_ <= 90))
+}
+
+export async function Char_isAsciiLower$(self_) {
+return ((self_ >= 97) && (self_ <= 122))
+}
+
+export async function Char_isAsciiDigit$(self_) {
+return ((self_ >= 48) && (self_ <= 57))
+}
+
+export async function Char_toString$(self_) {
+return ff_core_Core.panic_("magic")
 }
 
 

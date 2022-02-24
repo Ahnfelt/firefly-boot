@@ -55,6 +55,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+
+
 export function jsFileSystemHack() {} import * as fs from 'fs'; import * as path from 'path';
 
 export function FileSystem_readText(self_, file_) {
@@ -118,6 +120,78 @@ return (_w1 != 46)
 }
 
 export function FileSystem_suffixName(self_, path_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})), ((_w1) => {
+return (_w1 != 46)
+})))
+}
+
+export async function FileSystem_jsFileSystemHack$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_readText$(self_, file_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_writeText$(self_, file_, text_) {
+ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_list$(self_, path_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_exists$(self_, path_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_isDirectory$(self_, path_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_createDirectory$(self_, path_) {
+ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_createDirectories$(self_, path_) {
+ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_delete$(self_, path_) {
+ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_rename$(self_, fromPath_, toPath_) {
+ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_getAbsolutePath$(self_, path_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_directoryName$(self_, path_) {
+return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})), 1))
+}
+
+export async function FileSystem_baseName$(self_, path_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})))
+}
+
+export async function FileSystem_prefixName$(self_, path_) {
+return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+}))), ((_w1) => {
+return (_w1 != 46)
+}))
+}
+
+export async function FileSystem_suffixName$(self_, path_) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
 })), ((_w1) => {

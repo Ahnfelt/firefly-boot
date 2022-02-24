@@ -62,7 +62,27 @@ return True$;
 
 
 
+
+
 export function Bool_toInt(self_) {
+{
+const _1 = self_
+{
+if(!_1) {
+return 0
+return
+}
+}
+{
+if(_1) {
+return 1
+return
+}
+}
+}
+}
+
+export async function Bool_toInt$(self_) {
 {
 const _1 = self_
 {

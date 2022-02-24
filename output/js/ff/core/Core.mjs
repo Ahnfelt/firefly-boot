@@ -81,7 +81,7 @@ return
 }
 {
 if(_1) {
-body_()
+body_();
 while(condition_()) {
 body_()
 }
@@ -111,6 +111,61 @@ throw new Error(message_)
 
 export function magicShow_(value_) {
 return JSON.stringify(value_, undefined, 4)
+}
+
+export async function if_$(condition_, body_) {
+{
+const _1 = condition_
+{
+if(!_1) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1) {
+return ff_core_Option.Some((await body_()))
+return
+}
+}
+}
+}
+
+export async function while_$(condition_, body_) {
+{
+const _1 = (await condition_())
+{
+if(!_1) {
+
+return
+}
+}
+{
+if(_1) {
+(await body_());
+while((await condition_())) {
+(await body_())
+}
+return
+}
+}
+}
+}
+
+export async function try_$(body_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function do_$(body_) {
+return (await body_())
+}
+
+export async function panic_$(message_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function magicShow_$(value_) {
+return ff_core_Core.panic_("magic")
 }
 
 

@@ -67,28 +67,28 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function main_(system_) {
-const mainPackage_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0)
-const mainModule_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1)
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2))
-const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3)
-const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4)
-const fs_ = ff_core_System.System_files(system_)
+const mainPackage_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0);
+const mainModule_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1);
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2));
+const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3);
+const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4);
+const fs_ = ff_core_System.System_files(system_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
-}
-ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_)
-const jsPathFile_ = (tempPath_ + "/js")
-ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_)
+};
+ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_);
+const jsPathFile_ = (tempPath_ + "/js");
+ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_);
 const success_ = ff_core_Core.do_((() => {
-const compiler_ = ff_compiler_Compiler.make_(fs_, ff_core_System.System_time(system_), jsPathFile_, packagePaths_)
-ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_)
-ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
+const compiler_ = ff_compiler_Compiler.make_(fs_, ff_core_System.System_time(system_), jsPathFile_, packagePaths_);
+ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_);
+ff_compiler_Compiler.Compiler_printMeasurements(compiler_);
 return true
-}))
+}));
 if(success_) {
 if(ff_core_FileSystem.FileSystem_exists(fs_, jsOutputPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, jsOutputPath_)
-}
+};
 ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
 }
 }
@@ -100,13 +100,58 @@ ff_compiler_Main.deleteDirectory_(fs_, file_)
 } else {
 ff_core_FileSystem.FileSystem_delete(fs_, file_)
 }
-}))
+}));
 ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
 }
 
 export function parsePackageLocations_(text_) {
 return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 44)), ((item_) => {
-const parts_ = ff_core_String.String_split(item_, 64)
+const parts_ = ff_core_String.String_split(item_, 64);
+return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Array_expect(parts_, 1))
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+
+export async function main_$(system_) {
+const mainPackage_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 0);
+const mainModule_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 1);
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 2));
+const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 3);
+const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 4);
+const fs_ = (await ff_core_System.System_files$(system_));
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_))) {
+(await ff_compiler_Main.deleteDirectory_$(fs_, tempPath_))
+};
+(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, tempPath_));
+const jsPathFile_ = (tempPath_ + "/js");
+(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_));
+const success_ = (await ff_core_Core.do_$((async () => {
+const compiler_ = (await ff_compiler_Compiler.make_$(fs_, (await ff_core_System.System_time$(system_)), jsPathFile_, packagePaths_));
+(await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_));
+(await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_));
+return true
+})));
+if(success_) {
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_))) {
+(await ff_compiler_Main.deleteDirectory_$(fs_, jsOutputPath_))
+};
+(await ff_core_FileSystem.FileSystem_rename$(fs_, jsPathFile_, jsOutputPath_))
+}
+}
+
+export async function deleteDirectory_$(fs_, outputFile_) {
+(await ff_core_List.List_each$((await ff_core_FileSystem.FileSystem_list$(fs_, outputFile_)), (async (file_) => {
+if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_))) {
+(await ff_compiler_Main.deleteDirectory_$(fs_, file_))
+} else {
+(await ff_core_FileSystem.FileSystem_delete$(fs_, file_))
+}
+})));
+(await ff_core_FileSystem.FileSystem_delete$(fs_, outputFile_))
+}
+
+export async function parsePackageLocations_$(text_) {
+return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 44)), ((item_) => {
+const parts_ = ff_core_String.String_split(item_, 64);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Array_expect(parts_, 1))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }

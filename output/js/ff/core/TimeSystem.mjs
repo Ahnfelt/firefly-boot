@@ -55,6 +55,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+
+
 export function TimeSystem_now(self_) {
 return Date.now() * 0.001
 }
@@ -64,10 +66,26 @@ return performance.now() * 0.001
 }
 
 export function TimeSystem_measure(self_, body_) {
-const start_ = ff_core_TimeSystem.TimeSystem_elapsed(self_)
-const result_ = body_()
-const stop_ = ff_core_TimeSystem.TimeSystem_elapsed(self_)
-const duration_ = (stop_ - start_)
+const start_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
+const result_ = body_();
+const stop_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
+const duration_ = (stop_ - start_);
+return ff_core_Pair.Pair(result_, duration_)
+}
+
+export async function TimeSystem_now$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function TimeSystem_elapsed$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function TimeSystem_measure$(self_, body_) {
+const start_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
+const result_ = (await body_());
+const stop_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
+const duration_ = (stop_ - start_);
 return ff_core_Pair.Pair(result_, duration_)
 }
 

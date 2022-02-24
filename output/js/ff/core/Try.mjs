@@ -60,6 +60,8 @@ return {Failure: true, error_};
 
 
 
+
+
 export function Try_map(self_, body_) {
 {
 const _1 = self_
@@ -151,7 +153,7 @@ const _1 = self_
 if(_1.Success) {
 const value_ = _1.value_
 return ff_core_Core.try_((() => {
-body_()
+body_();
 return value_
 }))
 return
@@ -183,7 +185,161 @@ return
 }
 }
 
+export async function Try_map$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.Success) {
+const value_ = _1.value_
+return (await ff_core_Core.try_$((async () => {
+return (await body_(value_))
+})))
+return
+}
+}
+{
+if(_1.Failure) {
+const error_ = _1.error_
+return ff_core_Try.Failure(error_)
+return
+}
+}
+}
+}
+
+export async function Try_flatMap$(self_, body_) {
+return ff_core_Try.Try_flatten((await ff_core_Try.Try_map$(self_, body_)))
+}
+
+export async function Try_else$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.Success) {
+const value_ = _1.value_
+return value_
+return
+}
+}
+{
+if(_1.Failure) {
+return (await body_())
+return
+}
+}
+}
+}
+
+export async function Try_expect$(self_) {
+{
+const _1 = self_
+{
+if(_1.Success) {
+const value_ = _1.value_
+return value_
+return
+}
+}
+{
+if(_1.Failure) {
+const error_ = _1.error_
+return ff_core_Error.Error_rethrow(error_)
+return
+}
+}
+}
+}
+
+export async function Try_catchAny$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.Failure) {
+const error_ = _1.error_
+return (await ff_core_Core.try_$((async () => {
+return (await body_(error_))
+})))
+return
+}
+}
+{
+return self_
+return
+}
+}
+}
+
+export async function Try_finally$(self_, body_) {
+{
+const _1 = self_
+{
+if(_1.Success) {
+const value_ = _1.value_
+return (await ff_core_Core.try_$((async () => {
+(await body_());
+return value_
+})))
+return
+}
+}
+{
+if(_1.Failure) {
+{
+const _1 = (await ff_core_Core.try_$((async () => {
+return (await body_())
+})))
+{
+if(_1.Success) {
+return self_
+return
+}
+}
+{
+if(_1.Failure) {
+const error_ = _1.error_
+return ff_core_Try.Failure(error_)
+return
+}
+}
+}
+return
+}
+}
+}
+}
+
 export function Try_flatten(self_) {
+{
+const _1 = self_
+{
+if(_1.Success) {
+const t_ = _1.value_
+if(_1.value_.Success) {
+return t_
+return
+}
+}
+}
+{
+if(_1.Success) {
+const t_ = _1.value_
+if(_1.value_.Failure) {
+return t_
+return
+}
+}
+}
+{
+if(_1.Failure) {
+const error_ = _1.error_
+return ff_core_Try.Failure(error_)
+return
+}
+}
+}
+}
+
+export async function Try_flatten$(self_) {
 {
 const _1 = self_
 {

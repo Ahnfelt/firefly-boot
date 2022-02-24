@@ -55,6 +55,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+
+
 export function Float_toInt(self_) {
 return Math.trunc(Math.abs(self_))
 }
@@ -85,6 +87,38 @@ return Math.abs(self_)
 
 export function Float_toFixed(self_, digits_) {
 return self_.toFixed(digits_)
+}
+
+export async function Float_toInt$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Float_round$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Float_floor$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Float_ceil$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Float_truncate$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Float_sign$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Float_abs$(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function Float_toFixed$(self_, digits_) {
+return ff_core_Core.panic_("magic")
 }
 
 

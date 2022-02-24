@@ -56,6 +56,10 @@ export function debug_(value_) {
 console.log(value_)
 }
 
+export async function debug_$(value_) {
+ff_core_Core.panic_("magic")
+}
+
 
 
 

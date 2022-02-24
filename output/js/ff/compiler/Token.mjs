@@ -163,6 +163,8 @@ return LAssignLink$;
 
 
 
+
+
 export function Token_at(token_) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
 }
@@ -184,6 +186,30 @@ return (((token_.kind_ == kind1_) || (token_.kind_ == kind2_)) || (token_.kind_ 
 }
 
 export function Token_rawIs(token_, value_) {
+return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
+}
+
+export async function Token_at$(token_) {
+return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
+}
+
+export async function Token_raw$(token_) {
+return ff_core_String.String_slice(token_.code_, token_.startOffset_, token_.stopOffset_)
+}
+
+export async function Token_is$(token_, kind1_) {
+return (token_.kind_ == kind1_)
+}
+
+export async function Token_is2$(token_, kind1_, kind2_) {
+return ((token_.kind_ == kind1_) || (token_.kind_ == kind2_))
+}
+
+export async function Token_is3$(token_, kind1_, kind2_, kind3_) {
+return (((token_.kind_ == kind1_) || (token_.kind_ == kind2_)) || (token_.kind_ == kind3_))
+}
+
+export async function Token_rawIs$(token_, value_) {
 return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
@@ -500,6 +526,474 @@ return
 }
 
 export function TokenKind_afterKeyword(self_) {
+{
+const _1 = self_
+{
+if(_1.LEnd) {
+return false
+return
+}
+}
+{
+if(_1.LString) {
+return true
+return
+}
+}
+{
+if(_1.LChar) {
+return true
+return
+}
+}
+{
+if(_1.LInt) {
+return true
+return
+}
+}
+{
+if(_1.LFloat) {
+return true
+return
+}
+}
+{
+if(_1.LKeyword) {
+return true
+return
+}
+}
+{
+if(_1.LNamespace) {
+return true
+return
+}
+}
+{
+if(_1.LLower) {
+return true
+return
+}
+}
+{
+if(_1.LUpper) {
+return true
+return
+}
+}
+{
+if(_1.LWildcard) {
+return true
+return
+}
+}
+{
+if(_1.LBracketLeft) {
+return false
+return
+}
+}
+{
+if(_1.LBracketRight) {
+return false
+return
+}
+}
+{
+if(_1.LOperator) {
+return false
+return
+}
+}
+{
+if(_1.LComma) {
+return false
+return
+}
+}
+{
+if(_1.LSeparator) {
+return false
+return
+}
+}
+{
+if(_1.LDot) {
+return false
+return
+}
+}
+{
+if(_1.LSemicolon) {
+return false
+return
+}
+}
+{
+if(_1.LPipe) {
+return false
+return
+}
+}
+{
+if(_1.LColon) {
+return false
+return
+}
+}
+{
+if(_1.LDotDotDot) {
+return false
+return
+}
+}
+{
+if(_1.LArrowThick) {
+return false
+return
+}
+}
+{
+if(_1.LAssign) {
+return false
+return
+}
+}
+{
+if(_1.LAssignPlus) {
+return false
+return
+}
+}
+{
+if(_1.LAssignMinus) {
+return false
+return
+}
+}
+{
+if(_1.LAssignLink) {
+return false
+return
+}
+}
+}
+}
+
+export async function TokenKind_beforeSeparator$(self_) {
+{
+const _1 = self_
+{
+if(_1.LEnd) {
+return false
+return
+}
+}
+{
+if(_1.LString) {
+return true
+return
+}
+}
+{
+if(_1.LChar) {
+return true
+return
+}
+}
+{
+if(_1.LInt) {
+return true
+return
+}
+}
+{
+if(_1.LFloat) {
+return true
+return
+}
+}
+{
+if(_1.LKeyword) {
+return true
+return
+}
+}
+{
+if(_1.LNamespace) {
+return false
+return
+}
+}
+{
+if(_1.LLower) {
+return true
+return
+}
+}
+{
+if(_1.LUpper) {
+return true
+return
+}
+}
+{
+if(_1.LWildcard) {
+return true
+return
+}
+}
+{
+if(_1.LBracketLeft) {
+return false
+return
+}
+}
+{
+if(_1.LBracketRight) {
+return true
+return
+}
+}
+{
+if(_1.LOperator) {
+return false
+return
+}
+}
+{
+if(_1.LComma) {
+return false
+return
+}
+}
+{
+if(_1.LSeparator) {
+return false
+return
+}
+}
+{
+if(_1.LDot) {
+return false
+return
+}
+}
+{
+if(_1.LSemicolon) {
+return false
+return
+}
+}
+{
+if(_1.LPipe) {
+return false
+return
+}
+}
+{
+if(_1.LColon) {
+return false
+return
+}
+}
+{
+if(_1.LDotDotDot) {
+return false
+return
+}
+}
+{
+if(_1.LArrowThick) {
+return false
+return
+}
+}
+{
+if(_1.LAssign) {
+return false
+return
+}
+}
+{
+if(_1.LAssignPlus) {
+return false
+return
+}
+}
+{
+if(_1.LAssignMinus) {
+return false
+return
+}
+}
+{
+if(_1.LAssignLink) {
+return false
+return
+}
+}
+}
+}
+
+export async function TokenKind_afterSeparator$(self_) {
+{
+const _1 = self_
+{
+if(_1.LEnd) {
+return false
+return
+}
+}
+{
+if(_1.LString) {
+return true
+return
+}
+}
+{
+if(_1.LChar) {
+return true
+return
+}
+}
+{
+if(_1.LInt) {
+return true
+return
+}
+}
+{
+if(_1.LFloat) {
+return true
+return
+}
+}
+{
+if(_1.LKeyword) {
+return true
+return
+}
+}
+{
+if(_1.LNamespace) {
+return true
+return
+}
+}
+{
+if(_1.LLower) {
+return true
+return
+}
+}
+{
+if(_1.LUpper) {
+return true
+return
+}
+}
+{
+if(_1.LWildcard) {
+return true
+return
+}
+}
+{
+if(_1.LBracketLeft) {
+return true
+return
+}
+}
+{
+if(_1.LBracketRight) {
+return false
+return
+}
+}
+{
+if(_1.LOperator) {
+return false
+return
+}
+}
+{
+if(_1.LComma) {
+return false
+return
+}
+}
+{
+if(_1.LSeparator) {
+return false
+return
+}
+}
+{
+if(_1.LDot) {
+return false
+return
+}
+}
+{
+if(_1.LSemicolon) {
+return false
+return
+}
+}
+{
+if(_1.LPipe) {
+return false
+return
+}
+}
+{
+if(_1.LColon) {
+return false
+return
+}
+}
+{
+if(_1.LDotDotDot) {
+return true
+return
+}
+}
+{
+if(_1.LArrowThick) {
+return false
+return
+}
+}
+{
+if(_1.LAssign) {
+return false
+return
+}
+}
+{
+if(_1.LAssignPlus) {
+return false
+return
+}
+}
+{
+if(_1.LAssignMinus) {
+return false
+return
+}
+}
+{
+if(_1.LAssignLink) {
+return false
+return
+}
+}
+}
+}
+
+export async function TokenKind_afterKeyword$(self_) {
 {
 const _1 = self_
 {
