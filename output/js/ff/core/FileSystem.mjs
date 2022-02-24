@@ -57,7 +57,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function jsFileSystemHack() {} import * as fs from 'fs'; import * as path from 'path';
+export function jsFileSystemHack() {} import * as fs from 'fs';
 
 export function FileSystem_readText(self_, file_) {
 return fs.readFileSync(file_, {encoding: 'UTF-8'})
@@ -127,48 +127,46 @@ return (_w1 != 46)
 })))
 }
 
-export async function FileSystem_jsFileSystemHack$(self_) {
-return ff_core_Core.panic_("magic")
-}
+export function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';
 
 export async function FileSystem_readText$(self_, file_) {
-return ff_core_Core.panic_("magic")
+return await fsPromises.readFile(file_, {encoding: 'UTF-8'})
 }
 
 export async function FileSystem_writeText$(self_, file_, text_) {
-ff_core_Core.panic_("magic")
+await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8'})
 }
 
 export async function FileSystem_list$(self_, path_) {
-return ff_core_Core.panic_("magic")
+return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
 }
 
 export async function FileSystem_exists$(self_, path_) {
-return ff_core_Core.panic_("magic")
+return await fsPromises.access(path_).then(() => true).catch(() => false)
 }
 
 export async function FileSystem_isDirectory$(self_, path_) {
-return ff_core_Core.panic_("magic")
+return (await fsPromises.lstat(path_)).isDirectory()
 }
 
 export async function FileSystem_createDirectory$(self_, path_) {
-ff_core_Core.panic_("magic")
+await fsPromises.mkdir(path_)
 }
 
 export async function FileSystem_createDirectories$(self_, path_) {
-ff_core_Core.panic_("magic")
+await fsPromises.mkdir(path_, {recursive: true})
 }
 
 export async function FileSystem_delete$(self_, path_) {
-ff_core_Core.panic_("magic")
+try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
 }
 
 export async function FileSystem_rename$(self_, fromPath_, toPath_) {
-ff_core_Core.panic_("magic")
+await fsPromises.rename(fromPath_, toPath_)
 }
 
 export async function FileSystem_getAbsolutePath$(self_, path_) {
-return ff_core_Core.panic_("magic")
+return path.resolve(path_)
 }
 
 export async function FileSystem_directoryName$(self_, path_) {

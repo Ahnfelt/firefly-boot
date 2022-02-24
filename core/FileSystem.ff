@@ -3,37 +3,48 @@ type FileSystem! {}
 extend self: FileSystem {
 
     jsFileSystemHack(): Nothing { panic("magic") }
-        javascript "#function jsFileSystemHack() {} import * as fs from 'fs'; import * as path from 'path';"
+        javascript "#function jsFileSystemHack() {} import * as fs from 'fs';"
+        javascriptasync "#function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';"
 
     readText(file: String): String { panic("magic") }
         javascript "return fs.readFileSync(file_, {encoding: 'UTF-8'})"
+        javascriptasync "return await fsPromises.readFile(file_, {encoding: 'UTF-8'})"
 
     writeText(file: String, text: String): Unit { panic("magic") }
         javascript "fs.writeFileSync(file_, text_, {encoding: 'UTF-8'})"
+        javascriptasync "await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8'})"
 
     list(path: String): List[String] { panic("magic") }
         javascript "return ff_core_Array.Array_toList(fs.readdirSync(path_).map(f => path_ + '/' + f))"
+        javascriptasync "return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))"
 
     exists(path: String): Bool { panic("magic") }
         javascript "return fs.existsSync(path_)"
+        javascriptasync "return await fsPromises.access(path_).then(() => true).catch(() => false)"
 
     isDirectory(path: String): Bool { panic("magic") }
         javascript "return fs.lstatSync(path_).isDirectory()"
+        javascriptasync "return (await fsPromises.lstat(path_)).isDirectory()"
 
     createDirectory(path: String): Unit { panic("magic") }
         javascript "fs.mkdirSync(path_)"
+        javascriptasync "await fsPromises.mkdir(path_)"
 
     createDirectories(path: String): Unit { panic("magic") }
         javascript "fs.mkdirSync(path_, {recursive: true})"
+        javascriptasync "await fsPromises.mkdir(path_, {recursive: true})"
 
     delete(path: String): Unit { panic("magic") }
         javascript "try { fs.rmdirSync(path_) } catch(_) { fs.rmSync(path_) }"
+        javascriptasync "try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }"
 
     rename(fromPath: String, toPath: String): Unit { panic("magic") }
         javascript "fs.renameSync(fromPath_, toPath_)"
+        javascriptasync "await fsPromises.rename(fromPath_, toPath_)"
 
     getAbsolutePath(path: String): String { panic("magic") }
         javascript "return path.resolve(path_)"
+        javascriptasync "return path.resolve(path_)"
 
     directoryName(path: String): String {
         path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()

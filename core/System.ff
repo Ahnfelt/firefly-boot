@@ -6,11 +6,14 @@ extend self: System {
 
     arguments(): List[String] { panic("magic") }
         javascript "return ff_core_Array.Array_toList(self_.array_)"
+        javascriptasync "return ff_core_Array.Array_toList(self_.array_)"
 
     files(): FileSystem { panic("magic") }
         javascript "return null"
+        javascriptasync "return null"
 
     time(): TimeSystem { panic("magic") }
         javascript "return null"
+        javascriptasync "return null"
 
 }

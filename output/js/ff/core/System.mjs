@@ -75,15 +75,15 @@ return null
 }
 
 export async function System_arguments$(self_) {
-return ff_core_Core.panic_("magic")
+return ff_core_Array.Array_toList(self_.array_)
 }
 
 export async function System_files$(self_) {
-return ff_core_Core.panic_("magic")
+return null
 }
 
 export async function System_time$(self_) {
-return ff_core_Core.panic_("magic")
+return null
 }
 
 
