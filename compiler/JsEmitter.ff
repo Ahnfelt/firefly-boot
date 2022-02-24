@@ -534,8 +534,8 @@ invokeImmediately(function: Term): Term {
     | ELambda(_, Lambda(_, effect, [MatchCase(_, [], [], body)])) =>
         body
     | _ =>
-        let noEffect = TConstructor(function.at, "ff:core/Nothing.Nothing", []) // TODO: Only valid in sync context
-        ECall(function.at, False, False, function, noEffect, [], [], [])
+        let effect = TConstructor(function.at, "Q$", []) // Awaits more often than required in async context
+        ECall(function.at, False, False, function, effect, [], [], [])
 }
 
 extractTypeName(type: Type): String {
