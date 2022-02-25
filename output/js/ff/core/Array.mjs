@@ -64,7 +64,7 @@ const builder_ = ff_core_ArrayBuilder.empty_();
 function go_(state_) {
 _tailcall: for(;;) {
 {
-const _1 = body_(state_)
+const _1 = body_(state_);
 {
 if(_1.None) {
 
@@ -73,11 +73,11 @@ return
 }
 {
 if(_1.Some) {
-const s_ = _1.value_.first_
-const x_ = _1.value_.second_
+const s_ = _1.value_.first_;
+const x_ = _1.value_.second_;
 ff_core_ArrayBuilder.ArrayBuilder_add(builder_, x_);
 {
-const state_r_ = s_
+const state_r_ = s_;
 state_ = state_r_
 continue _tailcall
 }
@@ -110,10 +110,10 @@ return ff_core_Core.panic_("magic")
 
 export async function build_$(initial_, body_) {
 const builder_ = ff_core_ArrayBuilder.empty_();
-function go_(state_) {
+async function go_$(state_) {
 _tailcall: for(;;) {
 {
-const _1 = body_(state_)
+const _1 = (await body_(state_));
 {
 if(_1.None) {
 
@@ -122,11 +122,11 @@ return
 }
 {
 if(_1.Some) {
-const s_ = _1.value_.first_
-const x_ = _1.value_.second_
+const s_ = _1.value_.first_;
+const x_ = _1.value_.second_;
 ff_core_ArrayBuilder.ArrayBuilder_add(builder_, x_);
 {
-const state_r_ = s_
+const state_r_ = s_;
 state_ = state_r_
 continue _tailcall
 }

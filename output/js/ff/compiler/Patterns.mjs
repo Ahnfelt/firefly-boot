@@ -66,13 +66,13 @@ return {fields_, guard_};
 
 export function check_(variants_, fields_, cases_, success_, guard_) {
 {
-const _1 = ff_core_Pair.Pair(fields_, cases_)
+const _1 = ff_core_Pair.Pair(fields_, cases_);
 {
 if(_1.first_.Link) {
-const f_ = _1.first_.head_.first_
-const p_ = _1.first_.head_.second_
-const fs_ = _1.first_.tail_
-const cs_ = _1.second_
+const f_ = _1.first_.head_.first_;
+const p_ = _1.first_.head_.second_;
+const fs_ = _1.first_.tail_;
+const cs_ = _1.second_;
 const vs_ = ff_core_Option.Option_else(ff_core_Map.Map_get(variants_, f_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_core_Set.Set_add(p_.otherVariants_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }));
@@ -95,7 +95,7 @@ return
 }
 }
 {
-const _guard1 = (success_ && (!guard_))
+const _guard1 = (success_ && (!guard_));
 if(_guard1) {
 
 return
@@ -104,9 +104,9 @@ return
 {
 if(_1.first_.Empty) {
 if(_1.second_.Link) {
-const fs_ = _1.second_.head_.fields_
-const g_ = _1.second_.head_.guard_
-const cs_ = _1.second_.tail_
+const fs_ = _1.second_.head_.fields_;
+const g_ = _1.second_.head_.guard_;
+const cs_ = _1.second_.tail_;
 ff_compiler_Patterns.check_(variants_, fs_, cs_, true, g_)
 return
 }
@@ -119,8 +119,8 @@ const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Ma
 return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) != 0)
 })), ((_1) => {
 {
-const f_ = _1.first_
-const vs_ = _1.second_
+const f_ = _1.first_;
+const vs_ = _1.second_;
 return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))))
 return
 }
@@ -159,7 +159,7 @@ return (_w1 != variantName_)
 }
 function convertPattern_(pattern_) {
 {
-const pattern_a = pattern_
+const pattern_a = pattern_;
 {
 if(pattern_a.PString) {
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("String literal", ff_core_List.List_toSet(ff_core_List.Link("Any other String literal", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty()))
@@ -180,21 +180,21 @@ return
 }
 {
 if(pattern_a.PVariable) {
-const p_ = pattern_a
+const p_ = pattern_a;
 return ff_core_Option.None()
 return
 }
 }
 {
 if(pattern_a.PVariant) {
-const p_ = pattern_a
+const p_ = pattern_a;
 const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(p_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
 {
-const i_ = _1.first_
+const i_ = _1.first_;
 if(_1.second_.Some) {
-const p_ = _1.second_.value_
+const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
 return
 }
@@ -210,14 +210,14 @@ return
 }
 {
 if(pattern_a.PVariantAs) {
-const p_ = pattern_a
+const p_ = pattern_a;
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), ff_core_List.Empty()))
 return
 }
 }
 {
 if(pattern_a.PAlias) {
-const p_ = pattern_a
+const p_ = pattern_a;
 return convertPattern_(p_.pattern_)
 return
 }
@@ -226,15 +226,15 @@ return
 }
 return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
 {
-const caseIndex_ = _1.first_
-const case_ = _1.second_
+const caseIndex_ = _1.first_;
+const case_ = _1.second_;
 const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
 {
-const i_ = _1.first_
+const i_ = _1.first_;
 if(_1.second_.Some) {
-const p_ = _1.second_.value_
+const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
 return
 }
@@ -274,13 +274,13 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export async function check_$(variants_, fields_, cases_, success_, guard_) {
 {
-const _1 = ff_core_Pair.Pair(fields_, cases_)
+const _1 = ff_core_Pair.Pair(fields_, cases_);
 {
 if(_1.first_.Link) {
-const f_ = _1.first_.head_.first_
-const p_ = _1.first_.head_.second_
-const fs_ = _1.first_.tail_
-const cs_ = _1.second_
+const f_ = _1.first_.head_.first_;
+const p_ = _1.first_.head_.second_;
+const fs_ = _1.first_.tail_;
+const cs_ = _1.second_;
 const vs_ = ff_core_Option.Option_else(ff_core_Map.Map_get(variants_, f_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_core_Set.Set_add(p_.otherVariants_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }));
@@ -303,7 +303,7 @@ return
 }
 }
 {
-const _guard1 = (success_ && (!guard_))
+const _guard1 = (success_ && (!guard_));
 if(_guard1) {
 
 return
@@ -312,9 +312,9 @@ return
 {
 if(_1.first_.Empty) {
 if(_1.second_.Link) {
-const fs_ = _1.second_.head_.fields_
-const g_ = _1.second_.head_.guard_
-const cs_ = _1.second_.tail_
+const fs_ = _1.second_.head_.fields_;
+const g_ = _1.second_.head_.guard_;
+const cs_ = _1.second_.tail_;
 ff_compiler_Patterns.check_(variants_, fs_, cs_, true, g_)
 return
 }
@@ -327,8 +327,8 @@ const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Ma
 return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) != 0)
 })), ((_1) => {
 {
-const f_ = _1.first_
-const vs_ = _1.second_
+const f_ = _1.first_;
+const vs_ = _1.second_;
 return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))))
 return
 }
@@ -367,7 +367,7 @@ return (_w1 != variantName_)
 }
 function convertPattern_(pattern_) {
 {
-const pattern_a = pattern_
+const pattern_a = pattern_;
 {
 if(pattern_a.PString) {
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo("String literal", ff_core_List.List_toSet(ff_core_List.Link("Any other String literal", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty()))
@@ -388,21 +388,21 @@ return
 }
 {
 if(pattern_a.PVariable) {
-const p_ = pattern_a
+const p_ = pattern_a;
 return ff_core_Option.None()
 return
 }
 }
 {
 if(pattern_a.PVariant) {
-const p_ = pattern_a
+const p_ = pattern_a;
 const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(p_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
 {
-const i_ = _1.first_
+const i_ = _1.first_;
 if(_1.second_.Some) {
-const p_ = _1.second_.value_
+const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
 return
 }
@@ -418,14 +418,14 @@ return
 }
 {
 if(pattern_a.PVariantAs) {
-const p_ = pattern_a
+const p_ = pattern_a;
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), ff_core_List.Empty()))
 return
 }
 }
 {
 if(pattern_a.PAlias) {
-const p_ = pattern_a
+const p_ = pattern_a;
 return convertPattern_(p_.pattern_)
 return
 }
@@ -434,15 +434,15 @@ return
 }
 return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
 {
-const caseIndex_ = _1.first_
-const case_ = _1.second_
+const caseIndex_ = _1.first_;
+const case_ = _1.second_;
 const fields_ = ff_core_List.List_collect(ff_core_List.List_pairs(ff_core_List.List_map(case_.patterns_, ((pattern_) => {
 return convertPattern_(pattern_)
 }))), ((_1) => {
 {
-const i_ = _1.first_
+const i_ = _1.first_;
 if(_1.second_.Some) {
-const p_ = _1.second_.value_
+const p_ = _1.second_.value_;
 return ff_core_Option.Some(ff_core_Pair.Pair(("" + i_), p_))
 return
 }

@@ -87,7 +87,7 @@ ff_core_Log.debug_(ff_core_Show.ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show
 export const ff_core_Show_Show$ff_core_Bool_Bool = {
 show_(value_) {
 {
-const value_a = value_
+const value_a = value_;
 {
 if(!value_a) {
 return "False"
@@ -104,7 +104,7 @@ return
 },
 async show_$(value_) {
 {
-const value_a = value_
+const value_a = value_;
 {
 if(!value_a) {
 return "False"
@@ -164,18 +164,18 @@ return ff_core_Show_Show$T.show_(value_)
 export function ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show_Show$T) { return {
 show_(value_) {
 {
-const value_a = value_
+const value_a = value_;
 {
 if(value_a.Branch) {
-const l_ = value_a.left_
-const r_ = value_a.right_
+const l_ = value_a.left_;
+const r_ = value_a.right_;
 return (((("Branch(" + ff_core_Show.ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show_Show$T).show_(l_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show_Show$T).show_(r_)) + ")")
 return
 }
 }
 {
 if(value_a.Leaf) {
-const v_ = value_a.value_
+const v_ = value_a.value_;
 return (("Leaf(" + ff_core_Show_Show$T.show_(v_)) + ")")
 return
 }
@@ -184,18 +184,18 @@ return
 },
 async show_$(value_) {
 {
-const value_a = value_
+const value_a = value_;
 {
 if(value_a.Branch) {
-const l_ = value_a.left_
-const r_ = value_a.right_
+const l_ = value_a.left_;
+const r_ = value_a.right_;
 return (((("Branch(" + ff_core_Show.ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show_Show$T).show_(l_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Show_Tree(ff_core_Show_Show$T).show_(r_)) + ")")
 return
 }
 }
 {
 if(value_a.Leaf) {
-const v_ = value_a.value_
+const v_ = value_a.value_;
 return (("Leaf(" + ff_core_Show_Show$T.show_(v_)) + ")")
 return
 }

@@ -160,4 +160,4 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 
 
 
-queueMicrotask(() => main_({array_: process.argv.slice(2)}))
+queueMicrotask(() => main_$({array_: process.argv.slice(2)}))

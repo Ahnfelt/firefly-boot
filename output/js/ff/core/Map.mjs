@@ -70,15 +70,15 @@ export function Map_addAll(self_, that_, ff_core_Ordering_Order$K) {
 let result_ = self_;
 ff_core_RbMap.RbMap_each(that_, ((_1, _2) => {
 {
-const k_ = _1
-const v_ = _2
+const k_ = _1;
+const v_ = _2;
 if(_2.Some) {
 result_ = ff_core_RbMap.RbMap_add(result_, k_, v_, ff_core_Ordering_Order$K)
 return
 }
 }
 {
-const k_ = _1
+const k_ = _1;
 if(_2.None) {
 
 return
@@ -100,14 +100,14 @@ export function Map_removeAll(self_, that_, ff_core_Ordering_Order$K) {
 let result_ = self_;
 ff_core_RbMap.RbMap_each(that_, ((_1, _2) => {
 {
-const k_ = _1
+const k_ = _1;
 if(_2.Some) {
 result_ = ff_core_RbMap.RbMap_remove(result_, k_, ff_core_Ordering_Order$K)
 return
 }
 }
 {
-const k_ = _1
+const k_ = _1;
 if(_2.None) {
 
 return
@@ -120,15 +120,15 @@ return result_
 export function Map_pairs(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_, ff_core_Ordering_Order$K), ((_1) => {
 {
-const k_ = _1.first_
+const k_ = _1.first_;
 if(_1.second_.Some) {
-const v_ = _1.second_.value_
+const v_ = _1.second_.value_;
 return ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_List.Empty())
 return
 }
 }
 {
-const k_ = _1.first_
+const k_ = _1.first_;
 if(_1.second_.None) {
 return ff_core_List.Empty()
 return
@@ -147,10 +147,10 @@ export function Map_map(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering
 const initial_ = ff_core_RbMap.RbLeaf();
 return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), initial_, ((tree_, pair_) => {
 {
-const _1 = body_(pair_)
+const _1 = body_(pair_);
 {
-const k_ = _1.first_
-const v_ = _1.second_
+const k_ = _1.first_;
+const v_ = _1.second_;
 return ff_core_Map.Map_add(tree_, k_, v_, ff_core_Ordering_Order$K1)
 return
 }
@@ -168,7 +168,7 @@ return ff_core_Option.Option_expect(ff_core_Map.Map_get(self_, key_, ff_core_Ord
 
 export function Map_updateOrInsert(self_, key_, update_, default_, ff_core_Ordering_Order$K) {
 {
-const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K)
+const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
 return ff_core_Map.Map_add(self_, key_, default_(), ff_core_Ordering_Order$K)
@@ -177,7 +177,7 @@ return
 }
 {
 if(_1.Some) {
-const v_ = _1.value_
+const v_ = _1.value_;
 return ff_core_Map.Map_add(self_, key_, update_(v_), ff_core_Ordering_Order$K)
 return
 }
@@ -188,9 +188,9 @@ return
 export function Map_each(self_, body_, ff_core_Ordering_Order$K) {
 ff_core_RbMap.RbMap_each(self_, ((_1, _2) => {
 {
-const k_ = _1
+const k_ = _1;
 if(_2.Some) {
-const v_ = _2.value_
+const v_ = _2.value_;
 body_(k_, v_)
 return
 }
@@ -212,15 +212,15 @@ export async function Map_addAll$(self_, that_, ff_core_Ordering_Order$K) {
 let result_ = self_;
 ff_core_RbMap.RbMap_each(that_, ((_1, _2) => {
 {
-const k_ = _1
-const v_ = _2
+const k_ = _1;
+const v_ = _2;
 if(_2.Some) {
 result_ = ff_core_RbMap.RbMap_add(result_, k_, v_, ff_core_Ordering_Order$K)
 return
 }
 }
 {
-const k_ = _1
+const k_ = _1;
 if(_2.None) {
 
 return
@@ -242,14 +242,14 @@ export async function Map_removeAll$(self_, that_, ff_core_Ordering_Order$K) {
 let result_ = self_;
 ff_core_RbMap.RbMap_each(that_, ((_1, _2) => {
 {
-const k_ = _1
+const k_ = _1;
 if(_2.Some) {
 result_ = ff_core_RbMap.RbMap_remove(result_, k_, ff_core_Ordering_Order$K)
 return
 }
 }
 {
-const k_ = _1
+const k_ = _1;
 if(_2.None) {
 
 return
@@ -262,15 +262,15 @@ return result_
 export async function Map_pairs$(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.List_flatMap(ff_core_RbMap.RbMap_pairs(self_, ff_core_Ordering_Order$K), ((_1) => {
 {
-const k_ = _1.first_
+const k_ = _1.first_;
 if(_1.second_.Some) {
-const v_ = _1.second_.value_
+const v_ = _1.second_.value_;
 return ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_List.Empty())
 return
 }
 }
 {
-const k_ = _1.first_
+const k_ = _1.first_;
 if(_1.second_.None) {
 return ff_core_List.Empty()
 return
@@ -289,10 +289,10 @@ export async function Map_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_O
 const initial_ = ff_core_RbMap.RbLeaf();
 return (await ff_core_List.List_foldLeft$(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), initial_, (async (tree_, pair_) => {
 {
-const _1 = (await body_(pair_))
+const _1 = (await body_(pair_));
 {
-const k_ = _1.first_
-const v_ = _1.second_
+const k_ = _1.first_;
+const v_ = _1.second_;
 return ff_core_Map.Map_add(tree_, k_, v_, ff_core_Ordering_Order$K1)
 return
 }
@@ -310,7 +310,7 @@ return ff_core_Option.Option_expect(ff_core_Map.Map_get(self_, key_, ff_core_Ord
 
 export async function Map_updateOrInsert$(self_, key_, update_, default_, ff_core_Ordering_Order$K) {
 {
-const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K)
+const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
 return ff_core_Map.Map_add(self_, key_, (await default_()), ff_core_Ordering_Order$K)
@@ -319,7 +319,7 @@ return
 }
 {
 if(_1.Some) {
-const v_ = _1.value_
+const v_ = _1.value_;
 return ff_core_Map.Map_add(self_, key_, (await update_(v_)), ff_core_Ordering_Order$K)
 return
 }
@@ -330,9 +330,9 @@ return
 export async function Map_each$(self_, body_, ff_core_Ordering_Order$K) {
 (await ff_core_RbMap.RbMap_each$(self_, (async (_1, _2) => {
 {
-const k_ = _1
+const k_ = _1;
 if(_2.Some) {
-const v_ = _2.value_
+const v_ = _2.value_;
 (await body_(k_, v_))
 return
 }

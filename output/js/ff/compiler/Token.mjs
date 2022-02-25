@@ -215,7 +215,7 @@ return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_siz
 
 export function TokenKind_beforeSeparator(self_) {
 {
-const _1 = self_
+const _1 = self_;
 {
 if(_1.LEnd) {
 return false
@@ -371,7 +371,7 @@ return
 
 export function TokenKind_afterSeparator(self_) {
 {
-const _1 = self_
+const _1 = self_;
 {
 if(_1.LEnd) {
 return false
@@ -527,7 +527,7 @@ return
 
 export function TokenKind_afterKeyword(self_) {
 {
-const _1 = self_
+const _1 = self_;
 {
 if(_1.LEnd) {
 return false
@@ -683,7 +683,7 @@ return
 
 export async function TokenKind_beforeSeparator$(self_) {
 {
-const _1 = self_
+const _1 = self_;
 {
 if(_1.LEnd) {
 return false
@@ -839,7 +839,7 @@ return
 
 export async function TokenKind_afterSeparator$(self_) {
 {
-const _1 = self_
+const _1 = self_;
 {
 if(_1.LEnd) {
 return false
@@ -995,7 +995,7 @@ return
 
 export async function TokenKind_afterKeyword$(self_) {
 {
-const _1 = self_
+const _1 = self_;
 {
 if(_1.LEnd) {
 return false

@@ -831,17 +831,17 @@ return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign())
 const operator_ = ff_core_String.String_dropLast(ff_compiler_Token.Token_raw(token_), 1);
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 {
-const _1 = term_
+const _1 = term_;
 {
 if(_1.EVariable) {
-const name_ = _1.name_
+const name_ = _1.name_;
 return ff_compiler_Syntax.EAssign(ff_compiler_Token.Token_at(token_), operator_, name_, value_)
 return
 }
 }
 {
 if(_1.EField) {
-const e_ = _1
+const e_ = _1;
 return ff_compiler_Syntax.EAssignField(ff_compiler_Token.Token_at(token_), operator_, e_.record_, e_.field_, value_)
 return
 }
@@ -1112,8 +1112,8 @@ return _w1.first_
 export function Parser_parseListPattern(self_) {
 function convertListPattern_(at_, items_) {
 {
-const at_a = at_
-const items_a = items_
+const at_a = at_;
+const items_a = items_;
 {
 if(items_a.Empty) {
 return ff_compiler_Syntax.PVariant(at_, "ff:core/List.Empty", ff_core_List.Empty())
@@ -1122,9 +1122,9 @@ return
 }
 {
 if(items_a.Link) {
-const p_ = items_a.head_.first_
+const p_ = items_a.head_.first_;
 if(!items_a.head_.second_) {
-const ps_ = items_a.tail_
+const ps_ = items_a.tail_;
 return ff_compiler_Syntax.PVariant(p_.at_, "ff:core/List.Link", ff_core_List.Link(p_, ff_core_List.Link(convertListPattern_(p_.at_, ps_), ff_core_List.Empty())))
 return
 }
@@ -1132,7 +1132,7 @@ return
 }
 {
 if(items_a.Link) {
-const p_ = items_a.head_.first_
+const p_ = items_a.head_.first_;
 if(items_a.head_.second_) {
 if(items_a.tail_.Empty) {
 return p_
@@ -1143,7 +1143,7 @@ return
 }
 {
 if(items_a.Link) {
-const p_ = items_a.head_.first_
+const p_ = items_a.head_.first_;
 if(items_a.head_.second_) {
 return ff_compiler_Parser.Parser_fail(self_, p_.at_, "Invalid pattern: ... is only allowed for the last element in a list")
 return
@@ -1943,17 +1943,17 @@ return ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign())
 const operator_ = ff_core_String.String_dropLast(ff_compiler_Token.Token_raw(token_), 1);
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 {
-const _1 = term_
+const _1 = term_;
 {
 if(_1.EVariable) {
-const name_ = _1.name_
+const name_ = _1.name_;
 return ff_compiler_Syntax.EAssign(ff_compiler_Token.Token_at(token_), operator_, name_, value_)
 return
 }
 }
 {
 if(_1.EField) {
-const e_ = _1
+const e_ = _1;
 return ff_compiler_Syntax.EAssignField(ff_compiler_Token.Token_at(token_), operator_, e_.record_, e_.field_, value_)
 return
 }
@@ -2224,8 +2224,8 @@ return _w1.first_
 export async function Parser_parseListPattern$(self_) {
 function convertListPattern_(at_, items_) {
 {
-const at_a = at_
-const items_a = items_
+const at_a = at_;
+const items_a = items_;
 {
 if(items_a.Empty) {
 return ff_compiler_Syntax.PVariant(at_, "ff:core/List.Empty", ff_core_List.Empty())
@@ -2234,9 +2234,9 @@ return
 }
 {
 if(items_a.Link) {
-const p_ = items_a.head_.first_
+const p_ = items_a.head_.first_;
 if(!items_a.head_.second_) {
-const ps_ = items_a.tail_
+const ps_ = items_a.tail_;
 return ff_compiler_Syntax.PVariant(p_.at_, "ff:core/List.Link", ff_core_List.Link(p_, ff_core_List.Link(convertListPattern_(p_.at_, ps_), ff_core_List.Empty())))
 return
 }
@@ -2244,7 +2244,7 @@ return
 }
 {
 if(items_a.Link) {
-const p_ = items_a.head_.first_
+const p_ = items_a.head_.first_;
 if(items_a.head_.second_) {
 if(items_a.tail_.Empty) {
 return p_
@@ -2255,7 +2255,7 @@ return
 }
 {
 if(items_a.Link) {
-const p_ = items_a.head_.first_
+const p_ = items_a.head_.first_;
 if(items_a.head_.second_) {
 return ff_compiler_Parser.Parser_fail(self_, p_.at_, "Invalid pattern: ... is only allowed for the last element in a list")
 return

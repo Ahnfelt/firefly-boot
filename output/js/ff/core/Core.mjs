@@ -54,7 +54,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export function if_(condition_, body_) {
 {
-const _1 = condition_
+const _1 = condition_;
 {
 if(!_1) {
 return ff_core_Option.None()
@@ -72,7 +72,7 @@ return
 
 export function while_(condition_, body_) {
 {
-const _1 = condition_()
+const _1 = condition_();
 {
 if(!_1) {
 
@@ -115,7 +115,7 @@ return JSON.stringify(value_, undefined, 4)
 
 export async function if_$(condition_, body_) {
 {
-const _1 = condition_
+const _1 = condition_;
 {
 if(!_1) {
 return ff_core_Option.None()
@@ -133,7 +133,7 @@ return
 
 export async function while_$(condition_, body_) {
 {
-const _1 = (await condition_())
+const _1 = (await condition_());
 {
 if(!_1) {
 

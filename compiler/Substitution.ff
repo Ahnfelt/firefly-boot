@@ -38,7 +38,30 @@ extend self: Substitution {
 
     substituteFunctionDefinition(definition: DFunction): DFunction {
         definition.DFunction(
+            signature = self.substituteSignature(definition.signature)
             body = self.substituteLambda(definition.body)
+        )
+    }
+
+    substituteSignature(signature: Signature): Signature {
+        signature.Signature(
+            constraints = signature.constraints.map(self.substituteConstraint)
+            parameters = signature.parameters.map(self.substituteParameter)
+            returnType = self.substituteType(signature.returnType)
+            effect = self.substituteType(signature.effect)
+        )
+    }
+
+    substituteConstraint(constraint: Constraint): Constraint {
+        constraint.Constraint(
+            generics = constraint.generics.map(self.substituteType)
+        )
+    }
+
+    substituteParameter(parameter: Parameter): Parameter {
+        parameter.Parameter(
+            valueType = self.substituteType(parameter.valueType)
+            default = parameter.default.map(self.substituteTerm)
         )
     }
 

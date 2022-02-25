@@ -61,9 +61,9 @@ return {first_, second_};
 
 export function Pair_mapFirst(self_, body_) {
 {
-const _1 = self_
+const _1 = self_;
 {
-const _c = _1
+const _c = _1;
 return ff_core_Pair.Pair(body_(self_.first_), _c.second_)
 return
 }
@@ -72,9 +72,9 @@ return
 
 export function Pair_mapSecond(self_, body_) {
 {
-const _1 = self_
+const _1 = self_;
 {
-const _c = _1
+const _c = _1;
 return ff_core_Pair.Pair(_c.first_, body_(self_.second_))
 return
 }
@@ -87,9 +87,9 @@ return ff_core_Pair.Pair(self_.second_, self_.first_)
 
 export async function Pair_mapFirst$(self_, body_) {
 {
-const _1 = self_
+const _1 = self_;
 {
-const _c = _1
+const _c = _1;
 return ff_core_Pair.Pair((await body_(self_.first_)), _c.second_)
 return
 }
@@ -98,9 +98,9 @@ return
 
 export async function Pair_mapSecond$(self_, body_) {
 {
-const _1 = self_
+const _1 = self_;
 {
-const _c = _1
+const _c = _1;
 return ff_core_Pair.Pair(_c.first_, (await body_(self_.second_)))
 return
 }

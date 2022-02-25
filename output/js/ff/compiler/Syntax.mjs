@@ -296,12 +296,12 @@ return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", colum
 
 export function Type_show(self_) {
 {
-const _1 = self_
+const _1 = self_;
 {
 if(_1.TConstructor) {
-const at_ = _1.at_
-const name_ = _1.name_
-const generics_ = _1.generics_
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
 if(ff_core_List.List_isEmpty(generics_)) {
 return name_
 } else {
@@ -314,8 +314,8 @@ return
 }
 {
 if(_1.TVariable) {
-const at_ = _1.at_
-const index_ = _1.index_
+const at_ = _1.at_;
+const index_ = _1.index_;
 return ("$" + index_)
 return
 }
@@ -325,12 +325,12 @@ return
 
 export async function Type_show$(self_) {
 {
-const _1 = self_
+const _1 = self_;
 {
 if(_1.TConstructor) {
-const at_ = _1.at_
-const name_ = _1.name_
-const generics_ = _1.generics_
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
 if(ff_core_List.List_isEmpty(generics_)) {
 return name_
 } else {
@@ -343,8 +343,8 @@ return
 }
 {
 if(_1.TVariable) {
-const at_ = _1.at_
-const index_ = _1.index_
+const at_ = _1.at_;
+const index_ = _1.index_;
 return ("$" + index_)
 return
 }

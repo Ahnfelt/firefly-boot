@@ -44,7 +44,7 @@ extend self: JsEmitter {
     }
 
     emitMain(): String {
-        "queueMicrotask(() => main_({array_: process.argv.slice(2)}))" // TODO
+        "queueMicrotask(() => main_$({array_: process.argv.slice(2)}))" // TODO
     }
 
     emitImportDefinition(definition: DImport): String {
@@ -112,7 +112,7 @@ extend self: JsEmitter {
                 Patterns.convertAndCheck(self.otherModules, cases)
                 let escapedArguments = definition.signature.parameters.map { _.name + "_a" }
                 let shadowingWorkaround = definition.signature.parameters.map { p =>
-                    "const " + p.name + "_a = " + escapeKeyword(p.name)
+                    "const " + p.name + "_a = " + escapeKeyword(p.name) + ";"
                 }.join("\n")
                 let body = self.emitTailCall {
                     let casesString = cases.map {
@@ -350,7 +350,7 @@ extend self: JsEmitter {
                 self.tailCallUsed = True
                 let pair = arguments.map { a =>
                     Some(Pair(
-                        "const " + escapeKeyword(a.name.expect() + "_r") + " = " + self.emitTerm(a.value, async)
+                        "const " + escapeKeyword(a.name.expect() + "_r") + " = " + self.emitTerm(a.value, async) + ";"
                         escapeKeyword(a.name.expect()) + " = " + escapeKeyword(a.name.expect() + "_r")
                     ))
                 }.collect {_}.unzip()
@@ -358,7 +358,7 @@ extend self: JsEmitter {
             | EPipe(at, value, ELambda(_, Lambda(_, effect, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
                 if(!last) { "for(;;) " }.else { "" } +
-                "{\nconst _1 = " + self.emitTerm(value, async) + "\n" +
+                "{\nconst _1 = " + self.emitTerm(value, async) + ";\n" +
                 cases.map { "{\n" + self.emitCase(["_1"], _, last, async) + "\n}" }.join("\n") +
                 "\n}"
             | _ =>
@@ -399,7 +399,7 @@ extend self: JsEmitter {
             | Pair([], [guard, ...guards]) =>
                 let guardName = "_guard" + (guards.size() + 1)
                 let newCase = matchCase.MatchCase(patterns = [guard.pattern], guards = guards)
-                "const " + guardName + " = " + self.emitTerm(guard.term, async) + "\n" +
+                "const " + guardName + " = " + self.emitTerm(guard.term, async) + ";\n" +
                 self.emitCase([guardName], newCase, last, async)
             | Pair([], []) =>
                 self.emitStatements(matchCase.body, last, async) +
@@ -432,7 +432,7 @@ extend self: JsEmitter {
                 self.emitCase(arguments, matchCase, last, async)
             | PVariable(_, Some(name)) =>
                 let escaped = escapeKeyword(name)
-                if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +
+                if(escaped != argument) { "const " + escaped + " = " + argument + ";\n" } else { "" } +
                 self.emitCase(arguments, matchCase, last, async)
             | PVariant(_, "ff:core/Bool.False", []) =>
                 "if(!" + argument + ") {\n" +
@@ -456,13 +456,13 @@ extend self: JsEmitter {
                     "if(" + argument + "." + processed.variantName + ") {\n"
                 } +
                 variable.map(escapeKeyword).filter { _ != argument }.map {
-                    "const " + _ + " = " + argument + "\n"
+                    "const " + _ + " = " + argument + ";\n"
                 }.else {""} +
                 self.emitCase(arguments, matchCase, last, async) +
                 if(processed.loneVariant) { "" } else { "\n}" }
             | PAlias(_, pattern, variable) =>
                 let escaped = escapeKeyword(variable)
-                if(escaped != argument) { "const " + escaped + " = " + argument + "\n" } else { "" } +
+                if(escaped != argument) { "const " + escaped + " = " + argument + ";\n" } else { "" } +
                 self.emitPattern(argument, pattern, arguments, matchCase, last, async)
         }
     }
