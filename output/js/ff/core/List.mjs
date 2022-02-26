@@ -210,7 +210,7 @@ return go_(list_, ff_core_List.Empty())
 
 export async function groupList_$(list_, ff_core_Ordering_Order$K, $signal) {
 const initial_ = ff_core_List.Empty();
-return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_, ff_core_Ordering_Order$K), ((map_, pair_, $signal) => {
+return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_, ff_core_Ordering_Order$K), ((map_, pair_) => {
 return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.second"), ff_core_Ordering_Order$K)
 }))
 }
@@ -1261,13 +1261,13 @@ return
 }
 
 export async function List_expectFirst$(self_, $signal) {
-return ff_core_Option.Option_else(ff_core_List.List_first(self_), (($signal) => {
+return ff_core_Option.Option_else(ff_core_List.List_first(self_), (() => {
 return ff_core_Core.panic_("expectFirst() on empty list")
 }))
 }
 
 export async function List_expectLast$(self_, $signal) {
-return ff_core_Option.Option_else(ff_core_List.List_last(self_), (($signal) => {
+return ff_core_Option.Option_else(ff_core_List.List_last(self_), (() => {
 return ff_core_Core.panic_("expectLast() on empty list")
 }))
 }
@@ -1358,7 +1358,7 @@ return ff_core_List.List_reverse(ff_core_List.List_takeFirst(ff_core_List.List_r
 
 export async function List_pairs$(self_, $signal) {
 let i_ = 0;
-return ff_core_List.List_map(self_, ((x_, $signal) => {
+return ff_core_List.List_map(self_, ((x_) => {
 const r_ = ff_core_Pair.Pair(i_, x_);
 i_ += 1;
 return r_
@@ -2098,7 +2098,7 @@ return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
 }
 
 export async function List_toSet$(self_, ff_core_Ordering_Order$T, $signal) {
-return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((set_, value_, $signal) => {
+return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((set_, value_) => {
 return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
 }))
 }
@@ -2294,7 +2294,7 @@ return ff_core_List.groupList_(self_, ff_core_Ordering_Order$K)
 }
 
 export async function List_toMap$(self_, ff_core_Ordering_Order$K, $signal) {
-return ff_core_List.List_foldLeft(self_, ff_core_Map.empty_(), ((map_, pair_, $signal) => {
+return ff_core_List.List_foldLeft(self_, ff_core_Map.empty_(), ((map_, pair_) => {
 return ff_core_Map.Map_add(map_, pair_.first_, pair_.second_, ff_core_Ordering_Order$K)
 }))
 }

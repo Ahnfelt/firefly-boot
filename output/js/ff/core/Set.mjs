@@ -121,7 +121,7 @@ return ff_core_Map.Map_size(self_, ff_core_Ordering_Order$T)
 }
 
 export async function Set_toList$(self_, ff_core_Ordering_Order$T, $signal) {
-return ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$T), ((_w1, $signal) => {
+return ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
 }

@@ -334,7 +334,7 @@ const generics_ = _1.generics_;
 if(ff_core_List.List_isEmpty(generics_)) {
 return name_
 } else {
-return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1, $signal) => {
+return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
 return ff_compiler_Syntax.Type_show(_w1)
 })), ", ")) + "]")
 }

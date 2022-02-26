@@ -235,13 +235,13 @@ return ff_core_Core.panic_("magic")
 }
 
 export async function String_expectFirst$(self_, $signal) {
-return ff_core_Option.Option_else(ff_core_String.String_first(self_), (($signal) => {
+return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
 return ff_core_Core.panic_("expectFirst() on empty string")
 }))
 }
 
 export async function String_expectLast$(self_, $signal) {
-return ff_core_Option.Option_else(ff_core_String.String_last(self_), (($signal) => {
+return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
 return ff_core_Core.panic_("expectFirst() on empty string")
 }))
 }

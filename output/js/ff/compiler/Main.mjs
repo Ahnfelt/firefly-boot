@@ -150,7 +150,7 @@ if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $signal))) {
 }
 
 export async function parsePackageLocations_$(text_, $signal) {
-return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 44)), ((item_, $signal) => {
+return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 44)), ((item_) => {
 const parts_ = ff_core_String.String_split(item_, 64);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Array_expect(parts_, 1))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)

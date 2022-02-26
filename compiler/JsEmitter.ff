@@ -234,13 +234,13 @@ extend self: JsEmitter {
                 | PVariable p => p.name.map(escapeKeyword).else{"_"}
                 | _ => panic("!")
             }
-            let signal = if(async) {["$signal"]} else {[]}
+            let signal = if(newAsync) {["$signal"]} else {[]}
             let parameters = [...patternParameters, ...signal].join(", ")
             let prefix = if(newAsync) {"async "} else {""}
             "(" + prefix + "(" + parameters + ") => {\n" + self.emitStatements(body, True, newAsync) + "\n})"
         | ELambda(at, Lambda(_, effect, cases)) =>
             let newAsync = async && effectTypeIsAsync(effect)
-            let signal = if(async) {["$signal"]} else {[]}
+            let signal = if(newAsync) {["$signal"]} else {[]}
             Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped

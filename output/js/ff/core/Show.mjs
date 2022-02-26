@@ -155,7 +155,7 @@ return ff_core_Show_Show$T.show_(value_)
 })), ", ")) + "]")
 },
 async show_$(value_, $signal) {
-return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_, $signal) => {
+return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) => {
 return ff_core_Show_Show$T.show_(value_)
 })), ", ")) + "]")
 }

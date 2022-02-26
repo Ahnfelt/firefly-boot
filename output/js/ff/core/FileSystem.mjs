@@ -170,29 +170,29 @@ return path.resolve(path_)
 }
 
 export async function FileSystem_directoryName$(self_, path_, $signal) {
-return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1, $signal) => {
+return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
 })), 1))
 }
 
 export async function FileSystem_baseName$(self_, path_, $signal) {
-return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1, $signal) => {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
 })))
 }
 
 export async function FileSystem_prefixName$(self_, path_, $signal) {
-return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1, $signal) => {
+return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
-}))), ((_w1, $signal) => {
+}))), ((_w1) => {
 return (_w1 != 46)
 }))
 }
 
 export async function FileSystem_suffixName$(self_, path_, $signal) {
-return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1, $signal) => {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
-})), ((_w1, $signal) => {
+})), ((_w1) => {
 return (_w1 != 46)
 })))
 }

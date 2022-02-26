@@ -160,9 +160,9 @@ return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.
 }
 
 export async function make_$(module_, otherModules_, $signal) {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1, $signal) => {
+return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false).symbols_
-})), ff_core_Map.empty_(), ((_w1, _w2, $signal) => {
+})), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty()))
 }
@@ -175,14 +175,14 @@ export async function processModule_$(module_, isCurrentModule_, $signal) {
 function full_(module_, name_) {
 return ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
 }
-const functions_ = ff_core_List.List_map(module_.functions_, ((d_, $signal) => {
+const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
 return ff_core_Pair.Pair(full_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
 }));
-const lets_ = ff_core_List.List_map(module_.lets_, ((d_, $signal) => {
+const lets_ = ff_core_List.List_map(module_.lets_, ((d_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 return ff_core_Pair.Pair(full_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), d_.variableType_, noEffect_)))
 }));
-const traitMethods_ = ff_core_List.List_flatMap(module_.traits_, ((definition_, $signal) => {
+const traitMethods_ = ff_core_List.List_flatMap(module_.traits_, ((definition_) => {
 const generics_ = ff_core_List.List_map(definition_.generics_, ((name_) => {
 return ff_compiler_Syntax.TConstructor(definition_.at_, name_, ff_core_List.Empty())
 }));
@@ -194,7 +194,7 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(d
 return ff_core_Pair.Pair(full_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
 }))
 }));
-const extends_ = ff_core_List.List_flatMap(module_.extends_, ((d_, $signal) => {
+const extends_ = ff_core_List.List_flatMap(module_.extends_, ((d_) => {
 {
 const _1 = d_.type_;
 {
@@ -225,7 +225,7 @@ return
 }
 }
 }));
-const fields_ = ff_core_List.List_flatMap(module_.types_, ((d_, $signal) => {
+const fields_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
 const prefix_ = (d_.name_ + "_");
 const t_ = ff_compiler_Syntax.TConstructor(d_.at_, d_.name_, ff_core_List.List_map(d_.generics_, ((g_) => {
 return ff_compiler_Syntax.TConstructor(d_.at_, g_, ff_core_List.Empty())
@@ -236,7 +236,7 @@ const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothi
 return ff_core_Pair.Pair(full_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, d_.generics_, d_.constraints_, ff_core_List.Link(selfParameter_, ff_core_List.Empty()), f_.valueType_, noEffect_)))
 }))
 }));
-const variants_ = ff_core_List.List_flatMap(module_.types_, ((d_, $signal) => {
+const variants_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
 const returnType_ = ff_compiler_Syntax.TConstructor(d_.at_, full_(module_, d_.name_), ff_core_List.List_map(d_.generics_, ((typeParameter_) => {
 return ff_compiler_Syntax.TConstructor(d_.at_, typeParameter_, ff_core_List.Empty())
 })));

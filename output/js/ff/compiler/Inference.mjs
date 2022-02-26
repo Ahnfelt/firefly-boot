@@ -113,7 +113,7 @@ return ((("ff:core/" + name_) + ".") + name_)
 }
 
 export async function constraintsToInstances_$(constraints_, $signal) {
-return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_, $signal) => {
+return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
 const typeName_ = (((_1) => {
 {
 if(_1.TConstructor) {
@@ -1932,19 +1932,19 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 
 export async function Inference_inferModule$(self_, module_, otherModules_, $signal) {
 const environment_ = ff_compiler_Environment.make_(module_, otherModules_);
-const lets_ = ff_core_List.List_map(module_.lets_, ((_w1, $signal) => {
+const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferLetDefinition(self_, environment_, _w1)
 }));
-const functions_ = ff_core_List.List_map(module_.functions_, ((_w1, $signal) => {
+const functions_ = ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, _w1)
 }));
-const extends_ = ff_core_List.List_map(module_.extends_, ((_w1, $signal) => {
+const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferExtendDefinition(self_, environment_, _w1)
 }));
-const traits_ = ff_core_List.List_map(module_.traits_, ((_w1, $signal) => {
+const traits_ = ff_core_List.List_map(module_.traits_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferTraitDefinition(self_, environment_, _w1)
 }));
-const instances_ = ff_core_List.List_map(module_.instances_, ((_w1, $signal) => {
+const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferInstanceDefinition(self_, environment_, _w1)
 }));
 const result_ = ((async (_c, $signal) => {
@@ -1966,7 +1966,7 @@ return
 
 export async function Inference_inferInstanceDefinition$(self_, environment_, definition_, $signal) {
 const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.constraints_);
-return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (($signal) => {
+return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 {
 const _1 = definition_;
 {
@@ -1994,7 +1994,7 @@ return
 
 export async function Inference_inferExtendDefinition$(self_, environment_, definition_, $signal) {
 const selfParameter_ = ff_compiler_Syntax.Parameter(definition_.at_, false, definition_.name_, definition_.type_, ff_core_Option.None());
-const functions_ = ff_core_List.List_map(definition_.methods_, ((method_, $signal) => {
+const functions_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, method_.signature_.generics_), ff_core_List.List_addAll(definition_.constraints_, method_.signature_.constraints_), ff_core_List.Link(selfParameter_, method_.signature_.parameters_), _c.returnType_, _c.effect_)
 }))(method_.signature_);
@@ -2027,7 +2027,7 @@ return
 }
 
 export async function Inference_inferFunctionDefinition$(self_, environment_, definition_, $signal) {
-const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_, $signal) => {
+const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_, noEffect_));
 return ff_core_Pair.Pair(p_.name_, scheme_)
@@ -2036,12 +2036,12 @@ const parameterMap_ = ff_core_List.List_toMap(parameters_, ff_core_Ordering.ff_c
 const environment2_ = ((async (_c, $signal) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, parameterMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
-const parameterTypes_ = ff_core_List.List_map(parameters_, ((_w1, $signal) => {
+const parameterTypes_ = ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
 }));
 const functionType_ = ff_compiler_Syntax.TConstructor(definition_.at_, ("Function$" + ff_core_List.List_size(parameterTypes_)), ff_core_List.Link(definition_.signature_.effect_, ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(definition_.signature_.returnType_, ff_core_List.Empty()))));
 const instances_ = ff_compiler_Inference.constraintsToInstances_(definition_.signature_.constraints_);
-return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (($signal) => {
+return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_, instances_, (() => {
 {
 const _1 = definition_;
 {
@@ -2089,7 +2089,7 @@ return
 }))(ff_compiler_Unification.Unification_substitute(self_.unification_, expected_));
 const cases_ = ((!returnsUnit_)
 ? lambda_.cases_
-: ff_core_List.List_map(lambda_.cases_, ((c_, $signal) => {
+: ff_core_List.List_map(lambda_.cases_, ((c_) => {
 {
 const _1 = c_;
 {
@@ -2106,7 +2106,7 @@ return ff_compiler_Environment.Environment(_c.symbols_, lambda_.effect_)
 const _1 = lambda_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(cases_, ((_w1, $signal) => {
+return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(cases_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferMatchCase(self_, newEnvironment_, expected_, _w1)
 })))
 return
@@ -2115,13 +2115,13 @@ return
 }
 
 export async function Inference_inferMatchCase$(self_, environment_, expected_, case_, $signal) {
-const parameterTypes_ = ff_core_List.List_map(case_.patterns_, ((_w1, $signal) => {
+const parameterTypes_ = ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }));
 const returnType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, case_.at_);
 const functionType_ = ff_compiler_Syntax.TConstructor(case_.at_, ("Function$" + ff_core_List.List_size(case_.patterns_)), ff_core_List.Link(environment_.effect_, ff_core_List.List_addAll(parameterTypes_, ff_core_List.Link(returnType_, ff_core_List.Empty()))));
 ff_compiler_Unification.Unification_unify(self_.unification_, case_.at_, expected_, functionType_);
-const environment1_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_, ((_1, _2, $signal) => {
+const environment1_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameterTypes_, case_.patterns_), environment_, ((_1, _2) => {
 {
 const environment1_ = _1;
 const t_ = _2.first_;
@@ -2147,7 +2147,7 @@ return
 }
 }));
 let guards_ = ff_core_List.Empty();
-const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_, $signal) => {
+const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_) => {
 const guardType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, g_.at_);
 const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, guardType_, g_.term_);
 const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPattern(self_, environment2_, guardType_, g_.pattern_), ((_1) => {
@@ -2239,7 +2239,7 @@ if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 if(_1.variable_.None) {
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (($signal) => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }));
 if(instantiated_.scheme_.isNewtype_) {
@@ -2256,19 +2256,19 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 if(_1.variable_.Some) {
 const variable_ = _1.variable_.value_;
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (($signal) => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }));
 if(instantiated_.scheme_.isNewtype_) {
 ff_compiler_Inference.fail_(at_, "This kind of pattern is not allowed for newtypes")
 };
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
-const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1, $signal) => {
+const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const recordType_ = ff_compiler_Syntax.TConstructor(at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(parameters_, ((_w1, $signal) => {
+const recordType_ = ff_compiler_Syntax.TConstructor(at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.name_
-})), "$")), ff_core_List.List_map(parameters_, ((_w1, $signal) => {
+})), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
 })));
 return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(variable_, recordType_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -2281,18 +2281,18 @@ if(_1.PVariant) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (($signal) => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
-return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1, $signal) => {
+return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1) => {
 {
 const pattern_ = _1.first_;
 const parameter_ = _1.second_;
 return ff_compiler_Inference.Inference_inferPattern(self_, environment_, parameter_.valueType_, pattern_)
 return
 }
-})), ff_core_Map.empty_(), ((_w1, _w2, $signal) => {
+})), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 return
@@ -2335,14 +2335,14 @@ return
 {
 if(_1.EVariable) {
 const e_ = _1;
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), ((instantiated_, $signal) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), ((instantiated_) => {
 if(instantiated_.scheme_.isVariable_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
 } else {
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_)
 }
-})), (($signal) => {
+})), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
 }))
 return
@@ -2363,11 +2363,11 @@ const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
 const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1);
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1, $signal) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ == e_.field_)
-})), ((_w1, $signal) => {
+})), ((_w1) => {
 return _w1.first_
-})), ((index_, $signal) => {
+})), ((index_) => {
 const t1_ = ff_core_List.List_expect(typeArguments_, index_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_);
 {
@@ -2378,7 +2378,7 @@ return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
 return
 }
 }
-})), (($signal) => {
+})), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
 }))
 return
@@ -2446,7 +2446,7 @@ return
 {
 if(_1.EWildcard) {
 const e_ = _1;
-return ff_core_Option.Option_expect(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_, $signal) => {
+return ff_core_Option.Option_expect(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_) => {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
 })))
@@ -2460,7 +2460,7 @@ const t_ = _1.elementType_;
 const items_ = _1.items_;
 const listType_ = ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_("List"), ff_core_List.Link(t_, ff_core_List.Empty()));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, listType_);
-return ff_compiler_Syntax.EList(at_, t_, ff_core_List.List_map(items_, ((_1, $signal) => {
+return ff_compiler_Syntax.EList(at_, t_, ff_core_List.List_map(items_, ((_1) => {
 {
 const item_ = _1.first_;
 const spread_ = _1.second_;
@@ -2491,7 +2491,7 @@ const at3_ = _1.function_.lambda_.at_;
 const effect_ = _1.function_.lambda_.effect_;
 const cases_ = _1.function_.lambda_.cases_;
 const e_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Unit.Unit", ff_core_List.Empty(), ff_core_Option.None());
-const newCases_ = ff_core_List.List_map(cases_, ((case_, $signal) => {
+const newCases_ = ff_core_List.List_map(cases_, ((case_) => {
 {
 const _1 = case_;
 {
@@ -2563,18 +2563,18 @@ return
 {
 if(_1.EVariant) {
 const e_ = _1;
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (($signal) => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
-const arguments_ = ff_core_Option.Option_map(e_.arguments_, ((_w1, $signal) => {
+const arguments_ = ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, environment_, instantiated_.scheme_.signature_.parameters_, _w1)
 }));
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(instantiated_.typeArguments_, ((_w1, $signal) => {
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(instantiated_.typeArguments_, ((_w1) => {
 return _w1.second_
 })), arguments_)
 return
@@ -2586,15 +2586,15 @@ return
 {
 if(_1.EVariantIs) {
 const e_ = _1;
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (($signal) => {
+const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
 }));
-const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1, $signal) => {
+const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const recordType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(parameters_, ((_w1, $signal) => {
+const recordType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.name_
-})), "$")), ff_core_List.List_map(parameters_, ((_w1, $signal) => {
+})), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
 })));
 const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_), ff_core_List.Link(instantiated_.scheme_.signature_.returnType_, ff_core_List.Link(ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Option"), ff_core_List.Link(recordType_, ff_core_List.Empty())), ff_core_List.Empty()))));
@@ -2603,7 +2603,7 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(instantiated_.typeArguments_, ((_w1, $signal) => {
+return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(instantiated_.typeArguments_, ((_w1) => {
 return _w1.second_
 })))
 return
@@ -2615,21 +2615,21 @@ return
 {
 if(_1.ECopy) {
 const e_ = _1;
-const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), (($signal) => {
+const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
 })).scheme_;
 if(scheme_.isNewtype_) {
 ff_compiler_Inference.fail_(e_.at_, "Newtypes can't be copied")
 };
 const signature_ = scheme_.signature_;
-const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1, $signal) => {
+const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
 }));
-ff_core_Option.Option_each(ff_core_List.List_find(e_.arguments_, ((a_, $signal) => {
+ff_core_Option.Option_each(ff_core_List.List_find(e_.arguments_, ((a_) => {
 return (!ff_core_List.List_any(parameterNames_, ((_w1) => {
 return (_w1 == a_.name_)
 })))
-})), ((_1, $signal) => {
+})), ((_1) => {
 {
 const at_ = _1.at_;
 const name_ = _1.name_;
@@ -2638,7 +2638,7 @@ ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
 return
 }
 }));
-const arguments_ = ff_core_List.List_map(parameterNames_, ((name_, $signal) => {
+const arguments_ = ff_core_List.List_map(parameterNames_, ((name_) => {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_find(e_.arguments_, ((_w1) => {
 return (_w1.name_ == name_)
 })), ((_1) => {
@@ -2701,7 +2701,7 @@ const _1 = call_.function_;
 if(_1.EVariable) {
 const variableAt_ = _1.at_;
 const x_ = _1.name_;
-if(ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_, $signal) => {
+if(ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
 return ((c_ != 95) && (!ff_core_Char.Char_isAsciiLetter(c_)))
 }))) {
 return ff_compiler_Inference.Inference_inferOperator(self_, environment_, expected_, x_, term_)
@@ -2801,17 +2801,17 @@ return
 {
 if(_1.ERecord) {
 const e_ = _1;
-const fields_ = ff_core_List.List_sortBy(e_.fields_, ((_w1, $signal) => {
+const fields_ = ff_core_List.List_sortBy(e_.fields_, ((_w1) => {
 return _w1.name_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const fieldTypes_ = ff_core_List.List_map(fields_, ((_w1, $signal) => {
+const fieldTypes_ = ff_core_List.List_map(fields_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }));
-const recordType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(fields_, ((_w1, $signal) => {
+const recordType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Record$" + ff_core_List.List_join(ff_core_List.List_map(fields_, ((_w1) => {
 return _w1.name_
 })), "$")), fieldTypes_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, recordType_);
-const newFields_ = ff_core_List.List_map(ff_core_List.List_zip(fields_, fieldTypes_), ((_1, $signal) => {
+const newFields_ = ff_core_List.List_map(ff_core_List.List_zip(fields_, fieldTypes_), ((_1) => {
 {
 const field_ = _1.first_;
 const t_ = _1.second_;
@@ -2842,14 +2842,14 @@ if(_1.EFunctions) {
 const at_ = _1.at_;
 const functions_ = _1.functions_;
 const body_ = _1.body_;
-const functionMap_ = ff_core_List.List_toMap(ff_core_List.List_map(functions_, ((f_, $signal) => {
+const functionMap_ = ff_core_List.List_toMap(ff_core_List.List_map(functions_, ((f_) => {
 const scheme_ = ff_compiler_Environment.Scheme(false, false, false, false, f_.signature_);
 return ff_core_Pair.Pair(f_.signature_.name_, scheme_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const environment2_ = ((async (_c, $signal) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
-const newFunctions_ = ff_core_List.List_map(functions_, ((_w1, $signal) => {
+const newFunctions_ = ff_core_List.List_map(functions_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment2_, _w1)
 }));
 const newBody_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, expected_, body_);
@@ -2860,7 +2860,7 @@ return
 {
 if(_1.EAssign) {
 const e_ = _1;
-return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.variable_, ff_core_List.Empty()), ((instantiated_, $signal) => {
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.variable_, ff_core_List.Empty()), ((instantiated_) => {
 if(instantiated_.scheme_.isMutable_) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {
@@ -2874,7 +2874,7 @@ return
 } else {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_))
 }
-})), (($signal) => {
+})), (() => {
 return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.variable_))
 }))
 return
@@ -3007,7 +3007,7 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signat
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1, $signal) => {
+return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, false), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), ff_core_List.Link(selfArgument_, arguments_), _c.dictionaries_)
 return
@@ -3051,7 +3051,7 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signat
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, instanceCall_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1, $signal) => {
+return ff_compiler_Syntax.ECall(_c.at_, ff_compiler_Syntax.StaticCall(name_, call_.tailCall_, instanceCall_), signature_.effect_, ff_core_List.List_map(instantiation_, ((_w1) => {
 return _w1.second_
 })), arguments_, _c.dictionaries_)
 return
@@ -3098,12 +3098,12 @@ return
 }
 }))(e_.target_);
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, term_.at_);
-const argumentTypes_ = ff_core_List.List_map(e_.arguments_, ((_w1, $signal) => {
+const argumentTypes_ = ff_core_List.List_map(e_.arguments_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }));
 const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, ("Function$" + ff_core_List.List_size(e_.arguments_)), ff_core_List.Link(effect_, ff_core_List.List_addAll(argumentTypes_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, call_.function_);
-const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, argumentTypes_), ((_1, $signal) => {
+const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, argumentTypes_), ((_1) => {
 {
 const argument_ = _1.first_;
 const t_ = _1.second_;
@@ -3121,7 +3121,7 @@ return
 return
 }
 }));
-ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_, $signal) => {
+ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_) => {
 ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
 }));
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect_, environment_.effect_);
@@ -3275,7 +3275,7 @@ const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.u
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t2_, a2_.value_);
-const magic_ = ((t_, $signal) => {
+const magic_ = ((t_) => {
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
 {
@@ -3356,7 +3356,7 @@ return
 }
 }
 });
-const chooseType_ = ((_1, _2, $signal) => {
+const chooseType_ = ((_1, _2) => {
 {
 if(_1.Some) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t1_, t2_);
@@ -3419,7 +3419,7 @@ const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.u
 const t2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t2_, a2_.value_);
-const magic_ = ((t_, $signal) => {
+const magic_ = ((t_) => {
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t_);
 {
@@ -3464,7 +3464,7 @@ return
 }
 }
 });
-const chooseType_ = ((_1, _2, $signal) => {
+const chooseType_ = ((_1, _2) => {
 {
 if(_1.Some) {
 if(_1.value_ == "String") {
@@ -3587,17 +3587,17 @@ return
 }
 
 export async function Inference_inferEtaExpansion$(self_, environment_, expected_, at_, signature_, term_, $signal) {
-const parameters_ = ff_core_List.List_map(ff_core_List.List_filter(signature_.parameters_, ((_w1, $signal) => {
+const parameters_ = ff_core_List.List_map(ff_core_List.List_filter(signature_.parameters_, ((_w1) => {
 return ff_core_Option.Option_isEmpty(_w1.default_)
-})), ((p_, $signal) => {
+})), ((p_) => {
 return p_.name_
 }));
 const effect1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
-const body_ = ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(term_, false), effect1_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_, $signal) => {
+const body_ = ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(term_, false), effect1_, ff_core_List.Empty(), ff_core_List.List_map(parameters_, ((x_) => {
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(x_), ff_compiler_Syntax.EVariable(at_, x_))
 })), ff_core_List.Empty());
 const effect2_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_);
-const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect2_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1, $signal) => {
+const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect2_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
 })), ff_core_List.Empty(), body_), ff_core_List.Empty())));
 return ff_compiler_Inference.Inference_inferTerm(self_, ((async (_c, $signal) => {
@@ -3607,7 +3607,7 @@ return ff_compiler_Environment.Environment(_c.symbols_, effect2_)
 
 export async function Inference_inferArguments$(self_, at_, environment_, parameters_, arguments_, $signal) {
 let remainingArguments_ = arguments_;
-const newArguments_ = ff_core_List.List_map(parameters_, ((p_, $signal) => {
+const newArguments_ = ff_core_List.List_map(parameters_, ((p_) => {
 const t_ = p_.valueType_;
 function defaultArgument_() {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(p_.default_, ((e_) => {
@@ -3659,7 +3659,7 @@ return
 }
 }
 }));
-ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1, $signal) => {
+ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) => {
 {
 const at_ = _1.at_;
 if(_1.name_.None) {
@@ -3680,7 +3680,7 @@ return newArguments_
 }
 
 export async function Inference_lookup$(self_, environment_, at_, symbol_, typeArguments_, $signal) {
-return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((scheme_, $signal) => {
+return ff_core_Option.Option_map(ff_core_Map.Map_get(environment_.symbols_, symbol_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((scheme_) => {
 const instantiation_ = ((!ff_core_List.List_isEmpty(typeArguments_))
 ? (function() {
 const newTypeArguments_ = (((!scheme_.isVariable_) && ff_core_Option.Option_any(ff_core_List.List_first(scheme_.signature_.generics_), ((_w1) => {

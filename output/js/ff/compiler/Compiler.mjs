@@ -203,10 +203,10 @@ return result_
 }
 
 export async function Compiler_printMeasurements$(self_, $signal) {
-const worst_ = ff_core_List.List_reverse(ff_core_List.List_takeLast(ff_core_List.List_sortBy(self_.phaseDurations_, ((_w1, $signal) => {
+const worst_ = ff_core_List.List_reverse(ff_core_List.List_takeLast(ff_core_List.List_sortBy(self_.phaseDurations_, ((_w1) => {
 return ((_w1.second_ + 1000000.0) + "")
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), 5));
-ff_core_List.List_each(worst_, ((_1, $signal) => {
+ff_core_List.List_each(worst_, ((_1) => {
 {
 const text_ = _1.first_;
 const duration_ = _1.second_;
@@ -219,7 +219,7 @@ return
 export async function Compiler_parse$(self_, packageName_, moduleName_, $signal) {
 return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($signal) => {
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Parse", packageName_, moduleName_, (async ($signal) => {
-const packagePair_ = ff_core_Core.do_((($signal) => {
+const packagePair_ = ff_core_Core.do_((() => {
 const array_ = ff_core_String.String_split(packageName_, 58);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(array_, 0), ff_core_Array.Array_expect(array_, 1))
 }));
@@ -240,7 +240,7 @@ return result_
 export async function Compiler_imports$(self_, packageName_, module_, $signal) {
 return (await ff_core_List.List_map$(module_.imports_, (async (import_, $signal) => {
 const newPackageName_ = ((import_.package_.first_ + ":") + import_.package_.second_);
-const newModuleName_ = (ff_core_List.List_join(ff_core_List.List_map(import_.directory_, ((_w1, $signal) => {
+const newModuleName_ = (ff_core_List.List_join(ff_core_List.List_map(import_.directory_, ((_w1) => {
 return (_w1 + "/")
 })), "") + import_.file_);
 return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackageName_, newModuleName_, $signal))
@@ -288,7 +288,7 @@ const newModuleName_ = (await ff_core_FileSystem.FileSystem_prefixName$(self_.fi
 (await ff_compiler_Compiler.Compiler_emit$(self_, newPackageName_, newModuleName_, $signal));
 return (await ff_compiler_Compiler.Compiler_infer$(self_, newPackageName_, newModuleName_, $signal))
 }), $signal));
-const packagePair_ = ff_core_Core.do_((($signal) => {
+const packagePair_ = ff_core_Core.do_((() => {
 const array_ = ff_core_String.String_split(packageName_, 58);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(array_, 0), ff_core_Array.Array_expect(array_, 1))
 }));
