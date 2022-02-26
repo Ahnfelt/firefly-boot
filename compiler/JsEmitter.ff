@@ -44,7 +44,16 @@ extend self: JsEmitter {
     }
 
     emitMain(): String {
-        "queueMicrotask(() => main_$({array_: process.argv.slice(2)}))" // TODO
+        [
+            "queueMicrotask(async () => {"
+            "const controller = new AbortController()"
+            "try {"
+            "await main_$({array_: process.argv.slice(2)}, controller.signal)"
+            "} finally {"
+            "controller.abort()"
+            "}"
+            "})"
+        ].join("\n") // TODO
     }
 
     emitImportDefinition(definition: DImport): String {
@@ -142,7 +151,8 @@ extend self: JsEmitter {
         let dictionaryStrings = signature.constraints.map { c =>
             makeDictionaryName(c.name, firstTypeName(c.generics))
         }
-        let parameters = "(" + [...parameterStrings, ...dictionaryStrings].join(", ") + ")"
+        let signal = if(async) {["$signal"]} else {[]}
+        let parameters = "(" + [...parameterStrings, ...dictionaryStrings, ...signal].join(", ") + ")"
         let prefix = if(async) {"async "} else {""}
         let asyncSuffix = if(async) {"$"} else {""}
         prefix + "function " + escapeKeyword(signature.name) + suffix + asyncSuffix + parameters
@@ -220,18 +230,23 @@ extend self: JsEmitter {
             patterns.all {| PVariable _ => True | _ => False }
         } =>
             let newAsync = async && effectTypeIsAsync(effect)
-            let parameters =
-                patterns.map {| PVariable p => p.name.map(escapeKeyword).else{"_"} | _ => panic("!") }.join(", ")
+            let patternParameters = patterns.map {
+                | PVariable p => p.name.map(escapeKeyword).else{"_"}
+                | _ => panic("!")
+            }
+            let signal = if(async) {["$signal"]} else {[]}
+            let parameters = [...patternParameters, ...signal].join(", ")
             let prefix = if(newAsync) {"async "} else {""}
             "(" + prefix + "(" + parameters + ") => {\n" + self.emitStatements(body, True, newAsync) + "\n})"
         | ELambda(at, Lambda(_, effect, cases)) =>
             let newAsync = async && effectTypeIsAsync(effect)
+            let signal = if(async) {["$signal"]} else {[]}
             Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
             let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _, True, newAsync) + "\n}" }.join("\n")
             let prefix = if(newAsync) {"async "} else {""}
-            "(" + prefix + "(" + escapedArguments.join(", ") + ") => " +
+            "(" + prefix + "(" + [...escapedArguments, ...signal].join(", ") + ") => " +
             "{\n" + casesString + "\n})"
         | EPipe(at, value, function) =>
             // TODO: Add effect to pipe
@@ -250,7 +265,9 @@ extend self: JsEmitter {
             let d = dictionaryStrings.expectFirst()
             let asyncSuffix = if(await) {"$"} else {""}
             let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse()) + asyncSuffix
-            let call = d + "." + n + "(" + arguments.map{self.emitArgument(_, async)}.join(", ") + ds + ")"
+            let emittedArguments = arguments.map{self.emitArgument(_, async)}
+            let signal = if(await) {["$signal"]} else {[]}
+            let call = d + "." + n + "(" + [...emittedArguments, ...signal].join(", ") + ds + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ECall(at, StaticCall(name, _, _), effect, typeArguments, arguments, dictionaries) =>
             detectIfElse(term).{
@@ -261,10 +278,9 @@ extend self: JsEmitter {
                         dictionaries.map(self.emitDictionary).join(", ")
                     }
                     let functionCode = escapeResolved(name) + if(await) {"$"} else {""}
-                    let call =
-                        functionCode + "(" +
-                        arguments.map {self.emitArgument(_, async)}.join(", ") +
-                        ds + ")"
+                    let emittedArguments = arguments.map {self.emitArgument(_, async)}
+                    let signal = if(await) {["$signal"]} else {[]}
+                    let call = functionCode + "(" + [...emittedArguments, ...signal].join(", ") + ds + ")"
                     if(await) {"(await " + call + ")"} else {call}
                 | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
                     "(" + list.foldLeft(self.emitTerm(elseBody, async)) {| otherwise, Pair(condition, body) =>
@@ -281,10 +297,9 @@ extend self: JsEmitter {
             let await = async && effectTypeIsAsync(effect)
             if(!dictionaries.isEmpty()) {fail(at, "Internal error: Dictionaries in lambda call")}
             let functionCode = self.emitTerm(function, async)
-            let call =
-                functionCode + "(" +
-                arguments.map {self.emitArgument(_, async)}.join(", ") +
-                ")"
+            let emittedArguments = arguments.map {self.emitArgument(_, async)}
+            let signal = if(await) {["$signal"]} else {[]}
+            let call = functionCode + "(" + [...emittedArguments, ...signal].join(", ") + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ERecord(at, fields) =>
             if(fields.isEmpty()) {"{}"} else {

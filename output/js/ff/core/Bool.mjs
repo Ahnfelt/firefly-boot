@@ -82,7 +82,7 @@ return
 }
 }
 
-export async function Bool_toInt$(self_) {
+export async function Bool_toInt$(self_, $signal) {
 {
 const _1 = self_;
 {

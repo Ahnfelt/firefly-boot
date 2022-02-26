@@ -74,15 +74,15 @@ export function System_time(self_) {
 return null
 }
 
-export async function System_arguments$(self_) {
+export async function System_arguments$(self_, $signal) {
 return ff_core_Array.Array_toList(self_.array_)
 }
 
-export async function System_files$(self_) {
+export async function System_files$(self_, $signal) {
 return null
 }
 
-export async function System_time$(self_) {
+export async function System_time$(self_, $signal) {
 return null
 }
 

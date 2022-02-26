@@ -272,7 +272,7 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function check_$(variants_, fields_, cases_, success_, guard_) {
+export async function check_$(variants_, fields_, cases_, success_, guard_, $signal) {
 {
 const _1 = ff_core_Pair.Pair(fields_, cases_);
 {
@@ -281,11 +281,11 @@ const f_ = _1.first_.head_.first_;
 const p_ = _1.first_.head_.second_;
 const fs_ = _1.first_.tail_;
 const cs_ = _1.second_;
-const vs_ = ff_core_Option.Option_else(ff_core_Map.Map_get(variants_, f_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+const vs_ = ff_core_Option.Option_else(ff_core_Map.Map_get(variants_, f_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (($signal) => {
 return ff_core_Set.Set_add(p_.otherVariants_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }));
 if(ff_core_Set.Set_contains(vs_, p_.variant_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
-const newFields_ = ff_core_List.List_map(p_.fields_, ((_w1) => {
+const newFields_ = ff_core_List.List_map(p_.fields_, ((_w1, $signal) => {
 return ff_core_Pair.Pair_mapFirst(_w1, ((_w1) => {
 return ((((f_ + ".") + p_.variant_) + "_") + _w1)
 }))
@@ -323,9 +323,9 @@ return
 {
 if(_1.first_.Empty) {
 if(_1.second_.Empty) {
-const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1, $signal) => {
 return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) != 0)
-})), ((_1) => {
+})), ((_1, $signal) => {
 {
 const f_ = _1.first_;
 const vs_ = _1.second_;
@@ -343,7 +343,7 @@ return
 }
 }
 
-export async function convert_$(modules_, cases_) {
+export async function convert_$(modules_, cases_, $signal) {
 function unqualifiedName_(name_) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
@@ -432,7 +432,7 @@ return
 }
 }
 }
-return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1) => {
+return ff_core_List.List_map(ff_core_List.List_pairs(cases_), ((_1, $signal) => {
 {
 const caseIndex_ = _1.first_;
 const case_ = _1.second_;
@@ -467,16 +467,16 @@ return
 }))
 }
 
-export async function convertAndCheck_$(modules_, cases_) {
+export async function convertAndCheck_$(modules_, cases_, $signal) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
-ff_core_Try.Try_else(ff_core_Core.try_((() => {
+ff_core_Try.Try_else(ff_core_Core.try_((($signal) => {
 return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
-})), (() => {
+})), (($signal) => {
 ff_compiler_Patterns.fail_(ff_core_List.List_expect(cases_, 0).at_, "Unexhaustive match")
 }))
 }
 
-export async function fail_$(at_, message_) {
+export async function fail_$(at_, message_, $signal) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 

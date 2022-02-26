@@ -93,16 +93,16 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function make_$(modules_) {
+export async function make_$(modules_, $signal) {
 return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_).instances_)
 }
 
-export async function fail_$(at_, message_) {
+export async function fail_$(at_, message_, $signal) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function constraintsToInstances_$(constraints_) {
-return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
+export async function constraintsToInstances_$(constraints_, $signal) {
+return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_, $signal) => {
 const typeName_ = (((_1) => {
 {
 if(_1.TConstructor) {
@@ -599,9 +599,9 @@ return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.gen
 return ff_compiler_Syntax.Dictionary(instance_.packageName_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
 
-export async function Dictionaries_processModule$(self_, module_, otherModules_) {
+export async function Dictionaries_processModule$(self_, module_, otherModules_, $signal) {
 const environment_ = ff_compiler_Environment.make_(module_, otherModules_);
-const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_pairs(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
+const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_pairs(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1, $signal) => {
 {
 const name_ = _1.first_;
 const s_ = _1.second_;
@@ -616,16 +616,16 @@ return ff_core_Option.None()
 return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
+const lets_ = ff_core_List.List_map(module_.lets_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processLetDefinition(self_, functionSignatures_, _w1)
 }));
-const functions_ = ff_core_List.List_map(module_.functions_, ((_w1) => {
+const functions_ = ff_core_List.List_map(module_.functions_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self_, functionSignatures_, _w1)
 }));
-const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
+const extends_ = ff_core_List.List_map(module_.extends_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processExtendDefinition(self_, functionSignatures_, _w1)
 }));
-const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
+const instances_ = ff_core_List.List_map(module_.instances_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processInstanceDefinition(self_, functionSignatures_, _w1)
 }));
 {
@@ -638,7 +638,7 @@ return
 }
 }
 
-export async function Dictionaries_processLetDefinition$(self_, functions_, definition_) {
+export async function Dictionaries_processLetDefinition$(self_, functions_, definition_, $signal) {
 {
 const _1 = definition_;
 {
@@ -649,12 +649,12 @@ return
 }
 }
 
-export async function Dictionaries_processExtendDefinition$(self_, functions_, definition_) {
+export async function Dictionaries_processExtendDefinition$(self_, functions_, definition_, $signal) {
 {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, ff_core_List.List_map(definition_.methods_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self_, functions_, _w1)
 })))
 return
@@ -662,9 +662,9 @@ return
 }
 }
 
-export async function Dictionaries_processFunctionDefinition$(self_, functions_, definition_) {
+export async function Dictionaries_processFunctionDefinition$(self_, functions_, definition_, $signal) {
 const instances_ = ff_compiler_Dictionaries.constraintsToInstances_(definition_.signature_.constraints_);
-const self2_ = ((async (_c) => {
+const self2_ = ((async (_c, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey))
 }))(self_);
 {
@@ -677,16 +677,16 @@ return
 }
 }
 
-export async function Dictionaries_processInstanceDefinition$(self_, functions_, definition_) {
+export async function Dictionaries_processInstanceDefinition$(self_, functions_, definition_, $signal) {
 const instances_ = ff_compiler_Dictionaries.constraintsToInstances_(definition_.constraints_);
-const self2_ = ((async (_c) => {
+const self2_ = ((async (_c, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey))
 }))(self_);
 {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self2_, functions_, _w1)
 })))
 return
@@ -694,12 +694,12 @@ return
 }
 }
 
-export async function Dictionaries_processLambda$(self_, functions_, definition_) {
+export async function Dictionaries_processLambda$(self_, functions_, definition_, $signal) {
 {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(definition_.cases_, ((case_) => {
+return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(definition_.cases_, ((case_, $signal) => {
 {
 const _1 = case_;
 {
@@ -723,7 +723,7 @@ return
 }
 }
 
-export async function Dictionaries_processTerm$(self_, functions_, term_) {
+export async function Dictionaries_processTerm$(self_, functions_, term_, $signal) {
 {
 const _1 = term_;
 {
@@ -784,7 +784,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e_.items_, ((_1) => {
+return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e_.items_, ((_1, $signal) => {
 {
 const item_ = _1.first_;
 const b_ = _1.second_;
@@ -848,7 +848,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, _c.typeArguments_, ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, _c.typeArguments_, ff_core_Option.Option_map(e_.arguments_, ((_w1, $signal) => {
 return ff_core_List.List_map(_w1, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, _w1)
 }))
@@ -873,7 +873,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.record_), ff_core_List.List_map(e_.arguments_, ((_w1) => {
+return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.record_), ff_core_List.List_map(e_.arguments_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processField(self_, functions_, _w1)
 })))
 return
@@ -907,12 +907,12 @@ const arguments_ = _1.arguments_;
 const _guard1 = ff_core_Map.Map_get(functions_, target_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 if(_guard1.Some) {
 const signature_ = _guard1.value_;
-const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1) => {
+const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, signature_.generics_, typeArguments_, _w1)
 }));
-return ff_compiler_Syntax.ECall(at_, ((async (_c) => {
+return ff_compiler_Syntax.ECall(at_, ((async (_c, $signal) => {
 return ff_compiler_Syntax.StaticCall(_c.name_, _c.tailCall_, _c.instanceCall_)
-}))(target_), effect_, typeArguments_, ff_core_List.List_map(arguments_, ((_w1) => {
+}))(target_), effect_, typeArguments_, ff_core_List.List_map(arguments_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, _w1)
 })), dictionaries_)
 return
@@ -923,7 +923,7 @@ return
 {
 if(_1.ECall) {
 const e_ = _1;
-const target_ = ((async (_1) => {
+const target_ = ((async (_1, $signal) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -949,7 +949,7 @@ return
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((_w1) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, _w1)
 })), _c.dictionaries_)
 return
@@ -965,7 +965,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((_w1) => {
+return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processField(self_, functions_, _w1)
 })))
 return
@@ -977,14 +977,14 @@ return
 {
 if(_1.EFunctions) {
 const e_ = _1;
-const newFunctions_ = ff_core_Map.Map_addAll(functions_, ff_core_List.List_toMap(ff_core_List.List_map(e_.functions_, ((f_) => {
+const newFunctions_ = ff_core_Map.Map_addAll(functions_, ff_core_List.List_toMap(ff_core_List.List_map(e_.functions_, ((f_, $signal) => {
 return ff_core_Pair.Pair(f_.signature_.name_, f_.signature_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EFunctions(_c.at_, ff_core_List.List_map(e_.functions_, ((_w1) => {
+return ff_compiler_Syntax.EFunctions(_c.at_, ff_core_List.List_map(e_.functions_, ((_w1, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self_, newFunctions_, _w1)
 })), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, newFunctions_, e_.body_))
 return
@@ -1024,7 +1024,7 @@ return
 }
 }
 
-export async function Dictionaries_processArgument$(self_, functions_, argument_) {
+export async function Dictionaries_processArgument$(self_, functions_, argument_, $signal) {
 {
 const _1 = argument_;
 {
@@ -1035,7 +1035,7 @@ return
 }
 }
 
-export async function Dictionaries_processField$(self_, functions_, field_) {
+export async function Dictionaries_processField$(self_, functions_, field_, $signal) {
 {
 const _1 = field_;
 {
@@ -1046,13 +1046,13 @@ return
 }
 }
 
-export async function Dictionaries_makeDictionary$(self_, typeParameters_, typeArguments_, constraint_) {
+export async function Dictionaries_makeDictionary$(self_, typeParameters_, typeArguments_, constraint_, $signal) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty());
-const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
+const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1, $signal) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));
-const firstType_ = ((async (_1) => {
+const firstType_ = ((async (_1, $signal) => {
 {
 if(_1.TConstructor) {
 const t_ = _1;
@@ -1069,7 +1069,7 @@ return
 }
 }))(ff_core_List.List_expectFirst(newGenerics_));
 const instance_ = ff_core_Map.Map_expect(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
-const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
+const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_, $signal) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.generics_, firstType_.generics_, c_)
 }));
 return ff_compiler_Syntax.Dictionary(instance_.packageName_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)

@@ -823,7 +823,7 @@ return
 }
 }
 
-export async function RbMap_size$(self_, ff_core_Ordering_Order$K) {
+export async function RbMap_size$(self_, ff_core_Ordering_Order$K, $signal) {
 {
 const _1 = self_;
 {
@@ -843,7 +843,7 @@ return
 }
 }
 
-export async function RbMap_pairs$(self_, ff_core_Ordering_Order$K) {
+export async function RbMap_pairs$(self_, ff_core_Ordering_Order$K, $signal) {
 {
 const _1 = self_;
 {
@@ -865,7 +865,7 @@ return
 }
 }
 
-export async function RbMap_each$(self_, body_, ff_core_Ordering_Order$K) {
+export async function RbMap_each$(self_, body_, ff_core_Ordering_Order$K, $signal) {
 {
 const _1 = self_;
 {
@@ -880,16 +880,16 @@ const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-(await ff_core_RbMap.RbMap_each$(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K));
-(await body_(k_, v_));
-(await ff_core_RbMap.RbMap_each$(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+(await ff_core_RbMap.RbMap_each$(l_, body_, $signal, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K));
+(await body_(k_, v_, $signal));
+(await ff_core_RbMap.RbMap_each$(r_, body_, $signal, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
 return
 }
 }
 }
 }
 
-export async function RbMap_get$(self_, key_, ff_core_Ordering_Order$K) {
+export async function RbMap_get$(self_, key_, ff_core_Ordering_Order$K, $signal) {
 _tailcall: for(;;) {
 {
 const _1 = self_;
@@ -946,7 +946,7 @@ return
 }
 }
 
-export async function RbMap_add$(self_, key_, value_, ff_core_Ordering_Order$K) {
+export async function RbMap_add$(self_, key_, value_, ff_core_Ordering_Order$K, $signal) {
 function go_(self_) {
 {
 const _1 = self_;
@@ -1011,7 +1011,7 @@ return
 }
 }
 
-export async function RbMap_remove$(self_, key_, ff_core_Ordering_Order$K) {
+export async function RbMap_remove$(self_, key_, ff_core_Ordering_Order$K, $signal) {
 function go_(self_) {
 {
 const _1 = self_;
@@ -1467,7 +1467,7 @@ return
 }
 }
 
-export async function RbMap_balance$(self_, ff_core_Ordering_Order$K) {
+export async function RbMap_balance$(self_, ff_core_Ordering_Order$K, $signal) {
 {
 const _1 = self_;
 {

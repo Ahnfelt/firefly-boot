@@ -60,7 +60,7 @@ export function Instant_add(self_, duration_) {
 return (self_ + duration_)
 }
 
-export async function Instant_add$(self_, duration_) {
+export async function Instant_add$(self_, duration_, $signal) {
 return (self_ + duration_)
 }
 

@@ -67,11 +67,11 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$() {
+export async function make_$($signal) {
 return ff_compiler_Wildcards.Wildcards(0)
 }
 
-export async function fail_$(at_, message_) {
+export async function fail_$(at_, message_, $signal) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
@@ -332,7 +332,7 @@ return
 }
 }
 
-export async function Wildcards_fixWildcards$(self_, term_) {
+export async function Wildcards_fixWildcards$(self_, term_, $signal) {
 {
 const self_a = self_;
 const term_a = term_;
@@ -419,7 +419,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ((async (_1) => {
+return ff_compiler_Syntax.ECall(_c.at_, ((async (_1, $signal) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -438,7 +438,7 @@ return
 return ff_compiler_Wildcards.fail_(e_.at_, "Internal error: Static calls not expected in the Wildcards phase")
 return
 }
-}))(e_.target_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
+}))(e_.target_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_, $signal) => {
 {
 const _1 = a_;
 {
@@ -462,7 +462,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e_.items_, ((_1) => {
+return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e_.items_, ((_1, $signal) => {
 {
 const item_ = _1.first_;
 const spread_ = _1.second_;
@@ -484,7 +484,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((a_) => {
+return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((a_, $signal) => {
 {
 const _1 = a_;
 {
@@ -508,7 +508,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, _c.typeArguments_, ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, _c.typeArguments_, ff_core_Option.Option_map(e_.arguments_, ((_w1, $signal) => {
 return ff_core_List.List_map(_w1, ((a_) => {
 {
 const _1 = a_;
@@ -534,7 +534,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((a_) => {
+return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((a_, $signal) => {
 {
 const _1 = a_;
 {

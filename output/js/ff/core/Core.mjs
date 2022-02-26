@@ -113,7 +113,7 @@ export function magicShow_(value_) {
 return JSON.stringify(value_, undefined, 4)
 }
 
-export async function if_$(condition_, body_) {
+export async function if_$(condition_, body_, $signal) {
 {
 const _1 = condition_;
 {
@@ -124,16 +124,16 @@ return
 }
 {
 if(_1) {
-return ff_core_Option.Some((await body_()))
+return ff_core_Option.Some((await body_($signal)))
 return
 }
 }
 }
 }
 
-export async function while_$(condition_, body_) {
+export async function while_$(condition_, body_, $signal) {
 {
-const _1 = (await condition_());
+const _1 = (await condition_($signal));
 {
 if(!_1) {
 
@@ -142,9 +142,9 @@ return
 }
 {
 if(_1) {
-(await body_());
-while((await condition_())) {
-(await body_())
+(await body_($signal));
+while((await condition_($signal))) {
+(await body_($signal))
 }
 return
 }
@@ -152,19 +152,19 @@ return
 }
 }
 
-export async function try_$(body_) {
+export async function try_$(body_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function do_$(body_) {
-return (await body_())
+export async function do_$(body_, $signal) {
+return (await body_($signal))
 }
 
-export async function panic_$(message_) {
+export async function panic_$(message_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function magicShow_$(value_) {
+export async function magicShow_$(value_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 

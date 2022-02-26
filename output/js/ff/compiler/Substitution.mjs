@@ -63,7 +63,7 @@ export function core_(name_) {
 return ((("ff:core/" + name_) + ".") + name_)
 }
 
-export async function core_$(name_) {
+export async function core_$(name_, $signal) {
 return ((("ff:core/" + name_) + ".") + name_)
 }
 
@@ -586,17 +586,17 @@ export function Substitution_has(self_, index_) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
-export async function Substitution_substituteModule$(self_, module_) {
-const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
+export async function Substitution_substituteModule$(self_, module_, $signal) {
+const lets_ = ff_core_List.List_map(module_.lets_, ((_w1, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteLetDefinition(self_, _w1)
 }));
-const functions_ = ff_core_List.List_map(module_.functions_, ((_w1) => {
+const functions_ = ff_core_List.List_map(module_.functions_, ((_w1, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
 }));
-const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
+const extends_ = ff_core_List.List_map(module_.extends_, ((_w1, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteExtendDefinition(self_, _w1)
 }));
-const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
+const instances_ = ff_core_List.List_map(module_.instances_, ((_w1, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteInstanceDefinition(self_, _w1)
 }));
 {
@@ -609,7 +609,7 @@ return
 }
 }
 
-export async function Substitution_substituteLetDefinition$(self_, definition_) {
+export async function Substitution_substituteLetDefinition$(self_, definition_, $signal) {
 {
 const _1 = definition_;
 {
@@ -620,12 +620,12 @@ return
 }
 }
 
-export async function Substitution_substituteExtendDefinition$(self_, definition_) {
+export async function Substitution_substituteExtendDefinition$(self_, definition_, $signal) {
 {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, ff_core_List.List_map(definition_.methods_, ((_w1, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
 })))
 return
@@ -633,7 +633,7 @@ return
 }
 }
 
-export async function Substitution_substituteFunctionDefinition$(self_, definition_) {
+export async function Substitution_substituteFunctionDefinition$(self_, definition_, $signal) {
 {
 const _1 = definition_;
 {
@@ -644,14 +644,14 @@ return
 }
 }
 
-export async function Substitution_substituteSignature$(self_, signature_) {
+export async function Substitution_substituteSignature$(self_, signature_, $signal) {
 {
 const _1 = signature_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((constraint_) => {
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((constraint_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteConstraint(self_, constraint_)
-})), ff_core_List.List_map(signature_.parameters_, ((parameter_) => {
+})), ff_core_List.List_map(signature_.parameters_, ((parameter_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteParameter(self_, parameter_)
 })), ff_compiler_Substitution.Substitution_substituteType(self_, signature_.returnType_), ff_compiler_Substitution.Substitution_substituteType(self_, signature_.effect_))
 return
@@ -659,12 +659,12 @@ return
 }
 }
 
-export async function Substitution_substituteConstraint$(self_, constraint_) {
+export async function Substitution_substituteConstraint$(self_, constraint_, $signal) {
 {
 const _1 = constraint_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.List_map(constraint_.generics_, ((type_) => {
+return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.List_map(constraint_.generics_, ((type_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
 })))
 return
@@ -672,12 +672,12 @@ return
 }
 }
 
-export async function Substitution_substituteParameter$(self_, parameter_) {
+export async function Substitution_substituteParameter$(self_, parameter_, $signal) {
 {
 const _1 = parameter_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, parameter_.valueType_), ff_core_Option.Option_map(parameter_.default_, ((term_) => {
+return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, parameter_.valueType_), ff_core_Option.Option_map(parameter_.default_, ((term_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteTerm(self_, term_)
 })))
 return
@@ -685,12 +685,12 @@ return
 }
 }
 
-export async function Substitution_substituteInstanceDefinition$(self_, definition_) {
+export async function Substitution_substituteInstanceDefinition$(self_, definition_, $signal) {
 {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
 })))
 return
@@ -698,12 +698,12 @@ return
 }
 }
 
-export async function Substitution_substituteLambda$(self_, definition_) {
+export async function Substitution_substituteLambda$(self_, definition_, $signal) {
 {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Lambda(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.effect_), ff_core_List.List_map(definition_.cases_, ((case_) => {
+return ff_compiler_Syntax.Lambda(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.effect_), ff_core_List.List_map(definition_.cases_, ((case_, $signal) => {
 {
 const _1 = case_;
 {
@@ -727,7 +727,7 @@ return
 }
 }
 
-export async function Substitution_substituteTerm$(self_, term_) {
+export async function Substitution_substituteTerm$(self_, term_, $signal) {
 {
 const _1 = term_;
 {
@@ -788,7 +788,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EList(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, e_.elementType_), ff_core_List.List_map(e_.items_, ((_1) => {
+return ff_compiler_Syntax.EList(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, e_.elementType_), ff_core_List.List_map(e_.items_, ((_1, $signal) => {
 {
 const item_ = _1.first_;
 const b_ = _1.second_;
@@ -851,9 +851,9 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_) => {
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
-})), ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
+})), ff_core_Option.Option_map(e_.arguments_, ((_w1, $signal) => {
 return ff_core_List.List_map(_w1, ((argument_) => {
 return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)
 }))
@@ -871,7 +871,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_) => {
+return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
 })))
 return
@@ -887,7 +887,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((field_) => {
+return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((field_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteField(self_, field_)
 })))
 return
@@ -917,7 +917,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ((async (_1) => {
+return ff_compiler_Syntax.ECall(_c.at_, ((async (_1, $signal) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -938,9 +938,9 @@ return e_.target_
 return
 }
 }
-}))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((type_) => {
+}))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((type_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
-})), ff_core_List.List_map(e_.arguments_, ((argument_) => {
+})), ff_core_List.List_map(e_.arguments_, ((argument_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)
 })), _c.dictionaries_)
 return
@@ -956,7 +956,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((field_) => {
+return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((field_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteField(self_, field_)
 })))
 return
@@ -972,7 +972,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EFunctions(_c.at_, ff_core_List.List_map(e_.functions_, ((definition_) => {
+return ff_compiler_Syntax.EFunctions(_c.at_, ff_core_List.List_map(e_.functions_, ((definition_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, definition_)
 })), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.body_))
 return
@@ -1012,7 +1012,7 @@ return
 }
 }
 
-export async function Substitution_substituteArgument$(self_, argument_) {
+export async function Substitution_substituteArgument$(self_, argument_, $signal) {
 {
 const _1 = argument_;
 {
@@ -1023,7 +1023,7 @@ return
 }
 }
 
-export async function Substitution_substituteField$(self_, field_) {
+export async function Substitution_substituteField$(self_, field_, $signal) {
 {
 const _1 = field_;
 {
@@ -1034,7 +1034,7 @@ return
 }
 }
 
-export async function Substitution_substituteType$(self_, type_) {
+export async function Substitution_substituteType$(self_, type_, $signal) {
 {
 const self_a = self_;
 const type_a = type_;
@@ -1059,7 +1059,7 @@ const t_ = type_a;
 const _1 = t_;
 {
 const _c = _1;
-return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((t_) => {
+return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((t_, $signal) => {
 return ff_compiler_Substitution.Substitution_substituteType(self_, t_)
 })))
 return
@@ -1071,7 +1071,7 @@ return
 }
 }
 
-export async function Substitution_get$(self_, index_) {
+export async function Substitution_get$(self_, index_, $signal) {
 {
 const _1 = ff_core_Map.Map_expect(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
@@ -1101,7 +1101,7 @@ return
 }
 }
 
-export async function Substitution_has$(self_, index_) {
+export async function Substitution_has$(self_, index_, $signal) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 

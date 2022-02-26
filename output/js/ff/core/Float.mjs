@@ -89,35 +89,35 @@ export function Float_toFixed(self_, digits_) {
 return self_.toFixed(digits_)
 }
 
-export async function Float_toInt$(self_) {
+export async function Float_toInt$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Float_round$(self_) {
+export async function Float_round$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Float_floor$(self_) {
+export async function Float_floor$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Float_ceil$(self_) {
+export async function Float_ceil$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Float_truncate$(self_) {
+export async function Float_truncate$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Float_sign$(self_) {
+export async function Float_sign$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Float_abs$(self_) {
+export async function Float_abs$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Float_toFixed$(self_, digits_) {
+export async function Float_toFixed$(self_, digits_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 

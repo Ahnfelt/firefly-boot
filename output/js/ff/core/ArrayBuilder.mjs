@@ -57,7 +57,7 @@ export function empty_() {
 return {array: []}
 }
 
-export async function empty_$() {
+export async function empty_$($signal) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -111,43 +111,43 @@ export function ArrayBuilder_sortBy(self_, ordering_) {
 self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
-export async function ArrayBuilder_toArray$(self_) {
+export async function ArrayBuilder_toArray$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_isEmpty$(self_) {
+export async function ArrayBuilder_isEmpty$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_size$(self_) {
+export async function ArrayBuilder_size$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_add$(self_, value_) {
+export async function ArrayBuilder_add$(self_, value_, $signal) {
 ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_modify$(self_, index_, body_) {
+export async function ArrayBuilder_modify$(self_, index_, body_, $signal) {
 ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_drain$(self_) {
+export async function ArrayBuilder_drain$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_toList$(self_) {
+export async function ArrayBuilder_toList$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_last$(self_) {
+export async function ArrayBuilder_last$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_expectLast$(self_) {
+export async function ArrayBuilder_expectLast$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_sortBy$(self_, ordering_) {
+export async function ArrayBuilder_sortBy$(self_, ordering_, $signal) {
 ff_core_Core.panic_("magic")
 }
 

@@ -111,46 +111,46 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
-export async function main_$(system_) {
-const mainPackage_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 0);
-const mainModule_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 1);
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 2));
-const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 3);
-const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_)), 4);
-const fs_ = (await ff_core_System.System_files$(system_));
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_))) {
-(await ff_compiler_Main.deleteDirectory_$(fs_, tempPath_))
+export async function main_$(system_, $signal) {
+const mainPackage_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 0);
+const mainModule_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 1);
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 2));
+const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 3);
+const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 4);
+const fs_ = (await ff_core_System.System_files$(system_, $signal));
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $signal))) {
+(await ff_compiler_Main.deleteDirectory_$(fs_, tempPath_, $signal))
 };
-(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, tempPath_));
+(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, tempPath_, $signal));
 const jsPathFile_ = (tempPath_ + "/js");
-(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_));
-const success_ = (await ff_core_Core.do_$((async () => {
-const compiler_ = (await ff_compiler_Compiler.make_$(fs_, (await ff_core_System.System_time$(system_)), jsPathFile_, packagePaths_));
-(await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_));
-(await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_));
+(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $signal));
+const success_ = (await ff_core_Core.do_$((async ($signal) => {
+const compiler_ = (await ff_compiler_Compiler.make_$(fs_, (await ff_core_System.System_time$(system_, $signal)), jsPathFile_, packagePaths_, $signal));
+(await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, $signal));
+(await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $signal));
 return true
-})));
+}), $signal));
 if(success_) {
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_))) {
-(await ff_compiler_Main.deleteDirectory_$(fs_, jsOutputPath_))
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_, $signal))) {
+(await ff_compiler_Main.deleteDirectory_$(fs_, jsOutputPath_, $signal))
 };
-(await ff_core_FileSystem.FileSystem_rename$(fs_, jsPathFile_, jsOutputPath_))
+(await ff_core_FileSystem.FileSystem_rename$(fs_, jsPathFile_, jsOutputPath_, $signal))
 }
 }
 
-export async function deleteDirectory_$(fs_, outputFile_) {
-(await ff_core_List.List_each$((await ff_core_FileSystem.FileSystem_list$(fs_, outputFile_)), (async (file_) => {
-if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_))) {
-(await ff_compiler_Main.deleteDirectory_$(fs_, file_))
+export async function deleteDirectory_$(fs_, outputFile_, $signal) {
+(await ff_core_List.List_each$((await ff_core_FileSystem.FileSystem_list$(fs_, outputFile_, $signal)), (async (file_, $signal) => {
+if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $signal))) {
+(await ff_compiler_Main.deleteDirectory_$(fs_, file_, $signal))
 } else {
-(await ff_core_FileSystem.FileSystem_delete$(fs_, file_))
+(await ff_core_FileSystem.FileSystem_delete$(fs_, file_, $signal))
 }
-})));
-(await ff_core_FileSystem.FileSystem_delete$(fs_, outputFile_))
+}), $signal));
+(await ff_core_FileSystem.FileSystem_delete$(fs_, outputFile_, $signal))
 }
 
-export async function parsePackageLocations_$(text_) {
-return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 44)), ((item_) => {
+export async function parsePackageLocations_$(text_, $signal) {
+return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 44)), ((item_, $signal) => {
 const parts_ = ff_core_String.String_split(item_, 64);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Array_expect(parts_, 1))
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -160,4 +160,11 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 
 
 
-queueMicrotask(() => main_$({array_: process.argv.slice(2)}))
+queueMicrotask(async () => {
+const controller = new AbortController()
+try {
+await main_$({array_: process.argv.slice(2)}, controller.signal)
+} finally {
+controller.abort()
+}
+})

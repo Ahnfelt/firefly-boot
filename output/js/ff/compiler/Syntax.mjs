@@ -290,7 +290,7 @@ export function Location_show(self_) {
 return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
 }
 
-export async function Location_show$(self_) {
+export async function Location_show$(self_, $signal) {
 return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
 }
 
@@ -323,7 +323,7 @@ return
 }
 }
 
-export async function Type_show$(self_) {
+export async function Type_show$(self_, $signal) {
 {
 const _1 = self_;
 {
@@ -334,7 +334,7 @@ const generics_ = _1.generics_;
 if(ff_core_List.List_isEmpty(generics_)) {
 return name_
 } else {
-return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1, $signal) => {
 return ff_compiler_Syntax.Type_show(_w1)
 })), ", ")) + "]")
 }

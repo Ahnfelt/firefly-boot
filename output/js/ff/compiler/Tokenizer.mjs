@@ -234,7 +234,7 @@ emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 return ff_core_ArrayBuilder.ArrayBuilder_drain(tokens_)
 }
 
-export async function tokenize_$(file_, code_) {
+export async function tokenize_$(file_, code_, $signal) {
 const tokens_ = ff_core_ArrayBuilder.empty_();
 let line_ = 1;
 let lineOffset_ = 0;
@@ -242,7 +242,7 @@ let startLine_ = line_;
 let startLineOffset_ = lineOffset_;
 const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-,;";
 let operatorCharacters_ = ff_core_Set.empty_();
-ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
+ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_, $signal) => {
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_expect(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
@@ -406,7 +406,7 @@ const column_ = ((i_ - startLineOffset_) + 1);
 ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Core.magicShow_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
 } else {}
 };
-ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
+ff_core_List.List_each(ff_core_List.range_(5), ((_, $signal) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 }));
 return ff_core_ArrayBuilder.ArrayBuilder_drain(tokens_)

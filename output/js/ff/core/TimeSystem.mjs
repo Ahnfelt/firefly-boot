@@ -73,17 +73,17 @@ const duration_ = (stop_ - start_);
 return ff_core_Pair.Pair(result_, duration_)
 }
 
-export async function TimeSystem_now$(self_) {
+export async function TimeSystem_now$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function TimeSystem_elapsed$(self_) {
+export async function TimeSystem_elapsed$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function TimeSystem_measure$(self_, body_) {
+export async function TimeSystem_measure$(self_, body_, $signal) {
 const start_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
-const result_ = (await body_());
+const result_ = (await body_($signal));
 const stop_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
 const duration_ = (stop_ - start_);
 return ff_core_Pair.Pair(result_, duration_)

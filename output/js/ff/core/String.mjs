@@ -178,91 +178,91 @@ export function String_all(self_, body_) {
         
 }
 
-export async function String_size$(self_) {
+export async function String_size$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_expect$(self_, index_) {
+export async function String_expect$(self_, index_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_replace$(self_, needle_, replacement_) {
+export async function String_replace$(self_, needle_, replacement_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_replaceFirst$(self_, needle_, replacement_) {
+export async function String_replaceFirst$(self_, needle_, replacement_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_reverse$(self_) {
+export async function String_reverse$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_dropWhile$(self_, p_) {
+export async function String_dropWhile$(self_, p_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_takeWhile$(self_, p_) {
+export async function String_takeWhile$(self_, p_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_slice$(self_, from_, until_) {
+export async function String_slice$(self_, from_, until_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_split$(self_, char_) {
+export async function String_split$(self_, char_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_dropFirst$(self_, count_ = 1) {
+export async function String_dropFirst$(self_, count_ = 1, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_dropLast$(self_, count_ = 1) {
+export async function String_dropLast$(self_, count_ = 1, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_expectInt$(self_) {
+export async function String_expectInt$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_first$(self_) {
+export async function String_first$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_last$(self_) {
+export async function String_last$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_expectFirst$(self_) {
-return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
+export async function String_expectFirst$(self_, $signal) {
+return ff_core_Option.Option_else(ff_core_String.String_first(self_), (($signal) => {
 return ff_core_Core.panic_("expectFirst() on empty string")
 }))
 }
 
-export async function String_expectLast$(self_) {
-return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
+export async function String_expectLast$(self_, $signal) {
+return ff_core_Option.Option_else(ff_core_String.String_last(self_), (($signal) => {
 return ff_core_Core.panic_("expectFirst() on empty string")
 }))
 }
 
-export async function String_contains$(self_, substring_) {
+export async function String_contains$(self_, substring_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_startsWith$(self_, prefix_, offset_ = 0) {
+export async function String_startsWith$(self_, prefix_, offset_ = 0, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_endsWith$(self_, prefix_) {
+export async function String_endsWith$(self_, prefix_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_any$(self_, body_) {
+export async function String_any$(self_, body_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_all$(self_, body_) {
+export async function String_all$(self_, body_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 

@@ -104,16 +104,16 @@ export function empty_() {
     
 }
 
-export async function range_$(size_) {
+export async function range_$(size_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function build_$(initial_, body_) {
+export async function build_$(initial_, body_, $signal) {
 const builder_ = ff_core_ArrayBuilder.empty_();
-async function go_$(state_) {
+async function go_$(state_, $signal) {
 _tailcall: for(;;) {
 {
-const _1 = (await body_(state_));
+const _1 = (await body_(state_, $signal));
 {
 if(_1.None) {
 
@@ -137,15 +137,15 @@ return
 return
 }
 }
-(await go_$(initial_));
+(await go_$(initial_, $signal));
 return ff_core_ArrayBuilder.ArrayBuilder_drain(builder_)
 }
 
-export async function fill_$(size_, value_) {
+export async function fill_$(size_, value_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function empty_$() {
+export async function empty_$($signal) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -204,43 +204,43 @@ export function Array_toList(self_) {
         
 }
 
-export async function Array_addAll$(self_, that_) {
+export async function Array_addAll$(self_, that_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_isEmpty$(self_) {
+export async function Array_isEmpty$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_size$(self_) {
+export async function Array_size$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_expect$(self_, index_) {
+export async function Array_expect$(self_, index_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_expectFirst$(self_) {
+export async function Array_expectFirst$(self_, $signal) {
 return ff_core_Array.Array_expect(self_, 0)
 }
 
-export async function Array_expectLast$(self_) {
+export async function Array_expectLast$(self_, $signal) {
 return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
-export async function Array_dropFirst$(self_, count_ = 1) {
+export async function Array_dropFirst$(self_, count_ = 1, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_dropLast$(self_, count_ = 1) {
+export async function Array_dropLast$(self_, count_ = 1, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_update$(self_, index_, body_) {
+export async function Array_update$(self_, index_, body_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_toList$(self_) {
+export async function Array_toList$(self_, $signal) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -248,7 +248,7 @@ export function Array_join(self_, separator_ = "") {
 return self_.join(separator_)
 }
 
-export async function Array_join$(self_, separator_ = "") {
+export async function Array_join$(self_, separator_ = "", $signal) {
 return ff_core_Core.panic_("magic")
 }
 
