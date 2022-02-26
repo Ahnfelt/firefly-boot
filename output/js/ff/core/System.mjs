@@ -42,6 +42,8 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
 
+import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
@@ -70,6 +72,10 @@ export function System_files(self_) {
 return null
 }
 
+export function System_tasks(self_) {
+return ff_core_Core.panic_("magic")
+}
+
 export function System_time(self_) {
 return null
 }
@@ -79,6 +85,10 @@ return ff_core_Array.Array_toList(self_.array_)
 }
 
 export async function System_files$(self_, $signal) {
+return null
+}
+
+export async function System_tasks$(self_, $signal) {
 return null
 }
 

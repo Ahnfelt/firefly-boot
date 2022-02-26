@@ -12,6 +12,9 @@ extend self: System {
         javascript "return null"
         javascriptasync "return null"
 
+    tasks(): TaskSystem { panic("magic") }
+        javascriptasync "return null"
+
     time(): TimeSystem { panic("magic") }
         javascript "return null"
         javascriptasync "return null"

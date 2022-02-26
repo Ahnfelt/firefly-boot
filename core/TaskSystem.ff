@@ -1,0 +1,69 @@
+type TaskSystem! {}
+
+extend self: TaskSystem {
+
+    race[T](tasks: List[() => T]): T { panic("magic") }
+        javascriptasync """
+            if($signal.aborted) throw $signal.reason
+            let controller = new AbortController()
+            let abort = () => controller.abort($signal.reason)
+            $signal.addEventListener('abort', abort)
+            try {
+                let promises = ff_core_List.List_toArray(tasks_).map(f => f(controller.signal))
+                return await Promise.race(promises)
+            } finally {
+                $signal.removeEventListener('abort', abort)
+                controller.abort()
+            }
+        """
+
+    all[T](tasks: List[() => T]): List[T] { panic("magic") }
+        javascriptasync """
+            if($signal.aborted) throw $signal.reason
+            let controller = new AbortController()
+            let abort = () => controller.abort($signal.reason)
+            $signal.addEventListener('abort', abort)
+            try {
+                let promises = ff_core_List.List_toArray(tasks_).map(f => f(controller.signal))
+                let array = await Promise.all(promises)
+                return ff_core_Array.Array_toList(array)
+            } finally {
+                $signal.removeEventListener('abort', abort)
+                controller.abort()
+            }
+        """
+
+    both[A, B](task1: () => A, task2: () => B): Pair[A, B] { panic("magic") }
+        javascriptasync """
+            if($signal.aborted) throw $signal.reason
+            let controller = new AbortController()
+            let abort = () => controller.abort($signal.reason)
+            $signal.addEventListener('abort', abort)
+            try {
+                let array = await Promise.all([task1(controller.signal), task2(controller.signal)])
+                return {first_: array[0], second_: array[1]}
+            } finally {
+                $signal.removeEventListener('abort', abort)
+                controller.abort()
+            }
+        """
+
+    sleep(duration: Duration): Unit { panic("magic") }
+        javascriptasync """
+            if($signal.aborted) throw $signal.reason
+            await new Promise((resolve, reject) => {
+                let abort = () => {
+                    $signal.removeEventListener('abort', abort)
+                    if(timeoutId != null) clearTimeout(timeoutId)
+                    reject($signal.reason)
+                }
+                $signal.addEventListener('abort', abort)
+                let complete = () => {
+                    $signal.removeEventListener('abort', abort)
+                    resolve()
+                }
+                let timeoutId = setTimeout(complete, duration_ * 1000);
+            })
+        """
+
+}

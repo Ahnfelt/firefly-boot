@@ -56,6 +56,8 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_System from "../../ff/core/System.mjs"
 
+import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
 import * as ff_core_Try from "../../ff/core/Try.mjs"
@@ -72,6 +74,13 @@ const mainModule_ = ff_core_List.List_expect(ff_core_System.System_arguments(sys
 const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2));
 const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3);
 const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4);
+ff_core_Log.debug_("Foo");
+ff_core_TaskSystem.TaskSystem_all(ff_core_System.System_tasks(system_), ff_core_List.Link((() => {
+return ff_core_TaskSystem.TaskSystem_sleep(ff_core_System.System_tasks(system_), 1.0)
+}), ff_core_List.Link((() => {
+ff_core_TaskSystem.TaskSystem_sleep(ff_core_System.System_tasks(system_), 5.0)
+}), ff_core_List.Empty())));
+ff_core_Log.debug_("Bar");
 const fs_ = ff_core_System.System_files(system_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
@@ -117,6 +126,13 @@ const mainModule_ = ff_core_List.List_expect((await ff_core_System.System_argume
 const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 2));
 const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 3);
 const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 4);
+ff_core_Log.debug_("Foo");
+(await ff_core_TaskSystem.TaskSystem_all$((await ff_core_System.System_tasks$(system_, $signal)), ff_core_List.Link((async ($signal) => {
+return (await ff_core_TaskSystem.TaskSystem_sleep$((await ff_core_System.System_tasks$(system_, $signal)), 1.0, $signal))
+}), ff_core_List.Link((async ($signal) => {
+(await ff_core_TaskSystem.TaskSystem_sleep$((await ff_core_System.System_tasks$(system_, $signal)), 5.0, $signal))
+}), ff_core_List.Empty())), $signal));
+ff_core_Log.debug_("Bar");
 const fs_ = (await ff_core_System.System_files$(system_, $signal));
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $signal))) {
 (await ff_compiler_Main.deleteDirectory_$(fs_, tempPath_, $signal))

@@ -63,6 +63,7 @@ coreImports: List[DImport] =
         "Show",
         "String",
         "System",
+        "TaskSystem",
         "TimeSystem",
         "Try",
         "Unit"
