@@ -40,7 +40,7 @@ extend self: TaskSystem {
             let abort = () => controller.abort($signal.reason)
             $signal.addEventListener('abort', abort)
             try {
-                let array = await Promise.all([task1(controller.signal), task2(controller.signal)])
+                let array = await Promise.all([task1_(controller.signal), task2_(controller.signal)])
                 return {first_: array[0], second_: array[1]}
             } finally {
                 $signal.removeEventListener('abort', abort)
