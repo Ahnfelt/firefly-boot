@@ -75,7 +75,7 @@ const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_
 const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3);
 const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4);
 ff_core_Log.debug_("Foo");
-ff_core_TaskSystem.TaskSystem_all(ff_core_System.System_tasks(system_), ff_core_List.Link((() => {
+ff_core_TaskSystem.TaskSystem_race(ff_core_System.System_tasks(system_), ff_core_List.Link((() => {
 return ff_core_TaskSystem.TaskSystem_sleep(ff_core_System.System_tasks(system_), 1.0)
 }), ff_core_List.Link((() => {
 ff_core_TaskSystem.TaskSystem_sleep(ff_core_System.System_tasks(system_), 5.0)
@@ -127,7 +127,7 @@ const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_
 const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 3);
 const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $signal)), 4);
 ff_core_Log.debug_("Foo");
-(await ff_core_TaskSystem.TaskSystem_all$((await ff_core_System.System_tasks$(system_, $signal)), ff_core_List.Link((async ($signal) => {
+(await ff_core_TaskSystem.TaskSystem_race$((await ff_core_System.System_tasks$(system_, $signal)), ff_core_List.Link((async ($signal) => {
 return (await ff_core_TaskSystem.TaskSystem_sleep$((await ff_core_System.System_tasks$(system_, $signal)), 1.0, $signal))
 }), ff_core_List.Link((async ($signal) => {
 (await ff_core_TaskSystem.TaskSystem_sleep$((await ff_core_System.System_tasks$(system_, $signal)), 5.0, $signal))

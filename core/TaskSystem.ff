@@ -8,12 +8,14 @@ extend self: TaskSystem {
             let controller = new AbortController()
             let abort = () => controller.abort($signal.reason)
             $signal.addEventListener('abort', abort)
+            let promises = []
             try {
-                let promises = ff_core_List.List_toArray(tasks_).map(f => f(controller.signal))
+                ff_core_List.List_toArray(tasks_).forEach(f => promises.push(f(controller.signal)))
                 return await Promise.race(promises)
             } finally {
                 $signal.removeEventListener('abort', abort)
                 controller.abort()
+                await Promise.allSettled(promises)
             }
         """
 
@@ -23,13 +25,15 @@ extend self: TaskSystem {
             let controller = new AbortController()
             let abort = () => controller.abort($signal.reason)
             $signal.addEventListener('abort', abort)
+            let promises = []
             try {
-                let promises = ff_core_List.List_toArray(tasks_).map(f => f(controller.signal))
+                ff_core_List.List_toArray(tasks_).forEach(f => promises.push(f(controller.signal)))
                 let array = await Promise.all(promises)
                 return ff_core_Array.Array_toList(array)
             } finally {
                 $signal.removeEventListener('abort', abort)
                 controller.abort()
+                await Promise.allSettled(promises)
             }
         """
 
@@ -39,12 +43,16 @@ extend self: TaskSystem {
             let controller = new AbortController()
             let abort = () => controller.abort($signal.reason)
             $signal.addEventListener('abort', abort)
+            let promises = []
             try {
-                let array = await Promise.all([task1_(controller.signal), task2_(controller.signal)])
+                promises.push(task1_(controller.signal))
+                promises.push(task2_(controller.signal))
+                let array = await Promise.all(promises)
                 return {first_: array[0], second_: array[1]}
             } finally {
                 $signal.removeEventListener('abort', abort)
                 controller.abort()
+                await Promise.allSettled(promises)
             }
         """
 
