@@ -73,6 +73,40 @@ extend self: TaskSystem {
             })
         """
 
+    channel(): Pair[() => T, T => Unit] { panic("magic") }
+        javascriptasync """
+            let readers = []
+            let writers = []
+            async function read(signal) {
+                if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+                if(signal.aborted) throw signal.reason
+                if(writers.length != 0) {
+                    let writer = writers.shift()
+                    writer.resolve()
+                    return writer.value
+                } else {
+                    let resolve // TODO: Reject on either signal
+                    let promise = new Promise(r => resolve = r)
+                    readers.push(resolve)
+                    return await promise
+                }
+            }
+            async function write(value, signal) {
+                if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+                if(signal.aborted) throw signal.reason
+                if(readers.length != 0) {
+                    let reader = readers.shift()
+                    reader.resolve(value)
+                } else {
+                    let resolve // TODO: Reject on either signal
+                    let promise = new Promise(r => resolve = r)
+                    readers.push({value, resolve})
+                    await promise
+                }
+            }
+            return {first_: read, second_: write}
+        """
+
     race[T](tasks: List[() => T]): T { panic("magic") }
         javascriptasync """
             if(self_.controller.signal.aborted) throw self_.controller.signal.reason
