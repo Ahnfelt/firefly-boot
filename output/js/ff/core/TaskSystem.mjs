@@ -75,6 +75,10 @@ export function TaskSystem_sleep(self_, duration_) {
 ff_core_Core.panic_("magic")
 }
 
+export function TaskSystem_yield(self_) {
+ff_core_Core.panic_("magic")
+}
+
 export function TaskSystem_channel(self_, buffer_ = 0) {
 return ff_core_Core.panic_("magic")
 }
@@ -166,6 +170,13 @@ export async function TaskSystem_sleep$(self_, duration_, $signal) {
         
 }
 
+export async function TaskSystem_yield$(self_, $signal) {
+
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            await Promise.resolve().then(() => {})
+        
+}
+
 export async function TaskSystem_channel$(self_, buffer_ = 0, $signal) {
 
             let readers = new Set()
@@ -191,6 +202,7 @@ export async function TaskSystem_channel$(self_, buffer_ = 0, $signal) {
                     try {
                         return await promise
                     } finally {
+                        readers.remove(reader)
                         self_.controller.signal.removeEventListener('abort', abort)
                         signal.removeEventListener('abort', abort)
                     }
@@ -218,6 +230,7 @@ export async function TaskSystem_channel$(self_, buffer_ = 0, $signal) {
                         try {
                             await promise
                         } finally {
+                            writers.remove(writer)
                             self_.controller.signal.removeEventListener('abort', abort)
                             signal.removeEventListener('abort', abort)
                         }
