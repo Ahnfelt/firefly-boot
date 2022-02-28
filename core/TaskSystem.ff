@@ -75,33 +75,60 @@ extend self: TaskSystem {
 
     channel(): Pair[() => T, T => Unit] { panic("magic") }
         javascriptasync """
-            let readers = []
-            let writers = []
+            let readers = new Set()
+            let writers = new Set()
             async function read(signal) {
                 if(self_.controller.signal.aborted) throw self_.controller.signal.reason
                 if(signal.aborted) throw signal.reason
-                if(writers.length != 0) {
-                    let writer = writers.shift()
+                if(writers.size != 0) {
+                    let writer = writers.values().next().value
+                    writers.delete(writer)
                     writer.resolve()
                     return writer.value
                 } else {
-                    let resolve // TODO: Reject on either signal
-                    let promise = new Promise(r => resolve = r)
-                    readers.push(resolve)
-                    return await promise
+                    let reader
+                    let abort
+                    let promise = new Promise((resolve, reject) => {
+                        reader = resolve
+                        abort = () => reject(self_.controller.signal.reason || signal.reason)
+                    })
+                    readers.add(reader)
+                    self_.controller.signal.addEventListener('abort', abort)
+                    signal.addEventListener('abort', abort)
+                    try {
+                        return await promise
+                    } finally {
+                        readers.delete(reader)
+                        self_.controller.signal.removeEventListener('abort', abort)
+                        signal.removeEventListener('abort', abort)
+                    }
                 }
             }
             async function write(value, signal) {
                 if(self_.controller.signal.aborted) throw self_.controller.signal.reason
                 if(signal.aborted) throw signal.reason
-                if(readers.length != 0) {
-                    let reader = readers.shift()
+                if(readers.size != 0) {
+                    let reader = readers.values().next().value
+                    readers.delete(reader)
                     reader.resolve(value)
                 } else {
-                    let resolve // TODO: Reject on either signal
-                    let promise = new Promise(r => resolve = r)
-                    readers.push({value, resolve})
-                    await promise
+                    let send
+                    let abort
+                    let promise = new Promise((resolve, reject) => {
+                        send = resolve
+                        abort = () => reject(self_.controller.signal.reason || signal.reason)
+                    })
+                    let writer = {value, resolve: send}
+                    writers.add(writer)
+                    self_.controller.signal.addEventListener('abort', abort)
+                    signal.addEventListener('abort', abort)
+                    try {
+                        await promise
+                    } finally {
+                        writers.delete(writer)
+                        self_.controller.signal.removeEventListener('abort', abort)
+                        signal.removeEventListener('abort', abort)
+                    }
                 }
             }
             return {first_: read, second_: write}
