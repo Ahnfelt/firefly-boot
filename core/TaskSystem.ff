@@ -73,7 +73,7 @@ extend self: TaskSystem {
             })
         """
 
-    channel(): Pair[() => T, T => Unit] { panic("magic") }
+    channel(buffer: Int = 0): Pair[() => T, T => Unit] { panic("magic") }
         javascriptasync """
             let readers = new Set()
             let writers = new Set()
@@ -98,7 +98,6 @@ extend self: TaskSystem {
                     try {
                         return await promise
                     } finally {
-                        readers.delete(reader)
                         self_.controller.signal.removeEventListener('abort', abort)
                         signal.removeEventListener('abort', abort)
                     }
@@ -120,14 +119,15 @@ extend self: TaskSystem {
                     })
                     let writer = {value, resolve: send}
                     writers.add(writer)
-                    self_.controller.signal.addEventListener('abort', abort)
-                    signal.addEventListener('abort', abort)
-                    try {
-                        await promise
-                    } finally {
-                        writers.delete(writer)
-                        self_.controller.signal.removeEventListener('abort', abort)
-                        signal.removeEventListener('abort', abort)
+                    if(writers.size > buffer) {
+                        self_.controller.signal.addEventListener('abort', abort)
+                        signal.addEventListener('abort', abort)
+                        try {
+                            await promise
+                        } finally {
+                            self_.controller.signal.removeEventListener('abort', abort)
+                            signal.removeEventListener('abort', abort)
+                        }
                     }
                 }
             }
