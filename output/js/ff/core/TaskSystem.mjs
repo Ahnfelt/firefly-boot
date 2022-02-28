@@ -59,7 +59,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function TaskSystem_start(self_, body_) {
+export function TaskSystem_start(self_, task_) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -75,6 +75,10 @@ export function TaskSystem_sleep(self_, duration_) {
 ff_core_Core.panic_("magic")
 }
 
+export function TaskSystem_channel(self_, buffer_ = 0) {
+return ff_core_Core.panic_("magic")
+}
+
 export function TaskSystem_race(self_, tasks_) {
 return ff_core_Core.panic_("magic")
 }
@@ -87,12 +91,12 @@ export function TaskSystem_both(self_, task1_, task2_) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function TaskSystem_start$(self_, body_, $signal) {
+export async function TaskSystem_start$(self_, task_, $signal) {
 
             const promise = Promise.resolve().then(() => {
                 try {
                     if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-                    return body_(self_.controller.signal)
+                    return task_(self_.controller.signal)
                 } catch(e) {
                     if(self_.error == null) self_.error = e
                     throw e
@@ -159,6 +163,68 @@ export async function TaskSystem_sleep$(self_, duration_, $signal) {
                 }
                 let timeoutId = setTimeout(complete, duration_ * 1000);
             })
+        
+}
+
+export async function TaskSystem_channel$(self_, buffer_ = 0, $signal) {
+
+            let readers = new Set()
+            let writers = new Set()
+            async function read(signal) {
+                if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+                if(signal.aborted) throw signal.reason
+                if(writers.size != 0) {
+                    let writer = writers.values().next().value
+                    writers.delete(writer)
+                    writer.resolve()
+                    return writer.value
+                } else {
+                    let reader
+                    let abort
+                    let promise = new Promise((resolve, reject) => {
+                        reader = resolve
+                        abort = () => reject(self_.controller.signal.reason || signal.reason)
+                    })
+                    readers.add(reader)
+                    self_.controller.signal.addEventListener('abort', abort)
+                    signal.addEventListener('abort', abort)
+                    try {
+                        return await promise
+                    } finally {
+                        self_.controller.signal.removeEventListener('abort', abort)
+                        signal.removeEventListener('abort', abort)
+                    }
+                }
+            }
+            async function write(value, signal) {
+                if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+                if(signal.aborted) throw signal.reason
+                if(readers.size != 0) {
+                    let reader = readers.values().next().value
+                    readers.delete(reader)
+                    reader.resolve(value)
+                } else {
+                    let send
+                    let abort
+                    let promise = new Promise((resolve, reject) => {
+                        send = resolve
+                        abort = () => reject(self_.controller.signal.reason || signal.reason)
+                    })
+                    let writer = {value, resolve: send}
+                    writers.add(writer)
+                    if(writers.size > buffer) {
+                        self_.controller.signal.addEventListener('abort', abort)
+                        signal.addEventListener('abort', abort)
+                        try {
+                            await promise
+                        } finally {
+                            self_.controller.signal.removeEventListener('abort', abort)
+                            signal.removeEventListener('abort', abort)
+                        }
+                    }
+                }
+            }
+            return {first_: read, second_: write}
         
 }
 

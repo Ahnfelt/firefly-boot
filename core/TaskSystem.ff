@@ -73,7 +73,7 @@ extend self: TaskSystem {
             })
         """
 
-    channel(buffer: Int = 0): Pair[() => T, T => Unit] { panic("magic") }
+    channel[T](buffer: Int = 0): Pair[() => T, T => Unit] { panic("magic") }
         javascriptasync """
             let readers = new Set()
             let writers = new Set()
