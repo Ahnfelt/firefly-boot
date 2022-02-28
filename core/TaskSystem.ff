@@ -73,8 +73,6 @@ extend self: TaskSystem {
             })
         """
 
-    channel(): Pair[() => T, T => Unit] { panic("magic") }
-
     race[T](tasks: List[() => T]): T { panic("magic") }
         javascriptasync """
             if(self_.controller.signal.aborted) throw self_.controller.signal.reason
