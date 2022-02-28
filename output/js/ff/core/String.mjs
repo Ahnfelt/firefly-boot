@@ -201,11 +201,19 @@ return ff_core_Core.panic_("magic")
 }
 
 export async function String_dropWhile$(self_, p_, $signal) {
-return ff_core_Core.panic_("magic")
+
+            let i = 0
+            for(; i < self_.length && await p_(self_.codePointAt(i), $signal); i++);
+            return self_.slice(i)
+        
 }
 
 export async function String_takeWhile$(self_, p_, $signal) {
-return ff_core_Core.panic_("magic")
+
+            let i = 0
+            for(; i < self_.length && await p_(self_.codePointAt(i), $signal); i++);
+            return self_.slice(0, i)
+        
 }
 
 export async function String_slice$(self_, from_, until_, $signal) {
@@ -261,11 +269,21 @@ return ff_core_Core.panic_("magic")
 }
 
 export async function String_any$(self_, body_, $signal) {
-return ff_core_Core.panic_("magic")
+
+            for(let i = 0; i < self_.length; i++) {
+                if(await body_(self_.charCodeAt(i), $signal)) return true;
+            }
+            return false;
+        
 }
 
 export async function String_all$(self_, body_, $signal) {
-return ff_core_Core.panic_("magic")
+
+            for(let i = 0; i < self_.length; i++) {
+                if(!await body_(self_.charCodeAt(i), $signal)) return false;
+            }
+            return true;
+        
 }
 
 

@@ -132,11 +132,11 @@ return (_w1 != 46)
 export function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';
 
 export async function FileSystem_readText$(self_, file_, $signal) {
-return await fsPromises.readFile(file_, {encoding: 'UTF-8'})
+return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $signal})
 }
 
 export async function FileSystem_writeText$(self_, file_, text_, $signal) {
-await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8'})
+await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $signal})
 }
 
 export async function FileSystem_list$(self_, path_, $signal) {

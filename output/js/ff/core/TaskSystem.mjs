@@ -1,9 +1,94 @@
-type TaskSystem! {}
+import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-extend self: TaskSystem {
+import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
-    start[T](body: () => T): () => T { panic("magic") }
-        javascriptasync """
+import * as ff_core_Bool from "../../ff/core/Bool.mjs"
+
+import * as ff_core_Char from "../../ff/core/Char.mjs"
+
+import * as ff_core_Core from "../../ff/core/Core.mjs"
+
+import * as ff_core_Duration from "../../ff/core/Duration.mjs"
+
+import * as ff_core_Error from "../../ff/core/Error.mjs"
+
+import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
+
+import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_Instant from "../../ff/core/Instant.mjs"
+
+import * as ff_core_Int from "../../ff/core/Int.mjs"
+
+import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Log from "../../ff/core/Log.mjs"
+
+import * as ff_core_Map from "../../ff/core/Map.mjs"
+
+import * as ff_core_Nothing from "../../ff/core/Nothing.mjs"
+
+import * as ff_core_Option from "../../ff/core/Option.mjs"
+
+import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
+
+import * as ff_core_Pair from "../../ff/core/Pair.mjs"
+
+import * as ff_core_Set from "../../ff/core/Set.mjs"
+
+import * as ff_core_Show from "../../ff/core/Show.mjs"
+
+import * as ff_core_String from "../../ff/core/String.mjs"
+
+import * as ff_core_System from "../../ff/core/System.mjs"
+
+import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+
+import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
+
+import * as ff_core_Try from "../../ff/core/Try.mjs"
+
+import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+// type TaskSystem
+
+
+
+
+
+
+
+
+export function TaskSystem_start(self_, body_) {
+return ff_core_Core.panic_("magic")
+}
+
+export function TaskSystem_cancel(self_) {
+ff_core_Core.panic_("magic")
+}
+
+export function TaskSystem_scope(self_, body_) {
+return ff_core_Core.panic_("magic")
+}
+
+export function TaskSystem_sleep(self_, duration_) {
+ff_core_Core.panic_("magic")
+}
+
+export function TaskSystem_race(self_, tasks_) {
+return ff_core_Core.panic_("magic")
+}
+
+export function TaskSystem_all(self_, tasks_) {
+return ff_core_Core.panic_("magic")
+}
+
+export function TaskSystem_both(self_, task1_, task2_) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function TaskSystem_start$(self_, body_, $signal) {
+
             const promise = Promise.resolve().then(() => {
                 try {
                     if(self_.controller.signal.aborted) throw self_.controller.signal.reason
@@ -30,15 +115,17 @@ extend self: TaskSystem {
                     signal.removeEventListener('abort', abort)
                 }
             }
-        """
+        
+}
 
-    cancel(): Unit { panic("magic") }
-        javascriptasync """
+export async function TaskSystem_cancel$(self_, $signal) {
+
             self_.controller.abort()
-        """
+        
+}
 
-    scope[T](body: TaskSystem => T): T { panic("magic") }
-        javascriptasync """
+export async function TaskSystem_scope$(self_, body_, $signal) {
+
             if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             let controller = new AbortController()
             let abort = () => controller.abort(self_.controller.signal.reason)
@@ -53,10 +140,11 @@ extend self: TaskSystem {
             }
             if(self_.error != null) throw e
             return result
-        """
+        
+}
 
-    sleep(duration: Duration): Unit { panic("magic") }
-        javascriptasync """
+export async function TaskSystem_sleep$(self_, duration_, $signal) {
+
             if($signal.aborted) throw $signal.reason
             await new Promise((resolve, reject) => {
                 let abort = () => {
@@ -71,10 +159,11 @@ extend self: TaskSystem {
                 }
                 let timeoutId = setTimeout(complete, duration_ * 1000);
             })
-        """
+        
+}
 
-    race[T](tasks: List[() => T]): T { panic("magic") }
-        javascriptasync """
+export async function TaskSystem_race$(self_, tasks_, $signal) {
+
             if($signal.aborted) throw $signal.reason
             let controller = new AbortController()
             let abort = () => controller.abort($signal.reason)
@@ -90,10 +179,11 @@ extend self: TaskSystem {
                 controller.abort()
                 await Promise.allSettled(promises)
             }
-        """
+        
+}
 
-    all[T](tasks: List[() => T]): List[T] { panic("magic") }
-        javascriptasync """
+export async function TaskSystem_all$(self_, tasks_, $signal) {
+
             if($signal.aborted) throw $signal.reason
             let controller = new AbortController()
             let abort = () => controller.abort($signal.reason)
@@ -110,10 +200,11 @@ extend self: TaskSystem {
                 controller.abort()
                 await Promise.allSettled(promises)
             }
-        """
+        
+}
 
-    both[A, B](task1: () => A, task2: () => B): Pair[A, B] { panic("magic") }
-        javascriptasync """
+export async function TaskSystem_both$(self_, task1_, task2_, $signal) {
+
             if($signal.aborted) throw $signal.reason
             let controller = new AbortController()
             let abort = () => controller.abort($signal.reason)
@@ -129,6 +220,9 @@ extend self: TaskSystem {
                 controller.abort()
                 await Promise.allSettled(promises)
             }
-        """
-
+        
 }
+
+
+
+

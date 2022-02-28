@@ -155,7 +155,13 @@ return
 }
 
 export async function try_$(body_, $signal) {
-return ff_core_Core.panic_("magic")
+
+        try {
+            return {Success: true, value_: await body_($signal)}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    
 }
 
 export async function do_$(body_, $signal) {

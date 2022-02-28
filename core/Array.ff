@@ -64,6 +64,11 @@ extend self[T]: Array[T] {
             result[index_] = body_(result[index_]);
             return result;
         """
+        javascriptasync """
+            let result = self_.slice();
+            result[index_] = await body_(result[index_], $signal);
+            return result;
+        """
 
     toList(): List[T] { panic("magic") }
         javascript """

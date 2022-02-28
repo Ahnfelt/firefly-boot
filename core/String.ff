@@ -23,11 +23,21 @@ extend self: String {
             for(; i < self_.length && p_(self_.codePointAt(i)); i++);
             return self_.slice(i)
         """
+        javascriptasync """
+            let i = 0
+            for(; i < self_.length && await p_(self_.codePointAt(i), $signal); i++);
+            return self_.slice(i)
+        """
 
     takeWhile(p: Char => Bool): String { panic("magic") }
         javascript """
             let i = 0
             for(; i < self_.length && p_(self_.codePointAt(i)); i++);
+            return self_.slice(0, i)
+        """
+        javascriptasync """
+            let i = 0
+            for(; i < self_.length && await p_(self_.codePointAt(i), $signal); i++);
             return self_.slice(0, i)
         """
 
@@ -87,11 +97,23 @@ extend self: String {
             }
             return false;
         """
+        javascriptasync """
+            for(let i = 0; i < self_.length; i++) {
+                if(await body_(self_.charCodeAt(i), $signal)) return true;
+            }
+            return false;
+        """
 
     all(body: Char => Bool): Bool { panic("magic") }
         javascript """
             for(let i = 0; i < self_.length; i++) {
                 if(!body_(self_.charCodeAt(i))) return false;
+            }
+            return true;
+        """
+        javascriptasync """
+            for(let i = 0; i < self_.length; i++) {
+                if(!await body_(self_.charCodeAt(i), $signal)) return false;
             }
             return true;
         """

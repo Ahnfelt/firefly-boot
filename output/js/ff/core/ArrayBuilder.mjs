@@ -130,7 +130,7 @@ ff_core_Core.panic_("magic")
 }
 
 export async function ArrayBuilder_modify$(self_, index_, body_, $signal) {
-ff_core_Core.panic_("magic")
+self_.array[index_] = await body_(self_.array[index_], $signal)
 }
 
 export async function ArrayBuilder_drain$(self_, $signal) {

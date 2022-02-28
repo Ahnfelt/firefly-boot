@@ -19,6 +19,7 @@ extend self[T]: ArrayBuilder[T] {
 
     modify(index: Int, body: T => T): Unit { panic("magic") }
         javascript "self_.array[index_] = body_(self_.array[index_])"
+        javascriptasync "self_.array[index_] = await body_(self_.array[index_], $signal)"
 
     drain(): Array[T] { panic("magic") }
         javascript "const result = self_.array; self_.array = []; return result"
@@ -44,5 +45,6 @@ extend self[T]: ArrayBuilder[T] {
 
     sortBy(ordering: (T, T) => Ordering): Unit { panic("magic") }
         javascript "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
+        // TODO: Async version
 
 }

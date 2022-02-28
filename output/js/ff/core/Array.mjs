@@ -239,7 +239,11 @@ return ff_core_Core.panic_("magic")
 }
 
 export async function Array_update$(self_, index_, body_, $signal) {
-return ff_core_Core.panic_("magic")
+
+            let result = self_.slice();
+            result[index_] = await body_(result[index_], $signal);
+            return result;
+        
 }
 
 export async function Array_toList$(self_, $signal) {
