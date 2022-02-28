@@ -73,6 +73,12 @@ extend self: TaskSystem {
             })
         """
 
+    yield(): Unit { panic("magic") }
+        javascriptasync """
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            await Promise.resolve().then(() => {})
+        """
+
     channel[T](buffer: Int = 0): Pair[() => T, T => Unit] { panic("magic") }
         javascriptasync """
             let readers = new Set()
