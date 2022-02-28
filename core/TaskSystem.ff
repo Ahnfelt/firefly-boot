@@ -57,16 +57,16 @@ extend self: TaskSystem {
 
     sleep(duration: Duration): Unit { panic("magic") }
         javascriptasync """
-            if($signal.aborted) throw $signal.reason
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             await new Promise((resolve, reject) => {
                 let abort = () => {
-                    $signal.removeEventListener('abort', abort)
+                    self_.controller.signal.removeEventListener('abort', abort)
                     if(timeoutId != null) clearTimeout(timeoutId)
-                    reject($signal.reason)
+                    reject(self_.controller.signal.reason)
                 }
-                $signal.addEventListener('abort', abort)
+                self_.controller.signal.addEventListener('abort', abort)
                 let complete = () => {
-                    $signal.removeEventListener('abort', abort)
+                    self_.controller.signal.removeEventListener('abort', abort)
                     resolve()
                 }
                 let timeoutId = setTimeout(complete, duration_ * 1000);
@@ -75,10 +75,10 @@ extend self: TaskSystem {
 
     race[T](tasks: List[() => T]): T { panic("magic") }
         javascriptasync """
-            if($signal.aborted) throw $signal.reason
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             let controller = new AbortController()
-            let abort = () => controller.abort($signal.reason)
-            $signal.addEventListener('abort', abort)
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
             let promises = []
             try {
                 ff_core_List.List_toArray(tasks_).forEach(f =>
@@ -86,7 +86,7 @@ extend self: TaskSystem {
                 )
                 return await Promise.race(promises)
             } finally {
-                $signal.removeEventListener('abort', abort)
+                self_.controller.signal.removeEventListener('abort', abort)
                 controller.abort()
                 await Promise.allSettled(promises)
             }
@@ -94,10 +94,10 @@ extend self: TaskSystem {
 
     all[T](tasks: List[() => T]): List[T] { panic("magic") }
         javascriptasync """
-            if($signal.aborted) throw $signal.reason
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             let controller = new AbortController()
-            let abort = () => controller.abort($signal.reason)
-            $signal.addEventListener('abort', abort)
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
             let promises = []
             try {
                 ff_core_List.List_toArray(tasks_).forEach(f =>
@@ -106,7 +106,7 @@ extend self: TaskSystem {
                 let array = await Promise.all(promises)
                 return ff_core_Array.Array_toList(array)
             } finally {
-                $signal.removeEventListener('abort', abort)
+                self_.controller.signal.removeEventListener('abort', abort)
                 controller.abort()
                 await Promise.allSettled(promises)
             }
@@ -114,10 +114,10 @@ extend self: TaskSystem {
 
     both[A, B](task1: () => A, task2: () => B): Pair[A, B] { panic("magic") }
         javascriptasync """
-            if($signal.aborted) throw $signal.reason
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             let controller = new AbortController()
-            let abort = () => controller.abort($signal.reason)
-            $signal.addEventListener('abort', abort)
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
             let promises = []
             try {
                 promises.push(Promise.resolve(controller.signal).then(task1_))
@@ -125,7 +125,7 @@ extend self: TaskSystem {
                 let array = await Promise.all(promises)
                 return {first_: array[0], second_: array[1]}
             } finally {
-                $signal.removeEventListener('abort', abort)
+                self_.controller.signal.removeEventListener('abort', abort)
                 controller.abort()
                 await Promise.allSettled(promises)
             }

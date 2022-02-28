@@ -145,16 +145,16 @@ export async function TaskSystem_scope$(self_, body_, $signal) {
 
 export async function TaskSystem_sleep$(self_, duration_, $signal) {
 
-            if($signal.aborted) throw $signal.reason
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             await new Promise((resolve, reject) => {
                 let abort = () => {
-                    $signal.removeEventListener('abort', abort)
+                    self_.controller.signal.removeEventListener('abort', abort)
                     if(timeoutId != null) clearTimeout(timeoutId)
-                    reject($signal.reason)
+                    reject(self_.controller.signal.reason)
                 }
-                $signal.addEventListener('abort', abort)
+                self_.controller.signal.addEventListener('abort', abort)
                 let complete = () => {
-                    $signal.removeEventListener('abort', abort)
+                    self_.controller.signal.removeEventListener('abort', abort)
                     resolve()
                 }
                 let timeoutId = setTimeout(complete, duration_ * 1000);
@@ -164,10 +164,10 @@ export async function TaskSystem_sleep$(self_, duration_, $signal) {
 
 export async function TaskSystem_race$(self_, tasks_, $signal) {
 
-            if($signal.aborted) throw $signal.reason
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             let controller = new AbortController()
-            let abort = () => controller.abort($signal.reason)
-            $signal.addEventListener('abort', abort)
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
             let promises = []
             try {
                 ff_core_List.List_toArray(tasks_).forEach(f =>
@@ -175,7 +175,7 @@ export async function TaskSystem_race$(self_, tasks_, $signal) {
                 )
                 return await Promise.race(promises)
             } finally {
-                $signal.removeEventListener('abort', abort)
+                self_.controller.signal.removeEventListener('abort', abort)
                 controller.abort()
                 await Promise.allSettled(promises)
             }
@@ -184,10 +184,10 @@ export async function TaskSystem_race$(self_, tasks_, $signal) {
 
 export async function TaskSystem_all$(self_, tasks_, $signal) {
 
-            if($signal.aborted) throw $signal.reason
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             let controller = new AbortController()
-            let abort = () => controller.abort($signal.reason)
-            $signal.addEventListener('abort', abort)
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
             let promises = []
             try {
                 ff_core_List.List_toArray(tasks_).forEach(f =>
@@ -196,7 +196,7 @@ export async function TaskSystem_all$(self_, tasks_, $signal) {
                 let array = await Promise.all(promises)
                 return ff_core_Array.Array_toList(array)
             } finally {
-                $signal.removeEventListener('abort', abort)
+                self_.controller.signal.removeEventListener('abort', abort)
                 controller.abort()
                 await Promise.allSettled(promises)
             }
@@ -205,10 +205,10 @@ export async function TaskSystem_all$(self_, tasks_, $signal) {
 
 export async function TaskSystem_both$(self_, task1_, task2_, $signal) {
 
-            if($signal.aborted) throw $signal.reason
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
             let controller = new AbortController()
-            let abort = () => controller.abort($signal.reason)
-            $signal.addEventListener('abort', abort)
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
             let promises = []
             try {
                 promises.push(Promise.resolve(controller.signal).then(task1_))
@@ -216,7 +216,7 @@ export async function TaskSystem_both$(self_, task1_, task2_, $signal) {
                 let array = await Promise.all(promises)
                 return {first_: array[0], second_: array[1]}
             } finally {
-                $signal.removeEventListener('abort', abort)
+                self_.controller.signal.removeEventListener('abort', abort)
                 controller.abort()
                 await Promise.allSettled(promises)
             }
