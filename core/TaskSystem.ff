@@ -2,12 +2,12 @@ type TaskSystem! {}
 
 extend self: TaskSystem {
 
-    start[T](body: () => T): () => T { panic("magic") }
+    start[T](task: () => T): () => T { panic("magic") }
         javascriptasync """
             const promise = Promise.resolve().then(() => {
                 try {
                     if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-                    return body_(self_.controller.signal)
+                    return task_(self_.controller.signal)
                 } catch(e) {
                     if(self_.error == null) self_.error = e
                     throw e
@@ -73,6 +73,16 @@ extend self: TaskSystem {
             })
         """
 
+    channel(): Pair[() => T, T => Unit] { panic("magic") }
+        javascriptasync """
+            async function wait() {
+
+            }
+            async function write() {
+            }
+            return {first_: read, second_: write}
+        """
+
     race[T](tasks: List[() => T]): T { panic("magic") }
         javascriptasync """
             if(self_.controller.signal.aborted) throw self_.controller.signal.reason
@@ -132,3 +142,18 @@ extend self: TaskSystem {
         """
 
 }
+
+
+
+
+    start[T](body: () => T): () => T
+    cancel(): Unit
+    scope[T](body: TaskSystem => T): T
+
+    channel(): Pair[() => T, T => Unit]
+
+    sleep(duration: Duration): Unit
+
+    race[T](tasks: List[() => T]): T
+    all[T](tasks: List[() => T]): List[T]
+    both[A, B](task1: () => A, task2: () => B): Pair[A, B]
