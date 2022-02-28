@@ -74,14 +74,6 @@ extend self: TaskSystem {
         """
 
     channel(): Pair[() => T, T => Unit] { panic("magic") }
-        javascriptasync """
-            async function wait() {
-
-            }
-            async function write() {
-            }
-            return {first_: read, second_: write}
-        """
 
     race[T](tasks: List[() => T]): T { panic("magic") }
         javascriptasync """
@@ -142,18 +134,3 @@ extend self: TaskSystem {
         """
 
 }
-
-
-
-
-    start[T](body: () => T): () => T
-    cancel(): Unit
-    scope[T](body: TaskSystem => T): T
-
-    channel(): Pair[() => T, T => Unit]
-
-    sleep(duration: Duration): Unit
-
-    race[T](tasks: List[() => T]): T
-    all[T](tasks: List[() => T]): List[T]
-    both[A, B](task1: () => A, task2: () => B): Pair[A, B]
