@@ -1,0 +1,100 @@
+type Channel![T] {}
+
+extend self[T]: Channel[T] {
+
+    read(): T {
+        readOr(self, {_}).wait()
+    }
+
+    write(message: T): Unit {
+        writeOr(self, message, {}).wait()
+    }
+
+}
+
+
+type ChannelAction![T] {}
+
+extend self[T]: ChannelAction[T] {
+
+    readOr[M](channel: Channel[M], body: M => T): ChannelAction[T] { panic("magic") }
+        javascriptasync "return {channel: channel_, body: body_, previous: self_}"
+
+    writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T]
+        javascriptasync "return {channel: channel_, body: body_, message: message_, previous: self_}"
+
+    wait(): T {
+        internalRunChannelAction(self, None)
+    }
+
+    timeout(duration: Duration, body: () => T): T {
+        internalRunChannelAction(self, Some(Pair(body, Some(duration))))
+    }
+
+    immediately(body: () => T): T {
+        internalRunChannelAction(self, Some(Pair(body, None)))
+    }
+
+}
+
+readOr[M](channel: Channel[M], body: M => T): ChannelAction[T] { panic("magic") }
+    javascriptasync "return {channel: channel_, body: body_, previous: null}"
+
+writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T] { panic("magic") }
+    javascriptasync "return {channel: channel_, body: body_, message: message_, previous: null}"
+
+
+internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T, Option[Duration]]]): T { panic("magic") }
+    javascriptasync """
+        if($signal.aborted) throw $signal.reason
+        let actions = []
+        while(action_ != null) {
+            actions.push(action_)
+            action_ = action_.previous
+        }
+        actions.reverse()
+        for(let action of actions) {
+            if(action.hasOwnProperty("message")) {
+                if(action.channel.readers.size != 0) {
+                    let reader = action.channel.readers.values().next().value
+                    action.channel.readers.delete(reader)
+                    reader.resolve(value)
+                    return
+                } else if(action.channel.writers.size < action.channel.capacity) {
+                    action.channel.writers.add({message})
+                    return
+                }
+            } else {
+                if(action.channel.writers.size != 0) {
+                    let writer = action.channel.writers.values().next().value
+                    action.channel.writers.delete(writer)
+                    if(writer.resolve != null) writer.resolve()
+                    return writer.message
+                }
+            }
+        }
+         // TODO: When capacity > 0 and removing a writer such that writers <= capacity, wake up next sleeping writer, if any
+        let abort
+        let cleanups = []
+        let promise = new Promise((resolve, reject) => {
+            abort = reject
+            for(let action of actions) {
+                if(action.hasOwnProperty("message")) {
+                    let writer = {resolve, message: action.message}
+                    cleanups.push(() => action.channel.writers.delete(writer))
+                    action.channel.writers.add(writer)
+                } else {
+                    let reader = {resolve}
+                    cleanups.push(() => action.channel.readers.delete(reader))
+                    action.channel.readers.add(reader)
+                }
+            }
+        })
+        $signal.addEventListener('abort', abort)
+        try {
+            return await promise
+        } finally {
+            $signal.removeEventListener('abort', abort)
+            for(cleanup of cleanups) cleanup()
+        }
+    """

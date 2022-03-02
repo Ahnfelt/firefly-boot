@@ -1,0 +1,210 @@
+type TaskSystem! {}
+
+extend self: TaskSystem {
+
+    start[T](task: () => T): () => T { panic("magic") }
+        javascriptasync """
+            const promise = Promise.resolve().then(() => {
+                try {
+                    if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+                    return task_(self_.controller.signal)
+                } catch(e) {
+                    if(self_.error == null) self_.error = e
+                    throw e
+                } finally {
+                    self_.promises.delete(promise)
+                }
+            })
+            self_.promises.add(promise)
+            return async (signal) => {
+                if(signal.aborted) throw signal.reason
+                let abort
+                let cancelPromise = new Promise((_, reject) => abort = () => reject(signal.reason))
+                signal.addEventListener('abort', abort)
+                try {
+                    await Promise.race([
+                        promise,
+                        cancelPromise
+                    ])
+                } finally {
+                    signal.removeEventListener('abort', abort)
+                }
+            }
+        """
+
+    cancel(): Unit { panic("magic") }
+        javascriptasync """
+            self_.controller.abort()
+        """
+
+    scope[T](body: TaskSystem => T): T { panic("magic") }
+        javascriptasync """
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            let controller = new AbortController()
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
+            let result = undefined
+            let newTaskSystem = {promises: new Set(), controller: controller, error: null}
+            try {
+                result = await body_(newTaskSystem, newTaskSystem.controller.signal)
+            } finally {
+                self_.controller.signal.removeEventListener('abort', abort)
+                await Promise.allSettled(newTaskSystem.promises)
+            }
+            if(self_.error != null) throw e
+            return result
+        """
+
+    sleep(duration: Duration): Unit { panic("magic") }
+        javascriptasync """
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            await new Promise((resolve, reject) => {
+                let abort = () => {
+                    self_.controller.signal.removeEventListener('abort', abort)
+                    if(timeoutId != null) clearTimeout(timeoutId)
+                    reject(self_.controller.signal.reason)
+                }
+                self_.controller.signal.addEventListener('abort', abort)
+                let complete = () => {
+                    self_.controller.signal.removeEventListener('abort', abort)
+                    resolve()
+                }
+                let timeoutId = setTimeout(complete, duration_ * 1000);
+            })
+        """
+
+    yield(): Unit { panic("magic") }
+        javascriptasync """
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            await Promise.resolve().then(() => {})
+        """
+
+    channel[T](buffer: Int = 0): Pair[() => T, T => Unit] { panic("magic") }
+        javascriptasync """
+            let readers = new Set()
+            let writers = new Set()
+            async function read(signal) {
+                if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+                if(signal.aborted) throw signal.reason
+                if(writers.size != 0) {
+                    let writer = writers.values().next().value
+                    writers.delete(writer)
+                    writer.resolve()
+                    return writer.value
+                } else {
+                    let reader
+                    let abort
+                    let promise = new Promise((resolve, reject) => {
+                        reader = resolve
+                        abort = () => reject(self_.controller.signal.reason || signal.reason)
+                    })
+                    readers.add(reader)
+                    self_.controller.signal.addEventListener('abort', abort)
+                    signal.addEventListener('abort', abort)
+                    try {
+                        return await promise
+                    } finally {
+                        readers.remove(reader)
+                        self_.controller.signal.removeEventListener('abort', abort)
+                        signal.removeEventListener('abort', abort)
+                    }
+                }
+            }
+            async function write(value, signal) {
+                if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+                if(signal.aborted) throw signal.reason
+                if(readers.size != 0) {
+                    let reader = readers.values().next().value
+                    readers.delete(reader)
+                    reader.resolve(value)
+                } else {
+                    let send
+                    let abort
+                    let promise = new Promise((resolve, reject) => {
+                        send = resolve
+                        abort = () => reject(self_.controller.signal.reason || signal.reason)
+                    })
+                    let writer = {value, resolve: send}
+                    writers.add(writer)
+                    if(writers.size > buffer) {
+                        self_.controller.signal.addEventListener('abort', abort)
+                        signal.addEventListener('abort', abort)
+                        try {
+                            await promise
+                        } finally {
+                            writers.remove(writer)
+                            self_.controller.signal.removeEventListener('abort', abort)
+                            signal.removeEventListener('abort', abort)
+                        }
+                    }
+                }
+            }
+            return {first_: read, second_: write}
+        """
+
+    race[T](tasks: List[() => T]): T { panic("magic") }
+        javascriptasync """
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            let controller = new AbortController()
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
+            let promises = []
+            try {
+                ff_core_List.List_toArray(tasks_).forEach(f =>
+                    promises.push(Promise.resolve(controller.signal).then(f))
+                )
+                return await Promise.race(promises)
+            } finally {
+                self_.controller.signal.removeEventListener('abort', abort)
+                controller.abort()
+                await Promise.allSettled(promises)
+            }
+        """
+
+    all[T](tasks: List[() => T]): List[T] { panic("magic") }
+        javascriptasync """
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            let controller = new AbortController()
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
+            let promises = []
+            try {
+                ff_core_List.List_toArray(tasks_).forEach(f =>
+                    promises.push(Promise.resolve(controller.signal).then(f))
+                )
+                let array = await Promise.all(promises)
+                return ff_core_Array.Array_toList(array)
+            } finally {
+                self_.controller.signal.removeEventListener('abort', abort)
+                controller.abort()
+                await Promise.allSettled(promises)
+            }
+        """
+
+    both[A, B](task1: () => A, task2: () => B): Pair[A, B] { panic("magic") }
+        javascriptasync """
+            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            let controller = new AbortController()
+            let abort = () => controller.abort(self_.controller.signal.reason)
+            self_.controller.signal.addEventListener('abort', abort)
+            let promises = []
+            try {
+                promises.push(Promise.resolve(controller.signal).then(task1_))
+                promises.push(Promise.resolve(controller.signal).then(task2_))
+                let array = await Promise.all(promises)
+                return {first_: array[0], second_: array[1]}
+            } finally {
+                self_.controller.signal.removeEventListener('abort', abort)
+                controller.abort()
+                await Promise.allSettled(promises)
+            }
+        """
+
+}
+
+
+extend self: TaskSystem {
+    start[T](task: () => Unit): Task
+    channel[T](capacity: Int = 0): Channel[T]
+    sleep(duration: Duration): Unit
+}
