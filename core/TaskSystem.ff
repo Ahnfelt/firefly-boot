@@ -12,7 +12,7 @@ extend self: TaskSystem {
             (async () => {
                 let abort = () => controller.abort($signal.reason)
                 $signal.addEventListener('abort', abort)
-                let promise = Promise.resolve(controller.signal).then(body_)
+                let promise = Promise.resolve(controller.signal).then(taskBody_)
                 $signal.promises.add(promise)
                 let outcomes = []
                 try {
