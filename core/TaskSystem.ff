@@ -7,9 +7,9 @@ extend self: TaskSystem {
     start[T](taskBody: () => Unit): Task { panic("magic") }
         javascriptasync """
             if($signal.aborted) throw $signal.reason
-                async function spawn() {
-                let controller = new AbortController()
-                controller.signal.promises = new Set()
+            let controller = new AbortController()
+            controller.signal.promises = new Set()
+            (async () => {
                 let abort = () => controller.abort($signal.reason)
                 $signal.addEventListener('abort', abort)
                 let promise = Promise.resolve(controller.signal).then(body_)
@@ -23,11 +23,18 @@ extend self: TaskSystem {
                     $signal.promises.delete(promise)
                 }
                 for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
-            }
-            spawn() // What difference does it make if a spawned task waits for its subtasks?
+                 // Who will ever benefit from this throw?
+                 // What difference does it make if a spawned task waits for its subtasks?
+            })()
+            return controller
         """
 
     channel[T](capacity: Int = 0): Channel[T] { panic("magic") }
         javascriptasync """return {capacity: capacity_, readers: new Set(), writers: new Set()}"""
 
+}
+
+extend self: Task {
+    cancel(): Unit { panic("magic") }
+        javascript "self_.abort()"
 }
