@@ -58,7 +58,7 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                 if(action.channel.readers.size != 0) {
                     let reader = action.channel.readers.values().next().value
                     action.channel.readers.delete(reader)
-                    reader.resolve(value)
+                    reader.resolve(action.message)
                     return
                 } else if(action.channel.buffer.length < action.channel.capacity) {
                     action.channel.buffer.push(action.message)
