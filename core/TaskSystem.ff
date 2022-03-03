@@ -30,7 +30,7 @@ extend self: TaskSystem {
         """
 
     channel[T](capacity: Int = 0): Channel[T] { panic("magic") }
-        javascriptasync """return {capacity: capacity_, readers: new Set(), writers: new Set()}"""
+        javascriptasync """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
 }
 

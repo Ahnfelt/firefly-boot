@@ -75,7 +75,6 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                 }
             }
         }
-         // TODO: When capacity > 0 and removing a writer such that writers <= capacity, wake up next sleeping writer, if any
         let abort
         let cleanups = []
         let promise = new Promise((resolve, reject) => {
