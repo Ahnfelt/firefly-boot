@@ -156,7 +156,7 @@ export async function internalRunChannelAction_$(action_, mode_, $c) {
         let timeout = null
         try {
             $c.signal.addEventListener('abort', abort)
-            if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_)
+            if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_ * 1000)
             let body = await promise
             if(timeout != null) { clearTimeout(timeout); timeout = null }
             return await body()
