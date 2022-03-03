@@ -8,7 +8,7 @@ extend self: TaskSystem {
                 try {
                     await Promise.resolve($c).then(task_)
                 } catch(e) {
-                    if(!$c.aborted) {
+                    if(!$c.signal.aborted) {
                         $c.reasonWorkaround = e
                         $c.abort()
                     }
@@ -35,7 +35,7 @@ extend self: TaskSystem {
                 if(!shield_) $c.signal.addEventListener('abort', abort)
                 result = await body_(controller)
             } catch(e) {
-                if(!controller.aborted) {
+                if(!controller.signal.aborted) {
                     controller.reasonWorkaround = e
                     controller.abort()
                 }
