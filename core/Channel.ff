@@ -94,8 +94,8 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                 }
             }
         })
-        $signal.addEventListener('abort', abort)
         try {
+            $signal.addEventListener('abort', abort)
             return await promise
         } finally {
             $signal.removeEventListener('abort', abort)
