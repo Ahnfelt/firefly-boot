@@ -53,7 +53,7 @@ extend self: TaskSystem {
 
     sleep(duration: Duration): Unit {
         Channel.
-            readOr(self.channel()) {|_ => }.
+            readOr(self.channel()) {| _ => }.
             timeout(duration) {}
     }
 
