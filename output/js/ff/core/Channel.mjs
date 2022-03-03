@@ -82,13 +82,18 @@ return {channel: channel_, body: body_, message: message_, previous: null}
 
 export async function internalRunChannelAction_$(action_, mode_, $c) {
 
+        // If already aborted, throw.
         if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+
+        // Convert the linked actions into an array.
         let actions = []
         while(action_ != null) {
             actions.push(action_)
             action_ = action_.previous
         }
         actions.reverse()
+
+        // If any reads or writes can be done immediately, do the first one and return.
         for(let action of actions) {
             if(action.hasOwnProperty("message")) {
                 if(action.channel.readers.size != 0) {
@@ -111,7 +116,11 @@ export async function internalRunChannelAction_$(action_, mode_, $c) {
                 }
             }
         }
+
+        // If there's an "immediately(body)" action, do that now.
         if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($c)
+
+        // Otherwise, start waiting for one of the readers or writers (or timeout(body), or cancellation) to happen.
         let abort = null
         let finish = null
         let cleanups = []

@@ -1,110 +1,98 @@
 type TaskSystem! {}
 
-type Task {}
-
 extend self: TaskSystem {
 
-    start[T](taskBody: () => Unit): Task { panic("magic") }
+    start[T](task: () => Unit): Unit { panic("magic") }
         javascriptasync """
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            async function spawn() {
+                try {
+                    await Promise.resolve($c).then(task_)
+                } catch(e) {
+                    if(!$c.aborted) {
+                        $c.reasonWorkaround = e
+                        $c.abort()
+                    }
+                } finally {
+                    $c.promises.remove(promise)
+                }
+            }
+            let promise = spawn()
+            $c.promises.add(promise)
+        """
+
+    scope[T](body: () => T, shield: Bool = False): T { panic("magic") }
+        javascriptasync """
+            if(!shield_ && $c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             let controller = new AbortController()
             controller.promises = new Set()
-            async function spawn() {
-                let abort = () => {
-                    controller.reasonWorkaround = $c.reasonWorkaround
+            let abort = () => {
+                controller.reasonWorkaround = $c.reasonWorkaround
+                controller.abort()
+            }
+            let result = undefined
+            let outcomes = []
+            try {
+                if(!shield_) $c.signal.addEventListener('abort', abort)
+                result = await body_(controller)
+            } catch(e) {
+                if(!controller.aborted) {
+                    controller.reasonWorkaround = e
                     controller.abort()
                 }
-                $c.signal.addEventListener('abort', abort)
-                let promise = Promise.resolve(controller).then(taskBody_)
-                $c.promises.add(promise)
-                let outcomes = []
-                try {
-                    await promise
-                } finally {
-                    $c.signal.removeEventListener('abort', abort)
-                    outcomes = await Promise.allSettled(controller.promises)
-                    $c.promises.delete(promise)
-                }
-                for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
-                // Who will ever benefit from this throw?
-                // What difference does it make if a spawned task waits for its subtasks?
+                throw e
+            } finally {
+                if(!shield_) $c.signal.removeEventListener('abort', abort)
+                outcomes = await Promise.allSettled(controller.promises)
             }
-            spawn()
-            return controller
+            for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
+            return result
         """
 
     channel[T](capacity: Int = 0): Channel[T] { panic("magic") }
         javascriptasync """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
-    race[T](tasks: List[() => T]): T {
-        let channel = self.channel()
-        let taskReferences = tasks.map {task => self.start {
-            channel.write(task())
-        }}
-        try {
-            channel.read()
-        } finally {
-            taskReferences.each {_.cancel()}
-        } expect()
+    sleep(duration: Duration): Unit {
+        Channel.
+            readOr(self.channel()) {|_ => }.
+            timeout(duration) {}
     }
 
     all[T](tasks: List[() => T]): List[T] {
         let channel = self.channel()
-        let taskReferences = tasks.pairs().map {| Pair(i, task) => self.start {
-            let result = try {
-                Right(Pair(i, task()))
-            } catchAny {e =>
-                Left(e)
-            } expect()
-            channel.write(result)
-        }}
-        try {
-            mutable error = None
-            let pairs = taskReferences.collect {| _ =>
-                channel.read().{
-                    | Right(Pair(i, r)) =>
-                        Some(Pair(i, r))
-                    | Left(e) =>
-                        if(error == None) {
-                            taskReferences.each {_.cancel()}
-                            error = Some(e)
-                        }
-                        None
+        self.scope {
+            tasks.pairs().each {| Pair(i, task) =>
+                self.start {
+                    channel.write(Pair(i, task()))
                 }
             }
-            error.each(throw)
-            pairs.sortBy {_.first}.map {_.second}
-        } finally {
-            taskReferences.each {_.cancel()}
-        } expect()
+            tasks.map {| _ =>
+                channel.read()
+            }.sortBy {_.first}.map {_.second}
+        }
     }
 
-    sleep(duration: Duration): Unit { panic("magic") }
-        javascriptasync """
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            await new Promise((resolve, reject) => {
-                let abort = () => {
-                    $c.signal.removeEventListener('abort', abort)
-                    if(timeoutId != null) clearTimeout(timeoutId)
-                    reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))
+    race[T](tasks: List[() => T]): T {
+        let successChannel = self.channel()
+        let failureChannel = self.channel()
+        mutable live = tasks.size()
+        self.scope {
+            tasks.each {task =>
+                self.start {
+                    try {
+                        successChannel.write(task())
+                    } catchAny {e =>
+                        live -= 1
+                        if(live == 0) {
+                            failureChannel.write(e)
+                        }
+                    }
                 }
-                $c.signal.addEventListener('abort', abort)
-                let complete = () => {
-                    $c.signal.removeEventListener('abort', abort)
-                    resolve()
-                }
-                let timeoutId = setTimeout(complete, duration_ * 1000);
-            })
-        """
+            }
+            Channel.
+                readOr(successChannel, {_}).
+                readOr(failureChannel, throw).
+                wait()
+        }
+    }
 
 }
-
-extend self: Task {
-    cancel(): Unit { panic("magic") }
-        javascript """
-            self_.controller.reasonWorkaround = new Error("Cancellation")
-            self_.abort()
-        """
-}
-
-type Either[A, B] { Left(value: A); Right(value: B) } // TODO

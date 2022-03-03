@@ -55,24 +55,17 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type TaskSystem
 
 
-// type Task
 
 
-// type Either
-export function Left(value_) {
-return {Left: true, value_};
+
+
+
+
+export function TaskSystem_start(self_, task_) {
+ff_core_Core.panic_("magic")
 }
-export function Right(value_) {
-return {Right: true, value_};
-}
 
-
-
-
-
-
-
-export function TaskSystem_start(self_, taskBody_) {
+export function TaskSystem_scope(self_, body_, shield_ = false) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -80,113 +73,107 @@ export function TaskSystem_channel(self_, capacity_ = 0) {
 return ff_core_Core.panic_("magic")
 }
 
-export function TaskSystem_race(self_, tasks_) {
-const channel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
-const taskReferences_ = ff_core_List.List_map(tasks_, ((task_) => {
-return ff_core_TaskSystem.TaskSystem_start(self_, (() => {
-ff_core_Channel.Channel_write(channel_, task_())
+export function TaskSystem_sleep(self_, duration_) {
+ff_core_Channel.ChannelAction_timeout(ff_core_Channel.readOr_(ff_core_TaskSystem.TaskSystem_channel(self_, 0), ((_) => {
+
+})), duration_, (() => {
+
 }))
-}));
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-return ff_core_Channel.Channel_read(channel_)
-})), (() => {
-ff_core_List.List_each(taskReferences_, ((_w1) => {
-ff_core_TaskSystem.Task_cancel(_w1)
-}))
-})))
 }
 
 export function TaskSystem_all(self_, tasks_) {
 const channel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
-const taskReferences_ = ff_core_List.List_map(ff_core_List.List_pairs(tasks_), ((_1) => {
+return ff_core_TaskSystem.TaskSystem_scope(self_, (() => {
+ff_core_List.List_each(ff_core_List.List_pairs(tasks_), ((_1) => {
 {
 const i_ = _1.first_;
 const task_ = _1.second_;
-return ff_core_TaskSystem.TaskSystem_start(self_, (() => {
-const result_ = ff_core_Try.Try_expect(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
-return ff_core_TaskSystem.Right(ff_core_Pair.Pair(i_, task_()))
-})), ((e_) => {
-return ff_core_TaskSystem.Left(e_)
-})));
-ff_core_Channel.Channel_write(channel_, result_)
+ff_core_TaskSystem.TaskSystem_start(self_, (() => {
+ff_core_Channel.Channel_write(channel_, ff_core_Pair.Pair(i_, task_()))
 }))
 return
 }
 }));
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-let error_ = ff_core_Option.None();
-const pairs_ = ff_core_List.List_collect(taskReferences_, ((_) => {
-{
-const _1 = ff_core_Channel.Channel_read(channel_);
-{
-if(_1.Right) {
-const i_ = _1.value_.first_;
-const r_ = _1.value_.second_;
-return ff_core_Option.Some(ff_core_Pair.Pair(i_, r_))
-return
-}
-}
-{
-if(_1.Left) {
-const e_ = _1.value_;
-if((error_ == ff_core_Option.None())) {
-ff_core_List.List_each(taskReferences_, ((_w1) => {
-ff_core_TaskSystem.Task_cancel(_w1)
-}));
-error_ = ff_core_Option.Some(e_)
-};
-return ff_core_Option.None()
-return
-}
-}
-}
-}));
-ff_core_Option.Option_each(error_, ((error_) => {
-ff_core_Core.throw_(error_)
-}));
-return ff_core_List.List_map(ff_core_List.List_sortBy(pairs_, ((_w1) => {
+return ff_core_List.List_map(ff_core_List.List_sortBy(ff_core_List.List_map(tasks_, ((_) => {
+return ff_core_Channel.Channel_read(channel_)
+})), ((_w1) => {
 return _w1.first_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_w1) => {
 return _w1.second_
 }))
-})), (() => {
-ff_core_List.List_each(taskReferences_, ((_w1) => {
-ff_core_TaskSystem.Task_cancel(_w1)
+}), false)
+}
+
+export function TaskSystem_race(self_, tasks_) {
+const successChannel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
+const failureChannel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
+let live_ = ff_core_List.List_size(tasks_);
+return ff_core_TaskSystem.TaskSystem_scope(self_, (() => {
+ff_core_List.List_each(tasks_, ((task_) => {
+ff_core_TaskSystem.TaskSystem_start(self_, (() => {
+ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return ff_core_Channel.Channel_write(successChannel_, task_())
+})), ((e_) => {
+live_ -= 1;
+if((live_ == 0)) {
+ff_core_Channel.Channel_write(failureChannel_, e_)
+}
 }))
+}))
+}));
+return ff_core_Channel.ChannelAction_wait(ff_core_Channel.ChannelAction_readOr(ff_core_Channel.readOr_(successChannel_, ((_w1) => {
+return _w1
+})), failureChannel_, ((error_) => {
+return ff_core_Core.throw_(error_)
 })))
+}), false)
 }
 
-export function TaskSystem_sleep(self_, duration_) {
-ff_core_Core.panic_("magic")
+export async function TaskSystem_start$(self_, task_, $c) {
+
+            async function spawn() {
+                try {
+                    await Promise.resolve($c).then(task_)
+                } catch(e) {
+                    if(!$c.aborted) {
+                        $c.reasonWorkaround = e
+                        $c.abort()
+                    }
+                } finally {
+                    $c.promises.remove(promise)
+                }
+            }
+            let promise = spawn()
+            $c.promises.add(promise)
+        
 }
 
-export async function TaskSystem_start$(self_, taskBody_, $c) {
+export async function TaskSystem_scope$(self_, body_, shield_ = false, $c) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            if(!shield_ && $c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             let controller = new AbortController()
             controller.promises = new Set()
-            async function spawn() {
-                let abort = () => {
-                    controller.reasonWorkaround = $c.reasonWorkaround
+            let abort = () => {
+                controller.reasonWorkaround = $c.reasonWorkaround
+                controller.abort()
+            }
+            let result = undefined
+            let outcomes = []
+            try {
+                if(!shield_) $c.signal.addEventListener('abort', abort)
+                result = await body_(controller)
+            } catch(e) {
+                if(!controller.aborted) {
+                    controller.reasonWorkaround = e
                     controller.abort()
                 }
-                $c.signal.addEventListener('abort', abort)
-                let promise = Promise.resolve(controller).then(taskBody_)
-                $c.promises.add(promise)
-                let outcomes = []
-                try {
-                    await promise
-                } finally {
-                    $c.signal.removeEventListener('abort', abort)
-                    outcomes = await Promise.allSettled(controller.promises)
-                    $c.promises.delete(promise)
-                }
-                for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
-                // Who will ever benefit from this throw?
-                // What difference does it make if a spawned task waits for its subtasks?
+                throw e
+            } finally {
+                if(!shield_) $c.signal.removeEventListener('abort', abort)
+                outcomes = await Promise.allSettled(controller.promises)
             }
-            spawn()
-            return controller
+            for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
+            return result
         
 }
 
@@ -194,110 +181,60 @@ export async function TaskSystem_channel$(self_, capacity_ = 0, $c) {
 return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
 }
 
-export async function TaskSystem_race$(self_, tasks_, $c) {
-const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
-const taskReferences_ = (await ff_core_List.List_map$(tasks_, (async (task_, $c) => {
-return (await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($c) => {
-(await ff_core_Channel.Channel_write$(channel_, (await task_($c)), $c))
+export async function TaskSystem_sleep$(self_, duration_, $c) {
+(await ff_core_Channel.ChannelAction_timeout$((await ff_core_Channel.readOr_$((await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c)), (async (_, $c) => {
+
+}), $c)), duration_, (async ($c) => {
+
 }), $c))
-}), $c));
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
-return (await ff_core_Channel.Channel_read$(channel_, $c))
-}), $c)), (() => {
-ff_core_List.List_each(taskReferences_, ((_w1) => {
-ff_core_TaskSystem.Task_cancel(_w1)
-}))
-})))
 }
 
 export async function TaskSystem_all$(self_, tasks_, $c) {
 const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
-const taskReferences_ = (await ff_core_List.List_map$(ff_core_List.List_pairs(tasks_), (async (_1, $c) => {
+return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async ($c) => {
+(await ff_core_List.List_each$(ff_core_List.List_pairs(tasks_), (async (_1, $c) => {
 {
 const i_ = _1.first_;
 const task_ = _1.second_;
-return (await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($c) => {
-const result_ = ff_core_Try.Try_expect(ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($c) => {
-return ff_core_TaskSystem.Right(ff_core_Pair.Pair(i_, (await task_($c))))
-}), $c)), ((e_) => {
-return ff_core_TaskSystem.Left(e_)
-})));
-(await ff_core_Channel.Channel_write$(channel_, result_, $c))
+(await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($c) => {
+(await ff_core_Channel.Channel_write$(channel_, ff_core_Pair.Pair(i_, (await task_($c))), $c))
 }), $c))
 return
 }
 }), $c));
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
-let error_ = ff_core_Option.None();
-const pairs_ = (await ff_core_List.List_collect$(taskReferences_, (async (_, $c) => {
-{
-const _1 = (await ff_core_Channel.Channel_read$(channel_, $c));
-{
-if(_1.Right) {
-const i_ = _1.value_.first_;
-const r_ = _1.value_.second_;
-return ff_core_Option.Some(ff_core_Pair.Pair(i_, r_))
-return
-}
-}
-{
-if(_1.Left) {
-const e_ = _1.value_;
-if((error_ == ff_core_Option.None())) {
-ff_core_List.List_each(taskReferences_, ((_w1) => {
-ff_core_TaskSystem.Task_cancel(_w1)
-}));
-error_ = ff_core_Option.Some(e_)
-};
-return ff_core_Option.None()
-return
-}
-}
-}
-}), $c));
-ff_core_Option.Option_each(error_, ((error_) => {
-ff_core_Core.throw_(error_)
-}));
-return ff_core_List.List_map(ff_core_List.List_sortBy(pairs_, ((_w1) => {
+return ff_core_List.List_map(ff_core_List.List_sortBy((await ff_core_List.List_map$(tasks_, (async (_, $c) => {
+return (await ff_core_Channel.Channel_read$(channel_, $c))
+}), $c)), ((_w1) => {
 return _w1.first_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_w1) => {
 return _w1.second_
 }))
-}), $c)), (() => {
-ff_core_List.List_each(taskReferences_, ((_w1) => {
-ff_core_TaskSystem.Task_cancel(_w1)
-}))
-})))
+}), false, $c))
 }
 
-export async function TaskSystem_sleep$(self_, duration_, $c) {
-
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            await new Promise((resolve, reject) => {
-                let abort = () => {
-                    $c.signal.removeEventListener('abort', abort)
-                    if(timeoutId != null) clearTimeout(timeoutId)
-                    reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))
-                }
-                $c.signal.addEventListener('abort', abort)
-                let complete = () => {
-                    $c.signal.removeEventListener('abort', abort)
-                    resolve()
-                }
-                let timeoutId = setTimeout(complete, duration_ * 1000);
-            })
-        
+export async function TaskSystem_race$(self_, tasks_, $c) {
+const successChannel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
+const failureChannel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
+let live_ = ff_core_List.List_size(tasks_);
+return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async ($c) => {
+(await ff_core_List.List_each$(tasks_, (async (task_, $c) => {
+(await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($c) => {
+(await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Channel.Channel_write$(successChannel_, (await task_($c)), $c))
+}), $c)), (async (e_, $c) => {
+live_ -= 1;
+if((live_ == 0)) {
+(await ff_core_Channel.Channel_write$(failureChannel_, e_, $c))
 }
-
-export function Task_cancel(self_) {
-
-            self_.controller.reasonWorkaround = new Error("Cancellation")
-            self_.abort()
-        
-}
-
-export async function Task_cancel$(self_, $c) {
-ff_core_Core.panic_("magic")
+}), $c))
+}), $c))
+}), $c));
+return (await ff_core_Channel.ChannelAction_wait$((await ff_core_Channel.ChannelAction_readOr$((await ff_core_Channel.readOr_$(successChannel_, (async (_w1, $c) => {
+return _w1
+}), $c)), failureChannel_, (async (error_, $c) => {
+return ff_core_Core.throw_(error_)
+}), $c)), $c))
+}), false, $c))
 }
 
 

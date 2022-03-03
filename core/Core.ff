@@ -34,7 +34,7 @@ do[T](body: () => T): T {
     body()
 }
 
-throw[T](error: T) { panic("magic") }
+throw[E, T](error: E): T { panic("magic") }
     javascript "throw error_"
 
 panic[T](message: String): T { panic("magic") }

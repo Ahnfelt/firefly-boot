@@ -175,7 +175,7 @@ return (await body_($c))
 }
 
 export async function throw_$(error_, $c) {
-ff_core_Core.panic_("magic")
+return ff_core_Core.panic_("magic")
 }
 
 export async function panic_$(message_, $c) {
