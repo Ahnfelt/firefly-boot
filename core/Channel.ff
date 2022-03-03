@@ -77,15 +77,18 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
         }
         let abort
         let cleanups = []
+        function doCleanup() {
+            for(cleanup of cleanups) cleanup()
+        }
         let promise = new Promise((resolve, reject) => {
             abort = reject
             for(let action of actions) {
                 if(action.hasOwnProperty("message")) {
-                    let writer = {resolve, message: action.message}
+                    let writer = {resolve: v => {doCleanup(); resolve(v)}, message: action.message}
                     cleanups.push(() => action.channel.writers.delete(writer))
                     action.channel.writers.add(writer)
                 } else {
-                    let reader = {resolve}
+                    let reader = {resolve: () => {doCleanup(); resolve()}}
                     cleanups.push(() => action.channel.readers.delete(reader))
                     action.channel.readers.add(reader)
                 }
@@ -96,6 +99,6 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
             return await promise
         } finally {
             $signal.removeEventListener('abort', abort)
-            for(cleanup of cleanups) cleanup()
+            doCleanup()
         }
     """
