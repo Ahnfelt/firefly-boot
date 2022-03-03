@@ -60,15 +60,17 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                     action.channel.readers.delete(reader)
                     reader.resolve(value)
                     return
-                } else if(action.channel.writers.size < action.channel.capacity) {
-                    action.channel.writers.add({message})
+                } else if(action.channel.buffer.length < action.channel.capacity) {
+                    action.channel.buffer.push(action.message)
                     return
                 }
             } else {
-                if(action.channel.writers.size != 0) {
+                if(action.channel.buffer.length != 0) {
+                    return action.channel.buffer.shift()
+                } else if(action.channel.writers.size != 0) {
                     let writer = action.channel.writers.values().next().value
                     action.channel.writers.delete(writer)
-                    if(writer.resolve != null) writer.resolve()
+                    writer.resolve()
                     return writer.message
                 }
             }
