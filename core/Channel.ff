@@ -82,7 +82,7 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
             cleanups = []
         }
         let promise = new Promise((resolve, reject) => {
-            abort = reject
+            abort = e => {doCleanup(); reject(e)}
             for(let action of actions) {
                 if(action.hasOwnProperty("message")) {
                     let writer = {resolve: v => {doCleanup(); resolve(v)}, message: action.message}
