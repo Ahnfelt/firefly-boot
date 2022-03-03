@@ -4,6 +4,8 @@ import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Channel from "../../ff/core/Channel.mjs"
+
 import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
@@ -107,6 +109,10 @@ export function do_(body_) {
 return body_()
 }
 
+export function throw_(error_) {
+throw error_
+}
+
 export function panic_(message_) {
 throw new Error(message_)
 }
@@ -166,6 +172,10 @@ export async function try_$(body_, $signal) {
 
 export async function do_$(body_, $signal) {
 return (await body_($signal))
+}
+
+export async function throw_$(error_, $signal) {
+ff_core_Core.panic_("magic")
 }
 
 export async function panic_$(message_, $signal) {

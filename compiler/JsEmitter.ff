@@ -47,6 +47,7 @@ extend self: JsEmitter {
         [
             "queueMicrotask(async () => {"
             "const controller = new AbortController()"
+            "controller.signal.promises = new Set()"
             "try {"
             "await main_$({array_: process.argv.slice(2)}, controller.signal)"
             "} finally {"

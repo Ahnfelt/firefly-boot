@@ -13,6 +13,14 @@ main(system: System): Unit {
     let tempPath = system.arguments().expect(3)
     let jsOutputPath = system.arguments().expect(4)
 
+    /*Log.debug("Foo")
+    system.tasks().race([
+        {system.tasks().sleep(Duration(1.0))}
+        {system.tasks().sleep(Duration(10.0))}
+    ])
+    system.tasks().start({system.tasks().sleep(Duration(0.1))}).cancel()
+    Log.debug("Bar")*/
+
     let fs = system.files()
 
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }

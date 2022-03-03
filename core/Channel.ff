@@ -20,7 +20,7 @@ extend self[T]: ChannelAction[T] {
     readOr[M](channel: Channel[M], body: M => T): ChannelAction[T] { panic("magic") }
         javascriptasync "return {channel: channel_, body: body_, previous: self_}"
 
-    writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T]
+    writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T] { panic("magic") }
         javascriptasync "return {channel: channel_, body: body_, message: message_, previous: self_}"
 
     wait(): T {
@@ -37,16 +37,16 @@ extend self[T]: ChannelAction[T] {
 
 }
 
-readOr[M](channel: Channel[M], body: M => T): ChannelAction[T] { panic("magic") }
+readOr[M, T](channel: Channel[M], body: M => T): ChannelAction[T] { panic("magic") }
     javascriptasync "return {channel: channel_, body: body_, previous: null}"
 
-writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T] { panic("magic") }
+writeOr[M, T](channel: Channel[M], message: M, body: () => T): ChannelAction[T] { panic("magic") }
     javascriptasync "return {channel: channel_, body: body_, message: message_, previous: null}"
 
 
 internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T, Option[Duration]]]): T { panic("magic") }
     javascriptasync """
-        if($signal.aborted) throw $signal.reason
+        if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
         let actions = []
         while(action_ != null) {
             actions.push(action_)
@@ -59,36 +59,47 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                     let reader = action.channel.readers.values().next().value
                     action.channel.readers.delete(reader)
                     reader.resolve(action.message)
-                    return
+                    return await action.body($signal)
                 } else if(action.channel.buffer.length < action.channel.capacity) {
                     action.channel.buffer.push(action.message)
-                    return
+                    return await action.body($signal)
                 }
             } else {
                 if(action.channel.buffer.length != 0) {
-                    return action.channel.buffer.shift()
+                    return await action.body(action.channel.buffer.shift(), $signal)
                 } else if(action.channel.writers.size != 0) {
                     let writer = action.channel.writers.values().next().value
                     action.channel.writers.delete(writer)
                     writer.resolve()
-                    return writer.message
+                    return await action.body(writer.message, $signal)
                 }
             }
         }
         let abort
         let cleanups = []
         function doCleanup() {
-            for(cleanup of cleanups) cleanup()
+            for(let cleanup of cleanups) cleanup()
         }
         let promise = new Promise((resolve, reject) => {
-            abort = e => {doCleanup(); reject(e)}
+            abort = () => {doCleanup(); reject(new Error("Cancelled", {cause: $signal.reasonWorkaround}))}
             for(let action of actions) {
                 if(action.hasOwnProperty("message")) {
-                    let writer = {resolve: v => {doCleanup(); resolve(v)}, message: action.message}
+                    let writer = {
+                        resolve: () => {
+                            doCleanup()
+                            resolve(action.body)
+                        },
+                        message: action.message
+                    }
                     cleanups.push(() => action.channel.writers.delete(writer))
                     action.channel.writers.add(writer)
                 } else {
-                    let reader = {resolve: () => {doCleanup(); resolve()}}
+                    let reader = {
+                        resolve: m => {
+                            doCleanup()
+                            resolve(() => action.body(m))
+                        }
+                    }
                     cleanups.push(() => action.channel.readers.delete(reader))
                     action.channel.readers.add(reader)
                 }
@@ -96,8 +107,11 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
         })
         try {
             $signal.addEventListener('abort', abort)
-            return await promise
+            let body = await promise
+            return await body()
         } finally {
             $signal.removeEventListener('abort', abort)
         }
     """
+
+

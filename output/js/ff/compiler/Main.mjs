@@ -18,6 +18,8 @@ import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Channel from "../../ff/core/Channel.mjs"
+
 import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
@@ -164,6 +166,7 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 
 queueMicrotask(async () => {
 const controller = new AbortController()
+controller.signal.promises = new Set()
 try {
 await main_$({array_: process.argv.slice(2)}, controller.signal)
 } finally {

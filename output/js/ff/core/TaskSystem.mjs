@@ -4,6 +4,8 @@ import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Channel from "../../ff/core/Channel.mjs"
+
 import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
@@ -53,116 +55,233 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type TaskSystem
 
 
+// type Task
+
+
+// type Either
+export function Left(value_) {
+return {Left: true, value_};
+}
+export function Right(value_) {
+return {Right: true, value_};
+}
 
 
 
 
 
 
-export function TaskSystem_start(self_, task_) {
+
+export function TaskSystem_start(self_, taskBody_) {
 return ff_core_Core.panic_("magic")
 }
 
-export function TaskSystem_cancel(self_) {
-ff_core_Core.panic_("magic")
+export function TaskSystem_channel(self_, capacity_ = 0) {
+return ff_core_Core.panic_("magic")
 }
 
-export function TaskSystem_scope(self_, body_) {
-return ff_core_Core.panic_("magic")
+export function TaskSystem_race(self_, tasks_) {
+const channel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
+const taskReferences_ = ff_core_List.List_map(tasks_, ((task_) => {
+return ff_core_TaskSystem.TaskSystem_start(self_, (() => {
+ff_core_Channel.Channel_write(channel_, task_())
+}))
+}));
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_core_Channel.Channel_read(channel_)
+})), (() => {
+ff_core_List.List_each(taskReferences_, ((_w1) => {
+ff_core_TaskSystem.Task_cancel(_w1)
+}))
+})))
+}
+
+export function TaskSystem_all(self_, tasks_) {
+const channel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
+const taskReferences_ = ff_core_List.List_map(ff_core_List.List_pairs(tasks_), ((_1) => {
+{
+const i_ = _1.first_;
+const task_ = _1.second_;
+return ff_core_TaskSystem.TaskSystem_start(self_, (() => {
+const result_ = ff_core_Try.Try_expect(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return ff_core_TaskSystem.Right(ff_core_Pair.Pair(i_, task_()))
+})), ((e_) => {
+return ff_core_TaskSystem.Left(e_)
+})));
+ff_core_Channel.Channel_write(channel_, result_)
+}))
+return
+}
+}));
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+let error_ = ff_core_Option.None();
+const pairs_ = ff_core_List.List_collect(taskReferences_, ((_) => {
+{
+const _1 = ff_core_Channel.Channel_read(channel_);
+{
+if(_1.Right) {
+const i_ = _1.value_.first_;
+const r_ = _1.value_.second_;
+return ff_core_Option.Some(ff_core_Pair.Pair(i_, r_))
+return
+}
+}
+{
+if(_1.Left) {
+const e_ = _1.value_;
+if((error_ == ff_core_Option.None())) {
+ff_core_List.List_each(taskReferences_, ((_w1) => {
+ff_core_TaskSystem.Task_cancel(_w1)
+}));
+error_ = ff_core_Option.Some(e_)
+};
+return ff_core_Option.None()
+return
+}
+}
+}
+}));
+ff_core_Option.Option_each(error_, ((error_) => {
+ff_core_Core.throw_(error_)
+}));
+return ff_core_List.List_map(ff_core_List.List_sortBy(pairs_, ((_w1) => {
+return _w1.first_
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_w1) => {
+return _w1.second_
+}))
+})), (() => {
+ff_core_List.List_each(taskReferences_, ((_w1) => {
+ff_core_TaskSystem.Task_cancel(_w1)
+}))
+})))
 }
 
 export function TaskSystem_sleep(self_, duration_) {
 ff_core_Core.panic_("magic")
 }
 
-export function TaskSystem_yield(self_) {
-ff_core_Core.panic_("magic")
-}
+export async function TaskSystem_start$(self_, taskBody_, $signal) {
 
-export function TaskSystem_channel(self_, buffer_ = 0) {
-return ff_core_Core.panic_("magic")
-}
-
-export function TaskSystem_race(self_, tasks_) {
-return ff_core_Core.panic_("magic")
-}
-
-export function TaskSystem_all(self_, tasks_) {
-return ff_core_Core.panic_("magic")
-}
-
-export function TaskSystem_both(self_, task1_, task2_) {
-return ff_core_Core.panic_("magic")
-}
-
-export async function TaskSystem_start$(self_, task_, $signal) {
-
-            const promise = Promise.resolve().then(() => {
-                try {
-                    if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-                    return task_(self_.controller.signal)
-                } catch(e) {
-                    if(self_.error == null) self_.error = e
-                    throw e
-                } finally {
-                    self_.promises.delete(promise)
-                }
-            })
-            self_.promises.add(promise)
-            return async (signal) => {
-                if(signal.aborted) throw signal.reason
-                let abort
-                let cancelPromise = new Promise((_, reject) => abort = () => reject(signal.reason))
-                signal.addEventListener('abort', abort)
-                try {
-                    await Promise.race([
-                        promise,
-                        cancelPromise
-                    ])
-                } finally {
-                    signal.removeEventListener('abort', abort)
-                }
-            }
-        
-}
-
-export async function TaskSystem_cancel$(self_, $signal) {
-
-            self_.controller.abort()
-        
-}
-
-export async function TaskSystem_scope$(self_, body_, $signal) {
-
-            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
             let controller = new AbortController()
-            let abort = () => controller.abort(self_.controller.signal.reason)
-            self_.controller.signal.addEventListener('abort', abort)
-            let result = undefined
-            let newTaskSystem = {promises: new Set(), controller: controller, error: null}
-            try {
-                result = await body_(newTaskSystem, newTaskSystem.controller.signal)
-            } finally {
-                self_.controller.signal.removeEventListener('abort', abort)
-                await Promise.allSettled(newTaskSystem.promises)
+            controller.signal.promises = new Set()
+            async function spawn() {
+                let abort = () => {
+                    controller.signal.reasonWorkaround = $signal.reasonWorkaround
+                    controller.abort()
+                }
+                $signal.addEventListener('abort', abort)
+                let promise = Promise.resolve(controller.signal).then(taskBody_)
+                $signal.promises.add(promise)
+                let outcomes = []
+                try {
+                    await promise
+                } finally {
+                    $signal.removeEventListener('abort', abort)
+                    outcomes = await Promise.allSettled(controller.signal.promises)
+                    $signal.promises.delete(promise)
+                }
+                for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
+                // Who will ever benefit from this throw?
+                // What difference does it make if a spawned task waits for its subtasks?
             }
-            if(self_.error != null) throw e
-            return result
+            spawn()
+            return controller
         
+}
+
+export async function TaskSystem_channel$(self_, capacity_ = 0, $signal) {
+return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
+}
+
+export async function TaskSystem_race$(self_, tasks_, $signal) {
+const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $signal));
+const taskReferences_ = (await ff_core_List.List_map$(tasks_, (async (task_, $signal) => {
+return (await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($signal) => {
+(await ff_core_Channel.Channel_write$(channel_, (await task_($signal)), $signal))
+}), $signal))
+}), $signal));
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($signal) => {
+return (await ff_core_Channel.Channel_read$(channel_, $signal))
+}), $signal)), (() => {
+ff_core_List.List_each(taskReferences_, ((_w1) => {
+ff_core_TaskSystem.Task_cancel(_w1)
+}))
+})))
+}
+
+export async function TaskSystem_all$(self_, tasks_, $signal) {
+const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $signal));
+const taskReferences_ = (await ff_core_List.List_map$(ff_core_List.List_pairs(tasks_), (async (_1, $signal) => {
+{
+const i_ = _1.first_;
+const task_ = _1.second_;
+return (await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($signal) => {
+const result_ = ff_core_Try.Try_expect(ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($signal) => {
+return ff_core_TaskSystem.Right(ff_core_Pair.Pair(i_, (await task_($signal))))
+}), $signal)), ((e_) => {
+return ff_core_TaskSystem.Left(e_)
+})));
+(await ff_core_Channel.Channel_write$(channel_, result_, $signal))
+}), $signal))
+return
+}
+}), $signal));
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($signal) => {
+let error_ = ff_core_Option.None();
+const pairs_ = (await ff_core_List.List_collect$(taskReferences_, (async (_, $signal) => {
+{
+const _1 = (await ff_core_Channel.Channel_read$(channel_, $signal));
+{
+if(_1.Right) {
+const i_ = _1.value_.first_;
+const r_ = _1.value_.second_;
+return ff_core_Option.Some(ff_core_Pair.Pair(i_, r_))
+return
+}
+}
+{
+if(_1.Left) {
+const e_ = _1.value_;
+if((error_ == ff_core_Option.None())) {
+ff_core_List.List_each(taskReferences_, ((_w1) => {
+ff_core_TaskSystem.Task_cancel(_w1)
+}));
+error_ = ff_core_Option.Some(e_)
+};
+return ff_core_Option.None()
+return
+}
+}
+}
+}), $signal));
+ff_core_Option.Option_each(error_, ((error_) => {
+ff_core_Core.throw_(error_)
+}));
+return ff_core_List.List_map(ff_core_List.List_sortBy(pairs_, ((_w1) => {
+return _w1.first_
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_w1) => {
+return _w1.second_
+}))
+}), $signal)), (() => {
+ff_core_List.List_each(taskReferences_, ((_w1) => {
+ff_core_TaskSystem.Task_cancel(_w1)
+}))
+})))
 }
 
 export async function TaskSystem_sleep$(self_, duration_, $signal) {
 
-            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
+            if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
             await new Promise((resolve, reject) => {
                 let abort = () => {
-                    self_.controller.signal.removeEventListener('abort', abort)
+                    $signal.removeEventListener('abort', abort)
                     if(timeoutId != null) clearTimeout(timeoutId)
-                    reject(self_.controller.signal.reason)
+                    reject(new Error("Cancelled", {cause: $signal.reasonWorkaround}))
                 }
-                self_.controller.signal.addEventListener('abort', abort)
+                $signal.addEventListener('abort', abort)
                 let complete = () => {
-                    self_.controller.signal.removeEventListener('abort', abort)
+                    $signal.removeEventListener('abort', abort)
                     resolve()
                 }
                 let timeoutId = setTimeout(complete, duration_ * 1000);
@@ -170,136 +289,15 @@ export async function TaskSystem_sleep$(self_, duration_, $signal) {
         
 }
 
-export async function TaskSystem_yield$(self_, $signal) {
+export function Task_cancel(self_) {
 
-            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-            await Promise.resolve().then(() => {})
+            self_.signal.reasonWorkaround = new Error("Cancellation")
+            self_.abort()
         
 }
 
-export async function TaskSystem_channel$(self_, buffer_ = 0, $signal) {
-
-            let readers = new Set()
-            let writers = new Set()
-            async function read(signal) {
-                if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-                if(signal.aborted) throw signal.reason
-                if(writers.size != 0) {
-                    let writer = writers.values().next().value
-                    writers.delete(writer)
-                    writer.resolve()
-                    return writer.value
-                } else {
-                    let reader
-                    let abort
-                    let promise = new Promise((resolve, reject) => {
-                        reader = resolve
-                        abort = () => reject(self_.controller.signal.reason || signal.reason)
-                    })
-                    readers.add(reader)
-                    self_.controller.signal.addEventListener('abort', abort)
-                    signal.addEventListener('abort', abort)
-                    try {
-                        return await promise
-                    } finally {
-                        readers.remove(reader)
-                        self_.controller.signal.removeEventListener('abort', abort)
-                        signal.removeEventListener('abort', abort)
-                    }
-                }
-            }
-            async function write(value, signal) {
-                if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-                if(signal.aborted) throw signal.reason
-                if(readers.size != 0) {
-                    let reader = readers.values().next().value
-                    readers.delete(reader)
-                    reader.resolve(value)
-                } else {
-                    let send
-                    let abort
-                    let promise = new Promise((resolve, reject) => {
-                        send = resolve
-                        abort = () => reject(self_.controller.signal.reason || signal.reason)
-                    })
-                    let writer = {value, resolve: send}
-                    writers.add(writer)
-                    if(writers.size > buffer) {
-                        self_.controller.signal.addEventListener('abort', abort)
-                        signal.addEventListener('abort', abort)
-                        try {
-                            await promise
-                        } finally {
-                            writers.remove(writer)
-                            self_.controller.signal.removeEventListener('abort', abort)
-                            signal.removeEventListener('abort', abort)
-                        }
-                    }
-                }
-            }
-            return {first_: read, second_: write}
-        
-}
-
-export async function TaskSystem_race$(self_, tasks_, $signal) {
-
-            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-            let controller = new AbortController()
-            let abort = () => controller.abort(self_.controller.signal.reason)
-            self_.controller.signal.addEventListener('abort', abort)
-            let promises = []
-            try {
-                ff_core_List.List_toArray(tasks_).forEach(f =>
-                    promises.push(Promise.resolve(controller.signal).then(f))
-                )
-                return await Promise.race(promises)
-            } finally {
-                self_.controller.signal.removeEventListener('abort', abort)
-                controller.abort()
-                await Promise.allSettled(promises)
-            }
-        
-}
-
-export async function TaskSystem_all$(self_, tasks_, $signal) {
-
-            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-            let controller = new AbortController()
-            let abort = () => controller.abort(self_.controller.signal.reason)
-            self_.controller.signal.addEventListener('abort', abort)
-            let promises = []
-            try {
-                ff_core_List.List_toArray(tasks_).forEach(f =>
-                    promises.push(Promise.resolve(controller.signal).then(f))
-                )
-                let array = await Promise.all(promises)
-                return ff_core_Array.Array_toList(array)
-            } finally {
-                self_.controller.signal.removeEventListener('abort', abort)
-                controller.abort()
-                await Promise.allSettled(promises)
-            }
-        
-}
-
-export async function TaskSystem_both$(self_, task1_, task2_, $signal) {
-
-            if(self_.controller.signal.aborted) throw self_.controller.signal.reason
-            let controller = new AbortController()
-            let abort = () => controller.abort(self_.controller.signal.reason)
-            self_.controller.signal.addEventListener('abort', abort)
-            let promises = []
-            try {
-                promises.push(Promise.resolve(controller.signal).then(task1_))
-                promises.push(Promise.resolve(controller.signal).then(task2_))
-                let array = await Promise.all(promises)
-                return {first_: array[0], second_: array[1]}
-            } finally {
-                self_.controller.signal.removeEventListener('abort', abort)
-                controller.abort()
-                await Promise.allSettled(promises)
-            }
-        
+export async function Task_cancel$(self_, $signal) {
+ff_core_Core.panic_("magic")
 }
 
 

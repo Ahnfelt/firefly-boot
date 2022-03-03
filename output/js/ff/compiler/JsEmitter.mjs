@@ -10,6 +10,8 @@ import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Channel from "../../ff/core/Channel.mjs"
+
 import * as ff_core_Char from "../../ff/core/Char.mjs"
 
 import * as ff_core_Core from "../../ff/core/Core.mjs"
@@ -580,7 +582,7 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export function JsEmitter_emitMain(self_) {
-return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: process.argv.slice(2)}, controller.signal)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty())))))))), "\n")
+return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.signal.promises = new Set()", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: process.argv.slice(2)}, controller.signal)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))), "\n")
 }
 
 export function JsEmitter_emitImportDefinition(self_, definition_) {
@@ -1819,7 +1821,7 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export async function JsEmitter_emitMain$(self_, $signal) {
-return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: process.argv.slice(2)}, controller.signal)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty())))))))), "\n")
+return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.signal.promises = new Set()", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: process.argv.slice(2)}, controller.signal)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))), "\n")
 }
 
 export async function JsEmitter_emitImportDefinition$(self_, definition_, $signal) {

@@ -6,11 +6,14 @@ extend self: TaskSystem {
 
     start[T](taskBody: () => Unit): Task { panic("magic") }
         javascriptasync """
-            if($signal.aborted) throw $signal.reason
+            if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
             let controller = new AbortController()
             controller.signal.promises = new Set()
-            (async () => {
-                let abort = () => controller.abort($signal.reason)
+            async function spawn() {
+                let abort = () => {
+                    controller.signal.reasonWorkaround = $signal.reasonWorkaround
+                    controller.abort()
+                }
                 $signal.addEventListener('abort', abort)
                 let promise = Promise.resolve(controller.signal).then(taskBody_)
                 $signal.promises.add(promise)
@@ -23,18 +26,85 @@ extend self: TaskSystem {
                     $signal.promises.delete(promise)
                 }
                 for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
-                 // Who will ever benefit from this throw?
-                 // What difference does it make if a spawned task waits for its subtasks?
-            })()
+                // Who will ever benefit from this throw?
+                // What difference does it make if a spawned task waits for its subtasks?
+            }
+            spawn()
             return controller
         """
 
     channel[T](capacity: Int = 0): Channel[T] { panic("magic") }
         javascriptasync """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
+    race[T](tasks: List[() => T]): T {
+        let channel = self.channel()
+        let taskReferences = tasks.map {task => self.start {
+            channel.write(task())
+        }}
+        try {
+            channel.read()
+        } finally {
+            taskReferences.each {_.cancel()}
+        } expect()
+    }
+
+    all[T](tasks: List[() => T]): List[T] {
+        let channel = self.channel()
+        let taskReferences = tasks.pairs().map {| Pair(i, task) => self.start {
+            let result = try {
+                Right(Pair(i, task()))
+            } catchAny {e =>
+                Left(e)
+            } expect()
+            channel.write(result)
+        }}
+        try {
+            mutable error = None
+            let pairs = taskReferences.collect {| _ =>
+                channel.read().{
+                    | Right(Pair(i, r)) =>
+                        Some(Pair(i, r))
+                    | Left(e) =>
+                        if(error == None) {
+                            taskReferences.each {_.cancel()}
+                            error = Some(e)
+                        }
+                        None
+                }
+            }
+            error.each(throw)
+            pairs.sortBy {_.first}.map {_.second}
+        } finally {
+            taskReferences.each {_.cancel()}
+        } expect()
+    }
+
+    sleep(duration: Duration): Unit { panic("magic") }
+        javascriptasync """
+            if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
+            await new Promise((resolve, reject) => {
+                let abort = () => {
+                    $signal.removeEventListener('abort', abort)
+                    if(timeoutId != null) clearTimeout(timeoutId)
+                    reject(new Error("Cancelled", {cause: $signal.reasonWorkaround}))
+                }
+                $signal.addEventListener('abort', abort)
+                let complete = () => {
+                    $signal.removeEventListener('abort', abort)
+                    resolve()
+                }
+                let timeoutId = setTimeout(complete, duration_ * 1000);
+            })
+        """
+
 }
 
 extend self: Task {
     cancel(): Unit { panic("magic") }
-        javascript "self_.abort()"
+        javascript """
+            self_.signal.reasonWorkaround = new Error("Cancellation")
+            self_.abort()
+        """
 }
+
+type Either[A, B] { Left(value: A); Right(value: B) } // TODO
