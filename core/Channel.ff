@@ -129,5 +129,3 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
             $c.signal.removeEventListener('abort', abort)
         }
     """
-
-
