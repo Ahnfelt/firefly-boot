@@ -238,7 +238,7 @@ emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 return ff_core_ArrayBuilder.ArrayBuilder_drain(tokens_)
 }
 
-export async function tokenize_$(file_, code_, $controller) {
+export async function tokenize_$(file_, code_, $c) {
 const tokens_ = ff_core_ArrayBuilder.empty_();
 let line_ = 1;
 let lineOffset_ = 0;

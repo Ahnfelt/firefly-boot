@@ -309,18 +309,18 @@ return
 }
 }
 
-export async function make_$(otherModules_, $controller) {
+export async function make_$(otherModules_, $c) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), false)
 }
 
-export async function fail_$(at_, message_, $controller) {
+export async function fail_$(at_, message_, $c) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function detectIfElse_$(term_, $controller) {
+export async function detectIfElse_$(term_, $c) {
 {
 const term_a = term_;
 {
@@ -400,7 +400,7 @@ return
 }
 }
 
-export async function invokeImmediately_$(function_, $controller) {
+export async function invokeImmediately_$(function_, $c) {
 {
 const function_a = function_;
 {
@@ -427,7 +427,7 @@ return
 }
 }
 
-export async function extractTypeName_$(type_, $controller) {
+export async function extractTypeName_$(type_, $c) {
 {
 const type_a = type_;
 {
@@ -448,8 +448,8 @@ return
 }
 }
 
-export async function firstTypeName_$(types_, $controller) {
-return ((async (_1, $controller) => {
+export async function firstTypeName_$(types_, $c) {
+return ((async (_1, $c) => {
 {
 if(_1.TConstructor) {
 const t_ = _1;
@@ -467,11 +467,11 @@ return
 }))(ff_core_List.List_expectFirst(types_)).name_
 }
 
-export async function makeDictionaryName_$(traitName_, typeName_, $controller) {
+export async function makeDictionaryName_$(traitName_, typeName_, $c) {
 return ((ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(traitName_, ".", "_"), ":", "_"), "/", "_") + "$") + ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(typeName_, ".", "_"), ":", "_"), "/", "_"))
 }
 
-export async function charLiteralToNumber_$(charLiteral_, $controller) {
+export async function charLiteralToNumber_$(charLiteral_, $c) {
 {
 const charLiteral_a = charLiteral_;
 {
@@ -512,7 +512,7 @@ return
 }
 }
 
-export async function escapeResolved_$(word_, $controller) {
+export async function escapeResolved_$(word_, $c) {
 const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
 if(ff_core_List.List_isEmpty(initialParts_)) {
@@ -522,7 +522,7 @@ return ((ff_core_List.List_join(initialParts_, "_") + ".") + ff_compiler_JsEmitt
 }
 }
 
-export async function escapeKeyword_$(word_, $controller) {
+export async function escapeKeyword_$(word_, $c) {
 if(ff_core_Char.Char_isAsciiLower(ff_core_String.String_expectFirst(word_))) {
 return (word_ + "_")
 } else {
@@ -530,7 +530,7 @@ return word_
 }
 }
 
-export async function effectTypeIsAsync_$(effect_, $controller) {
+export async function effectTypeIsAsync_$(effect_, $c) {
 {
 const effect_a = effect_;
 {
@@ -755,7 +755,7 @@ const dictionaryStrings_ = ff_core_List.List_map(signature_.constraints_, ((c_) 
 return ff_compiler_JsEmitter.makeDictionaryName_(c_.name_, ff_compiler_JsEmitter.firstTypeName_(c_.generics_))
 }));
 const controller_ = (async_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_addAll(parameterStrings_, ff_core_List.List_addAll(dictionaryStrings_, controller_)), ", ")) + ")");
 const prefix_ = (async_
@@ -1003,7 +1003,7 @@ return
 }
 }));
 const controller_ = (newAsync_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const parameters_ = ff_core_List.List_join(ff_core_List.List_addAll(patternParameters_, controller_), ", ");
 const prefix_ = (newAsync_
@@ -1024,7 +1024,7 @@ const effect_ = _1.lambda_.effect_;
 const cases_ = _1.lambda_.cases_;
 const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const controller_ = (newAsync_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_expect(cases_, 0).patterns_), ((_w1) => {
@@ -1125,7 +1125,7 @@ const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 }));
 const controller_ = (await_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const call_ = ((((((d_ + ".") + n_) + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ds_) + ")");
 if(await_) {
@@ -1166,7 +1166,7 @@ const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 }));
 const controller_ = (await_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const call_ = ((((functionCode_ + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ds_) + ")");
 if(await_) {
@@ -1233,7 +1233,7 @@ const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 }));
 const controller_ = (await_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const call_ = (((functionCode_ + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ")");
 if(await_) {
@@ -1787,7 +1787,7 @@ export function JsEmitter_emitArgument(self_, argument_, async_) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
-export async function JsEmitter_emitModule$(self_, packagePair_, module_, $controller) {
+export async function JsEmitter_emitModule$(self_, packagePair_, module_, $c) {
 const selfImport_ = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.package_, i_.file_)
@@ -1820,15 +1820,15 @@ return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
 }
 
-export async function JsEmitter_emitMain$(self_, $controller) {
+export async function JsEmitter_emitMain$(self_, $c) {
 return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: process.argv.slice(2)}, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))), "\n")
 }
 
-export async function JsEmitter_emitImportDefinition$(self_, definition_, $controller) {
+export async function JsEmitter_emitImportDefinition$(self_, definition_, $c) {
 return ((((((((((((("import * as " + definition_.package_.first_) + "_") + definition_.package_.second_) + "_") + definition_.file_) + " ") + "from \"../../") + definition_.package_.first_) + "/") + definition_.package_.second_) + "/") + definition_.file_) + ".mjs\"")
 }
 
-export async function JsEmitter_emitLetDefinition$(self_, definition_, mutable_, async_, $controller) {
+export async function JsEmitter_emitLetDefinition$(self_, definition_, mutable_, async_, $c) {
 const mutability_ = (mutable_
 ? "let"
 : "const");
@@ -1838,7 +1838,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async
 return (((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + " = ") + valueCode_) + ";")
 }
 
-export async function JsEmitter_emitExtendsDefinition$(self_, definition_, $controller) {
+export async function JsEmitter_emitExtendsDefinition$(self_, definition_, $c) {
 const typeName_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_compiler_JsEmitter.extractTypeName_(definition_.type_)), ((_w1) => {
 return (_w1 != 46)
 })));
@@ -1863,7 +1863,7 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 return ff_core_List.List_join(ff_core_List.List_addAll(syncMethods_, asyncMethods_), "\n\n")
 }
 
-export async function JsEmitter_emitInstanceDefinition$(self_, definition_, $controller) {
+export async function JsEmitter_emitInstanceDefinition$(self_, definition_, $c) {
 const name_ = ff_compiler_JsEmitter.makeDictionaryName_(definition_.traitName_, ff_compiler_JsEmitter.firstTypeName_(definition_.typeArguments_));
 const methods_ = ff_core_List.List_map(ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, false, "")
@@ -1895,7 +1895,7 @@ return
 }
 }
 
-export async function JsEmitter_emitFunctionDefinition$(self_, definition_, async_, suffix_ = "", $controller) {
+export async function JsEmitter_emitFunctionDefinition$(self_, definition_, async_, suffix_ = "", $c) {
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
 const target_ = (async_
 ? definition_.targets_.javaScriptAsync_
@@ -1973,10 +1973,10 @@ return
 }))
 }
 
-export async function JsEmitter_emitTailCall$(self_, body_, $controller) {
+export async function JsEmitter_emitTailCall$(self_, body_, $c) {
 const outerTailCallUsed_ = self_.tailCallUsed_;
 self_.tailCallUsed_ = false;
-const result_ = (await body_($controller));
+const result_ = (await body_($c));
 const tailCallUsed_ = self_.tailCallUsed_;
 self_.tailCallUsed_ = outerTailCallUsed_;
 if(tailCallUsed_) {
@@ -1986,7 +1986,7 @@ return result_
 }
 }
 
-export async function JsEmitter_emitSignature$(self_, signature_, async_, suffix_ = "", $controller) {
+export async function JsEmitter_emitSignature$(self_, signature_, async_, suffix_ = "", $c) {
 const parameterStrings_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitParameter(self_, _w1, async_)
 }));
@@ -1994,7 +1994,7 @@ const dictionaryStrings_ = ff_core_List.List_map(signature_.constraints_, ((c_) 
 return ff_compiler_JsEmitter.makeDictionaryName_(c_.name_, ff_compiler_JsEmitter.firstTypeName_(c_.generics_))
 }));
 const controller_ = (async_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const parameters_ = (("(" + ff_core_List.List_join(ff_core_List.List_addAll(parameterStrings_, ff_core_List.List_addAll(dictionaryStrings_, controller_)), ", ")) + ")");
 const prefix_ = (async_
@@ -2006,7 +2006,7 @@ const asyncSuffix_ = (async_
 return (((((prefix_ + "function ") + ff_compiler_JsEmitter.escapeKeyword_(signature_.name_)) + suffix_) + asyncSuffix_) + parameters_)
 }
 
-export async function JsEmitter_emitParameter$(self_, parameter_, async_, $controller) {
+export async function JsEmitter_emitParameter$(self_, parameter_, async_, $c) {
 const defaultValue_ = ff_core_Option.Option_else(ff_core_Option.Option_map(parameter_.default_, ((_w1) => {
 return (" = " + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, _w1, async_))
 })), (() => {
@@ -2015,7 +2015,7 @@ return ""
 return (ff_compiler_JsEmitter.escapeKeyword_(parameter_.name_) + defaultValue_)
 }
 
-export async function JsEmitter_emitTypeDefinition$(self_, definition_, $controller) {
+export async function JsEmitter_emitTypeDefinition$(self_, definition_, $c) {
 if(definition_.newtype_) {
 return ("// newtype " + definition_.name_)
 } else {
@@ -2025,7 +2025,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitVariantDefinition(self_, definition_,
 }
 }
 
-export async function JsEmitter_emitVariantDefinition$(self_, typeDefinition_, definition_, $controller) {
+export async function JsEmitter_emitVariantDefinition$(self_, typeDefinition_, definition_, $c) {
 const allFields_ = ff_core_List.List_addAll(typeDefinition_.commonFields_, definition_.fields_);
 const fields_ = ff_core_List.List_join(ff_core_List.List_map(allFields_, ((_w1) => {
 return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
@@ -2041,7 +2041,7 @@ return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") 
 }))
 }
 
-export async function JsEmitter_emitTerm$(self_, term_, async_, $controller) {
+export async function JsEmitter_emitTerm$(self_, term_, async_, $c) {
 {
 const _1 = term_;
 {
@@ -2242,7 +2242,7 @@ return
 }
 }));
 const controller_ = (newAsync_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const parameters_ = ff_core_List.List_join(ff_core_List.List_addAll(patternParameters_, controller_), ", ");
 const prefix_ = (newAsync_
@@ -2263,7 +2263,7 @@ const effect_ = _1.lambda_.effect_;
 const cases_ = _1.lambda_.cases_;
 const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const controller_ = (newAsync_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_expect(cases_, 0).patterns_), ((_w1) => {
@@ -2364,7 +2364,7 @@ const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 }));
 const controller_ = (await_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const call_ = ((((((d_ + ".") + n_) + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ds_) + ")");
 if(await_) {
@@ -2405,7 +2405,7 @@ const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 }));
 const controller_ = (await_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const call_ = ((((functionCode_ + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ds_) + ")");
 if(await_) {
@@ -2472,7 +2472,7 @@ const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 }));
 const controller_ = (await_
-? ff_core_List.Link("$controller", ff_core_List.Empty())
+? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 const call_ = (((functionCode_ + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ")");
 if(await_) {
@@ -2517,7 +2517,7 @@ return
 }
 }
 
-export async function JsEmitter_emitDictionary$(self_, d_, $controller) {
+export async function JsEmitter_emitDictionary$(self_, d_, $c) {
 const m_ = ((d_.moduleName_ != "")
 ? (((ff_core_String.String_replace(d_.packageName_, ":", "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + ".")
 : "");
@@ -2531,7 +2531,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, d_)
 }
 }
 
-export async function JsEmitter_emitStatements$(self_, term_, last_, async_, $controller) {
+export async function JsEmitter_emitStatements$(self_, term_, last_, async_, $c) {
 {
 const _1 = term_;
 {
@@ -2774,14 +2774,14 @@ return
 }
 }
 
-export async function JsEmitter_emitCase$(self_, arguments_, matchCase_, last_, async_, $controller) {
+export async function JsEmitter_emitCase$(self_, arguments_, matchCase_, last_, async_, $c) {
 {
 const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
 {
 if(_1.first_.Link) {
 const p_ = _1.first_.head_;
 const ps_ = _1.first_.tail_;
-return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_expect(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), ((async (_c, $controller) => {
+return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_expect(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), ((async (_c, $c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), last_, async_)
 return
@@ -2793,7 +2793,7 @@ if(_1.second_.Link) {
 const guard_ = _1.second_.head_;
 const guards_ = _1.second_.tail_;
 const guardName_ = ("_guard" + (ff_core_List.List_size(guards_) + 1));
-const newCase_ = ((async (_c, $controller) => {
+const newCase_ = ((async (_c, $c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(guard_.pattern_, ff_core_List.Empty()), guards_, _c.body_)
 }))(matchCase_);
 return ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_, async_)) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(guardName_, ff_core_List.Empty()), newCase_, last_, async_))
@@ -2814,7 +2814,7 @@ return
 }
 }
 
-export async function JsEmitter_emitPattern$(self_, argument_, pattern_, arguments_, matchCase_, last_, async_, $controller) {
+export async function JsEmitter_emitPattern$(self_, argument_, pattern_, arguments_, matchCase_, last_, async_, $c) {
 {
 const _1 = pattern_;
 {
@@ -2883,7 +2883,7 @@ if(_1.PVariant) {
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
 const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, name_, argument_);
-const newMatchCase_ = ((async (_c, $controller) => {
+const newMatchCase_ = ((async (_c, $c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.List_addAll(patterns_, matchCase_.patterns_), _c.guards_, _c.body_)
 }))(matchCase_);
 return (((processed_.loneVariant_
@@ -2930,7 +2930,7 @@ return
 }
 }
 
-export async function JsEmitter_emitList$(self_, items_, async_, $controller) {
+export async function JsEmitter_emitList$(self_, items_, async_, $c) {
 {
 const _1 = items_;
 {
@@ -2973,7 +2973,7 @@ return
 }
 }
 
-export async function JsEmitter_processVariantCase$(self_, name_, argument_, $controller) {
+export async function JsEmitter_processVariantCase$(self_, name_, argument_, $c) {
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
 })));
@@ -3004,7 +3004,7 @@ return ((argument_ + ".") + ff_compiler_JsEmitter.escapeKeyword_(field_))
 return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, newtype_, loneVariant_, newArguments_)
 }
 
-export async function JsEmitter_processVariant$(self_, name_, $controller) {
+export async function JsEmitter_processVariant$(self_, name_, $c) {
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
 })));
@@ -3022,7 +3022,7 @@ newtype_ = definition_.newtype_
 return newtype_
 }
 
-export async function JsEmitter_emitArgument$(self_, argument_, async_, $controller) {
+export async function JsEmitter_emitArgument$(self_, argument_, async_, $c) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 

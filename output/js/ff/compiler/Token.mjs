@@ -193,27 +193,27 @@ export function Token_rawIs(token_, value_) {
 return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
-export async function Token_at$(token_, $controller) {
+export async function Token_at$(token_, $c) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
 }
 
-export async function Token_raw$(token_, $controller) {
+export async function Token_raw$(token_, $c) {
 return ff_core_String.String_slice(token_.code_, token_.startOffset_, token_.stopOffset_)
 }
 
-export async function Token_is$(token_, kind1_, $controller) {
+export async function Token_is$(token_, kind1_, $c) {
 return (token_.kind_ == kind1_)
 }
 
-export async function Token_is2$(token_, kind1_, kind2_, $controller) {
+export async function Token_is2$(token_, kind1_, kind2_, $c) {
 return ((token_.kind_ == kind1_) || (token_.kind_ == kind2_))
 }
 
-export async function Token_is3$(token_, kind1_, kind2_, kind3_, $controller) {
+export async function Token_is3$(token_, kind1_, kind2_, kind3_, $c) {
 return (((token_.kind_ == kind1_) || (token_.kind_ == kind2_)) || (token_.kind_ == kind3_))
 }
 
-export async function Token_rawIs$(token_, value_, $controller) {
+export async function Token_rawIs$(token_, value_, $c) {
 return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
@@ -685,7 +685,7 @@ return
 }
 }
 
-export async function TokenKind_beforeSeparator$(self_, $controller) {
+export async function TokenKind_beforeSeparator$(self_, $c) {
 {
 const _1 = self_;
 {
@@ -841,7 +841,7 @@ return
 }
 }
 
-export async function TokenKind_afterSeparator$(self_, $controller) {
+export async function TokenKind_afterSeparator$(self_, $c) {
 {
 const _1 = self_;
 {
@@ -997,7 +997,7 @@ return
 }
 }
 
-export async function TokenKind_afterKeyword$(self_, $controller) {
+export async function TokenKind_afterKeyword$(self_, $c) {
 {
 const _1 = self_;
 {

@@ -182,107 +182,107 @@ export function String_all(self_, body_) {
         
 }
 
-export async function String_size$(self_, $controller) {
+export async function String_size$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_expect$(self_, index_, $controller) {
+export async function String_expect$(self_, index_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_replace$(self_, needle_, replacement_, $controller) {
+export async function String_replace$(self_, needle_, replacement_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_replaceFirst$(self_, needle_, replacement_, $controller) {
+export async function String_replaceFirst$(self_, needle_, replacement_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_reverse$(self_, $controller) {
+export async function String_reverse$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_dropWhile$(self_, p_, $controller) {
+export async function String_dropWhile$(self_, p_, $c) {
 
             let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $controller); i++);
+            for(; i < self_.length && await p_(self_.codePointAt(i), $c); i++);
             return self_.slice(i)
         
 }
 
-export async function String_takeWhile$(self_, p_, $controller) {
+export async function String_takeWhile$(self_, p_, $c) {
 
             let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $controller); i++);
+            for(; i < self_.length && await p_(self_.codePointAt(i), $c); i++);
             return self_.slice(0, i)
         
 }
 
-export async function String_slice$(self_, from_, until_, $controller) {
+export async function String_slice$(self_, from_, until_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_split$(self_, char_, $controller) {
+export async function String_split$(self_, char_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_dropFirst$(self_, count_ = 1, $controller) {
+export async function String_dropFirst$(self_, count_ = 1, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_dropLast$(self_, count_ = 1, $controller) {
+export async function String_dropLast$(self_, count_ = 1, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_expectInt$(self_, $controller) {
+export async function String_expectInt$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_first$(self_, $controller) {
+export async function String_first$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_last$(self_, $controller) {
+export async function String_last$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_expectFirst$(self_, $controller) {
+export async function String_expectFirst$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
 return ff_core_Core.panic_("expectFirst() on empty string")
 }))
 }
 
-export async function String_expectLast$(self_, $controller) {
+export async function String_expectLast$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
 return ff_core_Core.panic_("expectFirst() on empty string")
 }))
 }
 
-export async function String_contains$(self_, substring_, $controller) {
+export async function String_contains$(self_, substring_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_startsWith$(self_, prefix_, offset_ = 0, $controller) {
+export async function String_startsWith$(self_, prefix_, offset_ = 0, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_endsWith$(self_, prefix_, $controller) {
+export async function String_endsWith$(self_, prefix_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function String_any$(self_, body_, $controller) {
+export async function String_any$(self_, body_, $c) {
 
             for(let i = 0; i < self_.length; i++) {
-                if(await body_(self_.charCodeAt(i), $controller)) return true;
+                if(await body_(self_.charCodeAt(i), $c)) return true;
             }
             return false;
         
 }
 
-export async function String_all$(self_, body_, $controller) {
+export async function String_all$(self_, body_, $c) {
 
             for(let i = 0; i < self_.length; i++) {
-                if(!await body_(self_.charCodeAt(i), $controller)) return false;
+                if(!await body_(self_.charCodeAt(i), $c)) return false;
             }
             return true;
         

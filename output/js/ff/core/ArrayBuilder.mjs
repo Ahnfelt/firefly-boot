@@ -61,7 +61,7 @@ export function empty_() {
 return {array: []}
 }
 
-export async function empty_$($controller) {
+export async function empty_$($c) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -115,43 +115,43 @@ export function ArrayBuilder_sortBy(self_, ordering_) {
 self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
-export async function ArrayBuilder_toArray$(self_, $controller) {
+export async function ArrayBuilder_toArray$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_isEmpty$(self_, $controller) {
+export async function ArrayBuilder_isEmpty$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_size$(self_, $controller) {
+export async function ArrayBuilder_size$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_add$(self_, value_, $controller) {
+export async function ArrayBuilder_add$(self_, value_, $c) {
 ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_modify$(self_, index_, body_, $controller) {
-self_.array[index_] = await body_(self_.array[index_], $controller)
+export async function ArrayBuilder_modify$(self_, index_, body_, $c) {
+self_.array[index_] = await body_(self_.array[index_], $c)
 }
 
-export async function ArrayBuilder_drain$(self_, $controller) {
+export async function ArrayBuilder_drain$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_toList$(self_, $controller) {
+export async function ArrayBuilder_toList$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_last$(self_, $controller) {
+export async function ArrayBuilder_last$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_expectLast$(self_, $controller) {
+export async function ArrayBuilder_expectLast$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function ArrayBuilder_sortBy$(self_, ordering_, $controller) {
+export async function ArrayBuilder_sortBy$(self_, ordering_, $c) {
 ff_core_Core.panic_("magic")
 }
 

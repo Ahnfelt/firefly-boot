@@ -84,27 +84,27 @@ export function Char_toString(self_) {
 return String.fromCharCode(self_)
 }
 
-export async function Char_isAsciiLetter$(self_, $controller) {
+export async function Char_isAsciiLetter$(self_, $c) {
 return (ff_core_Char.Char_isAsciiUpper(self_) || ff_core_Char.Char_isAsciiLower(self_))
 }
 
-export async function Char_isAsciiLetterOrDigit$(self_, $controller) {
+export async function Char_isAsciiLetterOrDigit$(self_, $c) {
 return (ff_core_Char.Char_isAsciiLetter(self_) || ff_core_Char.Char_isAsciiDigit(self_))
 }
 
-export async function Char_isAsciiUpper$(self_, $controller) {
+export async function Char_isAsciiUpper$(self_, $c) {
 return ((self_ >= 65) && (self_ <= 90))
 }
 
-export async function Char_isAsciiLower$(self_, $controller) {
+export async function Char_isAsciiLower$(self_, $c) {
 return ((self_ >= 97) && (self_ <= 122))
 }
 
-export async function Char_isAsciiDigit$(self_, $controller) {
+export async function Char_isAsciiDigit$(self_, $c) {
 return ((self_ >= 48) && (self_ <= 57))
 }
 
-export async function Char_toString$(self_, $controller) {
+export async function Char_toString$(self_, $c) {
 return ff_core_Core.panic_("magic")
 }
 

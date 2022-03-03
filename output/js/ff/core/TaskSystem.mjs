@@ -160,26 +160,26 @@ export function TaskSystem_sleep(self_, duration_) {
 ff_core_Core.panic_("magic")
 }
 
-export async function TaskSystem_start$(self_, taskBody_, $controller) {
+export async function TaskSystem_start$(self_, taskBody_, $c) {
 
-            if($controller.signal.aborted) throw new Error("Cancelled", {cause: $controller.reasonWorkaround})
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             let controller = new AbortController()
             controller.promises = new Set()
             async function spawn() {
                 let abort = () => {
-                    controller.reasonWorkaround = $controller.reasonWorkaround
+                    controller.reasonWorkaround = $c.reasonWorkaround
                     controller.abort()
                 }
-                $controller.signal.addEventListener('abort', abort)
+                $c.signal.addEventListener('abort', abort)
                 let promise = Promise.resolve(controller).then(taskBody_)
-                $controller.promises.add(promise)
+                $c.promises.add(promise)
                 let outcomes = []
                 try {
                     await promise
                 } finally {
-                    $controller.signal.removeEventListener('abort', abort)
+                    $c.signal.removeEventListener('abort', abort)
                     outcomes = await Promise.allSettled(controller.promises)
-                    $controller.promises.delete(promise)
+                    $c.promises.delete(promise)
                 }
                 for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
                 // Who will ever benefit from this throw?
@@ -190,48 +190,48 @@ export async function TaskSystem_start$(self_, taskBody_, $controller) {
         
 }
 
-export async function TaskSystem_channel$(self_, capacity_ = 0, $controller) {
+export async function TaskSystem_channel$(self_, capacity_ = 0, $c) {
 return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
 }
 
-export async function TaskSystem_race$(self_, tasks_, $controller) {
-const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $controller));
-const taskReferences_ = (await ff_core_List.List_map$(tasks_, (async (task_, $controller) => {
-return (await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($controller) => {
-(await ff_core_Channel.Channel_write$(channel_, (await task_($controller)), $controller))
-}), $controller))
-}), $controller));
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($controller) => {
-return (await ff_core_Channel.Channel_read$(channel_, $controller))
-}), $controller)), (() => {
+export async function TaskSystem_race$(self_, tasks_, $c) {
+const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
+const taskReferences_ = (await ff_core_List.List_map$(tasks_, (async (task_, $c) => {
+return (await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($c) => {
+(await ff_core_Channel.Channel_write$(channel_, (await task_($c)), $c))
+}), $c))
+}), $c));
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Channel.Channel_read$(channel_, $c))
+}), $c)), (() => {
 ff_core_List.List_each(taskReferences_, ((_w1) => {
 ff_core_TaskSystem.Task_cancel(_w1)
 }))
 })))
 }
 
-export async function TaskSystem_all$(self_, tasks_, $controller) {
-const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $controller));
-const taskReferences_ = (await ff_core_List.List_map$(ff_core_List.List_pairs(tasks_), (async (_1, $controller) => {
+export async function TaskSystem_all$(self_, tasks_, $c) {
+const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
+const taskReferences_ = (await ff_core_List.List_map$(ff_core_List.List_pairs(tasks_), (async (_1, $c) => {
 {
 const i_ = _1.first_;
 const task_ = _1.second_;
-return (await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($controller) => {
-const result_ = ff_core_Try.Try_expect(ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($controller) => {
-return ff_core_TaskSystem.Right(ff_core_Pair.Pair(i_, (await task_($controller))))
-}), $controller)), ((e_) => {
+return (await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($c) => {
+const result_ = ff_core_Try.Try_expect(ff_core_Try.Try_catchAny((await ff_core_Core.try_$((async ($c) => {
+return ff_core_TaskSystem.Right(ff_core_Pair.Pair(i_, (await task_($c))))
+}), $c)), ((e_) => {
 return ff_core_TaskSystem.Left(e_)
 })));
-(await ff_core_Channel.Channel_write$(channel_, result_, $controller))
-}), $controller))
+(await ff_core_Channel.Channel_write$(channel_, result_, $c))
+}), $c))
 return
 }
-}), $controller));
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($controller) => {
+}), $c));
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
 let error_ = ff_core_Option.None();
-const pairs_ = (await ff_core_List.List_collect$(taskReferences_, (async (_, $controller) => {
+const pairs_ = (await ff_core_List.List_collect$(taskReferences_, (async (_, $c) => {
 {
-const _1 = (await ff_core_Channel.Channel_read$(channel_, $controller));
+const _1 = (await ff_core_Channel.Channel_read$(channel_, $c));
 {
 if(_1.Right) {
 const i_ = _1.value_.first_;
@@ -254,7 +254,7 @@ return
 }
 }
 }
-}), $controller));
+}), $c));
 ff_core_Option.Option_each(error_, ((error_) => {
 ff_core_Core.throw_(error_)
 }));
@@ -263,25 +263,25 @@ return _w1.first_
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_w1) => {
 return _w1.second_
 }))
-}), $controller)), (() => {
+}), $c)), (() => {
 ff_core_List.List_each(taskReferences_, ((_w1) => {
 ff_core_TaskSystem.Task_cancel(_w1)
 }))
 })))
 }
 
-export async function TaskSystem_sleep$(self_, duration_, $controller) {
+export async function TaskSystem_sleep$(self_, duration_, $c) {
 
-            if($controller.signal.aborted) throw new Error("Cancelled", {cause: $controller.reasonWorkaround})
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             await new Promise((resolve, reject) => {
                 let abort = () => {
-                    $controller.signal.removeEventListener('abort', abort)
+                    $c.signal.removeEventListener('abort', abort)
                     if(timeoutId != null) clearTimeout(timeoutId)
-                    reject(new Error("Cancelled", {cause: $controller.reasonWorkaround}))
+                    reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))
                 }
-                $controller.signal.addEventListener('abort', abort)
+                $c.signal.addEventListener('abort', abort)
                 let complete = () => {
-                    $controller.signal.removeEventListener('abort', abort)
+                    $c.signal.removeEventListener('abort', abort)
                     resolve()
                 }
                 let timeoutId = setTimeout(complete, duration_ * 1000);
@@ -296,7 +296,7 @@ export function Task_cancel(self_) {
         
 }
 
-export async function Task_cancel$(self_, $controller) {
+export async function Task_cancel$(self_, $c) {
 ff_core_Core.panic_("magic")
 }
 

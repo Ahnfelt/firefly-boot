@@ -60,7 +60,7 @@ export function debug_(value_) {
 console.log(value_)
 }
 
-export async function debug_$(value_, $controller) {
+export async function debug_$(value_, $c) {
 ff_core_Core.panic_("magic")
 }
 

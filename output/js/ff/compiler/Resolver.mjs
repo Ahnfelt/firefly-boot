@@ -76,11 +76,11 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$($controller) {
+export async function make_$($c) {
 return ff_compiler_Resolver.Resolver(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Resolver.ResolverState(2))
 }
 
-export async function fail_$(at_, message_, $controller) {
+export async function fail_$(at_, message_, $c) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
@@ -1029,13 +1029,13 @@ return
 }
 }
 
-export async function Resolver_freshUnificationVariable$(self_, at_, $controller) {
+export async function Resolver_freshUnificationVariable$(self_, at_, $c) {
 const result_ = ff_compiler_Syntax.TVariable(at_, self_.state_.nextUnificationVariableIndex_);
 self_.state_.nextUnificationVariableIndex_ += 3;
 return result_
 }
 
-export async function Resolver_resolveModule$(self_, module_, otherModules_, $controller) {
+export async function Resolver_resolveModule$(self_, module_, otherModules_, $c) {
 const moduleNamespace_ = ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_replace(module_.file_, "\\", "/")), ((_w1) => {
 return (_w1 != 47)
 }))), ((_w1) => {
@@ -1065,7 +1065,7 @@ return
 }
 }
 
-export async function Resolver_processImports$(self_, imports_, modules_, $controller) {
+export async function Resolver_processImports$(self_, imports_, modules_, $c) {
 let resolver_ = self_;
 ff_core_List.List_each(imports_, ((import_) => {
 {
@@ -1090,7 +1090,7 @@ return
 return resolver_
 }
 
-export async function Resolver_processDefinitions$(self_, module_, importAlias_, $controller) {
+export async function Resolver_processDefinitions$(self_, module_, importAlias_, $c) {
 function entry_(name_, unqualified_) {
 const full_ = ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
 {
@@ -1155,11 +1155,11 @@ return entry_(_w1.name_, true)
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(ff_core_Map.Map_addAll(ff_core_Map.Map_addAll(self_.variables_, lets_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), functions_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), traitMethods_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variants_, variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.types_, types_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.asyncTypes_, asyncTypes_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.traits_, traits_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), self_.state_)
 }
 
-export async function Resolver_resolveTypeDefinition$(self_, definition_, $controller) {
+export async function Resolver_resolveTypeDefinition$(self_, definition_, $c) {
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const self2_ = ((async (_c, $controller) => {
+const self2_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_);
 if((!ff_core_Option.Option_any(ff_core_List.List_first(definition_.generics_), ((_w1) => {
@@ -1216,11 +1216,11 @@ return
 }
 }
 
-export async function Resolver_resolveTraitDefinition$(self_, definition_, $controller) {
+export async function Resolver_resolveTraitDefinition$(self_, definition_, $c) {
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const self2_ = ((async (_c, $controller) => {
+const self2_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_);
 {
@@ -1237,11 +1237,11 @@ return
 }
 }
 
-export async function Resolver_resolveInstanceDefinition$(self_, definition_, $controller) {
+export async function Resolver_resolveInstanceDefinition$(self_, definition_, $c) {
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const self2_ = ((async (_c, $controller) => {
+const self2_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_);
 const traitName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self2_.traits_, definition_.traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
@@ -1263,14 +1263,14 @@ return
 }
 }
 
-export async function Resolver_resolveExtendDefinition$(self_, definition_, $controller) {
+export async function Resolver_resolveExtendDefinition$(self_, definition_, $c) {
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const selfWithNoQ_ = ((async (_c, $controller) => {
+const selfWithNoQ_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_);
-const selfWithQ_ = ((async (_c, $controller) => {
+const selfWithQ_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_add(selfWithNoQ_.types_, "Q$", "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.asyncTypes_, ff_core_Set.Set_add(selfWithNoQ_.typeParameters_, "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(selfWithNoQ_);
 {
@@ -1287,8 +1287,8 @@ return
 }
 }
 
-export async function Resolver_resolveLetDefinition$(self_, definition_, topLevel_, $controller) {
-const self2_ = ((async (_c, $controller) => {
+export async function Resolver_resolveLetDefinition$(self_, definition_, topLevel_, $c) {
+const self2_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.state_)
 }))(self_);
 {
@@ -1301,7 +1301,7 @@ return
 }
 }
 
-export async function Resolver_resolveTerm$(self_, term_, topLevel_, $controller) {
+export async function Resolver_resolveTerm$(self_, term_, topLevel_, $c) {
 {
 const self_a = self_;
 const term_a = term_;
@@ -1486,7 +1486,7 @@ const effect_ = term_a.effect_;
 const typeArguments_ = term_a.typeArguments_;
 const arguments_ = term_a.arguments_;
 const dictionaries_ = term_a.dictionaries_;
-return ff_compiler_Syntax.ECall(at_, ((async (_c, $controller) => {
+return ff_compiler_Syntax.ECall(at_, ((async (_c, $c) => {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Resolver.Resolver_resolveTerm(self_, target_.function_, topLevel_), _c.tailCall_)
 }))(target_), ff_compiler_Resolver.Resolver_resolveType(self_, effect_, topLevel_), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
@@ -1561,7 +1561,7 @@ return _w1.signature_.name_
 })), ((name_) => {
 return ff_core_Pair.Pair(name_, name_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const self2_ = ((async (_c, $controller) => {
+const self2_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.state_)
 }))(self_);
 return ff_compiler_Syntax.EFunctions(at_, ff_core_List.List_map(functions_, ((_w1) => {
@@ -1574,7 +1574,7 @@ return
 const self_ = self_a;
 if(term_a.ELet) {
 const e_ = term_a;
-const self2_ = ((async (_c, $controller) => {
+const self2_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, e_.name_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.state_)
 }))(self_);
 {
@@ -1626,7 +1626,7 @@ return
 }
 }
 
-export async function Resolver_resolveType$(self_, type_, topLevel_, $controller) {
+export async function Resolver_resolveType$(self_, type_, topLevel_, $c) {
 {
 const self_a = self_;
 const type_a = type_;
@@ -1681,7 +1681,7 @@ return
 }
 }
 
-export async function Resolver_makeEffectArgument$(self_, at_, topLevel_, $controller) {
+export async function Resolver_makeEffectArgument$(self_, at_, topLevel_, $c) {
 if(topLevel_) {
 if((!ff_core_Set.Set_contains(self_.typeParameters_, "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
 return ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty())
@@ -1693,7 +1693,7 @@ return ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, at_)
 }
 }
 
-export async function Resolver_resolveConstraint$(self_, constraint_, topLevel_, $controller) {
+export async function Resolver_resolveConstraint$(self_, constraint_, topLevel_, $c) {
 const name_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traits_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_compiler_Resolver.fail_(constraint_.at_, ("No such trait: " + constraint_.name_))
 }));
@@ -1709,10 +1709,10 @@ return
 }
 }
 
-export async function Resolver_resolveFunctionDefinition$(self_, definition_, topLevel_, $controller) {
+export async function Resolver_resolveFunctionDefinition$(self_, definition_, topLevel_, $c) {
 const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
-const body_ = ((async (_c, $controller) => {
+const body_ = ((async (_c, $c) => {
 return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(definition_.body_.cases_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
 })))
@@ -1720,7 +1720,7 @@ return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
 return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_, definition_.targets_)
 }
 
-export async function Resolver_resolveSignature$(self_, signature_, topLevel_, $controller) {
+export async function Resolver_resolveSignature$(self_, signature_, topLevel_, $c) {
 const newSignature_ = (topLevel_
 ? (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Link("Q$", signature_.generics_), _c.constraints_, _c.parameters_, _c.returnType_, ff_compiler_Syntax.TConstructor(signature_.at_, "Q$", ff_core_List.Empty()))
@@ -1757,7 +1757,7 @@ return
 }
 }
 
-export async function Resolver_withSignature$(self_, signature_, $controller) {
+export async function Resolver_withSignature$(self_, signature_, $c) {
 const variableMap_ = ff_core_List.List_toMap(ff_core_List.List_map(ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
 })), ((name_) => {
@@ -1776,7 +1776,7 @@ return
 }
 }
 
-export async function Resolver_resolveCase$(self_, case_, topLevel_, $controller) {
+export async function Resolver_resolveCase$(self_, case_, topLevel_, $c) {
 function findVariables_(pattern_) {
 {
 const pattern_a = pattern_;
@@ -1861,7 +1861,7 @@ return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Resolver.Resolver_resol
 guards_ = ff_core_List.Link(guard_, guards_);
 return ff_core_Map.Map_addAll(variableMap1_, findVariables_(guard_.pattern_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }));
-const self3_ = ((async (_c, $controller) => {
+const self3_ = ((async (_c, $c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, variableMap2_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.state_)
 }))(self_);
 return ff_compiler_Syntax.MatchCase(case_.at_, ff_core_List.List_map(case_.patterns_, ((_w1) => {
@@ -1869,7 +1869,7 @@ return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
 })), ff_core_List.List_reverse(guards_), ff_compiler_Resolver.Resolver_resolveTerm(self3_, case_.body_, topLevel_))
 }
 
-export async function Resolver_resolvePattern$(self_, pattern_, $controller) {
+export async function Resolver_resolvePattern$(self_, pattern_, $c) {
 {
 const self_a = self_;
 const pattern_a = pattern_;
@@ -1944,7 +1944,7 @@ return
 }
 }
 
-export async function Resolver_containsAsyncType$(self_, type_, $controller) {
+export async function Resolver_containsAsyncType$(self_, type_, $c) {
 {
 const self_a = self_;
 const type_a = type_;

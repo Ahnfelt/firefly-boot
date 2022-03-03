@@ -326,12 +326,12 @@ return
 }
 }
 
-export async function Option_else$(self_, body_, $controller) {
+export async function Option_else$(self_, body_, $c) {
 {
 const _1 = self_;
 {
 if(_1.None) {
-return (await body_($controller))
+return (await body_($c))
 return
 }
 }
@@ -345,16 +345,16 @@ return
 }
 }
 
-export async function Option_elseIf$(self_, condition_, body_, $controller) {
+export async function Option_elseIf$(self_, condition_, body_, $c) {
 {
 const _1 = self_;
 {
 if(_1.None) {
 {
-const _1 = (await condition_($controller));
+const _1 = (await condition_($c));
 {
 if(_1) {
-return ff_core_Option.Some((await body_($controller)))
+return ff_core_Option.Some((await body_($c)))
 return
 }
 }
@@ -377,12 +377,12 @@ return
 }
 }
 
-export async function Option_orElse$(self_, body_, $controller) {
+export async function Option_orElse$(self_, body_, $c) {
 {
 const _1 = self_;
 {
 if(_1.None) {
-return (await body_($controller))
+return (await body_($c))
 return
 }
 }
@@ -395,7 +395,7 @@ return
 }
 }
 
-export async function Option_isEmpty$(self_, $controller) {
+export async function Option_isEmpty$(self_, $c) {
 {
 const _1 = self_;
 {
@@ -413,7 +413,7 @@ return
 }
 }
 
-export async function Option_toList$(self_, $controller) {
+export async function Option_toList$(self_, $c) {
 {
 const _1 = self_;
 {
@@ -432,13 +432,13 @@ return
 }
 }
 
-export async function Option_filter$(self_, body_, $controller) {
+export async function Option_filter$(self_, body_, $c) {
 {
 const _1 = self_;
 {
 if(_1.Some) {
 const v_ = _1.value_;
-const _guard1 = (await body_(v_, $controller));
+const _guard1 = (await body_(v_, $c));
 if(_guard1) {
 return ff_core_Option.Some(v_)
 return
@@ -452,7 +452,7 @@ return
 }
 }
 
-export async function Option_map$(self_, body_, $controller) {
+export async function Option_map$(self_, body_, $c) {
 {
 const _1 = self_;
 {
@@ -464,14 +464,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return ff_core_Option.Some((await body_(v_, $controller)))
+return ff_core_Option.Some((await body_(v_, $c)))
 return
 }
 }
 }
 }
 
-export async function Option_flatMap$(self_, body_, $controller) {
+export async function Option_flatMap$(self_, body_, $c) {
 {
 const _1 = self_;
 {
@@ -483,14 +483,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return (await body_(v_, $controller))
+return (await body_(v_, $c))
 return
 }
 }
 }
 }
 
-export async function Option_each$(self_, body_, $controller) {
+export async function Option_each$(self_, body_, $c) {
 {
 const _1 = self_;
 {
@@ -502,14 +502,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-(await body_(v_, $controller))
+(await body_(v_, $c))
 return
 }
 }
 }
 }
 
-export async function Option_all$(self_, body_, $controller) {
+export async function Option_all$(self_, body_, $c) {
 {
 const _1 = self_;
 {
@@ -521,14 +521,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return (await body_(v_, $controller))
+return (await body_(v_, $c))
 return
 }
 }
 }
 }
 
-export async function Option_any$(self_, body_, $controller) {
+export async function Option_any$(self_, body_, $c) {
 {
 const _1 = self_;
 {
@@ -540,14 +540,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return (await body_(v_, $controller))
+return (await body_(v_, $c))
 return
 }
 }
 }
 }
 
-export async function Option_expect$(self_, $controller) {
+export async function Option_expect$(self_, $c) {
 {
 const _1 = self_;
 {
@@ -566,7 +566,7 @@ return
 }
 }
 
-export async function Option_contains$(self_, value_, $controller) {
+export async function Option_contains$(self_, value_, $c) {
 {
 const _1 = self_;
 {
@@ -604,7 +604,7 @@ return
 }
 }
 
-export async function Option_flatten$(self_, $controller) {
+export async function Option_flatten$(self_, $c) {
 {
 const _1 = self_;
 {

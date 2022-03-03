@@ -86,7 +86,7 @@ return
 }
 }
 
-export async function Bool_toInt$(self_, $controller) {
+export async function Bool_toInt$(self_, $c) {
 {
 const _1 = self_;
 {

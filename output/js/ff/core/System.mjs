@@ -82,19 +82,19 @@ export function System_time(self_) {
 return null
 }
 
-export async function System_arguments$(self_, $controller) {
+export async function System_arguments$(self_, $c) {
 return ff_core_Array.Array_toList(self_.array_)
 }
 
-export async function System_files$(self_, $controller) {
+export async function System_files$(self_, $c) {
 return null
 }
 
-export async function System_tasks$(self_, $controller) {
+export async function System_tasks$(self_, $c) {
 return null
 }
 
-export async function System_time$(self_, $controller) {
+export async function System_time$(self_, $c) {
 return null
 }
 

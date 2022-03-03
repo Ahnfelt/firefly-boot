@@ -19,7 +19,7 @@ extend self[T]: ArrayBuilder[T] {
 
     modify(index: Int, body: T => T): Unit { panic("magic") }
         javascript "self_.array[index_] = body_(self_.array[index_])"
-        javascriptasync "self_.array[index_] = await body_(self_.array[index_], $controller)"
+        javascriptasync "self_.array[index_] = await body_(self_.array[index_], $c)"
 
     drain(): Array[T] { panic("magic") }
         javascript "const result = self_.array; self_.array = []; return result"

@@ -189,15 +189,15 @@ return
 }
 }
 
-export async function Try_map$(self_, body_, $controller) {
+export async function Try_map$(self_, body_, $c) {
 {
 const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return (await ff_core_Core.try_$((async ($controller) => {
-return (await body_(value_, $controller))
-}), $controller))
+return (await ff_core_Core.try_$((async ($c) => {
+return (await body_(value_, $c))
+}), $c))
 return
 }
 }
@@ -211,11 +211,11 @@ return
 }
 }
 
-export async function Try_flatMap$(self_, body_, $controller) {
-return ff_core_Try.Try_flatten((await ff_core_Try.Try_map$(self_, body_, $controller)))
+export async function Try_flatMap$(self_, body_, $c) {
+return ff_core_Try.Try_flatten((await ff_core_Try.Try_map$(self_, body_, $c)))
 }
 
-export async function Try_else$(self_, body_, $controller) {
+export async function Try_else$(self_, body_, $c) {
 {
 const _1 = self_;
 {
@@ -227,14 +227,14 @@ return
 }
 {
 if(_1.Failure) {
-return (await body_($controller))
+return (await body_($c))
 return
 }
 }
 }
 }
 
-export async function Try_expect$(self_, $controller) {
+export async function Try_expect$(self_, $c) {
 {
 const _1 = self_;
 {
@@ -254,15 +254,15 @@ return
 }
 }
 
-export async function Try_catchAny$(self_, body_, $controller) {
+export async function Try_catchAny$(self_, body_, $c) {
 {
 const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
-return (await ff_core_Core.try_$((async ($controller) => {
-return (await body_(error_, $controller))
-}), $controller))
+return (await ff_core_Core.try_$((async ($c) => {
+return (await body_(error_, $c))
+}), $c))
 return
 }
 }
@@ -273,25 +273,25 @@ return
 }
 }
 
-export async function Try_finally$(self_, body_, $controller) {
+export async function Try_finally$(self_, body_, $c) {
 {
 const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return (await ff_core_Core.try_$((async ($controller) => {
-(await body_($controller));
+return (await ff_core_Core.try_$((async ($c) => {
+(await body_($c));
 return value_
-}), $controller))
+}), $c))
 return
 }
 }
 {
 if(_1.Failure) {
 {
-const _1 = (await ff_core_Core.try_$((async ($controller) => {
-return (await body_($controller))
-}), $controller));
+const _1 = (await ff_core_Core.try_$((async ($c) => {
+return (await body_($c))
+}), $c));
 {
 if(_1.Success) {
 return self_
@@ -343,7 +343,7 @@ return
 }
 }
 
-export async function Try_flatten$(self_, $controller) {
+export async function Try_flatten$(self_, $c) {
 {
 const _1 = self_;
 {

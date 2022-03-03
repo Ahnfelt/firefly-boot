@@ -107,7 +107,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitNa
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int))
 }
 
-export async function make_$(modules_, $controller) {
+export async function make_$(modules_, $c) {
 function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
@@ -603,27 +603,27 @@ return
 }
 }
 
-export async function Unification_fail$(self_, at_, message_, $controller) {
+export async function Unification_fail$(self_, at_, message_, $c) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function Unification_withLocalInstances$(self_, instances_, body_, $controller) {
+export async function Unification_withLocalInstances$(self_, instances_, body_, $c) {
 const oldInstances_ = self_.instances_;
 self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($controller) => {
-return (await body_($controller))
-}), $controller)), (() => {
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
+return (await body_($c))
+}), $c)), (() => {
 self_.instances_ = oldInstances_
 })))
 }
 
-export async function Unification_freshUnificationVariable$(self_, at_, $controller) {
+export async function Unification_freshUnificationVariable$(self_, at_, $c) {
 const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextUnificationVariableIndex_);
 self_.nextUnificationVariableIndex_ += 3;
 return result_
 }
 
-export async function Unification_instantiate$(self_, instantiation_, type_, $controller) {
+export async function Unification_instantiate$(self_, instantiation_, type_, $c) {
 {
 const self_a = self_;
 const instantiation_a = instantiation_;
@@ -689,7 +689,7 @@ return
 }
 }
 
-export async function Unification_instantiateConstraint$(self_, instantiation_, constraint_, $controller) {
+export async function Unification_instantiateConstraint$(self_, instantiation_, constraint_, $c) {
 {
 const self_a = self_;
 const instantiation_a = instantiation_;
@@ -707,7 +707,7 @@ return
 }
 }
 
-export async function Unification_constrain$(self_, at_, type_, constraintName_, generics_, $controller) {
+export async function Unification_constrain$(self_, at_, type_, constraintName_, generics_, $c) {
 {
 const _1 = type_;
 {
@@ -815,7 +815,7 @@ return
 }
 }
 
-export async function Unification_get$(self_, index_, $controller) {
+export async function Unification_get$(self_, index_, $c) {
 return ff_core_Option.Option_map(ff_core_Map.Map_get(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_1) => {
 {
 if(_1.TVariable) {
@@ -837,7 +837,7 @@ return
 }))
 }
 
-export async function Unification_substitute$(self_, type_, $controller) {
+export async function Unification_substitute$(self_, type_, $c) {
 {
 const self_a = self_;
 const type_a = type_;
@@ -880,7 +880,7 @@ return
 }
 }
 
-export async function Unification_unify$(self_, at_, t1_, t2_, $controller) {
+export async function Unification_unify$(self_, at_, t1_, t2_, $c) {
 {
 const self_a = self_;
 const at_a = at_;
@@ -966,7 +966,7 @@ return
 }
 }
 
-export async function Unification_bind$(self_, at_, index_, type_, $controller) {
+export async function Unification_bind$(self_, at_, index_, type_, $c) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
 ff_compiler_Unification.Unification_fail(self_, at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
 };
@@ -991,7 +991,7 @@ ff_compiler_Unification.Unification_affect(self_, at_, type_, ff_compiler_Syntax
 }))
 }
 
-export async function Unification_affect$(self_, at_, source_, target_, $controller) {
+export async function Unification_affect$(self_, at_, source_, target_, $c) {
 {
 const _1 = ff_core_Pair.Pair(ff_compiler_Unification.Unification_substitute(self_, source_), ff_compiler_Unification.Unification_substitute(self_, target_));
 {
@@ -1032,7 +1032,7 @@ return
 }
 }
 
-export async function Unification_occursIn$(self_, index_, t_, $controller) {
+export async function Unification_occursIn$(self_, index_, t_, $c) {
 {
 const self_a = self_;
 const index_a = index_;
@@ -1087,7 +1087,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $controller) {
+async compare_$(x_, y_, $c) {
 {
 const _1 = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.traitName_, y_.traitName_);
 {

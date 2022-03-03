@@ -60,7 +60,7 @@ export function empty_() {
 return ff_core_Map.empty_()
 }
 
-export async function empty_$($controller) {
+export async function empty_$($c) {
 return ff_core_Map.empty_()
 }
 
@@ -100,40 +100,40 @@ body_(k_)
 }), ff_core_Ordering_Order$T)
 }
 
-export async function Set_add$(self_, value_, ff_core_Ordering_Order$T, $controller) {
+export async function Set_add$(self_, value_, ff_core_Ordering_Order$T, $c) {
 return ff_core_Map.Map_add(self_, value_, (void 0), ff_core_Ordering_Order$T)
 }
 
-export async function Set_addAll$(self_, that_, ff_core_Ordering_Order$T, $controller) {
+export async function Set_addAll$(self_, that_, ff_core_Ordering_Order$T, $c) {
 return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_remove$(self_, value_, ff_core_Ordering_Order$T, $controller) {
+export async function Set_remove$(self_, value_, ff_core_Ordering_Order$T, $c) {
 return ff_core_Map.Map_remove(self_, value_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_removeAll$(self_, that_, ff_core_Ordering_Order$T, $controller) {
+export async function Set_removeAll$(self_, that_, ff_core_Ordering_Order$T, $c) {
 return ff_core_Map.Map_removeAll(self_, that_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_contains$(self_, value_, ff_core_Ordering_Order$T, $controller) {
+export async function Set_contains$(self_, value_, ff_core_Ordering_Order$T, $c) {
 return ff_core_Map.Map_contains(self_, value_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_size$(self_, ff_core_Ordering_Order$T, $controller) {
+export async function Set_size$(self_, ff_core_Ordering_Order$T, $c) {
 return ff_core_Map.Map_size(self_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_toList$(self_, ff_core_Ordering_Order$T, $controller) {
+export async function Set_toList$(self_, ff_core_Ordering_Order$T, $c) {
 return ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
 }
 
-export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $controller) {
-(await ff_core_Map.Map_each$(self_, (async (k_, _, $controller) => {
-(await body_(k_, $controller))
-}), $controller, ff_core_Ordering_Order$T))
+export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $c) {
+(await ff_core_Map.Map_each$(self_, (async (k_, _, $c) => {
+(await body_(k_, $c))
+}), $c, ff_core_Ordering_Order$T))
 }
 
 

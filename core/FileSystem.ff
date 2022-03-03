@@ -8,11 +8,11 @@ extend self: FileSystem {
 
     readText(file: String): String { panic("magic") }
         javascript "return fs.readFileSync(file_, {encoding: 'UTF-8'})"
-        javascriptasync "return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $controller.signal})"
+        javascriptasync "return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})"
 
     writeText(file: String, text: String): Unit { panic("magic") }
         javascript "fs.writeFileSync(file_, text_, {encoding: 'UTF-8'})"
-        javascriptasync "await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $controller.signal})"
+        javascriptasync "await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})"
 
     list(path: String): List[String] { panic("magic") }
         javascript "return ff_core_Array.Array_toList(fs.readdirSync(path_).map(f => path_ + '/' + f))"

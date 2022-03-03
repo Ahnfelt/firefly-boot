@@ -121,7 +121,7 @@ export function magicShow_(value_) {
 return JSON.stringify(value_, undefined, 4)
 }
 
-export async function if_$(condition_, body_, $controller) {
+export async function if_$(condition_, body_, $c) {
 {
 const _1 = condition_;
 {
@@ -132,16 +132,16 @@ return
 }
 {
 if(_1) {
-return ff_core_Option.Some((await body_($controller)))
+return ff_core_Option.Some((await body_($c)))
 return
 }
 }
 }
 }
 
-export async function while_$(condition_, body_, $controller) {
+export async function while_$(condition_, body_, $c) {
 {
-const _1 = (await condition_($controller));
+const _1 = (await condition_($c));
 {
 if(!_1) {
 
@@ -150,9 +150,9 @@ return
 }
 {
 if(_1) {
-(await body_($controller));
-while((await condition_($controller))) {
-(await body_($controller))
+(await body_($c));
+while((await condition_($c))) {
+(await body_($c))
 }
 return
 }
@@ -160,29 +160,29 @@ return
 }
 }
 
-export async function try_$(body_, $controller) {
+export async function try_$(body_, $c) {
 
         try {
-            return {Success: true, value_: await body_($controller)}
+            return {Success: true, value_: await body_($c)}
         } catch(e) {
             return {Failure: true, error_: e}
         }
     
 }
 
-export async function do_$(body_, $controller) {
-return (await body_($controller))
+export async function do_$(body_, $c) {
+return (await body_($c))
 }
 
-export async function throw_$(error_, $controller) {
+export async function throw_$(error_, $c) {
 ff_core_Core.panic_("magic")
 }
 
-export async function panic_$(message_, $controller) {
+export async function panic_$(message_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function magicShow_$(value_, $controller) {
+export async function magicShow_$(value_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
