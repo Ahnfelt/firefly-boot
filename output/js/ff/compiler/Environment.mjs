@@ -163,7 +163,7 @@ const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(modu
 return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_)
 }
 
-export async function make_$(module_, otherModules_, $signal) {
+export async function make_$(module_, otherModules_, $controller) {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false).symbols_
 })), ff_core_Map.empty_(), ((_w1, _w2) => {
@@ -171,11 +171,11 @@ return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty()))
 }
 
-export async function fail_$(at_, message_, $signal) {
+export async function fail_$(at_, message_, $controller) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function processModule_$(module_, isCurrentModule_, $signal) {
+export async function processModule_$(module_, isCurrentModule_, $controller) {
 function full_(module_, name_) {
 return ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
 }

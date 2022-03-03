@@ -294,7 +294,7 @@ export function Location_show(self_) {
 return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
 }
 
-export async function Location_show$(self_, $signal) {
+export async function Location_show$(self_, $controller) {
 return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
 }
 
@@ -327,7 +327,7 @@ return
 }
 }
 
-export async function Type_show$(self_, $signal) {
+export async function Type_show$(self_, $controller) {
 {
 const _1 = self_;
 {

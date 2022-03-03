@@ -89,29 +89,29 @@ export function Pair_swap(self_) {
 return ff_core_Pair.Pair(self_.second_, self_.first_)
 }
 
-export async function Pair_mapFirst$(self_, body_, $signal) {
+export async function Pair_mapFirst$(self_, body_, $controller) {
 {
 const _1 = self_;
 {
 const _c = _1;
-return ff_core_Pair.Pair((await body_(self_.first_, $signal)), _c.second_)
+return ff_core_Pair.Pair((await body_(self_.first_, $controller)), _c.second_)
 return
 }
 }
 }
 
-export async function Pair_mapSecond$(self_, body_, $signal) {
+export async function Pair_mapSecond$(self_, body_, $controller) {
 {
 const _1 = self_;
 {
 const _c = _1;
-return ff_core_Pair.Pair(_c.first_, (await body_(self_.second_, $signal)))
+return ff_core_Pair.Pair(_c.first_, (await body_(self_.second_, $controller)))
 return
 }
 }
 }
 
-export async function Pair_swap$(self_, $signal) {
+export async function Pair_swap$(self_, $controller) {
 return ff_core_Pair.Pair(self_.second_, self_.first_)
 }
 

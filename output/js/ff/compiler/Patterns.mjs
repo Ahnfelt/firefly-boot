@@ -276,7 +276,7 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function check_$(variants_, fields_, cases_, success_, guard_, $signal) {
+export async function check_$(variants_, fields_, cases_, success_, guard_, $controller) {
 {
 const _1 = ff_core_Pair.Pair(fields_, cases_);
 {
@@ -347,7 +347,7 @@ return
 }
 }
 
-export async function convert_$(modules_, cases_, $signal) {
+export async function convert_$(modules_, cases_, $controller) {
 function unqualifiedName_(name_) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 != 46)
@@ -471,7 +471,7 @@ return
 }))
 }
 
-export async function convertAndCheck_$(modules_, cases_, $signal) {
+export async function convertAndCheck_$(modules_, cases_, $controller) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
 return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
@@ -480,7 +480,7 @@ ff_compiler_Patterns.fail_(ff_core_List.List_expect(cases_, 0).at_, "Unexhaustiv
 }))
 }
 
-export async function fail_$(at_, message_, $signal) {
+export async function fail_$(at_, message_, $controller) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 

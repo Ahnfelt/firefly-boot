@@ -93,35 +93,35 @@ export function Int_bitRight(self_, bits_ = 1, signed_ = true) {
 return signed_ ? self_ >> bits_ : self_ >>> bits_;
 }
 
-export async function Int_abs$(self_, $signal) {
+export async function Int_abs$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Int_toFloat$(self_, $signal) {
+export async function Int_toFloat$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Int_bitNot$(self_, $signal) {
+export async function Int_bitNot$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Int_bitOr$(self_, that_, $signal) {
+export async function Int_bitOr$(self_, that_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Int_bitAnd$(self_, that_, $signal) {
+export async function Int_bitAnd$(self_, that_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Int_bitXor$(self_, that_, $signal) {
+export async function Int_bitXor$(self_, that_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Int_bitLeft$(self_, bits_ = 1, $signal) {
+export async function Int_bitLeft$(self_, bits_ = 1, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Int_bitRight$(self_, bits_ = 1, signed_ = true, $signal) {
+export async function Int_bitRight$(self_, bits_ = 1, signed_ = true, $controller) {
 return ff_core_Core.panic_("magic")
 }
 

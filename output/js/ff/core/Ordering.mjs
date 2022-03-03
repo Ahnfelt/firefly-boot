@@ -105,7 +105,7 @@ return
 })
 }
 
-export async function fromInt_$(order_, $signal) {
+export async function fromInt_$(order_, $controller) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
 } else if((order_ == 0)) {
@@ -115,12 +115,12 @@ return ff_core_Ordering.OrderingAfter()
 }
 }
 
-export async function fromLessThan_$(lessThan_, $signal) {
-return (async (_1, _2, $signal) => {
+export async function fromLessThan_$(lessThan_, $controller) {
+return (async (_1, _2, $controller) => {
 {
 const x_ = _1;
 const y_ = _2;
-const _guard1 = (await lessThan_(x_, y_, $signal));
+const _guard1 = (await lessThan_(x_, y_, $controller));
 if(_guard1) {
 return ff_core_Ordering.OrderingBefore()
 return
@@ -129,7 +129,7 @@ return
 {
 const x_ = _1;
 const y_ = _2;
-const _guard1 = (await lessThan_(y_, x_, $signal));
+const _guard1 = (await lessThan_(y_, x_, $controller));
 if(_guard1) {
 return ff_core_Ordering.OrderingAfter()
 return
@@ -190,7 +190,7 @@ return
 }
 }
 
-export async function Ordering_toInt$(self_, $signal) {
+export async function Ordering_toInt$(self_, $controller) {
 {
 const _1 = self_;
 {
@@ -214,7 +214,7 @@ return
 }
 }
 
-export async function Ordering_reverse$(self_, $signal) {
+export async function Ordering_reverse$(self_, $controller) {
 {
 const _1 = self_;
 {
@@ -265,7 +265,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $signal) {
+async compare_$(x_, y_, $controller) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -297,7 +297,7 @@ export const ff_core_Ordering_Order$ff_core_Char_Char = {
 compare_(x_, y_) {
 return ff_core_Ordering.fromInt_((x_ - y_))
 },
-async compare_$(x_, y_, $signal) {
+async compare_$(x_, y_, $controller) {
 return ff_core_Ordering.fromInt_((x_ - y_))
 }
 };
@@ -306,7 +306,7 @@ export const ff_core_Ordering_Order$ff_core_Int_Int = {
 compare_(x_, y_) {
 return ff_core_Ordering.fromInt_((x_ - y_))
 },
-async compare_$(x_, y_, $signal) {
+async compare_$(x_, y_, $controller) {
 return ff_core_Ordering.fromInt_((x_ - y_))
 }
 };
@@ -321,7 +321,7 @@ return ff_core_Ordering.OrderingAfter()
 return ff_core_Ordering.OrderingSame()
 }
 },
-async compare_$(x_, y_, $signal) {
+async compare_$(x_, y_, $controller) {
 if((x_ < y_)) {
 return ff_core_Ordering.OrderingBefore()
 } else if((x_ > y_)) {
@@ -349,7 +349,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $signal) {
+async compare_$(x_, y_, $controller) {
 {
 const _1 = ff_core_Ordering_Order$A.compare_(x_.first_, y_.first_);
 {
@@ -419,7 +419,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $signal) {
+async compare_$(x_, y_, $controller) {
 {
 const x_a = x_;
 const y_a = y_;

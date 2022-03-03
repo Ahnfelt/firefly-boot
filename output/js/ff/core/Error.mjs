@@ -77,19 +77,19 @@ export function Error_stack(self_) {
 return self_.stack || ''
 }
 
-export async function Error_rethrow$(self_, $signal) {
+export async function Error_rethrow$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Error_name$(self_, $signal) {
+export async function Error_name$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Error_message$(self_, $signal) {
+export async function Error_message$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Error_stack$(self_, $signal) {
+export async function Error_stack$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 

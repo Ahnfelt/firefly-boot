@@ -144,15 +144,15 @@ return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.s
 }))
 }
 
-export async function range_$(size_, $signal) {
+export async function range_$(size_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function build_$(initial_, body_, $signal) {
-async function go_$(state_, result_, $signal) {
+export async function build_$(initial_, body_, $controller) {
+async function go_$(state_, result_, $controller) {
 _tailcall: for(;;) {
 {
-const _1 = (await body_(state_, $signal));
+const _1 = (await body_(state_, $controller));
 {
 if(_1.None) {
 return ff_core_List.List_reverse(result_)
@@ -177,10 +177,10 @@ return
 return
 }
 }
-return (await go_$(initial_, ff_core_List.Empty(), $signal))
+return (await go_$(initial_, ff_core_List.Empty(), $controller))
 }
 
-export async function reverseList_$(list_, $signal) {
+export async function reverseList_$(list_, $controller) {
 function go_(list_, result_) {
 _tailcall: for(;;) {
 {
@@ -212,7 +212,7 @@ return
 return go_(list_, ff_core_List.Empty())
 }
 
-export async function groupList_$(list_, ff_core_Ordering_Order$K, $signal) {
+export async function groupList_$(list_, ff_core_Ordering_Order$K, $controller) {
 const initial_ = ff_core_List.Empty();
 return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_, ff_core_Ordering_Order$K), ((map_, pair_) => {
 return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.second"), ff_core_Ordering_Order$K)
@@ -1161,15 +1161,15 @@ export function List_reverse(self_) {
 return ff_core_List.reverseList_(self_)
 }
 
-export async function List_addAll$(self_, list_, $signal) {
+export async function List_addAll$(self_, list_, $controller) {
 return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }
 
-export async function List_toArray$(self_, $signal) {
+export async function List_toArray$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function List_expect$(self_, index_, $signal) {
+export async function List_expect$(self_, index_, $controller) {
 function go_(list_, i_) {
 _tailcall: for(;;) {
 {
@@ -1210,7 +1210,7 @@ return
 return go_(self_, index_)
 }
 
-export async function List_first$(self_, $signal) {
+export async function List_first$(self_, $controller) {
 {
 const _1 = self_;
 {
@@ -1229,7 +1229,7 @@ return
 }
 }
 
-export async function List_last$(self_, $signal) {
+export async function List_last$(self_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = self_;
@@ -1264,19 +1264,19 @@ return
 }
 }
 
-export async function List_expectFirst$(self_, $signal) {
+export async function List_expectFirst$(self_, $controller) {
 return ff_core_Option.Option_else(ff_core_List.List_first(self_), (() => {
 return ff_core_Core.panic_("expectFirst() on empty list")
 }))
 }
 
-export async function List_expectLast$(self_, $signal) {
+export async function List_expectLast$(self_, $controller) {
 return ff_core_Option.Option_else(ff_core_List.List_last(self_), (() => {
 return ff_core_Core.panic_("expectLast() on empty list")
 }))
 }
 
-export async function List_dropFirst$(self_, count_ = 1, $signal) {
+export async function List_dropFirst$(self_, count_ = 1, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = self_;
@@ -1311,11 +1311,11 @@ return
 }
 }
 
-export async function List_dropLast$(self_, count_ = 1, $signal) {
+export async function List_dropLast$(self_, count_ = 1, $controller) {
 return ff_core_List.List_reverse(ff_core_List.List_dropFirst(ff_core_List.List_reverse(self_), count_))
 }
 
-export async function List_takeFirst$(self_, count_ = 1, $signal) {
+export async function List_takeFirst$(self_, count_ = 1, $controller) {
 function go_(list_, count_, result_) {
 _tailcall: for(;;) {
 {
@@ -1356,11 +1356,11 @@ return
 return go_(self_, count_, ff_core_List.Empty())
 }
 
-export async function List_takeLast$(self_, count_ = 1, $signal) {
+export async function List_takeLast$(self_, count_ = 1, $controller) {
 return ff_core_List.List_reverse(ff_core_List.List_takeFirst(ff_core_List.List_reverse(self_), count_))
 }
 
-export async function List_pairs$(self_, $signal) {
+export async function List_pairs$(self_, $controller) {
 let i_ = 0;
 return ff_core_List.List_map(self_, ((x_) => {
 const r_ = ff_core_Pair.Pair(i_, x_);
@@ -1369,11 +1369,11 @@ return r_
 }))
 }
 
-export async function List_slice$(self_, from_, until_, $signal) {
+export async function List_slice$(self_, from_, until_, $controller) {
 return ff_core_List.List_takeFirst(ff_core_List.List_dropFirst(self_, from_), (until_ - from_))
 }
 
-export async function List_isEmpty$(self_, $signal) {
+export async function List_isEmpty$(self_, $controller) {
 {
 const _1 = self_;
 {
@@ -1389,7 +1389,7 @@ return
 }
 }
 
-export async function List_size$(self_, $signal) {
+export async function List_size$(self_, $controller) {
 function go_(list_, result_) {
 _tailcall: for(;;) {
 {
@@ -1420,7 +1420,7 @@ return
 return go_(self_, 0)
 }
 
-export async function List_each$(self_, body_, $signal) {
+export async function List_each$(self_, body_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = self_;
@@ -1434,7 +1434,7 @@ return
 if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
-(await body_(head_, $signal));
+(await body_(head_, $controller));
 {
 const self_r_ = tail_;
 const body_r_ = body_;
@@ -1450,7 +1450,7 @@ return
 }
 }
 
-export async function List_all$(self_, body_, $signal) {
+export async function List_all$(self_, body_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = self_;
@@ -1463,7 +1463,7 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_;
-const _guard1 = (!(await body_(head_, $signal)));
+const _guard1 = (!(await body_(head_, $controller)));
 if(_guard1) {
 return false
 return
@@ -1488,7 +1488,7 @@ return
 }
 }
 
-export async function List_any$(self_, body_, $signal) {
+export async function List_any$(self_, body_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = self_;
@@ -1501,7 +1501,7 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_;
-const _guard1 = (await body_(head_, $signal));
+const _guard1 = (await body_(head_, $controller));
 if(_guard1) {
 return true
 return
@@ -1526,7 +1526,7 @@ return
 }
 }
 
-export async function List_find$(self_, body_, $signal) {
+export async function List_find$(self_, body_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = self_;
@@ -1539,7 +1539,7 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_;
-const _guard1 = (await body_(head_, $signal));
+const _guard1 = (await body_(head_, $controller));
 if(_guard1) {
 return ff_core_Option.Some(head_)
 return
@@ -1564,8 +1564,8 @@ return
 }
 }
 
-export async function List_filter$(self_, body_, $signal) {
-async function go_$(list_, result_, $signal) {
+export async function List_filter$(self_, body_, $controller) {
+async function go_$(list_, result_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
@@ -1579,7 +1579,7 @@ return
 if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
-const _guard1 = (await body_(head_, $signal));
+const _guard1 = (await body_(head_, $controller));
 if(_guard1) {
 {
 const list_r_ = tail_;
@@ -1609,11 +1609,11 @@ return
 return
 }
 }
-return (await go_$(self_, ff_core_List.Empty(), $signal))
+return (await go_$(self_, ff_core_List.Empty(), $controller))
 }
 
-export async function List_map$(self_, body_, $signal) {
-async function go_$(list_, result_, $signal) {
+export async function List_map$(self_, body_, $controller) {
+async function go_$(list_, result_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
@@ -1629,7 +1629,7 @@ const head_ = _1.head_;
 const tail_ = _1.tail_;
 {
 const list_r_ = tail_;
-const result_r_ = ff_core_List.Link((await body_(head_, $signal)), result_);
+const result_r_ = ff_core_List.Link((await body_(head_, $controller)), result_);
 list_ = list_r_
 result_ = result_r_
 continue _tailcall
@@ -1641,11 +1641,11 @@ return
 return
 }
 }
-return (await go_$(self_, ff_core_List.Empty(), $signal))
+return (await go_$(self_, ff_core_List.Empty(), $controller))
 }
 
-export async function List_flatMap$(self_, body_, $signal) {
-async function go_$(list_, result_, $signal) {
+export async function List_flatMap$(self_, body_, $controller) {
+async function go_$(list_, result_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
@@ -1661,7 +1661,7 @@ const head_ = _1.head_;
 const tail_ = _1.tail_;
 {
 const list_r_ = tail_;
-const result_r_ = ff_core_List.Link((await body_(head_, $signal)), result_);
+const result_r_ = ff_core_List.Link((await body_(head_, $controller)), result_);
 list_ = list_r_
 result_ = result_r_
 continue _tailcall
@@ -1673,11 +1673,11 @@ return
 return
 }
 }
-return (await go_$(self_, ff_core_List.Empty(), $signal))
+return (await go_$(self_, ff_core_List.Empty(), $controller))
 }
 
-export async function List_collect$(self_, body_, $signal) {
-async function go_$(list_, result_, $signal) {
+export async function List_collect$(self_, body_, $controller) {
+async function go_$(list_, result_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
@@ -1692,7 +1692,7 @@ if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
 {
-const _1 = (await body_(head_, $signal));
+const _1 = (await body_(head_, $controller));
 {
 if(_1.None) {
 {
@@ -1726,10 +1726,10 @@ return
 return
 }
 }
-return (await go_$(self_, ff_core_List.Empty(), $signal))
+return (await go_$(self_, ff_core_List.Empty(), $controller))
 }
 
-export async function List_collectFirst$(self_, body_, $signal) {
+export async function List_collectFirst$(self_, body_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = self_;
@@ -1744,7 +1744,7 @@ if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
 {
-const _1 = (await body_(head_, $signal));
+const _1 = (await body_(head_, $controller));
 {
 if(_1.None) {
 {
@@ -1773,8 +1773,8 @@ return
 }
 }
 
-export async function List_foldLeft$(self_, initial_, body_, $signal) {
-async function go_$(state_, list_, $signal) {
+export async function List_foldLeft$(self_, initial_, body_, $controller) {
+async function go_$(state_, list_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
@@ -1789,7 +1789,7 @@ if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
 {
-const state_r_ = (await body_(state_, head_, $signal));
+const state_r_ = (await body_(state_, head_, $controller));
 const list_r_ = tail_;
 state_ = state_r_
 list_ = list_r_
@@ -1802,10 +1802,10 @@ return
 return
 }
 }
-return (await go_$(initial_, self_, $signal))
+return (await go_$(initial_, self_, $controller))
 }
 
-export async function List_updated$(self_, index_, value_, $signal) {
+export async function List_updated$(self_, index_, value_, $controller) {
 function go_(list_, i_, result_) {
 _tailcall: for(;;) {
 {
@@ -1858,8 +1858,8 @@ return
 return go_(self_, index_, ff_core_List.Empty())
 }
 
-export async function List_modify$(self_, index_, body_, $signal) {
-async function go_$(list_, i_, result_, $signal) {
+export async function List_modify$(self_, index_, body_, $controller) {
+async function go_$(list_, i_, result_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
@@ -1878,7 +1878,7 @@ if(_guard1) {
 {
 const list_r_ = tail_;
 const i_r_ = (i_ - 1);
-const result_r_ = ff_core_List.Link((await body_(head_, $signal)), result_);
+const result_r_ = ff_core_List.Link((await body_(head_, $controller)), result_);
 list_ = list_r_
 i_ = i_r_
 result_ = result_r_
@@ -1908,10 +1908,10 @@ return
 return
 }
 }
-return (await go_$(self_, index_, ff_core_List.Empty(), $signal))
+return (await go_$(self_, index_, ff_core_List.Empty(), $controller))
 }
 
-export async function List_zip$(self_, that_, $signal) {
+export async function List_zip$(self_, that_, $controller) {
 function go_(list1_, list2_, result_) {
 _tailcall: for(;;) {
 {
@@ -1947,7 +1947,7 @@ return
 return go_(self_, that_, ff_core_List.Empty())
 }
 
-export async function List_sortBy$(self_, body_, ff_core_Ordering_Order$O, $signal) {
+export async function List_sortBy$(self_, body_, ff_core_Ordering_Order$O, $controller) {
 if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
@@ -1993,7 +1993,7 @@ return
 return
 }
 }
-async function merge_$(xs_, ys_, result_, $signal) {
+async function merge_$(xs_, ys_, result_, $controller) {
 _tailcall: for(;;) {
 {
 const _1 = ff_core_Pair.Pair(xs_, ys_);
@@ -2003,7 +2003,7 @@ const x_ = _1.first_.head_;
 const xs2_ = _1.first_.tail_;
 if(_1.second_.Link) {
 const y_ = _1.second_.head_;
-const _guard1 = (ff_core_Ordering_Order$O.compare_((await body_(x_, $signal)), (await body_(y_, $signal))) == ff_core_Ordering.OrderingBefore());
+const _guard1 = (ff_core_Ordering_Order$O.compare_((await body_(x_, $controller)), (await body_(y_, $controller))) == ff_core_Ordering.OrderingBefore());
 if(_guard1) {
 {
 const xs_r_ = xs2_;
@@ -2087,11 +2087,11 @@ return
 }
 }
 const pair_ = divide_(self_, ff_core_List.Empty(), ff_core_List.Empty());
-return (await merge_$((await ff_core_List.List_sortBy$(pair_.first_, body_, $signal, ff_core_Ordering_Order$O)), (await ff_core_List.List_sortBy$(pair_.second_, body_, $signal, ff_core_Ordering_Order$O)), ff_core_List.Empty(), $signal))
+return (await merge_$((await ff_core_List.List_sortBy$(pair_.first_, body_, $controller, ff_core_Ordering_Order$O)), (await ff_core_List.List_sortBy$(pair_.second_, body_, $controller, ff_core_Ordering_Order$O)), ff_core_List.Empty(), $controller))
 }
 }
 
-export async function List_reverse$(self_, $signal) {
+export async function List_reverse$(self_, $controller) {
 return ff_core_List.reverseList_(self_)
 }
 
@@ -2101,7 +2101,7 @@ return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
 }))
 }
 
-export async function List_toSet$(self_, ff_core_Ordering_Order$T, $signal) {
+export async function List_toSet$(self_, ff_core_Ordering_Order$T, $controller) {
 return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((set_, value_) => {
 return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
 }))
@@ -2197,7 +2197,7 @@ return
 return go_(self_, ff_core_List.Empty())
 }
 
-export async function List_flatten$(self_, $signal) {
+export async function List_flatten$(self_, $controller) {
 function finish_(list_, result_) {
 _tailcall: for(;;) {
 {
@@ -2297,13 +2297,13 @@ export function List_group(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.groupList_(self_, ff_core_Ordering_Order$K)
 }
 
-export async function List_toMap$(self_, ff_core_Ordering_Order$K, $signal) {
+export async function List_toMap$(self_, ff_core_Ordering_Order$K, $controller) {
 return ff_core_List.List_foldLeft(self_, ff_core_Map.empty_(), ((map_, pair_) => {
 return ff_core_Map.Map_add(map_, pair_.first_, pair_.second_, ff_core_Ordering_Order$K)
 }))
 }
 
-export async function List_group$(self_, ff_core_Ordering_Order$K, $signal) {
+export async function List_group$(self_, ff_core_Ordering_Order$K, $controller) {
 return ff_core_List.groupList_(self_, ff_core_Ordering_Order$K)
 }
 
@@ -2342,7 +2342,7 @@ return
 return go_(self_, ff_core_List.Empty(), ff_core_List.Empty())
 }
 
-export async function List_unzip$(self_, $signal) {
+export async function List_unzip$(self_, $controller) {
 function go_(pairs_, ks_, vs_) {
 _tailcall: for(;;) {
 {
@@ -2381,7 +2381,7 @@ export function List_join(self_, separator_ = "") {
 return ff_core_Array.Array_join(ff_core_List.List_toArray(self_), separator_)
 }
 
-export async function List_join$(self_, separator_ = "", $signal) {
+export async function List_join$(self_, separator_ = "", $controller) {
 return ff_core_Array.Array_join(ff_core_List.List_toArray(self_), separator_)
 }
 

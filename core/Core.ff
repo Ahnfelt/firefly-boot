@@ -24,7 +24,7 @@ try[T](body: () => T): Try[T] { panic("magic") }
     """
     javascriptasync """
         try {
-            return {Success: true, value_: await body_($signal)}
+            return {Success: true, value_: await body_($controller)}
         } catch(e) {
             return {Failure: true, error_: e}
         }

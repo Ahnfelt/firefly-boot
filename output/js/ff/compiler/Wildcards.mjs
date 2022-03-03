@@ -71,11 +71,11 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$($signal) {
+export async function make_$($controller) {
 return ff_compiler_Wildcards.Wildcards(0)
 }
 
-export async function fail_$(at_, message_, $signal) {
+export async function fail_$(at_, message_, $controller) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
@@ -336,7 +336,7 @@ return
 }
 }
 
-export async function Wildcards_fixWildcards$(self_, term_, $signal) {
+export async function Wildcards_fixWildcards$(self_, term_, $controller) {
 {
 const self_a = self_;
 const term_a = term_;
@@ -423,7 +423,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ((async (_1, $signal) => {
+return ff_compiler_Syntax.ECall(_c.at_, ((async (_1, $controller) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;

@@ -108,16 +108,16 @@ export function empty_() {
     
 }
 
-export async function range_$(size_, $signal) {
+export async function range_$(size_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function build_$(initial_, body_, $signal) {
+export async function build_$(initial_, body_, $controller) {
 const builder_ = ff_core_ArrayBuilder.empty_();
-async function go_$(state_, $signal) {
+async function go_$(state_, $controller) {
 _tailcall: for(;;) {
 {
-const _1 = (await body_(state_, $signal));
+const _1 = (await body_(state_, $controller));
 {
 if(_1.None) {
 
@@ -141,15 +141,15 @@ return
 return
 }
 }
-(await go_$(initial_, $signal));
+(await go_$(initial_, $controller));
 return ff_core_ArrayBuilder.ArrayBuilder_drain(builder_)
 }
 
-export async function fill_$(size_, value_, $signal) {
+export async function fill_$(size_, value_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function empty_$($signal) {
+export async function empty_$($controller) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -208,47 +208,47 @@ export function Array_toList(self_) {
         
 }
 
-export async function Array_addAll$(self_, that_, $signal) {
+export async function Array_addAll$(self_, that_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_isEmpty$(self_, $signal) {
+export async function Array_isEmpty$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_size$(self_, $signal) {
+export async function Array_size$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_expect$(self_, index_, $signal) {
+export async function Array_expect$(self_, index_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_expectFirst$(self_, $signal) {
+export async function Array_expectFirst$(self_, $controller) {
 return ff_core_Array.Array_expect(self_, 0)
 }
 
-export async function Array_expectLast$(self_, $signal) {
+export async function Array_expectLast$(self_, $controller) {
 return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
-export async function Array_dropFirst$(self_, count_ = 1, $signal) {
+export async function Array_dropFirst$(self_, count_ = 1, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_dropLast$(self_, count_ = 1, $signal) {
+export async function Array_dropLast$(self_, count_ = 1, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function Array_update$(self_, index_, body_, $signal) {
+export async function Array_update$(self_, index_, body_, $controller) {
 
             let result = self_.slice();
-            result[index_] = await body_(result[index_], $signal);
+            result[index_] = await body_(result[index_], $controller);
             return result;
         
 }
 
-export async function Array_toList$(self_, $signal) {
+export async function Array_toList$(self_, $controller) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -256,7 +256,7 @@ export function Array_join(self_, separator_ = "") {
 return self_.join(separator_)
 }
 
-export async function Array_join$(self_, separator_ = "", $signal) {
+export async function Array_join$(self_, separator_ = "", $controller) {
 return ff_core_Core.panic_("magic")
 }
 

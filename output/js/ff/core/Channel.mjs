@@ -72,17 +72,17 @@ export function internalRunChannelAction_(action_, mode_) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function readOr_$(channel_, body_, $signal) {
+export async function readOr_$(channel_, body_, $controller) {
 return {channel: channel_, body: body_, previous: null}
 }
 
-export async function writeOr_$(channel_, message_, body_, $signal) {
+export async function writeOr_$(channel_, message_, body_, $controller) {
 return {channel: channel_, body: body_, message: message_, previous: null}
 }
 
-export async function internalRunChannelAction_$(action_, mode_, $signal) {
+export async function internalRunChannelAction_$(action_, mode_, $controller) {
 
-        if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
+        if($controller.signal.aborted) throw new Error("Cancelled", {cause: $controller.reasonWorkaround})
         let actions = []
         while(action_ != null) {
             actions.push(action_)
@@ -95,23 +95,23 @@ export async function internalRunChannelAction_$(action_, mode_, $signal) {
                     let reader = action.channel.readers.values().next().value
                     action.channel.readers.delete(reader)
                     reader.resolve(action.message)
-                    return await action.body($signal)
+                    return await action.body($controller)
                 } else if(action.channel.buffer.length < action.channel.capacity) {
                     action.channel.buffer.push(action.message)
-                    return await action.body($signal)
+                    return await action.body($controller)
                 }
             } else {
                 if(action.channel.buffer.length != 0) {
-                    return await action.body(action.channel.buffer.shift(), $signal)
+                    return await action.body(action.channel.buffer.shift(), $controller)
                 } else if(action.channel.writers.size != 0) {
                     let writer = action.channel.writers.values().next().value
                     action.channel.writers.delete(writer)
                     writer.resolve()
-                    return await action.body(writer.message, $signal)
+                    return await action.body(writer.message, $controller)
                 }
             }
         }
-        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($signal)
+        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($controller)
         let abort = null
         let finish = null
         let cleanups = []
@@ -119,14 +119,14 @@ export async function internalRunChannelAction_$(action_, mode_, $signal) {
             for(let cleanup of cleanups) cleanup()
         }
         let promise = new Promise((resolve, reject) => {
-            if(mode_.value_) finish = () => {doCleanup(); resolve(mode_.value_.first_)}
-            abort = () => {doCleanup(); reject(new Error("Cancelled", {cause: $signal.reasonWorkaround}))}
+            if(mode_.value_) finish = () => {doCleanup(); resolve(() => mode_.value_.first_($controller))}
+            abort = () => {doCleanup(); reject(new Error("Cancelled", {cause: $controller.reasonWorkaround}))}
             for(let action of actions) {
                 if(action.hasOwnProperty("message")) {
                     let writer = {
                         resolve: () => {
                             doCleanup()
-                            resolve(action.body($signal))
+                            resolve(() => action.body($controller))
                         },
                         message: action.message
                     }
@@ -136,7 +136,7 @@ export async function internalRunChannelAction_$(action_, mode_, $signal) {
                     let reader = {
                         resolve: m => {
                             doCleanup()
-                            resolve(() => action.body(m, $signal))
+                            resolve(() => action.body(m, $controller))
                         }
                     }
                     cleanups.push(() => action.channel.readers.delete(reader))
@@ -146,14 +146,14 @@ export async function internalRunChannelAction_$(action_, mode_, $signal) {
         })
         let timeout = null
         try {
-            $signal.addEventListener('abort', abort)
+            $controller.signal.addEventListener('abort', abort)
             if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_)
             let body = await promise
             if(timeout != null) { clearTimeout(timeout); timeout = null }
-            return await body($signal)
+            return await body()
         } finally {
             if(timeout != null) clearTimeout(timeout)
-            $signal.removeEventListener('abort', abort)
+            $controller.signal.removeEventListener('abort', abort)
         }
     
 }
@@ -170,16 +170,16 @@ ff_core_Channel.ChannelAction_wait(ff_core_Channel.writeOr_(self_, message_, (()
 })))
 }
 
-export async function Channel_read$(self_, $signal) {
-return (await ff_core_Channel.ChannelAction_wait$((await ff_core_Channel.readOr_$(self_, (async (_w1, $signal) => {
+export async function Channel_read$(self_, $controller) {
+return (await ff_core_Channel.ChannelAction_wait$((await ff_core_Channel.readOr_$(self_, (async (_w1, $controller) => {
 return _w1
-}), $signal)), $signal))
+}), $controller)), $controller))
 }
 
-export async function Channel_write$(self_, message_, $signal) {
-(await ff_core_Channel.ChannelAction_wait$((await ff_core_Channel.writeOr_$(self_, message_, (async ($signal) => {
+export async function Channel_write$(self_, message_, $controller) {
+(await ff_core_Channel.ChannelAction_wait$((await ff_core_Channel.writeOr_$(self_, message_, (async ($controller) => {
 
-}), $signal)), $signal))
+}), $controller)), $controller))
 }
 
 export function ChannelAction_readOr(self_, channel_, body_) {
@@ -202,24 +202,24 @@ export function ChannelAction_immediately(self_, body_) {
 return ff_core_Channel.internalRunChannelAction_(self_, ff_core_Option.Some(ff_core_Pair.Pair(body_, ff_core_Option.None())))
 }
 
-export async function ChannelAction_readOr$(self_, channel_, body_, $signal) {
+export async function ChannelAction_readOr$(self_, channel_, body_, $controller) {
 return {channel: channel_, body: body_, previous: self_}
 }
 
-export async function ChannelAction_writeOr$(self_, channel_, message_, body_, $signal) {
+export async function ChannelAction_writeOr$(self_, channel_, message_, body_, $controller) {
 return {channel: channel_, body: body_, message: message_, previous: self_}
 }
 
-export async function ChannelAction_wait$(self_, $signal) {
-return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.None(), $signal))
+export async function ChannelAction_wait$(self_, $controller) {
+return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.None(), $controller))
 }
 
-export async function ChannelAction_timeout$(self_, duration_, body_, $signal) {
-return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.Some(ff_core_Pair.Pair(body_, ff_core_Option.Some(duration_))), $signal))
+export async function ChannelAction_timeout$(self_, duration_, body_, $controller) {
+return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.Some(ff_core_Pair.Pair(body_, ff_core_Option.Some(duration_))), $controller))
 }
 
-export async function ChannelAction_immediately$(self_, body_, $signal) {
-return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.Some(ff_core_Pair.Pair(body_, ff_core_Option.None())), $signal))
+export async function ChannelAction_immediately$(self_, body_, $controller) {
+return (await ff_core_Channel.internalRunChannelAction_$(self_, ff_core_Option.Some(ff_core_Pair.Pair(body_, ff_core_Option.None())), $controller))
 }
 
 

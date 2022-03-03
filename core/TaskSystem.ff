@@ -6,24 +6,24 @@ extend self: TaskSystem {
 
     start[T](taskBody: () => Unit): Task { panic("magic") }
         javascriptasync """
-            if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
+            if($controller.signal.aborted) throw new Error("Cancelled", {cause: $controller.reasonWorkaround})
             let controller = new AbortController()
-            controller.signal.promises = new Set()
+            controller.promises = new Set()
             async function spawn() {
                 let abort = () => {
-                    controller.signal.reasonWorkaround = $signal.reasonWorkaround
+                    controller.reasonWorkaround = $controller.reasonWorkaround
                     controller.abort()
                 }
-                $signal.addEventListener('abort', abort)
-                let promise = Promise.resolve(controller.signal).then(taskBody_)
-                $signal.promises.add(promise)
+                $controller.signal.addEventListener('abort', abort)
+                let promise = Promise.resolve(controller).then(taskBody_)
+                $controller.promises.add(promise)
                 let outcomes = []
                 try {
                     await promise
                 } finally {
-                    $signal.removeEventListener('abort', abort)
-                    outcomes = await Promise.allSettled(controller.signal.promises)
-                    $signal.promises.delete(promise)
+                    $controller.signal.removeEventListener('abort', abort)
+                    outcomes = await Promise.allSettled(controller.promises)
+                    $controller.promises.delete(promise)
                 }
                 for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
                 // Who will ever benefit from this throw?
@@ -81,16 +81,16 @@ extend self: TaskSystem {
 
     sleep(duration: Duration): Unit { panic("magic") }
         javascriptasync """
-            if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
+            if($controller.signal.aborted) throw new Error("Cancelled", {cause: $controller.reasonWorkaround})
             await new Promise((resolve, reject) => {
                 let abort = () => {
-                    $signal.removeEventListener('abort', abort)
+                    $controller.signal.removeEventListener('abort', abort)
                     if(timeoutId != null) clearTimeout(timeoutId)
-                    reject(new Error("Cancelled", {cause: $signal.reasonWorkaround}))
+                    reject(new Error("Cancelled", {cause: $controller.reasonWorkaround}))
                 }
-                $signal.addEventListener('abort', abort)
+                $controller.signal.addEventListener('abort', abort)
                 let complete = () => {
-                    $signal.removeEventListener('abort', abort)
+                    $controller.signal.removeEventListener('abort', abort)
                     resolve()
                 }
                 let timeoutId = setTimeout(complete, duration_ * 1000);
@@ -102,7 +102,7 @@ extend self: TaskSystem {
 extend self: Task {
     cancel(): Unit { panic("magic") }
         javascript """
-            self_.signal.reasonWorkaround = new Error("Cancellation")
+            self_.controller.reasonWorkaround = new Error("Cancellation")
             self_.abort()
         """
 }

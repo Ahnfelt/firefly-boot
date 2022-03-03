@@ -133,59 +133,59 @@ return (_w1 != 46)
 
 export function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';
 
-export async function FileSystem_readText$(self_, file_, $signal) {
-return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $signal})
+export async function FileSystem_readText$(self_, file_, $controller) {
+return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $controller.signal})
 }
 
-export async function FileSystem_writeText$(self_, file_, text_, $signal) {
-await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $signal})
+export async function FileSystem_writeText$(self_, file_, text_, $controller) {
+await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $controller.signal})
 }
 
-export async function FileSystem_list$(self_, path_, $signal) {
+export async function FileSystem_list$(self_, path_, $controller) {
 return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
 }
 
-export async function FileSystem_exists$(self_, path_, $signal) {
+export async function FileSystem_exists$(self_, path_, $controller) {
 return await fsPromises.access(path_).then(() => true).catch(() => false)
 }
 
-export async function FileSystem_isDirectory$(self_, path_, $signal) {
+export async function FileSystem_isDirectory$(self_, path_, $controller) {
 return (await fsPromises.lstat(path_)).isDirectory()
 }
 
-export async function FileSystem_createDirectory$(self_, path_, $signal) {
+export async function FileSystem_createDirectory$(self_, path_, $controller) {
 await fsPromises.mkdir(path_)
 }
 
-export async function FileSystem_createDirectories$(self_, path_, $signal) {
+export async function FileSystem_createDirectories$(self_, path_, $controller) {
 await fsPromises.mkdir(path_, {recursive: true})
 }
 
-export async function FileSystem_delete$(self_, path_, $signal) {
+export async function FileSystem_delete$(self_, path_, $controller) {
 try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
 }
 
-export async function FileSystem_rename$(self_, fromPath_, toPath_, $signal) {
+export async function FileSystem_rename$(self_, fromPath_, toPath_, $controller) {
 await fsPromises.rename(fromPath_, toPath_)
 }
 
-export async function FileSystem_getAbsolutePath$(self_, path_, $signal) {
+export async function FileSystem_getAbsolutePath$(self_, path_, $controller) {
 return path.resolve(path_)
 }
 
-export async function FileSystem_directoryName$(self_, path_, $signal) {
+export async function FileSystem_directoryName$(self_, path_, $controller) {
 return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
 })), 1))
 }
 
-export async function FileSystem_baseName$(self_, path_, $signal) {
+export async function FileSystem_baseName$(self_, path_, $controller) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
 })))
 }
 
-export async function FileSystem_prefixName$(self_, path_, $signal) {
+export async function FileSystem_prefixName$(self_, path_, $controller) {
 return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
 }))), ((_w1) => {
@@ -193,7 +193,7 @@ return (_w1 != 46)
 }))
 }
 
-export async function FileSystem_suffixName$(self_, path_, $signal) {
+export async function FileSystem_suffixName$(self_, path_, $controller) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
 })), ((_w1) => {

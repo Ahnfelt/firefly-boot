@@ -46,7 +46,7 @@ writeOr[M, T](channel: Channel[M], message: M, body: () => T): ChannelAction[T] 
 
 internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T, Option[Duration]]]): T { panic("magic") }
     javascriptasync """
-        if($signal.aborted) throw new Error("Cancelled", {cause: $signal.reasonWorkaround})
+        if($controller.signal.aborted) throw new Error("Cancelled", {cause: $controller.reasonWorkaround})
         let actions = []
         while(action_ != null) {
             actions.push(action_)
@@ -59,23 +59,23 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                     let reader = action.channel.readers.values().next().value
                     action.channel.readers.delete(reader)
                     reader.resolve(action.message)
-                    return await action.body($signal)
+                    return await action.body($controller)
                 } else if(action.channel.buffer.length < action.channel.capacity) {
                     action.channel.buffer.push(action.message)
-                    return await action.body($signal)
+                    return await action.body($controller)
                 }
             } else {
                 if(action.channel.buffer.length != 0) {
-                    return await action.body(action.channel.buffer.shift(), $signal)
+                    return await action.body(action.channel.buffer.shift(), $controller)
                 } else if(action.channel.writers.size != 0) {
                     let writer = action.channel.writers.values().next().value
                     action.channel.writers.delete(writer)
                     writer.resolve()
-                    return await action.body(writer.message, $signal)
+                    return await action.body(writer.message, $controller)
                 }
             }
         }
-        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($signal)
+        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($controller)
         let abort = null
         let finish = null
         let cleanups = []
@@ -83,14 +83,14 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
             for(let cleanup of cleanups) cleanup()
         }
         let promise = new Promise((resolve, reject) => {
-            if(mode_.value_) finish = () => {doCleanup(); resolve(() => mode_.value_.first_($signal))}
-            abort = () => {doCleanup(); reject(new Error("Cancelled", {cause: $signal.reasonWorkaround}))}
+            if(mode_.value_) finish = () => {doCleanup(); resolve(() => mode_.value_.first_($controller))}
+            abort = () => {doCleanup(); reject(new Error("Cancelled", {cause: $controller.reasonWorkaround}))}
             for(let action of actions) {
                 if(action.hasOwnProperty("message")) {
                     let writer = {
                         resolve: () => {
                             doCleanup()
-                            resolve(() => action.body($signal))
+                            resolve(() => action.body($controller))
                         },
                         message: action.message
                     }
@@ -100,7 +100,7 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                     let reader = {
                         resolve: m => {
                             doCleanup()
-                            resolve(() => action.body(m, $signal))
+                            resolve(() => action.body(m, $controller))
                         }
                     }
                     cleanups.push(() => action.channel.readers.delete(reader))
@@ -110,14 +110,14 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
         })
         let timeout = null
         try {
-            $signal.addEventListener('abort', abort)
+            $controller.signal.addEventListener('abort', abort)
             if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_)
             let body = await promise
             if(timeout != null) { clearTimeout(timeout); timeout = null }
             return await body()
         } finally {
             if(timeout != null) clearTimeout(timeout)
-            $signal.removeEventListener('abort', abort)
+            $controller.signal.removeEventListener('abort', abort)
         }
     """
 

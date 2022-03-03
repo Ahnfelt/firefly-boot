@@ -64,7 +64,7 @@ export function Duration_toString(self_, digits_ = 3) {
 return (ff_core_Float.Float_toFixed(self_, digits_) + " s")
 }
 
-export async function Duration_toString$(self_, digits_ = 3, $signal) {
+export async function Duration_toString$(self_, digits_ = 3, $controller) {
 return (ff_core_Float.Float_toFixed(self_, digits_) + " s")
 }
 
