@@ -44,7 +44,7 @@ extend self: TaskSystem {
                 if(!shield_) $c.signal.removeEventListener('abort', abort)
                 outcomes = await Promise.allSettled(controller.promises)
             }
-            for(let outcome of outcomes) if(outcome.status === "rejected") throw status.reason
+            for(let outcome of outcomes) if(outcome.status === "rejected") throw outcome.status.reason
             return result
         """
 
