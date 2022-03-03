@@ -111,19 +111,22 @@ export async function internalRunChannelAction_$(action_, mode_, $signal) {
                 }
             }
         }
-        let abort
+        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($signal)
+        let abort = null
+        let finish = null
         let cleanups = []
         function doCleanup() {
             for(let cleanup of cleanups) cleanup()
         }
         let promise = new Promise((resolve, reject) => {
+            if(mode_.value_) finish = () => {doCleanup(); resolve(mode_.value_.first_)}
             abort = () => {doCleanup(); reject(new Error("Cancelled", {cause: $signal.reasonWorkaround}))}
             for(let action of actions) {
                 if(action.hasOwnProperty("message")) {
                     let writer = {
                         resolve: () => {
                             doCleanup()
-                            resolve(action.body)
+                            resolve(action.body($signal))
                         },
                         message: action.message
                     }
@@ -133,7 +136,7 @@ export async function internalRunChannelAction_$(action_, mode_, $signal) {
                     let reader = {
                         resolve: m => {
                             doCleanup()
-                            resolve(() => action.body(m))
+                            resolve(() => action.body(m, $signal))
                         }
                     }
                     cleanups.push(() => action.channel.readers.delete(reader))
@@ -141,11 +144,15 @@ export async function internalRunChannelAction_$(action_, mode_, $signal) {
                 }
             }
         })
+        let timeout = null
         try {
             $signal.addEventListener('abort', abort)
+            if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_)
             let body = await promise
-            return await body()
+            if(timeout != null) { clearTimeout(timeout); timeout = null }
+            return await body($signal)
         } finally {
+            if(timeout != null) clearTimeout(timeout)
             $signal.removeEventListener('abort', abort)
         }
     
