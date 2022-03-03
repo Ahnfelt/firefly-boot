@@ -79,7 +79,6 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
         let cleanups = []
         function doCleanup() {
             for(cleanup of cleanups) cleanup()
-            cleanups = []
         }
         let promise = new Promise((resolve, reject) => {
             abort = e => {doCleanup(); reject(e)}
@@ -100,6 +99,5 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
             return await promise
         } finally {
             $signal.removeEventListener('abort', abort)
-            doCleanup()
         }
     """
