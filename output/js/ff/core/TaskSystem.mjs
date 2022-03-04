@@ -135,7 +135,7 @@ export async function TaskSystem_start$(self_, task_, $c) {
                 try {
                     await Promise.resolve($c).then(task_)
                 } catch(e) {
-                    if(!$c.aborted) {
+                    if(!$c.signal.aborted) {
                         $c.reasonWorkaround = e
                         $c.abort()
                     }
@@ -163,7 +163,7 @@ export async function TaskSystem_scope$(self_, body_, shield_ = false, $c) {
                 if(!shield_) $c.signal.addEventListener('abort', abort)
                 result = await body_(controller)
             } catch(e) {
-                if(!controller.aborted) {
+                if(!controller.signal.aborted) {
                     controller.reasonWorkaround = e
                     controller.abort()
                 }

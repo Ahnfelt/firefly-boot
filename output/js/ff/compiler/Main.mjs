@@ -167,9 +167,11 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 queueMicrotask(async () => {
 const controller = new AbortController()
 controller.promises = new Set()
+let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
 try {
 await main_$({array_: process.argv.slice(2)}, controller)
 } finally {
 controller.abort()
+clearInterval(interval)
 }
 })
