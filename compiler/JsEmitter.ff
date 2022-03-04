@@ -48,7 +48,7 @@ extend self: JsEmitter {
             "queueMicrotask(async () => {"
             "const controller = new AbortController()"
             "controller.promises = new Set()"
-            "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)"
+            "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
             "try {"
             "await main_$({array_: process.argv.slice(2)}, controller)"
             "} finally {"

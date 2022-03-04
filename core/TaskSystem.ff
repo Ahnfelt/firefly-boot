@@ -42,6 +42,10 @@ extend self: TaskSystem {
                 throw e
             } finally {
                 if(!shield_) $c.signal.removeEventListener('abort', abort)
+                if(!controller.signal.aborted) {
+                    controller.reasonWorkaround = new Error("Cancelled")
+                    controller.abort()
+                }
                 outcomes = await Promise.allSettled(controller.promises)
             }
             for(let outcome of outcomes) if(outcome.status === "rejected") throw outcome.reason

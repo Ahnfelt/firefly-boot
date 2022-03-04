@@ -170,6 +170,10 @@ export async function TaskSystem_scope$(self_, body_, shield_ = false, $c) {
                 throw e
             } finally {
                 if(!shield_) $c.signal.removeEventListener('abort', abort)
+                if(!controller.signal.aborted) {
+                    controller.reasonWorkaround = new Error("Cancelled")
+                    controller.abort()
+                }
                 outcomes = await Promise.allSettled(controller.promises)
             }
             for(let outcome of outcomes) if(outcome.status === "rejected") throw outcome.reason
