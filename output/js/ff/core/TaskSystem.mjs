@@ -55,14 +55,40 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type TaskSystem
 
 
+// type TaskScope
 
 
 
 
 
 
-export function TaskSystem_start(self_, task_) {
+
+
+export function TaskScope_spawn(self_, task_) {
 ff_core_Core.panic_("magic")
+}
+
+export async function TaskScope_spawn$(self_, task_, $c) {
+
+            if(self_.closed) throw new Error("Spawn outside scope")
+            async function spawn() {
+                try {
+                    await Promise.resolve(self_).then(controller => {
+                        if(self_.signal.aborted) throw new Error("Cancelled", {cause: self_.reasonWorkaround})
+                        task_(controller)
+                    })
+                } catch(e) {
+                    if(!self_.signal.aborted) {
+                        self_.reasonWorkaround = e
+                        self_.abort()
+                    }
+                } finally {
+                    self_.promises.delete(promise)
+                }
+            }
+            let promise = spawn()
+            self_.promises.add(promise)
+        
 }
 
 export function TaskSystem_scope(self_, body_, shield_ = false) {
@@ -83,12 +109,12 @@ ff_core_Channel.ChannelAction_timeout(ff_core_Channel.readOr_(ff_core_TaskSystem
 
 export function TaskSystem_all(self_, tasks_) {
 const channel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
-return ff_core_TaskSystem.TaskSystem_scope(self_, (() => {
+return ff_core_TaskSystem.TaskSystem_scope(self_, ((scope_) => {
 ff_core_List.List_each(ff_core_List.List_pairs(tasks_), ((_1) => {
 {
 const i_ = _1.first_;
 const task_ = _1.second_;
-ff_core_TaskSystem.TaskSystem_start(self_, (() => {
+ff_core_TaskSystem.TaskScope_spawn(scope_, (() => {
 ff_core_Channel.Channel_write(channel_, ff_core_Pair.Pair(i_, task_()))
 }))
 return
@@ -108,9 +134,9 @@ export function TaskSystem_race(self_, tasks_) {
 const successChannel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
 const failureChannel_ = ff_core_TaskSystem.TaskSystem_channel(self_, 0);
 let live_ = ff_core_List.List_size(tasks_);
-return ff_core_TaskSystem.TaskSystem_scope(self_, (() => {
+return ff_core_TaskSystem.TaskSystem_scope(self_, ((scope_) => {
 ff_core_List.List_each(tasks_, ((task_) => {
-ff_core_TaskSystem.TaskSystem_start(self_, (() => {
+ff_core_TaskSystem.TaskScope_spawn(scope_, (() => {
 ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
 return ff_core_Channel.Channel_write(successChannel_, task_())
 })), ((e_) => {
@@ -129,29 +155,11 @@ return ff_core_Core.throw_(error_)
 }), false)
 }
 
-export async function TaskSystem_start$(self_, task_, $c) {
-
-            async function spawn() {
-                try {
-                    await Promise.resolve($c).then(task_)
-                } catch(e) {
-                    if(!$c.signal.aborted) {
-                        $c.reasonWorkaround = e
-                        $c.abort()
-                    }
-                } finally {
-                    $c.promises.delete(promise)
-                }
-            }
-            let promise = spawn()
-            $c.promises.add(promise)
-        
-}
-
 export async function TaskSystem_scope$(self_, body_, shield_ = false, $c) {
 
             if(!shield_ && $c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             let controller = new AbortController()
+            controller.closed = false
             controller.promises = new Set()
             let abort = () => {
                 controller.reasonWorkaround = $c.reasonWorkaround
@@ -161,7 +169,7 @@ export async function TaskSystem_scope$(self_, body_, shield_ = false, $c) {
             let outcomes = []
             try {
                 if(!shield_) $c.signal.addEventListener('abort', abort)
-                result = await body_(controller)
+                result = await body_(controller, controller)
             } catch(e) {
                 if(!controller.signal.aborted) {
                     controller.reasonWorkaround = e
@@ -175,6 +183,7 @@ export async function TaskSystem_scope$(self_, body_, shield_ = false, $c) {
                     controller.abort()
                 }
                 outcomes = await Promise.allSettled(controller.promises)
+                controller.closed = true
             }
             for(let outcome of outcomes) if(outcome.status === "rejected") throw outcome.reason
             return result
@@ -195,12 +204,12 @@ export async function TaskSystem_sleep$(self_, duration_, $c) {
 
 export async function TaskSystem_all$(self_, tasks_, $c) {
 const channel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
-return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async ($c) => {
+return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async (scope_, $c) => {
 (await ff_core_List.List_each$(ff_core_List.List_pairs(tasks_), (async (_1, $c) => {
 {
 const i_ = _1.first_;
 const task_ = _1.second_;
-(await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($c) => {
+(await ff_core_TaskSystem.TaskScope_spawn$(scope_, (async ($c) => {
 (await ff_core_Channel.Channel_write$(channel_, ff_core_Pair.Pair(i_, (await task_($c))), $c))
 }), $c))
 return
@@ -220,9 +229,9 @@ export async function TaskSystem_race$(self_, tasks_, $c) {
 const successChannel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
 const failureChannel_ = (await ff_core_TaskSystem.TaskSystem_channel$(self_, 0, $c));
 let live_ = ff_core_List.List_size(tasks_);
-return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async ($c) => {
+return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async (scope_, $c) => {
 (await ff_core_List.List_each$(tasks_, (async (task_, $c) => {
-(await ff_core_TaskSystem.TaskSystem_start$(self_, (async ($c) => {
+(await ff_core_TaskSystem.TaskScope_spawn$(scope_, (async ($c) => {
 (await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($c) => {
 return (await ff_core_Channel.Channel_write$(successChannel_, (await task_($c)), $c))
 }), $c)), (async (e_, $c) => {
