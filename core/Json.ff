@@ -49,11 +49,13 @@ extend self: Json {
     addNull(): Unit
     addJson(json: Json): Unit
 
-    toString(indentation: Option[Int] = None): String
+    toString(indentation: Option[String] = None): String { panic("magic") }
+        javascript "return JSON.stringify(self_, indentation_.value_)"
 
 }
 
-parse(jsonString: String): Json
+parse(jsonString: String): Json { panic("magic") }
+    javascript "return JSON.parse(jsonString_)"
 
 object(entries: List[Pair[String, Json]]): Json
 array(items: List[Json]): Json
