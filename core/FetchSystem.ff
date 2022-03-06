@@ -1,0 +1,78 @@
+type FetchSystem! {}
+
+extend self: FetchSystem {
+
+    fetch(
+        url: String
+        method: String = "GET"
+        headers: FetchHeaders = headers([])
+        body: Option[FetchBody] = None
+        mode: Option[String] = None
+        credentials: Option[String] = None
+        cache: Option[String] = None
+        redirect: Option[String] = None
+        referrer: Option[String] = None
+        referrerPolicy: Option[String] = None
+        integrity: Option[String] = None
+        keepalive: Bool = False
+    ): FetchResponse { panic("magic") }
+        javascriptasync """
+            const options = {signal: $c.signal}
+            if(headers_.Some) options.headers = headers_.value_
+            if(body_.Some) options.body = body_.value_
+            if(mode_.Some) options.mode = mode_.value_
+            if(credentials_.Some) options.credentials = credentials_.value_
+            if(cache_.Some) options.cache = cache_.value_
+            if(redirect_.Some) options.redirect = redirect_.value_
+            if(referrer_.Some) options.referrer = referrer_.value_
+            if(referrerPolicy_.Some) options.referrerPolicy = referrerPolicy_.value_
+            if(integrity_.Some) options.integrity = integrity_.value_
+            if(keepalive_) options.keepalive = true
+            return await fetch(url, options)
+        """
+
+}
+
+
+type FetchHeaders {}
+
+headers(headers: List[Pair[String, String]]): FetchHeaders { panic("magic") }
+    javascript """
+        const headers = new Headers()
+        while(headers_.Link) {
+            headers.append(headers_.head_.first_, headers_.head_.second_)
+            headers_ = headers_.tail_
+        }
+        return headers
+    """
+
+
+type FetchBody {}
+
+stringBody(value: String): FetchBody { panic("magic") }
+    javascript """return value_"""
+
+
+type FetchResponse! {}
+
+extend self: FetchResponse {
+
+    headers(): FetchHeaders { panic("magic") }
+        javascriptasync """return self_.headers"""
+
+    trailers(): FetchHeaders { panic("magic") }
+        javascriptasync """return await self_.trailers"""
+
+    ok(): Bool { panic("magic") }
+        javascriptasync """return self_.ok"""
+
+    status(): Int { panic("magic") }
+        javascriptasync """return self_.status"""
+
+    statusText(): String { panic("magic") }
+        javascriptasync """return self_.statusText"""
+
+    text(): String { panic("magic") }
+        javascriptasync """return await self_.text()"""
+
+}

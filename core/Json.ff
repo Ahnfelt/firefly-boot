@@ -1,0 +1,44 @@
+type Json {}
+
+extend self: Json {
+
+    field(name: String): Json
+    at(index: Int): Json
+
+    fieldNames(): List[String]
+    size(): Int
+
+    string(): String
+    bool(): Bool
+    double(): Double
+    int(): Int
+
+    hasField(name: String): Bool
+
+    isObject(): Bool
+    isArray(): Bool
+    isString(): Bool
+    isBool(): Bool
+    isDouble(): Bool
+    isInt(): Bool
+    isNull(): Bool
+
+    setString(name: String, value: String): Unit
+    setBool(name: String: value: Bool): Unit
+    setDouble(name: String: value: Double): Unit
+    setInt(name: String: value: Int): Unit
+    setNull(name: String): Unit
+    setJson(name: String, json: Json): Unit
+
+    toString(indentation: Option[Int] = None): String
+
+}
+
+parse(jsonString: String): Json
+
+object(): Json
+string(value: String): Json
+bool(value: Bool): Json
+double(value: Double): Json
+int(value: Int): Json
+null(): Json
