@@ -5,15 +5,20 @@ extend self: Json {
     field(name: String): Json
     at(index: Int): Json
 
+    hasField(name: String): Bool
     fieldNames(): List[String]
     size(): Int
 
-    string(): String
-    bool(): Bool
-    double(): Double
-    int(): Int
+    expectString(): String
+    expectBool(): Bool
+    expectDouble(): Double
+    expectInt(): Int
+    expectNull(): Unit
 
-    hasField(name: String): Bool
+    getString(): Option[String]
+    getBool(): Option[Bool]
+    getDouble(): Option[Double]
+    getInt(): Option[Int]
 
     isObject(): Bool
     isArray(): Bool
@@ -32,13 +37,21 @@ extend self: Json {
 
     remove(name: String): Unit
 
+    addString(value: String): Unit
+    addBool(value: Bool): Unit
+    addDouble(value: Double): Unit
+    addInt(value: Int): Unit
+    addNull(): Unit
+    addJson(json: Json): Unit
+
     toString(indentation: Option[Int] = None): String
 
 }
 
 parse(jsonString: String): Json
 
-object(): Json
+object(entries: List[Pair[String, Json]]): Json
+array(items: List[Json]): Json
 string(value: String): Json
 bool(value: Bool): Json
 double(value: Double): Json
