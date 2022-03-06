@@ -2,12 +2,12 @@ type Json {}
 
 extend self: Json {
 
-    field(name: String): Json
-    at(index: Int): Json
+    field(name: String): Json { panic("magic") } javascript "return self_?.constructor === Object ? self_[name_] : null"
+    at(index: Int): Json { panic("magic") } javascript "return self_?.constructor === Array ? self_[index_] : null"
 
-    hasField(name: String): Bool
-    fieldNames(): List[String]
-    size(): Int
+    hasField(name: String): Bool "return self_?.constructor === Object ? Object.prototype.hasOwnProperty.call(self_, name_) : null"
+    fieldNames(): List[String] "return ff_core_Array.Array_toList(self_?.constructor === Object ? Object.keys(self_) : [])"
+    size(): Int javascript "return self_?.constructor === Array ? self_.length : 0"
 
     expectString(): String
     expectBool(): Bool
