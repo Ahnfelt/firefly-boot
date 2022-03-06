@@ -4,7 +4,6 @@ extend self: Json {
 
     field(name: String): Json { panic("magic") }
         javascript "return self_?.constructor === Object ? self_[name_] : null"
-
     at(index: Int): Json { panic("magic") }
         javascript "return self_?.constructor === Array ? self_[index_] : null"
 
