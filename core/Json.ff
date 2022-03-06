@@ -30,6 +30,8 @@ extend self: Json {
     setNull(name: String): Unit
     setJson(name: String, json: Json): Unit
 
+    remove(name: String): Unit
+
     toString(indentation: Option[Int] = None): String
 
 }
