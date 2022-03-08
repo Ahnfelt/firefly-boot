@@ -61,7 +61,7 @@ extend self: FileSystem {
                     if(doReject != null) doReject(error)
                 })
                 readable.on('close', () => {
-                    console.log("closed")
+                    if(doResolve != null) doResolve()
                 })
                 const abort = () => {
                     $c.signal.removeEventListener('abort', abort)
@@ -77,8 +77,6 @@ extend self: FileSystem {
                         doResolve = () => {doResolve = null; doReject = null; resolve()}
                         doReject = error => {doResolve = null; doReject = null; reject(error)}
                     }).then(() => go($c))
-
-                    console.log("will wait")
                     return await promise
                 }, abort)
             }

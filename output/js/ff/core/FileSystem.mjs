@@ -227,7 +227,7 @@ export async function FileSystem_readStream$(self_, file_, $c) {
                     if(doReject != null) doReject(error)
                 })
                 readable.on('close', () => {
-                    console.log("closed")
+                    if(doResolve != null) doResolve()
                 })
                 const abort = () => {
                     $c.signal.removeEventListener('abort', abort)
@@ -243,8 +243,6 @@ export async function FileSystem_readStream$(self_, file_, $c) {
                         doResolve = () => {doResolve = null; doReject = null; resolve()}
                         doReject = error => {doResolve = null; doReject = null; reject(error)}
                     }).then(() => go($c))
-
-                    console.log("will wait")
                     return await promise
                 }, abort)
             }
