@@ -61,6 +61,10 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function getAbsolutePath_(path_) {
+return path.resolve(path_)
+}
+
 export function directoryName_(path_) {
 return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
@@ -87,6 +91,10 @@ return (_w1 != 47)
 })), ((_w1) => {
 return (_w1 != 46)
 })))
+}
+
+export async function getAbsolutePath_$(path_, $c) {
+return ff_core_Core.panic_("magic")
 }
 
 export async function directoryName_$(path_, $c) {
@@ -155,10 +163,6 @@ export function FileSystem_rename(self_, fromPath_, toPath_) {
 fs.renameSync(fromPath_, toPath_)
 }
 
-export function FileSystem_getAbsolutePath(self_, path_) {
-return path.resolve(path_)
-}
-
 export function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';
 
 export async function FileSystem_readText$(self_, file_, $c) {
@@ -195,10 +199,6 @@ try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
 
 export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {
 await fsPromises.rename(fromPath_, toPath_)
-}
-
-export async function FileSystem_getAbsolutePath$(self_, path_, $c) {
-return path.resolve(path_)
 }
 
 
