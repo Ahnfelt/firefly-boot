@@ -30,6 +30,8 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
+import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
+
 import * as ff_core_List from "../../ff/core/List.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
@@ -47,6 +49,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
+
+import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
@@ -328,9 +332,7 @@ ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Parser.Parser_
 };
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]")
 };
-const generatorArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
-? ff_core_List.Empty()
-: ff_compiler_Parser.Parser_parseFunctionArguments(self_));
+const generatorArguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, false).first_;
 const methods_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"))
 ? ff_core_List.Empty()
 : (function() {
@@ -578,9 +580,10 @@ ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")")
 return ff_core_ArrayBuilder.ArrayBuilder_toList(parameters_)
 }
 
-export function Parser_parseFunctionArguments(self_) {
-ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
+export function Parser_parseFunctionArguments(self_, trailing_) {
 const arguments_ = ff_core_ArrayBuilder.empty_();
+if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
 while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const nameToken_ = ((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LAssign()))
 ? (function() {
@@ -601,8 +604,17 @@ if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_com
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }
 };
-ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
-return ff_core_ArrayBuilder.ArrayBuilder_toList(arguments_)
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")")
+};
+let lastWasCurly_ = false;
+if(trailing_) {
+while((ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{") || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))) {
+lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{");
+const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true);
+ff_core_ArrayBuilder.ArrayBuilder_add(arguments_, ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_)))
+}
+};
+return ff_core_Pair.Pair(ff_core_ArrayBuilder.ArrayBuilder_toList(arguments_), lastWasCurly_)
 }
 
 export function Parser_parseLambda(self_, defaultParameterCount_ = 0, ignoreGenerateKeyword_ = false, allowColon_ = false) {
@@ -958,21 +970,11 @@ const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_))
 const typeArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseTypeArguments(self_, false));
-const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
-? ff_core_List.Empty()
-: ff_compiler_Parser.Parser_parseFunctionArguments(self_));
-const moreArguments_ = ff_core_ArrayBuilder.empty_();
-let lastWasCurly_ = false;
-while((ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{") || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))) {
-lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{");
-const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true);
-ff_core_ArrayBuilder.ArrayBuilder_add(moreArguments_, ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_)))
-};
+const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, true);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, at_);
-const allArguments_ = ff_core_List.List_addAll(arguments_, ff_core_ArrayBuilder.ArrayBuilder_toList(moreArguments_));
 const target_ = ff_compiler_Syntax.DynamicCall(result_, tailCall_);
-result_ = ff_compiler_Syntax.ECall(at_, target_, effect_, typeArguments_, allArguments_, ff_core_List.Empty());
-if((lastWasCurly_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()))) {
+result_ = ff_compiler_Syntax.ECall(at_, target_, effect_, typeArguments_, arguments_.first_, ff_core_List.Empty());
+if((arguments_.second_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()))) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, ff_compiler_Token.Token_raw(token_))
 }
@@ -1043,10 +1045,10 @@ if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "?"))
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
 return ff_compiler_Syntax.EVariantIs(ff_compiler_Token.Token_at(token_), name_, typeArguments_)
 } else {
-const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
-? ff_core_Option.None()
-: ff_core_Option.Some(ff_compiler_Parser.Parser_parseFunctionArguments(self_)));
-return ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(token_), name_, typeArguments_, arguments_)
+const arguments_ = ff_core_Option.Some(ff_compiler_Parser.Parser_parseFunctionArguments(self_, true));
+return ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(token_), name_, typeArguments_, ff_core_Option.Option_map(arguments_, ((_w1) => {
+return _w1.first_
+})))
 }
 }
 
@@ -1440,9 +1442,7 @@ ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Parser.Parser_
 };
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]")
 };
-const generatorArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
-? ff_core_List.Empty()
-: ff_compiler_Parser.Parser_parseFunctionArguments(self_));
+const generatorArguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, false).first_;
 const methods_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{"))
 ? ff_core_List.Empty()
 : (function() {
@@ -1690,9 +1690,10 @@ ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")")
 return ff_core_ArrayBuilder.ArrayBuilder_toList(parameters_)
 }
 
-export async function Parser_parseFunctionArguments$(self_, $c) {
-ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
+export async function Parser_parseFunctionArguments$(self_, trailing_, $c) {
 const arguments_ = ff_core_ArrayBuilder.empty_();
+if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
 while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 const nameToken_ = ((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LAssign()))
 ? (function() {
@@ -1713,8 +1714,17 @@ if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_com
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma())
 }
 };
-ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
-return ff_core_ArrayBuilder.ArrayBuilder_toList(arguments_)
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")")
+};
+let lastWasCurly_ = false;
+if(trailing_) {
+while((ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{") || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))) {
+lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{");
+const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true);
+ff_core_ArrayBuilder.ArrayBuilder_add(arguments_, ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_)))
+}
+};
+return ff_core_Pair.Pair(ff_core_ArrayBuilder.ArrayBuilder_toList(arguments_), lastWasCurly_)
 }
 
 export async function Parser_parseLambda$(self_, defaultParameterCount_ = 0, ignoreGenerateKeyword_ = false, allowColon_ = false, $c) {
@@ -2070,21 +2080,11 @@ const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_))
 const typeArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseTypeArguments(self_, false));
-const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
-? ff_core_List.Empty()
-: ff_compiler_Parser.Parser_parseFunctionArguments(self_));
-const moreArguments_ = ff_core_ArrayBuilder.empty_();
-let lastWasCurly_ = false;
-while((ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{") || ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LColon()))) {
-lastWasCurly_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{");
-const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, 0, false, true);
-ff_core_ArrayBuilder.ArrayBuilder_add(moreArguments_, ff_compiler_Syntax.Argument(lambda_.at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(lambda_.at_, lambda_)))
-};
+const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, true);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, at_);
-const allArguments_ = ff_core_List.List_addAll(arguments_, ff_core_ArrayBuilder.ArrayBuilder_toList(moreArguments_));
 const target_ = ff_compiler_Syntax.DynamicCall(result_, tailCall_);
-result_ = ff_compiler_Syntax.ECall(at_, target_, effect_, typeArguments_, allArguments_, ff_core_List.Empty());
-if((lastWasCurly_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()))) {
+result_ = ff_compiler_Syntax.ECall(at_, target_, effect_, typeArguments_, arguments_.first_, ff_core_List.Empty());
+if((arguments_.second_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()))) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, ff_compiler_Token.Token_raw(token_))
 }
@@ -2155,10 +2155,10 @@ if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "?"))
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
 return ff_compiler_Syntax.EVariantIs(ff_compiler_Token.Token_at(token_), name_, typeArguments_)
 } else {
-const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
-? ff_core_Option.None()
-: ff_core_Option.Some(ff_compiler_Parser.Parser_parseFunctionArguments(self_)));
-return ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(token_), name_, typeArguments_, arguments_)
+const arguments_ = ff_core_Option.Some(ff_compiler_Parser.Parser_parseFunctionArguments(self_, true));
+return ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(token_), name_, typeArguments_, ff_core_Option.Option_map(arguments_, ((_w1) => {
+return _w1.first_
+})))
 }
 }
 

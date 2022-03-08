@@ -1,0 +1,150 @@
+newtype Stream![T](open: () => Iterator[T])
+
+extend self[A]: Stream[A] {
+
+    map[B](body: A => B): Stream[B] {
+        Stream:
+        let a = self.open()
+        Iterator {
+            a.next().map(body)
+        } {
+            a.close()
+        }
+    }
+
+    flatMap[B](body: A => Stream[B]): Stream[B] {
+        Stream:
+        let a = self.open()
+        mutable b: Option[Iterator[B]] = None
+        Iterator {
+            function go(): Option[B] {
+                b.flatMap {_.next()}.{
+                    | Some(v)@o => o
+                    | None =>
+                        b.each {_.close()}
+                        a.next().{
+                            | Some(x) =>
+                                let s = body(x)
+                                b = Some(s.open())
+                                tailcall go()
+                            | None =>
+                                None
+                        }
+                }
+            }
+            go()
+        } {
+            try {
+                b.each {_.close()}
+            } finally {
+                a.close()
+            } expect()
+        }
+    }
+
+    filter(body: A => Bool): Stream[A] {
+        Stream:
+        let a = self.open()
+        Iterator {
+            function go(): Option[A] {
+                a.next().{
+                    | None => None
+                    | Some(x) {body(x)} => Some(x)
+                    | Some(_) => tailcall go()
+                }
+            }
+            go()
+        } {
+            a.close()
+        }
+    }
+
+    zip[B](that: Stream[B]): Stream[Pair[A, B]] {
+        Stream:
+        let a = self.open()
+        let b = try { that.open() } onThrow { a.close() } expect()
+        Iterator {
+            Pair(a.next(), b.next()).{
+                | Pair(Some(x), Some(y)) => Some(Pair(x, y))
+                | _ => None
+            }
+        } {
+            try { a.close() } finally { b.close() } expect()
+        }
+    }
+
+    concat(that: Stream[A]): Stream[A] {
+        Stream:
+        mutable firstDone = False
+        mutable iterator = self.open()
+        Iterator {
+            iterator.next().orElse {
+                if(firstDone) {None} else {
+                    firstDone = True
+                    iterator.close()
+                    iterator = that.open()
+                    iterator.next()
+                }
+            }
+        } {
+            iterator.close()
+        }
+    }
+
+    parse[B](body: Iterator[A] => Iterator[B]): Stream[B] {
+        Stream:
+        let iterator = self.open()
+        let i = try {
+            body(iterator)
+        } onThrow {
+            iterator.close()
+        } expect()
+        Iterator {
+            i.next()
+        } {
+            try {
+                i.close()
+            } finally {
+                iterator.close()
+            } expect()
+        }
+    }
+
+    // Terminating methods
+
+    each(body: A => Unit): Unit {
+        let a = self.open()
+        try {
+            function go() {
+                a.next().{
+                    | None =>
+                    | Some(x) =>
+                        body(x)
+                        tailcall go()
+                }
+            }
+            go()
+        } finally {
+            a.close()
+        } expect()
+    }
+
+    eachWhile(body: A => Bool): Unit {
+        let a = self.open()
+        try {
+            function go() {
+                a.next().{
+                    | None =>
+                    | Some(x) =>
+                        if(body(x)) {
+                            tailcall go()
+                        }
+                }
+            }
+            go()
+        } finally {
+            a.close()
+        } expect()
+    }
+
+}

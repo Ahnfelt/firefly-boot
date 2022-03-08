@@ -46,6 +46,13 @@ extend self[T]: Try[T] {
         }
     }
 
+    onThrow(body: () => Unit): Try[T] {
+        self.{
+            | Failure(error) => try { body() }; self
+            | _ => self
+        }
+    }
+
     finally(body: () => Unit): Try[T] {
         self.{
             | Success(value) => try { body(); value }

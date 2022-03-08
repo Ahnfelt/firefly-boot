@@ -276,7 +276,7 @@ extend self: Parser {
             }
             self.rawSkip(LBracketRight, "]")
         }
-        let generatorArguments = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionArguments()}
+        let generatorArguments = self.parseFunctionArguments(False).first
         let methods = if(!self.current().rawIs("{")) {[]} else {
             let definitions = ArrayBuilder.empty[DFunction]()
             self.rawSkip(LBracketLeft, "{")
@@ -477,21 +477,31 @@ extend self: Parser {
         parameters.toList()
     }
     
-    parseFunctionArguments(): List[Argument] {
-        self.rawSkip(LBracketLeft, "(")
+    parseFunctionArguments(trailing: Bool): Pair[List[Argument], Bool] {
         let arguments = ArrayBuilder.empty[Argument]()
-        while {!self.current().is(LBracketRight)} {
-            let nameToken = if(self.current().is(LLower) && self.ahead().is(LAssign)) {
-                let token = self.skip(LLower)
-                self.skip(LAssign)
-                Some(token)
-            } else {None}
-            let value = self.parseTerm()
-            arguments.add(Argument(nameToken.map{_.at()}.else{value.at}, nameToken.map{_.raw()}, value))
-            if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
+        if(self.current().rawIs("(")){
+            self.rawSkip(LBracketLeft, "(")
+            while {!self.current().is(LBracketRight)} {
+                let nameToken = if(self.current().is(LLower) && self.ahead().is(LAssign)) {
+                    let token = self.skip(LLower)
+                    self.skip(LAssign)
+                    Some(token)
+                } else {None}
+                let value = self.parseTerm()
+                arguments.add(Argument(nameToken.map{_.at()}.else{value.at}, nameToken.map{_.raw()}, value))
+                if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
+            }
+            self.rawSkip(LBracketRight, ")")
         }
-        self.rawSkip(LBracketRight, ")")
-        arguments.toList()
+        mutable lastWasCurly = False
+        if(trailing) {
+            while {self.current().rawIs("{") || self.current().is(LColon)} {
+                lastWasCurly = self.current().rawIs("{")
+                let lambda = self.parseLambda(allowColon = True)
+                arguments.add(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
+            }
+        }
+        Pair(arguments.toList(), lastWasCurly)
     }
     
     parseLambda(
@@ -756,19 +766,11 @@ extend self: Parser {
             } else {
                 let at = self.current().at()
                 let typeArguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
-                let arguments = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionArguments()}
-                let moreArguments = ArrayBuilder.empty[Argument]()
-                mutable lastWasCurly = False
-                while {self.current().rawIs("{") || self.current().is(LColon)} {
-                    lastWasCurly = self.current().rawIs("{")
-                    let lambda = self.parseLambda(allowColon = True)
-                    moreArguments.add(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
-                }
+                let arguments = self.parseFunctionArguments(True)
                 let effect = self.freshUnificationVariable(at)
-                let allArguments = [...arguments, ...moreArguments.toList()]
                 let target = DynamicCall(result, tailCall)
-                result = ECall(at, target, effect, typeArguments, allArguments, [])
-                if(lastWasCurly && self.current().is(LLower)) {
+                result = ECall(at, target, effect, typeArguments, arguments.first, [])
+                if(arguments.second && self.current().is(LLower)) {
                     let token = self.skip(LLower)
                     result = EField(token.at(), False, result, token.raw())
                 }
@@ -824,14 +826,14 @@ extend self: Parser {
             self.fail(self.current().at(), "Expected atom, got " + self.current().raw())
         }
     }
-    
+
     parseVariant(prefix: String): Term {
         let token = self.skip(LUpper)
         let name = prefix + token.raw()
         let typeArguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
         if(self.current().rawIs("?")) { self.skip(LOperator); EVariantIs(token.at(), name, typeArguments) } else:
-        let arguments = if(!self.current().rawIs("(")) {None} else {Some(self.parseFunctionArguments())}
-        EVariant(token.at(), name, typeArguments, arguments)
+        let arguments = Some(self.parseFunctionArguments(True))
+        EVariant(token.at(), name, typeArguments, arguments.map {_.first})
     }
     
     parseCopy(record: Term): Term {

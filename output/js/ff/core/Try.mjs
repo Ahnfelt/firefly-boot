@@ -22,6 +22,8 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
+import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
+
 import * as ff_core_List from "../../ff/core/List.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
@@ -39,6 +41,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
+
+import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
@@ -140,6 +144,26 @@ const error_ = _1.error_;
 return ff_core_Core.try_((() => {
 return body_(error_)
 }))
+return
+}
+}
+{
+return self_
+return
+}
+}
+}
+
+export function Try_onThrow(self_, body_) {
+{
+const _1 = self_;
+{
+if(_1.Failure) {
+const error_ = _1.error_;
+ff_core_Core.try_((() => {
+return body_()
+}));
+return self_
 return
 }
 }
@@ -263,6 +287,26 @@ const error_ = _1.error_;
 return (await ff_core_Core.try_$((async ($c) => {
 return (await body_(error_, $c))
 }), $c))
+return
+}
+}
+{
+return self_
+return
+}
+}
+}
+
+export async function Try_onThrow$(self_, body_, $c) {
+{
+const _1 = self_;
+{
+if(_1.Failure) {
+const error_ = _1.error_;
+(await ff_core_Core.try_$((async ($c) => {
+return (await body_($c))
+}), $c));
+return self_
 return
 }
 }

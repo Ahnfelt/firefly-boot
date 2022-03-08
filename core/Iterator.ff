@@ -1,0 +1,28 @@
+type Iterator![T](
+    next: () => Option[T]
+    close: () => Unit
+)
+
+extend self[T]: Iterator[T] {
+
+    concat(that: Iterator[T]): Iterator[T] {
+        Iterator {
+            self.next().orElse { that.next() }
+        } {
+            try {
+                self.close()
+            } finally {
+                that.close()
+            } expect()
+        }
+    }
+
+    use[R](body: Iterator[T] => R): R {
+        try {
+            body(self)
+        } finally {
+            self.close()
+        } expect()
+    }
+
+}
