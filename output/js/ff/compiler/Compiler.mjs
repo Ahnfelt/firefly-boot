@@ -163,7 +163,7 @@ return ff_compiler_Compiler.Compiler_measure(self_, "Infer", packageName_, modul
 const module_ = ff_compiler_Compiler.Compiler_resolve(self_, packageName_, moduleName_);
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_), ((i_) => {
 const newPackageName_ = ((i_.packagePair_.first_ + ":") + i_.packagePair_.second_);
-return ff_compiler_Compiler.Compiler_resolve(self_, newPackageName_, ff_core_FileSystem.FileSystem_prefixName(self_.files_, i_.file_))
+return ff_compiler_Compiler.Compiler_resolve(self_, newPackageName_, ff_core_FileSystem.prefixName_(i_.file_))
 }));
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_)), module_, otherModules_);
 const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(ff_core_List.Link(module_, otherModules_)), inferredModule_, otherModules_);
@@ -182,7 +182,7 @@ self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ((packageName
 const module_ = ff_compiler_Compiler.Compiler_infer(self_, packageName_, moduleName_);
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_), ((i_) => {
 const newPackageName_ = ((i_.packagePair_.first_ + ":") + i_.packagePair_.second_);
-const newModuleName_ = ff_core_FileSystem.FileSystem_prefixName(self_.files_, i_.file_);
+const newModuleName_ = ff_core_FileSystem.prefixName_(i_.file_);
 ff_compiler_Compiler.Compiler_emit(self_, newPackageName_, newModuleName_);
 return ff_compiler_Compiler.Compiler_infer(self_, newPackageName_, newModuleName_)
 }));
@@ -273,7 +273,7 @@ return (await ff_compiler_Compiler.Compiler_measure$(self_, "Infer", packageName
 const module_ = (await ff_compiler_Compiler.Compiler_resolve$(self_, packageName_, moduleName_, $c));
 const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, packageName_, module_, $c)), (async (i_, $c) => {
 const newPackageName_ = ((i_.packagePair_.first_ + ":") + i_.packagePair_.second_);
-return (await ff_compiler_Compiler.Compiler_resolve$(self_, newPackageName_, (await ff_core_FileSystem.FileSystem_prefixName$(self_.files_, i_.file_, $c)), $c))
+return (await ff_compiler_Compiler.Compiler_resolve$(self_, newPackageName_, ff_core_FileSystem.prefixName_(i_.file_), $c))
 }), $c));
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_)), module_, otherModules_);
 const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(ff_core_List.Link(module_, otherModules_)), inferredModule_, otherModules_);
@@ -292,7 +292,7 @@ self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ((packageName
 const module_ = (await ff_compiler_Compiler.Compiler_infer$(self_, packageName_, moduleName_, $c));
 const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, packageName_, module_, $c)), (async (i_, $c) => {
 const newPackageName_ = ((i_.packagePair_.first_ + ":") + i_.packagePair_.second_);
-const newModuleName_ = (await ff_core_FileSystem.FileSystem_prefixName$(self_.files_, i_.file_, $c));
+const newModuleName_ = ff_core_FileSystem.prefixName_(i_.file_);
 (await ff_compiler_Compiler.Compiler_emit$(self_, newPackageName_, newModuleName_, $c));
 return (await ff_compiler_Compiler.Compiler_infer$(self_, newPackageName_, newModuleName_, $c))
 }), $c));

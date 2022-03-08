@@ -46,20 +46,20 @@ extend self: FileSystem {
         javascript "return path.resolve(path_)"
         javascriptasync "return path.resolve(path_)"
 
-    directoryName(path: String): String {
-        path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()
-    }
+}
 
-    baseName(path: String): String {
-        path.reverse().takeWhile { _ != '/' }.reverse()
-    }
+directoryName(path: String): String {
+    path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()
+}
 
-    prefixName(path: String): String {
-        path.reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
-    }
+baseName(path: String): String {
+    path.reverse().takeWhile { _ != '/' }.reverse()
+}
 
-    suffixName(path: String): String {
-        path.reverse().takeWhile { _ != '/' }.takeWhile { _ != '.' }.reverse()
-    }
+prefixName(path: String): String {
+    path.reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
+}
 
+suffixName(path: String): String {
+    path.reverse().takeWhile { _ != '/' }.takeWhile { _ != '.' }.reverse()
 }

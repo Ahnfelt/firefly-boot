@@ -148,7 +148,7 @@ extend self: Compiler {
         let module = self.resolve(packageName, moduleName)
         let otherModules = self.imports(packageName, module).map { i =>
             let newPackageName = i.packagePair.first + ":" + i.packagePair.second
-            self.resolve(newPackageName, self.files.prefixName(i.file))
+            self.resolve(newPackageName, FileSystem.prefixName(i.file))
         }
         let inferredModule = Inference.make([module, ...otherModules]).inferModule(module, otherModules)
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
@@ -165,7 +165,7 @@ extend self: Compiler {
         let module = self.infer(packageName, moduleName)
         let otherModules = self.imports(packageName, module).map { i =>
             let newPackageName = i.packagePair.first + ":" + i.packagePair.second
-            let newModuleName = self.files.prefixName(i.file)
+            let newModuleName = FileSystem.prefixName(i.file)
             self.emit(newPackageName, newModuleName)
             self.infer(newPackageName, newModuleName)
         }

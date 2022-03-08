@@ -61,9 +61,61 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function directoryName_(path_) {
+return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})), 1))
+}
 
+export function baseName_(path_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})))
+}
 
+export function prefixName_(path_) {
+return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+}))), ((_w1) => {
+return (_w1 != 46)
+}))
+}
 
+export function suffixName_(path_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})), ((_w1) => {
+return (_w1 != 46)
+})))
+}
+
+export async function directoryName_$(path_, $c) {
+return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})), 1))
+}
+
+export async function baseName_$(path_, $c) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})))
+}
+
+export async function prefixName_$(path_, $c) {
+return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+}))), ((_w1) => {
+return (_w1 != 46)
+}))
+}
+
+export async function suffixName_$(path_, $c) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+return (_w1 != 47)
+})), ((_w1) => {
+return (_w1 != 46)
+})))
+}
 
 export function jsFileSystemHack() {} import * as fs from 'fs';
 
@@ -107,34 +159,6 @@ export function FileSystem_getAbsolutePath(self_, path_) {
 return path.resolve(path_)
 }
 
-export function FileSystem_directoryName(self_, path_) {
-return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return (_w1 != 47)
-})), 1))
-}
-
-export function FileSystem_baseName(self_, path_) {
-return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return (_w1 != 47)
-})))
-}
-
-export function FileSystem_prefixName(self_, path_) {
-return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return (_w1 != 47)
-}))), ((_w1) => {
-return (_w1 != 46)
-}))
-}
-
-export function FileSystem_suffixName(self_, path_) {
-return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return (_w1 != 47)
-})), ((_w1) => {
-return (_w1 != 46)
-})))
-}
-
 export function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';
 
 export async function FileSystem_readText$(self_, file_, $c) {
@@ -175,34 +199,6 @@ await fsPromises.rename(fromPath_, toPath_)
 
 export async function FileSystem_getAbsolutePath$(self_, path_, $c) {
 return path.resolve(path_)
-}
-
-export async function FileSystem_directoryName$(self_, path_, $c) {
-return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return (_w1 != 47)
-})), 1))
-}
-
-export async function FileSystem_baseName$(self_, path_, $c) {
-return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return (_w1 != 47)
-})))
-}
-
-export async function FileSystem_prefixName$(self_, path_, $c) {
-return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return (_w1 != 47)
-}))), ((_w1) => {
-return (_w1 != 46)
-}))
-}
-
-export async function FileSystem_suffixName$(self_, path_, $c) {
-return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return (_w1 != 47)
-})), ((_w1) => {
-return (_w1 != 46)
-})))
 }
 
 
