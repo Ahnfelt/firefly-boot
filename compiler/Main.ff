@@ -16,7 +16,7 @@ main(system: System): Unit {
     let fs = system.files()
 
     //fs.writeStream("README_temp.md", fs.readStream("README.md"))
-    //fs.writeStream("isolate-copy.log", fs.readStream("isolate-0x6443d10-1747-v8.log"))
+    //Log.debug(system.time().measure { fs.writeStream("isolate-copy.log", fs.readStream("isolate-0x6443d10-1747-v8.log")) }.second)
 
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)
