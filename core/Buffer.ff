@@ -1,1 +1,23 @@
 type Buffer {}
+
+extend self: Buffer {
+
+    size(): Int { panic("magic") }
+        javascript "return self_.length"
+
+    expect(index: Int): Int { panic("magic") }
+        javascript """
+            if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
+            return self_[index_]
+        """
+
+    set(index: Int, byte: Int): Unit { panic("magic") }
+        javascript """
+            if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
+            self_[index_] = byte_
+        """
+
+}
+
+make(size: Int): Buffer { panic("magic") }
+    javascript "return Buffer.alloc(size_)"
