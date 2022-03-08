@@ -254,7 +254,7 @@ export async function FileSystem_writeStream$(self_, file_, stream_, $c) {
             let writeable = fs.createWriteStream(file_)
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
-                    while(!writeable.write(buffer)) {
+                    if(!writeable.write(buffer)) {
                         await new Promise((resolve, reject) => {
                             $c.signal.addEventListener('abort', reject)
                             writeable.once('drain', () => {
