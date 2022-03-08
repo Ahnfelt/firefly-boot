@@ -42,10 +42,44 @@ extend self: FileSystem {
         javascript "fs.renameSync(fromPath_, toPath_)"
         javascriptasync "await fsPromises.rename(fromPath_, toPath_)"
 
-}
+    getAbsolutePath(path: String): String { panic("magic") }
+        javascript "return path.resolve(path_)"
 
-getAbsolutePath(path: String): String { panic("magic") }
-    javascript "return path.resolve(path_)"
+    readStream(file: String): Stream[Buffer] { panic("magic") }
+        javascriptasync """
+            return $c => {
+                if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+                const readable = fs.createReadStream(file_)
+                let doResolve = null
+                let doReject = null
+                let seenError = null
+                readable.on('readable', () => {
+                    if(doResolve != null) doResolve()
+                })
+                readable.on('error', error => {
+                    seenError = error
+                    if(doReject != null) doReject(error)
+                })
+                const abort = () => {
+                    $c.signal.removeEventListener('abort', abort)
+                    readable.close()
+                }
+                $c.signal.addEventListener('abort', abort)
+                return ff_core_Iterator.Iterator(async function go($c) {
+                    let buffer = readable.read()
+                    if(buffer != null) return ff_core_Option.Some(buffer)
+                    if(seenError != null) throw seenError
+                    if(readable.destroyed) return ff_core_Option.None()
+                    let promise = new Promise((resolve, reject) => {
+                        doResolve = () => {doResolve = null; doReject = null; resolve()}
+                        doReject = error => {doResolve = null; doReject = null; reject(error)}
+                    }).then(() => go($c))
+                    return await promise
+                }, abort)
+            }
+        """
+
+}
 
 directoryName(path: String): String {
     path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()

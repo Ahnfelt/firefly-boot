@@ -4,6 +4,8 @@ import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
+
 import * as ff_core_Channel from "../../ff/core/Channel.mjs"
 
 import * as ff_core_Char from "../../ff/core/Char.mjs"
@@ -61,10 +63,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function getAbsolutePath_(path_) {
-return path.resolve(path_)
-}
-
 export function directoryName_(path_) {
 return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
@@ -91,10 +89,6 @@ return (_w1 != 47)
 })), ((_w1) => {
 return (_w1 != 46)
 })))
-}
-
-export async function getAbsolutePath_$(path_, $c) {
-return ff_core_Core.panic_("magic")
 }
 
 export async function directoryName_$(path_, $c) {
@@ -163,6 +157,14 @@ export function FileSystem_rename(self_, fromPath_, toPath_) {
 fs.renameSync(fromPath_, toPath_)
 }
 
+export function FileSystem_getAbsolutePath(self_, path_) {
+return path.resolve(path_)
+}
+
+export function FileSystem_readStream(self_, file_) {
+return ff_core_Core.panic_("magic")
+}
+
 export function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';
 
 export async function FileSystem_readText$(self_, file_, $c) {
@@ -199,6 +201,45 @@ try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
 
 export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {
 await fsPromises.rename(fromPath_, toPath_)
+}
+
+export async function FileSystem_getAbsolutePath$(self_, path_, $c) {
+return ff_core_Core.panic_("magic")
+}
+
+export async function FileSystem_readStream$(self_, file_, $c) {
+
+            return $c => {
+                if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+                const readable = fs.createReadStream(file_)
+                let doResolve = null
+                let doReject = null
+                let seenError = null
+                readable.on('readable', () => {
+                    if(doResolve != null) doResolve()
+                })
+                readable.on('error', error => {
+                    seenError = error
+                    if(doReject != null) doReject(error)
+                })
+                const abort = () => {
+                    $c.signal.removeEventListener('abort', abort)
+                    readable.close()
+                }
+                $c.signal.addEventListener('abort', abort)
+                return ff_core_Iterator.Iterator(async function go($c) {
+                    let buffer = readable.read()
+                    if(buffer != null) return ff_core_Option.Some(buffer)
+                    if(seenError != null) throw seenError
+                    if(readable.destroyed) return ff_core_Option.None()
+                    let promise = new Promise((resolve, reject) => {
+                        doResolve = () => {doResolve = null; doReject = null; resolve()}
+                        doReject = error => {doResolve = null; doReject = null; reject(error)}
+                    }).then(() => go($c))
+                    return await promise
+                }, abort)
+            }
+        
 }
 
 
