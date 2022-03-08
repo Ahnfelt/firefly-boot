@@ -15,6 +15,10 @@ main(system: System): Unit {
 
     let fs = system.files()
 
+    //fs.readStream("README.md").each(Log.debug)
+    //fs.writeStream("README_temp.md", )
+    //Log.debug("done streaming")
+
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)
 

@@ -165,6 +165,10 @@ export function FileSystem_readStream(self_, file_) {
 return ff_core_Core.panic_("magic")
 }
 
+export function FileSystem_writeStream(self_, file_, stream_) {
+ff_core_Core.panic_("magic")
+}
+
 export function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';
 
 export async function FileSystem_readText$(self_, file_, $c) {
@@ -222,6 +226,9 @@ export async function FileSystem_readStream$(self_, file_, $c) {
                     seenError = error
                     if(doReject != null) doReject(error)
                 })
+                readable.on('close', () => {
+                    console.log("closed")
+                })
                 const abort = () => {
                     $c.signal.removeEventListener('abort', abort)
                     readable.close()
@@ -236,8 +243,31 @@ export async function FileSystem_readStream$(self_, file_, $c) {
                         doResolve = () => {doResolve = null; doReject = null; resolve()}
                         doReject = error => {doResolve = null; doReject = null; reject(error)}
                     }).then(() => go($c))
+
+                    console.log("will wait")
                     return await promise
                 }, abort)
+            }
+        
+}
+
+export async function FileSystem_writeStream$(self_, file_, stream_, $c) {
+
+            let writeable = fs.createWriteStream(file_)
+            try {
+                await ff_core_Stream.Stream_each$(stream_, async buffer => {
+                    while(!writeable.write(buffer)) {
+                        await new Promise((resolve, reject) => {
+                            $c.signal.addEventListener('abort', reject)
+                            writeable.once('drain', () => {
+                                $c.signal.removeEventListener('abort', reject)
+                                resolve()
+                            })
+                        })
+                    }
+                }, $c)
+            } finally {
+                writeable.close()
             }
         
 }
