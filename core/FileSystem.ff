@@ -4,7 +4,7 @@ extend self: FileSystem {
 
     jsFileSystemHack(): Nothing { panic("magic") }
         javascript "#function jsFileSystemHack() {} import * as fs from 'fs';"
-        javascriptasync "#function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path';"
+        javascriptasync "#function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path'; import * as zlib from 'zlib'"
 
     readText(file: String): String { panic("magic") }
         javascript "return fs.readFileSync(file_, {encoding: 'UTF-8'})"
@@ -99,6 +99,47 @@ extend self: FileSystem {
                 }, $c)
             } finally {
                 writeable.close()
+            }
+        """
+
+    decompressGzipStream(stream: Stream[Buffer]): Stream[Buffer] { panic("magic") }
+        javascriptasync """
+            () => {
+                const iterator = stream_($c)
+                let decompress = zlib.createGunzip()
+                let doResolve = null
+                let doReject = null
+                let seenError = null
+                decompress.on('readable', () => {
+                    if(doResolve != null) doResolve()
+                })
+                decompress.on('error', error => {
+                    seenError = error
+                    if(doReject != null) doReject(error)
+                })
+                decompress.on('close', () => {
+                    if(doResolve != null) doResolve()
+                })
+                const abort = () => {
+                    $c.signal.removeEventListener('abort', abort)
+                    decompress.destroy()
+                }
+                $c.signal.addEventListener('abort', abort)
+                return ff_core_Iterator.Iterator(async function go($c) {
+                    let buffer = readable.read()
+                    if(buffer != null) return ff_core_Option.Some(buffer)
+                    let option = iterator.next_($c).value_
+                    let wait = buffer != null && !writeable.write(buffer)
+                    if(seenError != null) throw seenError
+                    if(decompress.destroyed) return ff_core_Option.None()
+                    let promise = new Promise((resolve, reject) => {
+                        function reset() { decompress.off('drain', doResolve); doResolve = null; doReject = null }
+                        doResolve = () => {reset(); resolve()}
+                        doReject = error => {reset(); reject(error)}
+                    }).then(() => go($c))
+                    decompress.on('drain', doResolve)
+                    return await promise
+                }, abort)
             }
         """
 
