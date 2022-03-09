@@ -276,7 +276,7 @@ export async function FileSystem_writeStream$(self_, file_, stream_, $c) {
 
 export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
 
-            () => {
+            return async ($c) => {
                 const iterator = stream_($c)
                 let decompress = zlib.createGunzip()
                 let doResolve = null

@@ -104,7 +104,7 @@ extend self: FileSystem {
 
     decompressGzipStream(stream: Stream[Buffer]): Stream[Buffer] { panic("magic") }
         javascriptasync """
-            () => {
+            return async ($c) => {
                 const iterator = stream_($c)
                 let decompress = zlib.createGunzip()
                 let doResolve = null
