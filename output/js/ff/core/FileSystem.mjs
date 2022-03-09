@@ -160,10 +160,6 @@ export function FileSystem_rename(self_, fromPath_, toPath_) {
 fs.renameSync(fromPath_, toPath_)
 }
 
-export function FileSystem_copy(self_, fromPath_, toPath_) {
-ff_core_Core.panic_("magic")
-}
-
 export function FileSystem_getAbsolutePath(self_, path_) {
 return path.resolve(path_)
 }
@@ -224,10 +220,6 @@ try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
 
 export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {
 await fsPromises.rename(fromPath_, toPath_)
-}
-
-export async function FileSystem_copy$(self_, fromPath_, toPath_, $c) {
-fs.copyFileSync(fromPath_, toPath_)
 }
 
 export async function FileSystem_getAbsolutePath$(self_, path_, $c) {

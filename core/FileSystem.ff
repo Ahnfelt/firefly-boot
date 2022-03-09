@@ -42,9 +42,6 @@ extend self: FileSystem {
         javascript "fs.renameSync(fromPath_, toPath_)"
         javascriptasync "await fsPromises.rename(fromPath_, toPath_)"
 
-    copy(fromPath: String, toPath: String): Unit { panic("magic") }
-        javascriptasync "fs.copyFileSync(fromPath_, toPath_)"
-
     getAbsolutePath(path: String): String { panic("magic") }
         javascript "return path.resolve(path_)"
 
