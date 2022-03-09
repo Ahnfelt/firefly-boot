@@ -298,12 +298,13 @@ export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
                 }
                 $c.signal.addEventListener('abort', abort)
                 return ff_core_Iterator.Iterator(async function go($c) {
-                    let buffer = readable.read()
+                    let buffer = decompress.read()
                     if(buffer != null) return ff_core_Option.Some(buffer)
-                    buffer = iterator.next_($c).value_
-                    let wait = buffer != null && !writeable.write(buffer)
+                    buffer = (await iterator.next_($c)).value_
+                    let wait = buffer == null || !decompress.write(buffer)
                     if(seenError != null) throw seenError
                     if(decompress.destroyed) return ff_core_Option.None()
+                    if(!wait) return go($c)
                     let promise = new Promise((resolve, reject) => {
                         function reset() { decompress.off('drain', doResolve); doResolve = null; doReject = null }
                         doResolve = () => {reset(); resolve()}
