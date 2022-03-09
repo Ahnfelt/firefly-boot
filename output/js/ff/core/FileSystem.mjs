@@ -169,7 +169,11 @@ export function FileSystem_readStream(self_, file_) {
 return ff_core_Core.panic_("magic")
 }
 
-export function FileSystem_writeStream(self_, file_, stream_) {
+export function FileSystem_writeStream(self_, file_, stream_, createOnly_ = false) {
+ff_core_Core.panic_("magic")
+}
+
+export function FileSystem_appendStream(self_, file_, stream_) {
 ff_core_Core.panic_("magic")
 }
 
@@ -261,9 +265,30 @@ export async function FileSystem_readStream$(self_, file_, $c) {
         
 }
 
-export async function FileSystem_writeStream$(self_, file_, stream_, $c) {
+export async function FileSystem_writeStream$(self_, file_, stream_, createOnly_ = false, $c) {
 
-            let writeable = fs.createWriteStream(file_)
+            let writeable = fs.createWriteStream(file_, {flags: createOnly_ ? 'wx' : 'w'})
+            try {
+                await ff_core_Stream.Stream_each$(stream_, async buffer => {
+                    if(!writeable.write(buffer)) {
+                        await new Promise((resolve, reject) => {
+                            $c.signal.addEventListener('abort', reject)
+                            writeable.once('drain', () => {
+                                $c.signal.removeEventListener('abort', reject)
+                                resolve()
+                            })
+                        })
+                    }
+                }, $c)
+            } finally {
+                writeable.close()
+            }
+        
+}
+
+export async function FileSystem_appendStream$(self_, file_, stream_, $c) {
+
+            let writeable = fs.createWriteStream(file_, {flags: 'a'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
                     if(!writeable.write(buffer)) {

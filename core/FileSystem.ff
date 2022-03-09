@@ -85,9 +85,29 @@ extend self: FileSystem {
             }
         """
 
-    writeStream(file: String, stream: Stream[Buffer]): Unit { panic("magic") }
+    writeStream(file: String, stream: Stream[Buffer], createOnly: Bool = False): Unit { panic("magic") }
         javascriptasync """
-            let writeable = fs.createWriteStream(file_)
+            let writeable = fs.createWriteStream(file_, {flags: createOnly_ ? 'wx' : 'w'})
+            try {
+                await ff_core_Stream.Stream_each$(stream_, async buffer => {
+                    if(!writeable.write(buffer)) {
+                        await new Promise((resolve, reject) => {
+                            $c.signal.addEventListener('abort', reject)
+                            writeable.once('drain', () => {
+                                $c.signal.removeEventListener('abort', reject)
+                                resolve()
+                            })
+                        })
+                    }
+                }, $c)
+            } finally {
+                writeable.close()
+            }
+        """
+
+    appendStream(file: String, stream: Stream[Buffer]): Unit { panic("magic") }
+        javascriptasync """
+            let writeable = fs.createWriteStream(file_, {flags: 'a'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
                     if(!writeable.write(buffer)) {
