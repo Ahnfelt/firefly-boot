@@ -300,7 +300,7 @@ export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
                 return ff_core_Iterator.Iterator(async function go($c) {
                     let buffer = readable.read()
                     if(buffer != null) return ff_core_Option.Some(buffer)
-                    let option = iterator.next_($c).value_
+                    buffer = iterator.next_($c).value_
                     let wait = buffer != null && !writeable.write(buffer)
                     if(seenError != null) throw seenError
                     if(decompress.destroyed) return ff_core_Option.None()
