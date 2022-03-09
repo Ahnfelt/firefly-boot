@@ -15,11 +15,16 @@ main(system: System): Unit {
 
     let fs = system.files()
 
+    /*Log.debug(system.time().measure {
+        fs.writeStream("progress-copy.txt", fs.readStream("progress.txt"))
+    }.second)
+
+    Log.debug(system.time().measure {
+        fs.copy("progress.txt", "progress-copy-3.txt")
+    }.second)*/
     //fs.writeStream("README_temp.md", fs.readStream("README.md"))
     //Log.debug(system.time().measure { fs.writeStream("isolate-copy.log", fs.readStream("isolate-0x6443d10-1747-v8.log")) }.second)
-    /*Log.debug(system.time().measure {
-        fs.writeStream("isolate-copy.log", fs.decompressGzipStream(fs.readStream("isolate-compressed.log.gz")))
-    }.second)*/
+    //fs.writeStream("isolate-copy.log", fs.decompressGzipStream(fs.readStream("isolate-compressed.log.gz")))
 
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)

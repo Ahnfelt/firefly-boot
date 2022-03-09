@@ -157,6 +157,10 @@ export function FileSystem_rename(self_, fromPath_, toPath_) {
 fs.renameSync(fromPath_, toPath_)
 }
 
+export function FileSystem_copy(self_, fromPath_, toPath_) {
+ff_core_Core.panic_("magic")
+}
+
 export function FileSystem_getAbsolutePath(self_, path_) {
 return path.resolve(path_)
 }
@@ -209,6 +213,10 @@ try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
 
 export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {
 await fsPromises.rename(fromPath_, toPath_)
+}
+
+export async function FileSystem_copy$(self_, fromPath_, toPath_, $c) {
+fs.copyFileSync(fromPath_, toPath_)
 }
 
 export async function FileSystem_getAbsolutePath$(self_, path_, $c) {
@@ -298,12 +306,14 @@ export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
                 }
                 $c.signal.addEventListener('abort', abort)
                 return ff_core_Iterator.Iterator(async function go($c) {
+                    if(seenError != null) throw seenError
+                    if(!decompress.readable) return ff_core_Option.None()
                     let buffer = decompress.read()
                     if(buffer != null) return ff_core_Option.Some(buffer)
                     buffer = (await iterator.next_($c)).value_
+                    if(buffer == null) decompress.end()
                     let wait = buffer == null || !decompress.write(buffer)
                     if(seenError != null) throw seenError
-                    if(decompress.destroyed) return ff_core_Option.None()
                     if(!wait) return go($c)
                     let promise = new Promise((resolve, reject) => {
                         function reset() { decompress.off('drain', doResolve); doResolve = null; doReject = null }
