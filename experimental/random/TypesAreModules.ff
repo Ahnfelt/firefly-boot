@@ -76,7 +76,7 @@ self.toString(): String {
     }
 
 
-// Traits are defined as
+// Traits are defined as follows. Note that modules may define a trait instead of a type.
 trait Order[T] {}
 
 instance Order[String] {}
