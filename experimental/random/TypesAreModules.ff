@@ -1,0 +1,82 @@
+// Set.ff only contains the Set type
+
+newtype Set[T](map: Map[T, Unit])
+
+empty[T](): Set[T] {
+    Set(Map.empty())
+}
+
+self.add(value: T): Set[T] @Order[T] { Set(self.map.add(value, Unit)) }
+self.addAll(that: Set[T]): Set[T] @Order[T] { Set(self.map.addAll(that.map)) }
+self.remove(value: T): Set[T] @Order[T] { Set(self.map.remove(value)) }
+self.removeAll(that: Set[T]): Set[T] @Order[T] { Set(self.map.removeAll(that.map)) }
+self.contains(value: T): Bool @Order[T] { self.map.contains(value) }
+self.size(): Int @Order[T] { self.map.size() }
+self.toList(): List[T] @Order[T] { self.map.pairs().map { _.first } }
+self.each(body: T => Unit): Unit @Order[T] { self.map.each {| k, _ => body(k)} }
+self.flatten[T](): Set[T] @[Set[T]] @Order[T] { todo() }
+self.join(separator: String): String @[String] @Order[T] { todo() }
+
+
+
+// Term.ff only contains the Term type
+
+type Term(at: Location) {
+    EString(value: String)
+    EChar(value: String)
+    EInt(value: String)
+    EFloat(value: String)
+    EVariable(name: String)
+    ELambda(lambda: Lambda)
+    EFunctions(functions: List[DFunction], body: Term)
+    ELet(mutable: Bool, name: String, valueType: Type, value: Term, body: Term)
+    ESequential(before: Term, after: Term)
+    EAssign(operator: String, variable: String, value: Term)
+    EAssignField(operator: String, record: Term, field: String, value: Term)
+    EPipe(value: Term, function: Term)
+    ECall(
+        target: CallTarget
+        effect: Type
+        typeArguments: List[Type]
+        arguments: List[Argument]
+        dictionaries: List[Dictionary]
+    )
+    EList(elementType: Type, items: List[Pair[Term, Bool]])
+    ECopy(name: String, record: Term, arguments: List[Field])
+    EVariant(name: String, typeArguments: List[Type], arguments: Option[List[Argument]])
+    EVariantIs(name: String, typeArguments: List[Type])
+    ERecord(fields: List[Field])
+    EField(newtype: Bool, record: Term, field: String)
+    EWildcard(index: Int)
+}
+
+self.toString(): String {
+    self.{
+        | string(v) => v
+        | char(c) => ...
+    }
+}
+
+
+// Bool.ff only contains the Bool type
+
+type Bool {
+    False
+    True
+}
+
+self.toString(): String {
+    self.{
+        | False => "false"
+        | True => "true"
+    }
+}
+
+    // False/True is resolved by expected type - or written in full as Bool.True/Bool.False
+    file.open(read: Bool = True, write: Bool = False): Bool {
+        ...
+    }
+
+
+// Imports import one type and all its constructors. The type can be renamed with as. Nothing else can be unqualified.
+import ff.core.Bool as B
