@@ -16,6 +16,8 @@ import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
+import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
@@ -59,9 +61,6 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type FileSystem
-
-
-// type FileHandle
 
 
 
@@ -354,61 +353,6 @@ export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
 export async function FileSystem_open$(self_, file_, flags_, $c) {
 
             return await fsPromises.open(file, flags)
-        
-}
-
-export function FileHandle_close(self_) {
-ff_core_Core.panic_("magic")
-}
-
-export function FileHandle_read(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
-ff_core_Core.panic_("magic")
-}
-
-export function FileHandle_write(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
-ff_core_Core.panic_("magic")
-}
-
-export function FileHandle_writeText(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8") {
-ff_core_Core.panic_("magic")
-}
-
-export function FileHandle_sync(self_, dataOnly_ = false) {
-ff_core_Core.panic_("magic")
-}
-
-export async function FileHandle_close$(self_, $c) {
-
-            await self_.close()
-        
-}
-
-export async function FileHandle_read$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
-
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            await self_.read(buffer, {offset: offset_, length: length.value_, position: position.value_})
-        
-}
-
-export async function FileHandle_write$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
-
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            await self_.write(buffer, offset_, length.value_, position.value_)
-        
-}
-
-export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $c) {
-
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            await self_.write(text, position.value_, encoding_)
-        
-}
-
-export async function FileHandle_sync$(self_, dataOnly_ = false, $c) {
-
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            if(dataOnly_) await self_.datasync()
-            else await self_.sync()
         
 }
 

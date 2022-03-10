@@ -50,6 +50,7 @@ coreImports: List[DImport] =
         "Core",
         "Duration",
         "Error",
+        "FileHandle",
         "FileSystem",
         "Float",
         "Instant",

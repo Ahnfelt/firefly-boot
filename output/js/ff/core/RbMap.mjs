@@ -18,6 +18,8 @@ import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
+import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
+
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
