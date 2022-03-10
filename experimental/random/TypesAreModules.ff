@@ -17,8 +17,6 @@ self.each(body: T => Unit): Unit @Order[T] { self.map.each {| k, _ => body(k)} }
 self.flatten[T](): Set[T] @[Set[T]] @Order[T] { todo() }
 self.join(separator: String): String @[String] @Order[T] { todo() }
 
-
-
 // Term.ff only contains the Term type
 
 type Term(at: Location) {
@@ -77,6 +75,13 @@ self.toString(): String {
         ...
     }
 
+
+// Traits are defined as
+trait Order[T] {}
+
+instance Order[String] {}
+
+instance Order[List[T]] @Order[T] {}
 
 // Imports import one type and all its constructors. The type can be renamed with as. Nothing else can be unqualified.
 import ff.core.Bool as B
