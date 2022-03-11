@@ -9,9 +9,9 @@ main(system: System): Unit {
 
     /*
     system.tasks().scope { scope =>
-        HttpServer.listen(system, "localhost", 8080, { request, response =>
+        HttpServer.listen(system, "localhost", 8080) { request, response =>
             response.writeText("Hi!")
-        })
+        }
     }
     */
 
