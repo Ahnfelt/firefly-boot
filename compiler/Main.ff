@@ -7,6 +7,14 @@ import Unification
 
 main(system: System): Unit {
 
+    /*
+    system.tasks().scope { scope =>
+        HttpServer.listen(system, "localhost", 8080, { request, response =>
+            response.writeText("Hi!")
+        })
+    }
+    */
+
     let mainPackage = system.arguments().expect(0)
     let mainModule = system.arguments().expect(1)
     let packagePaths = parsePackageLocations(system.arguments().expect(2))
