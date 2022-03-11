@@ -148,3 +148,17 @@ extend self[A]: Stream[A] {
     }
 
 }
+
+extend self: Stream[Buffer] {
+
+    toBuffer(): Buffer {
+        let builder = ArrayBuilder.empty()
+        self.each(builder.add)
+        Buffer.fromBufferArray(builder.toArray())
+    }
+
+    toString(encoding: String = "utf8"): String {
+        self.toBuffer().toString(encoding)
+    }
+
+}

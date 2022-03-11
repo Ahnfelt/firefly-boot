@@ -1,0 +1,169 @@
+type HttpRequest! {}
+type HttpResponse! {}
+type Url {}
+
+jsImportHack(): Nothing { panic("magic") }
+    javascriptasync "#function jsImportHack() {} import * as http from 'http'"
+
+listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit { panic("magic") }
+    javascriptasync """
+        if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+        const server = http.createServer(async (req, res) => {
+            try {
+                await ff_core_TaskSystem.TaskSystem_scope$(async (scope, $c) => {
+                    await handler_(req, res, $c)
+                }, false, $c)
+                if(!res.headersSent) res.writeHead(200, 'OK')
+            } finally {
+                if(!res.headersSent) res.writeHead(500, 'Internal Server Error')
+                if(!res.writableEnded) res.end()
+            }
+        })
+        await new Promise((resolve, reject) => {
+            server.listen(port_, host_, error => {if(error != null) reject(error); else resolve()})
+        })
+        await new Promise((resolve, reject) => {
+            const abort = () => {
+                $c.signal.removeEventListener('abort', abort)
+                server.close(() => reject(new Error("Cancelled", {cause: $c.reasonWorkaround})))
+            }
+            $c.signal.addEventListener('abort', abort)
+        })
+    """
+
+
+extend self: Url {
+
+    hash(): String { panic("magic") }
+        javascript "return self_.hash"
+
+    host(): String { panic("magic") }
+        javascript "return self_.hostname"
+
+    origin(): String { panic("magic") }
+        javascript "return self_.origin"
+
+    password(): String { panic("magic") }
+        javascript "return self_.password"
+
+    path(): String { panic("magic") }
+        javascript "return self_.pathname"
+
+    port(): String { panic("magic") }
+        javascript "return self_.port"
+
+    protocol(): String { panic("magic") }
+        javascript "return self_.protocol.replace(':', '')"
+
+    search(): String { panic("magic") }
+        javascript "return self_.search"
+
+    username(): String { panic("magic") }
+        javascript "return self_.username"
+
+    toString(): String { panic("magic") }
+        javascript "return self_.href"
+
+}
+
+extend self: HttpRequest {
+
+    url(): Url { panic("magic") }
+        javascriptasync """
+            return new URL(self_.url, `http://${self_.headers.host}`)
+        """
+
+    method(): String { panic("magic") }
+        javascriptasync """
+            return self_.method
+        """
+
+    header(name: String): String { panic("magic") }
+        javascriptasync """
+            return self_.headers[name_.toLowerCase()]
+        """
+
+    bodyStream(): Stream[Buffer] { panic("magic") }
+        javascriptasync """
+            return $c => {
+                if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+                if(self_.streamWorkaround != null) throw new Error("Can't open HttpRequest body stream twice")
+                self_.streamWorkaround = true
+                const readable = self_
+                let doResolve = null
+                let doReject = null
+                let seenError = null
+                readable.on('readable', () => {
+                    if(doResolve != null) doResolve()
+                })
+                readable.on('error', error => {
+                    seenError = error
+                    if(doReject != null) doReject(error)
+                })
+                readable.on('close', () => {
+                    if(doResolve != null) doResolve()
+                })
+                const abort = () => {
+                    $c.signal.removeEventListener('abort', abort)
+                    readable.close()
+                }
+                $c.signal.addEventListener('abort', abort)
+                return ff_core_Iterator.Iterator(async function go($c) {
+                    let buffer = readable.read()
+                    if(buffer != null) return ff_core_Option.Some(buffer)
+                    if(seenError != null) throw seenError
+                    if(readable.destroyed) return ff_core_Option.None()
+                    let promise = new Promise((resolve, reject) => {
+                        doResolve = () => {doResolve = null; doReject = null; resolve()}
+                        doReject = error => {doResolve = null; doReject = null; reject(error)}
+                    }).then(() => go($c))
+                    return await promise
+                }, abort)
+            }
+        """
+
+}
+
+extend self: HttpResponse {
+
+    setHeader(name: String, values: List[String]): Unit { panic("magic") }
+        javascriptasync "self_.setHeader(name_, ff_core_List.List_toArray(values_))"
+
+    writeStatus(code: Int, message: Option[String]): Unit { panic("magic") }
+        javascriptasync "self_.writeHead(code_, message_.value_)"
+
+    write(buffer: Buffer): Unit { panic("magic") }
+        javascriptasync """
+            if(!self_.write(buffer_, encoding_)) {
+                const abort = () => {
+                    $c.signal.addEventListener('abort', abort())
+                    reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))
+                }
+                await new Promise((resolve, reject) => {
+                    $c.signal.addEventListener('abort', abort)
+                    writeable.once('drain', () => {
+                        $c.signal.removeEventListener('abort', abort)
+                        resolve()
+                    })
+                })
+            }
+        """
+
+    writeText(text: String, encoding: String = "utf8"): Unit { panic("magic") }
+        javascriptasync """
+            if(!self_.write(text_, encoding_)) {
+                const abort = () => {
+                    $c.signal.addEventListener('abort', abort())
+                    reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))
+                }
+                await new Promise((resolve, reject) => {
+                    $c.signal.addEventListener('abort', abort)
+                    writeable.once('drain', () => {
+                        $c.signal.removeEventListener('abort', abort)
+                        resolve()
+                    })
+                })
+            }
+        """
+
+}

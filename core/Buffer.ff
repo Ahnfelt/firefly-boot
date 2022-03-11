@@ -17,7 +17,15 @@ extend self: Buffer {
             self_[index_] = byte_
         """
 
+    toString(encoding: String = "utf8"): String { panic("magic") }
+        javascript """
+            return self_.toString(encoding_)
+        """
+
 }
 
 make(size: Int): Buffer { panic("magic") }
     javascript "return Buffer.alloc(size_)"
+
+fromBufferArray(array: Array[Buffer]): Buffer { panic("magic") }
+    javascript "return Buffer.concat(array_)"

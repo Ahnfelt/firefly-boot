@@ -22,6 +22,8 @@ import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
+import * as ff_core_HttpServer from "../../ff/core/HttpServer.mjs"
+
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
@@ -606,6 +608,30 @@ return (await go_$($c))
 }), $c)), (async ($c) => {
 (await a_.close_($c))
 }), $c)))
+}
+
+export function Stream_toBuffer(self_) {
+const builder_ = ff_core_ArrayBuilder.empty_();
+ff_core_Stream.Stream_each(self_, ((value_) => {
+ff_core_ArrayBuilder.ArrayBuilder_add(builder_, value_)
+}));
+return ff_core_Buffer.fromBufferArray_(ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_))
+}
+
+export function Stream_toString(self_, encoding_ = "utf8") {
+return ff_core_Buffer.Buffer_toString(ff_core_Stream.Stream_toBuffer(self_), encoding_)
+}
+
+export async function Stream_toBuffer$(self_, $c) {
+const builder_ = ff_core_ArrayBuilder.empty_();
+(await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
+ff_core_ArrayBuilder.ArrayBuilder_add(builder_, value_)
+}), $c));
+return ff_core_Buffer.fromBufferArray_(ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_))
+}
+
+export async function Stream_toString$(self_, encoding_ = "utf8", $c) {
+return ff_core_Buffer.Buffer_toString((await ff_core_Stream.Stream_toBuffer$(self_, $c)), encoding_)
 }
 
 

@@ -62,65 +62,68 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Buffer
+// type FileHandle
 
 
 
 
-export function make_(size_) {
-return Buffer.alloc(size_)
-}
 
-export function fromBufferArray_(array_) {
-return Buffer.concat(array_)
-}
 
-export async function make_$(size_, $c) {
-return ff_core_Core.panic_("magic")
-}
 
-export async function fromBufferArray_$(array_, $c) {
-return ff_core_Core.panic_("magic")
-}
 
-export function Buffer_size(self_) {
-return self_.length
-}
-
-export function Buffer_expect(self_, index_) {
-
-            if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
-            return self_[index_]
-        
-}
-
-export function Buffer_set(self_, index_, byte_) {
-
-            if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
-            self_[index_] = byte_
-        
-}
-
-export function Buffer_toString(self_, encoding_ = "utf8") {
-
-            return self_.toString(encoding_)
-        
-}
-
-export async function Buffer_size$(self_, $c) {
-return ff_core_Core.panic_("magic")
-}
-
-export async function Buffer_expect$(self_, index_, $c) {
-return ff_core_Core.panic_("magic")
-}
-
-export async function Buffer_set$(self_, index_, byte_, $c) {
+export function FileHandle_close(self_) {
 ff_core_Core.panic_("magic")
 }
 
-export async function Buffer_toString$(self_, encoding_ = "utf8", $c) {
-return ff_core_Core.panic_("magic")
+export function FileHandle_read(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
+ff_core_Core.panic_("magic")
+}
+
+export function FileHandle_write(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
+ff_core_Core.panic_("magic")
+}
+
+export function FileHandle_writeText(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8") {
+ff_core_Core.panic_("magic")
+}
+
+export function FileHandle_sync(self_, dataOnly_ = false) {
+ff_core_Core.panic_("magic")
+}
+
+export async function FileHandle_close$(self_, $c) {
+
+            await self_.close()
+        
+}
+
+export async function FileHandle_read$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
+
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            await self_.read(buffer, {offset: offset_, length: length.value_, position: position.value_})
+        
+}
+
+export async function FileHandle_write$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
+
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            await self_.write(buffer, offset_, length.value_, position.value_)
+        
+}
+
+export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $c) {
+
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            await self_.write(text, position.value_, encoding_)
+        
+}
+
+export async function FileHandle_sync$(self_, dataOnly_ = false, $c) {
+
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            if(dataOnly_) await self_.datasync()
+            else await self_.sync()
+        
 }
 
 

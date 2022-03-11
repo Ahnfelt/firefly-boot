@@ -53,6 +53,7 @@ coreImports: List[DImport] =
         "FileHandle",
         "FileSystem",
         "Float",
+        "HttpServer",
         "Instant",
         "Int",
         "Iterator",
