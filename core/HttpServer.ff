@@ -78,9 +78,11 @@ extend self: HttpRequest {
             return self_.method
         """
 
-    header(name: String): String { panic("magic") }
+    header(name: String): Option[String] { panic("magic") }
         javascriptasync """
-            return self_.headers[name_.toLowerCase()]
+            let header = self_.headers[name_.toLowerCase()]
+            if(header == null || header.length == 0) ff_core_Option.None()
+            return ff_core_Option.Some(Array.isArray(header) ? header[0] : header)
         """
 
     bodyStream(): Stream[Buffer] { panic("magic") }

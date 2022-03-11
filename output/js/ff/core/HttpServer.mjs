@@ -220,7 +220,9 @@ export async function HttpRequest_method$(self_, $c) {
 
 export async function HttpRequest_header$(self_, name_, $c) {
 
-            return self_.headers[name_.toLowerCase()]
+            let header = self_.headers[name_.toLowerCase()]
+            if(header == null || header.length == 0) ff_core_Option.None()
+            return ff_core_Option.Some(Array.isArray(header) ? header[0] : header)
         
 }
 
