@@ -202,6 +202,18 @@ export function HttpRequest_header(self_, name_) {
 return ff_core_Core.panic_("magic")
 }
 
+export function HttpRequest_encoding(self_) {
+return ff_core_Core.panic_("magic")
+}
+
+export function HttpRequest_bodyText(self_, encoding_ = ff_core_Option.None()) {
+return ff_core_Stream.Stream_toString(ff_core_HttpServer.HttpRequest_bodyStream(self_), ff_core_Option.Option_else(encoding_, (() => {
+return ff_core_Option.Option_else(ff_core_HttpServer.HttpRequest_encoding(self_), (() => {
+return "utf8"
+}))
+})))
+}
+
 export function HttpRequest_bodyStream(self_) {
 return ff_core_Core.panic_("magic")
 }
@@ -226,6 +238,20 @@ export async function HttpRequest_header$(self_, name_, $c) {
         
 }
 
+export async function HttpRequest_encoding$(self_, $c) {
+
+            return self_.readableEncoding ? ff_core_Option.Some(self_.readableEncoding) : ff_core_Option.None()
+        
+}
+
+export async function HttpRequest_bodyText$(self_, encoding_ = ff_core_Option.None(), $c) {
+return (await ff_core_Stream.Stream_toString$((await ff_core_HttpServer.HttpRequest_bodyStream$(self_, $c)), (await ff_core_Option.Option_else$(encoding_, (async ($c) => {
+return ff_core_Option.Option_else((await ff_core_HttpServer.HttpRequest_encoding$(self_, $c)), (() => {
+return "utf8"
+}))
+}), $c)), $c))
+}
+
 export async function HttpRequest_bodyStream$(self_, $c) {
 
             return $c => {
@@ -248,7 +274,7 @@ export async function HttpRequest_bodyStream$(self_, $c) {
                 })
                 const abort = () => {
                     $c.signal.removeEventListener('abort', abort)
-                    readable.close()
+                    readable.destroy()
                 }
                 $c.signal.addEventListener('abort', abort)
                 return ff_core_Iterator.Iterator(async function go($c) {

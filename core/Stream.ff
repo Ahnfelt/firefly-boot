@@ -147,13 +147,13 @@ extend self[A]: Stream[A] {
         } expect()
     }
 
-    toArray(): Array[T] {
+    toArray(): Array[A] {
         let builder = ArrayBuilder.empty()
         self.each(builder.add)
         builder.toArray()
     }
 
-    toList(): List[T] {
+    toList(): List[A] {
         self.toArray().toList()
     }
 

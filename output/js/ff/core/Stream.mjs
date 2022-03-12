@@ -340,6 +340,18 @@ a_.close_()
 })))
 }
 
+export function Stream_toArray(self_) {
+const builder_ = ff_core_ArrayBuilder.empty_();
+ff_core_Stream.Stream_each(self_, ((value_) => {
+ff_core_ArrayBuilder.ArrayBuilder_add(builder_, value_)
+}));
+return ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_)
+}
+
+export function Stream_toList(self_) {
+return ff_core_Array.Array_toList(ff_core_Stream.Stream_toArray(self_))
+}
+
 export async function Stream_map$(self_, body_, $c) {
 return (async ($c) => {
 const a_ = (await self_($c));
@@ -608,6 +620,18 @@ return (await go_$($c))
 }), $c)), (async ($c) => {
 (await a_.close_($c))
 }), $c)))
+}
+
+export async function Stream_toArray$(self_, $c) {
+const builder_ = ff_core_ArrayBuilder.empty_();
+(await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
+ff_core_ArrayBuilder.ArrayBuilder_add(builder_, value_)
+}), $c));
+return ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_)
+}
+
+export async function Stream_toList$(self_, $c) {
+return ff_core_Array.Array_toList((await ff_core_Stream.Stream_toArray$(self_, $c)))
 }
 
 export function Stream_toBuffer(self_) {

@@ -85,8 +85,13 @@ extend self: HttpRequest {
             return ff_core_Option.Some(Array.isArray(header) ? header[0] : header)
         """
 
+    encoding(): Option[String] { panic("magic") }
+        javascriptasync """
+            return self_.readableEncoding ? ff_core_Option.Some(self_.readableEncoding) : ff_core_Option.None()
+        """
+
     bodyText(encoding: Option[String] = None): String {
-        bodyStream().toString(encoding.getOrElse("utf8"))
+        self.bodyStream().toString(encoding.else {self.encoding().else {"utf8"}})
     }
 
     bodyStream(): Stream[Buffer] { panic("magic") }
@@ -111,7 +116,7 @@ extend self: HttpRequest {
                 })
                 const abort = () => {
                     $c.signal.removeEventListener('abort', abort)
-                    readable.close()
+                    readable.destroy()
                 }
                 $c.signal.addEventListener('abort', abort)
                 return ff_core_Iterator.Iterator(async function go($c) {
