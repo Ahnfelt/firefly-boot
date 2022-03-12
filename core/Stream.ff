@@ -147,6 +147,16 @@ extend self[A]: Stream[A] {
         } expect()
     }
 
+    toArray(): Array[T] {
+        let builder = ArrayBuilder.empty()
+        self.each(builder.add)
+        builder.toArray()
+    }
+
+    toList(): List[T] {
+        self.toArray().toList()
+    }
+
 }
 
 extend self: Stream[Buffer] {

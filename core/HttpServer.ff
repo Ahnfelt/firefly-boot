@@ -85,6 +85,10 @@ extend self: HttpRequest {
             return ff_core_Option.Some(Array.isArray(header) ? header[0] : header)
         """
 
+    bodyText(encoding: Option[String] = None): String {
+        bodyStream().toString(encoding.getOrElse("utf8"))
+    }
+
     bodyStream(): Stream[Buffer] { panic("magic") }
         javascriptasync """
             return $c => {
