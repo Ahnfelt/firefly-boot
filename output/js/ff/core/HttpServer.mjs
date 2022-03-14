@@ -206,15 +206,15 @@ export function HttpRequest_encoding(self_) {
 return ff_core_Core.panic_("magic")
 }
 
-export function HttpRequest_bodyText(self_, encoding_ = ff_core_Option.None()) {
-return ff_core_Stream.Stream_toString(ff_core_HttpServer.HttpRequest_bodyStream(self_), ff_core_Option.Option_else(encoding_, (() => {
+export function HttpRequest_readText(self_, encoding_ = ff_core_Option.None()) {
+return ff_core_Stream.Stream_toString(ff_core_HttpServer.HttpRequest_readStream(self_), ff_core_Option.Option_else(encoding_, (() => {
 return ff_core_Option.Option_else(ff_core_HttpServer.HttpRequest_encoding(self_), (() => {
 return "utf8"
 }))
 })))
 }
 
-export function HttpRequest_bodyStream(self_) {
+export function HttpRequest_readStream(self_) {
 return ff_core_Core.panic_("magic")
 }
 
@@ -244,15 +244,15 @@ export async function HttpRequest_encoding$(self_, $c) {
         
 }
 
-export async function HttpRequest_bodyText$(self_, encoding_ = ff_core_Option.None(), $c) {
-return (await ff_core_Stream.Stream_toString$((await ff_core_HttpServer.HttpRequest_bodyStream$(self_, $c)), (await ff_core_Option.Option_else$(encoding_, (async ($c) => {
+export async function HttpRequest_readText$(self_, encoding_ = ff_core_Option.None(), $c) {
+return (await ff_core_Stream.Stream_toString$((await ff_core_HttpServer.HttpRequest_readStream$(self_, $c)), (await ff_core_Option.Option_else$(encoding_, (async ($c) => {
 return ff_core_Option.Option_else((await ff_core_HttpServer.HttpRequest_encoding$(self_, $c)), (() => {
 return "utf8"
 }))
 }), $c)), $c))
 }
 
-export async function HttpRequest_bodyStream$(self_, $c) {
+export async function HttpRequest_readStream$(self_, $c) {
 
             return $c => {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})

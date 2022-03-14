@@ -9,7 +9,7 @@ main(system: System): Unit {
 
     /*
     HttpServer.listen(system, "localhost", 8080) { request, response =>
-        Log.debug(request.bodyText())
+        Log.debug(request.readText())
         response.writeText("Hi!")
     }
     */

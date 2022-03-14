@@ -90,11 +90,11 @@ extend self: HttpRequest {
             return self_.readableEncoding ? ff_core_Option.Some(self_.readableEncoding) : ff_core_Option.None()
         """
 
-    bodyText(encoding: Option[String] = None): String {
-        self.bodyStream().toString(encoding.else {self.encoding().else {"utf8"}})
+    readText(encoding: Option[String] = None): String {
+        self.readStream().toString(encoding.else {self.encoding().else {"utf8"}})
     }
 
-    bodyStream(): Stream[Buffer] { panic("magic") }
+    readStream(): Stream[Buffer] { panic("magic") }
         javascriptasync """
             return $c => {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
