@@ -56,9 +56,7 @@ happyEyeballs(
             } { error =>
                 countdown.remaining -= 1
                 if(countdown.remaining == 0) {
-                    Try.catch {
-                        channel.write(None)
-                    } { error => }
+                    channel.write(None)
                 }
                 next()
             }
