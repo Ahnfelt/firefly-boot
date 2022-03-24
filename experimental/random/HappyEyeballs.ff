@@ -7,7 +7,7 @@ main(system: System): Unit {
     let taskSystem = system.tasks()
     let channel = taskSystem.channel()
     let ips = [
-        Ip("1.1.1.1", Duration(1.7), True)
+        Ip("1.1.1.1", Duration(1.7), False)
         Ip("2.2.2.2", Duration(0.4), False)
         Ip("3.3.3.3", Duration(1.5), True)
         Ip("4.4.4.4", Duration(0.6), True)
@@ -41,13 +41,13 @@ happyEyeballs(
                     happyEyeballs(channel, taskSystem, scope, countdown, otherIps)
                 }
             }
-            Try.catch {
-                scope.spawn {
-                    Try.catch {
-                        taskSystem.sleep(Duration(0.5))
-                    } { error => }
+            scope.spawn {
+                Try.catch {
+                    taskSystem.sleep(Duration(0.5))
                     next()
-                }
+                } { error => }
+            }
+            Try.catch {
                 taskSystem.sleep(ip.seconds)
                 if(!ip.succeed) {
                     panic("Network error")
