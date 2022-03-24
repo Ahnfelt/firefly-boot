@@ -72,9 +72,57 @@ return {Failure: true, error_};
 
 
 
+export function catch_(body_, catchBody_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return body_()
+})), ((error_) => {
+return catchBody_(error_)
+})))
+}
 
+export function finallyCatch_(body_, finallyBody_, catchBody_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_catchAny(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return body_()
+})), (() => {
+finallyBody_()
+})), ((error_) => {
+return catchBody_(error_)
+})))
+}
 
+export function finally_(body_, finallyBody_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return body_()
+})), (() => {
+finallyBody_()
+})))
+}
 
+export async function catch_$(body_, catchBody_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($c) => {
+return (await body_($c))
+}), $c)), (async (error_, $c) => {
+return (await catchBody_(error_, $c))
+}), $c)))
+}
+
+export async function finallyCatch_$(body_, finallyBody_, catchBody_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_catchAny$((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await body_($c))
+}), $c)), (async ($c) => {
+(await finallyBody_($c))
+}), $c)), (async (error_, $c) => {
+return (await catchBody_(error_, $c))
+}), $c)))
+}
+
+export async function finally_$(body_, finallyBody_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await body_($c))
+}), $c)), (async ($c) => {
+(await finallyBody_($c))
+}), $c)))
+}
 
 export function Try_map(self_, body_) {
 {

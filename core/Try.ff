@@ -3,6 +3,36 @@ type Try[T] {
     Failure(error: Error)
 }
 
+make[T](body: () => T): Try[T] {
+    try(body)
+}
+
+catch[T](body: () => T, catchBody: Error => T): T {
+    try {
+        body()
+    } catchAny { error =>
+        catchBody(error)
+    } expect()
+}
+
+finallyCatch[T](body: () => T, finallyBody: () => Unit, catchBody: Error => T): T {
+    try {
+        body()
+    } finally {
+        finallyBody()
+    } catchAny { error =>
+        catchBody(error)
+    } expect()
+}
+
+finally[T](body: () => T, finallyBody: () => Unit): T {
+    try {
+        body()
+    } finally {
+        finallyBody()
+    } expect()
+}
+
 extend self[T]: Try[T] {
 
     map[S](body: T => S): Try[S] {

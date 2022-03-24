@@ -1,0 +1,66 @@
+// https://datatracker.ietf.org/doc/html/rfc8305#section-5
+
+type Ip(ipAddress: String, seconds: Duration, succeed: Bool)
+type Countdown(mutable remaining: Int)
+
+main(system: System): Unit {
+    let taskSystem = system.tasks()
+    let channel = taskSystem.channel()
+    let ips = [
+        Ip("1.1.1.1", Duration(1.7), True)
+        Ip("2.2.2.2", Duration(0.4), False)
+        Ip("3.3.3.3", Duration(1.5), True)
+        Ip("4.4.4.4", Duration(0.6), True)
+    ]
+    let countdown = Countdown(ips.size())
+    taskSystem.scope { scope =>
+        scope.spawn {
+            happyEyeballs(channel, taskSystem, scope, countdown, ips)
+        }
+        let winner = Channel.
+            readOr(channel, {_}).
+            timeout(Duration(5.0), {None})
+        Log.debug(winner)
+    }
+}
+
+happyEyeballs(
+    channel: Channel[Option[String]],
+    taskSystem: TaskSystem,
+    scope: TaskScope,
+    countdown: Countdown,
+    ips: List[Ip]
+): Unit {
+    ips.{
+        | [] =>
+        | [ip, ...otherIps] =>
+            mutable startedNext = False
+            function next(): Unit {
+                if(!startedNext) {
+                    startedNext = True
+                    happyEyeballs(channel, taskSystem, scope, countdown, otherIps)
+                }
+            }
+            Try.catch {
+                scope.spawn {
+                    Try.catch {
+                        taskSystem.sleep(Duration(0.5))
+                    } { error => }
+                    next()
+                }
+                taskSystem.sleep(ip.seconds)
+                if(!ip.succeed) {
+                    panic("Network error")
+                }
+                channel.write(Some(ip.ipAddress))
+            } { error =>
+                countdown.remaining -= 1
+                if(countdown.remaining == 0) {
+                    Try.catch {
+                        channel.write(None)
+                    } { error => }
+                }
+                next()
+            }
+    }
+}

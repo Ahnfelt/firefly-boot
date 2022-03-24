@@ -318,14 +318,14 @@ self_.writeHead(code_, message_.value_)
 
 export async function HttpResponse_write$(self_, buffer_, $c) {
 
-            if(!self_.write(buffer_, encoding_)) {
+            if(!self_.write(buffer_)) {
                 const abort = () => {
                     $c.signal.addEventListener('abort', abort())
                     reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))
                 }
                 await new Promise((resolve, reject) => {
                     $c.signal.addEventListener('abort', abort)
-                    writeable.once('drain', () => {
+                    self_.once('drain', () => {
                         $c.signal.removeEventListener('abort', abort)
                         resolve()
                     })
@@ -343,7 +343,7 @@ export async function HttpResponse_writeText$(self_, text_, encoding_ = "utf8", 
                 }
                 await new Promise((resolve, reject) => {
                     $c.signal.addEventListener('abort', abort)
-                    writeable.once('drain', () => {
+                    self_.once('drain', () => {
                         $c.signal.removeEventListener('abort', abort)
                         resolve()
                     })
