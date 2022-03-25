@@ -9,36 +9,32 @@ main(system: System): Unit {
         Ip("3.3.3.3", Duration(1.5), True)
         Ip("4.4.4.4", Duration(0.6), True)
     ]
-    let channel = system.tasks().channel(capacity = 2)
-    channel.write(Unit)
-    channel.write(Unit)
-    let winner = happyEyeballs(channel, system.tasks(), ips)
+    let winner = happyEyeballs(system.tasks(), ips)
     Log.debug(winner)
 }
 
 happyEyeballs(
-    channel: Channel[Unit],
     taskSystem: TaskSystem,
     ips: List[Ip]
 ): String {
     let ip = ips.expectFirst()
-    let nextChannel = taskSystem.channel(capacity = 2)
+    let channel = taskSystem.channel(capacity = 2)
     taskSystem.race([
         {
-            channel.read()
-            Channel.readOr(channel, {_}).timeout(Duration(0.5), {})
-            nextChannel.write(Unit)
+            channel.write(Unit)
             Try.catch {
                 taskSystem.sleep(ip.seconds)
                 if(!ip.succeed) { panic("Network error") }
                 ip.ipAddress
             } { error =>
-                nextChannel.write(Unit)
+                channel.write(Unit)
                 error.rethrow()
             }
         }
         {
-            happyEyeballs(nextChannel, taskSystem, ips.dropFirst())
+            channel.read()
+            Channel.readOr(channel, {_}).timeout(Duration(0.5), {})
+            happyEyeballs(taskSystem, ips.dropFirst())
         }
     ])
 }
