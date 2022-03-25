@@ -13,10 +13,7 @@ main(system: System): Unit {
     Log.debug(winner)
 }
 
-happyEyeballs(
-    taskSystem: TaskSystem,
-    ips: List[Ip]
-): String {
+happyEyeballs(taskSystem: TaskSystem, ips: List[Ip]): String {
     let ip = ips.expectFirst()
     let channel = taskSystem.channel(capacity = 2)
     taskSystem.race([
