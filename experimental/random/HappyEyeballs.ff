@@ -1,64 +1,37 @@
 // https://datatracker.ietf.org/doc/html/rfc8305#section-5
 
 type Ip(ipAddress: String, seconds: Duration, succeed: Bool)
-type Countdown(mutable remaining: Int)
 
 main(system: System): Unit {
-    let taskSystem = system.tasks()
-    let channel = taskSystem.channel()
     let ips = [
         Ip("1.1.1.1", Duration(1.7), False)
         Ip("2.2.2.2", Duration(0.4), False)
         Ip("3.3.3.3", Duration(1.5), True)
         Ip("4.4.4.4", Duration(0.6), True)
     ]
-    let countdown = Countdown(ips.size())
-    taskSystem.scope { scope =>
-        scope.spawn {
-            happyEyeballs(channel, taskSystem, scope, countdown, ips)
-        }
-        let winner = Channel.
-            readOr(channel, {_}).
-            timeout(Duration(5.0), {None})
-        Log.debug(winner)
-    }
+    let winner = happyEyeballs(system.tasks(), ips)
+    Log.debug(winner)
 }
 
-happyEyeballs(
-    channel: Channel[Option[String]],
-    taskSystem: TaskSystem,
-    scope: TaskScope,
-    countdown: Countdown,
-    ips: List[Ip]
-): Unit {
-    ips.{
-        | [] =>
-        | [ip, ...otherIps] =>
-            mutable startedNext = False
-            function next(): Unit {
-                if(!startedNext) {
-                    startedNext = True
-                    happyEyeballs(channel, taskSystem, scope, countdown, otherIps)
-                }
-            }
-            scope.spawn {
-                Try.catch {
-                    taskSystem.sleep(Duration(0.5))
-                    next()
-                } { error => }
-            }
+happyEyeballs(taskSystem: TaskSystem, ips: List[Ip]): String {
+    let ip = ips.expectFirst()
+    let channel = taskSystem.channel(capacity = 2)
+    taskSystem.race([
+        {
+            channel.write(Unit)
             Try.catch {
                 taskSystem.sleep(ip.seconds)
-                if(!ip.succeed) {
-                    panic("Network error")
-                }
-                channel.write(Some(ip.ipAddress))
+                if(!ip.succeed) { panic("Network error") }
+                ip.ipAddress
             } { error =>
-                countdown.remaining -= 1
-                if(countdown.remaining == 0) {
-                    channel.write(None)
-                }
-                next()
+                channel.write(Unit)
+                error.rethrow()
             }
-    }
+        }
+        {
+            channel.read()
+            Channel.readOr(channel, {_}).timeout(Duration(0.5), {})
+            happyEyeballs(taskSystem, ips.dropFirst())
+        }
+    ])
 }
