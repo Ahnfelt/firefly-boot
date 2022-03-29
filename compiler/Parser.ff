@@ -154,23 +154,46 @@ extend self: Parser {
     }
 
     parseTargets(): Targets {
-        function parseTargetOption(target: String): Option[String] {
-            if(self.currentIsSeparator(LSemicolon) && self.ahead().is(LKeyword) && self.ahead().rawIs(target)) {
-                self.skip(LSeparator)
-                self.skip(LKeyword)
-                let result = self.skip(LString).raw()
-                let dropCount = if(result.startsWith("\"\"\"")) {3} else {1}
-                result.dropFirst(dropCount).dropLast(dropCount)
-                    .replace("\\\"", "\"")
-                    .replace("\\r", "\r")
-                    .replace("\\n", "\n")
-                    .replace("\\t", "\t")
-                    .replace("\\\\", "\\")
+        function processCode(code: String): String {
+            let dropCount = if(code.startsWith("\"\"\"")) {3} else {1}
+            code.dropFirst(dropCount).dropLast(dropCount)
+                .replace("\\\"", "\"")
+                .replace("\\r", "\r")
+                .replace("\\n", "\n")
+                .replace("\\t", "\t")
+                .replace("\\\\", "\\")
+        }
+        mutable targets = Targets(None, None, None, None, None, None)
+        while { self.currentIsSeparator(LSemicolon) && self.ahead().is(LKeyword) && self.ahead().rawIs("target") } {
+            self.skip(LSeparator)
+            let at = self.skip(LKeyword).at()
+            let target = self.skip(LKeyword).raw()
+            let mode = self.skip(LKeyword).raw()
+            let code = processCode(self.skip(LString).raw())
+            Pair(target, mode).{
+                | Pair("js", "sync") =>
+                    if(targets.jsSync != None) { self.fail(at, "Duplicate target definition") }
+                    targets = targets.Targets(jsSync = Some(code))
+                | Pair("js", "async") =>
+                    if(targets.jsAsync != None) { self.fail(at, "Duplicate target definition") }
+                    targets = targets.Targets(jsAsync = Some(code))
+                | Pair("browser", "sync") =>
+                    if(targets.browserSync != None) { self.fail(at, "Duplicate target definition") }
+                    targets = targets.Targets(browserSync = Some(code))
+                | Pair("browser", "async") =>
+                    if(targets.browserAsync != None) { self.fail(at, "Duplicate target definition") }
+                    targets = targets.Targets(browserAsync = Some(code))
+                | Pair("node", "sync") =>
+                    if(targets.nodeSync != None) { self.fail(at, "Duplicate target definition") }
+                    targets = targets.Targets(nodeSync = Some(code))
+                | Pair("node", "async") =>
+                    if(targets.nodeAsync != None) { self.fail(at, "Duplicate target definition") }
+                    targets = targets.Targets(nodeAsync = Some(code))
+                | Pair(_, _) =>
+                    self.fail(at, "Unknown target or mode")
             }
         }
-        let javaScript = parseTargetOption("javascript")
-        let javaScriptAsync = parseTargetOption("javascriptasync")
-        Targets(javaScript = javaScript, javaScriptAsync = javaScriptAsync)
+        targets
     }
 
     parseSignature(): Signature {
@@ -306,7 +329,7 @@ extend self: Parser {
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
         let variants = if(newtype || !self.current().rawIs("{")) {
-            [Variant(nameToken.at(), nameToken.raw(), [], Targets(None, None))]
+            [Variant(nameToken.at(), nameToken.raw(), [], Targets(None, None, None, None, None, None))]
         } else {
             self.rawSkip(LBracketLeft, "{")
             let variantsBuilder = ArrayBuilder.empty[Variant]()
@@ -705,7 +728,7 @@ extend self: Parser {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
             let body = self.parseLambda(defaultParameterCount = signature.parameters.size())
-            functions.add(DFunction(functionAt, signature, body, Targets(None, None)))
+            functions.add(DFunction(functionAt, signature, body, Targets(None, None, None, None, None, None)))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()

@@ -1,7 +1,7 @@
 type HashMap[K, V] {}
 
 empty() { panic("magic") }
-    javascript "return new Map()"
+    target js sync "return new Map()"
 
 extend self: HashMap[K, V] {
 

@@ -263,8 +263,8 @@ return {at_, name_, generics_};
 }
 
 // type Targets
-export function Targets(javaScript_, javaScriptAsync_) {
-return {javaScript_, javaScriptAsync_};
+export function Targets(jsSync_, jsAsync_, nodeSync_, nodeAsync_, browserSync_, browserAsync_) {
+return {jsSync_, jsAsync_, nodeSync_, nodeAsync_, browserSync_, browserAsync_};
 }
 
 // type Type

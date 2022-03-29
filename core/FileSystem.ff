@@ -3,50 +3,50 @@ type FileSystem! {}
 extend self: FileSystem {
 
     jsFileSystemHack(): Nothing { panic("magic") }
-        javascript "#function jsFileSystemHack() {} import * as fs from 'fs';"
-        javascriptasync "#function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path'; import * as zlib from 'zlib'"
+        target js sync "#function jsFileSystemHack() {} import * as fs from 'fs';"
+        target js async "#function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path'; import * as zlib from 'zlib'"
 
     readText(file: String): String { panic("magic") }
-        javascript "return fs.readFileSync(file_, {encoding: 'UTF-8'})"
-        javascriptasync "return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})"
+        target js sync "return fs.readFileSync(file_, {encoding: 'UTF-8'})"
+        target js async "return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})"
 
     writeText(file: String, text: String): Unit { panic("magic") }
-        javascript "fs.writeFileSync(file_, text_, {encoding: 'UTF-8'})"
-        javascriptasync "await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})"
+        target js sync "fs.writeFileSync(file_, text_, {encoding: 'UTF-8'})"
+        target js async "await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})"
 
     list(path: String): List[String] { panic("magic") }
-        javascript "return ff_core_Array.Array_toList(fs.readdirSync(path_).map(f => path_ + '/' + f))"
-        javascriptasync "return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))"
+        target js sync "return ff_core_Array.Array_toList(fs.readdirSync(path_).map(f => path_ + '/' + f))"
+        target js async "return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))"
 
     exists(path: String): Bool { panic("magic") }
-        javascript "return fs.existsSync(path_)"
-        javascriptasync "return await fsPromises.access(path_).then(() => true).catch(() => false)"
+        target js sync "return fs.existsSync(path_)"
+        target js async "return await fsPromises.access(path_).then(() => true).catch(() => false)"
 
     isDirectory(path: String): Bool { panic("magic") }
-        javascript "return fs.lstatSync(path_).isDirectory()"
-        javascriptasync "return (await fsPromises.lstat(path_)).isDirectory()"
+        target js sync "return fs.lstatSync(path_).isDirectory()"
+        target js async "return (await fsPromises.lstat(path_)).isDirectory()"
 
     createDirectory(path: String): Unit { panic("magic") }
-        javascript "fs.mkdirSync(path_)"
-        javascriptasync "await fsPromises.mkdir(path_)"
+        target js sync "fs.mkdirSync(path_)"
+        target js async "await fsPromises.mkdir(path_)"
 
     createDirectories(path: String): Unit { panic("magic") }
-        javascript "fs.mkdirSync(path_, {recursive: true})"
-        javascriptasync "await fsPromises.mkdir(path_, {recursive: true})"
+        target js sync "fs.mkdirSync(path_, {recursive: true})"
+        target js async "await fsPromises.mkdir(path_, {recursive: true})"
 
     delete(path: String): Unit { panic("magic") }
-        javascript "try { fs.rmdirSync(path_) } catch(_) { fs.rmSync(path_) }"
-        javascriptasync "try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }"
+        target js sync "try { fs.rmdirSync(path_) } catch(_) { fs.rmSync(path_) }"
+        target js async "try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }"
 
     rename(fromPath: String, toPath: String): Unit { panic("magic") }
-        javascript "fs.renameSync(fromPath_, toPath_)"
-        javascriptasync "await fsPromises.rename(fromPath_, toPath_)"
+        target js sync "fs.renameSync(fromPath_, toPath_)"
+        target js async "await fsPromises.rename(fromPath_, toPath_)"
 
     getAbsolutePath(path: String): String { panic("magic") }
-        javascript "return path.resolve(path_)"
+        target js sync "return path.resolve(path_)"
 
     readStream(file: String): Stream[Buffer] { panic("magic") }
-        javascriptasync """
+        target js async """
             return $c => {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
                 const readable = fs.createReadStream(file_)
@@ -83,7 +83,7 @@ extend self: FileSystem {
         """
 
     writeStream(file: String, stream: Stream[Buffer], createOnly: Bool = False): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             let writeable = fs.createWriteStream(file_, {flags: createOnly_ ? 'wx' : 'w'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
@@ -103,7 +103,7 @@ extend self: FileSystem {
         """
 
     appendStream(file: String, stream: Stream[Buffer]): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             let writeable = fs.createWriteStream(file_, {flags: 'a'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
@@ -123,7 +123,7 @@ extend self: FileSystem {
         """
 
     decompressGzipStream(stream: Stream[Buffer]): Stream[Buffer] { panic("magic") }
-        javascriptasync """
+        target js async """
             return async ($c) => {
                 const iterator = stream_($c)
                 let decompress = zlib.createGunzip()
@@ -167,7 +167,7 @@ extend self: FileSystem {
         """
 
     open(file: String, flags: String): FileHandle { panic("magic") }
-        javascriptasync """
+        target js async """
             return await fsPromises.open(file, flags)
         """
 

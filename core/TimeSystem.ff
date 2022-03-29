@@ -3,10 +3,10 @@ type TimeSystem {}
 extend self: TimeSystem {
 
     now(): Instant { panic("magic") }
-        javascript "return Date.now() * 0.001"
+        target js sync "return Date.now() * 0.001"
 
     elapsed(): Duration { panic("magic") }
-        javascript "return performance.now() * 0.001"
+        target js sync "return performance.now() * 0.001"
 
     measure[R](body: () => R): Pair[R, Duration] {
         let start = self.elapsed()

@@ -15,14 +15,14 @@ while(condition: () => Bool, body: () => Unit): Unit {
 }
 
 try[T](body: () => T): Try[T] { panic("magic") }
-    javascript """
+    target js sync """
         try {
             return {Success: true, value_: body_()}
         } catch(e) {
             return {Failure: true, error_: e}
         }
     """
-    javascriptasync """
+    target js async """
         try {
             return {Success: true, value_: await body_($c)}
         } catch(e) {
@@ -35,11 +35,11 @@ do[T](body: () => T): T {
 }
 
 throw[E, T](error: E): T { panic("magic") }
-    javascript "throw error_"
+    target js sync "throw error_"
 
 panic[T](message: String): T { panic("magic") }
-    javascript "throw new Error(message_)"
+    target js sync "throw new Error(message_)"
 
 magicShow[T](value: T): String { panic("magic") }
-    //javascript "return ('' + value_)"
-    javascript "return JSON.stringify(value_, undefined, 4)"
+    //target js sync "return ('' + value_)"
+    target js sync "return JSON.stringify(value_, undefined, 4)"

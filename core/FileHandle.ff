@@ -3,30 +3,30 @@ type FileHandle! {}
 extend self: FileHandle {
 
     close(): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             await self_.close()
         """
 
     read(buffer: Buffer, offset: Int = 0, length: Option[Int] = None, position: Option[Int] = None): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             await self_.read(buffer, {offset: offset_, length: length.value_, position: position.value_})
         """
 
     write(buffer: Buffer, offset: Int = 0, length: Option[Int] = None, position: Option[Int] = None): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             await self_.write(buffer, offset_, length.value_, position.value_)
         """
 
     writeText(text: String, position: Option[Int] = None, encoding: String = "utf8"): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             await self_.write(text, position.value_, encoding_)
         """
 
     sync(dataOnly: Bool = False): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             if(dataOnly_) await self_.datasync()
             else await self_.sync()

@@ -175,8 +175,12 @@ type Field(at: Location, name: String, value: Term)
 type Constraint(at: Location, name: String, generics: List[Type])
 
 type Targets(
-    javaScript: Option[String]
-    javaScriptAsync: Option[String]
+    jsSync: Option[String]
+    jsAsync: Option[String]
+    nodeSync: Option[String]
+    nodeAsync: Option[String]
+    browserSync: Option[String]
+    browserAsync: Option[String]
 )
 
 type Type(at: Location) {

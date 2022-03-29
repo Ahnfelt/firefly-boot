@@ -19,7 +19,7 @@ instance Int: Show {
 
 instance String: Show {
     show(value: String): String { panic("magic") }
-        javascript "return JSON.stringify(value_);"
+        target js sync "return JSON.stringify(value_);"
 }
 
 instance List[T: Show]: Show {

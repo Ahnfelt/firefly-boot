@@ -69,8 +69,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, tailCallUsed_) {
-return {otherModules_, tailCallUsed_};
+export function JsEmitter(otherModules_, targetIsNode_, tailCallUsed_) {
+return {otherModules_, targetIsNode_, tailCallUsed_};
 }
 
 // type ProcessedVariantCase
@@ -78,13 +78,13 @@ export function ProcessedVariantCase(variantName_, newtype_, loneVariant_, argum
 return {variantName_, newtype_, loneVariant_, arguments_};
 }
 
-
+export const emptyTargets_ = ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None());
 
 export function make_(otherModules_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), true, false)
 }
 
 export function fail_(at_, message_) {
@@ -323,7 +323,7 @@ export async function make_$(otherModules_, $c) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), true, false)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -558,6 +558,52 @@ return
 }
 }
 
+export function JsEmitter_bestTarget(self_, targets_, async_) {
+{
+const _1 = ff_core_Pair.Pair(self_.targetIsNode_, async_);
+{
+if(!_1.first_) {
+if(!_1.second_) {
+return ff_core_Option.Option_orElse(targets_.browserSync_, (() => {
+return targets_.jsSync_
+}))
+return
+}
+}
+}
+{
+if(!_1.first_) {
+if(_1.second_) {
+return ff_core_Option.Option_orElse(targets_.browserAsync_, (() => {
+return targets_.jsAsync_
+}))
+return
+}
+}
+}
+{
+if(_1.first_) {
+if(!_1.second_) {
+return ff_core_Option.Option_orElse(targets_.nodeSync_, (() => {
+return targets_.jsSync_
+}))
+return
+}
+}
+}
+{
+if(_1.first_) {
+if(_1.second_) {
+return ff_core_Option.Option_orElse(targets_.nodeAsync_, (() => {
+return targets_.jsAsync_
+}))
+return
+}
+}
+}
+}
+}
+
 export function JsEmitter_emitModule(self_, packagePair_, module_) {
 const selfImport_ = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
@@ -603,7 +649,7 @@ export function JsEmitter_emitLetDefinition(self_, definition_, mutable_, async_
 const mutability_ = (mutable_
 ? "let"
 : "const");
-const valueCode_ = ff_core_Option.Option_else(definition_.targets_.javaScript_, (() => {
+const valueCode_ = ff_core_Option.Option_else(ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, definition_.targets_, false), (() => {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_)
 }));
 return (((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + " = ") + valueCode_) + ";")
@@ -668,9 +714,7 @@ return
 
 export function JsEmitter_emitFunctionDefinition(self_, definition_, async_, suffix_ = "") {
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
-const target_ = (async_
-? definition_.targets_.javaScriptAsync_
-: definition_.targets_.javaScript_);
+const target_ = ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, definition_.targets_, async_);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(target_, ((code_) => {
 if(ff_core_String.String_startsWith(code_, "#", 0)) {
 return ff_core_String.String_dropFirst(code_, 1)
@@ -801,7 +845,7 @@ const allFields_ = ff_core_List.List_addAll(typeDefinition_.commonFields_, defin
 const fields_ = ff_core_List.List_join(ff_core_List.List_map(allFields_, ((_w1) => {
 return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
 })), ", ");
-return ff_core_Option.Option_else(definition_.targets_.javaScript_, (() => {
+return ff_core_Option.Option_else(ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, definition_.targets_, false), (() => {
 if(ff_core_List.List_isEmpty(allFields_)) {
 return ((((((((((((("const " + definition_.name_) + "$ = {") + definition_.name_) + ": true};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
 } else if((ff_core_List.List_size(typeDefinition_.variants_) == 1)) {
@@ -1312,7 +1356,7 @@ const functions_ = _1.functions_;
 const body_ = _1.body_;
 const functionStrings_ = ff_core_List.List_map(functions_, ((f_) => {
 const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(f_.signature_.effect_));
-return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), newAsync_, "")
+return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_JsEmitter.emptyTargets_), newAsync_, "")
 }));
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
 return
@@ -1326,7 +1370,7 @@ const name_ = _1.name_;
 const valueType_ = _1.valueType_;
 const value_ = _1.value_;
 const body_ = _1.body_;
-return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), mutable_, async_) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_JsEmitter.emptyTargets_), mutable_, async_) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
 return
 }
 }
@@ -1797,6 +1841,52 @@ export function JsEmitter_emitArgument(self_, argument_, async_) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
+export async function JsEmitter_bestTarget$(self_, targets_, async_, $c) {
+{
+const _1 = ff_core_Pair.Pair(self_.targetIsNode_, async_);
+{
+if(!_1.first_) {
+if(!_1.second_) {
+return ff_core_Option.Option_orElse(targets_.browserSync_, (() => {
+return targets_.jsSync_
+}))
+return
+}
+}
+}
+{
+if(!_1.first_) {
+if(_1.second_) {
+return ff_core_Option.Option_orElse(targets_.browserAsync_, (() => {
+return targets_.jsAsync_
+}))
+return
+}
+}
+}
+{
+if(_1.first_) {
+if(!_1.second_) {
+return ff_core_Option.Option_orElse(targets_.nodeSync_, (() => {
+return targets_.jsSync_
+}))
+return
+}
+}
+}
+{
+if(_1.first_) {
+if(_1.second_) {
+return ff_core_Option.Option_orElse(targets_.nodeAsync_, (() => {
+return targets_.jsAsync_
+}))
+return
+}
+}
+}
+}
+}
+
 export async function JsEmitter_emitModule$(self_, packagePair_, module_, $c) {
 const selfImport_ = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
@@ -1842,7 +1932,7 @@ export async function JsEmitter_emitLetDefinition$(self_, definition_, mutable_,
 const mutability_ = (mutable_
 ? "let"
 : "const");
-const valueCode_ = ff_core_Option.Option_else(definition_.targets_.javaScript_, (() => {
+const valueCode_ = ff_core_Option.Option_else(ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, definition_.targets_, false), (() => {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, definition_.value_, async_)
 }));
 return (((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition_.name_)) + " = ") + valueCode_) + ";")
@@ -1907,9 +1997,7 @@ return
 
 export async function JsEmitter_emitFunctionDefinition$(self_, definition_, async_, suffix_ = "", $c) {
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
-const target_ = (async_
-? definition_.targets_.javaScriptAsync_
-: definition_.targets_.javaScript_);
+const target_ = ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, definition_.targets_, async_);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(target_, ((code_) => {
 if(ff_core_String.String_startsWith(code_, "#", 0)) {
 return ff_core_String.String_dropFirst(code_, 1)
@@ -2040,7 +2128,7 @@ const allFields_ = ff_core_List.List_addAll(typeDefinition_.commonFields_, defin
 const fields_ = ff_core_List.List_join(ff_core_List.List_map(allFields_, ((_w1) => {
 return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
 })), ", ");
-return ff_core_Option.Option_else(definition_.targets_.javaScript_, (() => {
+return ff_core_Option.Option_else(ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, definition_.targets_, false), (() => {
 if(ff_core_List.List_isEmpty(allFields_)) {
 return ((((((((((((("const " + definition_.name_) + "$ = {") + definition_.name_) + ": true};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
 } else if((ff_core_List.List_size(typeDefinition_.variants_) == 1)) {
@@ -2551,7 +2639,7 @@ const functions_ = _1.functions_;
 const body_ = _1.body_;
 const functionStrings_ = ff_core_List.List_map(functions_, ((f_) => {
 const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(f_.signature_.effect_));
-return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), newAsync_, "")
+return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, ff_compiler_Syntax.DFunction(at_, f_.signature_, f_.body_, ff_compiler_JsEmitter.emptyTargets_), newAsync_, "")
 }));
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
 return
@@ -2565,7 +2653,7 @@ const name_ = _1.name_;
 const valueType_ = _1.valueType_;
 const value_ = _1.value_;
 const body_ = _1.body_;
-return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), mutable_, async_) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
+return ((ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, ff_compiler_Syntax.DLet(at_, name_, valueType_, value_, ff_compiler_JsEmitter.emptyTargets_), mutable_, async_) + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
 return
 }
 }

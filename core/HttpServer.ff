@@ -3,10 +3,10 @@ type HttpResponse! {}
 type Url {}
 
 jsImportHack(): Nothing { panic("magic") }
-    javascriptasync "#function jsImportHack() {} import * as http from 'http'"
+    target js async "#function jsImportHack() {} import * as http from 'http'"
 
 listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit { panic("magic") }
-    javascriptasync """
+    target js async """
         if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
         const server = http.createServer(async (req, res) => {
             try {
@@ -35,58 +35,58 @@ listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpRespo
 extend self: Url {
 
     hash(): String { panic("magic") }
-        javascript "return self_.hash"
+        target js sync "return self_.hash"
 
     host(): String { panic("magic") }
-        javascript "return self_.hostname"
+        target js sync "return self_.hostname"
 
     origin(): String { panic("magic") }
-        javascript "return self_.origin"
+        target js sync "return self_.origin"
 
     password(): String { panic("magic") }
-        javascript "return self_.password"
+        target js sync "return self_.password"
 
     path(): String { panic("magic") }
-        javascript "return self_.pathname"
+        target js sync "return self_.pathname"
 
     port(): String { panic("magic") }
-        javascript "return self_.port"
+        target js sync "return self_.port"
 
     protocol(): String { panic("magic") }
-        javascript "return self_.protocol.replace(':', '')"
+        target js sync "return self_.protocol.replace(':', '')"
 
     search(): String { panic("magic") }
-        javascript "return self_.search"
+        target js sync "return self_.search"
 
     username(): String { panic("magic") }
-        javascript "return self_.username"
+        target js sync "return self_.username"
 
     toString(): String { panic("magic") }
-        javascript "return self_.href"
+        target js sync "return self_.href"
 
 }
 
 extend self: HttpRequest {
 
     url(): Url { panic("magic") }
-        javascriptasync """
+        target js async """
             return new URL(self_.url, `http://${self_.headers.host}`)
         """
 
     method(): String { panic("magic") }
-        javascriptasync """
+        target js async """
             return self_.method
         """
 
     header(name: String): Option[String] { panic("magic") }
-        javascriptasync """
+        target js async """
             let header = self_.headers[name_.toLowerCase()]
             if(header == null || header.length == 0) ff_core_Option.None()
             return ff_core_Option.Some(Array.isArray(header) ? header[0] : header)
         """
 
     encoding(): Option[String] { panic("magic") }
-        javascriptasync """
+        target js async """
             return self_.readableEncoding ? ff_core_Option.Some(self_.readableEncoding) : ff_core_Option.None()
         """
 
@@ -95,7 +95,7 @@ extend self: HttpRequest {
     }
 
     readStream(): Stream[Buffer] { panic("magic") }
-        javascriptasync """
+        target js async """
             return $c => {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
                 if(self_.streamWorkaround != null) throw new Error("Can't open HttpRequest body stream twice")
@@ -138,13 +138,13 @@ extend self: HttpRequest {
 extend self: HttpResponse {
 
     setHeader(name: String, values: List[String]): Unit { panic("magic") }
-        javascriptasync "self_.setHeader(name_, ff_core_List.List_toArray(values_))"
+        target js async "self_.setHeader(name_, ff_core_List.List_toArray(values_))"
 
     writeStatus(code: Int, message: Option[String]): Unit { panic("magic") }
-        javascriptasync "self_.writeHead(code_, message_.value_)"
+        target js async "self_.writeHead(code_, message_.value_)"
 
     write(buffer: Buffer): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             if(!self_.write(buffer_)) {
                 const abort = () => {
                     $c.signal.addEventListener('abort', abort())
@@ -161,7 +161,7 @@ extend self: HttpResponse {
         """
 
     writeText(text: String, encoding: String = "utf8"): Unit { panic("magic") }
-        javascriptasync """
+        target js async """
             if(!self_.write(text_, encoding_)) {
                 const abort = () => {
                     $c.signal.addEventListener('abort', abort())

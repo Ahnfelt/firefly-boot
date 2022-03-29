@@ -215,22 +215,106 @@ return ff_compiler_Syntax.DFunction(signature_.at_, signature_, body_, targets_)
 }
 
 export function Parser_parseTargets(self_) {
-function parseTargetOption_(target_) {
-if(((ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LKeyword())) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_ahead(self_), target_))) {
-return ff_core_Option.Some((function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LSeparator());
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword());
-const result_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
-const dropCount_ = (ff_core_String.String_startsWith(result_, "\"\"\"", 0)
+function processCode_(code_) {
+const dropCount_ = (ff_core_String.String_startsWith(code_, "\"\"\"", 0)
 ? 3
 : 1);
-return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(result_, dropCount_), dropCount_), "\\\"", "\""), "\\r", "\r"), "\\n", "\n"), "\\t", "\t"), "\\\\", "\\")
-})())
-} else return ff_core_Option.None()
+return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(code_, dropCount_), dropCount_), "\\\"", "\""), "\\r", "\r"), "\\n", "\n"), "\\t", "\t"), "\\\\", "\\")
 }
-const javaScript_ = parseTargetOption_("javascript");
-const javaScriptAsync_ = parseTargetOption_("javascriptasync");
-return ff_compiler_Syntax.Targets(javaScript_, javaScriptAsync_)
+let targets_ = ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None());
+while(((ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LKeyword())) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_ahead(self_), "target"))) {
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LSeparator());
+const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const target_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const mode_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const code_ = processCode_(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString())));
+for(;;) {
+const _1 = ff_core_Pair.Pair(target_, mode_);
+{
+if(_1.first_ == "js") {
+if(_1.second_ == "sync") {
+if((targets_.jsSync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(ff_core_Option.Some(code_), _c.jsAsync_, _c.nodeSync_, _c.nodeAsync_, _c.browserSync_, _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "js") {
+if(_1.second_ == "async") {
+if((targets_.jsAsync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, ff_core_Option.Some(code_), _c.nodeSync_, _c.nodeAsync_, _c.browserSync_, _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "browser") {
+if(_1.second_ == "sync") {
+if((targets_.browserSync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, _c.jsAsync_, _c.nodeSync_, _c.nodeAsync_, ff_core_Option.Some(code_), _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "browser") {
+if(_1.second_ == "async") {
+if((targets_.browserAsync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, _c.jsAsync_, _c.nodeSync_, _c.nodeAsync_, _c.browserSync_, ff_core_Option.Some(code_))
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "node") {
+if(_1.second_ == "sync") {
+if((targets_.nodeSync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, _c.jsAsync_, ff_core_Option.Some(code_), _c.nodeAsync_, _c.browserSync_, _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "node") {
+if(_1.second_ == "async") {
+if((targets_.nodeAsync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, _c.jsAsync_, _c.nodeSync_, ff_core_Option.Some(code_), _c.browserSync_, _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+ff_compiler_Parser.Parser_fail(self_, at_, "Unknown target or mode")
+break
+}
+}
+};
+return targets_
 }
 
 export function Parser_parseSignature(self_) {
@@ -377,7 +461,7 @@ const commonFields_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseFunctionParameters(self_, true));
 const variants_ = ((newtype_ || (!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")))
-? ff_core_List.Link(ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), ff_core_List.Empty(), ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), ff_core_List.Empty())
+? ff_core_List.Link(ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), ff_core_List.Empty(), ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None())), ff_core_List.Empty())
 : (function() {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "{");
 const variantsBuilder_ = ff_core_ArrayBuilder.empty_();
@@ -906,7 +990,7 @@ while(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "f
 const functionAt_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "function"));
 const signature_ = ff_compiler_Parser.Parser_parseSignature(self_);
 const body_ = ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), false, false);
-ff_core_ArrayBuilder.ArrayBuilder_add(functions_, ff_compiler_Syntax.DFunction(functionAt_, signature_, body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())));
+ff_core_ArrayBuilder.ArrayBuilder_add(functions_, ff_compiler_Syntax.DFunction(functionAt_, signature_, body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None())));
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 };
 const body_ = ff_compiler_Parser.Parser_parseStatements(self_);
@@ -1325,22 +1409,106 @@ return ff_compiler_Syntax.DFunction(signature_.at_, signature_, body_, targets_)
 }
 
 export async function Parser_parseTargets$(self_, $c) {
-function parseTargetOption_(target_) {
-if(((ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LKeyword())) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_ahead(self_), target_))) {
-return ff_core_Option.Some((function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LSeparator());
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword());
-const result_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
-const dropCount_ = (ff_core_String.String_startsWith(result_, "\"\"\"", 0)
+function processCode_(code_) {
+const dropCount_ = (ff_core_String.String_startsWith(code_, "\"\"\"", 0)
 ? 3
 : 1);
-return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(result_, dropCount_), dropCount_), "\\\"", "\""), "\\r", "\r"), "\\n", "\n"), "\\t", "\t"), "\\\\", "\\")
-})())
-} else return ff_core_Option.None()
+return ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(code_, dropCount_), dropCount_), "\\\"", "\""), "\\r", "\r"), "\\n", "\n"), "\\t", "\t"), "\\\\", "\\")
 }
-const javaScript_ = parseTargetOption_("javascript");
-const javaScriptAsync_ = parseTargetOption_("javascriptasync");
-return ff_compiler_Syntax.Targets(javaScript_, javaScriptAsync_)
+let targets_ = ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None());
+while(((ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon()) && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LKeyword())) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_ahead(self_), "target"))) {
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LSeparator());
+const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const target_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const mode_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const code_ = processCode_(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString())));
+for(;;) {
+const _1 = ff_core_Pair.Pair(target_, mode_);
+{
+if(_1.first_ == "js") {
+if(_1.second_ == "sync") {
+if((targets_.jsSync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(ff_core_Option.Some(code_), _c.jsAsync_, _c.nodeSync_, _c.nodeAsync_, _c.browserSync_, _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "js") {
+if(_1.second_ == "async") {
+if((targets_.jsAsync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, ff_core_Option.Some(code_), _c.nodeSync_, _c.nodeAsync_, _c.browserSync_, _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "browser") {
+if(_1.second_ == "sync") {
+if((targets_.browserSync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, _c.jsAsync_, _c.nodeSync_, _c.nodeAsync_, ff_core_Option.Some(code_), _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "browser") {
+if(_1.second_ == "async") {
+if((targets_.browserAsync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, _c.jsAsync_, _c.nodeSync_, _c.nodeAsync_, _c.browserSync_, ff_core_Option.Some(code_))
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "node") {
+if(_1.second_ == "sync") {
+if((targets_.nodeSync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, _c.jsAsync_, ff_core_Option.Some(code_), _c.nodeAsync_, _c.browserSync_, _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+if(_1.first_ == "node") {
+if(_1.second_ == "async") {
+if((targets_.nodeAsync_ != ff_core_Option.None())) {
+ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+};
+targets_ = (((_c) => {
+return ff_compiler_Syntax.Targets(_c.jsSync_, _c.jsAsync_, _c.nodeSync_, ff_core_Option.Some(code_), _c.browserSync_, _c.browserAsync_)
+}))(targets_)
+break
+}
+}
+}
+{
+ff_compiler_Parser.Parser_fail(self_, at_, "Unknown target or mode")
+break
+}
+}
+};
+return targets_
 }
 
 export async function Parser_parseSignature$(self_, $c) {
@@ -1487,7 +1655,7 @@ const commonFields_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseFunctionParameters(self_, true));
 const variants_ = ((newtype_ || (!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")))
-? ff_core_List.Link(ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), ff_core_List.Empty(), ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())), ff_core_List.Empty())
+? ff_core_List.Link(ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(nameToken_), ff_compiler_Token.Token_raw(nameToken_), ff_core_List.Empty(), ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None())), ff_core_List.Empty())
 : (function() {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "{");
 const variantsBuilder_ = ff_core_ArrayBuilder.empty_();
@@ -2016,7 +2184,7 @@ while(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "f
 const functionAt_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "function"));
 const signature_ = ff_compiler_Parser.Parser_parseSignature(self_);
 const body_ = ff_compiler_Parser.Parser_parseLambda(self_, ff_core_List.List_size(signature_.parameters_), false, false);
-ff_core_ArrayBuilder.ArrayBuilder_add(functions_, ff_compiler_Syntax.DFunction(functionAt_, signature_, body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None())));
+ff_core_ArrayBuilder.ArrayBuilder_add(functions_, ff_compiler_Syntax.DFunction(functionAt_, signature_, body_, ff_compiler_Syntax.Targets(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None())));
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 };
 const body_ = ff_compiler_Parser.Parser_parseStatements(self_);

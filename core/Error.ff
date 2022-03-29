@@ -3,16 +3,16 @@ type Error {}
 extend self: Error {
 
     rethrow[T](): T { panic("magic") }
-        javascript "throw self_"
+        target js sync "throw self_"
 
     name(): String { panic("magic") }
-        javascript "return self_.name || ''"
+        target js sync "return self_.name || ''"
 
     message(): String { panic("magic") }
-        javascript "return self_.message || ''"
+        target js sync "return self_.message || ''"
 
     stack(): String { panic("magic") }
-        javascript "return self_.stack || ''"
+        target js sync "return self_.stack || ''"
 
     /*
     as[E: Exception](): Option[E]

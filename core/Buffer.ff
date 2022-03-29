@@ -3,29 +3,29 @@ type Buffer {}
 extend self: Buffer {
 
     size(): Int { panic("magic") }
-        javascript "return self_.length"
+        target js sync "return self_.length"
 
     expect(index: Int): Int { panic("magic") }
-        javascript """
+        target js sync """
             if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
             return self_[index_]
         """
 
     set(index: Int, byte: Int): Unit { panic("magic") }
-        javascript """
+        target js sync """
             if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
             self_[index_] = byte_
         """
 
     toString(encoding: String = "utf8"): String { panic("magic") }
-        javascript """
+        target js sync """
             return self_.toString(encoding_)
         """
 
 }
 
 make(size: Int): Buffer { panic("magic") }
-    javascript "return Buffer.alloc(size_)"
+    target js sync "return Buffer.alloc(size_)"
 
 fromBufferArray(array: Array[Buffer]): Buffer { panic("magic") }
-    javascript "return Buffer.concat(array_)"
+    target js sync "return Buffer.concat(array_)"

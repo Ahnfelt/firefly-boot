@@ -13,6 +13,6 @@ extend self: Char {
     isAsciiDigit(): Bool { self >= '0' && self <= '9' }
 
     toString(): String { panic("magic") }
-        javascript "return String.fromCharCode(self_)"
+        target js sync "return String.fromCharCode(self_)"
 
 }

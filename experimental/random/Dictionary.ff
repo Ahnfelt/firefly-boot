@@ -10,20 +10,20 @@ trait K: DictionaryKey {
 
 instance Int: DictionaryKey {
     add[V](js: JsValue, key: Int, value: V): Unit
-        javascript "js_.set(key_, value_)"
+        target js sync "js_.set(key_, value_)"
     has(js: JsValue, key: Int): Bool
-        javascript "return js_.has(key_)"
+        target js sync "return js_.has(key_)"
     get[V](js: JsValue, key: Int): Option[V]
-        javascript "return js_.has(key_) ? ff_core_Option.Some(js_.get(key_)) : ff_core_Option.None()"
+        target js sync "return js_.has(key_) ? ff_core_Option.Some(js_.get(key_)) : ff_core_Option.None()"
 }
 
 instance String: DictionaryKey {
     add[V](js: JsValue, key: String, value: V): Unit
-        javascript "js_.set(key_, value_)"
+        target js sync "js_.set(key_, value_)"
     has(js: JsValue, key: String): Bool
-        javascript "return js_.has(key_)"
+        target js sync "return js_.has(key_)"
     get[V](js: JsValue, key: String): Option[V]
-        javascript "return js_.has(key_) ? ff_core_Option.Some(js_.get(key_)) : ff_core_Option.None()"
+        target js sync "return js_.has(key_) ? ff_core_Option.Some(js_.get(key_)) : ff_core_Option.None()"
 }
 
 instance Pair[A: DictionaryKey, B: DictionaryKey]: DictionaryKey {

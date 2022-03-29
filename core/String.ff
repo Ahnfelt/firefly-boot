@@ -3,58 +3,58 @@ type String {}
 extend self: String {
 
     size(): Int { panic("magic") }
-        javascript "return self_.length"
+        target js sync "return self_.length"
 
     expect(index: Int): Char { panic("magic") }
-        javascript "return self_.charCodeAt(index_)"
+        target js sync "return self_.charCodeAt(index_)"
 
     replace(needle: String, replacement: String): String { panic("magic") }
-        javascript "return self_.replaceAll(needle_, replacement_)"
+        target js sync "return self_.replaceAll(needle_, replacement_)"
 
     replaceFirst(needle: String, replacement: String): String { panic("magic") }
-        javascript "return self_.replace(needle_, replacement_)"
+        target js sync "return self_.replace(needle_, replacement_)"
 
     reverse(): String { panic("magic") }
-        javascript "return [...self_].reverse().join('')"
+        target js sync "return [...self_].reverse().join('')"
 
     dropWhile(p: Char => Bool): String { panic("magic") }
-        javascript """
+        target js sync """
             let i = 0
             for(; i < self_.length && p_(self_.codePointAt(i)); i++);
             return self_.slice(i)
         """
-        javascriptasync """
+        target js async """
             let i = 0
             for(; i < self_.length && await p_(self_.codePointAt(i), $c); i++);
             return self_.slice(i)
         """
 
     takeWhile(p: Char => Bool): String { panic("magic") }
-        javascript """
+        target js sync """
             let i = 0
             for(; i < self_.length && p_(self_.codePointAt(i)); i++);
             return self_.slice(0, i)
         """
-        javascriptasync """
+        target js async """
             let i = 0
             for(; i < self_.length && await p_(self_.codePointAt(i), $c); i++);
             return self_.slice(0, i)
         """
 
     slice(from: Int, until: Int): String { panic("magic") }
-        javascript "return self_.slice(from_, until_)"
+        target js sync "return self_.slice(from_, until_)"
 
     split(char: Char): Array[String] { panic("magic") }
-        javascript "return self_.split(String.fromCharCode(char_))"
+        target js sync "return self_.split(String.fromCharCode(char_))"
 
     dropFirst(count: Int = 1): String { panic("magic") }
-        javascript "return self_.slice(count_)"
+        target js sync "return self_.slice(count_)"
 
     dropLast(count: Int = 1): String { panic("magic") }
-        javascript "return self_.slice(0, self_.length - count_)"
+        target js sync "return self_.slice(0, self_.length - count_)"
 
     expectInt(): Int { panic("magic") }
-        javascript """
+        target js sync """
             if(self_.array.length == 0) throw "expectInt on empty string"
             for(let i = 0; i < self_.length; i++) {
                 let c = self_.codePointAt(i);
@@ -64,14 +64,14 @@ extend self: String {
         """
 
     first(): Option[Char] { panic("magic") }
-        javascript """
+        target js sync """
             return self_.length > 0
                 ? ff_core_Option.Some(self_.charCodeAt(0))
                 : ff_core_Option.None()
         """
 
     last(): Option[Char] { panic("magic") }
-        javascript """
+        target js sync """
             return self_.length > 0
                 ? ff_core_Option.Some(self_.charCodeAt(self_.length - 1))
                 : ff_core_Option.None()
@@ -82,22 +82,22 @@ extend self: String {
     expectLast(): Char { self.last().else { panic("expectFirst() on empty string") } }
 
     contains(substring: String) : Bool { panic("magic") }
-        javascript "return self_.includes(substring_)"
+        target js sync "return self_.includes(substring_)"
 
     startsWith(prefix: String, offset: Int = 0) : Bool { panic("magic") }
-        javascript "return self_.startsWith(prefix_, offset_)"
+        target js sync "return self_.startsWith(prefix_, offset_)"
 
     endsWith(prefix: String) : Bool { panic("magic") }
-        javascript "return self_.endsWith(prefix_)"
+        target js sync "return self_.endsWith(prefix_)"
 
     any(body: Char => Bool): Bool { panic("magic") }
-        javascript """
+        target js sync """
             for(let i = 0; i < self_.length; i++) {
                 if(body_(self_.charCodeAt(i))) return true;
             }
             return false;
         """
-        javascriptasync """
+        target js async """
             for(let i = 0; i < self_.length; i++) {
                 if(await body_(self_.charCodeAt(i), $c)) return true;
             }
@@ -105,13 +105,13 @@ extend self: String {
         """
 
     all(body: Char => Bool): Bool { panic("magic") }
-        javascript """
+        target js sync """
             for(let i = 0; i < self_.length; i++) {
                 if(!body_(self_.charCodeAt(i))) return false;
             }
             return true;
         """
-        javascriptasync """
+        target js async """
             for(let i = 0; i < self_.length; i++) {
                 if(!await body_(self_.charCodeAt(i), $c)) return false;
             }

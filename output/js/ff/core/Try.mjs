@@ -72,6 +72,10 @@ return {Failure: true, error_};
 
 
 
+export function make_(body_) {
+return ff_core_Core.try_(body_)
+}
+
 export function catch_(body_, catchBody_) {
 return ff_core_Try.Try_expect(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
 return body_()
@@ -96,6 +100,10 @@ return body_()
 })), (() => {
 finallyBody_()
 })))
+}
+
+export async function make_$(body_, $c) {
+return (await ff_core_Core.try_$(body_, $c))
 }
 
 export async function catch_$(body_, catchBody_, $c) {

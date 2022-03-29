@@ -1,7 +1,7 @@
 type Array[T] {}
 
 range(size: Int): Array[Int] { panic("magic") }
-    javascript """
+    target js sync """
         return Array.from({length: size_}, (_, i) => i);
     """
 
@@ -20,28 +20,28 @@ build[A, B](initial: A, body: A => Option[Pair[A, B]]): Array[B] {
 }
 
 fill[T](size: Int, value: T): Array[T] { panic("magic") }
-    javascript """
+    target js sync """
         return new Array(size_).fill(value_);
     """
 
 empty[T](): Array[T] { panic("magic") }
-    javascript """
+    target js sync """
         return [];
     """
 
 extend self[T]: Array[T] {
 
     addAll(that: Array[T]): Array[T] { panic("magic") }
-        javascript "return self_.concat(that_)"
+        target js sync "return self_.concat(that_)"
 
     isEmpty(): Bool { panic("magic") }
-        javascript "return self_.length === 0"
+        target js sync "return self_.length === 0"
 
     size(): Int { panic("magic") }
-        javascript "return self_.length"
+        target js sync "return self_.length"
 
     expect(index: Int): T { panic("magic") }
-        javascript """
+        target js sync """
             if(index_ < 0 || index_ >= self_.length) {
                 throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.length)
             }
@@ -53,25 +53,25 @@ extend self[T]: Array[T] {
     expectLast(): T { self.expect(self.size() - 1) }
 
     dropFirst(count: Int = 1): Array[T] { panic("magic") }
-        javascript "return self_.slice(count_)"
+        target js sync "return self_.slice(count_)"
 
     dropLast(count: Int = 1): Array[T] { panic("magic") }
-        javascript "return self_.slice(0, self_.length - count_)"
+        target js sync "return self_.slice(0, self_.length - count_)"
 
     update(index: Int, body: T => T): Array[T] { panic("magic") }
-        javascript """
+        target js sync """
             let result = self_.slice();
             result[index_] = body_(result[index_]);
             return result;
         """
-        javascriptasync """
+        target js async """
             let result = self_.slice();
             result[index_] = await body_(result[index_], $c);
             return result;
         """
 
     toList(): List[T] { panic("magic") }
-        javascript """
+        target js sync """
             let result = ff_core_List.Empty();
             for(let i = self_.length - 1; i >= 0; i--) {
                 result = ff_core_List.Link(self_[i], result);
@@ -84,6 +84,6 @@ extend self[T]: Array[T] {
 extend self: Array[String] {
 
     join(separator: String = ""): String { panic("magic") }
-        javascript "return self_.join(separator_)"
+        target js sync "return self_.join(separator_)"
 
 }

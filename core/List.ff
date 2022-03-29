@@ -4,7 +4,7 @@ type List[T] {
 }
 
 range(size: Int): List[Int] { panic("magic") }
-    javascript """
+    target js sync """
         let result = ff_core_List.Empty();
         for(let i = size_ - 1; i >= 0; i--) {
             result = ff_core_List.Link(i, result);
@@ -29,7 +29,7 @@ extend self[T]: List[T] {
     }
 
     toArray(): Array[T] { panic("magic") }
-        javascript """
+        target js sync """
             let current = self_;
             let result = [];
             while(current.Link) {

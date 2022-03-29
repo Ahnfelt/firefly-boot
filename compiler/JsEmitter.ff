@@ -3,6 +3,7 @@ import Patterns
 
 type JsEmitter(
     otherModules: Map[String, Module]
+    targetIsNode: Bool
     mutable tailCallUsed: Bool
 )
 
@@ -12,6 +13,7 @@ make(otherModules: List[Module]): JsEmitter {
             let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
+        targetIsNode = True
         tailCallUsed = False
     )
 }
@@ -21,6 +23,15 @@ fail[T](at: Location, message: String): T {
 }
 
 extend self: JsEmitter {
+
+    bestTarget(targets: Targets, async: Bool): Option[String] {
+        Pair(self.targetIsNode, async).{
+            | Pair(False, False) => targets.browserSync.orElse {targets.jsSync}
+            | Pair(False, True) => targets.browserAsync.orElse {targets.jsAsync}
+            | Pair(True, False) => targets.nodeSync.orElse {targets.jsSync}
+            | Pair(True, True) => targets.nodeAsync.orElse {targets.jsAsync}
+        }
+    }
 
     emitModule(packagePair: Pair[String, String], module: Module): String {
         let selfImport =
@@ -66,7 +77,7 @@ extend self: JsEmitter {
 
     emitLetDefinition(definition: DLet, mutable: Bool, async: Bool): String {
         let mutability = if(mutable) {"let"} else {"const"}
-        let valueCode = definition.targets.javaScript.else { self.emitTerm(definition.value, async) }
+        let valueCode = self.bestTarget(definition.targets, async = False).else {self.emitTerm(definition.value, async)}
         mutability + " " + escapeKeyword(definition.name) + " = " + valueCode + ";"
     }
 
@@ -102,7 +113,7 @@ extend self: JsEmitter {
 
     emitFunctionDefinition(definition: DFunction, async: Bool, suffix: String = ""): String {
         let signature = self.emitSignature(definition.signature, async, suffix)
-        let target = if(async) {definition.targets.javaScriptAsync} else {definition.targets.javaScript}
+        let target = self.bestTarget(definition.targets, async)
         target.map { code =>
             if(code.startsWith("#")) {
                 code.dropFirst()
@@ -175,7 +186,7 @@ extend self: JsEmitter {
     emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
         let allFields = [...typeDefinition.commonFields, ...definition.fields]
         let fields = allFields.map { escapeKeyword(_.name) }.join(", ")
-        definition.targets.javaScript.else {
+        self.bestTarget(definition.targets, async = False).else {
             if(allFields.isEmpty()) {
                 "const " + definition.name + "$ = {" + definition.name + ": true};\n" +
                 "export function " + definition.name + "(" + fields + ") {\n" +
@@ -333,11 +344,11 @@ extend self: JsEmitter {
             | EFunctions(at, functions, body) =>
                 let functionStrings = functions.map { f =>
                     let newAsync = async && effectTypeIsAsync(f.signature.effect)
-                    self.emitFunctionDefinition(DFunction(at, f.signature, f.body, Targets(None, None)), newAsync)
+                    self.emitFunctionDefinition(DFunction(at, f.signature, f.body, emptyTargets), newAsync)
                 }
                 functionStrings.join("\n") + "\n" + self.emitStatements(body, last, async)
             | ELet(at, mutable, name, valueType, value, body) =>
-                self.emitLetDefinition(DLet(at, name, valueType, value, Targets(None, None)), mutable, async) + "\n" +
+                self.emitLetDefinition(DLet(at, name, valueType, value, emptyTargets), mutable, async) + "\n" +
                 self.emitStatements(body, last, async)
             | EVariant(at, "ff:core/Unit.Unit", _, _) =>
                 ""
@@ -609,3 +620,5 @@ effectTypeIsAsync(effect: Type): Bool {
     | TConstructor(_, "Q$", _) => True
     | _ => False
 }
+
+emptyTargets = Targets(None, None, None, None, None, None)

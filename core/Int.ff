@@ -3,27 +3,27 @@ type Int {}
 extend self: Int {
 
     abs(): Int { panic("magic") }
-        javascript "return Math.abs(self_)"
+        target js sync "return Math.abs(self_)"
 
     toFloat(): Float { panic("magic") }
-        javascript "return self_"
+        target js sync "return self_"
 
     bitNot(): Int { panic("magic") }
-        javascript "return ~self_;"
+        target js sync "return ~self_;"
 
     bitOr(that: Int): Int { panic("magic") }
-        javascript "return self_ | that_;"
+        target js sync "return self_ | that_;"
 
     bitAnd(that: Int): Int { panic("magic") }
-        javascript "return self_ & that_;"
+        target js sync "return self_ & that_;"
 
     bitXor(that: Int): Int { panic("magic") }
-        javascript "return self_ ^ that_;"
+        target js sync "return self_ ^ that_;"
 
     bitLeft(bits: Int = 1): Int { panic("magic") }
-        javascript "return self_ << bits_;"
+        target js sync "return self_ << bits_;"
 
     bitRight(bits: Int = 1, signed: Bool = True): Int { panic("magic") }
-        javascript "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
+        target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
 
 }
