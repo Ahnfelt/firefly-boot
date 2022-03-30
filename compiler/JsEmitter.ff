@@ -1,9 +1,11 @@
 import Syntax
 import Patterns
+import JsImporter
 
 type JsEmitter(
     otherModules: Map[String, Module]
     targetIsNode: Bool
+    jsImporter: JsImporter
     mutable tailCallUsed: Bool
 )
 
@@ -14,6 +16,7 @@ make(otherModules: List[Module]): JsEmitter {
             Pair(moduleName, m)
         }.toMap()
         targetIsNode = True
+        jsImporter = JsImporter.make()
         tailCallUsed = False
     )
 }
@@ -51,7 +54,8 @@ extend self: JsEmitter {
                 [self.emitMain()]
             } else { [] }
         ]
-        parts.map { _.join("\n\n") }.join("\n\n") + "\n"
+        let jsImports = self.jsImporter.generateImports()
+        [jsImports, ...parts].map { _.join("\n\n") }.join("\n\n") + "\n"
     }
 
     emitMain(): String {
@@ -118,7 +122,7 @@ extend self: JsEmitter {
             if(code.startsWith("#")) {
                 code.dropFirst()
             } else {
-                signature + " {\n" + code + "\n}"
+                signature + " {\n" + self.jsImporter.process(code) + "\n}"
             }
         }.else:
         definition.body.{

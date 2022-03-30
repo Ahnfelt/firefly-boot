@@ -1,0 +1,21 @@
+type JsImporter(
+    mutable imports: Map[String, String]
+)
+
+make(): JsImporter {
+    JsImporter(Map.empty())
+}
+
+extend self: JsImporter {
+
+    process(code: String): String {
+        code
+    }
+
+    generateImports(): List[String] {
+        self.imports.pairs().map {| Pair(moduleName, mangledName) =>
+            "import * as " + mangledName + " from '" + moduleName + "';"
+        }
+    }
+
+}

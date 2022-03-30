@@ -1,3 +1,5 @@
+
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
@@ -123,42 +125,44 @@ return (_w1 != 46)
 })))
 }
 
-export function jsFileSystemHack() {} import * as fs from 'fs';
+export function FileSystem_jsFileSystemHack(self_) {
+return ff_core_Core.panic_("magic")
+}
 
 export function FileSystem_readText(self_, file_) {
-return fs.readFileSync(file_, {encoding: 'UTF-8'})
+return ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_writeText(self_, file_, text_) {
-fs.writeFileSync(file_, text_, {encoding: 'UTF-8'})
+ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_list(self_, path_) {
-return ff_core_Array.Array_toList(fs.readdirSync(path_).map(f => path_ + '/' + f))
+return ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_exists(self_, path_) {
-return fs.existsSync(path_)
+return ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_isDirectory(self_, path_) {
-return fs.lstatSync(path_).isDirectory()
+return ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_createDirectory(self_, path_) {
-fs.mkdirSync(path_)
+ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_createDirectories(self_, path_) {
-fs.mkdirSync(path_, {recursive: true})
+ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_delete(self_, path_) {
-try { fs.rmdirSync(path_) } catch(_) { fs.rmSync(path_) }
+ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_rename(self_, fromPath_, toPath_) {
-fs.renameSync(fromPath_, toPath_)
+ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_getAbsolutePath(self_, path_) {

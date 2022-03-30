@@ -3,43 +3,33 @@ type FileSystem! {}
 extend self: FileSystem {
 
     jsFileSystemHack(): Nothing { panic("magic") }
-        target js sync "#function jsFileSystemHack() {} import * as fs from 'fs';"
         target js async "#function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path'; import * as zlib from 'zlib'"
 
     readText(file: String): String { panic("magic") }
-        target js sync "return fs.readFileSync(file_, {encoding: 'UTF-8'})"
         target js async "return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})"
 
     writeText(file: String, text: String): Unit { panic("magic") }
-        target js sync "fs.writeFileSync(file_, text_, {encoding: 'UTF-8'})"
         target js async "await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})"
 
     list(path: String): List[String] { panic("magic") }
-        target js sync "return ff_core_Array.Array_toList(fs.readdirSync(path_).map(f => path_ + '/' + f))"
         target js async "return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))"
 
     exists(path: String): Bool { panic("magic") }
-        target js sync "return fs.existsSync(path_)"
         target js async "return await fsPromises.access(path_).then(() => true).catch(() => false)"
 
     isDirectory(path: String): Bool { panic("magic") }
-        target js sync "return fs.lstatSync(path_).isDirectory()"
         target js async "return (await fsPromises.lstat(path_)).isDirectory()"
 
     createDirectory(path: String): Unit { panic("magic") }
-        target js sync "fs.mkdirSync(path_)"
         target js async "await fsPromises.mkdir(path_)"
 
     createDirectories(path: String): Unit { panic("magic") }
-        target js sync "fs.mkdirSync(path_, {recursive: true})"
         target js async "await fsPromises.mkdir(path_, {recursive: true})"
 
     delete(path: String): Unit { panic("magic") }
-        target js sync "try { fs.rmdirSync(path_) } catch(_) { fs.rmSync(path_) }"
         target js async "try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }"
 
     rename(fromPath: String, toPath: String): Unit { panic("magic") }
-        target js sync "fs.renameSync(fromPath_, toPath_)"
         target js async "await fsPromises.rename(fromPath_, toPath_)"
 
     getAbsolutePath(path: String): String { panic("magic") }

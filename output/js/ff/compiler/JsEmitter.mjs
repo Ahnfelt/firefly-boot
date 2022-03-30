@@ -1,4 +1,8 @@
+
+
 import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
+
+import * as ff_compiler_JsImporter from "../../ff/compiler/JsImporter.mjs"
 
 import * as ff_compiler_Patterns from "../../ff/compiler/Patterns.mjs"
 
@@ -69,8 +73,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, targetIsNode_, tailCallUsed_) {
-return {otherModules_, targetIsNode_, tailCallUsed_};
+export function JsEmitter(otherModules_, targetIsNode_, jsImporter_, tailCallUsed_) {
+return {otherModules_, targetIsNode_, jsImporter_, tailCallUsed_};
 }
 
 // type ProcessedVariantCase
@@ -84,7 +88,7 @@ export function make_(otherModules_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), true, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), true, ff_compiler_JsImporter.make_(), false)
 }
 
 export function fail_(at_, message_) {
@@ -323,7 +327,7 @@ export async function make_$(otherModules_, $c) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), true, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), true, ff_compiler_JsImporter.make_(), false)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -632,7 +636,8 @@ return (_w1.signature_.name_ == "main")
 }))
 ? ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_), ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.Empty()))))))));
-return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
+const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_);
+return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
 }
@@ -719,7 +724,7 @@ return ff_core_Option.Option_else(ff_core_Option.Option_map(target_, ((code_) =>
 if(ff_core_String.String_startsWith(code_, "#", 0)) {
 return ff_core_String.String_dropFirst(code_, 1)
 } else {
-return (((signature_ + " {\n") + code_) + "\n}")
+return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, code_)) + "\n}")
 }
 })), (() => {
 {
@@ -1915,7 +1920,8 @@ return (_w1.signature_.name_ == "main")
 }))
 ? ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_), ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.Empty()))))))));
-return (ff_core_List.List_join(ff_core_List.List_map(parts_, ((_w1) => {
+const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_);
+return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
 }
@@ -2002,7 +2008,7 @@ return ff_core_Option.Option_else(ff_core_Option.Option_map(target_, ((code_) =>
 if(ff_core_String.String_startsWith(code_, "#", 0)) {
 return ff_core_String.String_dropFirst(code_, 1)
 } else {
-return (((signature_ + " {\n") + code_) + "\n}")
+return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, code_)) + "\n}")
 }
 })), (() => {
 {
