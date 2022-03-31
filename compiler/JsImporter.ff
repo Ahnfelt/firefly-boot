@@ -1,3 +1,5 @@
+import Syntax
+
 type JsImporter(
     mutable imports: Map[String, String]
 )
@@ -6,10 +8,29 @@ make(): JsImporter {
     JsImporter(Map.empty())
 }
 
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show())
+}
+
 extend self: JsImporter {
 
-    process(code: String): String {
-        code
+    process(at: Location, code: String): String {
+        let space = code.takeWhile {c => c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == ';'}
+        let rest = code.dropFirst(space.size())
+        if(!rest.startsWith("import * as ")) {code} else:
+        let rest2 = rest.dropFirst("import * as ".size())
+        let name = rest2.takeWhile {_.isAsciiLetterOrDigit()}
+        if(name.size() == 0) {fail(at, "Expected alias after \"import * as \"")}
+        let rest3 = name.dropFirst(name.size())
+        if(!rest3.startsWith(" from '")) {fail(at, "Expected \" from '\" after \"import * as ...\"")}
+        let rest4 = rest3.dropFirst(" from '".size())
+        let url = rest4.takeWhile {_ != '\''}
+        if(url.size() == 0) {fail(at, "Expected module name after \" from '\"")}
+        if(url.any{_ == '\n'}) {fail(at, "Unclosed module name string")}
+        let rest5 = rest4.dropFirst(url.size() + 1)
+        let importName = "import$" + self.imports.size()
+        self.imports = self.imports.add(importName, url)
+        space + "const " + name + " = " + importName + self.process(at, rest5)
     }
 
     generateImports(): List[String] {

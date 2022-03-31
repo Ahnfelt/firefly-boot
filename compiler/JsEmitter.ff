@@ -122,7 +122,7 @@ extend self: JsEmitter {
             if(code.startsWith("#")) {
                 code.dropFirst()
             } else {
-                signature + " {\n" + self.jsImporter.process(code) + "\n}"
+                signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
             }
         }.else:
         definition.body.{
