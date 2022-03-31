@@ -21,15 +21,20 @@ extend self: JsImporter {
         let rest2 = rest.dropFirst("import * as ".size())
         let name = rest2.takeWhile {_.isAsciiLetterOrDigit()}
         if(name.size() == 0) {fail(at, "Expected alias after \"import * as \"")}
-        let rest3 = name.dropFirst(name.size())
+        let rest3 = rest2.dropFirst(name.size())
         if(!rest3.startsWith(" from '")) {fail(at, "Expected \" from '\" after \"import * as ...\"")}
         let rest4 = rest3.dropFirst(" from '".size())
         let url = rest4.takeWhile {_ != '\''}
         if(url.size() == 0) {fail(at, "Expected module name after \" from '\"")}
         if(url.any{_ == '\n'}) {fail(at, "Unclosed module name string")}
         let rest5 = rest4.dropFirst(url.size() + 1)
-        let importName = "import$" + self.imports.size()
-        self.imports = self.imports.add(importName, url)
+        let importName = self.imports.get(url).{
+            | None =>
+                let n = "import$" + self.imports.size()
+                self.imports = self.imports.add(url, n)
+                n
+            | Some(n) => n
+        }
         space + "const " + name + " = " + importName + self.process(at, rest5)
     }
 

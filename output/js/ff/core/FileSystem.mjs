@@ -1,4 +1,10 @@
+import * as import$2 from 'fs';
 
+import * as import$1 from 'fs/promises';
+
+import * as import$0 from 'path';
+
+import * as import$3 from 'zlib';
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
@@ -125,10 +131,6 @@ return (_w1 != 46)
 })))
 }
 
-export function FileSystem_jsFileSystemHack(self_) {
-return ff_core_Core.panic_("magic")
-}
-
 export function FileSystem_readText(self_, file_) {
 return ff_core_Core.panic_("magic")
 }
@@ -166,7 +168,10 @@ ff_core_Core.panic_("magic")
 }
 
 export function FileSystem_getAbsolutePath(self_, path_) {
-return path.resolve(path_)
+
+            const path = import$0
+            return path.resolve(path_)
+        
 }
 
 export function FileSystem_readStream(self_, file_) {
@@ -189,42 +194,67 @@ export function FileSystem_open(self_, file_, flags_) {
 return ff_core_Core.panic_("magic")
 }
 
-export function jsFileSystemHack$() {} import * as fsPromises from 'fs/promises'; import * as path from 'path'; import * as zlib from 'zlib'
-
 export async function FileSystem_readText$(self_, file_, $c) {
-return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})
+
+            const fsPromises = import$1
+            return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})
+        
 }
 
 export async function FileSystem_writeText$(self_, file_, text_, $c) {
-await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
+
+            const fsPromises = import$1
+            await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
+        
 }
 
 export async function FileSystem_list$(self_, path_, $c) {
-return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
+
+            const fsPromises = import$1
+            return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
+        
 }
 
 export async function FileSystem_exists$(self_, path_, $c) {
-return await fsPromises.access(path_).then(() => true).catch(() => false)
+
+            const fsPromises = import$1
+            return await fsPromises.access(path_).then(() => true).catch(() => false)
+        
 }
 
 export async function FileSystem_isDirectory$(self_, path_, $c) {
-return (await fsPromises.lstat(path_)).isDirectory()
+
+            const fsPromises = import$1
+            return (await fsPromises.lstat(path_)).isDirectory()
+        
 }
 
 export async function FileSystem_createDirectory$(self_, path_, $c) {
-await fsPromises.mkdir(path_)
+
+            const fsPromises = import$1
+            await fsPromises.mkdir(path_)
+        
 }
 
 export async function FileSystem_createDirectories$(self_, path_, $c) {
-await fsPromises.mkdir(path_, {recursive: true})
+
+            const fsPromises = import$1
+            await fsPromises.mkdir(path_, {recursive: true})
+        
 }
 
 export async function FileSystem_delete$(self_, path_, $c) {
-try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
+
+            const fsPromises = import$1
+            try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
+        
 }
 
 export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {
-await fsPromises.rename(fromPath_, toPath_)
+
+            const fsPromises = import$1
+            await fsPromises.rename(fromPath_, toPath_)
+        
 }
 
 export async function FileSystem_getAbsolutePath$(self_, path_, $c) {
@@ -233,6 +263,7 @@ return ff_core_Core.panic_("magic")
 
 export async function FileSystem_readStream$(self_, file_, $c) {
 
+            const fs = import$2
             return $c => {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
                 const readable = fs.createReadStream(file_)
@@ -271,6 +302,7 @@ export async function FileSystem_readStream$(self_, file_, $c) {
 
 export async function FileSystem_writeStream$(self_, file_, stream_, createOnly_ = false, $c) {
 
+            const fs = import$2
             let writeable = fs.createWriteStream(file_, {flags: createOnly_ ? 'wx' : 'w'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
@@ -292,6 +324,7 @@ export async function FileSystem_writeStream$(self_, file_, stream_, createOnly_
 
 export async function FileSystem_appendStream$(self_, file_, stream_, $c) {
 
+            const fs = import$2
             let writeable = fs.createWriteStream(file_, {flags: 'a'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
@@ -313,6 +346,7 @@ export async function FileSystem_appendStream$(self_, file_, stream_, $c) {
 
 export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
 
+            const zlib = import$3
             return async ($c) => {
                 const iterator = stream_($c)
                 let decompress = zlib.createGunzip()
@@ -358,6 +392,7 @@ export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
 
 export async function FileSystem_open$(self_, file_, flags_, $c) {
 
+            const fsPromises = import$1
             return await fsPromises.open(file, flags)
         
 }
