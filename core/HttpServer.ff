@@ -2,11 +2,9 @@ type HttpRequest! {}
 type HttpResponse! {}
 type Url {}
 
-jsImportHack(): Nothing { panic("magic") }
-    target js async "#function jsImportHack() {} import * as http from 'http'"
-
 listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit { panic("magic") }
     target js async """
+        import * as http from 'http'
         if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
         const server = http.createServer(async (req, res) => {
             try {
@@ -96,6 +94,7 @@ extend self: HttpRequest {
 
     readStream(): Stream[Buffer] { panic("magic") }
         target js async """
+            import * as http from 'http'
             return $c => {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
                 if(self_.streamWorkaround != null) throw new Error("Can't open HttpRequest body stream twice")
@@ -145,6 +144,7 @@ extend self: HttpResponse {
 
     write(buffer: Buffer): Unit { panic("magic") }
         target js async """
+            import * as http from 'http'
             if(!self_.write(buffer_)) {
                 const abort = () => {
                     $c.signal.addEventListener('abort', abort())
@@ -162,6 +162,7 @@ extend self: HttpResponse {
 
     writeText(text: String, encoding: String = "utf8"): Unit { panic("magic") }
         target js async """
+            import * as http from 'http'
             if(!self_.write(text_, encoding_)) {
                 const abort = () => {
                     $c.signal.addEventListener('abort', abort())

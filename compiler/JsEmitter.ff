@@ -119,11 +119,7 @@ extend self: JsEmitter {
         let signature = self.emitSignature(definition.signature, async, suffix)
         let target = self.bestTarget(definition.targets, async)
         target.map { code =>
-            if(code.startsWith("#")) {
-                code.dropFirst()
-            } else {
-                signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
-            }
+            signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
         }.else:
         definition.body.{
             | Lambda(_, effect, [matchCase]) {

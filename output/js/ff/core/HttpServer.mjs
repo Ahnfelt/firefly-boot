@@ -1,4 +1,4 @@
-
+import * as import$0 from 'http';
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
@@ -75,18 +75,13 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function jsImportHack_() {
-return ff_core_Core.panic_("magic")
-}
-
 export function listen_(system_, host_, port_, handler_) {
 ff_core_Core.panic_("magic")
 }
 
-export function jsImportHack() {} import * as http from 'http'
-
 export async function listen_$(system_, host_, port_, handler_, $c) {
 
+        const http = import$0
         if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
         const server = http.createServer(async (req, res) => {
             try {
@@ -256,6 +251,7 @@ return "utf8"
 
 export async function HttpRequest_readStream$(self_, $c) {
 
+            const http = import$0
             return $c => {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
                 if(self_.streamWorkaround != null) throw new Error("Can't open HttpRequest body stream twice")
@@ -320,6 +316,7 @@ self_.writeHead(code_, message_.value_)
 
 export async function HttpResponse_write$(self_, buffer_, $c) {
 
+            const http = import$0
             if(!self_.write(buffer_)) {
                 const abort = () => {
                     $c.signal.addEventListener('abort', abort())
@@ -338,6 +335,7 @@ export async function HttpResponse_write$(self_, buffer_, $c) {
 
 export async function HttpResponse_writeText$(self_, text_, encoding_ = "utf8", $c) {
 
+            const http = import$0
             if(!self_.write(text_, encoding_)) {
                 const abort = () => {
                     $c.signal.addEventListener('abort', abort())

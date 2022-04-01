@@ -721,11 +721,7 @@ export function JsEmitter_emitFunctionDefinition(self_, definition_, async_, suf
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
 const target_ = ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, definition_.targets_, async_);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(target_, ((code_) => {
-if(ff_core_String.String_startsWith(code_, "#", 0)) {
-return ff_core_String.String_dropFirst(code_, 1)
-} else {
 return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
-}
 })), (() => {
 {
 const _1 = definition_.body_;
@@ -2005,11 +2001,7 @@ export async function JsEmitter_emitFunctionDefinition$(self_, definition_, asyn
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
 const target_ = ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, definition_.targets_, async_);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(target_, ((code_) => {
-if(ff_core_String.String_startsWith(code_, "#", 0)) {
-return ff_core_String.String_dropFirst(code_, 1)
-} else {
 return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
-}
 })), (() => {
 {
 const _1 = definition_.body_;
