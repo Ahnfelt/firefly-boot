@@ -7,6 +7,7 @@ import JsEmitter
 import Dictionaries
 
 type Compiler!(
+    targetIsNode: Bool
     files: FileSystem
     time: TimeSystem
     jsOutputPath: String
@@ -20,12 +21,14 @@ type Compiler!(
 )
 
 make(
+    targetIsNode: Bool
     files: FileSystem
     time: TimeSystem
     jsOutputPath: String
     packagePaths: Map[String, String]
 ): Compiler {
     Compiler(
+        targetIsNode = targetIsNode,
         files = files
         time = time
         jsOutputPath = jsOutputPath
@@ -178,7 +181,7 @@ extend self: Compiler {
             Pair(array.expect(0), array.expect(1))
         }
 
-        let js = JsEmitter.make([module, ...otherModules]).emitModule(packagePair, module)
+        let js = JsEmitter.make(self.targetIsNode, [module, ...otherModules]).emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
         let jsFile = jsPath + "/" + moduleName + ".mjs"
         self.files.createDirectories(jsPath)

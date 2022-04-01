@@ -83,12 +83,31 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function main_(system_) {
-const mainPackage_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0);
-const mainModule_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1);
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2));
-const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3);
-const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4);
+const target_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0);
+const mainPackage_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1);
+const mainModule_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2);
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3));
+const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4);
+const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 5);
 const fs_ = ff_core_System.System_files(system_);
+const targetIsNode_ = (((_1) => {
+{
+if(_1 == "node") {
+return true
+return
+}
+}
+{
+if(_1 == "browser") {
+return false
+return
+}
+}
+{
+return ff_core_Core.panic_((("Unknown target '" + target_) + "'"))
+return
+}
+}))(target_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
 };
@@ -96,7 +115,7 @@ ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_);
 const jsPathFile_ = (tempPath_ + "/js");
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_);
 const success_ = ff_core_Core.do_((() => {
-const compiler_ = ff_compiler_Compiler.make_(fs_, ff_core_System.System_time(system_), jsPathFile_, packagePaths_);
+const compiler_ = ff_compiler_Compiler.make_(targetIsNode_, fs_, ff_core_System.System_time(system_), jsPathFile_, packagePaths_);
 ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_);
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_);
 return true
@@ -128,12 +147,31 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 }
 
 export async function main_$(system_, $c) {
-const mainPackage_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 0);
-const mainModule_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 1);
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 2));
-const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 3);
-const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 4);
+const target_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 0);
+const mainPackage_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 1);
+const mainModule_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 2);
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 3));
+const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 4);
+const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 5);
 const fs_ = (await ff_core_System.System_files$(system_, $c));
+const targetIsNode_ = ((async (_1, $c) => {
+{
+if(_1 == "node") {
+return true
+return
+}
+}
+{
+if(_1 == "browser") {
+return false
+return
+}
+}
+{
+return ff_core_Core.panic_((("Unknown target '" + target_) + "'"))
+return
+}
+}))(target_);
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 (await ff_compiler_Main.deleteDirectory_$(fs_, tempPath_, $c))
 };
@@ -141,7 +179,7 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 const jsPathFile_ = (tempPath_ + "/js");
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $c));
 const success_ = (await ff_core_Core.do_$((async ($c) => {
-const compiler_ = (await ff_compiler_Compiler.make_$(fs_, (await ff_core_System.System_time$(system_, $c)), jsPathFile_, packagePaths_, $c));
+const compiler_ = (await ff_compiler_Compiler.make_$(targetIsNode_, fs_, (await ff_core_System.System_time$(system_, $c)), jsPathFile_, packagePaths_, $c));
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, $c));
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c));
 return true

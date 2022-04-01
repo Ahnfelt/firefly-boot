@@ -9,13 +9,13 @@ type JsEmitter(
     mutable tailCallUsed: Bool
 )
 
-make(otherModules: List[Module]): JsEmitter {
+make(targetIsNode: Bool, otherModules: List[Module]): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map { m =>
             let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
-        targetIsNode = True
+        targetIsNode = targetIsNode
         jsImporter = JsImporter.make()
         tailCallUsed = False
     )

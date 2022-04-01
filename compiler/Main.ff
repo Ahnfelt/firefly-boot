@@ -14,13 +14,20 @@ main(system: System): Unit {
     }
     */
 
-    let mainPackage = system.arguments().expect(0)
-    let mainModule = system.arguments().expect(1)
-    let packagePaths = parsePackageLocations(system.arguments().expect(2))
-    let tempPath = system.arguments().expect(3)
-    let jsOutputPath = system.arguments().expect(4)
+    let target = system.arguments().expect(0)
+    let mainPackage = system.arguments().expect(1)
+    let mainModule = system.arguments().expect(2)
+    let packagePaths = parsePackageLocations(system.arguments().expect(3))
+    let tempPath = system.arguments().expect(4)
+    let jsOutputPath = system.arguments().expect(5)
 
     let fs = system.files()
+
+    let targetIsNode = target.{
+        | "node" => True
+        | "browser" => False
+        | _ => panic("Unknown target '" + target + "'")
+    }
 
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)
@@ -29,7 +36,7 @@ main(system: System): Unit {
     fs.createDirectories(jsPathFile)
 
     let success = do { //try {
-        let compiler = Compiler.make(fs, system.time(), jsPathFile, packagePaths)
+        let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, packagePaths)
         compiler.emit(mainPackage, mainModule)
         compiler.printMeasurements()
         True
