@@ -23,11 +23,22 @@ main(system: System): Unit {
 
     let fs = system.files()
 
+    /*
     let targetIsNode = target.{
         | "node" => True
         | "browser" => False
         | _ => panic("Unknown target '" + target + "'")
     }
+    Log.debug(targetIsNode) // Prints Promise(true)!
+    */
+    let targetIsNode =
+        if(target == "node") {
+            True
+        } elseIf {target == "browser"} {
+            False
+        } else {
+            panic("Unknown target '" + target + "'")
+        }
 
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)

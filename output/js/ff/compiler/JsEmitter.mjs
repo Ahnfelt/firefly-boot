@@ -643,7 +643,7 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export function JsEmitter_emitMain(self_) {
-return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: process.argv.slice(2)}, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))), "\n")
+return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))), "\n")
 }
 
 export function JsEmitter_emitImportDefinition(self_, definition_) {
@@ -1923,7 +1923,7 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export async function JsEmitter_emitMain$(self_, $c) {
-return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: process.argv.slice(2)}, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))), "\n")
+return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))), "\n")
 }
 
 export async function JsEmitter_emitImportDefinition$(self_, definition_, $c) {

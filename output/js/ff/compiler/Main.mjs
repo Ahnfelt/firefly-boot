@@ -90,24 +90,12 @@ const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_
 const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4);
 const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 5);
 const fs_ = ff_core_System.System_files(system_);
-const targetIsNode_ = (((_1) => {
-{
-if(_1 == "node") {
-return true
-return
-}
-}
-{
-if(_1 == "browser") {
-return false
-return
-}
-}
-{
-return ff_core_Core.panic_((("Unknown target '" + target_) + "'"))
-return
-}
-}))(target_);
+const targetIsNode_ = ((target_ == "node")
+? true
+: (target_ == "browser")
+? false
+: ff_core_Core.panic_((("Unknown target '" + target_) + "'")));
+ff_core_Log.debug_(targetIsNode_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
 };
@@ -154,24 +142,12 @@ const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_
 const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 4);
 const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 5);
 const fs_ = (await ff_core_System.System_files$(system_, $c));
-const targetIsNode_ = ((async (_1, $c) => {
-{
-if(_1 == "node") {
-return true
-return
-}
-}
-{
-if(_1 == "browser") {
-return false
-return
-}
-}
-{
-return ff_core_Core.panic_((("Unknown target '" + target_) + "'"))
-return
-}
-}))(target_);
+const targetIsNode_ = ((target_ == "node")
+? true
+: (target_ == "browser")
+? false
+: ff_core_Core.panic_((("Unknown target '" + target_) + "'")));
+ff_core_Log.debug_(targetIsNode_);
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 (await ff_compiler_Main.deleteDirectory_$(fs_, tempPath_, $c))
 };
@@ -219,7 +195,7 @@ const controller = new AbortController()
 controller.promises = new Set()
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
 try {
-await main_$({array_: process.argv.slice(2)}, controller)
+await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)
 } finally {
 controller.abort()
 clearInterval(interval)
