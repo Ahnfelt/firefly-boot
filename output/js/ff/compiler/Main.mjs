@@ -95,7 +95,6 @@ const targetIsNode_ = ((target_ == "node")
 : (target_ == "browser")
 ? false
 : ff_core_Core.panic_((("Unknown target '" + target_) + "'")));
-ff_core_Log.debug_(targetIsNode_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Main.deleteDirectory_(fs_, tempPath_)
 };
@@ -147,7 +146,6 @@ const targetIsNode_ = ((target_ == "node")
 : (target_ == "browser")
 ? false
 : ff_core_Core.panic_((("Unknown target '" + target_) + "'")));
-ff_core_Log.debug_(targetIsNode_);
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 (await ff_compiler_Main.deleteDirectory_$(fs_, tempPath_, $c))
 };
