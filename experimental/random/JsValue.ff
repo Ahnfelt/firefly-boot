@@ -2,43 +2,62 @@ type JsValue {}
 
 extend self: JsValue {
 
-    expectString(): String
-    expectChar(): Char
-    expectInt(): Int
-    expectFloat(): Float
-    expectBool(): Bool
+    expectString(): String { panic("magic") }
+        target js sync "return self_"
 
-    isString(): Bool
-    isChar(): Bool
-    isInt(): Bool
-    isFloat(): Bool
-    isBool(): Bool
-    isNull(): Bool
-    isUndefined(): Bool
-    isArray(): Bool
-    isObject(): Bool
-    isFunction(): Bool
+    expectChar(): Char { panic("magic") }
+        target js sync "return self_"
 
-    index(at: Int): JsValue
-    setIndex(at: Int, value: JsValue): JsValue
+    expectInt(): Int { panic("magic") }
+        target js sync "return self_"
 
-    hasOwnField(name: String): Bool
-    field(name: String): JsValue
-    setField(name: String, value: JsValue): JsValue
+    expectFloat(): Float { panic("magic") }
+        target js sync "return self_"
 
-    property(name: JsValue): JsValue
-    setProperty(name: JsValue, value: JsValue): JsValue
+    expectBool(): Bool { panic("magic") }
+        target js sync "return self_"
 
-    call(arguments: List[JsValue]): JsValue
-    callField(name: String, arguments: List[JsValue]): JsValue
+    isString(): Bool { panic("magic") }
+        target js sync "return self_"
 
-    toMap(): Map[String, JsValue]
-    toArray(): Array[JsValue]
-    toList(): List[JsValue]
+    isChar(): Bool { panic("magic") }
+    isInt(): Bool { panic("magic") }
+    isFloat(): Bool { panic("magic") }
+    isBool(): Bool { panic("magic") }
+    isNull(): Bool { panic("magic") }
+    isUndefined(): Bool { panic("magic") }
+    isArray(): Bool { panic("magic") }
+    isObject(): Bool { panic("magic") }
+    isFunction(): Bool { panic("magic") }
 
-    toJson(space: Option[String] = None): String
+    index(at: Int): JsValue { panic("magic") }
+        target js sync "return self_[at_]"
+
+    setIndex(at: Int, value: JsValue): JsValue { panic("magic") }
+
+    hasOwnField(name: String): Bool { panic("magic") }
+
+    field(name: String): JsValue { panic("magic") }
+        target js sync "return self_[name_]"
+
+    setField(name: String, value: JsValue): JsValue { panic("magic") }
+
+    property(name: JsValue): JsValue { panic("magic") }
+    setProperty(name: JsValue, value: JsValue): JsValue { panic("magic") }
+
+    call(arguments: List[JsValue]): JsValue { panic("magic") }
+    callField(name: String, arguments: List[JsValue]): JsValue { panic("magic") }
+
+    toMap(): Map[String, JsValue] { panic("magic") }
+    toArray(): Array[JsValue] { panic("magic") }
+    toList(): List[JsValue] { panic("magic") }
+
+    toJson(space: Option[String] = None): String { panic("magic") }
 
     // TODO: JS operators
+
+    assign(value : JsValue): Unit { panic("magic") }
+        target js sync "self_ = value_"
 
 }
 
@@ -57,22 +76,22 @@ float(value: Float): JsValue { panic("magic") }
 bool(value: Bool): JsValue { panic("magic") }
     target js sync "return value_"
 
-object(fields: List[Pair[String, JsValue]]): JsValue
+object(fields: List[Pair[String, JsValue]]): JsValue { panic("magic") }
 
-array(values: List[JsValue]): JsValue
+array(values: List[JsValue]): JsValue { panic("magic") }
 
-function0(value: () => JsValue): JsValue
-function1(value: JsValue => JsValue): JsValue
-function2(value: (JsValue, JsValue) => JsValue): JsValue
-function3(value: (JsValue, JsValue, JsValue) => JsValue): JsValue
-function4(value: (JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
-function5(value: (JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
-function6(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
-function7(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
-function8(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
-function9(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
+function0(value: () => JsValue): JsValue { panic("magic") }
+function1(value: JsValue => JsValue): JsValue { panic("magic") }
+function2(value: (JsValue, JsValue) => JsValue): JsValue { panic("magic") }
+function3(value: (JsValue, JsValue, JsValue) => JsValue): JsValue { panic("magic") }
+function4(value: (JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue { panic("magic") }
+function5(value: (JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue { panic("magic") }
+function6(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue { panic("magic") }
+function7(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue { panic("magic") }
+function8(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue { panic("magic") }
+function9(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue { panic("magic") }
 
-fromMap(value: Map[String, JsValue]): JsValue
-fromArray(value: Array[JsValue]): JsValue
+fromMap(value: Map[String, JsValue]): JsValue { panic("magic") }
+fromArray(value: Array[JsValue]): JsValue { panic("magic") }
 
-parseJson(json: String): JsValue
+parseJson(json: String): JsValue { panic("magic") }
