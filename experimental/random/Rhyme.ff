@@ -18,10 +18,10 @@ main(system: System): Unit {
         let text = input.field("value").expectString()
         Log.debug("input: " + text)
         let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + text)
-        let json = parseJson(result.readText())
+        let json = JsValue.parseJson(result.readText())
         let rhyme = json.index(0).field("word")
         Log.debug(rhyme)
-        setInnerText(output, rhyme)
+        output.setField("innerText", rhyme)
     }
 
     addEventListener(button, "click", handler)
@@ -41,9 +41,3 @@ addEventListener(
     target browser async """
         element_.addEventListener(type_, listener_)
     """
-
-setInnerText(element: JsValue, value: JsValue): Unit { panic("magic") }
-    target browser sync "element_.innerText = value_"
-
-parseJson(value: String): JsValue { panic("magic") }
-    target browser sync "return JSON.parse(value_)"
