@@ -1,0 +1,78 @@
+type JsValue {}
+
+extend self: JsValue {
+
+    expectString(): String
+    expectChar(): Char
+    expectInt(): Int
+    expectFloat(): Float
+    expectBool(): Bool
+
+    isString(): Bool
+    isChar(): Bool
+    isInt(): Bool
+    isFloat(): Bool
+    isBool(): Bool
+    isNull(): Bool
+    isUndefined(): Bool
+    isArray(): Bool
+    isObject(): Bool
+    isFunction(): Bool
+
+    index(at: Int): JsValue
+    setIndex(at: Int, value: JsValue): JsValue
+
+    hasOwnField(name: String): Bool
+    field(name: String): JsValue
+    setField(name: String, value: JsValue): JsValue
+
+    property(name: JsValue): JsValue
+    setProperty(name: JsValue, value: JsValue): JsValue
+
+    call(arguments: List[JsValue]): JsValue
+    callField(name: String, arguments: List[JsValue]): JsValue
+
+    toMap(): Map[String, JsValue]
+    toArray(): Array[JsValue]
+    toList(): List[JsValue]
+
+    toJson(space: Option[String] = None): String
+
+    // TODO: JS operators
+
+}
+
+null(): JsValue { panic("magic") }
+    target js sync "return null"
+undefined(): JsValue { panic("magic") }
+    target js sync "return void 0"
+string(value: String): JsValue { panic("magic") }
+    target js sync "return value_"
+char(value: Char): JsValue { panic("magic") }
+    target js sync "return value_"
+int(value: Int): JsValue { panic("magic") }
+    target js sync "return value_"
+float(value: Float): JsValue { panic("magic") }
+    target js sync "return value_"
+bool(value: Bool): JsValue { panic("magic") }
+    target js sync "return value_"
+
+object(fields: List[Pair[String, JsValue]]): JsValue
+
+array(values: List[JsValue]): JsValue
+
+function0(value: () => JsValue): JsValue
+function1(value: JsValue => JsValue): JsValue
+function2(value: (JsValue, JsValue) => JsValue): JsValue
+function3(value: (JsValue, JsValue, JsValue) => JsValue): JsValue
+function4(value: (JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
+function5(value: (JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
+function6(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
+function7(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
+function8(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
+function9(value: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => JsValue): JsValue
+
+fromMap(value: Map[String, JsValue]): JsValue
+fromArray(value: Array[JsValue]): JsValue
+
+parseJson(json: String): JsValue
