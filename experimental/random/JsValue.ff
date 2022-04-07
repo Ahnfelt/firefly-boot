@@ -33,31 +33,38 @@ extend self: JsValue {
     index(at: Int): JsValue { panic("magic") }
         target js sync "return self_[at_]"
 
-    setIndex(at: Int, value: JsValue): JsValue { panic("magic") }
+    setIndex(at: Int, value: JsValue): Unit { panic("magic") }
+        target js sync "self_[at_] = value_; return"
 
     hasOwnField(name: String): Bool { panic("magic") }
+        target js sync "return Object.prototype.hasOwnProperty.call(self_, name_)"
 
     field(name: String): JsValue { panic("magic") }
         target js sync "return self_[name_]"
 
-    setField(name: String, value: JsValue): JsValue { panic("magic") }
+    setField(name: String, value: JsValue): Unit { panic("magic") }
+        target js sync "self_[name_] = value_; return"
 
     property(name: JsValue): JsValue { panic("magic") }
-    setProperty(name: JsValue, value: JsValue): JsValue { panic("magic") }
+        target js sync "return self_[name_]"
+
+    setProperty(name: JsValue, value: JsValue): Unit { panic("magic") }
+        target js sync "self_[name_] = value_; return"
 
     call(arguments: List[JsValue]): JsValue { panic("magic") }
+        target js sync "return self_.apply(null, ff_core_List.List_toArray(arguments_))"
+
     callField(name: String, arguments: List[JsValue]): JsValue { panic("magic") }
+        target js sync "return self_[name_].apply(self_, ff_core_List.List_toArray(arguments_))"
 
     toMap(): Map[String, JsValue] { panic("magic") }
     toArray(): Array[JsValue] { panic("magic") }
     toList(): List[JsValue] { panic("magic") }
 
     toJson(space: Option[String] = None): String { panic("magic") }
+        target js sync "return JSON.stringify(self_, null, space_.value_)"
 
     // TODO: JS operators
-
-    assign(value: JsValue): Unit { panic("magic") }
-        target js sync "self_ = value_"
 
 }
 
@@ -95,3 +102,4 @@ fromMap(value: Map[String, JsValue]): JsValue { panic("magic") }
 fromArray(value: Array[JsValue]): JsValue { panic("magic") }
 
 parseJson(json: String): JsValue { panic("magic") }
+    target js sync "return JSON.parse(json_)"
