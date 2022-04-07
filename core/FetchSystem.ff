@@ -55,10 +55,10 @@ extend self: FetchResponse {
     ok(): Bool { panic("magic") }
         target js async "return self_.ok"
 
-    status(): Int  { panic("magic") }
+    status(): Int { panic("magic") }
         target js async "return self_.status"
 
-    statusText(): String  { panic("magic") }
+    statusText(): String { panic("magic") }
         target js async "return self_.statusText"
 
     header(name: String): Option[String] { panic("magic") }
