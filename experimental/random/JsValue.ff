@@ -56,7 +56,7 @@ extend self: JsValue {
 
     // TODO: JS operators
 
-    assign(value : JsValue): Unit { panic("magic") }
+    assign(value: JsValue): Unit { panic("magic") }
         target js sync "self_ = value_"
 
 }
