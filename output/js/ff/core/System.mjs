@@ -18,6 +18,8 @@ import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
+import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
+
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
@@ -79,11 +81,15 @@ return {array_};
 
 
 export function System_arguments(self_) {
-return ff_core_Array.Array_toList(self_.array_)
+return ff_core_Core.panic_("magic")
 }
 
 export function System_files(self_) {
-return null
+return ff_core_Core.panic_("magic")
+}
+
+export function System_fetch(self_) {
+return ff_core_Core.panic_("magic")
 }
 
 export function System_tasks(self_) {
@@ -91,7 +97,7 @@ return ff_core_Core.panic_("magic")
 }
 
 export function System_time(self_) {
-return null
+return ff_core_Core.panic_("magic")
 }
 
 export async function System_arguments$(self_, $c) {
@@ -99,6 +105,10 @@ return ff_core_Array.Array_toList(self_.array_)
 }
 
 export async function System_files$(self_, $c) {
+return null
+}
+
+export async function System_fetch$(self_, $c) {
 return null
 }
 

@@ -53,6 +53,7 @@ coreImports: List[DImport] =
         "Core",
         "Duration",
         "Error",
+        "FetchSystem",
         "FileHandle",
         "FileSystem",
         "Float",
