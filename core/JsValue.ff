@@ -70,70 +70,70 @@ extend self: JsValue {
     assign(source: JsValue): JsValue { panic("magic") }
         target js sync "return Object.assign(self_, source_)"
 
-    call(this: JsValue, arguments: List[JsValue]): JsValue { panic("magic") }
-        target js sync "return self_.apply(this_, ff_core_List.List_toArray(arguments_))"
-
-    callMethod(name: String, arguments: List[JsValue]): JsValue { panic("magic") }
+    call(name: String, arguments: List[JsValue]): JsValue { panic("magic") }
         target js sync "return self_[name_].apply(this_, ff_core_List.List_toArray(arguments_))"
 
-    call0(): JsValue { panic("magic") }
+    callValue(this: JsValue, arguments: List[JsValue]): JsValue { panic("magic") }
+        target js sync "return self_.apply(this_, ff_core_List.List_toArray(arguments_))"
+
+    call0(name: String): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_)"
 
-    call1[A1: IsJsValue](a1: A1): JsValue { panic("magic") }
+    call1[A1: IsJsValue](name: String, a1: A1): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_)"
 
-    call2[A1: IsJsValue, A2: IsJsValue](a1: A1, a2: A2): JsValue { panic("magic") }
+    call2[A1: IsJsValue, A2: IsJsValue](name: String, a1: A1, a2: A2): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_)"
 
-    call3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](a1: A1, a2: A2, a3: A3): JsValue { panic("magic") }
+    call3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](name: String, a1: A1, a2: A2, a3: A3): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_)"
 
-    call4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4): JsValue { panic("magic") }
+    call4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_)"
 
-    call5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue { panic("magic") }
+    call5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_)"
 
-    call6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue { panic("magic") }
+    call6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_)"
 
-    call7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue { panic("magic") }
+    call7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
 
-    call8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue { panic("magic") }
+    call8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
 
-    call9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue { panic("magic") }
+    call9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
 
-    callMethod0(name: String): JsValue { panic("magic") }
+    callValue0(): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_)"
 
-    callMethod1[A1: IsJsValue](name: String, a1: A1): JsValue { panic("magic") }
+    callValue1[A1: IsJsValue](a1: A1): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_)"
 
-    callMethod2[A1: IsJsValue, A2: IsJsValue](name: String, a1: A1, a2: A2): JsValue { panic("magic") }
+    callValue2[A1: IsJsValue, A2: IsJsValue](a1: A1, a2: A2): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_)"
 
-    callMethod3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](name: String, a1: A1, a2: A2, a3: A3): JsValue { panic("magic") }
+    callValue3[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue](a1: A1, a2: A2, a3: A3): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_)"
 
-    callMethod4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4): JsValue { panic("magic") }
+    callValue4[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_)"
 
-    callMethod5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue { panic("magic") }
+    callValue5[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_)"
 
-    callMethod6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue { panic("magic") }
+    callValue6[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_)"
 
-    callMethod7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue { panic("magic") }
+    callValue7[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_)"
 
-    callMethod8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue { panic("magic") }
+    callValue8[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_)"
 
-    callMethod9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](name: String, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue { panic("magic") }
+    callValue9[A1: IsJsValue, A2: IsJsValue, A3: IsJsValue, A4: IsJsValue, A5: IsJsValue, A6: IsJsValue, A7: IsJsValue, A8: IsJsValue, A9: IsJsValue](a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8, a9: A9): JsValue { panic("magic") }
         target js sync "return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)"
 
     toJson(space: Option[String] = None): String { panic("magic") }

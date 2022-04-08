@@ -2,9 +2,9 @@ main(system: System): Unit {
 
     let document = system.js().global().get("document")
     let location = document.get("location").expectString()
-    let input = document.callMethod1("getElementById", "input")
-    let output = document.callMethod1("getElementById", "output")
-    let button = document.callMethod1("getElementById", "button")
+    let input = document.call1("getElementById", "input")
+    let output = document.call1("getElementById", "output")
+    let button = document.call1("getElementById", "button")
 
     Log.debug("Hello World")
     Log.debug(location)
@@ -22,7 +22,7 @@ main(system: System): Unit {
         output.set("innerText", rhyme)
     }
 
-    button.callMethod2("addEventListener", "click", handler)
+    button.call2("addEventListener", "click", handler)
 
     while {True} { system.tasks().sleep(Duration(1.0)) }
 
