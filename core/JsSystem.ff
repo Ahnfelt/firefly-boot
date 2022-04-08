@@ -1,0 +1,70 @@
+type JsSystem {}
+
+extend self: JsSystem {
+
+    global(): JsValue { panic("magic") }
+        target js sync "return self_"
+
+    parseJson(json: String): JsValue { panic("magic") }
+        target js sync "return JSON.parse(json_)"
+
+    null(): JsValue { panic("magic") }
+        target js sync "return null"
+
+    undefined(): JsValue { panic("magic") }
+        target js sync "return void 0"
+
+    value[T: IsJsValue](jsValue: T): JsValue { panic("magic") }
+        target js sync "return jsValue_"
+
+    object(fields: List[Pair[String, JsValue]] = []): JsValue { panic("magic") }
+        target js sync """
+            const result = {}
+            ff_core_List.List_each(values_, v => result[v.first_] = v.second_)
+            return result
+        """
+
+    array(values: List[JsValue]): JsValue { panic("magic") }
+        target js sync "return ff_core_List.List_toArray(values_)"
+
+    function0[R](body: () => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return () => body_($c)"
+
+    function1[R](body: JsValue => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return a1 => body_(a1, $c)"
+
+    function2[R](body: (JsValue, JsValue) => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return (a1, a2) => body_(a1, a2, $c)"
+
+    function3[R](body: (JsValue, JsValue, JsValue) => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return (a1, a2, a3) => body_(a1, a2, a3, $c)"
+
+    function4[R](body: (JsValue, JsValue, JsValue, JsValue) => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return (a1, a2, a3, a4) => body_(a1, a2, a3, a4, $c)"
+
+    function5[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return (a1, a2, a3, a4, a5) => body_(a1, a2, a3, a4, a5, $c)"
+
+    function6[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return (a1, a2, a3, a4, a5, a6) => body_(a1, a2, a3, a4, a5, a6, $c)"
+
+    function7[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return (a1, a2, a3, a4, a5, a6, a7) => body_(a1, a2, a3, a4, a5, a6, a7, $c)"
+
+    function8[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return (a1, a2, a3, a4, a5, a6, a7, a8) => body_(a1, a2, a3, a4, a5, a6, a7, a8, $c)"
+
+    function9[R](body: (JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue, JsValue) => R): JsValue { panic("magic") }
+        target js sync "return body_"
+        target js async "return (a1, a2, a3, a4, a5, a6, a7, a8, a9) => body_(a1, a2, a3, a4, a5, a6, a7, a8, a9, $c)"
+
+}

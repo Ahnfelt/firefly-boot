@@ -19,4 +19,7 @@ extend self: System {
     time(): TimeSystem { panic("magic") }
         target js async "return null"
 
+    js(): JsSystem { panic("magic") }
+        target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+
 }

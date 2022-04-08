@@ -1,12 +1,10 @@
-import JsValue
-
 main(system: System): Unit {
 
-    let document = window().field("document")
-    let location = document.field("location").expectString()
-    let input = getElementById("input")
-    let output = getElementById("output")
-    let button = getElementById("button")
+    let document = system.js().global().get("document")
+    let location = document.get("location").expectString()
+    let input = document.callMethod1("getElementById", "input")
+    let output = document.callMethod1("getElementById", "output")
+    let button = document.callMethod1("getElementById", "button")
 
     Log.debug("Hello World")
     Log.debug(location)
@@ -14,30 +12,18 @@ main(system: System): Unit {
     Log.debug(output)
     Log.debug(button)
 
-    let handler = {
-        let text = input.field("value").expectString()
+    let handler = system.js().function1 { event =>
+        let text = input.get("value").expectString()
         Log.debug("input: " + text)
         let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + text)
-        let json = JsValue.parseJson(result.readText())
-        let rhyme = json.index(0).field("word")
+        let json = system.js().parseJson(result.readText())
+        let rhyme = json.get(0).get("word")
         Log.debug(rhyme)
-        output.setField("innerText", rhyme)
+        output.set("innerText", rhyme)
     }
 
-    addEventListener(button, "click", handler)
+    button.callMethod2("addEventListener", "click", handler)
+
+    while {True} { system.tasks().sleep(Duration(1.0)) }
+
 }
-
-window(): JsValue { panic("magic") }
-    target browser sync "return window"
-
-getElementById(id: String): JsValue { panic("magic") }
-    target browser sync "return document.getElementById(id_)"
-
-addEventListener(
-    element: JsValue
-    type: String
-    listener: () => Unit
-): JsValue { panic("magic") }
-    target browser async """
-        element_.addEventListener(type_, listener_)
-    """

@@ -34,6 +34,10 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
+
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
+
 import * as ff_core_List from "../../ff/core/List.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
@@ -100,6 +104,10 @@ export function System_time(self_) {
 return ff_core_Core.panic_("magic")
 }
 
+export function System_js(self_) {
+return ff_core_Core.panic_("magic")
+}
+
 export async function System_arguments$(self_, $c) {
 return ff_core_Array.Array_toList(self_.array_)
 }
@@ -118,6 +126,10 @@ return null
 
 export async function System_time$(self_, $c) {
 return null
+}
+
+export async function System_js$(self_, $c) {
+return typeof globalThis !== 'undefined' ? globalThis : window
 }
 
 

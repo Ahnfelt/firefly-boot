@@ -61,6 +61,8 @@ coreImports: List[DImport] =
         "Instant",
         "Int",
         "Iterator",
+        "JsValue",
+        "JsSystem",
         "List",
         "Log",
         "Map",
