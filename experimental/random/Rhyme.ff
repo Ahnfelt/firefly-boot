@@ -6,19 +6,11 @@ main(system: System): Unit {
     let output = document.call1("getElementById", "output")
     let button = document.call1("getElementById", "button")
 
-    Log.debug("Hello World")
-    Log.debug(location)
-    Log.debug(input)
-    Log.debug(output)
-    Log.debug(button)
-
     let handler = system.js().function1 { event =>
         let text = input.get("value").expectString()
-        Log.debug("input: " + text)
         let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + text)
         let json = system.js().parseJson(result.readText())
         let rhyme = json.get(0).get("word")
-        Log.debug(rhyme)
         output.set("innerText", rhyme)
     }
 
