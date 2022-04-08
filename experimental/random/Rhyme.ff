@@ -1,7 +1,6 @@
 main(system: System): Unit {
 
     let document = system.js().global().get("document")
-    let location = document.get("location").expectString()
     let input = document.call1("getElementById", "input")
     let output = document.call1("getElementById", "output")
     let button = document.call1("getElementById", "button")
