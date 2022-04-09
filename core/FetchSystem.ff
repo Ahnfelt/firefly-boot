@@ -12,7 +12,7 @@ extend self: FetchSystem {
     fetch(
         url: String
         method: String = "GET"
-        headers: List[Pair[String, String]] = emptyList
+        headers: List[Pair[String, String]] = []
         body: Option[FetchBody] = None
         redirect: FetchRedirect = RedirectFollow
         // The rest of the options are only respected by browsers - see the MDN fetch() documentation
@@ -41,8 +41,6 @@ extend self: FetchSystem {
         """
 
 }
-
-emptyList = [] // TODO: Why won't this type check when inlined?
 
 bodyString(body: String): FetchBody { panic("magic") }
     target js sync "return body_"
