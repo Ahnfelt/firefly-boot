@@ -5,16 +5,14 @@ main(system: System): Unit {
     let output = document.call1("getElementById", "output")
     let button = document.call1("getElementById", "button")
 
-    let handler = system.js().function1 { event =>
+    let handler = system.js().shield { system.js().function1 { event =>
         let text = input.get("value").expectString()
         let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + text)
         let json = system.js().parseJson(result.readText())
         let rhyme = json.get(0).get("word")
         output.set("innerText", rhyme)
-    }
+    }}
 
     button.call2("addEventListener", "click", handler)
-
-    while {True} { system.tasks().sleep(Duration(1.0)) }
 
 }

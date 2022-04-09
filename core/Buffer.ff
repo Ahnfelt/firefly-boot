@@ -19,7 +19,7 @@ extend self: Buffer {
 
     toString(encoding: String = "utf8"): String { panic("magic") }
         target node sync "return self_.toString(encoding_)"
-        target node sync "return new TextDecoder(encoding_).decode(self_)"
+        target js sync "return new TextDecoder(encoding_).decode(self_)"
 
 }
 

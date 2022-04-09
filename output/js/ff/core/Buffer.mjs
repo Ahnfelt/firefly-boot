@@ -110,9 +110,7 @@ export function Buffer_set(self_, index_, byte_) {
 }
 
 export function Buffer_toString(self_, encoding_ = "utf8") {
-
-            return self_.toString(encoding_)
-        
+return self_.toString(encoding_)
 }
 
 export async function Buffer_size$(self_, $c) {

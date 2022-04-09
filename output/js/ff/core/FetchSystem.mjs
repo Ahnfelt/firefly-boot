@@ -154,6 +154,10 @@ export function FetchResponse_readText(self_) {
 return ff_core_Core.panic_("magic")
 }
 
+export function FetchResponse_readBuffer(self_) {
+return ff_core_Core.panic_("magic")
+}
+
 export async function FetchResponse_ok$(self_, $c) {
 return self_.ok
 }
@@ -177,6 +181,10 @@ export async function FetchResponse_header$(self_, name_, $c) {
 
 export async function FetchResponse_readText$(self_, $c) {
 return await self_.text()
+}
+
+export async function FetchResponse_readBuffer$(self_, $c) {
+return Buffer.from(await self_.arrayBuffer())
 }
 
 
