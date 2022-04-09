@@ -68,8 +68,8 @@ extend self: JsValue {
         target js sync "return Object.prototype.hasOwnProperty.call(self_, name_)"
 
 
-    assign(source: JsValue): JsValue { panic("magic") }
-        target js sync "return Object.assign(self_, source_)"
+    assign(source: JsValue, source2: JsValue = source): JsValue { panic("magic") }
+        target js sync "return Object.assign(self_, source_, source2_ !== source_ ? source2_ : null)"
 
 
     each(body: JsValue => Unit): Unit { panic("magic") }
