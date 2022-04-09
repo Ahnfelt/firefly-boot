@@ -67,8 +67,18 @@ extend self: JsValue {
     hasOwn(name: String): Bool { panic("magic") }
         target js sync "return Object.prototype.hasOwnProperty.call(self_, name_)"
 
+
     assign(source: JsValue): JsValue { panic("magic") }
         target js sync "return Object.assign(self_, source_)"
+
+
+    each(body: JsValue => Unit): Unit { panic("magic") }
+        target js sync "for(const value of self_) body_(value)"
+        target js async "for(const value of self_) await body_(value, $c)"
+
+    eachWhile(body: JsValue => Bool): Unit { panic("magic") }
+        target js sync "for(const value of self_) if(!body_(value)) break"
+        target js async "for(const value of self_) if(!await body_(value, $c)) break"
 
 
     call(name: String, arguments: List[JsValue]): JsValue { panic("magic") }
