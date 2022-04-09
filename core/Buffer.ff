@@ -18,14 +18,25 @@ extend self: Buffer {
         """
 
     toString(encoding: String = "utf8"): String { panic("magic") }
-        target js sync """
-            return self_.toString(encoding_)
-        """
+        target node sync "return self_.toString(encoding_)"
+        target node sync "return new TextDecoder(encoding_).decode(self_)"
 
 }
 
 make(size: Int): Buffer { panic("magic") }
-    target js sync "return Buffer.alloc(size_)"
+    target node sync "return Buffer.alloc(size_)"
+    target js sync "return new Uint8Array(size_)"
 
 fromBufferArray(array: Array[Buffer]): Buffer { panic("magic") }
-    target js sync "return Buffer.concat(array_)"
+    target node sync "return Buffer.concat(array_)"
+    target js sync """
+        let length = 0
+        for(let a in array_) length += a.length
+        const result = new Uint8Array(length)
+        let offset = 0
+        for(let a in array_) {
+            result.set(a, offset)
+            offset += a.length
+        }
+        return result
+    """

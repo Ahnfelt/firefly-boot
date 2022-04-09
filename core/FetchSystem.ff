@@ -72,4 +72,8 @@ extend self: FetchResponse {
     readText(): String { panic("magic") }
         target js async "return await self_.text()"
 
+    readBuffer(): Buffer { panic("magic") }
+        target node async "return Buffer.from(await self_.arrayBuffer())"
+        target js async "return new Uint8Array(await self_.arrayBuffer())"
+
 }
