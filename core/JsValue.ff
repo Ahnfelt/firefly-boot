@@ -168,3 +168,6 @@ instance Int: IsJsValue {}
 instance Float: IsJsValue {}
 instance Bool: IsJsValue {}
 instance Array[T: IsJsValue]: IsJsValue {}
+instance Error: IsJsValue {}
+instance Instant: IsJsValue {}
+instance Duration: IsJsValue {}
