@@ -93,7 +93,7 @@ export function RedirectManual() {
 return RedirectManual$;
 }
 
-
+export const emptyList_ = ff_core_List.Empty();
 
 export function bodyString_(body_) {
 return body_
@@ -111,11 +111,11 @@ export async function bodyBuffer_$(body_, $c) {
 return ff_core_Core.panic_("magic")
 }
 
-export function FetchSystem_fetch(self_, url_, method_ = "GET", headers_ = ff_core_List.Empty(), body_ = ff_core_Option.None(), redirect_ = ff_core_FetchSystem.RedirectFollow(), referrer_ = ff_core_Option.None(), integrity_ = ff_core_Option.None(), mode_ = ff_core_Option.None(), credentials_ = ff_core_Option.None(), cache_ = ff_core_Option.None(), throw_ = true) {
+export function FetchSystem_fetch(self_, url_, method_ = "GET", headers_ = ff_core_FetchSystem.emptyList_, body_ = ff_core_Option.None(), redirect_ = ff_core_FetchSystem.RedirectFollow(), referrer_ = ff_core_Option.None(), integrity_ = ff_core_Option.None(), mode_ = ff_core_Option.None(), credentials_ = ff_core_Option.None(), cache_ = ff_core_Option.None(), throw_ = true) {
 return ff_core_Core.panic_("magic")
 }
 
-export async function FetchSystem_fetch$(self_, url_, method_ = "GET", headers_ = ff_core_List.Empty(), body_ = ff_core_Option.None(), redirect_ = ff_core_FetchSystem.RedirectFollow(), referrer_ = ff_core_Option.None(), integrity_ = ff_core_Option.None(), mode_ = ff_core_Option.None(), credentials_ = ff_core_Option.None(), cache_ = ff_core_Option.None(), throw_ = true, $c) {
+export async function FetchSystem_fetch$(self_, url_, method_ = "GET", headers_ = ff_core_FetchSystem.emptyList_, body_ = ff_core_Option.None(), redirect_ = ff_core_FetchSystem.RedirectFollow(), referrer_ = ff_core_Option.None(), integrity_ = ff_core_Option.None(), mode_ = ff_core_Option.None(), credentials_ = ff_core_Option.None(), cache_ = ff_core_Option.None(), throw_ = true, $c) {
 
             const options = {headers: {}, signal: $c.signal}
             options.method = method_
