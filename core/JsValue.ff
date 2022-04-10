@@ -65,7 +65,7 @@ extend self: JsValue {
         target js sync "return self_[key_]"
 
     set[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit { panic("magic") }
-        target js sync "self_[key_] = value_; return"
+        target js sync "self_[key_] = value_"
 
     hasOwn(name: String): Bool { panic("magic") }
         target js sync "return Object.prototype.hasOwnProperty.call(self_, name_)"
