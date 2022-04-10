@@ -57,6 +57,9 @@ extend self: JsValue {
     isNan(): Bool { panic("magic") }
         target js sync "return typeof self_ === 'number' && self_ !== self_"
 
+    isFinite(): Bool { panic("magic") }
+        target js sync "return typeof value === 'number' && isFinite(value)"
+
 
     get[K: IsJsValue](key: K): JsValue { panic("magic") }
         target js sync "return self_[key_]"
