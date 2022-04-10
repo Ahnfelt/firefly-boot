@@ -58,7 +58,7 @@ extend self: JsValue {
         target js sync "return typeof self_ === 'number' && self_ !== self_"
 
     isFinite(): Bool { panic("magic") }
-        target js sync "return typeof value === 'number' && isFinite(value)"
+        target js sync "return typeof self_ === 'number' && isFinite(self_)"
 
 
     get[K: IsJsValue](key: K): JsValue { panic("magic") }
