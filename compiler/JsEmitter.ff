@@ -28,8 +28,8 @@ extend self: JsEmitter {
     bestTarget(target: Target, async: Bool): Option[TargetCode] {
         target.{
             | AnyTarget(code) => Some(code)
-            | SyncTarget(code) => Some(code).filter {_ => !async}
-            | AsyncTarget(code) => Some(code).filter {_ => async}
+            | SyncTarget(code) => Some(code).filter {|_ => !async}
+            | AsyncTarget(code) => Some(code).filter {|_ => async}
             | SyncAsyncTarget(sync, async) => Some(if(async) {async} else {sync})
         }
     }
@@ -620,5 +620,3 @@ effectTypeIsAsync(effect: Type): Bool {
     | TConstructor(_, "Q$", _) => True
     | _ => False
 }
-
-emptyTargets = Targets(None, None, None, None, None, None)

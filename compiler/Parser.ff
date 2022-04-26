@@ -187,22 +187,22 @@ extend self: Parser {
             Pair(target, mode).{
                 | Pair("js", "sync") =>
                     if(targets.jsSync != None) { self.fail(at, "Duplicate target definition") }
-                    targets = targets.Targets(jsSync = Some(code))
+                    targets = targets.ParsedTargets(jsSync = Some(code))
                 | Pair("js", "async") =>
                     if(targets.jsAsync != None) { self.fail(at, "Duplicate target definition") }
-                    targets = targets.Targets(jsAsync = Some(code))
+                    targets = targets.ParsedTargets(jsAsync = Some(code))
                 | Pair("browser", "sync") =>
                     if(targets.browserSync != None) { self.fail(at, "Duplicate target definition") }
-                    targets = targets.Targets(browserSync = Some(code))
+                    targets = targets.ParsedTargets(browserSync = Some(code))
                 | Pair("browser", "async") =>
                     if(targets.browserAsync != None) { self.fail(at, "Duplicate target definition") }
-                    targets = targets.Targets(browserAsync = Some(code))
+                    targets = targets.ParsedTargets(browserAsync = Some(code))
                 | Pair("node", "sync") =>
                     if(targets.nodeSync != None) { self.fail(at, "Duplicate target definition") }
-                    targets = targets.Targets(nodeSync = Some(code))
+                    targets = targets.ParsedTargets(nodeSync = Some(code))
                 | Pair("node", "async") =>
                     if(targets.nodeAsync != None) { self.fail(at, "Duplicate target definition") }
-                    targets = targets.Targets(nodeAsync = Some(code))
+                    targets = targets.ParsedTargets(nodeAsync = Some(code))
                 | Pair(_, _) =>
                     self.fail(at, "Unknown target or mode")
             }
@@ -740,7 +740,7 @@ extend self: Parser {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
             let body = self.parseLambda(defaultParameterCount = signature.parameters.size())
-            functions.add(DFunction(functionAt, signature, AnyTarget(FireflyCode(body))))
+            functions.add(DFunction(functionAt, signature, Some(AnyTarget(FireflyCode(body)))))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()
@@ -971,21 +971,21 @@ binaryOperators = [
     ["^"]
 ].toArray()
 
-function findBestTarget(targetIsNode: Bool, body: Lambda, targets: ParsedTargets): Option[Target] {
+findBestTarget(targetIsNode: Bool, body: Option[Lambda], targets: ParsedTargets): Option[Target] {
     let pair = if(targetIsNode) {
-        let sync = targets.nodeSync.orElse {targets.jsSync}.orElse {body.map(FireflyCode)}
-        let async = targets.nodeAsync.orElse {targets.jsAsync}.orElse {body.map(FireflyCode)}
+        let sync = targets.nodeSync.orElse {targets.jsSync}.orElse {body.map {FireflyCode(_)}}
+        let async = targets.nodeAsync.orElse {targets.jsAsync}.orElse {body.map {FireflyCode(_)}}
         Pair(sync, async)
     } else {
-        let sync = targets.browserSync.orElse {targets.jsSync}.orElse {body.map(FireflyCode)}
-        let async = targets.browserAsync.orElse {targets.jsAsync}.orElse {body.map(FireflyCode)}
+        let sync = targets.browserSync.orElse {targets.jsSync}.orElse {body.map {FireflyCode(_)}}
+        let async = targets.browserAsync.orElse {targets.jsAsync}.orElse {body.map {FireflyCode(_)}}
         Pair(sync, async)
     }
     pair.{
         | Pair(None, None) => None
-        | Pair(Some(sync), None) => SyncTarget(sync)
-        | Pair(None, Some(async)) => AsyncTarget(async)
-        | Pair(Some(sync), Some(async)) {sync == async} => AnyTarget(sync)
-        | Pair(Some(sync), Some(async)) => SyncAsyncTarget(sync, async)
+        | Pair(Some(sync), None) => Some(SyncTarget(sync))
+        | Pair(None, Some(async)) => Some(AsyncTarget(async))
+        | Pair(Some(sync), Some(async)) {sync == async} => Some(AnyTarget(sync))
+        | Pair(Some(sync), Some(async)) => Some(SyncAsyncTarget(sync, async))
     }
 }
