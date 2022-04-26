@@ -121,7 +121,7 @@ extend self: Compiler {
         let file = moduleName + ".ff"
         let code = self.files.readText(packagePath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
-        let module = Parser.make(packagePair, file, tokens).parseModule()
+        let module = Parser.make(packagePair, file, tokens, self.targetIsNode).parseModule()
         let result = module.Module(
             imports = [...coreImports, ...module.imports]
         )
@@ -184,7 +184,7 @@ extend self: Compiler {
             Pair(array.expect(0), array.expect(1))
         }
 
-        let js = JsEmitter.make(self.targetIsNode, [module, ...otherModules]).emitModule(packagePair, module)
+        let js = JsEmitter.make([module, ...otherModules]).emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
         let jsFile = jsPath + "/" + moduleName + ".mjs"
         self.files.createDirectories(jsPath)

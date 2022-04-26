@@ -3,24 +3,35 @@ import Wildcards
 import Syntax
 
 type Parser(
-    packagePair: Pair[String, String],
-    file: String,
-    tokens: Array[Token],
-    end: Token,
-    mutable offset: Int,
+    packagePair: Pair[String, String]
+    file: String
+    tokens: Array[Token]
+    end: Token
+    targetIsNode: Bool
+    mutable offset: Int
     mutable nextUnificationVariableIndex: Int
 )
 
 type Poly(generics: List[String], constraints: List[Constraint])
 
-make(packagePair: Pair[String, String], file: String, tokens: Array[Token]): Parser {
+type ParsedTargets(
+    jsSync: Option[TargetCode]
+    jsAsync: Option[TargetCode]
+    browserSync: Option[TargetCode]
+    browserAsync: Option[TargetCode]
+    nodeSync: Option[TargetCode]
+    nodeAsync: Option[TargetCode]
+)
+
+make(packagePair: Pair[String, String], file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
     Parser(
-        packagePair,
-        file,
-        tokens,
-        tokens.expectLast(),
-        0,
-        1 // To avoid collision with the unification and resolver
+        packagePair = packagePair
+        file = file
+        tokens = tokens
+        end = tokens.expectLast()
+        targetIsNode = targetIsNode
+        offset = 0
+        nextUnificationVariableIndex = 1 // To avoid collision with the unification and resolver
     )
 }
 
@@ -137,23 +148,22 @@ extend self: Parser {
         } else { self.freshUnificationVariable(nameToken.at()) }
         self.skip(LAssign)
         let value = self.parseTerm()
-        let targets = self.parseTargets()
-        DLet(nameToken.at(), nameToken.raw(), variableType, value, targets)
+        DLet(nameToken.at(), nameToken.raw(), variableType, value)
     }
     
     parseFunctionDefinition(): DFunction {
         let signature = self.parseSignature()
-        let body = self.parseLambda(signature.parameters.size())
-        let targets = self.parseTargets()
+        let body = if(self.current().rawIs("{")) {self.parseLambda(signature.parameters.size())}
+        let targets = self.parseTargets(signature.parameters.size())
+        let bestTarget = findBestTarget(self.targetIsNode, body, targets)
         DFunction(
-            signature.at,
-            signature,
-            body,
-            targets
+            signature.at
+            signature
+            bestTarget
         )
     }
 
-    parseTargets(): Targets {
+    parseTargets(parameterCount: Int): ParsedTargets {
         function processCode(code: String): String {
             let dropCount = if(code.startsWith("\"\"\"")) {3} else {1}
             code.dropFirst(dropCount).dropLast(dropCount)
@@ -163,13 +173,17 @@ extend self: Parser {
                 .replace("\\t", "\t")
                 .replace("\\\\", "\\")
         }
-        mutable targets = Targets(None, None, None, None, None, None)
+        mutable targets = ParsedTargets(None, None, None, None, None, None)
         while { self.currentIsSeparator(LSemicolon) && self.ahead().is(LKeyword) && self.ahead().rawIs("target") } {
             self.skip(LSeparator)
             let at = self.skip(LKeyword).at()
             let target = self.skip(LKeyword).raw()
-            let mode = self.skip(LKeyword).raw()
-            let code = processCode(self.skip(LString).raw())
+            let mode = if(self.current().is(LLower)) {self.skip(LLower).raw()} else {self.skip(LKeyword).raw()}
+            let code = if(self.current().is(LString)) {
+                ForeignCode(processCode(self.skip(LString).raw()))
+            } else {
+                FireflyCode(self.parseLambda(parameterCount))
+            }
             Pair(target, mode).{
                 | Pair("js", "sync") =>
                     if(targets.jsSync != None) { self.fail(at, "Duplicate target definition") }
@@ -329,23 +343,21 @@ extend self: Parser {
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
         let variants = if(newtype || !self.current().rawIs("{")) {
-            [Variant(nameToken.at(), nameToken.raw(), [], Targets(None, None, None, None, None, None))]
+            [Variant(nameToken.at(), nameToken.raw(), [])]
         } else {
             self.rawSkip(LBracketLeft, "{")
             let variantsBuilder = ArrayBuilder.empty[Variant]()
             while {!self.current().is(LBracketRight)} {
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-                let targets = self.parseTargets()
                 variantsBuilder.add(
-                    Variant(variantNameToken.at(), variantNameToken.raw(), variantFields, targets)
+                    Variant(variantNameToken.at(), variantNameToken.raw(), variantFields)
                 )
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
             variantsBuilder.toList()
         }
-        let targets = self.parseTargets()
         if(newtype && commonFields.size() != 1) {
             self.fail(nameToken.at(), "Newtypes must have exactly one field")
         }
@@ -353,7 +365,7 @@ extend self: Parser {
             self.fail(commonFields.expect(0).at, "Newtypes can't have mutable fields")
         }
         let generics = [...effectParameter, ...poly.generics]
-        DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants, targets)
+        DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants)
     }
     
     parseImportDefinition(): DImport {
@@ -728,7 +740,7 @@ extend self: Parser {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
             let body = self.parseLambda(defaultParameterCount = signature.parameters.size())
-            functions.add(DFunction(functionAt, signature, body, Targets(None, None, None, None, None, None)))
+            functions.add(DFunction(functionAt, signature, AnyTarget(FireflyCode(body))))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()
@@ -958,3 +970,22 @@ binaryOperators = [
     ["*", "/", "%"]
     ["^"]
 ].toArray()
+
+function findBestTarget(targetIsNode: Bool, body: Lambda, targets: ParsedTargets): Option[Target] {
+    let pair = if(targetIsNode) {
+        let sync = targets.nodeSync.orElse {targets.jsSync}.orElse {body.map(FireflyCode)}
+        let async = targets.nodeAsync.orElse {targets.jsAsync}.orElse {body.map(FireflyCode)}
+        Pair(sync, async)
+    } else {
+        let sync = targets.browserSync.orElse {targets.jsSync}.orElse {body.map(FireflyCode)}
+        let async = targets.browserAsync.orElse {targets.jsAsync}.orElse {body.map(FireflyCode)}
+        Pair(sync, async)
+    }
+    pair.{
+        | Pair(None, None) => None
+        | Pair(Some(sync), None) => SyncTarget(sync)
+        | Pair(None, Some(async)) => AsyncTarget(async)
+        | Pair(Some(sync), Some(async)) {sync == async} => AnyTarget(sync)
+        | Pair(Some(sync), Some(async)) => SyncAsyncTarget(sync, async)
+    }
+}

@@ -4,18 +4,16 @@ import JsImporter
 
 type JsEmitter(
     otherModules: Map[String, Module]
-    targetIsNode: Bool
     jsImporter: JsImporter
     mutable tailCallUsed: Bool
 )
 
-make(targetIsNode: Bool, otherModules: List[Module]): JsEmitter {
+make(otherModules: List[Module]): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map { m =>
             let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
-        targetIsNode = targetIsNode
         jsImporter = JsImporter.make()
         tailCallUsed = False
     )
@@ -27,12 +25,12 @@ fail[T](at: Location, message: String): T {
 
 extend self: JsEmitter {
 
-    bestTarget(targets: Targets, async: Bool): Option[String] {
-        Pair(self.targetIsNode, async).{
-            | Pair(False, False) => targets.browserSync.orElse {targets.jsSync}
-            | Pair(False, True) => targets.browserAsync.orElse {targets.jsAsync}
-            | Pair(True, False) => targets.nodeSync.orElse {targets.jsSync}
-            | Pair(True, True) => targets.nodeAsync.orElse {targets.jsAsync}
+    bestTarget(target: Target, async: Bool): Option[TargetCode] {
+        target.{
+            | AnyTarget(code) => Some(code)
+            | SyncTarget(code) => Some(code).filter {_ => !async}
+            | AsyncTarget(code) => Some(code).filter {_ => async}
+            | SyncAsyncTarget(sync, async) => Some(if(async) {async} else {sync})
         }
     }
 
@@ -81,7 +79,7 @@ extend self: JsEmitter {
 
     emitLetDefinition(definition: DLet, mutable: Bool, async: Bool): String {
         let mutability = if(mutable) {"let"} else {"const"}
-        let valueCode = self.bestTarget(definition.targets, async = False).else {self.emitTerm(definition.value, async)}
+        let valueCode = self.emitTerm(definition.value, async)
         mutability + " " + escapeKeyword(definition.name) + " = " + valueCode + ";"
     }
 
@@ -117,33 +115,37 @@ extend self: JsEmitter {
 
     emitFunctionDefinition(definition: DFunction, async: Bool, suffix: String = ""): String {
         let signature = self.emitSignature(definition.signature, async, suffix)
-        let target = self.bestTarget(definition.targets, async)
-        target.map { code =>
-            signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
-        }.else:
-        definition.body.{
-            | Lambda(_, effect, [matchCase]) {
-                matchCase.patterns.all {
-                    | PVariable(_, None) => True
-                    | PVariable(_, Some(x)) {True /* TODO */} => True
-                    | _ => False
-                }
-            } =>
-                let body = self.emitTailCall { self.emitStatements(matchCase.body, True, async) }
-                signature + " {\n" + body + "\n}"
-            | Lambda(_, effect, cases) =>
-                Patterns.convertAndCheck(self.otherModules, cases)
-                let escapedArguments = definition.signature.parameters.map { _.name + "_a" }
-                let shadowingWorkaround = definition.signature.parameters.map { p =>
-                    "const " + p.name + "_a = " + escapeKeyword(p.name) + ";"
-                }.join("\n")
-                let body = self.emitTailCall {
-                    let casesString = cases.map {
-                        "{\n" + self.emitCase(escapedArguments, _, True, async) + "\n}"
+        let target = definition.body.flatMap {self.bestTarget(_, async)}
+        target. {
+            | None =>
+                let modeName = if(async) {"async"} else {"sync"}
+                signature + " {\nthrow new Error('Function " + signature.name + " not available on this target in " + modeName + " context.');\n}"
+            | Some(ForeignCode(code)) =>
+                signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
+            | Some(FireflyCode(body)) => body.{
+                | Lambda(_, effect, [matchCase]) {
+                    matchCase.patterns.all {
+                        | PVariable(_, None) => True
+                        | PVariable(_, Some(x)) {True /* TODO */} => True
+                        | _ => False
+                    }
+                } =>
+                    let body = self.emitTailCall { self.emitStatements(matchCase.body, True, async) }
+                    signature + " {\n" + body + "\n}"
+                | Lambda(_, effect, cases) =>
+                    Patterns.convertAndCheck(self.otherModules, cases)
+                    let escapedArguments = definition.signature.parameters.map { _.name + "_a" }
+                    let shadowingWorkaround = definition.signature.parameters.map { p =>
+                        "const " + p.name + "_a = " + escapeKeyword(p.name) + ";"
                     }.join("\n")
-                    "{\n" + shadowingWorkaround + "\n" + casesString + "\n}"
-                }
-                signature + " {\n" + body + "\n}"
+                    let body = self.emitTailCall {
+                        let casesString = cases.map {
+                            "{\n" + self.emitCase(escapedArguments, _, True, async) + "\n}"
+                        }.join("\n")
+                        "{\n" + shadowingWorkaround + "\n" + casesString + "\n}"
+                    }
+                    signature + " {\n" + body + "\n}"
+            }
         }
     }
 
@@ -186,21 +188,19 @@ extend self: JsEmitter {
     emitVariantDefinition(typeDefinition: DType, definition: Variant): String {
         let allFields = [...typeDefinition.commonFields, ...definition.fields]
         let fields = allFields.map { escapeKeyword(_.name) }.join(", ")
-        self.bestTarget(definition.targets, async = False).else {
-            if(allFields.isEmpty()) {
-                "const " + definition.name + "$ = {" + definition.name + ": true};\n" +
-                "export function " + definition.name + "(" + fields + ") {\n" +
-                "return " + definition.name + "$;\n" +
-                "}"
-            } elseIf { typeDefinition.variants.size() == 1 } {
-                "export function " + definition.name + "(" + fields + ") {\n" +
-                "return {" + fields + "};\n" +
-                "}"
-            } else {
-                "export function " + definition.name + "(" + fields + ") {\n" +
-                "return {" + definition.name + ": true, " + fields + "};\n" +
-                "}"
-            }
+        if(allFields.isEmpty()) {
+            "const " + definition.name + "$ = {" + definition.name + ": true};\n" +
+            "export function " + definition.name + "(" + fields + ") {\n" +
+            "return " + definition.name + "$;\n" +
+            "}"
+        } elseIf { typeDefinition.variants.size() == 1 } {
+            "export function " + definition.name + "(" + fields + ") {\n" +
+            "return {" + fields + "};\n" +
+            "}"
+        } else {
+            "export function " + definition.name + "(" + fields + ") {\n" +
+            "return {" + definition.name + ": true, " + fields + "};\n" +
+            "}"
         }
     }
 
@@ -344,11 +344,11 @@ extend self: JsEmitter {
             | EFunctions(at, functions, body) =>
                 let functionStrings = functions.map { f =>
                     let newAsync = async && effectTypeIsAsync(f.signature.effect)
-                    self.emitFunctionDefinition(DFunction(at, f.signature, f.body, emptyTargets), newAsync)
+                    self.emitFunctionDefinition(f, newAsync)
                 }
                 functionStrings.join("\n") + "\n" + self.emitStatements(body, last, async)
             | ELet(at, mutable, name, valueType, value, body) =>
-                self.emitLetDefinition(DLet(at, name, valueType, value, emptyTargets), mutable, async) + "\n" +
+                self.emitLetDefinition(DLet(at, name, valueType, value), mutable, async) + "\n" +
                 self.emitStatements(body, last, async)
             | EVariant(at, "ff:core/Unit.Unit", _, _) =>
                 ""

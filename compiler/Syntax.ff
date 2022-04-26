@@ -39,15 +39,13 @@ type DImport(
 type DFunction(
     at: Location,
     signature: Signature,
-    body: Lambda,
-    targets: Targets
+    body: Option[Target]
 )
 type DLet(
     at: Location,
     name: String,
     variableType: Type,
-    value: Term,
-    targets: Targets
+    value: Term
 )
 type DExtend(
     at: Location,
@@ -65,7 +63,6 @@ type DType(
     constraints: List[Constraint]
     commonFields: List[Parameter]
     variants: List[Variant]
-    targets: Targets
 )
 type DTrait(
     at: Location,
@@ -164,7 +161,7 @@ type Signature(
 
 type Lambda(at: Location, effect: Type, cases: List[MatchCase])
 
-type Variant(at: Location, name: String, fields: List[Parameter], targets: Targets)
+type Variant(at: Location, name: String, fields: List[Parameter])
 
 type Parameter(at: Location, mutable: Bool, name: String, valueType: Type, default: Option[Term])
 
@@ -174,14 +171,17 @@ type Field(at: Location, name: String, value: Term)
 
 type Constraint(at: Location, name: String, generics: List[Type])
 
-type Targets(
-    jsSync: Option[String]
-    jsAsync: Option[String]
-    nodeSync: Option[String]
-    nodeAsync: Option[String]
-    browserSync: Option[String]
-    browserAsync: Option[String]
-)
+type Target {
+    AnyTarget(code : TargetCode)
+    SyncTarget(code : TargetCode)
+    AsyncTarget(code : TargetCode)
+    SyncAsyncTarget(sync : TargetCode, async : TargetCode)
+}
+
+type TargetCode {
+    FireflyCode(code : Lambda)
+    ForeignCode(code : String)
+}
 
 type Type(at: Location) {
     TConstructor(name: String, generics: List[Type])
@@ -205,6 +205,26 @@ extend self: Type {
                 }
             | TVariable(at, index) =>
                 "$" + index
+        }
+    }
+}
+
+extend self: Target {
+    mapFirefly(f: Lambda => Lambda): Target {
+        self.{
+             | AnyTarget(code)  => AnyTarget(code.mapFirefly(f))
+             | SyncTarget(code) => SyncTarget(code.mapFirefly(f))
+             | AsyncTarget(code) => AsyncTarget(code.mapFirefly(f))
+             | SyncAsyncTarget(sync, async) => SyncAsyncTarget(sync.mapFirefly(f), async.mapFirefly(f))
+        }
+    }
+}
+
+extend self: TargetCode {
+    mapFirefly(f: Lambda => Lambda): TargetCode {
+        self.{
+            | FireflyCode(code) => FireflyCode(f(code))
+            | foreignCode => foreignCode
         }
     }
 }

@@ -112,7 +112,11 @@ extend self: Inference {
         )
         let instances = constraintsToInstances(definition.signature.constraints)
         self.unification.withLocalInstances(instances) {
-            definition.DFunction(body = self.inferLambda(environment2, functionType, definition.body))
+            definition.DFunction(
+                body = definition.body.map { target =>
+                    target.mapFirefly{self.inferLambda(environment2, functionType, _)}
+                }
+            )
         }
     }
 
