@@ -1,6 +1,6 @@
 type Array[T] {}
 
-range(size: Int): Array[Int] { panic("magic") }
+range(size: Int): Array[Int]
     target js sync """
         return Array.from({length: size_}, (_, i) => i);
     """
@@ -19,28 +19,28 @@ build[A, B](initial: A, body: A => Option[Pair[A, B]]): Array[B] {
     builder.drain()
 }
 
-fill[T](size: Int, value: T): Array[T] { panic("magic") }
+fill[T](size: Int, value: T): Array[T]
     target js sync """
         return new Array(size_).fill(value_);
     """
 
-empty[T](): Array[T] { panic("magic") }
+empty[T](): Array[T]
     target js sync """
         return [];
     """
 
 extend self[T]: Array[T] {
 
-    addAll(that: Array[T]): Array[T] { panic("magic") }
+    addAll(that: Array[T]): Array[T]
         target js sync "return self_.concat(that_)"
 
-    isEmpty(): Bool { panic("magic") }
+    isEmpty(): Bool
         target js sync "return self_.length === 0"
 
-    size(): Int { panic("magic") }
+    size(): Int
         target js sync "return self_.length"
 
-    expect(index: Int): T { panic("magic") }
+    expect(index: Int): T
         target js sync """
             if(index_ < 0 || index_ >= self_.length) {
                 throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.length)
@@ -52,13 +52,13 @@ extend self[T]: Array[T] {
 
     expectLast(): T { self.expect(self.size() - 1) }
 
-    dropFirst(count: Int = 1): Array[T] { panic("magic") }
+    dropFirst(count: Int = 1): Array[T]
         target js sync "return self_.slice(count_)"
 
-    dropLast(count: Int = 1): Array[T] { panic("magic") }
+    dropLast(count: Int = 1): Array[T]
         target js sync "return self_.slice(0, self_.length - count_)"
 
-    update(index: Int, body: T => T): Array[T] { panic("magic") }
+    update(index: Int, body: T => T): Array[T]
         target js sync """
             let result = self_.slice();
             result[index_] = body_(result[index_]);
@@ -70,7 +70,7 @@ extend self[T]: Array[T] {
             return result;
         """
 
-    toList(): List[T] { panic("magic") }
+    toList(): List[T]
         target js sync """
             let result = ff_core_List.Empty();
             for(let i = self_.length - 1; i >= 0; i--) {
@@ -83,7 +83,7 @@ extend self[T]: Array[T] {
 
 extend self: Array[String] {
 
-    join(separator: String = ""): String { panic("magic") }
+    join(separator: String = ""): String
         target js sync "return self_.join(separator_)"
 
 }

@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -112,35 +112,35 @@ return self_.toFixed(digits_)
 }
 
 export async function Float_toInt$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Float_toInt not available on this target in async context.');
 }
 
 export async function Float_round$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Float_round not available on this target in async context.');
 }
 
 export async function Float_floor$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Float_floor not available on this target in async context.');
 }
 
 export async function Float_ceil$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Float_ceil not available on this target in async context.');
 }
 
 export async function Float_truncate$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Float_truncate not available on this target in async context.');
 }
 
 export async function Float_sign$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Float_sign not available on this target in async context.');
 }
 
 export async function Float_abs$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Float_abs not available on this target in async context.');
 }
 
 export async function Float_toFixed$(self_, digits_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Float_toFixed not available on this target in async context.');
 }
 
 

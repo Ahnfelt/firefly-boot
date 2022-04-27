@@ -40,9 +40,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -138,39 +138,39 @@ return (_w1 != 46)
 }
 
 export function FileSystem_readText(self_, file_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_readText not available on this target in sync context.');
 }
 
 export function FileSystem_writeText(self_, file_, text_) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_writeText not available on this target in sync context.');
 }
 
 export function FileSystem_list(self_, path_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_list not available on this target in sync context.');
 }
 
 export function FileSystem_exists(self_, path_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_exists not available on this target in sync context.');
 }
 
 export function FileSystem_isDirectory(self_, path_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_isDirectory not available on this target in sync context.');
 }
 
 export function FileSystem_createDirectory(self_, path_) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_createDirectory not available on this target in sync context.');
 }
 
 export function FileSystem_createDirectories(self_, path_) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_createDirectories not available on this target in sync context.');
 }
 
 export function FileSystem_delete(self_, path_) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_delete not available on this target in sync context.');
 }
 
 export function FileSystem_rename(self_, fromPath_, toPath_) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_rename not available on this target in sync context.');
 }
 
 export function FileSystem_getAbsolutePath(self_, path_) {
@@ -181,23 +181,23 @@ export function FileSystem_getAbsolutePath(self_, path_) {
 }
 
 export function FileSystem_readStream(self_, file_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_readStream not available on this target in sync context.');
 }
 
 export function FileSystem_writeStream(self_, file_, stream_, createOnly_ = false) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_writeStream not available on this target in sync context.');
 }
 
 export function FileSystem_appendStream(self_, file_, stream_) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_appendStream not available on this target in sync context.');
 }
 
 export function FileSystem_decompressGzipStream(self_, stream_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_decompressGzipStream not available on this target in sync context.');
 }
 
 export function FileSystem_open(self_, file_, flags_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_open not available on this target in sync context.');
 }
 
 export async function FileSystem_readText$(self_, file_, $c) {
@@ -264,7 +264,7 @@ export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {
 }
 
 export async function FileSystem_getAbsolutePath$(self_, path_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function FileSystem_getAbsolutePath not available on this target in async context.');
 }
 
 export async function FileSystem_readStream$(self_, file_, $c) {

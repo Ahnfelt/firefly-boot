@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -84,11 +84,11 @@ return Buffer.concat(array_)
 }
 
 export async function make_$(size_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function make not available on this target in async context.');
 }
 
 export async function fromBufferArray_$(array_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function fromBufferArray not available on this target in async context.');
 }
 
 export function Buffer_size(self_) {
@@ -114,19 +114,19 @@ return self_.toString(encoding_)
 }
 
 export async function Buffer_size$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Buffer_size not available on this target in async context.');
 }
 
 export async function Buffer_expect$(self_, index_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Buffer_expect not available on this target in async context.');
 }
 
 export async function Buffer_set$(self_, index_, byte_, $c) {
-ff_core_Core.panic_("magic")
+throw new Error('Function Buffer_set not available on this target in async context.');
 }
 
 export async function Buffer_toString$(self_, encoding_ = "utf8", $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Buffer_toString not available on this target in async context.');
 }
 
 

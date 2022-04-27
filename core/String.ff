@@ -2,22 +2,22 @@ type String {}
 
 extend self: String {
 
-    size(): Int { panic("magic") }
+    size(): Int
         target js sync "return self_.length"
 
-    expect(index: Int): Char { panic("magic") }
+    expect(index: Int): Char
         target js sync "return self_.charCodeAt(index_)"
 
-    replace(needle: String, replacement: String): String { panic("magic") }
+    replace(needle: String, replacement: String): String
         target js sync "return self_.replaceAll(needle_, replacement_)"
 
-    replaceFirst(needle: String, replacement: String): String { panic("magic") }
+    replaceFirst(needle: String, replacement: String): String
         target js sync "return self_.replace(needle_, replacement_)"
 
-    reverse(): String { panic("magic") }
+    reverse(): String
         target js sync "return [...self_].reverse().join('')"
 
-    dropWhile(p: Char => Bool): String { panic("magic") }
+    dropWhile(p: Char => Bool): String
         target js sync """
             let i = 0
             for(; i < self_.length && p_(self_.codePointAt(i)); i++);
@@ -29,7 +29,7 @@ extend self: String {
             return self_.slice(i)
         """
 
-    takeWhile(p: Char => Bool): String { panic("magic") }
+    takeWhile(p: Char => Bool): String
         target js sync """
             let i = 0
             for(; i < self_.length && p_(self_.codePointAt(i)); i++);
@@ -41,19 +41,19 @@ extend self: String {
             return self_.slice(0, i)
         """
 
-    slice(from: Int, until: Int): String { panic("magic") }
+    slice(from: Int, until: Int): String
         target js sync "return self_.slice(from_, until_)"
 
-    split(char: Char): Array[String] { panic("magic") }
+    split(char: Char): Array[String]
         target js sync "return self_.split(String.fromCharCode(char_))"
 
-    dropFirst(count: Int = 1): String { panic("magic") }
+    dropFirst(count: Int = 1): String
         target js sync "return self_.slice(count_)"
 
-    dropLast(count: Int = 1): String { panic("magic") }
+    dropLast(count: Int = 1): String
         target js sync "return self_.slice(0, self_.length - count_)"
 
-    expectInt(): Int { panic("magic") }
+    expectInt(): Int
         target js sync """
             if(self_.array.length == 0) throw "expectInt on empty string"
             for(let i = 0; i < self_.length; i++) {
@@ -63,14 +63,14 @@ extend self: String {
             return parseInt(self_, 10);
         """
 
-    first(): Option[Char] { panic("magic") }
+    first(): Option[Char]
         target js sync """
             return self_.length > 0
                 ? ff_core_Option.Some(self_.charCodeAt(0))
                 : ff_core_Option.None()
         """
 
-    last(): Option[Char] { panic("magic") }
+    last(): Option[Char]
         target js sync """
             return self_.length > 0
                 ? ff_core_Option.Some(self_.charCodeAt(self_.length - 1))
@@ -81,16 +81,16 @@ extend self: String {
 
     expectLast(): Char { self.last().else { panic("expectFirst() on empty string") } }
 
-    contains(substring: String) : Bool { panic("magic") }
+    contains(substring: String) : Bool
         target js sync "return self_.includes(substring_)"
 
-    startsWith(prefix: String, offset: Int = 0) : Bool { panic("magic") }
+    startsWith(prefix: String, offset: Int = 0) : Bool
         target js sync "return self_.startsWith(prefix_, offset_)"
 
-    endsWith(prefix: String) : Bool { panic("magic") }
+    endsWith(prefix: String) : Bool
         target js sync "return self_.endsWith(prefix_)"
 
-    any(body: Char => Bool): Bool { panic("magic") }
+    any(body: Char => Bool): Bool
         target js sync """
             for(let i = 0; i < self_.length; i++) {
                 if(body_(self_.charCodeAt(i))) return true;
@@ -104,7 +104,7 @@ extend self: String {
             return false;
         """
 
-    all(body: Char => Bool): Bool { panic("magic") }
+    all(body: Char => Bool): Bool
         target js sync """
             for(let i = 0; i < self_.length; i++) {
                 if(!body_(self_.charCodeAt(i))) return false;

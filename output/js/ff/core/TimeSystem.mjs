@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -96,11 +96,11 @@ return ff_core_Pair.Pair(result_, duration_)
 }
 
 export async function TimeSystem_now$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function TimeSystem_now not available on this target in async context.');
 }
 
 export async function TimeSystem_elapsed$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function TimeSystem_elapsed not available on this target in async context.');
 }
 
 export async function TimeSystem_measure$(self_, body_, $c) {

@@ -2,28 +2,28 @@ type Int {}
 
 extend self: Int {
 
-    abs(): Int { panic("magic") }
+    abs(): Int
         target js sync "return Math.abs(self_)"
 
-    toFloat(): Float { panic("magic") }
+    toFloat(): Float
         target js sync "return self_"
 
-    bitNot(): Int { panic("magic") }
+    bitNot(): Int
         target js sync "return ~self_;"
 
-    bitOr(that: Int): Int { panic("magic") }
+    bitOr(that: Int): Int
         target js sync "return self_ | that_;"
 
-    bitAnd(that: Int): Int { panic("magic") }
+    bitAnd(that: Int): Int
         target js sync "return self_ & that_;"
 
-    bitXor(that: Int): Int { panic("magic") }
+    bitXor(that: Int): Int
         target js sync "return self_ ^ that_;"
 
-    bitLeft(bits: Int = 1): Int { panic("magic") }
+    bitLeft(bits: Int = 1): Int
         target js sync "return self_ << bits_;"
 
-    bitRight(bits: Int = 1, signed: Bool = True): Int { panic("magic") }
+    bitRight(bits: Int = 1, signed: Bool = True): Int
         target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
 
 }

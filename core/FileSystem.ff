@@ -2,67 +2,67 @@ type FileSystem! {}
 
 extend self: FileSystem {
 
-    readText(file: String): String { panic("magic") }
+    readText(file: String): String
         target node async """
             import * as fsPromises from 'fs/promises'
             return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})
         """
 
-    writeText(file: String, text: String): Unit { panic("magic") }
+    writeText(file: String, text: String): Unit
         target node async """
             import * as fsPromises from 'fs/promises'
             await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
         """
 
-    list(path: String): List[String] { panic("magic") }
+    list(path: String): List[String]
         target node async """
             import * as fsPromises from 'fs/promises'
             return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
         """
 
-    exists(path: String): Bool { panic("magic") }
+    exists(path: String): Bool
         target node async """
             import * as fsPromises from 'fs/promises'
             return await fsPromises.access(path_).then(() => true).catch(() => false)
         """
 
-    isDirectory(path: String): Bool { panic("magic") }
+    isDirectory(path: String): Bool
         target node async """
             import * as fsPromises from 'fs/promises'
             return (await fsPromises.lstat(path_)).isDirectory()
         """
 
-    createDirectory(path: String): Unit { panic("magic") }
+    createDirectory(path: String): Unit
         target node async """
             import * as fsPromises from 'fs/promises'
             await fsPromises.mkdir(path_)
         """
 
-    createDirectories(path: String): Unit { panic("magic") }
+    createDirectories(path: String): Unit
         target node async """
             import * as fsPromises from 'fs/promises'
             await fsPromises.mkdir(path_, {recursive: true})
         """
 
-    delete(path: String): Unit { panic("magic") }
+    delete(path: String): Unit
         target node async """
             import * as fsPromises from 'fs/promises'
             try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
         """
 
-    rename(fromPath: String, toPath: String): Unit { panic("magic") }
+    rename(fromPath: String, toPath: String): Unit
         target node async """
             import * as fsPromises from 'fs/promises'
             await fsPromises.rename(fromPath_, toPath_)
         """
 
-    getAbsolutePath(path: String): String { panic("magic") }
+    getAbsolutePath(path: String): String
         target node sync """
             import * as path from 'path'
             return path.resolve(path_)
         """
 
-    readStream(file: String): Stream[Buffer] { panic("magic") }
+    readStream(file: String): Stream[Buffer]
         target node async """
             import * as fs from 'fs'
             return $c => {
@@ -100,7 +100,7 @@ extend self: FileSystem {
             }
         """
 
-    writeStream(file: String, stream: Stream[Buffer], createOnly: Bool = False): Unit { panic("magic") }
+    writeStream(file: String, stream: Stream[Buffer], createOnly: Bool = False): Unit
         target node async """
             import * as fs from 'fs'
             let writeable = fs.createWriteStream(file_, {flags: createOnly_ ? 'wx' : 'w'})
@@ -121,7 +121,7 @@ extend self: FileSystem {
             }
         """
 
-    appendStream(file: String, stream: Stream[Buffer]): Unit { panic("magic") }
+    appendStream(file: String, stream: Stream[Buffer]): Unit
         target node async """
             import * as fs from 'fs'
             let writeable = fs.createWriteStream(file_, {flags: 'a'})
@@ -142,7 +142,7 @@ extend self: FileSystem {
             }
         """
 
-    decompressGzipStream(stream: Stream[Buffer]): Stream[Buffer] { panic("magic") }
+    decompressGzipStream(stream: Stream[Buffer]): Stream[Buffer]
         target node async """
             import * as zlib from 'zlib'
             return async ($c) => {
@@ -187,7 +187,7 @@ extend self: FileSystem {
             }
         """
 
-    open(file: String, flags: String): FileHandle { panic("magic") }
+    open(file: String, flags: String): FileHandle
         target node async """
             import * as fsPromises from 'fs/promises'
             return await fsPromises.open(file, flags)

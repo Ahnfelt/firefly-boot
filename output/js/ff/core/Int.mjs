@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -112,35 +112,35 @@ return signed_ ? self_ >> bits_ : self_ >>> bits_;
 }
 
 export async function Int_abs$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Int_abs not available on this target in async context.');
 }
 
 export async function Int_toFloat$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Int_toFloat not available on this target in async context.');
 }
 
 export async function Int_bitNot$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Int_bitNot not available on this target in async context.');
 }
 
 export async function Int_bitOr$(self_, that_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Int_bitOr not available on this target in async context.');
 }
 
 export async function Int_bitAnd$(self_, that_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Int_bitAnd not available on this target in async context.');
 }
 
 export async function Int_bitXor$(self_, that_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Int_bitXor not available on this target in async context.');
 }
 
 export async function Int_bitLeft$(self_, bits_ = 1, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Int_bitLeft not available on this target in async context.');
 }
 
 export async function Int_bitRight$(self_, bits_ = 1, signed_ = true, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Int_bitRight not available on this target in async context.');
 }
 
 

@@ -4,7 +4,7 @@ type TaskScope! {}
 
 extend self: TaskScope {
 
-    spawn(task: () => Unit): Unit { panic("magic") }
+    spawn(task: () => Unit): Unit
         target js async """
             if(self_.closed) throw new Error("Spawn outside scope")
             async function spawn() {
@@ -30,7 +30,7 @@ extend self: TaskScope {
 
 extend self: TaskSystem {
 
-    scope[T](body: TaskScope => T, shield: Bool = False): T { panic("magic") }
+    scope[T](body: TaskScope => T, shield: Bool = False): T
         target js async """
             if(!shield_ && $c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
             let controller = new AbortController()
@@ -64,7 +64,7 @@ extend self: TaskSystem {
             return result
         """
 
-    channel[T](capacity: Int = 0): Channel[T] { panic("magic") }
+    channel[T](capacity: Int = 0): Channel[T]
         target js async """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
     sleep(duration: Duration): Unit {

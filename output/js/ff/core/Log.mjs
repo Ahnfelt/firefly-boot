@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -79,7 +79,7 @@ console.log(value_)
 }
 
 export async function debug_$(value_, $c) {
-ff_core_Core.panic_("magic")
+throw new Error('Function debug not available on this target in async context.');
 }
 
 

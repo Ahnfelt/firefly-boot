@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -193,15 +193,15 @@ return (await body_($c))
 }
 
 export async function throw_$(error_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function throw not available on this target in async context.');
 }
 
 export async function panic_$(message_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function panic not available on this target in async context.');
 }
 
 export async function magicShow_$(value_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function magicShow not available on this target in async context.');
 }
 
 

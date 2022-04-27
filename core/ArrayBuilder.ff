@@ -1,30 +1,30 @@
 type ArrayBuilder[T] {}
 
-empty[T](): ArrayBuilder[T] { panic("magic") }
+empty[T](): ArrayBuilder[T]
     target js sync "return {array: []}"
 
 extend self[T]: ArrayBuilder[T] {
 
-    toArray(): Array[T] { panic("magic") }
+    toArray(): Array[T]
         target js sync "return self_.array.slice()"
 
-    isEmpty(): Bool { panic("magic") }
+    isEmpty(): Bool
         target js sync "return self_.array.length === 0"
 
-    size(): Int { panic("magic") }
+    size(): Int
         target js sync "return self_.array.length"
 
-    add(value: T): Unit { panic("magic") }
+    add(value: T): Unit
         target js sync "self_.array.push(value_)"
 
-    modify(index: Int, body: T => T): Unit { panic("magic") }
+    modify(index: Int, body: T => T): Unit
         target js sync "self_.array[index_] = body_(self_.array[index_])"
         target js async "self_.array[index_] = await body_(self_.array[index_], $c)"
 
-    drain(): Array[T] { panic("magic") }
+    drain(): Array[T]
         target js sync "const result = self_.array; self_.array = []; return result"
 
-    toList(): List[T] { panic("magic") }
+    toList(): List[T]
         target js sync """
             let result = ff_core_List.Empty();
             for(let i = self_.array.length - 1; i >= 0; i--) {
@@ -33,17 +33,17 @@ extend self[T]: ArrayBuilder[T] {
             return result;
         """
 
-    last(): Option[T] { panic("magic") }
+    last(): Option[T]
         target js sync """
             return self_.array.length > 0
                 ? ff_core_Option.Some(self_.array[self_.array.length - 1])
                 : ff_core_Option.None()
         """
 
-    expectLast(): T { panic("magic") }
+    expectLast(): T
         target js sync "return self_.array[self_.array.length - 1]"
 
-    sortBy(ordering: (T, T) => Ordering): Unit { panic("magic") }
+    sortBy(ordering: (T, T) => Ordering): Unit
         target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
         // TODO: Async version
 

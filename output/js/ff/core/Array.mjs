@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -127,7 +127,7 @@ export function empty_() {
 }
 
 export async function range_$(size_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function range not available on this target in async context.');
 }
 
 export async function build_$(initial_, body_, $c) {
@@ -164,11 +164,11 @@ return ff_core_ArrayBuilder.ArrayBuilder_drain(builder_)
 }
 
 export async function fill_$(size_, value_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function fill not available on this target in async context.');
 }
 
 export async function empty_$($c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function empty not available on this target in async context.');
 }
 
 export function Array_addAll(self_, that_) {
@@ -227,19 +227,19 @@ export function Array_toList(self_) {
 }
 
 export async function Array_addAll$(self_, that_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Array_addAll not available on this target in async context.');
 }
 
 export async function Array_isEmpty$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Array_isEmpty not available on this target in async context.');
 }
 
 export async function Array_size$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Array_size not available on this target in async context.');
 }
 
 export async function Array_expect$(self_, index_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Array_expect not available on this target in async context.');
 }
 
 export async function Array_expectFirst$(self_, $c) {
@@ -251,11 +251,11 @@ return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
 export async function Array_dropFirst$(self_, count_ = 1, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Array_dropFirst not available on this target in async context.');
 }
 
 export async function Array_dropLast$(self_, count_ = 1, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Array_dropLast not available on this target in async context.');
 }
 
 export async function Array_update$(self_, index_, body_, $c) {
@@ -267,7 +267,7 @@ export async function Array_update$(self_, index_, body_, $c) {
 }
 
 export async function Array_toList$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Array_toList not available on this target in async context.');
 }
 
 export function Array_join(self_, separator_ = "") {
@@ -275,7 +275,7 @@ return self_.join(separator_)
 }
 
 export async function Array_join$(self_, separator_ = "", $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Array_join not available on this target in async context.');
 }
 
 

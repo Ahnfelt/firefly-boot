@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -80,7 +80,7 @@ return {array: []}
 }
 
 export async function empty_$($c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function empty not available on this target in async context.');
 }
 
 export function ArrayBuilder_toArray(self_) {
@@ -134,19 +134,19 @@ self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
 export async function ArrayBuilder_toArray$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_toArray not available on this target in async context.');
 }
 
 export async function ArrayBuilder_isEmpty$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_isEmpty not available on this target in async context.');
 }
 
 export async function ArrayBuilder_size$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_size not available on this target in async context.');
 }
 
 export async function ArrayBuilder_add$(self_, value_, $c) {
-ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_add not available on this target in async context.');
 }
 
 export async function ArrayBuilder_modify$(self_, index_, body_, $c) {
@@ -154,23 +154,23 @@ self_.array[index_] = await body_(self_.array[index_], $c)
 }
 
 export async function ArrayBuilder_drain$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_drain not available on this target in async context.');
 }
 
 export async function ArrayBuilder_toList$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_toList not available on this target in async context.');
 }
 
 export async function ArrayBuilder_last$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_last not available on this target in async context.');
 }
 
 export async function ArrayBuilder_expectLast$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_expectLast not available on this target in async context.');
 }
 
 export async function ArrayBuilder_sortBy$(self_, ordering_, $c) {
-ff_core_Core.panic_("magic")
+throw new Error('Function ArrayBuilder_sortBy not available on this target in async context.');
 }
 
 

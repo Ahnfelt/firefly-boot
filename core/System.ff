@@ -4,22 +4,22 @@ type SystemArguments(array: Array[String])
 
 extend self: System {
 
-    arguments(): List[String] { panic("magic") }
+    arguments(): List[String]
         target js async "return ff_core_Array.Array_toList(self_.array_)"
 
-    files(): FileSystem { panic("magic") }
+    files(): FileSystem
         target js async "return null"
 
-    fetch(): FetchSystem { panic("magic") }
+    fetch(): FetchSystem
         target js async "return null"
 
-    tasks(): TaskSystem { panic("magic") }
+    tasks(): TaskSystem
         target js async "return null"
 
-    time(): TimeSystem { panic("magic") }
+    time(): TimeSystem
         target js async "return null"
 
-    js(): JsSystem { panic("magic") }
+    js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
 
 }

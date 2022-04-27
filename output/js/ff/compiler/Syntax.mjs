@@ -36,9 +36,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -98,13 +98,13 @@ return {at_, alias_, package_, directory_, file_};
 }
 
 // type DFunction
-export function DFunction(at_, signature_, body_, targets_) {
-return {at_, signature_, body_, targets_};
+export function DFunction(at_, signature_, body_) {
+return {at_, signature_, body_};
 }
 
 // type DLet
-export function DLet(at_, name_, variableType_, value_, targets_) {
-return {at_, name_, variableType_, value_, targets_};
+export function DLet(at_, name_, variableType_, value_) {
+return {at_, name_, variableType_, value_};
 }
 
 // type DExtend
@@ -113,8 +113,8 @@ return {at_, name_, generics_, constraints_, type_, methods_};
 }
 
 // type DType
-export function DType(at_, newtype_, name_, generics_, constraints_, commonFields_, variants_, targets_) {
-return {at_, newtype_, name_, generics_, constraints_, commonFields_, variants_, targets_};
+export function DType(at_, newtype_, name_, generics_, constraints_, commonFields_, variants_) {
+return {at_, newtype_, name_, generics_, constraints_, commonFields_, variants_};
 }
 
 // type DTrait
@@ -246,8 +246,8 @@ return {at_, effect_, cases_};
 }
 
 // type Variant
-export function Variant(at_, name_, fields_, targets_) {
-return {at_, name_, fields_, targets_};
+export function Variant(at_, name_, fields_) {
+return {at_, name_, fields_};
 }
 
 // type Parameter
@@ -270,9 +270,26 @@ export function Constraint(at_, name_, generics_) {
 return {at_, name_, generics_};
 }
 
-// type Targets
-export function Targets(jsSync_, jsAsync_, nodeSync_, nodeAsync_, browserSync_, browserAsync_) {
-return {jsSync_, jsAsync_, nodeSync_, nodeAsync_, browserSync_, browserAsync_};
+// type Target
+export function AnyTarget(code_) {
+return {AnyTarget: true, code_};
+}
+export function SyncTarget(code_) {
+return {SyncTarget: true, code_};
+}
+export function AsyncTarget(code_) {
+return {AsyncTarget: true, code_};
+}
+export function SyncAsyncTarget(sync_, async_) {
+return {SyncAsyncTarget: true, sync_, async_};
+}
+
+// type TargetCode
+export function FireflyCode(code_) {
+return {FireflyCode: true, code_};
+}
+export function ForeignCode(code_) {
+return {ForeignCode: true, code_};
 }
 
 // type Type
@@ -370,6 +387,112 @@ const index_ = _1.index_;
 return ("$" + index_)
 return
 }
+}
+}
+}
+
+export function Target_mapFirefly(self_, f_) {
+{
+const _1 = self_;
+{
+if(_1.AnyTarget) {
+const code_ = _1.code_;
+return ff_compiler_Syntax.AnyTarget(ff_compiler_Syntax.TargetCode_mapFirefly(code_, f_))
+return
+}
+}
+{
+if(_1.SyncTarget) {
+const code_ = _1.code_;
+return ff_compiler_Syntax.SyncTarget(ff_compiler_Syntax.TargetCode_mapFirefly(code_, f_))
+return
+}
+}
+{
+if(_1.AsyncTarget) {
+const code_ = _1.code_;
+return ff_compiler_Syntax.AsyncTarget(ff_compiler_Syntax.TargetCode_mapFirefly(code_, f_))
+return
+}
+}
+{
+if(_1.SyncAsyncTarget) {
+const sync_ = _1.sync_;
+const async_ = _1.async_;
+return ff_compiler_Syntax.SyncAsyncTarget(ff_compiler_Syntax.TargetCode_mapFirefly(sync_, f_), ff_compiler_Syntax.TargetCode_mapFirefly(async_, f_))
+return
+}
+}
+}
+}
+
+export async function Target_mapFirefly$(self_, f_, $c) {
+{
+const _1 = self_;
+{
+if(_1.AnyTarget) {
+const code_ = _1.code_;
+return ff_compiler_Syntax.AnyTarget((await ff_compiler_Syntax.TargetCode_mapFirefly$(code_, f_, $c)))
+return
+}
+}
+{
+if(_1.SyncTarget) {
+const code_ = _1.code_;
+return ff_compiler_Syntax.SyncTarget((await ff_compiler_Syntax.TargetCode_mapFirefly$(code_, f_, $c)))
+return
+}
+}
+{
+if(_1.AsyncTarget) {
+const code_ = _1.code_;
+return ff_compiler_Syntax.AsyncTarget((await ff_compiler_Syntax.TargetCode_mapFirefly$(code_, f_, $c)))
+return
+}
+}
+{
+if(_1.SyncAsyncTarget) {
+const sync_ = _1.sync_;
+const async_ = _1.async_;
+return ff_compiler_Syntax.SyncAsyncTarget((await ff_compiler_Syntax.TargetCode_mapFirefly$(sync_, f_, $c)), (await ff_compiler_Syntax.TargetCode_mapFirefly$(async_, f_, $c)))
+return
+}
+}
+}
+}
+
+export function TargetCode_mapFirefly(self_, f_) {
+{
+const _1 = self_;
+{
+if(_1.FireflyCode) {
+const code_ = _1.code_;
+return ff_compiler_Syntax.FireflyCode(f_(code_))
+return
+}
+}
+{
+const foreignCode_ = _1;
+return foreignCode_
+return
+}
+}
+}
+
+export async function TargetCode_mapFirefly$(self_, f_, $c) {
+{
+const _1 = self_;
+{
+if(_1.FireflyCode) {
+const code_ = _1.code_;
+return ff_compiler_Syntax.FireflyCode((await f_(code_, $c)))
+return
+}
+}
+{
+const foreignCode_ = _1;
+return foreignCode_
+return
 }
 }
 }

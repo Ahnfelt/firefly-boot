@@ -38,9 +38,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -117,7 +117,7 @@ export function Substitution_substituteLetDefinition(self_, definition_) {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.variableType_), ff_compiler_Substitution.Substitution_substituteTerm(self_, definition_.value_), _c.targets_)
+return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.variableType_), ff_compiler_Substitution.Substitution_substituteTerm(self_, definition_.value_))
 return
 }
 }
@@ -141,7 +141,11 @@ export function Substitution_substituteFunctionDefinition(self_, definition_) {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_.body_), _c.targets_)
+return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_core_Option.Option_map(definition_.body_, ((_w1) => {
+return ff_compiler_Syntax.Target_mapFirefly(_w1, ((definition_) => {
+return ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_)
+}))
+})))
 return
 }
 }
@@ -636,7 +640,7 @@ export async function Substitution_substituteLetDefinition$(self_, definition_, 
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.variableType_), ff_compiler_Substitution.Substitution_substituteTerm(self_, definition_.value_), _c.targets_)
+return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.variableType_), ff_compiler_Substitution.Substitution_substituteTerm(self_, definition_.value_))
 return
 }
 }
@@ -660,7 +664,11 @@ export async function Substitution_substituteFunctionDefinition$(self_, definiti
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_.body_), _c.targets_)
+return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_core_Option.Option_map(definition_.body_, ((_w1) => {
+return ff_compiler_Syntax.Target_mapFirefly(_w1, ((definition_) => {
+return ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_)
+}))
+})))
 return
 }
 }

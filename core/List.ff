@@ -3,7 +3,7 @@ type List[T] {
     Link(head: T, tail: List[T])
 }
 
-range(size: Int): List[Int] { panic("magic") }
+range(size: Int): List[Int]
     target js sync """
         let result = ff_core_List.Empty();
         for(let i = size_ - 1; i >= 0; i--) {
@@ -28,7 +28,7 @@ extend self[T]: List[T] {
         [self, list].flatten()
     }
 
-    toArray(): Array[T] { panic("magic") }
+    toArray(): Array[T]
         target js sync """
             let current = self_;
             let result = [];

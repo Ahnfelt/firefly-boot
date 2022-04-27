@@ -30,7 +30,7 @@ extend self: JsEmitter {
             | AnyTarget(code) => Some(code)
             | SyncTarget(code) => Some(code).filter {|_ => !async}
             | AsyncTarget(code) => Some(code).filter {|_ => async}
-            | SyncAsyncTarget(sync, async) => Some(if(async) {async} else {sync})
+            | SyncAsyncTarget(syncCode, asyncCode) => Some(if(async) {asyncCode} else {syncCode})
         }
     }
 
@@ -119,7 +119,7 @@ extend self: JsEmitter {
         target. {
             | None =>
                 let modeName = if(async) {"async"} else {"sync"}
-                signature + " {\nthrow new Error('Function " + signature.name + " not available on this target in " + modeName + " context.');\n}"
+                signature + " {\nthrow new Error('Function " + definition.signature.name + " not available on this target in " + modeName + " context.');\n}"
             | Some(ForeignCode(code)) =>
                 signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
             | Some(FireflyCode(body)) => body.{

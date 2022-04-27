@@ -50,9 +50,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -139,7 +139,7 @@ const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packageName_, f
 const file_ = (moduleName_ + ".ff");
 const code_ = ff_core_FileSystem.FileSystem_readText(self_.files_, ((packagePath_ + "/") + file_));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
-const module_ = ff_compiler_Parser.Parser_parseModule(ff_compiler_Parser.make_(packagePair_, file_, tokens_));
+const module_ = ff_compiler_Parser.Parser_parseModule(ff_compiler_Parser.make_(packagePair_, file_, tokens_, self_.targetIsNode_));
 const result_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, ff_core_List.List_addAll(ff_compiler_Compiler.coreImports_, module_.imports_), _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
 }))(module_);
@@ -204,7 +204,7 @@ const packagePair_ = ff_core_Core.do_((() => {
 const array_ = ff_core_String.String_split(packageName_, 58);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(array_, 0), ff_core_Array.Array_expect(array_, 1))
 }));
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(self_.targetIsNode_, ff_core_List.Link(module_, otherModules_)), packagePair_, module_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_)), packagePair_, module_);
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"));
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs");
 ff_core_FileSystem.FileSystem_createDirectories(self_.files_, jsPath_);
@@ -249,7 +249,7 @@ const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packageName_, f
 const file_ = (moduleName_ + ".ff");
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(self_.files_, ((packagePath_ + "/") + file_), $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
-const module_ = ff_compiler_Parser.Parser_parseModule(ff_compiler_Parser.make_(packagePair_, file_, tokens_));
+const module_ = ff_compiler_Parser.Parser_parseModule(ff_compiler_Parser.make_(packagePair_, file_, tokens_, self_.targetIsNode_));
 const result_ = ((async (_c, $c) => {
 return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, ff_core_List.List_addAll(ff_compiler_Compiler.coreImports_, module_.imports_), _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
 }))(module_);
@@ -314,7 +314,7 @@ const packagePair_ = ff_core_Core.do_((() => {
 const array_ = ff_core_String.String_split(packageName_, 58);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(array_, 0), ff_core_Array.Array_expect(array_, 1))
 }));
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(self_.targetIsNode_, ff_core_List.Link(module_, otherModules_)), packagePair_, module_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_)), packagePair_, module_);
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"));
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs");
 (await ff_core_FileSystem.FileSystem_createDirectories$(self_.files_, jsPath_, $c));

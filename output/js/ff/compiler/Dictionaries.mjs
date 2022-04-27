@@ -42,9 +42,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -189,7 +189,7 @@ export function Dictionaries_processLetDefinition(self_, functions_, definition_
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, definition_.value_), _c.targets_)
+return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, definition_.value_))
 return
 }
 }
@@ -217,7 +217,11 @@ return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instan
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Dictionaries.Dictionaries_processLambda(self2_, functions_, definition_.body_), _c.targets_)
+return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_core_Option.Option_map(definition_.body_, ((_w1) => {
+return ff_compiler_Syntax.Target_mapFirefly(_w1, ((_w1) => {
+return ff_compiler_Dictionaries.Dictionaries_processLambda(self2_, functions_, _w1)
+}))
+})))
 return
 }
 }
@@ -665,7 +669,7 @@ export async function Dictionaries_processLetDefinition$(self_, functions_, defi
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, definition_.value_), _c.targets_)
+return ff_compiler_Syntax.DLet(_c.at_, _c.name_, _c.variableType_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, definition_.value_))
 return
 }
 }
@@ -693,7 +697,11 @@ return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instan
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_compiler_Dictionaries.Dictionaries_processLambda(self2_, functions_, definition_.body_), _c.targets_)
+return ff_compiler_Syntax.DFunction(_c.at_, _c.signature_, ff_core_Option.Option_map(definition_.body_, ((_w1) => {
+return ff_compiler_Syntax.Target_mapFirefly(_w1, ((_w1) => {
+return ff_compiler_Dictionaries.Dictionaries_processLambda(self2_, functions_, _w1)
+}))
+})))
 return
 }
 }

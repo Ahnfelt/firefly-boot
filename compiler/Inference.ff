@@ -77,17 +77,21 @@ extend self: Inference {
                 constraints = [...definition.constraints, ...method.signature.constraints]
                 parameters = [selfParameter, ...method.signature.parameters]
             )
-            let lambda = method.body.Lambda(
-                cases = method.body.cases.map { case =>
-                    let selfPattern = PVariable(method.at, Some(definition.name))
-                    case.MatchCase(
-                        patterns = [selfPattern, ...case.patterns]
+            let body = method.body.map { target =>
+                target.mapFirefly { lambda =>
+                    lambda.Lambda(
+                        cases = lambda.cases.map { case =>
+                            let selfPattern = PVariable(method.at, Some(definition.name))
+                            case.MatchCase(
+                                patterns = [selfPattern, ...case.patterns]
+                            )
+                        }
                     )
                 }
-            )
+            }
             let function = method.DFunction(
                 signature = signature
-                body = lambda
+                body = body
             )
             self.inferFunctionDefinition(environment, function)
         }
@@ -114,7 +118,7 @@ extend self: Inference {
         self.unification.withLocalInstances(instances) {
             definition.DFunction(
                 body = definition.body.map { target =>
-                    target.mapFirefly{self.inferLambda(environment2, functionType, _)}
+                    target.mapFirefly {self.inferLambda(environment2, functionType, _)}
                 }
             )
         }

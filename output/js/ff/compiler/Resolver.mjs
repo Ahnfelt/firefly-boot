@@ -38,9 +38,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -279,11 +279,11 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1, true)
 return
 }
 }
-})), _c.targets_)
+})))
 return
 }
 }
-})), _c.targets_)
+})))
 return
 }
 }
@@ -368,7 +368,7 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, defin
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, definition_.variableType_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, definition_.value_, true), _c.targets_)
+return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, definition_.variableType_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, definition_.value_, true))
 return
 }
 }
@@ -785,12 +785,21 @@ return
 export function Resolver_resolveFunctionDefinition(self_, definition_, topLevel_) {
 const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
-const body_ = (((_c) => {
-return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(definition_.body_.cases_, ((_w1) => {
+const body_ = ff_core_Option.Option_map(definition_.body_, ((_w1) => {
+return ff_compiler_Syntax.Target_mapFirefly(_w1, ((lambda_) => {
+{
+const _1 = lambda_;
+{
+const _c = _1;
+return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(lambda_.cases_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
 })))
-}))(definition_.body_);
-return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_, definition_.targets_)
+return
+}
+}
+}))
+}));
+return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 }
 
 export function Resolver_resolveSignature(self_, signature_, topLevel_) {
@@ -1224,11 +1233,11 @@ return ff_compiler_Resolver.Resolver_resolveTerm(self2_, _w1, true)
 return
 }
 }
-})), _c.targets_)
+})))
 return
 }
 }
-})), _c.targets_)
+})))
 return
 }
 }
@@ -1313,7 +1322,7 @@ return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, defin
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, definition_.variableType_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, definition_.value_, true), _c.targets_)
+return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Resolver.Resolver_resolveType(self_, definition_.variableType_, topLevel_), ff_compiler_Resolver.Resolver_resolveTerm(self_, definition_.value_, true))
 return
 }
 }
@@ -1730,12 +1739,21 @@ return
 export async function Resolver_resolveFunctionDefinition$(self_, definition_, topLevel_, $c) {
 const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
-const body_ = ((async (_c, $c) => {
-return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(definition_.body_.cases_, ((_w1) => {
+const body_ = ff_core_Option.Option_map(definition_.body_, ((_w1) => {
+return ff_compiler_Syntax.Target_mapFirefly(_w1, ((lambda_) => {
+{
+const _1 = lambda_;
+{
+const _c = _1;
+return ff_compiler_Syntax.Lambda(_c.at_, signature_.effect_, ff_core_List.List_map(lambda_.cases_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
 })))
-}))(definition_.body_);
-return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_, definition_.targets_)
+return
+}
+}
+}))
+}));
+return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 }
 
 export async function Resolver_resolveSignature$(self_, signature_, topLevel_, $c) {

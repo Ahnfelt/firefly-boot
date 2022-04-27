@@ -2,32 +2,32 @@ type Buffer {}
 
 extend self: Buffer {
 
-    size(): Int { panic("magic") }
+    size(): Int
         target js sync "return self_.length"
 
-    expect(index: Int): Int { panic("magic") }
+    expect(index: Int): Int
         target js sync """
             if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
             return self_[index_]
         """
 
-    set(index: Int, byte: Int): Unit { panic("magic") }
+    set(index: Int, byte: Int): Unit
         target js sync """
             if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
             self_[index_] = byte_
         """
 
-    toString(encoding: String = "utf8"): String { panic("magic") }
+    toString(encoding: String = "utf8"): String
         target node sync "return self_.toString(encoding_)"
         target js sync "return new TextDecoder(encoding_).decode(self_)"
 
 }
 
-make(size: Int): Buffer { panic("magic") }
+make(size: Int): Buffer
     target node sync "return Buffer.alloc(size_)"
     target js sync "return new Uint8Array(size_)"
 
-fromBufferArray(array: Array[Buffer]): Buffer { panic("magic") }
+fromBufferArray(array: Array[Buffer]): Buffer
     target node sync "return Buffer.concat(array_)"
     target js sync """
         let length = 0

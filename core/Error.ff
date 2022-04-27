@@ -2,16 +2,16 @@ type Error {}
 
 extend self: Error {
 
-    rethrow[T](): T { panic("magic") }
+    rethrow[T](): T
         target js sync "throw self_"
 
-    name(): String { panic("magic") }
+    name(): String
         target js sync "return self_.name || ''"
 
-    message(): String { panic("magic") }
+    message(): String
         target js sync "return self_.message || ''"
 
-    stack(): String { panic("magic") }
+    stack(): String
         target js sync "return self_.stack || ''"
 
     /*

@@ -2,7 +2,7 @@ type HttpRequest! {}
 type HttpResponse! {}
 type Url {}
 
-listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit { panic("magic") }
+listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit
     target node async """
         import * as http from 'http'
         if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
@@ -32,58 +32,58 @@ listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpRespo
 
 extend self: Url {
 
-    hash(): String { panic("magic") }
+    hash(): String
         target node sync "return self_.hash"
 
-    host(): String { panic("magic") }
+    host(): String
         target node sync "return self_.hostname"
 
-    origin(): String { panic("magic") }
+    origin(): String
         target node sync "return self_.origin"
 
-    password(): String { panic("magic") }
+    password(): String
         target node sync "return self_.password"
 
-    path(): String { panic("magic") }
+    path(): String
         target node sync "return self_.pathname"
 
-    port(): String { panic("magic") }
+    port(): String
         target node sync "return self_.port"
 
-    protocol(): String { panic("magic") }
+    protocol(): String
         target node sync "return self_.protocol.replace(':', '')"
 
-    search(): String { panic("magic") }
+    search(): String
         target node sync "return self_.search"
 
-    username(): String { panic("magic") }
+    username(): String
         target node sync "return self_.username"
 
-    toString(): String { panic("magic") }
+    toString(): String
         target node sync "return self_.href"
 
 }
 
 extend self: HttpRequest {
 
-    url(): Url { panic("magic") }
+    url(): Url
         target node async """
             return new URL(self_.url, `http://${self_.headers.host}`)
         """
 
-    method(): String { panic("magic") }
+    method(): String
         target node async """
             return self_.method
         """
 
-    header(name: String): Option[String] { panic("magic") }
+    header(name: String): Option[String]
         target node async """
             let header = self_.headers[name_.toLowerCase()]
             if(header == null || header.length == 0) ff_core_Option.None()
             return ff_core_Option.Some(Array.isArray(header) ? header[0] : header)
         """
 
-    encoding(): Option[String] { panic("magic") }
+    encoding(): Option[String]
         target node async """
             return self_.readableEncoding ? ff_core_Option.Some(self_.readableEncoding) : ff_core_Option.None()
         """
@@ -92,7 +92,7 @@ extend self: HttpRequest {
         self.readStream().toString(encoding.else {self.encoding().else {"utf8"}})
     }
 
-    readStream(): Stream[Buffer] { panic("magic") }
+    readStream(): Stream[Buffer]
         target node async """
             import * as http from 'http'
             return $c => {
@@ -136,13 +136,13 @@ extend self: HttpRequest {
 
 extend self: HttpResponse {
 
-    setHeader(name: String, values: List[String]): Unit { panic("magic") }
+    setHeader(name: String, values: List[String]): Unit
         target node async "self_.setHeader(name_, ff_core_List.List_toArray(values_))"
 
-    writeStatus(code: Int, message: Option[String]): Unit { panic("magic") }
+    writeStatus(code: Int, message: Option[String]): Unit
         target node async "self_.writeHead(code_, message_.value_)"
 
-    write(buffer: Buffer): Unit { panic("magic") }
+    write(buffer: Buffer): Unit
         target node async """
             import * as http from 'http'
             if(!self_.write(buffer_)) {
@@ -160,7 +160,7 @@ extend self: HttpResponse {
             }
         """
 
-    writeText(text: String, encoding: String = "utf8"): Unit { panic("magic") }
+    writeText(text: String, encoding: String = "utf8"): Unit
         target node async """
             import * as http from 'http'
             if(!self_.write(text_, encoding_)) {

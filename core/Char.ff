@@ -12,7 +12,7 @@ extend self: Char {
 
     isAsciiDigit(): Bool { self >= '0' && self <= '9' }
 
-    toString(): String { panic("magic") }
+    toString(): String
         target js sync "return String.fromCharCode(self_)"
 
 }

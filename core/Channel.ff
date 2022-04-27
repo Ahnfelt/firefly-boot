@@ -17,10 +17,10 @@ type ChannelAction![T] {}
 
 extend self[T]: ChannelAction[T] {
 
-    readOr[M](channel: Channel[M], body: M => T): ChannelAction[T] { panic("magic") }
+    readOr[M](channel: Channel[M], body: M => T): ChannelAction[T]
         target js async "return {channel: channel_, body: body_, previous: self_}"
 
-    writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T] { panic("magic") }
+    writeOr[M](channel: Channel[M], message: M, body: () => T): ChannelAction[T]
         target js async "return {channel: channel_, body: body_, message: message_, previous: self_}"
 
     wait(): T {
@@ -37,14 +37,14 @@ extend self[T]: ChannelAction[T] {
 
 }
 
-readOr[M, T](channel: Channel[M], body: M => T): ChannelAction[T] { panic("magic") }
+readOr[M, T](channel: Channel[M], body: M => T): ChannelAction[T]
     target js async "return {channel: channel_, body: body_, previous: null}"
 
-writeOr[M, T](channel: Channel[M], message: M, body: () => T): ChannelAction[T] { panic("magic") }
+writeOr[M, T](channel: Channel[M], message: M, body: () => T): ChannelAction[T]
     target js async "return {channel: channel_, body: body_, message: message_, previous: null}"
 
 
-internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T, Option[Duration]]]): T { panic("magic") }
+internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T, Option[Duration]]]): T
     target js async """
         // If already aborted, throw.
         if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})

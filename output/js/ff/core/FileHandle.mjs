@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -80,23 +80,23 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function FileHandle_close(self_) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileHandle_close not available on this target in sync context.');
 }
 
 export function FileHandle_read(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileHandle_read not available on this target in sync context.');
 }
 
 export function FileHandle_write(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileHandle_write not available on this target in sync context.');
 }
 
 export function FileHandle_writeText(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8") {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileHandle_writeText not available on this target in sync context.');
 }
 
 export function FileHandle_sync(self_, dataOnly_ = false) {
-ff_core_Core.panic_("magic")
+throw new Error('Function FileHandle_sync not available on this target in sync context.');
 }
 
 export async function FileHandle_close$(self_, $c) {

@@ -14,7 +14,7 @@ while(condition: () => Bool, body: () => Unit): Unit {
     }
 }
 
-try[T](body: () => T): Try[T] { panic("magic") }
+try[T](body: () => T): Try[T]
     target js sync """
         try {
             return {Success: true, value_: body_()}
@@ -34,12 +34,12 @@ do[T](body: () => T): T {
     body()
 }
 
-throw[E, T](error: E): T { panic("magic") }
+throw[E, T](error: E): T
     target js sync "throw error_"
 
-panic[T](message: String): T { panic("magic") }
+panic[T](message: String): T
     target js sync "throw new Error(message_)"
 
-magicShow[T](value: T): String { panic("magic") }
+magicShow[T](value: T): String
     //target js sync "return ('' + value_)"
     target js sync "return JSON.stringify(value_, undefined, 4)"

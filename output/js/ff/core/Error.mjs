@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -96,19 +96,19 @@ return self_.stack || ''
 }
 
 export async function Error_rethrow$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Error_rethrow not available on this target in async context.');
 }
 
 export async function Error_name$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Error_name not available on this target in async context.');
 }
 
 export async function Error_message$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Error_message not available on this target in async context.');
 }
 
 export async function Error_stack$(self_, $c) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function Error_stack not available on this target in async context.');
 }
 
 

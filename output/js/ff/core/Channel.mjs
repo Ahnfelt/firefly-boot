@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -79,15 +79,15 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function readOr_(channel_, body_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function readOr not available on this target in sync context.');
 }
 
 export function writeOr_(channel_, message_, body_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function writeOr not available on this target in sync context.');
 }
 
 export function internalRunChannelAction_(action_, mode_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function internalRunChannelAction not available on this target in sync context.');
 }
 
 export async function readOr_$(channel_, body_, $c) {
@@ -210,11 +210,11 @@ export async function Channel_write$(self_, message_, $c) {
 }
 
 export function ChannelAction_readOr(self_, channel_, body_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ChannelAction_readOr not available on this target in sync context.');
 }
 
 export function ChannelAction_writeOr(self_, channel_, message_, body_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function ChannelAction_writeOr not available on this target in sync context.');
 }
 
 export function ChannelAction_wait(self_) {

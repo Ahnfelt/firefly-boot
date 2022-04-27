@@ -1,2 +1,2 @@
-debug[T](value: T): Unit { panic("magic") }
+debug[T](value: T): Unit
     target js sync "console.log(value_)"

@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -85,27 +85,27 @@ return {array_};
 
 
 export function System_arguments(self_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function System_arguments not available on this target in sync context.');
 }
 
 export function System_files(self_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function System_files not available on this target in sync context.');
 }
 
 export function System_fetch(self_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function System_fetch not available on this target in sync context.');
 }
 
 export function System_tasks(self_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function System_tasks not available on this target in sync context.');
 }
 
 export function System_time(self_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function System_time not available on this target in sync context.');
 }
 
 export function System_js(self_) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function System_js not available on this target in sync context.');
 }
 
 export async function System_arguments$(self_, $c) {

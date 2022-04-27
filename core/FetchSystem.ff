@@ -22,7 +22,7 @@ extend self: FetchSystem {
         credentials: Option[String] = None
         cache: Option[String] = None
         throw: Bool = True
-    ): FetchResponse { panic("magic") }
+    ): FetchResponse
         target js async """
             const options = {headers: {}, signal: $c.signal}
             options.method = method_
@@ -44,24 +44,24 @@ extend self: FetchSystem {
 
 emptyList = [] // TODO: Why won't this type check when inlined? Probably some dangling unification variable?
 
-bodyString(body: String): FetchBody { panic("magic") }
+bodyString(body: String): FetchBody
     target js sync "return body_"
 
-bodyBuffer(body: Buffer): FetchBody { panic("magic") }
+bodyBuffer(body: Buffer): FetchBody
     target js sync "return body_"
 
 extend self: FetchResponse {
 
-    ok(): Bool { panic("magic") }
+    ok(): Bool
         target js async "return self_.ok"
 
-    status(): Int { panic("magic") }
+    status(): Int
         target js async "return self_.status"
 
-    statusText(): String { panic("magic") }
+    statusText(): String
         target js async "return self_.statusText"
 
-    header(name: String): Option[String] { panic("magic") }
+    header(name: String): Option[String]
         target js async """
             const header = self_.headers.get(name_)
             return header != null
@@ -69,10 +69,10 @@ extend self: FetchResponse {
                 : ff_core_Option.None()
         """
 
-    readText(): String { panic("magic") }
+    readText(): String
         target js async "return await self_.text()"
 
-    readBuffer(): Buffer { panic("magic") }
+    readBuffer(): Buffer
         target node async "return Buffer.from(await self_.arrayBuffer())"
         target js async "return new Uint8Array(await self_.arrayBuffer())"
 

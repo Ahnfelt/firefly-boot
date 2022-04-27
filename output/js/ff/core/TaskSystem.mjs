@@ -34,9 +34,9 @@ import * as ff_core_Int from "../../ff/core/Int.mjs"
 
 import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
 
+import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
-
-
+import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
@@ -83,7 +83,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function TaskScope_spawn(self_, task_) {
-ff_core_Core.panic_("magic")
+throw new Error('Function TaskScope_spawn not available on this target in sync context.');
 }
 
 export async function TaskScope_spawn$(self_, task_, $c) {
@@ -110,11 +110,11 @@ export async function TaskScope_spawn$(self_, task_, $c) {
 }
 
 export function TaskSystem_scope(self_, body_, shield_ = false) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function TaskSystem_scope not available on this target in sync context.');
 }
 
 export function TaskSystem_channel(self_, capacity_ = 0) {
-return ff_core_Core.panic_("magic")
+throw new Error('Function TaskSystem_channel not available on this target in sync context.');
 }
 
 export function TaskSystem_sleep(self_, duration_) {
