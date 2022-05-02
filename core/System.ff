@@ -5,10 +5,10 @@ type SystemArguments(array: Array[String])
 extend self: System {
 
     arguments(): List[String]
-        target js async "return ff_core_Array.Array_toList(self_.array_)"
+        target node async "return ff_core_Array.Array_toList(self_.array_)"
 
     files(): FileSystem
-        target js async "return null"
+        target node async "return null"
 
     fetch(): FetchSystem
         target js async "return null"

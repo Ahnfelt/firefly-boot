@@ -1,0 +1,29 @@
+main(system: System): Unit
+    target browser async {
+
+        let document = system.js().global().get("document")
+        let input = document.call1("getElementById", "input")
+        let output = document.call1("getElementById", "output")
+        let button = document.call1("getElementById", "button")
+
+        let handler = system.js().shield { system.js().function1 { event =>
+            let text = input.get("value").expectString()
+            let result = system.fetch().fetch("http://localhost:8080/",
+                method = "POST",
+                body = Some(FetchSystem.bodyText(text))
+            )
+            output.set("innerText", result.readText())
+        }}
+
+        button.call2("addEventListener", "click", handler)
+
+    }
+    target node async {
+        HttpServer.listen(system, "localhost", 8080) { request, response =>
+            let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + request.readText())
+            let json = system.js().parseJson(result.readText())
+            let rhyme = json.get(0).get("word").expectString()
+            response.setHeader("Access-Control-Allow-Origin", ["*"])
+            response.writeText(rhyme)
+        }
+    }

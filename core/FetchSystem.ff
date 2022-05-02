@@ -42,13 +42,15 @@ extend self: FetchSystem {
 
 }
 
-emptyList = [] // TODO: Why won't this type check when inlined? Probably some dangling unification variable?
+emptyList: List[Pair[String, String]] = [] // TODO: Why won't this type check when inlined? Probably some dangling unification variable?
 
-bodyString(body: String): FetchBody
+bodyText(body: String): FetchBody
     target js sync "return body_"
+    target js async "return body_"
 
 bodyBuffer(body: Buffer): FetchBody
     target js sync "return body_"
+    target js async "return body_"
 
 extend self: FetchResponse {
 
