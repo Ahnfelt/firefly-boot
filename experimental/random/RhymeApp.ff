@@ -1,5 +1,5 @@
 main(system: System): Unit
-    target browser async {
+    target browser {
 
         let document = system.js().global().get("document")
         let input = document.call1("getElementById", "input")
@@ -18,7 +18,7 @@ main(system: System): Unit
         button.call2("addEventListener", "click", handler)
 
     }
-    target node async {
+    target node {
         HttpServer.listen(system, "localhost", 8080) { request, response =>
             let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + request.readText())
             let json = system.js().parseJson(result.readText())
