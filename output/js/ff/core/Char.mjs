@@ -123,7 +123,7 @@ return ((self_ >= 48) && (self_ <= 57))
 }
 
 export async function Char_toString$(self_, $c) {
-throw new Error('Function Char_toString not available on this target in async context.');
+throw new Error('Function Char_toString is missing on this target in async context.');
 }
 
 

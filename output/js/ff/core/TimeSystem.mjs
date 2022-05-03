@@ -96,11 +96,11 @@ return ff_core_Pair.Pair(result_, duration_)
 }
 
 export async function TimeSystem_now$(self_, $c) {
-throw new Error('Function TimeSystem_now not available on this target in async context.');
+throw new Error('Function TimeSystem_now is missing on this target in async context.');
 }
 
 export async function TimeSystem_elapsed$(self_, $c) {
-throw new Error('Function TimeSystem_elapsed not available on this target in async context.');
+throw new Error('Function TimeSystem_elapsed is missing on this target in async context.');
 }
 
 export async function TimeSystem_measure$(self_, body_, $c) {

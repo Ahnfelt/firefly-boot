@@ -785,8 +785,7 @@ return
 export function Resolver_resolveFunctionDefinition(self_, definition_, topLevel_) {
 const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
-const body_ = ff_core_Option.Option_map(definition_.body_, ((_w1) => {
-return ff_compiler_Syntax.Target_mapFirefly(_w1, ((lambda_) => {
+const body_ = ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((lambda_) => {
 {
 const _1 = lambda_;
 {
@@ -797,7 +796,6 @@ return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
 return
 }
 }
-}))
 }));
 return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 }
@@ -1739,8 +1737,7 @@ return
 export async function Resolver_resolveFunctionDefinition$(self_, definition_, topLevel_, $c) {
 const signature_ = ff_compiler_Resolver.Resolver_resolveSignature(self_, definition_.signature_, topLevel_);
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, signature_);
-const body_ = ff_core_Option.Option_map(definition_.body_, ((_w1) => {
-return ff_compiler_Syntax.Target_mapFirefly(_w1, ((lambda_) => {
+const body_ = ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((lambda_) => {
 {
 const _1 = lambda_;
 {
@@ -1751,7 +1748,6 @@ return ff_compiler_Resolver.Resolver_resolveCase(self2_, _w1, false)
 return
 }
 }
-}))
 }));
 return ff_compiler_Syntax.DFunction(definition_.at_, signature_, body_)
 }

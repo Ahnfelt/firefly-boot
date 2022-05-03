@@ -79,7 +79,7 @@ console.log(value_)
 }
 
 export async function debug_$(value_, $c) {
-throw new Error('Function debug not available on this target in async context.');
+throw new Error('Function debug is missing on this target in async context.');
 }
 
 

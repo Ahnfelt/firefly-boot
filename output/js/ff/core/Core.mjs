@@ -193,15 +193,15 @@ return (await body_($c))
 }
 
 export async function throw_$(error_, $c) {
-throw new Error('Function throw not available on this target in async context.');
+throw new Error('Function throw is missing on this target in async context.');
 }
 
 export async function panic_$(message_, $c) {
-throw new Error('Function panic not available on this target in async context.');
+throw new Error('Function panic is missing on this target in async context.');
 }
 
 export async function magicShow_$(value_, $c) {
-throw new Error('Function magicShow not available on this target in async context.');
+throw new Error('Function magicShow is missing on this target in async context.');
 }
 
 

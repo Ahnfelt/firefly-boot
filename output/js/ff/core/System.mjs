@@ -85,27 +85,27 @@ return {array_};
 
 
 export function System_arguments(self_) {
-throw new Error('Function System_arguments not available on this target in sync context.');
+throw new Error('Function System_arguments is missing on this target in sync context.');
 }
 
 export function System_files(self_) {
-throw new Error('Function System_files not available on this target in sync context.');
+throw new Error('Function System_files is missing on this target in sync context.');
 }
 
 export function System_fetch(self_) {
-throw new Error('Function System_fetch not available on this target in sync context.');
+throw new Error('Function System_fetch is missing on this target in sync context.');
 }
 
 export function System_tasks(self_) {
-throw new Error('Function System_tasks not available on this target in sync context.');
+throw new Error('Function System_tasks is missing on this target in sync context.');
 }
 
 export function System_time(self_) {
-throw new Error('Function System_time not available on this target in sync context.');
+throw new Error('Function System_time is missing on this target in sync context.');
 }
 
 export function System_js(self_) {
-throw new Error('Function System_js not available on this target in sync context.');
+throw new Error('Function System_js is missing on this target in sync context.');
 }
 
 export async function System_arguments$(self_, $c) {

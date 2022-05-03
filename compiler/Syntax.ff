@@ -39,7 +39,7 @@ type DImport(
 type DFunction(
     at: Location,
     signature: Signature,
-    body: Option[Target]
+    body: Target
 )
 type DLet(
     at: Location,
@@ -172,15 +172,8 @@ type Field(at: Location, name: String, value: Term)
 type Constraint(at: Location, name: String, generics: List[Type])
 
 type Target {
-    AnyTarget(code : TargetCode)
-    SyncTarget(code : TargetCode)
-    AsyncTarget(code : TargetCode)
-    SyncAsyncTarget(sync : TargetCode, async : TargetCode)
-}
-
-type TargetCode {
-    FireflyCode(code : Lambda)
-    ForeignCode(code : String)
+    FireflyTarget(lambda : Lambda)
+    ForeignTarget(syncCode : Option[String], asyncCode : Option[String])
 }
 
 type Type(at: Location) {
@@ -210,21 +203,11 @@ extend self: Type {
 }
 
 extend self: Target {
-    mapFirefly(f: Lambda => Lambda): Target {
+    mapFirefly(body: Lambda => Lambda): Target {
         self.{
-             | AnyTarget(code)  => AnyTarget(code.mapFirefly(f))
-             | SyncTarget(code) => SyncTarget(code.mapFirefly(f))
-             | AsyncTarget(code) => AsyncTarget(code.mapFirefly(f))
-             | SyncAsyncTarget(sync, async) => SyncAsyncTarget(sync.mapFirefly(f), async.mapFirefly(f))
+             | FireflyTarget(lambda) => FireflyTarget(body(lambda))
+             | ForeignTarget(_, _) => self
         }
     }
 }
 
-extend self: TargetCode {
-    mapFirefly(f: Lambda => Lambda): TargetCode {
-        self.{
-            | FireflyCode(code) => FireflyCode(f(code))
-            | foreignCode => foreignCode
-        }
-    }
-}

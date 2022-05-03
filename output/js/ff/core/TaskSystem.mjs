@@ -83,7 +83,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function TaskScope_spawn(self_, task_) {
-throw new Error('Function TaskScope_spawn not available on this target in sync context.');
+throw new Error('Function TaskScope_spawn is missing on this target in sync context.');
 }
 
 export async function TaskScope_spawn$(self_, task_, $c) {
@@ -110,11 +110,11 @@ export async function TaskScope_spawn$(self_, task_, $c) {
 }
 
 export function TaskSystem_scope(self_, body_, shield_ = false) {
-throw new Error('Function TaskSystem_scope not available on this target in sync context.');
+throw new Error('Function TaskSystem_scope is missing on this target in sync context.');
 }
 
 export function TaskSystem_channel(self_, capacity_ = 0) {
-throw new Error('Function TaskSystem_channel not available on this target in sync context.');
+throw new Error('Function TaskSystem_channel is missing on this target in sync context.');
 }
 
 export function TaskSystem_sleep(self_, duration_) {

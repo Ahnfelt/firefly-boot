@@ -568,47 +568,6 @@ return
 }
 }
 
-export function JsEmitter_bestTarget(self_, target_, async_) {
-{
-const _1 = target_;
-{
-if(_1.AnyTarget) {
-const code_ = _1.code_;
-return ff_core_Option.Some(code_)
-return
-}
-}
-{
-if(_1.SyncTarget) {
-const code_ = _1.code_;
-return ff_core_Option.Option_filter(ff_core_Option.Some(code_), ((_) => {
-return (!async_)
-}))
-return
-}
-}
-{
-if(_1.AsyncTarget) {
-const code_ = _1.code_;
-return ff_core_Option.Option_filter(ff_core_Option.Some(code_), ((_) => {
-return async_
-}))
-return
-}
-}
-{
-if(_1.SyncAsyncTarget) {
-const syncCode_ = _1.sync_;
-const asyncCode_ = _1.async_;
-return ff_core_Option.Some((async_
-? asyncCode_
-: syncCode_))
-return
-}
-}
-}
-}
-
 export function JsEmitter_emitModule(self_, packagePair_, module_) {
 const selfImport_ = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
@@ -718,35 +677,55 @@ return
 
 export function JsEmitter_emitFunctionDefinition(self_, definition_, async_, suffix_ = "") {
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
-const target_ = ff_core_Option.Option_flatMap(definition_.body_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, _w1, async_)
-}));
 {
-const _1 = target_;
+const _1 = ff_core_Pair.Pair(async_, definition_.body_);
 {
-if(_1.None) {
-const modeName_ = (async_
-? "async"
-: "sync");
-return (((((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " not available on this target in ") + modeName_) + " context.');\n}")
+if(!_1.first_) {
+if(_1.second_.ForeignTarget) {
+if(_1.second_.syncCode_.None) {
+return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in sync context.');\n}")
 return
 }
 }
+}
+}
 {
-if(_1.Some) {
-if(_1.value_.ForeignCode) {
-const code_ = _1.value_.code_;
+if(_1.first_) {
+if(_1.second_.ForeignTarget) {
+if(_1.second_.asyncCode_.None) {
+return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in async context.');\n}")
+return
+}
+}
+}
+}
+{
+if(!_1.first_) {
+if(_1.second_.ForeignTarget) {
+if(_1.second_.syncCode_.Some) {
+const code_ = _1.second_.syncCode_.value_;
 return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
 return
 }
 }
 }
+}
 {
-if(_1.Some) {
-if(_1.value_.FireflyCode) {
-const body_ = _1.value_.code_;
+if(_1.first_) {
+if(_1.second_.ForeignTarget) {
+if(_1.second_.asyncCode_.Some) {
+const code_ = _1.second_.asyncCode_.value_;
+return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
+return
+}
+}
+}
+}
 {
-const _1 = body_;
+if(_1.second_.FireflyTarget) {
+const lambda_ = _1.second_.lambda_;
+{
+const _1 = lambda_;
 {
 const effect_ = _1.effect_;
 if(_1.cases_.Link) {
@@ -809,7 +788,6 @@ return
 }
 }
 return
-}
 }
 }
 }
@@ -1866,47 +1844,6 @@ export function JsEmitter_emitArgument(self_, argument_, async_) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
-export async function JsEmitter_bestTarget$(self_, target_, async_, $c) {
-{
-const _1 = target_;
-{
-if(_1.AnyTarget) {
-const code_ = _1.code_;
-return ff_core_Option.Some(code_)
-return
-}
-}
-{
-if(_1.SyncTarget) {
-const code_ = _1.code_;
-return ff_core_Option.Option_filter(ff_core_Option.Some(code_), ((_) => {
-return (!async_)
-}))
-return
-}
-}
-{
-if(_1.AsyncTarget) {
-const code_ = _1.code_;
-return ff_core_Option.Option_filter(ff_core_Option.Some(code_), ((_) => {
-return async_
-}))
-return
-}
-}
-{
-if(_1.SyncAsyncTarget) {
-const syncCode_ = _1.sync_;
-const asyncCode_ = _1.async_;
-return ff_core_Option.Some((async_
-? asyncCode_
-: syncCode_))
-return
-}
-}
-}
-}
-
 export async function JsEmitter_emitModule$(self_, packagePair_, module_, $c) {
 const selfImport_ = ((((((((((((("import * as " + packagePair_.first_) + "_") + packagePair_.second_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
@@ -2016,35 +1953,55 @@ return
 
 export async function JsEmitter_emitFunctionDefinition$(self_, definition_, async_, suffix_ = "", $c) {
 const signature_ = ff_compiler_JsEmitter.JsEmitter_emitSignature(self_, definition_.signature_, async_, suffix_);
-const target_ = ff_core_Option.Option_flatMap(definition_.body_, ((_w1) => {
-return ff_compiler_JsEmitter.JsEmitter_bestTarget(self_, _w1, async_)
-}));
 {
-const _1 = target_;
+const _1 = ff_core_Pair.Pair(async_, definition_.body_);
 {
-if(_1.None) {
-const modeName_ = (async_
-? "async"
-: "sync");
-return (((((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " not available on this target in ") + modeName_) + " context.');\n}")
+if(!_1.first_) {
+if(_1.second_.ForeignTarget) {
+if(_1.second_.syncCode_.None) {
+return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in sync context.');\n}")
 return
 }
 }
+}
+}
 {
-if(_1.Some) {
-if(_1.value_.ForeignCode) {
-const code_ = _1.value_.code_;
+if(_1.first_) {
+if(_1.second_.ForeignTarget) {
+if(_1.second_.asyncCode_.None) {
+return (((signature_ + " {\nthrow new Error('Function ") + definition_.signature_.name_) + " is missing on this target in async context.');\n}")
+return
+}
+}
+}
+}
+{
+if(!_1.first_) {
+if(_1.second_.ForeignTarget) {
+if(_1.second_.syncCode_.Some) {
+const code_ = _1.second_.syncCode_.value_;
 return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
 return
 }
 }
 }
+}
 {
-if(_1.Some) {
-if(_1.value_.FireflyCode) {
-const body_ = _1.value_.code_;
+if(_1.first_) {
+if(_1.second_.ForeignTarget) {
+if(_1.second_.asyncCode_.Some) {
+const code_ = _1.second_.asyncCode_.value_;
+return (((signature_ + " {\n") + ff_compiler_JsImporter.JsImporter_process(self_.jsImporter_, definition_.at_, code_)) + "\n}")
+return
+}
+}
+}
+}
 {
-const _1 = body_;
+if(_1.second_.FireflyTarget) {
+const lambda_ = _1.second_.lambda_;
+{
+const _1 = lambda_;
 {
 const effect_ = _1.effect_;
 if(_1.cases_.Link) {
@@ -2107,7 +2064,6 @@ return
 }
 }
 return
-}
 }
 }
 }

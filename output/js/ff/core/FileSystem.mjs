@@ -138,39 +138,39 @@ return (_w1 != 46)
 }
 
 export function FileSystem_readText(self_, file_) {
-throw new Error('Function FileSystem_readText not available on this target in sync context.');
+throw new Error('Function FileSystem_readText is missing on this target in sync context.');
 }
 
 export function FileSystem_writeText(self_, file_, text_) {
-throw new Error('Function FileSystem_writeText not available on this target in sync context.');
+throw new Error('Function FileSystem_writeText is missing on this target in sync context.');
 }
 
 export function FileSystem_list(self_, path_) {
-throw new Error('Function FileSystem_list not available on this target in sync context.');
+throw new Error('Function FileSystem_list is missing on this target in sync context.');
 }
 
 export function FileSystem_exists(self_, path_) {
-throw new Error('Function FileSystem_exists not available on this target in sync context.');
+throw new Error('Function FileSystem_exists is missing on this target in sync context.');
 }
 
 export function FileSystem_isDirectory(self_, path_) {
-throw new Error('Function FileSystem_isDirectory not available on this target in sync context.');
+throw new Error('Function FileSystem_isDirectory is missing on this target in sync context.');
 }
 
 export function FileSystem_createDirectory(self_, path_) {
-throw new Error('Function FileSystem_createDirectory not available on this target in sync context.');
+throw new Error('Function FileSystem_createDirectory is missing on this target in sync context.');
 }
 
 export function FileSystem_createDirectories(self_, path_) {
-throw new Error('Function FileSystem_createDirectories not available on this target in sync context.');
+throw new Error('Function FileSystem_createDirectories is missing on this target in sync context.');
 }
 
 export function FileSystem_delete(self_, path_) {
-throw new Error('Function FileSystem_delete not available on this target in sync context.');
+throw new Error('Function FileSystem_delete is missing on this target in sync context.');
 }
 
 export function FileSystem_rename(self_, fromPath_, toPath_) {
-throw new Error('Function FileSystem_rename not available on this target in sync context.');
+throw new Error('Function FileSystem_rename is missing on this target in sync context.');
 }
 
 export function FileSystem_getAbsolutePath(self_, path_) {
@@ -181,23 +181,23 @@ export function FileSystem_getAbsolutePath(self_, path_) {
 }
 
 export function FileSystem_readStream(self_, file_) {
-throw new Error('Function FileSystem_readStream not available on this target in sync context.');
+throw new Error('Function FileSystem_readStream is missing on this target in sync context.');
 }
 
 export function FileSystem_writeStream(self_, file_, stream_, createOnly_ = false) {
-throw new Error('Function FileSystem_writeStream not available on this target in sync context.');
+throw new Error('Function FileSystem_writeStream is missing on this target in sync context.');
 }
 
 export function FileSystem_appendStream(self_, file_, stream_) {
-throw new Error('Function FileSystem_appendStream not available on this target in sync context.');
+throw new Error('Function FileSystem_appendStream is missing on this target in sync context.');
 }
 
 export function FileSystem_decompressGzipStream(self_, stream_) {
-throw new Error('Function FileSystem_decompressGzipStream not available on this target in sync context.');
+throw new Error('Function FileSystem_decompressGzipStream is missing on this target in sync context.');
 }
 
 export function FileSystem_open(self_, file_, flags_) {
-throw new Error('Function FileSystem_open not available on this target in sync context.');
+throw new Error('Function FileSystem_open is missing on this target in sync context.');
 }
 
 export async function FileSystem_readText$(self_, file_, $c) {
@@ -264,7 +264,7 @@ export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {
 }
 
 export async function FileSystem_getAbsolutePath$(self_, path_, $c) {
-throw new Error('Function FileSystem_getAbsolutePath not available on this target in async context.');
+throw new Error('Function FileSystem_getAbsolutePath is missing on this target in async context.');
 }
 
 export async function FileSystem_readStream$(self_, file_, $c) {

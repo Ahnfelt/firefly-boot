@@ -79,15 +79,15 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function readOr_(channel_, body_) {
-throw new Error('Function readOr not available on this target in sync context.');
+throw new Error('Function readOr is missing on this target in sync context.');
 }
 
 export function writeOr_(channel_, message_, body_) {
-throw new Error('Function writeOr not available on this target in sync context.');
+throw new Error('Function writeOr is missing on this target in sync context.');
 }
 
 export function internalRunChannelAction_(action_, mode_) {
-throw new Error('Function internalRunChannelAction not available on this target in sync context.');
+throw new Error('Function internalRunChannelAction is missing on this target in sync context.');
 }
 
 export async function readOr_$(channel_, body_, $c) {
@@ -210,11 +210,11 @@ export async function Channel_write$(self_, message_, $c) {
 }
 
 export function ChannelAction_readOr(self_, channel_, body_) {
-throw new Error('Function ChannelAction_readOr not available on this target in sync context.');
+throw new Error('Function ChannelAction_readOr is missing on this target in sync context.');
 }
 
 export function ChannelAction_writeOr(self_, channel_, message_, body_) {
-throw new Error('Function ChannelAction_writeOr not available on this target in sync context.');
+throw new Error('Function ChannelAction_writeOr is missing on this target in sync context.');
 }
 
 export function ChannelAction_wait(self_) {

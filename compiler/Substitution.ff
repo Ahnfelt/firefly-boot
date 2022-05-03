@@ -39,7 +39,7 @@ extend self: Substitution {
     substituteFunctionDefinition(definition: DFunction): DFunction {
         definition.DFunction(
             signature = self.substituteSignature(definition.signature)
-            body = definition.body.map { _.mapFirefly(self.substituteLambda) }
+            body = definition.body.mapFirefly(self.substituteLambda)
         )
     }
 

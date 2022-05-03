@@ -96,19 +96,19 @@ return self_.stack || ''
 }
 
 export async function Error_rethrow$(self_, $c) {
-throw new Error('Function Error_rethrow not available on this target in async context.');
+throw new Error('Function Error_rethrow is missing on this target in async context.');
 }
 
 export async function Error_name$(self_, $c) {
-throw new Error('Function Error_name not available on this target in async context.');
+throw new Error('Function Error_name is missing on this target in async context.');
 }
 
 export async function Error_message$(self_, $c) {
-throw new Error('Function Error_message not available on this target in async context.');
+throw new Error('Function Error_message is missing on this target in async context.');
 }
 
 export async function Error_stack$(self_, $c) {
-throw new Error('Function Error_stack not available on this target in async context.');
+throw new Error('Function Error_stack is missing on this target in async context.');
 }
 
 

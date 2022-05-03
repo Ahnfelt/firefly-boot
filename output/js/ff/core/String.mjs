@@ -201,23 +201,23 @@ export function String_all(self_, body_) {
 }
 
 export async function String_size$(self_, $c) {
-throw new Error('Function String_size not available on this target in async context.');
+throw new Error('Function String_size is missing on this target in async context.');
 }
 
 export async function String_expect$(self_, index_, $c) {
-throw new Error('Function String_expect not available on this target in async context.');
+throw new Error('Function String_expect is missing on this target in async context.');
 }
 
 export async function String_replace$(self_, needle_, replacement_, $c) {
-throw new Error('Function String_replace not available on this target in async context.');
+throw new Error('Function String_replace is missing on this target in async context.');
 }
 
 export async function String_replaceFirst$(self_, needle_, replacement_, $c) {
-throw new Error('Function String_replaceFirst not available on this target in async context.');
+throw new Error('Function String_replaceFirst is missing on this target in async context.');
 }
 
 export async function String_reverse$(self_, $c) {
-throw new Error('Function String_reverse not available on this target in async context.');
+throw new Error('Function String_reverse is missing on this target in async context.');
 }
 
 export async function String_dropWhile$(self_, p_, $c) {
@@ -237,31 +237,31 @@ export async function String_takeWhile$(self_, p_, $c) {
 }
 
 export async function String_slice$(self_, from_, until_, $c) {
-throw new Error('Function String_slice not available on this target in async context.');
+throw new Error('Function String_slice is missing on this target in async context.');
 }
 
 export async function String_split$(self_, char_, $c) {
-throw new Error('Function String_split not available on this target in async context.');
+throw new Error('Function String_split is missing on this target in async context.');
 }
 
 export async function String_dropFirst$(self_, count_ = 1, $c) {
-throw new Error('Function String_dropFirst not available on this target in async context.');
+throw new Error('Function String_dropFirst is missing on this target in async context.');
 }
 
 export async function String_dropLast$(self_, count_ = 1, $c) {
-throw new Error('Function String_dropLast not available on this target in async context.');
+throw new Error('Function String_dropLast is missing on this target in async context.');
 }
 
 export async function String_expectInt$(self_, $c) {
-throw new Error('Function String_expectInt not available on this target in async context.');
+throw new Error('Function String_expectInt is missing on this target in async context.');
 }
 
 export async function String_first$(self_, $c) {
-throw new Error('Function String_first not available on this target in async context.');
+throw new Error('Function String_first is missing on this target in async context.');
 }
 
 export async function String_last$(self_, $c) {
-throw new Error('Function String_last not available on this target in async context.');
+throw new Error('Function String_last is missing on this target in async context.');
 }
 
 export async function String_expectFirst$(self_, $c) {
@@ -277,15 +277,15 @@ return ff_core_Core.panic_("expectFirst() on empty string")
 }
 
 export async function String_contains$(self_, substring_, $c) {
-throw new Error('Function String_contains not available on this target in async context.');
+throw new Error('Function String_contains is missing on this target in async context.');
 }
 
 export async function String_startsWith$(self_, prefix_, offset_ = 0, $c) {
-throw new Error('Function String_startsWith not available on this target in async context.');
+throw new Error('Function String_startsWith is missing on this target in async context.');
 }
 
 export async function String_endsWith$(self_, prefix_, $c) {
-throw new Error('Function String_endsWith not available on this target in async context.');
+throw new Error('Function String_endsWith is missing on this target in async context.');
 }
 
 export async function String_any$(self_, body_, $c) {

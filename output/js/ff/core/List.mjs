@@ -163,7 +163,7 @@ return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.s
 }
 
 export async function range_$(size_, $c) {
-throw new Error('Function range not available on this target in async context.');
+throw new Error('Function range is missing on this target in async context.');
 }
 
 export async function build_$(initial_, body_, $c) {
@@ -1184,7 +1184,7 @@ return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list
 }
 
 export async function List_toArray$(self_, $c) {
-throw new Error('Function List_toArray not available on this target in async context.');
+throw new Error('Function List_toArray is missing on this target in async context.');
 }
 
 export async function List_expect$(self_, index_, $c) {

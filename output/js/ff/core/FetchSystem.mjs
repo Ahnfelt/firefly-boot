@@ -95,7 +95,7 @@ return RedirectManual$;
 
 export const emptyList_ = ff_core_List.Empty();
 
-export function bodyString_(body_) {
+export function bodyText_(body_) {
 return body_
 }
 
@@ -103,16 +103,16 @@ export function bodyBuffer_(body_) {
 return body_
 }
 
-export async function bodyString_$(body_, $c) {
-throw new Error('Function bodyString not available on this target in async context.');
+export async function bodyText_$(body_, $c) {
+return body_
 }
 
 export async function bodyBuffer_$(body_, $c) {
-throw new Error('Function bodyBuffer not available on this target in async context.');
+return body_
 }
 
 export function FetchSystem_fetch(self_, url_, method_ = "GET", headers_ = ff_core_FetchSystem.emptyList_, body_ = ff_core_Option.None(), redirect_ = ff_core_FetchSystem.RedirectFollow(), referrer_ = ff_core_Option.None(), integrity_ = ff_core_Option.None(), mode_ = ff_core_Option.None(), credentials_ = ff_core_Option.None(), cache_ = ff_core_Option.None(), throw_ = true) {
-throw new Error('Function FetchSystem_fetch not available on this target in sync context.');
+throw new Error('Function FetchSystem_fetch is missing on this target in sync context.');
 }
 
 export async function FetchSystem_fetch$(self_, url_, method_ = "GET", headers_ = ff_core_FetchSystem.emptyList_, body_ = ff_core_Option.None(), redirect_ = ff_core_FetchSystem.RedirectFollow(), referrer_ = ff_core_Option.None(), integrity_ = ff_core_Option.None(), mode_ = ff_core_Option.None(), credentials_ = ff_core_Option.None(), cache_ = ff_core_Option.None(), throw_ = true, $c) {
@@ -135,27 +135,27 @@ export async function FetchSystem_fetch$(self_, url_, method_ = "GET", headers_ 
 }
 
 export function FetchResponse_ok(self_) {
-throw new Error('Function FetchResponse_ok not available on this target in sync context.');
+throw new Error('Function FetchResponse_ok is missing on this target in sync context.');
 }
 
 export function FetchResponse_status(self_) {
-throw new Error('Function FetchResponse_status not available on this target in sync context.');
+throw new Error('Function FetchResponse_status is missing on this target in sync context.');
 }
 
 export function FetchResponse_statusText(self_) {
-throw new Error('Function FetchResponse_statusText not available on this target in sync context.');
+throw new Error('Function FetchResponse_statusText is missing on this target in sync context.');
 }
 
 export function FetchResponse_header(self_, name_) {
-throw new Error('Function FetchResponse_header not available on this target in sync context.');
+throw new Error('Function FetchResponse_header is missing on this target in sync context.');
 }
 
 export function FetchResponse_readText(self_) {
-throw new Error('Function FetchResponse_readText not available on this target in sync context.');
+throw new Error('Function FetchResponse_readText is missing on this target in sync context.');
 }
 
 export function FetchResponse_readBuffer(self_) {
-throw new Error('Function FetchResponse_readBuffer not available on this target in sync context.');
+throw new Error('Function FetchResponse_readBuffer is missing on this target in sync context.');
 }
 
 export async function FetchResponse_ok$(self_, $c) {

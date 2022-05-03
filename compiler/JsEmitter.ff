@@ -25,15 +25,6 @@ fail[T](at: Location, message: String): T {
 
 extend self: JsEmitter {
 
-    bestTarget(target: Target, async: Bool): Option[TargetCode] {
-        target.{
-            | AnyTarget(code) => Some(code)
-            | SyncTarget(code) => Some(code).filter {|_ => !async}
-            | AsyncTarget(code) => Some(code).filter {|_ => async}
-            | SyncAsyncTarget(syncCode, asyncCode) => Some(if(async) {asyncCode} else {syncCode})
-        }
-    }
-
     emitModule(packagePair: Pair[String, String], module: Module): String {
         let selfImport =
             "import * as " + packagePair.first + "_" + packagePair.second + "_" + module.file.dropLast(3) + " " +
@@ -115,14 +106,16 @@ extend self: JsEmitter {
 
     emitFunctionDefinition(definition: DFunction, async: Bool, suffix: String = ""): String {
         let signature = self.emitSignature(definition.signature, async, suffix)
-        let target = definition.body.flatMap {self.bestTarget(_, async)}
-        target. {
-            | None =>
-                let modeName = if(async) {"async"} else {"sync"}
-                signature + " {\nthrow new Error('Function " + definition.signature.name + " not available on this target in " + modeName + " context.');\n}"
-            | Some(ForeignCode(code)) =>
+        Pair(async, definition.body).{
+            | Pair(False, ForeignTarget(None, _)) =>
+                signature + " {\nthrow new Error('Function " + definition.signature.name + " is missing on this target in sync context.');\n}"
+            | Pair(True, ForeignTarget(_, None)) =>
+                signature + " {\nthrow new Error('Function " + definition.signature.name + " is missing on this target in async context.');\n}"
+            | Pair(False, ForeignTarget(Some(code), _)) =>
                 signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
-            | Some(FireflyCode(body)) => body.{
+            | Pair(True, ForeignTarget(_, Some(code))) =>
+                signature + " {\n" + self.jsImporter.process(definition.at, code) + "\n}"
+            | Pair(_, FireflyTarget(lambda)) => lambda.{
                 | Lambda(_, effect, [matchCase]) {
                     matchCase.patterns.all {
                         | PVariable(_, None) => True

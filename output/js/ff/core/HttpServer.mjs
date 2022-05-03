@@ -82,7 +82,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function listen_(system_, host_, port_, handler_) {
-throw new Error('Function listen not available on this target in sync context.');
+throw new Error('Function listen is missing on this target in sync context.');
 }
 
 export async function listen_$(system_, host_, port_, handler_, $c) {
@@ -154,59 +154,59 @@ return self_.href
 }
 
 export async function Url_hash$(self_, $c) {
-throw new Error('Function Url_hash not available on this target in async context.');
+throw new Error('Function Url_hash is missing on this target in async context.');
 }
 
 export async function Url_host$(self_, $c) {
-throw new Error('Function Url_host not available on this target in async context.');
+throw new Error('Function Url_host is missing on this target in async context.');
 }
 
 export async function Url_origin$(self_, $c) {
-throw new Error('Function Url_origin not available on this target in async context.');
+throw new Error('Function Url_origin is missing on this target in async context.');
 }
 
 export async function Url_password$(self_, $c) {
-throw new Error('Function Url_password not available on this target in async context.');
+throw new Error('Function Url_password is missing on this target in async context.');
 }
 
 export async function Url_path$(self_, $c) {
-throw new Error('Function Url_path not available on this target in async context.');
+throw new Error('Function Url_path is missing on this target in async context.');
 }
 
 export async function Url_port$(self_, $c) {
-throw new Error('Function Url_port not available on this target in async context.');
+throw new Error('Function Url_port is missing on this target in async context.');
 }
 
 export async function Url_protocol$(self_, $c) {
-throw new Error('Function Url_protocol not available on this target in async context.');
+throw new Error('Function Url_protocol is missing on this target in async context.');
 }
 
 export async function Url_search$(self_, $c) {
-throw new Error('Function Url_search not available on this target in async context.');
+throw new Error('Function Url_search is missing on this target in async context.');
 }
 
 export async function Url_username$(self_, $c) {
-throw new Error('Function Url_username not available on this target in async context.');
+throw new Error('Function Url_username is missing on this target in async context.');
 }
 
 export async function Url_toString$(self_, $c) {
-throw new Error('Function Url_toString not available on this target in async context.');
+throw new Error('Function Url_toString is missing on this target in async context.');
 }
 
 export function HttpRequest_url(self_) {
-throw new Error('Function HttpRequest_url not available on this target in sync context.');
+throw new Error('Function HttpRequest_url is missing on this target in sync context.');
 }
 
 export function HttpRequest_method(self_) {
-throw new Error('Function HttpRequest_method not available on this target in sync context.');
+throw new Error('Function HttpRequest_method is missing on this target in sync context.');
 }
 
 export function HttpRequest_header(self_, name_) {
-throw new Error('Function HttpRequest_header not available on this target in sync context.');
+throw new Error('Function HttpRequest_header is missing on this target in sync context.');
 }
 
 export function HttpRequest_encoding(self_) {
-throw new Error('Function HttpRequest_encoding not available on this target in sync context.');
+throw new Error('Function HttpRequest_encoding is missing on this target in sync context.');
 }
 
 export function HttpRequest_readText(self_, encoding_ = ff_core_Option.None()) {
@@ -218,7 +218,7 @@ return "utf8"
 }
 
 export function HttpRequest_readStream(self_) {
-throw new Error('Function HttpRequest_readStream not available on this target in sync context.');
+throw new Error('Function HttpRequest_readStream is missing on this target in sync context.');
 }
 
 export async function HttpRequest_url$(self_, $c) {
@@ -297,19 +297,19 @@ export async function HttpRequest_readStream$(self_, $c) {
 }
 
 export function HttpResponse_setHeader(self_, name_, values_) {
-throw new Error('Function HttpResponse_setHeader not available on this target in sync context.');
+throw new Error('Function HttpResponse_setHeader is missing on this target in sync context.');
 }
 
 export function HttpResponse_writeStatus(self_, code_, message_) {
-throw new Error('Function HttpResponse_writeStatus not available on this target in sync context.');
+throw new Error('Function HttpResponse_writeStatus is missing on this target in sync context.');
 }
 
 export function HttpResponse_write(self_, buffer_) {
-throw new Error('Function HttpResponse_write not available on this target in sync context.');
+throw new Error('Function HttpResponse_write is missing on this target in sync context.');
 }
 
 export function HttpResponse_writeText(self_, text_, encoding_ = "utf8") {
-throw new Error('Function HttpResponse_writeText not available on this target in sync context.');
+throw new Error('Function HttpResponse_writeText is missing on this target in sync context.');
 }
 
 export async function HttpResponse_setHeader$(self_, name_, values_, $c) {

@@ -80,23 +80,23 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function FileHandle_close(self_) {
-throw new Error('Function FileHandle_close not available on this target in sync context.');
+throw new Error('Function FileHandle_close is missing on this target in sync context.');
 }
 
 export function FileHandle_read(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
-throw new Error('Function FileHandle_read not available on this target in sync context.');
+throw new Error('Function FileHandle_read is missing on this target in sync context.');
 }
 
 export function FileHandle_write(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None()) {
-throw new Error('Function FileHandle_write not available on this target in sync context.');
+throw new Error('Function FileHandle_write is missing on this target in sync context.');
 }
 
 export function FileHandle_writeText(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8") {
-throw new Error('Function FileHandle_writeText not available on this target in sync context.');
+throw new Error('Function FileHandle_writeText is missing on this target in sync context.');
 }
 
 export function FileHandle_sync(self_, dataOnly_ = false) {
-throw new Error('Function FileHandle_sync not available on this target in sync context.');
+throw new Error('Function FileHandle_sync is missing on this target in sync context.');
 }
 
 export async function FileHandle_close$(self_, $c) {

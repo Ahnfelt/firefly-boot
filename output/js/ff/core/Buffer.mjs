@@ -84,11 +84,11 @@ return Buffer.concat(array_)
 }
 
 export async function make_$(size_, $c) {
-throw new Error('Function make not available on this target in async context.');
+throw new Error('Function make is missing on this target in async context.');
 }
 
 export async function fromBufferArray_$(array_, $c) {
-throw new Error('Function fromBufferArray not available on this target in async context.');
+throw new Error('Function fromBufferArray is missing on this target in async context.');
 }
 
 export function Buffer_size(self_) {
@@ -114,19 +114,19 @@ return self_.toString(encoding_)
 }
 
 export async function Buffer_size$(self_, $c) {
-throw new Error('Function Buffer_size not available on this target in async context.');
+throw new Error('Function Buffer_size is missing on this target in async context.');
 }
 
 export async function Buffer_expect$(self_, index_, $c) {
-throw new Error('Function Buffer_expect not available on this target in async context.');
+throw new Error('Function Buffer_expect is missing on this target in async context.');
 }
 
 export async function Buffer_set$(self_, index_, byte_, $c) {
-throw new Error('Function Buffer_set not available on this target in async context.');
+throw new Error('Function Buffer_set is missing on this target in async context.');
 }
 
 export async function Buffer_toString$(self_, encoding_ = "utf8", $c) {
-throw new Error('Function Buffer_toString not available on this target in async context.');
+throw new Error('Function Buffer_toString is missing on this target in async context.');
 }
 
 

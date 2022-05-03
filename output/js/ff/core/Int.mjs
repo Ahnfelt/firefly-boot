@@ -112,35 +112,35 @@ return signed_ ? self_ >> bits_ : self_ >>> bits_;
 }
 
 export async function Int_abs$(self_, $c) {
-throw new Error('Function Int_abs not available on this target in async context.');
+throw new Error('Function Int_abs is missing on this target in async context.');
 }
 
 export async function Int_toFloat$(self_, $c) {
-throw new Error('Function Int_toFloat not available on this target in async context.');
+throw new Error('Function Int_toFloat is missing on this target in async context.');
 }
 
 export async function Int_bitNot$(self_, $c) {
-throw new Error('Function Int_bitNot not available on this target in async context.');
+throw new Error('Function Int_bitNot is missing on this target in async context.');
 }
 
 export async function Int_bitOr$(self_, that_, $c) {
-throw new Error('Function Int_bitOr not available on this target in async context.');
+throw new Error('Function Int_bitOr is missing on this target in async context.');
 }
 
 export async function Int_bitAnd$(self_, that_, $c) {
-throw new Error('Function Int_bitAnd not available on this target in async context.');
+throw new Error('Function Int_bitAnd is missing on this target in async context.');
 }
 
 export async function Int_bitXor$(self_, that_, $c) {
-throw new Error('Function Int_bitXor not available on this target in async context.');
+throw new Error('Function Int_bitXor is missing on this target in async context.');
 }
 
 export async function Int_bitLeft$(self_, bits_ = 1, $c) {
-throw new Error('Function Int_bitLeft not available on this target in async context.');
+throw new Error('Function Int_bitLeft is missing on this target in async context.');
 }
 
 export async function Int_bitRight$(self_, bits_ = 1, signed_ = true, $c) {
-throw new Error('Function Int_bitRight not available on this target in async context.');
+throw new Error('Function Int_bitRight is missing on this target in async context.');
 }
 
 

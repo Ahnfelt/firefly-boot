@@ -112,35 +112,35 @@ return self_.toFixed(digits_)
 }
 
 export async function Float_toInt$(self_, $c) {
-throw new Error('Function Float_toInt not available on this target in async context.');
+throw new Error('Function Float_toInt is missing on this target in async context.');
 }
 
 export async function Float_round$(self_, $c) {
-throw new Error('Function Float_round not available on this target in async context.');
+throw new Error('Function Float_round is missing on this target in async context.');
 }
 
 export async function Float_floor$(self_, $c) {
-throw new Error('Function Float_floor not available on this target in async context.');
+throw new Error('Function Float_floor is missing on this target in async context.');
 }
 
 export async function Float_ceil$(self_, $c) {
-throw new Error('Function Float_ceil not available on this target in async context.');
+throw new Error('Function Float_ceil is missing on this target in async context.');
 }
 
 export async function Float_truncate$(self_, $c) {
-throw new Error('Function Float_truncate not available on this target in async context.');
+throw new Error('Function Float_truncate is missing on this target in async context.');
 }
 
 export async function Float_sign$(self_, $c) {
-throw new Error('Function Float_sign not available on this target in async context.');
+throw new Error('Function Float_sign is missing on this target in async context.');
 }
 
 export async function Float_abs$(self_, $c) {
-throw new Error('Function Float_abs not available on this target in async context.');
+throw new Error('Function Float_abs is missing on this target in async context.');
 }
 
 export async function Float_toFixed$(self_, digits_, $c) {
-throw new Error('Function Float_toFixed not available on this target in async context.');
+throw new Error('Function Float_toFixed is missing on this target in async context.');
 }
 
 

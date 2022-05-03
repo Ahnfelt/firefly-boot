@@ -271,25 +271,11 @@ return {at_, name_, generics_};
 }
 
 // type Target
-export function AnyTarget(code_) {
-return {AnyTarget: true, code_};
+export function FireflyTarget(lambda_) {
+return {FireflyTarget: true, lambda_};
 }
-export function SyncTarget(code_) {
-return {SyncTarget: true, code_};
-}
-export function AsyncTarget(code_) {
-return {AsyncTarget: true, code_};
-}
-export function SyncAsyncTarget(sync_, async_) {
-return {SyncAsyncTarget: true, sync_, async_};
-}
-
-// type TargetCode
-export function FireflyCode(code_) {
-return {FireflyCode: true, code_};
-}
-export function ForeignCode(code_) {
-return {ForeignCode: true, code_};
+export function ForeignTarget(syncCode_, asyncCode_) {
+return {ForeignTarget: true, syncCode_, asyncCode_};
 }
 
 // type Type
@@ -391,108 +377,40 @@ return
 }
 }
 
-export function Target_mapFirefly(self_, f_) {
+export function Target_mapFirefly(self_, body_) {
 {
 const _1 = self_;
 {
-if(_1.AnyTarget) {
-const code_ = _1.code_;
-return ff_compiler_Syntax.AnyTarget(ff_compiler_Syntax.TargetCode_mapFirefly(code_, f_))
+if(_1.FireflyTarget) {
+const lambda_ = _1.lambda_;
+return ff_compiler_Syntax.FireflyTarget(body_(lambda_))
 return
 }
 }
 {
-if(_1.SyncTarget) {
-const code_ = _1.code_;
-return ff_compiler_Syntax.SyncTarget(ff_compiler_Syntax.TargetCode_mapFirefly(code_, f_))
-return
-}
-}
-{
-if(_1.AsyncTarget) {
-const code_ = _1.code_;
-return ff_compiler_Syntax.AsyncTarget(ff_compiler_Syntax.TargetCode_mapFirefly(code_, f_))
-return
-}
-}
-{
-if(_1.SyncAsyncTarget) {
-const sync_ = _1.sync_;
-const async_ = _1.async_;
-return ff_compiler_Syntax.SyncAsyncTarget(ff_compiler_Syntax.TargetCode_mapFirefly(sync_, f_), ff_compiler_Syntax.TargetCode_mapFirefly(async_, f_))
+if(_1.ForeignTarget) {
+return self_
 return
 }
 }
 }
 }
 
-export async function Target_mapFirefly$(self_, f_, $c) {
+export async function Target_mapFirefly$(self_, body_, $c) {
 {
 const _1 = self_;
 {
-if(_1.AnyTarget) {
-const code_ = _1.code_;
-return ff_compiler_Syntax.AnyTarget((await ff_compiler_Syntax.TargetCode_mapFirefly$(code_, f_, $c)))
+if(_1.FireflyTarget) {
+const lambda_ = _1.lambda_;
+return ff_compiler_Syntax.FireflyTarget((await body_(lambda_, $c)))
 return
 }
 }
 {
-if(_1.SyncTarget) {
-const code_ = _1.code_;
-return ff_compiler_Syntax.SyncTarget((await ff_compiler_Syntax.TargetCode_mapFirefly$(code_, f_, $c)))
+if(_1.ForeignTarget) {
+return self_
 return
 }
-}
-{
-if(_1.AsyncTarget) {
-const code_ = _1.code_;
-return ff_compiler_Syntax.AsyncTarget((await ff_compiler_Syntax.TargetCode_mapFirefly$(code_, f_, $c)))
-return
-}
-}
-{
-if(_1.SyncAsyncTarget) {
-const sync_ = _1.sync_;
-const async_ = _1.async_;
-return ff_compiler_Syntax.SyncAsyncTarget((await ff_compiler_Syntax.TargetCode_mapFirefly$(sync_, f_, $c)), (await ff_compiler_Syntax.TargetCode_mapFirefly$(async_, f_, $c)))
-return
-}
-}
-}
-}
-
-export function TargetCode_mapFirefly(self_, f_) {
-{
-const _1 = self_;
-{
-if(_1.FireflyCode) {
-const code_ = _1.code_;
-return ff_compiler_Syntax.FireflyCode(f_(code_))
-return
-}
-}
-{
-const foreignCode_ = _1;
-return foreignCode_
-return
-}
-}
-}
-
-export async function TargetCode_mapFirefly$(self_, f_, $c) {
-{
-const _1 = self_;
-{
-if(_1.FireflyCode) {
-const code_ = _1.code_;
-return ff_compiler_Syntax.FireflyCode((await f_(code_, $c)))
-return
-}
-}
-{
-const foreignCode_ = _1;
-return foreignCode_
-return
 }
 }
 }

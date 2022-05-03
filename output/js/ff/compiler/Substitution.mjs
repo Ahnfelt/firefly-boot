@@ -141,10 +141,8 @@ export function Substitution_substituteFunctionDefinition(self_, definition_) {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_core_Option.Option_map(definition_.body_, ((_w1) => {
-return ff_compiler_Syntax.Target_mapFirefly(_w1, ((definition_) => {
+return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((definition_) => {
 return ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_)
-}))
 })))
 return
 }
@@ -664,10 +662,8 @@ export async function Substitution_substituteFunctionDefinition$(self_, definiti
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_core_Option.Option_map(definition_.body_, ((_w1) => {
-return ff_compiler_Syntax.Target_mapFirefly(_w1, ((definition_) => {
+return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((definition_) => {
 return ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_)
-}))
 })))
 return
 }

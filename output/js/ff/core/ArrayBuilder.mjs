@@ -80,7 +80,7 @@ return {array: []}
 }
 
 export async function empty_$($c) {
-throw new Error('Function empty not available on this target in async context.');
+throw new Error('Function empty is missing on this target in async context.');
 }
 
 export function ArrayBuilder_toArray(self_) {
@@ -134,19 +134,19 @@ self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
 export async function ArrayBuilder_toArray$(self_, $c) {
-throw new Error('Function ArrayBuilder_toArray not available on this target in async context.');
+throw new Error('Function ArrayBuilder_toArray is missing on this target in async context.');
 }
 
 export async function ArrayBuilder_isEmpty$(self_, $c) {
-throw new Error('Function ArrayBuilder_isEmpty not available on this target in async context.');
+throw new Error('Function ArrayBuilder_isEmpty is missing on this target in async context.');
 }
 
 export async function ArrayBuilder_size$(self_, $c) {
-throw new Error('Function ArrayBuilder_size not available on this target in async context.');
+throw new Error('Function ArrayBuilder_size is missing on this target in async context.');
 }
 
 export async function ArrayBuilder_add$(self_, value_, $c) {
-throw new Error('Function ArrayBuilder_add not available on this target in async context.');
+throw new Error('Function ArrayBuilder_add is missing on this target in async context.');
 }
 
 export async function ArrayBuilder_modify$(self_, index_, body_, $c) {
@@ -154,23 +154,23 @@ self_.array[index_] = await body_(self_.array[index_], $c)
 }
 
 export async function ArrayBuilder_drain$(self_, $c) {
-throw new Error('Function ArrayBuilder_drain not available on this target in async context.');
+throw new Error('Function ArrayBuilder_drain is missing on this target in async context.');
 }
 
 export async function ArrayBuilder_toList$(self_, $c) {
-throw new Error('Function ArrayBuilder_toList not available on this target in async context.');
+throw new Error('Function ArrayBuilder_toList is missing on this target in async context.');
 }
 
 export async function ArrayBuilder_last$(self_, $c) {
-throw new Error('Function ArrayBuilder_last not available on this target in async context.');
+throw new Error('Function ArrayBuilder_last is missing on this target in async context.');
 }
 
 export async function ArrayBuilder_expectLast$(self_, $c) {
-throw new Error('Function ArrayBuilder_expectLast not available on this target in async context.');
+throw new Error('Function ArrayBuilder_expectLast is missing on this target in async context.');
 }
 
 export async function ArrayBuilder_sortBy$(self_, ordering_, $c) {
-throw new Error('Function ArrayBuilder_sortBy not available on this target in async context.');
+throw new Error('Function ArrayBuilder_sortBy is missing on this target in async context.');
 }
 
 

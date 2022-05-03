@@ -348,10 +348,10 @@ extend self: Resolver {
     resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
         let signature = self.resolveSignature(definition.signature, topLevel)
         let self2 = self.withSignature(signature)
-        let body = definition.body.map { _.mapFirefly { lambda => lambda.Lambda(
+        let body = definition.body.mapFirefly { lambda => lambda.Lambda(
             effect = signature.effect
             cases = lambda.cases.map { self2.resolveCase(_, False) }
-        )}}
+        )}
         DFunction(definition.at, signature, body)
     }
 
