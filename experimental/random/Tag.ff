@@ -1,0 +1,49 @@
+// This may solve VDOM props, but what about "render props"?
+// https://reactjs.org/docs/render-props.html
+
+type Tag[M] {
+    ComponentTag(component: ComponentConstructor[M], key: Option[String])
+    ElementTag(name: String, tags: List[Tag[M]], key: Option[String])
+    AttributeTag(name: String, value: String)
+    StyleTag(name: String, value: String)
+    EventTag(name: String, value: M)
+    TextTag(text: String)
+}
+
+type ComponentConstructor[M]() {}
+
+extend self: Tag[M] {
+    map[T](body: M => T): Tag[T] {
+        self.{
+            | ComponentTag(constructor, key) => ComponentTag(constructor.map(body), key) // How to compare this function
+            | ElementTag(name, tags, key) => ElementTag(name, tags.map(_.map(body)), key)
+            | AttributeTag(_, _) => self
+            | StyleTag(_, _) => self
+            | EventTag(name, value) => EventTag(name, body(value))
+        }
+    }
+}
+
+component[C: Component[M], M](value: C, key: Option[String] = None): Tag[M] {
+    panic("TODO")
+}
+
+element[M](name: String, tags: List[Tag[M]], key: Option[String] = None): Tag[M] {
+    ElementTag(name, tags, key)
+}
+
+attribute[M](name: String, value: String): Tag[M] {
+    AttributeTag(name, value)
+}
+
+style[M](name: String, value: String): Tag[M] {
+    StyleTag(name, value)
+}
+
+event[M](name: String, value: M): Tag[M] {
+    EventTag(name, value)
+}
+
+text[M](value: String): Tag[M] {
+    TextTag(value)
+}
