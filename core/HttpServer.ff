@@ -2,7 +2,7 @@ type HttpRequest! {}
 type HttpResponse! {}
 type Url {}
 
-listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit
+listen(system: NodeSystem, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit
     target node async """
         import * as http from 'http'
         if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})

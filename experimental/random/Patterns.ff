@@ -204,7 +204,7 @@ compile(input: Match): Decision {
     fail(Negative(Set.empty()), input.rules)
 }
 
-main(system: System): Unit {
+main(system: NodeSystem): Unit {
     //type Color {Red, Green, Blue}
     let red = PConstructor(Constructor("Red", 0, 3), [])
     let green = PConstructor(Constructor("Green", 0, 3), [])

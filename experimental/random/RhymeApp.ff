@@ -18,7 +18,7 @@ browserMain(system: BrowserSystem): Unit {
 
 }
 
-nodeMain(system: System): Unit {
+nodeMain(system: NodeSystem): Unit {
     HttpServer.listen(system, "localhost", 8080) { request, response =>
         let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + request.readText())
         let json = system.js().parseJson(result.readText())

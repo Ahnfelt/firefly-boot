@@ -1,4 +1,4 @@
-main(system: System): Unit {
+main(system: NodeSystem): Unit {
 
     let document = system.js().global().get("document")
     let input = document.call1("getElementById", "input")

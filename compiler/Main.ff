@@ -5,7 +5,7 @@ import Resolver
 import Compiler
 import Unification
 
-nodeMain(system: System): Unit {
+nodeMain(system: NodeSystem): Unit {
 
     /*
     HttpServer.listen(system, "localhost", 8080) { request, response =>
