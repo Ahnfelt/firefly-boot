@@ -5,16 +5,18 @@ import JsImporter
 type JsEmitter(
     otherModules: Map[String, Module]
     jsImporter: JsImporter
+    targetIsNode: Bool
     mutable tailCallUsed: Bool
 )
 
-make(otherModules: List[Module]): JsEmitter {
+make(otherModules: List[Module], targetIsNode: Bool): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map { m =>
             let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
         jsImporter = JsImporter.make()
+        targetIsNode = targetIsNode
         tailCallUsed = False
     )
 }
@@ -39,28 +41,32 @@ extend self: JsEmitter {
             module.functions.map { "export " + self.emitFunctionDefinition(_, True) }
             module.extends.map { self.emitExtendsDefinition(_) }
             module.instances.map { self.emitInstanceDefinition(_) }
-            if(module.functions.any { _.signature.name == "main" }) {
-                [self.emitMain()]
-            } else { [] }
+            self.emitMain(module.functions)
         ]
         let jsImports = self.jsImporter.generateImports()
         [jsImports, ...parts].map { _.join("\n\n") }.join("\n\n") + "\n"
     }
 
-    emitMain(): String {
-        [
-            "queueMicrotask(async () => {"
-            "const controller = new AbortController()"
-            "controller.promises = new Set()"
-            "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
-            "try {"
-            "await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)"
-            "} finally {"
-            "controller.abort()"
-            "clearInterval(interval)"
-            "}"
-            "})"
-        ].join("\n") // TODO
+    emitMain(functions: List[DFunction]): List[String] {
+        let targetMain = if(self.targetIsNode) { "nodeMain" } else { "browserMain" }
+        let mainFunction =
+            functions.find { _.signature.name == targetMain }.orElse { functions.find { _.signature.name == "main" } }
+        mainFunction.map {_.signature.name}.map { mainName =>
+            [[
+                "queueMicrotask(async () => {"
+                "const controller = new AbortController()"
+                "controller.promises = new Set()"
+                "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
+                "try {"
+                "await " + mainName +
+                "_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)"
+                "} finally {"
+                "controller.abort()"
+                "clearInterval(interval)"
+                "}"
+                "})"
+            ].join("\n")]
+        }.else {[]}
     }
 
     emitImportDefinition(definition: DImport): String {

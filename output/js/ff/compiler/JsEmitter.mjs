@@ -79,8 +79,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, jsImporter_, tailCallUsed_) {
-return {otherModules_, jsImporter_, tailCallUsed_};
+export function JsEmitter(otherModules_, jsImporter_, targetIsNode_, tailCallUsed_) {
+return {otherModules_, jsImporter_, targetIsNode_, tailCallUsed_};
 }
 
 // type ProcessedVariantCase
@@ -90,11 +90,11 @@ return {variantName_, newtype_, loneVariant_, arguments_};
 
 
 
-export function make_(otherModules_) {
+export function make_(otherModules_, targetIsNode_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, false)
 }
 
 export function fail_(at_, message_) {
@@ -329,11 +329,11 @@ return
 }
 }
 
-export async function make_$(otherModules_, $c) {
+export async function make_$(otherModules_, targetIsNode_, $c) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, false)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -591,19 +591,31 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
-})), ff_core_List.Link((ff_core_List.List_any(module_.functions_, ((_w1) => {
-return (_w1.signature_.name_ == "main")
-}))
-? ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_), ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Empty()))))))));
+})), ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_, module_.functions_), ff_core_List.Empty()))))))));
 const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_);
 return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
 }
 
-export function JsEmitter_emitMain(self_) {
-return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))), "\n")
+export function JsEmitter_emitMain(self_, functions_) {
+const targetMain_ = (self_.targetIsNode_
+? "nodeMain"
+: "browserMain");
+const mainFunction_ = ff_core_Option.Option_orElse(ff_core_List.List_find(functions_, ((_w1) => {
+return (_w1.signature_.name_ == targetMain_)
+})), (() => {
+return ff_core_List.List_find(functions_, ((_w1) => {
+return (_w1.signature_.name_ == "main")
+}))
+}));
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
+return _w1.signature_.name_
+})), ((mainName_) => {
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("try {", ff_core_List.Link((("await " + mainName_) + "_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)"), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))), "\n"), ff_core_List.Empty())
+})), (() => {
+return ff_core_List.Empty()
+}))
 }
 
 export function JsEmitter_emitImportDefinition(self_, definition_) {
@@ -1867,19 +1879,31 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
-})), ff_core_List.Link((ff_core_List.List_any(module_.functions_, ((_w1) => {
-return (_w1.signature_.name_ == "main")
-}))
-? ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_), ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Empty()))))))));
+})), ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_, module_.functions_), ff_core_List.Empty()))))))));
 const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_);
 return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
 }
 
-export async function JsEmitter_emitMain$(self_, $c) {
-return ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("try {", ff_core_List.Link("await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))), "\n")
+export async function JsEmitter_emitMain$(self_, functions_, $c) {
+const targetMain_ = (self_.targetIsNode_
+? "nodeMain"
+: "browserMain");
+const mainFunction_ = ff_core_Option.Option_orElse(ff_core_List.List_find(functions_, ((_w1) => {
+return (_w1.signature_.name_ == targetMain_)
+})), (() => {
+return ff_core_List.List_find(functions_, ((_w1) => {
+return (_w1.signature_.name_ == "main")
+}))
+}));
+return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
+return _w1.signature_.name_
+})), ((mainName_) => {
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("try {", ff_core_List.Link((("await " + mainName_) + "_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)"), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))), "\n"), ff_core_List.Empty())
+})), (() => {
+return ff_core_List.Empty()
+}))
 }
 
 export async function JsEmitter_emitImportDefinition$(self_, definition_, $c) {

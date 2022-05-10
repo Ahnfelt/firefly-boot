@@ -184,7 +184,7 @@ extend self: Compiler {
             Pair(array.expect(0), array.expect(1))
         }
 
-        let js = JsEmitter.make([module, ...otherModules]).emitModule(packagePair, module)
+        let js = JsEmitter.make([module, ...otherModules], self.targetIsNode).emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
         let jsFile = jsPath + "/" + moduleName + ".mjs"
         self.files.createDirectories(jsPath)

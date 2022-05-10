@@ -88,7 +88,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function main_(system_) {
+export function nodeMain_(system_) {
 const target_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0);
 const mainPackage_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1);
 const mainModule_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2);
@@ -139,7 +139,7 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
-export async function main_$(system_, $c) {
+export async function nodeMain_$(system_, $c) {
 const target_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 0);
 const mainPackage_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 1);
 const mainModule_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 2);
@@ -199,7 +199,7 @@ const controller = new AbortController()
 controller.promises = new Set()
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
 try {
-await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)
+await nodeMain_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)
 } finally {
 controller.abort()
 clearInterval(interval)
