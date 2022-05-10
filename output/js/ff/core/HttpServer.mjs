@@ -76,9 +76,6 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 // type HttpResponse
 
 
-// type Url
-
-
 
 
 export function listen_(system_, host_, port_, handler_) {
@@ -113,92 +110,20 @@ export async function listen_$(system_, host_, port_, handler_, $c) {
     
 }
 
-export function Url_hash(self_) {
-return self_.hash
-}
-
-export function Url_host(self_) {
-return self_.hostname
-}
-
-export function Url_origin(self_) {
-return self_.origin
-}
-
-export function Url_password(self_) {
-return self_.password
-}
-
-export function Url_path(self_) {
-return self_.pathname
-}
-
-export function Url_port(self_) {
-return self_.port
-}
-
-export function Url_protocol(self_) {
-return self_.protocol.replace(':', '')
-}
-
-export function Url_search(self_) {
-return self_.search
-}
-
-export function Url_username(self_) {
-return self_.username
-}
-
-export function Url_toString(self_) {
-return self_.href
-}
-
-export async function Url_hash$(self_, $c) {
-throw new Error('Function Url_hash is missing on this target in async context.');
-}
-
-export async function Url_host$(self_, $c) {
-throw new Error('Function Url_host is missing on this target in async context.');
-}
-
-export async function Url_origin$(self_, $c) {
-throw new Error('Function Url_origin is missing on this target in async context.');
-}
-
-export async function Url_password$(self_, $c) {
-throw new Error('Function Url_password is missing on this target in async context.');
-}
-
-export async function Url_path$(self_, $c) {
-throw new Error('Function Url_path is missing on this target in async context.');
-}
-
-export async function Url_port$(self_, $c) {
-throw new Error('Function Url_port is missing on this target in async context.');
-}
-
-export async function Url_protocol$(self_, $c) {
-throw new Error('Function Url_protocol is missing on this target in async context.');
-}
-
-export async function Url_search$(self_, $c) {
-throw new Error('Function Url_search is missing on this target in async context.');
-}
-
-export async function Url_username$(self_, $c) {
-throw new Error('Function Url_username is missing on this target in async context.');
-}
-
-export async function Url_toString$(self_, $c) {
-throw new Error('Function Url_toString is missing on this target in async context.');
-}
-
-export function HttpRequest_url(self_) {
-throw new Error('Function HttpRequest_url is missing on this target in sync context.');
-}
-
 export function HttpRequest_method(self_) {
 throw new Error('Function HttpRequest_method is missing on this target in sync context.');
+}
+
+export function HttpRequest_path(self_) {
+throw new Error('Function HttpRequest_path is missing on this target in sync context.');
+}
+
+export function HttpRequest_parameters(self_) {
+throw new Error('Function HttpRequest_parameters is missing on this target in sync context.');
+}
+
+export function HttpRequest_parameter(self_, name_) {
+throw new Error('Function HttpRequest_parameter is missing on this target in sync context.');
 }
 
 export function HttpRequest_header(self_, name_) {
@@ -221,15 +146,33 @@ export function HttpRequest_readStream(self_) {
 throw new Error('Function HttpRequest_readStream is missing on this target in sync context.');
 }
 
-export async function HttpRequest_url$(self_, $c) {
+export async function HttpRequest_method$(self_, $c) {
+return self_.method
+}
 
-            return new URL(self_.url, `http://${self_.headers.host}`)
+export async function HttpRequest_path$(self_, $c) {
+
+            let i = self_.url.indexOf('?')
+            return i === -1 ? self_.url : self_.url.slice(0, i)
         
 }
 
-export async function HttpRequest_method$(self_, $c) {
+export async function HttpRequest_parameters$(self_, $c) {
 
-            return self_.method
+            let i = self_.url.indexOf('?')
+            return i === -1 ? ff_core_Option.None() : ff_core_Option.Some(self_.url.slice(i + 1))
+        
+}
+
+export async function HttpRequest_parameter$(self_, name_, $c) {
+
+            let i = self_.url.indexOf('?')
+            if(i === -1) return ff_core_Option.None()
+            let ps = self_.url.slice(i + 1).split('&')
+            let n = name_ + '='
+            let r = ps.find(p => p === name_ || p.startsWith(n))
+            if(r == null) return ff_core_Option.None()
+            return ff_core_Option.Some(r.slice(name_.length + 1))
         
 }
 

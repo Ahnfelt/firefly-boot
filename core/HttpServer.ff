@@ -1,6 +1,5 @@
 type HttpRequest! {}
 type HttpResponse! {}
-type Url {}
 
 listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit
     target node async """
@@ -30,50 +29,32 @@ listen(system: System, host: String, port: Int, handler: (HttpRequest, HttpRespo
     """
 
 
-extend self: Url {
-
-    hash(): String
-        target node sync "return self_.hash"
-
-    host(): String
-        target node sync "return self_.hostname"
-
-    origin(): String
-        target node sync "return self_.origin"
-
-    password(): String
-        target node sync "return self_.password"
-
-    path(): String
-        target node sync "return self_.pathname"
-
-    port(): String
-        target node sync "return self_.port"
-
-    protocol(): String
-        target node sync "return self_.protocol.replace(':', '')"
-
-    search(): String
-        target node sync "return self_.search"
-
-    username(): String
-        target node sync "return self_.username"
-
-    toString(): String
-        target node sync "return self_.href"
-
-}
-
 extend self: HttpRequest {
 
-    url(): Url
+    method(): String
+        target node async "return self_.method"
+
+    path(): String
         target node async """
-            return new URL(self_.url, `http://${self_.headers.host}`)
+            let i = self_.url.indexOf('?')
+            return i === -1 ? self_.url : self_.url.slice(0, i)
         """
 
-    method(): String
+    parameters(): Option[String]
         target node async """
-            return self_.method
+            let i = self_.url.indexOf('?')
+            return i === -1 ? ff_core_Option.None() : ff_core_Option.Some(self_.url.slice(i + 1))
+        """
+
+    parameter(name: String): Option[String]
+        target node async """
+            let i = self_.url.indexOf('?')
+            if(i === -1) return ff_core_Option.None()
+            let ps = self_.url.slice(i + 1).split('&')
+            let n = name_ + '='
+            let r = ps.find(p => p === name_ || p.startsWith(n))
+            if(r == null) return ff_core_Option.None()
+            return ff_core_Option.Some(r.slice(name_.length + 1))
         """
 
     header(name: String): Option[String]
