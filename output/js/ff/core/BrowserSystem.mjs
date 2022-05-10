@@ -72,19 +72,46 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+// type BrowserSystem
 
 
 
 
-export function debug_(value_) {
-console.log(value_)
+
+
+
+
+export function BrowserSystem_fetch(self_) {
+throw new Error('Function BrowserSystem_fetch is missing on this target in sync context.');
 }
 
-export async function debug_$(value_, $c) {
-throw new Error('Function debug is missing on this target in async context.');
+export function BrowserSystem_tasks(self_) {
+throw new Error('Function BrowserSystem_tasks is missing on this target in sync context.');
 }
 
+export function BrowserSystem_time(self_) {
+throw new Error('Function BrowserSystem_time is missing on this target in sync context.');
+}
 
+export function BrowserSystem_js(self_) {
+throw new Error('Function BrowserSystem_js is missing on this target in sync context.');
+}
+
+export async function BrowserSystem_fetch$(self_, $c) {
+return null
+}
+
+export async function BrowserSystem_tasks$(self_, $c) {
+return null
+}
+
+export async function BrowserSystem_time$(self_, $c) {
+return null
+}
+
+export async function BrowserSystem_js$(self_, $c) {
+return typeof globalThis !== 'undefined' ? globalThis : window
+}
 
 
 

@@ -1,4 +1,4 @@
-browserMain(system: System): Unit {
+browserMain(system: BrowserSystem): Unit {
 
     let document = system.js().global().get("document")
     let input = document.call1("getElementById", "input")
