@@ -1,0 +1,17 @@
+type BrowserSystem! {}
+
+extend self: BrowserSystem {
+
+    fetch(): FetchSystem
+        target js async "return null"
+
+    tasks(): TaskSystem
+        target js async "return null"
+
+    time(): TimeSystem
+        target js async "return null"
+
+    js(): JsSystem
+        target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+
+}

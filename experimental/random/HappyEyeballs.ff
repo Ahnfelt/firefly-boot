@@ -2,7 +2,7 @@
 
 type Ip(ipAddress: String, seconds: Duration, succeed: Bool)
 
-main(system: System): Unit {
+main(system: NodeSystem): Unit {
     let ips = [
         Ip("1.1.1.1", Duration(1.7), False)
         Ip("2.2.2.2", Duration(0.4), False)

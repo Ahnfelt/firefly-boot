@@ -6,6 +6,8 @@ import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
+
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
 
 import * as ff_core_Channel from "../../ff/core/Channel.mjs"
@@ -44,6 +46,8 @@ import * as ff_core_Log from "../../ff/core/Log.mjs"
 
 import * as ff_core_Map from "../../ff/core/Map.mjs"
 
+import * as ff_core_NodeSystem from "../../ff/core/NodeSystem.mjs"
+
 import * as ff_core_Nothing from "../../ff/core/Nothing.mjs"
 
 import * as ff_core_Option from "../../ff/core/Option.mjs"
@@ -60,8 +64,6 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
-import * as ff_core_System from "../../ff/core/System.mjs"
-
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -70,65 +72,44 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type System
+// type BrowserSystem
 
 
-// type SystemArguments
-export function SystemArguments(array_) {
-return {array_};
+
+
+
+
+
+
+export function BrowserSystem_fetch(self_) {
+throw new Error('Function BrowserSystem_fetch is missing on this target in sync context.');
 }
 
-
-
-
-
-
-
-export function System_arguments(self_) {
-throw new Error('Function System_arguments is missing on this target in sync context.');
+export function BrowserSystem_tasks(self_) {
+throw new Error('Function BrowserSystem_tasks is missing on this target in sync context.');
 }
 
-export function System_files(self_) {
-throw new Error('Function System_files is missing on this target in sync context.');
+export function BrowserSystem_time(self_) {
+throw new Error('Function BrowserSystem_time is missing on this target in sync context.');
 }
 
-export function System_fetch(self_) {
-throw new Error('Function System_fetch is missing on this target in sync context.');
+export function BrowserSystem_js(self_) {
+throw new Error('Function BrowserSystem_js is missing on this target in sync context.');
 }
 
-export function System_tasks(self_) {
-throw new Error('Function System_tasks is missing on this target in sync context.');
-}
-
-export function System_time(self_) {
-throw new Error('Function System_time is missing on this target in sync context.');
-}
-
-export function System_js(self_) {
-throw new Error('Function System_js is missing on this target in sync context.');
-}
-
-export async function System_arguments$(self_, $c) {
-return ff_core_Array.Array_toList(self_.array_)
-}
-
-export async function System_files$(self_, $c) {
+export async function BrowserSystem_fetch$(self_, $c) {
 return null
 }
 
-export async function System_fetch$(self_, $c) {
+export async function BrowserSystem_tasks$(self_, $c) {
 return null
 }
 
-export async function System_tasks$(self_, $c) {
+export async function BrowserSystem_time$(self_, $c) {
 return null
 }
 
-export async function System_time$(self_, $c) {
-return null
-}
-
-export async function System_js$(self_, $c) {
+export async function BrowserSystem_js$(self_, $c) {
 return typeof globalThis !== 'undefined' ? globalThis : window
 }
 

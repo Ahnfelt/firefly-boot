@@ -22,6 +22,8 @@ import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
+
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
 
 import * as ff_core_Channel from "../../ff/core/Channel.mjs"
@@ -60,6 +62,8 @@ import * as ff_core_Log from "../../ff/core/Log.mjs"
 
 import * as ff_core_Map from "../../ff/core/Map.mjs"
 
+import * as ff_core_NodeSystem from "../../ff/core/NodeSystem.mjs"
+
 import * as ff_core_Nothing from "../../ff/core/Nothing.mjs"
 
 import * as ff_core_Option from "../../ff/core/Option.mjs"
@@ -76,8 +80,6 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
-import * as ff_core_System from "../../ff/core/System.mjs"
-
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -91,7 +93,7 @@ export function Compiler(targetIsNode_, files_, time_, jsOutputPath_, packagePat
 return {targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
 }
 
-export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Array", ff_core_List.Link("ArrayBuilder", ff_core_List.Link("Bool", ff_core_List.Link("Buffer", ff_core_List.Link("Channel", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("Error", ff_core_List.Link("FetchSystem", ff_core_List.Link("FileHandle", ff_core_List.Link("FileSystem", ff_core_List.Link("Float", ff_core_List.Link("HttpServer", ff_core_List.Link("Instant", ff_core_List.Link("Int", ff_core_List.Link("Iterator", ff_core_List.Link("JsValue", ff_core_List.Link("JsSystem", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Ordering", ff_core_List.Link("Pair", ff_core_List.Link("Set", ff_core_List.Link("Show", ff_core_List.Link("Stream", ff_core_List.Link("String", ff_core_List.Link("System", ff_core_List.Link("TaskSystem", ff_core_List.Link("TimeSystem", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty()))))))))))))))))))))))))))))))))))), ((moduleName_) => {
+export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Array", ff_core_List.Link("ArrayBuilder", ff_core_List.Link("Bool", ff_core_List.Link("BrowserSystem", ff_core_List.Link("Buffer", ff_core_List.Link("Channel", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("Error", ff_core_List.Link("FetchSystem", ff_core_List.Link("FileHandle", ff_core_List.Link("FileSystem", ff_core_List.Link("Float", ff_core_List.Link("HttpServer", ff_core_List.Link("Instant", ff_core_List.Link("Int", ff_core_List.Link("Iterator", ff_core_List.Link("JsValue", ff_core_List.Link("JsSystem", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("NodeSystem", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Ordering", ff_core_List.Link("Pair", ff_core_List.Link("Set", ff_core_List.Link("Show", ff_core_List.Link("Stream", ff_core_List.Link("String", ff_core_List.Link("TaskSystem", ff_core_List.Link("TimeSystem", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty())))))))))))))))))))))))))))))))))))), ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_core_Pair.Pair("ff", "core"), ff_core_List.Empty(), moduleName_)
 }));
 
@@ -204,7 +206,7 @@ const packagePair_ = ff_core_Core.do_((() => {
 const array_ = ff_core_String.String_split(packageName_, 58);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(array_, 0), ff_core_Array.Array_expect(array_, 1))
 }));
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_)), packagePair_, module_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_), self_.targetIsNode_), packagePair_, module_);
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"));
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs");
 ff_core_FileSystem.FileSystem_createDirectories(self_.files_, jsPath_);
@@ -314,7 +316,7 @@ const packagePair_ = ff_core_Core.do_((() => {
 const array_ = ff_core_String.String_split(packageName_, 58);
 return ff_core_Pair.Pair(ff_core_Array.Array_expect(array_, 0), ff_core_Array.Array_expect(array_, 1))
 }));
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_)), packagePair_, module_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_), self_.targetIsNode_), packagePair_, module_);
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_core_String.String_replace(packageName_, ":", "/"));
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs");
 (await ff_core_FileSystem.FileSystem_createDirectories$(self_.files_, jsPath_, $c));

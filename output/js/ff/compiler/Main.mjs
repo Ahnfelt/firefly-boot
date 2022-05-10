@@ -20,6 +20,8 @@ import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
+import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
+
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
 
 import * as ff_core_Channel from "../../ff/core/Channel.mjs"
@@ -58,6 +60,8 @@ import * as ff_core_Log from "../../ff/core/Log.mjs"
 
 import * as ff_core_Map from "../../ff/core/Map.mjs"
 
+import * as ff_core_NodeSystem from "../../ff/core/NodeSystem.mjs"
+
 import * as ff_core_Nothing from "../../ff/core/Nothing.mjs"
 
 import * as ff_core_Option from "../../ff/core/Option.mjs"
@@ -74,8 +78,6 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
-import * as ff_core_System from "../../ff/core/System.mjs"
-
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -88,14 +90,14 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function main_(system_) {
-const target_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 0);
-const mainPackage_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 1);
-const mainModule_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 2);
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_System.System_arguments(system_), 3));
-const tempPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 4);
-const jsOutputPath_ = ff_core_List.List_expect(ff_core_System.System_arguments(system_), 5);
-const fs_ = ff_core_System.System_files(system_);
+export function nodeMain_(system_) {
+const target_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 0);
+const mainPackage_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 1);
+const mainModule_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 2);
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 3));
+const tempPath_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 4);
+const jsOutputPath_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 5);
+const fs_ = ff_core_NodeSystem.NodeSystem_files(system_);
 const targetIsNode_ = ((target_ == "node")
 ? true
 : (target_ == "browser")
@@ -108,7 +110,7 @@ ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_);
 const jsPathFile_ = (tempPath_ + "/js");
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_);
 const success_ = ff_core_Core.do_((() => {
-const compiler_ = ff_compiler_Compiler.make_(targetIsNode_, fs_, ff_core_System.System_time(system_), jsPathFile_, packagePaths_);
+const compiler_ = ff_compiler_Compiler.make_(targetIsNode_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), jsPathFile_, packagePaths_);
 ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_);
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_);
 return true
@@ -139,14 +141,14 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
-export async function main_$(system_, $c) {
-const target_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 0);
-const mainPackage_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 1);
-const mainModule_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 2);
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 3));
-const tempPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 4);
-const jsOutputPath_ = ff_core_List.List_expect((await ff_core_System.System_arguments$(system_, $c)), 5);
-const fs_ = (await ff_core_System.System_files$(system_, $c));
+export async function nodeMain_$(system_, $c) {
+const target_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 0);
+const mainPackage_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 1);
+const mainModule_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 2);
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 3));
+const tempPath_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 4);
+const jsOutputPath_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 5);
+const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
 const targetIsNode_ = ((target_ == "node")
 ? true
 : (target_ == "browser")
@@ -159,7 +161,7 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 const jsPathFile_ = (tempPath_ + "/js");
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $c));
 const success_ = (await ff_core_Core.do_$((async ($c) => {
-const compiler_ = (await ff_compiler_Compiler.make_$(targetIsNode_, fs_, (await ff_core_System.System_time$(system_, $c)), jsPathFile_, packagePaths_, $c));
+const compiler_ = (await ff_compiler_Compiler.make_$(targetIsNode_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), jsPathFile_, packagePaths_, $c));
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, $c));
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c));
 return true
@@ -199,7 +201,7 @@ const controller = new AbortController()
 controller.promises = new Set()
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
 try {
-await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)
+await nodeMain_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)
 } finally {
 controller.abort()
 clearInterval(interval)

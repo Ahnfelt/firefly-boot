@@ -72,7 +72,7 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Float
+// type NodeSystem
 
 
 
@@ -81,68 +81,52 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function Float_toInt(self_) {
-return Math.trunc(Math.abs(self_))
+export function NodeSystem_arguments(self_) {
+throw new Error('Function NodeSystem_arguments is missing on this target in sync context.');
 }
 
-export function Float_round(self_) {
-return Math.round(self_)
+export function NodeSystem_files(self_) {
+throw new Error('Function NodeSystem_files is missing on this target in sync context.');
 }
 
-export function Float_floor(self_) {
-return Math.floor(self_)
+export function NodeSystem_fetch(self_) {
+throw new Error('Function NodeSystem_fetch is missing on this target in sync context.');
 }
 
-export function Float_ceil(self_) {
-return Math.ceil(self_)
+export function NodeSystem_tasks(self_) {
+throw new Error('Function NodeSystem_tasks is missing on this target in sync context.');
 }
 
-export function Float_truncate(self_) {
-return Math.trunc(self_)
+export function NodeSystem_time(self_) {
+throw new Error('Function NodeSystem_time is missing on this target in sync context.');
 }
 
-export function Float_sign(self_) {
-return Math.sign(self_)
+export function NodeSystem_js(self_) {
+throw new Error('Function NodeSystem_js is missing on this target in sync context.');
 }
 
-export function Float_abs(self_) {
-return Math.abs(self_)
+export async function NodeSystem_arguments$(self_, $c) {
+return ff_core_Array.Array_toList(self_.array_)
 }
 
-export function Float_toFixed(self_, digits_) {
-return self_.toFixed(digits_)
+export async function NodeSystem_files$(self_, $c) {
+return null
 }
 
-export async function Float_toInt$(self_, $c) {
-throw new Error('Function Float_toInt is missing on this target in async context.');
+export async function NodeSystem_fetch$(self_, $c) {
+return null
 }
 
-export async function Float_round$(self_, $c) {
-throw new Error('Function Float_round is missing on this target in async context.');
+export async function NodeSystem_tasks$(self_, $c) {
+return null
 }
 
-export async function Float_floor$(self_, $c) {
-throw new Error('Function Float_floor is missing on this target in async context.');
+export async function NodeSystem_time$(self_, $c) {
+return null
 }
 
-export async function Float_ceil$(self_, $c) {
-throw new Error('Function Float_ceil is missing on this target in async context.');
-}
-
-export async function Float_truncate$(self_, $c) {
-throw new Error('Function Float_truncate is missing on this target in async context.');
-}
-
-export async function Float_sign$(self_, $c) {
-throw new Error('Function Float_sign is missing on this target in async context.');
-}
-
-export async function Float_abs$(self_, $c) {
-throw new Error('Function Float_abs is missing on this target in async context.');
-}
-
-export async function Float_toFixed$(self_, digits_, $c) {
-throw new Error('Function Float_toFixed is missing on this target in async context.');
+export async function NodeSystem_js$(self_, $c) {
+return typeof globalThis !== 'undefined' ? globalThis : window
 }
 
 
