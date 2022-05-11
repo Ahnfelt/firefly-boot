@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 target="$1"
 f=`basename "$2"`
@@ -11,7 +12,6 @@ if [ "$target" == "run" ]; then
   node --experimental-fetch ".firefly/output/node/script/script/$m.mjs"
 elif [[ "$target" == *":"* ]]; then
   targets=$(echo "$target" | tr ":" "\n")
-  set -e
   for t in $targets; do
     "$0" "$t" "$2"
   done

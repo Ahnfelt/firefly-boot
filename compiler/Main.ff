@@ -7,13 +7,6 @@ import Unification
 
 main(system: NodeSystem): Unit {
 
-    /*
-    HttpServer.listen(system, "localhost", 8080) { request, response =>
-        Log.debug(request.readText())
-        response.writeText("Hi!")
-    }
-    */
-
     let target = system.arguments().expect(0)
     let mainPackage = system.arguments().expect(1)
     let mainModule = system.arguments().expect(2)
@@ -23,14 +16,6 @@ main(system: NodeSystem): Unit {
 
     let fs = system.files()
 
-    /*
-    let targetIsNode = target.{
-        | "node" => True
-        | "browser" => False
-        | _ => panic("Unknown target '" + target + "'")
-    }
-    Log.debug(targetIsNode) // Prints Promise(true)!
-    */
     let targetIsNode =
         if(target == "node") {
             True
@@ -46,16 +31,12 @@ main(system: NodeSystem): Unit {
     let jsPathFile = tempPath + "/js"
     fs.createDirectories(jsPathFile)
 
-    let success = do { //try {
+    let success = do {
         let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, packagePaths)
         compiler.emit(mainPackage, mainModule)
         compiler.printMeasurements()
         True
     }
-    /*} else {
-        Log.debug("An exception was thrown from Compiler.")
-        False
-    }*/
 
     if(success) {
         if(fs.exists(jsOutputPath)) { deleteDirectory(fs, jsOutputPath) }
