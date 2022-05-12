@@ -40,6 +40,8 @@ main(system: NodeSystem): Unit {
         | s => panic("Unknown command '" + s + "'")
     }
 
+    arguments.first().each { panic("Unknown argument: " + _) }
+
     /*command.{ // This currently fails because command is a promise here, and isn't awaited
         | BootstrapCommand =>
         | _ => panic("Only the 'bootstrap' command is supported right now")
@@ -55,7 +57,7 @@ main(system: NodeSystem): Unit {
     let jsOutputPath = "output/js"
 
     Builder.build(
-        system = system,
+        system = system
         target = target
         mainPackage = mainPackage
         mainModule = mainModule

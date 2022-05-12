@@ -189,6 +189,9 @@ return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
 return
 }
 }))(ff_core_Option.Option_expect(consumeArgument_()));
+ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((_w1) => {
+ff_core_Core.panic_(("Unknown argument: " + _w1))
+}));
 const target_ = "node";
 const mainPackage_ = "ff:compiler";
 const mainModule_ = "Main";
@@ -274,6 +277,9 @@ return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
 return
 }
 }))(ff_core_Option.Option_expect(consumeArgument_()));
+ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((_w1) => {
+ff_core_Core.panic_(("Unknown argument: " + _w1))
+}));
 const target_ = "node";
 const mainPackage_ = "ff:compiler";
 const mainModule_ = "Main";
