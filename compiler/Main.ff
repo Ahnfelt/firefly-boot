@@ -40,7 +40,9 @@ main(system: NodeSystem): Unit {
         | s => panic("Unknown command '" + s + "'")
     }
 
-    arguments.first().each { panic("Unknown argument: " + _) }
+    arguments.first().each { argument =>
+        panic("Unknown argument: " + argument)
+    }
 
     /*command.{ // This currently fails because command is a promise here, and isn't awaited
         | BootstrapCommand =>
