@@ -52,7 +52,10 @@ main(system: NodeSystem): Unit {
                 target = "node"
                 mainPackage = "ff:compiler"
                 mainModule = "Main"
-                packagePaths = parsePackageLocations("ff:compiler@compiler,ff:core@core")
+                packagePaths = [
+                    Pair("ff:compiler", "compiler")
+                    Pair("ff:core", "core")
+                ].toMap()
                 tempPath = "output/temporary"
                 jsOutputPath = "output/js"
                 printMeasurements = True
@@ -64,7 +67,10 @@ main(system: NodeSystem): Unit {
                 target = target
                 mainPackage = "script:script"
                 mainModule = mainFile
-                packagePaths = parsePackageLocations("script:script@.,ff:core@" + fireflyPath + "/core")
+                packagePaths = [
+                    Pair("script:script", ".")
+                    Pair("ff:core", fireflyPath + "/core")
+                ].toMap()
                 tempPath = ".firefly/temporary"
                 jsOutputPath = ".firefly/output/" + target
                 printMeasurements = False
@@ -72,11 +78,4 @@ main(system: NodeSystem): Unit {
         | _ => panic("Only the 'bootstrap' and 'run' commands are supported for now")
     }
 
-}
-
-parsePackageLocations(text: String): Map[String, String] {
-    text.split(',').toList().map { item =>
-        let parts = item.split('@')
-        Pair(parts.expect(0), parts.expect(1))
-    }.toMap()
 }
