@@ -55,6 +55,7 @@ main(system: NodeSystem): Unit {
                 packagePaths = parsePackageLocations("ff:compiler@compiler,ff:core@core")
                 tempPath = "output/temporary"
                 jsOutputPath = "output/js"
+                printMeasurements = True
             )
         | RunCommand(mainFile) =>
             let target = "node"
@@ -66,6 +67,7 @@ main(system: NodeSystem): Unit {
                 packagePaths = parsePackageLocations("script:script@.,ff:core@" + fireflyPath + "/core")
                 tempPath = ".firefly/temporary"
                 jsOutputPath = ".firefly/output/" + target
+                printMeasurements = False
             )
         | _ => panic("Only the 'bootstrap' and 'run' commands are supported for now")
     }

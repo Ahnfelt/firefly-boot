@@ -13,6 +13,7 @@ build(
     packagePaths : Map[String, String]
     tempPath : String
     jsOutputPath : String
+    printMeasurements : Bool
 ): Unit {
 
     let fs = system.files()
@@ -35,7 +36,7 @@ build(
     let success = do {
         let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, packagePaths)
         compiler.emit(mainPackage, mainModule)
-        compiler.printMeasurements()
+        if(printMeasurements) { compiler.printMeasurements() }
         True
     }
 

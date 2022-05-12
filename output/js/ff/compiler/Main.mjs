@@ -197,7 +197,7 @@ for(;;) {
 const _1 = command_;
 {
 if(_1.BootstrapCommand) {
-ff_compiler_Builder.build_(system_, "node", "ff:compiler", "Main", ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core"), "output/temporary", "output/js")
+ff_compiler_Builder.build_(system_, "node", "ff:compiler", "Main", ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core"), "output/temporary", "output/js", true)
 break
 }
 }
@@ -205,7 +205,7 @@ break
 if(_1.RunCommand) {
 const mainFile_ = _1.mainPath_;
 const target_ = "node";
-ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, ff_compiler_Main.parsePackageLocations_((("script:script@.,ff:core@" + fireflyPath_) + "/core")), ".firefly/temporary", (".firefly/output/" + target_))
+ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, ff_compiler_Main.parsePackageLocations_((("script:script@.,ff:core@" + fireflyPath_) + "/core")), ".firefly/temporary", (".firefly/output/" + target_), false)
 break
 }
 }
@@ -300,7 +300,7 @@ for(;;) {
 const _1 = command_;
 {
 if(_1.BootstrapCommand) {
-(await ff_compiler_Builder.build_$(system_, "node", "ff:compiler", "Main", ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core"), "output/temporary", "output/js", $c))
+(await ff_compiler_Builder.build_$(system_, "node", "ff:compiler", "Main", ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core"), "output/temporary", "output/js", true, $c))
 break
 }
 }
@@ -308,7 +308,7 @@ break
 if(_1.RunCommand) {
 const mainFile_ = _1.mainPath_;
 const target_ = "node";
-(await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, ff_compiler_Main.parsePackageLocations_((("script:script@.,ff:core@" + fireflyPath_) + "/core")), ".firefly/temporary", (".firefly/output/" + target_), $c))
+(await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, ff_compiler_Main.parsePackageLocations_((("script:script@.,ff:core@" + fireflyPath_) + "/core")), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 break
 }
 }

@@ -90,7 +90,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function build_(system_, target_, mainPackage_, mainModule_, packagePaths_, tempPath_, jsOutputPath_) {
+export function build_(system_, target_, mainPackage_, mainModule_, packagePaths_, tempPath_, jsOutputPath_, printMeasurements_) {
 const fs_ = ff_core_NodeSystem.NodeSystem_files(system_);
 const targetIsNode_ = ((target_ == "node")
 ? true
@@ -106,7 +106,9 @@ ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_);
 const success_ = ff_core_Core.do_((() => {
 const compiler_ = ff_compiler_Compiler.make_(targetIsNode_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), jsPathFile_, packagePaths_);
 ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_);
-ff_compiler_Compiler.Compiler_printMeasurements(compiler_);
+if(printMeasurements_) {
+ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
+};
 return true
 }));
 if(success_) {
@@ -128,7 +130,7 @@ ff_core_FileSystem.FileSystem_delete(fs_, file_)
 ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
 }
 
-export async function build_$(system_, target_, mainPackage_, mainModule_, packagePaths_, tempPath_, jsOutputPath_, $c) {
+export async function build_$(system_, target_, mainPackage_, mainModule_, packagePaths_, tempPath_, jsOutputPath_, printMeasurements_, $c) {
 const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
 const targetIsNode_ = ((target_ == "node")
 ? true
@@ -144,7 +146,9 @@ const jsPathFile_ = (tempPath_ + "/js");
 const success_ = (await ff_core_Core.do_$((async ($c) => {
 const compiler_ = (await ff_compiler_Compiler.make_$(targetIsNode_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), jsPathFile_, packagePaths_, $c));
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, $c));
-(await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c));
+if(printMeasurements_) {
+(await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c))
+};
 return true
 }), $c));
 if(success_) {
