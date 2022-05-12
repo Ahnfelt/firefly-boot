@@ -180,9 +180,21 @@ return
 }
 });
 const command_ = parseCommand_(ff_core_Option.Option_expect(consumeArgument_()));
+for(;;) {
+const _1 = command_;
+{
+if(_1.RunCommand) {
+
+break
+}
+}
+{
 ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
-}));
+}))
+break
+}
+};
 function buildScript_(mainFile_, target_) {
 ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("script:script", "."), ff_core_List.Link(ff_core_Pair.Pair("ff:core", (fireflyPath_ + "/core")), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
@@ -197,7 +209,7 @@ if(ff_compiler_Main.detectBrowserMain_(ff_core_NodeSystem.NodeSystem_files(syste
 buildScript_(mainFile_, "browser")
 };
 buildScript_(mainFile_, "node");
-ff_compiler_Main.writeNodeRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_)
+ff_compiler_Main.writeNodeRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_, arguments_)
 break
 }
 }
@@ -251,15 +263,17 @@ ff_core_FileSystem.FileSystem_delete(fs_, ".firefly/output/run")
 }
 }
 
-export function writeNodeRunFile_(fs_, mainFile_) {
-ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", (("node --experimental-fetch \".firefly/output/node/script/script/" + mainFile_) + ".mjs\""))
+export function writeNodeRunFile_(fs_, mainFile_, arguments_) {
+ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((("node --experimental-fetch '.firefly/output/node/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
+return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
+})), "")))
 }
 
 export function writeEsbuildRunFile_(fs_, fireflyPath_, mainFile_) {
 const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
 const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
 const outPath_ = ((".firefly/output/browser/" + mainFile_) + ".min.js");
-ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((((((("\"" + esbuildPath_) + "\" \"") + mainPath_) + "\" --outfile=\"") + outPath_) + "\" ") + "--platform=browser --bundle --minify --log-level=warning"))
+ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", (((((((("'" + ff_core_String.String_replace(esbuildPath_, "'", "''")) + "' '") + ff_core_String.String_replace(mainPath_, "'", "''")) + "' ") + "--outfile='") + ff_core_String.String_replace(outPath_, "'", "''")) + "' ") + "--platform=browser --target=es6 --bundle --minify --log-level=warning"))
 }
 
 export function prepareFireflyDirectory_(fs_) {
@@ -361,9 +375,21 @@ return
 }
 });
 const command_ = parseCommand_(ff_core_Option.Option_expect(consumeArgument_()));
+for(;;) {
+const _1 = command_;
+{
+if(_1.RunCommand) {
+
+break
+}
+}
+{
 ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
-}));
+}))
+break
+}
+};
 async function buildScript_$(mainFile_, target_, $c) {
 (await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("script:script", "."), ff_core_List.Link(ff_core_Pair.Pair("ff:core", (fireflyPath_ + "/core")), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
@@ -378,7 +404,7 @@ if((await ff_compiler_Main.detectBrowserMain_$((await ff_core_NodeSystem.NodeSys
 (await buildScript_$(mainFile_, "browser", $c))
 };
 (await buildScript_$(mainFile_, "node", $c));
-(await ff_compiler_Main.writeNodeRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, $c))
+(await ff_compiler_Main.writeNodeRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, arguments_, $c))
 break
 }
 }
@@ -432,15 +458,17 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output/run", $c))
 }
 }
 
-export async function writeNodeRunFile_$(fs_, mainFile_, $c) {
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", (("node --experimental-fetch \".firefly/output/node/script/script/" + mainFile_) + ".mjs\""), $c))
+export async function writeNodeRunFile_$(fs_, mainFile_, arguments_, $c) {
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((("node --experimental-fetch '.firefly/output/node/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
+return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
+})), "")), $c))
 }
 
 export async function writeEsbuildRunFile_$(fs_, fireflyPath_, mainFile_, $c) {
 const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
 const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
 const outPath_ = ((".firefly/output/browser/" + mainFile_) + ".min.js");
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((((((("\"" + esbuildPath_) + "\" \"") + mainPath_) + "\" --outfile=\"") + outPath_) + "\" ") + "--platform=browser --bundle --minify --log-level=warning"), $c))
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", (((((((("'" + ff_core_String.String_replace(esbuildPath_, "'", "''")) + "' '") + ff_core_String.String_replace(mainPath_, "'", "''")) + "' ") + "--outfile='") + ff_core_String.String_replace(outPath_, "'", "''")) + "' ") + "--platform=browser --target=es6 --bundle --minify --log-level=warning"), $c))
 }
 
 export async function prepareFireflyDirectory_$(fs_, $c) {

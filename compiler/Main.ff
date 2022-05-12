@@ -41,8 +41,12 @@ main(system: NodeSystem): Unit {
     }
     let command = parseCommand(consumeArgument().expect())
 
-    arguments.first().each { argument =>
-        panic("Unknown argument: " + argument)
+    command.{
+        | RunCommand(_) =>
+        | _ =>
+            arguments.first().each { argument =>
+                panic("Unknown argument: " + argument)
+            }
     }
 
     function buildScript(mainFile: String, target: String) {
@@ -71,7 +75,7 @@ main(system: NodeSystem): Unit {
                 buildScript(mainFile, "browser")
             }
             buildScript(mainFile, "node")
-            writeNodeRunFile(system.files(), mainFile)
+            writeNodeRunFile(system.files(), mainFile, arguments)
 
         | BuildCommand(mainFile, BrowserPlatform) =>
             prepareFireflyDirectory(system.files())
@@ -112,9 +116,10 @@ deleteRunFile(fs: FileSystem) {
     }
 }
 
-writeNodeRunFile(fs: FileSystem, mainFile: String) {
+writeNodeRunFile(fs: FileSystem, mainFile: String, arguments: List[String]) {
     fs.writeText(".firefly/output/run"
-        "node --experimental-fetch \".firefly/output/node/script/script/" + mainFile + ".mjs\""
+        "node --experimental-fetch '.firefly/output/node/script/script/" + mainFile.replace("'", "''") + ".mjs'" +
+        arguments.map {" '" + _.replace("'", "''") + "'"}.join()
     )
 }
 
@@ -123,8 +128,9 @@ writeEsbuildRunFile(fs: FileSystem, fireflyPath: String, mainFile: String) {
     let mainPath = ".firefly/output/browser/script/script/" + mainFile + ".mjs"
     let outPath = ".firefly/output/browser/" + mainFile + ".min.js"
     fs.writeText(".firefly/output/run"
-        "\"" + esbuildPath + "\" \"" + mainPath + "\" --outfile=\"" + outPath + "\" " +
-        "--platform=browser --bundle --minify --log-level=warning"
+        "'" + esbuildPath.replace("'", "''") + "' '" + mainPath.replace("'", "''") + "' " +
+        "--outfile='" + outPath.replace("'", "''") + "' " +
+        "--platform=browser --target=es6 --bundle --minify --log-level=warning"
     )
 }
 
