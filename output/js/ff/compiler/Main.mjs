@@ -212,14 +212,45 @@ break
 }
 }
 {
+if(_1.BuildCommand) {
+const mainFile_ = _1.mainPath_;
+if(_1.platform_.BrowserPlatform) {
+ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
+buildScript_(mainFile_, "browser");
+ff_core_FileSystem.FileSystem_writeText(ff_core_NodeSystem.NodeSystem_files(system_), ".firefly/output/run", (((((("\"" + fireflyPath_) + "\"/node_modules/.bin/esbuild \".firefly/output/browser/script/script/") + mainFile_) + ".mjs\" --platform=browser --bundle --outfile=.firefly/output/browser/") + mainFile_) + ".min.js --minify --log-level=warning"))
+break
+}
+}
+}
+{
+if(_1.BuildCommand) {
+if(_1.platform_.LinuxPlatform) {
+ff_core_Core.panic_("Not yet implemented: 'linux'")
+break
+}
+}
+}
+{
+if(_1.BuildCommand) {
+if(_1.platform_.WindowsPlatform) {
+ff_core_Core.panic_("Not yet implemented: 'windows'")
+break
+}
+}
+}
+{
+if(_1.BuildCommand) {
+if(_1.platform_.MacosPlatform) {
+ff_core_Core.panic_("Not yet implemented: 'macos'")
+break
+}
+}
+}
+{
 if(_1.BootstrapCommand) {
 ff_compiler_Builder.build_(system_, "node", "ff:compiler", "Main", ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), "output/temporary", "output/js", true)
 break
 }
-}
-{
-ff_core_Core.panic_("Only the 'bootstrap' and 'run' commands are supported for now")
-break
 }
 }
 }
@@ -361,14 +392,45 @@ break
 }
 }
 {
+if(_1.BuildCommand) {
+const mainFile_ = _1.mainPath_;
+if(_1.platform_.BrowserPlatform) {
+(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
+(await buildScript_$(mainFile_, "browser", $c));
+(await ff_core_FileSystem.FileSystem_writeText$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ".firefly/output/run", (((((("\"" + fireflyPath_) + "\"/node_modules/.bin/esbuild \".firefly/output/browser/script/script/") + mainFile_) + ".mjs\" --platform=browser --bundle --outfile=.firefly/output/browser/") + mainFile_) + ".min.js --minify --log-level=warning"), $c))
+break
+}
+}
+}
+{
+if(_1.BuildCommand) {
+if(_1.platform_.LinuxPlatform) {
+ff_core_Core.panic_("Not yet implemented: 'linux'")
+break
+}
+}
+}
+{
+if(_1.BuildCommand) {
+if(_1.platform_.WindowsPlatform) {
+ff_core_Core.panic_("Not yet implemented: 'windows'")
+break
+}
+}
+}
+{
+if(_1.BuildCommand) {
+if(_1.platform_.MacosPlatform) {
+ff_core_Core.panic_("Not yet implemented: 'macos'")
+break
+}
+}
+}
+{
 if(_1.BootstrapCommand) {
 (await ff_compiler_Builder.build_$(system_, "node", "ff:compiler", "Main", ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), "output/temporary", "output/js", true, $c))
 break
 }
-}
-{
-ff_core_Core.panic_("Only the 'bootstrap' and 'run' commands are supported for now")
-break
 }
 }
 }

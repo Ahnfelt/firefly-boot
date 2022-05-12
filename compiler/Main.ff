@@ -75,6 +75,22 @@ main(system: NodeSystem): Unit {
                 "node --experimental-fetch \".firefly/output/node/script/script/" + mainFile + ".mjs\""
             )
 
+        | BuildCommand(mainFile, BrowserPlatform) =>
+            prepareFireflyDirectory(system.files())
+            buildScript(mainFile, "browser")
+            system.files().writeText(".firefly/output/run"
+                "\"" + fireflyPath + "\"/node_modules/.bin/esbuild \".firefly/output/browser/script/script/" + mainFile + ".mjs\" --platform=browser --bundle --outfile=.firefly/output/browser/" + mainFile + ".min.js --minify --log-level=warning"
+            )
+
+        | BuildCommand(_, LinuxPlatform) =>
+            panic("Not yet implemented: 'linux'")
+
+        | BuildCommand(_, WindowsPlatform) =>
+            panic("Not yet implemented: 'windows'")
+
+        | BuildCommand(_, MacosPlatform) =>
+            panic("Not yet implemented: 'macos'")
+
         | BootstrapCommand =>
             Builder.build(
                 system = system
@@ -89,9 +105,6 @@ main(system: NodeSystem): Unit {
                 jsOutputPath = "output/js"
                 printMeasurements = True
             )
-
-        | _ =>
-            panic("Only the 'bootstrap' and 'run' commands are supported for now")
 
     }
 
