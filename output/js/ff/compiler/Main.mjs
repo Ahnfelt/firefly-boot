@@ -196,6 +196,7 @@ ff_core_Core.panic_(("Unknown argument: " + argument_))
 function buildScript_(mainFile_, target_) {
 ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("script:script", "."), ff_core_List.Link(ff_core_Pair.Pair("ff:core", (fireflyPath_ + "/core")), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
+ff_compiler_Main.deleteFireflyRunFile_(ff_core_NodeSystem.NodeSystem_files(system_));
 for(;;) {
 const _1 = command_;
 {
@@ -223,10 +224,13 @@ break
 }
 }
 
-export function prepareFireflyDirectory_(fs_) {
+export function deleteFireflyRunFile_(fs_) {
 if(ff_core_FileSystem.FileSystem_exists(fs_, ".firefly/output/run")) {
 ff_core_FileSystem.FileSystem_delete(fs_, ".firefly/output/run")
-};
+}
+}
+
+export function prepareFireflyDirectory_(fs_) {
 if((!ff_core_FileSystem.FileSystem_exists(fs_, ".firefly/output"))) {
 if((!ff_core_FileSystem.FileSystem_exists(fs_, ".firefly"))) {
 ff_core_FileSystem.FileSystem_createDirectory(fs_, ".firefly")
@@ -341,6 +345,7 @@ ff_core_Core.panic_(("Unknown argument: " + argument_))
 async function buildScript_$(mainFile_, target_, $c) {
 (await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("script:script", "."), ff_core_List.Link(ff_core_Pair.Pair("ff:core", (fireflyPath_ + "/core")), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
+(await ff_compiler_Main.deleteFireflyRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 for(;;) {
 const _1 = command_;
 {
@@ -368,10 +373,13 @@ break
 }
 }
 
-export async function prepareFireflyDirectory_$(fs_, $c) {
+export async function deleteFireflyRunFile_$(fs_, $c) {
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output/run", $c))) {
 (await ff_core_FileSystem.FileSystem_delete$(fs_, ".firefly/output/run", $c))
-};
+}
+}
+
+export async function prepareFireflyDirectory_$(fs_, $c) {
 if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output", $c)))) {
 if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly", $c)))) {
 (await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly", $c))

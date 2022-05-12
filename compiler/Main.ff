@@ -61,6 +61,7 @@ main(system: NodeSystem): Unit {
         )
     }
 
+    deleteFireflyRunFile(system.files())
     command.{
 
         | RunCommand(mainFile) =>
@@ -95,10 +96,13 @@ main(system: NodeSystem): Unit {
 
 }
 
-prepareFireflyDirectory(fs: FileSystem, ) {
+deleteFireflyRunFile(fs: FileSystem) {
     if(fs.exists(".firefly/output/run")) {
         fs.delete(".firefly/output/run")
     }
+}
+
+prepareFireflyDirectory(fs: FileSystem) {
     if(!fs.exists(".firefly/output")) {
         if(!fs.exists(".firefly")) {
             fs.createDirectory(".firefly")
