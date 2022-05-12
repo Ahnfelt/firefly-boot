@@ -88,17 +88,113 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+// type MainCommand
+const BootstrapCommand$ = {BootstrapCommand: true};
+export function BootstrapCommand() {
+return BootstrapCommand$;
+}
+export function RunCommand(mainPath_) {
+return {RunCommand: true, mainPath_};
+}
+export function BuildCommand(mainPath_, platform_) {
+return {BuildCommand: true, mainPath_, platform_};
+}
 
+// type BuildPlatform
+const BrowserPlatform$ = {BrowserPlatform: true};
+export function BrowserPlatform() {
+return BrowserPlatform$;
+}
+const LinuxPlatform$ = {LinuxPlatform: true};
+export function LinuxPlatform() {
+return LinuxPlatform$;
+}
+const WindowsPlatform$ = {WindowsPlatform: true};
+export function WindowsPlatform() {
+return WindowsPlatform$;
+}
+const MacosPlatform$ = {MacosPlatform: true};
+export function MacosPlatform() {
+return MacosPlatform$;
+}
 
 
 
 export function main_(system_) {
-const target_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 0);
-const mainPackage_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 1);
-const mainModule_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 2);
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 3));
-const tempPath_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 4);
-const jsOutputPath_ = ff_core_List.List_expect(ff_core_NodeSystem.NodeSystem_arguments(system_), 5);
+let arguments_ = ff_core_NodeSystem.NodeSystem_arguments(system_);
+function consumeArgument_() {
+const first_ = ff_core_List.List_first(arguments_);
+arguments_ = ff_core_List.List_dropFirst(arguments_, 1);
+return first_
+}
+const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
+const command_ = (((_1) => {
+{
+const s_ = _1;
+const _guard1 = ff_core_String.String_endsWith(s_, ".ff");
+if(_guard1) {
+return ff_compiler_Main.RunCommand(s_)
+return
+}
+}
+{
+if(_1 == "bootstrap") {
+return ff_compiler_Main.BootstrapCommand()
+return
+}
+}
+{
+if(_1 == "run") {
+return ff_compiler_Main.RunCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})))
+return
+}
+}
+{
+if(_1 == "browser") {
+return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})), ff_compiler_Main.BrowserPlatform())
+return
+}
+}
+{
+if(_1 == "linux") {
+return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})), ff_compiler_Main.LinuxPlatform())
+return
+}
+}
+{
+if(_1 == "windows") {
+return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})), ff_compiler_Main.WindowsPlatform())
+return
+}
+}
+{
+if(_1 == "macos") {
+return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})), ff_compiler_Main.MacosPlatform())
+return
+}
+}
+{
+const s_ = _1;
+return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
+return
+}
+}))(ff_core_Option.Option_expect(consumeArgument_()));
+const target_ = "node";
+const mainPackage_ = "ff:compiler";
+const mainModule_ = "Main";
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core");
+const tempPath_ = "output/temporary";
+const jsOutputPath_ = "output/js";
 ff_compiler_Builder.build_(system_, target_, mainPackage_, mainModule_, packagePaths_, tempPath_, jsOutputPath_)
 }
 
@@ -110,12 +206,80 @@ return ff_core_Pair.Pair(ff_core_Array.Array_expect(parts_, 0), ff_core_Array.Ar
 }
 
 export async function main_$(system_, $c) {
-const target_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 0);
-const mainPackage_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 1);
-const mainModule_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 2);
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_(ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 3));
-const tempPath_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 4);
-const jsOutputPath_ = ff_core_List.List_expect((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c)), 5);
+let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
+function consumeArgument_() {
+const first_ = ff_core_List.List_first(arguments_);
+arguments_ = ff_core_List.List_dropFirst(arguments_, 1);
+return first_
+}
+const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
+const command_ = ((async (_1, $c) => {
+{
+const s_ = _1;
+const _guard1 = ff_core_String.String_endsWith(s_, ".ff");
+if(_guard1) {
+return ff_compiler_Main.RunCommand(s_)
+return
+}
+}
+{
+if(_1 == "bootstrap") {
+return ff_compiler_Main.BootstrapCommand()
+return
+}
+}
+{
+if(_1 == "run") {
+return ff_compiler_Main.RunCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})))
+return
+}
+}
+{
+if(_1 == "browser") {
+return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})), ff_compiler_Main.BrowserPlatform())
+return
+}
+}
+{
+if(_1 == "linux") {
+return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})), ff_compiler_Main.LinuxPlatform())
+return
+}
+}
+{
+if(_1 == "windows") {
+return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})), ff_compiler_Main.WindowsPlatform())
+return
+}
+}
+{
+if(_1 == "macos") {
+return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return "Main.ff"
+})), ff_compiler_Main.MacosPlatform())
+return
+}
+}
+{
+const s_ = _1;
+return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
+return
+}
+}))(ff_core_Option.Option_expect(consumeArgument_()));
+const target_ = "node";
+const mainPackage_ = "ff:compiler";
+const mainModule_ = "Main";
+const packagePaths_ = ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core");
+const tempPath_ = "output/temporary";
+const jsOutputPath_ = "output/js";
 (await ff_compiler_Builder.build_$(system_, target_, mainPackage_, mainModule_, packagePaths_, tempPath_, jsOutputPath_, $c))
 }
 

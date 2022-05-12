@@ -6,14 +6,53 @@ import Compiler
 import Unification
 import Builder
 
+type MainCommand {
+    BootstrapCommand
+    RunCommand(mainPath : String)
+    BuildCommand(mainPath : String, platform : BuildPlatform)
+}
+
+type BuildPlatform {
+    BrowserPlatform
+    LinuxPlatform
+    WindowsPlatform
+    MacosPlatform
+}
+
 main(system: NodeSystem): Unit {
 
-    let target = system.arguments().expect(0)
-    let mainPackage = system.arguments().expect(1)
-    let mainModule = system.arguments().expect(2)
-    let packagePaths = parsePackageLocations(system.arguments().expect(3))
-    let tempPath = system.arguments().expect(4)
-    let jsOutputPath = system.arguments().expect(5)
+    mutable arguments = system.arguments()
+    function consumeArgument(): Option[String] {
+        let first = arguments.first()
+        arguments = arguments.dropFirst()
+        first
+    }
+
+    let fireflyPath = consumeArgument().expect()
+    let command = consumeArgument().expect().{
+        | s {s.endsWith(".ff")} => RunCommand(s)
+        | "bootstrap" => BootstrapCommand
+        | "run" => RunCommand(consumeArgument().else {"Main.ff"})
+        | "browser" => BuildCommand(consumeArgument().else {"Main.ff"}, BrowserPlatform)
+        | "linux" => BuildCommand(consumeArgument().else {"Main.ff"}, LinuxPlatform)
+        | "windows" => BuildCommand(consumeArgument().else {"Main.ff"}, WindowsPlatform)
+        | "macos" => BuildCommand(consumeArgument().else {"Main.ff"}, MacosPlatform)
+        | s => panic("Unknown command '" + s + "'")
+    }
+
+    /*command.{ // This currently fails because command is a promise here, and isn't awaited
+        | BootstrapCommand =>
+        | _ => panic("Only the 'bootstrap' command is supported right now")
+    }*/
+
+    // node output/js/ff/compiler/Main.mjs "$target" script:script "$m" "script:script@$p",ff:core@core   "$p/.firefly/temporary" "$p/.firefly/output/$target"
+
+    let target = "node"
+    let mainPackage = "ff:compiler"
+    let mainModule = "Main"
+    let packagePaths = parsePackageLocations("ff:compiler@compiler,ff:core@core")
+    let tempPath = "output/temporary"
+    let jsOutputPath = "output/js"
 
     Builder.build(
         system = system,
