@@ -26,6 +26,8 @@ Missing dependencies are fetched from the central or configured package reposito
 
 ### Building an executable
 
+*Not yet implemented.*
+
 ```
 firefly linux MyApp.ff
 ```
@@ -40,5 +42,4 @@ Available platforms: `windows`, `linux`, `macos`.
 firefly browser MyApp.ff
 ```
 
-This generates a single, minified `MyApp.js`, compatible with all modern browsers (ES6+).
-
+This generates a single, minified `MyApp.min.js`, compatible with all modern browsers (ES6+).
