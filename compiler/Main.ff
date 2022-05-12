@@ -4,6 +4,7 @@ import Syntax
 import Resolver
 import Compiler
 import Unification
+import Builder
 
 main(system: NodeSystem): Unit {
 
@@ -14,46 +15,16 @@ main(system: NodeSystem): Unit {
     let tempPath = system.arguments().expect(4)
     let jsOutputPath = system.arguments().expect(5)
 
-    let fs = system.files()
+    Builder.build(
+        system = system,
+        target = target
+        mainPackage = mainPackage
+        mainModule = mainModule
+        packagePaths = packagePaths
+        tempPath = tempPath
+        jsOutputPath = jsOutputPath
+    )
 
-    let targetIsNode =
-        if(target == "node") {
-            True
-        } elseIf {target == "browser"} {
-            False
-        } else {
-            panic("Unknown target '" + target + "'")
-        }
-
-    if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
-    fs.createDirectory(tempPath)
-
-    let jsPathFile = tempPath + "/js"
-    fs.createDirectories(jsPathFile)
-
-    let success = do {
-        let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, packagePaths)
-        compiler.emit(mainPackage, mainModule)
-        compiler.printMeasurements()
-        True
-    }
-
-    if(success) {
-        if(fs.exists(jsOutputPath)) { deleteDirectory(fs, jsOutputPath) }
-        fs.rename(jsPathFile, jsOutputPath)
-    }
-
-}
-
-deleteDirectory(fs: FileSystem, outputFile: String): Unit {
-    fs.list(outputFile).each { file =>
-        if(fs.isDirectory(file)) {
-            deleteDirectory(fs, file)
-        } else {
-            fs.delete(file)
-        }
-    }
-    fs.delete(outputFile)
 }
 
 parsePackageLocations(text: String): Map[String, String] {

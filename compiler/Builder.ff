@@ -1,0 +1,58 @@
+import Tokenizer
+import Parser
+import Syntax
+import Resolver
+import Compiler
+import Unification
+
+build(
+    system: NodeSystem,
+    target : String
+    mainPackage : String
+    mainModule : String
+    packagePaths : Map[String, String]
+    tempPath : String
+    jsOutputPath : String
+): Unit {
+
+    let fs = system.files()
+
+    let targetIsNode =
+        if(target == "node") {
+            True
+        } elseIf {target == "browser"} {
+            False
+        } else {
+            panic("Unknown target '" + target + "'")
+        }
+
+    if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
+    fs.createDirectory(tempPath)
+
+    let jsPathFile = tempPath + "/js"
+    fs.createDirectories(jsPathFile)
+
+    let success = do {
+        let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, packagePaths)
+        compiler.emit(mainPackage, mainModule)
+        compiler.printMeasurements()
+        True
+    }
+
+    if(success) {
+        if(fs.exists(jsOutputPath)) { deleteDirectory(fs, jsOutputPath) }
+        fs.rename(jsPathFile, jsOutputPath)
+    }
+
+}
+
+deleteDirectory(fs: FileSystem, outputFile: String): Unit {
+    fs.list(outputFile).each { file =>
+        if(fs.isDirectory(file)) {
+            deleteDirectory(fs, file)
+        } else {
+            fs.delete(file)
+        }
+    }
+    fs.delete(outputFile)
+}
