@@ -8,15 +8,13 @@ Status: Firefly has been bootstrapped and now transpiles itself into JavaScript.
 ## Compiling the compiler
 
 ```
-node output/js/ff/compiler/Main.mjs node ff:compiler Main ff:compiler@compiler,ff:core@core output/temporary output/js
+firefly.sh bootstrap
 ```
 
-## Future plan for the command line
-
-### Running a main file
+## Running a main file
 
 ```
-firefly MyApp.ff
+firefly.sh run MyApp.ff
 ```
 
 The main file may include main functions for multiple targets, such as `browserMain` and `nodeMain`. 
@@ -24,22 +22,22 @@ Each of those targets will be built before running.
 
 Missing dependencies are fetched from the central or configured package repository before building and running.
 
-### Building an executable
+## Building an executable
 
 *Not yet implemented.*
 
 ```
-firefly linux MyApp.ff
+firefly.sh linux MyApp.ff
 ```
 
 This will generate a stand-alone executable file `MyApp` with the necessary assets and dependencies, compatible with most linux distributions. 
 
 Available platforms: `windows`, `linux`, `macos`.
 
-### Building for the browser
+## Building for the browser
 
 ```
-firefly browser MyApp.ff
+firefly.sh browser MyApp.ff
 ```
 
 This generates a single, minified `MyApp.min.js`, compatible with all modern browsers (ES6+).
