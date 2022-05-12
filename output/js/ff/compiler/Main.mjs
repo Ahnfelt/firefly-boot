@@ -205,7 +205,8 @@ ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(sy
 if(ff_compiler_Main.detectBrowserMain_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_Pair.Pair("script", "script"), mainFile_)) {
 buildScript_(mainFile_, "browser")
 };
-buildScript_(mainFile_, "node")
+buildScript_(mainFile_, "node");
+ff_core_FileSystem.FileSystem_writeText(ff_core_NodeSystem.NodeSystem_files(system_), ".firefly/output/run", (("node --experimental-fetch \".firefly/output/node/script/script/" + mainFile_) + ".mjs\""))
 break
 }
 }
@@ -223,6 +224,9 @@ break
 }
 
 export function prepareFireflyDirectory_(fs_) {
+if(ff_core_FileSystem.FileSystem_exists(fs_, ".firefly/output/run")) {
+ff_core_FileSystem.FileSystem_delete(fs_, ".firefly/output/run")
+};
 if((!ff_core_FileSystem.FileSystem_exists(fs_, ".firefly/output"))) {
 if((!ff_core_FileSystem.FileSystem_exists(fs_, ".firefly"))) {
 ff_core_FileSystem.FileSystem_createDirectory(fs_, ".firefly")
@@ -346,7 +350,8 @@ const mainFile_ = _1.mainPath_;
 if((await ff_compiler_Main.detectBrowserMain_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ff_core_Pair.Pair("script", "script"), mainFile_, $c))) {
 (await buildScript_$(mainFile_, "browser", $c))
 };
-(await buildScript_$(mainFile_, "node", $c))
+(await buildScript_$(mainFile_, "node", $c));
+(await ff_core_FileSystem.FileSystem_writeText$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ".firefly/output/run", (("node --experimental-fetch \".firefly/output/node/script/script/" + mainFile_) + ".mjs\""), $c))
 break
 }
 }
@@ -364,6 +369,9 @@ break
 }
 
 export async function prepareFireflyDirectory_$(fs_, $c) {
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output/run", $c))) {
+(await ff_core_FileSystem.FileSystem_delete$(fs_, ".firefly/output/run", $c))
+};
 if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output", $c)))) {
 if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly", $c)))) {
 (await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly", $c))

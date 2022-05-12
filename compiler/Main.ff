@@ -64,11 +64,14 @@ main(system: NodeSystem): Unit {
     command.{
 
         | RunCommand(mainFile) =>
-             prepareFireflyDirectory(system.files())
-             if(detectBrowserMain(system.files(), Pair("script", "script"), mainFile)) {
-                 buildScript(mainFile, "browser")
-             }
-             buildScript(mainFile, "node")
+            prepareFireflyDirectory(system.files())
+            if(detectBrowserMain(system.files(), Pair("script", "script"), mainFile)) {
+                buildScript(mainFile, "browser")
+            }
+            buildScript(mainFile, "node")
+            system.files().writeText(".firefly/output/run"
+                "node --experimental-fetch \".firefly/output/node/script/script/" + mainFile + ".mjs\""
+            )
 
         | BootstrapCommand =>
             Builder.build(
@@ -93,6 +96,9 @@ main(system: NodeSystem): Unit {
 }
 
 prepareFireflyDirectory(fs: FileSystem, ) {
+    if(fs.exists(".firefly/output/run")) {
+        fs.delete(".firefly/output/run")
+    }
     if(!fs.exists(".firefly/output")) {
         if(!fs.exists(".firefly")) {
             fs.createDirectory(".firefly")
