@@ -5,16 +5,10 @@ Status: Firefly has been bootstrapped and now transpiles itself into JavaScript.
 
 **Async/await inference:** https://www.ahnfelt.net/async-await-inference-in-firefly/
 
-## Compiling the compiler
-
-```
-firefly.sh bootstrap
-```
-
 ## Running a main file
 
 ```
-firefly.sh run MyApp.ff
+firefly.sh MyApp.ff
 ```
 
 The main file may include main functions for multiple targets, such as `browserMain` and `nodeMain`. 
@@ -41,3 +35,11 @@ firefly.sh browser MyApp.ff
 ```
 
 This generates a single, minified `MyApp.min.js`, compatible with all modern browsers (ES6+).
+
+## Bootstrapping the compiler
+
+```
+firefly.sh bootstrap
+```
+
+If you botch the compiler, just roll back the output directory and try again.

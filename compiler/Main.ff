@@ -30,13 +30,13 @@ main(system: NodeSystem): Unit {
 
     let fireflyPath = consumeArgument().expect()
     let parseCommand : String => MainCommand = { // TODO: Fix the code emitter so this can be a direct match instead
-        | s {s.endsWith(".ff")} => RunCommand(s)
-        | "bootstrap" => BootstrapCommand
+        | s {s.endsWith(".ff")} => RunCommand(s.dropLast(3))
         | "run" => RunCommand(consumeArgument().expect().dropLast(3))
         | "browser" => BuildCommand(consumeArgument().expect().dropLast(3), BrowserPlatform)
         | "linux" => BuildCommand(consumeArgument().expect().dropLast(3), LinuxPlatform)
         | "windows" => BuildCommand(consumeArgument().expect().dropLast(3), WindowsPlatform)
         | "macos" => BuildCommand(consumeArgument().expect().dropLast(3), MacosPlatform)
+        | "bootstrap" => BootstrapCommand
         | s => panic("Unknown command '" + s + "'")
     }
     let command = parseCommand(consumeArgument().expect())

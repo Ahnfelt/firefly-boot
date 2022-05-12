@@ -133,13 +133,7 @@ const parseCommand_ = ((_1) => {
 const s_ = _1;
 const _guard1 = ff_core_String.String_endsWith(s_, ".ff");
 if(_guard1) {
-return ff_compiler_Main.RunCommand(s_)
-return
-}
-}
-{
-if(_1 == "bootstrap") {
-return ff_compiler_Main.BootstrapCommand()
+return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(s_, 3))
 return
 }
 }
@@ -170,6 +164,12 @@ return
 {
 if(_1 == "macos") {
 return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.MacosPlatform())
+return
+}
+}
+{
+if(_1 == "bootstrap") {
+return ff_compiler_Main.BootstrapCommand()
 return
 }
 }
@@ -314,13 +314,7 @@ const parseCommand_ = ((_1) => {
 const s_ = _1;
 const _guard1 = ff_core_String.String_endsWith(s_, ".ff");
 if(_guard1) {
-return ff_compiler_Main.RunCommand(s_)
-return
-}
-}
-{
-if(_1 == "bootstrap") {
-return ff_compiler_Main.BootstrapCommand()
+return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(s_, 3))
 return
 }
 }
@@ -351,6 +345,12 @@ return
 {
 if(_1 == "macos") {
 return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.MacosPlatform())
+return
+}
+}
+{
+if(_1 == "bootstrap") {
+return ff_compiler_Main.BootstrapCommand()
 return
 }
 }
