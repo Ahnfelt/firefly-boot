@@ -145,41 +145,41 @@ return
 }
 {
 if(_1 == "run") {
-return ff_compiler_Main.RunCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})))
+})), 3))
 return
 }
 }
 {
 if(_1 == "browser") {
-return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})), ff_compiler_Main.BrowserPlatform())
+})), 3), ff_compiler_Main.BrowserPlatform())
 return
 }
 }
 {
 if(_1 == "linux") {
-return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})), ff_compiler_Main.LinuxPlatform())
+})), 3), ff_compiler_Main.LinuxPlatform())
 return
 }
 }
 {
 if(_1 == "windows") {
-return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})), ff_compiler_Main.WindowsPlatform())
+})), 3), ff_compiler_Main.WindowsPlatform())
 return
 }
 }
 {
 if(_1 == "macos") {
-return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})), ff_compiler_Main.MacosPlatform())
+})), 3), ff_compiler_Main.MacosPlatform())
 return
 }
 }
@@ -202,7 +202,15 @@ break
 }
 }
 {
-ff_core_Core.panic_("Only the 'bootstrap' command is supported for now")
+if(_1.RunCommand) {
+const mainFile_ = _1.mainPath_;
+const target_ = "node";
+ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, ff_compiler_Main.parsePackageLocations_((("script:script@.,ff:core@" + fireflyPath_) + "/core")), ".firefly/temporary", (".firefly/output/" + target_))
+break
+}
+}
+{
+ff_core_Core.panic_("Only the 'bootstrap' and 'run' commands are supported for now")
 break
 }
 }
@@ -240,41 +248,41 @@ return
 }
 {
 if(_1 == "run") {
-return ff_compiler_Main.RunCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})))
+})), 3))
 return
 }
 }
 {
 if(_1 == "browser") {
-return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})), ff_compiler_Main.BrowserPlatform())
+})), 3), ff_compiler_Main.BrowserPlatform())
 return
 }
 }
 {
 if(_1 == "linux") {
-return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})), ff_compiler_Main.LinuxPlatform())
+})), 3), ff_compiler_Main.LinuxPlatform())
 return
 }
 }
 {
 if(_1 == "windows") {
-return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})), ff_compiler_Main.WindowsPlatform())
+})), 3), ff_compiler_Main.WindowsPlatform())
 return
 }
 }
 {
 if(_1 == "macos") {
-return ff_compiler_Main.BuildCommand(ff_core_Option.Option_else(consumeArgument_(), (() => {
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
 return "Main.ff"
-})), ff_compiler_Main.MacosPlatform())
+})), 3), ff_compiler_Main.MacosPlatform())
 return
 }
 }
@@ -297,7 +305,15 @@ break
 }
 }
 {
-ff_core_Core.panic_("Only the 'bootstrap' command is supported for now")
+if(_1.RunCommand) {
+const mainFile_ = _1.mainPath_;
+const target_ = "node";
+(await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, ff_compiler_Main.parsePackageLocations_((("script:script@.,ff:core@" + fireflyPath_) + "/core")), ".firefly/temporary", (".firefly/output/" + target_), $c))
+break
+}
+}
+{
+ff_core_Core.panic_("Only the 'bootstrap' and 'run' commands are supported for now")
 break
 }
 }

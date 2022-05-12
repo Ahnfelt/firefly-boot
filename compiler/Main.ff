@@ -32,11 +32,11 @@ main(system: NodeSystem): Unit {
     let parseCommand : String => MainCommand = { // TODO: Fix the code emitter so this can be a direct match instead
         | s {s.endsWith(".ff")} => RunCommand(s)
         | "bootstrap" => BootstrapCommand
-        | "run" => RunCommand(consumeArgument().else {"Main.ff"})
-        | "browser" => BuildCommand(consumeArgument().else {"Main.ff"}, BrowserPlatform)
-        | "linux" => BuildCommand(consumeArgument().else {"Main.ff"}, LinuxPlatform)
-        | "windows" => BuildCommand(consumeArgument().else {"Main.ff"}, WindowsPlatform)
-        | "macos" => BuildCommand(consumeArgument().else {"Main.ff"}, MacosPlatform)
+        | "run" => RunCommand(consumeArgument().else {"Main.ff"}.dropLast(3))
+        | "browser" => BuildCommand(consumeArgument().else {"Main.ff"}.dropLast(3), BrowserPlatform)
+        | "linux" => BuildCommand(consumeArgument().else {"Main.ff"}.dropLast(3), LinuxPlatform)
+        | "windows" => BuildCommand(consumeArgument().else {"Main.ff"}.dropLast(3), WindowsPlatform)
+        | "macos" => BuildCommand(consumeArgument().else {"Main.ff"}.dropLast(3), MacosPlatform)
         | s => panic("Unknown command '" + s + "'")
     }
     let command = parseCommand(consumeArgument().expect())
@@ -56,8 +56,18 @@ main(system: NodeSystem): Unit {
                 tempPath = "output/temporary"
                 jsOutputPath = "output/js"
             )
-        | _ => panic("Only the 'bootstrap' command is supported for now")
-        // node output/js/ff/compiler/Main.mjs "$target" script:script "$m" "script:script@$p",ff:core@core   "$p/.firefly/temporary" "$p/.firefly/output/$target"
+        | RunCommand(mainFile) =>
+            let target = "node"
+            Builder.build(
+                system = system
+                target = target
+                mainPackage = "script:script"
+                mainModule = mainFile
+                packagePaths = parsePackageLocations("script:script@.,ff:core@" + fireflyPath + "/core")
+                tempPath = ".firefly/temporary"
+                jsOutputPath = ".firefly/output/" + target
+            )
+        | _ => panic("Only the 'bootstrap' and 'run' commands are supported for now")
     }
 
 }
