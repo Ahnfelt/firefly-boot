@@ -196,7 +196,7 @@ ff_core_Core.panic_(("Unknown argument: " + argument_))
 function buildScript_(mainFile_, target_) {
 ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("script:script", "."), ff_core_List.Link(ff_core_Pair.Pair("ff:core", (fireflyPath_ + "/core")), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
-ff_compiler_Main.deleteFireflyRunFile_(ff_core_NodeSystem.NodeSystem_files(system_));
+ff_compiler_Main.deleteRunFile_(ff_core_NodeSystem.NodeSystem_files(system_));
 for(;;) {
 const _1 = command_;
 {
@@ -207,7 +207,7 @@ if(ff_compiler_Main.detectBrowserMain_(ff_core_NodeSystem.NodeSystem_files(syste
 buildScript_(mainFile_, "browser")
 };
 buildScript_(mainFile_, "node");
-ff_core_FileSystem.FileSystem_writeText(ff_core_NodeSystem.NodeSystem_files(system_), ".firefly/output/run", (("node --experimental-fetch \".firefly/output/node/script/script/" + mainFile_) + ".mjs\""))
+ff_compiler_Main.writeNodeRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_)
 break
 }
 }
@@ -217,7 +217,7 @@ const mainFile_ = _1.mainPath_;
 if(_1.platform_.BrowserPlatform) {
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
 buildScript_(mainFile_, "browser");
-ff_core_FileSystem.FileSystem_writeText(ff_core_NodeSystem.NodeSystem_files(system_), ".firefly/output/run", (((((("\"" + fireflyPath_) + "\"/node_modules/.bin/esbuild \".firefly/output/browser/script/script/") + mainFile_) + ".mjs\" --platform=browser --bundle --outfile=.firefly/output/browser/") + mainFile_) + ".min.js --minify --log-level=warning"))
+ff_compiler_Main.writeEsbuildRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), fireflyPath_, mainFile_)
 break
 }
 }
@@ -255,10 +255,21 @@ break
 }
 }
 
-export function deleteFireflyRunFile_(fs_) {
+export function deleteRunFile_(fs_) {
 if(ff_core_FileSystem.FileSystem_exists(fs_, ".firefly/output/run")) {
 ff_core_FileSystem.FileSystem_delete(fs_, ".firefly/output/run")
 }
+}
+
+export function writeNodeRunFile_(fs_, mainFile_) {
+ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", (("node --experimental-fetch \".firefly/output/node/script/script/" + mainFile_) + ".mjs\""))
+}
+
+export function writeEsbuildRunFile_(fs_, fireflyPath_, mainFile_) {
+const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
+const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
+const outPath_ = ((".firefly/output/browser/" + mainFile_) + ".min.js");
+ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((((((("\"" + esbuildPath_) + "\" \"") + mainPath_) + "\" --outfile=\"") + outPath_) + "\" ") + "--platform=browser --bundle --minify --log-level=warning"))
 }
 
 export function prepareFireflyDirectory_(fs_) {
@@ -376,7 +387,7 @@ ff_core_Core.panic_(("Unknown argument: " + argument_))
 async function buildScript_$(mainFile_, target_, $c) {
 (await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("script:script", "."), ff_core_List.Link(ff_core_Pair.Pair("ff:core", (fireflyPath_ + "/core")), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
-(await ff_compiler_Main.deleteFireflyRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
+(await ff_compiler_Main.deleteRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 for(;;) {
 const _1 = command_;
 {
@@ -387,7 +398,7 @@ if((await ff_compiler_Main.detectBrowserMain_$((await ff_core_NodeSystem.NodeSys
 (await buildScript_$(mainFile_, "browser", $c))
 };
 (await buildScript_$(mainFile_, "node", $c));
-(await ff_core_FileSystem.FileSystem_writeText$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ".firefly/output/run", (("node --experimental-fetch \".firefly/output/node/script/script/" + mainFile_) + ".mjs\""), $c))
+(await ff_compiler_Main.writeNodeRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, $c))
 break
 }
 }
@@ -397,7 +408,7 @@ const mainFile_ = _1.mainPath_;
 if(_1.platform_.BrowserPlatform) {
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 (await buildScript_$(mainFile_, "browser", $c));
-(await ff_core_FileSystem.FileSystem_writeText$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ".firefly/output/run", (((((("\"" + fireflyPath_) + "\"/node_modules/.bin/esbuild \".firefly/output/browser/script/script/") + mainFile_) + ".mjs\" --platform=browser --bundle --outfile=.firefly/output/browser/") + mainFile_) + ".min.js --minify --log-level=warning"), $c))
+(await ff_compiler_Main.writeEsbuildRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), fireflyPath_, mainFile_, $c))
 break
 }
 }
@@ -435,10 +446,21 @@ break
 }
 }
 
-export async function deleteFireflyRunFile_$(fs_, $c) {
+export async function deleteRunFile_$(fs_, $c) {
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output/run", $c))) {
 (await ff_core_FileSystem.FileSystem_delete$(fs_, ".firefly/output/run", $c))
 }
+}
+
+export async function writeNodeRunFile_$(fs_, mainFile_, $c) {
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", (("node --experimental-fetch \".firefly/output/node/script/script/" + mainFile_) + ".mjs\""), $c))
+}
+
+export async function writeEsbuildRunFile_$(fs_, fireflyPath_, mainFile_, $c) {
+const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
+const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
+const outPath_ = ((".firefly/output/browser/" + mainFile_) + ".min.js");
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((((((("\"" + esbuildPath_) + "\" \"") + mainPath_) + "\" --outfile=\"") + outPath_) + "\" ") + "--platform=browser --bundle --minify --log-level=warning"), $c))
 }
 
 export async function prepareFireflyDirectory_$(fs_, $c) {
