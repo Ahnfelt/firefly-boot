@@ -47,27 +47,18 @@ main(system: NodeSystem): Unit {
 
     command.{
         | BootstrapCommand =>
+            Builder.build(
+                system = system
+                target = "node"
+                mainPackage = "ff:compiler"
+                mainModule = "Main"
+                packagePaths = parsePackageLocations("ff:compiler@compiler,ff:core@core")
+                tempPath = "output/temporary"
+                jsOutputPath = "output/js"
+            )
         | _ => panic("Only the 'bootstrap' command is supported for now")
+        // node output/js/ff/compiler/Main.mjs "$target" script:script "$m" "script:script@$p",ff:core@core   "$p/.firefly/temporary" "$p/.firefly/output/$target"
     }
-
-    // node output/js/ff/compiler/Main.mjs "$target" script:script "$m" "script:script@$p",ff:core@core   "$p/.firefly/temporary" "$p/.firefly/output/$target"
-
-    let target = "node"
-    let mainPackage = "ff:compiler"
-    let mainModule = "Main"
-    let packagePaths = parsePackageLocations("ff:compiler@compiler,ff:core@core")
-    let tempPath = "output/temporary"
-    let jsOutputPath = "output/js"
-
-    Builder.build(
-        system = system
-        target = target
-        mainPackage = mainPackage
-        mainModule = mainModule
-        packagePaths = packagePaths
-        tempPath = tempPath
-        jsOutputPath = jsOutputPath
-    )
 
 }
 

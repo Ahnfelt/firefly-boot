@@ -197,7 +197,7 @@ for(;;) {
 const _1 = command_;
 {
 if(_1.BootstrapCommand) {
-
+ff_compiler_Builder.build_(system_, "node", "ff:compiler", "Main", ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core"), "output/temporary", "output/js")
 break
 }
 }
@@ -205,14 +205,7 @@ break
 ff_core_Core.panic_("Only the 'bootstrap' command is supported for now")
 break
 }
-};
-const target_ = "node";
-const mainPackage_ = "ff:compiler";
-const mainModule_ = "Main";
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core");
-const tempPath_ = "output/temporary";
-const jsOutputPath_ = "output/js";
-ff_compiler_Builder.build_(system_, target_, mainPackage_, mainModule_, packagePaths_, tempPath_, jsOutputPath_)
+}
 }
 
 export function parsePackageLocations_(text_) {
@@ -299,7 +292,7 @@ for(;;) {
 const _1 = command_;
 {
 if(_1.BootstrapCommand) {
-
+(await ff_compiler_Builder.build_$(system_, "node", "ff:compiler", "Main", ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core"), "output/temporary", "output/js", $c))
 break
 }
 }
@@ -307,14 +300,7 @@ break
 ff_core_Core.panic_("Only the 'bootstrap' command is supported for now")
 break
 }
-};
-const target_ = "node";
-const mainPackage_ = "ff:compiler";
-const mainModule_ = "Main";
-const packagePaths_ = ff_compiler_Main.parsePackageLocations_("ff:compiler@compiler,ff:core@core");
-const tempPath_ = "output/temporary";
-const jsOutputPath_ = "output/js";
-(await ff_compiler_Builder.build_$(system_, target_, mainPackage_, mainModule_, packagePaths_, tempPath_, jsOutputPath_, $c))
+}
 }
 
 export async function parsePackageLocations_$(text_, $c) {
