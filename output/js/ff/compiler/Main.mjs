@@ -128,7 +128,7 @@ arguments_ = ff_core_List.List_dropFirst(arguments_, 1);
 return first_
 }
 const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
-const command_ = (((_1) => {
+const parseCommand_ = ((_1) => {
 {
 const s_ = _1;
 const _guard1 = ff_core_String.String_endsWith(s_, ".ff");
@@ -188,10 +188,24 @@ const s_ = _1;
 return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
 return
 }
-}))(ff_core_Option.Option_expect(consumeArgument_()));
+});
+const command_ = parseCommand_(ff_core_Option.Option_expect(consumeArgument_()));
 ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
 }));
+for(;;) {
+const _1 = command_;
+{
+if(_1.BootstrapCommand) {
+
+break
+}
+}
+{
+ff_core_Core.panic_("Only the 'bootstrap' command is supported for now")
+break
+}
+};
 const target_ = "node";
 const mainPackage_ = "ff:compiler";
 const mainModule_ = "Main";
@@ -216,7 +230,7 @@ arguments_ = ff_core_List.List_dropFirst(arguments_, 1);
 return first_
 }
 const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
-const command_ = ((async (_1, $c) => {
+const parseCommand_ = ((_1) => {
 {
 const s_ = _1;
 const _guard1 = ff_core_String.String_endsWith(s_, ".ff");
@@ -276,10 +290,24 @@ const s_ = _1;
 return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
 return
 }
-}))(ff_core_Option.Option_expect(consumeArgument_()));
+});
+const command_ = parseCommand_(ff_core_Option.Option_expect(consumeArgument_()));
 ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
 }));
+for(;;) {
+const _1 = command_;
+{
+if(_1.BootstrapCommand) {
+
+break
+}
+}
+{
+ff_core_Core.panic_("Only the 'bootstrap' command is supported for now")
+break
+}
+};
 const target_ = "node";
 const mainPackage_ = "ff:compiler";
 const mainModule_ = "Main";

@@ -29,7 +29,7 @@ main(system: NodeSystem): Unit {
     }
 
     let fireflyPath = consumeArgument().expect()
-    let command = consumeArgument().expect().{
+    let parseCommand : String => MainCommand = { // TODO: Fix the code emitter so this can be a direct match instead
         | s {s.endsWith(".ff")} => RunCommand(s)
         | "bootstrap" => BootstrapCommand
         | "run" => RunCommand(consumeArgument().else {"Main.ff"})
@@ -39,15 +39,16 @@ main(system: NodeSystem): Unit {
         | "macos" => BuildCommand(consumeArgument().else {"Main.ff"}, MacosPlatform)
         | s => panic("Unknown command '" + s + "'")
     }
+    let command = parseCommand(consumeArgument().expect())
 
     arguments.first().each { argument =>
         panic("Unknown argument: " + argument)
     }
 
-    /*command.{ // This currently fails because command is a promise here, and isn't awaited
+    command.{
         | BootstrapCommand =>
-        | _ => panic("Only the 'bootstrap' command is supported right now")
-    }*/
+        | _ => panic("Only the 'bootstrap' command is supported for now")
+    }
 
     // node output/js/ff/compiler/Main.mjs "$target" script:script "$m" "script:script@$p",ff:core@core   "$p/.firefly/temporary" "$p/.firefly/output/$target"
 
