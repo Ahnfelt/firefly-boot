@@ -145,41 +145,31 @@ return
 }
 {
 if(_1 == "run") {
-return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3))
+return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
 return
 }
 }
 {
 if(_1 == "browser") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3), ff_compiler_Main.BrowserPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.BrowserPlatform())
 return
 }
 }
 {
 if(_1 == "linux") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3), ff_compiler_Main.LinuxPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.LinuxPlatform())
 return
 }
 }
 {
 if(_1 == "windows") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3), ff_compiler_Main.WindowsPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.WindowsPlatform())
 return
 }
 }
 {
 if(_1 == "macos") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3), ff_compiler_Main.MacosPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.MacosPlatform())
 return
 }
 }
@@ -336,41 +326,31 @@ return
 }
 {
 if(_1 == "run") {
-return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3))
+return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
 return
 }
 }
 {
 if(_1 == "browser") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3), ff_compiler_Main.BrowserPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.BrowserPlatform())
 return
 }
 }
 {
 if(_1 == "linux") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3), ff_compiler_Main.LinuxPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.LinuxPlatform())
 return
 }
 }
 {
 if(_1 == "windows") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3), ff_compiler_Main.WindowsPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.WindowsPlatform())
 return
 }
 }
 {
 if(_1 == "macos") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_else(consumeArgument_(), (() => {
-return "Main.ff"
-})), 3), ff_compiler_Main.MacosPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.MacosPlatform())
 return
 }
 }

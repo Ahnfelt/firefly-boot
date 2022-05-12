@@ -32,11 +32,11 @@ main(system: NodeSystem): Unit {
     let parseCommand : String => MainCommand = { // TODO: Fix the code emitter so this can be a direct match instead
         | s {s.endsWith(".ff")} => RunCommand(s)
         | "bootstrap" => BootstrapCommand
-        | "run" => RunCommand(consumeArgument().else {"Main.ff"}.dropLast(3))
-        | "browser" => BuildCommand(consumeArgument().else {"Main.ff"}.dropLast(3), BrowserPlatform)
-        | "linux" => BuildCommand(consumeArgument().else {"Main.ff"}.dropLast(3), LinuxPlatform)
-        | "windows" => BuildCommand(consumeArgument().else {"Main.ff"}.dropLast(3), WindowsPlatform)
-        | "macos" => BuildCommand(consumeArgument().else {"Main.ff"}.dropLast(3), MacosPlatform)
+        | "run" => RunCommand(consumeArgument().expect().dropLast(3))
+        | "browser" => BuildCommand(consumeArgument().expect().dropLast(3), BrowserPlatform)
+        | "linux" => BuildCommand(consumeArgument().expect().dropLast(3), LinuxPlatform)
+        | "windows" => BuildCommand(consumeArgument().expect().dropLast(3), WindowsPlatform)
+        | "macos" => BuildCommand(consumeArgument().expect().dropLast(3), MacosPlatform)
         | s => panic("Unknown command '" + s + "'")
     }
     let command = parseCommand(consumeArgument().expect())
