@@ -193,14 +193,6 @@ const command_ = parseCommand_(ff_core_Option.Option_expect(consumeArgument_()))
 ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
 }));
-function prepareFireflyDirectory_() {
-if((!ff_core_FileSystem.FileSystem_exists(ff_core_NodeSystem.NodeSystem_files(system_), ".firefly/output"))) {
-if((!ff_core_FileSystem.FileSystem_exists(ff_core_NodeSystem.NodeSystem_files(system_), ".firefly"))) {
-ff_core_FileSystem.FileSystem_createDirectory(ff_core_NodeSystem.NodeSystem_files(system_), ".firefly")
-};
-ff_core_FileSystem.FileSystem_createDirectory(ff_core_NodeSystem.NodeSystem_files(system_), ".firefly/output")
-}
-}
 function buildScript_(mainFile_, target_) {
 ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("script:script", "."), ff_core_List.Link(ff_core_Pair.Pair("ff:core", (fireflyPath_ + "/core")), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
@@ -209,7 +201,7 @@ const _1 = command_;
 {
 if(_1.RunCommand) {
 const mainFile_ = _1.mainPath_;
-prepareFireflyDirectory_();
+ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
 if(ff_compiler_Main.detectBrowserMain_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_Pair.Pair("script", "script"), mainFile_)) {
 buildScript_(mainFile_, "browser")
 };
@@ -227,6 +219,15 @@ break
 ff_core_Core.panic_("Only the 'bootstrap' and 'run' commands are supported for now")
 break
 }
+}
+}
+
+export function prepareFireflyDirectory_(fs_) {
+if((!ff_core_FileSystem.FileSystem_exists(fs_, ".firefly/output"))) {
+if((!ff_core_FileSystem.FileSystem_exists(fs_, ".firefly"))) {
+ff_core_FileSystem.FileSystem_createDirectory(fs_, ".firefly")
+};
+ff_core_FileSystem.FileSystem_createDirectory(fs_, ".firefly/output")
 }
 }
 
@@ -333,14 +334,6 @@ const command_ = parseCommand_(ff_core_Option.Option_expect(consumeArgument_()))
 ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
 }));
-async function prepareFireflyDirectory_$($c) {
-if((!(await ff_core_FileSystem.FileSystem_exists$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ".firefly/output", $c)))) {
-if((!(await ff_core_FileSystem.FileSystem_exists$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ".firefly", $c)))) {
-(await ff_core_FileSystem.FileSystem_createDirectory$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ".firefly", $c))
-};
-(await ff_core_FileSystem.FileSystem_createDirectory$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ".firefly/output", $c))
-}
-}
 async function buildScript_$(mainFile_, target_, $c) {
 (await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("script:script", "."), ff_core_List.Link(ff_core_Pair.Pair("ff:core", (fireflyPath_ + "/core")), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
@@ -349,7 +342,7 @@ const _1 = command_;
 {
 if(_1.RunCommand) {
 const mainFile_ = _1.mainPath_;
-(await prepareFireflyDirectory_$($c));
+(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 if((await ff_compiler_Main.detectBrowserMain_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ff_core_Pair.Pair("script", "script"), mainFile_, $c))) {
 (await buildScript_$(mainFile_, "browser", $c))
 };
@@ -367,6 +360,15 @@ break
 ff_core_Core.panic_("Only the 'bootstrap' and 'run' commands are supported for now")
 break
 }
+}
+}
+
+export async function prepareFireflyDirectory_$(fs_, $c) {
+if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output", $c)))) {
+if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly", $c)))) {
+(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly", $c))
+};
+(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly/output", $c))
 }
 }
 

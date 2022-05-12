@@ -45,15 +45,6 @@ main(system: NodeSystem): Unit {
         panic("Unknown argument: " + argument)
     }
 
-    function prepareFireflyDirectory() {
-        if(!system.files().exists(".firefly/output")) {
-            if(!system.files().exists(".firefly")) {
-                system.files().createDirectory(".firefly")
-            }
-            system.files().createDirectory(".firefly/output")
-        }
-    }
-
     function buildScript(mainFile: String, target: String) {
         Builder.build(
             system = system
@@ -73,7 +64,7 @@ main(system: NodeSystem): Unit {
     command.{
 
         | RunCommand(mainFile) =>
-             prepareFireflyDirectory()
+             prepareFireflyDirectory(system.files())
              if(detectBrowserMain(system.files(), Pair("script", "script"), mainFile)) {
                  buildScript(mainFile, "browser")
              }
@@ -99,6 +90,15 @@ main(system: NodeSystem): Unit {
 
     }
 
+}
+
+prepareFireflyDirectory(fs: FileSystem, ) {
+    if(!fs.exists(".firefly/output")) {
+        if(!fs.exists(".firefly")) {
+            fs.createDirectory(".firefly")
+        }
+        fs.createDirectory(".firefly/output")
+    }
 }
 
 detectBrowserMain(fs: FileSystem, packagePair: Pair[String, String], mainFile: String): Bool {
