@@ -62,6 +62,7 @@ main(system: NodeSystem): Unit {
     }
 
     deleteFireflyRunFile(system.files())
+
     command.{
 
         | RunCommand(mainFile) =>
