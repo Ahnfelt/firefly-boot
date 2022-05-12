@@ -45,7 +45,40 @@ main(system: NodeSystem): Unit {
         panic("Unknown argument: " + argument)
     }
 
+    function prepareFireflyDirectory() {
+        if(!system.files().exists(".firefly/output")) {
+            if(!system.files().exists(".firefly")) {
+                system.files().createDirectory(".firefly")
+            }
+            system.files().createDirectory(".firefly/output")
+        }
+    }
+
+    function buildScript(mainFile: String, target: String) {
+        Builder.build(
+            system = system
+            target = target
+            mainPackage = "script:script"
+            mainModule = mainFile
+            packagePaths = [
+                Pair("script:script", ".")
+                Pair("ff:core", fireflyPath + "/core")
+            ].toMap()
+            tempPath = ".firefly/temporary"
+            jsOutputPath = ".firefly/output/" + target
+            printMeasurements = False
+        )
+    }
+
     command.{
+
+        | RunCommand(mainFile) =>
+             prepareFireflyDirectory()
+             if(detectBrowserMain(system.files(), Pair("script", "script"), mainFile)) {
+                 buildScript(mainFile, "browser")
+             }
+             buildScript(mainFile, "node")
+
         | BootstrapCommand =>
             Builder.build(
                 system = system
@@ -60,22 +93,25 @@ main(system: NodeSystem): Unit {
                 jsOutputPath = "output/js"
                 printMeasurements = True
             )
-        | RunCommand(mainFile) =>
-            let target = "node"
-            Builder.build(
-                system = system
-                target = target
-                mainPackage = "script:script"
-                mainModule = mainFile
-                packagePaths = [
-                    Pair("script:script", ".")
-                    Pair("ff:core", fireflyPath + "/core")
-                ].toMap()
-                tempPath = ".firefly/temporary"
-                jsOutputPath = ".firefly/output/" + target
-                printMeasurements = False
-            )
-        | _ => panic("Only the 'bootstrap' and 'run' commands are supported for now")
+
+        | _ =>
+            panic("Only the 'bootstrap' and 'run' commands are supported for now")
+
     }
 
+}
+
+detectBrowserMain(fs: FileSystem, packagePair: Pair[String, String], mainFile: String): Bool {
+    let file = mainFile + ".ff"
+    let code = fs.readText(file)
+    let tokens = Tokenizer.tokenize(file, code)
+    let parser = Parser.make(Pair("script", "script"), file, tokens, False)
+    let module = parser.parseModule()
+    module.functions.any { definition =>
+        (definition.signature.name == "browserMain" || definition.signature.name == "main") &&
+        definition.signature.parameters.{ // This is a bit wrong, since BrowserSystem may be aliased or qualified
+            | [Parameter p] {p.valueType | TConstructor(_, "BrowserSystem", _)} => True
+            | _ => False
+        }
+    }
 }
