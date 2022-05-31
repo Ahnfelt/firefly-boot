@@ -135,7 +135,7 @@ return self_.slice(0, self_.length - count_)
 
 export function String_expectInt(self_) {
 
-            if(self_.array.length == 0) throw "expectInt on empty string"
+            if(self_.length == 0) throw "expectInt on empty string"
             for(let i = 0; i < self_.length; i++) {
                 let c = self_.codePointAt(i);
                 if(c < 48 || c > 57) throw "expectInt on non-digit string";

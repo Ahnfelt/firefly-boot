@@ -55,7 +55,7 @@ extend self: String {
 
     expectInt(): Int
         target js sync """
-            if(self_.array.length == 0) throw "expectInt on empty string"
+            if(self_.length == 0) throw "expectInt on empty string"
             for(let i = 0; i < self_.length; i++) {
                 let c = self_.codePointAt(i);
                 if(c < 48 || c > 57) throw "expectInt on non-digit string";
