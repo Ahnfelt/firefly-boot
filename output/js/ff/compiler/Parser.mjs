@@ -81,8 +81,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Parser
-export function Parser(packagePair_, file_, tokens_, end_, targetIsNode_, offset_, nextUnificationVariableIndex_) {
-return {packagePair_, file_, tokens_, end_, targetIsNode_, offset_, nextUnificationVariableIndex_};
+export function Parser(package_, file_, tokens_, end_, targetIsNode_, offset_, nextUnificationVariableIndex_) {
+return {package_, file_, tokens_, end_, targetIsNode_, offset_, nextUnificationVariableIndex_};
 }
 
 // type Poly
@@ -97,8 +97,8 @@ return {js_, jsSync_, jsAsync_, browser_, browserSync_, browserAsync_, node_, no
 
 export const binaryOperators_ = ff_core_List.List_toArray(ff_core_List.Link(ff_core_List.Link("||", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("&&", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("!=", ff_core_List.Link("==", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("<=", ff_core_List.Link(">=", ff_core_List.Link("<", ff_core_List.Link(">", ff_core_List.Empty())))), ff_core_List.Link(ff_core_List.Link("+", ff_core_List.Link("-", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("*", ff_core_List.Link("/", ff_core_List.Link("%", ff_core_List.Empty()))), ff_core_List.Link(ff_core_List.Link("^", ff_core_List.Empty()), ff_core_List.Empty()))))))));
 
-export function make_(packagePair_, file_, tokens_, targetIsNode_) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), targetIsNode_, 0, 1)
+export function make_(package_, file_, tokens_, targetIsNode_) {
+return ff_compiler_Parser.Parser(package_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), targetIsNode_, 0, 1)
 }
 
 export function findBestTarget_(targetIsNode_, body_, targets_) {
@@ -172,8 +172,8 @@ return
 }
 }
 
-export async function make_$(packagePair_, file_, tokens_, targetIsNode_, $c) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), targetIsNode_, 0, 1)
+export async function make_$(package_, file_, tokens_, targetIsNode_, $c) {
+return ff_compiler_Parser.Parser(package_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), targetIsNode_, 0, 1)
 }
 
 export async function findBestTarget_$(targetIsNode_, body_, targets_, $c) {
@@ -315,7 +315,30 @@ return ff_compiler_Parser.Parser_skip(self_, kind_)
 }
 
 export function Parser_parseModule(self_) {
+const package_ = ff_core_Option.Option_else(self_.package_, (() => {
+if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
+const p_ = ff_compiler_Parser.Parser_parsePackageDefinition(self_);
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd()))) {
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
+};
+return p_
+} else {
+const location_ = (((_c) => {
+return ff_compiler_Syntax.Location(_c.file_, 1, 1)
+}))(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)));
+return ff_compiler_Syntax.DPackage(location_, ff_core_Pair.Pair("_script", "_script"), ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false))
+}
+}));
+if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition")
+};
 const dependencies_ = ff_core_ArrayBuilder.empty_();
+while((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
+ff_core_ArrayBuilder.ArrayBuilder_add(dependencies_, ff_compiler_Parser.Parser_parseDependencyDefinition(self_, package_.targets_));
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd()))) {
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
+}
+};
 const imports_ = ff_core_ArrayBuilder.empty_();
 const types_ = ff_core_ArrayBuilder.empty_();
 const traits_ = ff_core_ArrayBuilder.empty_();
@@ -337,9 +360,11 @@ ff_core_ArrayBuilder.ArrayBuilder_add(instances_, ff_compiler_Parser.Parser_pars
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "type") || ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "newtype")))) {
 ff_core_ArrayBuilder.ArrayBuilder_add(types_, ff_compiler_Parser.Parser_parseTypeDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
-ff_core_ArrayBuilder.ArrayBuilder_add(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_))
-} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ((ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "safe") || ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "unsafe")) || ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "trust")))) {
-ff_core_ArrayBuilder.ArrayBuilder_add(dependencies_, ff_compiler_Parser.Parser_parseDependencyDefinition(self_))
+ff_core_ArrayBuilder.ArrayBuilder_add(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_, package_.packagePair_))
+} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'")
+} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Package definition must be at the top of the file")
 } else {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LEnd())
 };
@@ -347,7 +372,7 @@ if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_com
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }
 };
-return ff_compiler_Syntax.Module(self_.packagePair_, self_.file_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_), ff_core_ArrayBuilder.ArrayBuilder_toList(imports_), ff_core_ArrayBuilder.ArrayBuilder_toList(types_), ff_core_ArrayBuilder.ArrayBuilder_toList(traits_), ff_core_ArrayBuilder.ArrayBuilder_toList(instances_), ff_core_ArrayBuilder.ArrayBuilder_toList(extends_), ff_core_ArrayBuilder.ArrayBuilder_toList(lets_), ff_core_ArrayBuilder.ArrayBuilder_toList(functions_))
+return ff_compiler_Syntax.Module(self_.file_, package_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_), ff_core_ArrayBuilder.ArrayBuilder_toList(imports_), ff_core_ArrayBuilder.ArrayBuilder_toList(types_), ff_core_ArrayBuilder.ArrayBuilder_toList(traits_), ff_core_ArrayBuilder.ArrayBuilder_toList(instances_), ff_core_ArrayBuilder.ArrayBuilder_toList(extends_), ff_core_ArrayBuilder.ArrayBuilder_toList(lets_), ff_core_ArrayBuilder.ArrayBuilder_toList(functions_))
 }
 
 export function Parser_parseLetDefinition(self_) {
@@ -693,7 +718,7 @@ const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_);
 return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_)
 }
 
-export function Parser_parseImportDefinition(self_) {
+export function Parser_parseImportDefinition(self_, currentPackagePair_) {
 const importToken_ = ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "import");
 const path_ = ff_core_ArrayBuilder.empty_();
 while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())) {
@@ -715,42 +740,91 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const packageName_ = ff_compiler_Parser.Parser_parseDashedName(self_);
 return ff_core_Pair.Pair(userName_, packageName_)
 })()
-: self_.packagePair_);
+: currentPackagePair_);
 return ff_compiler_Syntax.DImport(ff_compiler_Token.Token_at(importToken_), alias_, package_, ff_core_ArrayBuilder.ArrayBuilder_toList(path_), file_)
 }
 
-export function Parser_parseDependencyDefinition(self_) {
-const safety_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "safe")
-? ff_compiler_Syntax.Safe()
-: (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "unsafe")
-? ff_compiler_Syntax.Unsafe()
-: ff_compiler_Syntax.Trust()));
+export function Parser_parsePackageDefinition(self_) {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
 const user_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower()));
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const name_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower()));
-const goodVersions_ = ff_core_ArrayBuilder.empty_();
-const badVersions_ = ff_core_ArrayBuilder.empty_();
-if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketLeft());
-while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
-const bad_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "!");
-if(bad_) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator())
-};
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const version_ = ff_compiler_Parser.Parser_parseVersion(self_);
-if(bad_) {
-ff_core_ArrayBuilder.ArrayBuilder_add(badVersions_, version_)
-} else {
-ff_core_ArrayBuilder.ArrayBuilder_add(goodVersions_, version_)
-};
-if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
+const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, ff_compiler_Syntax.TargetNames(true, true));
+return ff_compiler_Syntax.DPackage(at_, ff_core_Pair.Pair(user_, name_), version_, targets_)
+}
+
+export function Parser_parseDependencyDefinition(self_, defaultTargetNames_) {
+const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const user_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower()));
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
+const name_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower()));
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
+const version_ = ff_compiler_Parser.Parser_parseVersion(self_);
+const safety_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "trusted")
+? ff_compiler_Syntax.Trusted()
+: (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "unsafe")
+? ff_compiler_Syntax.Unsafe()
+: ff_compiler_Syntax.Safe()));
+const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, defaultTargetNames_);
+return ff_compiler_Syntax.DDependency(at_, ff_core_Pair.Pair(user_, name_), version_, safety_, targets_)
+}
+
+export function Parser_parseTargetNames(self_, defaultTargets_) {
+let targets_ = ff_compiler_Syntax.TargetNames(false, false);
+while(ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword(), ff_compiler_Token.LLower())) {
+const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
+? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
+: ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+for(;;) {
+const _1 = ff_compiler_Token.Token_raw(token_);
+{
+if(_1 == "node") {
+const _guard1 = targets_.node_;
+if(_guard1) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), "Duplicate target name")
+break
+}
+}
+}
+{
+if(_1 == "node") {
+targets_ = (((_c) => {
+return ff_compiler_Syntax.TargetNames(true, _c.browser_)
+}))(targets_)
+break
+}
+}
+{
+if(_1 == "browser") {
+const _guard1 = targets_.browser_;
+if(_guard1) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), "Duplicate target name")
+break
+}
+}
+}
+{
+if(_1 == "browser") {
+targets_ = (((_c) => {
+return ff_compiler_Syntax.TargetNames(_c.node_, true)
+}))(targets_)
+break
+}
+}
+{
+const t_ = _1;
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_))
+break
+}
 }
 };
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketRight())
-};
-return ff_compiler_Syntax.DDependency(at_, ff_core_Pair.Pair(user_, name_), safety_, ff_core_ArrayBuilder.ArrayBuilder_toList(goodVersions_), ff_core_ArrayBuilder.ArrayBuilder_toList(badVersions_))
+if(((!targets_.node_) && (!targets_.browser_))) {
+return defaultTargets_
+} else {
+return targets_
+}
 }
 
 export function Parser_parseVersion(self_) {
@@ -1555,7 +1629,30 @@ return ff_compiler_Parser.Parser_skip(self_, kind_)
 }
 
 export async function Parser_parseModule$(self_, $c) {
+const package_ = ff_core_Option.Option_else(self_.package_, (() => {
+if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
+const p_ = ff_compiler_Parser.Parser_parsePackageDefinition(self_);
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd()))) {
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
+};
+return p_
+} else {
+const location_ = (((_c) => {
+return ff_compiler_Syntax.Location(_c.file_, 1, 1)
+}))(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)));
+return ff_compiler_Syntax.DPackage(location_, ff_core_Pair.Pair("_script", "_script"), ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(true, false))
+}
+}));
+if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition")
+};
 const dependencies_ = ff_core_ArrayBuilder.empty_();
+while((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
+ff_core_ArrayBuilder.ArrayBuilder_add(dependencies_, ff_compiler_Parser.Parser_parseDependencyDefinition(self_, package_.targets_));
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd()))) {
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
+}
+};
 const imports_ = ff_core_ArrayBuilder.empty_();
 const types_ = ff_core_ArrayBuilder.empty_();
 const traits_ = ff_core_ArrayBuilder.empty_();
@@ -1577,9 +1674,11 @@ ff_core_ArrayBuilder.ArrayBuilder_add(instances_, ff_compiler_Parser.Parser_pars
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "type") || ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "newtype")))) {
 ff_core_ArrayBuilder.ArrayBuilder_add(types_, ff_compiler_Parser.Parser_parseTypeDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
-ff_core_ArrayBuilder.ArrayBuilder_add(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_))
-} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ((ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "safe") || ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "unsafe")) || ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "trust")))) {
-ff_core_ArrayBuilder.ArrayBuilder_add(dependencies_, ff_compiler_Parser.Parser_parseDependencyDefinition(self_))
+ff_core_ArrayBuilder.ArrayBuilder_add(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_, package_.packagePair_))
+} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'")
+} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Package definition must be at the top of the file")
 } else {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LEnd())
 };
@@ -1587,7 +1686,7 @@ if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_com
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }
 };
-return ff_compiler_Syntax.Module(self_.packagePair_, self_.file_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_), ff_core_ArrayBuilder.ArrayBuilder_toList(imports_), ff_core_ArrayBuilder.ArrayBuilder_toList(types_), ff_core_ArrayBuilder.ArrayBuilder_toList(traits_), ff_core_ArrayBuilder.ArrayBuilder_toList(instances_), ff_core_ArrayBuilder.ArrayBuilder_toList(extends_), ff_core_ArrayBuilder.ArrayBuilder_toList(lets_), ff_core_ArrayBuilder.ArrayBuilder_toList(functions_))
+return ff_compiler_Syntax.Module(self_.file_, package_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_), ff_core_ArrayBuilder.ArrayBuilder_toList(imports_), ff_core_ArrayBuilder.ArrayBuilder_toList(types_), ff_core_ArrayBuilder.ArrayBuilder_toList(traits_), ff_core_ArrayBuilder.ArrayBuilder_toList(instances_), ff_core_ArrayBuilder.ArrayBuilder_toList(extends_), ff_core_ArrayBuilder.ArrayBuilder_toList(lets_), ff_core_ArrayBuilder.ArrayBuilder_toList(functions_))
 }
 
 export async function Parser_parseLetDefinition$(self_, $c) {
@@ -1933,7 +2032,7 @@ const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_);
 return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_)
 }
 
-export async function Parser_parseImportDefinition$(self_, $c) {
+export async function Parser_parseImportDefinition$(self_, currentPackagePair_, $c) {
 const importToken_ = ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "import");
 const path_ = ff_core_ArrayBuilder.empty_();
 while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())) {
@@ -1955,42 +2054,91 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const packageName_ = ff_compiler_Parser.Parser_parseDashedName(self_);
 return ff_core_Pair.Pair(userName_, packageName_)
 })()
-: self_.packagePair_);
+: currentPackagePair_);
 return ff_compiler_Syntax.DImport(ff_compiler_Token.Token_at(importToken_), alias_, package_, ff_core_ArrayBuilder.ArrayBuilder_toList(path_), file_)
 }
 
-export async function Parser_parseDependencyDefinition$(self_, $c) {
-const safety_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "safe")
-? ff_compiler_Syntax.Safe()
-: (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "unsafe")
-? ff_compiler_Syntax.Unsafe()
-: ff_compiler_Syntax.Trust()));
+export async function Parser_parsePackageDefinition$(self_, $c) {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
 const user_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower()));
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const name_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower()));
-const goodVersions_ = ff_core_ArrayBuilder.empty_();
-const badVersions_ = ff_core_ArrayBuilder.empty_();
-if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketLeft());
-while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
-const bad_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "!");
-if(bad_) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator())
-};
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const version_ = ff_compiler_Parser.Parser_parseVersion(self_);
-if(bad_) {
-ff_core_ArrayBuilder.ArrayBuilder_add(badVersions_, version_)
-} else {
-ff_core_ArrayBuilder.ArrayBuilder_add(goodVersions_, version_)
-};
-if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
+const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, ff_compiler_Syntax.TargetNames(true, true));
+return ff_compiler_Syntax.DPackage(at_, ff_core_Pair.Pair(user_, name_), version_, targets_)
+}
+
+export async function Parser_parseDependencyDefinition$(self_, defaultTargetNames_, $c) {
+const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const user_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower()));
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
+const name_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower()));
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
+const version_ = ff_compiler_Parser.Parser_parseVersion(self_);
+const safety_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "trusted")
+? ff_compiler_Syntax.Trusted()
+: (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "unsafe")
+? ff_compiler_Syntax.Unsafe()
+: ff_compiler_Syntax.Safe()));
+const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, defaultTargetNames_);
+return ff_compiler_Syntax.DDependency(at_, ff_core_Pair.Pair(user_, name_), version_, safety_, targets_)
+}
+
+export async function Parser_parseTargetNames$(self_, defaultTargets_, $c) {
+let targets_ = ff_compiler_Syntax.TargetNames(false, false);
+while(ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword(), ff_compiler_Token.LLower())) {
+const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
+? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
+: ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+for(;;) {
+const _1 = ff_compiler_Token.Token_raw(token_);
+{
+if(_1 == "node") {
+const _guard1 = targets_.node_;
+if(_guard1) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), "Duplicate target name")
+break
+}
+}
+}
+{
+if(_1 == "node") {
+targets_ = (((_c) => {
+return ff_compiler_Syntax.TargetNames(true, _c.browser_)
+}))(targets_)
+break
+}
+}
+{
+if(_1 == "browser") {
+const _guard1 = targets_.browser_;
+if(_guard1) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), "Duplicate target name")
+break
+}
+}
+}
+{
+if(_1 == "browser") {
+targets_ = (((_c) => {
+return ff_compiler_Syntax.TargetNames(_c.node_, true)
+}))(targets_)
+break
+}
+}
+{
+const t_ = _1;
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_))
+break
+}
 }
 };
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LBracketRight())
-};
-return ff_compiler_Syntax.DDependency(at_, ff_core_Pair.Pair(user_, name_), safety_, ff_core_ArrayBuilder.ArrayBuilder_toList(goodVersions_), ff_core_ArrayBuilder.ArrayBuilder_toList(badVersions_))
+if(((!targets_.node_) && (!targets_.browser_))) {
+return defaultTargets_
+} else {
+return targets_
+}
 }
 
 export async function Parser_parseVersion$(self_, $c) {

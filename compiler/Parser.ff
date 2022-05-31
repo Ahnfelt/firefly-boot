@@ -99,13 +99,15 @@ extend self: Parser {
 
         let package = self.package.else {
             if(self.current().is(LKeyword) && self.current().rawIs("package")) {
-                self.parsePackageDefinition()
+                let p = self.parsePackageDefinition()
                 if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+                p
             } else {
+                let location = self.current().at().Location(line = 1, column = 1)
                 DPackage(
-                    self.current().at().Location(line = 1, column = 1),
+                    location,
                     Pair("_script", "_script"),
-                    Version(0, 0, 0),
+                    Version(location, 0, 0, 0),
                     TargetNames(node = True, browser = False)
                 )
             }
@@ -115,7 +117,7 @@ extend self: Parser {
         }
         let dependencies = ArrayBuilder.empty[DDependency]()
         while {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
-            dependencies.add(self.parseDependencyDefinition(package.targetNames))
+            dependencies.add(self.parseDependencyDefinition(package.targets))
             if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
         }
 
@@ -437,12 +439,12 @@ extend self: Parser {
         let name = self.skip(LLower).raw()
         self.skip(LColon)
         let version = self.parseVersion()
-        let targetNames = self.parseTargetNames(TargetNames(True, True))
+        let targets = self.parseTargetNames(TargetNames(True, True))
         DPackage(
             at = at
             packagePair = Pair(user, name)
             version = version
-            targetNames = targetNames
+            targets = targets
         )
     }
 
@@ -458,32 +460,32 @@ extend self: Parser {
             if(self.current().rawIs("unsafe")) { Unsafe } else:
             Safe
         )
-        let targetNames = self.parseTargetNames(defaultTargetNames)
-        DPackage(
+        let targets = self.parseTargetNames(defaultTargetNames)
+        DDependency(
             at = at
             packagePair = Pair(user, name)
             version = version
             safety = safety
-            targetNames = targetNames
+            targets = targets
         )
     }
 
-    parseTargetNames(defaultTargetNames: TargetNames): TargetNames {
-        let targetNames = TargetNames(False, False)
+    parseTargetNames(defaultTargets: TargetNames): TargetNames {
+        mutable targets = TargetNames(False, False)
         while { self.current().is2(LKeyword, LLower) } {
             let token = if(self.current().is(LLower)) {self.skip(LLower)} else {self.skip(LKeyword)}
             token.raw().{
-                | "node" {targetNames.node} => fail(token.at(), "Duplicate target name")
-                | "node" => targetNames = targetNames.TargetNames(node = True)
-                | "browser" {targetNames.browser} => fail(token.at(), "Duplicate target name")
-                | "browser" => targetNames = targetNames.TargetNames(browser = True)
-                | t => fail(token.at(), "Unexpected target: " + t)
+                | "node" {targets.node} => self.fail(token.at(), "Duplicate target name")
+                | "node" => targets = targets.TargetNames(node = True)
+                | "browser" {targets.browser} => self.fail(token.at(), "Duplicate target name")
+                | "browser" => targets = targets.TargetNames(browser = True)
+                | t => self.fail(token.at(), "Unexpected target: " + t)
             }
         }
-        if(!targetNames.node && !targetNames.browser) {
-            defaultTargetNames
+        if(!targets.node && !targets.browser) {
+            defaultTargets
         } else {
-            targetNames
+            targets
         }
     }
     

@@ -289,7 +289,7 @@ export function detectBrowserMain_(fs_, packagePair_, mainFile_) {
 const file_ = (mainFile_ + ".ff");
 const code_ = ff_core_FileSystem.FileSystem_readText(fs_, file_);
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
-const parser_ = ff_compiler_Parser.make_(ff_core_Pair.Pair("script", "script"), file_, tokens_, false);
+const parser_ = ff_compiler_Parser.make_(ff_core_Option.None(), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModule(parser_);
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
 return (((definition_.signature_.name_ == "browserMain") || (definition_.signature_.name_ == "main")) && (((_1) => {
@@ -484,7 +484,7 @@ export async function detectBrowserMain_$(fs_, packagePair_, mainFile_, $c) {
 const file_ = (mainFile_ + ".ff");
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, file_, $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
-const parser_ = ff_compiler_Parser.make_(ff_core_Pair.Pair("script", "script"), file_, tokens_, false);
+const parser_ = ff_compiler_Parser.make_(ff_core_Option.None(), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModule(parser_);
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
 return (((definition_.signature_.name_ == "browserMain") || (definition_.signature_.name_ == "main")) && (((_1) => {

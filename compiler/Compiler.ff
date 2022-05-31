@@ -121,8 +121,8 @@ extend self: Compiler {
         let package = DPackage(
             at = Location("<todo>", 1, 1),
             packagePair = packagePair,
-            version = Version(0, 0, 0),
-            targetNames = TargetNames(node = self.targetIsNode, browser = !self.targetIsNode)
+            version = Version(Location("<todo>", 1, 1), 0, 0, 0),
+            targets = TargetNames(node = self.targetIsNode, browser = !self.targetIsNode)
         )
         let packagePath = self.packagePaths.expect(packageName)
         let file = moduleName + ".ff"
@@ -163,7 +163,7 @@ extend self: Compiler {
 
         let module = self.resolve(packageName, moduleName)
         let otherModules = self.imports(packageName, module).map { i =>
-            let newPackageName = i.packagePair.first + ":" + i.packagePair.second
+            let newPackageName = i.package.packagePair.first + ":" + i.package.packagePair.second
             self.resolve(newPackageName, FileSystem.prefixName(i.file))
         }
         let inferredModule = Inference.make([module, ...otherModules]).inferModule(module, otherModules)
@@ -180,7 +180,7 @@ extend self: Compiler {
 
         let module = self.infer(packageName, moduleName)
         let otherModules = self.imports(packageName, module).map { i =>
-            let newPackageName = i.packagePair.first + ":" + i.packagePair.second
+            let newPackageName = i.package.packagePair.first + ":" + i.package.packagePair.second
             let newModuleName = FileSystem.prefixName(i.file)
             self.emit(newPackageName, newModuleName)
             self.infer(newPackageName, newModuleName)

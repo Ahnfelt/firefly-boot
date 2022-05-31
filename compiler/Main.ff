@@ -147,7 +147,7 @@ detectBrowserMain(fs: FileSystem, packagePair: Pair[String, String], mainFile: S
     let file = mainFile + ".ff"
     let code = fs.readText(file)
     let tokens = Tokenizer.tokenize(file, code)
-    let parser = Parser.make(Pair("script", "script"), file, tokens, False)
+    let parser = Parser.make(None, file, tokens, False)
     let module = parser.parseModule()
     module.functions.any { definition =>
         (definition.signature.name == "browserMain" || definition.signature.name == "main") &&

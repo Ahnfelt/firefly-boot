@@ -193,7 +193,7 @@ type Type(at: Location) {
 type Safety {
     Safe
     Unsafe
-    Trust
+    Trusted
 }
 
 type Version(at: Location, major: Int, minor: Int, patch: Int)

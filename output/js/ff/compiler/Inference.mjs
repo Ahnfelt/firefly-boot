@@ -177,7 +177,7 @@ const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferInstanceDefinition(self_, environment_, _w1)
 }));
 const result_ = (((_c) => {
-return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.package_, _c.dependencies_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
 }))(module_);
 return ff_compiler_Substitution.Substitution_substituteModule(ff_compiler_Substitution.Substitution(self_.unification_.substitution_), result_)
 }
@@ -1981,7 +1981,7 @@ const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferInstanceDefinition(self_, environment_, _w1)
 }));
 const result_ = ((async (_c, $c) => {
-return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.package_, _c.dependencies_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
 }))(module_);
 return ff_compiler_Substitution.Substitution_substituteModule(ff_compiler_Substitution.Substitution(self_.unification_.substitution_), result_)
 }

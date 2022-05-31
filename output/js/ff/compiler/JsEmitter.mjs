@@ -94,7 +94,7 @@ return {variantName_, newtype_, loneVariant_, arguments_};
 
 export function make_(otherModules_, targetIsNode_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
-const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
+const moduleName_ = ((((m_.package_.packagePair_.first_ + ":") + m_.package_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, false)
 }
@@ -333,7 +333,7 @@ return
 
 export async function make_$(otherModules_, targetIsNode_, $c) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
-const moduleName_ = ((((m_.packagePair_.first_ + ":") + m_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
+const moduleName_ = ((((m_.package_.packagePair_.first_ + ":") + m_.package_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, false)
 }

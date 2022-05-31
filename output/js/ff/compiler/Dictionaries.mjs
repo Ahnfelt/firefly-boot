@@ -180,7 +180,7 @@ return ff_compiler_Dictionaries.Dictionaries_processInstanceDefinition(self_, fu
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.package_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
 return
 }
 }
@@ -658,7 +658,7 @@ return ff_compiler_Dictionaries.Dictionaries_processInstanceDefinition(self_, fu
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.packagePair_, _c.file_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.package_, _c.dependencies_, _c.imports_, _c.types_, _c.traits_, instances_, extends_, lets_, functions_)
 return
 }
 }

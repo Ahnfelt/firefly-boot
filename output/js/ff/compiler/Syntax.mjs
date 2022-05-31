@@ -85,13 +85,23 @@ return {at_, message_};
 }
 
 // type Module
-export function Module(packagePair_, file_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_) {
-return {packagePair_, file_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
+export function Module(file_, package_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_) {
+return {file_, package_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
+}
+
+// type DPackage
+export function DPackage(at_, packagePair_, version_, targets_) {
+return {at_, packagePair_, version_, targets_};
 }
 
 // type DDependency
-export function DDependency(at_, package_, safety_, goodVersions_, badVersions_) {
-return {at_, package_, safety_, goodVersions_, badVersions_};
+export function DDependency(at_, packagePair_, version_, safety_, targets_) {
+return {at_, packagePair_, version_, safety_, targets_};
+}
+
+// type TargetNames
+export function TargetNames(node_, browser_) {
+return {node_, browser_};
 }
 
 // type DImport
@@ -297,9 +307,9 @@ const Unsafe$ = {Unsafe: true};
 export function Unsafe() {
 return Unsafe$;
 }
-const Trust$ = {Trust: true};
-export function Trust() {
-return Trust$;
+const Trusted$ = {Trusted: true};
+export function Trusted() {
+return Trusted$;
 }
 
 // type Version
