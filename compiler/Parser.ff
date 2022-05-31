@@ -3,7 +3,7 @@ import Wildcards
 import Syntax
 
 type Parser(
-    packagePair: Pair[String, String]
+    package: Option[DPackage]
     file: String
     tokens: Array[Token]
     end: Token
@@ -26,9 +26,9 @@ type ParsedTargets(
     nodeAsync: Option[String]
 )
 
-make(packagePair: Pair[String, String], file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
+make(package: Option[DPackage], file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
     Parser(
-        packagePair = packagePair
+        package = package
         file = file
         tokens = tokens
         end = tokens.expectLast()
@@ -96,7 +96,29 @@ extend self: Parser {
     }
     
     parseModule(): Module {
+
+        let package = self.package.else {
+            if(self.current().is(LKeyword) && self.current().rawIs("package")) {
+                self.parsePackageDefinition()
+                if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+            } else {
+                DPackage(
+                    self.current().at().Location(line = 1, column = 1),
+                    Pair("_script", "_script"),
+                    Version(0, 0, 0),
+                    TargetNames(node = True, browser = False)
+                )
+            }
+        }
+        if(self.current().is(LKeyword) && self.current().rawIs("package")) {
+            self.fail(self.current().at(), "Duplicate package definition")
+        }
         let dependencies = ArrayBuilder.empty[DDependency]()
+        while {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
+            dependencies.add(self.parseDependencyDefinition(package.targetNames))
+            if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+        }
+
         let imports = ArrayBuilder.empty[DImport]()
         let types = ArrayBuilder.empty[DType]()
         let traits = ArrayBuilder.empty[DTrait]()
@@ -118,27 +140,27 @@ extend self: Parser {
             } elseIf {self.current().is(LKeyword) && (self.current().rawIs("type") || self.current().rawIs("newtype"))} {
                 types.add(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
-                imports.add(self.parseImportDefinition())
-            } elseIf {
-                self.current().is(LKeyword) &&
-                (self.current().rawIs("safe") || self.current().rawIs("unsafe") || self.current().rawIs("trust"))
-            } {
-                dependencies.add(self.parseDependencyDefinition())
+                imports.add(self.parseImportDefinition(package.packagePair))
+            } elseIf {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
+                self.fail(self.current().at(), "Dependencies must be at the top of the file or below 'package'")
+            } elseIf {self.current().is(LKeyword) && self.current().rawIs("package")} {
+                self.fail(self.current().at(), "Package definition must be at the top of the file")
             } else {
                 self.skip(LEnd)
             }
             if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
         }
+
         Module(
-            packagePair = self.packagePair,
-            file = self.file,
-            dependencies = dependencies.toList(),
-            imports = imports.toList(),
-            lets = lets.toList(),
-            functions = functions.toList(),
-            extends = extends.toList(),
-            types = types.toList(),
-            traits = traits.toList(),
+            file = self.file
+            package = package
+            dependencies = dependencies.toList()
+            imports = imports.toList()
+            lets = lets.toList()
+            functions = functions.toList()
+            extends = extends.toList()
+            types = types.toList()
+            traits = traits.toList()
             instances = instances.toList()
         )
     }
@@ -384,7 +406,7 @@ extend self: Parser {
         DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants)
     }
     
-    parseImportDefinition(): DImport {
+    parseImportDefinition(currentPackagePair: Pair[String, String]): DImport {
         let importToken = self.rawSkip(LKeyword, "import")
         let path = ArrayBuilder.empty[String]()
         while { self.current().is(LLower) } {
@@ -403,35 +425,66 @@ extend self: Parser {
             let packageName = self.parseDashedName()
             Pair(userName, packageName)
         } else {
-            self.packagePair
+            currentPackagePair
         }
         DImport(importToken.at(), alias, package, path.toList(), file)
     }
-    
-    parseDependencyDefinition(): DDependency {
-        let safety = (
-            if(self.current().rawIs("safe")) { Safe } else:
-            if(self.current().rawIs("unsafe")) { Unsafe } else:
-            Trust
-        )
+
+    parsePackageDefinition(): DPackage {
         let at = self.skip(LKeyword).at()
         let user = self.skip(LLower).raw()
         self.skip(LColon)
         let name = self.skip(LLower).raw()
-        let goodVersions = ArrayBuilder.empty[Version]()
-        let badVersions = ArrayBuilder.empty[Version]()
-        if(self.current().rawIs("(")) {
-            self.skip(LBracketLeft)
-            while { !self.current().is(LBracketRight) } {
-                let bad = self.current().rawIs("!")
-                if(bad) { self.skip(LOperator) }
-                let version = self.parseVersion()
-                if(bad) { badVersions.add(version) } else { goodVersions.add(version) }
-                if(!self.current().is(LBracketRight)) { self.skip(LComma) }
+        self.skip(LColon)
+        let version = self.parseVersion()
+        let targetNames = self.parseTargetNames(TargetNames(True, True))
+        DPackage(
+            at = at
+            packagePair = Pair(user, name)
+            version = version
+            targetNames = targetNames
+        )
+    }
+
+    parseDependencyDefinition(defaultTargetNames: TargetNames): DDependency {
+        let at = self.skip(LKeyword).at()
+        let user = self.skip(LLower).raw()
+        self.skip(LColon)
+        let name = self.skip(LLower).raw()
+        self.skip(LColon)
+        let version = self.parseVersion()
+        let safety = (
+            if(self.current().rawIs("trusted")) { Trusted } else:
+            if(self.current().rawIs("unsafe")) { Unsafe } else:
+            Safe
+        )
+        let targetNames = self.parseTargetNames(defaultTargetNames)
+        DPackage(
+            at = at
+            packagePair = Pair(user, name)
+            version = version
+            safety = safety
+            targetNames = targetNames
+        )
+    }
+
+    parseTargetNames(defaultTargetNames: TargetNames): TargetNames {
+        let targetNames = TargetNames(False, False)
+        while { self.current().is2(LKeyword, LLower) } {
+            let token = if(self.current().is(LLower)) {self.skip(LLower)} else {self.skip(LKeyword)}
+            token.raw().{
+                | "node" {targetNames.node} => fail(token.at(), "Duplicate target name")
+                | "node" => targetNames = targetNames.TargetNames(node = True)
+                | "browser" {targetNames.browser} => fail(token.at(), "Duplicate target name")
+                | "browser" => targetNames = targetNames.TargetNames(browser = True)
+                | t => fail(token.at(), "Unexpected target: " + t)
             }
-            self.skip(LBracketRight)
         }
-        DDependency(at, Pair(user, name), safety, goodVersions.toList(), badVersions.toList())
+        if(!targetNames.node && !targetNames.browser) {
+            defaultTargetNames
+        } else {
+            targetNames
+        }
     }
     
     parseVersion(): Version {

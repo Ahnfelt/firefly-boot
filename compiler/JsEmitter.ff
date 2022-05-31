@@ -12,7 +12,7 @@ type JsEmitter(
 make(otherModules: List[Module], targetIsNode: Bool): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map { m =>
-            let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
+            let moduleName = m.package.packagePair.first + ":" + m.package.packagePair.second + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
         jsImporter = JsImporter.make()

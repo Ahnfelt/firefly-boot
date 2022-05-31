@@ -1,0 +1,5 @@
+package ingolf:rhymeapp:0.0.1 node browser
+dependency rando:webserver:1.0.3 trusted node
+dependency rando:react4f:1.0.3 trusted browser
+dependency chronos:webgl:2.3.1 unsafe
+dependency ingolf:util:0.3.2

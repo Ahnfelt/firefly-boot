@@ -22,7 +22,7 @@ nodeMain(system: NodeSystem): Unit {
     HttpServer.listen(system, "localhost", 8080) { request, response =>
         if(request.path() == "/") {
             response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
-            response.writeText(system.files().readText("RhymeApp.html"))
+            response.writeText(system.files().readText("index.html"))
         } elseIf {request.path().startsWith("/.firefly/output/browser/") && !request.path().contains("..")} {
             response.setHeader("Content-Type", ["text/javascript"])
             response.writeText(system.files().readText(request.path().dropFirst()))

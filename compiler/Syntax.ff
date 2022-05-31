@@ -10,24 +10,33 @@ extend self: Location {
 }
 
 type Module(
-    packagePair: Pair[String, String],
-    file: String,
-    dependencies: List[DDependency],
-    imports: List[DImport],
-    types: List[DType],
-    traits: List[DTrait],
-    instances: List[DInstance],
-    extends: List[DExtend],
-    lets: List[DLet],
-    functions: List[DFunction],
+    file: String
+    package: DPackage
+    dependencies: List[DDependency]
+    imports: List[DImport]
+    types: List[DType]
+    traits: List[DTrait]
+    instances: List[DInstance]
+    extends: List[DExtend]
+    lets: List[DLet]
+    functions: List[DFunction]
 )
-
+type DPackage(
+    at: Location
+    packagePair: Pair[String, String]
+    version: Version
+    targets: TargetNames
+)
 type DDependency(
-    at: Location,
-    package: Pair[String, String],
-    safety: Safety,
-    goodVersions: List[Version],
-    badVersions: List[Version]
+    at: Location
+    packagePair: Pair[String, String]
+    version: Version
+    safety: Safety
+    targets: TargetNames
+)
+type TargetNames(
+    node: Bool
+    browser: Bool
 )
 type DImport(
     at: Location,

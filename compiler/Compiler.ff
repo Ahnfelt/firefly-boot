@@ -118,11 +118,17 @@ extend self: Compiler {
             let array = packageName.split(':')
             Pair(array.expect(0), array.expect(1))
         }
+        let package = DPackage(
+            at = Location("<todo>", 1, 1),
+            packagePair = packagePair,
+            version = Version(0, 0, 0),
+            targetNames = TargetNames(node = self.targetIsNode, browser = !self.targetIsNode)
+        )
         let packagePath = self.packagePaths.expect(packageName)
         let file = moduleName + ".ff"
         let code = self.files.readText(packagePath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
-        let module = Parser.make(packagePair, file, tokens, self.targetIsNode).parseModule()
+        let module = Parser.make(Some(package), file, tokens, self.targetIsNode).parseModule()
         let result = module.Module(
             imports = [...coreImports, ...module.imports]
         )
