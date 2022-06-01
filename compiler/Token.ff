@@ -39,6 +39,10 @@ extend token: Token {
         token.code.startsWith(value, token.startOffset)
     }
 
+    rawIs2(value1: String, value2: String): Bool {
+        token.rawIs(value1) || token.rawIs(value2)
+    }
+
 }
 
 type TokenKind {

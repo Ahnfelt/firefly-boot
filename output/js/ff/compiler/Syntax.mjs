@@ -84,9 +84,19 @@ export function CompileError(at_, message_) {
 return {at_, message_};
 }
 
+// type ModuleWithPackageInfo
+export function ModuleWithPackageInfo(packageInfo_, module_) {
+return {packageInfo_, module_};
+}
+
+// type PackageInfo
+export function PackageInfo(package_, dependencies_) {
+return {package_, dependencies_};
+}
+
 // type Module
-export function Module(file_, package_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_) {
-return {file_, package_, dependencies_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
+export function Module(file_, packagePair_, imports_, types_, traits_, instances_, extends_, lets_, functions_) {
+return {file_, packagePair_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
 }
 
 // type DPackage

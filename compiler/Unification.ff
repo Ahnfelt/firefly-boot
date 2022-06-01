@@ -40,7 +40,7 @@ make(modules: List[Module]): Unification {
         Map.empty()
         3 // To avoid collision with the parser and resolver
         modules.flatMap { module =>
-            let packageName = module.package.packagePair.first + ":" + module.package.packagePair.second
+            let packageName = module.packagePair.first + ":" + module.packagePair.second
             let moduleName = module.file.dropLast(".ff".size())
             module.instances.map { definition =>
                 let typeName = definition.typeArguments.expectFirst().{

@@ -103,7 +103,7 @@ function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
-const packageName_ = ((module_.package_.packagePair_.first_ + ":") + module_.package_.packagePair_.second_);
+const packageName_ = ((module_.packagePair_.first_ + ":") + module_.packagePair_.second_);
 const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
 const typeName_ = (((_1) => {
@@ -132,7 +132,7 @@ function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
-const packageName_ = ((module_.package_.packagePair_.first_ + ":") + module_.package_.packagePair_.second_);
+const packageName_ = ((module_.packagePair_.first_ + ":") + module_.packagePair_.second_);
 const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
 const typeName_ = (((_1) => {

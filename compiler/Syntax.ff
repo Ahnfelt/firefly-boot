@@ -9,10 +9,19 @@ extend self: Location {
     }
 }
 
+type ModuleWithPackageInfo(
+    packageInfo: Option[PackageInfo]
+    module: Module
+)
+
+type PackageInfo(
+    package: DPackage,
+    dependencies: List[DDependency]
+)
+
 type Module(
     file: String
-    package: DPackage
-    dependencies: List[DDependency]
+    packagePair: Pair[String, String]
     imports: List[DImport]
     types: List[DType]
     traits: List[DTrait]
@@ -21,6 +30,7 @@ type Module(
     lets: List[DLet]
     functions: List[DFunction]
 )
+
 type DPackage(
     at: Location
     packagePair: Pair[String, String]

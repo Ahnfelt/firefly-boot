@@ -3,7 +3,7 @@ import Wildcards
 import Syntax
 
 type Parser(
-    package: Option[DPackage]
+    packagePair: Pair[String, String]
     file: String
     tokens: Array[Token]
     end: Token
@@ -26,9 +26,9 @@ type ParsedTargets(
     nodeAsync: Option[String]
 )
 
-make(package: Option[DPackage], file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
+make(packagePair: Pair[String, String], file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
     Parser(
-        package = package
+        packagePair = packagePair
         file = file
         tokens = tokens
         end = tokens.expectLast()
@@ -94,33 +94,52 @@ extend self: Parser {
             self.skip(kind)
         }
     }
-    
-    parseModule(): Module {
 
-        let package = self.package.else {
-            if(self.current().is(LKeyword) && self.current().rawIs("package")) {
-                let p = self.parsePackageDefinition()
-                if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
-                p
-            } else {
-                let location = self.current().at().Location(line = 1, column = 1)
-                DPackage(
-                    location,
-                    Pair("_script", "_script"),
-                    Version(location, 0, 0, 0),
-                    TargetNames(node = True, browser = False)
-                )
-            }
+    parseModuleWithoutPackageInfo(): Module {
+        let moduleWithPackageInfo = self.parseModuleWithPackageInfo()
+        moduleWithPackageInfo.packageInfo.each { info =>
+            self.fail(info.package.at, "Package and dependencies already declared in package.ff")
+        }
+        moduleWithPackageInfo.module
+    }
+
+    parseModuleWithPackageInfo(): ModuleWithPackageInfo {
+        let packageInfo = if(self.current().is(LKeyword) && self.current().rawIs2("package", "dependency")) {
+            self.parsePackageInfo()
+        }
+        let module = self.parseModule()
+        ModuleWithPackageInfo(packageInfo, module)
+    }
+
+    parsePackageInfo(): PackageInfo {
+        let location = self.current().at()
+        let package = if(self.current().is(LKeyword) && self.current().rawIs("package")) {
+            let p = self.parsePackageDefinition()
+            if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+            p
+        } else {
+            DPackage(
+                location,
+                self.packagePair,
+                Version(location, 0, 0, 0),
+                TargetNames(node = self.targetIsNode, browser = !self.targetIsNode)
+            )
         }
         if(self.current().is(LKeyword) && self.current().rawIs("package")) {
             self.fail(self.current().at(), "Duplicate package definition")
         }
+        /* TODO: if(self.package != None && self.current().is(LKeyword) && self.current().rawIs("dependency")) {
+            self.fail(self.current().at(), "Dependencies must be defined in the same file as the package declaration")
+        }*/
         let dependencies = ArrayBuilder.empty[DDependency]()
         while {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
             dependencies.add(self.parseDependencyDefinition(package.targets))
             if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
         }
+        PackageInfo(package, dependencies.toList())
+    }
 
+    parseModule(): Module {
         let imports = ArrayBuilder.empty[DImport]()
         let types = ArrayBuilder.empty[DType]()
         let traits = ArrayBuilder.empty[DTrait]()
@@ -142,7 +161,7 @@ extend self: Parser {
             } elseIf {self.current().is(LKeyword) && (self.current().rawIs("type") || self.current().rawIs("newtype"))} {
                 types.add(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
-                imports.add(self.parseImportDefinition(package.packagePair))
+                imports.add(self.parseImportDefinition(self.packagePair))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
                 self.fail(self.current().at(), "Dependencies must be at the top of the file or below 'package'")
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("package")} {
@@ -155,8 +174,7 @@ extend self: Parser {
 
         Module(
             file = self.file
-            package = package
-            dependencies = dependencies.toList()
+            packagePair = self.packagePair
             imports = imports.toList()
             lets = lets.toList()
             functions = functions.toList()
@@ -420,7 +438,7 @@ extend self: Parser {
             self.rawSkip(LKeyword, "as")
             self.skip(LUpper).raw()
         } else { file }
-        let package = if(self.current().rawIs("from")) {
+        let packagePair = if(self.current().rawIs("from")) {
             self.rawSkip(LKeyword, "from")
             let userName = self.parseDashedName()
             self.skip(LColon)
@@ -429,7 +447,7 @@ extend self: Parser {
         } else {
             currentPackagePair
         }
-        DImport(importToken.at(), alias, package, path.toList(), file)
+        DImport(importToken.at(), alias, packagePair, path.toList(), file)
     }
 
     parsePackageDefinition(): DPackage {

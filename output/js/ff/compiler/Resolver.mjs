@@ -122,7 +122,7 @@ const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_,
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.package_, _c.dependencies_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.traits_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTraitDefinition(self3_, _w1)
@@ -167,7 +167,7 @@ return resolver_
 
 export function Resolver_processDefinitions(self_, module_, importAlias_) {
 function entry_(name_, unqualified_) {
-const full_ = ((((((module_.package_.packagePair_.first_ + ":") + module_.package_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
+const full_ = ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
 {
 const _1 = importAlias_;
 {
@@ -195,7 +195,7 @@ return
 }
 }
 }
-const isCore_ = (((module_.package_.packagePair_.first_ == "ff") && (module_.package_.packagePair_.second_ == "core")) && (module_.file_ == "Core.ff"));
+const isCore_ = (((module_.packagePair_.first_ == "ff") && (module_.packagePair_.second_ == "core")) && (module_.file_ == "Core.ff"));
 const lets_ = ff_core_List.List_toMap(ff_core_List.List_flatMap(module_.lets_, ((_w1) => {
 return entry_(_w1.name_, isCore_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -1074,7 +1074,7 @@ const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_,
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.package_, _c.dependencies_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.traits_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTraitDefinition(self3_, _w1)
@@ -1119,7 +1119,7 @@ return resolver_
 
 export async function Resolver_processDefinitions$(self_, module_, importAlias_, $c) {
 function entry_(name_, unqualified_) {
-const full_ = ((((((module_.package_.packagePair_.first_ + ":") + module_.package_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
+const full_ = ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
 {
 const _1 = importAlias_;
 {
@@ -1147,7 +1147,7 @@ return
 }
 }
 }
-const isCore_ = (((module_.package_.packagePair_.first_ == "ff") && (module_.package_.packagePair_.second_ == "core")) && (module_.file_ == "Core.ff"));
+const isCore_ = (((module_.packagePair_.first_ == "ff") && (module_.packagePair_.second_ == "core")) && (module_.file_ == "Core.ff"));
 const lets_ = ff_core_List.List_toMap(ff_core_List.List_flatMap(module_.lets_, ((_w1) => {
 return entry_(_w1.name_, isCore_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);

@@ -213,6 +213,10 @@ export function Token_rawIs(token_, value_) {
 return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
+export function Token_rawIs2(token_, value1_, value2_) {
+return (ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_))
+}
+
 export async function Token_at$(token_, $c) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
 }
@@ -235,6 +239,10 @@ return (((token_.kind_ == kind1_) || (token_.kind_ == kind2_)) || (token_.kind_ 
 
 export async function Token_rawIs$(token_, value_, $c) {
 return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
+}
+
+export async function Token_rawIs2$(token_, value1_, value2_, $c) {
+return (ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_))
 }
 
 export function TokenKind_beforeSeparator(self_) {

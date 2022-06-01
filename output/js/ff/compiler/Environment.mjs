@@ -107,7 +107,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export function processModule_(module_, isCurrentModule_) {
 function full_(module_, name_) {
-return ((((((module_.package_.packagePair_.first_ + ":") + module_.package_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
+return ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
 }
 const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
 return ff_core_Pair.Pair(full_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
@@ -197,7 +197,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export async function processModule_$(module_, isCurrentModule_, $c) {
 function full_(module_, name_) {
-return ((((((module_.package_.packagePair_.first_ + ":") + module_.package_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
+return ((((((module_.packagePair_.first_ + ":") + module_.packagePair_.second_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
 }
 const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
 return ff_core_Pair.Pair(full_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
