@@ -1,0 +1,73 @@
+import Parser
+import Syntax
+
+type Dependencies(
+    mutable packages: Map[Pair[String, String], PackageInfo]
+)
+
+extend self: Dependencies {
+
+    loadPackageInfo(
+        fs: FileSystem
+        packagePair: Pair[String, String]
+        path: String
+    ): PackageInfo {
+        let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
+        let sharedPackageFile = packageDirectory + "/.firefly/package.ff"
+        let packageFile = if(fs.exists(sharedPackageFile)) { sharedPackageFile } else { path }
+        let code = fs.readText(file)
+        let tokens = Tokenizer.tokenize(file, code)
+        let parser = Parser.make(packagePair, file, tokens, False)
+        parser.parseModuleWithPackageInfo().packageInfo
+    }
+
+    processPackageInfo(
+        packageInfo: PackageInfo
+    ): List[DDependency] {
+        packages = packages.add(packageInfo.package.packagePair, packageInfo)
+        packageInfo.dependencies.filter { !self.packages.contains(_.packagePair) }
+    }
+
+    fetchDependency(
+        fs: FileSystem
+        dependency: DDependency
+    ): String {
+        panic("TODO")
+    }
+
+    processDependencies(
+        fs: FileSystem
+        dependencies: List[DDependency]
+    ): Unit {
+        let packageInfos = dependencies.map { dependency =>
+            let path = self.fetchDependency(fs, dependency)
+            let packageInfo = loadPackageInfo(fs, dependency.packagePair, path)
+            checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
+            packageInfo
+        }
+        let newDependencies = packageInfos.flatMap { self.processPackageInfo(_) }
+        self.processDependencies(fs, newDependencies)
+    }
+
+}
+
+process(fs: FileSystem, path: String): Map[Pair[String, String], PackageInfo] {
+    let self = Dependencies([].toMap())
+    let packageInfo = loadPackageInfo(fs, Pair("_script", "_script"), path)
+    let newDependencies = self.processPackageInfo(packageInfo)
+    self.processDependencies(fs, newDependencies)
+    self.packages
+}
+
+checkPackagePairs(dependencyPair : Pair[String, String], packagePair: Pair[String, String]): Unit {
+    if(
+        packagePair.first != dependencyPair.first ||
+        packagePair.second != dependencyPair.second
+    ) {
+        panic(
+            "Dependency declaration and package declaration disagree on package name: " +
+            dependencyPair.first + ":" + dependencyPair.second + " vs. " +
+            packagePair.first + ":" + packagePair.second
+        )
+    }
+}
