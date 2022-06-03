@@ -196,7 +196,8 @@ extend self: FileSystem {
 }
 
 directoryName(path: String): String {
-    path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()
+    let directory = path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()
+    if(directory == "") {"."} else {directory}
 }
 
 baseName(path: String): String {

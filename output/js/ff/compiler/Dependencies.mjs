@@ -83,19 +83,19 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Dependencies
-export function Dependencies(workspace_, packages_) {
-return {workspace_, packages_};
+export function Dependencies(workspace_, packages_, packagePaths_) {
+return {workspace_, packages_, packagePaths_};
 }
 
 
 
 export function process_(fs_, path_) {
 const workspace_ = ff_compiler_Workspace.loadWorkspace_(fs_, path_);
-const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_core_Pair.Pair("_script", "_script"), path_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, newDependencies_);
-return self_.packages_
+return self_.packagePaths_
 }
 
 export function checkPackagePairs_(dependencyPair_, packagePair_) {
@@ -106,11 +106,11 @@ ff_core_Core.panic_(((((((("Dependency declaration and package declaration disag
 
 export async function process_$(fs_, path_, $c) {
 const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, path_, $c));
-const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_core_Pair.Pair("_script", "_script"), path_, $c));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, newDependencies_, $c));
-return self_.packages_
+return self_.packagePaths_
 }
 
 export async function checkPackagePairs_$(dependencyPair_, packagePair_, $c) {
@@ -152,6 +152,8 @@ return location_
 export function Dependencies_processDependencies(self_, fs_, dependencies_) {
 const packageInfos_ = ff_core_List.List_map(dependencies_, ((dependency_) => {
 const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, dependency_);
+const packageString_ = ((dependency_.packagePair_.first_ + ":") + dependency_.packagePair_.second_);
+self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageString_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, dependency_.packagePair_, path_);
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
@@ -197,6 +199,8 @@ return location_
 export async function Dependencies_processDependencies$(self_, fs_, dependencies_, $c) {
 const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (dependency_, $c) => {
 const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, dependency_, $c));
+const packageString_ = ((dependency_.packagePair_.first_ + ":") + dependency_.packagePair_.second_);
+self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageString_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, dependency_.packagePair_, path_, $c));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_

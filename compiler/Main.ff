@@ -44,23 +44,19 @@ main(system: NodeSystem): Unit {
 
     command.{
         | RunCommand(moduleName) =>
-            Dependencies.process(system.files(), moduleName + ".ff")
         | _ =>
             arguments.first().each { argument =>
                 panic("Unknown argument: " + argument)
             }
     }
 
-    function buildScript(mainFile: String, target: String) {
+    function buildScript(mainFile: String, target: String, packagePaths: Map[String, String]) {
         Builder.build(
             system = system
             target = target
             mainPackage = "script:script"
             mainModule = mainFile
-            packagePaths = [
-                Pair("script:script", ".")
-                Pair("ff:core", fireflyPath + "/core")
-            ].toMap()
+            packagePaths = packagePaths
             tempPath = ".firefly/temporary"
             jsOutputPath = ".firefly/output/" + target
             printMeasurements = False
@@ -72,16 +68,18 @@ main(system: NodeSystem): Unit {
     command.{
 
         | RunCommand(mainFile) =>
+            let packagePaths = Dependencies.process(system.files(), mainFile + ".ff").add("script:script", ".")
             prepareFireflyDirectory(system.files())
             if(detectBrowserMain(system.files(), Pair("script", "script"), mainFile)) {
-                buildScript(mainFile, "browser")
+                buildScript(mainFile, "browser", packagePaths)
             }
-            buildScript(mainFile, "node")
+            buildScript(mainFile, "node", packagePaths)
             writeNodeRunFile(system.files(), mainFile, arguments)
 
         | BuildCommand(mainFile, BrowserPlatform) =>
+            let packagePaths = Dependencies.process(system.files(), mainFile + ".ff").add("script:script", ".")
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, "browser")
+            buildScript(mainFile, "browser", packagePaths)
             writeEsbuildRunFile(system.files(), fireflyPath, mainFile)
 
         | BuildCommand(_, LinuxPlatform) =>

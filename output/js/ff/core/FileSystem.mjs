@@ -84,9 +84,14 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function directoryName_(path_) {
-return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+const directory_ = ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
-})), 1))
+})), 1));
+if((directory_ == "")) {
+return "."
+} else {
+return directory_
+}
 }
 
 export function baseName_(path_) {
@@ -112,9 +117,14 @@ return (_w1 != 46)
 }
 
 export async function directoryName_$(path_, $c) {
-return ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
+const directory_ = ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 != 47)
-})), 1))
+})), 1));
+if((directory_ == "")) {
+return "."
+} else {
+return directory_
+}
 }
 
 export async function baseName_$(path_, $c) {

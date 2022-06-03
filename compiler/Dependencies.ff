@@ -6,6 +6,7 @@ import Workspace
 type Dependencies(
     workspace: Workspace
     mutable packages: Map[Pair[String, String], PackageInfo]
+    mutable packagePaths: Map[String, String]
 )
 
 extend self: Dependencies {
@@ -50,6 +51,8 @@ extend self: Dependencies {
         // Remember to check for cycles
         let packageInfos = dependencies.map { dependency =>
             let path = self.fetchDependency(fs, dependency)
+            let packageString = dependency.packagePair.first + ":" + dependency.packagePair.second
+            self.packagePaths = self.packagePaths.add(packageString, path)
             let packageInfo = self.loadPackageInfo(fs, dependency.packagePair, path)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
             packageInfo
@@ -62,13 +65,13 @@ extend self: Dependencies {
 
 }
 
-process(fs: FileSystem, path: String): Map[Pair[String, String], PackageInfo] {
+process(fs: FileSystem, path: String): Map[String, String] {
     let workspace = Workspace.loadWorkspace(fs, path)
-    let self = Dependencies(workspace, [].toMap())
+    let self = Dependencies(workspace, [].toMap(), [].toMap())
     let packageInfo = self.loadPackageInfo(fs, Pair("_script", "_script"), path)
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(fs, newDependencies)
-    self.packages
+    self.packagePaths
 }
 
 checkPackagePairs(dependencyPair : Pair[String, String], packagePair: Pair[String, String]): Unit {
