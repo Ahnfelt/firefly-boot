@@ -51,12 +51,15 @@ main(system: NodeSystem): Unit {
     }
 
     function buildScript(mainFile: String, target: String, packagePaths: Map[String, String]) {
+        let fixedPackagePaths = if(packagePaths.contains("ff:core")) {packagePaths} else {
+            packagePaths.add("ff:core", fireflyPath + "/core")
+        }
         Builder.build(
             system = system
             target = target
             mainPackage = "script:script"
             mainModule = mainFile
-            packagePaths = packagePaths
+            packagePaths = fixedPackagePaths
             tempPath = ".firefly/temporary"
             jsOutputPath = ".firefly/output/" + target
             printMeasurements = False

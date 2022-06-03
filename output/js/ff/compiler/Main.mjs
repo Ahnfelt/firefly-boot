@@ -199,7 +199,10 @@ break
 }
 };
 function buildScript_(mainFile_, target_, packagePaths_) {
-ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, packagePaths_, ".firefly/temporary", (".firefly/output/" + target_), false)
+const fixedPackagePaths_ = (ff_core_Map.Map_contains(packagePaths_, "ff:core", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+? packagePaths_
+: ff_core_Map.Map_add(packagePaths_, "ff:core", (fireflyPath_ + "/core"), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, fixedPackagePaths_, ".firefly/temporary", (".firefly/output/" + target_), false)
 }
 ff_compiler_Main.deleteRunFile_(ff_core_NodeSystem.NodeSystem_files(system_));
 for(;;) {
@@ -397,7 +400,10 @@ break
 }
 };
 async function buildScript_$(mainFile_, target_, packagePaths_, $c) {
-(await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, packagePaths_, ".firefly/temporary", (".firefly/output/" + target_), false, $c))
+const fixedPackagePaths_ = (ff_core_Map.Map_contains(packagePaths_, "ff:core", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+? packagePaths_
+: ff_core_Map.Map_add(packagePaths_, "ff:core", (fireflyPath_ + "/core"), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+(await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, fixedPackagePaths_, ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
 (await ff_compiler_Main.deleteRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 for(;;) {
