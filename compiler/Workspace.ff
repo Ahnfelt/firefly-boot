@@ -1,0 +1,87 @@
+import Syntax
+
+type Workspace(
+    rules: List[WorkspaceRule]
+    defaultLocation: String
+)
+
+type WorkspaceRule(
+    packageGroup: String
+    packageName: Option[String]
+    location: String
+)
+
+centralLocation = "http://ting.ahnfelt.dk/firefly/repository/"
+
+loadWorkspace(fs: FileSystem, path: String): Workspace {
+    let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
+    let workspaceFile = packageDirectory + "/.firefly-workspace"
+    if(fs.exists(workspaceFile)) {
+        parseWorkspaceFile(fs, workspaceFile)
+    } elseIf {fs.exists(packageDirectory + "/..")} {
+        loadWorkspace(fs, packageDirectory + "/..")
+    } else {
+        Workspace([], centralLocation)
+    }
+}
+
+parseWorkspaceFile(fs: FileSystem, path: String): Workspace {
+    let text = fs.readText(path)
+    mutable defaultLocation = None
+    let lines = text.split('\n').toList().map {_.replace("\r", "")}.filter {!_.startsWith("#")}.filter {_.size() != 0}
+    let rules = lines.collect { line =>
+        let columns = line.replace("\t", " ").split(' ').toList().filter {_.size() != 0}
+        defaultLocation.each {| _ =>
+            panic("Unexpected rule after the * rule: " + line)
+        }
+        if(columns.size() != 2) {
+            panic("Could not parse workspace rule: " + line)
+        }
+        let package = columns.expect(0)
+        let location = columns.expect(1)
+        let fixedLocation = if(location.endsWith("/")) {location} else {location + "/"}
+        if(package == "*") {
+            defaultLocation = Some(fixedLocation)
+            None
+        } else {
+            let packageParts = package.split(':')
+            if(packageParts.size() != 2) {
+                panic("Could not parse workspace package: " + package)
+            }
+            if(packageParts.expect(0) == "*") {
+                panic("Unexpected wildcard: " + package)
+            }
+            Some(WorkspaceRule(
+                packageGroup = packageParts.expect(0)
+                packageName = if(packageParts.expect(1) != "*") { packageParts.expect(1) }
+                location = fixedLocation
+            ))
+        }
+    }
+    Workspace(rules, defaultLocation.else {centralLocation})
+}
+
+extend self: Workspace {
+
+    findPackageLocation(packagePair: Pair[String, String], version: Version): String {
+        self.rules.find { rule =>
+            rule.packageGroup == packagePair.first && rule.packageName.all {_ == packagePair.second}
+        }.map { rule =>
+            let prefix = if(rule.packageName == None) { packagePair.second + "/" } else { "" }
+            if(rule.location.contains(":")) {
+                rule.location + prefix + tarGzName(packagePair, version)
+            } else {
+                rule.location + prefix
+            }
+        }.else {
+            self.defaultLocation + packagePair.first + "/" + packagePair.second + "/" +
+            tarGzName(packagePair, version)
+        }
+    }
+
+}
+
+tarGzName(packagePair: Pair[String, String], version: Version): String {
+    packagePair.first + "_" + packagePair.second + "_" +
+    version.major + "_" + version.minor + "_" + version.patch + ".tar.gz"
+}

@@ -1,8 +1,10 @@
 import Parser
 import Syntax
 import Tokenizer
+import Workspace
 
 type Dependencies(
+    workspace: Workspace
     mutable packages: Map[Pair[String, String], PackageInfo]
 )
 
@@ -33,7 +35,12 @@ extend self: Dependencies {
         fs: FileSystem
         dependency: DDependency
     ): String {
-        panic("TODO")
+        let location = self.workspace.findPackageLocation(dependency.packagePair, dependency.version)
+        if(location.contains(":")) {
+            panic("Loading packages by URL is not yet supported: " + location)
+        } else {
+            location
+        }
     }
 
     processDependencies(
@@ -54,7 +61,8 @@ extend self: Dependencies {
 }
 
 process(fs: FileSystem, path: String): Map[Pair[String, String], PackageInfo] {
-    let self = Dependencies([].toMap())
+    let workspace = Workspace.loadWorkspace(fs, path)
+    let self = Dependencies(workspace, [].toMap())
     let packageInfo = self.loadPackageInfo(fs, Pair("_script", "_script"), path)
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(fs, newDependencies)

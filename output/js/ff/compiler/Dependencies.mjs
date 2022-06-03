@@ -8,6 +8,8 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
+import * as ff_compiler_Workspace from "../../ff/compiler/Workspace.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
@@ -81,14 +83,15 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Dependencies
-export function Dependencies(packages_) {
-return {packages_};
+export function Dependencies(workspace_, packages_) {
+return {workspace_, packages_};
 }
 
 
 
 export function process_(fs_, path_) {
-const self_ = ff_compiler_Dependencies.Dependencies(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
+const workspace_ = ff_compiler_Workspace.loadWorkspace_(fs_, path_);
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_core_Pair.Pair("_script", "_script"), path_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, newDependencies_);
@@ -102,7 +105,8 @@ ff_core_Core.panic_(((((((("Dependency declaration and package declaration disag
 }
 
 export async function process_$(fs_, path_, $c) {
-const self_ = ff_compiler_Dependencies.Dependencies(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
+const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, path_, $c));
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_core_Pair.Pair("_script", "_script"), path_, $c));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, newDependencies_, $c));
@@ -137,7 +141,12 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_core_Ord
 }
 
 export function Dependencies_fetchDependency(self_, fs_, dependency_) {
-return ff_core_Core.panic_("TODO")
+const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
+if(ff_core_String.String_contains(location_, ":")) {
+return ff_core_Core.panic_(("Loading packages by URL is not yet supported: " + location_))
+} else {
+return location_
+}
 }
 
 export function Dependencies_processDependencies(self_, fs_, dependencies_) {
@@ -175,7 +184,12 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_core_Ord
 }
 
 export async function Dependencies_fetchDependency$(self_, fs_, dependency_, $c) {
-return ff_core_Core.panic_("TODO")
+const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
+if(ff_core_String.String_contains(location_, ":")) {
+return ff_core_Core.panic_(("Loading packages by URL is not yet supported: " + location_))
+} else {
+return location_
+}
 }
 
 export async function Dependencies_processDependencies$(self_, fs_, dependencies_, $c) {
