@@ -55,7 +55,9 @@ extend self: Dependencies {
             packageInfo
         }
         let newDependencies = packageInfos.flatMap { self.processPackageInfo(_) }
-        self.processDependencies(fs, newDependencies)
+        if(newDependencies != []) {
+            self.processDependencies(fs, newDependencies)
+        }
     }
 
 }

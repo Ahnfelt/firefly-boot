@@ -43,7 +43,8 @@ main(system: NodeSystem): Unit {
     let command = parseCommand(consumeArgument().expect())
 
     command.{
-        | RunCommand(_) =>
+        | RunCommand(moduleName) =>
+            Dependencies.process(system.files(), moduleName + ".ff")
         | _ =>
             arguments.first().each { argument =>
                 panic("Unknown argument: " + argument)

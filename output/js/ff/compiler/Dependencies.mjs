@@ -159,7 +159,9 @@ return packageInfo_
 const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
+if((newDependencies_ != ff_core_List.Empty())) {
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, newDependencies_)
+}
 }
 
 export async function Dependencies_loadPackageInfo$(self_, fs_, packagePair_, path_, $c) {
@@ -202,7 +204,9 @@ return packageInfo_
 const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
+if((newDependencies_ != ff_core_List.Empty())) {
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, newDependencies_, $c))
+}
 }
 
 

@@ -3,6 +3,7 @@ import Syntax
 type Workspace(
     rules: List[WorkspaceRule]
     defaultLocation: String
+    packageDirectory: String
 )
 
 type WorkspaceRule(
@@ -15,17 +16,18 @@ centralLocation = "http://ting.ahnfelt.dk/firefly/repository/"
 
 loadWorkspace(fs: FileSystem, path: String): Workspace {
     let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
-    let workspaceFile = packageDirectory + "/.firefly-workspace"
+    let fixedPackageDirectory = if(packageDirectory == "") {"."} else {packageDirectory}
+    let workspaceFile = fixedPackageDirectory + "/.firefly-workspace"
     if(fs.exists(workspaceFile)) {
-        parseWorkspaceFile(fs, workspaceFile)
-    } elseIf {fs.exists(packageDirectory + "/..")} {
-        loadWorkspace(fs, packageDirectory + "/..")
+        parseWorkspaceFile(fs, workspaceFile, fixedPackageDirectory)
+    } elseIf {fs.exists(fixedPackageDirectory + "/..")} {
+        loadWorkspace(fs, fixedPackageDirectory + "/..")
     } else {
-        Workspace([], centralLocation)
+        Workspace([], centralLocation, ".")
     }
 }
 
-parseWorkspaceFile(fs: FileSystem, path: String): Workspace {
+parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Workspace {
     let text = fs.readText(path)
     mutable defaultLocation = None
     let lines = text.split('\n').toList().map {_.replace("\r", "")}.filter {!_.startsWith("#")}.filter {_.size() != 0}
@@ -58,7 +60,7 @@ parseWorkspaceFile(fs: FileSystem, path: String): Workspace {
             ))
         }
     }
-    Workspace(rules, defaultLocation.else {centralLocation})
+    Workspace(rules, defaultLocation.else {centralLocation}, packageDirectory)
 }
 
 extend self: Workspace {
@@ -71,7 +73,7 @@ extend self: Workspace {
             if(rule.location.contains(":")) {
                 rule.location + prefix + tarGzName(packagePair, version)
             } else {
-                rule.location + prefix
+                self.packageDirectory + "/" + rule.location + prefix
             }
         }.else {
             self.defaultLocation + packagePair.first + "/" + packagePair.second + "/" +

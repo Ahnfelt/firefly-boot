@@ -186,7 +186,8 @@ for(;;) {
 const _1 = command_;
 {
 if(_1.RunCommand) {
-
+const moduleName_ = _1.mainPath_;
+ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), (moduleName_ + ".ff"))
 break
 }
 }
@@ -381,7 +382,8 @@ for(;;) {
 const _1 = command_;
 {
 if(_1.RunCommand) {
-
+const moduleName_ = _1.mainPath_;
+(await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (moduleName_ + ".ff"), $c))
 break
 }
 }
