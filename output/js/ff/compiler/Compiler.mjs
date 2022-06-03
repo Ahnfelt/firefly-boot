@@ -101,8 +101,16 @@ export function make_(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_
 return ff_compiler_Compiler.Compiler(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
 }
 
+export function fail_(at_, message_) {
+return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
+}
+
 export async function make_$(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, $c) {
 return ff_compiler_Compiler.Compiler(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
+}
+
+export async function fail_$(at_, message_, $c) {
+return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
 export function Compiler_measure(self_, phase_, packageName_, moduleName_, body_) {
@@ -157,6 +165,9 @@ const newPackageName_ = ((import_.package_.first_ + ":") + import_.package_.seco
 const newModuleName_ = (ff_core_List.List_join(ff_core_List.List_map(import_.directory_, ((_w1) => {
 return (_w1 + "/")
 })), "") + import_.file_);
+if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackageName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+ff_compiler_Compiler.fail_(import_.at_, ("Missing dependency declaration for: " + newPackageName_))
+};
 return ff_compiler_Compiler.Compiler_parse(self_, newPackageName_, newModuleName_)
 }))
 }
@@ -267,6 +278,9 @@ const newPackageName_ = ((import_.package_.first_ + ":") + import_.package_.seco
 const newModuleName_ = (ff_core_List.List_join(ff_core_List.List_map(import_.directory_, ((_w1) => {
 return (_w1 + "/")
 })), "") + import_.file_);
+if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackageName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+ff_compiler_Compiler.fail_(import_.at_, ("Missing dependency declaration for: " + newPackageName_))
+};
 return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackageName_, newModuleName_, $c))
 }), $c))
 }

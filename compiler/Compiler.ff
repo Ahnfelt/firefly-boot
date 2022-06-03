@@ -42,6 +42,10 @@ make(
     )
 }
 
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show())
+}
+
 coreImports: List[DImport] =
     [
         "Array",
@@ -135,6 +139,9 @@ extend self: Compiler {
         module.imports.map { import =>
             let newPackageName = import.package.first + ":" + import.package.second
             let newModuleName = import.directory.map { _ + "/" }.join("") + import.file
+            if(!self.packagePaths.contains(newPackageName)) {
+                fail(import.at, "Missing dependency declaration for: " + newPackageName)
+            }
             self.parse(newPackageName, newModuleName)
         }
     }
