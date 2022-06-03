@@ -1,5 +1,6 @@
 import Parser
 import Syntax
+import Tokenizer
 
 type Dependencies(
     mutable packages: Map[Pair[String, String], PackageInfo]
@@ -15,16 +16,16 @@ extend self: Dependencies {
         let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
         let sharedPackageFile = packageDirectory + "/.firefly/package.ff"
         let packageFile = if(fs.exists(sharedPackageFile)) { sharedPackageFile } else { path }
-        let code = fs.readText(file)
-        let tokens = Tokenizer.tokenize(file, code)
-        let parser = Parser.make(packagePair, file, tokens, False)
-        parser.parseModuleWithPackageInfo().packageInfo
+        let code = fs.readText(packageFile)
+        let tokens = Tokenizer.tokenize(packageFile, code)
+        let parser = Parser.make(packagePair, packageFile, tokens, False)
+        parser.parsePackageInfo()
     }
 
     processPackageInfo(
         packageInfo: PackageInfo
     ): List[DDependency] {
-        packages = packages.add(packageInfo.package.packagePair, packageInfo)
+        self.packages = self.packages.add(packageInfo.package.packagePair, packageInfo)
         packageInfo.dependencies.filter { !self.packages.contains(_.packagePair) }
     }
 
@@ -39,9 +40,10 @@ extend self: Dependencies {
         fs: FileSystem
         dependencies: List[DDependency]
     ): Unit {
+        // Remember to check for cycles
         let packageInfos = dependencies.map { dependency =>
             let path = self.fetchDependency(fs, dependency)
-            let packageInfo = loadPackageInfo(fs, dependency.packagePair, path)
+            let packageInfo = self.loadPackageInfo(fs, dependency.packagePair, path)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
             packageInfo
         }
@@ -53,7 +55,7 @@ extend self: Dependencies {
 
 process(fs: FileSystem, path: String): Map[Pair[String, String], PackageInfo] {
     let self = Dependencies([].toMap())
-    let packageInfo = loadPackageInfo(fs, Pair("_script", "_script"), path)
+    let packageInfo = self.loadPackageInfo(fs, Pair("_script", "_script"), path)
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(fs, newDependencies)
     self.packages

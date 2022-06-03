@@ -5,6 +5,7 @@ import Resolver
 import Compiler
 import Unification
 import Builder
+import Dependencies
 
 type MainCommand {
     BootstrapCommand
