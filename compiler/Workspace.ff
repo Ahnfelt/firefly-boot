@@ -30,7 +30,7 @@ loadWorkspace(fs: FileSystem, path: String): Workspace {
 parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Workspace {
     let text = fs.readText(path)
     mutable defaultLocation = None
-    let lines = text.split('\n').toList().map {_.replace("\r", "")}.filter {!_.startsWith("#")}.filter {_.size() != 0}
+    let lines = text.split('\n').toList().map {_.replace("\r", "").takeWhile {_ != '#'}}.filter {_.size() != 0}
     let rules = lines.collect { line =>
         let columns = line.replace("\t", " ").split(' ').toList().filter {_.size() != 0}
         defaultLocation.each {| _ =>

@@ -108,10 +108,10 @@ return ff_compiler_Workspace.Workspace(ff_core_List.Empty(), ff_compiler_Workspa
 export function parseWorkspaceFile_(fs_, path_, packageDirectory_) {
 const text_ = ff_core_FileSystem.FileSystem_readText(fs_, path_);
 let defaultLocation_ = ff_core_Option.None();
-const lines_ = ff_core_List.List_filter(ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
-return ff_core_String.String_replace(_w1, "\r", "")
-})), ((_w1) => {
-return (!ff_core_String.String_startsWith(_w1, "#", 0))
+const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
+return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", ""), ((_w1) => {
+return (_w1 != 35)
+}))
 })), ((_w1) => {
 return (ff_core_String.String_size(_w1) != 0)
 }));
@@ -175,10 +175,10 @@ return ff_compiler_Workspace.Workspace(ff_core_List.Empty(), ff_compiler_Workspa
 export async function parseWorkspaceFile_$(fs_, path_, packageDirectory_, $c) {
 const text_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, path_, $c));
 let defaultLocation_ = ff_core_Option.None();
-const lines_ = ff_core_List.List_filter(ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
-return ff_core_String.String_replace(_w1, "\r", "")
-})), ((_w1) => {
-return (!ff_core_String.String_startsWith(_w1, "#", 0))
+const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
+return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", ""), ((_w1) => {
+return (_w1 != 35)
+}))
 })), ((_w1) => {
 return (ff_core_String.String_size(_w1) != 0)
 }));
