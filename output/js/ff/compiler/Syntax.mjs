@@ -183,8 +183,8 @@ return {EAssign: true, at_, operator_, variable_, value_};
 export function EAssignField(at_, operator_, record_, field_, value_) {
 return {EAssignField: true, at_, operator_, record_, field_, value_};
 }
-export function EPipe(at_, value_, function_) {
-return {EPipe: true, at_, value_, function_};
+export function EPipe(at_, value_, effect_, function_) {
+return {EPipe: true, at_, value_, effect_, function_};
 }
 export function ECall(at_, target_, effect_, typeArguments_, arguments_, dictionaries_) {
 return {ECall: true, at_, target_, effect_, typeArguments_, arguments_, dictionaries_};

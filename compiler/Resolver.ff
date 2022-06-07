@@ -232,10 +232,11 @@ extend self: Resolver {
         | ELambda(at, Lambda(lambdaAt, _, cases)), _ =>
             let effect = self.makeEffectArgument(lambdaAt, topLevel)
             ELambda(at, Lambda(lambdaAt, effect, cases.map { self.resolveCase(_, topLevel) }))
-        | EPipe(at, value, function), _ =>
+        | EPipe(at, value, effect, function), _ =>
             EPipe(
                 at = at
                 value = self.resolveTerm(value, topLevel)
+                effect = self.resolveType(effect, topLevel)
                 function = self.resolveTerm(function, topLevel)
             )
         | ECall(at, DynamicCall target, effect, typeArguments, arguments, dictionaries), _ =>

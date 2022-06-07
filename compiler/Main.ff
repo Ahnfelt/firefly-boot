@@ -30,7 +30,8 @@ main(system: NodeSystem): Unit {
     }
 
     let fireflyPath = consumeArgument().expect()
-    let parseCommand : String => MainCommand = { // TODO: Fix the code emitter so this can be a direct match instead
+
+    let command = consumeArgument().expect().{
         | s {s.endsWith(".ff")} => RunCommand(s.dropLast(3))
         | "run" => RunCommand(consumeArgument().expect().dropLast(3))
         | "browser" => BuildCommand(consumeArgument().expect().dropLast(3), BrowserPlatform)
@@ -40,7 +41,6 @@ main(system: NodeSystem): Unit {
         | "bootstrap" => BootstrapCommand
         | s => panic("Unknown command '" + s + "'")
     }
-    let command = parseCommand(consumeArgument().expect())
 
     command.{
         | RunCommand(moduleName) =>
@@ -65,8 +65,7 @@ main(system: NodeSystem): Unit {
             target = target
             mainPackage = "script:script"
             mainModule = mainFile
-            // TODO: When using the copy syntax, this becomes a promise
-            resolvedDependencies = ResolvedDependencies(packagePaths = fixedPackagePaths, singleFilePackages = resolvedDependencies.singleFilePackages)
+            resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
             tempPath = ".firefly/temporary"
             jsOutputPath = ".firefly/output/" + target
             printMeasurements = False
@@ -79,9 +78,8 @@ main(system: NodeSystem): Unit {
 
         | RunCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
-            let fixedDependencies = ResolvedDependencies( // TODO: When using the copy syntax, this becomes a promise
+            let fixedDependencies = resolvedDependencies.ResolvedDependencies(
                 packagePaths = resolvedDependencies.packagePaths.add("script:script", ".")
-                singleFilePackages = resolvedDependencies.singleFilePackages
             )
             prepareFireflyDirectory(system.files())
             if(detectBrowserMain(system.files(), Pair("script", "script"), mainFile)) {

@@ -471,7 +471,7 @@ return
 }
 
 export async function firstTypeName_$(types_, $c) {
-return ((async (_1, $c) => {
+return (((_1) => {
 {
 if(_1.TConstructor) {
 const t_ = _1;
@@ -1118,8 +1118,15 @@ return
 if(_1.EPipe) {
 const at_ = _1.at_;
 const value_ = _1.value_;
+const effect_ = _1.effect_;
 const function_ = _1.function_;
-return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")")
+const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
+const call_ = (((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")");
+if(await_) {
+return (("(await " + call_) + ")")
+} else {
+return call_
+}
 return
 }
 }
@@ -1525,7 +1532,6 @@ if(_1.EPipe) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 if(_1.function_.ELambda) {
-const effect_ = _1.function_.lambda_.effect_;
 const cases_ = _1.function_.lambda_.cases_;
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 return (((((((!last_)
@@ -2406,8 +2412,15 @@ return
 if(_1.EPipe) {
 const at_ = _1.at_;
 const value_ = _1.value_;
+const effect_ = _1.effect_;
 const function_ = _1.function_;
-return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")")
+const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
+const call_ = (((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")");
+if(await_) {
+return (("(await " + call_) + ")")
+} else {
+return call_
+}
 return
 }
 }
@@ -2813,7 +2826,6 @@ if(_1.EPipe) {
 const at_ = _1.at_;
 const value_ = _1.value_;
 if(_1.function_.ELambda) {
-const effect_ = _1.function_.lambda_.effect_;
 const cases_ = _1.function_.lambda_.cases_;
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
 return (((((((!last_)
@@ -2901,7 +2913,7 @@ const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
 if(_1.first_.Link) {
 const p_ = _1.first_.head_;
 const ps_ = _1.first_.tail_;
-return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_expect(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), ((async (_c, $c) => {
+return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_expect(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), last_, async_)
 return
@@ -2913,7 +2925,7 @@ if(_1.second_.Link) {
 const guard_ = _1.second_.head_;
 const guards_ = _1.second_.tail_;
 const guardName_ = ("_guard" + (ff_core_List.List_size(guards_) + 1));
-const newCase_ = ((async (_c, $c) => {
+const newCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(guard_.pattern_, ff_core_List.Empty()), guards_, _c.body_)
 }))(matchCase_);
 return ((((("const " + guardName_) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, guard_.term_, async_)) + ";\n") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link(guardName_, ff_core_List.Empty()), newCase_, last_, async_))
@@ -3003,7 +3015,7 @@ if(_1.PVariant) {
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
 const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, name_, argument_);
-const newMatchCase_ = ((async (_c, $c) => {
+const newMatchCase_ = (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.List_addAll(patterns_, matchCase_.patterns_), _c.guards_, _c.body_)
 }))(matchCase_);
 return (((processed_.loneVariant_

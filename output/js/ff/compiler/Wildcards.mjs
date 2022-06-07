@@ -171,7 +171,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
+return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), _c.effect_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
 return
 }
 }
@@ -428,7 +428,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
+return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), _c.effect_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
 return
 }
 }
@@ -443,7 +443,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ((async (_1, $c) => {
+return ff_compiler_Syntax.ECall(_c.at_, (((_1) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;

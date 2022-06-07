@@ -119,6 +119,7 @@ extend self: Substitution {
             )
             | EPipe e => e.EPipe(
                 value = self.substituteTerm(e.value)
+                effect = self.substituteType(e.effect)
                 function = self.substituteTerm(e.function)
             )
             | ECall e => e.ECall(

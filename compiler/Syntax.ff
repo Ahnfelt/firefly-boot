@@ -115,7 +115,7 @@ type Term(at: Location) {
     ESequential(before: Term, after: Term)
     EAssign(operator: String, variable: String, value: Term)
     EAssignField(operator: String, record: Term, field: String, value: Term)
-    EPipe(value: Term, function: Term)
+    EPipe(value: Term, effect: Type, function: Term)
     ECall(
         target: CallTarget
         effect: Type

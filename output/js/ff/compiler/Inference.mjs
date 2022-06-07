@@ -723,10 +723,11 @@ const _1 = before_;
 if(_1.EPipe) {
 const at1_ = _1.at_;
 const value_ = _1.value_;
+const effect1_ = _1.effect_;
 if(_1.function_.ELambda) {
 const at2_ = _1.function_.at_;
 const at3_ = _1.function_.lambda_.at_;
-const effect_ = _1.function_.lambda_.effect_;
+const effect3_ = _1.function_.lambda_.effect_;
 const cases_ = _1.function_.lambda_.cases_;
 const e_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Unit.Unit", ff_core_List.Empty(), ff_core_Option.None());
 const newCases_ = ff_core_List.List_map(cases_, ((case_) => {
@@ -739,7 +740,7 @@ return
 }
 }
 }));
-const newPipe_ = ff_compiler_Syntax.EPipe(at1_, value_, ff_compiler_Syntax.ELambda(at2_, ff_compiler_Syntax.Lambda(at3_, effect_, newCases_)));
+const newPipe_ = ff_compiler_Syntax.EPipe(at1_, value_, effect1_, ff_compiler_Syntax.ELambda(at2_, ff_compiler_Syntax.Lambda(at3_, effect3_, newCases_)));
 {
 const _1 = after_;
 {
@@ -892,7 +893,7 @@ return ff_compiler_Syntax.Argument(e_.at_, ff_core_Option.Some(name_), ff_compil
 }));
 const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.Some(arguments_));
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-const term_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(e_.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c")), ff_core_List.Empty()), ff_core_List.Empty(), body_), ff_core_List.Empty()))));
+const term_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(e_.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c")), ff_core_List.Empty()), ff_core_List.Empty(), body_), ff_core_List.Empty()))));
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, term_)
 return
 }
@@ -901,14 +902,15 @@ return
 if(_1.EPipe) {
 const e_ = _1;
 const valueType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(environment_.effect_, ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(e_.effect_, ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
 const value_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, valueType_, e_.value_);
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, e_.function_);
+ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, e_.effect_, environment_.effect_);
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EPipe(_c.at_, value_, function_)
+return ff_compiler_Syntax.EPipe(_c.at_, value_, _c.effect_, function_)
 return
 }
 }
@@ -1980,7 +1982,7 @@ return ff_compiler_Inference.Inference_inferTraitDefinition(self_, environment_,
 const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferInstanceDefinition(self_, environment_, _w1)
 }));
-const result_ = ((async (_c, $c) => {
+const result_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
 }))(module_);
 return ff_compiler_Substitution.Substitution_substituteModule(ff_compiler_Substitution.Substitution(self_.unification_.substitution_), result_)
@@ -2073,7 +2075,7 @@ const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_com
 return ff_core_Pair.Pair(p_.name_, scheme_)
 }));
 const parameterMap_ = ff_core_List.List_toMap(parameters_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const environment2_ = ((async (_c, $c) => {
+const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, parameterMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
 const parameterTypes_ = ff_core_List.List_map(parameters_, ((_w1) => {
@@ -2097,7 +2099,7 @@ return
 
 export async function Inference_inferLambda$(self_, environment_, expected_, lambda_, $c) {
 const unitName_ = ff_compiler_Inference.core_("Unit");
-const returnsUnit_ = ((async (_1, $c) => {
+const returnsUnit_ = (((_1) => {
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
@@ -2141,7 +2143,7 @@ return
 }
 }
 })));
-const newEnvironment_ = ((async (_c, $c) => {
+const newEnvironment_ = (((_c) => {
 return ff_compiler_Environment.Environment(_c.symbols_, lambda_.effect_)
 }))(environment_);
 {
@@ -2440,7 +2442,7 @@ if(_1.Some) {
 const instantiated_ = _1.value_;
 const _guard1 = (!instantiated_.scheme_.isVariable_);
 if(_guard1) {
-const signature_ = ((async (_c, $c) => {
+const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_, _c.effect_)
 }))(instantiated_.scheme_.signature_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_expect(instantiated_.scheme_.signature_.parameters_, 0).valueType_);
@@ -2527,10 +2529,11 @@ const _1 = before_;
 if(_1.EPipe) {
 const at1_ = _1.at_;
 const value_ = _1.value_;
+const effect1_ = _1.effect_;
 if(_1.function_.ELambda) {
 const at2_ = _1.function_.at_;
 const at3_ = _1.function_.lambda_.at_;
-const effect_ = _1.function_.lambda_.effect_;
+const effect3_ = _1.function_.lambda_.effect_;
 const cases_ = _1.function_.lambda_.cases_;
 const e_ = ff_compiler_Syntax.EVariant(at_, "ff:core/Unit.Unit", ff_core_List.Empty(), ff_core_Option.None());
 const newCases_ = ff_core_List.List_map(cases_, ((case_) => {
@@ -2543,7 +2546,7 @@ return
 }
 }
 }));
-const newPipe_ = ff_compiler_Syntax.EPipe(at1_, value_, ff_compiler_Syntax.ELambda(at2_, ff_compiler_Syntax.Lambda(at3_, effect_, newCases_)));
+const newPipe_ = ff_compiler_Syntax.EPipe(at1_, value_, effect1_, ff_compiler_Syntax.ELambda(at2_, ff_compiler_Syntax.Lambda(at3_, effect3_, newCases_)));
 {
 const _1 = after_;
 {
@@ -2579,7 +2582,7 @@ if(_1.ELet) {
 const e_ = _1;
 const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_, noEffect_));
-const environment2_ = ((async (_c, $c) => {
+const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
 {
@@ -2696,7 +2699,7 @@ return ff_compiler_Syntax.Argument(e_.at_, ff_core_Option.Some(name_), ff_compil
 }));
 const body_ = ff_compiler_Syntax.EVariant(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_Option.Some(arguments_));
 const effect_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-const term_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(e_.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c")), ff_core_List.Empty()), ff_core_List.Empty(), body_), ff_core_List.Empty()))));
+const term_ = ff_compiler_Syntax.EPipe(e_.at_, e_.record_, effect_, ff_compiler_Syntax.ELambda(e_.at_, ff_compiler_Syntax.Lambda(e_.at_, effect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(e_.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(e_.at_, ff_core_Option.Some("_c")), ff_core_List.Empty()), ff_core_List.Empty(), body_), ff_core_List.Empty()))));
 return ff_compiler_Inference.Inference_inferTerm(self_, environment_, expected_, term_)
 return
 }
@@ -2705,14 +2708,15 @@ return
 if(_1.EPipe) {
 const e_ = _1;
 const valueType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
-const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(environment_.effect_, ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
+const functionType_ = ff_compiler_Syntax.TConstructor(e_.at_, "Function$1", ff_core_List.Link(e_.effect_, ff_core_List.Link(valueType_, ff_core_List.Link(expected_, ff_core_List.Empty()))));
 const value_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, valueType_, e_.value_);
 const function_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, functionType_, e_.function_);
+ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, e_.effect_, environment_.effect_);
 {
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EPipe(_c.at_, value_, function_)
+return ff_compiler_Syntax.EPipe(_c.at_, value_, _c.effect_, function_)
 return
 }
 }
@@ -2722,7 +2726,7 @@ return
 {
 if(_1.ECall) {
 const e_ = _1;
-const call_ = ((async (_1, $c) => {
+const call_ = (((_1) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -2778,9 +2782,9 @@ if(_1.EField) {
 const f_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, f_.at_);
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, f_.record_);
-const e2_ = ((async (_c, $c) => {
-return ff_compiler_Syntax.ECall(_c.at_, ((async (_c, $c) => {
-return ff_compiler_Syntax.DynamicCall(((async (_c, $c) => {
+const e2_ = (((_c) => {
+return ff_compiler_Syntax.ECall(_c.at_, (((_c) => {
+return ff_compiler_Syntax.DynamicCall((((_c) => {
 return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, record_, _c.field_)
 }))(f_), _c.tailCall_)
 }))(call_), _c.effect_, _c.typeArguments_, _c.arguments_, _c.dictionaries_)
@@ -2888,7 +2892,7 @@ const functionMap_ = ff_core_List.List_toMap(ff_core_List.List_map(functions_, (
 const scheme_ = ff_compiler_Environment.Scheme(false, false, false, false, f_.signature_);
 return ff_core_Pair.Pair(f_.signature_.name_, scheme_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const environment2_ = ((async (_c, $c) => {
+const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
 const newFunctions_ = ff_core_List.List_map(functions_, ((_w1) => {
@@ -3011,7 +3015,7 @@ return newValue_
 }
 
 export async function Inference_inferMethodCall$(self_, environment_, expected_, signature_, instantiation_, term_, record_, recordType_, name_, $c) {
-const e_ = ((async (_1, $c) => {
+const e_ = (((_1) => {
 {
 if(_1.ECall) {
 const e_ = _1;
@@ -3024,7 +3028,7 @@ return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 return
 }
 }))(term_);
-const call_ = ((async (_1, $c) => {
+const call_ = (((_1) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -3058,7 +3062,7 @@ return
 }
 
 export async function Inference_inferFunctionCall$(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_, $c) {
-const e_ = ((async (_1, $c) => {
+const e_ = (((_1) => {
 {
 if(_1.ECall) {
 const e_ = _1;
@@ -3071,7 +3075,7 @@ return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 return
 }
 }))(term_);
-const call_ = ((async (_1, $c) => {
+const call_ = (((_1) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -3102,7 +3106,7 @@ return
 }
 
 export async function Inference_inferLambdaCall$(self_, environment_, expected_, term_, $c) {
-const e_ = ((async (_1, $c) => {
+const e_ = (((_1) => {
 {
 if(_1.ECall) {
 const e_ = _1;
@@ -3115,7 +3119,7 @@ return ff_compiler_Inference.fail_(term_.at_, "Call expected")
 return
 }
 }))(term_);
-const call_ = ((async (_1, $c) => {
+const call_ = (((_1) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -3171,7 +3175,7 @@ ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, ((async (_c, $c) => {
+return ff_compiler_Syntax.ECall(_c.at_, (((_c) => {
 return ff_compiler_Syntax.DynamicCall(function_, _c.tailCall_)
 }))(call_), effect_, ff_core_List.Empty(), arguments_, _c.dictionaries_)
 return
@@ -3180,7 +3184,7 @@ return
 }
 
 export async function Inference_inferOperator$(self_, environment_, expected_, operator_, term_, $c) {
-const e_ = ((async (_1, $c) => {
+const e_ = (((_1) => {
 {
 if(_1.ECall) {
 const e_ = _1;
@@ -3209,7 +3213,7 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link(((async (_c, $c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Empty()), _c.dictionaries_)
 return
@@ -3263,7 +3267,7 @@ break
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link(((async (_c, $c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
 }))(a1_), ff_core_List.Empty()), _c.dictionaries_)
 return
@@ -3290,9 +3294,9 @@ ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_,
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link(((async (_c, $c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link(((async (_c, $c) => {
+}))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_), ff_core_List.Empty())), _c.dictionaries_)
 return
@@ -3435,9 +3439,9 @@ chooseType_(magic_(t1_), magic_(t2_));
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link(((async (_c, $c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link(((async (_c, $c) => {
+}))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_), ff_core_List.Empty())), _c.dictionaries_)
 return
@@ -3607,9 +3611,9 @@ chooseType_(magic_(t1_), magic_(t2_));
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link(((async (_c, $c) => {
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
-}))(a1_), ff_core_List.Link(((async (_c, $c) => {
+}))(a1_), ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
 }))(a2_), ff_core_List.Empty())), _c.dictionaries_)
 return
@@ -3642,7 +3646,7 @@ const effect2_ = ff_compiler_Unification.Unification_freshUnificationVariable(se
 const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, effect2_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.List_map(parameters_, ((_w1) => {
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
 })), ff_core_List.Empty(), body_), ff_core_List.Empty())));
-return ff_compiler_Inference.Inference_inferTerm(self_, ((async (_c, $c) => {
+return ff_compiler_Inference.Inference_inferTerm(self_, (((_c) => {
 return ff_compiler_Environment.Environment(_c.symbols_, effect2_)
 }))(environment_), expected_, lambda_)
 }

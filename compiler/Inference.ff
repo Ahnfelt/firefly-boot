@@ -305,10 +305,10 @@ extend self: Inference {
             | ESequential(at, before, after) =>
                 let newExpected = self.unification.freshUnificationVariable(at)
                 before.{
-                    | EPipe(at1, value, ELambda(at2, Lambda(at3, effect, cases))) =>
+                    | EPipe(at1, value, effect1, ELambda(at2, Lambda(at3, effect3, cases))) =>
                         let e = EVariant(at, "ff:core/Unit.Unit", [], None)
                         let newCases = cases.map { case => case.MatchCase(body = ESequential(case.at, case.body, e)) }
-                        let newPipe = EPipe(at1, value, ELambda(at2, Lambda(at3, effect, newCases)))
+                        let newPipe = EPipe(at1, value, effect1, ELambda(at2, Lambda(at3, effect3, newCases)))
                         after.{
                             | EVariant(at, "ff:core/Unit.Unit", _, _) =>
                                 let unitType = TConstructor(at, core("Unit"), [])
@@ -389,19 +389,20 @@ extend self: Inference {
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
                 let effect = self.unification.freshUnificationVariable(e.at)
-                let term = EPipe(e.at, e.record,
+                let term = EPipe(e.at, e.record, effect,
                     ELambda(e.at, Lambda(e.at, effect, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], [], body)]))
                 )
                 self.inferTerm(environment, expected, term)
             | EPipe e =>
                 let valueType = self.unification.freshUnificationVariable(e.at)
                 let functionType = TConstructor(e.at, "Function$1", [
-                    environment.effect,
+                    e.effect,
                     valueType,
                     expected
                 ])
                 let value = self.inferTerm(environment, valueType, e.value)
                 let function = self.inferTerm(environment, functionType, e.function)
+                self.unification.affect(term.at, e.effect, environment.effect)
                 e.EPipe(
                     value = value
                     function = function

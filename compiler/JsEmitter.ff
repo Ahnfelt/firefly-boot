@@ -261,9 +261,10 @@ extend self: JsEmitter {
             let prefix = if(newAsync) {"async "} else {""}
             "(" + prefix + "(" + [...escapedArguments, ...controller].join(", ") + ") => " +
             "{\n" + casesString + "\n})"
-        | EPipe(at, value, function) =>
-            // TODO: Add effect to pipe
-            "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + ")"
+        | EPipe(at, value, effect, function) =>
+            let await = async && effectTypeIsAsync(effect)
+            let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + ")"
+            if(await) {"(await " + call + ")"} else {call}
         | ECall(at, StaticCall(operator, _, _), _, [], [value], _) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + operator + self.emitArgument(value, async) + ")"
         | ECall(at, StaticCall(operator, _, _), _, [], [left, right], _) {!operator.expectFirst().isAsciiLetter()} =>
@@ -383,7 +384,7 @@ extend self: JsEmitter {
                     ))
                 }.collect {_}.unzip()
                 "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
-            | EPipe(at, value, ELambda(_, Lambda(_, effect, cases))) =>
+            | EPipe(at, value, _, ELambda(_, Lambda(_, _, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
                 if(!last) { "for(;;) " }.else { "" } +
                 "{\nconst _1 = " + self.emitTerm(value, async) + ";\n" +

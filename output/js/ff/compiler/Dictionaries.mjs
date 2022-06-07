@@ -439,7 +439,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_))
+return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_), _c.effect_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_))
 return
 }
 }
@@ -690,7 +690,7 @@ return
 
 export async function Dictionaries_processFunctionDefinition$(self_, functions_, definition_, $c) {
 const instances_ = ff_compiler_Dictionaries.constraintsToInstances_(definition_.signature_.constraints_);
-const self2_ = ((async (_c, $c) => {
+const self2_ = (((_c) => {
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey))
 }))(self_);
 {
@@ -707,7 +707,7 @@ return
 
 export async function Dictionaries_processInstanceDefinition$(self_, functions_, definition_, $c) {
 const instances_ = ff_compiler_Dictionaries.constraintsToInstances_(definition_.constraints_);
-const self2_ = ((async (_c, $c) => {
+const self2_ = (((_c) => {
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey))
 }))(self_);
 {
@@ -917,7 +917,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_), ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_))
+return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.value_), _c.effect_, ff_compiler_Dictionaries.Dictionaries_processTerm(self_, functions_, e_.function_))
 return
 }
 }
@@ -938,7 +938,7 @@ const signature_ = _guard1.value_;
 const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, signature_.generics_, typeArguments_, _w1)
 }));
-return ff_compiler_Syntax.ECall(at_, ((async (_c, $c) => {
+return ff_compiler_Syntax.ECall(at_, (((_c) => {
 return ff_compiler_Syntax.StaticCall(_c.name_, _c.tailCall_, _c.instanceCall_)
 }))(target_), effect_, typeArguments_, ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processArgument(self_, functions_, _w1)
@@ -951,7 +951,7 @@ return
 {
 if(_1.ECall) {
 const e_ = _1;
-const target_ = ((async (_1, $c) => {
+const target_ = (((_1) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -1080,7 +1080,7 @@ const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty());
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));
-const firstType_ = ((async (_1, $c) => {
+const firstType_ = (((_1) => {
 {
 if(_1.TConstructor) {
 const t_ = _1;

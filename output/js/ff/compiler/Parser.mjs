@@ -1341,7 +1341,8 @@ if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compi
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 const term_ = ff_compiler_Parser.Parser_parseAtom(self_);
-result_ = ff_compiler_Syntax.EPipe(term_.at_, result_, term_)
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, term_.at_);
+result_ = ff_compiler_Syntax.EPipe(term_.at_, result_, effect_, term_)
 } else if(ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper(), ff_compiler_Token.LNamespace())) {
 result_ = ff_compiler_Parser.Parser_parseCopy(self_, result_)
 } else {
@@ -2671,7 +2672,8 @@ if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compi
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 const term_ = ff_compiler_Parser.Parser_parseAtom(self_);
-result_ = ff_compiler_Syntax.EPipe(term_.at_, result_, term_)
+const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, term_.at_);
+result_ = ff_compiler_Syntax.EPipe(term_.at_, result_, effect_, term_)
 } else if(ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LUpper(), ff_compiler_Token.LNamespace())) {
 result_ = ff_compiler_Parser.Parser_parseCopy(self_, result_)
 } else {

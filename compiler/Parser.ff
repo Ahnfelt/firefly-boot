@@ -880,7 +880,8 @@ extend self: Parser {
                 self.skip(LDot)
                 if(self.current().rawIs("{")) {
                     let term = self.parseAtom()
-                    result = EPipe(term.at, result, term)
+                    let effect = self.freshUnificationVariable(term.at)
+                    result = EPipe(term.at, result, effect, term)
                 } elseIf {self.current().is2(LUpper, LNamespace)} {
                     result = self.parseCopy(result)
                 } else {
