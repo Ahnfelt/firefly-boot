@@ -7,6 +7,12 @@ type Dependencies(
     workspace: Workspace
     mutable packages: Map[Pair[String, String], PackageInfo]
     mutable packagePaths: Map[String, String]
+    mutable singleFilePackages: Set[Pair[String, String]]
+)
+
+type ResolvedDependencies(
+    packagePaths: Map[String, String]
+    singleFilePackages: Set[Pair[String, String]]
 )
 
 extend self: Dependencies {
@@ -18,7 +24,12 @@ extend self: Dependencies {
     ): PackageInfo {
         let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
         let sharedPackageFile = packageDirectory + "/.firefly/package.ff"
-        let packageFile = if(fs.exists(sharedPackageFile)) { sharedPackageFile } else { path }
+        let packageFile = if(fs.exists(sharedPackageFile)) {
+            sharedPackageFile
+        } else {
+            self.singleFilePackages = self.singleFilePackages.add(packagePair)
+            path
+        }
         let code = fs.readText(packageFile)
         let tokens = Tokenizer.tokenize(packageFile, code)
         let parser = Parser.make(packagePair, packageFile, tokens, False)
@@ -65,13 +76,16 @@ extend self: Dependencies {
 
 }
 
-process(fs: FileSystem, path: String): Map[String, String] {
+process(fs: FileSystem, path: String): ResolvedDependencies {
     let workspace = Workspace.loadWorkspace(fs, path)
-    let self = Dependencies(workspace, [].toMap(), [].toMap())
-    let packageInfo = self.loadPackageInfo(fs, Pair("_script", "_script"), path)
+    let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
+    let packageInfo = self.loadPackageInfo(fs, Pair("script", "script"), path)
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(fs, newDependencies)
-    self.packagePaths
+    ResolvedDependencies(
+        packagePaths = self.packagePaths
+        singleFilePackages = self.singleFilePackages
+    )
 }
 
 checkPackagePairs(dependencyPair : Pair[String, String], packagePair: Pair[String, String]): Unit {

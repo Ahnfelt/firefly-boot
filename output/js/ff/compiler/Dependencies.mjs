@@ -83,19 +83,24 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Dependencies
-export function Dependencies(workspace_, packages_, packagePaths_) {
-return {workspace_, packages_, packagePaths_};
+export function Dependencies(workspace_, packages_, packagePaths_, singleFilePackages_) {
+return {workspace_, packages_, packagePaths_, singleFilePackages_};
+}
+
+// type ResolvedDependencies
+export function ResolvedDependencies(packagePaths_, singleFilePackages_) {
+return {packagePaths_, singleFilePackages_};
 }
 
 
 
 export function process_(fs_, path_) {
 const workspace_ = ff_compiler_Workspace.loadWorkspace_(fs_, path_);
-const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_core_Pair.Pair("_script", "_script"), path_);
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
+const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_core_Pair.Pair("script", "script"), path_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, newDependencies_);
-return self_.packagePaths_
+return ff_compiler_Dependencies.ResolvedDependencies(self_.packagePaths_, self_.singleFilePackages_)
 }
 
 export function checkPackagePairs_(dependencyPair_, packagePair_) {
@@ -106,11 +111,11 @@ ff_core_Core.panic_(((((((("Dependency declaration and package declaration disag
 
 export async function process_$(fs_, path_, $c) {
 const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, path_, $c));
-const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_core_Pair.Pair("_script", "_script"), path_, $c));
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
+const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_core_Pair.Pair("script", "script"), path_, $c));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, newDependencies_, $c));
-return self_.packagePaths_
+return ff_compiler_Dependencies.ResolvedDependencies(self_.packagePaths_, self_.singleFilePackages_)
 }
 
 export async function checkPackagePairs_$(dependencyPair_, packagePair_, $c) {
@@ -126,7 +131,10 @@ const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
 const sharedPackageFile_ = (packageDirectory_ + "/.firefly/package.ff");
 const packageFile_ = (ff_core_FileSystem.FileSystem_exists(fs_, sharedPackageFile_)
 ? sharedPackageFile_
-: path_);
+: (function() {
+self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+return path_
+})());
 const code_ = ff_core_FileSystem.FileSystem_readText(fs_, packageFile_);
 const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false);
@@ -173,7 +181,10 @@ const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
 const sharedPackageFile_ = (packageDirectory_ + "/.firefly/package.ff");
 const packageFile_ = ((await ff_core_FileSystem.FileSystem_exists$(fs_, sharedPackageFile_, $c))
 ? sharedPackageFile_
-: path_);
+: (function() {
+self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+return path_
+})());
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, packageFile_, $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false);

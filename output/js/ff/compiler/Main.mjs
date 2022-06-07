@@ -198,11 +198,11 @@ ff_core_Core.panic_(("Unknown argument: " + argument_))
 break
 }
 };
-function buildScript_(mainFile_, target_, packagePaths_) {
-const fixedPackagePaths_ = (ff_core_Map.Map_contains(packagePaths_, "ff:core", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-? packagePaths_
-: ff_core_Map.Map_add(packagePaths_, "ff:core", (fireflyPath_ + "/core"), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, fixedPackagePaths_, ".firefly/temporary", (".firefly/output/" + target_), false)
+function buildScript_(mainFile_, target_, resolvedDependencies_) {
+const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, "ff:core", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+? resolvedDependencies_.packagePaths_
+: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, "ff:core", (fireflyPath_ + "/core"), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+ff_compiler_Builder.build_(system_, target_, "script:script", mainFile_, ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, resolvedDependencies_.singleFilePackages_), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
 ff_compiler_Main.deleteRunFile_(ff_core_NodeSystem.NodeSystem_files(system_));
 for(;;) {
@@ -210,12 +210,13 @@ const _1 = command_;
 {
 if(_1.RunCommand) {
 const mainFile_ = _1.mainPath_;
-const packagePaths_ = ff_core_Map.Map_add(ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), (mainFile_ + ".ff")), "script:script", ".", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), (mainFile_ + ".ff"));
+const fixedDependencies_ = ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, "script:script", ".", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), resolvedDependencies_.singleFilePackages_);
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
 if(ff_compiler_Main.detectBrowserMain_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_Pair.Pair("script", "script"), mainFile_)) {
-buildScript_(mainFile_, "browser", packagePaths_)
+buildScript_(mainFile_, "browser", fixedDependencies_)
 };
-buildScript_(mainFile_, "node", packagePaths_);
+buildScript_(mainFile_, "node", fixedDependencies_);
 ff_compiler_Main.writeNodeRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_, arguments_)
 break
 }
@@ -224,9 +225,12 @@ break
 if(_1.BuildCommand) {
 const mainFile_ = _1.mainPath_;
 if(_1.platform_.BrowserPlatform) {
-const packagePaths_ = ff_core_Map.Map_add(ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), (mainFile_ + ".ff")), "script:script", ".", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), (mainFile_ + ".ff"));
+const fixedDependencies_ = (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, "script:script", ".", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.singleFilePackages_)
+}))(resolvedDependencies_);
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
-buildScript_(mainFile_, "browser", packagePaths_);
+buildScript_(mainFile_, "browser", fixedDependencies_);
 ff_compiler_Main.writeEsbuildRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), fireflyPath_, mainFile_)
 break
 }
@@ -258,7 +262,7 @@ break
 }
 {
 if(_1.BootstrapCommand) {
-ff_compiler_Builder.build_(system_, "node", "ff:compiler", "Main", ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), "output/temporary", "output/js", true)
+ff_compiler_Builder.build_(system_, "node", "ff:compiler", "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))), "output/temporary", "output/js", true)
 break
 }
 }
@@ -297,7 +301,7 @@ export function detectBrowserMain_(fs_, packagePair_, mainFile_) {
 const file_ = (mainFile_ + ".ff");
 const code_ = ff_core_FileSystem.FileSystem_readText(fs_, file_);
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
-const parser_ = ff_compiler_Parser.make_(ff_core_Pair.Pair("_script", "_script"), file_, tokens_, false);
+const parser_ = ff_compiler_Parser.make_(ff_core_Pair.Pair("script", "script"), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
 return (((definition_.signature_.name_ == "browserMain") || (definition_.signature_.name_ == "main")) && (((_1) => {
@@ -399,11 +403,11 @@ ff_core_Core.panic_(("Unknown argument: " + argument_))
 break
 }
 };
-async function buildScript_$(mainFile_, target_, packagePaths_, $c) {
-const fixedPackagePaths_ = (ff_core_Map.Map_contains(packagePaths_, "ff:core", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
-? packagePaths_
-: ff_core_Map.Map_add(packagePaths_, "ff:core", (fireflyPath_ + "/core"), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-(await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, fixedPackagePaths_, ".firefly/temporary", (".firefly/output/" + target_), false, $c))
+async function buildScript_$(mainFile_, target_, resolvedDependencies_, $c) {
+const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, "ff:core", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+? resolvedDependencies_.packagePaths_
+: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, "ff:core", (fireflyPath_ + "/core"), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+(await ff_compiler_Builder.build_$(system_, target_, "script:script", mainFile_, ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, resolvedDependencies_.singleFilePackages_), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
 (await ff_compiler_Main.deleteRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 for(;;) {
@@ -411,12 +415,13 @@ const _1 = command_;
 {
 if(_1.RunCommand) {
 const mainFile_ = _1.mainPath_;
-const packagePaths_ = ff_core_Map.Map_add((await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (mainFile_ + ".ff"), $c)), "script:script", ".", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (mainFile_ + ".ff"), $c));
+const fixedDependencies_ = ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, "script:script", ".", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), resolvedDependencies_.singleFilePackages_);
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 if((await ff_compiler_Main.detectBrowserMain_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ff_core_Pair.Pair("script", "script"), mainFile_, $c))) {
-(await buildScript_$(mainFile_, "browser", packagePaths_, $c))
+(await buildScript_$(mainFile_, "browser", fixedDependencies_, $c))
 };
-(await buildScript_$(mainFile_, "node", packagePaths_, $c));
+(await buildScript_$(mainFile_, "node", fixedDependencies_, $c));
 (await ff_compiler_Main.writeNodeRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, arguments_, $c))
 break
 }
@@ -425,9 +430,12 @@ break
 if(_1.BuildCommand) {
 const mainFile_ = _1.mainPath_;
 if(_1.platform_.BrowserPlatform) {
-const packagePaths_ = ff_core_Map.Map_add((await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (mainFile_ + ".ff"), $c)), "script:script", ".", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (mainFile_ + ".ff"), $c));
+const fixedDependencies_ = ((async (_c, $c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, "script:script", ".", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.singleFilePackages_)
+}))(resolvedDependencies_);
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
-(await buildScript_$(mainFile_, "browser", packagePaths_, $c));
+(await buildScript_$(mainFile_, "browser", fixedDependencies_, $c));
 (await ff_compiler_Main.writeEsbuildRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), fireflyPath_, mainFile_, $c))
 break
 }
@@ -459,7 +467,7 @@ break
 }
 {
 if(_1.BootstrapCommand) {
-(await ff_compiler_Builder.build_$(system_, "node", "ff:compiler", "Main", ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), "output/temporary", "output/js", true, $c))
+(await ff_compiler_Builder.build_$(system_, "node", "ff:compiler", "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("ff:compiler", "compiler"), ff_core_List.Link(ff_core_Pair.Pair("ff:core", "core"), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))), "output/temporary", "output/js", true, $c))
 break
 }
 }
@@ -498,7 +506,7 @@ export async function detectBrowserMain_$(fs_, packagePair_, mainFile_, $c) {
 const file_ = (mainFile_ + ".ff");
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, file_, $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
-const parser_ = ff_compiler_Parser.make_(ff_core_Pair.Pair("_script", "_script"), file_, tokens_, false);
+const parser_ = ff_compiler_Parser.make_(ff_core_Pair.Pair("script", "script"), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
 return (((definition_.signature_.name_ == "browserMain") || (definition_.signature_.name_ == "main")) && (((_1) => {

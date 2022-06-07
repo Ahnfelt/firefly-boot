@@ -4,13 +4,14 @@ import Syntax
 import Resolver
 import Compiler
 import Unification
+import Dependencies
 
 build(
     system: NodeSystem,
     target : String
     mainPackage : String
     mainModule : String
-    packagePaths : Map[String, String]
+    resolvedDependencies: ResolvedDependencies
     tempPath : String
     jsOutputPath : String
     printMeasurements : Bool
@@ -34,7 +35,7 @@ build(
     fs.createDirectories(jsPathFile)
 
     let success = do {
-        let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, packagePaths)
+        let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, resolvedDependencies)
         compiler.emit(mainPackage, mainModule)
         if(printMeasurements) { compiler.printMeasurements() }
         True

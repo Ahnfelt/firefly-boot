@@ -50,16 +50,23 @@ main(system: NodeSystem): Unit {
             }
     }
 
-    function buildScript(mainFile: String, target: String, packagePaths: Map[String, String]) {
-        let fixedPackagePaths = if(packagePaths.contains("ff:core")) {packagePaths} else {
-            packagePaths.add("ff:core", fireflyPath + "/core")
+    function buildScript(
+        mainFile: String,
+        target: String,
+        resolvedDependencies: ResolvedDependencies
+    ) {
+        let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains("ff:core")) {
+            resolvedDependencies.packagePaths
+        } else {
+            resolvedDependencies.packagePaths.add("ff:core", fireflyPath + "/core")
         }
         Builder.build(
             system = system
             target = target
             mainPackage = "script:script"
             mainModule = mainFile
-            packagePaths = fixedPackagePaths
+            // TODO: When using the copy syntax, this becomes a promise
+            resolvedDependencies = ResolvedDependencies(packagePaths = fixedPackagePaths, singleFilePackages = resolvedDependencies.singleFilePackages)
             tempPath = ".firefly/temporary"
             jsOutputPath = ".firefly/output/" + target
             printMeasurements = False
@@ -71,18 +78,25 @@ main(system: NodeSystem): Unit {
     command.{
 
         | RunCommand(mainFile) =>
-            let packagePaths = Dependencies.process(system.files(), mainFile + ".ff").add("script:script", ".")
+            let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
+            let fixedDependencies = ResolvedDependencies( // TODO: When using the copy syntax, this becomes a promise
+                packagePaths = resolvedDependencies.packagePaths.add("script:script", ".")
+                singleFilePackages = resolvedDependencies.singleFilePackages
+            )
             prepareFireflyDirectory(system.files())
             if(detectBrowserMain(system.files(), Pair("script", "script"), mainFile)) {
-                buildScript(mainFile, "browser", packagePaths)
+                buildScript(mainFile, "browser", fixedDependencies)
             }
-            buildScript(mainFile, "node", packagePaths)
+            buildScript(mainFile, "node", fixedDependencies)
             writeNodeRunFile(system.files(), mainFile, arguments)
 
         | BuildCommand(mainFile, BrowserPlatform) =>
-            let packagePaths = Dependencies.process(system.files(), mainFile + ".ff").add("script:script", ".")
+            let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
+            let fixedDependencies = resolvedDependencies.ResolvedDependencies(
+                packagePaths = resolvedDependencies.packagePaths.add("script:script", ".")
+            )
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, "browser", packagePaths)
+            buildScript(mainFile, "browser", fixedDependencies)
             writeEsbuildRunFile(system.files(), fireflyPath, mainFile)
 
         | BuildCommand(_, LinuxPlatform) =>
@@ -100,10 +114,13 @@ main(system: NodeSystem): Unit {
                 target = "node"
                 mainPackage = "ff:compiler"
                 mainModule = "Main"
-                packagePaths = [
-                    Pair("ff:compiler", "compiler")
-                    Pair("ff:core", "core")
-                ].toMap()
+                resolvedDependencies = ResolvedDependencies(
+                    packagePaths = [
+                        Pair("ff:compiler", "compiler")
+                        Pair("ff:core", "core")
+                    ].toMap()
+                    singleFilePackages = [].toSet()
+                )
                 tempPath = "output/temporary"
                 jsOutputPath = "output/js"
                 printMeasurements = True
@@ -150,7 +167,7 @@ detectBrowserMain(fs: FileSystem, packagePair: Pair[String, String], mainFile: S
     let file = mainFile + ".ff"
     let code = fs.readText(file)
     let tokens = Tokenizer.tokenize(file, code)
-    let parser = Parser.make(Pair("_script", "_script"), file, tokens, False)
+    let parser = Parser.make(Pair("script", "script"), file, tokens, False)
     let module = parser.parseModuleWithPackageInfo().module
     module.functions.any { definition =>
         (definition.signature.name == "browserMain" || definition.signature.name == "main") &&

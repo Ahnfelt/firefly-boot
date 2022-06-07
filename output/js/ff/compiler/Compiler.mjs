@@ -2,6 +2,8 @@
 
 import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
 
+import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
+
 import * as ff_compiler_Dictionaries from "../../ff/compiler/Dictionaries.mjs"
 
 import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
@@ -89,24 +91,24 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_) {
-return {targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
+export function Compiler(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, singleFilePackages_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_) {
+return {targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, singleFilePackages_, parsedModules_, resolvedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
 }
 
 export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Array", ff_core_List.Link("ArrayBuilder", ff_core_List.Link("Bool", ff_core_List.Link("BrowserSystem", ff_core_List.Link("Buffer", ff_core_List.Link("Channel", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("Error", ff_core_List.Link("FetchSystem", ff_core_List.Link("FileHandle", ff_core_List.Link("FileSystem", ff_core_List.Link("Float", ff_core_List.Link("HttpServer", ff_core_List.Link("Instant", ff_core_List.Link("Int", ff_core_List.Link("Iterator", ff_core_List.Link("JsValue", ff_core_List.Link("JsSystem", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("NodeSystem", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Ordering", ff_core_List.Link("Pair", ff_core_List.Link("Set", ff_core_List.Link("Show", ff_core_List.Link("Stream", ff_core_List.Link("String", ff_core_List.Link("TaskSystem", ff_core_List.Link("TimeSystem", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty())))))))))))))))))))))))))))))))))))), ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_core_Pair.Pair("ff", "core"), ff_core_List.Empty(), moduleName_)
 }));
 
-export function make_(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_) {
-return ff_compiler_Compiler.Compiler(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
+export function make_(targetIsNode_, files_, time_, jsOutputPath_, resolvedDependencies_) {
+return ff_compiler_Compiler.Compiler(targetIsNode_, files_, time_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
 }
 
 export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, $c) {
-return ff_compiler_Compiler.Compiler(targetIsNode_, files_, time_, jsOutputPath_, packagePaths_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
+export async function make_$(targetIsNode_, files_, time_, jsOutputPath_, resolvedDependencies_, $c) {
+return ff_compiler_Compiler.Compiler(targetIsNode_, files_, time_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -149,7 +151,10 @@ const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packageName_, f
 const file_ = (moduleName_ + ".ff");
 const code_ = ff_core_FileSystem.FileSystem_readText(self_.files_, ((packagePath_ + "/") + file_));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
-const module_ = ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(ff_compiler_Parser.make_(packagePair_, file_, tokens_, self_.targetIsNode_));
+const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, self_.targetIsNode_);
+const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
+: ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(parser_));
 const result_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, ff_core_List.List_addAll(ff_compiler_Compiler.coreImports_, module_.imports_), _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
 }))(module_);
@@ -262,7 +267,10 @@ const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packageName_, f
 const file_ = (moduleName_ + ".ff");
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(self_.files_, ((packagePath_ + "/") + file_), $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
-const module_ = ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(ff_compiler_Parser.make_(packagePair_, file_, tokens_, self_.targetIsNode_));
+const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, self_.targetIsNode_);
+const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
+: ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(parser_));
 const result_ = ((async (_c, $c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, ff_core_List.List_addAll(ff_compiler_Compiler.coreImports_, module_.imports_), _c.types_, _c.traits_, _c.instances_, _c.extends_, _c.lets_, _c.functions_)
 }))(module_);

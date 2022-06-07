@@ -5,6 +5,7 @@ import Resolver
 import Inference
 import JsEmitter
 import Dictionaries
+import Dependencies
 
 type Compiler!(
     targetIsNode: Bool
@@ -12,6 +13,7 @@ type Compiler!(
     time: TimeSystem
     jsOutputPath: String
     packagePaths: Map[String, String]
+    singleFilePackages: Set[Pair[String, String]]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable inferredModules: Map[String, Module]
@@ -25,14 +27,15 @@ make(
     files: FileSystem
     time: TimeSystem
     jsOutputPath: String
-    packagePaths: Map[String, String]
+    resolvedDependencies: ResolvedDependencies
 ): Compiler {
     Compiler(
         targetIsNode = targetIsNode,
         files = files
         time = time
         jsOutputPath = jsOutputPath
-        packagePaths = packagePaths
+        packagePaths = resolvedDependencies.packagePaths
+        singleFilePackages = resolvedDependencies.singleFilePackages
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
         inferredModules = Map.empty()
@@ -126,7 +129,12 @@ extend self: Compiler {
         let file = moduleName + ".ff"
         let code = self.files.readText(packagePath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
-        let module = Parser.make(packagePair, file, tokens, self.targetIsNode).parseModuleWithoutPackageInfo()
+        let parser = Parser.make(packagePair, file, tokens, self.targetIsNode)
+        let module = if(self.singleFilePackages.contains(packagePair)) {
+            parser.parseModuleWithPackageInfo().module
+        } else {
+            parser.parseModuleWithoutPackageInfo()
+        }
         let result = module.Module(
             imports = [...coreImports, ...module.imports]
         )
