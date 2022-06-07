@@ -67,7 +67,7 @@ extend self: Resolver {
     processDefinitions(module: Module, importAlias: Option[String]): Resolver {
         function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
             let full =
-                module.packagePair.first + ":" + module.packagePair.second + "/" +
+                module.packagePair.group + ":" + module.packagePair.name + "/" +
                 module.file.dropLast(3) + "." + name
             importAlias.{
                 | None => [Pair(name, full), Pair(full, full)]
@@ -76,8 +76,8 @@ extend self: Resolver {
             }
         }
         let isCore = // TODO: Extend imports to list unqualified symbols instead of this
-            module.packagePair.first == "ff" &&
-            module.packagePair.second == "core" &&
+            module.packagePair.group == "ff" &&
+            module.packagePair.name == "core" &&
             module.file == "Core.ff"
         let lets = module.lets.flatMap { entry(_.name, isCore) }.toMap()
         let functions = module.functions.flatMap { entry(_.signature.name, isCore) }.toMap()

@@ -3,7 +3,7 @@ import Wildcards
 import Syntax
 
 type Parser(
-    packagePair: Pair[String, String]
+    packagePair: PackagePair
     file: String
     tokens: Array[Token]
     end: Token
@@ -26,7 +26,7 @@ type ParsedTargets(
     nodeAsync: Option[String]
 )
 
-make(packagePair: Pair[String, String], file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
+make(packagePair: PackagePair, file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
     Parser(
         packagePair = packagePair
         file = file
@@ -426,7 +426,7 @@ extend self: Parser {
         DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants)
     }
     
-    parseImportDefinition(currentPackagePair: Pair[String, String]): DImport {
+    parseImportDefinition(currentPackagePair: PackagePair): DImport {
         let importToken = self.rawSkip(LKeyword, "import")
         let path = ArrayBuilder.empty[String]()
         while { self.current().is(LLower) } {
@@ -443,7 +443,7 @@ extend self: Parser {
             let userName = self.parseDashedName()
             self.skip(LColon)
             let packageName = self.parseDashedName()
-            Pair(userName, packageName)
+            PackagePair(userName, packageName)
         } else {
             currentPackagePair
         }
@@ -460,7 +460,7 @@ extend self: Parser {
         let targets = self.parseTargetNames(TargetNames(True, True))
         DPackage(
             at = at
-            packagePair = Pair(user, name)
+            packagePair = PackagePair(user, name)
             version = version
             targets = targets
         )
@@ -481,7 +481,7 @@ extend self: Parser {
         let targets = self.parseTargetNames(defaultTargetNames)
         DDependency(
             at = at
-            packagePair = Pair(user, name)
+            packagePair = PackagePair(user, name)
             version = version
             safety = safety
             targets = targets

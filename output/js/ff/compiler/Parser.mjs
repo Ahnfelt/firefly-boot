@@ -754,7 +754,7 @@ ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "from");
 const userName_ = ff_compiler_Parser.Parser_parseDashedName(self_);
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const packageName_ = ff_compiler_Parser.Parser_parseDashedName(self_);
-return ff_core_Pair.Pair(userName_, packageName_)
+return ff_compiler_Syntax.PackagePair(userName_, packageName_)
 })()
 : currentPackagePair_);
 return ff_compiler_Syntax.DImport(ff_compiler_Token.Token_at(importToken_), alias_, packagePair_, ff_core_ArrayBuilder.ArrayBuilder_toList(path_), file_)
@@ -768,7 +768,7 @@ const name_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, 
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const version_ = ff_compiler_Parser.Parser_parseVersion(self_);
 const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, ff_compiler_Syntax.TargetNames(true, true));
-return ff_compiler_Syntax.DPackage(at_, ff_core_Pair.Pair(user_, name_), version_, targets_)
+return ff_compiler_Syntax.DPackage(at_, ff_compiler_Syntax.PackagePair(user_, name_), version_, targets_)
 }
 
 export function Parser_parseDependencyDefinition(self_, defaultTargetNames_) {
@@ -784,7 +784,7 @@ const safety_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current
 ? ff_compiler_Syntax.Unsafe()
 : ff_compiler_Syntax.Safe()));
 const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, defaultTargetNames_);
-return ff_compiler_Syntax.DDependency(at_, ff_core_Pair.Pair(user_, name_), version_, safety_, targets_)
+return ff_compiler_Syntax.DDependency(at_, ff_compiler_Syntax.PackagePair(user_, name_), version_, safety_, targets_)
 }
 
 export function Parser_parseTargetNames(self_, defaultTargets_) {
@@ -2085,7 +2085,7 @@ ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "from");
 const userName_ = ff_compiler_Parser.Parser_parseDashedName(self_);
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const packageName_ = ff_compiler_Parser.Parser_parseDashedName(self_);
-return ff_core_Pair.Pair(userName_, packageName_)
+return ff_compiler_Syntax.PackagePair(userName_, packageName_)
 })()
 : currentPackagePair_);
 return ff_compiler_Syntax.DImport(ff_compiler_Token.Token_at(importToken_), alias_, packagePair_, ff_core_ArrayBuilder.ArrayBuilder_toList(path_), file_)
@@ -2099,7 +2099,7 @@ const name_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, 
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const version_ = ff_compiler_Parser.Parser_parseVersion(self_);
 const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, ff_compiler_Syntax.TargetNames(true, true));
-return ff_compiler_Syntax.DPackage(at_, ff_core_Pair.Pair(user_, name_), version_, targets_)
+return ff_compiler_Syntax.DPackage(at_, ff_compiler_Syntax.PackagePair(user_, name_), version_, targets_)
 }
 
 export async function Parser_parseDependencyDefinition$(self_, defaultTargetNames_, $c) {
@@ -2115,7 +2115,7 @@ const safety_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current
 ? ff_compiler_Syntax.Unsafe()
 : ff_compiler_Syntax.Safe()));
 const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, defaultTargetNames_);
-return ff_compiler_Syntax.DDependency(at_, ff_core_Pair.Pair(user_, name_), version_, safety_, targets_)
+return ff_compiler_Syntax.DDependency(at_, ff_compiler_Syntax.PackagePair(user_, name_), version_, safety_, targets_)
 }
 
 export async function Parser_parseTargetNames$(self_, defaultTargets_, $c) {

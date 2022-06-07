@@ -65,25 +65,25 @@ parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Work
 
 extend self: Workspace {
 
-    findPackageLocation(packagePair: Pair[String, String], version: Version): String {
+    findPackageLocation(packagePair: PackagePair, version: Version): String {
         self.rules.find { rule =>
-            rule.packageGroup == packagePair.first && rule.packageName.all {_ == packagePair.second}
+            rule.packageGroup == packagePair.group && rule.packageName.all {_ == packagePair.name}
         }.map { rule =>
-            let prefix = if(rule.packageName == None) { packagePair.second + "/" } else { "" }
+            let prefix = if(rule.packageName == None) { packagePair.name + "/" } else { "" }
             if(rule.location.contains(":")) {
                 rule.location + prefix + tarGzName(packagePair, version)
             } else {
                 self.packageDirectory + "/" + rule.location + prefix
             }
         }.else {
-            self.defaultLocation + packagePair.first + "/" + packagePair.second + "/" +
+            self.defaultLocation + packagePair.group + "/" + packagePair.name + "/" +
             tarGzName(packagePair, version)
         }
     }
 
 }
 
-tarGzName(packagePair: Pair[String, String], version: Version): String {
-    packagePair.first + "_" + packagePair.second + "_" +
+tarGzName(packagePair: PackagePair, version: Version): String {
+    packagePair.group + "_" + packagePair.name + "_" +
     version.major + "_" + version.minor + "_" + version.patch + ".tar.gz"
 }

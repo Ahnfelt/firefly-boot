@@ -12,7 +12,7 @@ type JsEmitter(
 make(otherModules: List[Module], targetIsNode: Bool): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map { m =>
-            let moduleName = m.packagePair.first + ":" + m.packagePair.second + "/" + m.file.dropLast(3)
+            let moduleName = m.packagePair.group + ":" + m.packagePair.name + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
         jsImporter = JsImporter.make()
@@ -27,10 +27,10 @@ fail[T](at: Location, message: String): T {
 
 extend self: JsEmitter {
 
-    emitModule(packagePair: Pair[String, String], module: Module): String {
+    emitModule(packagePair: PackagePair, module: Module): String {
         let selfImport =
-            "import * as " + packagePair.first + "_" + packagePair.second + "_" + module.file.dropLast(3) + " " +
-            "from \"../../" + packagePair.first + "/" + packagePair.second + "/" + module.file.dropLast(3) + ".mjs\""
+            "import * as " + packagePair.group + "_" + packagePair.name + "_" + module.file.dropLast(3) + " " +
+            "from \"../../" + packagePair.group + "/" + packagePair.name + "/" + module.file.dropLast(3) + ".mjs\""
         let imports =
             module.imports.sortBy { i => Pair(i.package, i.file) }.map { self.emitImportDefinition(_) }
         let parts = [
@@ -70,8 +70,8 @@ extend self: JsEmitter {
     }
 
     emitImportDefinition(definition: DImport): String {
-        "import * as " + definition.package.first + "_" + definition.package.second + "_" + definition.file + " " +
-        "from \"../../" + definition.package.first + "/" + definition.package.second + "/" + definition.file + ".mjs\""
+        "import * as " + definition.package.group + "_" + definition.package.name + "_" + definition.file + " " +
+        "from \"../../" + definition.package.group + "/" + definition.package.name + "/" + definition.file + ".mjs\""
     }
 
     emitLetDefinition(definition: DLet, mutable: Bool, async: Bool): String {

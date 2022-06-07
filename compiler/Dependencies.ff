@@ -5,21 +5,21 @@ import Workspace
 
 type Dependencies(
     workspace: Workspace
-    mutable packages: Map[Pair[String, String], PackageInfo]
+    mutable packages: Map[PackagePair, PackageInfo]
     mutable packagePaths: Map[String, String]
-    mutable singleFilePackages: Set[Pair[String, String]]
+    mutable singleFilePackages: Set[PackagePair]
 )
 
 type ResolvedDependencies(
     packagePaths: Map[String, String]
-    singleFilePackages: Set[Pair[String, String]]
+    singleFilePackages: Set[PackagePair]
 )
 
 extend self: Dependencies {
 
     loadPackageInfo(
         fs: FileSystem
-        packagePair: Pair[String, String]
+        packagePair: PackagePair
         path: String
     ): PackageInfo {
         let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
@@ -62,7 +62,7 @@ extend self: Dependencies {
         // Remember to check for cycles
         let packageInfos = dependencies.map { dependency =>
             let path = self.fetchDependency(fs, dependency)
-            let packageString = dependency.packagePair.first + ":" + dependency.packagePair.second
+            let packageString = dependency.packagePair.group + ":" + dependency.packagePair.name
             self.packagePaths = self.packagePaths.add(packageString, path)
             let packageInfo = self.loadPackageInfo(fs, dependency.packagePair, path)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
@@ -79,7 +79,7 @@ extend self: Dependencies {
 process(fs: FileSystem, path: String): ResolvedDependencies {
     let workspace = Workspace.loadWorkspace(fs, path)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
-    let packageInfo = self.loadPackageInfo(fs, Pair("script", "script"), path)
+    let packageInfo = self.loadPackageInfo(fs, PackagePair("script", "script"), path)
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(fs, newDependencies)
     ResolvedDependencies(
@@ -88,15 +88,15 @@ process(fs: FileSystem, path: String): ResolvedDependencies {
     )
 }
 
-checkPackagePairs(dependencyPair : Pair[String, String], packagePair: Pair[String, String]): Unit {
+checkPackagePairs(dependencyPair : PackagePair, packagePair: PackagePair): Unit {
     if(
-        packagePair.first != dependencyPair.first ||
-        packagePair.second != dependencyPair.second
+        packagePair.group != dependencyPair.group ||
+        packagePair.name != dependencyPair.name
     ) {
         panic(
             "Dependency declaration and package declaration disagree on package name: " +
-            dependencyPair.first + ":" + dependencyPair.second + " vs. " +
-            packagePair.first + ":" + packagePair.second
+            dependencyPair.group + ":" + dependencyPair.name + " vs. " +
+            packagePair.group + ":" + packagePair.name
         )
     }
 }

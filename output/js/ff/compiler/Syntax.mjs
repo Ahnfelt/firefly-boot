@@ -99,6 +99,11 @@ export function Module(file_, packagePair_, imports_, types_, traits_, instances
 return {file_, packagePair_, imports_, types_, traits_, instances_, extends_, lets_, functions_};
 }
 
+// type PackagePair
+export function PackagePair(group_, name_) {
+return {group_, name_};
+}
+
 // type DPackage
 export function DPackage(at_, packagePair_, version_, targets_) {
 return {at_, packagePair_, version_, targets_};
@@ -341,6 +346,14 @@ export async function Location_show$(self_, $c) {
 return (((((("in " + self_.file_) + " ") + "at line ") + self_.line_) + ", column ") + self_.column_)
 }
 
+export function PackagePair_groupName(self_, delimiter_ = ":") {
+return ((self_.group_ + delimiter_) + self_.name_)
+}
+
+export async function PackagePair_groupName$(self_, delimiter_ = ":", $c) {
+return ((self_.group_ + delimiter_) + self_.name_)
+}
+
 export function Type_show(self_) {
 {
 const _1 = self_;
@@ -437,6 +450,39 @@ return
 }
 }
 
-
+export const ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair = {
+compare_(x_, y_) {
+{
+const _1 = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.group_, y_.group_);
+{
+if(_1.OrderingSame) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.name_, y_.name_)
+return
+}
+}
+{
+const o_ = _1;
+return o_
+return
+}
+}
+},
+async compare_$(x_, y_, $c) {
+{
+const _1 = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.group_, y_.group_);
+{
+if(_1.OrderingSame) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.name_, y_.name_)
+return
+}
+}
+{
+const o_ = _1;
+return o_
+return
+}
+}
+}
+};
 
 

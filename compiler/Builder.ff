@@ -9,7 +9,7 @@ import Dependencies
 build(
     system: NodeSystem,
     target : String
-    mainPackage : String
+    mainPackage : PackagePair
     mainModule : String
     resolvedDependencies: ResolvedDependencies
     tempPath : String

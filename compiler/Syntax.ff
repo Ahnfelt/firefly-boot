@@ -21,7 +21,7 @@ type PackageInfo(
 
 type Module(
     file: String
-    packagePair: Pair[String, String]
+    packagePair: PackagePair
     imports: List[DImport]
     types: List[DType]
     traits: List[DTrait]
@@ -31,15 +31,35 @@ type Module(
     functions: List[DFunction]
 )
 
+type PackagePair(
+    group: String
+    name: String
+)
+
+extend self: PackagePair {
+    groupName(delimiter : String = ":"): String {
+        self.group + delimiter + self.name
+    }
+}
+
+instance PackagePair: Order {
+    compare(x: PackagePair, y: PackagePair): Ordering {
+        Ordering.compare(x.group, y.group).{
+            | OrderingSame => Ordering.compare(x.name, y.name)
+            | o => o
+        }
+    }
+}
+
 type DPackage(
     at: Location
-    packagePair: Pair[String, String]
+    packagePair: PackagePair
     version: Version
     targets: TargetNames
 )
 type DDependency(
     at: Location
-    packagePair: Pair[String, String]
+    packagePair: PackagePair
     version: Version
     safety: Safety
     targets: TargetNames
@@ -51,7 +71,7 @@ type TargetNames(
 type DImport(
     at: Location,
     alias: String,
-    package: Pair[String, String],
+    package: PackagePair,
     directory: List[String],
     file: String
 )

@@ -63,7 +63,7 @@ main(system: NodeSystem): Unit {
         Builder.build(
             system = system
             target = target
-            mainPackage = "script:script"
+            mainPackage = PackagePair("script", "script")
             mainModule = mainFile
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
             tempPath = ".firefly/temporary"
@@ -82,7 +82,7 @@ main(system: NodeSystem): Unit {
                 packagePaths = resolvedDependencies.packagePaths.add("script:script", ".")
             )
             prepareFireflyDirectory(system.files())
-            if(detectBrowserMain(system.files(), Pair("script", "script"), mainFile)) {
+            if(detectBrowserMain(system.files(), PackagePair("script", "script"), mainFile)) {
                 buildScript(mainFile, "browser", fixedDependencies)
             }
             buildScript(mainFile, "node", fixedDependencies)
@@ -110,7 +110,7 @@ main(system: NodeSystem): Unit {
             Builder.build(
                 system = system
                 target = "node"
-                mainPackage = "ff:compiler"
+                mainPackage = PackagePair("ff", "compiler")
                 mainModule = "Main"
                 resolvedDependencies = ResolvedDependencies(
                     packagePaths = [
@@ -161,11 +161,11 @@ prepareFireflyDirectory(fs: FileSystem) {
     }
 }
 
-detectBrowserMain(fs: FileSystem, packagePair: Pair[String, String], mainFile: String): Bool {
+detectBrowserMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): Bool {
     let file = mainFile + ".ff"
     let code = fs.readText(file)
     let tokens = Tokenizer.tokenize(file, code)
-    let parser = Parser.make(Pair("script", "script"), file, tokens, False)
+    let parser = Parser.make(PackagePair("script", "script"), file, tokens, False)
     let module = parser.parseModuleWithPackageInfo().module
     module.functions.any { definition =>
         (definition.signature.name == "browserMain" || definition.signature.name == "main") &&

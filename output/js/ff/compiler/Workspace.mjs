@@ -152,7 +152,7 @@ return ff_compiler_Workspace.centralLocation_
 }
 
 export function tarGzName_(packagePair_, version_) {
-return (((((((((packagePair_.first_ + "_") + packagePair_.second_) + "_") + version_.major_) + "_") + version_.minor_) + "_") + version_.patch_) + ".tar.gz")
+return (((((((((packagePair_.group_ + "_") + packagePair_.name_) + "_") + version_.major_) + "_") + version_.minor_) + "_") + version_.patch_) + ".tar.gz")
 }
 
 export async function loadWorkspace_$(fs_, path_, $c) {
@@ -219,17 +219,17 @@ return ff_compiler_Workspace.centralLocation_
 }
 
 export async function tarGzName_$(packagePair_, version_, $c) {
-return (((((((((packagePair_.first_ + "_") + packagePair_.second_) + "_") + version_.major_) + "_") + version_.minor_) + "_") + version_.patch_) + ".tar.gz")
+return (((((((((packagePair_.group_ + "_") + packagePair_.name_) + "_") + version_.major_) + "_") + version_.minor_) + "_") + version_.patch_) + ".tar.gz")
 }
 
 export function Workspace_findPackageLocation(self_, packagePair_, version_) {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_find(self_.rules_, ((rule_) => {
-return ((rule_.packageGroup_ == packagePair_.first_) && ff_core_Option.Option_all(rule_.packageName_, ((_w1) => {
-return (_w1 == packagePair_.second_)
+return ((rule_.packageGroup_ == packagePair_.group_) && ff_core_Option.Option_all(rule_.packageName_, ((_w1) => {
+return (_w1 == packagePair_.name_)
 })))
 })), ((rule_) => {
 const prefix_ = ((rule_.packageName_ == ff_core_Option.None())
-? (packagePair_.second_ + "/")
+? (packagePair_.name_ + "/")
 : "");
 if(ff_core_String.String_contains(rule_.location_, ":")) {
 return ((rule_.location_ + prefix_) + ff_compiler_Workspace.tarGzName_(packagePair_, version_))
@@ -237,18 +237,18 @@ return ((rule_.location_ + prefix_) + ff_compiler_Workspace.tarGzName_(packagePa
 return (((self_.packageDirectory_ + "/") + rule_.location_) + prefix_)
 }
 })), (() => {
-return (((((self_.defaultLocation_ + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, version_))
+return (((((self_.defaultLocation_ + packagePair_.group_) + "/") + packagePair_.name_) + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, version_))
 }))
 }
 
 export async function Workspace_findPackageLocation$(self_, packagePair_, version_, $c) {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_find(self_.rules_, ((rule_) => {
-return ((rule_.packageGroup_ == packagePair_.first_) && ff_core_Option.Option_all(rule_.packageName_, ((_w1) => {
-return (_w1 == packagePair_.second_)
+return ((rule_.packageGroup_ == packagePair_.group_) && ff_core_Option.Option_all(rule_.packageName_, ((_w1) => {
+return (_w1 == packagePair_.name_)
 })))
 })), ((rule_) => {
 const prefix_ = ((rule_.packageName_ == ff_core_Option.None())
-? (packagePair_.second_ + "/")
+? (packagePair_.name_ + "/")
 : "");
 if(ff_core_String.String_contains(rule_.location_, ":")) {
 return ((rule_.location_ + prefix_) + ff_compiler_Workspace.tarGzName_(packagePair_, version_))
@@ -256,7 +256,7 @@ return ((rule_.location_ + prefix_) + ff_compiler_Workspace.tarGzName_(packagePa
 return (((self_.packageDirectory_ + "/") + rule_.location_) + prefix_)
 }
 })), (() => {
-return (((((self_.defaultLocation_ + packagePair_.first_) + "/") + packagePair_.second_) + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, version_))
+return (((((self_.defaultLocation_ + packagePair_.group_) + "/") + packagePair_.name_) + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, version_))
 }))
 }
 

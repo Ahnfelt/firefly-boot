@@ -13,7 +13,7 @@ type Compiler!(
     time: TimeSystem
     jsOutputPath: String
     packagePaths: Map[String, String]
-    singleFilePackages: Set[Pair[String, String]]
+    singleFilePackages: Set[PackagePair]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable inferredModules: Map[String, Module]
@@ -91,7 +91,7 @@ coreImports: List[DImport] =
         DImport(
             at = Location("<prelude>", 1, 1),
             alias = moduleName,
-            package = Pair("ff", "core"),
+            package = PackagePair("ff", "core"),
             directory = [],
             file = moduleName
         )
@@ -117,14 +117,11 @@ extend self: Compiler {
         }
     }
 
-    parse(packageName: String, moduleName: String): Module {
+    parse(packagePair: PackagePair, moduleName: String): Module {
+        let packageName = packagePair.groupName()
         self.parsedModules.get(packageName + ":" + moduleName).else:
         self.measure("Parse", packageName, moduleName):
 
-        let packagePair = do {
-            let array = packageName.split(':')
-            Pair(array.expect(0), array.expect(1))
-        }
         let packagePath = self.packagePaths.expect(packageName)
         let file = moduleName + ".ff"
         let code = self.files.readText(packagePath + "/" + file)
@@ -145,20 +142,22 @@ extend self: Compiler {
 
     imports(packageName: String, module: Module): List[Module] {
         module.imports.map { import =>
-            let newPackageName = import.package.first + ":" + import.package.second
+            let newPackagePair = import.package
+            let newPackageName = import.package.groupName()
             let newModuleName = import.directory.map { _ + "/" }.join("") + import.file
             if(!self.packagePaths.contains(newPackageName)) {
                 fail(import.at, "Missing dependency declaration for: " + newPackageName)
             }
-            self.parse(newPackageName, newModuleName)
+            self.parse(newPackagePair, newModuleName)
         }
     }
 
-    resolve(packageName: String, moduleName: String): Module {
+    resolve(packagePair: PackagePair, moduleName: String): Module {
+        let packageName = packagePair.groupName()
         self.resolvedModules.get(packageName + ":" + moduleName).else:
         self.measure("Resolve", packageName, moduleName):
 
-        let module = self.parse(packageName, moduleName)
+        let module = self.parse(packagePair, moduleName)
         let otherModules = self.imports(packageName, module)
         let result = Resolver.make().resolveModule(module, otherModules)
 
@@ -166,14 +165,14 @@ extend self: Compiler {
         result
     }
 
-    infer(packageName: String, moduleName: String): Module {
+    infer(packagePair: PackagePair, moduleName: String): Module {
+        let packageName = packagePair.groupName()
         self.inferredModules.get(packageName + ":" + moduleName).else:
         self.measure("Infer", packageName, moduleName):
 
-        let module = self.resolve(packageName, moduleName)
+        let module = self.resolve(packagePair, moduleName)
         let otherModules = self.imports(packageName, module).map { i =>
-            let newPackageName = i.packagePair.first + ":" + i.packagePair.second
-            self.resolve(newPackageName, FileSystem.prefixName(i.file))
+            self.resolve(i.packagePair, FileSystem.prefixName(i.file))
         }
         let inferredModule = Inference.make([module, ...otherModules]).inferModule(module, otherModules)
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
@@ -182,26 +181,21 @@ extend self: Compiler {
         result
     }
 
-    emit(packageName: String, moduleName: String): Unit {
+    emit(packagePair: PackagePair, moduleName: String): Unit {
+        let packageName = packagePair.groupName()
         if(self.emittedModules.contains(packageName + ":" + moduleName)) {} else:
         self.measure("Emit", packageName, moduleName):
         self.emittedModules = self.emittedModules.add(packageName + ":" + moduleName)
 
-        let module = self.infer(packageName, moduleName)
+        let module = self.infer(packagePair, moduleName)
         let otherModules = self.imports(packageName, module).map { i =>
-            let newPackageName = i.packagePair.first + ":" + i.packagePair.second
             let newModuleName = FileSystem.prefixName(i.file)
-            self.emit(newPackageName, newModuleName)
-            self.infer(newPackageName, newModuleName)
-        }
-
-        let packagePair = do {
-            let array = packageName.split(':')
-            Pair(array.expect(0), array.expect(1))
+            self.emit(i.packagePair, newModuleName)
+            self.infer(i.packagePair, newModuleName)
         }
 
         let js = JsEmitter.make([module, ...otherModules], self.targetIsNode).emitModule(packagePair, module)
-        let jsPath = self.jsOutputPath + "/" + packageName.replace(":", "/")
+        let jsPath = self.jsOutputPath + "/" + packagePair.groupName("/")
         let jsFile = jsPath + "/" + moduleName + ".mjs"
         self.files.createDirectories(jsPath)
         self.files.writeText(jsFile, js)
