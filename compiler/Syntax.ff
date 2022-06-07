@@ -181,7 +181,7 @@ type MatchGuard(
 )
 
 type Dictionary(
-    packageName: String
+    packagePair: PackagePair
     moduleName: String
     traitName: String
     typeName: String

@@ -94,7 +94,7 @@ return {variantName_, newtype_, loneVariant_, arguments_};
 
 export function make_(otherModules_, targetIsNode_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
-const moduleName_ = ((((m_.packagePair_.group_ + ":") + m_.packagePair_.name_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
+const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, false)
 }
@@ -333,7 +333,7 @@ return
 
 export async function make_$(otherModules_, targetIsNode_, $c) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
-const moduleName_ = ((((m_.packagePair_.group_ + ":") + m_.packagePair_.name_) + "/") + ff_core_String.String_dropLast(m_.file_, 3));
+const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, false)
 }
@@ -571,7 +571,7 @@ return
 }
 
 export function JsEmitter_emitModule(self_, packagePair_, module_) {
-const selfImport_ = ((((((((((((("import * as " + packagePair_.group_) + "_") + packagePair_.name_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.group_) + "/") + packagePair_.name_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
+const selfImport_ = ((((((((("import * as " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "_")) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.package_, i_.file_)
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ((_w1) => {
@@ -1358,7 +1358,7 @@ return
 
 export function JsEmitter_emitDictionary(self_, d_) {
 const m_ = ((d_.moduleName_ != "")
-? (((ff_core_String.String_replace(d_.packageName_, ":", "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + ".")
+? (((ff_compiler_Syntax.PackagePair_groupName(d_.packagePair_, "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + ".")
 : "");
 const c_ = (m_ + ff_compiler_JsEmitter.makeDictionaryName_(d_.traitName_, d_.typeName_));
 if(ff_core_List.List_isEmpty(d_.dictionaries_)) {
@@ -1865,7 +1865,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
 export async function JsEmitter_emitModule$(self_, packagePair_, module_, $c) {
-const selfImport_ = ((((((((((((("import * as " + packagePair_.group_) + "_") + packagePair_.name_) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + packagePair_.group_) + "/") + packagePair_.name_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
+const selfImport_ = ((((((((("import * as " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "_")) + "_") + ff_core_String.String_dropLast(module_.file_, 3)) + " ") + "from \"../../") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".mjs\"");
 const imports_ = ff_core_List.List_map(ff_core_List.List_sortBy(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.package_, i_.file_)
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ((_w1) => {
@@ -2652,7 +2652,7 @@ return
 
 export async function JsEmitter_emitDictionary$(self_, d_, $c) {
 const m_ = ((d_.moduleName_ != "")
-? (((ff_core_String.String_replace(d_.packageName_, ":", "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + ".")
+? (((ff_compiler_Syntax.PackagePair_groupName(d_.packagePair_, "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + ".")
 : "");
 const c_ = (m_ + ff_compiler_JsEmitter.makeDictionaryName_(d_.traitName_, d_.typeName_));
 if(ff_core_List.List_isEmpty(d_.dictionaries_)) {

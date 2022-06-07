@@ -24,7 +24,7 @@ instance InstanceKey: Order {
 type InstanceValue(
     generics: List[String],
     constraints: List[Constraint],
-    packageName: String,
+    packagePair: PackagePair,
     moduleName: String,
     traitName: String,
     typeArguments: List[Type]
@@ -40,7 +40,6 @@ make(modules: List[Module]): Unification {
         Map.empty()
         3 // To avoid collision with the parser and resolver
         modules.flatMap { module =>
-            let packageName = module.packagePair.group + ":" + module.packagePair.name
             let moduleName = module.file.dropLast(".ff".size())
             module.instances.map { definition =>
                 let typeName = definition.typeArguments.expectFirst().{
@@ -52,7 +51,7 @@ make(modules: List[Module]): Unification {
                     InstanceValue(
                         generics = definition.generics
                         constraints = definition.constraints
-                        packageName = packageName
+                        packagePair = module.packagePair
                         moduleName = moduleName
                         traitName = definition.traitName
                         typeArguments = definition.typeArguments

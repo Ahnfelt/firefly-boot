@@ -6,12 +6,12 @@ import Workspace
 type Dependencies(
     workspace: Workspace
     mutable packages: Map[PackagePair, PackageInfo]
-    mutable packagePaths: Map[String, String]
+    mutable packagePaths: Map[PackagePair, String]
     mutable singleFilePackages: Set[PackagePair]
 )
 
 type ResolvedDependencies(
-    packagePaths: Map[String, String]
+    packagePaths: Map[PackagePair, String]
     singleFilePackages: Set[PackagePair]
 )
 
@@ -62,8 +62,7 @@ extend self: Dependencies {
         // Remember to check for cycles
         let packageInfos = dependencies.map { dependency =>
             let path = self.fetchDependency(fs, dependency)
-            let packageString = dependency.packagePair.group + ":" + dependency.packagePair.name
-            self.packagePaths = self.packagePaths.add(packageString, path)
+            self.packagePaths = self.packagePaths.add(dependency.packagePair, path)
             let packageInfo = self.loadPackageInfo(fs, dependency.packagePair, path)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
             packageInfo
@@ -95,8 +94,7 @@ checkPackagePairs(dependencyPair : PackagePair, packagePair: PackagePair): Unit 
     ) {
         panic(
             "Dependency declaration and package declaration disagree on package name: " +
-            dependencyPair.group + ":" + dependencyPair.name + " vs. " +
-            packagePair.group + ":" + packagePair.name
+            dependencyPair.groupName() + " vs. " + packagePair.groupName()
         )
     }
 }

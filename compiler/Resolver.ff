@@ -67,7 +67,7 @@ extend self: Resolver {
     processDefinitions(module: Module, importAlias: Option[String]): Resolver {
         function entry(name: String, unqualified: Bool): List[Pair[String, String]] {
             let full =
-                module.packagePair.group + ":" + module.packagePair.name + "/" +
+                module.packagePair.groupName() + "/" +
                 module.file.dropLast(3) + "." + name
             importAlias.{
                 | None => [Pair(name, full), Pair(full, full)]

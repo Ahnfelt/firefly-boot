@@ -258,8 +258,8 @@ return {at_, term_, pattern_};
 }
 
 // type Dictionary
-export function Dictionary(packageName_, moduleName_, traitName_, typeName_, dictionaries_) {
-return {packageName_, moduleName_, traitName_, typeName_, dictionaries_};
+export function Dictionary(packagePair_, moduleName_, traitName_, typeName_, dictionaries_) {
+return {packagePair_, moduleName_, traitName_, typeName_, dictionaries_};
 }
 
 // type Signature

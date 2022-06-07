@@ -115,13 +115,13 @@ export async function fail_$(at_, message_, $c) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export function Compiler_measure(self_, phase_, packageName_, moduleName_, body_) {
+export function Compiler_measure(self_, phase_, packagePair_, moduleName_, body_) {
 const start_ = (ff_core_TimeSystem.TimeSystem_elapsed(self_.time_) - self_.phaseDurationDelta_);
 const result_ = body_();
 const stop_ = (ff_core_TimeSystem.TimeSystem_elapsed(self_.time_) - self_.phaseDurationDelta_);
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
-const text_ = ((((phase_ + " ") + packageName_) + "/") + moduleName_);
+const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
 self_.phaseDurations_ = ff_core_List.Link(ff_core_Pair.Pair(text_, duration_), self_.phaseDurations_);
 return result_
 }
@@ -143,8 +143,8 @@ return
 export function Compiler_parse(self_, packagePair_, moduleName_) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Compiler.Compiler_measure(self_, "Parse", packageName_, moduleName_, (() => {
-const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packageName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return ff_compiler_Compiler.Compiler_measure(self_, "Parse", packagePair_, moduleName_, (() => {
+const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const file_ = (moduleName_ + ".ff");
 const code_ = ff_core_FileSystem.FileSystem_readText(self_.files_, ((packagePath_ + "/") + file_));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
@@ -161,15 +161,14 @@ return result_
 }))
 }
 
-export function Compiler_imports(self_, packageName_, module_) {
+export function Compiler_imports(self_, module_) {
 return ff_core_List.List_map(module_.imports_, ((import_) => {
 const newPackagePair_ = import_.package_;
-const newPackageName_ = ff_compiler_Syntax.PackagePair_groupName(import_.package_, ":");
 const newModuleName_ = (ff_core_List.List_join(ff_core_List.List_map(import_.directory_, ((_w1) => {
 return (_w1 + "/")
 })), "") + import_.file_);
-if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackageName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
-ff_compiler_Compiler.fail_(import_.at_, ("Missing dependency declaration for: " + newPackageName_))
+if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
+ff_compiler_Compiler.fail_(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":")))
 };
 return ff_compiler_Compiler.Compiler_parse(self_, newPackagePair_, newModuleName_)
 }))
@@ -178,9 +177,9 @@ return ff_compiler_Compiler.Compiler_parse(self_, newPackagePair_, newModuleName
 export function Compiler_resolve(self_, packagePair_, moduleName_) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Compiler.Compiler_measure(self_, "Resolve", packageName_, moduleName_, (() => {
+return ff_compiler_Compiler.Compiler_measure(self_, "Resolve", packagePair_, moduleName_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_parse(self_, packagePair_, moduleName_);
-const otherModules_ = ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_);
+const otherModules_ = ff_compiler_Compiler.Compiler_imports(self_, module_);
 const result_ = ff_compiler_Resolver.Resolver_resolveModule(ff_compiler_Resolver.make_(), module_, otherModules_);
 self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
@@ -191,9 +190,9 @@ return result_
 export function Compiler_infer(self_, packagePair_, moduleName_) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.inferredModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Compiler.Compiler_measure(self_, "Infer", packageName_, moduleName_, (() => {
+return ff_compiler_Compiler.Compiler_measure(self_, "Infer", packagePair_, moduleName_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_resolve(self_, packagePair_, moduleName_);
-const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_), ((i_) => {
+const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, module_), ((i_) => {
 return ff_compiler_Compiler.Compiler_resolve(self_, i_.packagePair_, ff_core_FileSystem.prefixName_(i_.file_))
 }));
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_)), module_, otherModules_);
@@ -209,10 +208,10 @@ const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")
 if(ff_core_Set.Set_contains(self_.emittedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 
 } else {
-ff_compiler_Compiler.Compiler_measure(self_, "Emit", packageName_, moduleName_, (() => {
+ff_compiler_Compiler.Compiler_measure(self_, "Emit", packagePair_, moduleName_, (() => {
 self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const module_ = ff_compiler_Compiler.Compiler_infer(self_, packagePair_, moduleName_);
-const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, packageName_, module_), ((i_) => {
+const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, module_), ((i_) => {
 const newModuleName_ = ff_core_FileSystem.prefixName_(i_.file_);
 ff_compiler_Compiler.Compiler_emit(self_, i_.packagePair_, newModuleName_);
 return ff_compiler_Compiler.Compiler_infer(self_, i_.packagePair_, newModuleName_)
@@ -226,13 +225,13 @@ return ff_core_FileSystem.FileSystem_writeText(self_.files_, jsFile_, js_)
 }
 }
 
-export async function Compiler_measure$(self_, phase_, packageName_, moduleName_, body_, $c) {
+export async function Compiler_measure$(self_, phase_, packagePair_, moduleName_, body_, $c) {
 const start_ = (ff_core_TimeSystem.TimeSystem_elapsed(self_.time_) - self_.phaseDurationDelta_);
 const result_ = (await body_($c));
 const stop_ = (ff_core_TimeSystem.TimeSystem_elapsed(self_.time_) - self_.phaseDurationDelta_);
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
-const text_ = ((((phase_ + " ") + packageName_) + "/") + moduleName_);
+const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
 self_.phaseDurations_ = ff_core_List.Link(ff_core_Pair.Pair(text_, duration_), self_.phaseDurations_);
 return result_
 }
@@ -254,8 +253,8 @@ return
 export async function Compiler_parse$(self_, packagePair_, moduleName_, $c) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
-return (await ff_compiler_Compiler.Compiler_measure$(self_, "Parse", packageName_, moduleName_, (async ($c) => {
-const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packageName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return (await ff_compiler_Compiler.Compiler_measure$(self_, "Parse", packagePair_, moduleName_, (async ($c) => {
+const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const file_ = (moduleName_ + ".ff");
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(self_.files_, ((packagePath_ + "/") + file_), $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
@@ -272,15 +271,14 @@ return result_
 }), $c))
 }
 
-export async function Compiler_imports$(self_, packageName_, module_, $c) {
+export async function Compiler_imports$(self_, module_, $c) {
 return (await ff_core_List.List_map$(module_.imports_, (async (import_, $c) => {
 const newPackagePair_ = import_.package_;
-const newPackageName_ = ff_compiler_Syntax.PackagePair_groupName(import_.package_, ":");
 const newModuleName_ = (ff_core_List.List_join(ff_core_List.List_map(import_.directory_, ((_w1) => {
 return (_w1 + "/")
 })), "") + import_.file_);
-if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackageName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
-ff_compiler_Compiler.fail_(import_.at_, ("Missing dependency declaration for: " + newPackageName_))
+if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
+ff_compiler_Compiler.fail_(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":")))
 };
 return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackagePair_, newModuleName_, $c))
 }), $c))
@@ -289,9 +287,9 @@ return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackagePair_, newMo
 export async function Compiler_resolve$(self_, packagePair_, moduleName_, $c) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
-return (await ff_compiler_Compiler.Compiler_measure$(self_, "Resolve", packageName_, moduleName_, (async ($c) => {
+return (await ff_compiler_Compiler.Compiler_measure$(self_, "Resolve", packagePair_, moduleName_, (async ($c) => {
 const module_ = (await ff_compiler_Compiler.Compiler_parse$(self_, packagePair_, moduleName_, $c));
-const otherModules_ = (await ff_compiler_Compiler.Compiler_imports$(self_, packageName_, module_, $c));
+const otherModules_ = (await ff_compiler_Compiler.Compiler_imports$(self_, module_, $c));
 const result_ = ff_compiler_Resolver.Resolver_resolveModule(ff_compiler_Resolver.make_(), module_, otherModules_);
 self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
@@ -302,9 +300,9 @@ return result_
 export async function Compiler_infer$(self_, packagePair_, moduleName_, $c) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.inferredModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
-return (await ff_compiler_Compiler.Compiler_measure$(self_, "Infer", packageName_, moduleName_, (async ($c) => {
+return (await ff_compiler_Compiler.Compiler_measure$(self_, "Infer", packagePair_, moduleName_, (async ($c) => {
 const module_ = (await ff_compiler_Compiler.Compiler_resolve$(self_, packagePair_, moduleName_, $c));
-const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, packageName_, module_, $c)), (async (i_, $c) => {
+const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, module_, $c)), (async (i_, $c) => {
 return (await ff_compiler_Compiler.Compiler_resolve$(self_, i_.packagePair_, ff_core_FileSystem.prefixName_(i_.file_), $c))
 }), $c));
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_)), module_, otherModules_);
@@ -320,10 +318,10 @@ const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")
 if(ff_core_Set.Set_contains(self_.emittedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 
 } else {
-(await ff_compiler_Compiler.Compiler_measure$(self_, "Emit", packageName_, moduleName_, (async ($c) => {
+(await ff_compiler_Compiler.Compiler_measure$(self_, "Emit", packagePair_, moduleName_, (async ($c) => {
 self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const module_ = (await ff_compiler_Compiler.Compiler_infer$(self_, packagePair_, moduleName_, $c));
-const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, packageName_, module_, $c)), (async (i_, $c) => {
+const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, module_, $c)), (async (i_, $c) => {
 const newModuleName_ = ff_core_FileSystem.prefixName_(i_.file_);
 (await ff_compiler_Compiler.Compiler_emit$(self_, i_.packagePair_, newModuleName_, $c));
 return (await ff_compiler_Compiler.Compiler_infer$(self_, i_.packagePair_, newModuleName_, $c))

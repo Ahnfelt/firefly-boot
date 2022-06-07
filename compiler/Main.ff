@@ -55,10 +55,10 @@ main(system: NodeSystem): Unit {
         target: String,
         resolvedDependencies: ResolvedDependencies
     ) {
-        let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains("ff:core")) {
+        let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths.add("ff:core", fireflyPath + "/core")
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
         }
         Builder.build(
             system = system
@@ -79,7 +79,7 @@ main(system: NodeSystem): Unit {
         | RunCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add("script:script", ".")
+                packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
             )
             prepareFireflyDirectory(system.files())
             if(detectBrowserMain(system.files(), PackagePair("script", "script"), mainFile)) {
@@ -91,7 +91,7 @@ main(system: NodeSystem): Unit {
         | BuildCommand(mainFile, BrowserPlatform) =>
             let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add("script:script", ".")
+                packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
             )
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, "browser", fixedDependencies)
@@ -114,8 +114,8 @@ main(system: NodeSystem): Unit {
                 mainModule = "Main"
                 resolvedDependencies = ResolvedDependencies(
                     packagePaths = [
-                        Pair("ff:compiler", "compiler")
-                        Pair("ff:core", "core")
+                        Pair(PackagePair("ff","compiler"), "compiler")
+                        Pair(PackagePair("ff", "core"), "core")
                     ].toMap()
                     singleFilePackages = [].toSet()
                 )

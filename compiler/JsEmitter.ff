@@ -12,7 +12,7 @@ type JsEmitter(
 make(otherModules: List[Module], targetIsNode: Bool): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map { m =>
-            let moduleName = m.packagePair.group + ":" + m.packagePair.name + "/" + m.file.dropLast(3)
+            let moduleName = m.packagePair.groupName() + "/" + m.file.dropLast(3)
             Pair(moduleName, m)
         }.toMap()
         jsImporter = JsImporter.make()
@@ -29,8 +29,8 @@ extend self: JsEmitter {
 
     emitModule(packagePair: PackagePair, module: Module): String {
         let selfImport =
-            "import * as " + packagePair.group + "_" + packagePair.name + "_" + module.file.dropLast(3) + " " +
-            "from \"../../" + packagePair.group + "/" + packagePair.name + "/" + module.file.dropLast(3) + ".mjs\""
+            "import * as " + packagePair.groupName("_") + "_" + module.file.dropLast(3) + " " +
+            "from \"../../" + packagePair.groupName("/") + "/" + module.file.dropLast(3) + ".mjs\""
         let imports =
             module.imports.sortBy { i => Pair(i.package, i.file) }.map { self.emitImportDefinition(_) }
         let parts = [
@@ -329,7 +329,7 @@ extend self: JsEmitter {
 
     emitDictionary(d : Dictionary): String {
         let m = if(d.moduleName != "") {
-            d.packageName.replace(":", "_") + "_" + d.moduleName.replace("/", "_") + "."
+            d.packagePair.groupName("_") + "_" + d.moduleName.replace("/", "_") + "."
         } else { "" }
         let c = m + makeDictionaryName(d.traitName, d.typeName)
         if(d.dictionaries.isEmpty()) {

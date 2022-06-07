@@ -172,7 +172,7 @@ extend self: Dictionaries {
         let dictionaries = instance.constraints.map { c =>
             self.makeDictionary(instance.generics, firstType.generics, c)
         }
-        Dictionary(instance.packageName, instance.moduleName, constraint.name, firstType.name, dictionaries)
+        Dictionary(instance.packagePair, instance.moduleName, constraint.name, firstType.name, dictionaries)
     }
 
 }
@@ -188,7 +188,7 @@ constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, Instance
             InstanceValue(
                 generics = []
                 constraints = []
-                packageName = ""
+                packagePair = PackagePair("", "")
                 moduleName = ""
                 traitName = c.name
                 typeArguments = c.generics

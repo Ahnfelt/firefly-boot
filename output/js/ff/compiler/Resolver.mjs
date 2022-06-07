@@ -167,7 +167,7 @@ return resolver_
 
 export function Resolver_processDefinitions(self_, module_, importAlias_) {
 function entry_(name_, unqualified_) {
-const full_ = ((((((module_.packagePair_.group_ + ":") + module_.packagePair_.name_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
+const full_ = ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
 {
 const _1 = importAlias_;
 {
@@ -1120,7 +1120,7 @@ return resolver_
 
 export async function Resolver_processDefinitions$(self_, module_, importAlias_, $c) {
 function entry_(name_, unqualified_) {
-const full_ = ((((((module_.packagePair_.group_ + ":") + module_.packagePair_.name_) + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
+const full_ = ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_);
 {
 const _1 = importAlias_;
 {

@@ -34,7 +34,7 @@ fail[T](at: Location, message: String): T {
 processModule(module: Module, isCurrentModule: Bool): Environment {
 
     function full(module: Module, name: String): String {
-        module.packagePair.group + ":" + module.packagePair.name + "/" +
+        module.packagePair.groupName() + "/" +
         module.file.dropLast(3) + "." + name
     }
 

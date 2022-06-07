@@ -96,7 +96,7 @@ return {packagePaths_, singleFilePackages_};
 
 export function process_(fs_, path_) {
 const workspace_ = ff_compiler_Workspace.loadWorkspace_(fs_, path_);
-const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), path_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, newDependencies_);
@@ -105,13 +105,13 @@ return ff_compiler_Dependencies.ResolvedDependencies(self_.packagePaths_, self_.
 
 export function checkPackagePairs_(dependencyPair_, packagePair_) {
 if(((packagePair_.group_ != dependencyPair_.group_) || (packagePair_.name_ != dependencyPair_.name_))) {
-ff_core_Core.panic_(((((((("Dependency declaration and package declaration disagree on package name: " + dependencyPair_.group_) + ":") + dependencyPair_.name_) + " vs. ") + packagePair_.group_) + ":") + packagePair_.name_))
+ff_core_Core.panic_(((("Dependency declaration and package declaration disagree on package name: " + ff_compiler_Syntax.PackagePair_groupName(dependencyPair_, ":")) + " vs. ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
 }
 }
 
 export async function process_$(fs_, path_, $c) {
 const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, path_, $c));
-const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $c));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, newDependencies_, $c));
@@ -120,7 +120,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(self_.packagePaths_, self_.
 
 export async function checkPackagePairs_$(dependencyPair_, packagePair_, $c) {
 if(((packagePair_.group_ != dependencyPair_.group_) || (packagePair_.name_ != dependencyPair_.name_))) {
-ff_core_Core.panic_(((((((("Dependency declaration and package declaration disagree on package name: " + dependencyPair_.group_) + ":") + dependencyPair_.name_) + " vs. ") + packagePair_.group_) + ":") + packagePair_.name_))
+ff_core_Core.panic_(((("Dependency declaration and package declaration disagree on package name: " + ff_compiler_Syntax.PackagePair_groupName(dependencyPair_, ":")) + " vs. ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
 }
 }
 
@@ -160,8 +160,7 @@ return location_
 export function Dependencies_processDependencies(self_, fs_, dependencies_) {
 const packageInfos_ = ff_core_List.List_map(dependencies_, ((dependency_) => {
 const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, dependency_);
-const packageString_ = ((dependency_.packagePair_.group_ + ":") + dependency_.packagePair_.name_);
-self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageString_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, dependency_.packagePair_, path_);
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
@@ -210,8 +209,7 @@ return location_
 export async function Dependencies_processDependencies$(self_, fs_, dependencies_, $c) {
 const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (dependency_, $c) => {
 const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, dependency_, $c));
-const packageString_ = ((dependency_.packagePair_.group_ + ":") + dependency_.packagePair_.name_);
-self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageString_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, dependency_.packagePair_, path_, $c));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
