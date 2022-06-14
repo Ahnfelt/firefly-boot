@@ -1,0 +1,24 @@
+type BuildSystem! {}
+
+extend self: BuildSystem {
+
+    compile(fireflyPath: String, mainFile: String): Unit
+        target js async """
+            import * as compiler from '../compiler/Main.mjs'
+            return await compiler.buildViaBuildSystem_$({...self_, array_: [
+                self_,
+                fireflyPath_,
+                mainFile_
+            ]}, $c)
+        """
+
+    arguments(): List[String]
+        target node async "return ff_core_Array.Array_toList(self_.array_)"
+
+    tasks(): TaskSystem
+        target js async "return null"
+
+    files(): FileSystem
+        target node async "return null"
+
+}

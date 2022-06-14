@@ -1,0 +1,5 @@
+dependency ff:compiler:0.0.0
+
+main(system: BuildSystem) {
+    system.compile("../../..", "Main.ff")
+}

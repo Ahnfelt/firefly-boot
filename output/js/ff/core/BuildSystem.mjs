@@ -1,4 +1,4 @@
-
+import * as import$0 from '../compiler/Main.mjs';
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
@@ -74,7 +74,7 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Nothing
+// type BuildSystem
 
 
 
@@ -83,7 +83,44 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function BuildSystem_compile(self_, fireflyPath_, mainFile_) {
+throw new Error('Function BuildSystem_compile is missing on this target in sync context.');
+}
 
+export function BuildSystem_arguments(self_) {
+throw new Error('Function BuildSystem_arguments is missing on this target in sync context.');
+}
+
+export function BuildSystem_tasks(self_) {
+throw new Error('Function BuildSystem_tasks is missing on this target in sync context.');
+}
+
+export function BuildSystem_files(self_) {
+throw new Error('Function BuildSystem_files is missing on this target in sync context.');
+}
+
+export async function BuildSystem_compile$(self_, fireflyPath_, mainFile_, $c) {
+
+            const compiler = import$0
+            return await compiler.buildViaBuildSystem_$({...self_, array_: [
+                self_,
+                fireflyPath_,
+                mainFile_
+            ]}, $c)
+        
+}
+
+export async function BuildSystem_arguments$(self_, $c) {
+return ff_core_Array.Array_toList(self_.array_)
+}
+
+export async function BuildSystem_tasks$(self_, $c) {
+return null
+}
+
+export async function BuildSystem_files$(self_, $c) {
+return null
+}
 
 
 

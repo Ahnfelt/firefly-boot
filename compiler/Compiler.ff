@@ -55,6 +55,7 @@ coreImports: List[DImport] =
         "ArrayBuilder",
         "Bool",
         "BrowserSystem",
+        "BuildSystem",
         "Buffer",
         "Channel",
         "Char",

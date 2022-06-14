@@ -28,6 +28,8 @@ import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
 
+import * as ff_core_BuildSystem from "../../ff/core/BuildSystem.mjs"
+
 import * as ff_core_Channel from "../../ff/core/Channel.mjs"
 
 import * as ff_core_Char from "../../ff/core/Char.mjs"
@@ -200,7 +202,7 @@ break
 function buildScript_(mainFile_, target_, resolvedDependencies_) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
-: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+: ff_core_Map.Map_add(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_compiler_Syntax.PackagePair("ff", "compiler"), (fireflyPath_ + "/compiler"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 ff_compiler_Builder.build_(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), ".firefly/temporary", (".firefly/output/" + target_), false)
@@ -270,6 +272,20 @@ break
 }
 }
 }
+}
+
+export function buildViaBuildSystem_(system_, fireflyPath_, mainFile_) {
+const target_ = "node";
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), (mainFile_ + ".ff"));
+const fixedDependencies_ = (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
+}))(resolvedDependencies_);
+const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
+? resolvedDependencies_.packagePaths_
+: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+ff_compiler_Builder.build_(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
+}))(resolvedDependencies_), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
 
 export function deleteRunFile_(fs_) {
@@ -408,7 +424,7 @@ break
 async function buildScript_$(mainFile_, target_, resolvedDependencies_, $c) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
-: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+: ff_core_Map.Map_add(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_compiler_Syntax.PackagePair("ff", "compiler"), (fireflyPath_ + "/compiler"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 (await ff_compiler_Builder.build_$(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
@@ -478,6 +494,20 @@ break
 }
 }
 }
+}
+
+export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, $c) {
+const target_ = "node";
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (mainFile_ + ".ff"), $c));
+const fixedDependencies_ = (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
+}))(resolvedDependencies_);
+const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
+? resolvedDependencies_.packagePaths_
+: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+(await ff_compiler_Builder.build_$(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
+}))(resolvedDependencies_), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
 
 export async function deleteRunFile_$(fs_, $c) {
