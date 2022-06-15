@@ -181,7 +181,7 @@ extend self: Compiler {
         result
     }
 
-    emit(packagePair: PackagePair, moduleName: String): Unit {
+    emit(packagePair: PackagePair, moduleName: String, isMainModule: Bool): Unit {
         let packageName = packagePair.groupName()
         if(self.emittedModules.contains(packageName + ":" + moduleName)) {} else:
         self.measure("Emit", packagePair, moduleName):
@@ -190,11 +190,12 @@ extend self: Compiler {
         let module = self.infer(packagePair, moduleName)
         let otherModules = self.imports(module).map { i =>
             let newModuleName = FileSystem.prefixName(i.file)
-            self.emit(i.packagePair, newModuleName)
+            self.emit(i.packagePair, newModuleName, isMainModule = False)
             self.infer(i.packagePair, newModuleName)
         }
 
-        let js = JsEmitter.make([module, ...otherModules], self.targetIsNode).emitModule(packagePair, module)
+        let js = JsEmitter.make([module, ...otherModules], self.targetIsNode, isMainModule)
+            .emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packagePair.groupName("/")
         let jsFile = jsPath + "/" + moduleName + ".mjs"
         self.files.createDirectories(jsPath)

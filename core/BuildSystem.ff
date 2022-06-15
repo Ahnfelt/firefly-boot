@@ -5,11 +5,7 @@ extend self: BuildSystem {
     compile(fireflyPath: String, mainFile: String): Unit
         target js async """
             import * as compiler from '../compiler/Main.mjs'
-            return await compiler.buildViaBuildSystem_$({...self_, array_: [
-                self_,
-                fireflyPath_,
-                mainFile_
-            ]}, $c)
+            return await compiler.buildViaBuildSystem_$(self_, fireflyPath_, mainFile_, $c)
         """
 
     arguments(): List[String]

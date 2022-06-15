@@ -6,10 +6,11 @@ type JsEmitter(
     otherModules: Map[String, Module]
     jsImporter: JsImporter
     targetIsNode: Bool
+    isMainModule: Bool
     mutable tailCallUsed: Bool
 )
 
-make(otherModules: List[Module], targetIsNode: Bool): JsEmitter {
+make(otherModules: List[Module], targetIsNode: Bool, isMainModule: Bool): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map { m =>
             let moduleName = m.packagePair.groupName() + "/" + m.file.dropLast(3)
@@ -17,6 +18,7 @@ make(otherModules: List[Module], targetIsNode: Bool): JsEmitter {
         }.toMap()
         jsImporter = JsImporter.make()
         targetIsNode = targetIsNode
+        isMainModule = isMainModule
         tailCallUsed = False
     )
 }
@@ -41,7 +43,7 @@ extend self: JsEmitter {
             module.functions.map { "export " + self.emitFunctionDefinition(_, True) }
             module.extends.map { self.emitExtendsDefinition(_) }
             module.instances.map { self.emitInstanceDefinition(_) }
-            self.emitMain(module.functions)
+            if(self.isMainModule) {self.emitMain(module.functions)} else {[]}
         ]
         let jsImports = self.jsImporter.generateImports()
         [jsImports, ...parts].map { _.join("\n\n") }.join("\n\n") + "\n"

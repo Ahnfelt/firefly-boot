@@ -205,7 +205,7 @@ return result_
 }))
 }
 
-export function Compiler_emit(self_, packagePair_, moduleName_) {
+export function Compiler_emit(self_, packagePair_, moduleName_, isMainModule_) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 if(ff_core_Set.Set_contains(self_.emittedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 
@@ -215,10 +215,10 @@ self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ((packageName
 const module_ = ff_compiler_Compiler.Compiler_infer(self_, packagePair_, moduleName_);
 const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_imports(self_, module_), ((i_) => {
 const newModuleName_ = ff_core_FileSystem.prefixName_(i_.file_);
-ff_compiler_Compiler.Compiler_emit(self_, i_.packagePair_, newModuleName_);
+ff_compiler_Compiler.Compiler_emit(self_, i_.packagePair_, newModuleName_, false);
 return ff_compiler_Compiler.Compiler_infer(self_, i_.packagePair_, newModuleName_)
 }));
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_), self_.targetIsNode_), packagePair_, module_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_), self_.targetIsNode_, isMainModule_), packagePair_, module_);
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/"));
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs");
 ff_core_FileSystem.FileSystem_createDirectories(self_.files_, jsPath_);
@@ -315,7 +315,7 @@ return result_
 }), $c))
 }
 
-export async function Compiler_emit$(self_, packagePair_, moduleName_, $c) {
+export async function Compiler_emit$(self_, packagePair_, moduleName_, isMainModule_, $c) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 if(ff_core_Set.Set_contains(self_.emittedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
 
@@ -325,10 +325,10 @@ self_.emittedModules_ = ff_core_Set.Set_add(self_.emittedModules_, ((packageName
 const module_ = (await ff_compiler_Compiler.Compiler_infer$(self_, packagePair_, moduleName_, $c));
 const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.Compiler_imports$(self_, module_, $c)), (async (i_, $c) => {
 const newModuleName_ = ff_core_FileSystem.prefixName_(i_.file_);
-(await ff_compiler_Compiler.Compiler_emit$(self_, i_.packagePair_, newModuleName_, $c));
+(await ff_compiler_Compiler.Compiler_emit$(self_, i_.packagePair_, newModuleName_, false, $c));
 return (await ff_compiler_Compiler.Compiler_infer$(self_, i_.packagePair_, newModuleName_, $c))
 }), $c));
-const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_), self_.targetIsNode_), packagePair_, module_);
+const js_ = ff_compiler_JsEmitter.JsEmitter_emitModule(ff_compiler_JsEmitter.make_(ff_core_List.Link(module_, otherModules_), self_.targetIsNode_, isMainModule_), packagePair_, module_);
 const jsPath_ = ((self_.jsOutputPath_ + "/") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/"));
 const jsFile_ = (((jsPath_ + "/") + moduleName_) + ".mjs");
 (await ff_core_FileSystem.FileSystem_createDirectories$(self_.files_, jsPath_, $c));

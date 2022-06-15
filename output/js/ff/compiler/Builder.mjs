@@ -109,7 +109,7 @@ const jsPathFile_ = (tempPath_ + "/js");
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_);
 const success_ = ff_core_Core.do_((() => {
 const compiler_ = ff_compiler_Compiler.make_(targetIsNode_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), jsPathFile_, resolvedDependencies_);
-ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_);
+ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_, true);
 if(printMeasurements_) {
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
 };
@@ -149,7 +149,7 @@ const jsPathFile_ = (tempPath_ + "/js");
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $c));
 const success_ = (await ff_core_Core.do_$((async ($c) => {
 const compiler_ = (await ff_compiler_Compiler.make_$(targetIsNode_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), jsPathFile_, resolvedDependencies_, $c));
-(await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, $c));
+(await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, true, $c));
 if(printMeasurements_) {
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c))
 };

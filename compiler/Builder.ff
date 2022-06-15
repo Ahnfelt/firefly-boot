@@ -36,7 +36,7 @@ build(
 
     let success = do {
         let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, resolvedDependencies)
-        compiler.emit(mainPackage, mainModule)
+        compiler.emit(mainPackage, mainModule, isMainModule = True)
         if(printMeasurements) { compiler.printMeasurements() }
         True
     }

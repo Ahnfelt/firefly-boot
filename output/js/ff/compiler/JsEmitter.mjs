@@ -83,8 +83,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, jsImporter_, targetIsNode_, tailCallUsed_) {
-return {otherModules_, jsImporter_, targetIsNode_, tailCallUsed_};
+export function JsEmitter(otherModules_, jsImporter_, targetIsNode_, isMainModule_, tailCallUsed_) {
+return {otherModules_, jsImporter_, targetIsNode_, isMainModule_, tailCallUsed_};
 }
 
 // type ProcessedVariantCase
@@ -94,11 +94,11 @@ return {variantName_, newtype_, loneVariant_, arguments_};
 
 
 
-export function make_(otherModules_, targetIsNode_) {
+export function make_(otherModules_, targetIsNode_, isMainModule_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, isMainModule_, false)
 }
 
 export function fail_(at_, message_) {
@@ -333,11 +333,11 @@ return
 }
 }
 
-export async function make_$(otherModules_, targetIsNode_, $c) {
+export async function make_$(otherModules_, targetIsNode_, isMainModule_, $c) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, isMainModule_, false)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -595,7 +595,9 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
-})), ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_, module_.functions_), ff_core_List.Empty()))))))));
+})), ff_core_List.Link((self_.isMainModule_
+? ff_compiler_JsEmitter.JsEmitter_emitMain(self_, module_.functions_)
+: ff_core_List.Empty()), ff_core_List.Empty()))))))));
 const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_);
 return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
@@ -1889,7 +1891,9 @@ return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
-})), ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_emitMain(self_, module_.functions_), ff_core_List.Empty()))))))));
+})), ff_core_List.Link((self_.isMainModule_
+? ff_compiler_JsEmitter.JsEmitter_emitMain(self_, module_.functions_)
+: ff_core_List.Empty()), ff_core_List.Empty()))))))));
 const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_);
 return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")

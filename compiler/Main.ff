@@ -132,7 +132,7 @@ main(system: NodeSystem): Unit {
 
 buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String) {
     let target = "node"
-    let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
+    let resolvedDependencies = Dependencies.process(system.files(), mainFile)
     let fixedDependencies = resolvedDependencies.ResolvedDependencies(
         packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
     )
@@ -145,7 +145,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String) {
         system = system
         target = target
         mainPackage = PackagePair("script", "script")
-        mainModule = mainFile
+        mainModule = mainFile.dropLast(".ff".size())
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         tempPath = ".firefly/temporary"
         jsOutputPath = ".firefly/output/" + target
