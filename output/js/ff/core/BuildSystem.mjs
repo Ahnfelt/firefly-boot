@@ -1,4 +1,4 @@
-import * as import$0 from '../compiler/Main.mjs';
+import * as import$0 from '../../../../../../../../output/js/ff/compiler/Main.mjs';
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 

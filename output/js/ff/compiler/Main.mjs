@@ -202,7 +202,7 @@ break
 function buildScript_(mainFile_, target_, resolvedDependencies_) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
-: ff_core_Map.Map_add(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_compiler_Syntax.PackagePair("ff", "compiler"), (fireflyPath_ + "/compiler"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 ff_compiler_Builder.build_(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), ".firefly/temporary", (".firefly/output/" + target_), false)
@@ -424,7 +424,7 @@ break
 async function buildScript_$(mainFile_, target_, resolvedDependencies_, $c) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
-: ff_core_Map.Map_add(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_compiler_Syntax.PackagePair("ff", "compiler"), (fireflyPath_ + "/compiler"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
+: ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 (await ff_compiler_Builder.build_$(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), ".firefly/temporary", (".firefly/output/" + target_), false, $c))

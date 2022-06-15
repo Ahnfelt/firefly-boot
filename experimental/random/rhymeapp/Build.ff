@@ -1,7 +1,3 @@
-dependency ff:compiler:0.0.0
-
-import Main from ff:compiler
-
 main(system: BuildSystem) {
     Log.debug("Compiling...")
     system.compile("../../..", "Main.ff")
