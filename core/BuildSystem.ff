@@ -4,7 +4,7 @@ extend self: BuildSystem {
 
     compile(fireflyPath: String, mainFile: String): Unit
         target js async """
-            import * as compiler from '../../../../../../../../output/js/ff/compiler/Main.mjs'
+            import * as compiler from '../compiler/Main.mjs'
             return await compiler.buildViaBuildSystem_$(self_, fireflyPath_, mainFile_, $c)
         """
 

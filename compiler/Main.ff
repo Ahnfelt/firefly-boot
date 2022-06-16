@@ -58,7 +58,9 @@ main(system: NodeSystem): Unit {
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+            resolvedDependencies.packagePaths
+                .add(PackagePair("ff", "core"), fireflyPath + "/core")
+                .add(PackagePair("ff", "compiler"), fireflyPath + "/compiler") // TODO: Only when it's a BuildSystem main
         }
         Builder.build(
             system = system
