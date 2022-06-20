@@ -50,9 +50,6 @@ main(system: NodeSystem): Unit {
             }
     }
 
-    // TODO: This should only be Some(...) in build mode.
-    let compilerModulePath = Some(fireflyPath + "/../../../../../output/js/ff/compiler/Main.mjs")
-
     function buildScript(
         mainFile: String,
         target: String,
@@ -63,6 +60,8 @@ main(system: NodeSystem): Unit {
         } else {
             resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
         }
+        // TODO: This should only be Some(...) in build mode.
+        let compilerModulePath = Some(fireflyPath + "/../../../../../output/js/ff/compiler/Main.mjs")
         Builder.build(
             system = system
             target = target
