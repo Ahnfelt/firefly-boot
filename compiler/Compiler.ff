@@ -11,6 +11,7 @@ type Compiler!(
     targetIsNode: Bool
     files: FileSystem
     time: TimeSystem
+    compilerModulePath: Option[String]
     jsOutputPath: String
     packagePaths: Map[PackagePair, String]
     singleFilePackages: Set[PackagePair]
@@ -26,6 +27,7 @@ make(
     targetIsNode: Bool
     files: FileSystem
     time: TimeSystem
+    compilerModulePath: Option[String]
     jsOutputPath: String
     resolvedDependencies: ResolvedDependencies
 ): Compiler {
@@ -33,6 +35,7 @@ make(
         targetIsNode = targetIsNode,
         files = files
         time = time
+        compilerModulePath = compilerModulePath
         jsOutputPath = jsOutputPath
         packagePaths = resolvedDependencies.packagePaths
         singleFilePackages = resolvedDependencies.singleFilePackages
@@ -194,7 +197,7 @@ extend self: Compiler {
             self.infer(i.packagePair, newModuleName)
         }
 
-        let js = JsEmitter.make([module, ...otherModules], self.targetIsNode, isMainModule)
+        let js = JsEmitter.make([module, ...otherModules], self.targetIsNode, isMainModule, self.compilerModulePath)
             .emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packagePair.groupName("/")
         let jsFile = jsPath + "/" + moduleName + ".mjs"

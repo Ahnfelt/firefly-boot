@@ -58,9 +58,7 @@ main(system: NodeSystem): Unit {
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {
-            resolvedDependencies.packagePaths
-                .add(PackagePair("ff", "core"), fireflyPath + "/core")
-                .add(PackagePair("ff", "compiler"), fireflyPath + "/compiler") // TODO: Only when it's a BuildSystem main
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
         }
         Builder.build(
             system = system
@@ -68,6 +66,7 @@ main(system: NodeSystem): Unit {
             mainPackage = PackagePair("script", "script")
             mainModule = mainFile
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+            compilerModulePath = Some(fireflyPath + "/../../../../../output/js/ff/compiler/Main.mjs")
             tempPath = ".firefly/temporary"
             jsOutputPath = ".firefly/output/" + target
             printMeasurements = False
@@ -121,6 +120,7 @@ main(system: NodeSystem): Unit {
                     ].toMap()
                     singleFilePackages = [].toSet()
                 )
+                compilerModulePath = None
                 tempPath = "output/temporary"
                 jsOutputPath = "output/js"
                 printMeasurements = True
@@ -147,6 +147,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String) {
         mainPackage = PackagePair("script", "script")
         mainModule = mainFile.dropLast(".ff".size())
         resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+        compilerModulePath = None
         tempPath = ".firefly/temporary"
         jsOutputPath = ".firefly/output/" + target
         printMeasurements = False

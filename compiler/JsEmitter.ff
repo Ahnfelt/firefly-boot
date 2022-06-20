@@ -7,10 +7,16 @@ type JsEmitter(
     jsImporter: JsImporter
     targetIsNode: Bool
     isMainModule: Bool
+    compilerModulePath: Option[String]
     mutable tailCallUsed: Bool
 )
 
-make(otherModules: List[Module], targetIsNode: Bool, isMainModule: Bool): JsEmitter {
+make(
+    otherModules: List[Module]
+    targetIsNode: Bool
+    isMainModule: Bool
+    compilerModulePath: Option[String]
+): JsEmitter {
     JsEmitter(
         otherModules = otherModules.map { m =>
             let moduleName = m.packagePair.groupName() + "/" + m.file.dropLast(3)
@@ -19,6 +25,7 @@ make(otherModules: List[Module], targetIsNode: Bool, isMainModule: Bool): JsEmit
         jsImporter = JsImporter.make()
         targetIsNode = targetIsNode
         isMainModule = isMainModule
+        compilerModulePath = compilerModulePath
         tailCallUsed = False
     )
 }
@@ -33,8 +40,10 @@ extend self: JsEmitter {
         let selfImport =
             "import * as " + packagePair.groupName("_") + "_" + module.file.dropLast(3) + " " +
             "from \"../../" + packagePair.groupName("/") + "/" + module.file.dropLast(3) + ".mjs\""
-        let imports =
+        let imports = [
+            self.compilerModulePath.map { "import * as $firefly_compiler from '" + _ + "'" }.toList()
             module.imports.sortBy { i => Pair(i.package, i.file) }.map { self.emitImportDefinition(_) }
+        ].flatten()
         let parts = [
             if(imports.any { _ == selfImport }) { imports } else { [selfImport, ...imports] }
             module.types.map { self.emitTypeDefinition(_) }

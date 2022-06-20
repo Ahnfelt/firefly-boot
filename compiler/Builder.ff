@@ -12,6 +12,7 @@ build(
     mainPackage : PackagePair
     mainModule : String
     resolvedDependencies: ResolvedDependencies
+    compilerModulePath: Option[String]
     tempPath : String
     jsOutputPath : String
     printMeasurements : Bool
@@ -35,7 +36,8 @@ build(
     fs.createDirectories(jsPathFile)
 
     let success = do {
-        let compiler = Compiler.make(targetIsNode, fs, system.time(), jsPathFile, resolvedDependencies)
+        let compiler =
+            Compiler.make(targetIsNode, fs, system.time(), compilerModulePath, jsPathFile, resolvedDependencies)
         compiler.emit(mainPackage, mainModule, isMainModule = True)
         if(printMeasurements) { compiler.printMeasurements() }
         True

@@ -94,7 +94,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function build_(system_, target_, mainPackage_, mainModule_, resolvedDependencies_, tempPath_, jsOutputPath_, printMeasurements_) {
+export function build_(system_, target_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_) {
 const fs_ = ff_core_NodeSystem.NodeSystem_files(system_);
 const targetIsNode_ = ((target_ == "node")
 ? true
@@ -108,7 +108,7 @@ ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_);
 const jsPathFile_ = (tempPath_ + "/js");
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_);
 const success_ = ff_core_Core.do_((() => {
-const compiler_ = ff_compiler_Compiler.make_(targetIsNode_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), jsPathFile_, resolvedDependencies_);
+const compiler_ = ff_compiler_Compiler.make_(targetIsNode_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), compilerModulePath_, jsPathFile_, resolvedDependencies_);
 ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_, true);
 if(printMeasurements_) {
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
@@ -134,7 +134,7 @@ ff_core_FileSystem.FileSystem_delete(fs_, file_)
 ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
 }
 
-export async function build_$(system_, target_, mainPackage_, mainModule_, resolvedDependencies_, tempPath_, jsOutputPath_, printMeasurements_, $c) {
+export async function build_$(system_, target_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, $c) {
 const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
 const targetIsNode_ = ((target_ == "node")
 ? true
@@ -148,7 +148,7 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 const jsPathFile_ = (tempPath_ + "/js");
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $c));
 const success_ = (await ff_core_Core.do_$((async ($c) => {
-const compiler_ = (await ff_compiler_Compiler.make_$(targetIsNode_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), jsPathFile_, resolvedDependencies_, $c));
+const compiler_ = (await ff_compiler_Compiler.make_$(targetIsNode_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), compilerModulePath_, jsPathFile_, resolvedDependencies_, $c));
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, true, $c));
 if(printMeasurements_) {
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c))

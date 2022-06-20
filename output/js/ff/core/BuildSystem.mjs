@@ -1,4 +1,4 @@
-import * as import$0 from '../compiler/Main.mjs';
+
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
@@ -101,8 +101,7 @@ throw new Error('Function BuildSystem_files is missing on this target in sync co
 
 export async function BuildSystem_compile$(self_, fireflyPath_, mainFile_, $c) {
 
-            const compiler = import$0
-            return await compiler.buildViaBuildSystem_$(self_, fireflyPath_, mainFile_, $c)
+            return await $firefly_compiler.buildViaBuildSystem_$(self_, fireflyPath_, mainFile_, $c)
         
 }
 
