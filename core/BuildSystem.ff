@@ -2,9 +2,9 @@ type BuildSystem! {}
 
 extend self: BuildSystem {
 
-    compile(fireflyPath: String, mainFile: String): Unit
+    compile(mainFile: String): Unit
         target js async """
-            return await $firefly_compiler.buildViaBuildSystem_$(self_, fireflyPath_, mainFile_, $c)
+            return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, $c)
         """
 
     arguments(): List[String]

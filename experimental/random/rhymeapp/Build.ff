@@ -1,5 +1,5 @@
 main(system: BuildSystem) {
     Log.debug("Compiling...")
-    system.compile("../../..", "Main.ff")
+    system.compile("Main.ff")
     Log.debug("Done.")
 }

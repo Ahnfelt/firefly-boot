@@ -546,12 +546,14 @@ return
 
 
 
+import * as path from 'node:path'
 queueMicrotask(async () => {
 const controller = new AbortController()
 controller.promises = new Set()
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
+let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))
 try {
-await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : []}, controller)
+await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_}, controller)
 } finally {
 controller.abort()
 clearInterval(interval)

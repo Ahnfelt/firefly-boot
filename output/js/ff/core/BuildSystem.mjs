@@ -83,7 +83,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function BuildSystem_compile(self_, fireflyPath_, mainFile_) {
+export function BuildSystem_compile(self_, mainFile_) {
 throw new Error('Function BuildSystem_compile is missing on this target in sync context.');
 }
 
@@ -99,9 +99,9 @@ export function BuildSystem_files(self_) {
 throw new Error('Function BuildSystem_files is missing on this target in sync context.');
 }
 
-export async function BuildSystem_compile$(self_, fireflyPath_, mainFile_, $c) {
+export async function BuildSystem_compile$(self_, mainFile_, $c) {
 
-            return await $firefly_compiler.buildViaBuildSystem_$(self_, fireflyPath_, mainFile_, $c)
+            return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, $c)
         
 }
 
