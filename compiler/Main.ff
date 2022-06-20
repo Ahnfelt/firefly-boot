@@ -60,11 +60,12 @@ main(system: NodeSystem): Unit {
         } else {
             resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
         }
-        // TODO: This should only be Some(...) in build mode.
-        let compilerModulePath = Some(fireflyPath + "/../../../../../output/js/ff/compiler/Builder.mjs")
+        let compilerModulePath = if(target == "build") {
+            fireflyPath + "/../../../../../output/js/ff/compiler/Builder.mjs"
+        }
         Builder.build(
             system = system
-            target = target
+            target = if(target == "build") {"node"} else {target}
             mainPackage = PackagePair("script", "script")
             mainModule = mainFile
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
@@ -85,11 +86,16 @@ main(system: NodeSystem): Unit {
                 packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
             )
             prepareFireflyDirectory(system.files())
-            if(detectBrowserMain(system.files(), PackagePair("script", "script"), mainFile)) {
-                buildScript(mainFile, "browser", fixedDependencies)
+            if(detectBuildMain(system.files(), PackagePair("script", "script"), mainFile)) {
+                buildScript(mainFile, "build", fixedDependencies)
+                writeBuildRunFile(system.files(), mainFile, arguments)
+            } else {
+                if(detectBrowserMain(system.files(), PackagePair("script", "script"), mainFile)) {
+                    buildScript(mainFile, "browser", fixedDependencies)
+                }
+                buildScript(mainFile, "node", fixedDependencies)
+                writeNodeRunFile(system.files(), mainFile, arguments)
             }
-            buildScript(mainFile, "node", fixedDependencies)
-            writeNodeRunFile(system.files(), mainFile, arguments)
 
         | BuildCommand(mainFile, BrowserPlatform) =>
             let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
@@ -145,6 +151,13 @@ writeNodeRunFile(fs: FileSystem, mainFile: String, arguments: List[String]) {
     )
 }
 
+writeBuildRunFile(fs: FileSystem, mainFile: String, arguments: List[String]) {
+    fs.writeText(".firefly/output/run"
+        "node --experimental-fetch '.firefly/output/build/script/script/" + mainFile.replace("'", "''") + ".mjs'" +
+        arguments.map {" '" + _.replace("'", "''") + "'"}.join()
+    )
+}
+
 writeEsbuildRunFile(fs: FileSystem, fireflyPath: String, mainFile: String) {
     let esbuildPath = "" + fireflyPath + "/node_modules/.bin/esbuild"
     let mainPath = ".firefly/output/browser/script/script/" + mainFile + ".mjs"
@@ -175,6 +188,21 @@ detectBrowserMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): B
         (definition.signature.name == "browserMain" || definition.signature.name == "main") &&
         definition.signature.parameters.{ // This is a bit wrong, since BrowserSystem may be aliased or qualified
             | [Parameter p] {p.valueType | TConstructor(_, "BrowserSystem", _)} => True
+            | _ => False
+        }
+    }
+}
+
+detectBuildMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): Bool {
+    let file = mainFile + ".ff"
+    let code = fs.readText(file)
+    let tokens = Tokenizer.tokenize(file, code)
+    let parser = Parser.make(PackagePair("script", "script"), file, tokens, False)
+    let module = parser.parseModuleWithPackageInfo().module
+    module.functions.any { definition =>
+        (definition.signature.name == "buildMain" || definition.signature.name == "main") &&
+        definition.signature.parameters.{ // This is a bit wrong, since BrowserSystem may be aliased or qualified
+            | [Parameter p] {p.valueType | TConstructor(_, "BuildSystem", _)} => True
             | _ => False
         }
     }

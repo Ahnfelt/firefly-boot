@@ -203,8 +203,12 @@ function buildScript_(mainFile_, target_, resolvedDependencies_) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const compilerModulePath_ = ff_core_Option.Some((fireflyPath_ + "/../../../../../output/js/ff/compiler/Builder.mjs"));
-ff_compiler_Builder.build_(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
+const compilerModulePath_ = ((target_ == "build")
+? ff_core_Option.Some((fireflyPath_ + "/../../../../../output/js/ff/compiler/Builder.mjs"))
+: ff_core_Option.None());
+ff_compiler_Builder.build_(system_, ((target_ == "build")
+? "node"
+: target_), ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + target_), false)
 }
@@ -219,11 +223,16 @@ const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
+if(ff_compiler_Main.detectBuildMain_(ff_core_NodeSystem.NodeSystem_files(system_), ff_compiler_Syntax.PackagePair("script", "script"), mainFile_)) {
+buildScript_(mainFile_, "build", fixedDependencies_);
+ff_compiler_Main.writeBuildRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_, arguments_)
+} else {
 if(ff_compiler_Main.detectBrowserMain_(ff_core_NodeSystem.NodeSystem_files(system_), ff_compiler_Syntax.PackagePair("script", "script"), mainFile_)) {
 buildScript_(mainFile_, "browser", fixedDependencies_)
 };
 buildScript_(mainFile_, "node", fixedDependencies_);
 ff_compiler_Main.writeNodeRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_, arguments_)
+}
 break
 }
 }
@@ -287,6 +296,12 @@ return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
 })), "")))
 }
 
+export function writeBuildRunFile_(fs_, mainFile_, arguments_) {
+ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((("node --experimental-fetch '.firefly/output/build/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
+return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
+})), "")))
+}
+
 export function writeEsbuildRunFile_(fs_, fireflyPath_, mainFile_) {
 const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
 const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
@@ -318,6 +333,36 @@ if(_1.tail_.Empty) {
 const _guard1 = p_.valueType_;
 if(_guard1.TConstructor) {
 if(_guard1.name_ == "BrowserSystem") {
+return true
+return
+}
+}
+}
+}
+}
+{
+return false
+return
+}
+}))(definition_.signature_.parameters_))
+}))
+}
+
+export function detectBuildMain_(fs_, packagePair_, mainFile_) {
+const file_ = (mainFile_ + ".ff");
+const code_ = ff_core_FileSystem.FileSystem_readText(fs_, file_);
+const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
+const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false);
+const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
+return ff_core_List.List_any(module_.functions_, ((definition_) => {
+return (((definition_.signature_.name_ == "buildMain") || (definition_.signature_.name_ == "main")) && (((_1) => {
+{
+if(_1.Link) {
+const p_ = _1.head_;
+if(_1.tail_.Empty) {
+const _guard1 = p_.valueType_;
+if(_guard1.TConstructor) {
+if(_guard1.name_ == "BuildSystem") {
 return true
 return
 }
@@ -412,8 +457,12 @@ async function buildScript_$(mainFile_, target_, resolvedDependencies_, $c) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const compilerModulePath_ = ff_core_Option.Some((fireflyPath_ + "/../../../../../output/js/ff/compiler/Builder.mjs"));
-(await ff_compiler_Builder.build_$(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
+const compilerModulePath_ = ((target_ == "build")
+? ff_core_Option.Some((fireflyPath_ + "/../../../../../output/js/ff/compiler/Builder.mjs"))
+: ff_core_Option.None());
+(await ff_compiler_Builder.build_$(system_, ((target_ == "build")
+? "node"
+: target_), ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
@@ -428,11 +477,16 @@ const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
+if((await ff_compiler_Main.detectBuildMain_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, $c))) {
+(await buildScript_$(mainFile_, "build", fixedDependencies_, $c));
+(await ff_compiler_Main.writeBuildRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, arguments_, $c))
+} else {
 if((await ff_compiler_Main.detectBrowserMain_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), ff_compiler_Syntax.PackagePair("script", "script"), mainFile_, $c))) {
 (await buildScript_$(mainFile_, "browser", fixedDependencies_, $c))
 };
 (await buildScript_$(mainFile_, "node", fixedDependencies_, $c));
 (await ff_compiler_Main.writeNodeRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, arguments_, $c))
+}
 break
 }
 }
@@ -496,6 +550,12 @@ return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
 })), "")), $c))
 }
 
+export async function writeBuildRunFile_$(fs_, mainFile_, arguments_, $c) {
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((("node --experimental-fetch '.firefly/output/build/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
+return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
+})), "")), $c))
+}
+
 export async function writeEsbuildRunFile_$(fs_, fireflyPath_, mainFile_, $c) {
 const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
 const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
@@ -527,6 +587,36 @@ if(_1.tail_.Empty) {
 const _guard1 = p_.valueType_;
 if(_guard1.TConstructor) {
 if(_guard1.name_ == "BrowserSystem") {
+return true
+return
+}
+}
+}
+}
+}
+{
+return false
+return
+}
+}))(definition_.signature_.parameters_))
+}))
+}
+
+export async function detectBuildMain_$(fs_, packagePair_, mainFile_, $c) {
+const file_ = (mainFile_ + ".ff");
+const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, file_, $c));
+const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
+const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false);
+const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
+return ff_core_List.List_any(module_.functions_, ((definition_) => {
+return (((definition_.signature_.name_ == "buildMain") || (definition_.signature_.name_ == "main")) && (((_1) => {
+{
+if(_1.Link) {
+const p_ = _1.head_;
+if(_1.tail_.Empty) {
+const _guard1 = p_.valueType_;
+if(_guard1.TConstructor) {
+if(_guard1.name_ == "BuildSystem") {
 return true
 return
 }
