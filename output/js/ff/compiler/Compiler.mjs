@@ -146,7 +146,9 @@ export function Compiler_parse(self_, packagePair_, moduleName_) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_compiler_Compiler.Compiler_measure(self_, "Parse", packagePair_, moduleName_, (() => {
-const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
 const file_ = (moduleName_ + ".ff");
 const code_ = ff_core_FileSystem.FileSystem_readText(self_.files_, ((packagePath_ + "/") + file_));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
@@ -256,7 +258,9 @@ export async function Compiler_parse$(self_, packagePair_, moduleName_, $c) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Parse", packagePair_, moduleName_, (async ($c) => {
-const packagePath_ = ff_core_Map.Map_expect(self_.packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.packagePaths_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (() => {
+return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
+}));
 const file_ = (moduleName_ + ".ff");
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(self_.files_, ((packagePath_ + "/") + file_), $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);

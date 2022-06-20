@@ -126,7 +126,9 @@ extend self: Compiler {
         self.parsedModules.get(packageName + ":" + moduleName).else:
         self.measure("Parse", packagePair, moduleName):
 
-        let packagePath = self.packagePaths.expect(packagePair)
+        let packagePath = self.packagePaths.get(packagePair).else {
+            panic("Internal error - package path missing: " + packagePair.groupName())
+        }
         let file = moduleName + ".ff"
         let code = self.files.readText(packagePath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
