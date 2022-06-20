@@ -67,17 +67,17 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String) {
     let fixedDependencies = resolvedDependencies.ResolvedDependencies(
         packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
     )
-    let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
-        resolvedDependencies.packagePaths
+    let fixedPackagePaths = if(fixedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
+        fixedDependencies.packagePaths
     } else {
-        resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+        fixedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
     }
     build(
         system = system
         target = target
         mainPackage = PackagePair("script", "script")
         mainModule = mainFile.dropLast(".ff".size())
-        resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+        resolvedDependencies = fixedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = None
         tempPath = ".firefly/temporary"
         jsOutputPath = ".firefly/output/" + target
