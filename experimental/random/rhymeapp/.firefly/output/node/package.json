@@ -1,0 +1,6 @@
+{
+              "pkg": {
+                "scripts": "Main.min.js",
+                "targets": [ "node14-linux-amd64" ]
+              }
+            }

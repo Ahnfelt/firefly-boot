@@ -146,14 +146,14 @@ deleteRunFile(fs: FileSystem) {
 
 writeNodeRunFile(fs: FileSystem, mainFile: String, arguments: List[String]) {
     fs.writeText(".firefly/output/run"
-        "node --experimental-fetch '.firefly/output/node/script/script/" + mainFile.replace("'", "''") + ".mjs'" +
+        "node '.firefly/output/node/script/script/" + mainFile.replace("'", "''") + ".mjs'" +
         arguments.map {" '" + _.replace("'", "''") + "'"}.join()
     )
 }
 
 writeBuildRunFile(fs: FileSystem, mainFile: String, arguments: List[String]) {
     fs.writeText(".firefly/output/run"
-        "node --experimental-fetch '.firefly/output/build/script/script/" + mainFile.replace("'", "''") + ".mjs'" +
+        "node '.firefly/output/build/script/script/" + mainFile.replace("'", "''") + ".mjs'" +
         arguments.map {" '" + _.replace("'", "''") + "'"}.join()
     )
 }

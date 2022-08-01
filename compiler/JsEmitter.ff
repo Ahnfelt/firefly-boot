@@ -217,6 +217,8 @@ extend self: JsEmitter {
     }
 
     emitTerm(term: Term, async: Bool): String { term.{
+        | EString(at, value) {value.startsWith("\"\"\"")} =>
+            "`" + value.dropFirst(3).dropLast(3).replace("`", "\\`") + "`" // TODO: Fix escaping
         | EString(at, value) => value
         | EChar(at, value) => charLiteralToNumber(value)
         | EInt(at, value) => value

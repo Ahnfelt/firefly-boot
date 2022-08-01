@@ -1,4 +1,6 @@
+import * as import$1 from 'esbuild';
 
+import * as import$0 from 'pkg';
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
@@ -79,12 +81,39 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function createExecutable_(self_, packageFile_, outputPath_, targets_) {
+throw new Error('Function createExecutable is missing on this target in sync context.');
+}
 
+export async function createExecutable_$(self_, packageFile_, outputPath_, targets_, $c) {
 
-
+        const pkg = import$0
+        return await pkg.exec([
+            packageFile_,
+            '--out-path', outputPath_,
+            '--target', ff_core_List.List_toArray(targets_).join(',')
+        ])
+    
+}
 
 export function BuildSystem_compile(self_, mainFile_) {
 throw new Error('Function BuildSystem_compile is missing on this target in sync context.');
+}
+
+export function BuildSystem_bundle(self_, mainJsFile_ = ".firefly/output/node/script/script/Main.mjs", outputPath_ = ".firefly/output/node/Main.min.js", minify_ = true) {
+throw new Error('Function BuildSystem_bundle is missing on this target in sync context.');
+}
+
+export function BuildSystem_executable(self_, mainJsFile_ = ".firefly/output/node/Main.min.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_List.Empty()) {
+const json_ = `{
+              "pkg": {
+                "scripts": "Main.min.js",
+                "targets": [ "node14-linux-amd64" ]
+              }
+            }`;
+const packageFile_ = ".firefly/output/node/package.json";
+ff_core_FileSystem.FileSystem_writeText(ff_core_BuildSystem.BuildSystem_files(self_), packageFile_, json_);
+ff_core_BuildSystem.createExecutable_(self_, packageFile_, outputPath_, targets_)
 }
 
 export function BuildSystem_arguments(self_) {
@@ -103,6 +132,35 @@ export async function BuildSystem_compile$(self_, mainFile_, $c) {
 
             return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, $c)
         
+}
+
+export async function BuildSystem_bundle$(self_, mainJsFile_ = ".firefly/output/node/script/script/Main.mjs", outputPath_ = ".firefly/output/node/Main.min.js", minify_ = true, $c) {
+
+            const esbuild = import$1
+            // TODO: assets
+            return await esbuild.build({
+                entryPoints: [mainJsFile_],
+                bundle: true,
+                minify: minify_,
+                sourcemap: true,
+                platform: 'node',
+                target: 'es6',
+                external: ['../../../node_modules/*'], // TODO
+                outfile: outputPath_
+            })
+        
+}
+
+export async function BuildSystem_executable$(self_, mainJsFile_ = ".firefly/output/node/Main.min.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_List.Empty(), $c) {
+const json_ = `{
+              "pkg": {
+                "scripts": "Main.min.js",
+                "targets": [ "node14-linux-amd64" ]
+              }
+            }`;
+const packageFile_ = ".firefly/output/node/package.json";
+(await ff_core_FileSystem.FileSystem_writeText$((await ff_core_BuildSystem.BuildSystem_files$(self_, $c)), packageFile_, json_, $c));
+(await ff_core_BuildSystem.createExecutable_$(self_, packageFile_, outputPath_, targets_, $c))
 }
 
 export async function BuildSystem_arguments$(self_, $c) {

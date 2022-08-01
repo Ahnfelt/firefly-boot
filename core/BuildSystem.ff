@@ -7,6 +7,45 @@ extend self: BuildSystem {
             return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, $c)
         """
 
+    bundle(
+        mainJsFile: String = ".firefly/output/node/script/script/Main.mjs",
+        outputPath: String = ".firefly/output/node/Main.min.js",
+        minify: Bool = True
+    ): Unit
+        target js async """
+            import * as esbuild from 'esbuild'
+            // TODO: assets
+            return await esbuild.build({
+                entryPoints: [mainJsFile_],
+                bundle: true,
+                minify: minify_,
+                sourcemap: true,
+                platform: 'node',
+                target: 'es6',
+                external: ['../../../node_modules/*'], // TODO
+                outfile: outputPath_
+            })
+        """
+
+    executable(
+        mainJsFile: String = ".firefly/output/node/Main.min.js",
+        outputPath: String = ".firefly/output",
+        targets: List[String] = ["host"],
+        assets: List[String] = []
+    ): Unit
+        target js {
+            let json = """{
+              "pkg": {
+                "scripts": "Main.min.js",
+                "targets": [ "node14-linux-amd64" ],
+                "outputPath": "bin"
+              }
+            }"""
+            let packageFile = ".firefly/output/node/package.json"
+            self.files().writeText(packageFile, json)
+            createExecutable(self, packageFile, outputPath, targets)
+        }
+
     arguments(): List[String]
         target node async "return ff_core_Array.Array_toList(self_.array_)"
 
@@ -17,3 +56,18 @@ extend self: BuildSystem {
         target node async "return null"
 
 }
+
+createExecutable(
+    self: BuildSystem,
+    packageFile: String,
+    outputPath: String,
+    targets: List[String]
+): Unit
+    target js async """
+        import * as pkg from 'pkg'
+        return await pkg.exec([
+            packageFile_,
+            '--out-path', outputPath_,
+            '--target', ff_core_List.List_toArray(targets_).join(',')
+        ])
+    """

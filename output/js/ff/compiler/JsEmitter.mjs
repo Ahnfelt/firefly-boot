@@ -886,6 +886,17 @@ const _1 = term_;
 if(_1.EString) {
 const at_ = _1.at_;
 const value_ = _1.value_;
+const _guard1 = ff_core_String.String_startsWith(value_, "\"\"\"", 0);
+if(_guard1) {
+return (("`" + ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(value_, 3), 3), "`", "\\`")) + "`")
+return
+}
+}
+}
+{
+if(_1.EString) {
+const at_ = _1.at_;
+const value_ = _1.value_;
 return value_
 return
 }
@@ -2180,6 +2191,17 @@ return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") 
 export async function JsEmitter_emitTerm$(self_, term_, async_, $c) {
 {
 const _1 = term_;
+{
+if(_1.EString) {
+const at_ = _1.at_;
+const value_ = _1.value_;
+const _guard1 = ff_core_String.String_startsWith(value_, "\"\"\"", 0);
+if(_guard1) {
+return (("`" + ff_core_String.String_replace(ff_core_String.String_dropLast(ff_core_String.String_dropFirst(value_, 3), 3), "`", "\\`")) + "`")
+return
+}
+}
+}
 {
 if(_1.EString) {
 const at_ = _1.at_;

@@ -291,13 +291,13 @@ ff_core_FileSystem.FileSystem_delete(fs_, ".firefly/output/run")
 }
 
 export function writeNodeRunFile_(fs_, mainFile_, arguments_) {
-ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((("node --experimental-fetch '.firefly/output/node/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
+ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((("node '.firefly/output/node/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
 return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
 })), "")))
 }
 
 export function writeBuildRunFile_(fs_, mainFile_, arguments_) {
-ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((("node --experimental-fetch '.firefly/output/build/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
+ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((("node '.firefly/output/build/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
 return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
 })), "")))
 }
@@ -545,13 +545,13 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output/run", $c))
 }
 
 export async function writeNodeRunFile_$(fs_, mainFile_, arguments_, $c) {
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((("node --experimental-fetch '.firefly/output/node/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((("node '.firefly/output/node/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
 return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
 })), "")), $c))
 }
 
 export async function writeBuildRunFile_$(fs_, mainFile_, arguments_, $c) {
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((("node --experimental-fetch '.firefly/output/build/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((("node '.firefly/output/build/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
 return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
 })), "")), $c))
 }
