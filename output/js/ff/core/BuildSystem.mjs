@@ -106,10 +106,25 @@ throw new Error('Function BuildSystem_bundle is missing on this target in sync c
 
 export function BuildSystem_executable(self_, mainJsFile_ = ".firefly/output/node/Main.min.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_List.Empty()) {
 const json_ = `{
-              "pkg": {
-                "scripts": "Main.min.js",
-                "targets": [ "node14-linux-amd64" ]
-              }
+                "name": "main",
+                "bin": {
+                    "firefly-main": "Main.min.js"
+                },
+                "devDependencies": {
+                    "pkg": "^5.7.0"
+                },
+                "pkg": {
+                    "scripts": "Main.min.js",
+                    "outputPath": "bin",
+                    "assets": [
+                        "/Users/ahnfelt/Downloads/firefly-boot/node_modules/pkg/**"
+                    ],
+                    "targets": [
+                        "node18-linux-x64",
+                        "node18-macos-x64",
+                        "node18-win-x64"
+                    ]
+                }
             }`;
 const packageFile_ = ".firefly/output/node/package.json";
 ff_core_FileSystem.FileSystem_writeText(ff_core_BuildSystem.BuildSystem_files(self_), packageFile_, json_);
@@ -153,10 +168,25 @@ export async function BuildSystem_bundle$(self_, mainJsFile_ = ".firefly/output/
 
 export async function BuildSystem_executable$(self_, mainJsFile_ = ".firefly/output/node/Main.min.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_List.Empty(), $c) {
 const json_ = `{
-              "pkg": {
-                "scripts": "Main.min.js",
-                "targets": [ "node14-linux-amd64" ]
-              }
+                "name": "main",
+                "bin": {
+                    "firefly-main": "Main.min.js"
+                },
+                "devDependencies": {
+                    "pkg": "^5.7.0"
+                },
+                "pkg": {
+                    "scripts": "Main.min.js",
+                    "outputPath": "bin",
+                    "assets": [
+                        "/Users/ahnfelt/Downloads/firefly-boot/node_modules/pkg/**"
+                    ],
+                    "targets": [
+                        "node18-linux-x64",
+                        "node18-macos-x64",
+                        "node18-win-x64"
+                    ]
+                }
             }`;
 const packageFile_ = ".firefly/output/node/package.json";
 (await ff_core_FileSystem.FileSystem_writeText$((await ff_core_BuildSystem.BuildSystem_files$(self_, $c)), packageFile_, json_, $c));

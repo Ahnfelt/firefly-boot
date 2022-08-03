@@ -1,3 +1,5 @@
+import BuildSystem from ff:core
+
 main(system: BuildSystem) {
     Log.debug("Compiling...")
     system.compile("Main.ff")
