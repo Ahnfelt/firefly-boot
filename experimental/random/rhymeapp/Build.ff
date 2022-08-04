@@ -2,7 +2,8 @@ import BuildSystem from ff:core
 
 main(system: BuildSystem) {
     Log.debug("Compiling...")
-    system.compile("Main.ff")
+    system.compile("Main.ff", "browser")
+    system.compile("Main.ff", "node")
     system.bundle()
     system.executable()
     Log.debug("Done.")

@@ -18,8 +18,6 @@ import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
 
-import * as ff_core_BuildSystem from "../../ff/core/BuildSystem.mjs"
-
 import * as ff_core_Channel from "../../ff/core/Channel.mjs"
 
 import * as ff_core_Char from "../../ff/core/Char.mjs"
@@ -620,7 +618,11 @@ return (_w1.signature_.name_ == "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("import * as path from 'node:path'", ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))", ff_core_List.Link("try {", ff_core_List.Link((("await " + mainName_) + "_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_}, controller)"), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))))), "\n"), ff_core_List.Empty())
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link((self_.targetIsNode_
+? "import * as path from 'node:path'"
+: ""), ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link((self_.targetIsNode_
+? "let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))"
+: "let fireflyPath_ = '.'"), ff_core_List.Link("try {", ff_core_List.Link((("await " + mainName_) + "_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_}, controller)"), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))))), "\n"), ff_core_List.Empty())
 })), (() => {
 return ff_core_List.Empty()
 }))
@@ -1929,7 +1931,11 @@ return (_w1.signature_.name_ == "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("import * as path from 'node:path'", ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))", ff_core_List.Link("try {", ff_core_List.Link((("await " + mainName_) + "_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_}, controller)"), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))))), "\n"), ff_core_List.Empty())
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link((self_.targetIsNode_
+? "import * as path from 'node:path'"
+: ""), ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link((self_.targetIsNode_
+? "let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))"
+: "let fireflyPath_ = '.'"), ff_core_List.Link("try {", ff_core_List.Link((("await " + mainName_) + "_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_}, controller)"), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))))), "\n"), ff_core_List.Empty())
 })), (() => {
 return ff_core_List.Empty()
 }))

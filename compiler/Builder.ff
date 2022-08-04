@@ -61,8 +61,7 @@ deleteDirectory(fs: FileSystem, outputFile: String): Unit {
     fs.delete(outputFile)
 }
 
-buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String) {
-    let target = "node"
+buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, target: String) {
     let resolvedDependencies = Dependencies.process(system.files(), mainFile)
     let fixedDependencies = resolvedDependencies.ResolvedDependencies(
         packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")

@@ -26,8 +26,6 @@ import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
 
-import * as ff_core_BuildSystem from "../../ff/core/BuildSystem.mjs"
-
 import * as ff_core_Channel from "../../ff/core/Channel.mjs"
 
 import * as ff_core_Char from "../../ff/core/Char.mjs"
@@ -134,8 +132,7 @@ ff_core_FileSystem.FileSystem_delete(fs_, file_)
 ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
 }
 
-export function buildViaBuildSystem_(system_, fireflyPath_, mainFile_) {
-const target_ = "node";
+export function buildViaBuildSystem_(system_, fireflyPath_, mainFile_, target_) {
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_);
 const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
@@ -188,8 +185,7 @@ if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $c))) {
 (await ff_core_FileSystem.FileSystem_delete$(fs_, outputFile_, $c))
 }
 
-export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, $c) {
-const target_ = "node";
+export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, target_, $c) {
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, $c));
 const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)

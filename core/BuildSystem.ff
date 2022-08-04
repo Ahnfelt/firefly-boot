@@ -2,9 +2,9 @@ type BuildSystem! {}
 
 extend self: BuildSystem {
 
-    compile(mainFile: String): Unit
+    compile(mainFile: String, target: String): Unit
         target js async """
-            return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, $c)
+            return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, target_, $c)
         """
 
     bundle(
@@ -45,9 +45,6 @@ extend self: BuildSystem {
                 "pkg": {
                     "scripts": "Main.min.js",
                     "outputPath": "bin",
-                    "assets": [
-                        "/Users/ahnfelt/Downloads/firefly-boot/node_modules/pkg/**"
-                    ],
                     "targets": [
                         "node18-linux-x64",
                         "node18-macos-x64",
