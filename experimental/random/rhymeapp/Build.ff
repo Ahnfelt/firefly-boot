@@ -5,6 +5,9 @@ main(system: BuildSystem) {
     system.compile("Main.ff", "browser")
     system.compile("Main.ff", "node")
     system.bundle()
-    system.executable()
+    system.executable(assets = [
+        "../../../index.html"
+        "../browser/**/*"
+    ])
     Log.debug("Done.")
 }

@@ -23,11 +23,21 @@ browserMain(system: BrowserSystem): Unit {
 nodeMain(system: NodeSystem): Unit {
     HttpServer.listen(system, "localhost", 8080) { request, response =>
         if(request.path() == "/") {
+            let path = if(system.files().isDirectory("/snapshot")) {
+                "/snapshot/rhymeapp/index.html"
+            } else {
+                "index.html"
+            }
             response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
-            response.writeText(system.files().readText("index.html"))
+            response.writeText(system.files().readText(path))
         } elseIf {request.path().startsWith("/.firefly/output/browser/") && !request.path().contains("..")} {
+            let path = if(system.files().isDirectory("/snapshot")) {
+                "/snapshot/rhymeapp/" + request.path().dropFirst()
+            } else {
+                request.path().dropFirst()
+            }
             response.setHeader("Content-Type", ["text/javascript"])
-            response.writeText(system.files().readText(request.path().dropFirst()))
+            response.writeText(system.files().readText(path))
         } elseIf {request.path() == "/rhyme"} {
             let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + request.readText())
             let json = system.js().parseJson(result.readText())

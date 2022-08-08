@@ -45,6 +45,9 @@ extend self: BuildSystem {
                 "pkg": {
                     "scripts": "Main.min.js",
                     "outputPath": "bin",
+                    "assets": [""" +
+                        assets.map { "\"" + _.replace("\\", "\\\\").replace("\"", "\\\"") + "\"" }.join(", ") +
+                    """],
                     "targets": [
                         "node18-linux-x64",
                         "node18-macos-x64",
@@ -78,6 +81,7 @@ createExecutable(
         import * as pkg from 'pkg'
         return await pkg.exec([
             packageFile_,
+            '--debug',
             '--out-path', outputPath_,
             '--target', ff_core_List.List_toArray(targets_).join(',')
         ])
