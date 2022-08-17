@@ -315,6 +315,17 @@ extend self[T: Order]: List[T] {
         self.foldLeft(Set.empty[T]()) { set, value => set.add(value) }
     }
 
+    distinct(): List[T] {
+        mutable seen = [].toSet()
+        self.filter {
+            | item {!seen.contains(item)} =>
+                seen = seen.add(item)
+                True
+            | _ =>
+                False
+        }
+    }
+
 }
 
 extend self[T]: List[List[T]] {

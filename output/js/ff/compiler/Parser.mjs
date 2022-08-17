@@ -12,6 +12,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
+import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"

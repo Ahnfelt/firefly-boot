@@ -1,0 +1,41 @@
+type AssetSystem!(
+    files: Map[String, Stream[Buffer]]
+)
+
+extend self: AssetSystem {
+
+    addAssets(path: String, assets: AssetSystem): AssetSystem {
+        let prefix = if(path.endsWith("/")) {path.dropLast(1)} else {path}
+        AssetSystem(
+            self.files.addAll(
+                assets.files.map {| Pair(p, stream) =>
+                     Pair(prefix + p, stream)
+                }
+            )
+        )
+    }
+
+    list(path: String): List[String] {
+        let prefix = if(path.endsWith("/")) {path} else {path + "/"}
+        self.files.pairs().collect {
+            | Pair(p, _) {p.startsWith(prefix)} => Some(p.dropFirst(prefix.size()).takeWhile {_ != '/'})
+            | _ => None
+        }.distinct()
+    }
+
+    exists(path: String): Bool {
+        let prefix = if(path.endsWith("/")) {path} else {path + "/"}
+        self.files.contains(path) || self.files.pairs().any {_.first.startsWith(prefix)}
+    }
+
+    readStream(file: String): Stream[Buffer] {
+        self.files.get(file).else {
+            panic("Asset not found for readStream: " + file)
+        }
+    }
+
+    readText(file: String): String {
+        self.readStream(file).toString()
+    }
+
+}

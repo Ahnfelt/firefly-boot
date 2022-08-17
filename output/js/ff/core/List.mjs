@@ -4,6 +4,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
 
+import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -2121,9 +2123,47 @@ return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
 }))
 }
 
+export function List_distinct(self_, ff_core_Ordering_Order$T) {
+let seen_ = ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering_Order$T);
+return ff_core_List.List_filter(self_, ((_1) => {
+{
+const item_ = _1;
+const _guard1 = (!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T));
+if(_guard1) {
+seen_ = ff_core_Set.Set_add(seen_, item_, ff_core_Ordering_Order$T);
+return true
+return
+}
+}
+{
+return false
+return
+}
+}))
+}
+
 export async function List_toSet$(self_, ff_core_Ordering_Order$T, $c) {
 return ff_core_List.List_foldLeft(self_, ff_core_Set.empty_(), ((set_, value_) => {
 return ff_core_Set.Set_add(set_, value_, ff_core_Ordering_Order$T)
+}))
+}
+
+export async function List_distinct$(self_, ff_core_Ordering_Order$T, $c) {
+let seen_ = ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering_Order$T);
+return ff_core_List.List_filter(self_, ((_1) => {
+{
+const item_ = _1;
+const _guard1 = (!ff_core_Set.Set_contains(seen_, item_, ff_core_Ordering_Order$T));
+if(_guard1) {
+seen_ = ff_core_Set.Set_add(seen_, item_, ff_core_Ordering_Order$T);
+return true
+return
+}
+}
+{
+return false
+return
+}
 }))
 }
 
