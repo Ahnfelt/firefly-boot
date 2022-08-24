@@ -21,21 +21,13 @@ browserMain(system: BrowserSystem): Unit {
 }
 
 nodeMain(system: NodeSystem): Unit {
+    let assets = makeAssets(system)
     HttpServer.listen(system, "localhost", 8080) { request, response =>
         if(request.path() == "/") {
-            let path = if(system.files().isDirectory("/snapshot")) {
-                "/snapshot/rhymeapp/index.html"
-            } else {
-                "index.html"
-            }
             response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
-            response.writeText(system.files().readText(path))
+            response.writeText(assets.readText("/index.html"))
         } elseIf {request.path().startsWith("/.firefly/output/browser/") && !request.path().contains("..")} {
-            let path = if(system.files().isDirectory("/snapshot")) {
-                "/snapshot/rhymeapp/" + request.path().dropFirst()
-            } else {
-                request.path().dropFirst()
-            }
+            let path = request.path().dropFirst("/.firefly/output".size())
             response.setHeader("Content-Type", ["text/javascript"])
             response.writeText(system.files().readText(path))
         } elseIf {request.path() == "/rhyme"} {
@@ -47,5 +39,15 @@ nodeMain(system: NodeSystem): Unit {
         } else {
             response.writeStatus(404, Some("Not found"))
         }
+    }
+}
+
+makeAssets(system: NodeSystem): AssetSystem {
+    system.mode().{
+        | ExecutableMode(m) => m.assets()
+        | ScriptMode(m) =>
+            AssetSystem.create()
+                .addAssets("/browser", m.compiledBrowserAssets())
+                .addAssets("/", m.packageAssets().asset("/index.html"))
     }
 }

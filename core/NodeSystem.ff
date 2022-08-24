@@ -5,8 +5,18 @@ extend self: NodeSystem {
     arguments(): List[String]
         target node async "return ff_core_Array.Array_toList(self_.array_)"
 
+    mode(): RunMode {
+        if(self.files().exists("/snapshot/.firefly")) {
+            ExecutableMode(internalExecutableMode(self.files()))
+        } else {
+            ScriptMode(internalScriptMode(self.files()))
+        }
+    }
+
     files(): FileSystem
         target node async "return null"
+
+    assets(): AssetSystem
 
     fetch(): FetchSystem
         target js async "return null"
@@ -21,3 +31,9 @@ extend self: NodeSystem {
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
 
 }
+
+internalExecutableMode(fs: FileSystem): ExecutableMode
+    target js async "return null"
+
+internalScriptMode(fs: FileSystem): ScriptMode
+    target js async "return null"

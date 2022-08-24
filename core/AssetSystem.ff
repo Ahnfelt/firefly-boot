@@ -2,6 +2,10 @@ type AssetSystem!(
     files: Map[String, Stream[Buffer]]
 )
 
+create(): AssetSystem {
+    AssetSystem([].toMap())
+}
+
 extend self: AssetSystem {
 
     addAssets(path: String, assets: AssetSystem): AssetSystem {
@@ -13,6 +17,21 @@ extend self: AssetSystem {
                 }
             )
         )
+    }
+
+    assets(path: String): AssetSystem {
+        let prefix = if(path.endsWith("/")) {path} else {path + "/"}
+        let streams = self.files.pairs().collect {
+            | Pair(p, s) {p.startsWith(prefix)} => Some(Pair(p.dropFirst(prefix.size()), s))
+            | _ => None
+        }
+        AssetSystem(streams.toMap())
+    }
+
+    asset(path: String): AssetSystem {
+        let name = path.reverse().takeWhile {_ != '/'}.reverse()
+        let streams = self.files.get(path).toList().map {s => Pair("/" + name, s)}
+        AssetSystem(streams.toMap())
     }
 
     list(path: String): List[String] {

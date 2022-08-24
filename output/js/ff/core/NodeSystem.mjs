@@ -58,6 +58,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_RunMode from "../../ff/core/RunMode.mjs"
+
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
@@ -79,16 +81,40 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function internalExecutableMode_(fs_) {
+throw new Error('Function internalExecutableMode is missing on this target in sync context.');
+}
 
+export function internalScriptMode_(fs_) {
+throw new Error('Function internalScriptMode is missing on this target in sync context.');
+}
 
+export async function internalExecutableMode_$(fs_, $c) {
+return null
+}
 
+export async function internalScriptMode_$(fs_, $c) {
+return null
+}
 
 export function NodeSystem_arguments(self_) {
 throw new Error('Function NodeSystem_arguments is missing on this target in sync context.');
 }
 
+export function NodeSystem_mode(self_) {
+if(ff_core_FileSystem.FileSystem_exists(ff_core_NodeSystem.NodeSystem_files(self_), "/snapshot/.firefly")) {
+return ff_core_RunMode.ExecutableMode(ff_core_NodeSystem.internalExecutableMode_(ff_core_NodeSystem.NodeSystem_files(self_)))
+} else {
+return ff_core_RunMode.ScriptMode(ff_core_NodeSystem.internalScriptMode_(ff_core_NodeSystem.NodeSystem_files(self_)))
+}
+}
+
 export function NodeSystem_files(self_) {
 throw new Error('Function NodeSystem_files is missing on this target in sync context.');
+}
+
+export function NodeSystem_assets(self_) {
+throw new Error('Function NodeSystem_assets is missing on this target in sync context.');
 }
 
 export function NodeSystem_fetch(self_) {
@@ -111,8 +137,20 @@ export async function NodeSystem_arguments$(self_, $c) {
 return ff_core_Array.Array_toList(self_.array_)
 }
 
+export async function NodeSystem_mode$(self_, $c) {
+if((await ff_core_FileSystem.FileSystem_exists$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), "/snapshot/.firefly", $c))) {
+return ff_core_RunMode.ExecutableMode((await ff_core_NodeSystem.internalExecutableMode_$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), $c)))
+} else {
+return ff_core_RunMode.ScriptMode((await ff_core_NodeSystem.internalScriptMode_$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), $c)))
+}
+}
+
 export async function NodeSystem_files$(self_, $c) {
 return null
+}
+
+export async function NodeSystem_assets$(self_, $c) {
+throw new Error('Function NodeSystem_assets is missing on this target in async context.');
 }
 
 export async function NodeSystem_fetch$(self_, $c) {

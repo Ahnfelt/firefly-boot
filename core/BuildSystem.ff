@@ -31,7 +31,7 @@ extend self: BuildSystem {
         mainJsFile: String = ".firefly/output/node/Main.min.js",
         outputPath: String = ".firefly/output",
         targets: List[String] = ["host"],
-        assets: List[String] = []
+        assets: AssetSystem = AssetSystem.create()
     ): Unit
         target js {
             let json = """{
