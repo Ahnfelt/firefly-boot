@@ -23,22 +23,32 @@ browserMain(system: BrowserSystem): Unit {
 nodeMain(system: NodeSystem): Unit {
     let assets = makeAssets(system)
     HttpServer.listen(system, "localhost", 8080) { request, response =>
+
         if(request.path() == "/") {
+
             response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
             response.writeText(assets.readText("/index.html"))
-        } elseIf {request.path().startsWith("/.firefly/output/browser/") && !request.path().contains("..")} {
-            let path = request.path().dropFirst("/.firefly/output".size())
+
+        } elseIf {request.path().startsWith("/js/") && !request.path().contains("..")} {
+
+            let path = request.path().dropFirst("/js/".size())
             response.setHeader("Content-Type", ["text/javascript"])
-            response.writeText(system.files().readText(path))
+            response.writeText(assets.readText("/browser/" + path))
+
         } elseIf {request.path() == "/rhyme"} {
+
             let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + request.readText())
             let json = system.js().parseJson(result.readText())
             let rhyme = json.get(0).get("word").expectString()
             response.setHeader("Access-Control-Allow-Origin", ["*"])
             response.writeText(rhyme)
+
         } else {
+
             response.writeStatus(404, Some("Not found"))
+
         }
+
     }
 }
 

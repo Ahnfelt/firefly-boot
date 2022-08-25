@@ -106,6 +106,7 @@ return ff_core_List.Link(file_, ff_core_List.Empty())
 }))
 }
 return ff_core_List.List_map(go_(path_), ((file_) => {
+ff_core_Log.debug_(file_);
 return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_))
 }))
 }
@@ -132,6 +133,7 @@ return ff_core_List.Link(file_, ff_core_List.Empty())
 }), $c))
 }
 return (await ff_core_List.List_map$((await go_$(path_, $c)), (async (file_, $c) => {
+ff_core_Log.debug_(file_);
 return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c)))
 }), $c))
 }
