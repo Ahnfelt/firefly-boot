@@ -54,8 +54,7 @@ nodeMain(system: NodeSystem): Unit {
 buildMain(system: BuildSystem) {
     let browser: BrowserCode = system.compileForBrowser("Main.ff")
     let browserAssets = if(system.buildMode()) {
-        let bundle: BrowserBundle = browser.bundle()
-        bundle.assets()
+        browser.bundle().assets()
     } else {
         browser.assets()
     }

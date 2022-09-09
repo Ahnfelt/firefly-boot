@@ -16,6 +16,8 @@ import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
 
 import * as ff_core_Buffer from "../../ff/core/Buffer.mjs"
 
+import * as ff_core_BuildSystem from "../../ff/core/BuildSystem.mjs"
+
 import * as ff_core_Channel from "../../ff/core/Channel.mjs"
 
 import * as ff_core_Char from "../../ff/core/Char.mjs"

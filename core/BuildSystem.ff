@@ -4,7 +4,7 @@ type BrowserBundle!(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
 
-    compileForBrowser(mainFile: String): BrowserCode
+    compileForBrowser(mainFile: String): BrowserCode {
         internalCompile(self, mainFile, "browser")
         let fs = internalFileSystem(self)
         let streams = internalListDirectory(fs, ".firefly/output/browser")
@@ -13,7 +13,7 @@ extend self: BuildSystem {
         )
     }
 
-    buildMode(): Boolean
+    buildMode(): Bool
         target node async "return !!self_.buildMode_"
 
     setAssets(assetSystem: AssetSystem): Unit
@@ -43,18 +43,19 @@ extend self: BrowserCode {
         self.assetSystem
     }
 
-    bundle(minify: Bool): BrowserBundle {
+    bundle(minify: Bool = True): BrowserBundle {
         let prefix = ".firefly/output/node"
         let mainJsFile = ".firefly/output/node/script/script/Main.mjs"
         let file = ".firefly/output/node/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify)
         let fs = internalBrowserCodeFileSystem(self)
-        AssetSystem([Pair(file.dropFirst(prefix.size()), fs.readStream(file))].toMap())
+        let assets = AssetSystem([Pair(file.dropFirst(prefix.size()), fs.readStream(file))].toMap())
+        BrowserBundle(assets)
     }
 
 }
 
-extend self: BrowserBuild {
+extend self: BrowserBundle {
 
     assets(): AssetSystem {
         self.assetSystem
@@ -63,7 +64,7 @@ extend self: BrowserBuild {
 }
 
 
-internalCallEsbuild(
+internalCallEsBuild(
     self: BrowserCode
     mainJsFile: String
     outputPath: String
@@ -91,6 +92,7 @@ internalCreateExecutable(
     assets: AssetSystem = AssetSystem.create()
 ): Unit
     target js {
+        let assetFiles = "" // TODO: assets.map { "\"" + _.replace("\\", "\\\\").replace("\"", "\\\"") + "\"" }.join(", ")
         let json = """{
             "name": "main",
             "bin": {
@@ -102,9 +104,7 @@ internalCreateExecutable(
             "pkg": {
                 "scripts": "Main.min.js",
                 "outputPath": "bin",
-                "assets": [""" +
-                    assets.map { "\"" + _.replace("\\", "\\\\").replace("\"", "\\\"") + "\"" }.join(", ") +
-                """],
+                "assets": [""" + assetFiles + """],
                 "targets": [
                     "node18-linux-x64",
                     "node18-macos-x64",

@@ -60,6 +60,7 @@ coreImports: List[DImport] =
         "Bool",
         "BrowserSystem",
         "Buffer",
+        "BuildSystem",
         "Channel",
         "Char",
         "Core",
