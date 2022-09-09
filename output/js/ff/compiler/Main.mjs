@@ -76,8 +76,6 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
-import * as ff_core_RunMode from "../../ff/core/RunMode.mjs"
-
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
@@ -639,16 +637,22 @@ return
 
 
 import * as path from 'node:path'
+import * as fs from 'node:fs'
 queueMicrotask(async () => {
 const controller = new AbortController()
 controller.promises = new Set()
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
 let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))
-let buildMode_ = false
-let nodeSystem = {array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_, buildMode_}
+let buildMode = process.argv[2] === 'build'
+let executableMode = fs.existsSync('/snapshot/.firefly')
+let system = {
+array_: typeof process !== 'undefined' ? process.argv.slice(buildMode ? 3 : 2) : [],
+fireflyPath_: fireflyPath_,
+executableMode_: executableMode,
+buildMode_: buildMode
+}
 try {
-await buildMain_$(nodeSystem, controller)
-await main_$(nodeSystem, controller)
+if(!system.buildMode_) await main_$(system, controller)
 } finally {
 controller.abort()
 clearInterval(interval)

@@ -58,8 +58,6 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
-import * as ff_core_RunMode from "../../ff/core/RunMode.mjs"
-
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
@@ -81,40 +79,33 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function internalExecutableMode_(fs_) {
-throw new Error('Function internalExecutableMode is missing on this target in sync context.');
+export function internalAssets_(system_) {
+throw new Error('Function internalAssets is missing on this target in sync context.');
 }
 
-export function internalScriptMode_(fs_) {
-throw new Error('Function internalScriptMode is missing on this target in sync context.');
-}
-
-export async function internalExecutableMode_$(fs_, $c) {
-return null
-}
-
-export async function internalScriptMode_$(fs_, $c) {
-return null
+export async function internalAssets_$(system_, $c) {
+return system_.assets_
 }
 
 export function NodeSystem_arguments(self_) {
 throw new Error('Function NodeSystem_arguments is missing on this target in sync context.');
 }
 
-export function NodeSystem_mode(self_) {
+export function NodeSystem_assets(self_) {
 if(ff_core_FileSystem.FileSystem_exists(ff_core_NodeSystem.NodeSystem_files(self_), "/snapshot/.firefly")) {
-return ff_core_RunMode.ExecutableMode(ff_core_NodeSystem.internalExecutableMode_(ff_core_NodeSystem.NodeSystem_files(self_)))
+const fs_ = ff_core_NodeSystem.NodeSystem_files(self_);
+const files_ = ff_core_FileSystem.FileSystem_list(fs_, "/snapshot/.firefly/output/assets");
+const streams_ = ff_core_List.List_map(files_, ((file_) => {
+return ff_core_Pair.Pair(file_, ff_core_FileSystem.FileSystem_readStream(fs_, file_))
+}));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
-return ff_core_RunMode.ScriptMode(ff_core_NodeSystem.internalScriptMode_(ff_core_NodeSystem.NodeSystem_files(self_)))
+return ff_core_NodeSystem.internalAssets_(self_)
 }
 }
 
 export function NodeSystem_files(self_) {
 throw new Error('Function NodeSystem_files is missing on this target in sync context.');
-}
-
-export function NodeSystem_assets(self_) {
-throw new Error('Function NodeSystem_assets is missing on this target in sync context.');
 }
 
 export function NodeSystem_fetch(self_) {
@@ -137,20 +128,21 @@ export async function NodeSystem_arguments$(self_, $c) {
 return ff_core_Array.Array_toList(self_.array_)
 }
 
-export async function NodeSystem_mode$(self_, $c) {
+export async function NodeSystem_assets$(self_, $c) {
 if((await ff_core_FileSystem.FileSystem_exists$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), "/snapshot/.firefly", $c))) {
-return ff_core_RunMode.ExecutableMode((await ff_core_NodeSystem.internalExecutableMode_$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), $c)))
+const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(self_, $c));
+const files_ = (await ff_core_FileSystem.FileSystem_list$(fs_, "/snapshot/.firefly/output/assets", $c));
+const streams_ = (await ff_core_List.List_map$(files_, (async (file_, $c) => {
+return ff_core_Pair.Pair(file_, (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c)))
+}), $c));
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
-return ff_core_RunMode.ScriptMode((await ff_core_NodeSystem.internalScriptMode_$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), $c)))
+return (await ff_core_NodeSystem.internalAssets_$(self_, $c))
 }
 }
 
 export async function NodeSystem_files$(self_, $c) {
 return null
-}
-
-export async function NodeSystem_assets$(self_, $c) {
-throw new Error('Function NodeSystem_assets is missing on this target in async context.');
 }
 
 export async function NodeSystem_fetch$(self_, $c) {
