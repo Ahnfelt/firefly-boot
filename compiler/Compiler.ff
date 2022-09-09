@@ -83,7 +83,6 @@ coreImports: List[DImport] =
         "Option",
         "Ordering",
         "Pair",
-        "RunMode",
         "Set",
         "Show",
         "Stream",

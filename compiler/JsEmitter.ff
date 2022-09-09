@@ -65,6 +65,7 @@ extend self: JsEmitter {
         mainFunction.map {_.signature.name}.map { mainName =>
             [[
                 if(self.targetIsNode) {"import * as path from 'node:path'"} else {""}
+                if(self.targetIsNode) {"import * as fs from 'node:fs'"} else {""}
                 "queueMicrotask(async () => {"
                 "const controller = new AbortController()"
                 "controller.promises = new Set()"
@@ -74,9 +75,17 @@ extend self: JsEmitter {
                 } else {
                     "let fireflyPath_ = '.'"
                 }
+                "let buildMode = " + if(self.targetIsNode) {"process.argv[2] === 'build'"} else {"false"}
+                "let executableMode = " + if(self.targetIsNode) {"fs.existsSync('/snapshot/.firefly')"} else {"false"}
+                "let system = {"
+                "array_: typeof process !== 'undefined' ? process.argv.slice(buildMode ? 3 : 2) : [],"
+                "fireflyPath_: fireflyPath_,"
+                "executableMode_: executableMode,"
+                "buildMode_: buildMode"
+                "}"
                 "try {"
-                "await " + mainName +
-                "_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_}, controller)"
+                "if(!system.executableMode_) await buildMain_$(system, controller)"
+                "if(!system.buildMode_) await " + mainName + "_$(system, controller)"
                 "} finally {"
                 "controller.abort()"
                 "clearInterval(interval)"

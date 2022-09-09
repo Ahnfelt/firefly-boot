@@ -644,8 +644,11 @@ const controller = new AbortController()
 controller.promises = new Set()
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
 let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))
+let buildMode_ = false
+let nodeSystem = {array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_, buildMode_}
 try {
-await main_$({array_: typeof process !== 'undefined' ? process.argv.slice(2) : [], fireflyPath_}, controller)
+await buildMain_$(nodeSystem, controller)
+await main_$(nodeSystem, controller)
 } finally {
 controller.abort()
 clearInterval(interval)

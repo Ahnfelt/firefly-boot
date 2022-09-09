@@ -5,18 +5,21 @@ extend self: NodeSystem {
     arguments(): List[String]
         target node async "return ff_core_Array.Array_toList(self_.array_)"
 
-    mode(): RunMode {
+    assets(): AssetSystem {
         if(self.files().exists("/snapshot/.firefly")) {
-            ExecutableMode(internalExecutableMode(self.files()))
+            let fs = self.files()
+            let files = fs.list("/snapshot/.firefly/output/assets")
+            let streams = files.map { file =>
+                Pair(file, fs.readStream(file))
+            }
+            AssetSystem(streams.toMap())
         } else {
-            ScriptMode(internalScriptMode(self.files()))
+            internalAssets(self)
         }
     }
 
     files(): FileSystem
         target node async "return null"
-
-    assets(): AssetSystem
 
     fetch(): FetchSystem
         target js async "return null"
@@ -32,8 +35,5 @@ extend self: NodeSystem {
 
 }
 
-internalExecutableMode(fs: FileSystem): ExecutableMode
-    target js async "return null"
-
-internalScriptMode(fs: FileSystem): ScriptMode
-    target js async "return null"
+internalAssets(system: NodeSystem): AssetSystem
+    target node async "return system_.assets_"

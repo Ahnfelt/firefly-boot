@@ -1,64 +1,33 @@
 type BuildSystem! {}
+type BrowserCode!(assetSystem: AssetSystem)
+type BrowserBundle!(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
 
-    compile(mainFile: String, target: String): Unit
-        target js async """
-            return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, target_, $c)
-        """
+    compileForBrowser(mainFile: String): BrowserCode
+        internalCompile(self, mainFile, "browser")
+        let fs = internalFileSystem(self)
+        let streams = internalListDirectory(fs, ".firefly/output/browser")
+        BrowserCode(
+            assetSystem = AssetSystem(streams.toMap())
+        )
+    }
 
-    bundle(
-        mainJsFile: String = ".firefly/output/node/script/script/Main.mjs",
-        outputPath: String = ".firefly/output/node/Main.min.js",
-        minify: Bool = True
-    ): Unit
-        target js async """
-            import * as esbuild from 'esbuild'
-            // TODO: assets
-            return await esbuild.build({
-                entryPoints: [mainJsFile_],
-                bundle: true,
-                minify: minify_,
-                sourcemap: true,
-                platform: 'node',
-                target: 'es6',
-                external: ['../../../node_modules/*'], // TODO
-                outfile: outputPath_
-            })
-        """
+    buildMode(): Boolean
+        target node async "return !!self_.buildMode_"
 
-    executable(
-        mainJsFile: String = ".firefly/output/node/Main.min.js",
-        outputPath: String = ".firefly/output",
-        targets: List[String] = ["host"],
-        assets: AssetSystem = AssetSystem.create()
-    ): Unit
-        target js {
-            let json = """{
-                "name": "main",
-                "bin": {
-                    "firefly-main": "Main.min.js"
-                },
-                "devDependencies": {
-                    "pkg": "^5.7.0"
-                },
-                "pkg": {
-                    "scripts": "Main.min.js",
-                    "outputPath": "bin",
-                    "assets": [""" +
-                        assets.map { "\"" + _.replace("\\", "\\\\").replace("\"", "\\\"") + "\"" }.join(", ") +
-                    """],
-                    "targets": [
-                        "node18-linux-x64",
-                        "node18-macos-x64",
-                        "node18-win-x64"
-                    ]
-                }
-            }"""
-            let packageFile = ".firefly/output/node/package.json"
-            self.files().writeText(packageFile, json)
-            createExecutable(self, packageFile, outputPath, targets)
-        }
+    setAssets(assetSystem: AssetSystem): Unit
+        target node async "self_.assets_ = assetSystem_"
+
+    packageAssets(): AssetSystem {
+        let fs = internalFileSystem(self)
+        let streams = internalListDirectory(fs, ".")
+        AssetSystem(streams.toMap())
+    }
+
+    dependencyAssets(user: String, package: String): AssetSystem {
+        panic("dependencyAssets not yet implemented")
+    }
 
     arguments(): List[String]
         target node async "return ff_core_Array.Array_toList(self_.array_)"
@@ -66,12 +35,89 @@ extend self: BuildSystem {
     tasks(): TaskSystem
         target js async "return null"
 
-    files(): FileSystem
-        target node async "return null"
+}
+
+extend self: BrowserCode {
+
+    assets(): AssetSystem {
+        self.assetSystem
+    }
+
+    bundle(minify: Bool): BrowserBundle {
+        let prefix = ".firefly/output/node"
+        let mainJsFile = ".firefly/output/node/script/script/Main.mjs"
+        let file = ".firefly/output/node/Main.bundle.js"
+        internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify)
+        let fs = internalBrowserCodeFileSystem(self)
+        AssetSystem([Pair(file.dropFirst(prefix.size()), fs.readStream(file))].toMap())
+    }
 
 }
 
-createExecutable(
+extend self: BrowserBuild {
+
+    assets(): AssetSystem {
+        self.assetSystem
+    }
+
+}
+
+
+internalCallEsbuild(
+    self: BrowserCode
+    mainJsFile: String
+    outputPath: String
+    minify: Bool
+): Unit
+    target js async """
+        import * as esbuild from 'esbuild'
+        return await esbuild.build({
+            entryPoints: [mainJsFile_],
+            bundle: true,
+            minify: minify_,
+            sourcemap: true,
+            platform: 'node',
+            target: 'es6',
+            external: ['../../../node_modules/*'], // TODO
+            outfile: outputPath_
+        })
+    """
+
+internalCreateExecutable(
+    self: BuildSystem,
+    mainJsFile: String = ".firefly/output/node/Main.min.js",
+    outputPath: String = ".firefly/output",
+    targets: List[String] = ["host"],
+    assets: AssetSystem = AssetSystem.create()
+): Unit
+    target js {
+        let json = """{
+            "name": "main",
+            "bin": {
+                "firefly-main": "Main.min.js"
+            },
+            "devDependencies": {
+                "pkg": "^5.7.0"
+            },
+            "pkg": {
+                "scripts": "Main.min.js",
+                "outputPath": "bin",
+                "assets": [""" +
+                    assets.map { "\"" + _.replace("\\", "\\\\").replace("\"", "\\\"") + "\"" }.join(", ") +
+                """],
+                "targets": [
+                    "node18-linux-x64",
+                    "node18-macos-x64",
+                    "node18-win-x64"
+                ]
+            }
+        }"""
+        let packageFile = ".firefly/output/node/package.json"
+        internalFileSystem(self).writeText(packageFile, json)
+        internalCallPkg(self, packageFile, outputPath, targets)
+    }
+
+internalCallPkg(
     self: BuildSystem,
     packageFile: String,
     outputPath: String,
@@ -85,4 +131,33 @@ createExecutable(
             '--out-path', outputPath_,
             '--target', ff_core_List.List_toArray(targets_).join(',')
         ])
+    """
+
+internalListDirectory(fs: FileSystem, path: String): List[Pair[String, Stream[Buffer]]] {
+    let prefix = if(path.endsWith("/")) {path.dropLast(1)} else {path}
+    function go(currentPath: String): List[String] {
+        fs.list(currentPath).flatMap { file =>
+            if(fs.isDirectory(file)) {
+                go(file)
+            } else {
+                [file]
+            }
+        }
+    }
+    go(path).map { file => Pair(file.dropFirst(prefix.size()), fs.readStream(file)) }
+}
+
+internalFileSystem(dummy: BuildSystem): FileSystem
+    target node async """
+        return null;
+    """
+
+internalBrowserCodeFileSystem(dummy: BrowserCode): FileSystem
+    target node async """
+        return null;
+    """
+
+internalCompile(dummy: BuildSystem, mainFile: String, target: String): Unit
+    target js async """
+        return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, target_, $c)
     """

@@ -21,19 +21,18 @@ browserMain(system: BrowserSystem): Unit {
 }
 
 nodeMain(system: NodeSystem): Unit {
-    let assets = makeAssets(system)
     HttpServer.listen(system, "localhost", 8080) { request, response =>
 
         if(request.path() == "/") {
 
             response.setHeader("Content-Type", ["text/html; charset=UTF-8"])
-            response.writeText(assets.readText("/index.html"))
+            response.writeText(system.assets().readText("/index.html"))
 
         } elseIf {request.path().startsWith("/js/") && !request.path().contains("..")} {
 
             let path = request.path().dropFirst("/js/".size())
             response.setHeader("Content-Type", ["text/javascript"])
-            response.writeText(assets.readText("/browser/" + path))
+            response.writeText(system.assets().readText("/browser/" + path))
 
         } elseIf {request.path() == "/rhyme"} {
 
@@ -52,12 +51,21 @@ nodeMain(system: NodeSystem): Unit {
     }
 }
 
-makeAssets(system: NodeSystem): AssetSystem {
-    system.mode().{
-        | ExecutableMode(m) => m.assets()
-        | ScriptMode(m) =>
-            AssetSystem.create()
-                .addAssets("/browser", m.compiledBrowserAssets())
-                .addAssets("/", m.packageAssets().asset("/index.html"))
+buildMain(system: BuildSystem) {
+    let browser: BrowserCode = system.compileForBrowser("Main.ff")
+    let browserAssets = if(system.buildMode()) {
+        let bundle: BrowserBundle = browser.bundle()
+        bundle.assets()
+    } else {
+        browser.assets()
     }
+    let assets = AssetSystem.create()
+        .addAssets("/", system.packageAssets().asset("/index.html"))
+        .addAssets("/browser", browserAssets)
+    system.setAssets(assets)
 }
+
+// Invariant: buildMain always runs before main.
+// script mode: runs buildMain, then main.
+// build mode: runs buildMain only.
+// executable mode: runs main only.
