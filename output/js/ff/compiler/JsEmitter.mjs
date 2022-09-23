@@ -85,8 +85,26 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, jsImporter_, targetIsNode_, isMainModule_, compilerModulePath_, tailCallUsed_) {
-return {otherModules_, jsImporter_, targetIsNode_, isMainModule_, compilerModulePath_, tailCallUsed_};
+export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, tailCallUsed_) {
+return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, tailCallUsed_};
+}
+
+// type EmitTarget
+const EmitNode$ = {EmitNode: true};
+export function EmitNode() {
+return EmitNode$;
+}
+const EmitBrowser$ = {EmitBrowser: true};
+export function EmitBrowser() {
+return EmitBrowser$;
+}
+const EmitBuild$ = {EmitBuild: true};
+export function EmitBuild() {
+return EmitBuild$;
+}
+const EmitExecutable$ = {EmitExecutable: true};
+export function EmitExecutable() {
+return EmitExecutable$;
 }
 
 // type ProcessedVariantCase
@@ -96,11 +114,11 @@ return {variantName_, newtype_, loneVariant_, arguments_};
 
 
 
-export function make_(otherModules_, targetIsNode_, isMainModule_, compilerModulePath_) {
+export function make_(otherModules_, emitTarget_, isMainModule_, compilerModulePath_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, isMainModule_, compilerModulePath_, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), emitTarget_, isMainModule_, compilerModulePath_, false)
 }
 
 export function fail_(at_, message_) {
@@ -335,11 +353,11 @@ return
 }
 }
 
-export async function make_$(otherModules_, targetIsNode_, isMainModule_, compilerModulePath_, $c) {
+export async function make_$(otherModules_, emitTarget_, isMainModule_, compilerModulePath_, $c) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), targetIsNode_, isMainModule_, compilerModulePath_, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), emitTarget_, isMainModule_, compilerModulePath_, false)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -602,7 +620,10 @@ return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 })), ff_core_List.Link((self_.isMainModule_
 ? ff_compiler_JsEmitter.JsEmitter_emitMain(self_, module_.functions_)
 : ff_core_List.Empty()), ff_core_List.Empty()))))))));
-const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_);
+const ignoreJsImports_ = ((((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable()) && (packagePair_.group_ == "ff")) && (packagePair_.name_ == "core"))
+? ff_core_List.Link("esbuild", ff_core_List.Empty())
+: ff_core_List.Empty());
+const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_, ff_core_List.List_toSet(ignoreJsImports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
@@ -612,7 +633,8 @@ export function JsEmitter_emitMain(self_, functions_) {
 const buildMainFunction_ = ff_core_List.List_find(functions_, ((_w1) => {
 return (_w1.signature_.name_ == "buildMain")
 }));
-const targetMain_ = (self_.targetIsNode_
+const willRunOnNode_ = (self_.emitTarget_ != ff_compiler_JsEmitter.EmitBrowser());
+const targetMain_ = (willRunOnNode_
 ? "nodeMain"
 : "browserMain");
 const mainFunction_ = ff_core_Option.Option_orElse(ff_core_List.List_find(functions_, ((_w1) => {
@@ -625,19 +647,19 @@ return (_w1.signature_.name_ == "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.List_addAll((self_.targetIsNode_
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.List_addAll((willRunOnNode_
 ? ff_core_List.Link("import * as path from 'node:path'", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.List_addAll((self_.targetIsNode_
+: ff_core_List.Empty()), ff_core_List.List_addAll((willRunOnNode_
 ? ff_core_List.Link("import * as fs from 'node:fs'", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link((self_.targetIsNode_
+: ff_core_List.Empty()), ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link((willRunOnNode_
 ? "let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))"
-: "let fireflyPath_ = '.'"), ff_core_List.Link(("let buildMode = " + (self_.targetIsNode_
-? "process.argv[2] === 'build'"
-: "false")), ff_core_List.Link(("let executableMode = " + (self_.targetIsNode_
-? "fs.existsSync('/snapshot/.firefly')"
-: "false")), ff_core_List.Link("let system = {", ff_core_List.Link("array_: typeof process !== 'undefined' ? process.argv.slice(buildMode ? 3 : 2) : [],", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link("executableMode_: executableMode,", ff_core_List.Link("buildMode_: buildMode", ff_core_List.Link("}", ff_core_List.Link("try {", ff_core_List.List_addAll(((!ff_core_Option.Option_isEmpty(buildMainFunction_))
+: "let fireflyPath_ = '.'"), ff_core_List.Link(("let executableMode = " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable())
+? "true"
+: "false")), ff_core_List.Link(("let buildMode = " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitBuild())
+? "true"
+: "false")), ff_core_List.Link("let system = {", ff_core_List.Link("array_: typeof process !== 'undefined' ? process.argv.slice(buildMode ? 3 : 2) : [],", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link("executableMode_: executableMode,", ff_core_List.Link("buildMode_: buildMode", ff_core_List.Link("}", ff_core_List.Link("try {", ff_core_List.List_addAll(((willRunOnNode_ && (!ff_core_Option.Option_isEmpty(buildMainFunction_)))
 ? ff_core_List.Link("if(!system.executableMode_) await buildMain_$(system, controller)", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Link((("if(!system.buildMode_) await " + mainName_) + "_$(system, controller)"), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))))))))))))))), "\n"), ff_core_List.Empty())
+: ff_core_List.Empty()), ff_core_List.Link((("if(!system.buildMode_) await " + mainName_) + "_$(system, controller)"), ff_core_List.Link("else await $firefly_compiler.internalCreateExecutable_$(system, process.argv[1], '.firefly/output', ['host'], system.assets_, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty())))))))))))))))))))))))), "\n"), ff_core_List.Empty())
 })), (() => {
 return ff_core_List.Empty()
 }))
@@ -1926,7 +1948,10 @@ return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 })), ff_core_List.Link((self_.isMainModule_
 ? ff_compiler_JsEmitter.JsEmitter_emitMain(self_, module_.functions_)
 : ff_core_List.Empty()), ff_core_List.Empty()))))))));
-const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_);
+const ignoreJsImports_ = ((((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable()) && (packagePair_.group_ == "ff")) && (packagePair_.name_ == "core"))
+? ff_core_List.Link("esbuild", ff_core_List.Empty())
+: ff_core_List.Empty());
+const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_, ff_core_List.List_toSet(ignoreJsImports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
@@ -1936,7 +1961,8 @@ export async function JsEmitter_emitMain$(self_, functions_, $c) {
 const buildMainFunction_ = ff_core_List.List_find(functions_, ((_w1) => {
 return (_w1.signature_.name_ == "buildMain")
 }));
-const targetMain_ = (self_.targetIsNode_
+const willRunOnNode_ = (self_.emitTarget_ != ff_compiler_JsEmitter.EmitBrowser());
+const targetMain_ = (willRunOnNode_
 ? "nodeMain"
 : "browserMain");
 const mainFunction_ = ff_core_Option.Option_orElse(ff_core_List.List_find(functions_, ((_w1) => {
@@ -1949,19 +1975,19 @@ return (_w1.signature_.name_ == "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.List_addAll((self_.targetIsNode_
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.List_addAll((willRunOnNode_
 ? ff_core_List.Link("import * as path from 'node:path'", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.List_addAll((self_.targetIsNode_
+: ff_core_List.Empty()), ff_core_List.List_addAll((willRunOnNode_
 ? ff_core_List.Link("import * as fs from 'node:fs'", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link((self_.targetIsNode_
+: ff_core_List.Empty()), ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link((willRunOnNode_
 ? "let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))"
-: "let fireflyPath_ = '.'"), ff_core_List.Link(("let buildMode = " + (self_.targetIsNode_
-? "process.argv[2] === 'build'"
-: "false")), ff_core_List.Link(("let executableMode = " + (self_.targetIsNode_
-? "fs.existsSync('/snapshot/.firefly')"
-: "false")), ff_core_List.Link("let system = {", ff_core_List.Link("array_: typeof process !== 'undefined' ? process.argv.slice(buildMode ? 3 : 2) : [],", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link("executableMode_: executableMode,", ff_core_List.Link("buildMode_: buildMode", ff_core_List.Link("}", ff_core_List.Link("try {", ff_core_List.List_addAll(((!ff_core_Option.Option_isEmpty(buildMainFunction_))
+: "let fireflyPath_ = '.'"), ff_core_List.Link(("let executableMode = " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable())
+? "true"
+: "false")), ff_core_List.Link(("let buildMode = " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitBuild())
+? "true"
+: "false")), ff_core_List.Link("let system = {", ff_core_List.Link("array_: typeof process !== 'undefined' ? process.argv.slice(buildMode ? 3 : 2) : [],", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link("executableMode_: executableMode,", ff_core_List.Link("buildMode_: buildMode", ff_core_List.Link("}", ff_core_List.Link("try {", ff_core_List.List_addAll(((willRunOnNode_ && (!ff_core_Option.Option_isEmpty(buildMainFunction_)))
 ? ff_core_List.Link("if(!system.executableMode_) await buildMain_$(system, controller)", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Link((("if(!system.buildMode_) await " + mainName_) + "_$(system, controller)"), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty()))))))))))))))))))))))), "\n"), ff_core_List.Empty())
+: ff_core_List.Empty()), ff_core_List.Link((("if(!system.buildMode_) await " + mainName_) + "_$(system, controller)"), ff_core_List.Link("else await $firefly_compiler.internalCreateExecutable_$(system, process.argv[1], '.firefly/output', ['host'], system.assets_, controller)", ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("})", ff_core_List.Empty())))))))))))))))))))))))), "\n"), ff_core_List.Empty())
 })), (() => {
 return ff_core_List.Empty()
 }))

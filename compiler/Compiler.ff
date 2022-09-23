@@ -8,7 +8,7 @@ import Dictionaries
 import Dependencies
 
 type Compiler!(
-    targetIsNode: Bool
+    emitTarget: EmitTarget
     files: FileSystem
     time: TimeSystem
     compilerModulePath: Option[String]
@@ -24,7 +24,7 @@ type Compiler!(
 )
 
 make(
-    targetIsNode: Bool
+    emitTarget: EmitTarget
     files: FileSystem
     time: TimeSystem
     compilerModulePath: Option[String]
@@ -32,7 +32,7 @@ make(
     resolvedDependencies: ResolvedDependencies
 ): Compiler {
     Compiler(
-        targetIsNode = targetIsNode,
+        emitTarget = emitTarget
         files = files
         time = time
         compilerModulePath = compilerModulePath
@@ -133,7 +133,7 @@ extend self: Compiler {
         let file = moduleName + ".ff"
         let code = self.files.readText(packagePath + "/" + file)
         let tokens = Tokenizer.tokenize(file, code)
-        let parser = Parser.make(packagePair, file, tokens, self.targetIsNode)
+        let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module
         } else {
@@ -200,7 +200,7 @@ extend self: Compiler {
             self.infer(i.packagePair, newModuleName)
         }
 
-        let js = JsEmitter.make([module, ...otherModules], self.targetIsNode, isMainModule, self.compilerModulePath)
+        let js = JsEmitter.make([module, ...otherModules], self.emitTarget, isMainModule, self.compilerModulePath)
             .emitModule(packagePair, module)
         let jsPath = self.jsOutputPath + "/" + packagePair.groupName("/")
         let jsFile = jsPath + "/" + moduleName + ".mjs"

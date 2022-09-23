@@ -1,10 +1,12 @@
-
+import * as import$0 from 'pkg';
 
 import * as ff_compiler_Builder from "../../ff/compiler/Builder.mjs"
 
 import * as ff_compiler_Compiler from "../../ff/compiler/Compiler.mjs"
 
 import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
+
+import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
 
 import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
 
@@ -96,13 +98,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function build_(system_, target_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_) {
+export function build_(system_, emitTarget_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_) {
 const fs_ = ff_core_NodeSystem.NodeSystem_files(system_);
-const targetIsNode_ = ((target_ == "node")
-? true
-: (target_ == "browser")
-? false
-: ff_core_Core.panic_((("Unknown target '" + target_) + "'")));
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
 ff_compiler_Builder.deleteDirectory_(fs_, tempPath_)
 };
@@ -110,7 +107,7 @@ ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_);
 const jsPathFile_ = (tempPath_ + "/js");
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_);
 const success_ = ff_core_Core.do_((() => {
-const compiler_ = ff_compiler_Compiler.make_(targetIsNode_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), compilerModulePath_, jsPathFile_, resolvedDependencies_);
+const compiler_ = ff_compiler_Compiler.make_(emitTarget_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), compilerModulePath_, jsPathFile_, resolvedDependencies_);
 ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_, true);
 if(printMeasurements_) {
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
@@ -144,18 +141,63 @@ return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolve
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? fixedDependencies_.packagePaths_
 : ff_core_Map.Map_add(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-ff_compiler_Builder.build_(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
+if((target_ != "browser")) {
+ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
+};
+ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_Syntax.PackagePair("script", "script"), ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(fixedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
 
-export async function build_$(system_, target_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, $c) {
+export function internalCreateExecutable_(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_()) {
+const fs_ = ff_compiler_Builder.internalFileSystem_(self_);
+const assetOutputPath_ = (outputPath_ + "/assets");
+ff_core_List.List_each(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
+{
+const path_ = _1.first_;
+const stream_ = _1.second_;
+const p_ = (assetOutputPath_ + path_);
+ff_core_FileSystem.FileSystem_createDirectories(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
+return (_w1 != 47)
+}))));
+ff_core_FileSystem.FileSystem_writeStream(fs_, p_, stream_, false)
+return
+}
+}));
+const json_ = `{
+            "name": "main",
+            "bin": {
+                "firefly-main": "Main.bundle.js"
+            },
+            "devDependencies": {
+                "pkg": "^5.7.0"
+            },
+            "pkg": {
+                "scripts": "Main.bundle.js",
+                "outputPath": "bin",
+                "assets": ["../assets/**/*"],
+                "targets": [
+                    "node18-linux-x64",
+                    "node18-macos-x64",
+                    "node18-win-x64"
+                ]
+            }
+        }`;
+const packageFile_ = (outputPath_ + "/executable/package.json");
+ff_core_FileSystem.FileSystem_writeText(fs_, packageFile_, json_);
+ff_compiler_Builder.internalCallPkg_(self_, packageFile_, outputPath_, targets_)
+}
+
+export function internalCallPkg_(self_, packageFile_, outputPath_, targets_) {
+throw new Error('Function internalCallPkg is missing on this target in sync context.');
+}
+
+export function internalFileSystem_(dummy_) {
+throw new Error('Function internalFileSystem is missing on this target in sync context.');
+}
+
+export async function build_$(system_, emitTarget_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, $c) {
 const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
-const targetIsNode_ = ((target_ == "node")
-? true
-: (target_ == "browser")
-? false
-: ff_core_Core.panic_((("Unknown target '" + target_) + "'")));
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 (await ff_compiler_Builder.deleteDirectory_$(fs_, tempPath_, $c))
 };
@@ -163,7 +205,7 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 const jsPathFile_ = (tempPath_ + "/js");
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $c));
 const success_ = (await ff_core_Core.do_$((async ($c) => {
-const compiler_ = (await ff_compiler_Compiler.make_$(targetIsNode_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), compilerModulePath_, jsPathFile_, resolvedDependencies_, $c));
+const compiler_ = (await ff_compiler_Compiler.make_$(emitTarget_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), compilerModulePath_, jsPathFile_, resolvedDependencies_, $c));
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, true, $c));
 if(printMeasurements_) {
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c))
@@ -197,9 +239,69 @@ return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolve
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? fixedDependencies_.packagePaths_
 : ff_core_Map.Map_add(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-(await ff_compiler_Builder.build_$(system_, target_, ff_compiler_Syntax.PackagePair("script", "script"), ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
+if((target_ != "browser")) {
+ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
+};
+(await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_Syntax.PackagePair("script", "script"), ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(fixedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
+}
+
+export async function internalCreateExecutable_$(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_(), $c) {
+const fs_ = (await ff_compiler_Builder.internalFileSystem_$(self_, $c));
+const assetOutputPath_ = (outputPath_ + "/assets");
+(await ff_core_List.List_each$(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async (_1, $c) => {
+{
+const path_ = _1.first_;
+const stream_ = _1.second_;
+const p_ = (assetOutputPath_ + path_);
+(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
+return (_w1 != 47)
+}))), $c));
+(await ff_core_FileSystem.FileSystem_writeStream$(fs_, p_, stream_, false, $c))
+return
+}
+}), $c));
+const json_ = `{
+            "name": "main",
+            "bin": {
+                "firefly-main": "Main.bundle.js"
+            },
+            "devDependencies": {
+                "pkg": "^5.7.0"
+            },
+            "pkg": {
+                "scripts": "Main.bundle.js",
+                "outputPath": "bin",
+                "assets": ["../assets/**/*"],
+                "targets": [
+                    "node18-linux-x64",
+                    "node18-macos-x64",
+                    "node18-win-x64"
+                ]
+            }
+        }`;
+const packageFile_ = (outputPath_ + "/executable/package.json");
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, packageFile_, json_, $c));
+(await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $c))
+}
+
+export async function internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $c) {
+
+        const pkg = import$0
+        return await pkg.exec([
+            packageFile_,
+            "--debug",
+            '--out-path', outputPath_,
+            '--target', ff_core_List.List_toArray(targets_).join(',')
+        ])
+    
+}
+
+export async function internalFileSystem_$(dummy_, $c) {
+
+        return null;
+    
 }
 
 

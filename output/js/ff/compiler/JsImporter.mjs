@@ -156,12 +156,16 @@ return (((((space_ + "const ") + name_) + " = ") + importName_) + ff_compiler_Js
 }
 }
 
-export function JsImporter_generateImports(self_) {
+export function JsImporter_generateImports(self_, ignoreModules_) {
 return ff_core_List.List_map(ff_core_Map.Map_pairs(self_.imports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const moduleName_ = _1.first_;
 const mangledName_ = _1.second_;
+if(ff_core_Set.Set_contains(ignoreModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
+return (("const " + mangledName_) + " = void 0; // Ignored import")
+} else {
 return (((("import * as " + mangledName_) + " from '") + moduleName_) + "';")
+}
 return
 }
 }))
@@ -220,12 +224,16 @@ return (((((space_ + "const ") + name_) + " = ") + importName_) + ff_compiler_Js
 }
 }
 
-export async function JsImporter_generateImports$(self_, $c) {
+export async function JsImporter_generateImports$(self_, ignoreModules_, $c) {
 return ff_core_List.List_map(ff_core_Map.Map_pairs(self_.imports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const moduleName_ = _1.first_;
 const mangledName_ = _1.second_;
+if(ff_core_Set.Set_contains(ignoreModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
+return (("const " + mangledName_) + " = void 0; // Ignored import")
+} else {
 return (((("import * as " + mangledName_) + " from '") + moduleName_) + "';")
+}
 return
 }
 }))

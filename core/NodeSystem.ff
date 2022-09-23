@@ -6,11 +6,12 @@ extend self: NodeSystem {
         target node async "return ff_core_Array.Array_toList(self_.array_)"
 
     assets(): AssetSystem {
-        if(self.files().exists("/snapshot/.firefly")) {
+        let assetPkgSnapshotPath = "/snapshot/output/assets"
+        if(self.files().isDirectory(assetPkgSnapshotPath)) {
             let fs = self.files()
-            let files = fs.list("/snapshot/.firefly/output/assets")
+            let files = fs.list(assetPkgSnapshotPath)
             let streams = files.map { file =>
-                Pair(file, fs.readStream(file))
+                Pair(file.dropFirst(assetPkgSnapshotPath.size()), fs.readStream(file))
             }
             AssetSystem(streams.toMap())
         } else {

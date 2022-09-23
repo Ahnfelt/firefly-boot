@@ -206,6 +206,12 @@ export function String_all(self_, body_) {
         
 }
 
+export function String_toBuffer(self_) {
+
+            return Buffer.from(self_, 'utf8');
+        
+}
+
 export async function String_size$(self_, $c) {
 throw new Error('Function String_size is missing on this target in async context.');
 }
@@ -310,6 +316,10 @@ export async function String_all$(self_, body_, $c) {
             }
             return true;
         
+}
+
+export async function String_toBuffer$(self_, $c) {
+throw new Error('Function String_toBuffer is missing on this target in async context.');
 }
 
 

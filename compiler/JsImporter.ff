@@ -38,9 +38,13 @@ extend self: JsImporter {
         space + "const " + name + " = " + importName + self.process(at, rest5)
     }
 
-    generateImports(): List[String] {
+    generateImports(ignoreModules: Set[String]): List[String] {
         self.imports.pairs().map {| Pair(moduleName, mangledName) =>
-            "import * as " + mangledName + " from '" + moduleName + "';"
+            if(ignoreModules.contains(moduleName)) {
+                "const " + mangledName + " = void 0; // Ignored import"
+            } else {
+                "import * as " + mangledName + " from '" + moduleName + "';"
+            }
         }
     }
 

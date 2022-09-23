@@ -94,11 +94,12 @@ throw new Error('Function NodeSystem_arguments is missing on this target in sync
 }
 
 export function NodeSystem_assets(self_) {
-if(ff_core_FileSystem.FileSystem_exists(ff_core_NodeSystem.NodeSystem_files(self_), "/snapshot/.firefly")) {
+const assetPkgSnapshotPath_ = "/snapshot/output/assets";
+if(ff_core_FileSystem.FileSystem_isDirectory(ff_core_NodeSystem.NodeSystem_files(self_), assetPkgSnapshotPath_)) {
 const fs_ = ff_core_NodeSystem.NodeSystem_files(self_);
-const files_ = ff_core_FileSystem.FileSystem_list(fs_, "/snapshot/.firefly/output/assets");
+const files_ = ff_core_FileSystem.FileSystem_list(fs_, assetPkgSnapshotPath_);
 const streams_ = ff_core_List.List_map(files_, ((file_) => {
-return ff_core_Pair.Pair(file_, ff_core_FileSystem.FileSystem_readStream(fs_, file_))
+return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_))
 }));
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
@@ -131,11 +132,12 @@ return ff_core_Array.Array_toList(self_.array_)
 }
 
 export async function NodeSystem_assets$(self_, $c) {
-if((await ff_core_FileSystem.FileSystem_exists$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), "/snapshot/.firefly", $c))) {
+const assetPkgSnapshotPath_ = "/snapshot/output/assets";
+if((await ff_core_FileSystem.FileSystem_isDirectory$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), assetPkgSnapshotPath_, $c))) {
 const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(self_, $c));
-const files_ = (await ff_core_FileSystem.FileSystem_list$(fs_, "/snapshot/.firefly/output/assets", $c));
+const files_ = (await ff_core_FileSystem.FileSystem_list$(fs_, assetPkgSnapshotPath_, $c));
 const streams_ = (await ff_core_List.List_map$(files_, (async (file_, $c) => {
-return ff_core_Pair.Pair(file_, (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c)))
+return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c)))
 }), $c));
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {

@@ -5,10 +5,11 @@ import Resolver
 import Compiler
 import Unification
 import Dependencies
+import JsEmitter
 
 build(
     system: NodeSystem,
-    target : String
+    emitTarget: EmitTarget
     mainPackage : PackagePair
     mainModule : String
     resolvedDependencies: ResolvedDependencies
@@ -20,15 +21,6 @@ build(
 
     let fs = system.files()
 
-    let targetIsNode =
-        if(target == "node") {
-            True
-        } elseIf {target == "browser"} {
-            False
-        } else {
-            panic("Unknown target '" + target + "'")
-        }
-
     if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
     fs.createDirectory(tempPath)
 
@@ -37,7 +29,7 @@ build(
 
     let success = do {
         let compiler =
-            Compiler.make(targetIsNode, fs, system.time(), compilerModulePath, jsPathFile, resolvedDependencies)
+            Compiler.make(emitTarget, fs, system.time(), compilerModulePath, jsPathFile, resolvedDependencies)
         compiler.emit(mainPackage, mainModule, isMainModule = True)
         if(printMeasurements) { compiler.printMeasurements() }
         True
@@ -71,9 +63,12 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
     } else {
         fixedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
     }
+    if(target != "browser") {
+        panic("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
+    }
     build(
         system = system
-        target = target
+        emitTarget = EmitBrowser
         mainPackage = PackagePair("script", "script")
         mainModule = mainFile.dropLast(".ff".size())
         resolvedDependencies = fixedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
@@ -83,3 +78,63 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
         printMeasurements = False
     )
 }
+
+internalCreateExecutable(
+    self: BuildSystem,
+    mainJsFile: String = ".firefly/output/executable/Main.bundle.js",
+    outputPath: String = ".firefly/output",
+    targets: List[String] = ["host"],
+    assets: AssetSystem = AssetSystem.create()
+): Unit
+    target node {
+        let fs = internalFileSystem(self)
+        let assetOutputPath = outputPath + "/assets"
+        assets.files.pairs().each {| Pair(path, stream) =>
+            let p = assetOutputPath + path
+            fs.createDirectories(p.reverse().dropWhile {_ != '/'}.reverse())
+            fs.writeStream(p, stream)
+        }
+        let json = """{
+            "name": "main",
+            "bin": {
+                "firefly-main": "Main.bundle.js"
+            },
+            "devDependencies": {
+                "pkg": "^5.7.0"
+            },
+            "pkg": {
+                "scripts": "Main.bundle.js",
+                "outputPath": "bin",
+                "assets": ["../assets/**/*"],
+                "targets": [
+                    "node18-linux-x64",
+                    "node18-macos-x64",
+                    "node18-win-x64"
+                ]
+            }
+        }"""
+        let packageFile = outputPath + "/executable/package.json"
+        fs.writeText(packageFile, json)
+        internalCallPkg(self, packageFile, outputPath, targets)
+    }
+
+internalCallPkg(
+    self: BuildSystem,
+    packageFile: String,
+    outputPath: String,
+    targets: List[String]
+): Unit
+    target node async """
+        import * as pkg from 'pkg'
+        return await pkg.exec([
+            packageFile_,
+            "--debug",
+            '--out-path', outputPath_,
+            '--target', ff_core_List.List_toArray(targets_).join(',')
+        ])
+    """
+
+internalFileSystem(dummy: BuildSystem): FileSystem
+    target node async """
+        return null;
+    """

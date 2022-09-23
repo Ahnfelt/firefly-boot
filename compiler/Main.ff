@@ -6,6 +6,7 @@ import Compiler
 import Unification
 import Builder
 import Dependencies
+import JsEmitter
 
 type MainCommand {
     BootstrapCommand
@@ -38,6 +39,7 @@ main(system: NodeSystem): Unit {
         | "linux" => BuildCommand(consumeArgument().expect().dropLast(3), LinuxPlatform)
         | "windows" => BuildCommand(consumeArgument().expect().dropLast(3), WindowsPlatform)
         | "macos" => BuildCommand(consumeArgument().expect().dropLast(3), MacosPlatform)
+        | "build" => BuildCommand(consumeArgument().expect().dropLast(3), MacosPlatform)
         | "bootstrap" => BootstrapCommand
         | s => panic("Unknown command '" + s + "'")
     }
@@ -52,7 +54,7 @@ main(system: NodeSystem): Unit {
 
     function buildScript(
         mainFile: String,
-        target: String,
+        emitTarget: EmitTarget
         resolvedDependencies: ResolvedDependencies
     ) {
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
@@ -60,18 +62,24 @@ main(system: NodeSystem): Unit {
         } else {
             resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
         }
-        let compilerModulePath = if(target == "build") {
-            fireflyPath + "/../../../../../output/js/ff/compiler/Builder.mjs"
+        let compilerModulePath = if(emitTarget != EmitBrowser && emitTarget != EmitExecutable) {
+            fireflyPath + "/output/js/ff/compiler/Builder.mjs"
+        }
+        let targetName = emitTarget.{
+            | EmitBuild => "build"
+            | EmitNode => "node"
+            | EmitBrowser => "browser"
+            | EmitExecutable => "executable"
         }
         Builder.build(
             system = system
-            target = if(target == "build") {"node"} else {target}
+            emitTarget = emitTarget
             mainPackage = PackagePair("script", "script")
             mainModule = mainFile
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
             compilerModulePath = compilerModulePath
             tempPath = ".firefly/temporary"
-            jsOutputPath = ".firefly/output/" + target
+            jsOutputPath = ".firefly/output/" + targetName
             printMeasurements = False
         )
     }
@@ -86,16 +94,8 @@ main(system: NodeSystem): Unit {
                 packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
             )
             prepareFireflyDirectory(system.files())
-            if(detectBuildMain(system.files(), PackagePair("script", "script"), mainFile)) {
-                buildScript(mainFile, "build", fixedDependencies)
-                writeBuildRunFile(system.files(), mainFile, arguments)
-            } else {
-                if(detectBrowserMain(system.files(), PackagePair("script", "script"), mainFile)) {
-                    buildScript(mainFile, "browser", fixedDependencies)
-                }
-                buildScript(mainFile, "node", fixedDependencies)
-                writeNodeRunFile(system.files(), mainFile, arguments)
-            }
+            buildScript(mainFile, EmitNode, fixedDependencies)
+            writeNodeRunFile(system.files(), mainFile, arguments)
 
         | BuildCommand(mainFile, BrowserPlatform) =>
             let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
@@ -103,7 +103,7 @@ main(system: NodeSystem): Unit {
                 packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
             )
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, "browser", fixedDependencies)
+            buildScript(mainFile, EmitBrowser, fixedDependencies)
             writeEsbuildRunFile(system.files(), fireflyPath, mainFile)
 
         | BuildCommand(_, LinuxPlatform) =>
@@ -112,13 +112,21 @@ main(system: NodeSystem): Unit {
         | BuildCommand(_, WindowsPlatform) =>
             panic("Not yet implemented: 'windows'")
 
-        | BuildCommand(_, MacosPlatform) =>
-            panic("Not yet implemented: 'macos'")
+        | BuildCommand(mainFile, MacosPlatform) =>
+            let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
+            let fixedDependencies = resolvedDependencies.ResolvedDependencies(
+                packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
+            )
+            prepareFireflyDirectory(system.files())
+            buildScript(mainFile, EmitBuild, fixedDependencies)
+            buildScript(mainFile, EmitExecutable, fixedDependencies)
+            bundleForPkg(system)
+            writeBuildRunFile(system.files(), mainFile, arguments)
 
         | BootstrapCommand =>
             Builder.build(
                 system = system
-                target = "node"
+                emitTarget = EmitNode
                 mainPackage = PackagePair("ff", "compiler")
                 mainModule = "Main"
                 resolvedDependencies = ResolvedDependencies(
@@ -136,6 +144,13 @@ main(system: NodeSystem): Unit {
 
     }
 
+}
+
+bundleForPkg(system: NodeSystem) {
+    let prefix = ".firefly/output/executable/"
+    let mainJsFile = prefix + "script/script/Main.mjs"
+    let file = prefix + "Main.bundle.js"
+    BuildSystem.internalNodeCallEsBuild(system, mainJsFile = mainJsFile, outputPath = file, minify = False)
 }
 
 deleteRunFile(fs: FileSystem) {
@@ -175,21 +190,6 @@ prepareFireflyDirectory(fs: FileSystem) {
             fs.createDirectory(".firefly")
         }
         fs.createDirectory(".firefly/output")
-    }
-}
-
-detectBrowserMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): Bool {
-    let file = mainFile + ".ff"
-    let code = fs.readText(file)
-    let tokens = Tokenizer.tokenize(file, code)
-    let parser = Parser.make(PackagePair("script", "script"), file, tokens, False)
-    let module = parser.parseModuleWithPackageInfo().module
-    module.functions.any { definition =>
-        (definition.signature.name == "browserMain" || definition.signature.name == "main") &&
-        definition.signature.parameters.{ // This is a bit wrong, since BrowserSystem may be aliased or qualified
-            | [Parameter p] {p.valueType | TConstructor(_, "BrowserSystem", _)} => True
-            | _ => False
-        }
     }
 }
 

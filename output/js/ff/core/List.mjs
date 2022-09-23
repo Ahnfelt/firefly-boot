@@ -1185,6 +1185,32 @@ export function List_reverse(self_) {
 return ff_core_List.reverseList_(self_)
 }
 
+export function List_toIterator(self_) {
+let remaining_ = self_;
+return ff_core_Iterator.Iterator((() => {
+{
+const _1 = remaining_;
+{
+if(_1.Link) {
+const head_ = _1.head_;
+const tail_ = _1.tail_;
+remaining_ = tail_;
+return ff_core_Option.Some(head_)
+return
+}
+}
+{
+if(_1.Empty) {
+return ff_core_Option.None()
+return
+}
+}
+}
+}), (() => {
+remaining_ = ff_core_List.Empty()
+}))
+}
+
 export async function List_addAll$(self_, list_, $c) {
 return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }
@@ -2117,6 +2143,32 @@ return (await merge_$((await ff_core_List.List_sortBy$(pair_.first_, body_, $c, 
 
 export async function List_reverse$(self_, $c) {
 return ff_core_List.reverseList_(self_)
+}
+
+export async function List_toIterator$(self_, $c) {
+let remaining_ = self_;
+return ff_core_Iterator.Iterator((async ($c) => {
+{
+const _1 = remaining_;
+{
+if(_1.Link) {
+const head_ = _1.head_;
+const tail_ = _1.tail_;
+remaining_ = tail_;
+return ff_core_Option.Some(head_)
+return
+}
+}
+{
+if(_1.Empty) {
+return ff_core_Option.None()
+return
+}
+}
+}
+}), (async ($c) => {
+remaining_ = ff_core_List.Empty()
+}))
 }
 
 export function List_toSet(self_, ff_core_Ordering_Order$T) {

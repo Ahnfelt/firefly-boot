@@ -21,6 +21,7 @@ browserMain(system: BrowserSystem): Unit {
 }
 
 nodeMain(system: NodeSystem): Unit {
+    //system.assets().files.each{ path, stream => Log.debug(path)}
     HttpServer.listen(system, "localhost", 8080) { request, response =>
 
         if(request.path() == "/") {
@@ -58,13 +59,21 @@ buildMain(system: BuildSystem) {
     } else {
         browser.assets()
     }
+    function rewriteHtml(): AssetSystem {
+        let html = system.packageAssets().readText("/index.html")
+        let newHtml = html.replace(
+            """<script type="module" src="/js/script/script/Main.mjs"></script>"""
+            """<script src="/js/Main.bundle.js"></script>"""
+        )
+        AssetSystem([Pair("/index.html", Stream { [newHtml.toBuffer()].toIterator() })].toMap())
+    }
+    let indexAssets = if(system.buildMode()) {
+        rewriteHtml()
+    } else {
+        system.packageAssets().asset("/index.html")
+    }
     let assets = AssetSystem.create()
-        .addAssets("/", system.packageAssets().asset("/index.html"))
+        .addAssets("/", indexAssets)
         .addAssets("/browser", browserAssets)
     system.setAssets(assets)
 }
-
-// Invariant: buildMain always runs before main.
-// script mode: runs buildMain, then main.
-// build mode: runs buildMain only.
-// executable mode: runs main only.

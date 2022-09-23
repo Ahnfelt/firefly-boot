@@ -5,6 +5,7 @@ type BrowserBundle!(assetSystem: AssetSystem)
 extend self: BuildSystem {
 
     compileForBrowser(mainFile: String): BrowserCode {
+        // TODO: Check that the mainFile is in the current package directory
         internalCompile(self, mainFile, "browser")
         let fs = internalFileSystem(self)
         let streams = internalListDirectory(fs, ".firefly/output/browser")
@@ -44,9 +45,9 @@ extend self: BrowserCode {
     }
 
     bundle(minify: Bool = True): BrowserBundle {
-        let prefix = ".firefly/output/node"
-        let mainJsFile = ".firefly/output/node/script/script/Main.mjs"
-        let file = ".firefly/output/node/Main.bundle.js"
+        let prefix = ".firefly/output/browser"
+        let mainJsFile = ".firefly/output/browser/script/script/Main.mjs"
+        let file = ".firefly/output/browser/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify)
         let fs = internalBrowserCodeFileSystem(self)
         let assets = AssetSystem([Pair(file.dropFirst(prefix.size()), fs.readStream(file))].toMap())
@@ -70,7 +71,7 @@ internalCallEsBuild(
     outputPath: String
     minify: Bool
 ): Unit
-    target js async """
+    target node async """
         import * as esbuild from 'esbuild'
         return await esbuild.build({
             entryPoints: [mainJsFile_],
@@ -84,53 +85,24 @@ internalCallEsBuild(
         })
     """
 
-internalCreateExecutable(
-    self: BuildSystem,
-    mainJsFile: String = ".firefly/output/node/Main.min.js",
-    outputPath: String = ".firefly/output",
-    targets: List[String] = ["host"],
-    assets: AssetSystem = AssetSystem.create()
+internalNodeCallEsBuild(
+    self: NodeSystem
+    mainJsFile: String
+    outputPath: String
+    minify: Bool
 ): Unit
-    target js {
-        let assetFiles = "" // TODO: assets.map { "\"" + _.replace("\\", "\\\\").replace("\"", "\\\"") + "\"" }.join(", ")
-        let json = """{
-            "name": "main",
-            "bin": {
-                "firefly-main": "Main.min.js"
-            },
-            "devDependencies": {
-                "pkg": "^5.7.0"
-            },
-            "pkg": {
-                "scripts": "Main.min.js",
-                "outputPath": "bin",
-                "assets": [""" + assetFiles + """],
-                "targets": [
-                    "node18-linux-x64",
-                    "node18-macos-x64",
-                    "node18-win-x64"
-                ]
-            }
-        }"""
-        let packageFile = ".firefly/output/node/package.json"
-        internalFileSystem(self).writeText(packageFile, json)
-        internalCallPkg(self, packageFile, outputPath, targets)
-    }
-
-internalCallPkg(
-    self: BuildSystem,
-    packageFile: String,
-    outputPath: String,
-    targets: List[String]
-): Unit
-    target js async """
-        import * as pkg from 'pkg'
-        return await pkg.exec([
-            packageFile_,
-            '--debug',
-            '--out-path', outputPath_,
-            '--target', ff_core_List.List_toArray(targets_).join(',')
-        ])
+    target node async """
+        import * as esbuild from 'esbuild'
+        return await esbuild.build({
+            entryPoints: [mainJsFile_],
+            bundle: true,
+            minify: minify_,
+            sourcemap: true,
+            platform: 'node',
+            target: 'es6',
+            external: ['../../../node_modules/*'], // TODO
+            outfile: outputPath_
+        })
     """
 
 internalListDirectory(fs: FileSystem, path: String): List[Pair[String, Stream[Buffer]]] {
@@ -157,7 +129,7 @@ internalBrowserCodeFileSystem(dummy: BrowserCode): FileSystem
         return null;
     """
 
-internalCompile(dummy: BuildSystem, mainFile: String, target: String): Unit
-    target js async """
-        return await $firefly_compiler.buildViaBuildSystem_$(self_, self_.fireflyPath_, mainFile_, target_, $c)
+internalCompile(buildSystem: BuildSystem, mainFile: String, target: String): Unit
+    target node async """
+        return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $c)
     """

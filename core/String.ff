@@ -118,4 +118,9 @@ extend self: String {
             return true;
         """
 
+    toBuffer(): Buffer
+        target js sync """
+            return Buffer.from(self_, 'utf8');
+        """
+
 }

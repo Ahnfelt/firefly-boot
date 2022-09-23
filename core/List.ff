@@ -307,6 +307,25 @@ extend self[T]: List[T] {
     reverse(): List[T] {
         reverseList(self)
     }
+
+    toIterator(): Iterator[T] {
+        mutable remaining = self
+        Iterator(
+            next = {
+                remaining.{
+                    | [head, ...tail] =>
+                        remaining = tail
+                        Some(head)
+                    | [] =>
+                        None
+                }
+            }
+            close = {
+                remaining = []
+            }
+        )
+    }
+
 }
 
 extend self[T: Order]: List[T] {
