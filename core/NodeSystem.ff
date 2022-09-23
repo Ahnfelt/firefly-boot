@@ -9,11 +9,17 @@ extend self: NodeSystem {
         let assetPkgSnapshotPath = "/snapshot/output/assets"
         if(self.files().isDirectory(assetPkgSnapshotPath)) {
             let fs = self.files()
-            let files = fs.list(assetPkgSnapshotPath)
-            let streams = files.map { file =>
-                Pair(file.dropFirst(assetPkgSnapshotPath.size()), fs.readStream(file))
+            function streams(path: String): List[Pair[String, Stream[Buffer]]] {
+                let files = fs.list(path)
+                files.flatMap { file =>
+                    if(fs.isDirectory(file)) {
+                        streams(file)
+                    } else {
+                        [Pair(file.dropFirst(assetPkgSnapshotPath.size()), fs.readStream(file))]
+                    }
+                }
             }
-            AssetSystem(streams.toMap())
+            AssetSystem(streams(assetPkgSnapshotPath).toMap())
         } else {
             internalAssets(self)
         }

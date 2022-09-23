@@ -97,11 +97,17 @@ export function NodeSystem_assets(self_) {
 const assetPkgSnapshotPath_ = "/snapshot/output/assets";
 if(ff_core_FileSystem.FileSystem_isDirectory(ff_core_NodeSystem.NodeSystem_files(self_), assetPkgSnapshotPath_)) {
 const fs_ = ff_core_NodeSystem.NodeSystem_files(self_);
-const files_ = ff_core_FileSystem.FileSystem_list(fs_, assetPkgSnapshotPath_);
-const streams_ = ff_core_List.List_map(files_, ((file_) => {
-return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_))
-}));
-return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+function streams_(path_) {
+const files_ = ff_core_FileSystem.FileSystem_list(fs_, path_);
+return ff_core_List.List_flatMap(files_, ((file_) => {
+if(ff_core_FileSystem.FileSystem_isDirectory(fs_, file_)) {
+return streams_(file_)
+} else {
+return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_)), ff_core_List.Empty())
+}
+}))
+}
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_(assetPkgSnapshotPath_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
 return ff_core_NodeSystem.internalAssets_(self_)
 }
@@ -135,11 +141,17 @@ export async function NodeSystem_assets$(self_, $c) {
 const assetPkgSnapshotPath_ = "/snapshot/output/assets";
 if((await ff_core_FileSystem.FileSystem_isDirectory$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), assetPkgSnapshotPath_, $c))) {
 const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(self_, $c));
-const files_ = (await ff_core_FileSystem.FileSystem_list$(fs_, assetPkgSnapshotPath_, $c));
-const streams_ = (await ff_core_List.List_map$(files_, (async (file_, $c) => {
-return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c)))
-}), $c));
-return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+async function streams_$(path_, $c) {
+const files_ = (await ff_core_FileSystem.FileSystem_list$(fs_, path_, $c));
+return (await ff_core_List.List_flatMap$(files_, (async (file_, $c) => {
+if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $c))) {
+return (await streams_$(file_, $c))
+} else {
+return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))), ff_core_List.Empty())
+}
+}), $c))
+}
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await streams_$(assetPkgSnapshotPath_, $c)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
 return (await ff_core_NodeSystem.internalAssets_$(self_, $c))
 }

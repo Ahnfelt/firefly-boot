@@ -50,7 +50,10 @@ extend self: BrowserCode {
         let file = ".firefly/output/browser/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify)
         let fs = internalBrowserCodeFileSystem(self)
-        let assets = AssetSystem([Pair(file.dropFirst(prefix.size()), fs.readStream(file))].toMap())
+        let assets = AssetSystem([
+            Pair(file.dropFirst(prefix.size()), fs.readStream(file))
+            Pair(file.dropFirst(prefix.size()) + ".map", fs.readStream(file + ".map"))
+        ].toMap())
         BrowserBundle(assets)
     }
 
@@ -78,7 +81,7 @@ internalCallEsBuild(
             bundle: true,
             minify: minify_,
             sourcemap: true,
-            platform: 'node',
+            platform: 'browser',
             target: 'es6',
             external: ['../../../node_modules/*'], // TODO
             outfile: outputPath_
