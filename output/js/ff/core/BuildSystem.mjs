@@ -91,7 +91,7 @@ return {assetSystem_};
 
 
 
-export function internalCallEsBuild_(self_, mainJsFile_, outputPath_, minify_) {
+export function internalCallEsBuild_(self_, mainJsFile_, outputPath_, minify_, sourceMap_) {
 throw new Error('Function internalCallEsBuild is missing on this target in sync context.');
 }
 
@@ -129,14 +129,14 @@ export function internalCompile_(buildSystem_, mainFile_, target_) {
 throw new Error('Function internalCompile is missing on this target in sync context.');
 }
 
-export async function internalCallEsBuild_$(self_, mainJsFile_, outputPath_, minify_, $c) {
+export async function internalCallEsBuild_$(self_, mainJsFile_, outputPath_, minify_, sourceMap_, $c) {
 
         const esbuild = import$0
         return await esbuild.build({
             entryPoints: [mainJsFile_],
             bundle: true,
             minify: minify_,
-            sourcemap: true,
+            sourcemap: sourceMap_,
             platform: 'browser',
             target: 'es6',
             external: ['../../../node_modules/*'], // TODO
@@ -267,13 +267,15 @@ export function BrowserCode_assets(self_) {
 return self_.assetSystem_
 }
 
-export function BrowserCode_bundle(self_, minify_ = true) {
+export function BrowserCode_bundle(self_, minify_ = true, sourceMap_ = false) {
 const prefix_ = ".firefly/output/browser";
 const mainJsFile_ = ".firefly/output/browser/script/script/Main.mjs";
 const file_ = ".firefly/output/browser/Main.bundle.js";
-ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_);
+ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_, sourceMap_);
 const fs_ = ff_core_BuildSystem.internalBrowserCodeFileSystem_(self_);
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_)), ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), ff_core_FileSystem.FileSystem_readStream(fs_, (file_ + ".map"))), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_)), (sourceMap_
+? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), ff_core_FileSystem.FileSystem_readStream(fs_, (file_ + ".map"))), ff_core_List.Empty())
+: ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return ff_core_BuildSystem.BrowserBundle(assets_)
 }
 
@@ -281,13 +283,15 @@ export async function BrowserCode_assets$(self_, $c) {
 return self_.assetSystem_
 }
 
-export async function BrowserCode_bundle$(self_, minify_ = true, $c) {
+export async function BrowserCode_bundle$(self_, minify_ = true, sourceMap_ = false, $c) {
 const prefix_ = ".firefly/output/browser";
 const mainJsFile_ = ".firefly/output/browser/script/script/Main.mjs";
 const file_ = ".firefly/output/browser/Main.bundle.js";
-(await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, $c));
+(await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, sourceMap_, $c));
 const fs_ = (await ff_core_BuildSystem.internalBrowserCodeFileSystem_$(self_, $c));
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))), ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (await ff_core_FileSystem.FileSystem_readStream$(fs_, (file_ + ".map"), $c))), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))), (sourceMap_
+? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (await ff_core_FileSystem.FileSystem_readStream$(fs_, (file_ + ".map"), $c))), ff_core_List.Empty())
+: ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return ff_core_BuildSystem.BrowserBundle(assets_)
 }
 

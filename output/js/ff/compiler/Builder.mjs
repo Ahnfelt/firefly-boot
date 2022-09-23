@@ -291,7 +291,6 @@ export async function internalCallPkg_$(self_, packageFile_, outputPath_, target
         const pkg = import$0
         return await pkg.exec([
             packageFile_,
-            "--debug",
             '--out-path', outputPath_,
             '--target', ff_core_List.List_toArray(targets_).join(',')
         ])

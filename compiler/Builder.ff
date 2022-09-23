@@ -128,7 +128,6 @@ internalCallPkg(
         import * as pkg from 'pkg'
         return await pkg.exec([
             packageFile_,
-            "--debug",
             '--out-path', outputPath_,
             '--target', ff_core_List.List_toArray(targets_).join(',')
         ])

@@ -63,7 +63,7 @@ buildMain(system: BuildSystem) {
         let html = system.packageAssets().readText("/index.html")
         let newHtml = html.replace(
             """<script type="module" src="/js/script/script/Main.mjs"></script>"""
-            """<script src="/js/Main.bundle.js"></script>"""
+            """<script defer src="/js/Main.bundle.js"></script>"""
         )
         AssetSystem([Pair("/index.html", Stream { [newHtml.toBuffer()].toIterator() })].toMap())
     }
