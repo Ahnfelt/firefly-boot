@@ -142,7 +142,26 @@ return path_
 const code_ = ff_core_FileSystem.FileSystem_readText(fs_, packageFile_);
 const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false);
-return ff_compiler_Parser.Parser_parsePackageInfo(parser_)
+const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
+return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
+}
+
+export function Dependencies_addCoreDependencyIfMissing(self_, info_) {
+if(ff_core_List.List_any(info_.dependencies_, ((d_) => {
+return ((d_.packagePair_.group_ == "ff") && (d_.packagePair_.name_ == "core"))
+}))) {
+return info_
+} else {
+const coreDependency_ = ff_compiler_Syntax.DDependency(info_.package_.at_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(info_.package_.at_, 0, 0, 0), ff_compiler_Syntax.Trusted(), info_.package_.targets_);
+{
+const _1 = info_;
+{
+const _c = _1;
+return ff_compiler_Syntax.PackageInfo(_c.package_, ff_core_List.Link(coreDependency_, info_.dependencies_))
+return
+}
+}
+}
 }
 
 export function Dependencies_processPackageInfo(self_, packageInfo_) {
@@ -191,7 +210,26 @@ return path_
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, packageFile_, $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false);
-return ff_compiler_Parser.Parser_parsePackageInfo(parser_)
+const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
+return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
+}
+
+export async function Dependencies_addCoreDependencyIfMissing$(self_, info_, $c) {
+if(ff_core_List.List_any(info_.dependencies_, ((d_) => {
+return ((d_.packagePair_.group_ == "ff") && (d_.packagePair_.name_ == "core"))
+}))) {
+return info_
+} else {
+const coreDependency_ = ff_compiler_Syntax.DDependency(info_.package_.at_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.Version(info_.package_.at_, 0, 0, 0), ff_compiler_Syntax.Trusted(), info_.package_.targets_);
+{
+const _1 = info_;
+{
+const _c = _1;
+return ff_compiler_Syntax.PackageInfo(_c.package_, ff_core_List.Link(coreDependency_, info_.dependencies_))
+return
+}
+}
+}
 }
 
 export async function Dependencies_processPackageInfo$(self_, packageInfo_, $c) {

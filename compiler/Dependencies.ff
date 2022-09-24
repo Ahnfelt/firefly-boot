@@ -33,7 +33,25 @@ extend self: Dependencies {
         let code = fs.readText(packageFile)
         let tokens = Tokenizer.tokenize(packageFile, code)
         let parser = Parser.make(packagePair, packageFile, tokens, False)
-        parser.parsePackageInfo()
+        let info = parser.parsePackageInfo()
+        self.addCoreDependencyIfMissing(info)
+    }
+
+    addCoreDependencyIfMissing(info: PackageInfo): PackageInfo {
+        if(info.dependencies.any { d =>
+                d.packagePair.group == "ff" && d.packagePair.name == "core"
+        }) {
+            info
+        } else {
+            let coreDependency = DDependency(
+                at = info.package.at
+                packagePair = PackagePair("ff", "core")
+                version = Version(info.package.at, 0, 0, 0)
+                safety = Trusted
+                targets = info.package.targets
+            )
+            info.PackageInfo(dependencies = [coreDependency, ...info.dependencies])
+        }
     }
 
     processPackageInfo(
