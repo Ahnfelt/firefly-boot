@@ -46,8 +46,8 @@ extend self: BrowserCode {
 
     bundle(minify: Bool = True, sourceMap: Bool = False): BrowserBundle {
         let prefix = ".firefly/output/browser"
-        let mainJsFile = ".firefly/output/browser/script/script/Main.mjs"
-        let file = ".firefly/output/browser/Main.bundle.js"
+        let mainJsFile = prefix + "/script/script/Main.mjs"
+        let file = prefix + "/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify, sourceMap = sourceMap)
         let fs = internalBrowserCodeFileSystem(self)
         let assets = AssetSystem([
