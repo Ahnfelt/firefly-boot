@@ -63,11 +63,25 @@ extend self: Dependencies {
 
     fetchDependency(
         fs: FileSystem
+        fetch: FetchSystem
         dependency: DDependency
     ): String {
         let location = self.workspace.findPackageLocation(dependency.packagePair, dependency.version)
         if(location.contains(":")) {
-            panic("Loading packages by URL is not yet supported: " + location)
+            if(location.startsWith("http://") || location.startsWith("https://")) {
+                let response = fetch.fetch(location, throw = False)
+                if(!response.ok()) {
+                    panic("Could not download dependency: " + location)
+                }
+                let buffer = response.readBuffer()
+                let packagePair = dependency.packagePair
+                let path = ".firefly/dependencies/" + packagePair.group + "/" + packagePair.name
+                fs.createDirectories(path)
+                internalExtractTar(fs, buffer, path)
+                path
+            } else {
+                panic("Loading packages by this protocol is not supported: " + location)
+            }
         } else {
             location
         }
@@ -75,11 +89,12 @@ extend self: Dependencies {
 
     processDependencies(
         fs: FileSystem
+        fetch: FetchSystem
         dependencies: List[DDependency]
     ): Unit {
         // Remember to check for cycles
         let packageInfos = dependencies.map { dependency =>
-            let path = self.fetchDependency(fs, dependency)
+            let path = self.fetchDependency(fs, fetch, dependency)
             self.packagePaths = self.packagePaths.add(dependency.packagePair, path)
             let packageInfo = self.loadPackageInfo(fs, dependency.packagePair, path)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
@@ -87,18 +102,18 @@ extend self: Dependencies {
         }
         let newDependencies = packageInfos.flatMap { self.processPackageInfo(_) }
         if(newDependencies != []) {
-            self.processDependencies(fs, newDependencies)
+            self.processDependencies(fs, fetch, newDependencies)
         }
     }
 
 }
 
-process(fs: FileSystem, path: String): ResolvedDependencies {
+process(fs: FileSystem, fetch: FetchSystem, path: String): ResolvedDependencies {
     let workspace = Workspace.loadWorkspace(fs, path)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
     let packageInfo = self.loadPackageInfo(fs, PackagePair("script", "script"), path)
     let newDependencies = self.processPackageInfo(packageInfo)
-    self.processDependencies(fs, newDependencies)
+    self.processDependencies(fs, fetch, newDependencies)
     ResolvedDependencies(
         packagePaths = self.packagePaths
         singleFilePackages = self.singleFilePackages
@@ -116,3 +131,9 @@ checkPackagePairs(dependencyPair : PackagePair, packagePair: PackagePair): Unit 
         )
     }
 }
+
+internalExtractTar(fs: FileSystem, buffer: Buffer, path: String): Unit
+    target node async """
+        import * as tar from 'tar'
+        await tar.extract({file: buffer_, cwd: path_, strict: true})
+    """

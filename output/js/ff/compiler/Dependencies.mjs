@@ -1,4 +1,4 @@
-
+import * as import$0 from 'tar';
 
 import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
 
@@ -98,12 +98,12 @@ return {packagePaths_, singleFilePackages_};
 
 
 
-export function process_(fs_, path_) {
+export function process_(fs_, fetch_, path_) {
 const workspace_ = ff_compiler_Workspace.loadWorkspace_(fs_, path_);
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), path_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
-ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, newDependencies_);
+ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_);
 return ff_compiler_Dependencies.ResolvedDependencies(self_.packagePaths_, self_.singleFilePackages_)
 }
 
@@ -113,12 +113,16 @@ ff_core_Core.panic_(((("Dependency declaration and package declaration disagree 
 }
 }
 
-export async function process_$(fs_, path_, $c) {
+export function internalExtractTar_(fs_, buffer_, path_) {
+throw new Error('Function internalExtractTar is missing on this target in sync context.');
+}
+
+export async function process_$(fs_, fetch_, path_, $c) {
 const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, path_, $c));
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $c));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
-(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, newDependencies_, $c));
+(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c));
 return ff_compiler_Dependencies.ResolvedDependencies(self_.packagePaths_, self_.singleFilePackages_)
 }
 
@@ -126,6 +130,13 @@ export async function checkPackagePairs_$(dependencyPair_, packagePair_, $c) {
 if(((packagePair_.group_ != dependencyPair_.group_) || (packagePair_.name_ != dependencyPair_.name_))) {
 ff_core_Core.panic_(((("Dependency declaration and package declaration disagree on package name: " + ff_compiler_Syntax.PackagePair_groupName(dependencyPair_, ":")) + " vs. ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
 }
+}
+
+export async function internalExtractTar_$(fs_, buffer_, path_, $c) {
+
+        const tar = import$0
+        await tar.extract({file: buffer_, cwd: path_, strict: true})
+    
 }
 
 export function Dependencies_loadPackageInfo(self_, fs_, packagePair_, path_) {
@@ -171,18 +182,30 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 }))
 }
 
-export function Dependencies_fetchDependency(self_, fs_, dependency_) {
+export function Dependencies_fetchDependency(self_, fs_, fetch_, dependency_) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if(ff_core_String.String_contains(location_, ":")) {
-return ff_core_Core.panic_(("Loading packages by URL is not yet supported: " + location_))
+if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
+const response_ = ff_core_FetchSystem.FetchSystem_fetch(fetch_, location_, "GET", ff_core_FetchSystem.emptyList_, ff_core_Option.None(), ff_core_FetchSystem.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
+if((!ff_core_FetchSystem.FetchResponse_ok(response_))) {
+ff_core_Core.panic_(("Could not download dependency: " + location_))
+};
+const buffer_ = ff_core_FetchSystem.FetchResponse_readBuffer(response_);
+const packagePair_ = dependency_.packagePair_;
+const path_ = (((".firefly/dependencies/" + packagePair_.group_) + "/") + packagePair_.name_);
+ff_compiler_Dependencies.internalExtractTar_(fs_, buffer_, path_);
+return path_
+} else {
+return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
+}
 } else {
 return location_
 }
 }
 
-export function Dependencies_processDependencies(self_, fs_, dependencies_) {
+export function Dependencies_processDependencies(self_, fs_, fetch_, dependencies_) {
 const packageInfos_ = ff_core_List.List_map(dependencies_, ((dependency_) => {
-const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, dependency_);
+const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, fetch_, dependency_);
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, dependency_.packagePair_, path_);
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
@@ -192,7 +215,7 @@ const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
 if((newDependencies_ != ff_core_List.Empty())) {
-ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, newDependencies_)
+ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_)
 }
 }
 
@@ -239,18 +262,30 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 }))
 }
 
-export async function Dependencies_fetchDependency$(self_, fs_, dependency_, $c) {
+export async function Dependencies_fetchDependency$(self_, fs_, fetch_, dependency_, $c) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if(ff_core_String.String_contains(location_, ":")) {
-return ff_core_Core.panic_(("Loading packages by URL is not yet supported: " + location_))
+if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
+const response_ = (await ff_core_FetchSystem.FetchSystem_fetch$(fetch_, location_, "GET", ff_core_FetchSystem.emptyList_, ff_core_Option.None(), ff_core_FetchSystem.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $c));
+if((!(await ff_core_FetchSystem.FetchResponse_ok$(response_, $c)))) {
+ff_core_Core.panic_(("Could not download dependency: " + location_))
+};
+const buffer_ = (await ff_core_FetchSystem.FetchResponse_readBuffer$(response_, $c));
+const packagePair_ = dependency_.packagePair_;
+const path_ = (((".firefly/dependencies/" + packagePair_.group_) + "/") + packagePair_.name_);
+(await ff_compiler_Dependencies.internalExtractTar_$(fs_, buffer_, path_, $c));
+return path_
+} else {
+return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
+}
 } else {
 return location_
 }
 }
 
-export async function Dependencies_processDependencies$(self_, fs_, dependencies_, $c) {
+export async function Dependencies_processDependencies$(self_, fs_, fetch_, dependencies_, $c) {
 const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (dependency_, $c) => {
-const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, dependency_, $c));
+const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, fetch_, dependency_, $c));
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, dependency_.packagePair_, path_, $c));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
@@ -260,7 +295,7 @@ const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
 if((newDependencies_ != ff_core_List.Empty())) {
-(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, newDependencies_, $c))
+(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c))
 }
 }
 

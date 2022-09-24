@@ -134,7 +134,7 @@ ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
 }
 
 export function buildViaBuildSystem_(system_, fireflyPath_, mainFile_, target_) {
-const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_);
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_fetch(system_), mainFile_);
 const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
@@ -232,7 +232,7 @@ if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $c))) {
 }
 
 export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, target_, $c) {
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, $c));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), mainFile_, $c));
 const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);

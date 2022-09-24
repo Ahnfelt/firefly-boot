@@ -80,7 +80,7 @@ main(system: NodeSystem): Unit {
     command.{
 
         | RunCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
                 packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
             )
@@ -89,7 +89,7 @@ main(system: NodeSystem): Unit {
             writeNodeRunFile(system.files(), mainFile, arguments)
 
         | BrowserCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
                 packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
             )
@@ -98,7 +98,7 @@ main(system: NodeSystem): Unit {
             writeEsbuildRunFile(system.files(), fireflyPath, mainFile)
 
         | BuildCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
                 packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
             )
