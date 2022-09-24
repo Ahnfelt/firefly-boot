@@ -11,14 +11,8 @@ import JsEmitter
 type MainCommand {
     BootstrapCommand
     RunCommand(mainPath : String)
-    BuildCommand(mainPath : String, platform : BuildPlatform)
-}
-
-type BuildPlatform {
-    BrowserPlatform
-    LinuxPlatform
-    WindowsPlatform
-    MacosPlatform
+    BrowserCommand(mainPath : String)
+    BuildCommand(mainPath : String)
 }
 
 main(system: NodeSystem): Unit {
@@ -35,11 +29,8 @@ main(system: NodeSystem): Unit {
     let command = consumeArgument().expect().{
         | s {s.endsWith(".ff")} => RunCommand(s.dropLast(3))
         | "run" => RunCommand(consumeArgument().expect().dropLast(3))
-        | "browser" => BuildCommand(consumeArgument().expect().dropLast(3), BrowserPlatform)
-        | "linux" => BuildCommand(consumeArgument().expect().dropLast(3), LinuxPlatform)
-        | "windows" => BuildCommand(consumeArgument().expect().dropLast(3), WindowsPlatform)
-        | "macos" => BuildCommand(consumeArgument().expect().dropLast(3), MacosPlatform)
-        | "build" => BuildCommand(consumeArgument().expect().dropLast(3), MacosPlatform)
+        | "browser" => BrowserCommand(consumeArgument().expect().dropLast(3))
+        | "build" => BuildCommand(consumeArgument().expect().dropLast(3))
         | "bootstrap" => BootstrapCommand
         | s => panic("Unknown command '" + s + "'")
     }
@@ -97,7 +88,7 @@ main(system: NodeSystem): Unit {
             buildScript(mainFile, EmitNode, fixedDependencies)
             writeNodeRunFile(system.files(), mainFile, arguments)
 
-        | BuildCommand(mainFile, BrowserPlatform) =>
+        | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
                 packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
@@ -106,13 +97,7 @@ main(system: NodeSystem): Unit {
             buildScript(mainFile, EmitBrowser, fixedDependencies)
             writeEsbuildRunFile(system.files(), fireflyPath, mainFile)
 
-        | BuildCommand(_, LinuxPlatform) =>
-            panic("Not yet implemented: 'linux'")
-
-        | BuildCommand(_, WindowsPlatform) =>
-            panic("Not yet implemented: 'windows'")
-
-        | BuildCommand(mainFile, MacosPlatform) =>
+        | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
                 packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
@@ -180,7 +165,7 @@ writeEsbuildRunFile(fs: FileSystem, fireflyPath: String, mainFile: String) {
     fs.writeText(".firefly/output/run"
         "'" + esbuildPath.replace("'", "''") + "' '" + mainPath.replace("'", "''") + "' " +
         "--outfile='" + outPath.replace("'", "''") + "' " +
-        "--platform=browser --target=es6 --bundle --minify --log-level=warning"
+        "--platform=browser --sourcemap --target=es6 --bundle --minify --log-level=warning"
     )
 }
 
