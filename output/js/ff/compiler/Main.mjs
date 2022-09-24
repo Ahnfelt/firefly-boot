@@ -104,26 +104,11 @@ return BootstrapCommand$;
 export function RunCommand(mainPath_) {
 return {RunCommand: true, mainPath_};
 }
-export function BuildCommand(mainPath_, platform_) {
-return {BuildCommand: true, mainPath_, platform_};
+export function BrowserCommand(mainPath_) {
+return {BrowserCommand: true, mainPath_};
 }
-
-// type BuildPlatform
-const BrowserPlatform$ = {BrowserPlatform: true};
-export function BrowserPlatform() {
-return BrowserPlatform$;
-}
-const LinuxPlatform$ = {LinuxPlatform: true};
-export function LinuxPlatform() {
-return LinuxPlatform$;
-}
-const WindowsPlatform$ = {WindowsPlatform: true};
-export function WindowsPlatform() {
-return WindowsPlatform$;
-}
-const MacosPlatform$ = {MacosPlatform: true};
-export function MacosPlatform() {
-return MacosPlatform$;
+export function BuildCommand(mainPath_) {
+return {BuildCommand: true, mainPath_};
 }
 
 
@@ -153,31 +138,13 @@ return
 }
 {
 if(_1 == "browser") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.BrowserPlatform())
-return
-}
-}
-{
-if(_1 == "linux") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.LinuxPlatform())
-return
-}
-}
-{
-if(_1 == "windows") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.WindowsPlatform())
-return
-}
-}
-{
-if(_1 == "macos") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.MacosPlatform())
+return ff_compiler_Main.BrowserCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
 return
 }
 }
 {
 if(_1 == "build") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.MacosPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
 return
 }
 }
@@ -263,9 +230,8 @@ break
 }
 }
 {
-if(_1.BuildCommand) {
+if(_1.BrowserCommand) {
 const mainFile_ = _1.mainPath_;
-if(_1.platform_.BrowserPlatform) {
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), (mainFile_ + ".ff"));
 const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
@@ -276,27 +242,9 @@ ff_compiler_Main.writeEsbuildRunFile_(ff_core_NodeSystem.NodeSystem_files(system
 break
 }
 }
-}
-{
-if(_1.BuildCommand) {
-if(_1.platform_.LinuxPlatform) {
-ff_core_Core.panic_("Not yet implemented: 'linux'")
-break
-}
-}
-}
-{
-if(_1.BuildCommand) {
-if(_1.platform_.WindowsPlatform) {
-ff_core_Core.panic_("Not yet implemented: 'windows'")
-break
-}
-}
-}
 {
 if(_1.BuildCommand) {
 const mainFile_ = _1.mainPath_;
-if(_1.platform_.MacosPlatform) {
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), (mainFile_ + ".ff"));
 const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
@@ -307,7 +255,6 @@ buildScript_(mainFile_, ff_compiler_JsEmitter.EmitExecutable(), fixedDependencie
 ff_compiler_Main.bundleForPkg_(system_);
 ff_compiler_Main.writeBuildRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_, arguments_)
 break
-}
 }
 }
 {
@@ -348,7 +295,7 @@ export function writeEsbuildRunFile_(fs_, fireflyPath_, mainFile_) {
 const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
 const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
 const outPath_ = ((".firefly/output/browser/" + mainFile_) + ".min.js");
-ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", (((((((("'" + ff_core_String.String_replace(esbuildPath_, "'", "''")) + "' '") + ff_core_String.String_replace(mainPath_, "'", "''")) + "' ") + "--outfile='") + ff_core_String.String_replace(outPath_, "'", "''")) + "' ") + "--platform=browser --target=es6 --bundle --minify --log-level=warning"))
+ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", (((((((("'" + ff_core_String.String_replace(esbuildPath_, "'", "''")) + "' '") + ff_core_String.String_replace(mainPath_, "'", "''")) + "' ") + "--outfile='") + ff_core_String.String_replace(outPath_, "'", "''")) + "' ") + "--platform=browser --sourcemap --target=es6 --bundle --minify --log-level=warning"))
 }
 
 export function prepareFireflyDirectory_(fs_) {
@@ -415,31 +362,13 @@ return
 }
 {
 if(_1 == "browser") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.BrowserPlatform())
-return
-}
-}
-{
-if(_1 == "linux") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.LinuxPlatform())
-return
-}
-}
-{
-if(_1 == "windows") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.WindowsPlatform())
-return
-}
-}
-{
-if(_1 == "macos") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.MacosPlatform())
+return ff_compiler_Main.BrowserCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
 return
 }
 }
 {
 if(_1 == "build") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3), ff_compiler_Main.MacosPlatform())
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
 return
 }
 }
@@ -525,9 +454,8 @@ break
 }
 }
 {
-if(_1.BuildCommand) {
+if(_1.BrowserCommand) {
 const mainFile_ = _1.mainPath_;
-if(_1.platform_.BrowserPlatform) {
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (mainFile_ + ".ff"), $c));
 const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
@@ -538,27 +466,9 @@ return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolve
 break
 }
 }
-}
-{
-if(_1.BuildCommand) {
-if(_1.platform_.LinuxPlatform) {
-ff_core_Core.panic_("Not yet implemented: 'linux'")
-break
-}
-}
-}
-{
-if(_1.BuildCommand) {
-if(_1.platform_.WindowsPlatform) {
-ff_core_Core.panic_("Not yet implemented: 'windows'")
-break
-}
-}
-}
 {
 if(_1.BuildCommand) {
 const mainFile_ = _1.mainPath_;
-if(_1.platform_.MacosPlatform) {
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (mainFile_ + ".ff"), $c));
 const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
@@ -569,7 +479,6 @@ return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolve
 (await ff_compiler_Main.bundleForPkg_$(system_, $c));
 (await ff_compiler_Main.writeBuildRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, arguments_, $c))
 break
-}
 }
 }
 {
@@ -610,7 +519,7 @@ export async function writeEsbuildRunFile_$(fs_, fireflyPath_, mainFile_, $c) {
 const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
 const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
 const outPath_ = ((".firefly/output/browser/" + mainFile_) + ".min.js");
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", (((((((("'" + ff_core_String.String_replace(esbuildPath_, "'", "''")) + "' '") + ff_core_String.String_replace(mainPath_, "'", "''")) + "' ") + "--outfile='") + ff_core_String.String_replace(outPath_, "'", "''")) + "' ") + "--platform=browser --target=es6 --bundle --minify --log-level=warning"), $c))
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", (((((((("'" + ff_core_String.String_replace(esbuildPath_, "'", "''")) + "' '") + ff_core_String.String_replace(mainPath_, "'", "''")) + "' ") + "--outfile='") + ff_core_String.String_replace(outPath_, "'", "''")) + "' ") + "--platform=browser --sourcemap --target=es6 --bundle --minify --log-level=warning"), $c))
 }
 
 export async function prepareFireflyDirectory_$(fs_, $c) {
