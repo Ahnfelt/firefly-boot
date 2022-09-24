@@ -65,7 +65,8 @@ buildMain(system: BuildSystem) {
             """<script type="module" src="/js/script/script/Main.mjs"></script>"""
             """<script defer src="/js/Main.bundle.js"></script>"""
         )
-        AssetSystem([Pair("/index.html", Stream { [newHtml.toBuffer()].toIterator() })].toMap())
+        let stream = Stream { [newHtml.toBuffer()].toIterator() }
+        AssetSystem([Pair("/index.html", stream)].toMap())
     }
     let indexAssets = if(system.buildMode()) {
         rewriteHtml()
