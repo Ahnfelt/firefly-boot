@@ -69,16 +69,24 @@ extend self: Dependencies {
         let location = self.workspace.findPackageLocation(dependency.packagePair, dependency.version)
         if(location.contains(":")) {
             if(location.startsWith("http://") || location.startsWith("https://")) {
-                let response = fetch.fetch(location, throw = False)
-                if(!response.ok()) {
-                    panic("Could not download dependency: " + location)
-                }
-                let buffer = response.readBuffer()
                 let packagePair = dependency.packagePair
-                let path = ".firefly/dependencies/" + packagePair.group + "/" + packagePair.name
-                fs.createDirectories(path)
-                internalExtractTar(fs, buffer, path)
-                path
+                let dependenciesPath = ".firefly/dependencies"
+                let tarGzPath = dependenciesPath + "/" + Workspace.tarGzName(packagePair, dependency.version)
+                let dependencyPath = dependenciesPath + "/" + packagePair.group + "/" + packagePair.name
+                let donePath = dependenciesPath + "/" + packagePair.group + "_" + packagePair.name + ".done"
+                if(!fs.exists(donePath)) {
+                    let response = fetch.fetch(location, throw = False)
+                    if(!response.ok()) {
+                        panic("Could not download dependency: " + location)
+                    }
+                    let buffer = response.readBuffer()
+                    fs.createDirectories(dependencyPath)
+                    fs.writeStream(tarGzPath, Stream { [buffer].toIterator() })
+                    internalExtractTarGz(fs, tarGzPath, dependencyPath)
+                    fs.delete(tarGzPath)
+                    fs.writeText(donePath, "Extracted: " + tarGzPath + "\n")
+                }
+                dependencyPath
             } else {
                 panic("Loading packages by this protocol is not supported: " + location)
             }
@@ -132,8 +140,8 @@ checkPackagePairs(dependencyPair : PackagePair, packagePair: PackagePair): Unit 
     }
 }
 
-internalExtractTar(fs: FileSystem, buffer: Buffer, path: String): Unit
+internalExtractTarGz(fs: FileSystem, tarGzPath: String, path: String): Unit
     target node async """
         import * as tar from 'tar'
-        await tar.extract({file: buffer_, cwd: path_, strict: true})
+        await tar.extract({file: tarGzPath_, cwd: path_, strict: true})
     """

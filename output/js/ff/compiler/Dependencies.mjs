@@ -113,8 +113,8 @@ ff_core_Core.panic_(((("Dependency declaration and package declaration disagree 
 }
 }
 
-export function internalExtractTar_(fs_, buffer_, path_) {
-throw new Error('Function internalExtractTar is missing on this target in sync context.');
+export function internalExtractTarGz_(fs_, tarGzPath_, path_) {
+throw new Error('Function internalExtractTarGz is missing on this target in sync context.');
 }
 
 export async function process_$(fs_, fetch_, path_, $c) {
@@ -132,10 +132,10 @@ ff_core_Core.panic_(((("Dependency declaration and package declaration disagree 
 }
 }
 
-export async function internalExtractTar_$(fs_, buffer_, path_, $c) {
+export async function internalExtractTarGz_$(fs_, tarGzPath_, path_, $c) {
 
         const tar = import$0
-        await tar.extract({file: buffer_, cwd: path_, strict: true})
+        await tar.extract({file: tarGzPath_, cwd: path_, strict: true})
     
 }
 
@@ -186,15 +186,26 @@ export function Dependencies_fetchDependency(self_, fs_, fetch_, dependency_) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if(ff_core_String.String_contains(location_, ":")) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
+const packagePair_ = dependency_.packagePair_;
+const dependenciesPath_ = ".firefly/dependencies";
+const tarGzPath_ = ((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
+const dependencyPath_ = ((((dependenciesPath_ + "/") + packagePair_.group_) + "/") + packagePair_.name_);
+const donePath_ = (((((dependenciesPath_ + "/") + packagePair_.group_) + "_") + packagePair_.name_) + ".done");
+if((!ff_core_FileSystem.FileSystem_exists(fs_, donePath_))) {
 const response_ = ff_core_FetchSystem.FetchSystem_fetch(fetch_, location_, "GET", ff_core_FetchSystem.emptyList_, ff_core_Option.None(), ff_core_FetchSystem.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
 if((!ff_core_FetchSystem.FetchResponse_ok(response_))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
 const buffer_ = ff_core_FetchSystem.FetchResponse_readBuffer(response_);
-const packagePair_ = dependency_.packagePair_;
-const path_ = (((".firefly/dependencies/" + packagePair_.group_) + "/") + packagePair_.name_);
-ff_compiler_Dependencies.internalExtractTar_(fs_, buffer_, path_);
-return path_
+ff_core_FileSystem.FileSystem_createDirectories(fs_, dependencyPath_);
+ff_core_FileSystem.FileSystem_writeStream(fs_, tarGzPath_, (() => {
+return ff_core_List.List_toIterator(ff_core_List.Link(buffer_, ff_core_List.Empty()))
+}), false);
+ff_compiler_Dependencies.internalExtractTarGz_(fs_, tarGzPath_, dependencyPath_);
+ff_core_FileSystem.FileSystem_delete(fs_, tarGzPath_);
+ff_core_FileSystem.FileSystem_writeText(fs_, donePath_, (("Extracted: " + tarGzPath_) + "\n"))
+};
+return dependencyPath_
 } else {
 return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
 }
@@ -266,15 +277,26 @@ export async function Dependencies_fetchDependency$(self_, fs_, fetch_, dependen
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if(ff_core_String.String_contains(location_, ":")) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
+const packagePair_ = dependency_.packagePair_;
+const dependenciesPath_ = ".firefly/dependencies";
+const tarGzPath_ = ((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
+const dependencyPath_ = ((((dependenciesPath_ + "/") + packagePair_.group_) + "/") + packagePair_.name_);
+const donePath_ = (((((dependenciesPath_ + "/") + packagePair_.group_) + "_") + packagePair_.name_) + ".done");
+if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, donePath_, $c)))) {
 const response_ = (await ff_core_FetchSystem.FetchSystem_fetch$(fetch_, location_, "GET", ff_core_FetchSystem.emptyList_, ff_core_Option.None(), ff_core_FetchSystem.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $c));
 if((!(await ff_core_FetchSystem.FetchResponse_ok$(response_, $c)))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
 const buffer_ = (await ff_core_FetchSystem.FetchResponse_readBuffer$(response_, $c));
-const packagePair_ = dependency_.packagePair_;
-const path_ = (((".firefly/dependencies/" + packagePair_.group_) + "/") + packagePair_.name_);
-(await ff_compiler_Dependencies.internalExtractTar_$(fs_, buffer_, path_, $c));
-return path_
+(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, dependencyPath_, $c));
+(await ff_core_FileSystem.FileSystem_writeStream$(fs_, tarGzPath_, (async ($c) => {
+return (await ff_core_List.List_toIterator$(ff_core_List.Link(buffer_, ff_core_List.Empty()), $c))
+}), false, $c));
+(await ff_compiler_Dependencies.internalExtractTarGz_$(fs_, tarGzPath_, dependencyPath_, $c));
+(await ff_core_FileSystem.FileSystem_delete$(fs_, tarGzPath_, $c));
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, donePath_, (("Extracted: " + tarGzPath_) + "\n"), $c))
+};
+return dependencyPath_
 } else {
 return ff_core_Core.panic_(("Loading packages by this protocol is not supported: " + location_))
 }
