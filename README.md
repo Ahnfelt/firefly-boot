@@ -35,7 +35,10 @@ firefly.sh build MyApp.ff
 
 *You must stand in the project directory when running this command.*
 
-This will generate a stand-alone executable file `MyApp` with the necessary assets and dependencies, compatible with most linux distributions, windows and osx. 
+This will generate a stand-alone executable file `MyApp` with the necessary assets and dependencies, compatible with most linux distributions, windows and osx.
+
+If there is a `buildMain(system: BuildSystem)` method, it will be run before producing the executables,
+and if it calls `system.setAssets(assets)`, those assets will be included in the executables and thus be available to the main file via `system.assets()`.
 
 ## Building for the browser
 
