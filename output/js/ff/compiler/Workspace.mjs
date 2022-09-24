@@ -90,7 +90,7 @@ export function WorkspaceRule(packageGroup_, packageName_, location_) {
 return {packageGroup_, packageName_, location_};
 }
 
-export const centralLocation_ = "http://ting.ahnfelt.dk/firefly/repository/";
+export const centralLocation_ = "https://ting.ahnfelt.dk/firefly/repository/";
 
 export function loadWorkspace_(fs_, path_) {
 const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")

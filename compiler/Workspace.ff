@@ -12,7 +12,7 @@ type WorkspaceRule(
     location: String
 )
 
-centralLocation = "http://ting.ahnfelt.dk/firefly/repository/"
+centralLocation = "https://ting.ahnfelt.dk/firefly/repository/"
 
 loadWorkspace(fs: FileSystem, path: String): Workspace {
     let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
