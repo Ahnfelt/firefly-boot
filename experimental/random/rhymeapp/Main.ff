@@ -1,4 +1,4 @@
-dependency ff:core:0.0.1
+//dependency ff:core:0.0.1
 
 browserMain(system: BrowserSystem): Unit {
 
