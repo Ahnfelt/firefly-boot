@@ -269,8 +269,8 @@ return self_.assetSystem_
 
 export function BrowserCode_bundle(self_, minify_ = true, sourceMap_ = false) {
 const prefix_ = ".firefly/output/browser";
-const mainJsFile_ = ".firefly/output/browser/script/script/Main.mjs";
-const file_ = ".firefly/output/browser/Main.bundle.js";
+const mainJsFile_ = (prefix_ + "/script/script/Main.mjs");
+const file_ = (prefix_ + "/Main.bundle.js");
 ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_, sourceMap_);
 const fs_ = ff_core_BuildSystem.internalBrowserCodeFileSystem_(self_);
 const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_)), (sourceMap_
@@ -285,8 +285,8 @@ return self_.assetSystem_
 
 export async function BrowserCode_bundle$(self_, minify_ = true, sourceMap_ = false, $c) {
 const prefix_ = ".firefly/output/browser";
-const mainJsFile_ = ".firefly/output/browser/script/script/Main.mjs";
-const file_ = ".firefly/output/browser/Main.bundle.js";
+const mainJsFile_ = (prefix_ + "/script/script/Main.mjs");
+const file_ = (prefix_ + "/Main.bundle.js");
 (await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, sourceMap_, $c));
 const fs_ = (await ff_core_BuildSystem.internalBrowserCodeFileSystem_$(self_, $c));
 const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))), (sourceMap_
