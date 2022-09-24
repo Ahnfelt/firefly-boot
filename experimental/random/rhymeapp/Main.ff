@@ -21,7 +21,6 @@ browserMain(system: BrowserSystem): Unit {
 }
 
 nodeMain(system: NodeSystem): Unit {
-    //system.assets().files.each{ path, stream => Log.debug(path)}
     HttpServer.listen(system, "localhost", 8080) { request, response =>
 
         if(request.path() == "/") {
