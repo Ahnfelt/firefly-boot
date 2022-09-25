@@ -101,7 +101,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 export function build_(system_, emitTarget_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_) {
 const fs_ = ff_core_NodeSystem.NodeSystem_files(system_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, tempPath_)) {
-ff_compiler_Builder.deleteDirectory_(fs_, tempPath_)
+ff_core_FileSystem.FileSystem_deleteDirectory(fs_, tempPath_)
 };
 ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_);
 const jsPathFile_ = (tempPath_ + "/js");
@@ -116,21 +116,10 @@ return true
 }));
 if(success_) {
 if(ff_core_FileSystem.FileSystem_exists(fs_, jsOutputPath_)) {
-ff_compiler_Builder.deleteDirectory_(fs_, jsOutputPath_)
+ff_core_FileSystem.FileSystem_deleteDirectory(fs_, jsOutputPath_)
 };
 ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
 }
-}
-
-export function deleteDirectory_(fs_, outputFile_) {
-ff_core_List.List_each(ff_core_FileSystem.FileSystem_list(fs_, outputFile_), ((file_) => {
-if(ff_core_FileSystem.FileSystem_isDirectory(fs_, file_)) {
-ff_compiler_Builder.deleteDirectory_(fs_, file_)
-} else {
-ff_core_FileSystem.FileSystem_delete(fs_, file_)
-}
-}));
-ff_core_FileSystem.FileSystem_delete(fs_, outputFile_)
 }
 
 export function buildViaBuildSystem_(system_, fireflyPath_, mainFile_, target_) {
@@ -199,7 +188,7 @@ throw new Error('Function internalFileSystem is missing on this target in sync c
 export async function build_$(system_, emitTarget_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, $c) {
 const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
-(await ff_compiler_Builder.deleteDirectory_$(fs_, tempPath_, $c))
+(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, tempPath_, $c))
 };
 (await ff_core_FileSystem.FileSystem_createDirectory$(fs_, tempPath_, $c));
 const jsPathFile_ = (tempPath_ + "/js");
@@ -214,21 +203,10 @@ return true
 }), $c));
 if(success_) {
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_, $c))) {
-(await ff_compiler_Builder.deleteDirectory_$(fs_, jsOutputPath_, $c))
+(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, jsOutputPath_, $c))
 };
 (await ff_core_FileSystem.FileSystem_rename$(fs_, jsPathFile_, jsOutputPath_, $c))
 }
-}
-
-export async function deleteDirectory_$(fs_, outputFile_, $c) {
-(await ff_core_List.List_each$((await ff_core_FileSystem.FileSystem_list$(fs_, outputFile_, $c)), (async (file_, $c) => {
-if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $c))) {
-(await ff_compiler_Builder.deleteDirectory_$(fs_, file_, $c))
-} else {
-(await ff_core_FileSystem.FileSystem_delete$(fs_, file_, $c))
-}
-}), $c));
-(await ff_core_FileSystem.FileSystem_delete$(fs_, outputFile_, $c))
 }
 
 export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, target_, $c) {

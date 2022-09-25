@@ -81,6 +81,9 @@ extend self: Dependencies {
                         panic("Could not download dependency: " + location)
                     }
                     let buffer = response.readBuffer()
+                    if(fs.isDirectory(dependencyPath)) {
+                        fs.deleteDirectory(dependencyPath)
+                    }
                     fs.createDirectories(dependencyPath)
                     fs.writeStream(tarGzPath, Stream { [buffer].toIterator() })
                     internalExtractTarGz(fs, tarGzPath, dependencyPath)

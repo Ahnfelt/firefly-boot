@@ -50,6 +50,17 @@ extend self: FileSystem {
             try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
         """
 
+    deleteDirectory(path: String): Unit {
+        self.list(path).each { file =>
+            if(self.isDirectory(file)) {
+                self.deleteDirectory(file)
+            } else {
+                self.delete(file)
+            }
+        }
+        self.delete(path)
+    }
+
     rename(fromPath: String, toPath: String): Unit
         target node async """
             import * as fsPromises from 'fs/promises'

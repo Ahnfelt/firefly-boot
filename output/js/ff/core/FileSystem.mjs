@@ -185,6 +185,17 @@ export function FileSystem_delete(self_, path_) {
 throw new Error('Function FileSystem_delete is missing on this target in sync context.');
 }
 
+export function FileSystem_deleteDirectory(self_, path_) {
+ff_core_List.List_each(ff_core_FileSystem.FileSystem_list(self_, path_), ((file_) => {
+if(ff_core_FileSystem.FileSystem_isDirectory(self_, file_)) {
+ff_core_FileSystem.FileSystem_deleteDirectory(self_, file_)
+} else {
+ff_core_FileSystem.FileSystem_delete(self_, file_)
+}
+}));
+ff_core_FileSystem.FileSystem_delete(self_, path_)
+}
+
 export function FileSystem_rename(self_, fromPath_, toPath_) {
 throw new Error('Function FileSystem_rename is missing on this target in sync context.');
 }
@@ -270,6 +281,17 @@ export async function FileSystem_delete$(self_, path_, $c) {
             const fsPromises = import$1
             try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
         
+}
+
+export async function FileSystem_deleteDirectory$(self_, path_, $c) {
+(await ff_core_List.List_each$((await ff_core_FileSystem.FileSystem_list$(self_, path_, $c)), (async (file_, $c) => {
+if((await ff_core_FileSystem.FileSystem_isDirectory$(self_, file_, $c))) {
+(await ff_core_FileSystem.FileSystem_deleteDirectory$(self_, file_, $c))
+} else {
+(await ff_core_FileSystem.FileSystem_delete$(self_, file_, $c))
+}
+}), $c));
+(await ff_core_FileSystem.FileSystem_delete$(self_, path_, $c))
 }
 
 export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {

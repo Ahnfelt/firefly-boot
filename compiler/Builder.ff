@@ -21,7 +21,7 @@ build(
 
     let fs = system.files()
 
-    if(fs.exists(tempPath)) { deleteDirectory(fs, tempPath) }
+    if(fs.exists(tempPath)) { fs.deleteDirectory( tempPath) }
     fs.createDirectory(tempPath)
 
     let jsPathFile = tempPath + "/js"
@@ -36,21 +36,10 @@ build(
     }
 
     if(success) {
-        if(fs.exists(jsOutputPath)) { deleteDirectory(fs, jsOutputPath) }
+        if(fs.exists(jsOutputPath)) { fs.deleteDirectory(jsOutputPath) }
         fs.rename(jsPathFile, jsOutputPath)
     }
 
-}
-
-deleteDirectory(fs: FileSystem, outputFile: String): Unit {
-    fs.list(outputFile).each { file =>
-        if(fs.isDirectory(file)) {
-            deleteDirectory(fs, file)
-        } else {
-            fs.delete(file)
-        }
-    }
-    fs.delete(outputFile)
 }
 
 buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, target: String) {
