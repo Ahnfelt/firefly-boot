@@ -27,8 +27,6 @@ Missing dependencies are fetched from the central or configured package reposito
 
 ## Building an executable
 
-*Not yet implemented.*
-
 ```
 firefly.sh build MyApp.ff
 ```
