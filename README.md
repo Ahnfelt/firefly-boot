@@ -5,6 +5,8 @@ Status: Firefly has been bootstrapped and now transpiles itself into JavaScript.
 
 You can create a whole webapp (frontend+backend) in a single file and it can be build as an executable for linux, windows and osx.
 
+[See an example webapp](https://github.com/Ahnfelt/firefly-boot/blob/master/experimental/random/rhymeapp/Main.ff)
+
 **Async/await inference:** https://www.ahnfelt.net/async-await-inference-in-firefly/
 
 
