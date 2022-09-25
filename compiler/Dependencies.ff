@@ -68,13 +68,14 @@ extend self: Dependencies {
     ): String {
         let location = self.workspace.findPackageLocation(dependency.packagePair, dependency.version)
         if(location.contains(":")) {
-            if(location.startsWith("https://")) {
+            if(location.startsWith("http://") || location.startsWith("https://")) {
                 let packagePair = dependency.packagePair
                 let dependenciesPath = ".firefly/dependencies"
-                let tarGzPath = dependenciesPath + "/" + Workspace.tarGzName(packagePair, dependency.version)
                 let dependencyPath = dependenciesPath + "/" + packagePair.group + "/" + packagePair.name
-                let donePath = dependenciesPath + "/" + packagePair.group + "_" + packagePair.name + ".done"
+                let tarGzPath = dependenciesPath + "/" + Workspace.tarGzName(packagePair, dependency.version)
+                let donePath = dependenciesPath + "/" + Workspace.tarGzName(packagePair, dependency.version) + ".done"
                 if(!fs.exists(donePath)) {
+                    Log.debug("Fetching " + location)
                     let response = fetch.fetch(location, throw = False)
                     if(!response.ok()) {
                         panic("Could not download dependency: " + location)
@@ -83,8 +84,7 @@ extend self: Dependencies {
                     fs.createDirectories(dependencyPath)
                     fs.writeStream(tarGzPath, Stream { [buffer].toIterator() })
                     internalExtractTarGz(fs, tarGzPath, dependencyPath)
-                    fs.delete(tarGzPath)
-                    fs.writeText(donePath, "Extracted: " + tarGzPath + "\n")
+                    fs.rename(tarGzPath, donePath)
                 }
                 dependencyPath
             } else {
