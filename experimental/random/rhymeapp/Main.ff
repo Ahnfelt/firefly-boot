@@ -56,7 +56,7 @@ buildMain(system: BuildSystem) {
     } else {
         browser.assets()
     }
-    function rewriteHtml(): AssetSystem {
+    let indexAssets = if(system.buildMode()) {
         let html = system.packageAssets().readText("/index.html")
         let newHtml = html.replace(
             """<script type="module" src="/js/script/script/Main.mjs"></script>"""
@@ -64,9 +64,6 @@ buildMain(system: BuildSystem) {
         )
         let stream = Stream { [newHtml.toBuffer()].toIterator() }
         AssetSystem([Pair("/index.html", stream)].toMap())
-    }
-    let indexAssets = if(system.buildMode()) {
-        rewriteHtml()
     } else {
         system.packageAssets().asset("/index.html")
     }

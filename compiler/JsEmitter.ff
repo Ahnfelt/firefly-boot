@@ -368,6 +368,8 @@ extend self: JsEmitter {
         | EWildcard(at, index) =>
             if(index == 0) {fail(at, "Unbound wildcard")}
             "_w" + index
+        | _ {async} =>
+            "(await (async function() {\n" + self.emitStatements(term, True, async) + "\n})())"
         | _ =>
             "(function() {\n" + self.emitStatements(term, True, async) + "\n})()"
     }}

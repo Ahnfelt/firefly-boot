@@ -240,10 +240,10 @@ const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
 const sharedPackageFile_ = (packageDirectory_ + "/.firefly/package.ff");
 const packageFile_ = ((await ff_core_FileSystem.FileSystem_exists$(fs_, sharedPackageFile_, $c))
 ? sharedPackageFile_
-: (function() {
+: (await (async function() {
 self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return path_
-})());
+})()));
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, packageFile_, $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false);

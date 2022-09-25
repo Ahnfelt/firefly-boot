@@ -1406,6 +1406,13 @@ return
 }
 }
 {
+const _guard1 = async_;
+if(_guard1) {
+return (("(await (async function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true, async_)) + "\n})())")
+return
+}
+}
+{
 return (("(function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true, async_)) + "\n})()")
 return
 }
@@ -2730,6 +2737,13 @@ if((index_ == 0)) {
 ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
 };
 return ("_w" + index_)
+return
+}
+}
+{
+const _guard1 = async_;
+if(_guard1) {
+return (("(await (async function() {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, term_, true, async_)) + "\n})())")
 return
 }
 }
