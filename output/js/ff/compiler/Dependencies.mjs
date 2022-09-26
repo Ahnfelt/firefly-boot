@@ -42,8 +42,6 @@ import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
 
-import * as ff_core_HttpServer from "../../ff/core/HttpServer.mjs"
-
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
@@ -198,7 +196,7 @@ if((!ff_core_FetchSystem.FetchResponse_ok(response_))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
 const buffer_ = ff_core_FetchSystem.FetchResponse_readBuffer(response_);
-if(ff_core_FileSystem.FileSystem_isDirectory(fs_, dependencyPath_)) {
+if(ff_core_FileSystem.FileSystem_exists(fs_, dependencyPath_)) {
 ff_core_FileSystem.FileSystem_deleteDirectory(fs_, dependencyPath_)
 };
 ff_core_FileSystem.FileSystem_createDirectories(fs_, dependencyPath_);
@@ -292,7 +290,7 @@ if((!(await ff_core_FetchSystem.FetchResponse_ok$(response_, $c)))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
 const buffer_ = (await ff_core_FetchSystem.FetchResponse_readBuffer$(response_, $c));
-if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, dependencyPath_, $c))) {
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, dependencyPath_, $c))) {
 (await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, dependencyPath_, $c))
 };
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, dependencyPath_, $c));

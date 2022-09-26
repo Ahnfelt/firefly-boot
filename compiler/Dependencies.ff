@@ -81,7 +81,7 @@ extend self: Dependencies {
                         panic("Could not download dependency: " + location)
                     }
                     let buffer = response.readBuffer()
-                    if(fs.isDirectory(dependencyPath)) {
+                    if(fs.exists(dependencyPath)) {
                         fs.deleteDirectory(dependencyPath)
                     }
                     fs.createDirectories(dependencyPath)

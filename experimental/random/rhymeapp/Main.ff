@@ -1,3 +1,6 @@
+dependency ff:httpserver:0.0.0
+import HttpServer from ff:httpserver
+
 browserMain(system: BrowserSystem): Unit {
 
     let document = system.js().global().get("document")
