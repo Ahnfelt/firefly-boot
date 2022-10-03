@@ -29,7 +29,11 @@ extend self: FileSystem {
     isDirectory(path: String): Bool
         target node async """
             import * as fsPromises from 'fs/promises'
-            return (await fsPromises.lstat(path_)).isDirectory()
+            try {
+                return (await fsPromises.lstat(path_)).isDirectory();
+            } catch(e) {
+                return false;
+            }
         """
 
     createDirectory(path: String): Unit

@@ -211,7 +211,6 @@ ff_compiler_Builder.build_(system_, emitTarget_, ff_compiler_Syntax.PackagePair(
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false)
 }
-ff_compiler_Main.deleteRunFile_(ff_core_NodeSystem.NodeSystem_files(system_));
 for(;;) {
 const _1 = command_;
 {
@@ -223,7 +222,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolve
 }))(resolvedDependencies_);
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
 buildScript_(mainFile_, ff_compiler_JsEmitter.EmitNode(), fixedDependencies_);
-ff_compiler_Main.writeNodeRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_, arguments_)
+ff_compiler_Main.importAndRun_(ff_core_NodeSystem.NodeSystem_files(system_), fireflyPath_, "node", mainFile_, arguments_)
 break
 }
 }
@@ -235,8 +234,7 @@ const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
-buildScript_(mainFile_, ff_compiler_JsEmitter.EmitBrowser(), fixedDependencies_);
-ff_compiler_Main.writeEsbuildRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), fireflyPath_, mainFile_)
+buildScript_(mainFile_, ff_compiler_JsEmitter.EmitBrowser(), fixedDependencies_)
 break
 }
 }
@@ -251,7 +249,7 @@ ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(sy
 buildScript_(mainFile_, ff_compiler_JsEmitter.EmitBuild(), fixedDependencies_);
 buildScript_(mainFile_, ff_compiler_JsEmitter.EmitExecutable(), fixedDependencies_);
 ff_compiler_Main.bundleForPkg_(system_);
-ff_compiler_Main.writeBuildRunFile_(ff_core_NodeSystem.NodeSystem_files(system_), mainFile_, arguments_)
+ff_compiler_Main.importAndRun_(ff_core_NodeSystem.NodeSystem_files(system_), fireflyPath_, "build", mainFile_, arguments_)
 break
 }
 }
@@ -271,29 +269,8 @@ const file_ = (prefix_ + "Main.bundle.js");
 ff_core_BuildSystem.internalNodeCallEsBuild_(system_, mainJsFile_, file_, false)
 }
 
-export function deleteRunFile_(fs_) {
-if(ff_core_FileSystem.FileSystem_exists(fs_, ".firefly/output/run")) {
-ff_core_FileSystem.FileSystem_delete(fs_, ".firefly/output/run")
-}
-}
-
-export function writeNodeRunFile_(fs_, mainFile_, arguments_) {
-ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((("node '.firefly/output/node/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
-return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
-})), "")))
-}
-
-export function writeBuildRunFile_(fs_, mainFile_, arguments_) {
-ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", ((("node '.firefly/output/build/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
-return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
-})), "")))
-}
-
-export function writeEsbuildRunFile_(fs_, fireflyPath_, mainFile_) {
-const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
-const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
-const outPath_ = ((".firefly/output/browser/" + mainFile_) + ".min.js");
-ff_core_FileSystem.FileSystem_writeText(fs_, ".firefly/output/run", (((((((("'" + ff_core_String.String_replace(esbuildPath_, "'", "''")) + "' '") + ff_core_String.String_replace(mainPath_, "'", "''")) + "' ") + "--outfile='") + ff_core_String.String_replace(outPath_, "'", "''")) + "' ") + "--platform=browser --sourcemap --target=es6 --bundle --minify --log-level=warning"))
+export function importAndRun_(fs_, fireflyPath_, target_, mainFile_, arguments_) {
+throw new Error('Function importAndRun is missing on this target in sync context.');
 }
 
 export function prepareFireflyDirectory_(fs_) {
@@ -435,7 +412,6 @@ return
 return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false, $c))
 }
-(await ff_compiler_Main.deleteRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 for(;;) {
 const _1 = command_;
 {
@@ -447,7 +423,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolve
 }))(resolvedDependencies_);
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
 (await buildScript_$(mainFile_, ff_compiler_JsEmitter.EmitNode(), fixedDependencies_, $c));
-(await ff_compiler_Main.writeNodeRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, arguments_, $c))
+(await ff_compiler_Main.importAndRun_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), fireflyPath_, "node", mainFile_, arguments_, $c))
 break
 }
 }
@@ -459,8 +435,7 @@ const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
-(await buildScript_$(mainFile_, ff_compiler_JsEmitter.EmitBrowser(), fixedDependencies_, $c));
-(await ff_compiler_Main.writeEsbuildRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), fireflyPath_, mainFile_, $c))
+(await buildScript_$(mainFile_, ff_compiler_JsEmitter.EmitBrowser(), fixedDependencies_, $c))
 break
 }
 }
@@ -475,7 +450,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolve
 (await buildScript_$(mainFile_, ff_compiler_JsEmitter.EmitBuild(), fixedDependencies_, $c));
 (await buildScript_$(mainFile_, ff_compiler_JsEmitter.EmitExecutable(), fixedDependencies_, $c));
 (await ff_compiler_Main.bundleForPkg_$(system_, $c));
-(await ff_compiler_Main.writeBuildRunFile_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), mainFile_, arguments_, $c))
+(await ff_compiler_Main.importAndRun_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), fireflyPath_, "build", mainFile_, arguments_, $c))
 break
 }
 }
@@ -495,29 +470,13 @@ const file_ = (prefix_ + "Main.bundle.js");
 (await ff_core_BuildSystem.internalNodeCallEsBuild_$(system_, mainJsFile_, file_, false, $c))
 }
 
-export async function deleteRunFile_$(fs_, $c) {
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output/run", $c))) {
-(await ff_core_FileSystem.FileSystem_delete$(fs_, ".firefly/output/run", $c))
-}
-}
+export async function importAndRun_$(fs_, fireflyPath_, target_, mainFile_, arguments_, $c) {
 
-export async function writeNodeRunFile_$(fs_, mainFile_, arguments_, $c) {
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((("node '.firefly/output/node/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
-return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
-})), "")), $c))
-}
-
-export async function writeBuildRunFile_$(fs_, mainFile_, arguments_, $c) {
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", ((("node '.firefly/output/build/script/script/" + ff_core_String.String_replace(mainFile_, "'", "''")) + ".mjs'") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_w1) => {
-return ((" '" + ff_core_String.String_replace(_w1, "'", "''")) + "'")
-})), "")), $c))
-}
-
-export async function writeEsbuildRunFile_$(fs_, fireflyPath_, mainFile_, $c) {
-const esbuildPath_ = (("" + fireflyPath_) + "/node_modules/.bin/esbuild");
-const mainPath_ = ((".firefly/output/browser/script/script/" + mainFile_) + ".mjs");
-const outPath_ = ((".firefly/output/browser/" + mainFile_) + ".min.js");
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, ".firefly/output/run", (((((((("'" + ff_core_String.String_replace(esbuildPath_, "'", "''")) + "' '") + ff_core_String.String_replace(mainPath_, "'", "''")) + "' ") + "--outfile='") + ff_core_String.String_replace(outPath_, "'", "''")) + "' ") + "--platform=browser --sourcemap --target=es6 --bundle --minify --log-level=warning"), $c))
+        const process = await import('process');
+        const cwd = process.cwd();
+        const main = await import(cwd + "/.firefly/output/" + target_ + "/script/script/" + mainFile_ + ".mjs");
+        await main.$run$(fireflyPath_, ff_core_List.List_toArray(arguments_))
+    
 }
 
 export async function prepareFireflyDirectory_$(fs_, $c) {
@@ -563,26 +522,25 @@ return
 
 
 
-import * as path from 'node:path'
-import * as fs from 'node:fs'
-queueMicrotask(async () => {
+export async function $run$(fireflyPath_, arguments_) {
 const controller = new AbortController()
 controller.promises = new Set()
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
-let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))
-let executableMode = false
-let buildMode = false
 let system = {
-array_: typeof process !== 'undefined' ? process.argv.slice(buildMode ? 3 : 2) : [],
+array_: arguments_,
 fireflyPath_: fireflyPath_,
-executableMode_: executableMode,
-buildMode_: buildMode
+executableMode_: false,
+buildMode_: false
 }
 try {
-if(!system.buildMode_) await main_$(system, controller)
-else await $firefly_compiler.internalCreateExecutable_$(system, process.argv[1], '.firefly/output', ['host'], system.assets_, controller)
+await main_$(system, controller)
 } finally {
 controller.abort()
 clearInterval(interval)
 }
+}
+import * as path from 'node:path'
+queueMicrotask(async () => {
+let fireflyPath_ = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))))
+await $run$(fireflyPath_, process.argv.slice(2))
 })
