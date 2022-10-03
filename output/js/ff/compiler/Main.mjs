@@ -234,7 +234,8 @@ const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
-buildScript_(mainFile_, ff_compiler_JsEmitter.EmitBrowser(), fixedDependencies_)
+buildScript_(mainFile_, ff_compiler_JsEmitter.EmitBrowser(), fixedDependencies_);
+ff_compiler_Main.bundleForBrowser_(system_)
 break
 }
 }
@@ -267,6 +268,14 @@ const prefix_ = ".firefly/output/executable/";
 const mainJsFile_ = (prefix_ + "script/script/Main.mjs");
 const file_ = (prefix_ + "Main.bundle.js");
 ff_core_BuildSystem.internalNodeCallEsBuild_(system_, mainJsFile_, file_, false)
+}
+
+export function bundleForBrowser_(system_) {
+const prefix_ = ".firefly/output/browser/";
+const mainJsFile_ = (prefix_ + "script/script/Main.mjs");
+const file_ = (prefix_ + "Main.bundle.js");
+const browserCode_ = ff_core_BuildSystem.BrowserCode(ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("/", ff_core_FileSystem.FileSystem_readStream(ff_core_NodeSystem.NodeSystem_files(system_), "")), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
+ff_core_BuildSystem.internalCallEsBuild_(browserCode_, mainJsFile_, file_, true, true)
 }
 
 export function importAndRun_(fs_, fireflyPath_, target_, mainFile_, arguments_) {
@@ -435,7 +444,8 @@ const fixedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
-(await buildScript_$(mainFile_, ff_compiler_JsEmitter.EmitBrowser(), fixedDependencies_, $c))
+(await buildScript_$(mainFile_, ff_compiler_JsEmitter.EmitBrowser(), fixedDependencies_, $c));
+(await ff_compiler_Main.bundleForBrowser_$(system_, $c))
 break
 }
 }
@@ -468,6 +478,14 @@ const prefix_ = ".firefly/output/executable/";
 const mainJsFile_ = (prefix_ + "script/script/Main.mjs");
 const file_ = (prefix_ + "Main.bundle.js");
 (await ff_core_BuildSystem.internalNodeCallEsBuild_$(system_, mainJsFile_, file_, false, $c))
+}
+
+export async function bundleForBrowser_$(system_, $c) {
+const prefix_ = ".firefly/output/browser/";
+const mainJsFile_ = (prefix_ + "script/script/Main.mjs");
+const file_ = (prefix_ + "Main.bundle.js");
+const browserCode_ = ff_core_BuildSystem.BrowserCode(ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("/", (await ff_core_FileSystem.FileSystem_readStream$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), "", $c))), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
+(await ff_core_BuildSystem.internalCallEsBuild_$(browserCode_, mainJsFile_, file_, true, true, $c))
 }
 
 export async function importAndRun_$(fs_, fireflyPath_, target_, mainFile_, arguments_, $c) {

@@ -93,7 +93,7 @@ main(system: NodeSystem): Unit {
             )
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, EmitBrowser, fixedDependencies)
-            // TODO: writeEsbuildRunFile(system.files(), fireflyPath, mainFile)
+            bundleForBrowser(system)
 
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
@@ -133,7 +133,15 @@ bundleForPkg(system: NodeSystem) {
     let prefix = ".firefly/output/executable/"
     let mainJsFile = prefix + "script/script/Main.mjs"
     let file = prefix + "Main.bundle.js"
-    BuildSystem.internalNodeCallEsBuild(system, mainJsFile = mainJsFile, outputPath = file, minify = False)
+    BuildSystem.internalNodeCallEsBuild(system, mainJsFile, outputPath = file, minify = False)
+}
+
+bundleForBrowser(system: NodeSystem) {
+    let prefix = ".firefly/output/browser/"
+    let mainJsFile = prefix + "script/script/Main.mjs"
+    let file = prefix + "Main.bundle.js"
+    let browserCode = BrowserCode(assetSystem = AssetSystem([Pair("/", system.files().readStream(""))].toMap())) // TODO
+    BuildSystem.internalCallEsBuild(browserCode, mainJsFile, outputPath = file, minify = True, sourceMap = True)
 }
 
 importAndRun(fs: FileSystem, fireflyPath: String, target: String, mainFile: String, arguments: List[String])
