@@ -75,8 +75,6 @@ main(system: NodeSystem): Unit {
         )
     }
 
-    deleteRunFile(system.files())
-
     command.{
 
         | RunCommand(mainFile) =>
@@ -86,7 +84,7 @@ main(system: NodeSystem): Unit {
             )
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, EmitNode, fixedDependencies)
-            writeNodeRunFile(system.files(), mainFile, arguments)
+            importAndRun(system.files(), fireflyPath, "node", mainFile, arguments)
 
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
@@ -95,7 +93,7 @@ main(system: NodeSystem): Unit {
             )
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, EmitBrowser, fixedDependencies)
-            writeEsbuildRunFile(system.files(), fireflyPath, mainFile)
+            bundleForBrowser(system)
 
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
@@ -106,7 +104,7 @@ main(system: NodeSystem): Unit {
             buildScript(mainFile, EmitBuild, fixedDependencies)
             buildScript(mainFile, EmitExecutable, fixedDependencies)
             bundleForPkg(system)
-            writeBuildRunFile(system.files(), mainFile, arguments)
+            importAndRun(system.files(), fireflyPath, "build", mainFile, arguments)
 
         | BootstrapCommand =>
             Builder.build(
@@ -135,39 +133,24 @@ bundleForPkg(system: NodeSystem) {
     let prefix = ".firefly/output/executable/"
     let mainJsFile = prefix + "script/script/Main.mjs"
     let file = prefix + "Main.bundle.js"
-    BuildSystem.internalNodeCallEsBuild(system, mainJsFile = mainJsFile, outputPath = file, minify = False)
+    BuildSystem.internalNodeCallEsBuild(system, mainJsFile, outputPath = file, minify = False)
 }
 
-deleteRunFile(fs: FileSystem) {
-    if(fs.exists(".firefly/output/run")) {
-        fs.delete(".firefly/output/run")
-    }
+bundleForBrowser(system: NodeSystem) {
+    let prefix = ".firefly/output/browser/"
+    let mainJsFile = prefix + "script/script/Main.mjs"
+    let file = prefix + "Main.bundle.js"
+    let browserCode = BrowserCode(assetSystem = AssetSystem([Pair("/", system.files().readStream(""))].toMap())) // TODO
+    BuildSystem.internalCallEsBuild(browserCode, mainJsFile, outputPath = file, minify = True, sourceMap = True)
 }
 
-writeNodeRunFile(fs: FileSystem, mainFile: String, arguments: List[String]) {
-    fs.writeText(".firefly/output/run"
-        "node '.firefly/output/node/script/script/" + mainFile.replace("'", "''") + ".mjs'" +
-        arguments.map {" '" + _.replace("'", "''") + "'"}.join()
-    )
-}
-
-writeBuildRunFile(fs: FileSystem, mainFile: String, arguments: List[String]) {
-    fs.writeText(".firefly/output/run"
-        "node '.firefly/output/build/script/script/" + mainFile.replace("'", "''") + ".mjs'" +
-        arguments.map {" '" + _.replace("'", "''") + "'"}.join()
-    )
-}
-
-writeEsbuildRunFile(fs: FileSystem, fireflyPath: String, mainFile: String) {
-    let esbuildPath = "" + fireflyPath + "/node_modules/.bin/esbuild"
-    let mainPath = ".firefly/output/browser/script/script/" + mainFile + ".mjs"
-    let outPath = ".firefly/output/browser/" + mainFile + ".min.js"
-    fs.writeText(".firefly/output/run"
-        "'" + esbuildPath.replace("'", "''") + "' '" + mainPath.replace("'", "''") + "' " +
-        "--outfile='" + outPath.replace("'", "''") + "' " +
-        "--platform=browser --sourcemap --target=es6 --bundle --minify --log-level=warning"
-    )
-}
+importAndRun(fs: FileSystem, fireflyPath: String, target: String, mainFile: String, arguments: List[String])
+    target node async """
+        const process = await import('process');
+        const cwd = process.cwd();
+        const main = await import(cwd + "/.firefly/output/" + target_ + "/script/script/" + mainFile_ + ".mjs");
+        await main.$run$(fireflyPath_, ff_core_List.List_toArray(arguments_))
+    """
 
 prepareFireflyDirectory(fs: FileSystem) {
     if(!fs.exists(".firefly/output")) {

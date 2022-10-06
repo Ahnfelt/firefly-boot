@@ -256,7 +256,11 @@ export async function FileSystem_exists$(self_, path_, $c) {
 export async function FileSystem_isDirectory$(self_, path_, $c) {
 
             const fsPromises = import$1
-            return (await fsPromises.lstat(path_)).isDirectory()
+            try {
+                return (await fsPromises.lstat(path_)).isDirectory();
+            } catch(e) {
+                return false;
+            }
         
 }
 
