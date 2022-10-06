@@ -1,0 +1,262 @@
+type PgPool! {}
+type PgConnection! {}
+type PgStatement!(sql: String, parameters: Map[String, JsValue], connection: Option[PgConnection])
+type PgRow {}
+type PgLevel {
+    PgReadCommitted
+    PgRepeatableRead
+    PgSerializable
+}
+
+makePool(
+    system: NodeSystem
+    user: String
+    host: String
+    database: String
+    password: () => String
+    port: Int = 5432
+    connectionTimeout: Duration = Duration(10.0)
+    idleTimeout: Duration = Duration(10.0)
+    maxConnections: Int = 10
+    allowExitOnIdle: Bool = True
+): PgPool
+    target node async """
+        import * as pg from 'pg'
+        return new pg.Pool({
+            system: system_,
+            user: user_,
+            host: host_,
+            database: database_,
+            password: password_,
+            port: port_,
+            connectionTimeoutMillis: connectionTimeout_ * 1000,
+            idleTimeoutMillis: idleTimeout_ * 1000,
+            max: maxConnections_,
+            allowExitOnIdle: allowExitOnIdle_
+        })
+    """
+
+makePoolFromConnectionString(
+    system: NodeSystem
+    connectionString: String
+    connectionTimeout: Duration = Duration(10.0)
+    idleTimeout: Duration = Duration(10.0)
+    maxConnections: Int = 10
+    allowExitOnIdle: Bool = True
+): PgPool
+    target node async """
+        import * as pg from 'pg'
+        return new pg.Pool({
+            connectionString: connectionString_,
+            connectionTimeoutMillis: connectionTimeout_ * 1000,
+            idleTimeoutMillis: idleTimeout_ * 1000,
+            max: maxConnections_,
+            allowExitOnIdle: allowExitOnIdle_
+        })
+    """
+
+extend self: PgPool {
+
+    connect(): PgConnection
+        target node async """
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            return await pool.connect()
+        """
+
+    close(): Unit
+        target node async """
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            await pool.end()
+        """
+
+    connectionCount(): Int
+        target node async """
+            return self_.totalCount
+        """
+
+    idleCount(): Int
+        target node async """
+            return self_.idleCount
+        """
+
+    waitingCount(): Int
+        target node async """
+            return self_.waitingCount
+        """
+
+    withTransaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted) {
+        let connection = self.connect()
+        mutable done = False
+        try {
+            connection.statement("begin").run()
+            level.{
+                | PgReadCommitted => 0 // Default level in PostgreSQL
+                | PgRepeatableRead => connection.statement("set transaction isolation level repeatable read").run()
+                | PgSerializable => connection.statement("set transaction isolation level serializable").run()
+            }
+            let result = body(connection)
+            done = True
+            connection.statement("commit").run()
+            result
+        } finally {
+            if(!done) {connection.statement("rollback").run()}
+            connection.release()
+        } expect()
+    }
+
+}
+
+extend self: PgConnection {
+
+    release(): Unit
+        target node async """
+            if($c.signal.aborted) connection.release(true)
+            else connection.release()
+        """
+
+    statement(sql: String): PgStatement {
+        PgStatement(sql, [].toMap(), Some(self))
+    }
+
+}
+
+extend self: PgStatement {
+
+    withInt(name: String, value: Int): PgStatement {
+        let p = internalCastValue(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableInt(name: String, value: Option[Int]): PgStatement {
+        let p = value.map(internalCastValue).else {internalNull()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withString(name: String, value: String): PgStatement {
+        let p = internalCastValue(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableString(name: String, value: Option[String]): PgStatement {
+        let p = value.map(internalCastValue).else {internalNull()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    run(): Int {
+        internalRunStatement(self, None)
+    }
+
+    all(body: PgRow => Bool): Bool {
+        internalRunStatement(self, Some(body))
+    }
+
+    any(body: PgRow => Bool): Bool {
+        !self.all { row =>
+            !body(row)
+        }
+    }
+
+    each(body: PgRow => Unit): Unit {
+        self.all { row =>
+            body(row)
+            True
+        }
+    }
+
+    map[T](body: PgRow => T): List[T] {
+        mutable result = []
+        self.each { row =>
+            result = [body(row), ...result]
+        }
+        result.reverse()
+    }
+
+}
+
+extend self: PgRow {
+
+    getInt(name: String): Option[Int]
+        target node sync """
+            if(!Object.hasOwn(self_, name_)) throw new Error("Column not found in result: " + name_)
+            return self_[name_] != null ? ff_core_Option.Some(parseInt(self_[name_])) : ff_core_Option.None()
+        """
+
+    getString(name: String): Option[String]
+        target node sync """
+            if(!Object.hasOwn(self_, name_)) throw new Error("Column not found in result: " + name_)
+            return self_[name_] != null ? ff_core_Option.Some("" + self_[name_]) : ff_core_Option.None()
+        """
+
+}
+
+internalRunStatement[T](statement: PgStatement, body: Option[PgRow => Bool]): T {
+    let pair = internalParseParameters(statement.sql)
+    let parameters = pair.second.map { name =>
+        statement.parameters.get(name).else {
+            panic("No value for parameter: " + name)
+        }
+    }.toArray()
+    let unusedParameters = statement.parameters.keys().removeAll(pair.second.toSet())
+    if(unusedParameters.size() > 0) {
+        panic("Unused parameters: " + unusedParameters.toList().join(", "))
+    }
+    internalRunStatementAndCast(statement.connection.expect(), pair.first, parameters, body)
+}
+
+internalParseParameters(statementSql: String): Pair[String, List[String]] {
+    mutable parameters = []
+    mutable parameterIndexes = [].toMap()
+    mutable i = 0
+    mutable last = 0
+    mutable sql = ""
+    while {i < statementSql.size()} {
+        if(statementSql.expect(i) == '$') {
+            sql = sql + statementSql.slice(last, i)
+            i += 1
+            last = i
+            if(statementSql.expect(i) == '$') {
+                sql = sql + "$"
+                i += 1
+            } else {
+                while {i < statementSql.size() && statementSql.expect(i).isAsciiLetterOrDigit()} {
+                    i += 1
+                }
+                let name = statementSql.slice(last, i)
+                if(name != "") {
+                    let index = parameterIndexes.get(name).else {
+                        let newIndex = parameterIndexes.size()
+                        parameterIndexes = parameterIndexes.add(name, newIndex)
+                        parameters = [name, ...parameters]
+                        newIndex
+                    }
+                    sql = sql + "$" + index
+                    last = i
+                }
+            }
+        }
+    }
+    sql = sql + statementSql.slice(last, i)
+    Pair(sql, parameters.reverse())
+}
+
+internalRunStatementAndCast[T](
+    connection: PgConnection,
+    sql: String,
+    parameters: Array[JsValue],
+    body: Option[PgRow => Bool]
+): T
+    target node async """
+        if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+        const result = await connection_.query(sql, parameters)
+        return body_.value_ ? result.rows.every(body_.value_) : result.rowCount
+    """
+
+internalCastValue[T](value: T): JsValue
+    target node sync """
+        return value_
+    """
+
+internalNull(): JsValue
+    target node sync """
+        return null
+    """
