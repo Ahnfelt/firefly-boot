@@ -1,7 +1,7 @@
-type PgPool! {}
+newtype PgPool!(jsValue: JsValue)
 newtype PgConnection!(jsValue: JsValue)
-type PgStatement!(sql: String, parameters: Map[String, JsValue], connection: Option[PgConnection])
 newtype PgRow(jsValue: JsValue)
+type PgStatement!(sql: String, parameters: Map[String, JsValue], connection: Option[PgConnection])
 type PgLevel {
     PgReadCommitted
     PgRepeatableRead
