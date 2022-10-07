@@ -1,7 +1,7 @@
 type PgPool! {}
-type PgConnection! {}
+newtype PgConnection!(jsValue: JsValue)
 type PgStatement!(sql: String, parameters: Map[String, JsValue], connection: Option[PgConnection])
-type PgRow {}
+newtype PgRow(jsValue: JsValue)
 type PgLevel {
     PgReadCommitted
     PgRepeatableRead
@@ -84,7 +84,7 @@ extend self: PgPool {
             return self_.waitingCount
         """
 
-    withTransaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted) {
+    withTransaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted): T {
         let connection = self.connect()
         mutable done = False
         try {
@@ -123,22 +123,22 @@ extend self: PgConnection {
 extend self: PgStatement {
 
     withInt(name: String, value: Int): PgStatement {
-        let p = internalCastValue(value)
+        let p = internalJsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableInt(name: String, value: Option[Int]): PgStatement {
-        let p = value.map(internalCastValue).else {internalNull()}
+        let p = value.map(internalJsSystem().value).else {internalJsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withString(name: String, value: String): PgStatement {
-        let p = internalCastValue(value)
+        let p = internalJsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableString(name: String, value: Option[String]): PgStatement {
-        let p = value.map(internalCastValue).else {internalNull()}
+        let p = value.map(internalJsSystem().value).else {internalJsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -147,7 +147,7 @@ extend self: PgStatement {
     }
 
     all(body: PgRow => Bool): Bool {
-        internalRunStatement(self, Some(body))
+        internalRunStatement(self, Some(body)) == 1
     }
 
     any(body: PgRow => Bool): Bool {
@@ -189,7 +189,7 @@ extend self: PgRow {
 
 }
 
-internalRunStatement[T](statement: PgStatement, body: Option[PgRow => Bool]): T {
+internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
     let pair = internalParseParameters(statement.sql)
     let parameters = pair.second.map { name =>
         statement.parameters.get(name).else {
@@ -200,7 +200,18 @@ internalRunStatement[T](statement: PgStatement, body: Option[PgRow => Bool]): T 
     if(unusedParameters.size() > 0) {
         panic("Unused parameters: " + unusedParameters.toList().join(", "))
     }
-    internalRunStatementAndCast(statement.connection.expect(), pair.first, parameters, body)
+    let js = internalJsSystem()
+    js.checkAborted()
+    let result = js.await { statement.connection.expect().jsValue.call2("query", pair.first, parameters) }
+    body.{
+        | None =>
+            result.get("rowCount").expectInt()
+        | Some(f) =>
+            let all = result.get("rows").expectArray().toList().all { row =>
+                f(PgRow(row))
+            }
+            if(all) {1} else {0}
+    }
 }
 
 internalParseParameters(statementSql: String): Pair[String, List[String]] {
@@ -215,7 +226,6 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
             i += 1
             last = i
             if(statementSql.expect(i) == '$') {
-                sql = sql + "$"
                 i += 1
             } else {
                 while {i < statementSql.size() && statementSql.expect(i).isAsciiLetterOrDigit()} {
@@ -224,7 +234,7 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
                 let name = statementSql.slice(last, i)
                 if(name != "") {
                     let index = parameterIndexes.get(name).else {
-                        let newIndex = parameterIndexes.size()
+                        let newIndex = parameterIndexes.size() + 1
                         parameterIndexes = parameterIndexes.add(name, newIndex)
                         parameters = [name, ...parameters]
                         newIndex
@@ -239,24 +249,10 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
     Pair(sql, parameters.reverse())
 }
 
-internalRunStatementAndCast[T](
-    connection: PgConnection,
-    sql: String,
-    parameters: Array[JsValue],
-    body: Option[PgRow => Bool]
-): T
-    target node async """
-        if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-        const result = await connection_.query(sql, parameters)
-        return body_.value_ ? result.rows.every(body_.value_) : result.rowCount
-    """
+internalJsSystem(): JsSystem
+    target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+    target js sync "return typeof globalThis !== 'undefined' ? globalThis : window"
 
-internalCastValue[T](value: T): JsValue
-    target node sync """
-        return value_
-    """
-
-internalNull(): JsValue
-    target node sync """
-        return null
-    """
+main(system: NodeSystem): Unit {
+    Log.debug("Hello!")
+}

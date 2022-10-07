@@ -17,6 +17,8 @@ extend self: JsValue {
     expectBool(): Bool
         target js sync "return self_"
 
+    expectArray(): Array[JsValue]
+        target js sync "return self_"
 
     isString(): Bool
         target js sync "return typeof self_ === 'string'"
