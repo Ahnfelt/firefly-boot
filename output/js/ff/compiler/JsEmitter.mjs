@@ -1284,9 +1284,9 @@ const body_ = _1.arguments_.tail_.head_.value_;
 if(_1.arguments_.tail_.tail_.Empty) {
 const emittedBody_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_);
 if(async_) {
-return (("(await (" + emittedBody_) + ")($c))")
+return (("(await " + emittedBody_) + "($c))")
 } else {
-return (("((" + emittedBody_) + ")())")
+return (("(" + emittedBody_) + "())")
 }
 return
 }
@@ -2726,9 +2726,9 @@ const body_ = _1.arguments_.tail_.head_.value_;
 if(_1.arguments_.tail_.tail_.Empty) {
 const emittedBody_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_);
 if(async_) {
-return (("(await (" + emittedBody_) + ")($c))")
+return (("(await " + emittedBody_) + "($c))")
 } else {
-return (("((" + emittedBody_) + ")())")
+return (("(" + emittedBody_) + "())")
 }
 return
 }

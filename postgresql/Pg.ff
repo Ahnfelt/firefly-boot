@@ -21,22 +21,21 @@ makePool(
     idleTimeout: Duration = Duration(10.0)
     maxConnections: Int = 10
     allowExitOnIdle: Bool = True
-): PgPool
-    target node async """
-        import * as pg from 'pg'
-        return new pg.Pool({
-            system: system_,
-            user: user_,
-            host: host_,
-            database: database_,
-            password: password_,
-            port: port_,
-            connectionTimeoutMillis: connectionTimeout_ * 1000,
-            idleTimeoutMillis: idleTimeout_ * 1000,
-            max: maxConnections_,
-            allowExitOnIdle: allowExitOnIdle_
-        })
-    """
+): PgPool {
+    let js = UnsafeJs.jsSystem()
+    let pg = js.import("pg")
+    PgPool(pg.get("Pool").new1(js.object()
+        .with("user", user)
+        .with("host", host)
+        .with("database", database)
+        .with("password", js.function0(password))
+        .with("port", port)
+        .with("connectionTimeoutMillis", connectionTimeout.seconds * 1000)
+        .with("idleTimeoutMillis", idleTimeout.seconds * 1000)
+        .with("max", maxConnections)
+        .with("allowExitOnIdle", allowExitOnIdle)
+    ))
+}
 
 makePoolFromConnectionString(
     system: NodeSystem
@@ -59,11 +58,11 @@ makePoolFromConnectionString(
 
 extend self: PgPool {
 
-    connect(): PgConnection
-        target node async """
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            return await pool.connect()
-        """
+    connect(): PgConnection {
+        let js = UnsafeJs.jsSystem()
+        js.throwIfCancelled()
+        PgConnection(js.await { self.jsValue.call0("connect") })
+    }
 
     close(): Unit
         target node async """

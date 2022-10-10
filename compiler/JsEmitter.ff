@@ -335,7 +335,7 @@ extend self: JsEmitter {
             self.jsImporter.add(url.replace("\"", ""))
         | ECall(at, StaticCall("ff:core/JsSystem.JsSystem_await", _, _), _, _, [_, Argument(_, _, body)], _) =>
             let emittedBody = self.emitTerm(body, async)
-            if(async) {"(await (" + emittedBody + ")($c))"} else {"((" + emittedBody + ")())"}
+            if(async) {"(await " + emittedBody + "($c))"} else {"(" + emittedBody + "())"}
         | ECall(at, StaticCall("ff:core/JsSystem.JsSystem_throwIfCancelled", _, _), _, _, [_], _) =>
             if(async) {
                 "((() => if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround}))())"
