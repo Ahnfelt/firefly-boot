@@ -1257,15 +1257,13 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_import") {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.import") {
 if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Link) {
-if(_1.arguments_.tail_.head_.value_.EString) {
-const url_ = _1.arguments_.tail_.head_.value_.value_;
-if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.arguments_.head_.value_.EString) {
+const url_ = _1.arguments_.head_.value_.value_;
+if(_1.arguments_.tail_.Empty) {
 return ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", ""))
 return
-}
 }
 }
 }
@@ -1277,11 +1275,10 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_await") {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.await") {
 if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Link) {
-const body_ = _1.arguments_.tail_.head_.value_;
-if(_1.arguments_.tail_.tail_.Empty) {
+const body_ = _1.arguments_.head_.value_;
+if(_1.arguments_.tail_.Empty) {
 const emittedBody_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_);
 if(async_) {
 return (("(await " + emittedBody_) + "($c))")
@@ -1295,14 +1292,12 @@ return
 }
 }
 }
-}
 {
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_cancelled") {
-if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Empty) {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.cancelled") {
+if(_1.arguments_.Empty) {
 if(async_) {
 return "$c.signal.aborted"
 } else {
@@ -1314,21 +1309,18 @@ return
 }
 }
 }
-}
 {
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_throwIfCancelled") {
-if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Empty) {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
+if(_1.arguments_.Empty) {
 if(async_) {
 return "((() => if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround}))())"
 } else {
 return ""
 }
 return
-}
 }
 }
 }
@@ -1675,16 +1667,14 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_throwIfCancelled") {
-if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Empty) {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
+if(_1.arguments_.Empty) {
 if(async_) {
 return "if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround})"
 } else {
 return ""
 }
 return
-}
 }
 }
 }
@@ -2718,15 +2708,13 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_import") {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.import") {
 if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Link) {
-if(_1.arguments_.tail_.head_.value_.EString) {
-const url_ = _1.arguments_.tail_.head_.value_.value_;
-if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.arguments_.head_.value_.EString) {
+const url_ = _1.arguments_.head_.value_.value_;
+if(_1.arguments_.tail_.Empty) {
 return ff_compiler_JsImporter.JsImporter_add(self_.jsImporter_, ff_core_String.String_replace(url_, "\"", ""))
 return
-}
 }
 }
 }
@@ -2738,11 +2726,10 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_await") {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.await") {
 if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Link) {
-const body_ = _1.arguments_.tail_.head_.value_;
-if(_1.arguments_.tail_.tail_.Empty) {
+const body_ = _1.arguments_.head_.value_;
+if(_1.arguments_.tail_.Empty) {
 const emittedBody_ = ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_);
 if(async_) {
 return (("(await " + emittedBody_) + "($c))")
@@ -2756,14 +2743,12 @@ return
 }
 }
 }
-}
 {
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_cancelled") {
-if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Empty) {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.cancelled") {
+if(_1.arguments_.Empty) {
 if(async_) {
 return "$c.signal.aborted"
 } else {
@@ -2775,21 +2760,18 @@ return
 }
 }
 }
-}
 {
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_throwIfCancelled") {
-if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Empty) {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
+if(_1.arguments_.Empty) {
 if(async_) {
 return "((() => if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround}))())"
 } else {
 return ""
 }
 return
-}
 }
 }
 }
@@ -3136,16 +3118,14 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_throwIfCancelled") {
-if(_1.arguments_.Link) {
-if(_1.arguments_.tail_.Empty) {
+if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
+if(_1.arguments_.Empty) {
 if(async_) {
 return "if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround})"
 } else {
 return ""
 }
 return
-}
 }
 }
 }

@@ -331,14 +331,14 @@ extend self: JsEmitter {
             "(" + operator + self.emitArgument(value, async) + ")"
         | ECall(at, StaticCall(operator, _, _), _, [], [left, right], _) {!operator.expectFirst().isAsciiLetter()} =>
             "(" + self.emitArgument(left, async) + " " + operator + " " + self.emitArgument(right, async) + ")"
-        | ECall(at, StaticCall("ff:core/JsSystem.JsSystem_import", _, _), _, _, [_, Argument(_, _, EString(_, url))], _) =>
+        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.import", _, _), _, _, [Argument(_, _, EString(_, url))], _) =>
             self.jsImporter.add(url.replace("\"", ""))
-        | ECall(at, StaticCall("ff:core/JsSystem.JsSystem_await", _, _), _, _, [_, Argument(_, _, body)], _) =>
+        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.await", _, _), _, _, [Argument(_, _, body)], _) =>
             let emittedBody = self.emitTerm(body, async)
             if(async) {"(await " + emittedBody + "($c))"} else {"(" + emittedBody + "())"}
-        | ECall(at, StaticCall("ff:core/JsSystem.JsSystem_cancelled", _, _), _, _, [_], _) =>
+        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.cancelled", _, _), _, _, [], _) =>
             if(async) {"$c.signal.aborted"} else {"false"}
-        | ECall(at, StaticCall("ff:core/JsSystem.JsSystem_throwIfCancelled", _, _), _, _, [_], _) =>
+        | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
             if(async) {
                 "((() => if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround}))())"
             } else {""}
@@ -449,7 +449,7 @@ extend self: JsEmitter {
                 } else {
                     self.emitStatements(invokeImmediately(body.value), False, async) + "\n}"
                 }
-            | ECall(at, StaticCall("ff:core/JsSystem.JsSystem_throwIfCancelled", _, _), _, _, [_], _) =>
+            | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
                 if(async) {
                     "if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround})"
                 } else {""}
