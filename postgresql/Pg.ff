@@ -22,8 +22,8 @@ makePool(
     maxConnections: Int = 10
     allowExitOnIdle: Bool = True
 ): PgPool {
-    let js = UnsafeJs.jsSystem()
     UnsafeJs.throwIfCancelled()
+    let js = UnsafeJs.jsSystem()
     let pg = UnsafeJs.import("pg")
     PgPool(pg.get("Pool").new1(js.object()
         .with("user", user)
@@ -46,8 +46,8 @@ makePoolFromConnectionString(
     maxConnections: Int = 10
     allowExitOnIdle: Bool = True
 ): PgPool {
-    let js = UnsafeJs.jsSystem()
     UnsafeJs.throwIfCancelled()
+    let js = UnsafeJs.jsSystem()
     let pg = UnsafeJs.import("pg")
     PgPool(pg.get("Pool").new1(js.object()
         .with("connectionString", connectionString)
