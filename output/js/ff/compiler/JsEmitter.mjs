@@ -1300,6 +1300,25 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_cancelled") {
+if(_1.arguments_.Link) {
+if(_1.arguments_.tail_.Empty) {
+if(async_) {
+return "$c.signal.aborted"
+} else {
+return "false"
+}
+return
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_throwIfCancelled") {
 if(_1.arguments_.Link) {
 if(_1.arguments_.tail_.Empty) {
@@ -2732,6 +2751,25 @@ return (("(" + emittedBody_) + "())")
 }
 return
 }
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/JsSystem.JsSystem_cancelled") {
+if(_1.arguments_.Link) {
+if(_1.arguments_.tail_.Empty) {
+if(async_) {
+return "$c.signal.aborted"
+} else {
+return "false"
+}
+return
 }
 }
 }

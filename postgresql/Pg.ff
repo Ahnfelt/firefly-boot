@@ -64,26 +64,23 @@ extend self: PgPool {
         PgConnection(js.await { self.jsValue.call0("connect") })
     }
 
-    close(): Unit
-        target node async """
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            await pool.end()
-        """
+    close(): Unit {
+        let js = UnsafeJs.jsSystem()
+        js.throwIfCancelled()
+        js.await { self.jsValue.call0("end") }
+    }
 
-    connectionCount(): Int
-        target node async """
-            return self_.totalCount
-        """
+    connectionCount(): Int {
+        self.jsValue.get("totalCount").expectInt()
+    }
 
-    idleCount(): Int
-        target node async """
-            return self_.idleCount
-        """
+    idleCount(): Int {
+        self.jsValue.get("idleCount").expectInt()
+    }
 
-    waitingCount(): Int
-        target node async """
-            return self_.waitingCount
-        """
+    waitingCount(): Int {
+        self.jsValue.get("waitingCount").expectInt()
+    }
 
     withTransaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted): T {
         let connection = self.connect()
@@ -109,11 +106,15 @@ extend self: PgPool {
 
 extend self: PgConnection {
 
-    release(): Unit
-        target node async """
-            if($c.signal.aborted) connection.release(true)
-            else connection.release()
-        """
+    release(): Unit {
+        let js = UnsafeJs.jsSystem()
+        js.throwIfCancelled()
+        if(js.cancelled()) {
+            self.jsValue.call1("release", True)
+        } else {
+            self.jsValue.call0("release")
+        }
+    }
 
     statement(sql: String): PgStatement {
         PgStatement(sql, [].toMap(), Some(self))
@@ -176,17 +177,17 @@ extend self: PgStatement {
 
 extend self: PgRow {
 
-    getInt(name: String): Option[Int]
-        target node sync """
-            if(!Object.hasOwn(self_, name_)) throw new Error("Column not found in result: " + name_)
-            return self_[name_] != null ? ff_core_Option.Some(parseInt(self_[name_])) : ff_core_Option.None()
-        """
+    getInt(name: String): Option[Int] {
+        if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
+        let value = self.jsValue.get(name)
+        if(!value.isNull()) {Some(value.expectInt())} else {None}
+    }
 
-    getString(name: String): Option[String]
-        target node sync """
-            if(!Object.hasOwn(self_, name_)) throw new Error("Column not found in result: " + name_)
-            return self_[name_] != null ? ff_core_Option.Some("" + self_[name_]) : ff_core_Option.None()
-        """
+    getString(name: String): Option[String] {
+        if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
+        let value = self.jsValue.get(name)
+        if(!value.isNull()) {Some(value.expectString())} else {None}
+    }
 
 }
 

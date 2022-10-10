@@ -111,6 +111,10 @@ export function JsSystem_object(self_) {
 return {}
 }
 
+export function JsSystem_cancelled(self_) {
+return false
+}
+
 export function JsSystem_throwIfCancelled(self_) {
 
 }
@@ -195,6 +199,10 @@ throw new Error('Function JsSystem_value is missing on this target in async cont
 
 export async function JsSystem_object$(self_, $c) {
 throw new Error('Function JsSystem_object is missing on this target in async context.');
+}
+
+export async function JsSystem_cancelled$(self_, $c) {
+return $c.signal.aborted
 }
 
 export async function JsSystem_throwIfCancelled$(self_, $c) {

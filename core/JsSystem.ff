@@ -23,6 +23,10 @@ extend self: JsSystem {
     object(): JsValue
         target js sync "return {}"
 
+    cancelled(): Bool // This is never actually called async, but will be rewitten by the compiler
+        target js async "return $c.signal.aborted"
+        target js sync "return false"
+
     throwIfCancelled(): Unit // This is never actually called async, but will be rewitten by the compiler
         target js async """
             if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
