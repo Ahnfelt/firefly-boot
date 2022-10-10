@@ -14,6 +14,17 @@ fail[T](at: Location, message: String): T {
 
 extend self: JsImporter {
 
+    add(url: String): String {
+        let importName = self.imports.get(url).{
+            | None =>
+                let n = "import$" + self.imports.size()
+                self.imports = self.imports.add(url, n)
+                n
+            | Some(n) => n
+        }
+        importName
+    }
+
     process(at: Location, code: String): String {
         let space = code.takeWhile {c => c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == ';'}
         let rest = code.dropFirst(space.size())
@@ -28,13 +39,7 @@ extend self: JsImporter {
         if(url.size() == 0) {fail(at, "Expected module name after \" from '\"")}
         if(url.any{_ == '\n'}) {fail(at, "Unclosed module name string")}
         let rest5 = rest4.dropFirst(url.size() + 1)
-        let importName = self.imports.get(url).{
-            | None =>
-                let n = "import$" + self.imports.size()
-                self.imports = self.imports.add(url, n)
-                n
-            | Some(n) => n
-        }
+        let importName = self.add(url)
         space + "const " + name + " = " + importName + self.process(at, rest5)
     }
 

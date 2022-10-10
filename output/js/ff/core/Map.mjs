@@ -163,6 +163,18 @@ return
 }))
 }
 
+export function Map_keys(self_, ff_core_Ordering_Order$K) {
+return ff_core_List.List_toSet(ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), ((_w1) => {
+return _w1.first_
+})), ff_core_Ordering_Order$K)
+}
+
+export function Map_values(self_, ff_core_Ordering_Order$K) {
+return ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), ((_w1) => {
+return _w1.second_
+}))
+}
+
 export function Map_size(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), 0, ((total_, _) => {
 return (total_ + 1)
@@ -302,6 +314,18 @@ return ff_core_List.Empty()
 return
 }
 }
+}))
+}
+
+export async function Map_keys$(self_, ff_core_Ordering_Order$K, $c) {
+return ff_core_List.List_toSet(ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), ((_w1) => {
+return _w1.first_
+})), ff_core_Ordering_Order$K)
+}
+
+export async function Map_values$(self_, ff_core_Ordering_Order$K, $c) {
+return ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), ((_w1) => {
+return _w1.second_
 }))
 }
 

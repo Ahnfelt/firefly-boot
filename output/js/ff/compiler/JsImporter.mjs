@@ -101,6 +101,27 @@ export async function fail_$(at_, message_, $c) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
+export function JsImporter_add(self_, url_) {
+const importName_ = (((_1) => {
+{
+if(_1.None) {
+const n_ = ("import$" + ff_core_Map.Map_size(self_.imports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+self_.imports_ = ff_core_Map.Map_add(self_.imports_, url_, n_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return n_
+return
+}
+}
+{
+if(_1.Some) {
+const n_ = _1.value_;
+return n_
+return
+}
+}
+}))(ff_core_Map.Map_get(self_.imports_, url_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+return importName_
+}
+
 export function JsImporter_process(self_, at_, code_) {
 const space_ = ff_core_String.String_takeWhile(code_, ((c_) => {
 return (((((c_ == 32) || (c_ == 9)) || (c_ == 13)) || (c_ == 10)) || (c_ == 59))
@@ -133,23 +154,7 @@ return (_w1 == 10)
 ff_compiler_JsImporter.fail_(at_, "Unclosed module name string")
 };
 const rest5_ = ff_core_String.String_dropFirst(rest4_, (ff_core_String.String_size(url_) + 1));
-const importName_ = (((_1) => {
-{
-if(_1.None) {
-const n_ = ("import$" + ff_core_Map.Map_size(self_.imports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-self_.imports_ = ff_core_Map.Map_add(self_.imports_, url_, n_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-return n_
-return
-}
-}
-{
-if(_1.Some) {
-const n_ = _1.value_;
-return n_
-return
-}
-}
-}))(ff_core_Map.Map_get(self_.imports_, url_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+const importName_ = ff_compiler_JsImporter.JsImporter_add(self_, url_);
 return (((((space_ + "const ") + name_) + " = ") + importName_) + ff_compiler_JsImporter.JsImporter_process(self_, at_, rest5_))
 }
 }
@@ -167,6 +172,27 @@ return (((("import * as " + mangledName_) + " from '") + moduleName_) + "';")
 return
 }
 }))
+}
+
+export async function JsImporter_add$(self_, url_, $c) {
+const importName_ = (((_1) => {
+{
+if(_1.None) {
+const n_ = ("import$" + ff_core_Map.Map_size(self_.imports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+self_.imports_ = ff_core_Map.Map_add(self_.imports_, url_, n_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return n_
+return
+}
+}
+{
+if(_1.Some) {
+const n_ = _1.value_;
+return n_
+return
+}
+}
+}))(ff_core_Map.Map_get(self_.imports_, url_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+return importName_
 }
 
 export async function JsImporter_process$(self_, at_, code_, $c) {
@@ -201,23 +227,7 @@ return (_w1 == 10)
 ff_compiler_JsImporter.fail_(at_, "Unclosed module name string")
 };
 const rest5_ = ff_core_String.String_dropFirst(rest4_, (ff_core_String.String_size(url_) + 1));
-const importName_ = (((_1) => {
-{
-if(_1.None) {
-const n_ = ("import$" + ff_core_Map.Map_size(self_.imports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-self_.imports_ = ff_core_Map.Map_add(self_.imports_, url_, n_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-return n_
-return
-}
-}
-{
-if(_1.Some) {
-const n_ = _1.value_;
-return n_
-return
-}
-}
-}))(ff_core_Map.Map_get(self_.imports_, url_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+const importName_ = ff_compiler_JsImporter.JsImporter_add(self_, url_);
 return (((((space_ + "const ") + name_) + " = ") + importName_) + ff_compiler_JsImporter.JsImporter_process(self_, at_, rest5_))
 }
 }

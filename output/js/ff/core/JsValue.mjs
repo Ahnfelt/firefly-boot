@@ -103,6 +103,10 @@ export function JsValue_expectBool(self_) {
 return self_
 }
 
+export function JsValue_expectArray(self_) {
+return self_
+}
+
 export function JsValue_isString(self_) {
 return typeof self_ === 'string'
 }
@@ -164,6 +168,10 @@ return self_[key_]
 
 export function JsValue_set(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V) {
 self_[key_] = value_
+}
+
+export function JsValue_with(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V) {
+return {...self_, [key_]: value}
 }
 
 export function JsValue_hasOwn(self_, name_) {
@@ -338,6 +346,10 @@ export async function JsValue_expectBool$(self_, $c) {
 throw new Error('Function JsValue_expectBool is missing on this target in async context.');
 }
 
+export async function JsValue_expectArray$(self_, $c) {
+throw new Error('Function JsValue_expectArray is missing on this target in async context.');
+}
+
 export async function JsValue_isString$(self_, $c) {
 throw new Error('Function JsValue_isString is missing on this target in async context.');
 }
@@ -396,6 +408,10 @@ throw new Error('Function JsValue_get is missing on this target in async context
 
 export async function JsValue_set$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $c) {
 throw new Error('Function JsValue_set is missing on this target in async context.');
+}
+
+export async function JsValue_with$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $c) {
+throw new Error('Function JsValue_with is missing on this target in async context.');
 }
 
 export async function JsValue_hasOwn$(self_, name_, $c) {

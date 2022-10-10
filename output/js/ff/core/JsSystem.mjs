@@ -87,6 +87,10 @@ export function JsSystem_global(self_) {
 return self_
 }
 
+export function JsSystem_import(self_, module_) {
+throw Error('Dynamic JS imports are not currently supported.')
+}
+
 export function JsSystem_parseJson(self_, json_) {
 return JSON.parse(json_)
 }
@@ -103,11 +107,17 @@ export function JsSystem_value(self_, jsValue_, ff_core_JsValue_IsJsValue$T) {
 return jsValue_
 }
 
-export function JsSystem_object(self_, fields_ = ff_core_List.Empty()) {
+export function JsSystem_object(self_) {
+return {}
+}
 
-            const result = {}
-            ff_core_List.List_each(values_, v => result[v.first_] = v.second_)
-            return result
+export function JsSystem_throwIfCancelled(self_) {
+
+}
+
+export function JsSystem_await(self_, body_) {
+
+            return body_()
         
 }
 
@@ -163,6 +173,10 @@ export async function JsSystem_global$(self_, $c) {
 throw new Error('Function JsSystem_global is missing on this target in async context.');
 }
 
+export async function JsSystem_import$(self_, module_, $c) {
+throw new Error('Function JsSystem_import is missing on this target in async context.');
+}
+
 export async function JsSystem_parseJson$(self_, json_, $c) {
 throw new Error('Function JsSystem_parseJson is missing on this target in async context.');
 }
@@ -179,8 +193,20 @@ export async function JsSystem_value$(self_, jsValue_, ff_core_JsValue_IsJsValue
 throw new Error('Function JsSystem_value is missing on this target in async context.');
 }
 
-export async function JsSystem_object$(self_, fields_ = ff_core_List.Empty(), $c) {
+export async function JsSystem_object$(self_, $c) {
 throw new Error('Function JsSystem_object is missing on this target in async context.');
+}
+
+export async function JsSystem_throwIfCancelled$(self_, $c) {
+
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+        
+}
+
+export async function JsSystem_await$(self_, body_, $c) {
+
+            return await body_($c)
+        
 }
 
 export async function JsSystem_array$(self_, values_, $c) {
