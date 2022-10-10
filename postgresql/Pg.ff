@@ -23,7 +23,8 @@ makePool(
     allowExitOnIdle: Bool = True
 ): PgPool {
     let js = UnsafeJs.jsSystem()
-    let pg = js.import("pg")
+    UnsafeJs.throwIfCancelled()
+    let pg = UnsafeJs.import("pg")
     PgPool(pg.get("Pool").new1(js.object()
         .with("user", user)
         .with("host", host)
@@ -46,7 +47,8 @@ makePoolFromConnectionString(
     allowExitOnIdle: Bool = True
 ): PgPool {
     let js = UnsafeJs.jsSystem()
-    let pg = js.import("pg")
+    UnsafeJs.throwIfCancelled()
+    let pg = UnsafeJs.import("pg")
     PgPool(pg.get("Pool").new1(js.object()
         .with("connectionString", connectionString)
         .with("connectionTimeoutMillis", connectionTimeout.seconds * 1000)
@@ -59,15 +61,12 @@ makePoolFromConnectionString(
 extend self: PgPool {
 
     connect(): PgConnection {
-        let js = UnsafeJs.jsSystem()
-        js.throwIfCancelled()
-        PgConnection(js.await { self.jsValue.call0("connect") })
+        UnsafeJs.throwIfCancelled()
+        PgConnection(UnsafeJs.await { self.jsValue.call0("connect") })
     }
 
     close(): Unit {
-        let js = UnsafeJs.jsSystem()
-        js.throwIfCancelled()
-        js.await { self.jsValue.call0("end") }
+        UnsafeJs.await { self.jsValue.call0("end") }
     }
 
     connectionCount(): Int {
@@ -107,9 +106,7 @@ extend self: PgPool {
 extend self: PgConnection {
 
     release(): Unit {
-        let js = UnsafeJs.jsSystem()
-        js.throwIfCancelled()
-        if(js.cancelled()) {
+        if(UnsafeJs.cancelled()) {
             self.jsValue.call1("release", True)
         } else {
             self.jsValue.call0("release")
@@ -202,9 +199,8 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
     if(unusedParameters.size() > 0) {
         panic("Unused parameters: " + unusedParameters.toList().join(", "))
     }
-    let js = UnsafeJs.jsSystem()
-    js.throwIfCancelled()
-    let result = js.await { statement.connection.expect().jsValue.call2("query", pair.first, parameters) }
+    UnsafeJs.throwIfCancelled()
+    let result = UnsafeJs.await { statement.connection.expect().jsValue.call2("query", pair.first, parameters) }
     body.{
         | None =>
             result.get("rowCount").expectInt()

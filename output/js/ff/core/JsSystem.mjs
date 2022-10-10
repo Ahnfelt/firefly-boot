@@ -87,10 +87,6 @@ export function JsSystem_global(self_) {
 return self_
 }
 
-export function JsSystem_import(self_, module_) {
-throw Error('Dynamic JS imports are not currently supported.')
-}
-
 export function JsSystem_parseJson(self_, json_) {
 return JSON.parse(json_)
 }
@@ -109,20 +105,6 @@ return jsValue_
 
 export function JsSystem_object(self_) {
 return {}
-}
-
-export function JsSystem_cancelled(self_) {
-return false
-}
-
-export function JsSystem_throwIfCancelled(self_) {
-
-}
-
-export function JsSystem_await(self_, body_) {
-
-            return body_()
-        
 }
 
 export function JsSystem_array(self_, values_) {
@@ -177,10 +159,6 @@ export async function JsSystem_global$(self_, $c) {
 throw new Error('Function JsSystem_global is missing on this target in async context.');
 }
 
-export async function JsSystem_import$(self_, module_, $c) {
-throw new Error('Function JsSystem_import is missing on this target in async context.');
-}
-
 export async function JsSystem_parseJson$(self_, json_, $c) {
 throw new Error('Function JsSystem_parseJson is missing on this target in async context.');
 }
@@ -199,22 +177,6 @@ throw new Error('Function JsSystem_value is missing on this target in async cont
 
 export async function JsSystem_object$(self_, $c) {
 throw new Error('Function JsSystem_object is missing on this target in async context.');
-}
-
-export async function JsSystem_cancelled$(self_, $c) {
-return $c.signal.aborted
-}
-
-export async function JsSystem_throwIfCancelled$(self_, $c) {
-
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-        
-}
-
-export async function JsSystem_await$(self_, body_, $c) {
-
-            return await body_($c)
-        
 }
 
 export async function JsSystem_array$(self_, values_, $c) {
