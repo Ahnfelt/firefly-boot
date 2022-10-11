@@ -195,29 +195,27 @@ extend self: PgStatement {
 extend self: PgRow {
 
     getBool(name: String): Option[Bool] {
-        if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
-        let value = self.jsValue.get(name)
-        if(!value.isNull()) {Some(value.expectBool())} else {None}
+        internalGet(self, name) {_.expectBool()}
     }
 
     getInt(name: String): Option[Int] {
-        if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
-        let value = self.jsValue.get(name)
-        if(!value.isNull()) {Some(value.expectInt())} else {None}
+        internalGet(self, name) {_.expectInt()}
     }
 
     getFloat(name: String): Option[Float] {
-        if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
-        let value = self.jsValue.get(name)
-        if(!value.isNull()) {Some(value.expectFloat())} else {None}
+        internalGet(self, name) {_.expectFloat()}
     }
 
     getString(name: String): Option[String] {
-        if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
-        let value = self.jsValue.get(name)
-        if(!value.isNull()) {Some(value.expectString())} else {None}
+        internalGet(self, name) {_.expectString()}
     }
 
+}
+
+internalGet[T](row: PgRow, name: String, body: JsValue => T): Option[T] {
+    if(!row.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
+    let value = row.jsValue.get(name)
+    if(!value.isNull()) {Some(body(value))} else {None}
 }
 
 internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
