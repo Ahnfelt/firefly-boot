@@ -81,7 +81,7 @@ extend self: PgPool {
         self.jsValue.get("waitingCount").expectInt()
     }
 
-    withTransaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted): T {
+    transaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted): T {
         let connection = self.connect()
         mutable done = False
         try {
@@ -345,7 +345,7 @@ main(system: NodeSystem): Unit {
         password = {system.arguments().expect(3)}
     )
 
-    pool.withTransaction { connection =>
+    pool.transaction { connection =>
         let parties = connection.statement("""
             select name, listCode, entityId
             from election."PartyRow"
