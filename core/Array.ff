@@ -79,6 +79,28 @@ extend self[T]: Array[T] {
             return result;
         """
 
+    each(body: T => Unit): Unit
+        target js sync """
+            return self_.forEach(body_);
+        """
+        target js async """
+            for(let i = self_.length - 1; i >= 0; i--) {
+                await body_(self_[i], $c)
+            }
+        """
+
+    map[S](body: T => S): Array[S]
+        target js sync """
+            return self_.map(body_)
+        """
+        target js async """
+            let result = [];
+            for(let i = self_.length - 1; i >= 0; i--) {
+                result.push(await body_(self_[i], $c));
+            }
+            return result;
+        """
+
 }
 
 extend self: Array[String] {

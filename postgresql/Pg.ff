@@ -161,6 +161,46 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
+    withBoolArray(name: String, value: Array[Bool]): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableBoolArray(name: String, value: Option[Array[Bool]]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withIntArray(name: String, value: Array[Int]): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableIntArray(name: String, value: Option[Array[Int]]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withFloatArray(name: String, value: Array[Float]): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableFloatArray(name: String, value: Option[Array[Float]]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withStringArray(name: String, value: Array[String]): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableStringArray(name: String, value: Option[Array[String]]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
     run(): Int {
         internalRunStatement(self, None)
     }
@@ -208,6 +248,22 @@ extend self: PgRow {
 
     getString(name: String): Option[String] {
         internalGet(self, name) {_.expectString()}
+    }
+
+    getBoolArray(name: String): Option[Array[Bool]] {
+        internalGet(self, name) {_.expectArray().map {_.expectBool()}}
+    }
+
+    getIntArray(name: String): Option[Array[Int]] {
+        internalGet(self, name) {_.expectArray().map {_.expectInt()}}
+    }
+
+    getFloatArray(name: String): Option[Array[Float]] {
+        internalGet(self, name) {_.expectArray().map {_.expectFloat()}}
+    }
+
+    getStringArray(name: String): Option[Array[String]] {
+        internalGet(self, name) {_.expectArray().map {_.expectString()}}
     }
 
 }
