@@ -121,12 +121,32 @@ extend self: PgConnection {
 
 extend self: PgStatement {
 
+    withBool(name: String, value: Bool): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableBool(name: String, value: Option[Bool]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
     withInt(name: String, value: Int): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
     withNullableInt(name: String, value: Option[Int]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withFloat(name: String, value: Float): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableFloat(name: String, value: Option[Float]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
@@ -174,10 +194,22 @@ extend self: PgStatement {
 
 extend self: PgRow {
 
+    getBool(name: String): Option[Bool] {
+        if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
+        let value = self.jsValue.get(name)
+        if(!value.isNull()) {Some(value.expectBool())} else {None}
+    }
+
     getInt(name: String): Option[Int] {
         if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
         let value = self.jsValue.get(name)
         if(!value.isNull()) {Some(value.expectInt())} else {None}
+    }
+
+    getFloat(name: String): Option[Float] {
+        if(!self.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
+        let value = self.jsValue.get(name)
+        if(!value.isNull()) {Some(value.expectFloat())} else {None}
     }
 
     getString(name: String): Option[String] {
@@ -250,7 +282,6 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
 }
 
 main(system: NodeSystem): Unit {
-    Log.debug("Hello!")
 
     let pool = makePool(
         system = system
@@ -266,14 +297,14 @@ main(system: NodeSystem): Unit {
             from election."PartyRow"
             where entityId < $maxEntityId
         """)
-        .withInt("maxEntityId", 200)
-        .map {row =>
-            (
-                name = row.getString("name").expect()
-                listCode = row.getString("listcode").expect()
-                entityId = row.getInt("entityid").expect()
-            )
-        }
+            .withInt("maxEntityId", 200)
+            .map {row =>
+                (
+                    name = row.getString("name").expect()
+                    listCode = row.getString("listcode").expect()
+                    entityId = row.getInt("entityid").expect()
+                )
+            }
         parties.each(Log.debug)
     }
 }
