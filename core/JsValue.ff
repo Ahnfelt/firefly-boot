@@ -70,7 +70,7 @@ extend self: JsValue {
         target js sync "self_[key_] = value_"
 
     with[K: IsJsValue, V: IsJsValue](key: K, value: V): JsValue
-        target js sync "return {...self_, [key_]: value}"
+        target js sync "return {...self_, [key_]: value_}"
 
     hasOwn(name: String): Bool
         target js sync "return Object.prototype.hasOwnProperty.call(self_, name_)"

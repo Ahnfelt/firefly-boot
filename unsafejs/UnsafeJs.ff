@@ -1,4 +1,5 @@
 jsSystem(): JsSystem
+    target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
     target js sync "return typeof globalThis !== 'undefined' ? globalThis : window"
 
 import(module: String): JsValue

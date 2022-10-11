@@ -24,7 +24,7 @@ makePool(
 ): PgPool {
     UnsafeJs.throwIfCancelled()
     let js = UnsafeJs.jsSystem()
-    let pg = UnsafeJs.import("pg")
+    let pg = UnsafeJs.import("pg").get("default")
     PgPool(pg.get("Pool").new1(js.object()
         .with("user", user)
         .with("host", host)
@@ -48,7 +48,7 @@ makePoolFromConnectionString(
 ): PgPool {
     UnsafeJs.throwIfCancelled()
     let js = UnsafeJs.jsSystem()
-    let pg = UnsafeJs.import("pg")
+    let pg = UnsafeJs.import("pg").get("default")
     PgPool(pg.get("Pool").new1(js.object()
         .with("connectionString", connectionString)
         .with("connectionTimeoutMillis", connectionTimeout.seconds * 1000)
@@ -241,6 +241,8 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
                     last = i
                 }
             }
+        } else {
+            i += 1
         }
     }
     sql = sql + statementSql.slice(last, i)
@@ -249,4 +251,29 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
 
 main(system: NodeSystem): Unit {
     Log.debug("Hello!")
+
+    let pool = makePool(
+        system = system
+        host = system.arguments().expect(0)
+        database = system.arguments().expect(1)
+        user = system.arguments().expect(2)
+        password = {system.arguments().expect(3)}
+    )
+
+    pool.withTransaction { connection =>
+        let parties = connection.statement("""
+            select name, listCode, entityId
+            from election."PartyRow"
+            where entityId < $maxEntityId
+        """)
+        .withInt("maxEntityId", 200)
+        .map {row =>
+            (
+                name = row.getString("name").expect()
+                listCode = row.getString("listcode").expect()
+                entityId = row.getInt("entityid").expect()
+            )
+        }
+        parties.each(Log.debug)
+    }
 }
