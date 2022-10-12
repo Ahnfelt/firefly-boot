@@ -118,11 +118,11 @@ extend self: PgConnection {
     }
 
     batchRun(statements: List[PgStatement]): List[Int] {
-        internalBatchStatement(statements, None, None)
+        internalBatchStatements(statements, None, None)
     }
 
     batchAll(statements: List[PgStatement], body: PgRow => Bool): List[Bool] {
-        internalBatchStatement(statements, Some(body), None).map {_ == 1}
+        internalBatchStatements(statements, Some(body), None).map {_ == 1}
     }
 
     batchAny(statements: List[PgStatement], body: PgRow => Bool): List[Bool] {
@@ -136,7 +136,7 @@ extend self: PgConnection {
     batchMap[T](statements: List[PgStatement], body: PgRow => T): List[List[T]] {
         mutable results = []
         mutable result = []
-        internalBatchStatement(statements, Some({row =>
+        internalBatchStatements(statements, Some({row =>
             result = [body(row), ...result]
             True
         }), Some({
@@ -318,7 +318,7 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
     }
 }
 
-internalBatchStatement(
+internalBatchStatements(
     statements: List[PgStatement],
     body: Option[PgRow => Bool],
     endBody: Option[() => Unit]
