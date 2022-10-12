@@ -620,7 +620,9 @@ return
 }
 }
 }))(ff_core_List.List_expectFirst(newGenerics_));
-const instance_ = ff_core_Map.Map_expect(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
+const instance_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), (() => {
+return ff_compiler_Dictionaries.fail_(constraint_.at_, ((("Internal error - missing instance " + firstType_.name_) + ": ") + constraint_.name_))
+}));
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.generics_, firstType_.generics_, c_)
 }));
@@ -1098,7 +1100,9 @@ return
 }
 }
 }))(ff_core_List.List_expectFirst(newGenerics_));
-const instance_ = ff_core_Map.Map_expect(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
+const instance_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), (() => {
+return ff_compiler_Dictionaries.fail_(constraint_.at_, ((("Internal error - missing instance " + firstType_.name_) + ": ") + constraint_.name_))
+}));
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
 return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.generics_, firstType_.generics_, c_)
 }));

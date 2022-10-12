@@ -230,6 +230,18 @@ export function Array_toList(self_) {
         
 }
 
+export function Array_each(self_, body_) {
+
+            return self_.forEach(body_);
+        
+}
+
+export function Array_map(self_, body_) {
+
+            return self_.map(body_)
+        
+}
+
 export async function Array_addAll$(self_, that_, $c) {
 throw new Error('Function Array_addAll is missing on this target in async context.');
 }
@@ -272,6 +284,24 @@ export async function Array_update$(self_, index_, body_, $c) {
 
 export async function Array_toList$(self_, $c) {
 throw new Error('Function Array_toList is missing on this target in async context.');
+}
+
+export async function Array_each$(self_, body_, $c) {
+
+            for(let i = self_.length - 1; i >= 0; i--) {
+                await body_(self_[i], $c)
+            }
+        
+}
+
+export async function Array_map$(self_, body_, $c) {
+
+            let result = [];
+            for(let i = self_.length - 1; i >= 0; i--) {
+                result.push(await body_(self_[i], $c));
+            }
+            return result;
+        
 }
 
 export function Array_join(self_, separator_ = "") {

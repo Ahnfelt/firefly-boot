@@ -168,7 +168,9 @@ extend self: Dictionaries {
             | TConstructor t => t
             | TVariable t => fail(t.at, " is still a unification variable")
         }
-        let instance = self.instances.expect(InstanceKey(constraint.name, firstType.name))
+        let instance = self.instances.get(InstanceKey(constraint.name, firstType.name)).else {
+            fail(constraint.at, "Internal error - missing instance " + firstType.name + ": " + constraint.name)
+        }
         let dictionaries = instance.constraints.map { c =>
             self.makeDictionary(instance.generics, firstType.generics, c)
         }

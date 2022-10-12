@@ -118,11 +118,11 @@ extend self: PgConnection {
     }
 
     batchRun(statements: List[PgStatement]): List[Int] {
-        internalBatchStatements(statements, None, None)
+        internalBatchStatements(self, statements, None, None)
     }
 
     batchAll(statements: List[PgStatement], body: PgRow => Bool): List[Bool] {
-        internalBatchStatements(statements, Some(body), None).map {_ == 1}
+        internalBatchStatements(self, statements, Some(body), None).map {_ == 1}
     }
 
     batchAny(statements: List[PgStatement], body: PgRow => Bool): List[Bool] {
@@ -136,7 +136,7 @@ extend self: PgConnection {
     batchMap[T](statements: List[PgStatement], body: PgRow => T): List[List[T]] {
         mutable results = []
         mutable result = []
-        internalBatchStatements(statements, Some({row =>
+        internalBatchStatements(self, statements, Some({row =>
             result = [body(row), ...result]
             True
         }), Some({
@@ -319,23 +319,32 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
 }
 
 internalBatchStatements(
+    connection: PgConnection,
     statements: List[PgStatement],
     body: Option[PgRow => Bool],
     endBody: Option[() => Unit]
 ): List[Int] {
     let sqlCache = statements.map {s => Pair(s.sql, s.sql)}.group().map {| Pair(sql, list) =>
         let pair = internalParseParameters(sql)
-        let prepared = None
-        let newSql = pair.first
-        Pair(sql, (newSql = newSql, parameterNames = pair.second, prepared = prepared))
+        let prepared = if(list.size() >= 10) {
+            let hash = UnsafeJs.import("crypto")
+                .call1("createHash", "md5")
+                .call1("update", pair.first)
+                .call1("digest", "hex")
+            "ffpgps" + hash.expectString()
+        }
+        Pair(sql, (newSql = pair.first, parameterNames = pair.second, prepared = prepared))
     }
     let promises = statements.map { statement =>
         UnsafeJs.throwIfCancelled()
         let record = sqlCache.expect(statement.sql)
         let parameters = internalCheckParameters(record.parameterNames, statement.parameters)
-        statement.connection.expect().jsValue.call2("query", record.newSql, parameters)
+        let query = UnsafeJs.jsSystem().object()
+            .with("text", record.newSql)
+            .with("values", parameters)
+        connection.jsValue.call1("query", record.prepared.map {query.with("name", _)}.else {query})
     }
-    promises.map { promise =>
+    let results = promises.map { promise =>
         UnsafeJs.throwIfCancelled()
         let result = UnsafeJs.await { promise }
         UnsafeJs.throwIfCancelled()
@@ -350,6 +359,7 @@ internalBatchStatements(
                 if(all) {1} else {0}
         }
     }
+    results
 }
 
 internalCheckParameters(parameterNames: List[String], parameters: Map[String, JsValue]): Array[JsValue] {

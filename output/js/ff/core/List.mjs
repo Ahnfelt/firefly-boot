@@ -159,13 +159,6 @@ return
 return go_(list_, ff_core_List.Empty())
 }
 
-export function groupList_(list_, ff_core_Ordering_Order$K) {
-const initial_ = ff_core_List.Empty();
-return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_, ff_core_Ordering_Order$K), ((map_, pair_) => {
-return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.second"), ff_core_Ordering_Order$K)
-}))
-}
-
 export async function range_$(size_, $c) {
 throw new Error('Function range is missing on this target in async context.');
 }
@@ -232,13 +225,6 @@ return
 }
 }
 return go_(list_, ff_core_List.Empty())
-}
-
-export async function groupList_$(list_, ff_core_Ordering_Order$K, $c) {
-const initial_ = ff_core_List.Empty();
-return ff_core_List.List_foldLeft(list_, ff_core_List.List_toMap(initial_, ff_core_Ordering_Order$K), ((map_, pair_) => {
-return ff_core_Map.Map_addToList(map_, pair_.first_, ff_core_Core.panic_("pair.second"), ff_core_Ordering_Order$K)
-}))
 }
 
 export function List_addAll(self_, list_) {
@@ -2406,7 +2392,10 @@ return ff_core_Map.Map_add(map_, pair_.first_, pair_.second_, ff_core_Ordering_O
 }
 
 export function List_group(self_, ff_core_Ordering_Order$K) {
-return ff_core_List.groupList_(self_, ff_core_Ordering_Order$K)
+const initial_ = ff_core_List.Empty();
+return ff_core_List.List_foldLeft(self_, ff_core_List.List_toMap(initial_, ff_core_Ordering_Order$K), ((map_, pair_) => {
+return ff_core_Map.Map_addToList(map_, pair_.first_, pair_.second_, ff_core_Ordering_Order$K)
+}))
 }
 
 export async function List_toMap$(self_, ff_core_Ordering_Order$K, $c) {
@@ -2416,7 +2405,10 @@ return ff_core_Map.Map_add(map_, pair_.first_, pair_.second_, ff_core_Ordering_O
 }
 
 export async function List_group$(self_, ff_core_Ordering_Order$K, $c) {
-return ff_core_List.groupList_(self_, ff_core_Ordering_Order$K)
+const initial_ = ff_core_List.Empty();
+return ff_core_List.List_foldLeft(self_, ff_core_List.List_toMap(initial_, ff_core_Ordering_Order$K), ((map_, pair_) => {
+return ff_core_Map.Map_addToList(map_, pair_.first_, pair_.second_, ff_core_Ordering_Order$K)
+}))
 }
 
 export function List_unzip(self_) {

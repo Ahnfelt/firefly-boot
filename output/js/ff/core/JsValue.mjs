@@ -171,7 +171,7 @@ self_[key_] = value_
 }
 
 export function JsValue_with(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V) {
-return {...self_, [key_]: value}
+return {...self_, [key_]: value_}
 }
 
 export function JsValue_hasOwn(self_, name_) {

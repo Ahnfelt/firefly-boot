@@ -213,3 +213,4 @@ instance Array[T: IsJsValue]: IsJsValue {}
 instance Error: IsJsValue {}
 instance Instant: IsJsValue {}
 instance Duration: IsJsValue {}
+instance Nothing: IsJsValue {}
