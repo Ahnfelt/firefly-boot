@@ -374,7 +374,8 @@ extend self[K: Order, V]: List[Pair[K, V]] {
     }
 
     group(): Map[K, List[V]] {
-        groupList(self)
+        let initial: List[Pair[K, List[V]]] = []
+        self.foldLeft(initial.toMap()) { map, pair => map.addToList(pair.first, pair.second) }
     }
 
 }
@@ -415,7 +416,3 @@ reverseList[T](list: List[T]): List[T] { // Hack to work around Scala/IDEA infer
 
 }
 
-groupList[K: Order, V](list : List[Pair[K, V]]): Map[K, List[V]] { // Hack to work around Scala/IDEA inference bug
-    let initial: List[Pair[K, List[V]]] = []
-    list.foldLeft(initial.toMap()) { map, pair => map.addToList(pair.first, panic("pair.second")) }
-}
