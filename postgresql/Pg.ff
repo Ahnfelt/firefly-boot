@@ -117,6 +117,34 @@ extend self: PgConnection {
         PgStatement(sql, [].toMap(), Some(self))
     }
 
+    batchRun(statements: List[PgStatement]): List[Int] {
+        internalBatchStatement(statements, None, None)
+    }
+
+    batchAll(statements: List[PgStatement], body: PgRow => Bool): List[Bool] {
+        internalBatchStatement(statements, Some(body), None).map {_ == 1}
+    }
+
+    batchAny(statements: List[PgStatement], body: PgRow => Bool): List[Bool] {
+        self.batchAll(statements, {!body(_)}).map {!_}
+    }
+
+    batchEach(statements: List[PgStatement], body: PgRow => Unit): Unit {
+        self.batchAll(statements, {body(_); True})
+    }
+
+    batchMap[T](statements: List[PgStatement], body: PgRow => T): List[List[T]] {
+        mutable results = []
+        mutable result = []
+        internalBatchStatement(statements, Some({row =>
+            result = [body(row), ...result]
+            True
+        }), Some({
+            results = [result.reverse(), ...results]
+        }))
+        results.reverse()
+    }
+
 }
 
 extend self: PgStatement {
@@ -275,17 +303,9 @@ internalGet[T](row: PgRow, name: String, body: JsValue => T): Option[T] {
 }
 
 internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
-    let pair = internalParseParameters(statement.sql)
-    let parameters = pair.second.map { name =>
-        statement.parameters.get(name).else {
-            panic("No value for parameter: " + name)
-        }
-    }.toArray()
-    let unusedParameters = statement.parameters.keys().removeAll(pair.second.toSet())
-    if(unusedParameters.size() > 0) {
-        panic("Unused parameters: " + unusedParameters.toList().join(", "))
-    }
     UnsafeJs.throwIfCancelled()
+    let pair = internalParseParameters(statement.sql)
+    let parameters = internalCheckParameters(pair.second, statement.parameters)
     let result = UnsafeJs.await { statement.connection.expect().jsValue.call2("query", pair.first, parameters) }
     body.{
         | None =>
@@ -296,6 +316,47 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
             }
             if(all) {1} else {0}
     }
+}
+
+internalBatchStatement(
+    statements: List[PgStatement],
+    body: Option[PgRow => Bool],
+    endBody: Option[() => Unit]
+): List[Int] {
+    let promises = statements.map { statement =>
+        UnsafeJs.throwIfCancelled()
+        let pair = internalParseParameters(statement.sql)
+        let parameters = internalCheckParameters(pair.second, statement.parameters)
+        statement.connection.expect().jsValue.call2("query", pair.first, parameters)
+    }
+    promises.map { promise =>
+        UnsafeJs.throwIfCancelled()
+        let result = UnsafeJs.await { promise }
+        UnsafeJs.throwIfCancelled()
+        body.{
+            | None =>
+                result.get("rowCount").expectInt()
+            | Some(f) =>
+                let all = result.get("rows").expectArray().toList().all { row =>
+                    f(PgRow(row))
+                }
+                endBody.each {_()}
+                if(all) {1} else {0}
+        }
+    }
+}
+
+internalCheckParameters(parameterNames: List[String], parameters: Map[String, JsValue]): Array[JsValue] {
+    let arguments = parameterNames.map { name =>
+        parameters.get(name).else {
+            panic("No value for parameter: " + name)
+        }
+    }.toArray()
+    let unusedParameters = parameters.keys().removeAll(parameterNames.toSet())
+    if(unusedParameters.size() > 0) {
+        panic("Unused parameters: " + unusedParameters.toList().join(", "))
+    }
+    arguments
 }
 
 internalParseParameters(statementSql: String): Pair[String, List[String]] {
@@ -359,6 +420,21 @@ main(system: NodeSystem): Unit {
                     entityId = row.getInt("entityid").expect()
                 )
             }
-        parties.each(Log.debug)
+
+        connection.batchMap(
+            parties.map { item =>
+                connection.statement("""
+                    select id
+                    from election."PartyRow"
+                    where name = $name and listCode = $listCode and entityId = $entityId
+                """)
+                    .withString("name", item.name)
+                    .withString("listCode", item.listCode)
+                    .withInt("entityId", item.entityId)
+            }
+        ) { row =>
+            Log.debug(row)
+        }
+
     }
 }
