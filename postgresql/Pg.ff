@@ -330,6 +330,7 @@ internalBatchStatements(
             let hash = UnsafeJs.import("crypto")
                 .call1("createHash", "md5")
                 .call1("update", pair.first)
+                .call1("update", "ffpgps")
                 .call1("digest", "hex")
             "ffpgps" + hash.expectString()
         }
