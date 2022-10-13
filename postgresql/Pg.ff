@@ -189,6 +189,24 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
+    withInstant(name: String, value: Instant): PgStatement {
+        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        function toJsDate(instant: Instant): JsValue {
+            jsDate.new1(instant.since1970.seconds * 1000.0)
+        }
+        let p = toJsDate(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableInstant(name: String, value: Option[Instant]): PgStatement {
+        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        function toJsDate(instant: Instant): JsValue {
+            jsDate.new1(instant.since1970.seconds * 1000.0)
+        }
+        let p = value.map(toJsDate).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
     withBoolArray(name: String, value: Array[Bool]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
@@ -226,6 +244,24 @@ extend self: PgStatement {
 
     withNullableStringArray(name: String, value: Option[Array[String]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withInstantArray(name: String, value: Array[Instant]): PgStatement {
+        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        function toJsDate(instant: Instant): JsValue {
+            jsDate.new1(instant.since1970.seconds * 1000.0)
+        }
+        let p = UnsafeJs.jsSystem().value(value.map(toJsDate))
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableInstantArray(name: String, value: Option[Array[Instant]]): PgStatement {
+        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        function toJsDate(instant: Instant): JsValue {
+            jsDate.new1(instant.since1970.seconds * 1000.0)
+        }
+        let p = value.map {_.map(toJsDate)}.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
@@ -278,6 +314,10 @@ extend self: PgRow {
         internalGet(self, name, lower) {"" + _.expectString()}
     }
 
+    getInstant(name: String, lower: Bool = True): Option[Instant] {
+        internalGet(self, name, lower) {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}
+    }
+
     getBoolArray(name: String, lower: Bool = True): Option[Array[Bool]] {
         internalGet(self, name, lower) {_.expectArray().map {(_.expectBool() && True) || False}}
     }
@@ -292,6 +332,10 @@ extend self: PgRow {
 
     getStringArray(name: String, lower: Bool = True): Option[Array[String]] {
         internalGet(self, name, lower) {_.expectArray().map {"" + _.expectString()}}
+    }
+
+    getInstantArray(name: String, lower: Bool = True): Option[Array[Instant]] {
+        internalGet(self, name, lower) {_.expectArray().map {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}}
     }
 
 }
