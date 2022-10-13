@@ -263,35 +263,35 @@ extend self: PgStatement {
 extend self: PgRow {
 
     getBool(name: String, lower: Bool = True): Option[Bool] {
-        internalGet(self, name, lower) {_.expectBool()}
+        internalGet(self, name, lower) {(_.expectBool() && True) || False}
     }
 
     getInt(name: String, lower: Bool = True): Option[Int] {
-        internalGet(self, name, lower) {_.expectInt()}
+        internalGet(self, name, lower) {_.expectInt() * 1}
     }
 
     getFloat(name: String, lower: Bool = True): Option[Float] {
-        internalGet(self, name, lower) {_.expectFloat()}
+        internalGet(self, name, lower) {_.expectFloat() * 1.0}
     }
 
     getString(name: String, lower: Bool = True): Option[String] {
-        internalGet(self, name, lower) {_.expectString()}
+        internalGet(self, name, lower) {"" + _.expectString()}
     }
 
     getBoolArray(name: String, lower: Bool = True): Option[Array[Bool]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectBool()}}
+        internalGet(self, name, lower) {_.expectArray().map {(_.expectBool() && True) || False}}
     }
 
     getIntArray(name: String, lower: Bool = True): Option[Array[Int]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectInt()}}
+        internalGet(self, name, lower) {_.expectArray().map {_.expectInt() * 1}}
     }
 
     getFloatArray(name: String, lower: Bool = True): Option[Array[Float]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectFloat()}}
+        internalGet(self, name, lower) {_.expectArray().map {_.expectFloat() * 1.0}}
     }
 
     getStringArray(name: String, lower: Bool = True): Option[Array[String]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectString()}}
+        internalGet(self, name, lower) {_.expectArray().map {"" + _.expectString()}}
     }
 
 }
@@ -424,7 +424,7 @@ main(system: NodeSystem): Unit {
         password = {system.arguments().expect(3)}
     )
 
-    pool.transaction { connection =>
+    pool.transaction {connection =>
         let parties = connection.statement("""
             select name, listCode, entityId
             from election."PartyRow"
@@ -440,7 +440,7 @@ main(system: NodeSystem): Unit {
             }
 
         connection.batchMap(
-            parties.map { item =>
+            parties.map {item =>
                 connection.statement("""
                     select id
                     from election."PartyRow"
@@ -450,7 +450,7 @@ main(system: NodeSystem): Unit {
                     .withString("listCode", item.listCode)
                     .withInt("entityId", item.entityId)
             }
-        ) { row =>
+        ) {row =>
             Log.debug(row)
         }
 
