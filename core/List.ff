@@ -308,6 +308,26 @@ extend self[T]: List[T] {
         reverseList(self)
     }
 
+    chunks(chunkSize: Int): List[List[T]] {
+        mutable results = []
+        mutable result = []
+        mutable added = 0
+        self.each { item =>
+            if(added < chunkSize) {
+                result = [item, ...result]
+                added += 1
+            } else {
+                results = [result.reverse(), ...results]
+                result = []
+                added = 0
+            }
+        }
+        if(added != 0) {
+            results = [result.reverse(), ...results]
+        }
+        results.reverse()
+    }
+
     toIterator(): Iterator[T] {
         mutable remaining = self
         Iterator(
