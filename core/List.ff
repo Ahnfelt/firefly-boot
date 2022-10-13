@@ -308,7 +308,7 @@ extend self[T]: List[T] {
         reverseList(self)
     }
 
-    chunks(chunkSize: Int): List[List[T]] {
+    chunk(chunkSize: Int): List[List[T]] {
         mutable results = []
         mutable result = []
         mutable added = 0
