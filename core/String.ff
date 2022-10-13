@@ -17,6 +17,12 @@ extend self: String {
     reverse(): String
         target js sync "return [...self_].reverse().join('')"
 
+    lower(): String
+        target js sync "return self_.toLowerCase()"
+
+    upper(): String
+        target js sync "return self_.toUpperCase()"
+
     dropWhile(p: Char => Bool): String
         target js sync """
             let i = 0
