@@ -20,6 +20,12 @@ extend self: JsValue {
     expectArray(): Array[JsValue]
         target js sync "return self_"
 
+    expectBuffer(): Buffer
+        target js sync """
+            if(!self_ instanceof Buffer) throw new Error('Expected buffer, got '+ typeof self_);
+            return self_
+        """
+
     isString(): Bool
         target js sync "return typeof self_ === 'string'"
 
@@ -213,4 +219,5 @@ instance Array[T: IsJsValue]: IsJsValue {}
 instance Error: IsJsValue {}
 instance Instant: IsJsValue {}
 instance Duration: IsJsValue {}
+instance Buffer: IsJsValue {}
 instance Nothing: IsJsValue {}

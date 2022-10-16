@@ -207,6 +207,16 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
+    withBuffer(name: String, value: Buffer): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableBuffer(name: String, value: Option[Buffer]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
     withBoolArray(name: String, value: Array[Bool]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
@@ -265,6 +275,16 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
+    withBufferArray(name: String, value: Array[Buffer]): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableBufferArray(name: String, value: Option[Array[Buffer]]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
     run(): Int {
         internalRunStatement(self, None)
     }
@@ -318,6 +338,10 @@ extend self: PgRow {
         internalGet(self, name, lower) {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}
     }
 
+    getBuffer(name: String, lower: Bool = True): Option[Buffer] {
+        internalGet(self, name, lower) {_.expectBuffer()}
+    }
+
     getBoolArray(name: String, lower: Bool = True): Option[Array[Bool]] {
         internalGet(self, name, lower) {_.expectArray().map {(_.expectBool() && True) || False}}
     }
@@ -336,6 +360,10 @@ extend self: PgRow {
 
     getInstantArray(name: String, lower: Bool = True): Option[Array[Instant]] {
         internalGet(self, name, lower) {_.expectArray().map {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}}
+    }
+
+    getBufferArray(name: String, lower: Bool = True): Option[Array[Buffer]] {
+        internalGet(self, name, lower) {_.expectArray().map {_.expectBuffer()}}
     }
 
 }
