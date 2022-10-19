@@ -22,7 +22,7 @@ extend self: JsValue {
 
     expectBuffer(): Buffer
         target js sync """
-            if(!self_ instanceof Buffer) throw new Error('Expected buffer, got '+ typeof self_);
+            if(!(self_ instanceof Buffer)) throw new Error('Expected buffer, got '+ typeof self_);
             return self_
         """
 
