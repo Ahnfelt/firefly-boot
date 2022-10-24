@@ -15,8 +15,9 @@ type ModuleWithPackageInfo(
 )
 
 type PackageInfo(
-    package: DPackage,
+    package: DPackage
     dependencies: List[DDependency]
+    includes: List[DInclude]
 )
 
 type Module(
@@ -63,6 +64,10 @@ type DDependency(
     version: Version
     safety: Safety
     targets: TargetNames
+)
+type DInclude(
+    at: Location
+    path: String
 )
 type TargetNames(
     node: Bool

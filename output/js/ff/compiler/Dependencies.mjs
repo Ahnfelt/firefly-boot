@@ -90,8 +90,8 @@ return {workspace_, packages_, packagePaths_, singleFilePackages_};
 }
 
 // type ResolvedDependencies
-export function ResolvedDependencies(packagePaths_, singleFilePackages_) {
-return {packagePaths_, singleFilePackages_};
+export function ResolvedDependencies(mainPackagePair_, packages_, packagePaths_, singleFilePackages_) {
+return {mainPackagePair_, packages_, packagePaths_, singleFilePackages_};
 }
 
 
@@ -102,7 +102,7 @@ const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.Lis
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), path_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_);
-return ff_compiler_Dependencies.ResolvedDependencies(self_.packagePaths_, self_.singleFilePackages_)
+return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, self_.packagePaths_, self_.singleFilePackages_)
 }
 
 export function checkPackagePairs_(dependencyPair_, packagePair_) {
@@ -121,7 +121,7 @@ const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.Lis
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $c));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c));
-return ff_compiler_Dependencies.ResolvedDependencies(self_.packagePaths_, self_.singleFilePackages_)
+return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, self_.packagePaths_, self_.singleFilePackages_)
 }
 
 export async function checkPackagePairs_$(dependencyPair_, packagePair_, $c) {
@@ -166,7 +166,7 @@ const coreDependency_ = ff_compiler_Syntax.DDependency(info_.package_.at_, ff_co
 const _1 = info_;
 {
 const _c = _1;
-return ff_compiler_Syntax.PackageInfo(_c.package_, ff_core_List.Link(coreDependency_, info_.dependencies_))
+return ff_compiler_Syntax.PackageInfo(_c.package_, ff_core_List.Link(coreDependency_, info_.dependencies_), _c.includes_)
 return
 }
 }
@@ -260,7 +260,7 @@ const coreDependency_ = ff_compiler_Syntax.DDependency(info_.package_.at_, ff_co
 const _1 = info_;
 {
 const _c = _1;
-return ff_compiler_Syntax.PackageInfo(_c.package_, ff_core_List.Link(coreDependency_, info_.dependencies_))
+return ff_compiler_Syntax.PackageInfo(_c.package_, ff_core_List.Link(coreDependency_, info_.dependencies_), _c.includes_)
 return
 }
 }

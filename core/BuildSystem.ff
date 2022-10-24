@@ -1,5 +1,5 @@
 type BuildSystem! {}
-type BrowserCode!(assetSystem: AssetSystem)
+type BrowserCode!(packageGroup: String, packageName: String, assetSystem: AssetSystem)
 type BrowserBundle!(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
@@ -9,7 +9,10 @@ extend self: BuildSystem {
         internalCompile(self, mainFile, "browser")
         let fs = internalFileSystem(self)
         let streams = internalListDirectory(fs, ".firefly/output/browser")
+        let mainPackagePair = internalMainPackagePair(self)
         BrowserCode(
+            packageGroup = mainPackagePair.first
+            packageName = mainPackagePair.second
             assetSystem = AssetSystem(streams.toMap())
         )
     }
@@ -46,7 +49,7 @@ extend self: BrowserCode {
 
     bundle(minify: Bool = True, sourceMap: Bool = False): BrowserBundle {
         let prefix = ".firefly/output/browser"
-        let mainJsFile = prefix + "/script/script/Main.mjs"
+        let mainJsFile = prefix + "/" + self.packageGroup + "/" + self.packageName + "/Main.mjs"
         let file = prefix + "/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify, sourceMap = sourceMap)
         let fs = internalBrowserCodeFileSystem(self)
@@ -138,4 +141,9 @@ internalBrowserCodeFileSystem(dummy: BrowserCode): FileSystem
 internalCompile(buildSystem: BuildSystem, mainFile: String, target: String): Unit
     target node async """
         return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $c)
+    """
+
+internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String]
+    target node async """
+        return {first_: buildSystem_.mainPackagePair_.group_, second_: buildSystem_.mainPackagePair_.name_}
     """

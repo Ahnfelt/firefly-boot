@@ -1169,6 +1169,26 @@ export function List_reverse(self_) {
 return ff_core_List.reverseList_(self_)
 }
 
+export function List_chunk(self_, chunkSize_) {
+let results_ = ff_core_List.Empty();
+let result_ = ff_core_List.Empty();
+let added_ = 0;
+ff_core_List.List_each(self_, ((item_) => {
+if((added_ < chunkSize_)) {
+result_ = ff_core_List.Link(item_, result_);
+added_ += 1
+} else {
+results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_);
+result_ = ff_core_List.Empty();
+added_ = 0
+}
+}));
+if((added_ != 0)) {
+results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_)
+};
+return ff_core_List.List_reverse(results_)
+}
+
 export function List_toIterator(self_) {
 let remaining_ = self_;
 return ff_core_Iterator.Iterator((() => {
@@ -2127,6 +2147,26 @@ return (await merge_$((await ff_core_List.List_sortBy$(pair_.first_, body_, $c, 
 
 export async function List_reverse$(self_, $c) {
 return ff_core_List.reverseList_(self_)
+}
+
+export async function List_chunk$(self_, chunkSize_, $c) {
+let results_ = ff_core_List.Empty();
+let result_ = ff_core_List.Empty();
+let added_ = 0;
+ff_core_List.List_each(self_, ((item_) => {
+if((added_ < chunkSize_)) {
+result_ = ff_core_List.Link(item_, result_);
+added_ += 1
+} else {
+results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_);
+result_ = ff_core_List.Empty();
+added_ = 0
+}
+}));
+if((added_ != 0)) {
+results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_)
+};
+return ff_core_List.List_reverse(results_)
 }
 
 export async function List_toIterator$(self_, $c) {

@@ -325,7 +325,7 @@ return moduleWithPackageInfo_.module_
 }
 
 export function Parser_parseModuleWithPackageInfo(self_) {
-const packageInfo_ = ((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "package", "dependency"))
+const packageInfo_ = ((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs3(ff_compiler_Parser.Parser_current(self_), "package", "dependency", "include"))
 ? ff_core_Option.Some(ff_compiler_Parser.Parser_parsePackageInfo(self_))
 : ff_core_Option.None());
 const module_ = ff_compiler_Parser.Parser_parseModule(self_);
@@ -353,7 +353,14 @@ if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_com
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }
 };
-return ff_compiler_Syntax.PackageInfo(package_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_))
+const includes_ = ff_core_ArrayBuilder.empty_();
+while((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
+ff_core_ArrayBuilder.ArrayBuilder_add(includes_, ff_compiler_Parser.Parser_parseIncludeDefinition(self_));
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd()))) {
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
+}
+};
+return ff_compiler_Syntax.PackageInfo(package_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_), ff_core_ArrayBuilder.ArrayBuilder_toList(includes_))
 }
 
 export function Parser_parseModule(self_) {
@@ -379,6 +386,8 @@ ff_core_ArrayBuilder.ArrayBuilder_add(instances_, ff_compiler_Parser.Parser_pars
 ff_core_ArrayBuilder.ArrayBuilder_add(types_, ff_compiler_Parser.Parser_parseTypeDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
 ff_core_ArrayBuilder.ArrayBuilder_add(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.packagePair_))
+} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'")
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'")
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
@@ -787,6 +796,12 @@ const safety_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current
 : ff_compiler_Syntax.Safe()));
 const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, defaultTargetNames_);
 return ff_compiler_Syntax.DDependency(at_, ff_compiler_Syntax.PackagePair(user_, name_), version_, safety_, targets_)
+}
+
+export function Parser_parseIncludeDefinition(self_) {
+const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const path_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
+return ff_compiler_Syntax.DInclude(at_, path_)
 }
 
 export function Parser_parseTargetNames(self_, defaultTargets_) {
@@ -1656,7 +1671,7 @@ return moduleWithPackageInfo_.module_
 }
 
 export async function Parser_parseModuleWithPackageInfo$(self_, $c) {
-const packageInfo_ = ((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "package", "dependency"))
+const packageInfo_ = ((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs3(ff_compiler_Parser.Parser_current(self_), "package", "dependency", "include"))
 ? ff_core_Option.Some(ff_compiler_Parser.Parser_parsePackageInfo(self_))
 : ff_core_Option.None());
 const module_ = ff_compiler_Parser.Parser_parseModule(self_);
@@ -1684,7 +1699,14 @@ if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_com
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 }
 };
-return ff_compiler_Syntax.PackageInfo(package_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_))
+const includes_ = ff_core_ArrayBuilder.empty_();
+while((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
+ff_core_ArrayBuilder.ArrayBuilder_add(includes_, ff_compiler_Parser.Parser_parseIncludeDefinition(self_));
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LEnd()))) {
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
+}
+};
+return ff_compiler_Syntax.PackageInfo(package_, ff_core_ArrayBuilder.ArrayBuilder_toList(dependencies_), ff_core_ArrayBuilder.ArrayBuilder_toList(includes_))
 }
 
 export async function Parser_parseModule$(self_, $c) {
@@ -1710,6 +1732,8 @@ ff_core_ArrayBuilder.ArrayBuilder_add(instances_, ff_compiler_Parser.Parser_pars
 ff_core_ArrayBuilder.ArrayBuilder_add(types_, ff_compiler_Parser.Parser_parseTypeDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
 ff_core_ArrayBuilder.ArrayBuilder_add(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.packagePair_))
+} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'")
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'")
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
@@ -2118,6 +2142,12 @@ const safety_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current
 : ff_compiler_Syntax.Safe()));
 const targets_ = ff_compiler_Parser.Parser_parseTargetNames(self_, defaultTargetNames_);
 return ff_compiler_Syntax.DDependency(at_, ff_compiler_Syntax.PackagePair(user_, name_), version_, safety_, targets_)
+}
+
+export async function Parser_parseIncludeDefinition$(self_, $c) {
+const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
+const path_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
+return ff_compiler_Syntax.DInclude(at_, path_)
 }
 
 export async function Parser_parseTargetNames$(self_, defaultTargets_, $c) {

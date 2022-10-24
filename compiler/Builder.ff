@@ -32,6 +32,11 @@ build(
             Compiler.make(emitTarget, fs, system.time(), compilerModulePath, jsPathFile, resolvedDependencies)
         compiler.emit(mainPackage, mainModule, isMainModule = True)
         if(printMeasurements) { compiler.printMeasurements() }
+        resolvedDependencies.packagePaths.each { packagePair, packagePath =>
+            resolvedDependencies.packages.get(packagePair).each { packageInfo =>
+                processIncludes(jsPathFile, packagePath, packageInfo)
+            }
+        }
         True
     }
 
@@ -42,10 +47,16 @@ build(
 
 }
 
+processIncludes(jsPathFile: String, packagePath: String, info: PackageInfo): Unit {
+    info.includes.each { include =>
+        Log.debug(include)
+    }
+}
+
 buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, target: String) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
     let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-        packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
+        packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
     )
     let fixedPackagePaths = if(fixedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
         fixedDependencies.packagePaths
@@ -58,7 +69,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
     build(
         system = system
         emitTarget = EmitBrowser
-        mainPackage = PackagePair("script", "script")
+        mainPackage = resolvedDependencies.mainPackagePair
         mainModule = mainFile.dropLast(".ff".size())
         resolvedDependencies = fixedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = None

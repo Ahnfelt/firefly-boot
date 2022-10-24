@@ -45,6 +45,7 @@ main(system: NodeSystem): Unit {
 
     function buildScript(
         mainFile: String,
+        mainPackagePair: PackagePair
         emitTarget: EmitTarget
         resolvedDependencies: ResolvedDependencies
     ) {
@@ -65,7 +66,7 @@ main(system: NodeSystem): Unit {
         Builder.build(
             system = system
             emitTarget = emitTarget
-            mainPackage = PackagePair("script", "script")
+            mainPackage = mainPackagePair
             mainModule = mainFile
             resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
             compilerModulePath = compilerModulePath
@@ -80,31 +81,31 @@ main(system: NodeSystem): Unit {
         | RunCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
+                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
             )
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, EmitNode, fixedDependencies)
-            importAndRun(system.files(), fireflyPath, "node", mainFile, arguments)
+            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitNode, fixedDependencies)
+            importAndRun(system.files(), fireflyPath, "node", resolvedDependencies.mainPackagePair, mainFile, arguments)
 
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
+                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
             )
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, EmitBrowser, fixedDependencies)
-            bundleForBrowser(system)
+            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, fixedDependencies)
+            bundleForBrowser(system, resolvedDependencies.mainPackagePair)
 
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(PackagePair("script", "script"), ".")
+                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
             )
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, EmitBuild, fixedDependencies)
-            buildScript(mainFile, EmitExecutable, fixedDependencies)
-            bundleForPkg(system)
-            importAndRun(system.files(), fireflyPath, "build", mainFile, arguments)
+            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBuild, fixedDependencies)
+            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitExecutable, fixedDependencies)
+            bundleForPkg(system, resolvedDependencies.mainPackagePair)
+            importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, mainFile, arguments)
 
         | BootstrapCommand =>
             Builder.build(
@@ -113,6 +114,8 @@ main(system: NodeSystem): Unit {
                 mainPackage = PackagePair("ff", "compiler")
                 mainModule = "Main"
                 resolvedDependencies = ResolvedDependencies(
+                    mainPackagePair = PackagePair("ff", "compiler")
+                    packages = [].toMap() // Only used for includes currently
                     packagePaths = [
                         Pair(PackagePair("ff","compiler"), "compiler")
                         Pair(PackagePair("ff", "core"), "core")
@@ -129,26 +132,38 @@ main(system: NodeSystem): Unit {
 
 }
 
-bundleForPkg(system: NodeSystem) {
+bundleForPkg(system: NodeSystem, packagePair: PackagePair) {
     let prefix = ".firefly/output/executable/"
-    let mainJsFile = prefix + "script/script/Main.mjs"
+    let mainJsFile = prefix + packagePair.groupName("/") + "/Main.mjs"
     let file = prefix + "Main.bundle.js"
     BuildSystem.internalNodeCallEsBuild(system, mainJsFile, outputPath = file, minify = False)
 }
 
-bundleForBrowser(system: NodeSystem) {
+bundleForBrowser(system: NodeSystem, packagePair: PackagePair) {
     let prefix = ".firefly/output/browser/"
-    let mainJsFile = prefix + "script/script/Main.mjs"
+    let mainJsFile = prefix + packagePair.groupName("/") + "script/script/Main.mjs"
     let file = prefix + "Main.bundle.js"
-    let browserCode = BrowserCode(assetSystem = AssetSystem([Pair("/", system.files().readStream(""))].toMap())) // TODO
+    let browserCode = BrowserCode(
+        packageGroup = packagePair.group
+        packageName = packagePair.name
+        assetSystem = AssetSystem([Pair("/", system.files().readStream(""))].toMap())
+    ) // TODO
     BuildSystem.internalCallEsBuild(browserCode, mainJsFile, outputPath = file, minify = True, sourceMap = True)
 }
 
-importAndRun(fs: FileSystem, fireflyPath: String, target: String, mainFile: String, arguments: List[String])
+importAndRun(
+    fs: FileSystem
+    fireflyPath: String
+    target: String
+    packagePair: PackagePair
+    mainFile: String
+    arguments: List[String]
+): Unit
     target node async """
         const process = await import('process');
         const cwd = process.cwd();
-        const main = await import(cwd + "/.firefly/output/" + target_ + "/script/script/" + mainFile_ + ".mjs");
+        const packagePath = packagePair_.group_ + "/" + packagePair_.name_
+        const main = await import(cwd + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
         await main.$run$(fireflyPath_, ff_core_List.List_toArray(arguments_))
     """
 

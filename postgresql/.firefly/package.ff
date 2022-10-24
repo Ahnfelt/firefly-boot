@@ -1,2 +1,3 @@
 package ff:postgresql:0.0.0
 dependency ff:unsafejs:0.0.0
+include "node_modules"

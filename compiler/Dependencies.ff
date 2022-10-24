@@ -11,6 +11,8 @@ type Dependencies(
 )
 
 type ResolvedDependencies(
+    mainPackagePair: PackagePair
+    packages: Map[PackagePair, PackageInfo]
     packagePaths: Map[PackagePair, String]
     singleFilePackages: Set[PackagePair]
 )
@@ -39,7 +41,7 @@ extend self: Dependencies {
 
     addCoreDependencyIfMissing(info: PackageInfo): PackageInfo {
         if(info.dependencies.any { d =>
-                d.packagePair.group == "ff" && d.packagePair.name == "core"
+            d.packagePair.group == "ff" && d.packagePair.name == "core"
         }) {
             info
         } else {
@@ -126,6 +128,8 @@ process(fs: FileSystem, fetch: FetchSystem, path: String): ResolvedDependencies 
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(fs, fetch, newDependencies)
     ResolvedDependencies(
+        mainPackagePair = packageInfo.package.packagePair
+        packages = self.packages
         packagePaths = self.packagePaths
         singleFilePackages = self.singleFilePackages
     )

@@ -92,8 +92,8 @@ return {packageInfo_, module_};
 }
 
 // type PackageInfo
-export function PackageInfo(package_, dependencies_) {
-return {package_, dependencies_};
+export function PackageInfo(package_, dependencies_, includes_) {
+return {package_, dependencies_, includes_};
 }
 
 // type Module
@@ -114,6 +114,11 @@ return {at_, packagePair_, version_, targets_};
 // type DDependency
 export function DDependency(at_, packagePair_, version_, safety_, targets_) {
 return {at_, packagePair_, version_, safety_, targets_};
+}
+
+// type DInclude
+export function DInclude(at_, path_) {
+return {at_, path_};
 }
 
 // type TargetNames

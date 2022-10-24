@@ -110,6 +110,11 @@ ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_, true);
 if(printMeasurements_) {
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
 };
+ff_core_Map.Map_each(resolvedDependencies_.packagePaths_, ((packagePair_, packagePath_) => {
+ff_core_Option.Option_each(ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ((packageInfo_) => {
+ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
+}))
+}), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return true
 }));
 if(success_) {
@@ -120,10 +125,16 @@ ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
 }
 }
 
+export function processIncludes_(jsPathFile_, packagePath_, info_) {
+ff_core_List.List_each(info_.includes_, ((include_) => {
+ff_core_Log.debug_(include_)
+}))
+}
+
 export function buildViaBuildSystem_(system_, fireflyPath_, mainFile_, target_) {
 const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_fetch(system_), mainFile_);
 const fixedDependencies_ = (((_c) => {
-return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
+return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, resolvedDependencies_.mainPackagePair_, ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? fixedDependencies_.packagePaths_
@@ -131,8 +142,8 @@ const fixedPackagePaths_ = (ff_core_Map.Map_contains(fixedDependencies_.packageP
 if((target_ != "browser")) {
 ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
 };
-ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_Syntax.PackagePair("script", "script"), ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
-return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
+ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(fixedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
 
@@ -197,6 +208,11 @@ const compiler_ = (await ff_compiler_Compiler.make_$(emitTarget_, fs_, (await ff
 if(printMeasurements_) {
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c))
 };
+ff_core_Map.Map_each(resolvedDependencies_.packagePaths_, ((packagePair_, packagePath_) => {
+ff_core_Option.Option_each(ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ((packageInfo_) => {
+ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
+}))
+}), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return true
 }), $c));
 if(success_) {
@@ -207,10 +223,16 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_, $c))) {
 }
 }
 
+export async function processIncludes_$(jsPathFile_, packagePath_, info_, $c) {
+ff_core_List.List_each(info_.includes_, ((include_) => {
+ff_core_Log.debug_(include_)
+}))
+}
+
 export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, target_, $c) {
 const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), mainFile_, $c));
 const fixedDependencies_ = (((_c) => {
-return ff_compiler_Dependencies.ResolvedDependencies(ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("script", "script"), ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
+return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, resolvedDependencies_.mainPackagePair_, ".", ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), _c.singleFilePackages_)
 }))(resolvedDependencies_);
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? fixedDependencies_.packagePaths_
@@ -218,8 +240,8 @@ const fixedPackagePaths_ = (ff_core_Map.Map_contains(fixedDependencies_.packageP
 if((target_ != "browser")) {
 ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
 };
-(await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_Syntax.PackagePair("script", "script"), ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
-return ff_compiler_Dependencies.ResolvedDependencies(fixedPackagePaths_, _c.singleFilePackages_)
+(await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
+return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(fixedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
 

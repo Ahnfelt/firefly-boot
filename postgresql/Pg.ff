@@ -450,7 +450,7 @@ main(system: NodeSystem): Unit {
                     .withInt("entityId", item.entityId)
             }
         ) { row =>
-            Log.debug(row)
+            //Log.debug(row)
         }
 
     }

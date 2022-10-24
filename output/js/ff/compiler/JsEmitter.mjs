@@ -616,7 +616,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 })), ff_core_List.Link((self_.isMainModule_
-? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, ((packagePair_.group_ == "ff") && (packagePair_.name_ == "compiler")))
+? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, packagePair_, ((packagePair_.group_ == "ff") && (packagePair_.name_ == "compiler")))
 : ff_core_List.Empty()), ff_core_List.Empty()))))))));
 const ignoreJsImports_ = ((((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable()) && (packagePair_.group_ == "ff")) && (packagePair_.name_ == "core"))
 ? ff_core_List.Link("esbuild", ff_core_List.Empty())
@@ -627,7 +627,7 @@ return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
 }
 
-export function JsEmitter_emitRun(self_, functions_, bootstrapping_) {
+export function JsEmitter_emitRun(self_, functions_, mainPackagePair_, bootstrapping_) {
 const buildMainFunction_ = ff_core_Option.Option_filter(ff_core_List.List_find(functions_, ((_w1) => {
 return (_w1.signature_.name_ == "buildMain")
 })), ((_) => {
@@ -647,7 +647,7 @@ return (_w1.signature_.name_ == "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((("executableMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable())
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
 : "false")) + ","), ff_core_List.Link(("buildMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitBuild())
 ? "true"
@@ -683,7 +683,7 @@ return
 return ff_core_List.Empty()
 return
 }
-}))(self_.emitTarget_)))))))))))))))))))), "\n"), ff_core_List.Empty())
+}))(self_.emitTarget_))))))))))))))))))))), "\n"), ff_core_List.Empty())
 })), (() => {
 return ff_core_List.Empty()
 }))
@@ -2067,7 +2067,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 })), ff_core_List.Link((self_.isMainModule_
-? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, ((packagePair_.group_ == "ff") && (packagePair_.name_ == "compiler")))
+? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, packagePair_, ((packagePair_.group_ == "ff") && (packagePair_.name_ == "compiler")))
 : ff_core_List.Empty()), ff_core_List.Empty()))))))));
 const ignoreJsImports_ = ((((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable()) && (packagePair_.group_ == "ff")) && (packagePair_.name_ == "core"))
 ? ff_core_List.Link("esbuild", ff_core_List.Empty())
@@ -2078,7 +2078,7 @@ return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
 }
 
-export async function JsEmitter_emitRun$(self_, functions_, bootstrapping_, $c) {
+export async function JsEmitter_emitRun$(self_, functions_, mainPackagePair_, bootstrapping_, $c) {
 const buildMainFunction_ = ff_core_Option.Option_filter(ff_core_List.List_find(functions_, ((_w1) => {
 return (_w1.signature_.name_ == "buildMain")
 })), ((_) => {
@@ -2098,7 +2098,7 @@ return (_w1.signature_.name_ == "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((("executableMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable())
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
 : "false")) + ","), ff_core_List.Link(("buildMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitBuild())
 ? "true"
@@ -2134,7 +2134,7 @@ return
 return ff_core_List.Empty()
 return
 }
-}))(self_.emitTarget_)))))))))))))))))))), "\n"), ff_core_List.Empty())
+}))(self_.emitTarget_))))))))))))))))))))), "\n"), ff_core_List.Empty())
 })), (() => {
 return ff_core_List.Empty()
 }))

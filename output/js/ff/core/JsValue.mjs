@@ -606,4 +606,8 @@ export const ff_core_JsValue_IsJsValue$ff_core_Duration_Duration = {
 
 };
 
+export const ff_core_JsValue_IsJsValue$ff_core_Nothing_Nothing = {
+
+};
+
 

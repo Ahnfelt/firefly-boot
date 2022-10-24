@@ -104,7 +104,7 @@ extend self: Parser {
     }
 
     parseModuleWithPackageInfo(): ModuleWithPackageInfo {
-        let packageInfo = if(self.current().is(LKeyword) && self.current().rawIs2("package", "dependency")) {
+        let packageInfo = if(self.current().is(LKeyword) && self.current().rawIs3("package", "dependency", "include")) {
             self.parsePackageInfo()
         }
         let module = self.parseModule()
@@ -136,7 +136,13 @@ extend self: Parser {
             dependencies.add(self.parseDependencyDefinition(package.targets))
             if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
         }
-        PackageInfo(package, dependencies.toList())
+        let includes = ArrayBuilder.empty[DInclude]()
+        while {self.current().is(LKeyword) && self.current().rawIs("include")} {
+            includes.add(self.parseIncludeDefinition())
+            if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+        }
+        // TODO: When this method is called directly for package.ff, check that the whole file has been consumed
+        PackageInfo(package, dependencies.toList(), includes.toList())
     }
 
     parseModule(): Module {
@@ -162,6 +168,8 @@ extend self: Parser {
                 types.add(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
                 imports.add(self.parseImportDefinition(self.packagePair))
+            } elseIf {self.current().is(LKeyword) && self.current().rawIs("include")} {
+                self.fail(self.current().at(), "Includes must be at the top of the file or below 'package'")
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
                 self.fail(self.current().at(), "Dependencies must be at the top of the file or below 'package'")
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("package")} {
@@ -485,6 +493,15 @@ extend self: Parser {
             version = version
             safety = safety
             targets = targets
+        )
+    }
+
+    parseIncludeDefinition(): DInclude {
+        let at = self.skip(LKeyword).at()
+        let path = self.skip(LString).raw()
+        DInclude(
+            at = at
+            path = path
         )
     }
 

@@ -60,7 +60,7 @@ extend self: JsEmitter {
             module.extends.map { self.emitExtendsDefinition(_) }
             module.instances.map { self.emitInstanceDefinition(_) }
             if(self.isMainModule) {
-                self.emitRun(module.functions, packagePair.group == "ff" && packagePair.name == "compiler")
+                self.emitRun(module.functions, packagePair, packagePair.group == "ff" && packagePair.name == "compiler")
             } else {[]}
         ]
         let ignoreJsImports = if(
@@ -72,7 +72,7 @@ extend self: JsEmitter {
         [jsImports, ...parts].map { _.join("\n\n") }.join("\n\n") + "\n"
     }
 
-    emitRun(functions: List[DFunction], bootstrapping: Bool): List[String] {
+    emitRun(functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
         let buildMainFunction = functions.find { _.signature.name == "buildMain" }.filter {| _ =>
             self.emitTarget != EmitBrowser && self.emitTarget != EmitExecutable
         }
@@ -88,6 +88,7 @@ extend self: JsEmitter {
             "let system = {"
             "array_: arguments_,"
             "fireflyPath_: fireflyPath_,"
+            "mainPackagePair_: {group_: \"" + mainPackagePair.group + "\", name_: \"" + mainPackagePair.name + "\"},"
             "executableMode_: " + if(self.emitTarget == EmitExecutable) {"true"} else {"false"} + ","
             "buildMode_: " + if(self.emitTarget == EmitBuild) {"true"} else {"false"}
             "}"
