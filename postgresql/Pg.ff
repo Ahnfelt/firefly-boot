@@ -189,6 +189,34 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
+    withInstant(name: String, value: Instant): PgStatement {
+        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        function toJsDate(instant: Instant): JsValue {
+            jsDate.new1(instant.since1970.seconds * 1000.0)
+        }
+        let p = toJsDate(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableInstant(name: String, value: Option[Instant]): PgStatement {
+        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        function toJsDate(instant: Instant): JsValue {
+            jsDate.new1(instant.since1970.seconds * 1000.0)
+        }
+        let p = value.map(toJsDate).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withBuffer(name: String, value: Buffer): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableBuffer(name: String, value: Option[Buffer]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
     withBoolArray(name: String, value: Array[Bool]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
@@ -229,6 +257,34 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
+    withInstantArray(name: String, value: Array[Instant]): PgStatement {
+        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        function toJsDate(instant: Instant): JsValue {
+            jsDate.new1(instant.since1970.seconds * 1000.0)
+        }
+        let p = UnsafeJs.jsSystem().value(value.map(toJsDate))
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableInstantArray(name: String, value: Option[Array[Instant]]): PgStatement {
+        let jsDate = UnsafeJs.jsSystem().global().get("Date")
+        function toJsDate(instant: Instant): JsValue {
+            jsDate.new1(instant.since1970.seconds * 1000.0)
+        }
+        let p = value.map {_.map(toJsDate)}.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withBufferArray(name: String, value: Array[Buffer]): PgStatement {
+        let p = UnsafeJs.jsSystem().value(value)
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
+    withNullableBufferArray(name: String, value: Option[Array[Buffer]]): PgStatement {
+        let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
+        self.PgStatement(parameters = self.parameters.add(name, p))
+    }
+
     run(): Int {
         internalRunStatement(self, None)
     }
@@ -262,43 +318,60 @@ extend self: PgStatement {
 
 extend self: PgRow {
 
-    getBool(name: String): Option[Bool] {
-        internalGet(self, name) {_.expectBool()}
+    getBool(name: String, lower: Bool = True): Option[Bool] {
+        internalGet(self, name, lower) {(_.expectBool() && True) || False}
     }
 
-    getInt(name: String): Option[Int] {
-        internalGet(self, name) {_.expectInt()}
+    getInt(name: String, lower: Bool = True): Option[Int] {
+        internalGet(self, name, lower) {_.expectInt() * 1}
     }
 
-    getFloat(name: String): Option[Float] {
-        internalGet(self, name) {_.expectFloat()}
+    getFloat(name: String, lower: Bool = True): Option[Float] {
+        internalGet(self, name, lower) {_.expectFloat() * 1.0}
     }
 
-    getString(name: String): Option[String] {
-        internalGet(self, name) {_.expectString()}
+    getString(name: String, lower: Bool = True): Option[String] {
+        internalGet(self, name, lower) {"" + _.expectString()}
     }
 
-    getBoolArray(name: String): Option[Array[Bool]] {
-        internalGet(self, name) {_.expectArray().map {_.expectBool()}}
+    getInstant(name: String, lower: Bool = True): Option[Instant] {
+        internalGet(self, name, lower) {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}
     }
 
-    getIntArray(name: String): Option[Array[Int]] {
-        internalGet(self, name) {_.expectArray().map {_.expectInt()}}
+    getBuffer(name: String, lower: Bool = True): Option[Buffer] {
+        internalGet(self, name, lower) {_.expectBuffer()}
     }
 
-    getFloatArray(name: String): Option[Array[Float]] {
-        internalGet(self, name) {_.expectArray().map {_.expectFloat()}}
+    getBoolArray(name: String, lower: Bool = True): Option[Array[Bool]] {
+        internalGet(self, name, lower) {_.expectArray().map {(_.expectBool() && True) || False}}
     }
 
-    getStringArray(name: String): Option[Array[String]] {
-        internalGet(self, name) {_.expectArray().map {_.expectString()}}
+    getIntArray(name: String, lower: Bool = True): Option[Array[Int]] {
+        internalGet(self, name, lower) {_.expectArray().map {_.expectInt() * 1}}
+    }
+
+    getFloatArray(name: String, lower: Bool = True): Option[Array[Float]] {
+        internalGet(self, name, lower) {_.expectArray().map {_.expectFloat() * 1.0}}
+    }
+
+    getStringArray(name: String, lower: Bool = True): Option[Array[String]] {
+        internalGet(self, name, lower) {_.expectArray().map {"" + _.expectString()}}
+    }
+
+    getInstantArray(name: String, lower: Bool = True): Option[Array[Instant]] {
+        internalGet(self, name, lower) {_.expectArray().map {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}}
+    }
+
+    getBufferArray(name: String, lower: Bool = True): Option[Array[Buffer]] {
+        internalGet(self, name, lower) {_.expectArray().map {_.expectBuffer()}}
     }
 
 }
 
-internalGet[T](row: PgRow, name: String, body: JsValue => T): Option[T] {
-    if(!row.jsValue.hasOwn(name)) {panic("Column not found in result: " + name)}
-    let value = row.jsValue.get(name)
+internalGet[T](row: PgRow, name: String, lower: Bool, body: JsValue => T): Option[T] {
+    let n = if(lower) {name.lower()} else {name}
+    if(!row.jsValue.hasOwn(n)) {panic("Column not found in result: " + n)}
+    let value = row.jsValue.get(n)
     if(!value.isNull()) {Some(body(value))} else {None}
 }
 
@@ -423,7 +496,7 @@ main(system: NodeSystem): Unit {
         password = {system.arguments().expect(3)}
     )
 
-    pool.transaction { connection =>
+    pool.transaction {connection =>
         let parties = connection.statement("""
             select name, listCode, entityId
             from election."PartyRow"
@@ -433,13 +506,13 @@ main(system: NodeSystem): Unit {
             .map {row =>
                 (
                     name = row.getString("name").expect()
-                    listCode = row.getString("listcode").expect()
-                    entityId = row.getInt("entityid").expect()
+                    listCode = row.getString("listCode").expect()
+                    entityId = row.getInt("entityId").expect()
                 )
             }
 
         connection.batchMap(
-            parties.map { item =>
+            parties.map {item =>
                 connection.statement("""
                     select id
                     from election."PartyRow"
@@ -449,8 +522,8 @@ main(system: NodeSystem): Unit {
                     .withString("listCode", item.listCode)
                     .withInt("entityId", item.entityId)
             }
-        ) { row =>
-            //Log.debug(row)
+        ) {row =>
+            Log.debug(row)
         }
 
     }

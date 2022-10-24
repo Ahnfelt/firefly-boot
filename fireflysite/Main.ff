@@ -1,0 +1,13 @@
+dependency ff:httpserver:0.0.0
+import HttpServer from ff:httpserver
+
+nodeMain(system: NodeSystem): Unit {
+    let host = system.arguments().expect(0)
+    let port = system.arguments().expect(1).expectInt()
+    HttpServer.listen(system, host, port) { request, response =>
+        let parameters = request.parameters().map {"?" + _}.else {""}
+        response.setHeader("Location", ["https://www.firefly-lang.org" + request.path() + parameters])
+        response.writeStatus(302, Some("Found"))
+    }
+}
+
