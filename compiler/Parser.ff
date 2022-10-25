@@ -501,7 +501,7 @@ extend self: Parser {
         let path = self.skip(LString).raw()
         DInclude(
             at = at
-            path = path
+            path = path.dropFirst().dropLast() // TODO: Fix string escaping
         )
     }
 

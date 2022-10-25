@@ -107,6 +107,13 @@ export function JsValue_expectArray(self_) {
 return self_
 }
 
+export function JsValue_expectBuffer(self_) {
+
+            if(!(self_ instanceof Buffer)) throw new Error('Expected buffer, got '+ typeof self_);
+            return self_
+        
+}
+
 export function JsValue_isString(self_) {
 return typeof self_ === 'string'
 }
@@ -348,6 +355,10 @@ throw new Error('Function JsValue_expectBool is missing on this target in async 
 
 export async function JsValue_expectArray$(self_, $c) {
 throw new Error('Function JsValue_expectArray is missing on this target in async context.');
+}
+
+export async function JsValue_expectBuffer$(self_, $c) {
+throw new Error('Function JsValue_expectBuffer is missing on this target in async context.');
 }
 
 export async function JsValue_isString$(self_, $c) {
@@ -603,6 +614,10 @@ export const ff_core_JsValue_IsJsValue$ff_core_Instant_Instant = {
 };
 
 export const ff_core_JsValue_IsJsValue$ff_core_Duration_Duration = {
+
+};
+
+export const ff_core_JsValue_IsJsValue$ff_core_Buffer_Buffer = {
 
 };
 

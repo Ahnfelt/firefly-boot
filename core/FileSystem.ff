@@ -2,6 +2,18 @@ type FileSystem! {}
 
 extend self: FileSystem {
 
+    copy(fromPath: String, toPath: String): Unit {
+        if(self.isDirectory(fromPath)) {
+            if(self.exists(toPath)) { self.deleteDirectory(toPath) }
+            self.createDirectory(toPath)
+            self.list(fromPath).each { file =>
+                self.copy(file, toPath + "/" + file.reverse().takeWhile {_ != '/'}.reverse())
+            }
+        } else {
+            self.writeStream(toPath, self.readStream(fromPath))
+        }
+    }
+
     readText(file: String): String
         target node async """
             import * as fsPromises from 'fs/promises'

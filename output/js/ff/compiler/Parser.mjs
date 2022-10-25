@@ -801,7 +801,7 @@ return ff_compiler_Syntax.DDependency(at_, ff_compiler_Syntax.PackagePair(user_,
 export function Parser_parseIncludeDefinition(self_) {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
 const path_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
-return ff_compiler_Syntax.DInclude(at_, path_)
+return ff_compiler_Syntax.DInclude(at_, ff_core_String.String_dropLast(ff_core_String.String_dropFirst(path_, 1), 1))
 }
 
 export function Parser_parseTargetNames(self_, defaultTargets_) {
@@ -2147,7 +2147,7 @@ return ff_compiler_Syntax.DDependency(at_, ff_compiler_Syntax.PackagePair(user_,
 export async function Parser_parseIncludeDefinition$(self_, $c) {
 const at_ = ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
 const path_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString()));
-return ff_compiler_Syntax.DInclude(at_, path_)
+return ff_compiler_Syntax.DInclude(at_, ff_core_String.String_dropLast(ff_core_String.String_dropFirst(path_, 1), 1))
 }
 
 export async function Parser_parseTargetNames$(self_, defaultTargets_, $c) {

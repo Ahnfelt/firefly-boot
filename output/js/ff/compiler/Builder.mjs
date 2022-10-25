@@ -112,7 +112,7 @@ ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
 };
 ff_core_Map.Map_each(resolvedDependencies_.packagePaths_, ((packagePair_, packagePath_) => {
 ff_core_Option.Option_each(ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ((packageInfo_) => {
-ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
+ff_compiler_Builder.processIncludes_(fs_, jsPathFile_, packagePath_, packageInfo_)
 }))
 }), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return true
@@ -125,9 +125,9 @@ ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
 }
 }
 
-export function processIncludes_(jsPathFile_, packagePath_, info_) {
+export function processIncludes_(fs_, jsPathFile_, packagePath_, info_) {
 ff_core_List.List_each(info_.includes_, ((include_) => {
-ff_core_Log.debug_(include_)
+ff_core_FileSystem.FileSystem_copy(fs_, ((packagePath_ + "/.firefly/include/") + include_.path_), ((((jsPathFile_ + "/") + ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/")) + "/") + include_.path_))
 }))
 }
 
@@ -208,11 +208,11 @@ const compiler_ = (await ff_compiler_Compiler.make_$(emitTarget_, fs_, (await ff
 if(printMeasurements_) {
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c))
 };
-ff_core_Map.Map_each(resolvedDependencies_.packagePaths_, ((packagePair_, packagePath_) => {
-ff_core_Option.Option_each(ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ((packageInfo_) => {
-ff_compiler_Builder.processIncludes_(jsPathFile_, packagePath_, packageInfo_)
-}))
-}), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+(await ff_core_Map.Map_each$(resolvedDependencies_.packagePaths_, (async (packagePair_, packagePath_, $c) => {
+(await ff_core_Option.Option_each$(ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (async (packageInfo_, $c) => {
+(await ff_compiler_Builder.processIncludes_$(fs_, jsPathFile_, packagePath_, packageInfo_, $c))
+}), $c))
+}), $c, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 return true
 }), $c));
 if(success_) {
@@ -223,10 +223,10 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_, $c))) {
 }
 }
 
-export async function processIncludes_$(jsPathFile_, packagePath_, info_, $c) {
-ff_core_List.List_each(info_.includes_, ((include_) => {
-ff_core_Log.debug_(include_)
-}))
+export async function processIncludes_$(fs_, jsPathFile_, packagePath_, info_, $c) {
+(await ff_core_List.List_each$(info_.includes_, (async (include_, $c) => {
+(await ff_core_FileSystem.FileSystem_copy$(fs_, ((packagePath_ + "/.firefly/include/") + include_.path_), ((((jsPathFile_ + "/") + ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/")) + "/") + include_.path_), $c))
+}), $c))
 }
 
 export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, target_, $c) {

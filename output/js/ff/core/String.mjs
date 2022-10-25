@@ -103,6 +103,14 @@ export function String_reverse(self_) {
 return [...self_].reverse().join('')
 }
 
+export function String_lower(self_) {
+return self_.toLowerCase()
+}
+
+export function String_upper(self_) {
+return self_.toUpperCase()
+}
+
 export function String_dropWhile(self_, p_) {
 
             let i = 0
@@ -228,6 +236,14 @@ throw new Error('Function String_replaceFirst is missing on this target in async
 
 export async function String_reverse$(self_, $c) {
 throw new Error('Function String_reverse is missing on this target in async context.');
+}
+
+export async function String_lower$(self_, $c) {
+throw new Error('Function String_lower is missing on this target in async context.');
+}
+
+export async function String_upper$(self_, $c) {
+throw new Error('Function String_upper is missing on this target in async context.');
 }
 
 export async function String_dropWhile$(self_, p_, $c) {

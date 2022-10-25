@@ -151,6 +151,22 @@ return (_w1 != 46)
 })))
 }
 
+export function FileSystem_copy(self_, fromPath_, toPath_) {
+if(ff_core_FileSystem.FileSystem_isDirectory(self_, fromPath_)) {
+if(ff_core_FileSystem.FileSystem_exists(self_, toPath_)) {
+ff_core_FileSystem.FileSystem_deleteDirectory(self_, toPath_)
+};
+ff_core_FileSystem.FileSystem_createDirectory(self_, toPath_);
+ff_core_List.List_each(ff_core_FileSystem.FileSystem_list(self_, fromPath_), ((file_) => {
+ff_core_FileSystem.FileSystem_copy(self_, file_, ((toPath_ + "/") + ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(file_), ((_w1) => {
+return (_w1 != 47)
+})))))
+}))
+} else {
+ff_core_FileSystem.FileSystem_writeStream(self_, toPath_, ff_core_FileSystem.FileSystem_readStream(self_, fromPath_), false)
+}
+}
+
 export function FileSystem_readText(self_, file_) {
 throw new Error('Function FileSystem_readText is missing on this target in sync context.');
 }
@@ -223,6 +239,22 @@ throw new Error('Function FileSystem_decompressGzipStream is missing on this tar
 
 export function FileSystem_open(self_, file_, flags_) {
 throw new Error('Function FileSystem_open is missing on this target in sync context.');
+}
+
+export async function FileSystem_copy$(self_, fromPath_, toPath_, $c) {
+if((await ff_core_FileSystem.FileSystem_isDirectory$(self_, fromPath_, $c))) {
+if((await ff_core_FileSystem.FileSystem_exists$(self_, toPath_, $c))) {
+(await ff_core_FileSystem.FileSystem_deleteDirectory$(self_, toPath_, $c))
+};
+(await ff_core_FileSystem.FileSystem_createDirectory$(self_, toPath_, $c));
+(await ff_core_List.List_each$((await ff_core_FileSystem.FileSystem_list$(self_, fromPath_, $c)), (async (file_, $c) => {
+(await ff_core_FileSystem.FileSystem_copy$(self_, file_, ((toPath_ + "/") + ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(file_), ((_w1) => {
+return (_w1 != 47)
+})))), $c))
+}), $c))
+} else {
+(await ff_core_FileSystem.FileSystem_writeStream$(self_, toPath_, (await ff_core_FileSystem.FileSystem_readStream$(self_, fromPath_, $c)), false, $c))
+}
 }
 
 export async function FileSystem_readText$(self_, file_, $c) {

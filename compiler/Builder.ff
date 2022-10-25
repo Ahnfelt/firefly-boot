@@ -34,7 +34,7 @@ build(
         if(printMeasurements) { compiler.printMeasurements() }
         resolvedDependencies.packagePaths.each { packagePair, packagePath =>
             resolvedDependencies.packages.get(packagePair).each { packageInfo =>
-                processIncludes(jsPathFile, packagePath, packageInfo)
+                processIncludes(fs, jsPathFile, packagePath, packageInfo)
             }
         }
         True
@@ -47,9 +47,12 @@ build(
 
 }
 
-processIncludes(jsPathFile: String, packagePath: String, info: PackageInfo): Unit {
+processIncludes(fs : FileSystem, jsPathFile: String, packagePath: String, info: PackageInfo): Unit {
     info.includes.each { include =>
-        Log.debug(include)
+        fs.copy(
+            packagePath + "/.firefly/include/" + include.path
+            jsPathFile + "/" + info.package.packagePair.groupName("/") + "/" + include.path
+        )
     }
 }
 
