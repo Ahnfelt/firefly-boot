@@ -94,7 +94,7 @@ main(system: NodeSystem): Unit {
             )
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, fixedDependencies)
-            bundleForBrowser(system, resolvedDependencies.mainPackagePair)
+            bundleForBrowser(system, resolvedDependencies.mainPackagePair, mainFile)
 
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
@@ -104,7 +104,7 @@ main(system: NodeSystem): Unit {
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBuild, fixedDependencies)
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitExecutable, fixedDependencies)
-            bundleForPkg(system, resolvedDependencies.mainPackagePair)
+            bundleForPkg(system, resolvedDependencies.mainPackagePair, mainFile)
             importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, mainFile, arguments)
 
         | BootstrapCommand =>
@@ -132,20 +132,21 @@ main(system: NodeSystem): Unit {
 
 }
 
-bundleForPkg(system: NodeSystem, packagePair: PackagePair) {
+bundleForPkg(system: NodeSystem, packagePair: PackagePair, mainFile: String) {
     let prefix = ".firefly/output/executable/"
-    let mainJsFile = prefix + packagePair.groupName("/") + "/Main.mjs"
+    let mainJsFile = prefix + packagePair.groupName("/") + "/" + mainFile + ".mjs"
     let file = prefix + "Main.bundle.js"
     BuildSystem.internalNodeCallEsBuild(system, mainJsFile, outputPath = file, minify = False)
 }
 
-bundleForBrowser(system: NodeSystem, packagePair: PackagePair) {
+bundleForBrowser(system: NodeSystem, packagePair: PackagePair, mainFile: String) {
     let prefix = ".firefly/output/browser/"
-    let mainJsFile = prefix + packagePair.groupName("/") + "script/script/Main.mjs"
+    let mainJsFile = prefix + packagePair.groupName("/") + "/" + mainFile + ".mjs"
     let file = prefix + "Main.bundle.js"
     let browserCode = BrowserCode(
         packageGroup = packagePair.group
         packageName = packagePair.name
+        mainFile = mainFile
         assetSystem = AssetSystem([Pair("/", system.files().readStream(""))].toMap())
     ) // TODO
     BuildSystem.internalCallEsBuild(browserCode, mainJsFile, outputPath = file, minify = True, sourceMap = True)

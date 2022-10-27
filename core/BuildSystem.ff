@@ -1,5 +1,5 @@
 type BuildSystem! {}
-type BrowserCode!(packageGroup: String, packageName: String, assetSystem: AssetSystem)
+type BrowserCode!(packageGroup: String, packageName: String, mainFile: String, assetSystem: AssetSystem)
 type BrowserBundle!(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
@@ -13,6 +13,7 @@ extend self: BuildSystem {
         BrowserCode(
             packageGroup = mainPackagePair.first
             packageName = mainPackagePair.second
+            mainFile = mainFile
             assetSystem = AssetSystem(streams.toMap())
         )
     }
@@ -49,7 +50,7 @@ extend self: BrowserCode {
 
     bundle(minify: Bool = True, sourceMap: Bool = False): BrowserBundle {
         let prefix = ".firefly/output/browser"
-        let mainJsFile = prefix + "/" + self.packageGroup + "/" + self.packageName + "/Main.mjs"
+        let mainJsFile = prefix + "/" + self.packageGroup + "/" + self.packageName + "/" + self.mainFile + ".mjs"
         let file = prefix + "/Main.bundle.js"
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify, sourceMap = sourceMap)
         let fs = internalBrowserCodeFileSystem(self)
