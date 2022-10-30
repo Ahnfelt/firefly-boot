@@ -308,7 +308,31 @@ return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, ff_core_List.Li
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
 })), _c.generatorParameters_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true)
-})), definition_.methodDefaults_, _c.methodGenerators_)
+})), ff_core_List.List_map(definition_.methodDefaults_, ((_1) => {
+{
+const name_ = _1.first_;
+const lambda_ = _1.second_;
+const signature_ = ff_core_Option.Option_expect(ff_core_List.List_find(definition_.methods_, ((_w1) => {
+return (_w1.name_ == name_)
+})));
+const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
+const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true);
+return ff_core_Pair.Pair(name_, (((_1) => {
+{
+if(_1.FireflyTarget) {
+const lambda_ = _1.lambda_;
+return lambda_
+return
+}
+}
+{
+return ff_compiler_Resolver.fail_(signature_.at_, "Internal error: Expected method default to be a lambda")
+return
+}
+}))(function2_.body_))
+return
+}
+})), _c.methodGenerators_)
 return
 }
 }
@@ -1261,7 +1285,31 @@ return ff_compiler_Syntax.DTrait(_c.at_, _c.name_, _c.generics_, ff_core_List.Li
 return ff_compiler_Resolver.Resolver_resolveConstraint(self2_, _w1, true)
 })), _c.generatorParameters_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true)
-})), definition_.methodDefaults_, _c.methodGenerators_)
+})), ff_core_List.List_map(definition_.methodDefaults_, ((_1) => {
+{
+const name_ = _1.first_;
+const lambda_ = _1.second_;
+const signature_ = ff_core_Option.Option_expect(ff_core_List.List_find(definition_.methods_, ((_w1) => {
+return (_w1.name_ == name_)
+})));
+const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
+const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true);
+return ff_core_Pair.Pair(name_, (((_1) => {
+{
+if(_1.FireflyTarget) {
+const lambda_ = _1.lambda_;
+return lambda_
+return
+}
+}
+{
+return ff_compiler_Resolver.fail_(signature_.at_, "Internal error: Expected method default to be a lambda")
+return
+}
+}))(function2_.body_))
+return
+}
+})), _c.methodGenerators_)
 return
 }
 }

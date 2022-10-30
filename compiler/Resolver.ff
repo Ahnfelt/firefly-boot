@@ -141,7 +141,15 @@ extend self: Resolver {
         definition.DTrait(
             constraints = definition.constraints.map { self2.resolveConstraint(_, True) },
             methods = definition.methods.map { self2.resolveSignature(_, True) },
-            methodDefaults = definition.methodDefaults // TODO
+            methodDefaults = definition.methodDefaults.map {| Pair(name, lambda) =>
+                let signature = definition.methods.find {_.name == name}.expect()
+                let function1 = DFunction(signature.at, signature, FireflyTarget(lambda))
+                let function2 = self2.resolveFunctionDefinition(function1, True)
+                Pair(name, function2.body.{
+                    | FireflyTarget(lambda) => lambda
+                    | _ => fail(signature.at, "Internal error: Expected method default to be a lambda")
+                })
+            }
         )
     }
 
