@@ -673,9 +673,11 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper());
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "[")) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "[");
-while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LComma())) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma());
-ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Parser.Parser_parseType(self_))
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
+ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Parser.Parser_parseType(self_));
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
+}
 };
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]")
 };
@@ -2019,9 +2021,11 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LColon());
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper());
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "[")) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "[");
-while(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LComma())) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma());
-ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Parser.Parser_parseType(self_))
+while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
+ff_core_ArrayBuilder.ArrayBuilder_add(typeArguments_, ff_compiler_Parser.Parser_parseType(self_));
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
+ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
+}
 };
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "]")
 };

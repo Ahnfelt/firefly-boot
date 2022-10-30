@@ -373,9 +373,9 @@ extend self: Parser {
         let nameToken = self.skip(LUpper)
         if(self.current().rawIs("[")) {
             self.rawSkip(LBracketLeft, "[")
-            while {self.current().is(LComma)} {
-                self.skip(LComma)
+            while {!self.current().is(LBracketRight)} {
                 typeArguments.add(self.parseType())
+                if(!self.current().is(LBracketRight)) {self.skip(LComma)}
             }
             self.rawSkip(LBracketRight, "]")
         }
