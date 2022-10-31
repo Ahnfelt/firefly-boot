@@ -1,0 +1,50 @@
+import Blueprint
+
+trait T: Pretty {
+    pretty(value: T): String {
+        pretty(Blueprint.toBlueprint(value))
+    }
+}
+
+instance Int: Pretty {
+    pretty(value: Int): String {
+        "" + value
+    }
+}
+
+instance String: Pretty {
+    pretty(value: String): String {
+        "\"" + value + "\""
+    }
+}
+
+// Example of implementing a generic instance of Pretty
+
+instance BpFields[A: Pretty, B: Pretty]: Pretty {
+    pretty(v: BpFields[A, B]): String { pretty(v.first) + ", " + pretty(v.second) }
+}
+
+instance BpNoFields: Pretty {
+    pretty(v: BpNoFields): String { "" }
+}
+
+instance BpField[S: BpFieldSymbol, V: Pretty]: Pretty {
+    pretty(v: BpField[S, V]): String { Blueprint.fieldName[S, Unit]() + " = " + pretty(v.value) }
+}
+
+instance BpConstructors[A: Pretty, B: Pretty]: Pretty {
+    pretty(v: BpConstructors[A, B]): String {
+        | BpLeft(v) => pretty(v)
+        | BpRight(v) => pretty(v)
+    }
+}
+
+instance BpConstructor[S: BpConstructorSymbol, V: Pretty]: Pretty {
+    pretty(v: BpConstructor[S, V]): String { Blueprint.constructorName[S, Unit]() + "(" + pretty(v.value) + ")" }
+}
+
+instance BpType[S, C: Pretty]: Pretty {
+    pretty(v: BpType[S, C]): String {
+        pretty(v.constructors)
+    }
+}

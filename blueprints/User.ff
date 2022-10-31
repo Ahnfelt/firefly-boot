@@ -1,0 +1,64 @@
+import Blueprint
+import Pretty
+
+type User(id: Int, email: String)
+
+
+//instance User: Pretty
+
+type UserIdField {}
+instance UserIdField: BpFieldSymbol {
+    fieldName(): String { "id" }
+}
+
+type UserEmailField {}
+instance UserEmailField: BpFieldSymbol {
+    fieldName(): String { "email" }
+}
+
+type UserUserConstructor {}
+instance UserUserConstructor: BpConstructorSymbol {
+    constructorName(): String { "User" }
+}
+
+type UserType {}
+instance UserType: BpTypeSymbol {
+    typeName(): String { "User" }
+    packageName(): String { "ff:blueprints" }
+    moduleName(): String { "Main" }
+}
+
+instance User: Blueprint[BpType[UserType,
+    BpConstructor[UserUserConstructor, BpFields[
+        BpField[UserIdField, Int],
+        BpField[UserEmailField, String]
+    ]]
+]] {
+
+    toBlueprint(value: User): BpType[UserType,
+        BpConstructor[UserUserConstructor, BpFields[
+            BpField[UserIdField, Int],
+            BpField[UserEmailField, String]
+        ]]
+    ] {
+        BpType(BpConstructor(BpFields(BpField(value.id), BpField(value.email))))
+    }
+
+    fromBlueprint(generic: BpType[UserType,
+        BpConstructor[UserUserConstructor, BpFields[
+            BpField[UserIdField, Int],
+            BpField[UserEmailField, String]
+        ]]
+    ]): User {
+        generic.{
+            | BpType(BpConstructor(BpFields(BpField(id), BpField(email)))) => User(id, email)
+        }
+    }
+
+}
+
+instance User: Pretty {
+    pretty(value: User): String {
+        Pretty.pretty(Blueprint.toBlueprint(value))
+    }
+}

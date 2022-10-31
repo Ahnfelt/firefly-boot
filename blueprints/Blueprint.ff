@@ -1,0 +1,52 @@
+// Two fields, zero fields and a particular field
+
+type BpFields[A, B](
+    first: A
+    second: B
+)
+
+type BpNoFields()
+
+type BpField[S, V](value: V)
+
+
+// Two constructors, zero constructors and a particular constructor
+
+type BpConstructors[L, R] {
+    BpLeft(value: L)
+    BpRight(value: R)
+}
+
+type BpNoConstructors {}
+
+type BpConstructor[S, V](value: V)
+
+
+// Type declarations
+
+type BpType[S, C](constructors: C)
+
+
+// Names and such
+
+trait S: BpFieldSymbol {
+    fieldName(): String
+}
+
+trait S: BpConstructorSymbol {
+    constructorName(): String
+}
+
+trait S: BpTypeSymbol {
+    typeName(): String
+    packageName(): String
+    moduleName(): String
+}
+
+
+// The type class that converts from/to the generic representation
+
+trait T: Blueprint[R] {
+    toBlueprint(value: T): R
+    fromBlueprint(generic: R): T
+}

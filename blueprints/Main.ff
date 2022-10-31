@@ -1,0 +1,11 @@
+import User
+import Pretty
+
+nodeMain(system: NodeSystem) {
+    Log.debug("Hello blueprints")
+    Log.debug(Pretty.pretty(User(1, "foo@example.com")))
+}
+
+// TODO: Use default trait method implementations
+// TODO: Check that all trait methods have been implemented in instances
+// TODO: Fix "wrong number of type parameters" above (where Unit is used)
