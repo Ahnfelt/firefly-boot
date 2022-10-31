@@ -21,15 +21,21 @@ instance String: Pretty {
 // Example of implementing a generic instance of Pretty
 
 instance BpFields[A: Pretty, B: Pretty]: Pretty {
-    pretty(v: BpFields[A, B]): String { pretty(v.first) + ", " + pretty(v.second) }
+    pretty(v: BpFields[A, B]): String {
+        pretty(v.first) + ", " + pretty(v.second)
+    }
 }
 
 instance BpNoFields: Pretty {
-    pretty(v: BpNoFields): String { "" }
+    pretty(v: BpNoFields): String {
+        ""
+    }
 }
 
 instance BpField[S: BpFieldSymbol, V: Pretty]: Pretty {
-    pretty(v: BpField[S, V]): String { Blueprint.fieldName[S, Unit]() + " = " + pretty(v.value) }
+    pretty(v: BpField[S, V]): String {
+        Blueprint.fieldName[S, Unit]() + " = " + pretty(v.value)
+    }
 }
 
 instance BpConstructors[A: Pretty, B: Pretty]: Pretty {
@@ -40,7 +46,9 @@ instance BpConstructors[A: Pretty, B: Pretty]: Pretty {
 }
 
 instance BpConstructor[S: BpConstructorSymbol, V: Pretty]: Pretty {
-    pretty(v: BpConstructor[S, V]): String { Blueprint.constructorName[S, Unit]() + "(" + pretty(v.value) + ")" }
+    pretty(v: BpConstructor[S, V]): String {
+        Blueprint.constructorName[S, Unit]() + "(" + pretty(v.value) + ")"
+    }
 }
 
 instance BpType[S, C: Pretty]: Pretty {
