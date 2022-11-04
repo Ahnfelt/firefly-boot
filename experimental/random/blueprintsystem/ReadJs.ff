@@ -1,0 +1,13 @@
+trait T: ReadJs {
+    readJs(value: JsValue): T { blueprint system =>
+        let constructors = bs.constructors()
+        Blueprint("""value.get("$tag").expectString().{\n""" +
+            constructors.map { constructor =>
+                "| " + system.string(constructor.constructorName()).code + " =>\n" +
+                constructor.emit().code + "(" + constructor.fields.map { field =>
+                    field.emit().code + " = readJs(value.get(" + system.string(field.fieldName()) + "))"
+                }.join(", ") + ")"
+            }.join("\n") +
+        """\n}""")
+    }
+}
