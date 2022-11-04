@@ -1,6 +1,6 @@
 trait T: ReadJs {
     readJs(value: JsValue): T { blueprint system =>
-        let constructors = bs.constructors()
+        let constructors = system.constructors()
         Blueprint("""value.get("$tag").expectString().{\n""" +
             constructors.map { constructor =>
                 "| " + system.string(constructor.constructorName()).code + " =>\n" +
