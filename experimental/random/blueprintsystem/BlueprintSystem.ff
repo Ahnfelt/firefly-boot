@@ -24,7 +24,7 @@ extend self: BlueprintSystem {
 }
 
 extend self: ConstructorBlueprint {
-    typeBlueprint(typeArguments: List[TypeBlueprint]): TypeBlueprint
+    typeBlueprint(typeArguments: List[TypeBlueprint] = []): TypeBlueprint
     constructorName(): String
     fields(): List[GeneratorField]
     emit(typeArguments: List[TypeBlueprint] = []): Blueprint
