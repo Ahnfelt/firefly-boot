@@ -1,0 +1,48 @@
+type BlueprintSystem {}
+type ConstructorBlueprint {}
+type FieldBlueprint {}
+type TypeBlueprint {}
+newtype Blueprint(code: String)
+
+extend self: BlueprintSystem {
+    groupName(): String
+    packageName(): String
+    moduleName(): String
+    typeName(): String
+    typeParameters(): List[String]
+    commonFields(): List[FieldBlueprint]
+    constructors(): List[ConstructorBlueprint]
+
+    typeBlueprint(typeArguments: List[TypeBlueprint] = []): TypeBlueprint
+
+    fresh(name: String): Blueprint
+    bool(value: Bool): Blueprint
+    char(value: Char): Blueprint
+    int(value: Int): Blueprint
+    float(value: Float): Blueprint
+    string(value: String): Blueprint
+}
+
+extend self: ConstructorBlueprint {
+    typeBlueprint(typeArguments: List[TypeBlueprint]): TypeBlueprint
+    constructorName(): String
+    fields(): List[GeneratorField]
+    emit(typeArguments: List[TypeBlueprint] = []): Blueprint
+}
+
+extend self: FieldBlueprint {
+    fieldName(): String
+    fieldType(): TypeBlueprint
+    mutable(): Bool
+    defaultValue(): Option[Blueprint]
+    emit(): Blueprint
+}
+
+extend self: TypeBlueprint {
+    groupName(): String
+    packageName(): String
+    moduleName(): String
+    typeName(): TypeBlueprint
+    typeArguments(): List[TypeBlueprint]
+    emit(): Blueprint
+}
