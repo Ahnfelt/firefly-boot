@@ -1,6 +1,7 @@
 import Kahrs
 
 nodeMain(system: NodeSystem): Unit {
+
     let values = [8, 3, 2, 1, 4, 7, 6, 5, 9]
     values.foldLeft(Kahrs.E, {t, a =>
         let t2 = Kahrs.insert(a, t)
@@ -12,6 +13,11 @@ nodeMain(system: NodeSystem): Unit {
         Log.debug("Delete " + a + ": " + Show.show(toList(t2)))
         t2
     })
+
+    Log.debug(Show.show(toList(Kahrs.delete(1, Kahrs.insert(1, Kahrs.insert(2, Kahrs.E))))))
+    Log.debug(Show.show(toList(Kahrs.delete(2, Kahrs.insert(1, Kahrs.insert(2, Kahrs.E))))))
+    Log.debug(Show.show(toList(Kahrs.delete(1, Kahrs.insert(2, Kahrs.insert(1, Kahrs.E))))))
+    Log.debug(Show.show(toList(Kahrs.delete(2, Kahrs.insert(2, Kahrs.insert(1, Kahrs.E))))))
 }
 
 toList[A: Order](t: RB[A]): List[A] {
