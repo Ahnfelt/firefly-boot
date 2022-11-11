@@ -186,7 +186,6 @@ extend self: JsEmitter {
                 | Lambda(_, effect, [matchCase]) {
                     matchCase.patterns.all {
                         | PVariable(_, None) => True
-                        | PVariable(_, Some(x)) {True /* TODO */} => True
                         | _ => False
                     }
                 } =>

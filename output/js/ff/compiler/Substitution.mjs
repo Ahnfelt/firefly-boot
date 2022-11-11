@@ -548,7 +548,6 @@ export function Substitution_substituteType(self_, type_) {
 const self_a = self_;
 const type_a = type_;
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 const at_ = type_a.at_;
 const i_ = type_a.index_;
@@ -561,7 +560,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const t_ = type_a;
 {
@@ -1069,7 +1067,6 @@ export async function Substitution_substituteType$(self_, type_, $c) {
 const self_a = self_;
 const type_a = type_;
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 const at_ = type_a.at_;
 const i_ = type_a.index_;
@@ -1082,7 +1079,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const t_ = type_a;
 {

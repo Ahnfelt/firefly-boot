@@ -824,18 +824,6 @@ return
 }
 }
 {
-if(_1.PVariable) {
-if(_1.name_.Some) {
-const x_ = _1.name_.value_;
-const _guard1 = true;
-if(_guard1) {
-return true
-return
-}
-}
-}
-}
-{
 return false
 return
 }
@@ -2271,18 +2259,6 @@ if(_1.PVariable) {
 if(_1.name_.None) {
 return true
 return
-}
-}
-}
-{
-if(_1.PVariable) {
-if(_1.name_.Some) {
-const x_ = _1.name_.value_;
-const _guard1 = true;
-if(_guard1) {
-return true
-return
-}
 }
 }
 }

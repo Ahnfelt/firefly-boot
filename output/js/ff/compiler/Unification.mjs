@@ -182,7 +182,6 @@ const self_a = self_;
 const instantiation_a = instantiation_;
 const type_a = type_;
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const at_ = type_a.at_;
 const name_ = type_a.name_;
@@ -208,7 +207,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const at_ = type_a.at_;
 const name_ = type_a.name_;
@@ -220,7 +218,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 const i_ = type_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -232,7 +229,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 const i_ = type_a.index_;
 return type_
@@ -248,7 +244,6 @@ const self_a = self_;
 const instantiation_a = instantiation_;
 const constraint_a = constraint_;
 {
-const self_ = self_a;
 const at_ = constraint_a.at_;
 const name_ = constraint_a.name_;
 const generics_ = constraint_a.generics_;
@@ -395,7 +390,6 @@ export function Unification_substitute(self_, type_) {
 const self_a = self_;
 const type_a = type_;
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 const i_ = type_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -407,14 +401,12 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 return type_
 return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const t_ = type_a;
 {
@@ -440,7 +432,6 @@ const at_a = at_;
 const t1_a = t1_;
 const t2_a = t2_;
 {
-const self_ = self_a;
 if(t1_a.TVariable) {
 const i1_ = t1_a.index_;
 if(t2_a.TVariable) {
@@ -454,7 +445,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t1_a.TVariable) {
 const i_ = t1_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -466,7 +456,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t2_a.TVariable) {
 const i_ = t2_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -478,7 +467,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t1_a.TVariable) {
 const i_ = t1_a.index_;
 ff_compiler_Unification.Unification_bind(self_, at_, i_, t2_)
@@ -486,7 +474,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t2_a.TVariable) {
 const i_ = t2_a.index_;
 ff_compiler_Unification.Unification_bind(self_, at_, i_, t1_)
@@ -494,7 +481,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t1_a.TConstructor) {
 const name1_ = t1_a.name_;
 const generics1_ = t1_a.generics_;
@@ -591,7 +577,6 @@ const self_a = self_;
 const index_a = index_;
 const t_a = t_;
 {
-const self_ = self_a;
 if(t_a.TVariable) {
 const i_ = t_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -603,7 +588,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t_a.TVariable) {
 const i_ = t_a.index_;
 return (i_ == index_)
@@ -611,7 +595,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t_a.TConstructor) {
 const generics_ = t_a.generics_;
 return ff_core_List.List_any(generics_, ((t_) => {
@@ -649,7 +632,6 @@ const self_a = self_;
 const instantiation_a = instantiation_;
 const type_a = type_;
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const at_ = type_a.at_;
 const name_ = type_a.name_;
@@ -675,7 +657,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const at_ = type_a.at_;
 const name_ = type_a.name_;
@@ -687,7 +668,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 const i_ = type_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -699,7 +679,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 const i_ = type_a.index_;
 return type_
@@ -715,7 +694,6 @@ const self_a = self_;
 const instantiation_a = instantiation_;
 const constraint_a = constraint_;
 {
-const self_ = self_a;
 const at_ = constraint_a.at_;
 const name_ = constraint_a.name_;
 const generics_ = constraint_a.generics_;
@@ -862,7 +840,6 @@ export async function Unification_substitute$(self_, type_, $c) {
 const self_a = self_;
 const type_a = type_;
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 const i_ = type_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -874,14 +851,12 @@ return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 return type_
 return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const t_ = type_a;
 {
@@ -907,7 +882,6 @@ const at_a = at_;
 const t1_a = t1_;
 const t2_a = t2_;
 {
-const self_ = self_a;
 if(t1_a.TVariable) {
 const i1_ = t1_a.index_;
 if(t2_a.TVariable) {
@@ -921,7 +895,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t1_a.TVariable) {
 const i_ = t1_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -933,7 +906,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t2_a.TVariable) {
 const i_ = t2_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -945,7 +917,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t1_a.TVariable) {
 const i_ = t1_a.index_;
 ff_compiler_Unification.Unification_bind(self_, at_, i_, t2_)
@@ -953,7 +924,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t2_a.TVariable) {
 const i_ = t2_a.index_;
 ff_compiler_Unification.Unification_bind(self_, at_, i_, t1_)
@@ -961,7 +931,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t1_a.TConstructor) {
 const name1_ = t1_a.name_;
 const generics1_ = t1_a.generics_;
@@ -1058,7 +1027,6 @@ const self_a = self_;
 const index_a = index_;
 const t_a = t_;
 {
-const self_ = self_a;
 if(t_a.TVariable) {
 const i_ = t_a.index_;
 const _guard1 = ff_compiler_Unification.Unification_get(self_, i_);
@@ -1070,7 +1038,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t_a.TVariable) {
 const i_ = t_a.index_;
 return (i_ == index_)
@@ -1078,7 +1045,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(t_a.TConstructor) {
 const generics_ = t_a.generics_;
 return ff_core_List.List_any(generics_, ((t_) => {

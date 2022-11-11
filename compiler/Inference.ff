@@ -80,9 +80,8 @@ extend self: Inference {
             let body = method.body.mapFirefly { lambda =>
                 lambda.Lambda(
                     cases = lambda.cases.map { case =>
-                        let selfPattern = PVariable(method.at, Some(definition.name))
                         case.MatchCase(
-                            patterns = [selfPattern, ...case.patterns]
+                            patterns = [PVariable(method.at, None), ...case.patterns]
                         )
                     }
                 )

@@ -408,35 +408,30 @@ const self_a = self_;
 const term_a = term_;
 const topLevel_a = topLevel_;
 {
-const self_ = self_a;
 if(term_a.EString) {
 return term_
 return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EChar) {
 return term_
 return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EInt) {
 return term_
 return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EFloat) {
 return term_
 return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EVariable) {
 const e_ = term_a;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(self_.variables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
@@ -461,7 +456,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EList) {
 const at_ = term_a.at_;
 const t_ = term_a.elementType_;
@@ -478,7 +472,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EVariant) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -504,7 +497,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EVariantIs) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -518,7 +510,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ECopy) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -540,7 +531,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EField) {
 const e_ = term_a;
 {
@@ -555,7 +545,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ELambda) {
 const at_ = term_a.at_;
 const lambdaAt_ = term_a.lambda_.at_;
@@ -568,7 +557,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EPipe) {
 const at_ = term_a.at_;
 const value_ = term_a.value_;
@@ -579,7 +567,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.DynamicCall) {
@@ -607,7 +594,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
@@ -617,7 +603,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ERecord) {
 const at_ = term_a.at_;
 const fields_ = term_a.fields_;
@@ -635,7 +620,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EWildcard) {
 const e_ = term_a;
 if((e_.index_ == 0)) {
@@ -653,7 +637,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EFunctions) {
 const at_ = term_a.at_;
 const functions_ = term_a.functions_;
@@ -673,7 +656,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ELet) {
 const e_ = term_a;
 const self2_ = (((_c) => {
@@ -691,7 +673,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ESequential) {
 const at_ = term_a.at_;
 const before_ = term_a.before_;
@@ -701,7 +682,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EAssign) {
 const at_ = term_a.at_;
 const operator_ = term_a.operator_;
@@ -714,7 +694,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EAssignField) {
 const at_ = term_a.at_;
 const operator_ = term_a.operator_;
@@ -734,14 +713,12 @@ const self_a = self_;
 const type_a = type_;
 const topLevel_a = topLevel_;
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 return type_
 return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
@@ -983,35 +960,30 @@ export function Resolver_resolvePattern(self_, pattern_) {
 const self_a = self_;
 const pattern_a = pattern_;
 {
-const self_ = self_a;
 if(pattern_a.PString) {
 return pattern_
 return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PInt) {
 return pattern_
 return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PChar) {
 return pattern_
 return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PVariable) {
 return pattern_
 return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PVariant) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
@@ -1027,7 +999,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
@@ -1040,7 +1011,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PAlias) {
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
@@ -1058,14 +1028,12 @@ export function Resolver_containsAsyncType(self_, type_) {
 const self_a = self_;
 const type_a = type_;
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 return false
 return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
@@ -1385,35 +1353,30 @@ const self_a = self_;
 const term_a = term_;
 const topLevel_a = topLevel_;
 {
-const self_ = self_a;
 if(term_a.EString) {
 return term_
 return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EChar) {
 return term_
 return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EInt) {
 return term_
 return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EFloat) {
 return term_
 return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EVariable) {
 const e_ = term_a;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Map.Map_get(self_.variables_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
@@ -1438,7 +1401,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EList) {
 const at_ = term_a.at_;
 const t_ = term_a.elementType_;
@@ -1455,7 +1417,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EVariant) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -1481,7 +1442,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EVariantIs) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -1495,7 +1455,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ECopy) {
 const at_ = term_a.at_;
 const name_ = term_a.name_;
@@ -1517,7 +1476,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EField) {
 const e_ = term_a;
 {
@@ -1532,7 +1490,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ELambda) {
 const at_ = term_a.at_;
 const lambdaAt_ = term_a.lambda_.at_;
@@ -1545,7 +1502,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EPipe) {
 const at_ = term_a.at_;
 const value_ = term_a.value_;
@@ -1556,7 +1512,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.DynamicCall) {
@@ -1584,7 +1539,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
@@ -1594,7 +1548,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ERecord) {
 const at_ = term_a.at_;
 const fields_ = term_a.fields_;
@@ -1612,7 +1565,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EWildcard) {
 const e_ = term_a;
 if((e_.index_ == 0)) {
@@ -1630,7 +1582,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EFunctions) {
 const at_ = term_a.at_;
 const functions_ = term_a.functions_;
@@ -1650,7 +1601,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ELet) {
 const e_ = term_a;
 const self2_ = (((_c) => {
@@ -1668,7 +1618,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.ESequential) {
 const at_ = term_a.at_;
 const before_ = term_a.before_;
@@ -1678,7 +1627,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EAssign) {
 const at_ = term_a.at_;
 const operator_ = term_a.operator_;
@@ -1691,7 +1639,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(term_a.EAssignField) {
 const at_ = term_a.at_;
 const operator_ = term_a.operator_;
@@ -1711,14 +1658,12 @@ const self_a = self_;
 const type_a = type_;
 const topLevel_a = topLevel_;
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 return type_
 return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
@@ -1960,35 +1905,30 @@ export async function Resolver_resolvePattern$(self_, pattern_, $c) {
 const self_a = self_;
 const pattern_a = pattern_;
 {
-const self_ = self_a;
 if(pattern_a.PString) {
 return pattern_
 return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PInt) {
 return pattern_
 return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PChar) {
 return pattern_
 return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PVariable) {
 return pattern_
 return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PVariant) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
@@ -2004,7 +1944,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PVariantAs) {
 const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
@@ -2017,7 +1956,6 @@ return
 }
 }
 {
-const self_ = self_a;
 if(pattern_a.PAlias) {
 const at_ = pattern_a.at_;
 const pattern_ = pattern_a.pattern_;
@@ -2035,14 +1973,12 @@ export async function Resolver_containsAsyncType$(self_, type_, $c) {
 const self_a = self_;
 const type_a = type_;
 {
-const self_ = self_a;
 if(type_a.TVariable) {
 return false
 return
 }
 }
 {
-const self_ = self_a;
 if(type_a.TConstructor) {
 const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")

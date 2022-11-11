@@ -235,12 +235,11 @@ const _1 = lambda_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(lambda_.cases_, ((case_) => {
-const selfPattern_ = ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.Some(definition_.name_));
 {
 const _1 = case_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(selfPattern_, case_.patterns_), _c.guards_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.None()), case_.patterns_), _c.guards_, _c.body_)
 return
 }
 }
@@ -2041,12 +2040,11 @@ const _1 = lambda_;
 {
 const _c = _1;
 return ff_compiler_Syntax.Lambda(_c.at_, _c.effect_, ff_core_List.List_map(lambda_.cases_, ((case_) => {
-const selfPattern_ = ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.Some(definition_.name_));
 {
 const _1 = case_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(selfPattern_, case_.patterns_), _c.guards_, _c.body_)
+return ff_compiler_Syntax.MatchCase(_c.at_, ff_core_List.Link(ff_compiler_Syntax.PVariable(method_.at_, ff_core_Option.None()), case_.patterns_), _c.guards_, _c.body_)
 return
 }
 }

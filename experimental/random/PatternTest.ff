@@ -1,0 +1,15 @@
+test1(foo: Option[Int], bar: Option[Int]): Option[Int] {
+    | a, b => b
+}
+
+test2(foo: Option[Int], bar: Option[Int]): Option[Int] {
+    function f(baz: Option[Int], quux: Option[Int]): Option[Int] {
+        | Some(_), b => b
+        | None, _ => None
+    }
+    f(foo, bar)
+}
+
+nodeMain(main: NodeSystem) {
+    Log.debug(test2(Some(1), Some(2)))
+}
