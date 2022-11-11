@@ -205,7 +205,7 @@ tokenize(file: String, code: String): Array[Token] {
 
     }
 
-    List.range(5).each {| _ => emitToken(LEnd, i, i) }
+    List.range(5).each {_ => emitToken(LEnd, i, i) }
 
     tokens.drain()
 

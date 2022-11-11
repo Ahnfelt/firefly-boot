@@ -73,7 +73,7 @@ extend self: JsEmitter {
     }
 
     emitRun(functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
-        let buildMainFunction = functions.find { _.signature.name == "buildMain" }.filter {| _ =>
+        let buildMainFunction = functions.find { _.signature.name == "buildMain" }.filter {_ =>
             self.emitTarget != EmitBrowser && self.emitTarget != EmitExecutable
         }
         let willRunOnNode = self.emitTarget != EmitBrowser

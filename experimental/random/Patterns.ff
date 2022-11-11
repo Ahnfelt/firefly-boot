@@ -164,7 +164,7 @@ match(
             }
 
             function getDescriptionArguments(description: TermDescription) : List[TermDescription] {
-                | Negative(_) => args {|_ => Negative(Set.empty())}
+                | Negative(_) => args {_ => Negative(Set.empty())}
                 | Positive(c, ps) => ps
             }
 

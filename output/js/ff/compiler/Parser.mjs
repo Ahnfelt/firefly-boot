@@ -1035,12 +1035,17 @@ ff_core_ArrayBuilder.ArrayBuilder_add(cases_, ff_compiler_Parser.Parser_parseCas
 };
 return ff_core_ArrayBuilder.ArrayBuilder_toList(cases_)
 })()
-: (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()) && ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LComma(), ff_compiler_Token.LArrowThick()))
+: (ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower(), ff_compiler_Token.LWildcard()) && ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LComma(), ff_compiler_Token.LArrowThick()))
 ? (function() {
 const parameters_ = ff_core_ArrayBuilder.empty_();
 while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick()))) {
-const parameterToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
-ff_core_ArrayBuilder.ArrayBuilder_add(parameters_, ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(parameterToken_), ff_core_Option.Some(ff_compiler_Token.Token_raw(parameterToken_))));
+const isVariable_ = ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower());
+const parameterToken_ = (isVariable_
+? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
+: ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard()));
+ff_core_ArrayBuilder.ArrayBuilder_add(parameters_, ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(parameterToken_), (isVariable_
+? ff_core_Option.Some(ff_compiler_Token.Token_raw(parameterToken_))
+: ff_core_Option.None())));
 if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick()))) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }
@@ -2383,12 +2388,17 @@ ff_core_ArrayBuilder.ArrayBuilder_add(cases_, ff_compiler_Parser.Parser_parseCas
 };
 return ff_core_ArrayBuilder.ArrayBuilder_toList(cases_)
 })())
-: (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()) && ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LComma(), ff_compiler_Token.LArrowThick()))
+: (ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower(), ff_compiler_Token.LWildcard()) && ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_ahead(self_), ff_compiler_Token.LComma(), ff_compiler_Token.LArrowThick()))
 ? (await (async function() {
 const parameters_ = ff_core_ArrayBuilder.empty_();
 while((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick()))) {
-const parameterToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
-ff_core_ArrayBuilder.ArrayBuilder_add(parameters_, ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(parameterToken_), ff_core_Option.Some(ff_compiler_Token.Token_raw(parameterToken_))));
+const isVariable_ = ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower());
+const parameterToken_ = (isVariable_
+? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
+: ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard()));
+ff_core_ArrayBuilder.ArrayBuilder_add(parameters_, ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(parameterToken_), (isVariable_
+? ff_core_Option.Some(ff_compiler_Token.Token_raw(parameterToken_))
+: ff_core_Option.None())));
 if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick()))) {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LComma())
 }

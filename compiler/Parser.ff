@@ -659,11 +659,12 @@ extend self: Parser {
                 cases.add(self.parseCase())
             }
             cases.toList()
-        } elseIf {self.current().is(LLower) && self.ahead().is2(LComma, LArrowThick)} {
+        } elseIf {self.current().is2(LLower, LWildcard) && self.ahead().is2(LComma, LArrowThick)} {
             let parameters = ArrayBuilder.empty[MatchPattern]()
             while {!self.current().is(LArrowThick)} {
-                let parameterToken = self.skip(LLower)
-                parameters.add(PVariable(parameterToken.at(), Some(parameterToken.raw())))
+                let isVariable = self.current().is(LLower)
+                let parameterToken = if(isVariable) {self.skip(LLower)} else {self.skip(LWildcard)}
+                parameters.add(PVariable(parameterToken.at(), if(isVariable) {Some(parameterToken.raw())} else {None}))
                 if(!self.current().is(LArrowThick)) {self.skip(LComma)}
             }
             self.skip(LArrowThick)

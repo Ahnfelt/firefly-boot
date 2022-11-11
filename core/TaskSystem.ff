@@ -69,7 +69,7 @@ extend self: TaskSystem {
 
     sleep(duration: Duration): Unit {
         Channel.
-            readOr(self.channel()) {| _ => }.
+            readOr(self.channel()) {_ => }.
             timeout(duration) {}
     }
 
@@ -81,7 +81,7 @@ extend self: TaskSystem {
                     channel.write(Pair(i, task()))
                 }
             }
-            tasks.map {| _ =>
+            tasks.map {_ =>
                 channel.read()
             }.sortBy {_.first}.map {_.second}
         }
