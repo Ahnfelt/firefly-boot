@@ -13,11 +13,11 @@ test2(foo: Option[Int], bar: Option[Int]): Option[Int] {
 type Moo(x: Int)
 
 extend self: Moo {
-    test3(): Moo {
-        self
+    test3(moo: Moo): Moo {
+        | m => m
     }
 }
 
 nodeMain(main: NodeSystem) {
-    Log.debug(Moo(7).test3())
+    Log.debug(Moo(7).test3(Moo(8)))
 }
