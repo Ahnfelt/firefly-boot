@@ -11,5 +11,5 @@ test2(foo: Option[Int], bar: Option[Int]): Option[Int] {
 }
 
 nodeMain(main: NodeSystem) {
-    Log.debug(test2(Some(1), Some(2)))
+    Log.debug(test1(Some(1), Some(2)))
 }

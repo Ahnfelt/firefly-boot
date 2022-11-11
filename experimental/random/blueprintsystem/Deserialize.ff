@@ -1,0 +1,53 @@
+trait T: Deserializable {
+    deserialize(value: Json): T { blueprint t =>
+        let constructors = t.constructors()
+        Blueprint.code("""value.get("$tag").expectString().{\n""" +
+            constructors.map { constructor =>
+                "| " + Blueprint.string(constructor.constructorName()) + " =>\n" +
+                constructor.emit() + "(" + constructor.fields.map { field =>
+                    field.emit() + " = deserialize(value.get(" + Blueprint.string(field.fieldName()) + "))"
+                }.join(", ") + ")"
+            }.join("\n") +
+        """\n| tag => panic("Unknown tag: " + tag)\n}""")
+    }
+}
+
+type Shape {
+    Circle(radius: Float)
+    Rectangle(width: Float, height: Float)
+}
+
+instance Shape: Deserializable
+
+instance Shape: Deserializable {
+    deserialize(value: Json): Shape {
+        value.get("$tag").expectString().{
+            | "Circle" =>
+                Circle(
+                    radius = deserialize(value.get("radius"))
+                )
+            | "Rectangle" =>
+                Rectangle(
+                    width = deserialize(value.get("width"))
+                    height = deserialize(value.get("height"))
+                )
+            | tag =>
+                panic("Unknown tag: " + tag)
+        }
+    }
+}
+
+trait T: Foo[M] {
+    bar(x: Int): Int { blueprint t, m =>
+        ...
+    }
+}
+
+trait T: Baz(trimStrings: Bool) {
+    Quux(x: Int): Int { blueprint t =>
+        // Use t and trimStrings here to generate code
+    }
+}
+
+instance Shape: Baz(trimStrings = False)
+
