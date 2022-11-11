@@ -1,0 +1,22 @@
+import Kahrs
+
+nodeMain(system: NodeSystem): Unit {
+
+    let values = [8, 3, 2, 1, 4, 7, 6, 5, 9]
+    let full = values.foldLeft(Kahrs.E, {t, a =>
+        let t2 = Kahrs.insert(a, t)
+        Log.debug("Insert " + a + ": " + Show.show(toList(t2)))
+        t2
+    })
+    values.foldLeft(full, {t, a =>
+        let t2 = Kahrs.delete(a, t)
+        Log.debug("Delete " + a + ": " + Show.show(toList(t2)))
+        t2
+    })
+
+}
+
+toList[A: Order](t: RB[A]): List[A] {
+    | E => []
+    | T(_, left, e, right) => [...toList(left), e, ...toList(right)]
+}

@@ -1,0 +1,112 @@
+// Base on https://www.cs.kent.ac.uk/people/staff/smk/redblack/Untyped.hs
+
+type Color {
+    R
+    B
+}
+
+type RB[A] {
+    E
+    T(color : Color, left: RB[A], element: A, right: RB[A])
+}
+
+insert[A: Order](x: A, s: RB[A]): RB[A] {
+    function ins(s: RB[A]): RB[A] {
+        | E => T(R, E, x, E)
+        | T(B, a, y, b) => Ordering.compare(x, y).{
+            | OrderingBefore => balance(ins(a), y, b)
+            | OrderingAfter => balance(a, y, ins(b))
+            | OrderingSame => a
+        }
+        | T(R, a, y, b) => Ordering.compare(x, y).{
+            | OrderingBefore => T(R, ins(a), y, b)
+            | OrderingAfter => T(R, a, y, ins(b))
+            | OrderingSame => s
+        }
+    }
+
+    ins(s).{
+        | E => panic("Unexpected empty tree")
+        | T(_, a, z, b) => T(B, a, z, b)
+    }
+}
+
+member[A: Order](x: A, s: RB[A]): Bool {
+    | x, E => False
+    | x, T(_, a, y, b,) => Ordering.compare(x, y).{
+        | OrderingBefore => member(x, a)
+        | OrderingAfter => member(x, b)
+        | OrderingSame => True
+    }
+}
+
+balance[A: Order](aa : RB[A], xx: A, bb: RB[A]): RB[A] {
+    | T(R, a, x, b), y, T(R, c, z, d) => T(R, T(B, a, x, b), y, T(B, c, z, d))
+    | T(R, T(R, a, x, b), y, c), z, d => T(R, T(B, a, x, b), y, T(B, c, z, d))
+    | T(R, a, x, T(R, b, y, c)), z, d => T(R, T(B, a, x, b), y, T(B, c, z, d))
+    | a, x, T(R, b, y, T(R, c, z, d)) => T(R, T(B, a, x, b), y, T(B, c, z, d))
+    | a, x, T(R, T(R, b, y, c), z, d) => T(R, T(B, a, x, b), y, T(B, c, z, d))
+    | a, x, b => T(B, a, x, b)
+}
+
+delete[A: Order](x: A, t: RB[A]): RB[A] {
+    function del(ss: RB[A]): RB[A] {
+        | E => E
+        | T(_, a, y, b) => Ordering.compare(x, y).{
+            | OrderingBefore => delformLeft(a, y, b)
+            | OrderingAfter => delformRight(a, y, b)
+            | OrderingSame => app(a, b)
+        }
+    }
+
+    function delformLeft(a: RB[A], y: A, b: RB[A]): RB[A] {
+        | T(B, _, _, _), y, b => balleft(del(a), y, b)
+        | a, y, b => T(R, del(a), y, b)
+    }
+
+    function delformRight(a: RB[A], y: A, b: RB[A]): RB[A] {
+        | a, y, T(B, _, _, _) => balright(a, y, del(b))
+        | a, y, b => T(R, a, y, del(b))
+    }
+
+    del(t).{
+        | T(_, a, y, b) => T(B, a, y, b)
+        | _ => E
+    }
+}
+
+balleft[A: Order](aa: RB[A], xx: A, bb: RB[A]): RB[A] {
+    | T(R, a, x, b), y, c => T(R, T(B, a, x, b), y, c)
+    | bl, x, T(B, a, y, b) => balance(bl, x, T(R, a, y, b))
+    | bl, x, T(R, T(B, a, y, b), z, c) => T(R, T(B, bl, x, a), y, (balance(b, z, sub1(c))))
+    | _, _, _ => panic("Unexhaustive match in balleft")
+}
+
+balright[A: Order](aa: RB[A], xx: A, bb: RB[A]): RB[A] {
+    | a, x, T(R, b, y, c) => T(R, a, x, T(B, b, y, c))
+    | T(B, a, x, b), y, bl => balance(T(R, a, x, b), y, bl)
+    | T(R, a, x, T(B, b, y, c)), z, bl => T(R, balance(sub1(a), x, b), y, T(B, c, z, bl))
+    | _, _, _ => panic("Unexhaustive match in balright")
+}
+
+sub1[A: Order](tt: RB[A]): RB[A] {
+    | T(B, a, x, b) => T(R, a, x, b)
+    | _ => panic("invariance violation")
+}
+
+app[A: Order](aa: RB[A], bb: RB[A]): RB[A] {
+    | E, x => x
+    | x, E => x
+    | T(R, a, x, b), T(R, c, y, d) =>
+        app(b, c).{
+            | T(R, b2, z, c2) => T(R, T(R, a, x, b2), z, T(R, c2, y, d))
+            | bc => T(R, a, x, T(R, bc, y, d))
+        }
+    | T(B, a, x, b), T(B, c, y, d) =>
+        app(b, c).{
+            | T(R, b2, z, c2) => T(R, T(B, a, x, b2), z, T(B, c2, y, d))
+            | bc => balleft(a, x, T(B, bc, y, d))
+        }
+    | a, T(R, b, x, c) => T(R, app(a, b), x, c)
+    | T(R, a, x, b), c => T(R, a, x, app(b, c))
+}
