@@ -10,6 +10,14 @@ test2(foo: Option[Int], bar: Option[Int]): Option[Int] {
     f(foo, bar)
 }
 
+type Moo(x: Int)
+
+extend self: Moo {
+    test3(): Moo {
+        self
+    }
+}
+
 nodeMain(main: NodeSystem) {
-    Log.debug(test1(Some(1), Some(2)))
+    Log.debug(Moo(7).test3())
 }
