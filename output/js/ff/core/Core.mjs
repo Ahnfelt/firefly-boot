@@ -117,6 +117,16 @@ return
 }
 }
 
+export function doWhile_(body_) {
+while(body_()) {
+
+}
+}
+
+export function do_(body_) {
+return body_()
+}
+
 export function try_(body_) {
 
         try {
@@ -125,10 +135,6 @@ export function try_(body_) {
             return {Failure: true, error_: e}
         }
     
-}
-
-export function do_(body_) {
-return body_()
 }
 
 export function throw_(error_) {
@@ -182,6 +188,16 @@ return
 }
 }
 
+export async function doWhile_$(body_, $c) {
+while((await body_($c))) {
+
+}
+}
+
+export async function do_$(body_, $c) {
+return (await body_($c))
+}
+
 export async function try_$(body_, $c) {
 
         try {
@@ -190,10 +206,6 @@ export async function try_$(body_, $c) {
             return {Failure: true, error_: e}
         }
     
-}
-
-export async function do_$(body_, $c) {
-return (await body_($c))
 }
 
 export async function throw_$(error_, $c) {

@@ -115,6 +115,26 @@ export function Int_bitRight(self_, bits_ = 1, signed_ = true) {
 return signed_ ? self_ >> bits_ : self_ >>> bits_;
 }
 
+export function Int_to(self_, inclusiveEnd_) {
+let result_ = ff_core_List.Empty();
+let n_ = inclusiveEnd_;
+while((self_ <= n_)) {
+result_ = ff_core_List.Link(n_, result_);
+n_ -= 1
+};
+return result_
+}
+
+export function Int_until(self_, exclusiveEnd_) {
+let result_ = ff_core_List.Empty();
+let n_ = exclusiveEnd_;
+while((self_ < n_)) {
+result_ = ff_core_List.Link((n_ - 1), result_);
+n_ -= 1
+};
+return result_
+}
+
 export async function Int_abs$(self_, $c) {
 throw new Error('Function Int_abs is missing on this target in async context.');
 }
@@ -145,6 +165,26 @@ throw new Error('Function Int_bitLeft is missing on this target in async context
 
 export async function Int_bitRight$(self_, bits_ = 1, signed_ = true, $c) {
 throw new Error('Function Int_bitRight is missing on this target in async context.');
+}
+
+export async function Int_to$(self_, inclusiveEnd_, $c) {
+let result_ = ff_core_List.Empty();
+let n_ = inclusiveEnd_;
+while((self_ <= n_)) {
+result_ = ff_core_List.Link(n_, result_);
+n_ -= 1
+};
+return result_
+}
+
+export async function Int_until$(self_, exclusiveEnd_, $c) {
+let result_ = ff_core_List.Empty();
+let n_ = exclusiveEnd_;
+while((self_ < n_)) {
+result_ = ff_core_List.Link((n_ - 1), result_);
+n_ -= 1
+};
+return result_
 }
 
 

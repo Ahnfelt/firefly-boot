@@ -26,4 +26,24 @@ extend self: Int {
     bitRight(bits: Int = 1, signed: Bool = True): Int
         target js sync "return signed_ ? self_ >> bits_ : self_ >>> bits_;"
 
+    to(inclusiveEnd: Int): List[Int] {
+        mutable result = []
+        mutable n = inclusiveEnd
+        while {self <= n} {
+            result = [n, ...result]
+            n -= 1
+        }
+        result
+    }
+
+    until(exclusiveEnd: Int): List[Int] {
+        mutable result = []
+        mutable n = exclusiveEnd
+        while {self < n} {
+            result = [n - 1, ...result]
+            n -= 1
+        }
+        result
+    }
+
 }
