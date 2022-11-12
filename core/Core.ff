@@ -18,6 +18,13 @@ doWhile(body: () => Bool): Unit {
     while {body()} {}
 }
 
+doUntil[T](body: () => Option[T]): T {
+    body().{
+        | Some(v) => v
+        | None => tailcall doUntil(body)
+    }
+}
+
 do[T](body: () => T): T {
     body()
 }
