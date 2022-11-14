@@ -123,6 +123,32 @@ while(body_()) {
 }
 }
 
+export function doUntil_(body_) {
+_tailcall: for(;;) {
+{
+const _1 = body_();
+{
+if(_1.Some) {
+const v_ = _1.value_;
+return v_
+return
+}
+}
+{
+if(_1.None) {
+{
+const body_r_ = body_;
+body_ = body_r_
+continue _tailcall
+}
+return
+}
+}
+}
+return
+}
+}
+
 export function do_(body_) {
 return body_()
 }
@@ -191,6 +217,32 @@ return
 export async function doWhile_$(body_, $c) {
 while((await body_($c))) {
 
+}
+}
+
+export async function doUntil_$(body_, $c) {
+_tailcall: for(;;) {
+{
+const _1 = (await body_($c));
+{
+if(_1.Some) {
+const v_ = _1.value_;
+return v_
+return
+}
+}
+{
+if(_1.None) {
+{
+const body_r_ = body_;
+body_ = body_r_
+continue _tailcall
+}
+return
+}
+}
+}
+return
 }
 }
 

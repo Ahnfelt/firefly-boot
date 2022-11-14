@@ -1,4 +1,4 @@
-// Base on https://www.cs.kent.ac.uk/people/staff/smk/redblack/Untyped.hs
+// Based on https://www.cs.kent.ac.uk/people/staff/smk/redblack/Untyped.hs
 
 type Color {
     R

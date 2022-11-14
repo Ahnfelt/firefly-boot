@@ -1,151 +1,152 @@
-// Based on https://github.com/Abhiroop/okasaki/blob/master/src/RedBlackTree.hs
+// Based on https://www.cs.kent.ac.uk/people/staff/smk/redblack/Untyped.hs
 
-type RbMap[K, V] {
-    RbLeaf
-    RbNode(isRed: Bool, left: RbMap[K, V], key: K, value: V, right: RbMap[K, V])
+type Color {
+    R
+    B
 }
 
-extend self[K: Order, V]: RbMap[K, V] {
+type RB[K, V] {
+    E
+    T(color : Color, left: RB[K, V], key: K, value: V, right: RB[K, V])
+}
+
+insert[K: Order, V](x: K, xv: V, s: RB[K, V]): RB[K, V] {
+    function ins(s: RB[K, V]): RB[K, V] {
+        | E => T(R, E, x, xv, E)
+        | T(B, a, y, yv, b) => Ordering.compare(x, y).{
+            | OrderingBefore => balance(ins(a), y, yv, b)
+            | OrderingAfter => balance(a, y, yv, ins(b))
+            | OrderingSame => T(B, a, x, xv, b)
+        }
+        | T(R, a, y, yv, b) => Ordering.compare(x, y).{
+            | OrderingBefore => T(R, ins(a), y, yv, b)
+            | OrderingAfter => T(R, a, y, yv, ins(b))
+            | OrderingSame => T(R, a, x, xv, b)
+        }
+    }
+
+    ins(s).{
+        | E => panic("Unexpected empty tree")
+        | T(_, a, z, zv, b) => T(B, a, z, zv, b)
+    }
+}
+
+member[K: Order, V](key: K, tree: RB[K, V]): Bool {
+    | x, E => False
+    | x, T(_, a, y, _, b,) => Ordering.compare(x, y).{
+        | OrderingBefore => member(x, a)
+        | OrderingAfter => member(x, b)
+        | OrderingSame => True
+    }
+}
+
+balance[K: Order, V](tree1: RB[K, V], key: K, value: V, tree2: RB[K, V]): RB[K, V] {
+    | T(R, a, x, xv, b), y, yv, T(R, c, z, zv, d) => T(R, T(B, a, x, xv, b), y, yv, T(B, c, z, zv, d))
+    | T(R, T(R, a, x, xv, b), y, yv, c), z, zv, d => T(R, T(B, a, x, xv, b), y, yv, T(B, c, z, zv, d))
+    | T(R, a, x, xv, T(R, b, y, yv, c)), z, zv, d => T(R, T(B, a, x, xv, b), y, yv, T(B, c, z, zv, d))
+    | a, x, xv, T(R, b, y, yv, T(R, c, z, zv, d)) => T(R, T(B, a, x, xv, b), y, yv, T(B, c, z, zv, d))
+    | a, x, xv, T(R, T(R, b, y, yv, c), z, zv, d) => T(R, T(B, a, x, xv, b), y, yv, T(B, c, z, zv, d))
+    | a, x, xv, b => T(B, a, x, xv, b)
+}
+
+delete[K: Order, V](x: K, t: RB[K, V]): RB[K, V] {
+    function del(ss: RB[K, V]): RB[K, V] {
+        | E => E
+        | T(_, a, y, yv, b) => Ordering.compare(x, y).{
+            | OrderingBefore => delformLeft(a, y, yv, b)
+            | OrderingAfter => delformRight(a, y, yv, b)
+            | OrderingSame => app(a, b)
+        }
+    }
+
+    function delformLeft(left: RB[K, V], key: K, value: V, right: RB[K, V]): RB[K, V] {
+        | T(B, _, _, _, _), y, yv, b => balleft(del(left), y, yv, b)
+        | a, y, yv, b => T(R, del(a), y, yv, b)
+    }
+
+    function delformRight(left: RB[K, V], key: K, value: V, right: RB[K, V]): RB[K, V] {
+        | a, y, yv, T(B, _, _, _, _) => balright(a, y, yv, del(right))
+        | a, y, yv, b => T(R, a, y, yv, del(b))
+    }
+
+    del(t).{
+        | T(_, a, y, yv, b) => T(B, a, y, yv, b)
+        | _ => E
+    }
+}
+
+balleft[K: Order, V](tree1: RB[K, V], key: K, value: V, tree2: RB[K, V]): RB[K, V] {
+    | T(R, a, x, xv, b), y, yv, c => T(R, T(B, a, x, xv, b), y, yv, c)
+    | bl, x, xv, T(B, a, y, yv, b) => balance(bl, x, xv, T(R, a, y, yv, b))
+    | bl, x, xv, T(R, T(B, a, y, yv, b), z, zv, c) => T(R, T(B, bl, x, xv, a), y, yv, (balance(b, z, zv, sub1(c))))
+    | _, _, _, _ => panic("Unexhaustive match in balleft")
+}
+
+balright[K: Order, V](tree1: RB[K, V], key: K, value: V, tree2: RB[K, V]): RB[K, V] {
+    | a, x, xv, T(R, b, y, yv, c) => T(R, a, x, xv, T(B, b, y, yv, c))
+    | T(B, a, x, xv, b), y, yv, bl => balance(T(R, a, x, xv, b), y, yv, bl)
+    | T(R, a, x, xv, T(B, b, y, yv, c)), z, zv, bl => T(R, balance(sub1(a), x, xv, b), y, yv, T(B, c, z, zv, bl))
+    | _, _, _, _ => panic("Unexhaustive match in balright")
+}
+
+sub1[K: Order, V](tree: RB[K, V]): RB[K, V] {
+    | T(B, a, x, xv, b) => T(R, a, x, xv, b)
+    | _ => panic("invariance violation")
+}
+
+app[K: Order, V](tree1: RB[K, V], tree2: RB[K, V]): RB[K, V] {
+    | E, b => b
+    | a, E => a
+    | T(R, a, x, xv, b), T(R, c, y, yv, d) =>
+        app(b, c).{
+            | T(R, b2, z, zv, c2) => T(R, T(R, a, x, xv, b2), z, zv, T(R, c2, y, yv, d))
+            | bc => T(R, a, x, xv, T(R, bc, y, yv, d))
+        }
+    | T(B, a, x, xv, b), T(B, c, y, yv, d) =>
+        app(b, c).{
+            | T(R, b2, z, zv, c2) => T(R, T(B, a, x, xv, b2), z, zv, T(B, c2, y, yv, d))
+            | bc => balleft(a, x, xv, T(B, bc, y, yv, d))
+        }
+    | a, T(R, b, x, xv, c) => T(R, app(a, b), x, xv, c)
+    | T(R, a, x, xv, b), c => T(R, a, x, xv, app(b, c))
+}
+
+extend self[K: Order, V]: RB[K, V] {
+
+    get(key: K): Option[V] {
+        self.{
+            | E_ => None
+            | T(_, a, y, yv, b,) => Ordering.compare(key, y).{
+                | OrderingBefore => a.get(key)
+                | OrderingAfter => b.get(key)
+                | OrderingSame => Some(yv)
+            }
+        }
+    }
 
     size(): Int {
         self.{
-            | RbLeaf => 0
-            | RbNode(_, l, _, _, r) => l.size() + 1 + r.size()
+            | E => 0
+            | T(_, l, _, _, r) => l.size() + 1 + r.size()
         }
     }
 
     pairs(): List[Pair[K, V]] {
         self.{
-            | RbLeaf => []
-            | RbNode(_, l, k, v, r) => [...l.pairs(), Pair(k, v), ...r.pairs()]
+            | E => []
+            | T(_, l, k, v, r) => [...l.pairs(), Pair(k, v), ...r.pairs()]
         }
     }
 
     each(body: (K, V) => Unit): Unit {
         self.{
-            | RbLeaf =>
-            | RbNode(_, l, k, v, r) =>
+            | E =>
+            | T(_, l, k, v, r) =>
                 l.each(body)
                 body(k, v)
                 r.each(body)
         }
     }
 
-    get(key: K): Option[V] {
-        self.{
-            | RbLeaf => None
-            | RbNode(_, l, k, v, r) => Ordering.compare(key, k).{
-                | OrderingBefore => tailcall l.get(key)
-                | OrderingAfter => tailcall r.get(key)
-                | OrderingSame => Some(v)
-            }
-        }
-    }
-
-    add(key: K, value: V): RbMap[K, V] {
-        function go(self: RbMap[K, V]): RbMap[K, V] {
-            self.{
-                | RbLeaf => RbNode(True, RbLeaf, key, value, RbLeaf)
-                | RbNode(c, l, k, v, r) => Ordering.compare(key, k).{
-                    | OrderingBefore => RbNode(c, go(l), k, v, r).balance()
-                    | OrderingAfter => RbNode(c, l, k, v, go(r)).balance()
-                    | OrderingSame => RbNode(c, l, key, value, r)
-                }
-            }
-        }
-        go(self).{
-            | RbNode(True, l, k, v, r) => RbNode(False, l, k, v, r)
-            | n => n
-        }
-    }
-
-    // TODO: Remove does not work: E.g. add 1 2 3 then remove 2 breaks it. It hits a non-exhaustive case in Haskell.
-    remove(key: K): RbMap[K, V] {
-        function go(self: RbMap[K, V]): RbMap[K, V] {
-            self.{
-                | RbLeaf => self
-                | RbNode(_, l, k, _, r) => Ordering.compare(key, k).{
-                    | OrderingBefore => goLeft(self)
-                    | OrderingAfter => goRight(self)
-                    | OrderingSame => fuse(l, r)
-                }
-            }
-        }
-        function goLeft(self: RbMap[K, V]): RbMap[K, V] {
-            self.{
-                | RbLeaf => self
-                | RbNode(_, RbNode(False, a, k1, v1, b), k2, v2, c) =>
-                    balanceLeft(RbNode(False, go(RbNode(False, a, k1, v1, b)), k2, v2, c))
-                | RbNode(_, a, k, v, b) => RbNode(True, go(a), k, v, b)
-            }
-        }
-        function balanceLeft(self: RbMap[K, V]): RbMap[K, V] {
-            self.{
-                | RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c) =>
-                    RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, c)
-                | RbNode(False, a, k1, v1, RbNode(False, b, k2, v2, c)) =>
-                    RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, c)).balance()
-                | RbNode(False, a, k1, v1, RbNode(True, RbNode(False, b, k2, v2, c), k3, v3, RbNode(False, d, k4, v4, e))) =>
-                    RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, RbNode(True, d, k4, v4, e)).balance())
-                | _ =>
-                    panic("Unexpected input to balanceLeft")
-            }
-        }
-        function goRight(self: RbMap[K, V]): RbMap[K, V] {
-            self.{
-                | RbLeaf => self
-                | RbNode(_, a, k1, v1, RbNode(False, b, k2, v2, c)) =>
-                    balanceRight(RbNode(False, a, k1, v1, go(RbNode(False, b, k2, v2, c))))
-                | RbNode(_, a, k, v, b) => RbNode(True, a, k, v, go(b))
-            }
-        }
-        function balanceRight(self: RbMap[K, V]): RbMap[K, V] {
-            self.{
-                | RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, c)) => RbNode(True, a, k1, v1, RbNode(False, b, k2, v2, c))
-                | RbNode(False, RbNode(False, a, k1, v1, b), k2, v2, c) => RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c).balance()
-                | RbNode(False, RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d)), k4, v4, e) =>
-                    RbNode(True, RbNode(False, RbNode(True, a, k1, v1, b), k2, v2, c).balance(), k3, v3, RbNode(False, d, k4, v4, e))
-                | _ => panic("Unexpected input to balanceRight")
-            }
-        }
-        function fuse(x: RbMap[K, V], y: RbMap[K, V]): RbMap[K, V] {
-            Pair(x, y).{
-                | Pair(RbLeaf, a) => a
-                | Pair(a, RbLeaf) => a
-                | Pair(RbNode(False, a, k1, v1, b), RbNode(True, c, k2, v2, d)) =>
-                    RbNode(True, fuse(RbNode(False, a, k1, v1, b), c), k2, v2, d)
-                | Pair(RbNode(True, a, k1, v1, b), RbNode(False, c, k2, v2, d)) =>
-                    RbNode(True, a, k1, v1, fuse(b, RbNode(False, c, k2, v2, d)))
-                | Pair(RbNode(True, a, k1, v1, b), RbNode(True, c, k2, v2, d)) =>
-                    let e = fuse(b, c)
-                    e.{
-                        | RbNode(True, f, k3, v3, g) => RbNode(True, RbNode(True, a, k1, v1, f), k3, v3, RbNode(True, g, k2, v2, d))
-                        | RbNode(False, _, _, _, _) => RbNode(True, a, k1, v1, RbNode(True, e, k2, v2, d))
-                        | RbLeaf => RbLeaf
-                    }
-                | Pair(RbNode(False, a, k1, v1, b), RbNode(False, c, k2, v2, d)) =>
-                    let e = fuse(b, c)
-                    e.{
-                        | RbNode(True, f, k3, v3, g) => RbNode(True, RbNode(True, a, k1, v1, f), k3, v3, RbNode(True, g, k2, v2, d))
-                        | RbNode(False, _, _, _, _) => balanceLeft(RbNode(False, a, k1, v1, RbNode(False, e, k2, v2, d)))
-                        | RbLeaf => RbLeaf
-                    }
-            }
-        }
-        go(self).{
-            | RbNode(True, a, k1, v1, b) => RbNode(False, a, k1, v1, b)
-            | n => n
-        }
-    }
-
-    balance(): RbMap[K, V] {
-        self.{
-            | RbNode(False, RbNode(True, RbNode(True, a, k1, v1, b), k2, v2, c), k3, v3, d) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
-            | RbNode(False, RbNode(True, a, k1, v1, RbNode(True, b, k2, v2, c)), k3, v3, d) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
-            | RbNode(False, a, k1, v1, RbNode(True, RbNode(True, b, k2, v2, c), k3, v3, d)) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
-            | RbNode(False, a, k1, v1, RbNode(True, b, k2, v2, RbNode(True, c, k3, v3, d))) => RbNode(True, RbNode(False, a, k1, v1, b), k2, v2, RbNode(False, c, k3, v3, d))
-            | _ => self
-        }
-    }
-
 }
+

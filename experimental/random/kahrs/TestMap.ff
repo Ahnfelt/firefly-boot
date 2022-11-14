@@ -1,0 +1,18 @@
+import RbMap from ff:core
+
+nodeMain(system: NodeSystem): Unit {
+    let values = [8, 3, 2, 1, 4, 7, 6, 5, 9]
+    let full = values.foldLeft(RbMap.E, {t, a =>
+        let t2 = RbMap.insert(a, "" + a, t)
+        Log.debug("Insert " + a + ": " + Show.show(t2.pairs()))
+        t2
+    })
+    values.foldLeft(full, {t, a =>
+        let t2 = RbMap.delete(a, t)
+        Log.debug("Delete " + a + ": " + Show.show(t2.pairs()))
+        t2
+    })
+
+    //RbMap.delete(1, RbMap.delete(1, RbMap.insert(1, "A", RbMap.E)))
+
+}

@@ -1,46 +1,41 @@
 import RbMap
 
-newtype Map[K, V](redBlack: RbMap[K, Option[V]])
+newtype Map[K, V](redBlack: RB[K, V])
 
-empty[K, V](): Map[K, V] { Map(RbLeaf) }
+empty[K, V](): Map[K, V] { Map(E) }
 
 extend self[K: Order, V]: Map[K, V] {
 
     add(key: K, value: V): Map[K, V] {
-        Map(self.redBlack.add(key, Some(value)))
+        Map(RbMap.insert(key, value, self.redBlack))
     }
 
     addAll(that: Map[K, V]) : Map[K, V] {
         mutable result = self.redBlack
-        that.redBlack.each {
-            | k, Some(_)@v => result = result.add(k, v)
-            | k, None =>
+        that.redBlack.each { k, v =>
+            result = RbMap.insert(k, v, result)
         }
         Map(result)
     }
 
     get(key: K): Option[V] {
-        self.redBlack.get(key).flatten()
+        self.redBlack.get(key)
     }
 
     remove(key: K): Map[K, V] {
-        Map(self.redBlack.add(key, None))
+        Map(RbMap.delete(key, self.redBlack))
     }
 
     removeAll(that: Map[K, V]) : Map[K, V] {
         mutable result = self.redBlack
-        that.redBlack.each {
-            | k, Some(_) => result = result.remove(k)
-            | k, None =>
+        that.redBlack.each {| k, _ =>
+            result = RbMap.delete(k, result)
         }
         Map(result)
     }
 
     pairs(): List[Pair[K, V]] {
-        self.redBlack.pairs().flatMap {
-            | Pair(k, Some(v)) => [Pair(k, v)]
-            | Pair(k, None) => []
-        }
+        self.redBlack.pairs()
     }
 
     keys(): Set[K] {
@@ -52,13 +47,11 @@ extend self[K: Order, V]: Map[K, V] {
     }
 
     size(): Int {
-        self.pairs().foldLeft(0) {
-            | total, _ => total + 1
-        }
+        self.redBlack.size()
     }
 
     map[K1: Order, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
-        let initial: Map[K1, V1] = Map[K1, V1](RbLeaf)
+        let initial: Map[K1, V1] = Map[K1, V1](E)
         self.pairs().foldLeft(initial) { tree, pair =>
             body(pair).{
                 | Pair(k, v) => tree.add(k, v)
@@ -82,10 +75,7 @@ extend self[K: Order, V]: Map[K, V] {
     }
 
     each(body: (K, V) => Unit): Unit {
-        self.redBlack.each {
-            | k, Some(v) => body(k, v)
-            | _, None =>
-        }
+        self.redBlack.each(body)
     }
 
 }
@@ -93,7 +83,7 @@ extend self[K: Order, V]: Map[K, V] {
 extend self[K: Order, V]: Map[K, List[V]] {
 
     addToList(key: K, value: V): Map[K, List[V]] {
-        self.updateOrInsert(key, {[value, ... _]}, {[value]})
+        self.updateOrInsert(key, {[value, ..._]}, {[value]})
     }
 
 }

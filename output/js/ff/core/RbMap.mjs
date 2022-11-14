@@ -76,1533 +76,1559 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type RbMap
-const RbLeaf$ = {RbLeaf: true};
-export function RbLeaf() {
-return RbLeaf$;
+// type Color
+const R$ = {R: true};
+export function R() {
+return R$;
 }
-export function RbNode(isRed_, left_, key_, value_, right_) {
-return {RbNode: true, isRed_, left_, key_, value_, right_};
+const B$ = {B: true};
+export function B() {
+return B$;
+}
+
+// type RB
+const E$ = {E: true};
+export function E() {
+return E$;
+}
+export function T(color_, left_, key_, value_, right_) {
+return {T: true, color_, left_, key_, value_, right_};
 }
 
 
 
+export function insert_(x_, xv_, s_, ff_core_Ordering_Order$K) {
+function ins_(s_) {
+{
+const s_a = s_;
+{
+if(s_a.E) {
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.E(), x_, xv_, ff_core_RbMap.E())
+return
+}
+}
+{
+if(s_a.T) {
+if(s_a.color_.B) {
+const a_ = s_a.left_;
+const y_ = s_a.key_;
+const yv_ = s_a.value_;
+const b_ = s_a.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return ff_core_RbMap.balance_(ins_(a_), y_, yv_, b_, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_RbMap.balance_(a_, y_, yv_, ins_(b_), ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
+return
+}
+}
+}
+return
+}
+}
+}
+{
+if(s_a.T) {
+if(s_a.color_.R) {
+const a_ = s_a.left_;
+const y_ = s_a.key_;
+const yv_ = s_a.value_;
+const b_ = s_a.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return ff_core_RbMap.T(ff_core_RbMap.R(), ins_(a_), y_, yv_, b_)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, ins_(b_))
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
+return
+}
+}
+}
+return
+}
+}
+}
+}
+}
+{
+const _1 = ins_(s_);
+{
+if(_1.E) {
+return ff_core_Core.panic_("Unexpected empty tree")
+return
+}
+}
+{
+if(_1.T) {
+const a_ = _1.left_;
+const z_ = _1.key_;
+const zv_ = _1.value_;
+const b_ = _1.right_;
+return ff_core_RbMap.T(ff_core_RbMap.B(), a_, z_, zv_, b_)
+return
+}
+}
+}
+}
 
+export function member_(key_, tree_, ff_core_Ordering_Order$K) {
+{
+const key_a = key_;
+const tree_a = tree_;
+{
+const x_ = key_a;
+if(tree_a.E) {
+return false
+return
+}
+}
+{
+const x_ = key_a;
+if(tree_a.T) {
+const a_ = tree_a.left_;
+const y_ = tree_a.key_;
+const b_ = tree_a.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return ff_core_RbMap.member_(x_, a_, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_RbMap.member_(x_, b_, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return true
+return
+}
+}
+}
+return
+}
+}
+}
+}
 
+export function balance_(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K) {
+{
+const tree1_a = tree1_;
+const key_a = key_;
+const value_a = value_;
+const tree2_a = tree2_;
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+const y_ = key_a;
+const yv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const c_ = tree2_a.left_;
+const z_ = tree2_a.key_;
+const zv_ = tree2_a.value_;
+const d_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+if(tree1_a.left_.T) {
+if(tree1_a.left_.color_.R) {
+const a_ = tree1_a.left_.left_;
+const x_ = tree1_a.left_.key_;
+const xv_ = tree1_a.left_.value_;
+const b_ = tree1_a.left_.right_;
+const y_ = tree1_a.key_;
+const yv_ = tree1_a.value_;
+const c_ = tree1_a.right_;
+const z_ = key_a;
+const zv_ = value_a;
+const d_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+if(tree1_a.right_.T) {
+if(tree1_a.right_.color_.R) {
+const b_ = tree1_a.right_.left_;
+const y_ = tree1_a.right_.key_;
+const yv_ = tree1_a.right_.value_;
+const c_ = tree1_a.right_.right_;
+const z_ = key_a;
+const zv_ = value_a;
+const d_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+const a_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const b_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+if(tree2_a.right_.T) {
+if(tree2_a.right_.color_.R) {
+const c_ = tree2_a.right_.left_;
+const z_ = tree2_a.right_.key_;
+const zv_ = tree2_a.right_.value_;
+const d_ = tree2_a.right_.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+const a_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+if(tree2_a.left_.T) {
+if(tree2_a.left_.color_.R) {
+const b_ = tree2_a.left_.left_;
+const y_ = tree2_a.left_.key_;
+const yv_ = tree2_a.left_.value_;
+const c_ = tree2_a.left_.right_;
+const z_ = tree2_a.key_;
+const zv_ = tree2_a.value_;
+const d_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+const a_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+const b_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
+return
+}
+}
+}
 
+export function delete_(x_, t_, ff_core_Ordering_Order$K) {
+function del_(ss_) {
+{
+const ss_a = ss_;
+{
+if(ss_a.E) {
+return ff_core_RbMap.E()
+return
+}
+}
+{
+if(ss_a.T) {
+const a_ = ss_a.left_;
+const y_ = ss_a.key_;
+const yv_ = ss_a.value_;
+const b_ = ss_a.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return delformLeft_(a_, y_, yv_, b_)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return delformRight_(a_, y_, yv_, b_)
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K)
+return
+}
+}
+}
+return
+}
+}
+}
+}
+function delformLeft_(left_, key_, value_, right_) {
+{
+const left_a = left_;
+const key_a = key_;
+const value_a = value_;
+const right_a = right_;
+{
+if(left_a.T) {
+if(left_a.color_.B) {
+const y_ = key_a;
+const yv_ = value_a;
+const b_ = right_a;
+return ff_core_RbMap.balleft_(del_(left_), y_, yv_, b_, ff_core_Ordering_Order$K)
+return
+}
+}
+}
+{
+const a_ = left_a;
+const y_ = key_a;
+const yv_ = value_a;
+const b_ = right_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), del_(a_), y_, yv_, b_)
+return
+}
+}
+}
+function delformRight_(left_, key_, value_, right_) {
+{
+const left_a = left_;
+const key_a = key_;
+const value_a = value_;
+const right_a = right_;
+{
+const a_ = left_a;
+const y_ = key_a;
+const yv_ = value_a;
+if(right_a.T) {
+if(right_a.color_.B) {
+return ff_core_RbMap.balright_(a_, y_, yv_, del_(right_), ff_core_Ordering_Order$K)
+return
+}
+}
+}
+{
+const a_ = left_a;
+const y_ = key_a;
+const yv_ = value_a;
+const b_ = right_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, del_(b_))
+return
+}
+}
+}
+{
+const _1 = del_(t_);
+{
+if(_1.T) {
+const a_ = _1.left_;
+const y_ = _1.key_;
+const yv_ = _1.value_;
+const b_ = _1.right_;
+return ff_core_RbMap.T(ff_core_RbMap.B(), a_, y_, yv_, b_)
+return
+}
+}
+{
+return ff_core_RbMap.E()
+return
+}
+}
+}
 
-export function RbMap_size(self_, ff_core_Ordering_Order$K) {
+export function balleft_(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K) {
+{
+const tree1_a = tree1_;
+const key_a = key_;
+const value_a = value_;
+const tree2_a = tree2_;
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+const y_ = key_a;
+const yv_ = value_a;
+const c_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, c_)
+return
+}
+}
+}
+{
+const bl_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.B) {
+const a_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+const b_ = tree2_a.right_;
+return ff_core_RbMap.balance_(bl_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, b_), ff_core_Ordering_Order$K)
+return
+}
+}
+}
+{
+const bl_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+if(tree2_a.left_.T) {
+if(tree2_a.left_.color_.B) {
+const a_ = tree2_a.left_.left_;
+const y_ = tree2_a.left_.key_;
+const yv_ = tree2_a.left_.value_;
+const b_ = tree2_a.left_.right_;
+const z_ = tree2_a.key_;
+const zv_ = tree2_a.value_;
+const c_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), bl_, x_, xv_, a_), y_, yv_, ff_core_RbMap.balance_(b_, z_, zv_, ff_core_RbMap.sub1_(c_, ff_core_Ordering_Order$K), ff_core_Ordering_Order$K))
+return
+}
+}
+}
+}
+}
+{
+return ff_core_Core.panic_("Unexhaustive match in balleft")
+return
+}
+}
+}
+
+export function balright_(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K) {
+{
+const tree1_a = tree1_;
+const key_a = key_;
+const value_a = value_;
+const tree2_a = tree2_;
+{
+const a_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const b_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+const c_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.B(), b_, y_, yv_, c_))
+return
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.B) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+const y_ = key_a;
+const yv_ = value_a;
+const bl_ = tree2_a;
+return ff_core_RbMap.balance_(ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_), y_, yv_, bl_, ff_core_Ordering_Order$K)
+return
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+if(tree1_a.right_.T) {
+if(tree1_a.right_.color_.B) {
+const b_ = tree1_a.right_.left_;
+const y_ = tree1_a.right_.key_;
+const yv_ = tree1_a.right_.value_;
+const c_ = tree1_a.right_.right_;
+const z_ = key_a;
+const zv_ = value_a;
+const bl_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.balance_(ff_core_RbMap.sub1_(a_, ff_core_Ordering_Order$K), x_, xv_, b_, ff_core_Ordering_Order$K), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, bl_))
+return
+}
+}
+}
+}
+}
+{
+return ff_core_Core.panic_("Unexhaustive match in balright")
+return
+}
+}
+}
+
+export function sub1_(tree_, ff_core_Ordering_Order$K) {
+{
+const tree_a = tree_;
+{
+if(tree_a.T) {
+if(tree_a.color_.B) {
+const a_ = tree_a.left_;
+const x_ = tree_a.key_;
+const xv_ = tree_a.value_;
+const b_ = tree_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
+return
+}
+}
+}
+{
+return ff_core_Core.panic_("invariance violation")
+return
+}
+}
+}
+
+export function app_(tree1_, tree2_, ff_core_Ordering_Order$K) {
+{
+const tree1_a = tree1_;
+const tree2_a = tree2_;
+{
+if(tree1_a.E) {
+const b_ = tree2_a;
+return b_
+return
+}
+}
+{
+const a_ = tree1_a;
+if(tree2_a.E) {
+return a_
+return
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const c_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+const d_ = tree2_a.right_;
+{
+const _1 = ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K);
+{
+if(_1.T) {
+if(_1.color_.R) {
+const b2_ = _1.left_;
+const z_ = _1.key_;
+const zv_ = _1.value_;
+const c2_ = _1.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b2_), z_, zv_, ff_core_RbMap.T(ff_core_RbMap.R(), c2_, y_, yv_, d_))
+return
+}
+}
+}
+{
+const bc_ = _1;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.R(), bc_, y_, yv_, d_))
+return
+}
+}
+return
+}
+}
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.B) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+if(tree2_a.T) {
+if(tree2_a.color_.B) {
+const c_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+const d_ = tree2_a.right_;
+{
+const _1 = ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K);
+{
+if(_1.T) {
+if(_1.color_.R) {
+const b2_ = _1.left_;
+const z_ = _1.key_;
+const zv_ = _1.value_;
+const c2_ = _1.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b2_), z_, zv_, ff_core_RbMap.T(ff_core_RbMap.B(), c2_, y_, yv_, d_))
+return
+}
+}
+}
+{
+const bc_ = _1;
+return ff_core_RbMap.balleft_(a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.B(), bc_, y_, yv_, d_), ff_core_Ordering_Order$K)
+return
+}
+}
+return
+}
+}
+}
+}
+}
+{
+const a_ = tree1_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const b_ = tree2_a.left_;
+const x_ = tree2_a.key_;
+const xv_ = tree2_a.value_;
+const c_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K), x_, xv_, c_)
+return
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+const c_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K))
+return
+}
+}
+}
+}
+}
+
+export async function insert_$(x_, xv_, s_, ff_core_Ordering_Order$K, $c) {
+function ins_(s_) {
+{
+const s_a = s_;
+{
+if(s_a.E) {
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.E(), x_, xv_, ff_core_RbMap.E())
+return
+}
+}
+{
+if(s_a.T) {
+if(s_a.color_.B) {
+const a_ = s_a.left_;
+const y_ = s_a.key_;
+const yv_ = s_a.value_;
+const b_ = s_a.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return ff_core_RbMap.balance_(ins_(a_), y_, yv_, b_, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_RbMap.balance_(a_, y_, yv_, ins_(b_), ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
+return
+}
+}
+}
+return
+}
+}
+}
+{
+if(s_a.T) {
+if(s_a.color_.R) {
+const a_ = s_a.left_;
+const y_ = s_a.key_;
+const yv_ = s_a.value_;
+const b_ = s_a.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return ff_core_RbMap.T(ff_core_RbMap.R(), ins_(a_), y_, yv_, b_)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, ins_(b_))
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
+return
+}
+}
+}
+return
+}
+}
+}
+}
+}
+{
+const _1 = ins_(s_);
+{
+if(_1.E) {
+return ff_core_Core.panic_("Unexpected empty tree")
+return
+}
+}
+{
+if(_1.T) {
+const a_ = _1.left_;
+const z_ = _1.key_;
+const zv_ = _1.value_;
+const b_ = _1.right_;
+return ff_core_RbMap.T(ff_core_RbMap.B(), a_, z_, zv_, b_)
+return
+}
+}
+}
+}
+
+export async function member_$(key_, tree_, ff_core_Ordering_Order$K, $c) {
+{
+const key_a = key_;
+const tree_a = tree_;
+{
+const x_ = key_a;
+if(tree_a.E) {
+return false
+return
+}
+}
+{
+const x_ = key_a;
+if(tree_a.T) {
+const a_ = tree_a.left_;
+const y_ = tree_a.key_;
+const b_ = tree_a.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return ff_core_RbMap.member_(x_, a_, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_RbMap.member_(x_, b_, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return true
+return
+}
+}
+}
+return
+}
+}
+}
+}
+
+export async function balance_$(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K, $c) {
+{
+const tree1_a = tree1_;
+const key_a = key_;
+const value_a = value_;
+const tree2_a = tree2_;
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+const y_ = key_a;
+const yv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const c_ = tree2_a.left_;
+const z_ = tree2_a.key_;
+const zv_ = tree2_a.value_;
+const d_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+if(tree1_a.left_.T) {
+if(tree1_a.left_.color_.R) {
+const a_ = tree1_a.left_.left_;
+const x_ = tree1_a.left_.key_;
+const xv_ = tree1_a.left_.value_;
+const b_ = tree1_a.left_.right_;
+const y_ = tree1_a.key_;
+const yv_ = tree1_a.value_;
+const c_ = tree1_a.right_;
+const z_ = key_a;
+const zv_ = value_a;
+const d_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+if(tree1_a.right_.T) {
+if(tree1_a.right_.color_.R) {
+const b_ = tree1_a.right_.left_;
+const y_ = tree1_a.right_.key_;
+const yv_ = tree1_a.right_.value_;
+const c_ = tree1_a.right_.right_;
+const z_ = key_a;
+const zv_ = value_a;
+const d_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+const a_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const b_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+if(tree2_a.right_.T) {
+if(tree2_a.right_.color_.R) {
+const c_ = tree2_a.right_.left_;
+const z_ = tree2_a.right_.key_;
+const zv_ = tree2_a.right_.value_;
+const d_ = tree2_a.right_.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+const a_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+if(tree2_a.left_.T) {
+if(tree2_a.left_.color_.R) {
+const b_ = tree2_a.left_.left_;
+const y_ = tree2_a.left_.key_;
+const yv_ = tree2_a.left_.value_;
+const c_ = tree2_a.left_.right_;
+const z_ = tree2_a.key_;
+const zv_ = tree2_a.value_;
+const d_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, d_))
+return
+}
+}
+}
+}
+}
+{
+const a_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+const b_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_)
+return
+}
+}
+}
+
+export async function delete_$(x_, t_, ff_core_Ordering_Order$K, $c) {
+function del_(ss_) {
+{
+const ss_a = ss_;
+{
+if(ss_a.E) {
+return ff_core_RbMap.E()
+return
+}
+}
+{
+if(ss_a.T) {
+const a_ = ss_a.left_;
+const y_ = ss_a.key_;
+const yv_ = ss_a.value_;
+const b_ = ss_a.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return delformLeft_(a_, y_, yv_, b_)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return delformRight_(a_, y_, yv_, b_)
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K)
+return
+}
+}
+}
+return
+}
+}
+}
+}
+function delformLeft_(left_, key_, value_, right_) {
+{
+const left_a = left_;
+const key_a = key_;
+const value_a = value_;
+const right_a = right_;
+{
+if(left_a.T) {
+if(left_a.color_.B) {
+const y_ = key_a;
+const yv_ = value_a;
+const b_ = right_a;
+return ff_core_RbMap.balleft_(del_(left_), y_, yv_, b_, ff_core_Ordering_Order$K)
+return
+}
+}
+}
+{
+const a_ = left_a;
+const y_ = key_a;
+const yv_ = value_a;
+const b_ = right_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), del_(a_), y_, yv_, b_)
+return
+}
+}
+}
+function delformRight_(left_, key_, value_, right_) {
+{
+const left_a = left_;
+const key_a = key_;
+const value_a = value_;
+const right_a = right_;
+{
+const a_ = left_a;
+const y_ = key_a;
+const yv_ = value_a;
+if(right_a.T) {
+if(right_a.color_.B) {
+return ff_core_RbMap.balright_(a_, y_, yv_, del_(right_), ff_core_Ordering_Order$K)
+return
+}
+}
+}
+{
+const a_ = left_a;
+const y_ = key_a;
+const yv_ = value_a;
+const b_ = right_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, del_(b_))
+return
+}
+}
+}
+{
+const _1 = del_(t_);
+{
+if(_1.T) {
+const a_ = _1.left_;
+const y_ = _1.key_;
+const yv_ = _1.value_;
+const b_ = _1.right_;
+return ff_core_RbMap.T(ff_core_RbMap.B(), a_, y_, yv_, b_)
+return
+}
+}
+{
+return ff_core_RbMap.E()
+return
+}
+}
+}
+
+export async function balleft_$(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K, $c) {
+{
+const tree1_a = tree1_;
+const key_a = key_;
+const value_a = value_;
+const tree2_a = tree2_;
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+const y_ = key_a;
+const yv_ = value_a;
+const c_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b_), y_, yv_, c_)
+return
+}
+}
+}
+{
+const bl_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.B) {
+const a_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+const b_ = tree2_a.right_;
+return ff_core_RbMap.balance_(bl_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.R(), a_, y_, yv_, b_), ff_core_Ordering_Order$K)
+return
+}
+}
+}
+{
+const bl_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+if(tree2_a.left_.T) {
+if(tree2_a.left_.color_.B) {
+const a_ = tree2_a.left_.left_;
+const y_ = tree2_a.left_.key_;
+const yv_ = tree2_a.left_.value_;
+const b_ = tree2_a.left_.right_;
+const z_ = tree2_a.key_;
+const zv_ = tree2_a.value_;
+const c_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), bl_, x_, xv_, a_), y_, yv_, ff_core_RbMap.balance_(b_, z_, zv_, ff_core_RbMap.sub1_(c_, ff_core_Ordering_Order$K), ff_core_Ordering_Order$K))
+return
+}
+}
+}
+}
+}
+{
+return ff_core_Core.panic_("Unexhaustive match in balleft")
+return
+}
+}
+}
+
+export async function balright_$(tree1_, key_, value_, tree2_, ff_core_Ordering_Order$K, $c) {
+{
+const tree1_a = tree1_;
+const key_a = key_;
+const value_a = value_;
+const tree2_a = tree2_;
+{
+const a_ = tree1_a;
+const x_ = key_a;
+const xv_ = value_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const b_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+const c_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.B(), b_, y_, yv_, c_))
+return
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.B) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+const y_ = key_a;
+const yv_ = value_a;
+const bl_ = tree2_a;
+return ff_core_RbMap.balance_(ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_), y_, yv_, bl_, ff_core_Ordering_Order$K)
+return
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+if(tree1_a.right_.T) {
+if(tree1_a.right_.color_.B) {
+const b_ = tree1_a.right_.left_;
+const y_ = tree1_a.right_.key_;
+const yv_ = tree1_a.right_.value_;
+const c_ = tree1_a.right_.right_;
+const z_ = key_a;
+const zv_ = value_a;
+const bl_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.balance_(ff_core_RbMap.sub1_(a_, ff_core_Ordering_Order$K), x_, xv_, b_, ff_core_Ordering_Order$K), y_, yv_, ff_core_RbMap.T(ff_core_RbMap.B(), c_, z_, zv_, bl_))
+return
+}
+}
+}
+}
+}
+{
+return ff_core_Core.panic_("Unexhaustive match in balright")
+return
+}
+}
+}
+
+export async function sub1_$(tree_, ff_core_Ordering_Order$K, $c) {
+{
+const tree_a = tree_;
+{
+if(tree_a.T) {
+if(tree_a.color_.B) {
+const a_ = tree_a.left_;
+const x_ = tree_a.key_;
+const xv_ = tree_a.value_;
+const b_ = tree_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b_)
+return
+}
+}
+}
+{
+return ff_core_Core.panic_("invariance violation")
+return
+}
+}
+}
+
+export async function app_$(tree1_, tree2_, ff_core_Ordering_Order$K, $c) {
+{
+const tree1_a = tree1_;
+const tree2_a = tree2_;
+{
+if(tree1_a.E) {
+const b_ = tree2_a;
+return b_
+return
+}
+}
+{
+const a_ = tree1_a;
+if(tree2_a.E) {
+return a_
+return
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const c_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+const d_ = tree2_a.right_;
+{
+const _1 = ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K);
+{
+if(_1.T) {
+if(_1.color_.R) {
+const b2_ = _1.left_;
+const z_ = _1.key_;
+const zv_ = _1.value_;
+const c2_ = _1.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, b2_), z_, zv_, ff_core_RbMap.T(ff_core_RbMap.R(), c2_, y_, yv_, d_))
+return
+}
+}
+}
+{
+const bc_ = _1;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.R(), bc_, y_, yv_, d_))
+return
+}
+}
+return
+}
+}
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.B) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+if(tree2_a.T) {
+if(tree2_a.color_.B) {
+const c_ = tree2_a.left_;
+const y_ = tree2_a.key_;
+const yv_ = tree2_a.value_;
+const d_ = tree2_a.right_;
+{
+const _1 = ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K);
+{
+if(_1.T) {
+if(_1.color_.R) {
+const b2_ = _1.left_;
+const z_ = _1.key_;
+const zv_ = _1.value_;
+const c2_ = _1.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.T(ff_core_RbMap.B(), a_, x_, xv_, b2_), z_, zv_, ff_core_RbMap.T(ff_core_RbMap.B(), c2_, y_, yv_, d_))
+return
+}
+}
+}
+{
+const bc_ = _1;
+return ff_core_RbMap.balleft_(a_, x_, xv_, ff_core_RbMap.T(ff_core_RbMap.B(), bc_, y_, yv_, d_), ff_core_Ordering_Order$K)
+return
+}
+}
+return
+}
+}
+}
+}
+}
+{
+const a_ = tree1_a;
+if(tree2_a.T) {
+if(tree2_a.color_.R) {
+const b_ = tree2_a.left_;
+const x_ = tree2_a.key_;
+const xv_ = tree2_a.value_;
+const c_ = tree2_a.right_;
+return ff_core_RbMap.T(ff_core_RbMap.R(), ff_core_RbMap.app_(a_, b_, ff_core_Ordering_Order$K), x_, xv_, c_)
+return
+}
+}
+}
+{
+if(tree1_a.T) {
+if(tree1_a.color_.R) {
+const a_ = tree1_a.left_;
+const x_ = tree1_a.key_;
+const xv_ = tree1_a.value_;
+const b_ = tree1_a.right_;
+const c_ = tree2_a;
+return ff_core_RbMap.T(ff_core_RbMap.R(), a_, x_, xv_, ff_core_RbMap.app_(b_, c_, ff_core_Ordering_Order$K))
+return
+}
+}
+}
+}
+}
+
+export function RB_get(self_, key_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_;
 {
-if(_1.RbLeaf) {
+if(_1.E) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1.T) {
+const a_ = _1.left_;
+const y_ = _1.key_;
+const yv_ = _1.value_;
+const b_ = _1.right_;
+{
+const _1 = ff_core_Ordering_Order$K.compare_(key_, y_);
+{
+if(_1.OrderingBefore) {
+return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_Option.Some(yv_)
+return
+}
+}
+}
+return
+}
+}
+}
+}
+
+export function RB_size(self_, ff_core_Ordering_Order$K) {
+{
+const _1 = self_;
+{
+if(_1.E) {
 return 0
 return
 }
 }
 {
-if(_1.RbNode) {
+if(_1.T) {
 const l_ = _1.left_;
 const r_ = _1.right_;
-return ((ff_core_RbMap.RbMap_size(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RbMap_size(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
 return
 }
 }
 }
 }
 
-export function RbMap_pairs(self_, ff_core_Ordering_Order$K) {
+export function RB_pairs(self_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_;
 {
-if(_1.RbLeaf) {
+if(_1.E) {
 return ff_core_List.Empty()
 return
 }
 }
 {
-if(_1.RbNode) {
+if(_1.T) {
 const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-return ff_core_List.List_addAll(ff_core_RbMap.RbMap_pairs(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_RbMap.RbMap_pairs(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)))
+return ff_core_List.List_addAll(ff_core_RbMap.RB_pairs(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_RbMap.RB_pairs(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)))
 return
 }
 }
 }
 }
 
-export function RbMap_each(self_, body_, ff_core_Ordering_Order$K) {
+export function RB_each(self_, body_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_;
 {
-if(_1.RbLeaf) {
+if(_1.E) {
 
 return
 }
 }
 {
-if(_1.RbNode) {
+if(_1.T) {
 const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-ff_core_RbMap.RbMap_each(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+ff_core_RbMap.RB_each(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
 body_(k_, v_);
-ff_core_RbMap.RbMap_each(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
+ff_core_RbMap.RB_each(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 return
 }
 }
 }
 }
 
-export function RbMap_get(self_, key_, ff_core_Ordering_Order$K) {
-_tailcall: for(;;) {
+export async function RB_get$(self_, key_, ff_core_Ordering_Order$K, $c) {
 {
 const _1 = self_;
 {
-if(_1.RbLeaf) {
+if(_1.E) {
 return ff_core_Option.None()
 return
 }
 }
 {
-if(_1.RbNode) {
-const l_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const r_ = _1.right_;
+if(_1.T) {
+const a_ = _1.left_;
+const y_ = _1.key_;
+const yv_ = _1.value_;
+const b_ = _1.right_;
 {
-const _1 = ff_core_Ordering_Order$K.compare_(key_, k_);
+const _1 = ff_core_Ordering_Order$K.compare_(key_, y_);
 {
 if(_1.OrderingBefore) {
-{
-const self_r_ = l_;
-const key_r_ = key_;
-self_ = self_r_
-key_ = key_r_
-continue _tailcall
-}
+return ff_core_RbMap.RB_get(a_, key_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 return
 }
 }
 {
 if(_1.OrderingAfter) {
-{
-const self_r_ = r_;
-const key_r_ = key_;
-self_ = self_r_
-key_ = key_r_
-continue _tailcall
-}
+return ff_core_RbMap.RB_get(b_, key_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
 return
 }
 }
 {
 if(_1.OrderingSame) {
-return ff_core_Option.Some(v_)
+return ff_core_Option.Some(yv_)
 return
 }
 }
 }
 return
 }
-}
-}
-return
-}
-}
-
-export function RbMap_add(self_, key_, value_, ff_core_Ordering_Order$K) {
-function go_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbLeaf(), key_, value_, ff_core_RbMap.RbLeaf())
-return
-}
-}
-{
-if(_1.RbNode) {
-const c_ = _1.isRed_;
-const l_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const r_ = _1.right_;
-{
-const _1 = ff_core_Ordering_Order$K.compare_(key_, k_);
-{
-if(_1.OrderingBefore) {
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, go_(l_), k_, v_, r_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
-return
-}
-}
-{
-if(_1.OrderingAfter) {
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, l_, k_, v_, go_(r_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
-return
-}
-}
-{
-if(_1.OrderingSame) {
-return ff_core_RbMap.RbNode(c_, l_, key_, value_, r_)
-return
-}
-}
-}
-return
-}
-}
-}
-}
-{
-const _1 = go_(self_);
-{
-if(_1.RbNode) {
-if(_1.isRed_) {
-const l_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const r_ = _1.right_;
-return ff_core_RbMap.RbNode(false, l_, k_, v_, r_)
-return
-}
-}
-}
-{
-const n_ = _1;
-return n_
-return
 }
 }
 }
 
-export function RbMap_remove(self_, key_, ff_core_Ordering_Order$K) {
-function go_(self_) {
+export async function RB_size$(self_, ff_core_Ordering_Order$K, $c) {
 {
 const _1 = self_;
 {
-if(_1.RbLeaf) {
-return self_
-return
-}
-}
-{
-if(_1.RbNode) {
-const l_ = _1.left_;
-const k_ = _1.key_;
-const r_ = _1.right_;
-{
-const _1 = ff_core_Ordering_Order$K.compare_(key_, k_);
-{
-if(_1.OrderingBefore) {
-return goLeft_(self_)
-return
-}
-}
-{
-if(_1.OrderingAfter) {
-return goRight_(self_)
-return
-}
-}
-{
-if(_1.OrderingSame) {
-return fuse_(l_, r_)
-return
-}
-}
-}
-return
-}
-}
-}
-}
-function goLeft_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
-return self_
-return
-}
-}
-{
-if(_1.RbNode) {
-if(_1.left_.RbNode) {
-if(!_1.left_.isRed_) {
-const a_ = _1.left_.left_;
-const k1_ = _1.left_.key_;
-const v1_ = _1.left_.value_;
-const b_ = _1.left_.right_;
-const k2_ = _1.key_;
-const v2_ = _1.value_;
-const c_ = _1.right_;
-return balanceLeft_(ff_core_RbMap.RbNode(false, go_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_)), k2_, v2_, c_))
-return
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-const a_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const b_ = _1.right_;
-return ff_core_RbMap.RbNode(true, go_(a_), k_, v_, b_)
-return
-}
-}
-}
-}
-function balanceLeft_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(_1.left_.isRed_) {
-const a_ = _1.left_.left_;
-const k1_ = _1.left_.key_;
-const v1_ = _1.left_.value_;
-const b_ = _1.left_.right_;
-const k2_ = _1.key_;
-const v2_ = _1.value_;
-const c_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, c_)
-return
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(!_1.right_.isRed_) {
-const b_ = _1.right_.left_;
-const k2_ = _1.right_.key_;
-const v2_ = _1.right_.value_;
-const c_ = _1.right_.right_;
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, a_, k1_, v1_, ff_core_RbMap.RbNode(true, b_, k2_, v2_, c_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
-return
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(_1.right_.isRed_) {
-if(_1.right_.left_.RbNode) {
-if(!_1.right_.left_.isRed_) {
-const b_ = _1.right_.left_.left_;
-const k2_ = _1.right_.left_.key_;
-const v2_ = _1.right_.left_.value_;
-const c_ = _1.right_.left_.right_;
-const k3_ = _1.right_.key_;
-const v3_ = _1.right_.value_;
-if(_1.right_.right_.RbNode) {
-if(!_1.right_.right_.isRed_) {
-const d_ = _1.right_.right_.left_;
-const k4_ = _1.right_.right_.key_;
-const v4_ = _1.right_.right_.value_;
-const e_ = _1.right_.right_.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, c_, k3_, v3_, ff_core_RbMap.RbNode(true, d_, k4_, v4_, e_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
-return
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-return ff_core_Core.panic_("Unexpected input to balanceLeft")
-return
-}
-}
-}
-function goRight_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
-return self_
-return
-}
-}
-{
-if(_1.RbNode) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(!_1.right_.isRed_) {
-const b_ = _1.right_.left_;
-const k2_ = _1.right_.key_;
-const v2_ = _1.right_.value_;
-const c_ = _1.right_.right_;
-return balanceRight_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, go_(ff_core_RbMap.RbNode(false, b_, k2_, v2_, c_))))
-return
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-const a_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const b_ = _1.right_;
-return ff_core_RbMap.RbNode(true, a_, k_, v_, go_(b_))
-return
-}
-}
-}
-}
-function balanceRight_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(_1.right_.isRed_) {
-const b_ = _1.right_.left_;
-const k2_ = _1.right_.key_;
-const v2_ = _1.right_.value_;
-const c_ = _1.right_.right_;
-return ff_core_RbMap.RbNode(true, a_, k1_, v1_, ff_core_RbMap.RbNode(false, b_, k2_, v2_, c_))
-return
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(!_1.left_.isRed_) {
-const a_ = _1.left_.left_;
-const k1_ = _1.left_.key_;
-const v1_ = _1.left_.value_;
-const b_ = _1.left_.right_;
-const k2_ = _1.key_;
-const v2_ = _1.value_;
-const c_ = _1.right_;
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
-return
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(_1.left_.isRed_) {
-if(_1.left_.left_.RbNode) {
-if(!_1.left_.left_.isRed_) {
-const a_ = _1.left_.left_.left_;
-const k1_ = _1.left_.left_.key_;
-const v1_ = _1.left_.left_.value_;
-const b_ = _1.left_.left_.right_;
-const k2_ = _1.left_.key_;
-const v2_ = _1.left_.value_;
-if(_1.left_.right_.RbNode) {
-if(!_1.left_.right_.isRed_) {
-const c_ = _1.left_.right_.left_;
-const k3_ = _1.left_.right_.key_;
-const v3_ = _1.left_.right_.value_;
-const d_ = _1.left_.right_.right_;
-const k4_ = _1.key_;
-const v4_ = _1.value_;
-const e_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), k3_, v3_, ff_core_RbMap.RbNode(false, d_, k4_, v4_, e_))
-return
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-return ff_core_Core.panic_("Unexpected input to balanceRight")
-return
-}
-}
-}
-function fuse_(x_, y_) {
-{
-const _1 = ff_core_Pair.Pair(x_, y_);
-{
-if(_1.first_.RbLeaf) {
-const a_ = _1.second_;
-return a_
-return
-}
-}
-{
-const a_ = _1.first_;
-if(_1.second_.RbLeaf) {
-return a_
-return
-}
-}
-{
-if(_1.first_.RbNode) {
-if(!_1.first_.isRed_) {
-const a_ = _1.first_.left_;
-const k1_ = _1.first_.key_;
-const v1_ = _1.first_.value_;
-const b_ = _1.first_.right_;
-if(_1.second_.RbNode) {
-if(_1.second_.isRed_) {
-const c_ = _1.second_.left_;
-const k2_ = _1.second_.key_;
-const v2_ = _1.second_.value_;
-const d_ = _1.second_.right_;
-return ff_core_RbMap.RbNode(true, fuse_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), c_), k2_, v2_, d_)
-return
-}
-}
-}
-}
-}
-{
-if(_1.first_.RbNode) {
-if(_1.first_.isRed_) {
-const a_ = _1.first_.left_;
-const k1_ = _1.first_.key_;
-const v1_ = _1.first_.value_;
-const b_ = _1.first_.right_;
-if(_1.second_.RbNode) {
-if(!_1.second_.isRed_) {
-const c_ = _1.second_.left_;
-const k2_ = _1.second_.key_;
-const v2_ = _1.second_.value_;
-const d_ = _1.second_.right_;
-return ff_core_RbMap.RbNode(true, a_, k1_, v1_, fuse_(b_, ff_core_RbMap.RbNode(false, c_, k2_, v2_, d_)))
-return
-}
-}
-}
-}
-}
-{
-if(_1.first_.RbNode) {
-if(_1.first_.isRed_) {
-const a_ = _1.first_.left_;
-const k1_ = _1.first_.key_;
-const v1_ = _1.first_.value_;
-const b_ = _1.first_.right_;
-if(_1.second_.RbNode) {
-if(_1.second_.isRed_) {
-const c_ = _1.second_.left_;
-const k2_ = _1.second_.key_;
-const v2_ = _1.second_.value_;
-const d_ = _1.second_.right_;
-const e_ = fuse_(b_, c_);
-{
-const _1 = e_;
-{
-if(_1.RbNode) {
-if(_1.isRed_) {
-const f_ = _1.left_;
-const k3_ = _1.key_;
-const v3_ = _1.value_;
-const g_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(true, a_, k1_, v1_, f_), k3_, v3_, ff_core_RbMap.RbNode(true, g_, k2_, v2_, d_))
-return
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-return ff_core_RbMap.RbNode(true, a_, k1_, v1_, ff_core_RbMap.RbNode(true, e_, k2_, v2_, d_))
-return
-}
-}
-}
-{
-if(_1.RbLeaf) {
-return ff_core_RbMap.RbLeaf()
-return
-}
-}
-}
-return
-}
-}
-}
-}
-}
-{
-if(_1.first_.RbNode) {
-if(!_1.first_.isRed_) {
-const a_ = _1.first_.left_;
-const k1_ = _1.first_.key_;
-const v1_ = _1.first_.value_;
-const b_ = _1.first_.right_;
-if(_1.second_.RbNode) {
-if(!_1.second_.isRed_) {
-const c_ = _1.second_.left_;
-const k2_ = _1.second_.key_;
-const v2_ = _1.second_.value_;
-const d_ = _1.second_.right_;
-const e_ = fuse_(b_, c_);
-{
-const _1 = e_;
-{
-if(_1.RbNode) {
-if(_1.isRed_) {
-const f_ = _1.left_;
-const k3_ = _1.key_;
-const v3_ = _1.value_;
-const g_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(true, a_, k1_, v1_, f_), k3_, v3_, ff_core_RbMap.RbNode(true, g_, k2_, v2_, d_))
-return
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-return balanceLeft_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, ff_core_RbMap.RbNode(false, e_, k2_, v2_, d_)))
-return
-}
-}
-}
-{
-if(_1.RbLeaf) {
-return ff_core_RbMap.RbLeaf()
-return
-}
-}
-}
-return
-}
-}
-}
-}
-}
-}
-}
-{
-const _1 = go_(self_);
-{
-if(_1.RbNode) {
-if(_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-const b_ = _1.right_;
-return ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_)
-return
-}
-}
-}
-{
-const n_ = _1;
-return n_
-return
-}
-}
-}
-
-export function RbMap_balance(self_, ff_core_Ordering_Order$K) {
-{
-const _1 = self_;
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(_1.left_.isRed_) {
-if(_1.left_.left_.RbNode) {
-if(_1.left_.left_.isRed_) {
-const a_ = _1.left_.left_.left_;
-const k1_ = _1.left_.left_.key_;
-const v1_ = _1.left_.left_.value_;
-const b_ = _1.left_.left_.right_;
-const k2_ = _1.left_.key_;
-const v2_ = _1.left_.value_;
-const c_ = _1.left_.right_;
-const k3_ = _1.key_;
-const v3_ = _1.value_;
-const d_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
-return
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(_1.left_.isRed_) {
-const a_ = _1.left_.left_;
-const k1_ = _1.left_.key_;
-const v1_ = _1.left_.value_;
-if(_1.left_.right_.RbNode) {
-if(_1.left_.right_.isRed_) {
-const b_ = _1.left_.right_.left_;
-const k2_ = _1.left_.right_.key_;
-const v2_ = _1.left_.right_.value_;
-const c_ = _1.left_.right_.right_;
-const k3_ = _1.key_;
-const v3_ = _1.value_;
-const d_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
-return
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(_1.right_.isRed_) {
-if(_1.right_.left_.RbNode) {
-if(_1.right_.left_.isRed_) {
-const b_ = _1.right_.left_.left_;
-const k2_ = _1.right_.left_.key_;
-const v2_ = _1.right_.left_.value_;
-const c_ = _1.right_.left_.right_;
-const k3_ = _1.right_.key_;
-const v3_ = _1.right_.value_;
-const d_ = _1.right_.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
-return
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(_1.right_.isRed_) {
-const b_ = _1.right_.left_;
-const k2_ = _1.right_.key_;
-const v2_ = _1.right_.value_;
-if(_1.right_.right_.RbNode) {
-if(_1.right_.right_.isRed_) {
-const c_ = _1.right_.right_.left_;
-const k3_ = _1.right_.right_.key_;
-const v3_ = _1.right_.right_.value_;
-const d_ = _1.right_.right_.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
-return
-}
-}
-}
-}
-}
-}
-}
-{
-return self_
-return
-}
-}
-}
-
-export async function RbMap_size$(self_, ff_core_Ordering_Order$K, $c) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
+if(_1.E) {
 return 0
 return
 }
 }
 {
-if(_1.RbNode) {
+if(_1.T) {
 const l_ = _1.left_;
 const r_ = _1.right_;
-return ((ff_core_RbMap.RbMap_size(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RbMap_size(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+return ((ff_core_RbMap.RB_size(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) + 1) + ff_core_RbMap.RB_size(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
 return
 }
 }
 }
 }
 
-export async function RbMap_pairs$(self_, ff_core_Ordering_Order$K, $c) {
+export async function RB_pairs$(self_, ff_core_Ordering_Order$K, $c) {
 {
 const _1 = self_;
 {
-if(_1.RbLeaf) {
+if(_1.E) {
 return ff_core_List.Empty()
 return
 }
 }
 {
-if(_1.RbNode) {
+if(_1.T) {
 const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-return ff_core_List.List_addAll(ff_core_RbMap.RbMap_pairs(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_RbMap.RbMap_pairs(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)))
+return ff_core_List.List_addAll(ff_core_RbMap.RB_pairs(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_RbMap.RB_pairs(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)))
 return
 }
 }
 }
 }
 
-export async function RbMap_each$(self_, body_, ff_core_Ordering_Order$K, $c) {
+export async function RB_each$(self_, body_, ff_core_Ordering_Order$K, $c) {
 {
 const _1 = self_;
 {
-if(_1.RbLeaf) {
+if(_1.E) {
 
 return
 }
 }
 {
-if(_1.RbNode) {
+if(_1.T) {
 const l_ = _1.left_;
 const k_ = _1.key_;
 const v_ = _1.value_;
 const r_ = _1.right_;
-(await ff_core_RbMap.RbMap_each$(l_, body_, $c, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K));
+(await ff_core_RbMap.RB_each$(l_, body_, $c, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K));
 (await body_(k_, v_, $c));
-(await ff_core_RbMap.RbMap_each$(r_, body_, $c, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+(await ff_core_RbMap.RB_each$(r_, body_, $c, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
 return
 }
-}
-}
-}
-
-export async function RbMap_get$(self_, key_, ff_core_Ordering_Order$K, $c) {
-_tailcall: for(;;) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
-return ff_core_Option.None()
-return
-}
-}
-{
-if(_1.RbNode) {
-const l_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const r_ = _1.right_;
-{
-const _1 = ff_core_Ordering_Order$K.compare_(key_, k_);
-{
-if(_1.OrderingBefore) {
-{
-const self_r_ = l_;
-const key_r_ = key_;
-self_ = self_r_
-key_ = key_r_
-continue _tailcall
-}
-return
-}
-}
-{
-if(_1.OrderingAfter) {
-{
-const self_r_ = r_;
-const key_r_ = key_;
-self_ = self_r_
-key_ = key_r_
-continue _tailcall
-}
-return
-}
-}
-{
-if(_1.OrderingSame) {
-return ff_core_Option.Some(v_)
-return
-}
-}
-}
-return
-}
-}
-}
-return
-}
-}
-
-export async function RbMap_add$(self_, key_, value_, ff_core_Ordering_Order$K, $c) {
-function go_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbLeaf(), key_, value_, ff_core_RbMap.RbLeaf())
-return
-}
-}
-{
-if(_1.RbNode) {
-const c_ = _1.isRed_;
-const l_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const r_ = _1.right_;
-{
-const _1 = ff_core_Ordering_Order$K.compare_(key_, k_);
-{
-if(_1.OrderingBefore) {
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, go_(l_), k_, v_, r_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
-return
-}
-}
-{
-if(_1.OrderingAfter) {
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(c_, l_, k_, v_, go_(r_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
-return
-}
-}
-{
-if(_1.OrderingSame) {
-return ff_core_RbMap.RbNode(c_, l_, key_, value_, r_)
-return
-}
-}
-}
-return
-}
-}
-}
-}
-{
-const _1 = go_(self_);
-{
-if(_1.RbNode) {
-if(_1.isRed_) {
-const l_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const r_ = _1.right_;
-return ff_core_RbMap.RbNode(false, l_, k_, v_, r_)
-return
-}
-}
-}
-{
-const n_ = _1;
-return n_
-return
-}
-}
-}
-
-export async function RbMap_remove$(self_, key_, ff_core_Ordering_Order$K, $c) {
-function go_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
-return self_
-return
-}
-}
-{
-if(_1.RbNode) {
-const l_ = _1.left_;
-const k_ = _1.key_;
-const r_ = _1.right_;
-{
-const _1 = ff_core_Ordering_Order$K.compare_(key_, k_);
-{
-if(_1.OrderingBefore) {
-return goLeft_(self_)
-return
-}
-}
-{
-if(_1.OrderingAfter) {
-return goRight_(self_)
-return
-}
-}
-{
-if(_1.OrderingSame) {
-return fuse_(l_, r_)
-return
-}
-}
-}
-return
-}
-}
-}
-}
-function goLeft_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
-return self_
-return
-}
-}
-{
-if(_1.RbNode) {
-if(_1.left_.RbNode) {
-if(!_1.left_.isRed_) {
-const a_ = _1.left_.left_;
-const k1_ = _1.left_.key_;
-const v1_ = _1.left_.value_;
-const b_ = _1.left_.right_;
-const k2_ = _1.key_;
-const v2_ = _1.value_;
-const c_ = _1.right_;
-return balanceLeft_(ff_core_RbMap.RbNode(false, go_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_)), k2_, v2_, c_))
-return
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-const a_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const b_ = _1.right_;
-return ff_core_RbMap.RbNode(true, go_(a_), k_, v_, b_)
-return
-}
-}
-}
-}
-function balanceLeft_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(_1.left_.isRed_) {
-const a_ = _1.left_.left_;
-const k1_ = _1.left_.key_;
-const v1_ = _1.left_.value_;
-const b_ = _1.left_.right_;
-const k2_ = _1.key_;
-const v2_ = _1.value_;
-const c_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, c_)
-return
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(!_1.right_.isRed_) {
-const b_ = _1.right_.left_;
-const k2_ = _1.right_.key_;
-const v2_ = _1.right_.value_;
-const c_ = _1.right_.right_;
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, a_, k1_, v1_, ff_core_RbMap.RbNode(true, b_, k2_, v2_, c_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
-return
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(_1.right_.isRed_) {
-if(_1.right_.left_.RbNode) {
-if(!_1.right_.left_.isRed_) {
-const b_ = _1.right_.left_.left_;
-const k2_ = _1.right_.left_.key_;
-const v2_ = _1.right_.left_.value_;
-const c_ = _1.right_.left_.right_;
-const k3_ = _1.right_.key_;
-const v3_ = _1.right_.value_;
-if(_1.right_.right_.RbNode) {
-if(!_1.right_.right_.isRed_) {
-const d_ = _1.right_.right_.left_;
-const k4_ = _1.right_.right_.key_;
-const v4_ = _1.right_.right_.value_;
-const e_ = _1.right_.right_.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, c_, k3_, v3_, ff_core_RbMap.RbNode(true, d_, k4_, v4_, e_)), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
-return
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-return ff_core_Core.panic_("Unexpected input to balanceLeft")
-return
-}
-}
-}
-function goRight_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbLeaf) {
-return self_
-return
-}
-}
-{
-if(_1.RbNode) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(!_1.right_.isRed_) {
-const b_ = _1.right_.left_;
-const k2_ = _1.right_.key_;
-const v2_ = _1.right_.value_;
-const c_ = _1.right_.right_;
-return balanceRight_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, go_(ff_core_RbMap.RbNode(false, b_, k2_, v2_, c_))))
-return
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-const a_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const b_ = _1.right_;
-return ff_core_RbMap.RbNode(true, a_, k_, v_, go_(b_))
-return
-}
-}
-}
-}
-function balanceRight_(self_) {
-{
-const _1 = self_;
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(_1.right_.isRed_) {
-const b_ = _1.right_.left_;
-const k2_ = _1.right_.key_;
-const v2_ = _1.right_.value_;
-const c_ = _1.right_.right_;
-return ff_core_RbMap.RbNode(true, a_, k1_, v1_, ff_core_RbMap.RbNode(false, b_, k2_, v2_, c_))
-return
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(!_1.left_.isRed_) {
-const a_ = _1.left_.left_;
-const k1_ = _1.left_.key_;
-const v1_ = _1.left_.value_;
-const b_ = _1.left_.right_;
-const k2_ = _1.key_;
-const v2_ = _1.value_;
-const c_ = _1.right_;
-return ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)
-return
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(_1.left_.isRed_) {
-if(_1.left_.left_.RbNode) {
-if(!_1.left_.left_.isRed_) {
-const a_ = _1.left_.left_.left_;
-const k1_ = _1.left_.left_.key_;
-const v1_ = _1.left_.left_.value_;
-const b_ = _1.left_.left_.right_;
-const k2_ = _1.left_.key_;
-const v2_ = _1.left_.value_;
-if(_1.left_.right_.RbNode) {
-if(!_1.left_.right_.isRed_) {
-const c_ = _1.left_.right_.left_;
-const k3_ = _1.left_.right_.key_;
-const v3_ = _1.left_.right_.value_;
-const d_ = _1.left_.right_.right_;
-const k4_ = _1.key_;
-const v4_ = _1.value_;
-const e_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbMap_balance(ff_core_RbMap.RbNode(false, ff_core_RbMap.RbNode(true, a_, k1_, v1_, b_), k2_, v2_, c_), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), k3_, v3_, ff_core_RbMap.RbNode(false, d_, k4_, v4_, e_))
-return
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-return ff_core_Core.panic_("Unexpected input to balanceRight")
-return
-}
-}
-}
-function fuse_(x_, y_) {
-{
-const _1 = ff_core_Pair.Pair(x_, y_);
-{
-if(_1.first_.RbLeaf) {
-const a_ = _1.second_;
-return a_
-return
-}
-}
-{
-const a_ = _1.first_;
-if(_1.second_.RbLeaf) {
-return a_
-return
-}
-}
-{
-if(_1.first_.RbNode) {
-if(!_1.first_.isRed_) {
-const a_ = _1.first_.left_;
-const k1_ = _1.first_.key_;
-const v1_ = _1.first_.value_;
-const b_ = _1.first_.right_;
-if(_1.second_.RbNode) {
-if(_1.second_.isRed_) {
-const c_ = _1.second_.left_;
-const k2_ = _1.second_.key_;
-const v2_ = _1.second_.value_;
-const d_ = _1.second_.right_;
-return ff_core_RbMap.RbNode(true, fuse_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), c_), k2_, v2_, d_)
-return
-}
-}
-}
-}
-}
-{
-if(_1.first_.RbNode) {
-if(_1.first_.isRed_) {
-const a_ = _1.first_.left_;
-const k1_ = _1.first_.key_;
-const v1_ = _1.first_.value_;
-const b_ = _1.first_.right_;
-if(_1.second_.RbNode) {
-if(!_1.second_.isRed_) {
-const c_ = _1.second_.left_;
-const k2_ = _1.second_.key_;
-const v2_ = _1.second_.value_;
-const d_ = _1.second_.right_;
-return ff_core_RbMap.RbNode(true, a_, k1_, v1_, fuse_(b_, ff_core_RbMap.RbNode(false, c_, k2_, v2_, d_)))
-return
-}
-}
-}
-}
-}
-{
-if(_1.first_.RbNode) {
-if(_1.first_.isRed_) {
-const a_ = _1.first_.left_;
-const k1_ = _1.first_.key_;
-const v1_ = _1.first_.value_;
-const b_ = _1.first_.right_;
-if(_1.second_.RbNode) {
-if(_1.second_.isRed_) {
-const c_ = _1.second_.left_;
-const k2_ = _1.second_.key_;
-const v2_ = _1.second_.value_;
-const d_ = _1.second_.right_;
-const e_ = fuse_(b_, c_);
-{
-const _1 = e_;
-{
-if(_1.RbNode) {
-if(_1.isRed_) {
-const f_ = _1.left_;
-const k3_ = _1.key_;
-const v3_ = _1.value_;
-const g_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(true, a_, k1_, v1_, f_), k3_, v3_, ff_core_RbMap.RbNode(true, g_, k2_, v2_, d_))
-return
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-return ff_core_RbMap.RbNode(true, a_, k1_, v1_, ff_core_RbMap.RbNode(true, e_, k2_, v2_, d_))
-return
-}
-}
-}
-{
-if(_1.RbLeaf) {
-return ff_core_RbMap.RbLeaf()
-return
-}
-}
-}
-return
-}
-}
-}
-}
-}
-{
-if(_1.first_.RbNode) {
-if(!_1.first_.isRed_) {
-const a_ = _1.first_.left_;
-const k1_ = _1.first_.key_;
-const v1_ = _1.first_.value_;
-const b_ = _1.first_.right_;
-if(_1.second_.RbNode) {
-if(!_1.second_.isRed_) {
-const c_ = _1.second_.left_;
-const k2_ = _1.second_.key_;
-const v2_ = _1.second_.value_;
-const d_ = _1.second_.right_;
-const e_ = fuse_(b_, c_);
-{
-const _1 = e_;
-{
-if(_1.RbNode) {
-if(_1.isRed_) {
-const f_ = _1.left_;
-const k3_ = _1.key_;
-const v3_ = _1.value_;
-const g_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(true, a_, k1_, v1_, f_), k3_, v3_, ff_core_RbMap.RbNode(true, g_, k2_, v2_, d_))
-return
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-return balanceLeft_(ff_core_RbMap.RbNode(false, a_, k1_, v1_, ff_core_RbMap.RbNode(false, e_, k2_, v2_, d_)))
-return
-}
-}
-}
-{
-if(_1.RbLeaf) {
-return ff_core_RbMap.RbLeaf()
-return
-}
-}
-}
-return
-}
-}
-}
-}
-}
-}
-}
-{
-const _1 = go_(self_);
-{
-if(_1.RbNode) {
-if(_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-const b_ = _1.right_;
-return ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_)
-return
-}
-}
-}
-{
-const n_ = _1;
-return n_
-return
-}
-}
-}
-
-export async function RbMap_balance$(self_, ff_core_Ordering_Order$K, $c) {
-{
-const _1 = self_;
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(_1.left_.isRed_) {
-if(_1.left_.left_.RbNode) {
-if(_1.left_.left_.isRed_) {
-const a_ = _1.left_.left_.left_;
-const k1_ = _1.left_.left_.key_;
-const v1_ = _1.left_.left_.value_;
-const b_ = _1.left_.left_.right_;
-const k2_ = _1.left_.key_;
-const v2_ = _1.left_.value_;
-const c_ = _1.left_.right_;
-const k3_ = _1.key_;
-const v3_ = _1.value_;
-const d_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
-return
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-if(_1.left_.RbNode) {
-if(_1.left_.isRed_) {
-const a_ = _1.left_.left_;
-const k1_ = _1.left_.key_;
-const v1_ = _1.left_.value_;
-if(_1.left_.right_.RbNode) {
-if(_1.left_.right_.isRed_) {
-const b_ = _1.left_.right_.left_;
-const k2_ = _1.left_.right_.key_;
-const v2_ = _1.left_.right_.value_;
-const c_ = _1.left_.right_.right_;
-const k3_ = _1.key_;
-const v3_ = _1.value_;
-const d_ = _1.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
-return
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(_1.right_.isRed_) {
-if(_1.right_.left_.RbNode) {
-if(_1.right_.left_.isRed_) {
-const b_ = _1.right_.left_.left_;
-const k2_ = _1.right_.left_.key_;
-const v2_ = _1.right_.left_.value_;
-const c_ = _1.right_.left_.right_;
-const k3_ = _1.right_.key_;
-const v3_ = _1.right_.value_;
-const d_ = _1.right_.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
-return
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.RbNode) {
-if(!_1.isRed_) {
-const a_ = _1.left_;
-const k1_ = _1.key_;
-const v1_ = _1.value_;
-if(_1.right_.RbNode) {
-if(_1.right_.isRed_) {
-const b_ = _1.right_.left_;
-const k2_ = _1.right_.key_;
-const v2_ = _1.right_.value_;
-if(_1.right_.right_.RbNode) {
-if(_1.right_.right_.isRed_) {
-const c_ = _1.right_.right_.left_;
-const k3_ = _1.right_.right_.key_;
-const v3_ = _1.right_.right_.value_;
-const d_ = _1.right_.right_.right_;
-return ff_core_RbMap.RbNode(true, ff_core_RbMap.RbNode(false, a_, k1_, v1_, b_), k2_, v2_, ff_core_RbMap.RbNode(false, c_, k3_, v3_, d_))
-return
-}
-}
-}
-}
-}
-}
-}
-{
-return self_
-return
 }
 }
 }

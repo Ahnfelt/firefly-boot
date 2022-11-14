@@ -1,4 +1,4 @@
-test1(foo: Option[Int], bar: Option[Int]): Option[Int] {
+/*test1(foo: Option[Int], bar: Option[Int]): Option[Int] {
     | a, b => b
 }
 
@@ -17,7 +17,23 @@ extend self: Moo {
         | m => m
     }
 }
+*/
+type Color {
+    R
+    B
+}
+
+type RB[K, V] {
+    E
+    T(color : Color, left: RB[K, V], key: K, value: V)
+}
+
+test4[K, V](left: RB[K, V], key: K): RB[K, V] {
+    | T(_, _, _, _), y => E
+    | a, y => E
+}
 
 nodeMain(main: NodeSystem) {
-    Log.debug(Moo(7).test3(Moo(8)))
+    //Log.debug(Moo(7).test3(Moo(8)))
+    //Log.debug(test3())
 }

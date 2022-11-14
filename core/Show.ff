@@ -28,26 +28,8 @@ instance List[T: Show]: Show {
     }
 }
 
-baz[T: Show](value: T): String {
-    show(value)
-}
-
-foobar() {
-    Log.debug(baz([42]))
-}
-
-type Tree[T] {
-    Branch(left: Tree[T], right: Tree[T])
-    Leaf(value: T)
-}
-
-instance Tree[T: Show]: Show {
-    show(value: Tree[T]): String {
-        | Branch(l, r) => "Branch(" + show(l) + ", " + show(r) + ")"
-        | Leaf(v) => "Leaf(" + show(v) + ")"
+instance Pair[A: Show, B: Show]: Show {
+    show(value: Pair[A, B]): String {
+        "Pair(" + show(value.first) + ", " + show(value.second) + ")"
     }
-}
-
-quux() {
-    Log.debug(show(Branch(Branch(Leaf(7), Leaf(8)), Leaf(9))))
 }
