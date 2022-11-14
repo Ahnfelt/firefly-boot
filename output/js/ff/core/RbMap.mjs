@@ -1480,25 +1480,11 @@ return
 }
 
 export function RB_pairs(self_, ff_core_Ordering_Order$K) {
-{
-const _1 = self_;
-{
-if(_1.E) {
-return ff_core_List.Empty()
-return
-}
-}
-{
-if(_1.T) {
-const l_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const r_ = _1.right_;
-return ff_core_List.List_addAll(ff_core_RbMap.RB_pairs(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_RbMap.RB_pairs(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)))
-return
-}
-}
-}
+let result_ = ff_core_List.Empty();
+ff_core_RbMap.RB_each(self_, ((k_, v_) => {
+result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
+}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+return ff_core_List.List_reverse(result_)
 }
 
 export function RB_each(self_, body_, ff_core_Ordering_Order$K) {
@@ -1588,25 +1574,11 @@ return
 }
 
 export async function RB_pairs$(self_, ff_core_Ordering_Order$K, $c) {
-{
-const _1 = self_;
-{
-if(_1.E) {
-return ff_core_List.Empty()
-return
-}
-}
-{
-if(_1.T) {
-const l_ = _1.left_;
-const k_ = _1.key_;
-const v_ = _1.value_;
-const r_ = _1.right_;
-return ff_core_List.List_addAll(ff_core_RbMap.RB_pairs(l_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K), ff_core_List.Link(ff_core_Pair.Pair(k_, v_), ff_core_RbMap.RB_pairs(r_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K)))
-return
-}
-}
-}
+let result_ = ff_core_List.Empty();
+ff_core_RbMap.RB_each(self_, ((k_, v_) => {
+result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
+}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+return ff_core_List.List_reverse(result_)
 }
 
 export async function RB_each$(self_, body_, ff_core_Ordering_Order$K, $c) {

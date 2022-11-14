@@ -132,10 +132,11 @@ extend self[K: Order, V]: RB[K, V] {
     }
 
     pairs(): List[Pair[K, V]] {
-        self.{
-            | E => []
-            | T(_, l, k, v, r) => [...l.pairs(), Pair(k, v), ...r.pairs()]
+        mutable result = []
+        self.each {k, v =>
+            result = [Pair(k, v), ...result]
         }
+        result.reverse()
     }
 
     each(body: (K, V) => Unit): Unit {
