@@ -150,9 +150,9 @@ extend self: Inference {
         )
         self.unification.unify(case.at, expected, functionType)
         let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
-            let symbols = self.inferPattern(environment, t, c).map {| Pair(name, type) =>
+            let symbols = self.inferPattern(environment, t, c).mapValues { name, type =>
                 let noEffect = TConstructor(c.at, "ff:core/Nothing.Nothing", [])
-                Pair(name, Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type, noEffect)))
+                Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type, noEffect))
             }
             environment.Environment(symbols = environment1.symbols.addAll(symbols))
         }
@@ -160,9 +160,9 @@ extend self: Inference {
         let environment3 = case.guards.foldLeft(environment1) { environment2, g =>
             let guardType = self.unification.freshUnificationVariable(g.at)
             let guardTerm = self.inferTerm(environment2, guardType, g.term)
-            let symbols = self.inferPattern(environment2, guardType, g.pattern).map {| Pair(name, type) =>
+            let symbols = self.inferPattern(environment2, guardType, g.pattern).mapValues { name, type =>
                 let noEffect = TConstructor(g.at, "ff:core/Nothing.Nothing", [])
-                Pair(name, Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type, noEffect)))
+                Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type, noEffect))
             }
             guards = [g.MatchGuard(term = guardTerm), ...guards]
             environment2.Environment(symbols = environment2.symbols.addAll(symbols))

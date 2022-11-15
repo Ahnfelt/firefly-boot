@@ -149,5 +149,30 @@ extend self[K: Order, V]: RB[K, V] {
         }
     }
 
-}
+    map[K2: Order, V2](body: (K, V) => Pair[K2, V2]): RB[K2, V2] {
+        mutable result = E
+        self.each {k, v =>
+            let pair = body(k, v)
+            result = insert(pair.first, pair.second, result)
+        }
+        result
+    }
 
+    mapValues[V2](body: (K, V) => V2): RB[K, V2] {
+        function mapValues2(map: RB[K, V], body: (K, V) => V2): RB[K, V2] {
+            map.{
+                | E => E
+                | T(c, l, k, v, r) =>
+                    T(c, mapValues2(l, body), k, body(k, v), mapValues2(r, body))
+            }
+        }
+        mapValues2(self, body)
+        // TODO: The following gives "missing instance V2: Order", which seems like a compiler error
+        /*self.{
+            | E => E
+            | T(c, l, k, v, r) =>
+                T(c, l.mapValues(body), k, body(k, v), r.mapValues(body))
+        }*/
+    }
+
+}

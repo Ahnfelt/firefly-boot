@@ -137,18 +137,11 @@ return ff_core_RbMap.RB_size(self_, ff_core_Ordering_Order$K)
 }
 
 export function Map_map(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1) {
-const initial_ = ff_core_RbMap.E();
-return ff_core_List.List_foldLeft(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), initial_, ((tree_, pair_) => {
-{
-const _1 = body_(pair_);
-{
-const k_ = _1.first_;
-const v_ = _1.second_;
-return ff_core_Map.Map_add(tree_, k_, v_, ff_core_Ordering_Order$K1)
-return
+return ff_core_RbMap.RB_map(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1)
 }
-}
-}))
+
+export function Map_mapValues(self_, body_, ff_core_Ordering_Order$K) {
+return ff_core_RbMap.RB_mapValues(self_, body_, ff_core_Ordering_Order$K)
 }
 
 export function Map_contains(self_, key_, ff_core_Ordering_Order$K) {
@@ -231,18 +224,11 @@ return ff_core_RbMap.RB_size(self_, ff_core_Ordering_Order$K)
 }
 
 export async function Map_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1, $c) {
-const initial_ = ff_core_RbMap.E();
-return (await ff_core_List.List_foldLeft$(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), initial_, (async (tree_, pair_, $c) => {
-{
-const _1 = (await body_(pair_, $c));
-{
-const k_ = _1.first_;
-const v_ = _1.second_;
-return ff_core_Map.Map_add(tree_, k_, v_, ff_core_Ordering_Order$K1)
-return
+return (await ff_core_RbMap.RB_map$(self_, body_, $c, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1))
 }
-}
-}), $c))
+
+export async function Map_mapValues$(self_, body_, ff_core_Ordering_Order$K, $c) {
+return (await ff_core_RbMap.RB_mapValues$(self_, body_, $c, ff_core_Ordering_Order$K))
 }
 
 export async function Map_contains$(self_, key_, ff_core_Ordering_Order$K, $c) {

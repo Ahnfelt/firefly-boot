@@ -12,7 +12,7 @@ extend self: AssetSystem {
         let prefix = if(path.endsWith("/")) {path.dropLast(1)} else {path}
         AssetSystem(
             self.files.addAll(
-                assets.files.map {| Pair(p, stream) =>
+                assets.files.map {p, stream =>
                      Pair(prefix + p, stream)
                 }
             )

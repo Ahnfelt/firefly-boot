@@ -50,13 +50,12 @@ extend self[K: Order, V]: Map[K, V] {
         self.redBlack.size()
     }
 
-    map[K1: Order, V1](body: Pair[K, V] => Pair[K1, V1]): Map[K1, V1] {
-        let initial: Map[K1, V1] = Map[K1, V1](E)
-        self.pairs().foldLeft(initial) { tree, pair =>
-            body(pair).{
-                | Pair(k, v) => tree.add(k, v)
-            }
-        }
+    map[K1: Order, V1](body: (K, V) => Pair[K1, V1]): Map[K1, V1] {
+        Map(self.redBlack.map(body))
+    }
+
+    mapValues[V1](body: (K, V) => V1): Map[K, V1] {
+        Map(self.redBlack.mapValues(body))
     }
 
     contains(key: K): Bool {

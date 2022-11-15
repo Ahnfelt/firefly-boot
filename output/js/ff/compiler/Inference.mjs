@@ -365,15 +365,10 @@ const environment1_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameter
 const environment1_ = _1;
 const t_ = _2.first_;
 const c_ = _2.second_;
-const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPattern(self_, environment_, t_, c_), ((_1) => {
-{
-const name_ = _1.first_;
-const type_ = _1.second_;
+const symbols_ = ff_core_Map.Map_mapValues(ff_compiler_Inference.Inference_inferPattern(self_, environment_, t_, c_), ((name_, type_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(c_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_)))
-return
-}
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
 const _1 = environment_;
 {
@@ -389,15 +384,10 @@ let guards_ = ff_core_List.Empty();
 const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_) => {
 const guardType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, g_.at_);
 const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, guardType_, g_.term_);
-const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPattern(self_, environment2_, guardType_, g_.pattern_), ((_1) => {
-{
-const name_ = _1.first_;
-const type_ = _1.second_;
+const symbols_ = ff_core_Map.Map_mapValues(ff_compiler_Inference.Inference_inferPattern(self_, environment2_, guardType_, g_.pattern_), ((name_, type_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(g_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(g_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_)))
-return
-}
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(g_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 guards_ = ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
 }))(g_), guards_);
@@ -2170,15 +2160,10 @@ const environment1_ = ff_core_List.List_foldLeft(ff_core_List.List_zip(parameter
 const environment1_ = _1;
 const t_ = _2.first_;
 const c_ = _2.second_;
-const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPattern(self_, environment_, t_, c_), ((_1) => {
-{
-const name_ = _1.first_;
-const type_ = _1.second_;
+const symbols_ = ff_core_Map.Map_mapValues(ff_compiler_Inference.Inference_inferPattern(self_, environment_, t_, c_), ((name_, type_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(c_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_)))
-return
-}
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(c_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
 const _1 = environment_;
 {
@@ -2194,15 +2179,10 @@ let guards_ = ff_core_List.Empty();
 const environment3_ = ff_core_List.List_foldLeft(case_.guards_, environment1_, ((environment2_, g_) => {
 const guardType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, g_.at_);
 const guardTerm_ = ff_compiler_Inference.Inference_inferTerm(self_, environment2_, guardType_, g_.term_);
-const symbols_ = ff_core_Map.Map_map(ff_compiler_Inference.Inference_inferPattern(self_, environment2_, guardType_, g_.pattern_), ((_1) => {
-{
-const name_ = _1.first_;
-const type_ = _1.second_;
+const symbols_ = ff_core_Map.Map_mapValues(ff_compiler_Inference.Inference_inferPattern(self_, environment2_, guardType_, g_.pattern_), ((name_, type_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(g_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(name_, ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(g_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_)))
-return
-}
-}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(g_.at_, name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), type_, noEffect_))
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 guards_ = ff_core_List.Link((((_c) => {
 return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
 }))(g_), guards_);

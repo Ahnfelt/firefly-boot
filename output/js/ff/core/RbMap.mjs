@@ -1511,6 +1511,41 @@ return
 }
 }
 
+export function RB_map(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K2) {
+let result_ = ff_core_RbMap.E();
+ff_core_RbMap.RB_each(self_, ((k_, v_) => {
+const pair_ = body_(k_, v_);
+result_ = ff_core_RbMap.insert_(pair_.first_, pair_.second_, result_, ff_core_Ordering_Order$K2)
+}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+return result_
+}
+
+export function RB_mapValues(self_, body_, ff_core_Ordering_Order$K) {
+function mapValues2_(map_, body_) {
+{
+const _1 = map_;
+{
+if(_1.E) {
+return ff_core_RbMap.E()
+return
+}
+}
+{
+if(_1.T) {
+const c_ = _1.color_;
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+return ff_core_RbMap.T(c_, mapValues2_(l_, body_), k_, body_(k_, v_), mapValues2_(r_, body_))
+return
+}
+}
+}
+}
+return mapValues2_(self_, body_)
+}
+
 export async function RB_get$(self_, key_, ff_core_Ordering_Order$K, $c) {
 {
 const _1 = self_;
@@ -1603,6 +1638,41 @@ return
 }
 }
 }
+}
+
+export async function RB_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K2, $c) {
+let result_ = ff_core_RbMap.E();
+(await ff_core_RbMap.RB_each$(self_, (async (k_, v_, $c) => {
+const pair_ = (await body_(k_, v_, $c));
+result_ = ff_core_RbMap.insert_(pair_.first_, pair_.second_, result_, ff_core_Ordering_Order$K2)
+}), $c, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K));
+return result_
+}
+
+export async function RB_mapValues$(self_, body_, ff_core_Ordering_Order$K, $c) {
+async function mapValues2_$(map_, body_, $c) {
+{
+const _1 = map_;
+{
+if(_1.E) {
+return ff_core_RbMap.E()
+return
+}
+}
+{
+if(_1.T) {
+const c_ = _1.color_;
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+return ff_core_RbMap.T(c_, (await mapValues2_$(l_, body_, $c)), k_, (await body_(k_, v_, $c)), (await mapValues2_$(r_, body_, $c)))
+return
+}
+}
+}
+}
+return (await mapValues2_$(self_, body_, $c))
 }
 
 

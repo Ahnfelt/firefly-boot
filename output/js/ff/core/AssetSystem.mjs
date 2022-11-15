@@ -93,13 +93,8 @@ export function AssetSystem_addAssets(self_, path_, assets_) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? ff_core_String.String_dropLast(path_, 1)
 : path_);
-return ff_core_AssetSystem.AssetSystem(ff_core_Map.Map_addAll(self_.files_, ff_core_Map.Map_map(assets_.files_, ((_1) => {
-{
-const p_ = _1.first_;
-const stream_ = _1.second_;
+return ff_core_AssetSystem.AssetSystem(ff_core_Map.Map_addAll(self_.files_, ff_core_Map.Map_map(assets_.files_, ((p_, stream_) => {
 return ff_core_Pair.Pair((prefix_ + p_), stream_)
-return
-}
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
@@ -180,13 +175,8 @@ export async function AssetSystem_addAssets$(self_, path_, assets_, $c) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? ff_core_String.String_dropLast(path_, 1)
 : path_);
-return ff_core_AssetSystem.AssetSystem(ff_core_Map.Map_addAll(self_.files_, ff_core_Map.Map_map(assets_.files_, ((_1) => {
-{
-const p_ = _1.first_;
-const stream_ = _1.second_;
+return ff_core_AssetSystem.AssetSystem(ff_core_Map.Map_addAll(self_.files_, ff_core_Map.Map_map(assets_.files_, ((p_, stream_) => {
 return ff_core_Pair.Pair((prefix_ + p_), stream_)
-return
-}
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
