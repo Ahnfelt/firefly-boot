@@ -159,20 +159,11 @@ extend self[K: Order, V]: RB[K, V] {
     }
 
     mapValues[V2](body: (K, V) => V2): RB[K, V2] {
-        function mapValues2(map: RB[K, V], body: (K, V) => V2): RB[K, V2] {
-            map.{
-                | E => E
-                | T(c, l, k, v, r) =>
-                    T(c, mapValues2(l, body), k, body(k, v), mapValues2(r, body))
-            }
-        }
-        mapValues2(self, body)
-        // TODO: The following gives "missing instance V2: Order", which seems like a compiler error
-        /*self.{
+        self.{
             | E => E
             | T(c, l, k, v, r) =>
                 T(c, l.mapValues(body), k, body(k, v), r.mapValues(body))
-        }*/
+        }
     }
 
 }

@@ -24,7 +24,7 @@ core(name: String): String {
 extend self: Inference {
 
     inferModule(module: Module, otherModules: List[Module]): Module {
-        let environment = Environment.make(module, otherModules)
+        let environment = Environment.make(module, otherModules, alreadyFlat = False)
 
         let lets = module.lets.map { self.inferLetDefinition(environment, _) }
         let functions = module.functions.map { self.inferFunctionDefinition(environment, _) }

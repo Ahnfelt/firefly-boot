@@ -18,10 +18,10 @@ type Instantiated(
     scheme: Scheme
 )
 
-make(module: Module, otherModules: List[Module]): Environment {
+make(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment {
     Environment(
-        symbols = processModule(module, True).symbols.addAll(
-            otherModules.map { processModule(_, False).symbols }.foldLeft(Map.empty()) { _.addAll(_) }
+        symbols = processModule(module, True, alreadyFlat).symbols.addAll(
+            otherModules.map { processModule(_, False, False).symbols }.foldLeft(Map.empty()) { _.addAll(_) }
         )
         effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
     )
@@ -31,7 +31,7 @@ fail[T](at: Location, message: String): T {
     panic(message + " " + at.show())
 }
 
-processModule(module: Module, isCurrentModule: Bool): Environment {
+processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environment {
 
     function full(module: Module, name: String): String {
         module.packagePair.groupName() + "/" +
@@ -57,10 +57,11 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
         module.traits.flatMap { definition =>
             let generics = definition.generics.map { name => TConstructor(definition.at, name, []) }
             let constraint = Constraint(definition.at, full(module, definition.name), generics)
+            let outerConstraints = if(alreadyFlat) {[]} else {definition.constraints}
             definition.methods.map { methodSignature =>
                 let signature = methodSignature.Signature(
                     generics = [...definition.generics, ...methodSignature.generics]
-                    constraints = [constraint, ...definition.constraints, ...methodSignature.constraints]
+                    constraints = [constraint, ...outerConstraints, ...methodSignature.constraints]
                 )
                 Pair(
                     full(module, signature.name),
@@ -80,10 +81,11 @@ processModule(module: Module, isCurrentModule: Bool): Environment {
                     d.methods.map { method =>
                         let effect = method.signature.generics.filter {_ == "Q$"}
                         let normalGenerics = method.signature.generics.filter {_ != "Q$"}
+                        let outerGenerics = if(alreadyFlat) {[]} else {d.generics}
                         Pair(
                             prefix + method.signature.name,
                             Scheme(False, False, False, False, method.signature.Signature(
-                                generics = [...effect, ...d.generics, ...normalGenerics]
+                                generics = [...effect, ...outerGenerics, ...normalGenerics]
                                 constraints = [...d.constraints, ...method.signature.constraints]
                                 parameters = [selfParameter, ...method.signature.parameters]
                             ))

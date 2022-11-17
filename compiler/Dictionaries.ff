@@ -17,7 +17,7 @@ fail[T](at: Location, message: String): T {
 extend self: Dictionaries {
 
     processModule(module: Module, otherModules: List[Module]): Module {
-        let environment = Environment.make(module, otherModules)
+        let environment = Environment.make(module, otherModules, alreadyFlat = True)
         let functionSignatures = environment.symbols.pairs().collect {
             | Pair(name, s) {!s.isVariable} => Some(Pair(name, s.signature))
             | _ => None

@@ -150,7 +150,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 }
 
 export function Dictionaries_processModule(self_, module_, otherModules_) {
-const environment_ = ff_compiler_Environment.make_(module_, otherModules_);
+const environment_ = ff_compiler_Environment.make_(module_, otherModules_, true);
 const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_pairs(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const name_ = _1.first_;
@@ -630,7 +630,7 @@ return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleNam
 }
 
 export async function Dictionaries_processModule$(self_, module_, otherModules_, $c) {
-const environment_ = ff_compiler_Environment.make_(module_, otherModules_);
+const environment_ = ff_compiler_Environment.make_(module_, otherModules_, true);
 const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_pairs(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const name_ = _1.first_;

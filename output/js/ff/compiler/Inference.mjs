@@ -162,7 +162,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 }
 
 export function Inference_inferModule(self_, module_, otherModules_) {
-const environment_ = ff_compiler_Environment.make_(module_, otherModules_);
+const environment_ = ff_compiler_Environment.make_(module_, otherModules_, false);
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferLetDefinition(self_, environment_, _w1)
 }));
@@ -1960,7 +1960,7 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 }
 
 export async function Inference_inferModule$(self_, module_, otherModules_, $c) {
-const environment_ = ff_compiler_Environment.make_(module_, otherModules_);
+const environment_ = ff_compiler_Environment.make_(module_, otherModules_, false);
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferLetDefinition(self_, environment_, _w1)
 }));
