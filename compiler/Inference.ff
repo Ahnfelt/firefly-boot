@@ -216,6 +216,11 @@ extend self: Inference {
                     fail(at, "No such variant: " + name)
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
+                if(patterns.size() != instantiated.scheme.signature.parameters.size()) {
+                    fail(at, "Wrong number of subpatterns, expected " +
+                        instantiated.scheme.signature.parameters.size() + ", got " + patterns.size() + "."
+                    )
+                }
                 patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
                 }.foldLeft(Map.empty[String, Type]()) { _.addAll(_) }

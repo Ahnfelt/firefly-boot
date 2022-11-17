@@ -514,6 +514,9 @@ const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
+if((ff_core_List.List_size(patterns_) != ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_))) {
+ff_compiler_Inference.fail_(at_, (((("Wrong number of subpatterns, expected " + ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) + ", got ") + ff_core_List.List_size(patterns_)) + "."))
+};
 return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1) => {
 {
 const pattern_ = _1.first_;
@@ -2309,6 +2312,9 @@ const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference
 return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
+if((ff_core_List.List_size(patterns_) != ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_))) {
+ff_compiler_Inference.fail_(at_, (((("Wrong number of subpatterns, expected " + ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) + ", got ") + ff_core_List.List_size(patterns_)) + "."))
+};
 return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1) => {
 {
 const pattern_ = _1.first_;
