@@ -278,6 +278,13 @@ return ff_core_List.Link(value_, ff_core_List.Empty())
 }), ff_core_Ordering_Order$K)
 }
 
-
+export function ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering_Order$K, ff_core_Ordering_Order$V) { return {
+compare_(x_, y_) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering_Order$K, ff_core_Ordering_Order$V)).compare_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K), ff_core_Map.Map_pairs(y_, ff_core_Ordering_Order$K))
+},
+async compare_$(x_, y_, $c) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering_Order$K, ff_core_Ordering_Order$V)).compare_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K), ff_core_Map.Map_pairs(y_, ff_core_Ordering_Order$K))
+}
+}}
 
 

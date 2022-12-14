@@ -3468,6 +3468,283 @@ export async function JsEmitter_emitArgument$(self_, argument_, async_, $c) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
+export const ff_core_Ordering_Order$ff_compiler_JsEmitter_JsEmitter = {
+compare_(x_, y_) {
+const otherModulesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Module).compare_(x_.otherModules_, y_.otherModules_);
+if((otherModulesOrdering_ != ff_core_Ordering.OrderingSame())) {
+return otherModulesOrdering_
+} else {
+const jsImporterOrdering_ = ff_compiler_JsImporter.ff_core_Ordering_Order$ff_compiler_JsImporter_JsImporter.compare_(x_.jsImporter_, y_.jsImporter_);
+if((jsImporterOrdering_ != ff_core_Ordering.OrderingSame())) {
+return jsImporterOrdering_
+} else {
+const emitTargetOrdering_ = ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget.compare_(x_.emitTarget_, y_.emitTarget_);
+if((emitTargetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return emitTargetOrdering_
+} else {
+const isMainModuleOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isMainModule_, y_.isMainModule_);
+if((isMainModuleOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isMainModuleOrdering_
+} else {
+const compilerModulePathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.compilerModulePath_, y_.compilerModulePath_);
+if((compilerModulePathOrdering_ != ff_core_Ordering.OrderingSame())) {
+return compilerModulePathOrdering_
+} else {
+const tailCallUsedOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.tailCallUsed_, y_.tailCallUsed_);
+if((tailCallUsedOrdering_ != ff_core_Ordering.OrderingSame())) {
+return tailCallUsedOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
+},
+async compare_$(x_, y_, $c) {
+const otherModulesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Module).compare_(x_.otherModules_, y_.otherModules_);
+if((otherModulesOrdering_ != ff_core_Ordering.OrderingSame())) {
+return otherModulesOrdering_
+} else {
+const jsImporterOrdering_ = ff_compiler_JsImporter.ff_core_Ordering_Order$ff_compiler_JsImporter_JsImporter.compare_(x_.jsImporter_, y_.jsImporter_);
+if((jsImporterOrdering_ != ff_core_Ordering.OrderingSame())) {
+return jsImporterOrdering_
+} else {
+const emitTargetOrdering_ = ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget.compare_(x_.emitTarget_, y_.emitTarget_);
+if((emitTargetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return emitTargetOrdering_
+} else {
+const isMainModuleOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isMainModule_, y_.isMainModule_);
+if((isMainModuleOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isMainModuleOrdering_
+} else {
+const compilerModulePathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.compilerModulePath_, y_.compilerModulePath_);
+if((compilerModulePathOrdering_ != ff_core_Ordering.OrderingSame())) {
+return compilerModulePathOrdering_
+} else {
+const tailCallUsedOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.tailCallUsed_, y_.tailCallUsed_);
+if((tailCallUsedOrdering_ != ff_core_Ordering.OrderingSame())) {
+return tailCallUsedOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
+}
+};
 
+export const ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget = {
+compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+if(x_a.EmitNode) {
+const x_ = x_a;
+if(y_a.EmitNode) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.EmitBrowser) {
+const x_ = x_a;
+if(y_a.EmitBrowser) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.EmitBuild) {
+const x_ = x_a;
+if(y_a.EmitBuild) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.EmitExecutable) {
+const x_ = x_a;
+if(y_a.EmitExecutable) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+function number_(z_) {
+{
+const z_a = z_;
+{
+if(z_a.EmitNode) {
+return 0
+return
+}
+}
+{
+if(z_a.EmitBrowser) {
+return 1
+return
+}
+}
+{
+if(z_a.EmitBuild) {
+return 2
+return
+}
+}
+{
+if(z_a.EmitExecutable) {
+return 3
+return
+}
+}
+}
+}
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
+return
+}
+}
+},
+async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+if(x_a.EmitNode) {
+const x_ = x_a;
+if(y_a.EmitNode) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.EmitBrowser) {
+const x_ = x_a;
+if(y_a.EmitBrowser) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.EmitBuild) {
+const x_ = x_a;
+if(y_a.EmitBuild) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.EmitExecutable) {
+const x_ = x_a;
+if(y_a.EmitExecutable) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+function number_(z_) {
+{
+const z_a = z_;
+{
+if(z_a.EmitNode) {
+return 0
+return
+}
+}
+{
+if(z_a.EmitBrowser) {
+return 1
+return
+}
+}
+{
+if(z_a.EmitBuild) {
+return 2
+return
+}
+}
+{
+if(z_a.EmitExecutable) {
+return 3
+return
+}
+}
+}
+}
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
+return
+}
+}
+}
+};
+
+export const ff_core_Ordering_Order$ff_compiler_JsEmitter_ProcessedVariantCase = {
+compare_(x_, y_) {
+const variantNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variantName_, y_.variantName_);
+if((variantNameOrdering_ != ff_core_Ordering.OrderingSame())) {
+return variantNameOrdering_
+} else {
+const newtypeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.newtype_, y_.newtype_);
+if((newtypeOrdering_ != ff_core_Ordering.OrderingSame())) {
+return newtypeOrdering_
+} else {
+const loneVariantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.loneVariant_, y_.loneVariant_);
+if((loneVariantOrdering_ != ff_core_Ordering.OrderingSame())) {
+return loneVariantOrdering_
+} else {
+const argumentsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.arguments_, y_.arguments_);
+if((argumentsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return argumentsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+},
+async compare_$(x_, y_, $c) {
+const variantNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variantName_, y_.variantName_);
+if((variantNameOrdering_ != ff_core_Ordering.OrderingSame())) {
+return variantNameOrdering_
+} else {
+const newtypeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.newtype_, y_.newtype_);
+if((newtypeOrdering_ != ff_core_Ordering.OrderingSame())) {
+return newtypeOrdering_
+} else {
+const loneVariantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.loneVariant_, y_.loneVariant_);
+if((loneVariantOrdering_ != ff_core_Ordering.OrderingSame())) {
+return loneVariantOrdering_
+} else {
+const argumentsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.arguments_, y_.arguments_);
+if((argumentsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return argumentsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+};
 
 

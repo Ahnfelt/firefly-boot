@@ -289,6 +289,121 @@ return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.
 
 
 
+export const ff_core_Ordering_Order$ff_compiler_Environment_Environment = {
+compare_(x_, y_) {
+const symbolsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Ordering_Order$ff_compiler_Environment_Scheme).compare_(x_.symbols_, y_.symbols_);
+if((symbolsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return symbolsOrdering_
+} else {
+const effectOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type.compare_(x_.effect_, y_.effect_);
+if((effectOrdering_ != ff_core_Ordering.OrderingSame())) {
+return effectOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+},
+async compare_$(x_, y_, $c) {
+const symbolsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Ordering_Order$ff_compiler_Environment_Scheme).compare_(x_.symbols_, y_.symbols_);
+if((symbolsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return symbolsOrdering_
+} else {
+const effectOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type.compare_(x_.effect_, y_.effect_);
+if((effectOrdering_ != ff_core_Ordering.OrderingSame())) {
+return effectOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+};
 
+export const ff_core_Ordering_Order$ff_compiler_Environment_Scheme = {
+compare_(x_, y_) {
+const isVariableOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isVariable_, y_.isVariable_);
+if((isVariableOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isVariableOrdering_
+} else {
+const isMutableOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isMutable_, y_.isMutable_);
+if((isMutableOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isMutableOrdering_
+} else {
+const isNewtypeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isNewtype_, y_.isNewtype_);
+if((isNewtypeOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isNewtypeOrdering_
+} else {
+const isTraitMethodOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isTraitMethod_, y_.isTraitMethod_);
+if((isTraitMethodOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isTraitMethodOrdering_
+} else {
+const signatureOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Signature.compare_(x_.signature_, y_.signature_);
+if((signatureOrdering_ != ff_core_Ordering.OrderingSame())) {
+return signatureOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+},
+async compare_$(x_, y_, $c) {
+const isVariableOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isVariable_, y_.isVariable_);
+if((isVariableOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isVariableOrdering_
+} else {
+const isMutableOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isMutable_, y_.isMutable_);
+if((isMutableOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isMutableOrdering_
+} else {
+const isNewtypeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isNewtype_, y_.isNewtype_);
+if((isNewtypeOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isNewtypeOrdering_
+} else {
+const isTraitMethodOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isTraitMethod_, y_.isTraitMethod_);
+if((isTraitMethodOrdering_ != ff_core_Ordering.OrderingSame())) {
+return isTraitMethodOrdering_
+} else {
+const signatureOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Signature.compare_(x_.signature_, y_.signature_);
+if((signatureOrdering_ != ff_core_Ordering.OrderingSame())) {
+return signatureOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
+};
+
+export const ff_core_Ordering_Order$ff_compiler_Environment_Instantiated = {
+compare_(x_, y_) {
+const typeArgumentsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type)).compare_(x_.typeArguments_, y_.typeArguments_);
+if((typeArgumentsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return typeArgumentsOrdering_
+} else {
+const schemeOrdering_ = ff_compiler_Environment.ff_core_Ordering_Order$ff_compiler_Environment_Scheme.compare_(x_.scheme_, y_.scheme_);
+if((schemeOrdering_ != ff_core_Ordering.OrderingSame())) {
+return schemeOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+},
+async compare_$(x_, y_, $c) {
+const typeArgumentsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type)).compare_(x_.typeArguments_, y_.typeArguments_);
+if((typeArgumentsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return typeArgumentsOrdering_
+} else {
+const schemeOrdering_ = ff_compiler_Environment.ff_core_Ordering_Order$ff_compiler_Environment_Scheme.compare_(x_.scheme_, y_.scheme_);
+if((schemeOrdering_ != ff_core_Ordering.OrderingSame())) {
+return schemeOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+};
 
 

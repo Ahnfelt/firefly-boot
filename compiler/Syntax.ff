@@ -163,9 +163,9 @@ type CallTarget {
 }
 
 type MatchCase(
-    at: Location,
-    patterns: List[MatchPattern],
-    guards : List[MatchGuard]
+    at: Location
+    patterns: List[MatchPattern]
+    guards: List[MatchGuard]
     body: Term
 )
 

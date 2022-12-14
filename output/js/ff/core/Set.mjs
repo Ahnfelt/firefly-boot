@@ -158,6 +158,13 @@ export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $c) {
 }), $c, ff_core_Ordering_Order$T))
 }
 
-
+export function ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering_Order$A) { return {
+compare_(x_, y_) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$A).compare_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
+},
+async compare_$(x_, y_, $c) {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$A).compare_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
+}
+}}
 
 

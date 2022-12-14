@@ -14,3 +14,9 @@ extend self[T: Order]: Set[T] {
     toList(): List[T] { self.map.pairs().map { _.first } }
     each(body: T => Unit): Unit { self.map.each {| k, _ => body(k)} }
 }
+
+instance Set[A: Order]: Order {
+    compare(x: Set[A], y: Set[A]): Ordering {
+        Ordering.compare(x.toList(), y.toList())
+    }
+}

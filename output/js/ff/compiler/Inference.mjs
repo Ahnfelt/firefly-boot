@@ -3757,6 +3757,23 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 }))
 }
 
-
+export const ff_core_Ordering_Order$ff_compiler_Inference_Inference = {
+compare_(x_, y_) {
+const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_Unification.compare_(x_.unification_, y_.unification_);
+if((unificationOrdering_ != ff_core_Ordering.OrderingSame())) {
+return unificationOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+},
+async compare_$(x_, y_, $c) {
+const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_Unification.compare_(x_.unification_, y_.unification_);
+if((unificationOrdering_ != ff_core_Ordering.OrderingSame())) {
+return unificationOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+};
 
 

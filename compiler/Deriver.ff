@@ -1,0 +1,180 @@
+import Syntax
+
+type Deriver(
+)
+
+make(): Deriver {
+    Deriver(
+    )
+}
+
+fail[T](at: Location, message: String): T {
+    panic(message + " " + at.show())
+}
+
+extend self: Deriver {
+
+    deriveModule(module: Module): Module {
+
+        let typesWithOrdering = module.instances.collect {
+            | instance {instance.typeArguments.first() | Some(TConstructor(_, name, _))} =>
+                if(instance.traitName == "ff:core/Ordering.Order") {name}
+            | _ => None
+        }.toSet()
+
+        let modulePrefix = module.packagePair.groupName() + "/" + module.file.dropLast(3)
+
+        let coreWhitelist = [
+            "ff:core/Option.Option"
+        ].toSet()
+
+        let missingOrdering = module.types.filter {t =>
+            (module.packagePair.groupName() != "ff:core" || coreWhitelist.contains(modulePrefix + "." + t.name)) &&
+            !t.generics.first().any {_ == "Q$"} &&
+            !typesWithOrdering.contains(modulePrefix + "." + t.name)
+        }
+
+        let orderingInstances = missingOrdering.map {self.makeOrderingInstance(modulePrefix, _)}
+
+        //orderingInstances.each(Log.debug)
+
+        module.Module(
+            instances = [...module.instances, ...orderingInstances],
+        )
+    }
+
+    makeOrderingInstance(modulePrefix: String, declaration: DType): DInstance {
+        let constraints = declaration.generics.map { t =>
+            Constraint(declaration.at, "ff:core/Ordering.Order", [TConstructor(declaration.at, t, [])])
+        }
+        let typeArguments = declaration.generics.map { t =>
+            TConstructor(declaration.at, t, [])
+        }
+        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let signature = Signature(
+            at = declaration.at
+            name = "compare"
+            generics = []
+            constraints = []
+            parameters = [
+                Parameter(declaration.at, False, "x", selfType, None)
+                Parameter(declaration.at, False, "y", selfType, None)
+            ]
+            returnType = TConstructor(declaration.at, "ff:core/Ordering.Ordering", [])
+            effect = noEffect
+        )
+        let body = FireflyTarget(
+            Lambda(declaration.at, noEffect, self.makeOrderingCases(modulePrefix, declaration, selfType))
+        )
+        let compareMethod = DFunction(declaration.at, signature, body)
+        DInstance(
+            at = declaration.at
+            generics = declaration.generics
+            constraints = constraints
+            traitName = "ff:core/Ordering.Order"
+            typeArguments = [selfType]
+            generatorArguments = []
+            methods = [compareMethod]
+        )
+        // trait T: Order
+        // instance Option[V: Order]: Order
+    }
+
+    makeOrderingCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
+        let at = declaration.at
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let wildcardPattern = PVariable(at, None)
+        declaration.variants.{
+            | [variant] =>
+                [MatchCase(
+                    at = at,
+                    patterns = [wildcardPattern, wildcardPattern]
+                    guards = []
+                    body =
+                        self.makeFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
+                )]
+            | variants =>
+                let sameVariantCases = variants.map { variant =>
+                    let variantName = modulePrefix + "." + variant.name
+                    MatchCase(
+                        at = at,
+                        patterns = [PVariantAs(at, variantName, Some("x")), PVariantAs(at, variantName, Some("y"))]
+                        guards = []
+                        body =
+                            self.makeFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
+                    )
+                }
+                let intType = TConstructor(declaration.at, "ff:core/Int.Int", [])
+                let numberSignature =
+                    Signature(at, "number", [], [], [Parameter(at, False, "z", selfType, None)], intType, noEffect)
+                let numberCases = variants.pairs().map {| Pair(index, variant) =>
+                    let variantName = modulePrefix + "." + variant.name
+                    MatchCase(
+                        at = at,
+                        patterns = [PVariantAs(at, variantName, None)]
+                        guards = []
+                        body = EInt(at, "" + index)
+                    )
+                }
+                let differentVariant = MatchCase(
+                    at = at,
+                    patterns = [wildcardPattern, wildcardPattern]
+                    guards = []
+                    body =
+                        EFunctions(at,
+                            [DFunction(at, numberSignature, FireflyTarget(Lambda(at, noEffect, numberCases)))],
+                            self.makeSimpleCall(at, "ff:core/Ordering.compare", [
+                                self.makeSimpleCall(at, "number", [EVariable(at, "x")])
+                                self.makeSimpleCall(at, "number", [EVariable(at, "y")])
+                            ])
+                        )
+                )
+                [...sameVariantCases, differentVariant]
+        }
+    }
+
+    makeFields(modulePrefix: String, declaration: DType, fields : List[Parameter]): Term {
+        let at = declaration.at
+        let orderingType = TConstructor(declaration.at, "ff:core/Ordering.Ordering", [])
+        let orderingSame = EVariant(at, "ff:core/Ordering.OrderingSame", [], None)
+        function go(fields : List[Parameter]): Term {
+            | [] =>
+                orderingSame
+            | [head, ...tail] =>
+                let variableName = head.name + "Ordering"
+                let compareTerm = self.makeSimpleCall(at, "ff:core/Ordering.compare", [
+                    EField(at, False, EVariable(at, "x"), head.name)
+                    EField(at, False, EVariable(at, "y"), head.name)
+                ])
+                let notEqualTerm = self.makeSimpleCall(at, "!=", [
+                    EVariable(at, variableName)
+                    orderingSame
+                ])
+                let ifTerm = self.makeIf(at, notEqualTerm, EVariable(at, variableName), go(tail))
+                ELet(at, False, variableName, orderingType, compareTerm, ifTerm)
+        }
+        go(fields)
+    }
+
+    makeSimpleCall(at: Location, name: String, arguments: List[Term]): Term {
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+        let callTarget = DynamicCall(EVariable(at, name), tailCall = False)
+        ECall(at, callTarget, noEffect, [], arguments.map { e =>
+            Argument(at, None, e)
+        }, [])
+    }
+
+    makeIf(at: Location, condition: Term, then: Term, else: Term): Term {
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+        let target = DynamicCall(EVariable(at, "ff:core/Core.if"), tailCall = False)
+        let option = ECall(at, target, noEffect, [], [
+            Argument(at, None, condition),
+            Argument(at, None, ELambda(at, Lambda(at, noEffect, [MatchCase(at, [], [], then)])))
+        ], [])
+        ECall(at, DynamicCall(EField(at, False, option, "else"), tailCall = False), noEffect, [], [
+            Argument(at, None, ELambda(at, Lambda(at, noEffect, [MatchCase(at, [], [], else)])))
+        ], [])
+    }
+
+}

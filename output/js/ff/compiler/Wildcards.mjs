@@ -589,6 +589,23 @@ return
 }
 }
 
-
+export const ff_core_Ordering_Order$ff_compiler_Wildcards_Wildcards = {
+compare_(x_, y_) {
+const seenWildcardsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.seenWildcards_, y_.seenWildcards_);
+if((seenWildcardsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return seenWildcardsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+},
+async compare_$(x_, y_, $c) {
+const seenWildcardsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.seenWildcards_, y_.seenWildcards_);
+if((seenWildcardsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return seenWildcardsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+};
 
 

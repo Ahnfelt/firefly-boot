@@ -2,6 +2,7 @@ import Syntax
 import Tokenizer
 import Parser
 import Resolver
+import Deriver
 import Inference
 import JsEmitter
 import Dictionaries
@@ -17,6 +18,7 @@ type Compiler!(
     singleFilePackages: Set[PackagePair]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
+    mutable derivedModules: Map[String, Module]
     mutable inferredModules: Map[String, Module]
     mutable emittedModules: Set[String]
     mutable phaseDurations: List[Pair[String, Duration]]
@@ -41,6 +43,7 @@ make(
         singleFilePackages = resolvedDependencies.singleFilePackages
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
+        derivedModules = Map.empty()
         inferredModules = Map.empty()
         emittedModules = Set.empty()
         phaseDurations = [],
@@ -170,14 +173,26 @@ extend self: Compiler {
         result
     }
 
+    derive(packagePair: PackagePair, moduleName: String): Module {
+        let packageName = packagePair.groupName()
+        self.derivedModules.get(packageName + ":" + moduleName).else:
+        self.measure("Derive", packagePair, moduleName):
+
+        let module = self.resolve(packagePair, moduleName)
+        let result = Deriver.make().deriveModule(module)
+
+        self.derivedModules = self.derivedModules.add(packageName + ":" + moduleName, result)
+        result
+    }
+
     infer(packagePair: PackagePair, moduleName: String): Module {
         let packageName = packagePair.groupName()
         self.inferredModules.get(packageName + ":" + moduleName).else:
         self.measure("Infer", packagePair, moduleName):
 
-        let module = self.resolve(packagePair, moduleName)
+        let module = self.derive(packagePair, moduleName)
         let otherModules = self.imports(module).map { i =>
-            self.resolve(i.packagePair, FileSystem.prefixName(i.file))
+            self.derive(i.packagePair, FileSystem.prefixName(i.file))
         }
         let inferredModule = Inference.make([module, ...otherModules]).inferModule(module, otherModules)
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)

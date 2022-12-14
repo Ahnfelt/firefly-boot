@@ -247,6 +247,23 @@ return
 }))
 }
 
-
+export const ff_core_Ordering_Order$ff_compiler_JsImporter_JsImporter = {
+compare_(x_, y_) {
+const importsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.imports_, y_.imports_);
+if((importsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return importsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+},
+async compare_$(x_, y_, $c) {
+const importsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.imports_, y_.imports_);
+if((importsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return importsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+};
 
 

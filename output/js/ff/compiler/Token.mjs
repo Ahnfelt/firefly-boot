@@ -1191,6 +1191,936 @@ return
 }
 }
 
+export const ff_core_Ordering_Order$ff_compiler_Token_Token = {
+compare_(x_, y_) {
+const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
+if((fileOrdering_ != ff_core_Ordering.OrderingSame())) {
+return fileOrdering_
+} else {
+const codeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.code_, y_.code_);
+if((codeOrdering_ != ff_core_Ordering.OrderingSame())) {
+return codeOrdering_
+} else {
+const kindOrdering_ = ff_compiler_Token.ff_core_Ordering_Order$ff_compiler_Token_TokenKind.compare_(x_.kind_, y_.kind_);
+if((kindOrdering_ != ff_core_Ordering.OrderingSame())) {
+return kindOrdering_
+} else {
+const startLineOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startLine_, y_.startLine_);
+if((startLineOrdering_ != ff_core_Ordering.OrderingSame())) {
+return startLineOrdering_
+} else {
+const startLineOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startLineOffset_, y_.startLineOffset_);
+if((startLineOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return startLineOffsetOrdering_
+} else {
+const startOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startOffset_, y_.startOffset_);
+if((startOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return startOffsetOrdering_
+} else {
+const stopLineOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopLine_, y_.stopLine_);
+if((stopLineOrdering_ != ff_core_Ordering.OrderingSame())) {
+return stopLineOrdering_
+} else {
+const stopLineOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopLineOffset_, y_.stopLineOffset_);
+if((stopLineOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return stopLineOffsetOrdering_
+} else {
+const stopOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopOffset_, y_.stopOffset_);
+if((stopOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return stopOffsetOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
+}
+}
+}
+},
+async compare_$(x_, y_, $c) {
+const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
+if((fileOrdering_ != ff_core_Ordering.OrderingSame())) {
+return fileOrdering_
+} else {
+const codeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.code_, y_.code_);
+if((codeOrdering_ != ff_core_Ordering.OrderingSame())) {
+return codeOrdering_
+} else {
+const kindOrdering_ = ff_compiler_Token.ff_core_Ordering_Order$ff_compiler_Token_TokenKind.compare_(x_.kind_, y_.kind_);
+if((kindOrdering_ != ff_core_Ordering.OrderingSame())) {
+return kindOrdering_
+} else {
+const startLineOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startLine_, y_.startLine_);
+if((startLineOrdering_ != ff_core_Ordering.OrderingSame())) {
+return startLineOrdering_
+} else {
+const startLineOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startLineOffset_, y_.startLineOffset_);
+if((startLineOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return startLineOffsetOrdering_
+} else {
+const startOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startOffset_, y_.startOffset_);
+if((startOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return startOffsetOrdering_
+} else {
+const stopLineOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopLine_, y_.stopLine_);
+if((stopLineOrdering_ != ff_core_Ordering.OrderingSame())) {
+return stopLineOrdering_
+} else {
+const stopLineOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopLineOffset_, y_.stopLineOffset_);
+if((stopLineOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return stopLineOffsetOrdering_
+} else {
+const stopOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopOffset_, y_.stopOffset_);
+if((stopOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+return stopOffsetOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+};
 
+export const ff_core_Ordering_Order$ff_compiler_Token_TokenKind = {
+compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+if(x_a.LEnd) {
+const x_ = x_a;
+if(y_a.LEnd) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LString) {
+const x_ = x_a;
+if(y_a.LString) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LChar) {
+const x_ = x_a;
+if(y_a.LChar) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LInt) {
+const x_ = x_a;
+if(y_a.LInt) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LFloat) {
+const x_ = x_a;
+if(y_a.LFloat) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LKeyword) {
+const x_ = x_a;
+if(y_a.LKeyword) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LNamespace) {
+const x_ = x_a;
+if(y_a.LNamespace) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LLower) {
+const x_ = x_a;
+if(y_a.LLower) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LUpper) {
+const x_ = x_a;
+if(y_a.LUpper) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LWildcard) {
+const x_ = x_a;
+if(y_a.LWildcard) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LBracketLeft) {
+const x_ = x_a;
+if(y_a.LBracketLeft) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LBracketRight) {
+const x_ = x_a;
+if(y_a.LBracketRight) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LOperator) {
+const x_ = x_a;
+if(y_a.LOperator) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LComma) {
+const x_ = x_a;
+if(y_a.LComma) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LSeparator) {
+const x_ = x_a;
+if(y_a.LSeparator) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LDot) {
+const x_ = x_a;
+if(y_a.LDot) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LSemicolon) {
+const x_ = x_a;
+if(y_a.LSemicolon) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LPipe) {
+const x_ = x_a;
+if(y_a.LPipe) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LColon) {
+const x_ = x_a;
+if(y_a.LColon) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LDotDotDot) {
+const x_ = x_a;
+if(y_a.LDotDotDot) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LArrowThick) {
+const x_ = x_a;
+if(y_a.LArrowThick) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LAssign) {
+const x_ = x_a;
+if(y_a.LAssign) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LAssignPlus) {
+const x_ = x_a;
+if(y_a.LAssignPlus) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LAssignMinus) {
+const x_ = x_a;
+if(y_a.LAssignMinus) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LAssignLink) {
+const x_ = x_a;
+if(y_a.LAssignLink) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+function number_(z_) {
+{
+const z_a = z_;
+{
+if(z_a.LEnd) {
+return 0
+return
+}
+}
+{
+if(z_a.LString) {
+return 1
+return
+}
+}
+{
+if(z_a.LChar) {
+return 2
+return
+}
+}
+{
+if(z_a.LInt) {
+return 3
+return
+}
+}
+{
+if(z_a.LFloat) {
+return 4
+return
+}
+}
+{
+if(z_a.LKeyword) {
+return 5
+return
+}
+}
+{
+if(z_a.LNamespace) {
+return 6
+return
+}
+}
+{
+if(z_a.LLower) {
+return 7
+return
+}
+}
+{
+if(z_a.LUpper) {
+return 8
+return
+}
+}
+{
+if(z_a.LWildcard) {
+return 9
+return
+}
+}
+{
+if(z_a.LBracketLeft) {
+return 10
+return
+}
+}
+{
+if(z_a.LBracketRight) {
+return 11
+return
+}
+}
+{
+if(z_a.LOperator) {
+return 12
+return
+}
+}
+{
+if(z_a.LComma) {
+return 13
+return
+}
+}
+{
+if(z_a.LSeparator) {
+return 14
+return
+}
+}
+{
+if(z_a.LDot) {
+return 15
+return
+}
+}
+{
+if(z_a.LSemicolon) {
+return 16
+return
+}
+}
+{
+if(z_a.LPipe) {
+return 17
+return
+}
+}
+{
+if(z_a.LColon) {
+return 18
+return
+}
+}
+{
+if(z_a.LDotDotDot) {
+return 19
+return
+}
+}
+{
+if(z_a.LArrowThick) {
+return 20
+return
+}
+}
+{
+if(z_a.LAssign) {
+return 21
+return
+}
+}
+{
+if(z_a.LAssignPlus) {
+return 22
+return
+}
+}
+{
+if(z_a.LAssignMinus) {
+return 23
+return
+}
+}
+{
+if(z_a.LAssignLink) {
+return 24
+return
+}
+}
+}
+}
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
+return
+}
+}
+},
+async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+if(x_a.LEnd) {
+const x_ = x_a;
+if(y_a.LEnd) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LString) {
+const x_ = x_a;
+if(y_a.LString) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LChar) {
+const x_ = x_a;
+if(y_a.LChar) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LInt) {
+const x_ = x_a;
+if(y_a.LInt) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LFloat) {
+const x_ = x_a;
+if(y_a.LFloat) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LKeyword) {
+const x_ = x_a;
+if(y_a.LKeyword) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LNamespace) {
+const x_ = x_a;
+if(y_a.LNamespace) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LLower) {
+const x_ = x_a;
+if(y_a.LLower) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LUpper) {
+const x_ = x_a;
+if(y_a.LUpper) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LWildcard) {
+const x_ = x_a;
+if(y_a.LWildcard) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LBracketLeft) {
+const x_ = x_a;
+if(y_a.LBracketLeft) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LBracketRight) {
+const x_ = x_a;
+if(y_a.LBracketRight) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LOperator) {
+const x_ = x_a;
+if(y_a.LOperator) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LComma) {
+const x_ = x_a;
+if(y_a.LComma) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LSeparator) {
+const x_ = x_a;
+if(y_a.LSeparator) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LDot) {
+const x_ = x_a;
+if(y_a.LDot) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LSemicolon) {
+const x_ = x_a;
+if(y_a.LSemicolon) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LPipe) {
+const x_ = x_a;
+if(y_a.LPipe) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LColon) {
+const x_ = x_a;
+if(y_a.LColon) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LDotDotDot) {
+const x_ = x_a;
+if(y_a.LDotDotDot) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LArrowThick) {
+const x_ = x_a;
+if(y_a.LArrowThick) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LAssign) {
+const x_ = x_a;
+if(y_a.LAssign) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LAssignPlus) {
+const x_ = x_a;
+if(y_a.LAssignPlus) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LAssignMinus) {
+const x_ = x_a;
+if(y_a.LAssignMinus) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+if(x_a.LAssignLink) {
+const x_ = x_a;
+if(y_a.LAssignLink) {
+const y_ = y_a;
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+}
+{
+function number_(z_) {
+{
+const z_a = z_;
+{
+if(z_a.LEnd) {
+return 0
+return
+}
+}
+{
+if(z_a.LString) {
+return 1
+return
+}
+}
+{
+if(z_a.LChar) {
+return 2
+return
+}
+}
+{
+if(z_a.LInt) {
+return 3
+return
+}
+}
+{
+if(z_a.LFloat) {
+return 4
+return
+}
+}
+{
+if(z_a.LKeyword) {
+return 5
+return
+}
+}
+{
+if(z_a.LNamespace) {
+return 6
+return
+}
+}
+{
+if(z_a.LLower) {
+return 7
+return
+}
+}
+{
+if(z_a.LUpper) {
+return 8
+return
+}
+}
+{
+if(z_a.LWildcard) {
+return 9
+return
+}
+}
+{
+if(z_a.LBracketLeft) {
+return 10
+return
+}
+}
+{
+if(z_a.LBracketRight) {
+return 11
+return
+}
+}
+{
+if(z_a.LOperator) {
+return 12
+return
+}
+}
+{
+if(z_a.LComma) {
+return 13
+return
+}
+}
+{
+if(z_a.LSeparator) {
+return 14
+return
+}
+}
+{
+if(z_a.LDot) {
+return 15
+return
+}
+}
+{
+if(z_a.LSemicolon) {
+return 16
+return
+}
+}
+{
+if(z_a.LPipe) {
+return 17
+return
+}
+}
+{
+if(z_a.LColon) {
+return 18
+return
+}
+}
+{
+if(z_a.LDotDotDot) {
+return 19
+return
+}
+}
+{
+if(z_a.LArrowThick) {
+return 20
+return
+}
+}
+{
+if(z_a.LAssign) {
+return 21
+return
+}
+}
+{
+if(z_a.LAssignPlus) {
+return 22
+return
+}
+}
+{
+if(z_a.LAssignMinus) {
+return 23
+return
+}
+}
+{
+if(z_a.LAssignLink) {
+return 24
+return
+}
+}
+}
+}
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(number_(x_), number_(y_))
+return
+}
+}
+}
+};
 
 

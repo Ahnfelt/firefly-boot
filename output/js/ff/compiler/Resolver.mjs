@@ -1996,6 +1996,102 @@ return
 }
 }
 
+export const ff_core_Ordering_Order$ff_compiler_Resolver_Resolver = {
+compare_(x_, y_) {
+const variablesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.variables_, y_.variables_);
+if((variablesOrdering_ != ff_core_Ordering.OrderingSame())) {
+return variablesOrdering_
+} else {
+const variantsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.variants_, y_.variants_);
+if((variantsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return variantsOrdering_
+} else {
+const typesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.types_, y_.types_);
+if((typesOrdering_ != ff_core_Ordering.OrderingSame())) {
+return typesOrdering_
+} else {
+const asyncTypesOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.asyncTypes_, y_.asyncTypes_);
+if((asyncTypesOrdering_ != ff_core_Ordering.OrderingSame())) {
+return asyncTypesOrdering_
+} else {
+const typeParametersOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.typeParameters_, y_.typeParameters_);
+if((typeParametersOrdering_ != ff_core_Ordering.OrderingSame())) {
+return typeParametersOrdering_
+} else {
+const traitsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.traits_, y_.traits_);
+if((traitsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return traitsOrdering_
+} else {
+const stateOrdering_ = ff_compiler_Resolver.ff_core_Ordering_Order$ff_compiler_Resolver_ResolverState.compare_(x_.state_, y_.state_);
+if((stateOrdering_ != ff_core_Ordering.OrderingSame())) {
+return stateOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
+}
+},
+async compare_$(x_, y_, $c) {
+const variablesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.variables_, y_.variables_);
+if((variablesOrdering_ != ff_core_Ordering.OrderingSame())) {
+return variablesOrdering_
+} else {
+const variantsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.variants_, y_.variants_);
+if((variantsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return variantsOrdering_
+} else {
+const typesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.types_, y_.types_);
+if((typesOrdering_ != ff_core_Ordering.OrderingSame())) {
+return typesOrdering_
+} else {
+const asyncTypesOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.asyncTypes_, y_.asyncTypes_);
+if((asyncTypesOrdering_ != ff_core_Ordering.OrderingSame())) {
+return asyncTypesOrdering_
+} else {
+const typeParametersOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.typeParameters_, y_.typeParameters_);
+if((typeParametersOrdering_ != ff_core_Ordering.OrderingSame())) {
+return typeParametersOrdering_
+} else {
+const traitsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.traits_, y_.traits_);
+if((traitsOrdering_ != ff_core_Ordering.OrderingSame())) {
+return traitsOrdering_
+} else {
+const stateOrdering_ = ff_compiler_Resolver.ff_core_Ordering_Order$ff_compiler_Resolver_ResolverState.compare_(x_.state_, y_.state_);
+if((stateOrdering_ != ff_core_Ordering.OrderingSame())) {
+return stateOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+}
+}
+}
+}
+}
+};
 
+export const ff_core_Ordering_Order$ff_compiler_Resolver_ResolverState = {
+compare_(x_, y_) {
+const nextUnificationVariableIndexOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.nextUnificationVariableIndex_, y_.nextUnificationVariableIndex_);
+if((nextUnificationVariableIndexOrdering_ != ff_core_Ordering.OrderingSame())) {
+return nextUnificationVariableIndexOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+},
+async compare_$(x_, y_, $c) {
+const nextUnificationVariableIndexOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.nextUnificationVariableIndex_, y_.nextUnificationVariableIndex_);
+if((nextUnificationVariableIndexOrdering_ != ff_core_Ordering.OrderingSame())) {
+return nextUnificationVariableIndexOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+};
 
 
