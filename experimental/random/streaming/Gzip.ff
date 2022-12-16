@@ -1,0 +1,3 @@
+compress(stream: Stream[Buffer]): Stream[Buffer] {panic("TODO")}
+
+decompress(stream: Stream[Buffer]): Stream[Buffer] {panic("TODO")}

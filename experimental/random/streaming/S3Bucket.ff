@@ -1,0 +1,11 @@
+type S3Bucket
+
+extend self: S3Bucket {
+
+    listKeys(): Stream[String]
+
+    readStream(key: String): Stream[Buffer] {panic("TODO")}
+
+    writeStream(key: String, stream: Stream[Buffer]): Unit {panic("TODO")}
+
+}

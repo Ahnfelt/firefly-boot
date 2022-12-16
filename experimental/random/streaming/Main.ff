@@ -1,0 +1,34 @@
+// Have: Gzipped .tar archives containing .xml files in S3.
+// Want: Gzipped .tar archives containing .json files in S3.
+// But: Too big to store it all in memory, and disk is too slow.
+// Firefly iterators to the rescue!
+
+    convertFiles(bucket: S3Bucket): Unit {
+        bucket.listKeys(prefix = "xml/").each {key =>
+            let xmlTarGz = bucket.readStream(key)
+            let xmlTar = Gzip.decompress(xmlTarGz)
+            let entries = Tar.unarchive(xmlTar) {entry =>
+                TarEntry(entry.name.replace(".xml", ".json"), process(entry))
+            }
+            let jsonTar = Tar.archive(entries)
+            let jsonTarGz = Gzip.compress(jsonTar)
+            bucket.writeStream(key.replaceFirst("xml/", "json/"), jsonTarGz)
+        )
+    }
+
+
+
+    Gzip.compress(stream: Stream[Buffer]): Stream[Buffer]
+    Gzip.decompress(stream: Stream[Buffer]): Stream[Buffer]
+    Tar.archive(stream: Stream[TarEntry]): Stream[Buffer]
+    Tar.unarchive(stream: Stream[Buffer]): Stream[TarEntry]
+    bucket.listKeys(): Stream[String]
+    bucket.readStream(key: String): Stream[Buffer]
+    bucket.writeStream(key: String, stream: Stream[Buffer]): Unit
+
+
+    type Stream![T](
+        next: () => Option[T]
+        close: () => Unit
+    )
+
