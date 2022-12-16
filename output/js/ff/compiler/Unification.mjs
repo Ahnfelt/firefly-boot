@@ -1091,6 +1091,98 @@ return
 }
 };
 
+export const ff_core_Show_Show$ff_compiler_Unification_Unification = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((("Unification" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.substitution_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_ConstraintGenerics)).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.nextUnificationVariableIndex_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceValue).show_(z_.instances_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)).show_(z_.affects_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((("Unification" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.substitution_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_ConstraintGenerics)).show_(z_.constraints_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.nextUnificationVariableIndex_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_InstanceValue).show_(z_.instances_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)).show_(z_.affects_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Unification_ConstraintGenerics = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((("ConstraintGenerics" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.generics_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((("ConstraintGenerics" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.generics_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Unification_InstanceKey = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((("InstanceKey" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.typeName_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((("InstanceKey" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.typeName_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Unification_InstanceValue = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((((("InstanceValue" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.moduleName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((((("InstanceValue" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.generics_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Constraint).show_(z_.constraints_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.moduleName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.traitName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.typeArguments_)) + ")")
+return
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_Unification_Unification = {
 compare_(x_, y_) {
 const substitutionOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.substitution_, y_.substitution_);

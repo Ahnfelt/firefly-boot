@@ -1215,6 +1215,12 @@ remaining_ = ff_core_List.Empty()
 }))
 }
 
+export function List_insertBetween(self_, separator_) {
+return ff_core_List.List_dropFirst(ff_core_List.List_flatMap(self_, ((e_) => {
+return ff_core_List.List_addAll(separator_, ff_core_List.Link(e_, ff_core_List.Empty()))
+})), ff_core_List.List_size(separator_))
+}
+
 export async function List_addAll$(self_, list_, $c) {
 return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }
@@ -2193,6 +2199,12 @@ return
 }), (async ($c) => {
 remaining_ = ff_core_List.Empty()
 }))
+}
+
+export async function List_insertBetween$(self_, separator_, $c) {
+return ff_core_List.List_dropFirst(ff_core_List.List_flatMap(self_, ((e_) => {
+return ff_core_List.List_addAll(separator_, ff_core_List.Link(e_, ff_core_List.Empty()))
+})), ff_core_List.List_size(separator_))
 }
 
 export function List_toSet(self_, ff_core_Ordering_Order$T) {

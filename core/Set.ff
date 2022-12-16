@@ -20,3 +20,9 @@ instance Set[A: Order]: Order {
         Ordering.compare(x.toList(), y.toList())
     }
 }
+
+instance Set[A: Show: Order]: Show {
+    show(x: Set[A]): String {
+        Show.show(x.toList()) + ".toSet()"
+    }
+}

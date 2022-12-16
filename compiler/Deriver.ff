@@ -16,31 +16,95 @@ extend self: Deriver {
 
     deriveModule(module: Module): Module {
 
-        let typesWithOrdering = module.instances.collect {
-            | instance {instance.typeArguments.first() | Some(TConstructor(_, name, _))} =>
-                if(instance.traitName == "ff:core/Ordering.Order") {name}
-            | _ => None
-        }.toSet()
-
         let modulePrefix = module.packagePair.groupName() + "/" + module.file.dropLast(3)
 
         let coreWhitelist = [
             "ff:core/Option.Option"
         ].toSet()
 
-        let missingOrdering = module.types.filter {t =>
-            (module.packagePair.groupName() != "ff:core" || coreWhitelist.contains(modulePrefix + "." + t.name)) &&
-            !t.generics.first().any {_ == "Q$"} &&
-            !typesWithOrdering.contains(modulePrefix + "." + t.name)
-        }
-
-        let orderingInstances = missingOrdering.map {self.makeOrderingInstance(modulePrefix, _)}
-
-        //orderingInstances.each(Log.debug)
+        let showInstances = self.makeShowInstances(modulePrefix, coreWhitelist, module)
+        let orderingInstances = self.makeOrderingInstances(modulePrefix, coreWhitelist, module)
 
         module.Module(
-            instances = [...module.instances, ...orderingInstances],
+            instances = [...module.instances, ...showInstances, ...orderingInstances],
         )
+    }
+
+    // Show
+    makeShowInstances(modulePrefix: String, coreWhitelist: Set[String], module: Module): List[DInstance] {
+        let missingInstance =
+            self.findTypesThatNeedInstances("ff:core/Show.Show", modulePrefix, coreWhitelist, module)
+        missingInstance.map {self.makeShowInstance(modulePrefix, _)}
+    }
+
+    makeShowInstance(modulePrefix: String, declaration: DType): DInstance {
+        let constraints = declaration.generics.map { t =>
+            Constraint(declaration.at, "ff:core/Show.Show", [TConstructor(declaration.at, t, [])])
+        }
+        let typeArguments = declaration.generics.map { t =>
+            TConstructor(declaration.at, t, [])
+        }
+        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let signature = Signature(
+            at = declaration.at
+            name = "show"
+            generics = []
+            constraints = []
+            parameters = [Parameter(declaration.at, False, "x", selfType, None)]
+            returnType = TConstructor(declaration.at, "ff:core/String.String", [])
+            effect = noEffect
+        )
+        let body = FireflyTarget(
+            Lambda(declaration.at, noEffect, self.makeShowCases(modulePrefix, declaration, selfType))
+        )
+        let showMethod = DFunction(declaration.at, signature, body)
+        DInstance(
+            at = declaration.at
+            generics = declaration.generics
+            constraints = constraints
+            traitName = "ff:core/Show.Show"
+            typeArguments = [selfType]
+            generatorArguments = []
+            methods = [showMethod]
+        )
+    }
+
+    makeShowCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
+        let at = declaration.at
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let wildcardPattern = PVariable(at, None)
+        declaration.variants.{
+            | variants =>
+                variants.map { variant =>
+                    let variantName = modulePrefix + "." + variant.name
+                    let fields = [...declaration.commonFields, ...variant.fields]
+                    let strings = if(fields.size() == 0) {[]} else {[
+                        EString(at, "\"(\"")
+                        ...fields.map {field =>
+                            self.makeSimpleCall(at, "ff:core/Show.show", [
+                                EField(at, False, EVariable(at, "z"), field.name)
+                            ])
+                        }.insertBetween([EString(at, "\", \"")])
+                        EString(at, "\")\"")
+                    ]}
+                    MatchCase(
+                        at = at,
+                        patterns = [PVariantAs(at, variantName, Some("z"))]
+                        guards = []
+                        body = strings.foldLeft(EString(at, "\"" + variant.name + "\"")) {a, b =>
+                            self.makeSimpleCall(at, "+", [a, b])
+                        }
+                    )
+                }
+        }
+    }
+
+    // Ordering
+    makeOrderingInstances(modulePrefix: String, coreWhitelist: Set[String], module: Module): List[DInstance] {
+        let missingInstance =
+            self.findTypesThatNeedInstances("ff:core/Ordering.Order", modulePrefix, coreWhitelist, module)
+        missingInstance.map {self.makeOrderingInstance(modulePrefix, _)}
     }
 
     makeOrderingInstance(modulePrefix: String, declaration: DType): DInstance {
@@ -77,8 +141,6 @@ extend self: Deriver {
             generatorArguments = []
             methods = [compareMethod]
         )
-        // trait T: Order
-        // instance Option[V: Order]: Order
     }
 
     makeOrderingCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
@@ -92,7 +154,7 @@ extend self: Deriver {
                     patterns = [wildcardPattern, wildcardPattern]
                     guards = []
                     body =
-                        self.makeFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
+                        self.makeOrderingFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
                 )]
             | variants =>
                 let sameVariantCases = variants.map { variant =>
@@ -102,7 +164,7 @@ extend self: Deriver {
                         patterns = [PVariantAs(at, variantName, Some("x")), PVariantAs(at, variantName, Some("y"))]
                         guards = []
                         body =
-                            self.makeFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
+                            self.makeOrderingFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
                     )
                 }
                 let intType = TConstructor(declaration.at, "ff:core/Int.Int", [])
@@ -134,7 +196,7 @@ extend self: Deriver {
         }
     }
 
-    makeFields(modulePrefix: String, declaration: DType, fields : List[Parameter]): Term {
+    makeOrderingFields(modulePrefix: String, declaration: DType, fields : List[Parameter]): Term {
         let at = declaration.at
         let orderingType = TConstructor(declaration.at, "ff:core/Ordering.Ordering", [])
         let orderingSame = EVariant(at, "ff:core/Ordering.OrderingSame", [], None)
@@ -155,6 +217,27 @@ extend self: Deriver {
                 ELet(at, False, variableName, orderingType, compareTerm, ifTerm)
         }
         go(fields)
+    }
+    
+    // Common
+
+    findTypesThatNeedInstances(
+        traitName: String,
+        modulePrefix: String,
+        coreWhitelist: Set[String],
+        module: Module
+    ): List[DType] {
+        let typesWithInstance = module.instances.collect {
+            | instance {instance.typeArguments.first() | Some(TConstructor(_, name, _))} =>
+                if(instance.traitName == traitName) {name}
+            | _ => None
+        }.toSet()
+
+        module.types.filter {t =>
+            (module.packagePair.groupName() != "ff:core" || coreWhitelist.contains(modulePrefix + "." + t.name)) &&
+            !t.generics.first().any {_ == "Q$"} &&
+            !typesWithInstance.contains(modulePrefix + "." + t.name)
+        }
     }
 
     makeSimpleCall(at: Location, name: String, arguments: List[Term]): Term {

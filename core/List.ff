@@ -346,6 +346,10 @@ extend self[T]: List[T] {
         )
     }
 
+    insertBetween(separator: List[T]): List[T] {
+        self.flatMap {e => [...separator, e]}.dropFirst(separator.size())
+    }
+
 }
 
 extend self[T: Order]: List[T] {

@@ -262,6 +262,52 @@ return (((((self_.defaultLocation_ + packagePair_.group_) + "/") + packagePair_.
 }))
 }
 
+export const ff_core_Show_Show$ff_compiler_Workspace_Workspace = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((("Workspace" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Workspace.ff_core_Show_Show$ff_compiler_Workspace_WorkspaceRule).show_(z_.rules_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.defaultLocation_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.packageDirectory_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((("Workspace" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Workspace.ff_core_Show_Show$ff_compiler_Workspace_WorkspaceRule).show_(z_.rules_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.defaultLocation_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.packageDirectory_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Workspace_WorkspaceRule = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((("WorkspaceRule" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.packageGroup_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packageName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.location_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((("WorkspaceRule" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.packageGroup_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packageName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.location_)) + ")")
+return
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_Workspace_Workspace = {
 compare_(x_, y_) {
 const rulesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Workspace.ff_core_Ordering_Order$ff_compiler_Workspace_WorkspaceRule).compare_(x_.rules_, y_.rules_);

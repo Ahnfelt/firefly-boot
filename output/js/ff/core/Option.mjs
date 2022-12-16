@@ -645,6 +645,47 @@ return
 }
 }
 
+export function ff_core_Show_Show$ff_core_Option_Option(ff_core_Show_Show$T) { return {
+show_(x_) {
+{
+const x_a = x_;
+{
+if(x_a.None) {
+const z_ = x_a;
+return "None"
+return
+}
+}
+{
+if(x_a.Some) {
+const z_ = x_a;
+return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
+return
+}
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+if(x_a.None) {
+const z_ = x_a;
+return "None"
+return
+}
+}
+{
+if(x_a.Some) {
+const z_ = x_a;
+return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
+return
+}
+}
+}
+}
+}}
+
 export function ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering_Order$T) { return {
 compare_(x_, y_) {
 {

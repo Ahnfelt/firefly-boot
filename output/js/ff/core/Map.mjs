@@ -287,4 +287,13 @@ return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Orderin
 }
 }}
 
+export function ff_core_Show_Show$ff_core_Map_Map(ff_core_Show_Show$K, ff_core_Ordering_Order$K, ff_core_Show_Show$V) { return {
+show_(x_) {
+return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show_Show$K, ff_core_Show_Show$V)).show_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K)) + ".toMap()")
+},
+async show_$(x_, $c) {
+return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show_Show$K, ff_core_Show_Show$V)).show_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K)) + ".toMap()")
+}
+}}
+
 

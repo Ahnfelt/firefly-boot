@@ -1996,6 +1996,52 @@ return
 }
 }
 
+export const ff_core_Show_Show$ff_compiler_Resolver_Resolver = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((((((("Resolver" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.variables_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.variants_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.types_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).show_(z_.asyncTypes_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).show_(z_.typeParameters_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.traits_)) + ", ") + ff_compiler_Resolver.ff_core_Show_Show$ff_compiler_Resolver_ResolverState.show_(z_.state_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((((((("Resolver" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.variables_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.variants_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.types_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).show_(z_.asyncTypes_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).show_(z_.typeParameters_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.traits_)) + ", ") + ff_compiler_Resolver.ff_core_Show_Show$ff_compiler_Resolver_ResolverState.show_(z_.state_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Resolver_ResolverState = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((("ResolverState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.nextUnificationVariableIndex_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((("ResolverState" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.nextUnificationVariableIndex_)) + ")")
+return
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_Resolver_Resolver = {
 compare_(x_, y_) {
 const variablesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.variables_, y_.variables_);

@@ -1131,6 +1131,29 @@ export async function Substitution_has$(self_, index_, $c) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
+export const ff_core_Show_Show$ff_compiler_Substitution_Substitution = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((("Substitution" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.substitution_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((("Substitution" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.substitution_)) + ")")
+return
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_Substitution_Substitution = {
 compare_(x_, y_) {
 const substitutionOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.substitution_, y_.substitution_);

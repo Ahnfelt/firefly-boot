@@ -589,6 +589,29 @@ return
 }
 }
 
+export const ff_core_Show_Show$ff_compiler_Wildcards_Wildcards = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((("Wildcards" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.seenWildcards_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((("Wildcards" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.seenWildcards_)) + ")")
+return
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_Wildcards_Wildcards = {
 compare_(x_, y_) {
 const seenWildcardsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.seenWildcards_, y_.seenWildcards_);

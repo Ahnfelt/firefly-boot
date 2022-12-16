@@ -92,3 +92,9 @@ instance Map[K: Order, V: Order]: Order {
         Ordering.compare(x.pairs(), y.pairs())
     }
 }
+
+instance Map[K: Show: Order, V: Show]: Show {
+    show(x: Map[K, V]): String {
+        Show.show(x.pairs()) + ".toMap()"
+    }
+}

@@ -3468,6 +3468,121 @@ export async function JsEmitter_emitArgument$(self_, argument_, async_, $c) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
+export const ff_core_Show_Show$ff_compiler_JsEmitter_JsEmitter = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((((("JsEmitter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module).show_(z_.otherModules_)) + ", ") + ff_compiler_JsImporter.ff_core_Show_Show$ff_compiler_JsImporter_JsImporter.show_(z_.jsImporter_)) + ", ") + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(z_.emitTarget_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMainModule_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.compilerModulePath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCallUsed_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((((("JsEmitter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module).show_(z_.otherModules_)) + ", ") + ff_compiler_JsImporter.ff_core_Show_Show$ff_compiler_JsImporter_JsImporter.show_(z_.jsImporter_)) + ", ") + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(z_.emitTarget_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMainModule_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.compilerModulePath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCallUsed_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget = {
+show_(x_) {
+{
+const x_a = x_;
+{
+if(x_a.EmitNode) {
+const z_ = x_a;
+return "EmitNode"
+return
+}
+}
+{
+if(x_a.EmitBrowser) {
+const z_ = x_a;
+return "EmitBrowser"
+return
+}
+}
+{
+if(x_a.EmitBuild) {
+const z_ = x_a;
+return "EmitBuild"
+return
+}
+}
+{
+if(x_a.EmitExecutable) {
+const z_ = x_a;
+return "EmitExecutable"
+return
+}
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+if(x_a.EmitNode) {
+const z_ = x_a;
+return "EmitNode"
+return
+}
+}
+{
+if(x_a.EmitBrowser) {
+const z_ = x_a;
+return "EmitBrowser"
+return
+}
+}
+{
+if(x_a.EmitBuild) {
+const z_ = x_a;
+return "EmitBuild"
+return
+}
+}
+{
+if(x_a.EmitExecutable) {
+const z_ = x_a;
+return "EmitExecutable"
+return
+}
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_JsEmitter_ProcessedVariantCase = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((("ProcessedVariantCase" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variantName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.loneVariant_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.arguments_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((("ProcessedVariantCase" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variantName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.loneVariant_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.arguments_)) + ")")
+return
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_JsEmitter_JsEmitter = {
 compare_(x_, y_) {
 const otherModulesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Module).compare_(x_.otherModules_, y_.otherModules_);

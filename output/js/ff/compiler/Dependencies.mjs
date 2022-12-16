@@ -325,6 +325,52 @@ if((newDependencies_ != ff_core_List.Empty())) {
 }
 }
 
+export const ff_core_Show_Show$ff_compiler_Dependencies_Dependencies = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((("Dependencies" + "(") + ff_compiler_Workspace.ff_core_Show_Show$ff_compiler_Workspace_Workspace.show_(z_.workspace_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((("Dependencies" + "(") + ff_compiler_Workspace.ff_core_Show_Show$ff_compiler_Workspace_Workspace.show_(z_.workspace_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Dependencies_ResolvedDependencies = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((("ResolvedDependencies" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.mainPackagePair_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((("ResolvedDependencies" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.mainPackagePair_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
+return
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_Dependencies_Dependencies = {
 compare_(x_, y_) {
 const workspaceOrdering_ = ff_compiler_Workspace.ff_core_Ordering_Order$ff_compiler_Workspace_Workspace.compare_(x_.workspace_, y_.workspace_);

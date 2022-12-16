@@ -247,6 +247,29 @@ return
 }))
 }
 
+export const ff_core_Show_Show$ff_compiler_JsImporter_JsImporter = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((("JsImporter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.imports_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((("JsImporter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.imports_)) + ")")
+return
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_JsImporter_JsImporter = {
 compare_(x_, y_) {
 const importsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.imports_, y_.imports_);

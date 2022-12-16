@@ -1191,6 +1191,392 @@ return
 }
 }
 
+export const ff_core_Show_Show$ff_compiler_Token_Token = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((((((((((((((("Token" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.code_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(z_.kind_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.startOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLine_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopLineOffset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.stopOffset_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Token_TokenKind = {
+show_(x_) {
+{
+const x_a = x_;
+{
+if(x_a.LEnd) {
+const z_ = x_a;
+return "LEnd"
+return
+}
+}
+{
+if(x_a.LString) {
+const z_ = x_a;
+return "LString"
+return
+}
+}
+{
+if(x_a.LChar) {
+const z_ = x_a;
+return "LChar"
+return
+}
+}
+{
+if(x_a.LInt) {
+const z_ = x_a;
+return "LInt"
+return
+}
+}
+{
+if(x_a.LFloat) {
+const z_ = x_a;
+return "LFloat"
+return
+}
+}
+{
+if(x_a.LKeyword) {
+const z_ = x_a;
+return "LKeyword"
+return
+}
+}
+{
+if(x_a.LNamespace) {
+const z_ = x_a;
+return "LNamespace"
+return
+}
+}
+{
+if(x_a.LLower) {
+const z_ = x_a;
+return "LLower"
+return
+}
+}
+{
+if(x_a.LUpper) {
+const z_ = x_a;
+return "LUpper"
+return
+}
+}
+{
+if(x_a.LWildcard) {
+const z_ = x_a;
+return "LWildcard"
+return
+}
+}
+{
+if(x_a.LBracketLeft) {
+const z_ = x_a;
+return "LBracketLeft"
+return
+}
+}
+{
+if(x_a.LBracketRight) {
+const z_ = x_a;
+return "LBracketRight"
+return
+}
+}
+{
+if(x_a.LOperator) {
+const z_ = x_a;
+return "LOperator"
+return
+}
+}
+{
+if(x_a.LComma) {
+const z_ = x_a;
+return "LComma"
+return
+}
+}
+{
+if(x_a.LSeparator) {
+const z_ = x_a;
+return "LSeparator"
+return
+}
+}
+{
+if(x_a.LDot) {
+const z_ = x_a;
+return "LDot"
+return
+}
+}
+{
+if(x_a.LSemicolon) {
+const z_ = x_a;
+return "LSemicolon"
+return
+}
+}
+{
+if(x_a.LPipe) {
+const z_ = x_a;
+return "LPipe"
+return
+}
+}
+{
+if(x_a.LColon) {
+const z_ = x_a;
+return "LColon"
+return
+}
+}
+{
+if(x_a.LDotDotDot) {
+const z_ = x_a;
+return "LDotDotDot"
+return
+}
+}
+{
+if(x_a.LArrowThick) {
+const z_ = x_a;
+return "LArrowThick"
+return
+}
+}
+{
+if(x_a.LAssign) {
+const z_ = x_a;
+return "LAssign"
+return
+}
+}
+{
+if(x_a.LAssignPlus) {
+const z_ = x_a;
+return "LAssignPlus"
+return
+}
+}
+{
+if(x_a.LAssignMinus) {
+const z_ = x_a;
+return "LAssignMinus"
+return
+}
+}
+{
+if(x_a.LAssignLink) {
+const z_ = x_a;
+return "LAssignLink"
+return
+}
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+if(x_a.LEnd) {
+const z_ = x_a;
+return "LEnd"
+return
+}
+}
+{
+if(x_a.LString) {
+const z_ = x_a;
+return "LString"
+return
+}
+}
+{
+if(x_a.LChar) {
+const z_ = x_a;
+return "LChar"
+return
+}
+}
+{
+if(x_a.LInt) {
+const z_ = x_a;
+return "LInt"
+return
+}
+}
+{
+if(x_a.LFloat) {
+const z_ = x_a;
+return "LFloat"
+return
+}
+}
+{
+if(x_a.LKeyword) {
+const z_ = x_a;
+return "LKeyword"
+return
+}
+}
+{
+if(x_a.LNamespace) {
+const z_ = x_a;
+return "LNamespace"
+return
+}
+}
+{
+if(x_a.LLower) {
+const z_ = x_a;
+return "LLower"
+return
+}
+}
+{
+if(x_a.LUpper) {
+const z_ = x_a;
+return "LUpper"
+return
+}
+}
+{
+if(x_a.LWildcard) {
+const z_ = x_a;
+return "LWildcard"
+return
+}
+}
+{
+if(x_a.LBracketLeft) {
+const z_ = x_a;
+return "LBracketLeft"
+return
+}
+}
+{
+if(x_a.LBracketRight) {
+const z_ = x_a;
+return "LBracketRight"
+return
+}
+}
+{
+if(x_a.LOperator) {
+const z_ = x_a;
+return "LOperator"
+return
+}
+}
+{
+if(x_a.LComma) {
+const z_ = x_a;
+return "LComma"
+return
+}
+}
+{
+if(x_a.LSeparator) {
+const z_ = x_a;
+return "LSeparator"
+return
+}
+}
+{
+if(x_a.LDot) {
+const z_ = x_a;
+return "LDot"
+return
+}
+}
+{
+if(x_a.LSemicolon) {
+const z_ = x_a;
+return "LSemicolon"
+return
+}
+}
+{
+if(x_a.LPipe) {
+const z_ = x_a;
+return "LPipe"
+return
+}
+}
+{
+if(x_a.LColon) {
+const z_ = x_a;
+return "LColon"
+return
+}
+}
+{
+if(x_a.LDotDotDot) {
+const z_ = x_a;
+return "LDotDotDot"
+return
+}
+}
+{
+if(x_a.LArrowThick) {
+const z_ = x_a;
+return "LArrowThick"
+return
+}
+}
+{
+if(x_a.LAssign) {
+const z_ = x_a;
+return "LAssign"
+return
+}
+}
+{
+if(x_a.LAssignPlus) {
+const z_ = x_a;
+return "LAssignPlus"
+return
+}
+}
+{
+if(x_a.LAssignMinus) {
+const z_ = x_a;
+return "LAssignMinus"
+return
+}
+}
+{
+if(x_a.LAssignLink) {
+const z_ = x_a;
+return "LAssignLink"
+return
+}
+}
+}
+}
+};
+
 export const ff_core_Ordering_Order$ff_compiler_Token_Token = {
 compare_(x_, y_) {
 const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
