@@ -7,7 +7,7 @@
         bucket.listKeys(prefix = "xml/").each {key =>
             let xmlTarGz = bucket.readStream(key)
             let xmlTar = Gzip.decompress(xmlTarGz)
-            let entries = Tar.unarchive(xmlTar) {entry =>
+            let entries = Tar.unarchive(xmlTar).map {entry =>
                 TarEntry(entry.name.replace(".xml", ".json"), process(entry))
             }
             let jsonTar = Tar.archive(entries)
