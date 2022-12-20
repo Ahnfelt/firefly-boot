@@ -159,6 +159,15 @@ extend self[T]: Iterator[T] {
         }
     }
 
+    pairs(): Iterator[Pair[Int, T]] {
+        mutable i = 0
+        self.map {x =>
+            let r = Pair(i, x)
+            i += 1
+            r
+        }
+    }
+
     // Consuming methods
 
     use[R](body: Iterator[T] => R): R {
@@ -195,6 +204,24 @@ extend self[T]: Iterator[T] {
         } finally {
             self.close()
         } expect()
+    }
+
+    all(body: T => Bool): Bool {
+        mutable result = True
+        self.eachWhile {x =>
+            result = result && body(x)
+            result
+        }
+        result
+    }
+
+    any(body: T => Bool): Bool {
+        mutable result = False
+        self.eachWhile {x =>
+            result = result || body(x)
+            (!result)
+        }
+        result
     }
 
     first(): Option[T] {

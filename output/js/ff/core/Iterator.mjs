@@ -351,6 +351,15 @@ self_.close_()
 }))
 }
 
+export function Iterator_pairs(self_) {
+let i_ = 0;
+return ff_core_Iterator.Iterator_map(self_, ((x_) => {
+const r_ = ff_core_Pair.Pair(i_, x_);
+i_ += 1;
+return r_
+}))
+}
+
 export function Iterator_use(self_, body_) {
 return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return body_(self_)
@@ -409,6 +418,24 @@ break
 })), (() => {
 self_.close_()
 })))
+}
+
+export function Iterator_all(self_, body_) {
+let result_ = true;
+ff_core_Iterator.Iterator_eachWhile(self_, ((x_) => {
+result_ = (result_ && body_(x_));
+return result_
+}));
+return result_
+}
+
+export function Iterator_any(self_, body_) {
+let result_ = false;
+ff_core_Iterator.Iterator_eachWhile(self_, ((x_) => {
+result_ = (result_ || body_(x_));
+return (!result_)
+}));
+return result_
 }
 
 export function Iterator_first(self_) {
@@ -792,6 +819,15 @@ return (await self_.next_($c))
 }))
 }
 
+export async function Iterator_pairs$(self_, $c) {
+let i_ = 0;
+return (await ff_core_Iterator.Iterator_map$(self_, (async (x_, $c) => {
+const r_ = ff_core_Pair.Pair(i_, x_);
+i_ += 1;
+return r_
+}), $c))
+}
+
 export async function Iterator_use$(self_, body_, $c) {
 return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
 return (await body_(self_, $c))
@@ -850,6 +886,24 @@ break
 }), $c)), (async ($c) => {
 (await self_.close_($c))
 }), $c)))
+}
+
+export async function Iterator_all$(self_, body_, $c) {
+let result_ = true;
+(await ff_core_Iterator.Iterator_eachWhile$(self_, (async (x_, $c) => {
+result_ = (result_ && (await body_(x_, $c)));
+return result_
+}), $c));
+return result_
+}
+
+export async function Iterator_any$(self_, body_, $c) {
+let result_ = false;
+(await ff_core_Iterator.Iterator_eachWhile$(self_, (async (x_, $c) => {
+result_ = (result_ || (await body_(x_, $c)));
+return (!result_)
+}), $c));
+return result_
 }
 
 export async function Iterator_first$(self_, $c) {
