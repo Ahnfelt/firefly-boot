@@ -1579,6 +1579,17 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Token_Token = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
 if((fileOrdering_ != ff_core_Ordering.OrderingSame())) {
 return fileOrdering_
@@ -1623,10 +1634,24 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
 if((fileOrdering_ != ff_core_Ordering.OrderingSame())) {
 return fileOrdering_
@@ -1671,6 +1696,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 }
@@ -1681,6 +1709,13 @@ compare_(x_, y_) {
 {
 const x_a = x_;
 const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
 {
 if(x_a.LEnd) {
 const x_ = x_a;
@@ -2096,6 +2131,13 @@ async compare_$(x_, y_, $c) {
 {
 const x_a = x_;
 const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
 {
 if(x_a.LEnd) {
 const x_ = x_a;

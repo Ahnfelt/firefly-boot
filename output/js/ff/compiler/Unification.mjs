@@ -1185,6 +1185,17 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Unification_Unification = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const substitutionOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.substitution_, y_.substitution_);
 if((substitutionOrdering_ != ff_core_Ordering.OrderingSame())) {
 return substitutionOrdering_
@@ -1209,10 +1220,24 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const substitutionOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.substitution_, y_.substitution_);
 if((substitutionOrdering_ != ff_core_Ordering.OrderingSame())) {
 return substitutionOrdering_
@@ -1237,6 +1262,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 }
@@ -1244,6 +1272,17 @@ return ff_core_Ordering.OrderingSame()
 
 export const ff_core_Ordering_Order$ff_compiler_Unification_ConstraintGenerics = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const atOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location.compare_(x_.at_, y_.at_);
 if((atOrdering_ != ff_core_Ordering.OrderingSame())) {
 return atOrdering_
@@ -1253,10 +1292,24 @@ if((genericsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return genericsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const atOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location.compare_(x_.at_, y_.at_);
 if((atOrdering_ != ff_core_Ordering.OrderingSame())) {
 return atOrdering_
@@ -1266,6 +1319,9 @@ if((genericsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return genericsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
+return
 }
 }
 }
@@ -1273,6 +1329,17 @@ return ff_core_Ordering.OrderingSame()
 
 export const ff_core_Ordering_Order$ff_compiler_Unification_InstanceValue = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const genericsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.generics_, y_.generics_);
 if((genericsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return genericsOrdering_
@@ -1302,10 +1369,24 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const genericsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.generics_, y_.generics_);
 if((genericsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return genericsOrdering_
@@ -1335,6 +1416,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 }

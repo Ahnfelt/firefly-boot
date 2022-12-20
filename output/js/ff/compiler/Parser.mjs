@@ -280,7 +280,7 @@ return self_.end_
 export function Parser_skip(self_, kind_) {
 const c_ = ff_compiler_Parser.Parser_current(self_);
 if((c_.kind_ != kind_)) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + ff_core_Core.magicShow_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_)))
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_)))
 };
 self_.offset_ += 1;
 return c_
@@ -289,7 +289,7 @@ return c_
 export function Parser_rawSkip(self_, kind_, value_) {
 const c_ = ff_compiler_Parser.Parser_current(self_);
 if((c_.kind_ != kind_)) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_core_Core.magicShow_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_)))
+ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_)))
 };
 if((!ff_compiler_Token.Token_rawIs(c_, value_))) {
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_)))
@@ -1633,7 +1633,7 @@ return self_.end_
 export async function Parser_skip$(self_, kind_, $c) {
 const c_ = (await ff_compiler_Parser.Parser_current$(self_, $c));
 if((c_.kind_ != kind_)) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + ff_core_Core.magicShow_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_)), $c))
+(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_)), $c))
 };
 self_.offset_ += 1;
 return c_
@@ -1642,7 +1642,7 @@ return c_
 export async function Parser_rawSkip$(self_, kind_, value_, $c) {
 const c_ = (await ff_compiler_Parser.Parser_current$(self_, $c));
 if((c_.kind_ != kind_)) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_core_Core.magicShow_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_)), $c))
+(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_)), $c))
 };
 if((!ff_compiler_Token.Token_rawIs(c_, value_))) {
 (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_)), $c))
@@ -3003,6 +3003,17 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Parser_Poly = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const genericsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.generics_, y_.generics_);
 if((genericsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return genericsOrdering_
@@ -3012,10 +3023,24 @@ if((constraintsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return constraintsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const genericsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.generics_, y_.generics_);
 if((genericsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return genericsOrdering_
@@ -3025,6 +3050,9 @@ if((constraintsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return constraintsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
+return
 }
 }
 }
@@ -3032,6 +3060,17 @@ return ff_core_Ordering.OrderingSame()
 
 export const ff_core_Ordering_Order$ff_compiler_Parser_ParsedTargets = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const jsOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Lambda).compare_(x_.js_, y_.js_);
 if((jsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return jsOrdering_
@@ -3076,10 +3115,24 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const jsOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Lambda).compare_(x_.js_, y_.js_);
 if((jsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return jsOrdering_
@@ -3124,6 +3177,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 }

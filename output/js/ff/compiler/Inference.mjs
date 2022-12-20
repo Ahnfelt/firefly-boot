@@ -1502,6 +1502,36 @@ const a1_ = _1.head_;
 if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_;
 if(_1.tail_.tail_.Empty) {
+const _guard1 = ((operator_ == "===") || (operator_ == "!=="));
+if(_guard1) {
+const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
+const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
+const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a2_.value_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty()));
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
+}))(a1_), ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
+}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+}
+}
+}
+{
+if(_1.Link) {
+const a1_ = _1.head_;
+if(_1.tail_.Link) {
+const a2_ = _1.tail_.head_;
+if(_1.tail_.tail_.Empty) {
 const _guard1 = ((((((operator_ == "<") || (operator_ == ">")) || (operator_ == "<=")) || (operator_ == ">=")) || (operator_ == "==")) || (operator_ == "!="));
 if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty());
@@ -3300,6 +3330,36 @@ const a1_ = _1.head_;
 if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_;
 if(_1.tail_.tail_.Empty) {
+const _guard1 = ((operator_ == "===") || (operator_ == "!=="));
+if(_guard1) {
+const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
+const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
+const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a2_.value_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty()));
+{
+const _1 = e_;
+{
+const _c = _1;
+return ff_compiler_Syntax.ECall(_c.at_, target_, _c.effect_, _c.typeArguments_, ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e1_)
+}))(a1_), ff_core_List.Link((((_c) => {
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, e2_)
+}))(a2_), ff_core_List.Empty())), _c.dictionaries_)
+return
+}
+}
+return
+}
+}
+}
+}
+}
+{
+if(_1.Link) {
+const a1_ = _1.head_;
+if(_1.tail_.Link) {
+const a2_ = _1.tail_.head_;
+if(_1.tail_.tail_.Empty) {
 const _guard1 = ((((((operator_ == "<") || (operator_ == ">")) || (operator_ == "<=")) || (operator_ == ">=")) || (operator_ == "==")) || (operator_ == "!="));
 if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty());
@@ -3782,19 +3842,47 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Inference_Inference = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_Unification.compare_(x_.unification_, y_.unification_);
 if((unificationOrdering_ != ff_core_Ordering.OrderingSame())) {
 return unificationOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+return
+}
+}
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_Unification.compare_(x_.unification_, y_.unification_);
 if((unificationOrdering_ != ff_core_Ordering.OrderingSame())) {
 return unificationOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+return
+}
 }
 }
 };

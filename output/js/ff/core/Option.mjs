@@ -692,6 +692,13 @@ compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
 {
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 if(x_a.None) {
 const x_ = x_a;
 if(y_a.None) {
@@ -743,6 +750,13 @@ async compare_$(x_, y_, $c) {
 {
 const x_a = x_;
 const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
 {
 if(x_a.None) {
 const x_ = x_a;

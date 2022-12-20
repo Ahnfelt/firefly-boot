@@ -37,7 +37,7 @@ check(
             check(variants, fs, cs, True, g)
         | Pair([], []) =>
             let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
-                f + " could be " + magicShow(vs.toList().toArray())
+                f + " could be " + Show.show(vs.toList())
             }
             if(remaining.size() != 0) {
                 panic("Unexhaustive match:\n" + remaining.join("\n"))

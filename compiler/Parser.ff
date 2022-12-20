@@ -59,7 +59,7 @@ extend self: Parser {
     skip(kind: TokenKind): Token {
         let c = self.current()
         if(c.kind != kind) {
-            self.fail(c.at(), "Expected " + magicShow(kind) + ", got " + c.raw())
+            self.fail(c.at(), "Expected " + Show.show(kind) + ", got " + c.raw())
         }
         self.offset += 1
         c
@@ -68,7 +68,7 @@ extend self: Parser {
     rawSkip(kind: TokenKind, value: String): Token {
         let c = self.current()
         if(c.kind != kind) {
-            self.fail(c.at(), "Expected " + magicShow(kind) + " " + value + ", got " + c.raw())
+            self.fail(c.at(), "Expected " + Show.show(kind) + " " + value + ", got " + c.raw())
         }
         if(!c.rawIs(value)) {
             self.fail(c.at(), "Expected " + value + " got " + c.raw())

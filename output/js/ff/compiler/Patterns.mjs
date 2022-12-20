@@ -147,7 +147,7 @@ return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Orde
 {
 const f_ = _1.first_;
 const vs_ = _1.second_;
-return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))))
+return ((f_ + " could be ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 return
 }
 }));
@@ -355,7 +355,7 @@ return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Orde
 {
 const f_ = _1.first_;
 const vs_ = _1.second_;
-return ((f_ + " could be ") + ff_core_Core.magicShow_(ff_core_List.List_toArray(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))))
+return ((f_ + " could be ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(ff_core_Set.Set_toList(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 return
 }
 }));
@@ -556,6 +556,17 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const variantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variant_, y_.variant_);
 if((variantOrdering_ != ff_core_Ordering.OrderingSame())) {
 return variantOrdering_
@@ -570,10 +581,24 @@ return fieldsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const variantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variant_, y_.variant_);
 if((variantOrdering_ != ff_core_Ordering.OrderingSame())) {
 return variantOrdering_
@@ -588,6 +613,9 @@ return fieldsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+}
+}
+return
 }
 }
 }
@@ -595,6 +623,17 @@ return ff_core_Ordering.OrderingSame()
 
 export const ff_core_Ordering_Order$ff_compiler_Patterns_PatternCaseInfo = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
 if((fieldsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return fieldsOrdering_
@@ -604,10 +643,24 @@ if((guardOrdering_ != ff_core_Ordering.OrderingSame())) {
 return guardOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
 if((fieldsOrdering_ != ff_core_Ordering.OrderingSame())) {
 return fieldsOrdering_
@@ -617,6 +670,9 @@ if((guardOrdering_ != ff_core_Ordering.OrderingSame())) {
 return guardOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+}
+return
 }
 }
 }

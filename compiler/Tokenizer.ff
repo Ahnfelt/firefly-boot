@@ -199,7 +199,7 @@ tokenize(file: String, code: String): Array[Token] {
         } {
 
             let column = (i - startLineOffset) + 1
-            panic("Unexpected character: " + magicShow(code.expect(i)) + " in " + file + " at line " + line + ", column " + column)
+            panic("Unexpected character: " + Show.show(code.expect(i)) + " in " + file + " at line " + line + ", column " + column)
 
         }
 

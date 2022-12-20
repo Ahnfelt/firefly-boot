@@ -1134,19 +1134,47 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Dictionaries_Dictionaries = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const instancesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceValue).compare_(x_.instances_, y_.instances_);
 if((instancesOrdering_ != ff_core_Ordering.OrderingSame())) {
 return instancesOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+return
+}
+}
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const instancesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceValue).compare_(x_.instances_, y_.instances_);
 if((instancesOrdering_ != ff_core_Ordering.OrderingSame())) {
 return instancesOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+return
+}
 }
 }
 };

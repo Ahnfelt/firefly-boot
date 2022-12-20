@@ -1,2 +1,6 @@
-debug[T](value: T): Unit
+debug(value: String): Unit {
+    magic(value)
+}
+
+magic[T](value: T): Unit
     target js sync "console.log(value_)"

@@ -373,6 +373,17 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Dependencies_Dependencies = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const workspaceOrdering_ = ff_compiler_Workspace.ff_core_Ordering_Order$ff_compiler_Workspace_Workspace.compare_(x_.workspace_, y_.workspace_);
 if((workspaceOrdering_ != ff_core_Ordering.OrderingSame())) {
 return workspaceOrdering_
@@ -392,10 +403,24 @@ return singleFilePackagesOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const workspaceOrdering_ = ff_compiler_Workspace.ff_core_Ordering_Order$ff_compiler_Workspace_Workspace.compare_(x_.workspace_, y_.workspace_);
 if((workspaceOrdering_ != ff_core_Ordering.OrderingSame())) {
 return workspaceOrdering_
@@ -415,6 +440,9 @@ return singleFilePackagesOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 }
+}
+}
+return
 }
 }
 }
@@ -422,6 +450,17 @@ return ff_core_Ordering.OrderingSame()
 
 export const ff_core_Ordering_Order$ff_compiler_Dependencies_ResolvedDependencies = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const mainPackagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.mainPackagePair_, y_.mainPackagePair_);
 if((mainPackagePairOrdering_ != ff_core_Ordering.OrderingSame())) {
 return mainPackagePairOrdering_
@@ -441,10 +480,24 @@ return singleFilePackagesOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const mainPackagePairOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair.compare_(x_.mainPackagePair_, y_.mainPackagePair_);
 if((mainPackagePairOrdering_ != ff_core_Ordering.OrderingSame())) {
 return mainPackagePairOrdering_
@@ -464,6 +517,9 @@ return singleFilePackagesOrdering_
 return ff_core_Ordering.OrderingSame()
 }
 }
+}
+}
+return
 }
 }
 }

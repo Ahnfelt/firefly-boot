@@ -50,7 +50,3 @@ throw[E, T](error: E): T
 
 panic[T](message: String): T
     target js sync "throw new Error(message_)"
-
-magicShow[T](value: T): String
-    //target js sync "return ('' + value_)"
-    target js sync "return JSON.stringify(value_, undefined, 4)"

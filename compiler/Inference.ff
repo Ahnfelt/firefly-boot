@@ -689,6 +689,14 @@ extend self: Inference {
                 self.unification.unify(e.at, expected, t)
                 e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | [a1, a2] {
+                operator == "===" || operator == "!==" // For internal use
+            } =>
+                let t1 = self.unification.freshUnificationVariable(e.at)
+                let e1 = self.inferTerm(environment, t1, a1.value)
+                let e2 = self.inferTerm(environment, t1, a2.value)
+                self.unification.unify(e.at, expected, TConstructor(e.at, core("Bool"), []))
+                e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+            | [a1, a2] {
                 operator == "<" || operator == ">" ||
                 operator == "<=" || operator == ">=" ||
                 operator == "==" || operator == "!="

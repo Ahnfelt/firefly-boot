@@ -112,7 +112,6 @@ return {BuildCommand: true, mainPath_};
 
 
 export function main_(system_) {
-ff_core_Log.debug_(ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool).show_(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("foo", true), ff_core_List.Link(ff_core_Pair.Pair("bar", false), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
 let arguments_ = ff_core_NodeSystem.NodeSystem_arguments(system_);
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
@@ -323,7 +322,6 @@ return
 }
 
 export async function main_$(system_, $c) {
-ff_core_Log.debug_(ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool).show_(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("foo", true), ff_core_List.Link(ff_core_Pair.Pair("bar", false), ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
 let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
@@ -616,6 +614,13 @@ compare_(x_, y_) {
 const x_a = x_;
 const y_a = y_;
 {
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 if(x_a.BootstrapCommand) {
 const x_ = x_a;
 if(y_a.BootstrapCommand) {
@@ -709,6 +714,13 @@ async compare_$(x_, y_, $c) {
 {
 const x_a = x_;
 const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
 {
 if(x_a.BootstrapCommand) {
 const x_ = x_a;

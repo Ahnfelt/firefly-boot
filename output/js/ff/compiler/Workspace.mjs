@@ -310,6 +310,17 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Workspace_Workspace = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const rulesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Workspace.ff_core_Ordering_Order$ff_compiler_Workspace_WorkspaceRule).compare_(x_.rules_, y_.rules_);
 if((rulesOrdering_ != ff_core_Ordering.OrderingSame())) {
 return rulesOrdering_
@@ -324,10 +335,24 @@ return packageDirectoryOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const rulesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Workspace.ff_core_Ordering_Order$ff_compiler_Workspace_WorkspaceRule).compare_(x_.rules_, y_.rules_);
 if((rulesOrdering_ != ff_core_Ordering.OrderingSame())) {
 return rulesOrdering_
@@ -342,6 +367,9 @@ return packageDirectoryOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+}
+}
+return
 }
 }
 }
@@ -349,6 +377,17 @@ return ff_core_Ordering.OrderingSame()
 
 export const ff_core_Ordering_Order$ff_compiler_Workspace_WorkspaceRule = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const packageGroupOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.packageGroup_, y_.packageGroup_);
 if((packageGroupOrdering_ != ff_core_Ordering.OrderingSame())) {
 return packageGroupOrdering_
@@ -363,10 +402,24 @@ return locationOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const packageGroupOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.packageGroup_, y_.packageGroup_);
 if((packageGroupOrdering_ != ff_core_Ordering.OrderingSame())) {
 return packageGroupOrdering_
@@ -381,6 +434,9 @@ return locationOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+}
+}
+return
 }
 }
 }

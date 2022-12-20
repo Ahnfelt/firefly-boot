@@ -251,7 +251,7 @@ i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
 const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Core.magicShow_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
+ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
 } else {}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
@@ -429,7 +429,7 @@ i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
 const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Core.magicShow_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
+ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
 } else {}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {

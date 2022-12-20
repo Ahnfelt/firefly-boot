@@ -222,5 +222,5 @@ main(system: NodeSystem): Unit {
         //Pair(PVariable("x"), Body(2))
     ])
 
-    Log.debug(magicShow(compile(match)))
+    Log.debug(compile(match))
 }

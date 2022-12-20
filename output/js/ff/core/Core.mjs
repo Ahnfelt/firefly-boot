@@ -171,10 +171,6 @@ export function panic_(message_) {
 throw new Error(message_)
 }
 
-export function magicShow_(value_) {
-return JSON.stringify(value_, undefined, 4)
-}
-
 export async function if_$(condition_, body_, $c) {
 {
 const _1 = condition_;
@@ -266,10 +262,6 @@ throw new Error('Function throw is missing on this target in async context.');
 
 export async function panic_$(message_, $c) {
 throw new Error('Function panic is missing on this target in async context.');
-}
-
-export async function magicShow_$(value_, $c) {
-throw new Error('Function magicShow is missing on this target in async context.');
 }
 
 

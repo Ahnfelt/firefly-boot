@@ -147,9 +147,19 @@ extend self: Deriver {
         let at = declaration.at
         let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
+        let sameCase = MatchCase(
+            at = at,
+            patterns = [wildcardPattern, wildcardPattern]
+            guards = [MatchGuard(
+                at,
+                self.makeSimpleCall(at, "===", [EVariable(at, "x"), EVariable(at, "y")]),
+                PVariant(at, "ff:core/Bool.True", [])
+            )]
+            body = EVariant(at, "ff:core/Ordering.OrderingSame", [], None)
+        )
         declaration.variants.{
             | [variant] =>
-                [MatchCase(
+                [sameCase, MatchCase(
                     at = at,
                     patterns = [wildcardPattern, wildcardPattern]
                     guards = []
@@ -192,7 +202,7 @@ extend self: Deriver {
                             ])
                         )
                 )
-                [...sameVariantCases, differentVariant]
+                [sameCase, ...sameVariantCases, differentVariant]
         }
     }
 

@@ -2044,6 +2044,17 @@ return
 
 export const ff_core_Ordering_Order$ff_compiler_Resolver_Resolver = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const variablesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.variables_, y_.variables_);
 if((variablesOrdering_ != ff_core_Ordering.OrderingSame())) {
 return variablesOrdering_
@@ -2078,10 +2089,24 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const variablesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.variables_, y_.variables_);
 if((variablesOrdering_ != ff_core_Ordering.OrderingSame())) {
 return variablesOrdering_
@@ -2116,6 +2141,9 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
 }
 }
 }
@@ -2123,19 +2151,47 @@ return ff_core_Ordering.OrderingSame()
 
 export const ff_core_Ordering_Order$ff_compiler_Resolver_ResolverState = {
 compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const nextUnificationVariableIndexOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.nextUnificationVariableIndex_, y_.nextUnificationVariableIndex_);
 if((nextUnificationVariableIndexOrdering_ != ff_core_Ordering.OrderingSame())) {
 return nextUnificationVariableIndexOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
+return
+}
+}
 },
 async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
 const nextUnificationVariableIndexOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.nextUnificationVariableIndex_, y_.nextUnificationVariableIndex_);
 if((nextUnificationVariableIndexOrdering_ != ff_core_Ordering.OrderingSame())) {
 return nextUnificationVariableIndexOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+return
+}
 }
 }
 };
