@@ -21,15 +21,16 @@ instance Int: Order {
 }
 
 instance String: Order {
-    compare(x: String, y: String): Ordering {
-        if(x < y) {
-            OrderingBefore
-        } elseIf { x > y } {
-            OrderingAfter
-        } else {
-            OrderingSame
-        }
-    }
+    compare(x: String, y: String): Ordering
+        target js sync """
+            if(x_ < y_) {
+                return ff_core_Ordering.OrderingBefore()
+            } else if(x_ > y_) {
+                return ff_core_Ordering.OrderingAfter()
+            } else {
+                return ff_core_Ordering.OrderingSame()
+            }
+        """
 }
 
 instance Pair[A: Order, B: Order]: Order {

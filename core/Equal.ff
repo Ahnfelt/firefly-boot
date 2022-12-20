@@ -1,0 +1,23 @@
+trait T: Equal {
+    equals(x: T, y: T): Bool
+}
+
+instance Bool: Equal {
+    equals(x: Bool, y: Bool): Bool
+        target js sync """return x_ === y_"""
+}
+
+instance Char: Equal {
+    equals(x: Char, y: Char): Bool
+        target js sync """return x_ === y_"""
+}
+
+instance Int: Equal {
+    equals(x: Int, y: Int): Bool
+        target js sync """return x_ === y_"""
+}
+
+instance String: Equal {
+    equals(x: String, y: String): Bool
+        target js sync """return x_ === y_"""
+}

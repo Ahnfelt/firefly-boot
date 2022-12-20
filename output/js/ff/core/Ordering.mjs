@@ -335,22 +335,18 @@ return ff_core_Ordering.fromInt_((x_ - y_))
 
 export const ff_core_Ordering_Order$ff_core_String_String = {
 compare_(x_, y_) {
-if((x_ < y_)) {
-return ff_core_Ordering.OrderingBefore()
-} else if((x_ > y_)) {
-return ff_core_Ordering.OrderingAfter()
-} else {
-return ff_core_Ordering.OrderingSame()
-}
+
+            if(x_ < y_) {
+                return ff_core_Ordering.OrderingBefore()
+            } else if(x_ > y_) {
+                return ff_core_Ordering.OrderingAfter()
+            } else {
+                return ff_core_Ordering.OrderingSame()
+            }
+        
 },
 async compare_$(x_, y_, $c) {
-if((x_ < y_)) {
-return ff_core_Ordering.OrderingBefore()
-} else if((x_ > y_)) {
-return ff_core_Ordering.OrderingAfter()
-} else {
-return ff_core_Ordering.OrderingSame()
-}
+throw new Error('Function compare is missing on this target in async context.');
 }
 };
 
