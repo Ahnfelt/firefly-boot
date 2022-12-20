@@ -3,6 +3,10 @@ type Iterator![T](
     close: () => Unit
 )
 
+make[T](next: () => Option[T], close: () => Unit = {}): Iterator[T] {
+    Iterator(next, close)
+}
+
 extend self[T]: Iterator[T] {
 
     concat(that: Iterator[T]): Iterator[T] {

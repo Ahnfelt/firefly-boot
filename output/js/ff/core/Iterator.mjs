@@ -81,9 +81,17 @@ return {next_, close_};
 
 
 
+export function make_(next_, close_ = (() => {
 
+})) {
+return ff_core_Iterator.Iterator(next_, close_)
+}
 
+export async function make_$(next_, close_ = (async ($c) => {
 
+}), $c) {
+return ff_core_Iterator.Iterator(next_, close_)
+}
 
 export function Iterator_concat(self_, that_) {
 let firstDone_ = false;
