@@ -229,6 +229,38 @@ extend self[T]: Iterator[T] {
         self.last().else { panic("expectLast() on empty iterator") }
     }
 
+    collectFirst[R](body: T => Option[R]): Option[R] {
+        try {
+            mutable done = False
+            mutable result = None
+            while {!done} {
+                self.next().{
+                    | None => done = True
+                    | Some(x) =>
+                        body(x).{
+                            | None =>
+                            | o =>
+                                done = True
+                                result = o
+                        }
+                }
+            }
+            result
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    find(body: T => Bool): Option[T] {
+        self.filter(body).first()
+    }
+
+    foldLeft[R](initial: R, body: (R, T) => R): R {
+        mutable result = initial
+        self.each {result = body(result, _)}
+        result
+    }
+
     toArray(): Array[T] {
         let builder = ArrayBuilder.empty()
         self.each(builder.add)

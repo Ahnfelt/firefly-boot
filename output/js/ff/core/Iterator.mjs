@@ -105,14 +105,6 @@ that_.close_()
 }))
 }
 
-export function Iterator_use(self_, body_) {
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-return body_(self_)
-})), (() => {
-self_.close_()
-})))
-}
-
 export function Iterator_map(self_, body_) {
 return ff_core_Iterator.Iterator((() => {
 return ff_core_Option.Option_map(self_.next_(), body_)
@@ -359,6 +351,14 @@ self_.close_()
 }))
 }
 
+export function Iterator_use(self_, body_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return body_(self_)
+})), (() => {
+self_.close_()
+})))
+}
+
 export function Iterator_each(self_, body_) {
 ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 let done_ = false;
@@ -460,6 +460,60 @@ return ff_core_Core.panic_("expectLast() on empty iterator")
 }))
 }
 
+export function Iterator_collectFirst(self_, body_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+let done_ = false;
+let result_ = ff_core_Option.None();
+while((!done_)) {
+for(;;) {
+const _1 = self_.next_();
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+for(;;) {
+const _1 = body_(x_);
+{
+if(_1.None) {
+
+break
+}
+}
+{
+const o_ = _1;
+done_ = true;
+result_ = o_
+break
+}
+}
+break
+}
+}
+}
+};
+return result_
+})), (() => {
+self_.close_()
+})))
+}
+
+export function Iterator_find(self_, body_) {
+return ff_core_Iterator.Iterator_first(ff_core_Iterator.Iterator_filter(self_, body_))
+}
+
+export function Iterator_foldLeft(self_, initial_, body_) {
+let result_ = initial_;
+ff_core_Iterator.Iterator_each(self_, ((_w1) => {
+result_ = body_(result_, _w1)
+}));
+return result_
+}
+
 export function Iterator_toArray(self_) {
 const builder_ = ff_core_ArrayBuilder.empty_();
 ff_core_Iterator.Iterator_each(self_, ((value_) => {
@@ -490,14 +544,6 @@ return (await self_.close_($c))
 (await that_.close_($c))
 }), $c)))
 }))
-}
-
-export async function Iterator_use$(self_, body_, $c) {
-return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
-return (await body_(self_, $c))
-}), $c)), (async ($c) => {
-(await self_.close_($c))
-}), $c)))
 }
 
 export async function Iterator_map$(self_, body_, $c) {
@@ -746,6 +792,14 @@ return (await self_.next_($c))
 }))
 }
 
+export async function Iterator_use$(self_, body_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await body_(self_, $c))
+}), $c)), (async ($c) => {
+(await self_.close_($c))
+}), $c)))
+}
+
 export async function Iterator_each$(self_, body_, $c) {
 ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
 let done_ = false;
@@ -845,6 +899,60 @@ export async function Iterator_expectLast$(self_, $c) {
 return ff_core_Option.Option_else((await ff_core_Iterator.Iterator_last$(self_, $c)), (() => {
 return ff_core_Core.panic_("expectLast() on empty iterator")
 }))
+}
+
+export async function Iterator_collectFirst$(self_, body_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+let done_ = false;
+let result_ = ff_core_Option.None();
+while((!done_)) {
+for(;;) {
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+for(;;) {
+const _1 = (await body_(x_, $c));
+{
+if(_1.None) {
+
+break
+}
+}
+{
+const o_ = _1;
+done_ = true;
+result_ = o_
+break
+}
+}
+break
+}
+}
+}
+};
+return result_
+}), $c)), (async ($c) => {
+(await self_.close_($c))
+}), $c)))
+}
+
+export async function Iterator_find$(self_, body_, $c) {
+return (await ff_core_Iterator.Iterator_first$((await ff_core_Iterator.Iterator_filter$(self_, body_, $c)), $c))
+}
+
+export async function Iterator_foldLeft$(self_, initial_, body_, $c) {
+let result_ = initial_;
+(await ff_core_Iterator.Iterator_each$(self_, (async (_w1, $c) => {
+result_ = (await body_(result_, _w1, $c))
+}), $c));
+return result_
 }
 
 export async function Iterator_toArray$(self_, $c) {
