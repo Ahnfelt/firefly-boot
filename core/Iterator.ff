@@ -177,17 +177,20 @@ extend self[T]: Iterator[T] {
         Iterator {
             if(remaining <= 0) {None} else:
             self.next().{
-                | None => None
+                | None =>
+                    remaining = -1
+                    None
                 | Some(x) =>
                     mutable list = [x]
-                    while {remaining >= 1} {
+                    remaining -= 1
+                    while {remaining > 0} {
                         remaining -= 1
                         self.next().{
                             | None => remaining = -1
                             | Some(x) => list = [x, ...list]
                         }
                     }
-                    if(remaining >= 0) {remaining = size}
+                    if(remaining != -1) {remaining = size}
                     Some(list.reverse())
             }
         } {

@@ -378,6 +378,7 @@ return ff_core_Option.None()
 const _1 = self_.next_();
 {
 if(_1.None) {
+remaining_ = (-1);
 return ff_core_Option.None()
 return
 }
@@ -386,7 +387,8 @@ return
 if(_1.Some) {
 const x_ = _1.value_;
 let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
-while((remaining_ >= 1)) {
+remaining_ -= 1;
+while((remaining_ > 0)) {
 remaining_ -= 1;
 for(;;) {
 const _1 = self_.next_();
@@ -405,7 +407,7 @@ break
 }
 }
 };
-if((remaining_ >= 0)) {
+if((remaining_ != (-1))) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))
@@ -897,6 +899,7 @@ return ff_core_Option.None()
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
+remaining_ = (-1);
 return ff_core_Option.None()
 return
 }
@@ -905,7 +908,8 @@ return
 if(_1.Some) {
 const x_ = _1.value_;
 let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
-while((remaining_ >= 1)) {
+remaining_ -= 1;
+while((remaining_ > 0)) {
 remaining_ -= 1;
 for(;;) {
 const _1 = (await self_.next_($c));
@@ -924,7 +928,7 @@ break
 }
 }
 };
-if((remaining_ >= 0)) {
+if((remaining_ != (-1))) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))
