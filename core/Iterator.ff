@@ -25,14 +25,6 @@ extend self[T]: Iterator[T] {
         }
     }
 
-    use[R](body: Iterator[T] => R): R {
-        try {
-            body(self)
-        } finally {
-            self.close()
-        } expect()
-    }
-
     map[S](body: T => S): Iterator[S] {
         Iterator {
             self.next().map(body)
@@ -168,6 +160,14 @@ extend self[T]: Iterator[T] {
     }
 
     // Consuming methods
+
+    use[R](body: Iterator[T] => R): R {
+        try {
+            body(self)
+        } finally {
+            self.close()
+        } expect()
+    }
 
     each(body: T => Unit): Unit {
         try {
