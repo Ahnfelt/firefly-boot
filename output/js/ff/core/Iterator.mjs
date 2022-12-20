@@ -368,6 +368,57 @@ return r_
 }))
 }
 
+export function Iterator_chunked(self_, size_) {
+let remaining_ = size_;
+return ff_core_Iterator.Iterator((() => {
+if((remaining_ <= 0)) {
+return ff_core_Option.None()
+} else {
+{
+const _1 = self_.next_();
+{
+if(_1.None) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
+while((remaining_ >= 1)) {
+remaining_ -= 1;
+for(;;) {
+const _1 = self_.next_();
+{
+if(_1.None) {
+remaining_ = (-1)
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+list_ = ff_core_List.Link(x_, list_)
+break
+}
+}
+}
+};
+if((remaining_ >= 0)) {
+remaining_ = size_
+};
+return ff_core_Option.Some(ff_core_List.List_reverse(list_))
+return
+}
+}
+}
+}
+}), (() => {
+self_.close_()
+}))
+}
+
 export function Iterator_use(self_, body_) {
 return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return body_(self_)
@@ -834,6 +885,57 @@ const r_ = ff_core_Pair.Pair(i_, x_);
 i_ += 1;
 return r_
 }), $c))
+}
+
+export async function Iterator_chunked$(self_, size_, $c) {
+let remaining_ = size_;
+return ff_core_Iterator.Iterator((async ($c) => {
+if((remaining_ <= 0)) {
+return ff_core_Option.None()
+} else {
+{
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
+while((remaining_ >= 1)) {
+remaining_ -= 1;
+for(;;) {
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+remaining_ = (-1)
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+list_ = ff_core_List.Link(x_, list_)
+break
+}
+}
+}
+};
+if((remaining_ >= 0)) {
+remaining_ = size_
+};
+return ff_core_Option.Some(ff_core_List.List_reverse(list_))
+return
+}
+}
+}
+}
+}), (async ($c) => {
+(await self_.close_($c))
+}))
 }
 
 export async function Iterator_use$(self_, body_, $c) {

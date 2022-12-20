@@ -172,6 +172,29 @@ extend self[T]: Iterator[T] {
         }
     }
 
+    chunked(size: Int): Iterator[List[T]] {
+        mutable remaining = size
+        Iterator {
+            if(remaining <= 0) {None} else:
+            self.next().{
+                | None => None
+                | Some(x) =>
+                    mutable list = [x]
+                    while {remaining >= 1} {
+                        remaining -= 1
+                        self.next().{
+                            | None => remaining = -1
+                            | Some(x) => list = [x, ...list]
+                        }
+                    }
+                    if(remaining >= 0) {remaining = size}
+                    Some(list.reverse())
+            }
+        } {
+            self.close()
+        }
+    }
+
     // Consuming methods
 
     use[R](body: Iterator[T] => R): R {
