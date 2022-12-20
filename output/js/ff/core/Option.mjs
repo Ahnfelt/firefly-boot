@@ -195,6 +195,14 @@ return
 }
 }
 
+export function Option_toIterator(self_) {
+return ff_core_Iterator.Iterator((() => {
+return self_
+}), (() => {
+
+}))
+}
+
 export function Option_filter(self_, body_) {
 {
 const _1 = self_;
@@ -452,6 +460,14 @@ return
 }
 }
 }
+}
+
+export async function Option_toIterator$(self_, $c) {
+return ff_core_Iterator.Iterator((async ($c) => {
+return self_
+}), (async ($c) => {
+
+}))
 }
 
 export async function Option_filter$(self_, body_, $c) {

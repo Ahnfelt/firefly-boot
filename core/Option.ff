@@ -44,6 +44,10 @@ extend self[T]: Option[T] {
         }
     }
 
+    toIterator(): Iterator[T] {
+        Iterator {self} {}
+    }
+
     filter(body: T => Bool): Option[T] {
         self.{
             | Some(v) {body(v)} => Some(v)

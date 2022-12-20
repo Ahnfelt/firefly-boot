@@ -304,6 +304,22 @@ export async function Array_map$(self_, body_, $c) {
         
 }
 
+export function Array_toSet(self_, ff_core_Ordering_Order$T) {
+return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
+}
+
+export async function Array_toSet$(self_, ff_core_Ordering_Order$T, $c) {
+return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
+}
+
+export function Array_toMap(self_, ff_core_Ordering_Order$K) {
+return ff_core_List.List_toMap(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$K)
+}
+
+export async function Array_toMap$(self_, ff_core_Ordering_Order$K, $c) {
+return ff_core_List.List_toMap(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$K)
+}
+
 export function Array_join(self_, separator_ = "") {
 return self_.join(separator_)
 }

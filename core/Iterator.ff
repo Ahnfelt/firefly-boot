@@ -6,8 +6,16 @@ type Iterator![T](
 extend self[T]: Iterator[T] {
 
     concat(that: Iterator[T]): Iterator[T] {
+        mutable firstDone = False
         Iterator {
-            self.next().orElse { that.next() }
+            if(firstDone) {
+                that.next()
+            } else {
+                self.next().orElse {
+                    firstDone = True
+                    that.next()
+                }
+            }
         } {
             try {
                 self.close()
@@ -23,6 +31,238 @@ extend self[T]: Iterator[T] {
         } finally {
             self.close()
         } expect()
+    }
+
+    map[S](body: T => S): Iterator[S] {
+        Iterator {
+            self.next().map(body)
+        } {
+            self.close()
+        }
+    }
+
+    flatMap[S](body: T => Iterator[S]): Iterator[S] {
+        mutable inner = Iterator {None} {}
+        Iterator {
+            mutable result = None
+            while {result == None} {
+                inner.next().{
+                    | Some(_)@i => result = Some(i)
+                    | None =>
+                        self.next().{
+                            | None => result = Some(None)
+                            | Some(o) => inner = body(o)
+                        }
+                }
+            }
+            result.expect()
+        } {
+            try {
+                inner.close()
+            } finally {
+                self.close()
+            } expect()
+        }
+    }
+
+    collect[S](body: T => Option[S]): Iterator[S] {
+        self.flatMap {body(_).toIterator()}
+    }
+
+    filter(body: T => Bool): Iterator[T] {
+        Iterator {
+            mutable result = None
+            while {result == None} {
+                self.next().{
+                    | Some(x) {body(x)} => result = Some(Some(x))
+                    | Some(_) =>
+                    | None => result = Some(None)
+                }
+            }
+            result.expect()
+        } {
+            self.close()
+        }
+    }
+
+    zip[S](that: Iterator[S]): Iterator[Pair[T, S]] {
+        Iterator {
+            Pair(self.next(), that.next()).{
+                | Pair(Some(x), Some(y)) => Some(Pair(x, y))
+                | _ => None
+            }
+        } {
+            try {
+                self.close()
+            } finally {
+                that.close()
+            } expect()
+        }
+    }
+
+    takeFirst(count: Int = 1): Iterator[T] {
+        mutable remaining = count
+        Iterator {
+            self.next().filter {_ =>
+                remaining -= 1
+                remaining >= 0
+            }
+        } {
+            self.close()
+        }
+    }
+
+    dropFirst(count: Int = 1): Iterator[T] {
+        mutable remaining = count
+        Iterator {
+            while {remaining >= 1} {
+                self.next().{
+                    | None => remaining = 0
+                    | Some(_) => remaining -= 1
+                }
+            }
+            self.next()
+        } {
+            self.close()
+        }
+    }
+
+    takeWhile(body: T => Bool): Iterator[T] {
+        mutable done = False
+        Iterator {
+            if(done) {None} else:
+            self.next().{
+                | None =>
+                    done = True
+                    None
+                | Some(x)@o =>
+                    done = !body(x)
+                    if(done) {None} else {o}
+            }
+        } {
+            self.close()
+        }
+    }
+
+    dropWhile(body: T => Bool): Iterator[T] {
+        mutable done = False
+        Iterator {
+            if(!done) {
+                mutable result = None
+                while {!done} {
+                    self.next().{
+                        | None => done = True
+                        | Some(x) {body(x)} =>
+                        | Some(x)@o =>
+                            result = o
+                            done = True
+                    }
+                }
+                result
+            } else {
+                self.next()
+            }
+        } {
+            self.close()
+        }
+    }
+
+    // Consuming methods
+
+    each(body: T => Unit): Unit {
+        try {
+            mutable done = False
+            while {!done} {
+                self.next().{
+                    | None => done = True
+                    | Some(x) => body(x)
+                }
+            }
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    eachWhile(body: T => Bool): Unit {
+        try {
+            mutable done = False
+            while {!done} {
+                self.next().{
+                    | None => done = True
+                    | Some(x) => done = !body(x)
+                }
+            }
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    first(): Option[T] {
+        try {
+            self.next()
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    last(): Option[T] {
+        try {
+            mutable done = False
+            mutable result = None
+            while {!done} {
+                self.next().{
+                    | None => done = True
+                    | Some(x)@o => result = o
+                }
+            }
+            result
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    expectFirst(): T {
+        self.first().else { panic("expectFirst() on empty iterator") }
+    }
+
+    expectLast(): T {
+        self.last().else { panic("expectLast() on empty iterator") }
+    }
+
+    toArray(): Array[T] {
+        let builder = ArrayBuilder.empty()
+        self.each(builder.add)
+        builder.toArray()
+    }
+
+    toList(): List[T] {
+        self.toArray().toList()
+    }
+
+}
+
+extend self[T: Order]: Iterator[T] {
+    toSet(): Set[T] {
+        self.toArray().toSet()
+    }
+}
+
+extend self[K: Order, V]: Iterator[Pair[K, V]] {
+    toMap(): Map[K, V] {
+        self.toArray().toMap()
+    }
+}
+
+extend self: Iterator[Buffer] {
+
+    toBuffer(): Buffer {
+        let builder = ArrayBuilder.empty()
+        self.each(builder.add)
+        Buffer.fromBufferArray(builder.toArray())
+    }
+
+    toString(encoding: String = "utf8"): String {
+        self.toBuffer().toString(encoding)
     }
 
 }

@@ -12,7 +12,7 @@
             }
             let jsonTar = Tar.archive(entries)
             let jsonTarGz = Gzip.compress(jsonTar)
-            bucket.writeStream(key.replaceFirst("xml/", "json/"), jsonTarGz)
+            bucket.writeStream(key.replace("xml/", "json/"), jsonTarGz)
         )
     }
 
@@ -22,12 +22,12 @@
     Gzip.decompress(stream: Stream[Buffer]): Stream[Buffer]
     Tar.archive(stream: Stream[TarEntry]): Stream[Buffer]
     Tar.unarchive(stream: Stream[Buffer]): Stream[TarEntry]
-    bucket.listKeys(): Stream[String]
+    bucket.listKeys(prefix: String = ""): Stream[String]
     bucket.readStream(key: String): Stream[Buffer]
     bucket.writeStream(key: String, stream: Stream[Buffer]): Unit
 
 
-    type Stream![T](
+    class Stream[T](
         next: () => Option[T]
         close: () => Unit
     )

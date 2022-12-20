@@ -103,6 +103,19 @@ extend self[T]: Array[T] {
 
 }
 
+
+extend self[T: Order]: Array[T] {
+    toSet(): Set[T] {
+        self.toList().toSet()
+    }
+}
+
+extend self[K: Order, V]: Array[Pair[K, V]] {
+    toMap(): Map[K, V] {
+        self.toList().toMap()
+    }
+}
+
 extend self: Array[String] {
 
     join(separator: String = ""): String
