@@ -114,6 +114,7 @@ return {BuildCommand: true, mainPath_};
 
 
 export function main_(system_) {
+ff_core_Log.debug_(ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_Nothing_Nothing).equals_(ff_core_List.Empty(), ff_core_List.Empty())));
 let arguments_ = ff_core_NodeSystem.NodeSystem_arguments(system_);
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
@@ -324,6 +325,7 @@ return
 }
 
 export async function main_$(system_, $c) {
+ff_core_Log.debug_(ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_Nothing_Nothing).equals_(ff_core_List.Empty(), ff_core_List.Empty())));
 let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);

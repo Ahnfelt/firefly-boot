@@ -9,6 +9,10 @@ instance Bool: Show {
     }
 }
 
+instance Nothing: Show {
+    show(value: Nothing): String {""}
+}
+
 instance Char: Show {
     show(value: Char): String { value.toString() }
 }

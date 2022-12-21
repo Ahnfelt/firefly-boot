@@ -86,99 +86,69 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export const ff_core_Show_Show$ff_core_Bool_Bool = {
-show_(value_) {
-{
-const value_a = value_;
-{
-if(!value_a) {
-return "False"
-return
-}
-}
-{
-if(value_a) {
-return "True"
-return
-}
-}
-}
+export const ff_core_Equal_Equal$ff_core_Nothing_Nothing = {
+equals_(x_, y_) {
+return true
 },
-async show_$(value_, $c) {
-{
-const value_a = value_;
-{
-if(!value_a) {
-return "False"
-return
-}
-}
-{
-if(value_a) {
-return "True"
-return
-}
-}
-}
+async equals_$(x_, y_, $c) {
+return true
 }
 };
 
-export const ff_core_Show_Show$ff_core_Nothing_Nothing = {
-show_(value_) {
-return ""
+export const ff_core_Equal_Equal$ff_core_Bool_Bool = {
+equals_(x_, y_) {
+return x_ === y_
 },
-async show_$(value_, $c) {
-return ""
+async equals_$(x_, y_, $c) {
+throw new Error('Function equals is missing on this target in async context.');
 }
 };
 
-export const ff_core_Show_Show$ff_core_Char_Char = {
-show_(value_) {
-return ff_core_Char.Char_toString(value_)
+export const ff_core_Equal_Equal$ff_core_Char_Char = {
+equals_(x_, y_) {
+return x_ === y_
 },
-async show_$(value_, $c) {
-return ff_core_Char.Char_toString(value_)
+async equals_$(x_, y_, $c) {
+throw new Error('Function equals is missing on this target in async context.');
 }
 };
 
-export const ff_core_Show_Show$ff_core_Int_Int = {
-show_(value_) {
-return ("" + value_)
+export const ff_core_Equal_Equal$ff_core_Int_Int = {
+equals_(x_, y_) {
+return x_ === y_
 },
-async show_$(value_, $c) {
-return ("" + value_)
+async equals_$(x_, y_, $c) {
+throw new Error('Function equals is missing on this target in async context.');
 }
 };
 
-export const ff_core_Show_Show$ff_core_String_String = {
-show_(value_) {
-return JSON.stringify(value_);
+export const ff_core_Equal_Equal$ff_core_String_String = {
+equals_(x_, y_) {
+return x_ === y_
 },
-async show_$(value_, $c) {
-throw new Error('Function show is missing on this target in async context.');
+async equals_$(x_, y_, $c) {
+throw new Error('Function equals is missing on this target in async context.');
 }
 };
 
-export function ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T) { return {
-show_(value_) {
-return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) => {
-return ff_core_Show_Show$T.show_(value_)
-})), ", ")) + "]")
-},
-async show_$(value_, $c) {
-return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) => {
-return ff_core_Show_Show$T.show_(value_)
-})), ", ")) + "]")
-}
-}}
+export const ff_core_Equal_Equal$ff_core_List_List = {
+equals_(x_, y_) {
 
-export function ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show_Show$A, ff_core_Show_Show$B) { return {
-show_(value_) {
-return (((("Pair(" + ff_core_Show_Show$A.show_(value_.first_)) + ", ") + ff_core_Show_Show$B.show_(value_.second_)) + ")")
+            let a = x_
+            let b = y_
+            if(a === b) return true
+            while(a.Link && b.Link) {
+                if(a === b) return true
+                if(!ff_core_Equal_Equal$T.equals_(a.head_, b.head_)) return false
+                a = a.tail_
+                b = b.tail_
+            }
+            return a.Empty && b.Empty
+        
 },
-async show_$(value_, $c) {
-return (((("Pair(" + ff_core_Show_Show$A.show_(value_.first_)) + ", ") + ff_core_Show_Show$B.show_(value_.second_)) + ")")
+async equals_$(x_, y_, $c) {
+throw new Error('Function equals is missing on this target in async context.');
 }
-}}
+};
 
 

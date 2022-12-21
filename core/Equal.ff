@@ -2,6 +2,10 @@ trait T: Equal {
     equals(x: T, y: T): Bool
 }
 
+instance Nothing: Equal {
+    equals(x: Nothing, y: Nothing): Bool {True}
+}
+
 instance Bool: Equal {
     equals(x: Bool, y: Bool): Bool
         target js sync """return x_ === y_"""
@@ -20,4 +24,20 @@ instance Int: Equal {
 instance String: Equal {
     equals(x: String, y: String): Bool
         target js sync """return x_ === y_"""
+}
+
+instance List[T]: Equal {
+    equals(x: List[T], y: List[T]): Bool
+        target js sync """
+            let a = x_
+            let b = y_
+            if(a === b) return true
+            while(a.Link && b.Link) {
+                if(a === b) return true
+                if(!ff_core_Equal_Equal$T.equals_(a.head_, b.head_)) return false
+                a = a.tail_
+                b = b.tail_
+            }
+            return a.Empty && b.Empty
+        """
 }

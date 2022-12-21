@@ -262,6 +262,15 @@ return
 }
 }
 
+export const ff_core_Ordering_Order$ff_core_Nothing_Nothing = {
+compare_(x_, y_) {
+return ff_core_Ordering.OrderingSame()
+},
+async compare_$(x_, y_, $c) {
+return ff_core_Ordering.OrderingSame()
+}
+};
+
 export const ff_core_Ordering_Order$ff_core_Bool_Bool = {
 compare_(x_, y_) {
 {

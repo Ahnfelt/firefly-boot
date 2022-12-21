@@ -2,6 +2,10 @@ trait T: Order {
     compare(x: T, y: T): Ordering
 }
 
+instance Nothing: Order {
+    compare(x: Nothing, y: Nothing): Ordering {OrderingSame}
+}
+
 instance Bool: Order {
     compare(x: Bool, y: Bool): Ordering {
         | False, True => OrderingBefore
