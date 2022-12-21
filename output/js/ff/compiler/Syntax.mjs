@@ -24,6 +24,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -1712,6 +1714,1984 @@ const x_a = x_;
 {
 const z_ = x_a;
 return ((((((((("Version" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.major_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.minor_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.patch_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Location = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.line_, y_.line_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.column_, y_.column_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.line_, y_.line_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.column_, y_.column_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_CompileError = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.message_, y_.message_))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.message_, y_.message_))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_ModuleWithPackageInfo = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packageInfo_, y_.packageInfo_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module.equals_(x_.module_, y_.module_))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packageInfo_, y_.packageInfo_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module.equals_(x_.module_, y_.module_))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DPackage.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency).equals_(x_.dependencies_, y_.dependencies_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInclude).equals_(x_.includes_, y_.includes_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DPackage.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency).equals_(x_.dependencies_, y_.dependencies_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInclude).equals_(x_.includes_, y_.includes_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Module = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DType).equals_(x_.types_, y_.types_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInstance).equals_(x_.instances_, y_.instances_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DExtend).equals_(x_.extends_, y_.extends_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DLet).equals_(x_.lets_, y_.lets_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_)))))))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DType).equals_(x_.types_, y_.types_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DTrait).equals_(x_.traits_, y_.traits_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DInstance).equals_(x_.instances_, y_.instances_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DExtend).equals_(x_.extends_, y_.extends_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DLet).equals_(x_.lets_, y_.lets_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_)))))))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.group_, y_.group_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.group_, y_.group_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DPackage = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Version.equals_(x_.version_, y_.version_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames.equals_(x_.targets_, y_.targets_))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Version.equals_(x_.version_, y_.version_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames.equals_(x_.targets_, y_.targets_))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DDependency = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Version.equals_(x_.version_, y_.version_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Safety.equals_(x_.safety_, y_.safety_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames.equals_(x_.targets_, y_.targets_)))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Version.equals_(x_.version_, y_.version_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Safety.equals_(x_.safety_, y_.safety_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames.equals_(x_.targets_, y_.targets_)))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DInclude = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.path_, y_.path_))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.path_, y_.path_))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_TargetNames = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.node_, y_.node_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.browser_, y_.browser_))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.node_, y_.node_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.browser_, y_.browser_))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DImport = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.alias_, y_.alias_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.directory_, y_.directory_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_)))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.alias_, y_.alias_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.package_, y_.package_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.directory_, y_.directory_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_)))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DFunction = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Target.equals_(x_.body_, y_.body_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Target.equals_(x_.body_, y_.body_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DLet = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.variableType_, y_.variableType_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.variableType_, y_.variableType_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DExtend = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.type_, y_.type_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.methods_, y_.methods_))))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.type_, y_.type_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.methods_, y_.methods_))))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DType = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.newtype_, y_.newtype_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.commonFields_, y_.commonFields_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Variant).equals_(x_.variants_, y_.variants_)))))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.newtype_, y_.newtype_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.commonFields_, y_.commonFields_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Variant).equals_(x_.variants_, y_.variants_)))))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DTrait = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.generatorParameters_, y_.generatorParameters_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature).equals_(x_.methods_, y_.methods_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda)).equals_(x_.methodDefaults_, y_.methodDefaults_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda)).equals_(x_.methodGenerators_, y_.methodGenerators_))))))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.generatorParameters_, y_.generatorParameters_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature).equals_(x_.methods_, y_.methods_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda)).equals_(x_.methodDefaults_, y_.methodDefaults_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda)).equals_(x_.methodGenerators_, y_.methodGenerators_))))))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_DInstance = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.traitName_, y_.traitName_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Argument).equals_(x_.generatorArguments_, y_.generatorArguments_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.methods_, y_.methods_)))))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.traitName_, y_.traitName_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Argument).equals_(x_.generatorArguments_, y_.generatorArguments_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.methods_, y_.methods_)))))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Term = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.EString) {
+const x_ = x_a;
+if(y_a.EString) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.EChar) {
+const x_ = x_a;
+if(y_a.EChar) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.EInt) {
+const x_ = x_a;
+if(y_a.EInt) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.EFloat) {
+const x_ = x_a;
+if(y_a.EFloat) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.EVariable) {
+const x_ = x_a;
+if(y_a.EVariable) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_))
+return
+}
+}
+}
+{
+if(x_a.ELambda) {
+const x_ = x_a;
+if(y_a.ELambda) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda.equals_(x_.lambda_, y_.lambda_))
+return
+}
+}
+}
+{
+if(x_a.EFunctions) {
+const x_ = x_a;
+if(y_a.EFunctions) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.body_, y_.body_)))
+return
+}
+}
+}
+{
+if(x_a.ELet) {
+const x_ = x_a;
+if(y_a.ELet) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.mutable_, y_.mutable_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.valueType_, y_.valueType_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.body_, y_.body_))))))
+return
+}
+}
+}
+{
+if(x_a.ESequential) {
+const x_ = x_a;
+if(y_a.ESequential) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.before_, y_.before_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.after_, y_.after_)))
+return
+}
+}
+}
+{
+if(x_a.EAssign) {
+const x_ = x_a;
+if(y_a.EAssign) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.operator_, y_.operator_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.variable_, y_.variable_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_))))
+return
+}
+}
+}
+{
+if(x_a.EAssignField) {
+const x_ = x_a;
+if(y_a.EAssignField) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.operator_, y_.operator_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.record_, y_.record_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.field_, y_.field_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))))
+return
+}
+}
+}
+{
+if(x_a.EPipe) {
+const x_ = x_a;
+if(y_a.EPipe) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.function_, y_.function_))))
+return
+}
+}
+}
+{
+if(x_a.ECall) {
+const x_ = x_a;
+if(y_a.ECall) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_CallTarget.equals_(x_.target_, y_.target_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Argument).equals_(x_.arguments_, y_.arguments_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_))))))
+return
+}
+}
+}
+{
+if(x_a.EList) {
+const x_ = x_a;
+if(y_a.EList) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.elementType_, y_.elementType_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term, ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool)).equals_(x_.items_, y_.items_)))
+return
+}
+}
+}
+{
+if(x_a.ECopy) {
+const x_ = x_a;
+if(y_a.ECopy) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.record_, y_.record_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Field).equals_(x_.arguments_, y_.arguments_))))
+return
+}
+}
+}
+{
+if(x_a.EVariant) {
+const x_ = x_a;
+if(y_a.EVariant) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Argument)).equals_(x_.arguments_, y_.arguments_))))
+return
+}
+}
+}
+{
+if(x_a.EVariantIs) {
+const x_ = x_a;
+if(y_a.EVariantIs) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_)))
+return
+}
+}
+}
+{
+if(x_a.ERecord) {
+const x_ = x_a;
+if(y_a.ERecord) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Field).equals_(x_.fields_, y_.fields_))
+return
+}
+}
+}
+{
+if(x_a.EField) {
+const x_ = x_a;
+if(y_a.EField) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.newtype_, y_.newtype_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.record_, y_.record_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.field_, y_.field_))))
+return
+}
+}
+}
+{
+if(x_a.EWildcard) {
+const x_ = x_a;
+if(y_a.EWildcard) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.index_, y_.index_))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.EString) {
+const x_ = x_a;
+if(y_a.EString) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.EChar) {
+const x_ = x_a;
+if(y_a.EChar) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.EInt) {
+const x_ = x_a;
+if(y_a.EInt) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.EFloat) {
+const x_ = x_a;
+if(y_a.EFloat) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.EVariable) {
+const x_ = x_a;
+if(y_a.EVariable) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_))
+return
+}
+}
+}
+{
+if(x_a.ELambda) {
+const x_ = x_a;
+if(y_a.ELambda) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda.equals_(x_.lambda_, y_.lambda_))
+return
+}
+}
+}
+{
+if(x_a.EFunctions) {
+const x_ = x_a;
+if(y_a.EFunctions) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DFunction).equals_(x_.functions_, y_.functions_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.body_, y_.body_)))
+return
+}
+}
+}
+{
+if(x_a.ELet) {
+const x_ = x_a;
+if(y_a.ELet) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.mutable_, y_.mutable_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.valueType_, y_.valueType_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.body_, y_.body_))))))
+return
+}
+}
+}
+{
+if(x_a.ESequential) {
+const x_ = x_a;
+if(y_a.ESequential) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.before_, y_.before_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.after_, y_.after_)))
+return
+}
+}
+}
+{
+if(x_a.EAssign) {
+const x_ = x_a;
+if(y_a.EAssign) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.operator_, y_.operator_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.variable_, y_.variable_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_))))
+return
+}
+}
+}
+{
+if(x_a.EAssignField) {
+const x_ = x_a;
+if(y_a.EAssignField) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.operator_, y_.operator_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.record_, y_.record_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.field_, y_.field_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))))
+return
+}
+}
+}
+{
+if(x_a.EPipe) {
+const x_ = x_a;
+if(y_a.EPipe) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.function_, y_.function_))))
+return
+}
+}
+}
+{
+if(x_a.ECall) {
+const x_ = x_a;
+if(y_a.ECall) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_CallTarget.equals_(x_.target_, y_.target_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Argument).equals_(x_.arguments_, y_.arguments_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_))))))
+return
+}
+}
+}
+{
+if(x_a.EList) {
+const x_ = x_a;
+if(y_a.EList) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.elementType_, y_.elementType_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term, ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool)).equals_(x_.items_, y_.items_)))
+return
+}
+}
+}
+{
+if(x_a.ECopy) {
+const x_ = x_a;
+if(y_a.ECopy) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.record_, y_.record_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Field).equals_(x_.arguments_, y_.arguments_))))
+return
+}
+}
+}
+{
+if(x_a.EVariant) {
+const x_ = x_a;
+if(y_a.EVariant) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Argument)).equals_(x_.arguments_, y_.arguments_))))
+return
+}
+}
+}
+{
+if(x_a.EVariantIs) {
+const x_ = x_a;
+if(y_a.EVariantIs) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_)))
+return
+}
+}
+}
+{
+if(x_a.ERecord) {
+const x_ = x_a;
+if(y_a.ERecord) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Field).equals_(x_.fields_, y_.fields_))
+return
+}
+}
+}
+{
+if(x_a.EField) {
+const x_ = x_a;
+if(y_a.EField) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.newtype_, y_.newtype_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.record_, y_.record_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.field_, y_.field_))))
+return
+}
+}
+}
+{
+if(x_a.EWildcard) {
+const x_ = x_a;
+if(y_a.EWildcard) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.index_, y_.index_))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_CallTarget = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.DynamicCall) {
+const x_ = x_a;
+if(y_a.DynamicCall) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.function_, y_.function_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.tailCall_, y_.tailCall_))
+return
+}
+}
+}
+{
+if(x_a.StaticCall) {
+const x_ = x_a;
+if(y_a.StaticCall) {
+const y_ = y_a;
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.tailCall_, y_.tailCall_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.instanceCall_, y_.instanceCall_)))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.DynamicCall) {
+const x_ = x_a;
+if(y_a.DynamicCall) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.function_, y_.function_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.tailCall_, y_.tailCall_))
+return
+}
+}
+}
+{
+if(x_a.StaticCall) {
+const x_ = x_a;
+if(y_a.StaticCall) {
+const y_ = y_a;
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.tailCall_, y_.tailCall_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.instanceCall_, y_.instanceCall_)))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_MatchCase = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern).equals_(x_.patterns_, y_.patterns_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchGuard).equals_(x_.guards_, y_.guards_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.body_, y_.body_))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern).equals_(x_.patterns_, y_.patterns_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchGuard).equals_(x_.guards_, y_.guards_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.body_, y_.body_))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.PString) {
+const x_ = x_a;
+if(y_a.PString) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.PInt) {
+const x_ = x_a;
+if(y_a.PInt) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.PChar) {
+const x_ = x_a;
+if(y_a.PChar) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.PVariable) {
+const x_ = x_a;
+if(y_a.PVariable) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.name_, y_.name_))
+return
+}
+}
+}
+{
+if(x_a.PVariant) {
+const x_ = x_a;
+if(y_a.PVariant) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern).equals_(x_.patterns_, y_.patterns_)))
+return
+}
+}
+}
+{
+if(x_a.PVariantAs) {
+const x_ = x_a;
+if(y_a.PVariantAs) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.variable_, y_.variable_)))
+return
+}
+}
+}
+{
+if(x_a.PAlias) {
+const x_ = x_a;
+if(y_a.PAlias) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern.equals_(x_.pattern_, y_.pattern_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.variable_, y_.variable_)))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.PString) {
+const x_ = x_a;
+if(y_a.PString) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.PInt) {
+const x_ = x_a;
+if(y_a.PInt) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.PChar) {
+const x_ = x_a;
+if(y_a.PChar) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.value_, y_.value_))
+return
+}
+}
+}
+{
+if(x_a.PVariable) {
+const x_ = x_a;
+if(y_a.PVariable) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.name_, y_.name_))
+return
+}
+}
+}
+{
+if(x_a.PVariant) {
+const x_ = x_a;
+if(y_a.PVariant) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern).equals_(x_.patterns_, y_.patterns_)))
+return
+}
+}
+}
+{
+if(x_a.PVariantAs) {
+const x_ = x_a;
+if(y_a.PVariantAs) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.variable_, y_.variable_)))
+return
+}
+}
+}
+{
+if(x_a.PAlias) {
+const x_ = x_a;
+if(y_a.PAlias) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern.equals_(x_.pattern_, y_.pattern_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.variable_, y_.variable_)))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_MatchGuard = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.term_, y_.term_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern.equals_(x_.pattern_, y_.pattern_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.term_, y_.term_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchPattern.equals_(x_.pattern_, y_.pattern_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.moduleName_, y_.moduleName_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.traitName_, y_.traitName_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.typeName_, y_.typeName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_)))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.moduleName_, y_.moduleName_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.traitName_, y_.traitName_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.typeName_, y_.typeName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Dictionary).equals_(x_.dictionaries_, y_.dictionaries_)))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Signature = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.parameters_, y_.parameters_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.returnType_, y_.returnType_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_)))))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.parameters_, y_.parameters_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.returnType_, y_.returnType_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_)))))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Lambda = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchCase).equals_(x_.cases_, y_.cases_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_MatchCase).equals_(x_.cases_, y_.cases_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Variant = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.fields_, y_.fields_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Parameter).equals_(x_.fields_, y_.fields_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Parameter = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.mutable_, y_.mutable_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.valueType_, y_.valueType_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term).equals_(x_.default_, y_.default_)))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.mutable_, y_.mutable_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.valueType_, y_.valueType_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term).equals_(x_.default_, y_.default_)))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Argument = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.name_, y_.name_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.name_, y_.name_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Field = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Term.equals_(x_.value_, y_.value_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Constraint = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.generics_, y_.generics_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.generics_, y_.generics_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Target = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.FireflyTarget) {
+const x_ = x_a;
+if(y_a.FireflyTarget) {
+const y_ = y_a;
+return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda.equals_(x_.lambda_, y_.lambda_)
+return
+}
+}
+}
+{
+if(x_a.ForeignTarget) {
+const x_ = x_a;
+if(y_a.ForeignTarget) {
+const y_ = y_a;
+return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.syncCode_, y_.syncCode_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.asyncCode_, y_.asyncCode_))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.FireflyTarget) {
+const x_ = x_a;
+if(y_a.FireflyTarget) {
+const y_ = y_a;
+return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Lambda.equals_(x_.lambda_, y_.lambda_)
+return
+}
+}
+}
+{
+if(x_a.ForeignTarget) {
+const x_ = x_a;
+if(y_a.ForeignTarget) {
+const y_ = y_a;
+return (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.syncCode_, y_.syncCode_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.asyncCode_, y_.asyncCode_))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Type = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.TConstructor) {
+const x_ = x_a;
+if(y_a.TConstructor) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.generics_, y_.generics_)))
+return
+}
+}
+}
+{
+if(x_a.TVariable) {
+const x_ = x_a;
+if(y_a.TVariable) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.index_, y_.index_))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.TConstructor) {
+const x_ = x_a;
+if(y_a.TConstructor) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.name_, y_.name_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.generics_, y_.generics_)))
+return
+}
+}
+}
+{
+if(x_a.TVariable) {
+const x_ = x_a;
+if(y_a.TVariable) {
+const y_ = y_a;
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.index_, y_.index_))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Safety = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.Safe) {
+const x_ = x_a;
+if(y_a.Safe) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.Unsafe) {
+const x_ = x_a;
+if(y_a.Unsafe) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.Trusted) {
+const x_ = x_a;
+if(y_a.Trusted) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.Safe) {
+const x_ = x_a;
+if(y_a.Safe) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.Unsafe) {
+const x_ = x_a;
+if(y_a.Unsafe) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.Trusted) {
+const x_ = x_a;
+if(y_a.Trusted) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Syntax_Version = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.major_, y_.major_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.minor_, y_.minor_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.patch_, y_.patch_))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.major_, y_.major_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.minor_, y_.minor_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.patch_, y_.patch_))))
 return
 }
 }

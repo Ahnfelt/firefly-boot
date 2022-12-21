@@ -26,6 +26,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -1572,6 +1574,580 @@ const z_ = x_a;
 return "LAssignLink"
 return
 }
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Token_Token = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.code_, y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startLine_, y_.startLine_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startLineOffset_, y_.startLineOffset_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startOffset_, y_.startOffset_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopLine_, y_.stopLine_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopLineOffset_, y_.stopLineOffset_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopOffset_, y_.stopOffset_)))))))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.code_, y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startLine_, y_.startLine_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startLineOffset_, y_.startLineOffset_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startOffset_, y_.startOffset_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopLine_, y_.stopLine_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopLineOffset_, y_.stopLineOffset_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopOffset_, y_.stopOffset_)))))))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Token_TokenKind = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.LEnd) {
+const x_ = x_a;
+if(y_a.LEnd) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LString) {
+const x_ = x_a;
+if(y_a.LString) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LChar) {
+const x_ = x_a;
+if(y_a.LChar) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LInt) {
+const x_ = x_a;
+if(y_a.LInt) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LFloat) {
+const x_ = x_a;
+if(y_a.LFloat) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LKeyword) {
+const x_ = x_a;
+if(y_a.LKeyword) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LNamespace) {
+const x_ = x_a;
+if(y_a.LNamespace) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LLower) {
+const x_ = x_a;
+if(y_a.LLower) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LUpper) {
+const x_ = x_a;
+if(y_a.LUpper) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LWildcard) {
+const x_ = x_a;
+if(y_a.LWildcard) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LBracketLeft) {
+const x_ = x_a;
+if(y_a.LBracketLeft) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LBracketRight) {
+const x_ = x_a;
+if(y_a.LBracketRight) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LOperator) {
+const x_ = x_a;
+if(y_a.LOperator) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LComma) {
+const x_ = x_a;
+if(y_a.LComma) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LSeparator) {
+const x_ = x_a;
+if(y_a.LSeparator) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LDot) {
+const x_ = x_a;
+if(y_a.LDot) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LSemicolon) {
+const x_ = x_a;
+if(y_a.LSemicolon) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LPipe) {
+const x_ = x_a;
+if(y_a.LPipe) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LColon) {
+const x_ = x_a;
+if(y_a.LColon) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LDotDotDot) {
+const x_ = x_a;
+if(y_a.LDotDotDot) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LArrowThick) {
+const x_ = x_a;
+if(y_a.LArrowThick) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LAssign) {
+const x_ = x_a;
+if(y_a.LAssign) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LAssignPlus) {
+const x_ = x_a;
+if(y_a.LAssignPlus) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LAssignMinus) {
+const x_ = x_a;
+if(y_a.LAssignMinus) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LAssignLink) {
+const x_ = x_a;
+if(y_a.LAssignLink) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.LEnd) {
+const x_ = x_a;
+if(y_a.LEnd) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LString) {
+const x_ = x_a;
+if(y_a.LString) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LChar) {
+const x_ = x_a;
+if(y_a.LChar) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LInt) {
+const x_ = x_a;
+if(y_a.LInt) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LFloat) {
+const x_ = x_a;
+if(y_a.LFloat) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LKeyword) {
+const x_ = x_a;
+if(y_a.LKeyword) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LNamespace) {
+const x_ = x_a;
+if(y_a.LNamespace) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LLower) {
+const x_ = x_a;
+if(y_a.LLower) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LUpper) {
+const x_ = x_a;
+if(y_a.LUpper) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LWildcard) {
+const x_ = x_a;
+if(y_a.LWildcard) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LBracketLeft) {
+const x_ = x_a;
+if(y_a.LBracketLeft) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LBracketRight) {
+const x_ = x_a;
+if(y_a.LBracketRight) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LOperator) {
+const x_ = x_a;
+if(y_a.LOperator) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LComma) {
+const x_ = x_a;
+if(y_a.LComma) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LSeparator) {
+const x_ = x_a;
+if(y_a.LSeparator) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LDot) {
+const x_ = x_a;
+if(y_a.LDot) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LSemicolon) {
+const x_ = x_a;
+if(y_a.LSemicolon) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LPipe) {
+const x_ = x_a;
+if(y_a.LPipe) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LColon) {
+const x_ = x_a;
+if(y_a.LColon) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LDotDotDot) {
+const x_ = x_a;
+if(y_a.LDotDotDot) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LArrowThick) {
+const x_ = x_a;
+if(y_a.LArrowThick) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LAssign) {
+const x_ = x_a;
+if(y_a.LAssign) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LAssignPlus) {
+const x_ = x_a;
+if(y_a.LAssignPlus) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LAssignMinus) {
+const x_ = x_a;
+if(y_a.LAssignMinus) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.LAssignLink) {
+const x_ = x_a;
+if(y_a.LAssignLink) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+return false
+return
 }
 }
 }

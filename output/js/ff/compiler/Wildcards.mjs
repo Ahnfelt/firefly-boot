@@ -26,6 +26,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -606,6 +608,43 @@ const x_a = x_;
 {
 const z_ = x_a;
 return ((("Wildcards" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.seenWildcards_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Wildcards_Wildcards = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.seenWildcards_, y_.seenWildcards_)
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.seenWildcards_, y_.seenWildcards_)
 return
 }
 }

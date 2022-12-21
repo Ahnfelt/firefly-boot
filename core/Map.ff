@@ -87,6 +87,12 @@ extend self[K: Order, V]: Map[K, List[V]] {
 
 }
 
+instance Map[K: Equal: Order, V: Equal]: Equal {
+    equals(x: Map[K, V], y: Map[K, V]): Bool {
+        Equal.equals(x.pairs(), y.pairs())
+    }
+}
+
 instance Map[K: Order, V: Order]: Order {
     compare(x: Map[K, V], y: Map[K, V]): Ordering {
         Ordering.compare(x.pairs(), y.pairs())

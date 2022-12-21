@@ -30,6 +30,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -3577,6 +3579,197 @@ const x_a = x_;
 {
 const z_ = x_a;
 return ((((((((("ProcessedVariantCase" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.variantName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.newtype_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.loneVariant_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.arguments_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_JsEmitter_JsEmitter = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module).equals_(x_.otherModules_, y_.otherModules_) && (ff_compiler_JsImporter.ff_core_Equal_Equal$ff_compiler_JsImporter_JsImporter.equals_(x_.jsImporter_, y_.jsImporter_) && (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(x_.emitTarget_, y_.emitTarget_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isMainModule_, y_.isMainModule_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.compilerModulePath_, y_.compilerModulePath_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.tailCallUsed_, y_.tailCallUsed_))))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module).equals_(x_.otherModules_, y_.otherModules_) && (ff_compiler_JsImporter.ff_core_Equal_Equal$ff_compiler_JsImporter_JsImporter.equals_(x_.jsImporter_, y_.jsImporter_) && (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(x_.emitTarget_, y_.emitTarget_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isMainModule_, y_.isMainModule_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.compilerModulePath_, y_.compilerModulePath_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.tailCallUsed_, y_.tailCallUsed_))))))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.EmitNode) {
+const x_ = x_a;
+if(y_a.EmitNode) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.EmitBrowser) {
+const x_ = x_a;
+if(y_a.EmitBrowser) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.EmitBuild) {
+const x_ = x_a;
+if(y_a.EmitBuild) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.EmitExecutable) {
+const x_ = x_a;
+if(y_a.EmitExecutable) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.EmitNode) {
+const x_ = x_a;
+if(y_a.EmitNode) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.EmitBrowser) {
+const x_ = x_a;
+if(y_a.EmitBrowser) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.EmitBuild) {
+const x_ = x_a;
+if(y_a.EmitBuild) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.EmitExecutable) {
+const x_ = x_a;
+if(y_a.EmitExecutable) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_JsEmitter_ProcessedVariantCase = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.variantName_, y_.variantName_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.newtype_, y_.newtype_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.loneVariant_, y_.loneVariant_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.arguments_, y_.arguments_))))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.variantName_, y_.variantName_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.newtype_, y_.newtype_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.loneVariant_, y_.loneVariant_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.arguments_, y_.arguments_))))
 return
 }
 }

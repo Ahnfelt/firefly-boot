@@ -18,20 +18,20 @@ extend self: Deriver {
 
         let modulePrefix = module.packagePair.groupName() + "/" + module.file.dropLast(3)
 
-        let coreWhitelist = [
-            "ff:core/Option.Option"
-        ].toSet()
-
-        let showInstances = self.makeShowInstances(modulePrefix, coreWhitelist, module)
-        let orderingInstances = self.makeOrderingInstances(modulePrefix, coreWhitelist, module)
+        let showInstances = self.makeShowInstances(modulePrefix, module)
+        let equalInstances = self.makeEqualInstances(modulePrefix, module)
+        let orderingInstances = self.makeOrderingInstances(modulePrefix, module)
 
         module.Module(
-            instances = [...module.instances, ...showInstances, ...orderingInstances],
+            instances = [...module.instances, ...showInstances, ...equalInstances, ...orderingInstances],
         )
     }
 
     // Show
-    makeShowInstances(modulePrefix: String, coreWhitelist: Set[String], module: Module): List[DInstance] {
+    makeShowInstances(modulePrefix: String, module: Module): List[DInstance] {
+        let coreWhitelist = [
+            "ff:core/Option.Option"
+        ].toSet()
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Show.Show", modulePrefix, coreWhitelist, module)
         missingInstance.map {self.makeShowInstance(modulePrefix, _)}
@@ -101,7 +101,10 @@ extend self: Deriver {
     }
 
     // Ordering
-    makeOrderingInstances(modulePrefix: String, coreWhitelist: Set[String], module: Module): List[DInstance] {
+    makeOrderingInstances(modulePrefix: String, module: Module): List[DInstance] {
+        let coreWhitelist = [
+            "ff:core/Option.Option"
+        ].toSet()
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Ordering.Order", modulePrefix, coreWhitelist, module)
         missingInstance.map {self.makeOrderingInstance(modulePrefix, _)}
@@ -225,6 +228,121 @@ extend self: Deriver {
                 ])
                 let ifTerm = self.makeIf(at, notEqualTerm, EVariable(at, variableName), go(tail))
                 ELet(at, False, variableName, orderingType, compareTerm, ifTerm)
+        }
+        go(fields)
+    }
+
+    // Equal
+    makeEqualInstances(modulePrefix: String, module: Module): List[DInstance] {
+        let coreWhitelist = [
+            "ff:core/Option.Option",
+            "ff:core/List.List",
+            "ff:core/Pair.Pair",
+        ].toSet()
+        let missingInstance =
+            self.findTypesThatNeedInstances("ff:core/Equal.Equal", modulePrefix, coreWhitelist, module)
+        missingInstance.map {self.makeEqualInstance(modulePrefix, _)}
+    }
+
+    makeEqualInstance(modulePrefix: String, declaration: DType): DInstance {
+        let constraints = declaration.generics.map { t =>
+            Constraint(declaration.at, "ff:core/Equal.Equal", [TConstructor(declaration.at, t, [])])
+        }
+        let typeArguments = declaration.generics.map { t =>
+            TConstructor(declaration.at, t, [])
+        }
+        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let signature = Signature(
+            at = declaration.at
+            name = "equals"
+            generics = []
+            constraints = []
+            parameters = [
+                Parameter(declaration.at, False, "x", selfType, None)
+                Parameter(declaration.at, False, "y", selfType, None)
+            ]
+            returnType = TConstructor(declaration.at, "ff:core/Bool.Bool", [])
+            effect = noEffect
+        )
+        let body = FireflyTarget(
+            Lambda(declaration.at, noEffect, self.makeEqualsCases(modulePrefix, declaration, selfType))
+        )
+        let equalsMethod = DFunction(declaration.at, signature, body)
+        DInstance(
+            at = declaration.at
+            generics = declaration.generics
+            constraints = constraints
+            traitName = "ff:core/Equal.Equal"
+            typeArguments = [selfType]
+            generatorArguments = []
+            methods = [equalsMethod]
+        )
+    }
+
+    makeEqualsCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
+        let at = declaration.at
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let wildcardPattern = PVariable(at, None)
+        let sameCase = MatchCase(
+            at = at,
+            patterns = [wildcardPattern, wildcardPattern]
+            guards = [MatchGuard(
+                at,
+                self.makeSimpleCall(at, "===", [EVariable(at, "x"), EVariable(at, "y")]),
+                PVariant(at, "ff:core/Bool.True", [])
+            )]
+            body = EVariant(at, "ff:core/Bool.True", [], None)
+        )
+        declaration.variants.{
+            | [variant] =>
+                [sameCase, MatchCase(
+                    at = at,
+                    patterns = [wildcardPattern, wildcardPattern]
+                    guards = []
+                    body =
+                        self.makeEqualFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
+                )]
+            | variants =>
+                let sameVariantCases = variants.map { variant =>
+                    let variantName = modulePrefix + "." + variant.name
+                    MatchCase(
+                        at = at,
+                        patterns = [PVariantAs(at, variantName, Some("x")), PVariantAs(at, variantName, Some("y"))]
+                        guards = []
+                        body =
+                            self.makeEqualFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
+                    )
+                }
+                let differentVariant = MatchCase(
+                    at = at,
+                    patterns = [wildcardPattern, wildcardPattern]
+                    guards = []
+                    body = EVariant(at, "ff:core/Bool.False", [], None)
+                )
+                [sameCase, ...sameVariantCases, differentVariant]
+        }
+    }
+
+    makeEqualFields(modulePrefix: String, declaration: DType, fields : List[Parameter]): Term {
+        let at = declaration.at
+        function go(fields : List[Parameter]): Term {
+            | [] =>
+                EVariant(at, "ff:core/Bool.True", [], None)
+            | [head] =>
+                self.makeSimpleCall(at, "ff:core/Equal.equals", [
+                    EField(at, False, EVariable(at, "x"), head.name)
+                    EField(at, False, EVariable(at, "y"), head.name)
+                ])
+            | [head, ...tail] =>
+                let equalsTerm = self.makeSimpleCall(at, "ff:core/Equal.equals", [
+                    EField(at, False, EVariable(at, "x"), head.name)
+                    EField(at, False, EVariable(at, "y"), head.name)
+                ])
+                self.makeSimpleCall(at, "&&", [
+                    equalsTerm
+                    go(tail)
+                ])
         }
         go(fields)
     }

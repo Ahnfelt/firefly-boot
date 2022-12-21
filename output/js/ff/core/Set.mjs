@@ -22,6 +22,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -157,6 +159,15 @@ export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $c) {
 (await body_(k_, $c))
 }), $c, ff_core_Ordering_Order$T))
 }
+
+export function ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal_Equal$A, ff_core_Ordering_Order$A) { return {
+equals_(x_, y_) {
+return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$A).equals_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
+},
+async equals_$(x_, y_, $c) {
+return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$A).equals_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
+}
+}}
 
 export function ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering_Order$A) { return {
 compare_(x_, y_) {

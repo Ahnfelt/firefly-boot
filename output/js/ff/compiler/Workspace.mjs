@@ -26,6 +26,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -302,6 +304,80 @@ const x_a = x_;
 {
 const z_ = x_a;
 return ((((((("WorkspaceRule" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.packageGroup_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packageName_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.location_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Workspace_Workspace = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Workspace.ff_core_Equal_Equal$ff_compiler_Workspace_WorkspaceRule).equals_(x_.rules_, y_.rules_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.defaultLocation_, y_.defaultLocation_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.packageDirectory_, y_.packageDirectory_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Workspace.ff_core_Equal_Equal$ff_compiler_Workspace_WorkspaceRule).equals_(x_.rules_, y_.rules_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.defaultLocation_, y_.defaultLocation_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.packageDirectory_, y_.packageDirectory_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Workspace_WorkspaceRule = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.packageGroup_, y_.packageGroup_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packageName_, y_.packageName_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.location_, y_.location_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.packageGroup_, y_.packageGroup_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packageName_, y_.packageName_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.location_, y_.location_)))
 return
 }
 }

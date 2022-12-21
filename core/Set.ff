@@ -15,6 +15,12 @@ extend self[T: Order]: Set[T] {
     each(body: T => Unit): Unit { self.map.each {| k, _ => body(k)} }
 }
 
+instance Set[A: Equal: Order]: Equal {
+    equals(x: Set[A], y: Set[A]): Bool {
+        Equal.equals(x.toList(), y.toList())
+    }
+}
+
 instance Set[A: Order]: Order {
     compare(x: Set[A], y: Set[A]): Ordering {
         Ordering.compare(x.toList(), y.toList())

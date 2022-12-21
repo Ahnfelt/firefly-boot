@@ -22,6 +22,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -2541,6 +2543,81 @@ export async function List_join$(self_, separator_ = "", $c) {
 return ff_core_Array.Array_join(ff_core_List.List_toArray(self_), separator_)
 }
 
-
+export function ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T) { return {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.Empty) {
+const x_ = x_a;
+if(y_a.Empty) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.Link) {
+const x_ = x_a;
+if(y_a.Link) {
+const y_ = y_a;
+return (ff_core_Equal_Equal$T.equals_(x_.head_, y_.head_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T).equals_(x_.tail_, y_.tail_))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.Empty) {
+const x_ = x_a;
+if(y_a.Empty) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.Link) {
+const x_ = x_a;
+if(y_a.Link) {
+const y_ = y_a;
+return (ff_core_Equal_Equal$T.equals_(x_.head_, y_.head_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T).equals_(x_.tail_, y_.tail_))
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+}}
 
 

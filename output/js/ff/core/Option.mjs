@@ -22,6 +22,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -697,6 +699,83 @@ const z_ = x_a;
 return ((("Some" + "(") + ff_core_Show_Show$T.show_(z_.value_)) + ")")
 return
 }
+}
+}
+}
+}}
+
+export function ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal_Equal$T) { return {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.None) {
+const x_ = x_a;
+if(y_a.None) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.Some) {
+const x_ = x_a;
+if(y_a.Some) {
+const y_ = y_a;
+return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+if(x_a.None) {
+const x_ = x_a;
+if(y_a.None) {
+const y_ = y_a;
+return true
+return
+}
+}
+}
+{
+if(x_a.Some) {
+const x_ = x_a;
+if(y_a.Some) {
+const y_ = y_a;
+return ff_core_Equal_Equal$T.equals_(x_.value_, y_.value_)
+return
+}
+}
+}
+{
+return false
+return
 }
 }
 }

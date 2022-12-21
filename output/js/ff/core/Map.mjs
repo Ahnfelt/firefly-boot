@@ -22,6 +22,8 @@ import * as ff_core_Core from "../../ff/core/Core.mjs"
 
 import * as ff_core_Duration from "../../ff/core/Duration.mjs"
 
+import * as ff_core_Equal from "../../ff/core/Equal.mjs"
+
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
 import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
@@ -277,6 +279,15 @@ return ff_core_List.Link(value_, _w1)
 return ff_core_List.Link(value_, ff_core_List.Empty())
 }), ff_core_Ordering_Order$K)
 }
+
+export function ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal_Equal$K, ff_core_Ordering_Order$K, ff_core_Equal_Equal$V) { return {
+equals_(x_, y_) {
+return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal_Equal$K, ff_core_Equal_Equal$V)).equals_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K), ff_core_Map.Map_pairs(y_, ff_core_Ordering_Order$K))
+},
+async equals_$(x_, y_, $c) {
+return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal_Equal$K, ff_core_Equal_Equal$V)).equals_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K), ff_core_Map.Map_pairs(y_, ff_core_Ordering_Order$K))
+}
+}}
 
 export function ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering_Order$K, ff_core_Ordering_Order$V) { return {
 compare_(x_, y_) {
