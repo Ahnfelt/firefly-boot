@@ -17,8 +17,6 @@ type MainCommand {
 
 main(system: NodeSystem): Unit {
 
-    let eq = 1337 != 42
-
     mutable arguments = system.arguments()
     function consumeArgument(): Option[String] {
         let first = arguments.first()
