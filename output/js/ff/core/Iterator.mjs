@@ -1137,6 +1137,18 @@ export async function Iterator_toList$(self_, $c) {
 return ff_core_Array.Array_toList((await ff_core_Iterator.Iterator_toArray$(self_, $c)))
 }
 
+export function Iterator_flatten(self_) {
+return ff_core_Iterator.Iterator_flatMap(self_, ((_w1) => {
+return _w1
+}))
+}
+
+export async function Iterator_flatten$(self_, $c) {
+return (await ff_core_Iterator.Iterator_flatMap$(self_, (async (_w1, $c) => {
+return _w1
+}), $c))
+}
+
 export function Iterator_toSet(self_, ff_core_Ordering_Order$T) {
 return ff_core_Array.Array_toSet(ff_core_Iterator.Iterator_toArray(self_), ff_core_Ordering_Order$T)
 }

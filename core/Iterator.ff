@@ -330,6 +330,12 @@ extend self[T]: Iterator[T] {
 
 }
 
+extend self[T]: Iterator[Iterator[T]] {
+    flatten(): Iterator[T] {
+        self.flatMap {_}
+    }
+}
+
 extend self[T: Order]: Iterator[T] {
     toSet(): Set[T] {
         self.toArray().toSet()
