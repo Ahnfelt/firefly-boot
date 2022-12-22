@@ -698,8 +698,7 @@ extend self: Inference {
                 e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
             | [a1, a2] {
                 operator == "<" || operator == ">" ||
-                operator == "<=" || operator == ">=" ||
-                operator == "==" || operator == "!="
+                operator == "<=" || operator == ">="
             } =>
                 let t = TConstructor(e.at, core("Bool"), [])
                 let t1 = self.unification.freshUnificationVariable(e.at)
@@ -722,10 +721,6 @@ extend self: Inference {
                         self.unification.unify(e.at, t1, t2)
                         self.unification.unify(e.at, expected, t)
                     | _, Some(_) =>
-                        self.unification.unify(e.at, t2, t1)
-                        self.unification.unify(e.at, expected, t)
-                    | _, _ { operator == "==" || operator == "!=" } =>
-                        // TODO: This case is cheating, remove it
                         self.unification.unify(e.at, t2, t1)
                         self.unification.unify(e.at, expected, t)
                     | None, None =>

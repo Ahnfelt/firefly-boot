@@ -3826,27 +3826,27 @@ return
 }
 {
 const otherModulesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Module).compare_(x_.otherModules_, y_.otherModules_);
-if((otherModulesOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((otherModulesOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return otherModulesOrdering_
 } else {
 const jsImporterOrdering_ = ff_compiler_JsImporter.ff_core_Ordering_Order$ff_compiler_JsImporter_JsImporter.compare_(x_.jsImporter_, y_.jsImporter_);
-if((jsImporterOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((jsImporterOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return jsImporterOrdering_
 } else {
 const emitTargetOrdering_ = ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget.compare_(x_.emitTarget_, y_.emitTarget_);
-if((emitTargetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((emitTargetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return emitTargetOrdering_
 } else {
 const isMainModuleOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isMainModule_, y_.isMainModule_);
-if((isMainModuleOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((isMainModuleOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return isMainModuleOrdering_
 } else {
 const compilerModulePathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.compilerModulePath_, y_.compilerModulePath_);
-if((compilerModulePathOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((compilerModulePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return compilerModulePathOrdering_
 } else {
 const tailCallUsedOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.tailCallUsed_, y_.tailCallUsed_);
-if((tailCallUsedOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((tailCallUsedOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return tailCallUsedOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -3873,27 +3873,27 @@ return
 }
 {
 const otherModulesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Module).compare_(x_.otherModules_, y_.otherModules_);
-if((otherModulesOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((otherModulesOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return otherModulesOrdering_
 } else {
 const jsImporterOrdering_ = ff_compiler_JsImporter.ff_core_Ordering_Order$ff_compiler_JsImporter_JsImporter.compare_(x_.jsImporter_, y_.jsImporter_);
-if((jsImporterOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((jsImporterOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return jsImporterOrdering_
 } else {
 const emitTargetOrdering_ = ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget.compare_(x_.emitTarget_, y_.emitTarget_);
-if((emitTargetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((emitTargetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return emitTargetOrdering_
 } else {
 const isMainModuleOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isMainModule_, y_.isMainModule_);
-if((isMainModuleOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((isMainModuleOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return isMainModuleOrdering_
 } else {
 const compilerModulePathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.compilerModulePath_, y_.compilerModulePath_);
-if((compilerModulePathOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((compilerModulePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return compilerModulePathOrdering_
 } else {
 const tailCallUsedOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.tailCallUsed_, y_.tailCallUsed_);
-if((tailCallUsedOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((tailCallUsedOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return tailCallUsedOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -4018,19 +4018,19 @@ return
 }
 {
 const variantNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variantName_, y_.variantName_);
-if((variantNameOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((variantNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return variantNameOrdering_
 } else {
 const newtypeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.newtype_, y_.newtype_);
-if((newtypeOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((newtypeOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return newtypeOrdering_
 } else {
 const loneVariantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.loneVariant_, y_.loneVariant_);
-if((loneVariantOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((loneVariantOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return loneVariantOrdering_
 } else {
 const argumentsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.arguments_, y_.arguments_);
-if((argumentsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((argumentsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return argumentsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -4055,19 +4055,19 @@ return
 }
 {
 const variantNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variantName_, y_.variantName_);
-if((variantNameOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((variantNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return variantNameOrdering_
 } else {
 const newtypeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.newtype_, y_.newtype_);
-if((newtypeOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((newtypeOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return newtypeOrdering_
 } else {
 const loneVariantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.loneVariant_, y_.loneVariant_);
-if((loneVariantOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((loneVariantOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return loneVariantOrdering_
 } else {
 const argumentsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.arguments_, y_.arguments_);
-if((argumentsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((argumentsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return argumentsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()

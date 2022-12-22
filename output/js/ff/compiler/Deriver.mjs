@@ -254,7 +254,7 @@ const head_ = fields_a.head_;
 const tail_ = fields_a.tail_;
 const variableName_ = (head_.name_ + "Ordering");
 const compareTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Ordering.compare", ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_), ff_core_List.Empty())));
-const notEqualTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "!=", ff_core_List.Link(ff_compiler_Syntax.EVariable(at_, variableName_), ff_core_List.Link(orderingSame_, ff_core_List.Empty())));
+const notEqualTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "!==", ff_core_List.Link(ff_compiler_Syntax.EVariable(at_, variableName_), ff_core_List.Link(orderingSame_, ff_core_List.Empty())));
 const ifTerm_ = ff_compiler_Deriver.Deriver_makeIf(self_, at_, notEqualTerm_, ff_compiler_Syntax.EVariable(at_, variableName_), go_(tail_));
 return ff_compiler_Syntax.ELet(at_, false, variableName_, orderingType_, compareTerm_, ifTerm_)
 return
@@ -548,7 +548,7 @@ const head_ = fields_a.head_;
 const tail_ = fields_a.tail_;
 const variableName_ = (head_.name_ + "Ordering");
 const compareTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Ordering.compare", ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "x"), head_.name_), ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "y"), head_.name_), ff_core_List.Empty())));
-const notEqualTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "!=", ff_core_List.Link(ff_compiler_Syntax.EVariable(at_, variableName_), ff_core_List.Link(orderingSame_, ff_core_List.Empty())));
+const notEqualTerm_ = ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "!==", ff_core_List.Link(ff_compiler_Syntax.EVariable(at_, variableName_), ff_core_List.Link(orderingSame_, ff_core_List.Empty())));
 const ifTerm_ = ff_compiler_Deriver.Deriver_makeIf(self_, at_, notEqualTerm_, ff_compiler_Syntax.EVariable(at_, variableName_), go_(tail_));
 return ff_compiler_Syntax.ELet(at_, false, variableName_, orderingType_, compareTerm_, ifTerm_)
 return

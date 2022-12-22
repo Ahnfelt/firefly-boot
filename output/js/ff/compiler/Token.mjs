@@ -1667,39 +1667,39 @@ return
 }
 {
 const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
-if((fileOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((fileOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return fileOrdering_
 } else {
 const codeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.code_, y_.code_);
-if((codeOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((codeOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return codeOrdering_
 } else {
 const kindOrdering_ = ff_compiler_Token.ff_core_Ordering_Order$ff_compiler_Token_TokenKind.compare_(x_.kind_, y_.kind_);
-if((kindOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((kindOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return kindOrdering_
 } else {
 const startLineOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startLine_, y_.startLine_);
-if((startLineOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((startLineOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return startLineOrdering_
 } else {
 const startLineOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startLineOffset_, y_.startLineOffset_);
-if((startLineOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((startLineOffsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return startLineOffsetOrdering_
 } else {
 const startOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startOffset_, y_.startOffset_);
-if((startOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((startOffsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return startOffsetOrdering_
 } else {
 const stopLineOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopLine_, y_.stopLine_);
-if((stopLineOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((stopLineOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return stopLineOrdering_
 } else {
 const stopLineOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopLineOffset_, y_.stopLineOffset_);
-if((stopLineOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((stopLineOffsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return stopLineOffsetOrdering_
 } else {
 const stopOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopOffset_, y_.stopOffset_);
-if((stopOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((stopOffsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return stopOffsetOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -1729,39 +1729,39 @@ return
 }
 {
 const fileOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.file_, y_.file_);
-if((fileOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((fileOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return fileOrdering_
 } else {
 const codeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.code_, y_.code_);
-if((codeOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((codeOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return codeOrdering_
 } else {
 const kindOrdering_ = ff_compiler_Token.ff_core_Ordering_Order$ff_compiler_Token_TokenKind.compare_(x_.kind_, y_.kind_);
-if((kindOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((kindOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return kindOrdering_
 } else {
 const startLineOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startLine_, y_.startLine_);
-if((startLineOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((startLineOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return startLineOrdering_
 } else {
 const startLineOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startLineOffset_, y_.startLineOffset_);
-if((startLineOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((startLineOffsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return startLineOffsetOrdering_
 } else {
 const startOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.startOffset_, y_.startOffset_);
-if((startOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((startOffsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return startOffsetOrdering_
 } else {
 const stopLineOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopLine_, y_.stopLine_);
-if((stopLineOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((stopLineOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return stopLineOrdering_
 } else {
 const stopLineOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopLineOffset_, y_.stopLineOffset_);
-if((stopLineOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((stopLineOffsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return stopLineOffsetOrdering_
 } else {
 const stopOffsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.stopOffset_, y_.stopOffset_);
-if((stopOffsetOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((stopOffsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return stopOffsetOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()

@@ -779,7 +779,7 @@ const x_ = x_a;
 if(y_a.Some) {
 const y_ = y_a;
 const valueOrdering_ = ff_core_Ordering_Order$T.compare_(x_.value_, y_.value_);
-if((valueOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((valueOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return valueOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -828,7 +828,7 @@ const x_ = x_a;
 if(y_a.Some) {
 const y_ = y_a;
 const valueOrdering_ = ff_core_Ordering_Order$T.compare_(x_.value_, y_.value_);
-if((valueOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((valueOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return valueOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()

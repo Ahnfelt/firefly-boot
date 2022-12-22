@@ -1207,7 +1207,7 @@ return
 }
 {
 const substitutionOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.substitution_, y_.substitution_);
-if((substitutionOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((substitutionOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return substitutionOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -1229,7 +1229,7 @@ return
 }
 {
 const substitutionOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.substitution_, y_.substitution_);
-if((substitutionOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((substitutionOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return substitutionOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()

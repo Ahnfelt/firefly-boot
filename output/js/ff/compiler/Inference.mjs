@@ -1534,7 +1534,7 @@ const a1_ = _1.head_;
 if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_;
 if(_1.tail_.tail_.Empty) {
-const _guard1 = ((((((operator_ === "<") || (operator_ === ">")) || (operator_ === "<=")) || (operator_ === ">=")) || (operator_ === "==")) || (operator_ === "!="));
+const _guard1 = ((((operator_ === "<") || (operator_ === ">")) || (operator_ === "<=")) || (operator_ === ">="));
 if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty());
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -1632,14 +1632,6 @@ return
 }
 {
 if(_2.Some) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
-return
-}
-}
-{
-const _guard1 = ((operator_ === "==") || (operator_ === "!="));
-if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
@@ -3362,7 +3354,7 @@ const a1_ = _1.head_;
 if(_1.tail_.Link) {
 const a2_ = _1.tail_.head_;
 if(_1.tail_.tail_.Empty) {
-const _guard1 = ((((((operator_ === "<") || (operator_ === ">")) || (operator_ === "<=")) || (operator_ === ">=")) || (operator_ === "==")) || (operator_ === "!="));
+const _guard1 = ((((operator_ === "<") || (operator_ === ">")) || (operator_ === "<=")) || (operator_ === ">="));
 if(_guard1) {
 const t_ = ff_compiler_Syntax.TConstructor(e_.at_, ff_compiler_Inference.core_("Bool"), ff_core_List.Empty());
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
@@ -3460,14 +3452,6 @@ return
 }
 {
 if(_2.Some) {
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
-return
-}
-}
-{
-const _guard1 = ((operator_ === "==") || (operator_ === "!="));
-if(_guard1) {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, t2_, t1_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t_)
 return
@@ -3893,7 +3877,7 @@ return
 }
 {
 const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_Unification.compare_(x_.unification_, y_.unification_);
-if((unificationOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((unificationOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return unificationOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -3915,7 +3899,7 @@ return
 }
 {
 const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_Unification.compare_(x_.unification_, y_.unification_);
-if((unificationOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((unificationOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return unificationOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()

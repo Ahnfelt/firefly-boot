@@ -644,15 +644,15 @@ return
 }
 {
 const variantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variant_, y_.variant_);
-if((variantOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((variantOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return variantOrdering_
 } else {
 const otherVariantsOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.otherVariants_, y_.otherVariants_);
-if((otherVariantsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((otherVariantsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return otherVariantsOrdering_
 } else {
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
-if((fieldsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((fieldsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return fieldsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -676,15 +676,15 @@ return
 }
 {
 const variantOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.variant_, y_.variant_);
-if((variantOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((variantOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return variantOrdering_
 } else {
 const otherVariantsOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.otherVariants_, y_.otherVariants_);
-if((otherVariantsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((otherVariantsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return otherVariantsOrdering_
 } else {
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
-if((fieldsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((fieldsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return fieldsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -711,11 +711,11 @@ return
 }
 {
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
-if((fieldsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((fieldsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return fieldsOrdering_
 } else {
 const guardOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.guard_, y_.guard_);
-if((guardOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((guardOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return guardOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -738,11 +738,11 @@ return
 }
 {
 const fieldsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Patterns.ff_core_Ordering_Order$ff_compiler_Patterns_PatternInfo)).compare_(x_.fields_, y_.fields_);
-if((fieldsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((fieldsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return fieldsOrdering_
 } else {
 const guardOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.guard_, y_.guard_);
-if((guardOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((guardOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return guardOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()

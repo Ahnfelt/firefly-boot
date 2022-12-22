@@ -225,7 +225,7 @@ extend self: Deriver {
                     EField(at, False, EVariable(at, "x"), head.name)
                     EField(at, False, EVariable(at, "y"), head.name)
                 ])
-                let notEqualTerm = self.makeSimpleCall(at, "!=", [
+                let notEqualTerm = self.makeSimpleCall(at, "!==", [
                     EVariable(at, variableName)
                     orderingSame
                 ])

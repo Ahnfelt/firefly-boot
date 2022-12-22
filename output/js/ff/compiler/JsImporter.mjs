@@ -323,7 +323,7 @@ return
 }
 {
 const importsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.imports_, y_.imports_);
-if((importsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((importsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return importsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
@@ -345,7 +345,7 @@ return
 }
 {
 const importsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.imports_, y_.imports_);
-if((importsOrdering_ != ff_core_Ordering.OrderingSame())) {
+if((importsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return importsOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
