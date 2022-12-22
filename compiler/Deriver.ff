@@ -172,7 +172,7 @@ extend self: Deriver {
             | variants =>
                 let variantsWithFields = variants.filter {variant =>
                     !declaration.commonFields.isEmpty() || !variant.fields.isEmpty()
-                }
+                } // We can skip no-arg constructors assuming there are never more than one instance of them
                 let sameVariantCases = variantsWithFields.map { variant =>
                     let variantName = modulePrefix + "." + variant.name
                     let fields = [...declaration.commonFields, ...variant.fields]
@@ -309,7 +309,7 @@ extend self: Deriver {
             | variants =>
                 let variantsWithFields = variants.filter {variant =>
                     !declaration.commonFields.isEmpty() || !variant.fields.isEmpty()
-                }
+                } // We can skip no-arg constructors assuming there are never more than one instance of them
                 let sameVariantCases = variantsWithFields.map { variant =>
                     let variantName = modulePrefix + "." + variant.name
                     let fields = [...declaration.commonFields, ...variant.fields]
