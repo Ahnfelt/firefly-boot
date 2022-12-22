@@ -108,7 +108,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packa
 }
 
 export function checkPackagePairs_(dependencyPair_, packagePair_) {
-if(((packagePair_.group_ != dependencyPair_.group_) || (packagePair_.name_ != dependencyPair_.name_))) {
+if((ff_core_Equal.notEquals_(packagePair_.group_, dependencyPair_.group_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String) || ff_core_Equal.notEquals_(packagePair_.name_, dependencyPair_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 ff_core_Core.panic_(((("Dependency declaration and package declaration disagree on package name: " + ff_compiler_Syntax.PackagePair_groupName(dependencyPair_, ":")) + " vs. ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
 }
 }
@@ -127,7 +127,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packa
 }
 
 export async function checkPackagePairs_$(dependencyPair_, packagePair_, $c) {
-if(((packagePair_.group_ != dependencyPair_.group_) || (packagePair_.name_ != dependencyPair_.name_))) {
+if((ff_core_Equal.notEquals_(packagePair_.group_, dependencyPair_.group_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String) || ff_core_Equal.notEquals_(packagePair_.name_, dependencyPair_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
 ff_core_Core.panic_(((("Dependency declaration and package declaration disagree on package name: " + ff_compiler_Syntax.PackagePair_groupName(dependencyPair_, ":")) + " vs. ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
 }
 }
@@ -159,7 +159,7 @@ return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, i
 
 export function Dependencies_addCoreDependencyIfMissing(self_, info_) {
 if(ff_core_List.List_any(info_.dependencies_, ((d_) => {
-return ((d_.packagePair_.group_ == "ff") && (d_.packagePair_.name_ == "core"))
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(d_.packagePair_.group_, "ff") && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(d_.packagePair_.name_, "core"))
 }))) {
 return info_
 } else {
@@ -228,7 +228,7 @@ return packageInfo_
 const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
-if((newDependencies_ != ff_core_List.Empty())) {
+if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_)
 }
 }
@@ -253,7 +253,7 @@ return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, i
 
 export async function Dependencies_addCoreDependencyIfMissing$(self_, info_, $c) {
 if(ff_core_List.List_any(info_.dependencies_, ((d_) => {
-return ((d_.packagePair_.group_ == "ff") && (d_.packagePair_.name_ == "core"))
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(d_.packagePair_.group_, "ff") && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(d_.packagePair_.name_, "core"))
 }))) {
 return info_
 } else {
@@ -322,7 +322,7 @@ return packageInfo_
 const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
-if((newDependencies_ != ff_core_List.Empty())) {
+if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c))
 }
 }

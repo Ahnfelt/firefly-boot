@@ -110,7 +110,7 @@ return ff_core_Pair.Pair_mapFirst(_w1, ((_w1) => {
 return ((((f_ + ".") + p_.variant_) + "_") + _w1)
 }))
 }));
-if((ff_core_Set.Set_size(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) == 1)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_Set.Set_size(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), 1)) {
 ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
 } else {
 ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_);
@@ -144,7 +144,7 @@ return
 if(_1.first_.Empty) {
 if(_1.second_.Empty) {
 const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
-return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) != 0)
+return ff_core_Equal.notEquals_(ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)
 })), ((_1) => {
 {
 const f_ = _1.first_;
@@ -153,7 +153,7 @@ return ((f_ + " could be ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(f
 return
 }
 }));
-if((ff_core_List.List_size(remaining_) != 0)) {
+if(ff_core_Equal.notEquals_(ff_core_List.List_size(remaining_), 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
 ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 }
 return
@@ -166,7 +166,7 @@ return
 export function convert_(modules_, cases_) {
 function unqualifiedName_(name_) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })))
 }
 function otherVariants_(name_) {
@@ -175,12 +175,12 @@ const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String
 const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
-return (_w1.name_ == variantName_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.name_, variantName_)
 })), ((variant_) => {
 return ff_core_List.List_toSet(ff_core_List.List_filter(ff_core_List.List_map(definition_.variants_, ((_w1) => {
 return _w1.name_
 })), ((_w1) => {
-return (_w1 != variantName_)
+return ff_core_Equal.notEquals_(_w1, variantName_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 })))
@@ -318,7 +318,7 @@ return ff_core_Pair.Pair_mapFirst(_w1, ((_w1) => {
 return ((((f_ + ".") + p_.variant_) + "_") + _w1)
 }))
 }));
-if((ff_core_Set.Set_size(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) == 1)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_Set.Set_size(vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), 1)) {
 ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, vs_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_)
 } else {
 ff_compiler_Patterns.check_(ff_core_Map.Map_add(variants_, f_, ff_core_List.List_toSet(ff_core_List.Link(p_.variant_, ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_addAll(newFields_, fs_), cs_, true, guard_);
@@ -352,7 +352,7 @@ return
 if(_1.first_.Empty) {
 if(_1.second_.Empty) {
 const remaining_ = ff_core_List.List_map(ff_core_List.List_filter(ff_core_Map.Map_pairs(variants_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
-return (ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) != 0)
+return ff_core_Equal.notEquals_(ff_core_Set.Set_size(_w1.second_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)
 })), ((_1) => {
 {
 const f_ = _1.first_;
@@ -361,7 +361,7 @@ return ((f_ + " could be ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(f
 return
 }
 }));
-if((ff_core_List.List_size(remaining_) != 0)) {
+if(ff_core_Equal.notEquals_(ff_core_List.List_size(remaining_), 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
 ff_core_Core.panic_(("Unexhaustive match:\n" + ff_core_List.List_join(remaining_, "\n")))
 }
 return
@@ -374,7 +374,7 @@ return
 export async function convert_$(modules_, cases_, $c) {
 function unqualifiedName_(name_) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })))
 }
 function otherVariants_(name_) {
@@ -383,12 +383,12 @@ const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String
 const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
-return (_w1.name_ == variantName_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.name_, variantName_)
 })), ((variant_) => {
 return ff_core_List.List_toSet(ff_core_List.List_filter(ff_core_List.List_map(definition_.variants_, ((_w1) => {
 return _w1.name_
 })), ((_w1) => {
-return (_w1 != variantName_)
+return ff_core_Equal.notEquals_(_w1, variantName_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }))
 })))

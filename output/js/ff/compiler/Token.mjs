@@ -202,19 +202,19 @@ return ff_core_String.String_slice(token_.code_, token_.startOffset_, token_.sto
 }
 
 export function Token_is(token_, kind1_) {
-return (token_.kind_ == kind1_)
+return ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_)
 }
 
 export function Token_is2(token_, kind1_, kind2_) {
-return ((token_.kind_ == kind1_) || (token_.kind_ == kind2_))
+return (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_))
 }
 
 export function Token_is3(token_, kind1_, kind2_, kind3_) {
-return (((token_.kind_ == kind1_) || (token_.kind_ == kind2_)) || (token_.kind_ == kind3_))
+return ((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind3_))
 }
 
 export function Token_rawIs(token_, value_) {
-return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_((token_.stopOffset_ - token_.startOffset_), ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
 export function Token_rawIs2(token_, value1_, value2_) {
@@ -234,19 +234,19 @@ return ff_core_String.String_slice(token_.code_, token_.startOffset_, token_.sto
 }
 
 export async function Token_is$(token_, kind1_, $c) {
-return (token_.kind_ == kind1_)
+return ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_)
 }
 
 export async function Token_is2$(token_, kind1_, kind2_, $c) {
-return ((token_.kind_ == kind1_) || (token_.kind_ == kind2_))
+return (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_))
 }
 
 export async function Token_is3$(token_, kind1_, kind2_, kind3_, $c) {
-return (((token_.kind_ == kind1_) || (token_.kind_ == kind2_)) || (token_.kind_ == kind3_))
+return ((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind3_))
 }
 
 export async function Token_rawIs$(token_, value_, $c) {
-return (((token_.stopOffset_ - token_.startOffset_) == ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_((token_.stopOffset_ - token_.startOffset_), ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
 export async function Token_rawIs2$(token_, value1_, value2_, $c) {

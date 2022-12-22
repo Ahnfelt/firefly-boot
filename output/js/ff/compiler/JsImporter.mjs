@@ -126,7 +126,7 @@ return importName_
 
 export function JsImporter_process(self_, at_, code_) {
 const space_ = ff_core_String.String_takeWhile(code_, ((c_) => {
-return (((((c_ == 32) || (c_ == 9)) || (c_ == 13)) || (c_ == 10)) || (c_ == 59))
+return ((((ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 32) || ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 9)) || ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 13)) || ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 10)) || ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 59))
 }));
 const rest_ = ff_core_String.String_dropFirst(code_, ff_core_String.String_size(space_));
 if((!ff_core_String.String_startsWith(rest_, "import * as ", 0))) {
@@ -136,7 +136,7 @@ const rest2_ = ff_core_String.String_dropFirst(rest_, ff_core_String.String_size
 const name_ = ff_core_String.String_takeWhile(rest2_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
 }));
-if((ff_core_String.String_size(name_) == 0)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_String.String_size(name_), 0)) {
 ff_compiler_JsImporter.fail_(at_, "Expected alias after \"import * as \"")
 };
 const rest3_ = ff_core_String.String_dropFirst(rest2_, ff_core_String.String_size(name_));
@@ -145,13 +145,13 @@ ff_compiler_JsImporter.fail_(at_, "Expected \" from '\" after \"import * as ...\
 };
 const rest4_ = ff_core_String.String_dropFirst(rest3_, ff_core_String.String_size(" from '"));
 const url_ = ff_core_String.String_takeWhile(rest4_, ((_w1) => {
-return (_w1 != 39)
+return ff_core_Equal.notEquals_(_w1, 39, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 }));
-if((ff_core_String.String_size(url_) == 0)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_String.String_size(url_), 0)) {
 ff_compiler_JsImporter.fail_(at_, "Expected module name after \" from '\"")
 };
 if(ff_core_String.String_any(url_, ((_w1) => {
-return (_w1 == 10)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(_w1, 10)
 }))) {
 ff_compiler_JsImporter.fail_(at_, "Unclosed module name string")
 };
@@ -199,7 +199,7 @@ return importName_
 
 export async function JsImporter_process$(self_, at_, code_, $c) {
 const space_ = ff_core_String.String_takeWhile(code_, ((c_) => {
-return (((((c_ == 32) || (c_ == 9)) || (c_ == 13)) || (c_ == 10)) || (c_ == 59))
+return ((((ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 32) || ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 9)) || ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 13)) || ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 10)) || ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(c_, 59))
 }));
 const rest_ = ff_core_String.String_dropFirst(code_, ff_core_String.String_size(space_));
 if((!ff_core_String.String_startsWith(rest_, "import * as ", 0))) {
@@ -209,7 +209,7 @@ const rest2_ = ff_core_String.String_dropFirst(rest_, ff_core_String.String_size
 const name_ = ff_core_String.String_takeWhile(rest2_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
 }));
-if((ff_core_String.String_size(name_) == 0)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_String.String_size(name_), 0)) {
 ff_compiler_JsImporter.fail_(at_, "Expected alias after \"import * as \"")
 };
 const rest3_ = ff_core_String.String_dropFirst(rest2_, ff_core_String.String_size(name_));
@@ -218,13 +218,13 @@ ff_compiler_JsImporter.fail_(at_, "Expected \" from '\" after \"import * as ...\
 };
 const rest4_ = ff_core_String.String_dropFirst(rest3_, ff_core_String.String_size(" from '"));
 const url_ = ff_core_String.String_takeWhile(rest4_, ((_w1) => {
-return (_w1 != 39)
+return ff_core_Equal.notEquals_(_w1, 39, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 }));
-if((ff_core_String.String_size(url_) == 0)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_String.String_size(url_), 0)) {
 ff_compiler_JsImporter.fail_(at_, "Expected module name after \" from '\"")
 };
 if(ff_core_String.String_any(url_, ((_w1) => {
-return (_w1 == 10)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(_w1, 10)
 }))) {
 ff_compiler_JsImporter.fail_(at_, "Unclosed module name string")
 };

@@ -153,7 +153,7 @@ const variants_ = _1;
 return ff_core_List.List_map(variants_, ((variant_) => {
 const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
 const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
-const strings_ = ((ff_core_List.List_size(fields_) == 0)
+const strings_ = (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_List.List_size(fields_), 0)
 ? ff_core_List.Empty()
 : ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"(\""), ff_core_List.List_addAll(ff_core_List.List_insertBetween(ff_core_List.List_map(fields_, ((field_) => {
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Show.show", ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "z"), field_.name_), ff_core_List.Empty()))
@@ -354,7 +354,7 @@ const _guard1 = ff_core_List.List_first(instance_.typeArguments_);
 if(_guard1.Some) {
 if(_guard1.value_.TConstructor) {
 const name_ = _guard1.value_.name_;
-if((instance_.traitName_ == traitName_)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(instance_.traitName_, traitName_)) {
 return ff_core_Option.Some(name_)
 } else return ff_core_Option.None()
 return
@@ -367,8 +367,8 @@ return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
-return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") != "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
-return (_w1 == "Q$")
+return (((ff_core_Equal.notEquals_(ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":"), "ff:core", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String) || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
 })))) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }))
 }
@@ -437,7 +437,7 @@ const variants_ = _1;
 return ff_core_List.List_map(variants_, ((variant_) => {
 const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
 const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
-const strings_ = ((ff_core_List.List_size(fields_) == 0)
+const strings_ = (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_List.List_size(fields_), 0)
 ? ff_core_List.Empty()
 : ff_core_List.Link(ff_compiler_Syntax.EString(at_, "\"(\""), ff_core_List.List_addAll(ff_core_List.List_insertBetween(ff_core_List.List_map(fields_, ((field_) => {
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "ff:core/Show.show", ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "z"), field_.name_), ff_core_List.Empty()))
@@ -638,7 +638,7 @@ const _guard1 = ff_core_List.List_first(instance_.typeArguments_);
 if(_guard1.Some) {
 if(_guard1.value_.TConstructor) {
 const name_ = _guard1.value_.name_;
-if((instance_.traitName_ == traitName_)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(instance_.traitName_, traitName_)) {
 return ff_core_Option.Some(name_)
 } else return ff_core_Option.None()
 return
@@ -651,8 +651,8 @@ return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
-return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") != "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
-return (_w1 == "Q$")
+return (((ff_core_Equal.notEquals_(ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":"), "ff:core", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String) || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
 })))) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }))
 }

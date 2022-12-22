@@ -2,6 +2,10 @@ trait T: Equal {
     equals(x: T, y: T): Bool
 }
 
+notEquals[T: Equal](x: T, y: T): Bool {
+    !equals(x, y)
+}
+
 instance Nothing: Equal {
     equals(x: Nothing, y: Nothing): Bool {True}
 }

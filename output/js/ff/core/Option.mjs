@@ -339,25 +339,6 @@ return
 }
 }
 
-export function Option_contains(self_, value_) {
-{
-const _1 = self_;
-{
-if(_1.None) {
-return false
-return
-}
-}
-{
-if(_1.Some) {
-const v_ = _1.value_;
-return (v_ == value_)
-return
-}
-}
-}
-}
-
 export async function Option_else$(self_, body_, $c) {
 {
 const _1 = self_;
@@ -606,7 +587,7 @@ return
 }
 }
 
-export async function Option_contains$(self_, value_, $c) {
+export function Option_contains(self_, value_, ff_core_Equal_Equal$T) {
 {
 const _1 = self_;
 {
@@ -618,7 +599,26 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return (v_ == value_)
+return ff_core_Equal_Equal$T.equals_(v_, value_)
+return
+}
+}
+}
+}
+
+export async function Option_contains$(self_, value_, ff_core_Equal_Equal$T, $c) {
+{
+const _1 = self_;
+{
+if(_1.None) {
+return false
+return
+}
+}
+{
+if(_1.Some) {
+const v_ = _1.value_;
+return ff_core_Equal_Equal$T.equals_(v_, value_)
 return
 }
 }

@@ -114,7 +114,6 @@ return {BuildCommand: true, mainPath_};
 
 
 export function main_(system_) {
-ff_core_Log.debug_(ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_Nothing_Nothing).equals_(ff_core_List.Empty(), ff_core_List.Empty())));
 let arguments_ = ff_core_NodeSystem.NodeSystem_arguments(system_);
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
@@ -181,7 +180,7 @@ function buildScript_(mainFile_, mainPackagePair_, emitTarget_, resolvedDependen
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const compilerModulePath_ = (((emitTarget_ != ff_compiler_JsEmitter.EmitBrowser()) && (emitTarget_ != ff_compiler_JsEmitter.EmitExecutable()))
+const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
 ? ff_core_Option.Some((fireflyPath_ + "/output/js/ff/compiler/Builder.mjs"))
 : ff_core_Option.None());
 const targetName_ = (((_1) => {
@@ -301,7 +300,7 @@ const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
-return (((definition_.signature_.name_ == "buildMain") || (definition_.signature_.name_ == "main")) && (((_1) => {
+return ((ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(definition_.signature_.name_, "buildMain") || ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(definition_.signature_.name_, "main")) && (((_1) => {
 {
 if(_1.Link) {
 const p_ = _1.head_;
@@ -325,7 +324,6 @@ return
 }
 
 export async function main_$(system_, $c) {
-ff_core_Log.debug_(ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_Nothing_Nothing).equals_(ff_core_List.Empty(), ff_core_List.Empty())));
 let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
@@ -392,7 +390,7 @@ async function buildScript_$(mainFile_, mainPackagePair_, emitTarget_, resolvedD
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const compilerModulePath_ = (((emitTarget_ != ff_compiler_JsEmitter.EmitBrowser()) && (emitTarget_ != ff_compiler_JsEmitter.EmitExecutable()))
+const compilerModulePath_ = ((ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
 ? ff_core_Option.Some((fireflyPath_ + "/output/js/ff/compiler/Builder.mjs"))
 : ff_core_Option.None());
 const targetName_ = (((_1) => {
@@ -518,7 +516,7 @@ const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
-return (((definition_.signature_.name_ == "buildMain") || (definition_.signature_.name_ == "main")) && (((_1) => {
+return ((ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(definition_.signature_.name_, "buildMain") || ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(definition_.signature_.name_, "main")) && (((_1) => {
 {
 if(_1.Link) {
 const p_ = _1.head_;

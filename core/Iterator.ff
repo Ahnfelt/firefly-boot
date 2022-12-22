@@ -41,7 +41,7 @@ extend self[T]: Iterator[T] {
         mutable inner = Iterator {None} {}
         Iterator {
             mutable result = None
-            while {result == None} {
+            while {result.isEmpty()} {
                 inner.next().{
                     | Some(_)@i => result = Some(i)
                     | None =>
@@ -68,7 +68,7 @@ extend self[T]: Iterator[T] {
     filter(body: T => Bool): Iterator[T] {
         Iterator {
             mutable result = None
-            while {result == None} {
+            while {result.isEmpty()} {
                 self.next().{
                     | Some(x) {body(x)} => result = Some(Some(x))
                     | Some(_) =>

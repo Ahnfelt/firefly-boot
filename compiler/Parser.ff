@@ -868,7 +868,11 @@ extend self: Parser {
                 let right = self.parseBinary(level + 1)
                 let arguments = [Argument(result.at, None, result), Argument(right.at, None, right)]
                 let effect = self.freshUnificationVariable(token.at())
-                let target = DynamicCall(EVariable(token.at(), token.raw()), False)
+                let target = token.raw().{
+                    | "==" => DynamicCall(EVariable(token.at(), "ff:core/Equal.equals"), False)
+                    | "!=" => DynamicCall(EVariable(token.at(), "ff:core/Equal.notEquals"), False)
+                    | o => DynamicCall(EVariable(token.at(), o), False)
+                }
                 result = ECall(token.at(), target, effect, [], arguments, [])
             }
         }

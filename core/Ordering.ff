@@ -64,6 +64,15 @@ type Ordering {
     OrderingAfter
 }
 
+instance Ordering: Equal {
+    equals(x: Ordering, y: Ordering) : Bool {
+        | OrderingBefore, OrderingBefore => True
+        | OrderingSame, OrderingSame => True
+        | OrderingAfter, OrderingAfter => True
+        | _, _ => False
+    }
+}
+
 fromInt(order: Int): Ordering {
     if(order < 0) {
         OrderingBefore

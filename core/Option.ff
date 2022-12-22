@@ -97,14 +97,15 @@ extend self[T]: Option[T] {
         }
     }
 
-    // TODO: Eq constraint
+}
+
+extend self[T: Equal]: Option[T] {
     contains(value: T): Bool {
         self.{
             | None => False
             | Some(v) => v == value
         }
     }
-
 }
 
 extend self[T]: Option[Option[T]] {

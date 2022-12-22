@@ -95,7 +95,7 @@ return OrderingAfter$;
 export function fromInt_(order_) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
-} else if((order_ == 0)) {
+} else if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(order_, 0)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 return ff_core_Ordering.OrderingAfter()
@@ -132,7 +132,7 @@ return
 export async function fromInt_$(order_, $c) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
-} else if((order_ == 0)) {
+} else if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(order_, 0)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 return ff_core_Ordering.OrderingAfter()
@@ -500,5 +500,76 @@ return
 }
 }
 }}
+
+export const ff_core_Equal_Equal$ff_core_Ordering_Ordering = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+if(x_a.OrderingBefore) {
+if(y_a.OrderingBefore) {
+return true
+return
+}
+}
+}
+{
+if(x_a.OrderingSame) {
+if(y_a.OrderingSame) {
+return true
+return
+}
+}
+}
+{
+if(x_a.OrderingAfter) {
+if(y_a.OrderingAfter) {
+return true
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+if(x_a.OrderingBefore) {
+if(y_a.OrderingBefore) {
+return true
+return
+}
+}
+}
+{
+if(x_a.OrderingSame) {
+if(y_a.OrderingSame) {
+return true
+return
+}
+}
+}
+{
+if(x_a.OrderingAfter) {
+if(y_a.OrderingAfter) {
+return true
+return
+}
+}
+}
+{
+return false
+return
+}
+}
+}
+};
 
 

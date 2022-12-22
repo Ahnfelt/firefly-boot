@@ -438,7 +438,7 @@ if(t1_a.TVariable) {
 const i1_ = t1_a.index_;
 if(t2_a.TVariable) {
 const i2_ = t2_a.index_;
-const _guard1 = (i1_ == i2_);
+const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i1_, i2_);
 if(_guard1) {
 
 return
@@ -489,7 +489,7 @@ const generics1_ = t1_a.generics_;
 if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
-if(((name1_ != name2_) || (ff_core_List.List_size(generics1_) != ff_core_List.List_size(generics2_)))) {
+if((ff_core_Equal.notEquals_(name1_, name2_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String) || ff_core_Equal.notEquals_(ff_core_List.List_size(generics1_), ff_core_List.List_size(generics2_), ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int))) {
 ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
@@ -592,7 +592,7 @@ return
 {
 if(t_a.TVariable) {
 const i_ = t_a.index_;
-return (i_ == index_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, index_)
 return
 }
 }
@@ -888,7 +888,7 @@ if(t1_a.TVariable) {
 const i1_ = t1_a.index_;
 if(t2_a.TVariable) {
 const i2_ = t2_a.index_;
-const _guard1 = (i1_ == i2_);
+const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i1_, i2_);
 if(_guard1) {
 
 return
@@ -939,7 +939,7 @@ const generics1_ = t1_a.generics_;
 if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
-if(((name1_ != name2_) || (ff_core_List.List_size(generics1_) != ff_core_List.List_size(generics2_)))) {
+if((ff_core_Equal.notEquals_(name1_, name2_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String) || ff_core_Equal.notEquals_(ff_core_List.List_size(generics1_), ff_core_List.List_size(generics2_), ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int))) {
 ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
@@ -1042,7 +1042,7 @@ return
 {
 if(t_a.TVariable) {
 const i_ = t_a.index_;
-return (i_ == index_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, index_)
 return
 }
 }

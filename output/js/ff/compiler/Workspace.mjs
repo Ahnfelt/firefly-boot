@@ -96,7 +96,7 @@ export function loadWorkspace_(fs_, path_) {
 const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
 ? ff_core_FileSystem.directoryName_(path_)
 : path_);
-const fixedPackageDirectory_ = ((packageDirectory_ == "")
+const fixedPackageDirectory_ = (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packageDirectory_, "")
 ? "."
 : packageDirectory_);
 const workspaceFile_ = (fixedPackageDirectory_ + "/.firefly-workspace");
@@ -114,19 +114,19 @@ const text_ = ff_core_FileSystem.FileSystem_readText(fs_, path_);
 let defaultLocation_ = ff_core_Option.None();
 const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
 return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", ""), ((_w1) => {
-return (_w1 != 35)
+return ff_core_Equal.notEquals_(_w1, 35, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 }))
 })), ((_w1) => {
-return (ff_core_String.String_size(_w1) != 0)
+return ff_core_Equal.notEquals_(ff_core_String.String_size(_w1), 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)
 }));
 const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
 const columns_ = ff_core_List.List_filter(ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32)), ((_w1) => {
-return (ff_core_String.String_size(_w1) != 0)
+return ff_core_Equal.notEquals_(ff_core_String.String_size(_w1), 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)
 }));
 ff_core_Option.Option_each(defaultLocation_, ((_) => {
 ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
 }));
-if((ff_core_List.List_size(columns_) != 2)) {
+if(ff_core_Equal.notEquals_(ff_core_List.List_size(columns_), 2, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
 ff_core_Core.panic_(("Could not parse workspace rule: " + line_))
 };
 const package_ = ff_core_List.List_expect(columns_, 0);
@@ -134,18 +134,18 @@ const location_ = ff_core_List.List_expect(columns_, 1);
 const fixedLocation_ = (ff_core_String.String_endsWith(location_, "/")
 ? location_
 : (location_ + "/"));
-if((package_ == "*")) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(package_, "*")) {
 defaultLocation_ = ff_core_Option.Some(fixedLocation_);
 return ff_core_Option.None()
 } else {
 const packageParts_ = ff_core_String.String_split(package_, 58);
-if((ff_core_Array.Array_size(packageParts_) != 2)) {
+if(ff_core_Equal.notEquals_(ff_core_Array.Array_size(packageParts_), 2, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
 ff_core_Core.panic_(("Could not parse workspace package: " + package_))
 };
-if((ff_core_Array.Array_expect(packageParts_, 0) == "*")) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(ff_core_Array.Array_expect(packageParts_, 0), "*")) {
 ff_core_Core.panic_(("Unexpected wildcard: " + package_))
 };
-return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_expect(packageParts_, 0), ((ff_core_Array.Array_expect(packageParts_, 1) != "*")
+return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_expect(packageParts_, 0), (ff_core_Equal.notEquals_(ff_core_Array.Array_expect(packageParts_, 1), "*", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 ? ff_core_Option.Some(ff_core_Array.Array_expect(packageParts_, 1))
 : ff_core_Option.None()), fixedLocation_))
 }
@@ -163,7 +163,7 @@ export async function loadWorkspace_$(fs_, path_, $c) {
 const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
 ? ff_core_FileSystem.directoryName_(path_)
 : path_);
-const fixedPackageDirectory_ = ((packageDirectory_ == "")
+const fixedPackageDirectory_ = (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packageDirectory_, "")
 ? "."
 : packageDirectory_);
 const workspaceFile_ = (fixedPackageDirectory_ + "/.firefly-workspace");
@@ -181,19 +181,19 @@ const text_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, path_, $c));
 let defaultLocation_ = ff_core_Option.None();
 const lines_ = ff_core_List.List_filter(ff_core_List.List_map(ff_core_Array.Array_toList(ff_core_String.String_split(text_, 10)), ((_w1) => {
 return ff_core_String.String_takeWhile(ff_core_String.String_replace(_w1, "\r", ""), ((_w1) => {
-return (_w1 != 35)
+return ff_core_Equal.notEquals_(_w1, 35, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 }))
 })), ((_w1) => {
-return (ff_core_String.String_size(_w1) != 0)
+return ff_core_Equal.notEquals_(ff_core_String.String_size(_w1), 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)
 }));
 const rules_ = ff_core_List.List_collect(lines_, ((line_) => {
 const columns_ = ff_core_List.List_filter(ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(line_, "\t", " "), 32)), ((_w1) => {
-return (ff_core_String.String_size(_w1) != 0)
+return ff_core_Equal.notEquals_(ff_core_String.String_size(_w1), 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)
 }));
 ff_core_Option.Option_each(defaultLocation_, ((_) => {
 ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
 }));
-if((ff_core_List.List_size(columns_) != 2)) {
+if(ff_core_Equal.notEquals_(ff_core_List.List_size(columns_), 2, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
 ff_core_Core.panic_(("Could not parse workspace rule: " + line_))
 };
 const package_ = ff_core_List.List_expect(columns_, 0);
@@ -201,18 +201,18 @@ const location_ = ff_core_List.List_expect(columns_, 1);
 const fixedLocation_ = (ff_core_String.String_endsWith(location_, "/")
 ? location_
 : (location_ + "/"));
-if((package_ == "*")) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(package_, "*")) {
 defaultLocation_ = ff_core_Option.Some(fixedLocation_);
 return ff_core_Option.None()
 } else {
 const packageParts_ = ff_core_String.String_split(package_, 58);
-if((ff_core_Array.Array_size(packageParts_) != 2)) {
+if(ff_core_Equal.notEquals_(ff_core_Array.Array_size(packageParts_), 2, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
 ff_core_Core.panic_(("Could not parse workspace package: " + package_))
 };
-if((ff_core_Array.Array_expect(packageParts_, 0) == "*")) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(ff_core_Array.Array_expect(packageParts_, 0), "*")) {
 ff_core_Core.panic_(("Unexpected wildcard: " + package_))
 };
-return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_expect(packageParts_, 0), ((ff_core_Array.Array_expect(packageParts_, 1) != "*")
+return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_expect(packageParts_, 0), (ff_core_Equal.notEquals_(ff_core_Array.Array_expect(packageParts_, 1), "*", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 ? ff_core_Option.Some(ff_core_Array.Array_expect(packageParts_, 1))
 : ff_core_Option.None()), fixedLocation_))
 }
@@ -228,11 +228,11 @@ return (((((((((packagePair_.group_ + "_") + packagePair_.name_) + "_") + versio
 
 export function Workspace_findPackageLocation(self_, packagePair_, version_) {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_find(self_.rules_, ((rule_) => {
-return ((rule_.packageGroup_ == packagePair_.group_) && ff_core_Option.Option_all(rule_.packageName_, ((_w1) => {
-return (_w1 == packagePair_.name_)
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(rule_.packageGroup_, packagePair_.group_) && ff_core_Option.Option_all(rule_.packageName_, ((_w1) => {
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, packagePair_.name_)
 })))
 })), ((rule_) => {
-const prefix_ = ((rule_.packageName_ == ff_core_Option.None())
+const prefix_ = (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(rule_.packageName_, ff_core_Option.None())
 ? (packagePair_.name_ + "/")
 : "");
 if(ff_core_String.String_contains(rule_.location_, ":")) {
@@ -247,11 +247,11 @@ return (((((self_.defaultLocation_ + packagePair_.group_) + "/") + packagePair_.
 
 export async function Workspace_findPackageLocation$(self_, packagePair_, version_, $c) {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_List.List_find(self_.rules_, ((rule_) => {
-return ((rule_.packageGroup_ == packagePair_.group_) && ff_core_Option.Option_all(rule_.packageName_, ((_w1) => {
-return (_w1 == packagePair_.name_)
+return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(rule_.packageGroup_, packagePair_.group_) && ff_core_Option.Option_all(rule_.packageName_, ((_w1) => {
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, packagePair_.name_)
 })))
 })), ((rule_) => {
-const prefix_ = ((rule_.packageName_ == ff_core_Option.None())
+const prefix_ = (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(rule_.packageName_, ff_core_Option.None())
 ? (packagePair_.name_ + "/")
 : "");
 if(ff_core_String.String_contains(rule_.location_, ":")) {

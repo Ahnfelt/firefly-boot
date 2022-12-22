@@ -602,7 +602,7 @@ return ff_core_Pair.Pair(i_.package_, i_.file_)
 return ff_compiler_JsEmitter.JsEmitter_emitImportDefinition(self_, _w1)
 })), ff_core_List.Empty())));
 const parts_ = ff_core_List.Link((ff_core_List.List_any(imports_, ((_w1) => {
-return (_w1 == selfImport_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, selfImport_)
 }))
 ? imports_
 : ff_core_List.Link(selfImport_, imports_)), ff_core_List.Link(ff_core_List.List_map(module_.types_, ((_w1) => {
@@ -618,9 +618,9 @@ return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 })), ff_core_List.Link((self_.isMainModule_
-? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, packagePair_, ((packagePair_.group_ == "ff") && (packagePair_.name_ == "compiler")))
+? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, packagePair_, (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packagePair_.group_, "ff") && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packagePair_.name_, "compiler")))
 : ff_core_List.Empty()), ff_core_List.Empty()))))))));
-const ignoreJsImports_ = ((((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable()) && (packagePair_.group_ == "ff")) && (packagePair_.name_ == "core"))
+const ignoreJsImports_ = (((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable()) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packagePair_.group_, "ff")) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packagePair_.name_, "core"))
 ? ff_core_List.Link("esbuild", ff_core_List.Empty())
 : ff_core_List.Empty());
 const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_, ff_core_List.List_toSet(ignoreJsImports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
@@ -631,33 +631,33 @@ return ff_core_List.List_join(_w1, "\n\n")
 
 export function JsEmitter_emitRun(self_, functions_, mainPackagePair_, bootstrapping_) {
 const buildMainFunction_ = ff_core_Option.Option_filter(ff_core_List.List_find(functions_, ((_w1) => {
-return (_w1.signature_.name_ == "buildMain")
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.signature_.name_, "buildMain")
 })), ((_) => {
-return ((self_.emitTarget_ != ff_compiler_JsEmitter.EmitBrowser()) && (self_.emitTarget_ != ff_compiler_JsEmitter.EmitExecutable()))
+return (ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
 }));
-const willRunOnNode_ = (self_.emitTarget_ != ff_compiler_JsEmitter.EmitBrowser());
+const willRunOnNode_ = ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget);
 const targetMain_ = (willRunOnNode_
 ? "nodeMain"
 : "browserMain");
 const mainFunction_ = ff_core_Option.Option_orElse(ff_core_List.List_find(functions_, ((_w1) => {
-return (_w1.signature_.name_ == targetMain_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.signature_.name_, targetMain_)
 })), (() => {
 return ff_core_List.List_find(functions_, ((_w1) => {
-return (_w1.signature_.name_ == "main")
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.signature_.name_, "main")
 }))
 }));
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable())
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
-: "false")) + ","), ff_core_List.Link(("buildMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitBuild())
+: "false")) + ","), ff_core_List.Link(("buildMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? "true"
 : "false")), ff_core_List.Link("}", ff_core_List.Link("try {", ff_core_List.List_addAll(((!ff_core_Option.Option_isEmpty(buildMainFunction_))
 ? ff_core_List.Link("await buildMain_$(system, controller)", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.List_addAll(((self_.emitTarget_ != ff_compiler_JsEmitter.EmitBuild())
+: ff_core_List.Empty()), ff_core_List.List_addAll((ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ff_core_List.Link((("await " + mainName_) + "_$(system, controller)"), ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.List_addAll(((self_.emitTarget_ == ff_compiler_JsEmitter.EmitBuild())
+: ff_core_List.Empty()), ff_core_List.List_addAll((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? ff_core_List.Link("await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, controller)", ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("}", (((_1) => {
 {
@@ -705,7 +705,7 @@ return (((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition
 
 export function JsEmitter_emitExtendsDefinition(self_, definition_) {
 const typeName_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_compiler_JsEmitter.extractTypeName_(definition_.type_)), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })));
 const methods_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 {
@@ -925,7 +925,7 @@ return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
 })), ", ");
 if(ff_core_List.List_isEmpty(allFields_)) {
 return ((((((((((((("const " + definition_.name_) + "$ = {") + definition_.name_) + ": true};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
-} else if((ff_core_List.List_size(typeDefinition_.variants_) == 1)) {
+} else if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_List.List_size(typeDefinition_.variants_), 1)) {
 return (((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + fields_) + "};\n") + "}")
 } else {
 return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + definition_.name_) + ": true, ") + fields_) + "};\n") + "}")
@@ -1070,7 +1070,7 @@ if(_1.EVariantIs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const n_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })));
 return (((("(function(_v) { " + "return _v.") + ff_compiler_JsEmitter.escapeResolved_(n_)) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();") + "})")
 return
@@ -1340,7 +1340,7 @@ const asyncSuffix_ = (await_
 ? "$"
 : "");
 const n_ = (ff_compiler_JsEmitter.escapeKeyword_(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })))) + asyncSuffix_);
 const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
@@ -1485,7 +1485,7 @@ return
 if(_1.EWildcard) {
 const at_ = _1.at_;
 const index_ = _1.index_;
-if((index_ == 0)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(index_, 0)) {
 ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
 };
 return ("_w" + index_)
@@ -1507,7 +1507,7 @@ return
 }
 
 export function JsEmitter_emitDictionary(self_, d_) {
-const m_ = ((d_.moduleName_ != "")
+const m_ = (ff_core_Equal.notEquals_(d_.moduleName_, "", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 ? (((ff_compiler_Syntax.PackagePair_groupName(d_.packagePair_, "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + ".")
 : "");
 const c_ = (m_ + ff_compiler_JsEmitter.makeDictionaryName_(d_.traitName_, d_.typeName_));
@@ -1856,7 +1856,7 @@ if(_1.PVariable) {
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
 const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(name_);
-return (((escaped_ != argument_)
+return ((ff_core_Equal.notEquals_(escaped_, argument_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 ? (((("const " + escaped_) + " = ") + argument_) + ";\n")
 : "") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, last_, async_))
 return
@@ -1910,7 +1910,7 @@ return ((((processed_.loneVariant_
 : (((("if(" + argument_) + ".") + processed_.variantName_) + ") {\n")) + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 })), ((_w1) => {
-return (_w1 != argument_)
+return ff_core_Equal.notEquals_(_w1, argument_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 })), ((_w1) => {
 return (((("const " + _w1) + " = ") + argument_) + ";\n")
 })), (() => {
@@ -1926,7 +1926,7 @@ if(_1.PAlias) {
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
 const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(variable_);
-return (((escaped_ != argument_)
+return ((ff_core_Equal.notEquals_(escaped_, argument_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 ? (((("const " + escaped_) + " = ") + argument_) + ";\n")
 : "") + ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_, last_, async_))
 return
@@ -1980,7 +1980,7 @@ return
 
 export function JsEmitter_processVariantCase(self_, name_, argument_) {
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })));
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
@@ -1989,10 +1989,10 @@ let newtype_ = false;
 let loneVariant_ = false;
 const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
-return (_w1.name_ == variantName_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.name_, variantName_)
 })), ((variant_) => {
 newtype_ = definition_.newtype_;
-loneVariant_ = (ff_core_List.List_size(definition_.variants_) == 1);
+loneVariant_ = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_List.List_size(definition_.variants_), 1);
 return ff_core_List.List_addAll(ff_core_List.List_map(definition_.commonFields_, ((_w1) => {
 return _w1.name_
 })), ff_core_List.List_map(variant_.fields_, ((_w1) => {
@@ -2011,7 +2011,7 @@ return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, newtype_, loneVa
 
 export function JsEmitter_processVariant(self_, name_) {
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })));
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
@@ -2019,7 +2019,7 @@ const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_, 
 let newtype_ = false;
 const newArguments_ = ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
-return (_w1.name_ == variantName_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.name_, variantName_)
 })), ((variant_) => {
 newtype_ = definition_.newtype_
 }))
@@ -2041,7 +2041,7 @@ return ff_core_Pair.Pair(i_.package_, i_.file_)
 return ff_compiler_JsEmitter.JsEmitter_emitImportDefinition(self_, _w1)
 })), ff_core_List.Empty())));
 const parts_ = ff_core_List.Link((ff_core_List.List_any(imports_, ((_w1) => {
-return (_w1 == selfImport_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, selfImport_)
 }))
 ? imports_
 : ff_core_List.Link(selfImport_, imports_)), ff_core_List.Link(ff_core_List.List_map(module_.types_, ((_w1) => {
@@ -2057,9 +2057,9 @@ return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitInstanceDefinition(self_, _w1)
 })), ff_core_List.Link((self_.isMainModule_
-? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, packagePair_, ((packagePair_.group_ == "ff") && (packagePair_.name_ == "compiler")))
+? ff_compiler_JsEmitter.JsEmitter_emitRun(self_, module_.functions_, packagePair_, (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packagePair_.group_, "ff") && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packagePair_.name_, "compiler")))
 : ff_core_List.Empty()), ff_core_List.Empty()))))))));
-const ignoreJsImports_ = ((((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable()) && (packagePair_.group_ == "ff")) && (packagePair_.name_ == "core"))
+const ignoreJsImports_ = (((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable()) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packagePair_.group_, "ff")) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(packagePair_.name_, "core"))
 ? ff_core_List.Link("esbuild", ff_core_List.Empty())
 : ff_core_List.Empty());
 const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImporter_, ff_core_List.List_toSet(ignoreJsImports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
@@ -2070,33 +2070,33 @@ return ff_core_List.List_join(_w1, "\n\n")
 
 export async function JsEmitter_emitRun$(self_, functions_, mainPackagePair_, bootstrapping_, $c) {
 const buildMainFunction_ = ff_core_Option.Option_filter(ff_core_List.List_find(functions_, ((_w1) => {
-return (_w1.signature_.name_ == "buildMain")
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.signature_.name_, "buildMain")
 })), ((_) => {
-return ((self_.emitTarget_ != ff_compiler_JsEmitter.EmitBrowser()) && (self_.emitTarget_ != ff_compiler_JsEmitter.EmitExecutable()))
+return (ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget) && ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget))
 }));
-const willRunOnNode_ = (self_.emitTarget_ != ff_compiler_JsEmitter.EmitBrowser());
+const willRunOnNode_ = ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget);
 const targetMain_ = (willRunOnNode_
 ? "nodeMain"
 : "browserMain");
 const mainFunction_ = ff_core_Option.Option_orElse(ff_core_List.List_find(functions_, ((_w1) => {
-return (_w1.signature_.name_ == targetMain_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.signature_.name_, targetMain_)
 })), (() => {
 return ff_core_List.List_find(functions_, ((_w1) => {
-return (_w1.signature_.name_ == "main")
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.signature_.name_, "main")
 }))
 }));
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitExecutable())
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
-: "false")) + ","), ff_core_List.Link(("buildMode_: " + ((self_.emitTarget_ == ff_compiler_JsEmitter.EmitBuild())
+: "false")) + ","), ff_core_List.Link(("buildMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? "true"
 : "false")), ff_core_List.Link("}", ff_core_List.Link("try {", ff_core_List.List_addAll(((!ff_core_Option.Option_isEmpty(buildMainFunction_))
 ? ff_core_List.Link("await buildMain_$(system, controller)", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.List_addAll(((self_.emitTarget_ != ff_compiler_JsEmitter.EmitBuild())
+: ff_core_List.Empty()), ff_core_List.List_addAll((ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
 ? ff_core_List.Link((("await " + mainName_) + "_$(system, controller)"), ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.List_addAll(((self_.emitTarget_ == ff_compiler_JsEmitter.EmitBuild())
+: ff_core_List.Empty()), ff_core_List.List_addAll((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? ff_core_List.Link("await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, controller)", ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("}", (((_1) => {
 {
@@ -2144,7 +2144,7 @@ return (((((mutability_ + " ") + ff_compiler_JsEmitter.escapeKeyword_(definition
 
 export async function JsEmitter_emitExtendsDefinition$(self_, definition_, $c) {
 const typeName_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_compiler_JsEmitter.extractTypeName_(definition_.type_)), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })));
 const methods_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 {
@@ -2364,7 +2364,7 @@ return ff_compiler_JsEmitter.escapeKeyword_(_w1.name_)
 })), ", ");
 if(ff_core_List.List_isEmpty(allFields_)) {
 return ((((((((((((("const " + definition_.name_) + "$ = {") + definition_.name_) + ": true};\n") + "export function ") + definition_.name_) + "(") + fields_) + ") {\n") + "return ") + definition_.name_) + "$;\n") + "}")
-} else if((ff_core_List.List_size(typeDefinition_.variants_) == 1)) {
+} else if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_List.List_size(typeDefinition_.variants_), 1)) {
 return (((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + fields_) + "};\n") + "}")
 } else {
 return (((((((((("export function " + definition_.name_) + "(") + fields_) + ") {\n") + "return {") + definition_.name_) + ": true, ") + fields_) + "};\n") + "}")
@@ -2509,7 +2509,7 @@ if(_1.EVariantIs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const n_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })));
 return (((("(function(_v) { " + "return _v.") + ff_compiler_JsEmitter.escapeResolved_(n_)) + " ? ff_core_Option.Some(_v) : ff_core_Option.None();") + "})")
 return
@@ -2779,7 +2779,7 @@ const asyncSuffix_ = (await_
 ? "$"
 : "");
 const n_ = (ff_compiler_JsEmitter.escapeKeyword_(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })))) + asyncSuffix_);
 const emittedArguments_ = ff_core_List.List_map(arguments_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
@@ -2924,7 +2924,7 @@ return
 if(_1.EWildcard) {
 const at_ = _1.at_;
 const index_ = _1.index_;
-if((index_ == 0)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(index_, 0)) {
 ff_compiler_JsEmitter.fail_(at_, "Unbound wildcard")
 };
 return ("_w" + index_)
@@ -2946,7 +2946,7 @@ return
 }
 
 export async function JsEmitter_emitDictionary$(self_, d_, $c) {
-const m_ = ((d_.moduleName_ != "")
+const m_ = (ff_core_Equal.notEquals_(d_.moduleName_, "", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 ? (((ff_compiler_Syntax.PackagePair_groupName(d_.packagePair_, "_") + "_") + ff_core_String.String_replace(d_.moduleName_, "/", "_")) + ".")
 : "");
 const c_ = (m_ + ff_compiler_JsEmitter.makeDictionaryName_(d_.traitName_, d_.typeName_));
@@ -3295,7 +3295,7 @@ if(_1.PVariable) {
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
 const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(name_);
-return (((escaped_ != argument_)
+return ((ff_core_Equal.notEquals_(escaped_, argument_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 ? (((("const " + escaped_) + " = ") + argument_) + ";\n")
 : "") + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, matchCase_, last_, async_))
 return
@@ -3349,7 +3349,7 @@ return ((((processed_.loneVariant_
 : (((("if(" + argument_) + ".") + processed_.variantName_) + ") {\n")) + ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(ff_core_Option.Option_map(variable_, ((word_) => {
 return ff_compiler_JsEmitter.escapeKeyword_(word_)
 })), ((_w1) => {
-return (_w1 != argument_)
+return ff_core_Equal.notEquals_(_w1, argument_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 })), ((_w1) => {
 return (((("const " + _w1) + " = ") + argument_) + ";\n")
 })), (() => {
@@ -3365,7 +3365,7 @@ if(_1.PAlias) {
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
 const escaped_ = ff_compiler_JsEmitter.escapeKeyword_(variable_);
-return (((escaped_ != argument_)
+return ((ff_core_Equal.notEquals_(escaped_, argument_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 ? (((("const " + escaped_) + " = ") + argument_) + ";\n")
 : "") + ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, argument_, pattern_, arguments_, matchCase_, last_, async_))
 return
@@ -3419,7 +3419,7 @@ return
 
 export async function JsEmitter_processVariantCase$(self_, name_, argument_, $c) {
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })));
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
@@ -3428,10 +3428,10 @@ let newtype_ = false;
 let loneVariant_ = false;
 const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
-return (_w1.name_ == variantName_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.name_, variantName_)
 })), ((variant_) => {
 newtype_ = definition_.newtype_;
-loneVariant_ = (ff_core_List.List_size(definition_.variants_) == 1);
+loneVariant_ = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_List.List_size(definition_.variants_), 1);
 return ff_core_List.List_addAll(ff_core_List.List_map(definition_.commonFields_, ((_w1) => {
 return _w1.name_
 })), ff_core_List.List_map(variant_.fields_, ((_w1) => {
@@ -3450,7 +3450,7 @@ return ff_compiler_JsEmitter.ProcessedVariantCase(variantName_, newtype_, loneVa
 
 export async function JsEmitter_processVariant$(self_, name_, $c) {
 const variantNameUnqualified_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
-return (_w1 != 46)
+return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
 })));
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
@@ -3458,7 +3458,7 @@ const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_, 
 let newtype_ = false;
 const newArguments_ = ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
-return (_w1.name_ == variantName_)
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.name_, variantName_)
 })), ((variant_) => {
 newtype_ = definition_.newtype_
 }))

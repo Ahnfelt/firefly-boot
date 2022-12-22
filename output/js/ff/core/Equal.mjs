@@ -80,9 +80,13 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function notEquals_(x_, y_, ff_core_Equal_Equal$T) {
+return (!ff_core_Equal_Equal$T.equals_(x_, y_))
+}
 
-
-
+export async function notEquals_$(x_, y_, ff_core_Equal_Equal$T, $c) {
+return (!ff_core_Equal_Equal$T.equals_(x_, y_))
+}
 
 
 

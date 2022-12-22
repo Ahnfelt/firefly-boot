@@ -152,10 +152,10 @@ const prefix_ = (t_.name_ + "_");
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, d_.type_, ff_core_Option.None());
 return ff_core_List.List_map(d_.methods_, ((method_) => {
 const effect_ = ff_core_List.List_filter(method_.signature_.generics_, ((_w1) => {
-return (_w1 == "Q$")
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
 }));
 const normalGenerics_ = ff_core_List.List_filter(method_.signature_.generics_, ((_w1) => {
-return (_w1 != "Q$")
+return ff_core_Equal.notEquals_(_w1, "Q$", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 }));
 const outerGenerics_ = (alreadyFlat_
 ? ff_core_List.Empty()
@@ -248,10 +248,10 @@ const prefix_ = (t_.name_ + "_");
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, d_.type_, ff_core_Option.None());
 return ff_core_List.List_map(d_.methods_, ((method_) => {
 const effect_ = ff_core_List.List_filter(method_.signature_.generics_, ((_w1) => {
-return (_w1 == "Q$")
+return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
 }));
 const normalGenerics_ = ff_core_List.List_filter(method_.signature_.generics_, ((_w1) => {
-return (_w1 != "Q$")
+return ff_core_Equal.notEquals_(_w1, "Q$", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
 }));
 const outerGenerics_ = (alreadyFlat_
 ? ff_core_List.Empty()

@@ -131,7 +131,7 @@ return ff_core_Option.None()
 }));
 return ff_core_Iterator.Iterator((() => {
 let result_ = ff_core_Option.None();
-while((result_ == ff_core_Option.None())) {
+while(ff_core_Option.Option_isEmpty(result_)) {
 for(;;) {
 const _1 = inner_.next_();
 {
@@ -183,7 +183,7 @@ return ff_core_Option.Option_toIterator(body_(_w1))
 export function Iterator_filter(self_, body_) {
 return ff_core_Iterator.Iterator((() => {
 let result_ = ff_core_Option.None();
-while((result_ == ff_core_Option.None())) {
+while(ff_core_Option.Option_isEmpty(result_)) {
 for(;;) {
 const _1 = self_.next_();
 {
@@ -409,7 +409,7 @@ break
 }
 }
 };
-if((remaining_ != (-1))) {
+if(ff_core_Equal.notEquals_(remaining_, (-1), ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))
@@ -652,7 +652,7 @@ return ff_core_Option.None()
 }));
 return ff_core_Iterator.Iterator((async ($c) => {
 let result_ = ff_core_Option.None();
-while((result_ == ff_core_Option.None())) {
+while(ff_core_Option.Option_isEmpty(result_)) {
 for(;;) {
 const _1 = (await inner_.next_($c));
 {
@@ -704,7 +704,7 @@ return (await ff_core_Option.Option_toIterator$((await body_(_w1, $c)), $c))
 export async function Iterator_filter$(self_, body_, $c) {
 return ff_core_Iterator.Iterator((async ($c) => {
 let result_ = ff_core_Option.None();
-while((result_ == ff_core_Option.None())) {
+while(ff_core_Option.Option_isEmpty(result_)) {
 for(;;) {
 const _1 = (await self_.next_($c));
 {
@@ -930,7 +930,7 @@ break
 }
 }
 };
-if((remaining_ != (-1))) {
+if(ff_core_Equal.notEquals_(remaining_, (-1), ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))

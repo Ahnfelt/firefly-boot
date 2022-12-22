@@ -165,7 +165,7 @@ ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
 return ff_core_Channel.Channel_write(successChannel_, task_())
 })), ((e_) => {
 live_ -= 1;
-if((live_ == 0)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(live_, 0)) {
 ff_core_Channel.Channel_write(failureChannel_, e_)
 }
 }))
@@ -260,7 +260,7 @@ return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async (scope_, $c) =>
 return (await ff_core_Channel.Channel_write$(successChannel_, (await task_($c)), $c))
 }), $c)), (async (e_, $c) => {
 live_ -= 1;
-if((live_ == 0)) {
+if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(live_, 0)) {
 (await ff_core_Channel.Channel_write$(failureChannel_, e_, $c))
 }
 }), $c))
