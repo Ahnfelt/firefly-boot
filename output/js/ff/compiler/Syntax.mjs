@@ -7964,36 +7964,6 @@ return
 }
 }
 {
-if(x_a.Safe) {
-const x_ = x_a;
-if(y_a.Safe) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.Unsafe) {
-const x_ = x_a;
-if(y_a.Unsafe) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.Trusted) {
-const x_ = x_a;
-if(y_a.Trusted) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
 function number_(z_) {
 {
 const z_a = z_;
@@ -8031,36 +8001,6 @@ const _guard1 = (x_ === y_);
 if(_guard1) {
 return ff_core_Ordering.OrderingSame()
 return
-}
-}
-{
-if(x_a.Safe) {
-const x_ = x_a;
-if(y_a.Safe) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.Unsafe) {
-const x_ = x_a;
-if(y_a.Unsafe) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.Trusted) {
-const x_ = x_a;
-if(y_a.Trusted) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
 }
 }
 {

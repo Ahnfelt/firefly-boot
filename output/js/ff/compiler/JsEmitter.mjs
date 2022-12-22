@@ -3922,46 +3922,6 @@ return
 }
 }
 {
-if(x_a.EmitNode) {
-const x_ = x_a;
-if(y_a.EmitNode) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.EmitBrowser) {
-const x_ = x_a;
-if(y_a.EmitBrowser) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.EmitBuild) {
-const x_ = x_a;
-if(y_a.EmitBuild) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.EmitExecutable) {
-const x_ = x_a;
-if(y_a.EmitExecutable) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
 function number_(z_) {
 {
 const z_a = z_;
@@ -4005,46 +3965,6 @@ const _guard1 = (x_ === y_);
 if(_guard1) {
 return ff_core_Ordering.OrderingSame()
 return
-}
-}
-{
-if(x_a.EmitNode) {
-const x_ = x_a;
-if(y_a.EmitNode) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.EmitBrowser) {
-const x_ = x_a;
-if(y_a.EmitBrowser) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.EmitBuild) {
-const x_ = x_a;
-if(y_a.EmitBuild) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-}
-{
-if(x_a.EmitExecutable) {
-const x_ = x_a;
-if(y_a.EmitExecutable) {
-const y_ = y_a;
-return ff_core_Ordering.OrderingSame()
-return
-}
 }
 }
 {
