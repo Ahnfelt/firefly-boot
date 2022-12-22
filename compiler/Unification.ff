@@ -12,15 +12,6 @@ type ConstraintGenerics(at: Location, generics: List[Type])
 
 type InstanceKey(traitName: String, typeName: String)
 
-instance InstanceKey: Order {
-    compare(x: InstanceKey, y: InstanceKey): Ordering {
-        Ordering.compare(x.traitName, y.traitName).{
-            | OrderingSame => Ordering.compare(x.typeName, y.typeName)
-            | o => o
-        }
-    }
-}
-
 type InstanceValue(
     generics: List[String],
     constraints: List[Constraint],
