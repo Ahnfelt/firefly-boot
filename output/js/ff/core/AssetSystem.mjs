@@ -124,7 +124,7 @@ return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core
 
 export function AssetSystem_asset(self_, path_) {
 const name_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })));
 const streams_ = ff_core_List.List_map(ff_core_Option.Option_toList(ff_core_Map.Map_get(self_.files_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ((s_) => {
 return ff_core_Pair.Pair(("/" + name_), s_)
@@ -142,7 +142,7 @@ const p_ = _1.first_;
 const _guard1 = ff_core_String.String_startsWith(p_, prefix_, 0);
 if(_guard1) {
 return ff_core_Option.Some(ff_core_String.String_takeWhile(ff_core_String.String_dropFirst(p_, ff_core_String.String_size(prefix_)), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })))
 return
 }
@@ -206,7 +206,7 @@ return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core
 
 export async function AssetSystem_asset$(self_, path_, $c) {
 const name_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })));
 const streams_ = ff_core_List.List_map(ff_core_Option.Option_toList(ff_core_Map.Map_get(self_.files_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)), ((s_) => {
 return ff_core_Pair.Pair(("/" + name_), s_)
@@ -224,7 +224,7 @@ const p_ = _1.first_;
 const _guard1 = ff_core_String.String_startsWith(p_, prefix_, 0);
 if(_guard1) {
 return ff_core_Option.Some(ff_core_String.String_takeWhile(ff_core_String.String_dropFirst(p_, ff_core_String.String_size(prefix_)), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })))
 return
 }

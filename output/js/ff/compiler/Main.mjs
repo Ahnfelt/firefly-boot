@@ -114,6 +114,7 @@ return {BuildCommand: true, mainPath_};
 
 
 export function main_(system_) {
+const eq_ = (1337 !== 42);
 let arguments_ = ff_core_NodeSystem.NodeSystem_arguments(system_);
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
@@ -300,7 +301,7 @@ const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
-return ((ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(definition_.signature_.name_, "buildMain") || ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(definition_.signature_.name_, "main")) && (((_1) => {
+return (((definition_.signature_.name_ === "buildMain") || (definition_.signature_.name_ === "main")) && (((_1) => {
 {
 if(_1.Link) {
 const p_ = _1.head_;
@@ -324,6 +325,7 @@ return
 }
 
 export async function main_$(system_, $c) {
+const eq_ = (1337 !== 42);
 let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
@@ -516,7 +518,7 @@ const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
-return ((ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(definition_.signature_.name_, "buildMain") || ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(definition_.signature_.name_, "main")) && (((_1) => {
+return (((definition_.signature_.name_ === "buildMain") || (definition_.signature_.name_ === "main")) && (((_1) => {
 {
 if(_1.Link) {
 const p_ = _1.head_;
@@ -637,7 +639,7 @@ if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
 const y_ = y_a;
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.mainPath_, y_.mainPath_)
+return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
@@ -647,7 +649,7 @@ if(x_a.BrowserCommand) {
 const x_ = x_a;
 if(y_a.BrowserCommand) {
 const y_ = y_a;
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.mainPath_, y_.mainPath_)
+return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
@@ -657,7 +659,7 @@ if(x_a.BuildCommand) {
 const x_ = x_a;
 if(y_a.BuildCommand) {
 const y_ = y_a;
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.mainPath_, y_.mainPath_)
+return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
@@ -694,7 +696,7 @@ if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
 const y_ = y_a;
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.mainPath_, y_.mainPath_)
+return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
@@ -704,7 +706,7 @@ if(x_a.BrowserCommand) {
 const x_ = x_a;
 if(y_a.BrowserCommand) {
 const y_ = y_a;
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.mainPath_, y_.mainPath_)
+return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }
@@ -714,7 +716,7 @@ if(x_a.BuildCommand) {
 const x_ = x_a;
 if(y_a.BuildCommand) {
 const y_ = y_a;
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.mainPath_, y_.mainPath_)
+return (x_.mainPath_ === y_.mainPath_)
 return
 }
 }

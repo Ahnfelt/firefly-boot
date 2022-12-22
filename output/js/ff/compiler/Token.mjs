@@ -214,7 +214,7 @@ return ((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equal
 }
 
 export function Token_rawIs(token_, value_) {
-return (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_((token_.stopOffset_ - token_.startOffset_), ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
+return (((token_.stopOffset_ - token_.startOffset_) === ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
 export function Token_rawIs2(token_, value1_, value2_) {
@@ -246,7 +246,7 @@ return ((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equal
 }
 
 export async function Token_rawIs$(token_, value_, $c) {
-return (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_((token_.stopOffset_ - token_.startOffset_), ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
+return (((token_.stopOffset_ - token_.startOffset_) === ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
 export async function Token_rawIs2$(token_, value1_, value2_, $c) {
@@ -1592,7 +1592,7 @@ return
 }
 }
 {
-return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.code_, y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startLine_, y_.startLine_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startLineOffset_, y_.startLineOffset_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startOffset_, y_.startOffset_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopLine_, y_.stopLine_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopLineOffset_, y_.stopLineOffset_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopOffset_, y_.stopOffset_)))))))))
+return ((x_.file_ === y_.file_) && ((x_.code_ === y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && ((x_.startLine_ === y_.startLine_) && ((x_.startLineOffset_ === y_.startLineOffset_) && ((x_.startOffset_ === y_.startOffset_) && ((x_.stopLine_ === y_.stopLine_) && ((x_.stopLineOffset_ === y_.stopLineOffset_) && (x_.stopOffset_ === y_.stopOffset_)))))))))
 return
 }
 }
@@ -1609,7 +1609,7 @@ return
 }
 }
 {
-return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.file_, y_.file_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.code_, y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startLine_, y_.startLine_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startLineOffset_, y_.startLineOffset_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.startOffset_, y_.startOffset_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopLine_, y_.stopLine_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopLineOffset_, y_.stopLineOffset_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.stopOffset_, y_.stopOffset_)))))))))
+return ((x_.file_ === y_.file_) && ((x_.code_ === y_.code_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(x_.kind_, y_.kind_) && ((x_.startLine_ === y_.startLine_) && ((x_.startLineOffset_ === y_.startLineOffset_) && ((x_.startOffset_ === y_.startOffset_) && ((x_.stopLine_ === y_.stopLine_) && ((x_.stopLineOffset_ === y_.stopLineOffset_) && (x_.stopOffset_ === y_.stopOffset_)))))))))
 return
 }
 }

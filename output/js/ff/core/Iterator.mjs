@@ -409,7 +409,7 @@ break
 }
 }
 };
-if(ff_core_Equal.notEquals_(remaining_, (-1), ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
+if((remaining_ !== (-1))) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))
@@ -930,7 +930,7 @@ break
 }
 }
 };
-if(ff_core_Equal.notEquals_(remaining_, (-1), ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
+if((remaining_ !== (-1))) {
 remaining_ = size_
 };
 return ff_core_Option.Some(ff_core_List.List_reverse(list_))

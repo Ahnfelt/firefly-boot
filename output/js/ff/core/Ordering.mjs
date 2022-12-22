@@ -95,7 +95,7 @@ return OrderingAfter$;
 export function fromInt_(order_) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
-} else if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(order_, 0)) {
+} else if((order_ === 0)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 return ff_core_Ordering.OrderingAfter()
@@ -132,7 +132,7 @@ return
 export async function fromInt_$(order_, $c) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
-} else if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(order_, 0)) {
+} else if((order_ === 0)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 return ff_core_Ordering.OrderingAfter()

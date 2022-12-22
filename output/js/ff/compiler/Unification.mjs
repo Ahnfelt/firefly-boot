@@ -438,7 +438,7 @@ if(t1_a.TVariable) {
 const i1_ = t1_a.index_;
 if(t2_a.TVariable) {
 const i2_ = t2_a.index_;
-const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i1_, i2_);
+const _guard1 = (i1_ === i2_);
 if(_guard1) {
 
 return
@@ -489,7 +489,7 @@ const generics1_ = t1_a.generics_;
 if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
-if((ff_core_Equal.notEquals_(name1_, name2_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String) || ff_core_Equal.notEquals_(ff_core_List.List_size(generics1_), ff_core_List.List_size(generics2_), ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int))) {
+if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
 ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
@@ -592,7 +592,7 @@ return
 {
 if(t_a.TVariable) {
 const i_ = t_a.index_;
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, index_)
+return (i_ === index_)
 return
 }
 }
@@ -888,7 +888,7 @@ if(t1_a.TVariable) {
 const i1_ = t1_a.index_;
 if(t2_a.TVariable) {
 const i2_ = t2_a.index_;
-const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i1_, i2_);
+const _guard1 = (i1_ === i2_);
 if(_guard1) {
 
 return
@@ -939,7 +939,7 @@ const generics1_ = t1_a.generics_;
 if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
-if((ff_core_Equal.notEquals_(name1_, name2_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String) || ff_core_Equal.notEquals_(ff_core_List.List_size(generics1_), ff_core_List.List_size(generics2_), ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int))) {
+if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
 ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
@@ -1042,7 +1042,7 @@ return
 {
 if(t_a.TVariable) {
 const i_ = t_a.index_;
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, index_)
+return (i_ === index_)
 return
 }
 }
@@ -1198,7 +1198,7 @@ return
 }
 }
 {
-return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.substitution_, y_.substitution_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_ConstraintGenerics)).equals_(x_.constraints_, y_.constraints_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.nextUnificationVariableIndex_, y_.nextUnificationVariableIndex_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_) && ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)).equals_(x_.affects_, y_.affects_)))))
+return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.substitution_, y_.substitution_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_ConstraintGenerics)).equals_(x_.constraints_, y_.constraints_) && ((x_.nextUnificationVariableIndex_ === y_.nextUnificationVariableIndex_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_) && ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)).equals_(x_.affects_, y_.affects_)))))
 return
 }
 }
@@ -1215,7 +1215,7 @@ return
 }
 }
 {
-return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.substitution_, y_.substitution_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_ConstraintGenerics)).equals_(x_.constraints_, y_.constraints_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.nextUnificationVariableIndex_, y_.nextUnificationVariableIndex_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_) && ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)).equals_(x_.affects_, y_.affects_)))))
+return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.substitution_, y_.substitution_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_ConstraintGenerics)).equals_(x_.constraints_, y_.constraints_) && ((x_.nextUnificationVariableIndex_ === y_.nextUnificationVariableIndex_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey, ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_InstanceValue).equals_(x_.instances_, y_.instances_) && ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)).equals_(x_.affects_, y_.affects_)))))
 return
 }
 }
@@ -1272,7 +1272,7 @@ return
 }
 }
 {
-return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.traitName_, y_.traitName_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.typeName_, y_.typeName_))
+return ((x_.traitName_ === y_.traitName_) && (x_.typeName_ === y_.typeName_))
 return
 }
 }
@@ -1289,7 +1289,7 @@ return
 }
 }
 {
-return (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.traitName_, y_.traitName_) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.typeName_, y_.typeName_))
+return ((x_.traitName_ === y_.traitName_) && (x_.typeName_ === y_.typeName_))
 return
 }
 }
@@ -1309,7 +1309,7 @@ return
 }
 }
 {
-return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.moduleName_, y_.moduleName_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.traitName_, y_.traitName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_))))))
+return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.moduleName_ === y_.moduleName_) && ((x_.traitName_ === y_.traitName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_))))))
 return
 }
 }
@@ -1326,7 +1326,7 @@ return
 }
 }
 {
-return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.moduleName_, y_.moduleName_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(x_.traitName_, y_.traitName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_))))))
+return (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.generics_, y_.generics_) && (ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Constraint).equals_(x_.constraints_, y_.constraints_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.moduleName_ === y_.moduleName_) && ((x_.traitName_ === y_.traitName_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.typeArguments_, y_.typeArguments_))))))
 return
 }
 }

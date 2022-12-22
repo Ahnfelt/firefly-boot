@@ -152,10 +152,10 @@ const prefix_ = (t_.name_ + "_");
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, d_.type_, ff_core_Option.None());
 return ff_core_List.List_map(d_.methods_, ((method_) => {
 const effect_ = ff_core_List.List_filter(method_.signature_.generics_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
+return (_w1 === "Q$")
 }));
 const normalGenerics_ = ff_core_List.List_filter(method_.signature_.generics_, ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, "Q$", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
+return (_w1 !== "Q$")
 }));
 const outerGenerics_ = (alreadyFlat_
 ? ff_core_List.Empty()
@@ -248,10 +248,10 @@ const prefix_ = (t_.name_ + "_");
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, d_.type_, ff_core_Option.None());
 return ff_core_List.List_map(d_.methods_, ((method_) => {
 const effect_ = ff_core_List.List_filter(method_.signature_.generics_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
+return (_w1 === "Q$")
 }));
 const normalGenerics_ = ff_core_List.List_filter(method_.signature_.generics_, ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, "Q$", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
+return (_w1 !== "Q$")
 }));
 const outerGenerics_ = (alreadyFlat_
 ? ff_core_List.Empty()
@@ -410,7 +410,7 @@ return
 }
 }
 {
-return (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isVariable_, y_.isVariable_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isMutable_, y_.isMutable_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isNewtype_, y_.isNewtype_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isTraitMethod_, y_.isTraitMethod_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_)))))
+return ((x_.isVariable_ === y_.isVariable_) && ((x_.isMutable_ === y_.isMutable_) && ((x_.isNewtype_ === y_.isNewtype_) && ((x_.isTraitMethod_ === y_.isTraitMethod_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_)))))
 return
 }
 }
@@ -427,7 +427,7 @@ return
 }
 }
 {
-return (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isVariable_, y_.isVariable_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isMutable_, y_.isMutable_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isNewtype_, y_.isNewtype_) && (ff_core_Equal.ff_core_Equal_Equal$ff_core_Bool_Bool.equals_(x_.isTraitMethod_, y_.isTraitMethod_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_)))))
+return ((x_.isVariable_ === y_.isVariable_) && ((x_.isMutable_ === y_.isMutable_) && ((x_.isNewtype_ === y_.isNewtype_) && ((x_.isTraitMethod_ === y_.isTraitMethod_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Signature.equals_(x_.signature_, y_.signature_)))))
 return
 }
 }

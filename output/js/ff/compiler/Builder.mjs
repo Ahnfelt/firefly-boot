@@ -141,7 +141,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? fixedDependencies_.packagePaths_
 : ff_core_Map.Map_add(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-if(ff_core_Equal.notEquals_(target_, "browser", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)) {
+if((target_ !== "browser")) {
 ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
 };
 ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
@@ -158,7 +158,7 @@ const path_ = _1.first_;
 const stream_ = _1.second_;
 const p_ = (assetOutputPath_ + path_);
 ff_core_FileSystem.FileSystem_createDirectories(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 }))));
 ff_core_FileSystem.FileSystem_writeStream(fs_, p_, stream_, false)
 return
@@ -239,7 +239,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? fixedDependencies_.packagePaths_
 : ff_core_Map.Map_add(fixedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-if(ff_core_Equal.notEquals_(target_, "browser", ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)) {
+if((target_ !== "browser")) {
 ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
 };
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
@@ -256,7 +256,7 @@ const path_ = _1.first_;
 const stream_ = _1.second_;
 const p_ = (assetOutputPath_ + path_);
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 }))), $c));
 (await ff_core_FileSystem.FileSystem_writeStream$(fs_, p_, stream_, false, $c))
 return

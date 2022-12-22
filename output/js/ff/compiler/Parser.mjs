@@ -739,7 +739,7 @@ ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}");
 return ff_core_ArrayBuilder.ArrayBuilder_toList(variantsBuilder_)
 })());
-if((newtype_ && ff_core_Equal.notEquals_(ff_core_List.List_size(commonFields_), 1, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int))) {
+if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field")
 };
 if((newtype_ && ff_core_List.List_expect(commonFields_, 0).mutable_)) {
@@ -906,9 +906,9 @@ return ff_core_Char.Char_isAsciiUpper(_w1)
 ff_compiler_Parser.Parser_fail(self_, at_, ("Package names and paths must not contain upper case letters: " + part_))
 };
 if((ff_core_String.String_any(part_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(_w1, 95)
+return (_w1 === 95)
 })) || ff_core_String.String_any(part_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(_w1, 46)
+return (_w1 === 46)
 })))) {
 ff_compiler_Parser.Parser_fail(self_, at_, ("Package names and paths must not contain underscores or dots: " + part_))
 };
@@ -1060,7 +1060,7 @@ return ff_core_List.Link(ff_compiler_Syntax.MatchCase(ff_compiler_Token.Token_at
 const term_ = ff_compiler_Parser.Parser_parseStatements(self_);
 const wildcards_ = ff_compiler_Wildcards.make_();
 const e_ = ff_compiler_Wildcards.Wildcards_fixWildcards(wildcards_, term_);
-const arguments_ = (ff_core_Equal.notEquals_(wildcards_.seenWildcards_, 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)
+const arguments_ = ((wildcards_.seenWildcards_ !== 0)
 ? ff_core_List.List_map(ff_core_List.range_(wildcards_.seenWildcards_), ((i_) => {
 return ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(token_), ff_core_Option.Some(("_w" + (i_ + 1))))
 }))
@@ -1194,7 +1194,7 @@ const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_cu
 : ff_compiler_Parser.Parser_parseTypeArguments(self_, false));
 return ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_), ff_core_List.Empty())
 })());
-if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_List.List_size(leftTypes_), 1))) {
+if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (ff_core_List.List_size(leftTypes_) === 1))) {
 return ff_core_List.List_expectFirst(leftTypes_)
 } else {
 const arrowToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick());
@@ -2110,7 +2110,7 @@ if((!ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_,
 (await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LBracketRight(), "}", $c));
 return ff_core_ArrayBuilder.ArrayBuilder_toList(variantsBuilder_)
 })()));
-if((newtype_ && ff_core_Equal.notEquals_(ff_core_List.List_size(commonFields_), 1, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int))) {
+if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field", $c))
 };
 if((newtype_ && ff_core_List.List_expect(commonFields_, 0).mutable_)) {
@@ -2277,9 +2277,9 @@ return ff_core_Char.Char_isAsciiUpper(_w1)
 (await ff_compiler_Parser.Parser_fail$(self_, at_, ("Package names and paths must not contain upper case letters: " + part_), $c))
 };
 if((ff_core_String.String_any(part_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(_w1, 95)
+return (_w1 === 95)
 })) || ff_core_String.String_any(part_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char.equals_(_w1, 46)
+return (_w1 === 46)
 })))) {
 (await ff_compiler_Parser.Parser_fail$(self_, at_, ("Package names and paths must not contain underscores or dots: " + part_), $c))
 };
@@ -2431,7 +2431,7 @@ return ff_core_List.Link(ff_compiler_Syntax.MatchCase(ff_compiler_Token.Token_at
 const term_ = (await ff_compiler_Parser.Parser_parseStatements$(self_, $c));
 const wildcards_ = ff_compiler_Wildcards.make_();
 const e_ = ff_compiler_Wildcards.Wildcards_fixWildcards(wildcards_, term_);
-const arguments_ = (ff_core_Equal.notEquals_(wildcards_.seenWildcards_, 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)
+const arguments_ = ((wildcards_.seenWildcards_ !== 0)
 ? ff_core_List.List_map(ff_core_List.range_(wildcards_.seenWildcards_), ((i_) => {
 return ff_compiler_Syntax.PVariable(ff_compiler_Token.Token_at(token_), ff_core_Option.Some(("_w" + (i_ + 1))))
 }))
@@ -2565,7 +2565,7 @@ const arguments_ = ((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Pa
 : (await ff_compiler_Parser.Parser_parseTypeArguments$(self_, false, $c)));
 return ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_), ff_core_List.Empty())
 })()));
-if(((!ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LArrowThick())) && ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(ff_core_List.List_size(leftTypes_), 1))) {
+if(((!ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LArrowThick())) && (ff_core_List.List_size(leftTypes_) === 1))) {
 return ff_core_List.List_expectFirst(leftTypes_)
 } else {
 const arrowToken_ = (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LArrowThick(), $c));

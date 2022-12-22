@@ -342,6 +342,14 @@ extend self: JsEmitter {
             if(async) {
                 "((() => if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround}))())"
             } else {""}
+        | ECall(at, StaticCall("ff:core/Equal.equals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
+            primitiveTypes.contains(typeName)
+        } =>
+            "(" + self.emitArgument(left, async) + " === " + self.emitArgument(right, async) + ")"
+        | ECall(at, StaticCall("ff:core/Equal.notEquals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
+            primitiveTypes.contains(typeName)
+        } =>
+            "(" + self.emitArgument(left, async) + " !== " + self.emitArgument(right, async) + ")"
         | ECall(at, StaticCall(name, _, True), effect, typeArguments, arguments, dictionaries) =>
             let await = async && effectTypeIsAsync(effect)
             let dictionaryStrings = dictionaries.map(self.emitDictionary)
@@ -699,3 +707,12 @@ effectTypeIsAsync(effect: Type): Bool {
     | TConstructor(_, "Q$", _) => True
     | _ => False
 }
+
+primitiveTypes = [
+    "ff:core/Bool.Bool"
+    "ff:core/Char.Char"
+    "ff:core/Int.Int"
+    "ff:core/Float.Float"
+    "ff:core/String.String"
+    "ff:core/Ordering.Ordering"
+].toSet()

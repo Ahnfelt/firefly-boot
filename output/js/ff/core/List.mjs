@@ -259,7 +259,7 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_;
-const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, 0);
+const _guard1 = (i_ === 0);
 if(_guard1) {
 return head_
 return
@@ -896,7 +896,7 @@ return
 if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
-const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, 0);
+const _guard1 = (i_ === 0);
 if(_guard1) {
 {
 const list_r_ = tail_;
@@ -949,7 +949,7 @@ return
 if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
-const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, 0);
+const _guard1 = (i_ === 0);
 if(_guard1) {
 {
 const list_r_ = tail_;
@@ -1079,7 +1079,7 @@ const x_ = _1.first_.head_;
 const xs2_ = _1.first_.tail_;
 if(_1.second_.Link) {
 const y_ = _1.second_.head_;
-const _guard1 = ff_core_Ordering.ff_core_Equal_Equal$ff_core_Ordering_Ordering.equals_(ff_core_Ordering_Order$O.compare_(body_(x_), body_(y_)), ff_core_Ordering.OrderingBefore());
+const _guard1 = (ff_core_Ordering_Order$O.compare_(body_(x_), body_(y_)) === ff_core_Ordering.OrderingBefore());
 if(_guard1) {
 {
 const xs_r_ = xs2_;
@@ -1185,7 +1185,7 @@ result_ = ff_core_List.Empty();
 added_ = 0
 }
 }));
-if(ff_core_Equal.notEquals_(added_, 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
+if((added_ !== 0)) {
 results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_)
 };
 return ff_core_List.List_reverse(results_)
@@ -1245,7 +1245,7 @@ return
 {
 if(_1.Link) {
 const head_ = _1.head_;
-const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, 0);
+const _guard1 = (i_ === 0);
 if(_guard1) {
 return head_
 return
@@ -1882,7 +1882,7 @@ return
 if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
-const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, 0);
+const _guard1 = (i_ === 0);
 if(_guard1) {
 {
 const list_r_ = tail_;
@@ -1935,7 +1935,7 @@ return
 if(_1.Link) {
 const head_ = _1.head_;
 const tail_ = _1.tail_;
-const _guard1 = ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(i_, 0);
+const _guard1 = (i_ === 0);
 if(_guard1) {
 {
 const list_r_ = tail_;
@@ -2065,7 +2065,7 @@ const x_ = _1.first_.head_;
 const xs2_ = _1.first_.tail_;
 if(_1.second_.Link) {
 const y_ = _1.second_.head_;
-const _guard1 = ff_core_Ordering.ff_core_Equal_Equal$ff_core_Ordering_Ordering.equals_(ff_core_Ordering_Order$O.compare_((await body_(x_, $c)), (await body_(y_, $c))), ff_core_Ordering.OrderingBefore());
+const _guard1 = (ff_core_Ordering_Order$O.compare_((await body_(x_, $c)), (await body_(y_, $c))) === ff_core_Ordering.OrderingBefore());
 if(_guard1) {
 {
 const xs_r_ = xs2_;
@@ -2171,7 +2171,7 @@ result_ = ff_core_List.Empty();
 added_ = 0
 }
 }));
-if(ff_core_Equal.notEquals_(added_, 0, ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int)) {
+if((added_ !== 0)) {
 results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_)
 };
 return ff_core_List.List_reverse(results_)

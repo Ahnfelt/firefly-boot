@@ -89,9 +89,9 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 export function directoryName_(path_) {
 const directory_ = ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })), 1));
-if(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(directory_, "")) {
+if((directory_ === "")) {
 return "."
 } else {
 return directory_
@@ -100,31 +100,31 @@ return directory_
 
 export function baseName_(path_) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })))
 }
 
 export function prefixName_(path_) {
 return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 }))), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 46)
 }))
 }
 
 export function suffixName_(path_) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 46)
 })))
 }
 
 export async function directoryName_$(path_, $c) {
 const directory_ = ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })), 1));
-if(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(directory_, "")) {
+if((directory_ === "")) {
 return "."
 } else {
 return directory_
@@ -133,23 +133,23 @@ return directory_
 
 export async function baseName_$(path_, $c) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })))
 }
 
 export async function prefixName_$(path_, $c) {
 return ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 }))), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 46)
 }))
 }
 
 export async function suffixName_$(path_, $c) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 46)
 })))
 }
 
@@ -161,7 +161,7 @@ ff_core_FileSystem.FileSystem_deleteDirectory(self_, toPath_)
 ff_core_FileSystem.FileSystem_createDirectory(self_, toPath_);
 ff_core_List.List_each(ff_core_FileSystem.FileSystem_list(self_, fromPath_), ((file_) => {
 ff_core_FileSystem.FileSystem_copy(self_, file_, ((toPath_ + "/") + ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(file_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })))))
 }))
 } else {
@@ -251,7 +251,7 @@ if((await ff_core_FileSystem.FileSystem_exists$(self_, toPath_, $c))) {
 (await ff_core_FileSystem.FileSystem_createDirectory$(self_, toPath_, $c));
 (await ff_core_List.List_each$((await ff_core_FileSystem.FileSystem_list$(self_, fromPath_, $c)), (async (file_, $c) => {
 (await ff_core_FileSystem.FileSystem_copy$(self_, file_, ((toPath_ + "/") + ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(file_), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 })))), $c))
 }), $c))
 } else {

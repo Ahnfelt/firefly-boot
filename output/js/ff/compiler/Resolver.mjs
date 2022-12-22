@@ -116,9 +116,9 @@ return result_
 
 export function Resolver_resolveModule(self_, module_, otherModules_) {
 const moduleNamespace_ = ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_replace(module_.file_, "\\", "/")), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 }))), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 46)
 }));
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
@@ -149,7 +149,7 @@ let resolver_ = self_;
 ff_core_List.List_each(imports_, ((import_) => {
 {
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(ff_core_String.String_dropLast(_w1.file_, 3), import_.file_)
+return (ff_core_String.String_dropLast(_w1.file_, 3) === import_.file_)
 }));
 {
 if(_1.Some) {
@@ -199,7 +199,7 @@ return
 }
 }
 }
-const isCore_ = ((ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(module_.packagePair_.group_, "ff") && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(module_.packagePair_.name_, "core")) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(module_.file_, "Core.ff"));
+const isCore_ = (((module_.packagePair_.group_ === "ff") && (module_.packagePair_.name_ === "core")) && (module_.file_ === "Core.ff"));
 const lets_ = ff_core_List.List_toMap(ff_core_List.List_flatMap(module_.lets_, ((_w1) => {
 return entry_(_w1.name_, isCore_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -219,7 +219,7 @@ return entry_(_w1.name_, true)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const asyncTypes_ = ff_core_List.List_toSet(ff_core_List.List_flatMap(ff_core_List.List_filter(module_.types_, ((_w1) => {
 return ff_core_Option.Option_any(ff_core_List.List_first(_w1.generics_), ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
+return (_w1 === "Q$")
 }))
 })), ((_w1) => {
 return ff_core_List.List_map(entry_(_w1.name_, true), ((_w1) => {
@@ -242,7 +242,7 @@ const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_);
 if((!ff_core_Option.Option_any(ff_core_List.List_first(definition_.generics_), ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
+return (_w1 === "Q$")
 })))) {
 ff_core_List.List_each(ff_core_List.List_addAll(definition_.commonFields_, ff_core_List.List_flatMap(definition_.variants_, ((_w1) => {
 return _w1.fields_
@@ -315,7 +315,7 @@ return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true)
 const name_ = _1.first_;
 const lambda_ = _1.second_;
 const signature_ = ff_core_Option.Option_expect(ff_core_List.List_find(definition_.methods_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.name_, name_)
+return (_w1.name_ === name_)
 })));
 const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
 const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true);
@@ -624,7 +624,7 @@ return
 {
 if(term_a.EWildcard) {
 const e_ = term_a;
-if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(e_.index_, 0)) {
+if((e_.index_ === 0)) {
 ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
 };
 {
@@ -1061,9 +1061,9 @@ return result_
 
 export async function Resolver_resolveModule$(self_, module_, otherModules_, $c) {
 const moduleNamespace_ = ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(ff_core_String.String_replace(module_.file_, "\\", "/")), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 47, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 47)
 }))), ((_w1) => {
-return ff_core_Equal.notEquals_(_w1, 46, ff_core_Equal.ff_core_Equal_Equal$ff_core_Char_Char)
+return (_w1 !== 46)
 }));
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
@@ -1094,7 +1094,7 @@ let resolver_ = self_;
 ff_core_List.List_each(imports_, ((import_) => {
 {
 const _1 = ff_core_List.List_find(modules_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(ff_core_String.String_dropLast(_w1.file_, 3), import_.file_)
+return (ff_core_String.String_dropLast(_w1.file_, 3) === import_.file_)
 }));
 {
 if(_1.Some) {
@@ -1144,7 +1144,7 @@ return
 }
 }
 }
-const isCore_ = ((ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(module_.packagePair_.group_, "ff") && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(module_.packagePair_.name_, "core")) && ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(module_.file_, "Core.ff"));
+const isCore_ = (((module_.packagePair_.group_ === "ff") && (module_.packagePair_.name_ === "core")) && (module_.file_ === "Core.ff"));
 const lets_ = ff_core_List.List_toMap(ff_core_List.List_flatMap(module_.lets_, ((_w1) => {
 return entry_(_w1.name_, isCore_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -1164,7 +1164,7 @@ return entry_(_w1.name_, true)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const asyncTypes_ = ff_core_List.List_toSet(ff_core_List.List_flatMap(ff_core_List.List_filter(module_.types_, ((_w1) => {
 return ff_core_Option.Option_any(ff_core_List.List_first(_w1.generics_), ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
+return (_w1 === "Q$")
 }))
 })), ((_w1) => {
 return ff_core_List.List_map(entry_(_w1.name_, true), ((_w1) => {
@@ -1187,7 +1187,7 @@ const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_);
 if((!ff_core_Option.Option_any(ff_core_List.List_first(definition_.generics_), ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1, "Q$")
+return (_w1 === "Q$")
 })))) {
 ff_core_List.List_each(ff_core_List.List_addAll(definition_.commonFields_, ff_core_List.List_flatMap(definition_.variants_, ((_w1) => {
 return _w1.fields_
@@ -1260,7 +1260,7 @@ return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true)
 const name_ = _1.first_;
 const lambda_ = _1.second_;
 const signature_ = ff_core_Option.Option_expect(ff_core_List.List_find(definition_.methods_, ((_w1) => {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String.equals_(_w1.name_, name_)
+return (_w1.name_ === name_)
 })));
 const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
 const function2_ = ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, function1_, true);
@@ -1569,7 +1569,7 @@ return
 {
 if(term_a.EWildcard) {
 const e_ = term_a;
-if(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(e_.index_, 0)) {
+if((e_.index_ === 0)) {
 ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
 };
 {
@@ -2094,7 +2094,7 @@ return
 }
 }
 {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.nextUnificationVariableIndex_, y_.nextUnificationVariableIndex_)
+return (x_.nextUnificationVariableIndex_ === y_.nextUnificationVariableIndex_)
 return
 }
 }
@@ -2111,7 +2111,7 @@ return
 }
 }
 {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.nextUnificationVariableIndex_, y_.nextUnificationVariableIndex_)
+return (x_.nextUnificationVariableIndex_ === y_.nextUnificationVariableIndex_)
 return
 }
 }

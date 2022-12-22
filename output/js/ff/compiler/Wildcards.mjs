@@ -627,7 +627,7 @@ return
 }
 }
 {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.seenWildcards_, y_.seenWildcards_)
+return (x_.seenWildcards_ === y_.seenWildcards_)
 return
 }
 }
@@ -644,7 +644,7 @@ return
 }
 }
 {
-return ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int.equals_(x_.seenWildcards_, y_.seenWildcards_)
+return (x_.seenWildcards_ === y_.seenWildcards_)
 return
 }
 }
