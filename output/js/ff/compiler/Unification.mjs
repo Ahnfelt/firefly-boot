@@ -1058,41 +1058,6 @@ return
 }
 }
 
-export const ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey = {
-compare_(x_, y_) {
-{
-const _1 = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.traitName_, y_.traitName_);
-{
-if(_1.OrderingSame) {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.typeName_, y_.typeName_)
-return
-}
-}
-{
-const o_ = _1;
-return o_
-return
-}
-}
-},
-async compare_$(x_, y_, $c) {
-{
-const _1 = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.traitName_, y_.traitName_);
-{
-if(_1.OrderingSame) {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.typeName_, y_.typeName_)
-return
-}
-}
-{
-const o_ = _1;
-return o_
-return
-}
-}
-}
-};
-
 export const ff_core_Show_Show$ff_compiler_Unification_Unification = {
 show_(x_) {
 {
@@ -1467,6 +1432,63 @@ return atOrdering_
 const genericsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.generics_, y_.generics_);
 if((genericsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return genericsOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+return
+}
+}
+}
+};
+
+export const ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey = {
+compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+const traitNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.traitName_, y_.traitName_);
+if((traitNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return traitNameOrdering_
+} else {
+const typeNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.typeName_, y_.typeName_);
+if((typeNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return typeNameOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+return
+}
+}
+},
+async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+const traitNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.traitName_, y_.traitName_);
+if((traitNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return traitNameOrdering_
+} else {
+const typeNameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.typeName_, y_.typeName_);
+if((typeNameOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return typeNameOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
 }
