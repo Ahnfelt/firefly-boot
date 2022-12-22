@@ -625,16 +625,6 @@ return
 }
 }
 {
-if(x_a.BootstrapCommand) {
-const x_ = x_a;
-if(y_a.BootstrapCommand) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
 if(x_a.RunCommand) {
 const x_ = x_a;
 if(y_a.RunCommand) {
@@ -679,16 +669,6 @@ const _guard1 = (x_ === y_);
 if(_guard1) {
 return true
 return
-}
-}
-{
-if(x_a.BootstrapCommand) {
-const x_ = x_a;
-if(y_a.BootstrapCommand) {
-const y_ = y_a;
-return true
-return
-}
 }
 }
 {

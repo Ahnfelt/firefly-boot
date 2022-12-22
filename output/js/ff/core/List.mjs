@@ -2556,16 +2556,6 @@ return
 }
 }
 {
-if(x_a.Empty) {
-const x_ = x_a;
-if(y_a.Empty) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
 if(x_a.Link) {
 const x_ = x_a;
 if(y_a.Link) {
@@ -2590,16 +2580,6 @@ const _guard1 = (x_ === y_);
 if(_guard1) {
 return true
 return
-}
-}
-{
-if(x_a.Empty) {
-const x_ = x_a;
-if(y_a.Empty) {
-const y_ = y_a;
-return true
-return
-}
 }
 }
 {

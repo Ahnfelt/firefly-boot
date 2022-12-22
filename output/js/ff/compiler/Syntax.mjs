@@ -3577,36 +3577,6 @@ return
 }
 }
 {
-if(x_a.Safe) {
-const x_ = x_a;
-if(y_a.Safe) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.Unsafe) {
-const x_ = x_a;
-if(y_a.Unsafe) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.Trusted) {
-const x_ = x_a;
-if(y_a.Trusted) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
 return false
 return
 }
@@ -3621,36 +3591,6 @@ const _guard1 = (x_ === y_);
 if(_guard1) {
 return true
 return
-}
-}
-{
-if(x_a.Safe) {
-const x_ = x_a;
-if(y_a.Safe) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.Unsafe) {
-const x_ = x_a;
-if(y_a.Unsafe) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.Trusted) {
-const x_ = x_a;
-if(y_a.Trusted) {
-const y_ = y_a;
-return true
-return
-}
 }
 }
 {

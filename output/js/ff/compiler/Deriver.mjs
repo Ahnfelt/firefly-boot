@@ -214,7 +214,7 @@ return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(ff_compiler_Syntax.PV
 }));
 const intType_ = ff_compiler_Syntax.TConstructor(declaration_.at_, "ff:core/Int.Int", ff_core_List.Empty());
 const numberSignature_ = ff_compiler_Syntax.Signature(at_, "number", ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "z", selfType_, ff_core_Option.None()), ff_core_List.Empty()), intType_, noEffect_);
-const numberCases_ = ff_core_List.List_map(ff_core_List.List_pairs(variants_), ((_1) => {
+const numberCases_ = ff_core_List.List_map(ff_core_List.List_pairs(declaration_.variants_), ((_1) => {
 {
 const index_ = _1.first_;
 const variant_ = _1.second_;
@@ -294,16 +294,21 @@ const _1 = declaration_.variants_;
 if(_1.Link) {
 const variant_ = _1.head_;
 if(_1.tail_.Empty) {
-return ff_core_List.Link(sameCase_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(wildcardPattern_, ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_))), ff_core_List.Empty()))
+const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
+return ff_core_List.Link(sameCase_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(wildcardPattern_, ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_)), ff_core_List.Empty()))
 return
 }
 }
 }
 {
 const variants_ = _1;
-const sameVariantCases_ = ff_core_List.List_map(variants_, ((variant_) => {
+const variantsWithFields_ = ff_core_List.List_filter(variants_, ((variant_) => {
+return ((!ff_core_List.List_isEmpty(declaration_.commonFields_)) || (!ff_core_List.List_isEmpty(variant_.fields_)))
+}));
+const sameVariantCases_ = ff_core_List.List_map(variantsWithFields_, ((variant_) => {
 const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
-return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, ff_core_Option.Some("x")), ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, ff_core_Option.Some("y")), ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_)))
+const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
+return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, ff_core_Option.Some("x")), ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, ff_core_Option.Some("y")), ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_))
 }));
 const differentVariant_ = ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(wildcardPattern_, ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.False", ff_core_List.Empty(), ff_core_Option.None()));
 return ff_core_List.Link(sameCase_, ff_core_List.List_addAll(sameVariantCases_, ff_core_List.Link(differentVariant_, ff_core_List.Empty())))
@@ -498,7 +503,7 @@ return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(ff_compiler_Syntax.PV
 }));
 const intType_ = ff_compiler_Syntax.TConstructor(declaration_.at_, "ff:core/Int.Int", ff_core_List.Empty());
 const numberSignature_ = ff_compiler_Syntax.Signature(at_, "number", ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(at_, false, "z", selfType_, ff_core_Option.None()), ff_core_List.Empty()), intType_, noEffect_);
-const numberCases_ = ff_core_List.List_map(ff_core_List.List_pairs(variants_), ((_1) => {
+const numberCases_ = ff_core_List.List_map(ff_core_List.List_pairs(declaration_.variants_), ((_1) => {
 {
 const index_ = _1.first_;
 const variant_ = _1.second_;
@@ -578,16 +583,21 @@ const _1 = declaration_.variants_;
 if(_1.Link) {
 const variant_ = _1.head_;
 if(_1.tail_.Empty) {
-return ff_core_List.Link(sameCase_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(wildcardPattern_, ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_))), ff_core_List.Empty()))
+const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
+return ff_core_List.Link(sameCase_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(wildcardPattern_, ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_)), ff_core_List.Empty()))
 return
 }
 }
 }
 {
 const variants_ = _1;
-const sameVariantCases_ = ff_core_List.List_map(variants_, ((variant_) => {
+const variantsWithFields_ = ff_core_List.List_filter(variants_, ((variant_) => {
+return ((!ff_core_List.List_isEmpty(declaration_.commonFields_)) || (!ff_core_List.List_isEmpty(variant_.fields_)))
+}));
+const sameVariantCases_ = ff_core_List.List_map(variantsWithFields_, ((variant_) => {
 const variantName_ = ((modulePrefix_ + ".") + variant_.name_);
-return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, ff_core_Option.Some("x")), ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, ff_core_Option.Some("y")), ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_)))
+const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
+return ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, ff_core_Option.Some("x")), ff_core_List.Link(ff_compiler_Syntax.PVariantAs(at_, variantName_, ff_core_Option.Some("y")), ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Deriver.Deriver_makeEqualFields(self_, modulePrefix_, declaration_, fields_))
 }));
 const differentVariant_ = ff_compiler_Syntax.MatchCase(at_, ff_core_List.Link(wildcardPattern_, ff_core_List.Link(wildcardPattern_, ff_core_List.Empty())), ff_core_List.Empty(), ff_compiler_Syntax.EVariant(at_, "ff:core/Bool.False", ff_core_List.Empty(), ff_core_Option.None()));
 return ff_core_List.Link(sameCase_, ff_core_List.List_addAll(sameVariantCases_, ff_core_List.Link(differentVariant_, ff_core_List.Empty())))

@@ -183,7 +183,7 @@ extend self: Deriver {
                 let intType = TConstructor(declaration.at, "ff:core/Int.Int", [])
                 let numberSignature =
                     Signature(at, "number", [], [], [Parameter(at, False, "z", selfType, None)], intType, noEffect)
-                let numberCases = variants.pairs().map {| Pair(index, variant) =>
+                let numberCases = declaration.variants.pairs().map {| Pair(index, variant) =>
                     let variantName = modulePrefix + "." + variant.name
                     MatchCase(
                         at = at,
@@ -296,22 +296,25 @@ extend self: Deriver {
         )
         declaration.variants.{
             | [variant] =>
+                let fields = [...declaration.commonFields, ...variant.fields]
                 [sameCase, MatchCase(
                     at = at,
                     patterns = [wildcardPattern, wildcardPattern]
                     guards = []
-                    body =
-                        self.makeEqualFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
+                    body = self.makeEqualFields(modulePrefix, declaration, fields)
                 )]
             | variants =>
-                let sameVariantCases = variants.map { variant =>
+                let variantsWithFields = variants.filter {variant =>
+                    !declaration.commonFields.isEmpty() || !variant.fields.isEmpty()
+                }
+                let sameVariantCases = variantsWithFields.map { variant =>
                     let variantName = modulePrefix + "." + variant.name
+                    let fields = [...declaration.commonFields, ...variant.fields]
                     MatchCase(
                         at = at,
                         patterns = [PVariantAs(at, variantName, Some("x")), PVariantAs(at, variantName, Some("y"))]
                         guards = []
-                        body =
-                            self.makeEqualFields(modulePrefix, declaration, [...declaration.commonFields, ...variant.fields])
+                        body = self.makeEqualFields(modulePrefix, declaration, fields)
                     )
                 }
                 let differentVariant = MatchCase(

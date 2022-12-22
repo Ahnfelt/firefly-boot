@@ -3751,46 +3751,6 @@ return
 }
 }
 {
-if(x_a.EmitNode) {
-const x_ = x_a;
-if(y_a.EmitNode) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.EmitBrowser) {
-const x_ = x_a;
-if(y_a.EmitBrowser) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.EmitBuild) {
-const x_ = x_a;
-if(y_a.EmitBuild) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.EmitExecutable) {
-const x_ = x_a;
-if(y_a.EmitExecutable) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
 return false
 return
 }
@@ -3805,46 +3765,6 @@ const _guard1 = (x_ === y_);
 if(_guard1) {
 return true
 return
-}
-}
-{
-if(x_a.EmitNode) {
-const x_ = x_a;
-if(y_a.EmitNode) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.EmitBrowser) {
-const x_ = x_a;
-if(y_a.EmitBrowser) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.EmitBuild) {
-const x_ = x_a;
-if(y_a.EmitBuild) {
-const y_ = y_a;
-return true
-return
-}
-}
-}
-{
-if(x_a.EmitExecutable) {
-const x_ = x_a;
-if(y_a.EmitExecutable) {
-const y_ = y_a;
-return true
-return
-}
 }
 }
 {
