@@ -459,41 +459,6 @@ return
 }
 }
 
-export const ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair = {
-compare_(x_, y_) {
-{
-const _1 = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.group_, y_.group_);
-{
-if(_1.OrderingSame) {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.name_, y_.name_)
-return
-}
-}
-{
-const o_ = _1;
-return o_
-return
-}
-}
-},
-async compare_$(x_, y_, $c) {
-{
-const _1 = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.group_, y_.group_);
-{
-if(_1.OrderingSame) {
-return ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.name_, y_.name_)
-return
-}
-}
-{
-const o_ = _1;
-return o_
-return
-}
-}
-}
-};
-
 export const ff_core_Show_Show$ff_compiler_Syntax_Location = {
 show_(x_) {
 {
@@ -4005,6 +3970,63 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
+}
+}
+return
+}
+}
+}
+};
+
+export const ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair = {
+compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+const groupOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.group_, y_.group_);
+if((groupOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return groupOrdering_
+} else {
+const nameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.name_, y_.name_);
+if((nameOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return nameOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+return
+}
+}
+},
+async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+const groupOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.group_, y_.group_);
+if((groupOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return groupOrdering_
+} else {
+const nameOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.name_, y_.name_);
+if((nameOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return nameOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
 }
 }
 return

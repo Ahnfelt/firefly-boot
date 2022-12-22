@@ -43,15 +43,6 @@ extend self: PackagePair {
     }
 }
 
-instance PackagePair: Order {
-    compare(x: PackagePair, y: PackagePair): Ordering {
-        Ordering.compare(x.group, y.group).{
-            | OrderingSame => Ordering.compare(x.name, y.name)
-            | o => o
-        }
-    }
-}
-
 type DPackage(
     at: Location
     packagePair: PackagePair
