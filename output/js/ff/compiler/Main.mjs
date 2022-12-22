@@ -114,7 +114,6 @@ return {BuildCommand: true, mainPath_};
 
 
 export function main_(system_) {
-const eq_ = (1337 < 42);
 let arguments_ = ff_core_NodeSystem.NodeSystem_arguments(system_);
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
@@ -325,7 +324,6 @@ return
 }
 
 export async function main_$(system_, $c) {
-const eq_ = (1337 < 42);
 let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
 function consumeArgument_() {
 const first_ = ff_core_List.List_first(arguments_);
