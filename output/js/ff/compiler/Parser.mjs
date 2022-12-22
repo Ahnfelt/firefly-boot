@@ -1348,6 +1348,30 @@ return
 }
 }
 {
+if(_1 == "<") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.before"), false)
+return
+}
+}
+{
+if(_1 == "<=") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notAfter"), false)
+return
+}
+}
+{
+if(_1 == ">") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.after"), false)
+return
+}
+}
+{
+if(_1 == ">=") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notBefore"), false)
+return
+}
+}
+{
 const o_ = _1;
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), o_), false)
 return
@@ -2715,6 +2739,30 @@ return
 {
 if(_1 == "!=") {
 return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Equal.notEquals"), false)
+return
+}
+}
+{
+if(_1 == "<") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.before"), false)
+return
+}
+}
+{
+if(_1 == "<=") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notAfter"), false)
+return
+}
+}
+{
+if(_1 == ">") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.after"), false)
+return
+}
+}
+{
+if(_1 == ">=") {
+return ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(ff_compiler_Token.Token_at(token_), "ff:core/Ordering.notBefore"), false)
 return
 }
 }

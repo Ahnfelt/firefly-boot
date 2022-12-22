@@ -92,6 +92,22 @@ return OrderingAfter$;
 
 
 
+export function before_(x_, y_, ff_core_Ordering_Order$T) {
+return (ff_core_Ordering_Order$T.compare_(x_, y_) === ff_core_Ordering.OrderingBefore())
+}
+
+export function notBefore_(x_, y_, ff_core_Ordering_Order$T) {
+return (ff_core_Ordering_Order$T.compare_(x_, y_) !== ff_core_Ordering.OrderingBefore())
+}
+
+export function after_(x_, y_, ff_core_Ordering_Order$T) {
+return (ff_core_Ordering_Order$T.compare_(x_, y_) === ff_core_Ordering.OrderingAfter())
+}
+
+export function notAfter_(x_, y_, ff_core_Ordering_Order$T) {
+return (ff_core_Ordering_Order$T.compare_(x_, y_) !== ff_core_Ordering.OrderingAfter())
+}
+
 export function fromInt_(order_) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
@@ -127,6 +143,22 @@ return ff_core_Ordering.OrderingSame()
 return
 }
 })
+}
+
+export async function before_$(x_, y_, ff_core_Ordering_Order$T, $c) {
+return (ff_core_Ordering_Order$T.compare_(x_, y_) === ff_core_Ordering.OrderingBefore())
+}
+
+export async function notBefore_$(x_, y_, ff_core_Ordering_Order$T, $c) {
+return (ff_core_Ordering_Order$T.compare_(x_, y_) !== ff_core_Ordering.OrderingBefore())
+}
+
+export async function after_$(x_, y_, ff_core_Ordering_Order$T, $c) {
+return (ff_core_Ordering_Order$T.compare_(x_, y_) === ff_core_Ordering.OrderingAfter())
+}
+
+export async function notAfter_$(x_, y_, ff_core_Ordering_Order$T, $c) {
+return (ff_core_Ordering_Order$T.compare_(x_, y_) !== ff_core_Ordering.OrderingAfter())
 }
 
 export async function fromInt_$(order_, $c) {

@@ -871,6 +871,10 @@ extend self: Parser {
                 let target = token.raw().{
                     | "==" => DynamicCall(EVariable(token.at(), "ff:core/Equal.equals"), False)
                     | "!=" => DynamicCall(EVariable(token.at(), "ff:core/Equal.notEquals"), False)
+                    | "<" => DynamicCall(EVariable(token.at(), "ff:core/Ordering.before"), False)
+                    | "<=" => DynamicCall(EVariable(token.at(), "ff:core/Ordering.notAfter"), False)
+                    | ">" => DynamicCall(EVariable(token.at(), "ff:core/Ordering.after"), False)
+                    | ">=" => DynamicCall(EVariable(token.at(), "ff:core/Ordering.notBefore"), False)
                     | o => DynamicCall(EVariable(token.at(), o), False)
                 }
                 result = ECall(token.at(), target, effect, [], arguments, [])

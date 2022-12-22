@@ -2,6 +2,22 @@ trait T: Order {
     compare(x: T, y: T): Ordering
 }
 
+before[T: Order](x: T, y: T): Bool {
+    compare(x, y) == OrderingBefore
+}
+
+notBefore[T: Order](x: T, y: T): Bool {
+    compare(x, y) != OrderingBefore
+}
+
+after[T: Order](x: T, y: T): Bool {
+    compare(x, y) == OrderingAfter
+}
+
+notAfter[T: Order](x: T, y: T): Bool {
+    compare(x, y) != OrderingAfter
+}
+
 instance Nothing: Order {
     compare(x: Nothing, y: Nothing): Ordering {OrderingSame}
 }

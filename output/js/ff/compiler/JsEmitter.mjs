@@ -112,7 +112,7 @@ export function ProcessedVariantCase(variantName_, newtype_, loneVariant_, argum
 return {variantName_, newtype_, loneVariant_, arguments_};
 }
 
-export const primitiveTypes_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Bool.Bool", ff_core_List.Link("ff:core/Char.Char", ff_core_List.Link("ff:core/Int.Int", ff_core_List.Link("ff:core/Float.Float", ff_core_List.Link("ff:core/String.String", ff_core_List.Link("ff:core/Ordering.Ordering", ff_core_List.Empty())))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+export const primitiveTypes_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Bool.Bool", ff_core_List.Link("ff:core/Char.Char", ff_core_List.Link("ff:core/Int.Int", ff_core_List.Link("ff:core/Float.Float", ff_core_List.Link("ff:core/String.String", ff_core_List.Empty()))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 
 export function make_(otherModules_, emitTarget_, isMainModule_, compilerModulePath_) {
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
@@ -1330,7 +1330,7 @@ if(_1.dictionaries_.Link) {
 const typeName_ = _1.dictionaries_.head_.typeName_;
 if(_1.dictionaries_.head_.dictionaries_.Empty) {
 if(_1.dictionaries_.tail_.Empty) {
-const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const _guard1 = (ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"));
 if(_guard1) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
 return
@@ -1359,9 +1359,125 @@ if(_1.dictionaries_.Link) {
 const typeName_ = _1.dictionaries_.head_.typeName_;
 if(_1.dictionaries_.head_.dictionaries_.Empty) {
 if(_1.dictionaries_.tail_.Empty) {
-const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const _guard1 = (ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"));
 if(_guard1) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Ordering.before") {
+if(_1.arguments_.Link) {
+const left_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+const right_ = _1.arguments_.tail_.head_;
+if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const typeName_ = _1.dictionaries_.head_.typeName_;
+if(_1.dictionaries_.head_.dictionaries_.Empty) {
+if(_1.dictionaries_.tail_.Empty) {
+const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(_guard1) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " < ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Ordering.notBefore") {
+if(_1.arguments_.Link) {
+const left_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+const right_ = _1.arguments_.tail_.head_;
+if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const typeName_ = _1.dictionaries_.head_.typeName_;
+if(_1.dictionaries_.head_.dictionaries_.Empty) {
+if(_1.dictionaries_.tail_.Empty) {
+const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(_guard1) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " >= ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Ordering.after") {
+if(_1.arguments_.Link) {
+const left_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+const right_ = _1.arguments_.tail_.head_;
+if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const typeName_ = _1.dictionaries_.head_.typeName_;
+if(_1.dictionaries_.head_.dictionaries_.Empty) {
+if(_1.dictionaries_.tail_.Empty) {
+const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(_guard1) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " > ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Ordering.notAfter") {
+if(_1.arguments_.Link) {
+const left_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+const right_ = _1.arguments_.tail_.head_;
+if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const typeName_ = _1.dictionaries_.head_.typeName_;
+if(_1.dictionaries_.head_.dictionaries_.Empty) {
+if(_1.dictionaries_.tail_.Empty) {
+const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(_guard1) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " <= ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
 return
 }
 }
@@ -2827,7 +2943,7 @@ if(_1.dictionaries_.Link) {
 const typeName_ = _1.dictionaries_.head_.typeName_;
 if(_1.dictionaries_.head_.dictionaries_.Empty) {
 if(_1.dictionaries_.tail_.Empty) {
-const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const _guard1 = (ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"));
 if(_guard1) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " === ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
 return
@@ -2856,9 +2972,125 @@ if(_1.dictionaries_.Link) {
 const typeName_ = _1.dictionaries_.head_.typeName_;
 if(_1.dictionaries_.head_.dictionaries_.Empty) {
 if(_1.dictionaries_.tail_.Empty) {
-const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const _guard1 = (ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String) || (typeName_ === "ff:core/Ordering.Ordering"));
 if(_guard1) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " !== ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Ordering.before") {
+if(_1.arguments_.Link) {
+const left_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+const right_ = _1.arguments_.tail_.head_;
+if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const typeName_ = _1.dictionaries_.head_.typeName_;
+if(_1.dictionaries_.head_.dictionaries_.Empty) {
+if(_1.dictionaries_.tail_.Empty) {
+const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(_guard1) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " < ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Ordering.notBefore") {
+if(_1.arguments_.Link) {
+const left_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+const right_ = _1.arguments_.tail_.head_;
+if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const typeName_ = _1.dictionaries_.head_.typeName_;
+if(_1.dictionaries_.head_.dictionaries_.Empty) {
+if(_1.dictionaries_.tail_.Empty) {
+const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(_guard1) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " >= ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Ordering.after") {
+if(_1.arguments_.Link) {
+const left_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+const right_ = _1.arguments_.tail_.head_;
+if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const typeName_ = _1.dictionaries_.head_.typeName_;
+if(_1.dictionaries_.head_.dictionaries_.Empty) {
+if(_1.dictionaries_.tail_.Empty) {
+const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(_guard1) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " > ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Ordering.notAfter") {
+if(_1.arguments_.Link) {
+const left_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+const right_ = _1.arguments_.tail_.head_;
+if(_1.arguments_.tail_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const typeName_ = _1.dictionaries_.head_.typeName_;
+if(_1.dictionaries_.head_.dictionaries_.Empty) {
+if(_1.dictionaries_.tail_.Empty) {
+const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, typeName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+if(_guard1) {
+return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " <= ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
 return
 }
 }
