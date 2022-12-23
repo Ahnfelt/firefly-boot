@@ -1168,6 +1168,10 @@ remaining_ = ff_core_List.Empty()
 }))
 }
 
+export function List_toCollection(self_, ff_core_Iterator_FromIterator$C) {
+return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_List.List_toIterator(self_))
+}
+
 export function List_insertBetween(self_, separator_) {
 return ff_core_List.List_dropFirst(ff_core_List.List_flatMap(self_, ((e_) => {
 return ff_core_List.List_addAll(separator_, ff_core_List.Link(e_, ff_core_List.Empty()))
@@ -2103,6 +2107,10 @@ return
 }), (async ($c) => {
 remaining_ = ff_core_List.Empty()
 }))
+}
+
+export async function List_toCollection$(self_, ff_core_Iterator_FromIterator$C, $c) {
+return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_List.List_toIterator(self_))
 }
 
 export async function List_insertBetween$(self_, separator_, $c) {

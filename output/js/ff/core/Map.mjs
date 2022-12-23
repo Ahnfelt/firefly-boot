@@ -123,7 +123,11 @@ return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
 }
 
 export function Map_toIterator(self_, ff_core_Ordering_Order$K) {
-return ff_core_List.List_toIterator(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K))
+return ff_core_RbMap.RB_toIterator(self_, ff_core_Ordering_Order$K)
+}
+
+export function Map_toCollection(self_, ff_core_Ordering_Order$K, ff_core_Iterator_FromIterator$C) {
+return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_Map.Map_toIterator(self_, ff_core_Ordering_Order$K))
 }
 
 export function Map_keys(self_, ff_core_Ordering_Order$K) {
@@ -214,7 +218,11 @@ return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
 }
 
 export async function Map_toIterator$(self_, ff_core_Ordering_Order$K, $c) {
-return (await ff_core_List.List_toIterator$(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K), $c))
+return (await ff_core_RbMap.RB_toIterator$(self_, $c, ff_core_Ordering_Order$K))
+}
+
+export async function Map_toCollection$(self_, ff_core_Ordering_Order$K, ff_core_Iterator_FromIterator$C, $c) {
+return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_Map.Map_toIterator(self_, ff_core_Ordering_Order$K))
 }
 
 export async function Map_keys$(self_, ff_core_Ordering_Order$K, $c) {

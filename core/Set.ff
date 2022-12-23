@@ -13,6 +13,7 @@ extend self[T: Order]: Set[T] {
     size(): Int { self.map.size() }
     toList(): List[T] { self.map.pairs().map { _.first } }
     toIterator(): Iterator[T] { self.map.toIterator().map { _.first } }
+    toCollection[C: FromIterator[T]](): C { Iterator.fromIterator(self.toIterator()) }
     each(body: T => Unit): Unit { self.map.each {| k, _ => body(k)} }
 }
 

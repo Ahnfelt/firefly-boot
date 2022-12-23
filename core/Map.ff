@@ -42,6 +42,10 @@ extend self[K: Order, V]: Map[K, V] {
         self.redBlack.toIterator()
     }
 
+    toCollection[C: FromIterator[Pair[K, V]]](): C {
+        Iterator.fromIterator(self.toIterator())
+    }
+
     keys(): Set[K] {
         self.pairs().map {_.first}.toSet()
     }

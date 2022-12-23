@@ -1489,6 +1489,77 @@ result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
 return ff_core_List.List_reverse(result_)
 }
 
+export function RB_toIterator(self_, ff_core_Ordering_Order$K) {
+let stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
+function next_() {
+_tailcall: for(;;) {
+{
+const _1 = stack_;
+{
+if(_1.Empty) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1.Link) {
+if(_1.head_.E) {
+const tail_ = _1.tail_;
+stack_ = tail_;
+{
+
+
+continue _tailcall
+}
+return
+}
+}
+}
+{
+if(_1.Link) {
+if(_1.head_.T) {
+if(_1.head_.left_.E) {
+const k_ = _1.head_.key_;
+const v_ = _1.head_.value_;
+if(_1.head_.right_.E) {
+const tail_ = _1.tail_;
+stack_ = tail_;
+return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
+return
+}
+}
+}
+}
+}
+{
+if(_1.Link) {
+if(_1.head_.T) {
+const l_ = _1.head_.left_;
+const k_ = _1.head_.key_;
+const v_ = _1.head_.value_;
+const r_ = _1.head_.right_;
+const tail_ = _1.tail_;
+stack_ = ff_core_List.Link(l_, ff_core_List.Link(ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), ff_core_List.Link(r_, tail_)));
+{
+
+
+continue _tailcall
+}
+return
+}
+}
+}
+}
+return
+}
+}
+return ff_core_Iterator.make_((() => {
+return next_()
+}), (() => {
+
+}))
+}
+
 export function RB_each(self_, body_, ff_core_Ordering_Order$K) {
 {
 const _1 = self_;
@@ -1613,6 +1684,77 @@ ff_core_RbMap.RB_each(self_, ((k_, v_) => {
 result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
 }), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
 return ff_core_List.List_reverse(result_)
+}
+
+export async function RB_toIterator$(self_, ff_core_Ordering_Order$K, $c) {
+let stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
+function next_() {
+_tailcall: for(;;) {
+{
+const _1 = stack_;
+{
+if(_1.Empty) {
+return ff_core_Option.None()
+return
+}
+}
+{
+if(_1.Link) {
+if(_1.head_.E) {
+const tail_ = _1.tail_;
+stack_ = tail_;
+{
+
+
+continue _tailcall
+}
+return
+}
+}
+}
+{
+if(_1.Link) {
+if(_1.head_.T) {
+if(_1.head_.left_.E) {
+const k_ = _1.head_.key_;
+const v_ = _1.head_.value_;
+if(_1.head_.right_.E) {
+const tail_ = _1.tail_;
+stack_ = tail_;
+return ff_core_Option.Some(ff_core_Pair.Pair(k_, v_))
+return
+}
+}
+}
+}
+}
+{
+if(_1.Link) {
+if(_1.head_.T) {
+const l_ = _1.head_.left_;
+const k_ = _1.head_.key_;
+const v_ = _1.head_.value_;
+const r_ = _1.head_.right_;
+const tail_ = _1.tail_;
+stack_ = ff_core_List.Link(l_, ff_core_List.Link(ff_core_RbMap.T(ff_core_RbMap.B(), ff_core_RbMap.E(), k_, v_, ff_core_RbMap.E()), ff_core_List.Link(r_, tail_)));
+{
+
+
+continue _tailcall
+}
+return
+}
+}
+}
+}
+return
+}
+}
+return (await ff_core_Iterator.make_$((async ($c) => {
+return next_()
+}), (async ($c) => {
+
+}), $c))
 }
 
 export async function RB_each$(self_, body_, ff_core_Ordering_Order$K, $c) {

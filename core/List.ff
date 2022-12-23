@@ -335,6 +335,10 @@ extend self[T]: List[T] {
         )
     }
 
+    toCollection[C: FromIterator[T]](): C {
+        Iterator.fromIterator(self.toIterator())
+    }
+
     insertBetween(separator: List[T]): List[T] {
         self.flatMap {e => [...separator, e]}.dropFirst(separator.size())
     }
