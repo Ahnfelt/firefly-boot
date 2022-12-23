@@ -752,57 +752,8 @@ return
 return go_(self_, ff_core_List.Empty())
 }
 
-export function List_collect(self_, body_) {
-function go_(list_, result_) {
-_tailcall: for(;;) {
-{
-const _1 = list_;
-{
-if(_1.Empty) {
-return ff_core_List.List_reverse(result_)
-return
-}
-}
-{
-if(_1.Link) {
-const head_ = _1.head_;
-const tail_ = _1.tail_;
-{
-const _1 = body_(head_);
-{
-if(_1.None) {
-{
-const list_r_ = tail_;
-const result_r_ = result_;
-list_ = list_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-{
-if(_1.Some) {
-const value_ = _1.value_;
-{
-const list_r_ = tail_;
-const result_r_ = ff_core_List.Link(value_, result_);
-list_ = list_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-}
-return
-}
-}
-}
-return
-}
-}
-return go_(self_, ff_core_List.Empty())
+export function List_collect(self_, body_, ff_core_Iterator_ToIterator$C) {
+return ff_core_Iterator.Iterator_toList(ff_core_Iterator.Iterator_collect(ff_core_List.List_toIterator(self_), body_, ff_core_Iterator_ToIterator$C))
 }
 
 export function List_collectFirst(self_, body_) {
@@ -1738,57 +1689,8 @@ return
 return (await go_$(self_, ff_core_List.Empty(), $c))
 }
 
-export async function List_collect$(self_, body_, $c) {
-async function go_$(list_, result_, $c) {
-_tailcall: for(;;) {
-{
-const _1 = list_;
-{
-if(_1.Empty) {
-return ff_core_List.List_reverse(result_)
-return
-}
-}
-{
-if(_1.Link) {
-const head_ = _1.head_;
-const tail_ = _1.tail_;
-{
-const _1 = (await body_(head_, $c));
-{
-if(_1.None) {
-{
-const list_r_ = tail_;
-const result_r_ = result_;
-list_ = list_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-{
-if(_1.Some) {
-const value_ = _1.value_;
-{
-const list_r_ = tail_;
-const result_r_ = ff_core_List.Link(value_, result_);
-list_ = list_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-}
-return
-}
-}
-}
-return
-}
-}
-return (await go_$(self_, ff_core_List.Empty(), $c))
+export async function List_collect$(self_, body_, ff_core_Iterator_ToIterator$C, $c) {
+return (await ff_core_Iterator.Iterator_toList$((await ff_core_Iterator.Iterator_collect$((await ff_core_List.List_toIterator$(self_, $c)), body_, $c, ff_core_Iterator_ToIterator$C)), $c))
 }
 
 export async function List_collectFirst$(self_, body_, $c) {

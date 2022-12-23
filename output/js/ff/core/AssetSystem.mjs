@@ -118,7 +118,7 @@ return
 return ff_core_Option.None()
 return
 }
-}));
+}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option);
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
@@ -151,7 +151,7 @@ return
 return ff_core_Option.None()
 return
 }
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
 export function AssetSystem_exists(self_, path_) {
@@ -200,7 +200,7 @@ return
 return ff_core_Option.None()
 return
 }
-}));
+}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option);
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
@@ -233,7 +233,7 @@ return
 return ff_core_Option.None()
 return
 }
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
 export async function AssetSystem_exists$(self_, path_, $c) {

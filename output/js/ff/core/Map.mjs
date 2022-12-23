@@ -122,6 +122,10 @@ export function Map_pairs(self_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
 }
 
+export function Map_toIterator(self_, ff_core_Ordering_Order$K) {
+return ff_core_List.List_toIterator(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K))
+}
+
 export function Map_keys(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.List_toSet(ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), ((_w1) => {
 return _w1.first_
@@ -207,6 +211,10 @@ return result_
 
 export async function Map_pairs$(self_, ff_core_Ordering_Order$K, $c) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
+}
+
+export async function Map_toIterator$(self_, ff_core_Ordering_Order$K, $c) {
+return (await ff_core_List.List_toIterator$(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K), $c))
 }
 
 export async function Map_keys$(self_, ff_core_Ordering_Order$K, $c) {

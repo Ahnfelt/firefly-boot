@@ -61,8 +61,8 @@ extend self[T]: Iterator[T] {
         }
     }
 
-    collect[S](body: T => Option[S]): Iterator[S] {
-        self.flatMap {body(_).toIterator()}
+    collect[S, C: ToIterator[S]](body: T => C): Iterator[S] {
+        self.flatMap {Iterator.toIterator(body(_))}
     }
 
     filter(body: T => Bool): Iterator[T] {
@@ -328,6 +328,10 @@ extend self[T]: Iterator[T] {
         self.toArray().toList()
     }
 
+    toCollection[C: FromIterator[T]](): C {
+        Iterator.fromIterator(self)
+    }
+
 }
 
 extend self[T]: Iterator[Iterator[T]] {
@@ -360,4 +364,74 @@ extend self: Iterator[Buffer] {
         self.toBuffer().toString(encoding)
     }
 
+}
+
+
+
+trait C: FromIterator[T] {
+    fromIterator(iterator: Iterator[T]): C
+}
+
+trait C: ToIterator[T] {
+    toIterator(collection: C): Iterator[T]
+}
+
+instance Array[T]: FromIterator[T] {
+    fromIterator(iterator: Iterator[T]): Array[T] {
+        iterator.toArray()
+    }
+}
+
+instance Array[T]: ToIterator[T] {
+    toIterator(collection: Array[T]): Iterator[T] {
+        collection.toIterator()
+    }
+}
+
+instance List[T]: FromIterator[T] {
+    fromIterator(iterator: Iterator[T]): List[T] {
+        iterator.toList()
+    }
+}
+
+instance List[T]: ToIterator[T] {
+    toIterator(collection: List[T]): Iterator[T] {
+        collection.toIterator()
+    }
+}
+
+instance Set[T: Order]: FromIterator[T] {
+    fromIterator(iterator: Iterator[T]): Set[T] {
+        iterator.toSet()
+    }
+}
+
+instance Set[T: Order]: ToIterator[T] {
+    toIterator(collection: Set[T]): Iterator[T] {
+        collection.toIterator()
+    }
+}
+
+instance Map[K: Order, V]: FromIterator[Pair[K, V]] {
+    fromIterator(iterator: Iterator[Pair[K, V]]): Map[K, V] {
+        iterator.toMap()
+    }
+}
+
+instance Map[K: Order, V]: ToIterator[Pair[K, V]] {
+    toIterator(collection: Map[K, V]): Iterator[Pair[K, V]] {
+        collection.toIterator()
+    }
+}
+
+instance Option[T]: ToIterator[T] {
+    toIterator(collection: Option[T]): Iterator[T] {
+        collection.toIterator()
+    }
+}
+
+instance Pair[T, T]: ToIterator[T] {
+    toIterator(collection: Pair[T, T]): Iterator[T] {
+        [collection.first, collection.second].toIterator()
+    }
 }

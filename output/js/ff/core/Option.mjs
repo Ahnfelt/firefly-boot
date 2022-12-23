@@ -198,8 +198,11 @@ return
 }
 
 export function Option_toIterator(self_) {
-return ff_core_Iterator.Iterator((() => {
-return self_
+let next_ = self_;
+return ff_core_Iterator.make_((() => {
+const result_ = next_;
+next_ = ff_core_Option.None();
+return result_
 }), (() => {
 
 }))
@@ -446,11 +449,14 @@ return
 }
 
 export async function Option_toIterator$(self_, $c) {
-return ff_core_Iterator.Iterator((async ($c) => {
-return self_
+let next_ = self_;
+return (await ff_core_Iterator.make_$((async ($c) => {
+const result_ = next_;
+next_ = ff_core_Option.None();
+return result_
 }), (async ($c) => {
 
-}))
+}), $c))
 }
 
 export async function Option_filter$(self_, body_, $c) {

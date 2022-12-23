@@ -118,6 +118,12 @@ return _w1.first_
 }))
 }
 
+export function Set_toIterator(self_, ff_core_Ordering_Order$T) {
+return ff_core_Iterator.Iterator_map(ff_core_Map.Map_toIterator(self_, ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
+}
+
 export function Set_each(self_, body_, ff_core_Ordering_Order$T) {
 ff_core_Map.Map_each(self_, ((k_, _) => {
 body_(k_)
@@ -152,6 +158,12 @@ export async function Set_toList$(self_, ff_core_Ordering_Order$T, $c) {
 return ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
+}
+
+export async function Set_toIterator$(self_, ff_core_Ordering_Order$T, $c) {
+return (await ff_core_Iterator.Iterator_map$((await ff_core_Map.Map_toIterator$(self_, $c, ff_core_Ordering_Order$T)), (async (_w1, $c) => {
+return _w1.first_
+}), $c))
 }
 
 export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $c) {

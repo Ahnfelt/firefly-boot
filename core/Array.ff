@@ -79,6 +79,17 @@ extend self[T]: Array[T] {
             return result;
         """
 
+    toIterator(): Iterator[T] {
+        mutable index = 0
+        Iterator.make {
+            if(index < self.size()) {
+                let result = self.expect(index)
+                index += 1
+                result
+            }
+        }
+    }
+
     each(body: T => Unit): Unit
         target js sync """
             return self_.forEach(body_);
@@ -100,6 +111,10 @@ extend self[T]: Array[T] {
             }
             return result;
         """
+
+    toCollection[C: FromIterator[T]](): C {
+        Iterator.fromIterator(self.toIterator())
+    }
 
 }
 

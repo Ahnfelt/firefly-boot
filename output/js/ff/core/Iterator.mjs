@@ -174,9 +174,9 @@ self_.close_()
 }))
 }
 
-export function Iterator_collect(self_, body_) {
+export function Iterator_collect(self_, body_, ff_core_Iterator_ToIterator$C) {
 return ff_core_Iterator.Iterator_flatMap(self_, ((_w1) => {
-return ff_core_Option.Option_toIterator(body_(_w1))
+return ff_core_Iterator_ToIterator$C.toIterator_(body_(_w1))
 }))
 }
 
@@ -616,6 +616,10 @@ export function Iterator_toList(self_) {
 return ff_core_Array.Array_toList(ff_core_Iterator.Iterator_toArray(self_))
 }
 
+export function Iterator_toCollection(self_, ff_core_Iterator_FromIterator$C) {
+return ff_core_Iterator_FromIterator$C.fromIterator_(self_)
+}
+
 export async function Iterator_concat$(self_, that_, $c) {
 let firstDone_ = false;
 return ff_core_Iterator.Iterator((async ($c) => {
@@ -695,9 +699,9 @@ return (await inner_.close_($c))
 }))
 }
 
-export async function Iterator_collect$(self_, body_, $c) {
+export async function Iterator_collect$(self_, body_, ff_core_Iterator_ToIterator$C, $c) {
 return (await ff_core_Iterator.Iterator_flatMap$(self_, (async (_w1, $c) => {
-return (await ff_core_Option.Option_toIterator$((await body_(_w1, $c)), $c))
+return (await ff_core_Iterator_ToIterator$C.toIterator_$((await body_(_w1, $c)), $c))
 }), $c))
 }
 
@@ -1137,6 +1141,10 @@ export async function Iterator_toList$(self_, $c) {
 return ff_core_Array.Array_toList((await ff_core_Iterator.Iterator_toArray$(self_, $c)))
 }
 
+export async function Iterator_toCollection$(self_, ff_core_Iterator_FromIterator$C, $c) {
+return (await ff_core_Iterator_FromIterator$C.fromIterator_$(self_, $c))
+}
+
 export function Iterator_flatten(self_) {
 return ff_core_Iterator.Iterator_flatMap(self_, ((_w1) => {
 return _w1
@@ -1189,6 +1197,94 @@ export async function Iterator_toString$(self_, encoding_ = "utf8", $c) {
 return ff_core_Buffer.Buffer_toString((await ff_core_Iterator.Iterator_toBuffer$(self_, $c)), encoding_)
 }
 
+export const ff_core_Iterator_FromIterator$ff_core_Array_Array = {
+fromIterator_(iterator_) {
+return ff_core_Iterator.Iterator_toArray(iterator_)
+},
+async fromIterator_$(iterator_, $c) {
+return (await ff_core_Iterator.Iterator_toArray$(iterator_, $c))
+}
+};
 
+export const ff_core_Iterator_ToIterator$ff_core_Array_Array = {
+toIterator_(collection_) {
+return ff_core_Array.Array_toIterator(collection_)
+},
+async toIterator_$(collection_, $c) {
+return (await ff_core_Array.Array_toIterator$(collection_, $c))
+}
+};
+
+export const ff_core_Iterator_FromIterator$ff_core_List_List = {
+fromIterator_(iterator_) {
+return ff_core_Iterator.Iterator_toList(iterator_)
+},
+async fromIterator_$(iterator_, $c) {
+return (await ff_core_Iterator.Iterator_toList$(iterator_, $c))
+}
+};
+
+export const ff_core_Iterator_ToIterator$ff_core_List_List = {
+toIterator_(collection_) {
+return ff_core_List.List_toIterator(collection_)
+},
+async toIterator_$(collection_, $c) {
+return (await ff_core_List.List_toIterator$(collection_, $c))
+}
+};
+
+export function ff_core_Iterator_FromIterator$ff_core_Set_Set(ff_core_Ordering_Order$T) { return {
+fromIterator_(iterator_) {
+return ff_core_Iterator.Iterator_toSet(iterator_, ff_core_Ordering_Order$T)
+},
+async fromIterator_$(iterator_, $c) {
+return (await ff_core_Iterator.Iterator_toSet$(iterator_, $c, ff_core_Ordering_Order$T))
+}
+}}
+
+export function ff_core_Iterator_ToIterator$ff_core_Set_Set(ff_core_Ordering_Order$T) { return {
+toIterator_(collection_) {
+return ff_core_Set.Set_toIterator(collection_, ff_core_Ordering_Order$T)
+},
+async toIterator_$(collection_, $c) {
+return (await ff_core_Set.Set_toIterator$(collection_, $c, ff_core_Ordering_Order$T))
+}
+}}
+
+export function ff_core_Iterator_FromIterator$ff_core_Map_Map(ff_core_Ordering_Order$K) { return {
+fromIterator_(iterator_) {
+return ff_core_Iterator.Iterator_toMap(iterator_, ff_core_Ordering_Order$K)
+},
+async fromIterator_$(iterator_, $c) {
+return (await ff_core_Iterator.Iterator_toMap$(iterator_, $c, ff_core_Ordering_Order$K))
+}
+}}
+
+export function ff_core_Iterator_ToIterator$ff_core_Map_Map(ff_core_Ordering_Order$K) { return {
+toIterator_(collection_) {
+return ff_core_Map.Map_toIterator(collection_, ff_core_Ordering_Order$K)
+},
+async toIterator_$(collection_, $c) {
+return (await ff_core_Map.Map_toIterator$(collection_, $c, ff_core_Ordering_Order$K))
+}
+}}
+
+export const ff_core_Iterator_ToIterator$ff_core_Option_Option = {
+toIterator_(collection_) {
+return ff_core_Option.Option_toIterator(collection_)
+},
+async toIterator_$(collection_, $c) {
+return (await ff_core_Option.Option_toIterator$(collection_, $c))
+}
+};
+
+export const ff_core_Iterator_ToIterator$ff_core_Pair_Pair = {
+toIterator_(collection_) {
+return ff_core_List.List_toIterator(ff_core_List.Link(collection_.first_, ff_core_List.Link(collection_.second_, ff_core_List.Empty())))
+},
+async toIterator_$(collection_, $c) {
+return (await ff_core_List.List_toIterator$(ff_core_List.Link(collection_.first_, ff_core_List.Link(collection_.second_, ff_core_List.Empty())), $c))
+}
+};
 
 

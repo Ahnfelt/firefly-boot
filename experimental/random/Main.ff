@@ -1,0 +1,7 @@
+main(system: NodeSystem): Unit {
+    Log.debug(Show.show([
+        Pair(4, 2)
+        Pair(3, 4)
+    ].toMap()))
+    Log.debug(Show.show([1, 2, 3].collect {x => Pair(x, x * 2)}))
+}

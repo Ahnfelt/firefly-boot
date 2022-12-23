@@ -45,7 +45,12 @@ extend self[T]: Option[T] {
     }
 
     toIterator(): Iterator[T] {
-        Iterator {self} {}
+        mutable next = self
+        Iterator.make {
+            let result = next
+            next = None
+            result
+        }
     }
 
     filter(body: T => Bool): Option[T] {

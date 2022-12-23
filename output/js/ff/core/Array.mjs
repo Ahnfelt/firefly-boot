@@ -232,6 +232,21 @@ export function Array_toList(self_) {
         
 }
 
+export function Array_toIterator(self_) {
+let index_ = 0;
+return ff_core_Iterator.make_((() => {
+if((index_ < ff_core_Array.Array_size(self_))) {
+return ff_core_Option.Some((function() {
+const result_ = ff_core_Array.Array_expect(self_, index_);
+index_ += 1;
+return result_
+})())
+} else return ff_core_Option.None()
+}), (() => {
+
+}))
+}
+
 export function Array_each(self_, body_) {
 
             return self_.forEach(body_);
@@ -242,6 +257,10 @@ export function Array_map(self_, body_) {
 
             return self_.map(body_)
         
+}
+
+export function Array_toCollection(self_, ff_core_Iterator_FromIterator$C) {
+return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_Array.Array_toIterator(self_))
 }
 
 export async function Array_addAll$(self_, that_, $c) {
@@ -288,6 +307,21 @@ export async function Array_toList$(self_, $c) {
 throw new Error('Function Array_toList is missing on this target in async context.');
 }
 
+export async function Array_toIterator$(self_, $c) {
+let index_ = 0;
+return (await ff_core_Iterator.make_$((async ($c) => {
+if((index_ < ff_core_Array.Array_size(self_))) {
+return ff_core_Option.Some((await (async function() {
+const result_ = ff_core_Array.Array_expect(self_, index_);
+index_ += 1;
+return result_
+})()))
+} else return ff_core_Option.None()
+}), (async ($c) => {
+
+}), $c))
+}
+
 export async function Array_each$(self_, body_, $c) {
 
             for(let i = self_.length - 1; i >= 0; i--) {
@@ -304,6 +338,10 @@ export async function Array_map$(self_, body_, $c) {
             }
             return result;
         
+}
+
+export async function Array_toCollection$(self_, ff_core_Iterator_FromIterator$C, $c) {
+return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_Array.Array_toIterator(self_))
 }
 
 export function Array_toSet(self_, ff_core_Ordering_Order$T) {
