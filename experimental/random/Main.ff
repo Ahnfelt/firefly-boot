@@ -4,4 +4,6 @@ main(system: NodeSystem): Unit {
         Pair(3, 4)
     ].toMap()))
     Log.debug(Show.show([1, 2, 3].collect {x => Pair(x, x * 2)}))
+    Log.debug(Show.show([6, 4, 36, 8, 9, 5, 4, 2, 12, 2, 34, 4, 5, 65].toSet().toIterator().toList()))
+    Log.debug(Show.show([6, 4, 36, 8, 9, 5, 4, 2, 12, 2, 34, 4, 5, 65].toSet().toList()))
 }

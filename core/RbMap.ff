@@ -139,6 +139,26 @@ extend self[K: Order, V]: RB[K, V] {
         result.reverse()
     }
 
+    toIterator(): Iterator[Pair[K, V]] {
+        mutable stack = [self]
+        function next(): Option[Pair[K, V]] {
+            stack.{
+                | [] =>
+                    None
+                | [E, ...tail] =>
+                    stack = tail
+                    tailcall next()
+                | [T(_, E, k, v, E), ...tail] =>
+                    stack = tail
+                    Some(Pair(k, v))
+                | [T(_, l, k, v, r), ...tail] =>
+                    stack = [l, T(B, E, k, v, E), r, ...tail]
+                    tailcall next()
+            }
+        }
+        Iterator.make(next)
+    }
+
     each(body: (K, V) => Unit): Unit {
         self.{
             | E =>
