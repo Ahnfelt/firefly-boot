@@ -167,7 +167,7 @@ return
 return ff_core_Option.None()
 return
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processLetDefinition(self_, functionSignatures_, _w1)
 }));
@@ -647,7 +647,7 @@ return
 return ff_core_Option.None()
 return
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processLetDefinition(self_, functionSignatures_, _w1)
 }));

@@ -231,7 +231,7 @@ return
 return ff_core_Option.None()
 return
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option);
+}));
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), fields_))
 return
 }
@@ -271,7 +271,7 @@ return
 return ff_core_Option.None()
 return
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option);
+}));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
 const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()));
 return ff_core_Try.Try_else(ff_core_Core.try_((() => {
@@ -439,7 +439,7 @@ return
 return ff_core_Option.None()
 return
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option);
+}));
 return ff_core_Option.Some(ff_compiler_Patterns.PatternInfo(unqualifiedName_(p_.name_), otherVariants_(p_.name_), fields_))
 return
 }
@@ -479,7 +479,7 @@ return
 return ff_core_Option.None()
 return
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option);
+}));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
 const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()));
 return ff_core_Try.Try_else(ff_core_Core.try_((() => {

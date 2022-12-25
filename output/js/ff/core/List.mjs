@@ -752,8 +752,8 @@ return
 return go_(self_, ff_core_List.Empty())
 }
 
-export function List_collect(self_, body_, ff_core_Iterator_ToIterator$C) {
-return ff_core_Iterator.Iterator_toList(ff_core_Iterator.Iterator_collect(ff_core_List.List_toIterator(self_), body_, ff_core_Iterator_ToIterator$C))
+export function List_collect(self_, body_) {
+return ff_core_Iterator.Iterator_toList(ff_core_Iterator.Iterator_collect(ff_core_List.List_toIterator(self_), body_))
 }
 
 export function List_collectFirst(self_, body_) {
@@ -1166,10 +1166,6 @@ return
 }), (() => {
 remaining_ = ff_core_List.Empty()
 }))
-}
-
-export function List_toCollection(self_, ff_core_Iterator_FromIterator$C) {
-return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_List.List_toIterator(self_))
 }
 
 export function List_insertBetween(self_, separator_) {
@@ -1693,8 +1689,8 @@ return
 return (await go_$(self_, ff_core_List.Empty(), $c))
 }
 
-export async function List_collect$(self_, body_, ff_core_Iterator_ToIterator$C, $c) {
-return (await ff_core_Iterator.Iterator_toList$((await ff_core_Iterator.Iterator_collect$((await ff_core_List.List_toIterator$(self_, $c)), body_, $c, ff_core_Iterator_ToIterator$C)), $c))
+export async function List_collect$(self_, body_, $c) {
+return (await ff_core_Iterator.Iterator_toList$((await ff_core_Iterator.Iterator_collect$((await ff_core_List.List_toIterator$(self_, $c)), body_, $c)), $c))
 }
 
 export async function List_collectFirst$(self_, body_, $c) {
@@ -2107,10 +2103,6 @@ return
 }), (async ($c) => {
 remaining_ = ff_core_List.Empty()
 }))
-}
-
-export async function List_toCollection$(self_, ff_core_Iterator_FromIterator$C, $c) {
-return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_List.List_toIterator(self_))
 }
 
 export async function List_insertBetween$(self_, separator_, $c) {

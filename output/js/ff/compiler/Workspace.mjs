@@ -149,7 +149,7 @@ return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Arr
 ? ff_core_Option.Some(ff_core_Array.Array_expect(packageParts_, 1))
 : ff_core_Option.None()), fixedLocation_))
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option);
+}));
 return ff_compiler_Workspace.Workspace(rules_, ff_core_Option.Option_else(defaultLocation_, (() => {
 return ff_compiler_Workspace.centralLocation_
 })), packageDirectory_)
@@ -216,7 +216,7 @@ return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Arr
 ? ff_core_Option.Some(ff_core_Array.Array_expect(packageParts_, 1))
 : ff_core_Option.None()), fixedLocation_))
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option);
+}));
 return ff_compiler_Workspace.Workspace(rules_, ff_core_Option.Option_else(defaultLocation_, (() => {
 return ff_compiler_Workspace.centralLocation_
 })), packageDirectory_)

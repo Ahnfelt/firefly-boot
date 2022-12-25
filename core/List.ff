@@ -201,7 +201,7 @@ extend self[T]: List[T] {
         go(self, [])
     }
 
-    collect[R, C: ToIterator[R]](body: T => C): List[R] {
+    collect[R](body: T => Option[R]): List[R] {
         self.toIterator().collect(body).toList()
     }
 
@@ -333,10 +333,6 @@ extend self[T]: List[T] {
                 remaining = []
             }
         )
-    }
-
-    toCollection[C: FromIterator[T]](): C {
-        Iterator.fromIterator(self.toIterator())
     }
 
     insertBetween(separator: List[T]): List[T] {

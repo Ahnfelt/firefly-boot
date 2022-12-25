@@ -112,10 +112,6 @@ extend self[T]: Array[T] {
             return result;
         """
 
-    toCollection[C: FromIterator[T]](): C {
-        Iterator.fromIterator(self.toIterator())
-    }
-
 }
 
 

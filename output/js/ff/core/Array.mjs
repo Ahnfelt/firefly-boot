@@ -259,10 +259,6 @@ export function Array_map(self_, body_) {
         
 }
 
-export function Array_toCollection(self_, ff_core_Iterator_FromIterator$C) {
-return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_Array.Array_toIterator(self_))
-}
-
 export async function Array_addAll$(self_, that_, $c) {
 throw new Error('Function Array_addAll is missing on this target in async context.');
 }
@@ -338,10 +334,6 @@ export async function Array_map$(self_, body_, $c) {
             }
             return result;
         
-}
-
-export async function Array_toCollection$(self_, ff_core_Iterator_FromIterator$C, $c) {
-return ff_core_Iterator_FromIterator$C.fromIterator_(ff_core_Array.Array_toIterator(self_))
 }
 
 export function Array_toSet(self_, ff_core_Ordering_Order$T) {

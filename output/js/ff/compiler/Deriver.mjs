@@ -375,7 +375,7 @@ return
 return ff_core_Option.None()
 return
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
 return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
 return (_w1 === "Q$")
@@ -669,7 +669,7 @@ return
 return ff_core_Option.None()
 return
 }
-}), ff_core_Iterator.ff_core_Iterator_ToIterator$ff_core_Option_Option), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
 return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
 return (_w1 === "Q$")
