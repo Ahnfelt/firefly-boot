@@ -1,162 +1,351 @@
-newtype Stream![T](open: () => Iterator[T])
+type Stream![T](
+    next: () => Option[T]
+    close: () => Unit
+)
 
-extend self[A]: Stream[A] {
+make[T](next: () => Option[T], close: () => Unit = {}): Stream[T] {
+    Stream(next, close)
+}
 
-    map[B](body: A => B): Stream[B] {
-        Stream:
-        let a = self.open()
-        Iterator {
-            a.next().map(body)
-        } {
-            a.close()
-        }
-    }
+extend self[T]: Stream[T] {
 
-    flatMap[B](body: A => Stream[B]): Stream[B] {
-        Stream:
-        let a = self.open()
-        mutable b: Option[Iterator[B]] = None
-        Iterator {
-            function go(): Option[B] {
-                b.flatMap {_.next()}.{
-                    | Some(v)@o => o
-                    | None =>
-                        b.each {_.close()}
-                        a.next().{
-                            | Some(x) =>
-                                let s = body(x)
-                                b = Some(s.open())
-                                tailcall go()
-                            | None =>
-                                None
-                        }
+    concat(that: Stream[T]): Stream[T] {
+        mutable firstDone = False
+        Stream {
+            if(firstDone) {
+                that.next()
+            } else {
+                self.next().orElse {
+                    firstDone = True
+                    that.next()
                 }
             }
-            go()
         } {
             try {
-                b.each {_.close()}
+                self.close()
             } finally {
-                a.close()
+                that.close()
             } expect()
         }
     }
 
-    filter(body: A => Bool): Stream[A] {
-        Stream:
-        let a = self.open()
-        Iterator {
-            function go(): Option[A] {
-                a.next().{
-                    | None => None
-                    | Some(x) {body(x)} => Some(x)
-                    | Some(_) => tailcall go()
-                }
-            }
-            go()
+    map[S](body: T => S): Stream[S] {
+        Stream {
+            self.next().map(body)
         } {
-            a.close()
+            self.close()
         }
     }
 
-    zip[B](that: Stream[B]): Stream[Pair[A, B]] {
-        Stream:
-        let a = self.open()
-        let b = try { that.open() } onThrow { a.close() } expect()
-        Iterator {
-            Pair(a.next(), b.next()).{
+    flatMap[S](body: T => Stream[S]): Stream[S] {
+        mutable inner = Stream {None} {}
+        Stream {
+            mutable result = None
+            while {result.isEmpty()} {
+                inner.next().{
+                    | Some(_)@i => result = Some(i)
+                    | None =>
+                        self.next().{
+                            | None => result = Some(None)
+                            | Some(o) => inner = body(o)
+                        }
+                }
+            }
+            result.expect()
+        } {
+            try {
+                inner.close()
+            } finally {
+                self.close()
+            } expect()
+        }
+    }
+
+    collect[S](body: T => Option[S]): Stream[S] {
+        self.flatMap {body(_).toStream()}
+    }
+
+    filter(body: T => Bool): Stream[T] {
+        Stream {
+            mutable result = None
+            while {result.isEmpty()} {
+                self.next().{
+                    | Some(x) {body(x)} => result = Some(Some(x))
+                    | Some(_) =>
+                    | None => result = Some(None)
+                }
+            }
+            result.expect()
+        } {
+            self.close()
+        }
+    }
+
+    zip[S](that: Stream[S]): Stream[Pair[T, S]] {
+        Stream {
+            Pair(self.next(), that.next()).{
                 | Pair(Some(x), Some(y)) => Some(Pair(x, y))
                 | _ => None
             }
         } {
-            try { a.close() } finally { b.close() } expect()
-        }
-    }
-
-    concat(that: Stream[A]): Stream[A] {
-        Stream:
-        mutable firstDone = False
-        mutable iterator = self.open()
-        Iterator {
-            iterator.next().orElse {
-                if(firstDone) {None} else {
-                    firstDone = True
-                    iterator.close()
-                    iterator = that.open()
-                    iterator.next()
-                }
-            }
-        } {
-            iterator.close()
-        }
-    }
-
-    parse[B](body: Iterator[A] => Iterator[B]): Stream[B] {
-        Stream:
-        let iterator = self.open()
-        let i = try {
-            body(iterator)
-        } onThrow {
-            iterator.close()
-        } expect()
-        Iterator {
-            i.next()
-        } {
             try {
-                i.close()
+                self.close()
             } finally {
-                iterator.close()
+                that.close()
             } expect()
         }
     }
 
-    // Terminating methods
+    takeFirst(count: Int = 1): Stream[T] {
+        mutable remaining = count
+        Stream {
+            self.next().filter {_ =>
+                remaining -= 1
+                remaining >= 0
+            }
+        } {
+            self.close()
+        }
+    }
 
-    each(body: A => Unit): Unit {
-        let a = self.open()
-        try {
-            function go() {
-                a.next().{
-                    | None =>
-                    | Some(x) =>
-                        body(x)
-                        tailcall go()
+    dropFirst(count: Int = 1): Stream[T] {
+        mutable remaining = count
+        Stream {
+            while {remaining >= 1} {
+                self.next().{
+                    | None => remaining = 0
+                    | Some(_) => remaining -= 1
                 }
             }
-            go()
+            self.next()
+        } {
+            self.close()
+        }
+    }
+
+    takeWhile(body: T => Bool): Stream[T] {
+        mutable done = False
+        Stream {
+            if(done) {None} else:
+            self.next().{
+                | None =>
+                    done = True
+                    None
+                | Some(x)@o =>
+                    done = !body(x)
+                    if(done) {None} else {o}
+            }
+        } {
+            self.close()
+        }
+    }
+
+    dropWhile(body: T => Bool): Stream[T] {
+        mutable done = False
+        Stream {
+            if(!done) {
+                mutable result = None
+                while {!done} {
+                    self.next().{
+                        | None => done = True
+                        | Some(x) {body(x)} =>
+                        | Some(x)@o =>
+                            result = o
+                            done = True
+                    }
+                }
+                result
+            } else {
+                self.next()
+            }
+        } {
+            self.close()
+        }
+    }
+
+    pairs(): Stream[Pair[Int, T]] {
+        mutable i = 0
+        self.map {x =>
+            let r = Pair(i, x)
+            i += 1
+            r
+        }
+    }
+
+    chunked(size: Int): Stream[List[T]] {
+        mutable remaining = size
+        Stream {
+            if(remaining <= 0) {None} else:
+            self.next().{
+                | None =>
+                    remaining = -1
+                    None
+                | Some(x) =>
+                    mutable list = [x]
+                    remaining -= 1
+                    while {remaining > 0} {
+                        remaining -= 1
+                        self.next().{
+                            | None => remaining = -1
+                            | Some(x) => list = [x, ...list]
+                        }
+                    }
+                    if(remaining != -1) {remaining = size}
+                    Some(list.reverse())
+            }
+        } {
+            self.close()
+        }
+    }
+
+    // Consuming methods
+
+    use[R](body: Stream[T] => R): R {
+        try {
+            body(self)
         } finally {
-            a.close()
+            self.close()
         } expect()
     }
 
-    eachWhile(body: A => Bool): Unit {
-        let a = self.open()
+    each(body: T => Unit): Unit {
         try {
-            function go() {
-                a.next().{
-                    | None =>
+            mutable done = False
+            while {!done} {
+                self.next().{
+                    | None => done = True
+                    | Some(x) => body(x)
+                }
+            }
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    eachWhile(body: T => Bool): Unit {
+        try {
+            mutable done = False
+            while {!done} {
+                self.next().{
+                    | None => done = True
+                    | Some(x) => done = !body(x)
+                }
+            }
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    all(body: T => Bool): Bool {
+        mutable result = True
+        self.eachWhile {x =>
+            result = result && body(x)
+            result
+        }
+        result
+    }
+
+    any(body: T => Bool): Bool {
+        mutable result = False
+        self.eachWhile {x =>
+            result = result || body(x)
+            (!result)
+        }
+        result
+    }
+
+    first(): Option[T] {
+        try {
+            self.next()
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    last(): Option[T] {
+        try {
+            mutable done = False
+            mutable result = None
+            while {!done} {
+                self.next().{
+                    | None => done = True
+                    | Some(x)@o => result = o
+                }
+            }
+            result
+        } finally {
+            self.close()
+        } expect()
+    }
+
+    expectFirst(): T {
+        self.first().else { panic("expectFirst() on empty iterator") }
+    }
+
+    expectLast(): T {
+        self.last().else { panic("expectLast() on empty iterator") }
+    }
+
+    collectFirst[R](body: T => Option[R]): Option[R] {
+        try {
+            mutable done = False
+            mutable result = None
+            while {!done} {
+                self.next().{
+                    | None => done = True
                     | Some(x) =>
-                        if(body(x)) {
-                            tailcall go()
+                        body(x).{
+                            | None =>
+                            | o =>
+                                done = True
+                                result = o
                         }
                 }
             }
-            go()
+            result
         } finally {
-            a.close()
+            self.close()
         } expect()
     }
 
-    toArray(): Array[A] {
+    find(body: T => Bool): Option[T] {
+        self.filter(body).first()
+    }
+
+    foldLeft[R](initial: R, body: (R, T) => R): R {
+        mutable result = initial
+        self.each {result = body(result, _)}
+        result
+    }
+
+    toArray(): Array[T] {
         let builder = ArrayBuilder.empty()
         self.each(builder.add)
         builder.toArray()
     }
 
-    toList(): List[A] {
+    toList(): List[T] {
         self.toArray().toList()
     }
 
+}
+
+extend self[T]: Stream[Stream[T]] {
+    flatten(): Stream[T] {
+        self.flatMap {_}
+    }
+}
+
+extend self[T: Order]: Stream[T] {
+    toSet(): Set[T] {
+        self.toArray().toSet()
+    }
+}
+
+extend self[K: Order, V]: Stream[Pair[K, V]] {
+    toMap(): Map[K, V] {
+        self.toArray().toMap()
+    }
 }
 
 extend self: Stream[Buffer] {

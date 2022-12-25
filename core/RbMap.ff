@@ -139,7 +139,7 @@ extend self[K: Order, V]: RB[K, V] {
         result.reverse()
     }
 
-    toIterator(): Iterator[Pair[K, V]] {
+    toStream(): Stream[Pair[K, V]] {
         mutable stack = [self]
         function next(): Option[Pair[K, V]] {
             stack.{
@@ -156,7 +156,7 @@ extend self[K: Order, V]: RB[K, V] {
                     tailcall next()
             }
         }
-        Iterator.make(next)
+        Stream.make(next)
     }
 
     each(body: (K, V) => Unit): Unit {

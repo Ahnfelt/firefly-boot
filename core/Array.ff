@@ -79,9 +79,9 @@ extend self[T]: Array[T] {
             return result;
         """
 
-    toIterator(): Iterator[T] {
+    toStream(): Stream[T] {
         mutable index = 0
-        Iterator.make {
+        Stream.make {
             if(index < self.size()) {
                 let result = self.expect(index)
                 index += 1

@@ -1,11 +1,9 @@
 import Syntax
 
-type Deriver(
-)
+type Deriver()
 
 make(): Deriver {
-    Deriver(
-    )
+    Deriver()
 }
 
 fail[T](at: Location, message: String): T {
@@ -370,6 +368,7 @@ extend self: Deriver {
         module.types.filter {t =>
             (module.packagePair.groupName() != "ff:core" || coreWhitelist.contains(modulePrefix + "." + t.name)) &&
             !t.generics.first().any {_ == "Q$"} &&
+            !t.newtype &&
             !typesWithInstance.contains(modulePrefix + "." + t.name)
         }
     }

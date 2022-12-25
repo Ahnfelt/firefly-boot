@@ -44,8 +44,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -344,12 +342,21 @@ throw new Error('Function FileSystem_getAbsolutePath is missing on this target i
 export async function FileSystem_readStream$(self_, file_, $c) {
 
             const fs = import$2
-            return $c => {
+            let c = null
+            let readable = null
+            let doResolve = null
+            let doReject = null
+            let seenError = null
+            const abort = () => {
+                if(c != null) {
+                    c.signal.removeEventListener('abort', abort)
+                    readable.close()
+                }
+            }
+            function open($c) {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-                const readable = fs.createReadStream(file_)
-                let doResolve = null
-                let doReject = null
-                let seenError = null
+                c = $c
+                readable = fs.createReadStream(file_)
                 readable.on('readable', () => {
                     if(doResolve != null) doResolve()
                 })
@@ -360,23 +367,20 @@ export async function FileSystem_readStream$(self_, file_, $c) {
                 readable.on('close', () => {
                     if(doResolve != null) doResolve()
                 })
-                const abort = () => {
-                    $c.signal.removeEventListener('abort', abort)
-                    readable.close()
-                }
                 $c.signal.addEventListener('abort', abort)
-                return ff_core_Iterator.Iterator(async function go($c) {
-                    let buffer = readable.read()
-                    if(buffer != null) return ff_core_Option.Some(buffer)
-                    if(seenError != null) throw seenError
-                    if(readable.destroyed) return ff_core_Option.None()
-                    let promise = new Promise((resolve, reject) => {
-                        doResolve = () => {doResolve = null; doReject = null; resolve()}
-                        doReject = error => {doResolve = null; doReject = null; reject(error)}
-                    }).then(() => go($c))
-                    return await promise
-                }, abort)
             }
+            return ff_core_Stream.Stream(async function go($c) {
+                if(c == null) open($c)
+                let buffer = readable.read()
+                if(buffer != null) return ff_core_Option.Some(buffer)
+                if(seenError != null) throw seenError
+                if(readable.destroyed) return ff_core_Option.None()
+                let promise = new Promise((resolve, reject) => {
+                    doResolve = () => {doResolve = null; doReject = null; resolve()}
+                    doReject = error => {doResolve = null; doReject = null; reject(error)}
+                }).then(() => go($c))
+                return await promise
+            }, abort)
         
 }
 
@@ -427,12 +431,20 @@ export async function FileSystem_appendStream$(self_, file_, stream_, $c) {
 export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
 
             const zlib = import$3
-            return async ($c) => {
-                const iterator = stream_($c)
-                let decompress = zlib.createGunzip()
-                let doResolve = null
-                let doReject = null
-                let seenError = null
+            let c = null
+            let decompress = null
+            let doResolve = null
+            let doReject = null
+            let seenError = null
+            const abort = () => {
+                if(c != null) {
+                    c.signal.removeEventListener('abort', abort)
+                    decompress.destroy()
+                }
+            }
+            function open($c) {
+                c = $c
+                decompress = zlib.createGunzip()
                 decompress.on('readable', () => {
                     if(doResolve != null) doResolve()
                 })
@@ -443,30 +455,27 @@ export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
                 decompress.on('close', () => {
                     if(doResolve != null) doResolve()
                 })
-                const abort = () => {
-                    $c.signal.removeEventListener('abort', abort)
-                    decompress.destroy()
-                }
                 $c.signal.addEventListener('abort', abort)
-                return ff_core_Iterator.Iterator(async function go($c) {
-                    if(seenError != null) throw seenError
-                    if(!decompress.readable) return ff_core_Option.None()
-                    let buffer = decompress.read()
-                    if(buffer != null) return ff_core_Option.Some(buffer)
-                    buffer = (await iterator.next_($c)).value_
-                    if(buffer == null) decompress.end()
-                    let wait = buffer == null || !decompress.write(buffer)
-                    if(seenError != null) throw seenError
-                    if(!wait) return go($c)
-                    let promise = new Promise((resolve, reject) => {
-                        function reset() { decompress.off('drain', doResolve); doResolve = null; doReject = null }
-                        doResolve = () => {reset(); resolve()}
-                        doReject = error => {reset(); reject(error)}
-                    }).then(() => go($c))
-                    decompress.on('drain', doResolve)
-                    return await promise
-                }, abort)
             }
+            return ff_core_Stream.Stream(async function go($c) {
+                if(c == null) open($c)
+                if(seenError != null) throw seenError
+                if(!decompress.readable) return ff_core_Option.None()
+                let buffer = decompress.read()
+                if(buffer != null) return ff_core_Option.Some(buffer)
+                buffer = (await stream_.next_($c)).value_
+                if(buffer == null) decompress.end()
+                let wait = buffer == null || !decompress.write(buffer)
+                if(seenError != null) throw seenError
+                if(!wait) return go($c)
+                let promise = new Promise((resolve, reject) => {
+                    function reset() { decompress.off('drain', doResolve); doResolve = null; doReject = null }
+                    doResolve = () => {reset(); resolve()}
+                    doReject = error => {reset(); reject(error)}
+                }).then(() => go($c))
+                decompress.on('drain', doResolve)
+                return await promise
+            }, abort)
         
 }
 

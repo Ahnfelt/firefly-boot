@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -232,9 +230,9 @@ export function Array_toList(self_) {
         
 }
 
-export function Array_toIterator(self_) {
+export function Array_toStream(self_) {
 let index_ = 0;
-return ff_core_Iterator.make_((() => {
+return ff_core_Stream.make_((() => {
 if((index_ < ff_core_Array.Array_size(self_))) {
 return ff_core_Option.Some((function() {
 const result_ = ff_core_Array.Array_expect(self_, index_);
@@ -303,9 +301,9 @@ export async function Array_toList$(self_, $c) {
 throw new Error('Function Array_toList is missing on this target in async context.');
 }
 
-export async function Array_toIterator$(self_, $c) {
+export async function Array_toStream$(self_, $c) {
 let index_ = 0;
-return (await ff_core_Iterator.make_$((async ($c) => {
+return (await ff_core_Stream.make_$((async ($c) => {
 if((index_ < ff_core_Array.Array_size(self_))) {
 return ff_core_Option.Some((await (async function() {
 const result_ = ff_core_Array.Array_expect(self_, index_);

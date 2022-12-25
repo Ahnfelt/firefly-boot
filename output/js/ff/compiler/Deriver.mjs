@@ -42,8 +42,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -377,9 +375,9 @@ return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
-return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
+return (((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
 return (_w1 === "Q$")
-})))) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
+})))) && (!t_.newtype_)) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }))
 }
 
@@ -671,9 +669,9 @@ return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
-return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
+return (((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
 return (_w1 === "Q$")
-})))) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
+})))) && (!t_.newtype_)) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }))
 }
 

@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -753,7 +751,7 @@ return go_(self_, ff_core_List.Empty())
 }
 
 export function List_collect(self_, body_) {
-return ff_core_Iterator.Iterator_toList(ff_core_Iterator.Iterator_collect(ff_core_List.List_toIterator(self_), body_))
+return ff_core_Stream.Stream_toList(ff_core_Stream.Stream_collect(ff_core_List.List_toStream(self_), body_))
 }
 
 export function List_collectFirst(self_, body_) {
@@ -1142,9 +1140,9 @@ results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_)
 return ff_core_List.List_reverse(results_)
 }
 
-export function List_toIterator(self_) {
+export function List_toStream(self_) {
 let remaining_ = self_;
-return ff_core_Iterator.Iterator((() => {
+return ff_core_Stream.Stream((() => {
 {
 const _1 = remaining_;
 {
@@ -1690,7 +1688,7 @@ return (await go_$(self_, ff_core_List.Empty(), $c))
 }
 
 export async function List_collect$(self_, body_, $c) {
-return (await ff_core_Iterator.Iterator_toList$((await ff_core_Iterator.Iterator_collect$((await ff_core_List.List_toIterator$(self_, $c)), body_, $c)), $c))
+return (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_collect$((await ff_core_List.List_toStream$(self_, $c)), body_, $c)), $c))
 }
 
 export async function List_collectFirst$(self_, body_, $c) {
@@ -2079,9 +2077,9 @@ results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_)
 return ff_core_List.List_reverse(results_)
 }
 
-export async function List_toIterator$(self_, $c) {
+export async function List_toStream$(self_, $c) {
 let remaining_ = self_;
-return ff_core_Iterator.Iterator((async ($c) => {
+return ff_core_Stream.Stream((async ($c) => {
 {
 const _1 = remaining_;
 {

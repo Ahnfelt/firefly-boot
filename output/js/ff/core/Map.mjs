@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -122,8 +120,8 @@ export function Map_pairs(self_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
 }
 
-export function Map_toIterator(self_, ff_core_Ordering_Order$K) {
-return ff_core_RbMap.RB_toIterator(self_, ff_core_Ordering_Order$K)
+export function Map_toStream(self_, ff_core_Ordering_Order$K) {
+return ff_core_RbMap.RB_toStream(self_, ff_core_Ordering_Order$K)
 }
 
 export function Map_keys(self_, ff_core_Ordering_Order$K) {
@@ -213,8 +211,8 @@ export async function Map_pairs$(self_, ff_core_Ordering_Order$K, $c) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_toIterator$(self_, ff_core_Ordering_Order$K, $c) {
-return (await ff_core_RbMap.RB_toIterator$(self_, $c, ff_core_Ordering_Order$K))
+export async function Map_toStream$(self_, ff_core_Ordering_Order$K, $c) {
+return (await ff_core_RbMap.RB_toStream$(self_, $c, ff_core_Ordering_Order$K))
 }
 
 export async function Map_keys$(self_, ff_core_Ordering_Order$K, $c) {

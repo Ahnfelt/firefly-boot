@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -112,8 +110,14 @@ return ff_core_List.Link(file_, ff_core_List.Empty())
 }
 }))
 }
+function makeOpen_(file_) {
+ff_core_FileSystem.FileSystem_exists(fs_, "/");
+return (() => {
+return ff_core_FileSystem.FileSystem_readStream(fs_, file_)
+})
+}
 return ff_core_List.List_map(go_(path_), ((file_) => {
-return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_))
+return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), makeOpen_(file_))
 }))
 }
 
@@ -178,8 +182,14 @@ return ff_core_List.Link(file_, ff_core_List.Empty())
 }
 }), $c))
 }
+async function makeOpen_$(file_, $c) {
+(await ff_core_FileSystem.FileSystem_exists$(fs_, "/", $c));
+return (async ($c) => {
+return (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))
+})
+}
 return (await ff_core_List.List_map$((await go_$(path_, $c)), (async (file_, $c) => {
-return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c)))
+return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (await makeOpen_$(file_, $c)))
 }), $c))
 }
 
@@ -285,8 +295,12 @@ const mainJsFile_ = (((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.
 const file_ = (prefix_ + "/Main.bundle.js");
 ff_core_BuildSystem.internalCallEsBuild_(self_, mainJsFile_, file_, minify_, sourceMap_);
 const fs_ = ff_core_BuildSystem.internalBrowserCodeFileSystem_(self_);
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_)), (sourceMap_
-? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), ff_core_FileSystem.FileSystem_readStream(fs_, (file_ + ".map"))), ff_core_List.Empty())
+const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (() => {
+return ff_core_FileSystem.FileSystem_readStream(fs_, file_)
+})), (sourceMap_
+? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (() => {
+return ff_core_FileSystem.FileSystem_readStream(fs_, (file_ + ".map"))
+})), ff_core_List.Empty())
 : ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return ff_core_BuildSystem.BrowserBundle(assets_)
 }
@@ -301,8 +315,12 @@ const mainJsFile_ = (((((((prefix_ + "/") + self_.packageGroup_) + "/") + self_.
 const file_ = (prefix_ + "/Main.bundle.js");
 (await ff_core_BuildSystem.internalCallEsBuild_$(self_, mainJsFile_, file_, minify_, sourceMap_, $c));
 const fs_ = (await ff_core_BuildSystem.internalBrowserCodeFileSystem_$(self_, $c));
-const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))), (sourceMap_
-? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (await ff_core_FileSystem.FileSystem_readStream$(fs_, (file_ + ".map"), $c))), ff_core_List.Empty())
+const assets_ = ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (async ($c) => {
+return (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))
+})), (sourceMap_
+? ff_core_List.Link(ff_core_Pair.Pair((ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)) + ".map"), (async ($c) => {
+return (await ff_core_FileSystem.FileSystem_readStream$(fs_, (file_ + ".map"), $c))
+})), ff_core_List.Empty())
 : ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 return ff_core_BuildSystem.BrowserBundle(assets_)
 }

@@ -44,9 +44,9 @@ extend self[T]: Option[T] {
         }
     }
 
-    toIterator(): Iterator[T] {
+    toStream(): Stream[T] {
         mutable next = self
-        Iterator.make {
+        Stream.make {
             let result = next
             next = None
             result

@@ -56,8 +56,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -155,12 +153,12 @@ const assetOutputPath_ = (outputPath_ + "/assets");
 ff_core_List.List_each(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const path_ = _1.first_;
-const stream_ = _1.second_;
+const makeStream_ = _1.second_;
 const p_ = (assetOutputPath_ + path_);
 ff_core_FileSystem.FileSystem_createDirectories(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
 return (_w1 !== 47)
 }))));
-ff_core_FileSystem.FileSystem_writeStream(fs_, p_, stream_, false)
+ff_core_FileSystem.FileSystem_writeStream(fs_, p_, makeStream_(), false)
 return
 }
 }));
@@ -253,12 +251,12 @@ const assetOutputPath_ = (outputPath_ + "/assets");
 (await ff_core_List.List_each$(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async (_1, $c) => {
 {
 const path_ = _1.first_;
-const stream_ = _1.second_;
+const makeStream_ = _1.second_;
 const p_ = (assetOutputPath_ + path_);
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
 return (_w1 !== 47)
 }))), $c));
-(await ff_core_FileSystem.FileSystem_writeStream$(fs_, p_, stream_, false, $c))
+(await ff_core_FileSystem.FileSystem_writeStream$(fs_, p_, (await makeStream_($c)), false, $c))
 return
 }
 }), $c));

@@ -40,8 +40,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -1489,7 +1487,7 @@ result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
 return ff_core_List.List_reverse(result_)
 }
 
-export function RB_toIterator(self_, ff_core_Ordering_Order$K) {
+export function RB_toStream(self_, ff_core_Ordering_Order$K) {
 let stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
 function next_() {
 _tailcall: for(;;) {
@@ -1553,7 +1551,7 @@ return
 return
 }
 }
-return ff_core_Iterator.make_((() => {
+return ff_core_Stream.make_((() => {
 return next_()
 }), (() => {
 
@@ -1686,7 +1684,7 @@ result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
 return ff_core_List.List_reverse(result_)
 }
 
-export async function RB_toIterator$(self_, ff_core_Ordering_Order$K, $c) {
+export async function RB_toStream$(self_, ff_core_Ordering_Order$K, $c) {
 let stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
 function next_() {
 _tailcall: for(;;) {
@@ -1750,7 +1748,7 @@ return
 return
 }
 }
-return (await ff_core_Iterator.make_$((async ($c) => {
+return (await ff_core_Stream.make_$((async ($c) => {
 return next_()
 }), (async ($c) => {
 

@@ -202,7 +202,7 @@ extend self[T]: List[T] {
     }
 
     collect[R](body: T => Option[R]): List[R] {
-        self.toIterator().collect(body).toList()
+        self.toStream().collect(body).toList()
     }
 
     collectFirst[R](body: T => Option[R]): Option[R] {
@@ -317,9 +317,9 @@ extend self[T]: List[T] {
         results.reverse()
     }
 
-    toIterator(): Iterator[T] {
+    toStream(): Stream[T] {
         mutable remaining = self
-        Iterator(
+        Stream(
             next = {
                 remaining.{
                     | [head, ...tail] =>

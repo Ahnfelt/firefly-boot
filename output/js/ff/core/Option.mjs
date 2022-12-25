@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -197,9 +195,9 @@ return
 }
 }
 
-export function Option_toIterator(self_) {
+export function Option_toStream(self_) {
 let next_ = self_;
-return ff_core_Iterator.make_((() => {
+return ff_core_Stream.make_((() => {
 const result_ = next_;
 next_ = ff_core_Option.None();
 return result_
@@ -448,9 +446,9 @@ return
 }
 }
 
-export async function Option_toIterator$(self_, $c) {
+export async function Option_toStream$(self_, $c) {
 let next_ = self_;
-return (await ff_core_Iterator.make_$((async ($c) => {
+return (await ff_core_Stream.make_$((async ($c) => {
 const result_ = next_;
 next_ = ff_core_Option.None();
 return result_

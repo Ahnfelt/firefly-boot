@@ -55,9 +55,9 @@ extend self: BrowserCode {
         internalCallEsBuild(self, mainJsFile = mainJsFile, outputPath = file, minify = minify, sourceMap = sourceMap)
         let fs = internalBrowserCodeFileSystem(self)
         let assets = AssetSystem([
-            Pair(file.dropFirst(prefix.size()), fs.readStream(file))
+            Pair(file.dropFirst(prefix.size()), {fs.readStream(file)})
             ...if(sourceMap) {[
-                Pair(file.dropFirst(prefix.size()) + ".map", fs.readStream(file + ".map"))
+                Pair(file.dropFirst(prefix.size()) + ".map", {fs.readStream(file + ".map")})
             ]} else {[]}
         ].toMap())
         BrowserBundle(assets)
@@ -115,7 +115,7 @@ internalNodeCallEsBuild(
         })
     """
 
-internalListDirectory(fs: FileSystem, path: String): List[Pair[String, Stream[Buffer]]] {
+internalListDirectory(fs: FileSystem, path: String): List[Pair[String, () => Stream[Buffer]]] {
     let prefix = if(path.endsWith("/")) {path.dropLast(1)} else {path}
     function go(currentPath: String): List[String] {
         fs.list(currentPath).flatMap { file =>
@@ -126,7 +126,11 @@ internalListDirectory(fs: FileSystem, path: String): List[Pair[String, Stream[Bu
             }
         }
     }
-    go(path).map { file => Pair(file.dropFirst(prefix.size()), fs.readStream(file)) }
+    function makeOpen(file: String): () => Stream[Buffer] {
+        fs.exists("/")
+        {fs.readStream(file)}
+    }
+    go(path).map { file => Pair(file.dropFirst(prefix.size()), makeOpen(file)) }
 }
 
 internalFileSystem(dummy: BuildSystem): FileSystem

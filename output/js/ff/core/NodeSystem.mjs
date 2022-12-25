@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -103,7 +101,9 @@ return ff_core_List.List_flatMap(files_, ((file_) => {
 if(ff_core_FileSystem.FileSystem_isDirectory(fs_, file_)) {
 return streams_(file_)
 } else {
-return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), ff_core_FileSystem.FileSystem_readStream(fs_, file_)), ff_core_List.Empty())
+return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (() => {
+return ff_core_FileSystem.FileSystem_readStream(fs_, file_)
+})), ff_core_List.Empty())
 }
 }))
 }
@@ -147,7 +147,9 @@ return (await ff_core_List.List_flatMap$(files_, (async (file_, $c) => {
 if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $c))) {
 return (await streams_$(file_, $c))
 } else {
-return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))), ff_core_List.Empty())
+return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (async ($c) => {
+return (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))
+})), ff_core_List.Empty())
 }
 }), $c))
 }

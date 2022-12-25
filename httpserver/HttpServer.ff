@@ -76,14 +76,22 @@ extend self: HttpRequest {
     readStream(): Stream[Buffer]
         target node async """
             import * as http from 'http'
-            return $c => {
+            let c = null
+            let readable = self_
+            let doResolve = null
+            let doReject = null
+            let seenError = null
+            const abort = () => {
+                if(c != null) {
+                    c.signal.removeEventListener('abort', abort)
+                    readable.destroy()
+                }
+            }
+            function open($c) {
                 if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
                 if(self_.streamWorkaround != null) throw new Error("Can't open HttpRequest body stream twice")
+                c = $c
                 self_.streamWorkaround = true
-                const readable = self_
-                let doResolve = null
-                let doReject = null
-                let seenError = null
                 readable.on('readable', () => {
                     if(doResolve != null) doResolve()
                 })
@@ -94,23 +102,20 @@ extend self: HttpRequest {
                 readable.on('close', () => {
                     if(doResolve != null) doResolve()
                 })
-                const abort = () => {
-                    $c.signal.removeEventListener('abort', abort)
-                    readable.destroy()
-                }
                 $c.signal.addEventListener('abort', abort)
-                return ff_core_Iterator.Iterator(async function go($c) {
-                    let buffer = readable.read()
-                    if(buffer != null) return ff_core_Option.Some(buffer)
-                    if(seenError != null) throw seenError
-                    if(readable.destroyed) return ff_core_Option.None()
-                    let promise = new Promise((resolve, reject) => {
-                        doResolve = () => {doResolve = null; doReject = null; resolve()}
-                        doReject = error => {doResolve = null; doReject = null; reject(error)}
-                    }).then(() => go($c))
-                    return await promise
-                }, abort)
             }
+            return ff_core_Stream.Stream(async function go($c) {
+                if(c == null) open($c)
+                let buffer = readable.read()
+                if(buffer != null) return ff_core_Option.Some(buffer)
+                if(seenError != null) throw seenError
+                if(readable.destroyed) return ff_core_Option.None()
+                let promise = new Promise((resolve, reject) => {
+                    doResolve = () => {doResolve = null; doReject = null; resolve()}
+                    doReject = error => {doResolve = null; doReject = null; reject(error)}
+                }).then(() => go($c))
+                return await promise
+            }, abort)
         """
 
 }

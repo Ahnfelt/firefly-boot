@@ -76,7 +76,6 @@ coreImports: List[DImport] =
         "Float",
         "Instant",
         "Int",
-        "Iterator",
         "JsValue",
         "JsSystem",
         "List",

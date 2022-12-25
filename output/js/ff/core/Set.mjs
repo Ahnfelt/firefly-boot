@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -118,8 +116,8 @@ return _w1.first_
 }))
 }
 
-export function Set_toIterator(self_, ff_core_Ordering_Order$T) {
-return ff_core_Iterator.Iterator_map(ff_core_Map.Map_toIterator(self_, ff_core_Ordering_Order$T), ((_w1) => {
+export function Set_toStream(self_, ff_core_Ordering_Order$T) {
+return ff_core_Stream.Stream_map(ff_core_Map.Map_toStream(self_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
 }
@@ -160,8 +158,8 @@ return _w1.first_
 }))
 }
 
-export async function Set_toIterator$(self_, ff_core_Ordering_Order$T, $c) {
-return (await ff_core_Iterator.Iterator_map$((await ff_core_Map.Map_toIterator$(self_, $c, ff_core_Ordering_Order$T)), (async (_w1, $c) => {
+export async function Set_toStream$(self_, ff_core_Ordering_Order$T, $c) {
+return (await ff_core_Stream.Stream_map$((await ff_core_Map.Map_toStream$(self_, $c, ff_core_Ordering_Order$T)), (async (_w1, $c) => {
 return _w1.first_
 }), $c))
 }

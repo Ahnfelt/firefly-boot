@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -164,9 +162,10 @@ return ff_core_String.String_startsWith(_w1.first_, prefix_, 0)
 }
 
 export function AssetSystem_readStream(self_, file_) {
-return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.files_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+const makeStream_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.files_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_core_Core.panic_(("Asset not found for readStream: " + file_))
-}))
+}));
+return makeStream_()
 }
 
 export function AssetSystem_readText(self_, file_) {
@@ -246,9 +245,10 @@ return ff_core_String.String_startsWith(_w1.first_, prefix_, 0)
 }
 
 export async function AssetSystem_readStream$(self_, file_, $c) {
-return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.files_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+const makeStream_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.files_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_core_Core.panic_(("Asset not found for readStream: " + file_))
-}))
+}));
+return (await makeStream_($c))
 }
 
 export async function AssetSystem_readText$(self_, file_, $c) {

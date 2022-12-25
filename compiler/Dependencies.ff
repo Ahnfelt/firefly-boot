@@ -87,7 +87,7 @@ extend self: Dependencies {
                         fs.deleteDirectory(dependencyPath)
                     }
                     fs.createDirectories(dependencyPath)
-                    fs.writeStream(tarGzPath, Stream { [buffer].toIterator() })
+                    fs.writeStream(tarGzPath, [buffer].toStream())
                     internalExtractTarGz(fs, tarGzPath, dependencyPath)
                     fs.rename(tarGzPath, donePath)
                 }

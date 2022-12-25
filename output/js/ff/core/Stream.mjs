@@ -38,8 +38,6 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
-import * as ff_core_Iterator from "../../ff/core/Iterator.mjs"
-
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -76,147 +74,150 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// newtype Stream
+// type Stream
+export function Stream(next_, close_) {
+return {next_, close_};
+}
 
 
 
+export function make_(next_, close_ = (() => {
 
+})) {
+return ff_core_Stream.Stream(next_, close_)
+}
 
+export async function make_$(next_, close_ = (async ($c) => {
 
+}), $c) {
+return ff_core_Stream.Stream(next_, close_)
+}
+
+export function Stream_concat(self_, that_) {
+let firstDone_ = false;
+return ff_core_Stream.Stream((() => {
+if(firstDone_) {
+return that_.next_()
+} else {
+return ff_core_Option.Option_orElse(self_.next_(), (() => {
+firstDone_ = true;
+return that_.next_()
+}))
+}
+}), (() => {
+ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return self_.close_()
+})), (() => {
+that_.close_()
+})))
+}))
+}
 
 export function Stream_map(self_, body_) {
-return (() => {
-const a_ = self_();
-return ff_core_Iterator.Iterator((() => {
-return ff_core_Option.Option_map(a_.next_(), body_)
+return ff_core_Stream.Stream((() => {
+return ff_core_Option.Option_map(self_.next_(), body_)
 }), (() => {
-a_.close_()
+self_.close_()
 }))
-})
 }
 
 export function Stream_flatMap(self_, body_) {
-return (() => {
-const a_ = self_();
-let b_ = ff_core_Option.None();
-return ff_core_Iterator.Iterator((() => {
-function go_() {
-_tailcall: for(;;) {
-{
-const _1 = ff_core_Option.Option_flatMap(b_, ((_w1) => {
-return _w1.next_()
-}));
-{
-const o_ = _1;
-if(_1.Some) {
-const v_ = _1.value_;
-return o_
-return
-}
-}
-{
-if(_1.None) {
-ff_core_Option.Option_each(b_, ((_w1) => {
-_w1.close_()
-}));
-{
-const _1 = a_.next_();
-{
-if(_1.Some) {
-const x_ = _1.value_;
-const s_ = body_(x_);
-b_ = ff_core_Option.Some(s_());
-{
-
-
-continue _tailcall
-}
-return
-}
-}
-{
-if(_1.None) {
+let inner_ = ff_core_Stream.Stream((() => {
 return ff_core_Option.None()
-return
+}), (() => {
+
+}));
+return ff_core_Stream.Stream((() => {
+let result_ = ff_core_Option.None();
+while(ff_core_Option.Option_isEmpty(result_)) {
+for(;;) {
+const _1 = inner_.next_();
+{
+const i_ = _1;
+if(_1.Some) {
+result_ = ff_core_Option.Some(i_)
+break
+}
+}
+{
+if(_1.None) {
+for(;;) {
+const _1 = self_.next_();
+{
+if(_1.None) {
+result_ = ff_core_Option.Some(ff_core_Option.None())
+break
+}
+}
+{
+if(_1.Some) {
+const o_ = _1.value_;
+inner_ = body_(o_)
+break
 }
 }
 }
-return
+break
 }
 }
 }
-return
-}
-}
-return go_()
+};
+return ff_core_Option.Option_expect(result_)
 }), (() => {
 ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-return ff_core_Option.Option_each(b_, ((_w1) => {
-_w1.close_()
-}))
+return inner_.close_()
 })), (() => {
-a_.close_()
+self_.close_()
 })))
 }))
-})
+}
+
+export function Stream_collect(self_, body_) {
+return ff_core_Stream.Stream_flatMap(self_, ((_w1) => {
+return ff_core_Option.Option_toStream(body_(_w1))
+}))
 }
 
 export function Stream_filter(self_, body_) {
-return (() => {
-const a_ = self_();
-return ff_core_Iterator.Iterator((() => {
-function go_() {
-_tailcall: for(;;) {
-{
-const _1 = a_.next_();
-{
-if(_1.None) {
-return ff_core_Option.None()
-return
-}
-}
+return ff_core_Stream.Stream((() => {
+let result_ = ff_core_Option.None();
+while(ff_core_Option.Option_isEmpty(result_)) {
+for(;;) {
+const _1 = self_.next_();
 {
 if(_1.Some) {
 const x_ = _1.value_;
 const _guard1 = body_(x_);
 if(_guard1) {
-return ff_core_Option.Some(x_)
-return
+result_ = ff_core_Option.Some(ff_core_Option.Some(x_))
+break
 }
 }
 }
 {
 if(_1.Some) {
+
+break
+}
+}
 {
-
-
-continue _tailcall
-}
-return
+if(_1.None) {
+result_ = ff_core_Option.Some(ff_core_Option.None())
+break
 }
 }
 }
-return
-}
-}
-return go_()
+};
+return ff_core_Option.Option_expect(result_)
 }), (() => {
-a_.close_()
+self_.close_()
 }))
-})
 }
 
 export function Stream_zip(self_, that_) {
-return (() => {
-const a_ = self_();
-const b_ = ff_core_Try.Try_expect(ff_core_Try.Try_onThrow(ff_core_Core.try_((() => {
-return that_()
-})), (() => {
-a_.close_()
-})));
-return ff_core_Iterator.Iterator((() => {
+return ff_core_Stream.Stream((() => {
 {
-const _1 = ff_core_Pair.Pair(a_.next_(), b_.next_());
+const _1 = ff_core_Pair.Pair(self_.next_(), that_.next_());
 {
 if(_1.first_.Some) {
 const x_ = _1.first_.value_;
@@ -234,124 +235,371 @@ return
 }
 }), (() => {
 ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-return a_.close_()
+return self_.close_()
 })), (() => {
-b_.close_()
+that_.close_()
 })))
 }))
-})
 }
 
-export function Stream_concat(self_, that_) {
-return (() => {
-let firstDone_ = false;
-let iterator_ = self_();
-return ff_core_Iterator.Iterator((() => {
-return ff_core_Option.Option_orElse(iterator_.next_(), (() => {
-if(firstDone_) {
-return ff_core_Option.None()
-} else {
-firstDone_ = true;
-iterator_.close_();
-iterator_ = that_();
-return iterator_.next_()
-}
+export function Stream_takeFirst(self_, count_ = 1) {
+let remaining_ = count_;
+return ff_core_Stream.Stream((() => {
+return ff_core_Option.Option_filter(self_.next_(), ((_) => {
+remaining_ -= 1;
+return (remaining_ >= 0)
 }))
 }), (() => {
-iterator_.close_()
+self_.close_()
 }))
-})
 }
 
-export function Stream_parse(self_, body_) {
-return (() => {
-const iterator_ = self_();
-const i_ = ff_core_Try.Try_expect(ff_core_Try.Try_onThrow(ff_core_Core.try_((() => {
-return body_(iterator_)
-})), (() => {
-iterator_.close_()
-})));
-return ff_core_Iterator.Iterator((() => {
-return i_.next_()
-}), (() => {
-ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-return i_.close_()
-})), (() => {
-iterator_.close_()
-})))
-}))
-})
-}
-
-export function Stream_each(self_, body_) {
-const a_ = self_();
-ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-function go_() {
-_tailcall: for(;;) {
-{
-const _1 = a_.next_();
+export function Stream_dropFirst(self_, count_ = 1) {
+let remaining_ = count_;
+return ff_core_Stream.Stream((() => {
+while((remaining_ >= 1)) {
+for(;;) {
+const _1 = self_.next_();
 {
 if(_1.None) {
+remaining_ = 0
+break
+}
+}
+{
+if(_1.Some) {
+remaining_ -= 1
+break
+}
+}
+}
+};
+return self_.next_()
+}), (() => {
+self_.close_()
+}))
+}
 
+export function Stream_takeWhile(self_, body_) {
+let done_ = false;
+return ff_core_Stream.Stream((() => {
+if(done_) {
+return ff_core_Option.None()
+} else {
+{
+const _1 = self_.next_();
+{
+if(_1.None) {
+done_ = true;
+return ff_core_Option.None()
+return
+}
+}
+{
+const o_ = _1;
+if(_1.Some) {
+const x_ = _1.value_;
+done_ = (!body_(x_));
+if(done_) {
+return ff_core_Option.None()
+} else {
+return o_
+}
+return
+}
+}
+}
+}
+}), (() => {
+self_.close_()
+}))
+}
+
+export function Stream_dropWhile(self_, body_) {
+let done_ = false;
+return ff_core_Stream.Stream((() => {
+if((!done_)) {
+let result_ = ff_core_Option.None();
+while((!done_)) {
+for(;;) {
+const _1 = self_.next_();
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+const _guard1 = body_(x_);
+if(_guard1) {
+
+break
+}
+}
+}
+{
+const o_ = _1;
+if(_1.Some) {
+const x_ = _1.value_;
+result_ = o_;
+done_ = true
+break
+}
+}
+}
+};
+return result_
+} else {
+return self_.next_()
+}
+}), (() => {
+self_.close_()
+}))
+}
+
+export function Stream_pairs(self_) {
+let i_ = 0;
+return ff_core_Stream.Stream_map(self_, ((x_) => {
+const r_ = ff_core_Pair.Pair(i_, x_);
+i_ += 1;
+return r_
+}))
+}
+
+export function Stream_chunked(self_, size_) {
+let remaining_ = size_;
+return ff_core_Stream.Stream((() => {
+if((remaining_ <= 0)) {
+return ff_core_Option.None()
+} else {
+{
+const _1 = self_.next_();
+{
+if(_1.None) {
+remaining_ = (-1);
+return ff_core_Option.None()
 return
 }
 }
 {
 if(_1.Some) {
 const x_ = _1.value_;
-body_(x_);
+let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
+remaining_ -= 1;
+while((remaining_ > 0)) {
+remaining_ -= 1;
+for(;;) {
+const _1 = self_.next_();
 {
-
-
-continue _tailcall
+if(_1.None) {
+remaining_ = (-1)
+break
 }
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+list_ = ff_core_List.Link(x_, list_)
+break
+}
+}
+}
+};
+if((remaining_ !== (-1))) {
+remaining_ = size_
+};
+return ff_core_Option.Some(ff_core_List.List_reverse(list_))
 return
 }
 }
 }
-return
 }
+}), (() => {
+self_.close_()
+}))
 }
-return go_()
+
+export function Stream_use(self_, body_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return body_(self_)
 })), (() => {
-a_.close_()
+self_.close_()
+})))
+}
+
+export function Stream_each(self_, body_) {
+ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+let done_ = false;
+while((!done_)) {
+for(;;) {
+const _1 = self_.next_();
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+body_(x_)
+break
+}
+}
+}
+}
+})), (() => {
+self_.close_()
 })))
 }
 
 export function Stream_eachWhile(self_, body_) {
-const a_ = self_();
 ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-function go_() {
-_tailcall: for(;;) {
-{
-const _1 = a_.next_();
+let done_ = false;
+while((!done_)) {
+for(;;) {
+const _1 = self_.next_();
 {
 if(_1.None) {
-
-return
+done_ = true
+break
 }
 }
 {
 if(_1.Some) {
 const x_ = _1.value_;
-if(body_(x_)) {
-{
-
-
-continue _tailcall
-}
-}
-return
+done_ = (!body_(x_))
+break
 }
 }
 }
-return
 }
-}
-return go_()
 })), (() => {
-a_.close_()
+self_.close_()
 })))
+}
+
+export function Stream_all(self_, body_) {
+let result_ = true;
+ff_core_Stream.Stream_eachWhile(self_, ((x_) => {
+result_ = (result_ && body_(x_));
+return result_
+}));
+return result_
+}
+
+export function Stream_any(self_, body_) {
+let result_ = false;
+ff_core_Stream.Stream_eachWhile(self_, ((x_) => {
+result_ = (result_ || body_(x_));
+return (!result_)
+}));
+return result_
+}
+
+export function Stream_first(self_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return self_.next_()
+})), (() => {
+self_.close_()
+})))
+}
+
+export function Stream_last(self_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+let done_ = false;
+let result_ = ff_core_Option.None();
+while((!done_)) {
+for(;;) {
+const _1 = self_.next_();
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+const o_ = _1;
+if(_1.Some) {
+const x_ = _1.value_;
+result_ = o_
+break
+}
+}
+}
+};
+return result_
+})), (() => {
+self_.close_()
+})))
+}
+
+export function Stream_expectFirst(self_) {
+return ff_core_Option.Option_else(ff_core_Stream.Stream_first(self_), (() => {
+return ff_core_Core.panic_("expectFirst() on empty iterator")
+}))
+}
+
+export function Stream_expectLast(self_) {
+return ff_core_Option.Option_else(ff_core_Stream.Stream_last(self_), (() => {
+return ff_core_Core.panic_("expectLast() on empty iterator")
+}))
+}
+
+export function Stream_collectFirst(self_, body_) {
+return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+let done_ = false;
+let result_ = ff_core_Option.None();
+while((!done_)) {
+for(;;) {
+const _1 = self_.next_();
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+for(;;) {
+const _1 = body_(x_);
+{
+if(_1.None) {
+
+break
+}
+}
+{
+const o_ = _1;
+done_ = true;
+result_ = o_
+break
+}
+}
+break
+}
+}
+}
+};
+return result_
+})), (() => {
+self_.close_()
+})))
+}
+
+export function Stream_find(self_, body_) {
+return ff_core_Stream.Stream_first(ff_core_Stream.Stream_filter(self_, body_))
+}
+
+export function Stream_foldLeft(self_, initial_, body_) {
+let result_ = initial_;
+ff_core_Stream.Stream_each(self_, ((_w1) => {
+result_ = body_(result_, _w1)
+}));
+return result_
 }
 
 export function Stream_toArray(self_) {
@@ -366,139 +614,131 @@ export function Stream_toList(self_) {
 return ff_core_Array.Array_toList(ff_core_Stream.Stream_toArray(self_))
 }
 
-export async function Stream_map$(self_, body_, $c) {
-return (async ($c) => {
-const a_ = (await self_($c));
-return ff_core_Iterator.Iterator((async ($c) => {
-return (await ff_core_Option.Option_map$((await a_.next_($c)), body_, $c))
+export async function Stream_concat$(self_, that_, $c) {
+let firstDone_ = false;
+return ff_core_Stream.Stream((async ($c) => {
+if(firstDone_) {
+return (await that_.next_($c))
+} else {
+return (await ff_core_Option.Option_orElse$((await self_.next_($c)), (async ($c) => {
+firstDone_ = true;
+return (await that_.next_($c))
+}), $c))
+}
 }), (async ($c) => {
-(await a_.close_($c))
+ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await self_.close_($c))
+}), $c)), (async ($c) => {
+(await that_.close_($c))
+}), $c)))
 }))
-})
+}
+
+export async function Stream_map$(self_, body_, $c) {
+return ff_core_Stream.Stream((async ($c) => {
+return (await ff_core_Option.Option_map$((await self_.next_($c)), body_, $c))
+}), (async ($c) => {
+(await self_.close_($c))
+}))
 }
 
 export async function Stream_flatMap$(self_, body_, $c) {
-return (async ($c) => {
-const a_ = (await self_($c));
-let b_ = ff_core_Option.None();
-return ff_core_Iterator.Iterator((async ($c) => {
-async function go_$($c) {
-_tailcall: for(;;) {
-{
-const _1 = (await ff_core_Option.Option_flatMap$(b_, (async (_w1, $c) => {
-return (await _w1.next_($c))
-}), $c));
-{
-const o_ = _1;
-if(_1.Some) {
-const v_ = _1.value_;
-return o_
-return
-}
-}
-{
-if(_1.None) {
-(await ff_core_Option.Option_each$(b_, (async (_w1, $c) => {
-(await _w1.close_($c))
-}), $c));
-{
-const _1 = (await a_.next_($c));
-{
-if(_1.Some) {
-const x_ = _1.value_;
-const s_ = (await body_(x_, $c));
-b_ = ff_core_Option.Some((await s_($c)));
-{
-
-
-continue _tailcall
-}
-return
-}
-}
-{
-if(_1.None) {
+let inner_ = ff_core_Stream.Stream((async ($c) => {
 return ff_core_Option.None()
-return
+}), (async ($c) => {
+
+}));
+return ff_core_Stream.Stream((async ($c) => {
+let result_ = ff_core_Option.None();
+while(ff_core_Option.Option_isEmpty(result_)) {
+for(;;) {
+const _1 = (await inner_.next_($c));
+{
+const i_ = _1;
+if(_1.Some) {
+result_ = ff_core_Option.Some(i_)
+break
+}
+}
+{
+if(_1.None) {
+for(;;) {
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+result_ = ff_core_Option.Some(ff_core_Option.None())
+break
+}
+}
+{
+if(_1.Some) {
+const o_ = _1.value_;
+inner_ = (await body_(o_, $c))
+break
 }
 }
 }
-return
+break
 }
 }
 }
-return
-}
-}
-return (await go_$($c))
+};
+return ff_core_Option.Option_expect(result_)
 }), (async ($c) => {
 ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
-return (await ff_core_Option.Option_each$(b_, (async (_w1, $c) => {
-(await _w1.close_($c))
-}), $c))
+return (await inner_.close_($c))
 }), $c)), (async ($c) => {
-(await a_.close_($c))
+(await self_.close_($c))
 }), $c)))
 }))
-})
+}
+
+export async function Stream_collect$(self_, body_, $c) {
+return (await ff_core_Stream.Stream_flatMap$(self_, (async (_w1, $c) => {
+return (await ff_core_Option.Option_toStream$((await body_(_w1, $c)), $c))
+}), $c))
 }
 
 export async function Stream_filter$(self_, body_, $c) {
-return (async ($c) => {
-const a_ = (await self_($c));
-return ff_core_Iterator.Iterator((async ($c) => {
-async function go_$($c) {
-_tailcall: for(;;) {
-{
-const _1 = (await a_.next_($c));
-{
-if(_1.None) {
-return ff_core_Option.None()
-return
-}
-}
+return ff_core_Stream.Stream((async ($c) => {
+let result_ = ff_core_Option.None();
+while(ff_core_Option.Option_isEmpty(result_)) {
+for(;;) {
+const _1 = (await self_.next_($c));
 {
 if(_1.Some) {
 const x_ = _1.value_;
 const _guard1 = (await body_(x_, $c));
 if(_guard1) {
-return ff_core_Option.Some(x_)
-return
+result_ = ff_core_Option.Some(ff_core_Option.Some(x_))
+break
 }
 }
 }
 {
 if(_1.Some) {
+
+break
+}
+}
 {
-
-
-continue _tailcall
-}
-return
+if(_1.None) {
+result_ = ff_core_Option.Some(ff_core_Option.None())
+break
 }
 }
 }
-return
-}
-}
-return (await go_$($c))
+};
+return ff_core_Option.Option_expect(result_)
 }), (async ($c) => {
-(await a_.close_($c))
+(await self_.close_($c))
 }))
-})
 }
 
 export async function Stream_zip$(self_, that_, $c) {
-return (async ($c) => {
-const a_ = (await self_($c));
-const b_ = ff_core_Try.Try_expect((await ff_core_Try.Try_onThrow$((await ff_core_Core.try_$((async ($c) => {
-return (await that_($c))
-}), $c)), (async ($c) => {
-(await a_.close_($c))
-}), $c)));
-return ff_core_Iterator.Iterator((async ($c) => {
+return ff_core_Stream.Stream((async ($c) => {
 {
-const _1 = ff_core_Pair.Pair((await a_.next_($c)), (await b_.next_($c)));
+const _1 = ff_core_Pair.Pair((await self_.next_($c)), (await that_.next_($c)));
 {
 if(_1.first_.Some) {
 const x_ = _1.first_.value_;
@@ -516,124 +756,371 @@ return
 }
 }), (async ($c) => {
 ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
-return (await a_.close_($c))
+return (await self_.close_($c))
 }), $c)), (async ($c) => {
-(await b_.close_($c))
+(await that_.close_($c))
 }), $c)))
 }))
-})
 }
 
-export async function Stream_concat$(self_, that_, $c) {
-return (async ($c) => {
-let firstDone_ = false;
-let iterator_ = (await self_($c));
-return ff_core_Iterator.Iterator((async ($c) => {
-return (await ff_core_Option.Option_orElse$((await iterator_.next_($c)), (async ($c) => {
-if(firstDone_) {
-return ff_core_Option.None()
-} else {
-firstDone_ = true;
-(await iterator_.close_($c));
-iterator_ = (await that_($c));
-return (await iterator_.next_($c))
-}
-}), $c))
-}), (async ($c) => {
-(await iterator_.close_($c))
+export async function Stream_takeFirst$(self_, count_ = 1, $c) {
+let remaining_ = count_;
+return ff_core_Stream.Stream((async ($c) => {
+return ff_core_Option.Option_filter((await self_.next_($c)), ((_) => {
+remaining_ -= 1;
+return (remaining_ >= 0)
 }))
-})
-}
-
-export async function Stream_parse$(self_, body_, $c) {
-return (async ($c) => {
-const iterator_ = (await self_($c));
-const i_ = ff_core_Try.Try_expect((await ff_core_Try.Try_onThrow$((await ff_core_Core.try_$((async ($c) => {
-return (await body_(iterator_, $c))
-}), $c)), (async ($c) => {
-(await iterator_.close_($c))
-}), $c)));
-return ff_core_Iterator.Iterator((async ($c) => {
-return (await i_.next_($c))
 }), (async ($c) => {
-ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
-return (await i_.close_($c))
-}), $c)), (async ($c) => {
-(await iterator_.close_($c))
-}), $c)))
+(await self_.close_($c))
 }))
-})
 }
 
-export async function Stream_each$(self_, body_, $c) {
-const a_ = (await self_($c));
-ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
-async function go_$($c) {
-_tailcall: for(;;) {
-{
-const _1 = (await a_.next_($c));
+export async function Stream_dropFirst$(self_, count_ = 1, $c) {
+let remaining_ = count_;
+return ff_core_Stream.Stream((async ($c) => {
+while((remaining_ >= 1)) {
+for(;;) {
+const _1 = (await self_.next_($c));
 {
 if(_1.None) {
+remaining_ = 0
+break
+}
+}
+{
+if(_1.Some) {
+remaining_ -= 1
+break
+}
+}
+}
+};
+return (await self_.next_($c))
+}), (async ($c) => {
+(await self_.close_($c))
+}))
+}
 
+export async function Stream_takeWhile$(self_, body_, $c) {
+let done_ = false;
+return ff_core_Stream.Stream((async ($c) => {
+if(done_) {
+return ff_core_Option.None()
+} else {
+{
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+done_ = true;
+return ff_core_Option.None()
+return
+}
+}
+{
+const o_ = _1;
+if(_1.Some) {
+const x_ = _1.value_;
+done_ = (!(await body_(x_, $c)));
+if(done_) {
+return ff_core_Option.None()
+} else {
+return o_
+}
+return
+}
+}
+}
+}
+}), (async ($c) => {
+(await self_.close_($c))
+}))
+}
+
+export async function Stream_dropWhile$(self_, body_, $c) {
+let done_ = false;
+return ff_core_Stream.Stream((async ($c) => {
+if((!done_)) {
+let result_ = ff_core_Option.None();
+while((!done_)) {
+for(;;) {
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+const _guard1 = (await body_(x_, $c));
+if(_guard1) {
+
+break
+}
+}
+}
+{
+const o_ = _1;
+if(_1.Some) {
+const x_ = _1.value_;
+result_ = o_;
+done_ = true
+break
+}
+}
+}
+};
+return result_
+} else {
+return (await self_.next_($c))
+}
+}), (async ($c) => {
+(await self_.close_($c))
+}))
+}
+
+export async function Stream_pairs$(self_, $c) {
+let i_ = 0;
+return (await ff_core_Stream.Stream_map$(self_, (async (x_, $c) => {
+const r_ = ff_core_Pair.Pair(i_, x_);
+i_ += 1;
+return r_
+}), $c))
+}
+
+export async function Stream_chunked$(self_, size_, $c) {
+let remaining_ = size_;
+return ff_core_Stream.Stream((async ($c) => {
+if((remaining_ <= 0)) {
+return ff_core_Option.None()
+} else {
+{
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+remaining_ = (-1);
+return ff_core_Option.None()
 return
 }
 }
 {
 if(_1.Some) {
 const x_ = _1.value_;
-(await body_(x_, $c));
+let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
+remaining_ -= 1;
+while((remaining_ > 0)) {
+remaining_ -= 1;
+for(;;) {
+const _1 = (await self_.next_($c));
 {
-
-
-continue _tailcall
+if(_1.None) {
+remaining_ = (-1)
+break
 }
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+list_ = ff_core_List.Link(x_, list_)
+break
+}
+}
+}
+};
+if((remaining_ !== (-1))) {
+remaining_ = size_
+};
+return ff_core_Option.Some(ff_core_List.List_reverse(list_))
 return
 }
 }
 }
-return
 }
+}), (async ($c) => {
+(await self_.close_($c))
+}))
 }
-return (await go_$($c))
+
+export async function Stream_use$(self_, body_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await body_(self_, $c))
 }), $c)), (async ($c) => {
-(await a_.close_($c))
+(await self_.close_($c))
+}), $c)))
+}
+
+export async function Stream_each$(self_, body_, $c) {
+ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+let done_ = false;
+while((!done_)) {
+for(;;) {
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+(await body_(x_, $c))
+break
+}
+}
+}
+}
+}), $c)), (async ($c) => {
+(await self_.close_($c))
 }), $c)))
 }
 
 export async function Stream_eachWhile$(self_, body_, $c) {
-const a_ = (await self_($c));
 ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
-async function go_$($c) {
-_tailcall: for(;;) {
-{
-const _1 = (await a_.next_($c));
+let done_ = false;
+while((!done_)) {
+for(;;) {
+const _1 = (await self_.next_($c));
 {
 if(_1.None) {
-
-return
+done_ = true
+break
 }
 }
 {
 if(_1.Some) {
 const x_ = _1.value_;
-if((await body_(x_, $c))) {
-{
-
-
-continue _tailcall
-}
-}
-return
+done_ = (!(await body_(x_, $c)))
+break
 }
 }
 }
-return
 }
-}
-return (await go_$($c))
 }), $c)), (async ($c) => {
-(await a_.close_($c))
+(await self_.close_($c))
 }), $c)))
+}
+
+export async function Stream_all$(self_, body_, $c) {
+let result_ = true;
+(await ff_core_Stream.Stream_eachWhile$(self_, (async (x_, $c) => {
+result_ = (result_ && (await body_(x_, $c)));
+return result_
+}), $c));
+return result_
+}
+
+export async function Stream_any$(self_, body_, $c) {
+let result_ = false;
+(await ff_core_Stream.Stream_eachWhile$(self_, (async (x_, $c) => {
+result_ = (result_ || (await body_(x_, $c)));
+return (!result_)
+}), $c));
+return result_
+}
+
+export async function Stream_first$(self_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await self_.next_($c))
+}), $c)), (async ($c) => {
+(await self_.close_($c))
+}), $c)))
+}
+
+export async function Stream_last$(self_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+let done_ = false;
+let result_ = ff_core_Option.None();
+while((!done_)) {
+for(;;) {
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+const o_ = _1;
+if(_1.Some) {
+const x_ = _1.value_;
+result_ = o_
+break
+}
+}
+}
+};
+return result_
+}), $c)), (async ($c) => {
+(await self_.close_($c))
+}), $c)))
+}
+
+export async function Stream_expectFirst$(self_, $c) {
+return ff_core_Option.Option_else((await ff_core_Stream.Stream_first$(self_, $c)), (() => {
+return ff_core_Core.panic_("expectFirst() on empty iterator")
+}))
+}
+
+export async function Stream_expectLast$(self_, $c) {
+return ff_core_Option.Option_else((await ff_core_Stream.Stream_last$(self_, $c)), (() => {
+return ff_core_Core.panic_("expectLast() on empty iterator")
+}))
+}
+
+export async function Stream_collectFirst$(self_, body_, $c) {
+return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+let done_ = false;
+let result_ = ff_core_Option.None();
+while((!done_)) {
+for(;;) {
+const _1 = (await self_.next_($c));
+{
+if(_1.None) {
+done_ = true
+break
+}
+}
+{
+if(_1.Some) {
+const x_ = _1.value_;
+for(;;) {
+const _1 = (await body_(x_, $c));
+{
+if(_1.None) {
+
+break
+}
+}
+{
+const o_ = _1;
+done_ = true;
+result_ = o_
+break
+}
+}
+break
+}
+}
+}
+};
+return result_
+}), $c)), (async ($c) => {
+(await self_.close_($c))
+}), $c)))
+}
+
+export async function Stream_find$(self_, body_, $c) {
+return (await ff_core_Stream.Stream_first$((await ff_core_Stream.Stream_filter$(self_, body_, $c)), $c))
+}
+
+export async function Stream_foldLeft$(self_, initial_, body_, $c) {
+let result_ = initial_;
+(await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
+result_ = (await body_(result_, _w1, $c))
+}), $c));
+return result_
 }
 
 export async function Stream_toArray$(self_, $c) {
@@ -646,6 +1133,34 @@ return ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_)
 
 export async function Stream_toList$(self_, $c) {
 return ff_core_Array.Array_toList((await ff_core_Stream.Stream_toArray$(self_, $c)))
+}
+
+export function Stream_flatten(self_) {
+return ff_core_Stream.Stream_flatMap(self_, ((_w1) => {
+return _w1
+}))
+}
+
+export async function Stream_flatten$(self_, $c) {
+return (await ff_core_Stream.Stream_flatMap$(self_, (async (_w1, $c) => {
+return _w1
+}), $c))
+}
+
+export function Stream_toSet(self_, ff_core_Ordering_Order$T) {
+return ff_core_Array.Array_toSet(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$T)
+}
+
+export async function Stream_toSet$(self_, ff_core_Ordering_Order$T, $c) {
+return ff_core_Array.Array_toSet((await ff_core_Stream.Stream_toArray$(self_, $c)), ff_core_Ordering_Order$T)
+}
+
+export function Stream_toMap(self_, ff_core_Ordering_Order$K) {
+return ff_core_Array.Array_toMap(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$K)
+}
+
+export async function Stream_toMap$(self_, ff_core_Ordering_Order$K, $c) {
+return ff_core_Array.Array_toMap((await ff_core_Stream.Stream_toArray$(self_, $c)), ff_core_Ordering_Order$K)
 }
 
 export function Stream_toBuffer(self_) {

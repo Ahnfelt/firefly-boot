@@ -92,10 +92,10 @@ internalCreateExecutable(
     target node {
         let fs = internalFileSystem(self)
         let assetOutputPath = outputPath + "/assets"
-        assets.files.pairs().each {| Pair(path, stream) =>
+        assets.files.pairs().each {| Pair(path, makeStream) =>
             let p = assetOutputPath + path
             fs.createDirectories(p.reverse().dropWhile {_ != '/'}.reverse())
-            fs.writeStream(p, stream)
+            fs.writeStream(p, makeStream())
         }
         let json = """{
             "name": "main",

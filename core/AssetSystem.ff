@@ -1,5 +1,5 @@
 type AssetSystem!(
-    files: Map[String, Stream[Buffer]]
+    files: Map[String, () => Stream[Buffer]]
 )
 
 create(): AssetSystem {
@@ -48,9 +48,10 @@ extend self: AssetSystem {
     }
 
     readStream(file: String): Stream[Buffer] {
-        self.files.get(file).else {
+        let makeStream = self.files.get(file).else {
             panic("Asset not found for readStream: " + file)
         }
+        makeStream()
     }
 
     readText(file: String): String {

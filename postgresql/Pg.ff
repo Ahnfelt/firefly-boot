@@ -397,7 +397,7 @@ internalBatchStatements(
     body: Option[PgRow => Bool],
     endBody: Option[() => Unit]
 ): List[Int] {
-    let sqlCache = statements.map {s => Pair(s.sql, s.sql)}.group().map {| Pair(sql, list) =>
+    let sqlCache = statements.map {s => Pair(s.sql, s.sql)}.group().map {sql, list =>
         let pair = internalParseParameters(sql)
         let prepared = if(list.size() >= 10) {
             let hash = UnsafeJs.import("crypto")
@@ -523,7 +523,7 @@ main(system: NodeSystem): Unit {
                     .withInt("entityId", item.entityId)
             }
         ) {row =>
-            Log.debug(row)
+            //Log.debug(row)
         }
 
     }
