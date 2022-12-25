@@ -111,7 +111,9 @@ return ff_core_List.Link(file_, ff_core_List.Empty())
 }))
 }
 function makeOpen_(file_) {
-ff_core_FileSystem.FileSystem_exists(fs_, "/");
+if(false) {
+ff_core_FileSystem.FileSystem_exists(fs_, "/")
+};
 return (() => {
 return ff_core_FileSystem.FileSystem_readStream(fs_, file_)
 })
@@ -183,7 +185,9 @@ return ff_core_List.Link(file_, ff_core_List.Empty())
 }), $c))
 }
 async function makeOpen_$(file_, $c) {
-(await ff_core_FileSystem.FileSystem_exists$(fs_, "/", $c));
+if(false) {
+(await ff_core_FileSystem.FileSystem_exists$(fs_, "/", $c))
+};
 return (async ($c) => {
 return (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))
 })
