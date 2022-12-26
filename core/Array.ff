@@ -53,9 +53,22 @@ extend self[T]: Array[T] {
                 : ff_core_Option.None()
         """
 
+    set(index: Int, value: T): Unit
+        target js sync "self_.array[index_] = body_(self_.array[index_])"
+
     modify(index: Int, body: T => T): Unit
         target js sync "self_.array[index_] = body_(self_.array[index_])"
         target js async "self_.array[index_] = await body_(self_.array[index_], $c)"
+
+    each(body: T => Unit): Unit
+        target js sync """
+            return self_.array.forEach(body_);
+        """
+        target js async """
+            for(let i = 0; i < self_.array.length; i++) {
+                await body_(self_.array[i], $c)
+            }
+        """
 
     drain(): Vector[T]
         target js sync "const result = self_.array; self_.array = []; return result"

@@ -84,7 +84,7 @@ extend self[T]: Vector[T] {
             return self_.forEach(body_);
         """
         target js async """
-            for(let i = self_.length - 1; i >= 0; i--) {
+            for(let i = 0; i < self_.length; i++) {
                 await body_(self_[i], $c)
             }
         """
