@@ -11,6 +11,32 @@ extend self[T]: Array[T] {
     size(): Int
         target js sync "return self_.array.length"
 
+    expect(index: Int): T
+        target js sync """
+            if(index_ < 0 || index_ >= self_.array.length) {
+                throw new Error('Index ' + index_ + ' is out of bounds in an vector of size ' + self_.array.length)
+            }
+            return self_.array[index_]
+        """
+
+    expectFirst(): T { self.expect(0) }
+
+    expectLast(): T { self.expect(self.size() - 1) }
+
+    first(): Option[T]
+        target js sync """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array[0])
+                : ff_core_Option.None()
+        """
+
+    last(): Option[T]
+        target js sync """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array[self_.array.length - 1])
+                : ff_core_Option.None()
+        """
+
     push(value: T): Unit
         target js sync "self_.array.push(value_)"
 
@@ -45,16 +71,6 @@ extend self[T]: Array[T] {
             }
             return result;
         """
-
-    last(): Option[T]
-        target js sync """
-            return self_.array.length > 0
-                ? ff_core_Option.Some(self_.array[self_.array.length - 1])
-                : ff_core_Option.None()
-        """
-
-    expectLast(): T
-        target js sync "return self_.array[self_.array.length - 1]"
 
     sortBy(ordering: (T, T) => Ordering): Unit
         target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
