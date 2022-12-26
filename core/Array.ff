@@ -85,13 +85,17 @@ extend self[T]: Array[T] {
     drain(): Vector[T]
         target js sync "const result = self_.array; self_.array = []; return result"
 
-    toVector(): Vector[T]
-        target js sync "return self_.array.slice()"
+    toVector(start: Int = 0, end: Int = 9007199254740991): Vector[T]
+        target js sync """return self_.array.slice(start_, end_)"""
 
-    toList(): List[T]
+    toList(start: Int = 0, end: Int = 9007199254740991): List[T]
         target js sync """
+            if(start_ < 0) start_ = self_.array.length + start_
+            if(end_ < 0) end_ = self_.array.length + start_
+            start_ = Math.max(0, Math.min(start_, self_.array.length))
+            end_ = Math.max(0, Math.min(end_, self_.array.length))
             let result = ff_core_List.Empty();
-            for(let i = self_.array.length - 1; i >= 0; i--) {
+            for(let i = end_ - 1; i >= start_; i--) {
                 result = ff_core_List.Link(self_.array[i], result);
             }
             return result;

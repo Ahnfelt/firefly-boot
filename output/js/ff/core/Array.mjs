@@ -179,14 +179,18 @@ export function Array_drain(self_) {
 const result = self_.array; self_.array = []; return result
 }
 
-export function Array_toVector(self_) {
-return self_.array.slice()
+export function Array_toVector(self_, start_ = 0, end_ = 9007199254740991) {
+return self_.array.slice(start_, end_)
 }
 
-export function Array_toList(self_) {
+export function Array_toList(self_, start_ = 0, end_ = 9007199254740991) {
 
+            if(start_ < 0) start_ = self_.array.length + start_
+            if(end_ < 0) end_ = self_.array.length + start_
+            start_ = Math.max(0, Math.min(start_, self_.array.length))
+            end_ = Math.max(0, Math.min(end_, self_.array.length))
             let result = ff_core_List.Empty();
-            for(let i = self_.array.length - 1; i >= 0; i--) {
+            for(let i = end_ - 1; i >= start_; i--) {
                 result = ff_core_List.Link(self_.array[i], result);
             }
             return result;
@@ -265,11 +269,11 @@ export async function Array_drain$(self_, $c) {
 throw new Error('Function Array_drain is missing on this target in async context.');
 }
 
-export async function Array_toVector$(self_, $c) {
+export async function Array_toVector$(self_, start_ = 0, end_ = 9007199254740991, $c) {
 throw new Error('Function Array_toVector is missing on this target in async context.');
 }
 
-export async function Array_toList$(self_, $c) {
+export async function Array_toList$(self_, start_ = 0, end_ = 9007199254740991, $c) {
 throw new Error('Function Array_toList is missing on this target in async context.');
 }
 

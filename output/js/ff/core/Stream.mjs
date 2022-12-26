@@ -615,7 +615,7 @@ return ff_core_Array.Array_drain(ff_core_Stream.Stream_toArray(self_))
 }
 
 export function Stream_toList(self_) {
-return ff_core_Array.Array_toList(ff_core_Stream.Stream_toArray(self_))
+return ff_core_Array.Array_toList(ff_core_Stream.Stream_toArray(self_), 0, 9007199254740991)
 }
 
 export async function Stream_concat$(self_, that_, $c) {
@@ -1140,7 +1140,7 @@ return ff_core_Array.Array_drain((await ff_core_Stream.Stream_toArray$(self_, $c
 }
 
 export async function Stream_toList$(self_, $c) {
-return ff_core_Array.Array_toList((await ff_core_Stream.Stream_toArray$(self_, $c)))
+return ff_core_Array.Array_toList((await ff_core_Stream.Stream_toArray$(self_, $c)), 0, 9007199254740991)
 }
 
 export function Stream_flatten(self_) {
@@ -1176,7 +1176,7 @@ const builder_ = ff_core_Array.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
 ff_core_Array.Array_push(builder_, value_)
 }));
-return ff_core_Buffer.fromBufferVector_(ff_core_Array.Array_toVector(builder_))
+return ff_core_Buffer.fromBufferVector_(ff_core_Array.Array_toVector(builder_, 0, 9007199254740991))
 }
 
 export function Stream_toString(self_, encoding_ = "utf8") {
@@ -1188,7 +1188,7 @@ const builder_ = ff_core_Array.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
 ff_core_Array.Array_push(builder_, value_)
 }), $c));
-return ff_core_Buffer.fromBufferVector_(ff_core_Array.Array_toVector(builder_))
+return ff_core_Buffer.fromBufferVector_(ff_core_Array.Array_toVector(builder_, 0, 9007199254740991))
 }
 
 export async function Stream_toString$(self_, encoding_ = "utf8", $c) {
