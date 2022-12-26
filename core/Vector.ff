@@ -98,6 +98,9 @@ extend self[T]: Vector[T] {
             return result;
         """
 
+    toArray(): Array[T]
+        target js sync "return {array: self_.slice()}"
+
 }
 
 
