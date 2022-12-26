@@ -87,10 +87,6 @@ export async function empty_$($c) {
 throw new Error('Function empty is missing on this target in async context.');
 }
 
-export function Array_toVector(self_) {
-return self_.array.slice()
-}
-
 export function Array_isEmpty(self_) {
 return self_.array.length === 0
 }
@@ -109,6 +105,10 @@ self_.array[index_] = body_(self_.array[index_])
 
 export function Array_drain(self_) {
 const result = self_.array; self_.array = []; return result
+}
+
+export function Array_toVector(self_) {
+return self_.array.slice()
 }
 
 export function Array_toList(self_) {
@@ -137,10 +137,6 @@ export function Array_sortBy(self_, ordering_) {
 self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
-export async function Array_toVector$(self_, $c) {
-throw new Error('Function Array_toVector is missing on this target in async context.');
-}
-
 export async function Array_isEmpty$(self_, $c) {
 throw new Error('Function Array_isEmpty is missing on this target in async context.');
 }
@@ -159,6 +155,10 @@ self_.array[index_] = await body_(self_.array[index_], $c)
 
 export async function Array_drain$(self_, $c) {
 throw new Error('Function Array_drain is missing on this target in async context.');
+}
+
+export async function Array_toVector$(self_, $c) {
+throw new Error('Function Array_toVector is missing on this target in async context.');
 }
 
 export async function Array_toList$(self_, $c) {

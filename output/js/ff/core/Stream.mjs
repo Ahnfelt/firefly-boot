@@ -602,16 +602,20 @@ result_ = body_(result_, _w1)
 return result_
 }
 
-export function Stream_toVector(self_) {
-const builder_ = ff_core_Array.empty_();
+export function Stream_toArray(self_) {
+const array_ = ff_core_Array.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_Array.Array_add(builder_, value_)
+ff_core_Array.Array_add(array_, value_)
 }));
-return ff_core_Array.Array_toVector(builder_)
+return array_
+}
+
+export function Stream_toVector(self_) {
+return ff_core_Array.Array_toVector(ff_core_Stream.Stream_toArray(self_))
 }
 
 export function Stream_toList(self_) {
-return ff_core_Vector.Vector_toList(ff_core_Stream.Stream_toVector(self_))
+return ff_core_Array.Array_toList(ff_core_Stream.Stream_toArray(self_))
 }
 
 export async function Stream_concat$(self_, that_, $c) {
@@ -1123,16 +1127,20 @@ result_ = (await body_(result_, _w1, $c))
 return result_
 }
 
-export async function Stream_toVector$(self_, $c) {
-const builder_ = ff_core_Array.empty_();
+export async function Stream_toArray$(self_, $c) {
+const array_ = ff_core_Array.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_Array.Array_add(builder_, value_)
+ff_core_Array.Array_add(array_, value_)
 }), $c));
-return ff_core_Array.Array_toVector(builder_)
+return array_
+}
+
+export async function Stream_toVector$(self_, $c) {
+return ff_core_Array.Array_toVector((await ff_core_Stream.Stream_toArray$(self_, $c)))
 }
 
 export async function Stream_toList$(self_, $c) {
-return ff_core_Vector.Vector_toList((await ff_core_Stream.Stream_toVector$(self_, $c)))
+return ff_core_Array.Array_toList((await ff_core_Stream.Stream_toArray$(self_, $c)))
 }
 
 export function Stream_flatten(self_) {

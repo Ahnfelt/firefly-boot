@@ -318,14 +318,18 @@ extend self[T]: Stream[T] {
         result
     }
 
+    toArray(): Array[T] {
+        let array = Array.empty()
+        self.each(array.add)
+        array
+    }
+
     toVector(): Vector[T] {
-        let builder = Array.empty()
-        self.each(builder.add)
-        builder.toVector()
+        self.toArray().toVector()
     }
 
     toList(): List[T] {
-        self.toVector().toList()
+        self.toArray().toList()
     }
 
 }
