@@ -98,7 +98,7 @@ return self_.array.length
 export function Array_expect(self_, index_) {
 
             if(index_ < 0 || index_ >= self_.array.length) {
-                throw new Error('Index ' + index_ + ' is out of bounds in an vector of size ' + self_.array.length)
+                throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.array.length)
             }
             return self_.array[index_]
         
@@ -149,7 +149,12 @@ export function Array_pop(self_) {
 }
 
 export function Array_set(self_, index_, value_) {
-self_.array[index_] = body_(self_.array[index_])
+
+            if(index < 0 || index > self.array.length) {
+                throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.array.length)
+            }
+            self_.array[index_] = value
+        
 }
 
 export function Array_modify(self_, index_, body_) {
@@ -258,6 +263,14 @@ throw new Error('Function Array_toList is missing on this target in async contex
 
 export async function Array_sortBy$(self_, ordering_, $c) {
 throw new Error('Function Array_sortBy is missing on this target in async context.');
+}
+
+export function Array_join(self_, separator_ = "") {
+return self_.array.join(separator_)
+}
+
+export async function Array_join$(self_, separator_ = "", $c) {
+throw new Error('Function Array_join is missing on this target in async context.');
 }
 
 
