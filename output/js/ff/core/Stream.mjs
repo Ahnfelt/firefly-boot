@@ -2,8 +2,6 @@
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -73,6 +71,8 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type Stream
 export function Stream(next_, close_) {
@@ -602,16 +602,16 @@ result_ = body_(result_, _w1)
 return result_
 }
 
-export function Stream_toArray(self_) {
-const builder_ = ff_core_ArrayBuilder.empty_();
+export function Stream_toVector(self_) {
+const builder_ = ff_core_Array.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_ArrayBuilder.ArrayBuilder_add(builder_, value_)
+ff_core_Array.Array_add(builder_, value_)
 }));
-return ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_)
+return ff_core_Array.Array_toVector(builder_)
 }
 
 export function Stream_toList(self_) {
-return ff_core_Array.Array_toList(ff_core_Stream.Stream_toArray(self_))
+return ff_core_Vector.Vector_toList(ff_core_Stream.Stream_toVector(self_))
 }
 
 export async function Stream_concat$(self_, that_, $c) {
@@ -1123,16 +1123,16 @@ result_ = (await body_(result_, _w1, $c))
 return result_
 }
 
-export async function Stream_toArray$(self_, $c) {
-const builder_ = ff_core_ArrayBuilder.empty_();
+export async function Stream_toVector$(self_, $c) {
+const builder_ = ff_core_Array.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_ArrayBuilder.ArrayBuilder_add(builder_, value_)
+ff_core_Array.Array_add(builder_, value_)
 }), $c));
-return ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_)
+return ff_core_Array.Array_toVector(builder_)
 }
 
 export async function Stream_toList$(self_, $c) {
-return ff_core_Array.Array_toList((await ff_core_Stream.Stream_toArray$(self_, $c)))
+return ff_core_Vector.Vector_toList((await ff_core_Stream.Stream_toVector$(self_, $c)))
 }
 
 export function Stream_flatten(self_) {
@@ -1148,27 +1148,27 @@ return _w1
 }
 
 export function Stream_toSet(self_, ff_core_Ordering_Order$T) {
-return ff_core_Array.Array_toSet(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$T)
+return ff_core_Vector.Vector_toSet(ff_core_Stream.Stream_toVector(self_), ff_core_Ordering_Order$T)
 }
 
 export async function Stream_toSet$(self_, ff_core_Ordering_Order$T, $c) {
-return ff_core_Array.Array_toSet((await ff_core_Stream.Stream_toArray$(self_, $c)), ff_core_Ordering_Order$T)
+return ff_core_Vector.Vector_toSet((await ff_core_Stream.Stream_toVector$(self_, $c)), ff_core_Ordering_Order$T)
 }
 
 export function Stream_toMap(self_, ff_core_Ordering_Order$K) {
-return ff_core_Array.Array_toMap(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$K)
+return ff_core_Vector.Vector_toMap(ff_core_Stream.Stream_toVector(self_), ff_core_Ordering_Order$K)
 }
 
 export async function Stream_toMap$(self_, ff_core_Ordering_Order$K, $c) {
-return ff_core_Array.Array_toMap((await ff_core_Stream.Stream_toArray$(self_, $c)), ff_core_Ordering_Order$K)
+return ff_core_Vector.Vector_toMap((await ff_core_Stream.Stream_toVector$(self_, $c)), ff_core_Ordering_Order$K)
 }
 
 export function Stream_toBuffer(self_) {
-const builder_ = ff_core_ArrayBuilder.empty_();
+const builder_ = ff_core_Array.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_ArrayBuilder.ArrayBuilder_add(builder_, value_)
+ff_core_Array.Array_add(builder_, value_)
 }));
-return ff_core_Buffer.fromBufferArray_(ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_))
+return ff_core_Buffer.fromBufferVector_(ff_core_Array.Array_toVector(builder_))
 }
 
 export function Stream_toString(self_, encoding_ = "utf8") {
@@ -1176,11 +1176,11 @@ return ff_core_Buffer.Buffer_toString(ff_core_Stream.Stream_toBuffer(self_), enc
 }
 
 export async function Stream_toBuffer$(self_, $c) {
-const builder_ = ff_core_ArrayBuilder.empty_();
+const builder_ = ff_core_Array.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_ArrayBuilder.ArrayBuilder_add(builder_, value_)
+ff_core_Array.Array_add(builder_, value_)
 }), $c));
-return ff_core_Buffer.fromBufferArray_(ff_core_ArrayBuilder.ArrayBuilder_toArray(builder_))
+return ff_core_Buffer.fromBufferVector_(ff_core_Array.Array_toVector(builder_))
 }
 
 export async function Stream_toString$(self_, encoding_ = "utf8", $c) {

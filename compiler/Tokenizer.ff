@@ -1,8 +1,8 @@
 import Token
 
-tokenize(file: String, code: String): Array[Token] {
+tokenize(file: String, code: String): Vector[Token] {
 
-    let tokens = ArrayBuilder.empty[Token]()
+    let tokens = Array.empty[Token]()
     mutable line = 1
     mutable lineOffset = 0
 

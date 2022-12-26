@@ -1,0 +1,121 @@
+type Vector[T] {}
+
+empty[T](): Vector[T]
+    target js sync """
+        return [];
+    """
+
+fill[T](size: Int, value: T): Vector[T]
+    target js sync """
+        return new Array(size_).fill(value_);
+    """
+
+range(size: Int): Vector[Int]
+    target js sync """
+        return Array.from({length: size_}, (_, i) => i);
+    """
+
+extend self[T]: Vector[T] {
+
+    addAll(that: Vector[T]): Vector[T]
+        target js sync "return self_.concat(that_)"
+
+    isEmpty(): Bool
+        target js sync "return self_.length === 0"
+
+    size(): Int
+        target js sync "return self_.length"
+
+    expect(index: Int): T
+        target js sync """
+            if(index_ < 0 || index_ >= self_.length) {
+                throw new Error('Index ' + index_ + ' is out of bounds in an vector of size ' + self_.length)
+            }
+            return self_[index_]
+        """
+
+    expectFirst(): T { self.expect(0) }
+
+    expectLast(): T { self.expect(self.size() - 1) }
+
+    dropFirst(count: Int = 1): Vector[T]
+        target js sync "return self_.slice(count_)"
+
+    dropLast(count: Int = 1): Vector[T]
+        target js sync "return self_.slice(0, self_.length - count_)"
+
+    update(index: Int, body: T => T): Vector[T]
+        target js sync """
+            let result = self_.slice();
+            result[index_] = body_(result[index_]);
+            return result;
+        """
+        target js async """
+            let result = self_.slice();
+            result[index_] = await body_(result[index_], $c);
+            return result;
+        """
+
+    toList(): List[T]
+        target js sync """
+            let result = ff_core_List.Empty();
+            for(let i = self_.length - 1; i >= 0; i--) {
+                result = ff_core_List.Link(self_[i], result);
+            }
+            return result;
+        """
+
+    toStream(): Stream[T] {
+        mutable index = 0
+        Stream.make {
+            if(index < self.size()) {
+                let result = self.expect(index)
+                index += 1
+                result
+            }
+        }
+    }
+
+    each(body: T => Unit): Unit
+        target js sync """
+            return self_.forEach(body_);
+        """
+        target js async """
+            for(let i = self_.length - 1; i >= 0; i--) {
+                await body_(self_[i], $c)
+            }
+        """
+
+    map[S](body: T => S): Vector[S]
+        target js sync """
+            return self_.map(body_)
+        """
+        target js async """
+            let result = [];
+            for(let i = self_.length - 1; i >= 0; i--) {
+                result.push(await body_(self_[i], $c));
+            }
+            return result;
+        """
+
+}
+
+
+extend self[T: Order]: Vector[T] {
+    toSet(): Set[T] {
+        self.toList().toSet()
+    }
+}
+
+extend self[K: Order, V]: Vector[Pair[K, V]] {
+    toMap(): Map[K, V] {
+        self.toList().toMap()
+    }
+}
+
+extend self: Vector[String] {
+
+    join(separator: String = ""): String
+        target js sync "return self_.join(separator_)"
+
+}

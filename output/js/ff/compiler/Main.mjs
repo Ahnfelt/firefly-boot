@@ -22,8 +22,6 @@ import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -93,6 +91,8 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type MainCommand
 const BootstrapCommand$ = {BootstrapCommand: true};
@@ -498,7 +498,7 @@ export async function importAndRun_$(fs_, fireflyPath_, target_, packagePair_, m
         const cwd = process.cwd();
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(cwd + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        await main.$run$(fireflyPath_, ff_core_List.List_toArray(arguments_))
+        await main.$run$(fireflyPath_, ff_core_List.List_toVector(arguments_))
     
 }
 

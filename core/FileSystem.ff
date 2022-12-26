@@ -29,7 +29,7 @@ extend self: FileSystem {
     list(path: String): List[String]
         target node async """
             import * as fsPromises from 'fs/promises'
-            return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
+            return ff_core_Vector.Vector_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
         """
 
     exists(path: String): Bool

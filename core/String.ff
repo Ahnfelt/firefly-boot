@@ -50,7 +50,7 @@ extend self: String {
     slice(from: Int, until: Int): String
         target js sync "return self_.slice(from_, until_)"
 
-    split(char: Char): Array[String]
+    split(char: Char): Vector[String]
         target js sync "return self_.split(String.fromCharCode(char_))"
 
     dropFirst(count: Int = 1): String

@@ -57,43 +57,43 @@ fail[T](at: Location, message: String): T {
 
 coreImports: List[DImport] =
     [
-        "Array",
-        "ArrayBuilder",
-        "AssetSystem",
-        "Bool",
-        "BrowserSystem",
-        "Buffer",
-        "BuildSystem",
-        "Channel",
-        "Char",
-        "Core",
-        "Duration",
-        "Equal",
-        "Error",
-        "FetchSystem",
-        "FileHandle",
-        "FileSystem",
-        "Float",
-        "Instant",
-        "Int",
-        "JsValue",
-        "JsSystem",
-        "List",
-        "Log",
-        "Map",
-        "NodeSystem",
-        "Nothing",
-        "Option",
-        "Ordering",
-        "Pair",
-        "Set",
-        "Show",
-        "Stream",
-        "String",
-        "TaskSystem",
-        "TimeSystem",
-        "Try",
+        "Array"
+        "AssetSystem"
+        "Bool"
+        "BrowserSystem"
+        "Buffer"
+        "BuildSystem"
+        "Channel"
+        "Char"
+        "Core"
+        "Duration"
+        "Equal"
+        "Error"
+        "FetchSystem"
+        "FileHandle"
+        "FileSystem"
+        "Float"
+        "Instant"
+        "Int"
+        "JsValue"
+        "JsSystem"
+        "List"
+        "Log"
+        "Map"
+        "NodeSystem"
+        "Nothing"
+        "Option"
+        "Ordering"
+        "Pair"
+        "Set"
+        "Show"
+        "Stream"
+        "String"
+        "TaskSystem"
+        "TimeSystem"
+        "Try"
         "Unit"
+        "Vector"
     ].map { moduleName =>
         DImport(
             at = Location("<prelude>", 1, 1),

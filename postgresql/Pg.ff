@@ -217,47 +217,47 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withBoolArray(name: String, value: Array[Bool]): PgStatement {
+    withBoolVector(name: String, value: Vector[Bool]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableBoolArray(name: String, value: Option[Array[Bool]]): PgStatement {
+    withNullableBoolVector(name: String, value: Option[Vector[Bool]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withIntArray(name: String, value: Array[Int]): PgStatement {
+    withIntVector(name: String, value: Vector[Int]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableIntArray(name: String, value: Option[Array[Int]]): PgStatement {
+    withNullableIntVector(name: String, value: Option[Vector[Int]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withFloatArray(name: String, value: Array[Float]): PgStatement {
+    withFloatVector(name: String, value: Vector[Float]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableFloatArray(name: String, value: Option[Array[Float]]): PgStatement {
+    withNullableFloatVector(name: String, value: Option[Vector[Float]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withStringArray(name: String, value: Array[String]): PgStatement {
+    withStringVector(name: String, value: Vector[String]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableStringArray(name: String, value: Option[Array[String]]): PgStatement {
+    withNullableStringVector(name: String, value: Option[Vector[String]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withInstantArray(name: String, value: Array[Instant]): PgStatement {
+    withInstantVector(name: String, value: Vector[Instant]): PgStatement {
         let jsDate = UnsafeJs.jsSystem().global().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
@@ -266,7 +266,7 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableInstantArray(name: String, value: Option[Array[Instant]]): PgStatement {
+    withNullableInstantVector(name: String, value: Option[Vector[Instant]]): PgStatement {
         let jsDate = UnsafeJs.jsSystem().global().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
@@ -275,12 +275,12 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withBufferArray(name: String, value: Array[Buffer]): PgStatement {
+    withBufferVector(name: String, value: Vector[Buffer]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableBufferArray(name: String, value: Option[Array[Buffer]]): PgStatement {
+    withNullableBufferVector(name: String, value: Option[Vector[Buffer]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
@@ -342,27 +342,27 @@ extend self: PgRow {
         internalGet(self, name, lower) {_.expectBuffer()}
     }
 
-    getBoolArray(name: String, lower: Bool = True): Option[Array[Bool]] {
+    getBoolVector(name: String, lower: Bool = True): Option[Vector[Bool]] {
         internalGet(self, name, lower) {_.expectArray().map {(_.expectBool() && True) || False}}
     }
 
-    getIntArray(name: String, lower: Bool = True): Option[Array[Int]] {
+    getIntVector(name: String, lower: Bool = True): Option[Vector[Int]] {
         internalGet(self, name, lower) {_.expectArray().map {_.expectInt() * 1}}
     }
 
-    getFloatArray(name: String, lower: Bool = True): Option[Array[Float]] {
+    getFloatVector(name: String, lower: Bool = True): Option[Vector[Float]] {
         internalGet(self, name, lower) {_.expectArray().map {_.expectFloat() * 1.0}}
     }
 
-    getStringArray(name: String, lower: Bool = True): Option[Array[String]] {
+    getStringVector(name: String, lower: Bool = True): Option[Vector[String]] {
         internalGet(self, name, lower) {_.expectArray().map {"" + _.expectString()}}
     }
 
-    getInstantArray(name: String, lower: Bool = True): Option[Array[Instant]] {
+    getInstantVector(name: String, lower: Bool = True): Option[Vector[Instant]] {
         internalGet(self, name, lower) {_.expectArray().map {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}}
     }
 
-    getBufferArray(name: String, lower: Bool = True): Option[Array[Buffer]] {
+    getBufferVector(name: String, lower: Bool = True): Option[Vector[Buffer]] {
         internalGet(self, name, lower) {_.expectArray().map {_.expectBuffer()}}
     }
 
@@ -436,12 +436,12 @@ internalBatchStatements(
     results
 }
 
-internalCheckParameters(parameterNames: List[String], parameters: Map[String, JsValue]): Array[JsValue] {
+internalCheckParameters(parameterNames: List[String], parameters: Map[String, JsValue]): Vector[JsValue] {
     let arguments = parameterNames.map { name =>
         parameters.get(name).else {
             panic("No value for parameter: " + name)
         }
-    }.toArray()
+    }.toVector()
     let unusedParameters = parameters.keys().removeAll(parameterNames.toSet())
     if(unusedParameters.size() > 0) {
         panic("Unused parameters: " + unusedParameters.toList().join(", "))

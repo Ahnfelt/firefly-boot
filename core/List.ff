@@ -28,7 +28,7 @@ extend self[T]: List[T] {
         [self, list].flatten()
     }
 
-    toArray(): Array[T]
+    toVector(): Vector[T]
         target js sync """
             let current = self_;
             let result = [];
@@ -411,7 +411,7 @@ extend self[K, V]: List[Pair[K, V]] {
 
 extend self: List[String] {
 
-    join(separator: String = ""): String { self.toArray().join(separator) }
+    join(separator: String = ""): String { self.toVector().join(separator) }
 
 }
 

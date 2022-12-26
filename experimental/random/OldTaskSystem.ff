@@ -150,7 +150,7 @@ extend self: TaskSystem {
             self_.controller.signal.addEventListener('abort', abort)
             let promises = []
             try {
-                ff_core_List.List_toArray(tasks_).forEach(f =>
+                ff_core_List.List_toVector(tasks_).forEach(f =>
                     promises.push(Promise.resolve(controller.signal).then(f))
                 )
                 return await Promise.race(promises)
@@ -169,11 +169,11 @@ extend self: TaskSystem {
             self_.controller.signal.addEventListener('abort', abort)
             let promises = []
             try {
-                ff_core_List.List_toArray(tasks_).forEach(f =>
+                ff_core_List.List_toVector(tasks_).forEach(f =>
                     promises.push(Promise.resolve(controller.signal).then(f))
                 )
                 let array = await Promise.all(promises)
-                return ff_core_Array.Array_toList(array)
+                return ff_core_Vector.Vector_toList(array)
             } finally {
                 self_.controller.signal.removeEventListener('abort', abort)
                 controller.abort()

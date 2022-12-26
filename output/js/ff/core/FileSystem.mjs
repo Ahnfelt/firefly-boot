@@ -8,8 +8,6 @@ import * as import$3 from 'zlib';
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -79,6 +77,8 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type FileSystem
 
@@ -274,7 +274,7 @@ export async function FileSystem_writeText$(self_, file_, text_, $c) {
 export async function FileSystem_list$(self_, path_, $c) {
 
             const fsPromises = import$1
-            return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
+            return ff_core_Vector.Vector_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
         
 }
 

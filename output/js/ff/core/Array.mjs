@@ -2,8 +2,6 @@
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -74,125 +72,73 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_Vector from "../../ff/core/Vector.mjs"
+
 // type Array
 
 
 
 
 export function empty_() {
-
-        return [];
-    
-}
-
-export function fill_(size_, value_) {
-
-        return new Array(size_).fill(value_);
-    
-}
-
-export function range_(size_) {
-
-        return Array.from({length: size_}, (_, i) => i);
-    
+return {array: []}
 }
 
 export async function empty_$($c) {
 throw new Error('Function empty is missing on this target in async context.');
 }
 
-export async function fill_$(size_, value_, $c) {
-throw new Error('Function fill is missing on this target in async context.');
-}
-
-export async function range_$(size_, $c) {
-throw new Error('Function range is missing on this target in async context.');
-}
-
-export function Array_addAll(self_, that_) {
-return self_.concat(that_)
+export function Array_toVector(self_) {
+return self_.array.slice()
 }
 
 export function Array_isEmpty(self_) {
-return self_.length === 0
+return self_.array.length === 0
 }
 
 export function Array_size(self_) {
-return self_.length
+return self_.array.length
 }
 
-export function Array_expect(self_, index_) {
-
-            if(index_ < 0 || index_ >= self_.length) {
-                throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.length)
-            }
-            return self_[index_]
-        
+export function Array_add(self_, value_) {
+self_.array.push(value_)
 }
 
-export function Array_expectFirst(self_) {
-return ff_core_Array.Array_expect(self_, 0)
+export function Array_modify(self_, index_, body_) {
+self_.array[index_] = body_(self_.array[index_])
 }
 
-export function Array_expectLast(self_) {
-return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
-}
-
-export function Array_dropFirst(self_, count_ = 1) {
-return self_.slice(count_)
-}
-
-export function Array_dropLast(self_, count_ = 1) {
-return self_.slice(0, self_.length - count_)
-}
-
-export function Array_update(self_, index_, body_) {
-
-            let result = self_.slice();
-            result[index_] = body_(result[index_]);
-            return result;
-        
+export function Array_drain(self_) {
+const result = self_.array; self_.array = []; return result
 }
 
 export function Array_toList(self_) {
 
             let result = ff_core_List.Empty();
-            for(let i = self_.length - 1; i >= 0; i--) {
-                result = ff_core_List.Link(self_[i], result);
+            for(let i = self_.array.length - 1; i >= 0; i--) {
+                result = ff_core_List.Link(self_.array[i], result);
             }
             return result;
         
 }
 
-export function Array_toStream(self_) {
-let index_ = 0;
-return ff_core_Stream.make_((() => {
-if((index_ < ff_core_Array.Array_size(self_))) {
-return ff_core_Option.Some((function() {
-const result_ = ff_core_Array.Array_expect(self_, index_);
-index_ += 1;
-return result_
-})())
-} else return ff_core_Option.None()
-}), (() => {
+export function Array_last(self_) {
 
-}))
-}
-
-export function Array_each(self_, body_) {
-
-            return self_.forEach(body_);
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array[self_.array.length - 1])
+                : ff_core_Option.None()
         
 }
 
-export function Array_map(self_, body_) {
-
-            return self_.map(body_)
-        
+export function Array_expectLast(self_) {
+return self_.array[self_.array.length - 1]
 }
 
-export async function Array_addAll$(self_, that_, $c) {
-throw new Error('Function Array_addAll is missing on this target in async context.');
+export function Array_sortBy(self_, ordering_) {
+self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
+}
+
+export async function Array_toVector$(self_, $c) {
+throw new Error('Function Array_toVector is missing on this target in async context.');
 }
 
 export async function Array_isEmpty$(self_, $c) {
@@ -203,93 +149,32 @@ export async function Array_size$(self_, $c) {
 throw new Error('Function Array_size is missing on this target in async context.');
 }
 
-export async function Array_expect$(self_, index_, $c) {
-throw new Error('Function Array_expect is missing on this target in async context.');
+export async function Array_add$(self_, value_, $c) {
+throw new Error('Function Array_add is missing on this target in async context.');
 }
 
-export async function Array_expectFirst$(self_, $c) {
-return ff_core_Array.Array_expect(self_, 0)
+export async function Array_modify$(self_, index_, body_, $c) {
+self_.array[index_] = await body_(self_.array[index_], $c)
 }
 
-export async function Array_expectLast$(self_, $c) {
-return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
-}
-
-export async function Array_dropFirst$(self_, count_ = 1, $c) {
-throw new Error('Function Array_dropFirst is missing on this target in async context.');
-}
-
-export async function Array_dropLast$(self_, count_ = 1, $c) {
-throw new Error('Function Array_dropLast is missing on this target in async context.');
-}
-
-export async function Array_update$(self_, index_, body_, $c) {
-
-            let result = self_.slice();
-            result[index_] = await body_(result[index_], $c);
-            return result;
-        
+export async function Array_drain$(self_, $c) {
+throw new Error('Function Array_drain is missing on this target in async context.');
 }
 
 export async function Array_toList$(self_, $c) {
 throw new Error('Function Array_toList is missing on this target in async context.');
 }
 
-export async function Array_toStream$(self_, $c) {
-let index_ = 0;
-return (await ff_core_Stream.make_$((async ($c) => {
-if((index_ < ff_core_Array.Array_size(self_))) {
-return ff_core_Option.Some((await (async function() {
-const result_ = ff_core_Array.Array_expect(self_, index_);
-index_ += 1;
-return result_
-})()))
-} else return ff_core_Option.None()
-}), (async ($c) => {
-
-}), $c))
+export async function Array_last$(self_, $c) {
+throw new Error('Function Array_last is missing on this target in async context.');
 }
 
-export async function Array_each$(self_, body_, $c) {
-
-            for(let i = self_.length - 1; i >= 0; i--) {
-                await body_(self_[i], $c)
-            }
-        
+export async function Array_expectLast$(self_, $c) {
+throw new Error('Function Array_expectLast is missing on this target in async context.');
 }
 
-export async function Array_map$(self_, body_, $c) {
-
-            let result = [];
-            for(let i = self_.length - 1; i >= 0; i--) {
-                result.push(await body_(self_[i], $c));
-            }
-            return result;
-        
-}
-
-export function Array_toSet(self_, ff_core_Ordering_Order$T) {
-return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
-}
-
-export async function Array_toSet$(self_, ff_core_Ordering_Order$T, $c) {
-return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
-}
-
-export function Array_toMap(self_, ff_core_Ordering_Order$K) {
-return ff_core_List.List_toMap(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$K)
-}
-
-export async function Array_toMap$(self_, ff_core_Ordering_Order$K, $c) {
-return ff_core_List.List_toMap(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$K)
-}
-
-export function Array_join(self_, separator_ = "") {
-return self_.join(separator_)
-}
-
-export async function Array_join$(self_, separator_ = "", $c) {
-throw new Error('Function Array_join is missing on this target in async context.');
+export async function Array_sortBy$(self_, ordering_, $c) {
+throw new Error('Function Array_sortBy is missing on this target in async context.');
 }
 
 

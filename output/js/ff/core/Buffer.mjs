@@ -2,8 +2,6 @@
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -74,6 +72,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_Vector from "../../ff/core/Vector.mjs"
+
 // type Buffer
 
 
@@ -83,7 +83,7 @@ export function make_(size_) {
 return Buffer.alloc(size_)
 }
 
-export function fromBufferArray_(array_) {
+export function fromBufferVector_(vector_) {
 return Buffer.concat(array_)
 }
 
@@ -91,8 +91,8 @@ export async function make_$(size_, $c) {
 throw new Error('Function make is missing on this target in async context.');
 }
 
-export async function fromBufferArray_$(array_, $c) {
-throw new Error('Function fromBufferArray is missing on this target in async context.');
+export async function fromBufferVector_$(vector_, $c) {
+throw new Error('Function fromBufferVector is missing on this target in async context.');
 }
 
 export function Buffer_size(self_) {

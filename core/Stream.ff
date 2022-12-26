@@ -318,14 +318,14 @@ extend self[T]: Stream[T] {
         result
     }
 
-    toArray(): Array[T] {
-        let builder = ArrayBuilder.empty()
+    toVector(): Vector[T] {
+        let builder = Array.empty()
         self.each(builder.add)
-        builder.toArray()
+        builder.toVector()
     }
 
     toList(): List[T] {
-        self.toArray().toList()
+        self.toVector().toList()
     }
 
 }
@@ -338,22 +338,22 @@ extend self[T]: Stream[Stream[T]] {
 
 extend self[T: Order]: Stream[T] {
     toSet(): Set[T] {
-        self.toArray().toSet()
+        self.toVector().toSet()
     }
 }
 
 extend self[K: Order, V]: Stream[Pair[K, V]] {
     toMap(): Map[K, V] {
-        self.toArray().toMap()
+        self.toVector().toMap()
     }
 }
 
 extend self: Stream[Buffer] {
 
     toBuffer(): Buffer {
-        let builder = ArrayBuilder.empty()
+        let builder = Array.empty()
         self.each(builder.add)
-        Buffer.fromBufferArray(builder.toArray())
+        Buffer.fromBufferVector(builder.toVector())
     }
 
     toString(encoding: String = "utf8"): String {

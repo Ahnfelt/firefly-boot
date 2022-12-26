@@ -2,8 +2,6 @@
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -74,6 +72,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_Vector from "../../ff/core/Vector.mjs"
+
 // type NodeSystem
 
 
@@ -134,7 +134,7 @@ throw new Error('Function NodeSystem_js is missing on this target in sync contex
 }
 
 export async function NodeSystem_arguments$(self_, $c) {
-return ff_core_Array.Array_toList(self_.array_)
+return ff_core_Vector.Vector_toList(self_.array_)
 }
 
 export async function NodeSystem_assets$(self_, $c) {

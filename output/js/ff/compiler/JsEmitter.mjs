@@ -10,8 +10,6 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -81,6 +79,8 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
+
+import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type JsEmitter
 export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, emittingAsync_, tailCallUsed_) {
@@ -316,7 +316,7 @@ return
 }
 
 export function escapeResolved_(word_) {
-const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
+const parts_ = ff_core_Vector.Vector_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
 if(ff_core_List.List_isEmpty(initialParts_)) {
 return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))
@@ -555,7 +555,7 @@ return
 }
 
 export async function escapeResolved_$(word_, $c) {
-const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
+const parts_ = ff_core_Vector.Vector_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
 if(ff_core_List.List_isEmpty(initialParts_)) {
 return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))

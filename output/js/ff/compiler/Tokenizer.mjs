@@ -6,8 +6,6 @@ import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
-import * as ff_core_ArrayBuilder from "../../ff/core/ArrayBuilder.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -78,12 +76,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
+import * as ff_core_Vector from "../../ff/core/Vector.mjs"
+
 
 
 
 
 export function tokenize_(file_, code_) {
-const tokens_ = ff_core_ArrayBuilder.empty_();
+const tokens_ = ff_core_Array.empty_();
 let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
@@ -94,10 +94,10 @@ ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCha
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_expect(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
-if((!ff_core_ArrayBuilder.ArrayBuilder_isEmpty(tokens_))) {
-const last_ = ff_core_ArrayBuilder.ArrayBuilder_expectLast(tokens_);
+if((!ff_core_Array.Array_isEmpty(tokens_))) {
+const last_ = ff_core_Array.Array_expectLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
-ff_core_ArrayBuilder.ArrayBuilder_modify(tokens_, (ff_core_ArrayBuilder.ArrayBuilder_size(tokens_) - 1), ((_w1) => {
+ff_core_Array.Array_modify(tokens_, (ff_core_Array.Array_size(tokens_) - 1), ((_w1) => {
 {
 const _1 = _w1;
 {
@@ -109,10 +109,10 @@ return
 }))
 };
 if((((last_.stopLine_ !== startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_ArrayBuilder.ArrayBuilder_add(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
+ff_core_Array.Array_add(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
 }
 };
-ff_core_ArrayBuilder.ArrayBuilder_add(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
+ff_core_Array.Array_add(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0;
 while((i_ < ff_core_String.String_size(code_))) {
@@ -257,11 +257,11 @@ ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 }));
-return ff_core_ArrayBuilder.ArrayBuilder_drain(tokens_)
+return ff_core_Array.Array_drain(tokens_)
 }
 
 export async function tokenize_$(file_, code_, $c) {
-const tokens_ = ff_core_ArrayBuilder.empty_();
+const tokens_ = ff_core_Array.empty_();
 let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
@@ -272,10 +272,10 @@ ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCha
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_expect(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
-if((!ff_core_ArrayBuilder.ArrayBuilder_isEmpty(tokens_))) {
-const last_ = ff_core_ArrayBuilder.ArrayBuilder_expectLast(tokens_);
+if((!ff_core_Array.Array_isEmpty(tokens_))) {
+const last_ = ff_core_Array.Array_expectLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
-ff_core_ArrayBuilder.ArrayBuilder_modify(tokens_, (ff_core_ArrayBuilder.ArrayBuilder_size(tokens_) - 1), ((_w1) => {
+ff_core_Array.Array_modify(tokens_, (ff_core_Array.Array_size(tokens_) - 1), ((_w1) => {
 {
 const _1 = _w1;
 {
@@ -287,10 +287,10 @@ return
 }))
 };
 if((((last_.stopLine_ !== startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_ArrayBuilder.ArrayBuilder_add(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
+ff_core_Array.Array_add(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
 }
 };
-ff_core_ArrayBuilder.ArrayBuilder_add(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
+ff_core_Array.Array_add(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0;
 while((i_ < ff_core_String.String_size(code_))) {
@@ -435,7 +435,7 @@ ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 }));
-return ff_core_ArrayBuilder.ArrayBuilder_drain(tokens_)
+return ff_core_Array.Array_drain(tokens_)
 }
 
 
