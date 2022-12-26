@@ -5,9 +5,6 @@ empty[T](): Array[T]
 
 extend self[T]: Array[T] {
 
-    toVector(): Vector[T]
-        target js sync "return self_.array.slice()"
-
     isEmpty(): Bool
         target js sync "return self_.array.length === 0"
 
@@ -23,6 +20,9 @@ extend self[T]: Array[T] {
 
     drain(): Vector[T]
         target js sync "const result = self_.array; self_.array = []; return result"
+
+    toVector(): Vector[T]
+        target js sync "return self_.array.slice()"
 
     toList(): List[T]
         target js sync """
