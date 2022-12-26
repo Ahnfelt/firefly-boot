@@ -320,7 +320,7 @@ extend self[T]: Stream[T] {
 
     toArray(): Array[T] {
         let array = Array.empty()
-        self.each(array.add)
+        self.each(array.push)
         array
     }
 
@@ -356,7 +356,7 @@ extend self: Stream[Buffer] {
 
     toBuffer(): Buffer {
         let builder = Array.empty()
-        self.each(builder.add)
+        self.each(builder.push)
         Buffer.fromBufferVector(builder.toVector())
     }
 

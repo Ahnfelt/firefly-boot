@@ -11,8 +11,21 @@ extend self[T]: Array[T] {
     size(): Int
         target js sync "return self_.array.length"
 
-    add(value: T): Unit
+    push(value: T): Unit
         target js sync "self_.array.push(value_)"
+
+    pushAll(value: Array[T]): Unit
+        target js sync "self_.array.push(...value_.array)"
+
+    pushVector(value: Vector[T]): Unit
+        target js sync "self_.array.push(...value_)"
+
+    pop(): Option[T]
+        target js sync """
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array.pop())
+                : ff_core_Option.None()
+        """
 
     modify(index: Int, body: T => T): Unit
         target js sync "self_.array[index_] = body_(self_.array[index_])"

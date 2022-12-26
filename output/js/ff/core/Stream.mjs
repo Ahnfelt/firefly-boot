@@ -605,7 +605,7 @@ return result_
 export function Stream_toArray(self_) {
 const array_ = ff_core_Array.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_Array.Array_add(array_, value_)
+ff_core_Array.Array_push(array_, value_)
 }));
 return array_
 }
@@ -1130,7 +1130,7 @@ return result_
 export async function Stream_toArray$(self_, $c) {
 const array_ = ff_core_Array.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_Array.Array_add(array_, value_)
+ff_core_Array.Array_push(array_, value_)
 }), $c));
 return array_
 }
@@ -1174,7 +1174,7 @@ return ff_core_Vector.Vector_toMap((await ff_core_Stream.Stream_toVector$(self_,
 export function Stream_toBuffer(self_) {
 const builder_ = ff_core_Array.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_Array.Array_add(builder_, value_)
+ff_core_Array.Array_push(builder_, value_)
 }));
 return ff_core_Buffer.fromBufferVector_(ff_core_Array.Array_toVector(builder_))
 }
@@ -1186,7 +1186,7 @@ return ff_core_Buffer.Buffer_toString(ff_core_Stream.Stream_toBuffer(self_), enc
 export async function Stream_toBuffer$(self_, $c) {
 const builder_ = ff_core_Array.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_Array.Array_add(builder_, value_)
+ff_core_Array.Array_push(builder_, value_)
 }), $c));
 return ff_core_Buffer.fromBufferVector_(ff_core_Array.Array_toVector(builder_))
 }

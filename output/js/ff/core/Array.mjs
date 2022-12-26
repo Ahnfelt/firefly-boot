@@ -95,8 +95,24 @@ export function Array_size(self_) {
 return self_.array.length
 }
 
-export function Array_add(self_, value_) {
+export function Array_push(self_, value_) {
 self_.array.push(value_)
+}
+
+export function Array_pushAll(self_, value_) {
+self_.array.push(...value_.array)
+}
+
+export function Array_pushVector(self_, value_) {
+self_.array.push(...value_)
+}
+
+export function Array_pop(self_) {
+
+            return self_.array.length > 0
+                ? ff_core_Option.Some(self_.array.pop())
+                : ff_core_Option.None()
+        
 }
 
 export function Array_modify(self_, index_, body_) {
@@ -145,8 +161,20 @@ export async function Array_size$(self_, $c) {
 throw new Error('Function Array_size is missing on this target in async context.');
 }
 
-export async function Array_add$(self_, value_, $c) {
-throw new Error('Function Array_add is missing on this target in async context.');
+export async function Array_push$(self_, value_, $c) {
+throw new Error('Function Array_push is missing on this target in async context.');
+}
+
+export async function Array_pushAll$(self_, value_, $c) {
+throw new Error('Function Array_pushAll is missing on this target in async context.');
+}
+
+export async function Array_pushVector$(self_, value_, $c) {
+throw new Error('Function Array_pushVector is missing on this target in async context.');
+}
+
+export async function Array_pop$(self_, $c) {
+throw new Error('Function Array_pop is missing on this target in async context.');
 }
 
 export async function Array_modify$(self_, index_, body_, $c) {

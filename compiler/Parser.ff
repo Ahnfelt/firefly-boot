@@ -133,12 +133,12 @@ extend self: Parser {
         }*/
         let dependencies = Array.empty[DDependency]()
         while {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
-            dependencies.add(self.parseDependencyDefinition(package.targets))
+            dependencies.push(self.parseDependencyDefinition(package.targets))
             if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
         }
         let includes = Array.empty[DInclude]()
         while {self.current().is(LKeyword) && self.current().rawIs("include")} {
-            includes.add(self.parseIncludeDefinition())
+            includes.push(self.parseIncludeDefinition())
             if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
         }
         // TODO: When this method is called directly for package.ff, check that the whole file has been consumed
@@ -155,19 +155,19 @@ extend self: Parser {
         let functions = Array.empty[DFunction]()
         while {!self.current().is(LEnd)} {
             if(self.current().is(LLower) && (self.ahead().is(LAssign) || self.ahead().is(LColon))) {
-                lets.add(self.parseLetDefinition())
+                lets.push(self.parseLetDefinition())
             } elseIf {self.current().is(LLower) && self.ahead().is(LBracketLeft)} {
-                functions.add(self.parseFunctionDefinition())
+                functions.push(self.parseFunctionDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("extend")} {
-                extends.add(self.parseExtendDefinition())
+                extends.push(self.parseExtendDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("trait")} {
-                traits.add(self.parseTraitDefinition())
+                traits.push(self.parseTraitDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("instance")} {
-                instances.add(self.parseInstanceDefinition())
+                instances.push(self.parseInstanceDefinition())
             } elseIf {self.current().is(LKeyword) && (self.current().rawIs("type") || self.current().rawIs("newtype"))} {
-                types.add(self.parseTypeDefinition())
+                types.push(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
-                imports.add(self.parseImportDefinition(self.packagePair))
+                imports.push(self.parseImportDefinition(self.packagePair))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("include")} {
                 self.fail(self.current().at(), "Includes must be at the top of the file or below 'package'")
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
@@ -299,7 +299,7 @@ extend self: Parser {
         self.rawSkip(LBracketLeft, "{")
         let methods = Array.empty[DFunction]()
         while { !self.current().is(LBracketRight) } {
-            methods.add(self.parseFunctionDefinition())
+            methods.push(self.parseFunctionDefinition())
             if(!self.current().is(LBracketRight)) { self.skipSeparator(LSemicolon) }
         }
         self.rawSkip(LBracketRight, "}")
@@ -324,7 +324,7 @@ extend self: Parser {
             self.fail(self.current().at(), "Trait constraints is not yet implemented")
             self.skip(LColon)
             let constraint = self.parseConstraint()
-            constraints.add(constraint.Constraint(generics =
+            constraints.push(constraint.Constraint(generics =
                 [TConstructor(typeParameterToken.at(), typeParameterToken.raw(), []), ...constraint.generics]
             ))
         }
@@ -336,14 +336,14 @@ extend self: Parser {
             self.rawSkip(LBracketLeft, "{")
             while {!self.current().is(LBracketRight)} {
                 let signature = self.parseSignature()
-                signatures.add(signature)
+                signatures.push(signature)
                 if(self.current().rawIs("{")) {
                     let generator = self.ahead().is(LKeyword) && self.ahead().rawIs("generate")
                     let body = self.parseLambda(signature.parameters.size(), ignoreGenerateKeyword = True)
                     if(generator) {
-                        methodGenerators.add(Pair(signature.name, body))
+                        methodGenerators.push(Pair(signature.name, body))
                     } else {
-                        methodDefaults.add(Pair(signature.name, body))
+                        methodDefaults.push(Pair(signature.name, body))
                     }
                 }
                 if(!self.current().is(LBracketRight)) { self.skipSeparator(LSemicolon) }
@@ -368,13 +368,13 @@ extend self: Parser {
         let token = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let typeArguments = Array.empty[Type]()
-        typeArguments.add(TConstructor(token.at(), token.raw(), poly.generics.map { TConstructor(token.at(), _, []) }))
+        typeArguments.push(TConstructor(token.at(), token.raw(), poly.generics.map { TConstructor(token.at(), _, []) }))
         self.skip(LColon)
         let nameToken = self.skip(LUpper)
         if(self.current().rawIs("[")) {
             self.rawSkip(LBracketLeft, "[")
             while {!self.current().is(LBracketRight)} {
-                typeArguments.add(self.parseType())
+                typeArguments.push(self.parseType())
                 if(!self.current().is(LBracketRight)) {self.skip(LComma)}
             }
             self.rawSkip(LBracketRight, "]")
@@ -384,7 +384,7 @@ extend self: Parser {
             let definitions = Array.empty[DFunction]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current().is(LBracketRight)} {
-                definitions.add(self.parseFunctionDefinition())
+                definitions.push(self.parseFunctionDefinition())
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
@@ -416,7 +416,7 @@ extend self: Parser {
             while {!self.current().is(LBracketRight)} {
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
-                variantsBuilder.add(
+                variantsBuilder.push(
                     Variant(variantNameToken.at(), variantNameToken.raw(), variantFields)
                 )
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
@@ -438,7 +438,7 @@ extend self: Parser {
         let importToken = self.rawSkip(LKeyword, "import")
         let path = Array.empty[String]()
         while { self.current().is(LLower) } {
-            path.add(self.parseDashedName())
+            path.push(self.parseDashedName())
             self.skip(LDot)
         }
         let file = self.skip(LUpper).raw()
@@ -569,14 +569,14 @@ extend self: Parser {
         let constraints = Array.empty[Constraint]()
         while {!self.current().is(LBracketRight) && !self.current().is(LSemicolon)} {
             if(self.ahead().is(LBracketLeft)) {
-                constraints.add(self.parseConstraint())
+                constraints.push(self.parseConstraint())
             } else {
                 let parameterNameToken = self.skip(LUpper)
-                parameters.add(parameterNameToken.raw())
+                parameters.push(parameterNameToken.raw())
                 while {self.current().is(LColon)} {
                     self.skip(LColon)
                     let constraint = self.parseConstraint()
-                    constraints.add(constraint.Constraint(generics =
+                    constraints.push(constraint.Constraint(generics =
                         [TConstructor(parameterNameToken.at(), parameterNameToken.raw(), []), ...constraint.generics]
                     ))
                 }
@@ -591,7 +591,7 @@ extend self: Parser {
         self.rawSkip(LBracketLeft, if(parenthesis) {"("} else {"["})
         let types = Array.empty[Type]()
         while {!self.current().is(LBracketRight)} {
-            types.add(self.parseType())
+            types.push(self.parseType())
             if(!self.current().is(LBracketRight)) {self.skip(LComma)}
         }
         self.rawSkip(LBracketRight, if(parenthesis) {")"} else {"]"})
@@ -611,7 +611,7 @@ extend self: Parser {
                 self.skip(LAssign)
                 Some(self.parseTerm())
             }
-            parameters.add(Parameter(parameterNameToken.at(), mutable, parameterNameToken.raw(), parameterType, default))
+            parameters.push(Parameter(parameterNameToken.at(), mutable, parameterNameToken.raw(), parameterType, default))
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
@@ -629,7 +629,7 @@ extend self: Parser {
                     Some(token)
                 } else {None}
                 let value = self.parseTerm()
-                arguments.add(Argument(nameToken.map{_.at()}.else{value.at}, nameToken.map{_.raw()}, value))
+                arguments.push(Argument(nameToken.map{_.at()}.else{value.at}, nameToken.map{_.raw()}, value))
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
             }
             self.rawSkip(LBracketRight, ")")
@@ -639,7 +639,7 @@ extend self: Parser {
             while {self.current().rawIs("{") || self.current().is(LColon)} {
                 lastWasCurly = self.current().rawIs("{")
                 let lambda = self.parseLambda(allowColon = True)
-                arguments.add(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
+                arguments.push(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
             }
         }
         Pair(arguments.toList(), lastWasCurly)
@@ -656,7 +656,7 @@ extend self: Parser {
         let result = if(self.current().is(LPipe)) {
             let cases = Array.empty[MatchCase]()
             while {self.current().is(LPipe)} {
-                cases.add(self.parseCase())
+                cases.push(self.parseCase())
             }
             cases.toList()
         } elseIf {self.current().is2(LLower, LWildcard) && self.ahead().is2(LComma, LArrowThick)} {
@@ -664,7 +664,7 @@ extend self: Parser {
             while {!self.current().is(LArrowThick)} {
                 let isVariable = self.current().is(LLower)
                 let parameterToken = if(isVariable) {self.skip(LLower)} else {self.skip(LWildcard)}
-                parameters.add(PVariable(parameterToken.at(), if(isVariable) {Some(parameterToken.raw())} else {None}))
+                parameters.push(PVariable(parameterToken.at(), if(isVariable) {Some(parameterToken.raw())} else {None}))
                 if(!self.current().is(LArrowThick)) {self.skip(LComma)}
             }
             self.skip(LArrowThick)
@@ -690,12 +690,12 @@ extend self: Parser {
         let token = self.skip(LPipe)
         let patterns = Array.empty[MatchPattern]()
         while {!self.current().is(LArrowThick) && !self.current().rawIs("{")} {
-            patterns.add(self.parsePattern())
+            patterns.push(self.parsePattern())
             if(!self.current().is(LArrowThick) && !self.current().rawIs("{")) {self.skip(LComma)}
         }
         let guards = Array.empty[MatchGuard]()
         while {self.current().rawIs("{")} {
-            guards.add(self.parseCaseGuard())
+            guards.push(self.parseCaseGuard())
         }
         self.skip(LArrowThick)
         let body = self.parseStatements()
@@ -743,7 +743,7 @@ extend self: Parser {
                 let patterns = Array.empty[MatchPattern]()
                 self.rawSkip(LBracketLeft, "(")
                 while {!self.current().is(LBracketRight)} {
-                    patterns.add(self.parsePattern())
+                    patterns.push(self.parsePattern())
                     if(!self.current().is(LBracketRight)) {self.skip(LComma)}
                 }
                 self.rawSkip(LBracketRight, ")")
@@ -847,7 +847,7 @@ extend self: Parser {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
             let body = self.parseLambda(defaultParameterCount = signature.parameters.size())
-            functions.add(DFunction(functionAt, signature, FireflyTarget(body)))
+            functions.push(DFunction(functionAt, signature, FireflyTarget(body)))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()
@@ -1003,7 +1003,7 @@ extend self: Parser {
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
             self.skip(LAssign)
-            fields.add(Field(fieldToken.at(), fieldToken.raw(), self.parseTerm()))
+            fields.push(Field(fieldToken.at(), fieldToken.raw(), self.parseTerm()))
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
@@ -1016,7 +1016,7 @@ extend self: Parser {
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
             self.skipSeparator(LColon)
-            fields.add(Pair(fieldToken.raw(), self.parseType()))
+            fields.push(Pair(fieldToken.raw(), self.parseType()))
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
@@ -1029,7 +1029,7 @@ extend self: Parser {
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
             self.skip(LAssign)
-            fields.add(Pair(fieldToken.raw(), self.parsePattern()))
+            fields.push(Pair(fieldToken.raw(), self.parsePattern()))
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
@@ -1055,7 +1055,7 @@ extend self: Parser {
             } else {
                 self.parsePattern()
             }
-            items.add(Pair(pattern, spread))
+            items.push(Pair(pattern, spread))
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
@@ -1068,7 +1068,7 @@ extend self: Parser {
         while {!self.current().rawIs("]")} {
             let spread = self.current().is(LDotDotDot)
             if(spread) { self.skip(LDotDotDot) }
-            items.add(Pair(self.parseTerm(), spread))
+            items.push(Pair(self.parseTerm(), spread))
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, "]")

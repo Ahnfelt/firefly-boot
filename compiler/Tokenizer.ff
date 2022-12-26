@@ -22,14 +22,14 @@ tokenize(file: String, code: String): Vector[Token] {
                 tokens.modify(tokens.size() - 1) {_.Token(kind = LKeyword)}
             }
             if(last.stopLine != startLine && last.kind.beforeSeparator() && kind.afterSeparator()) {
-                tokens.add(Token(
+                tokens.push(Token(
                     file, code, LSeparator,
                     startLine, startLineOffset, startOffset,
                     startLine, startLineOffset, startOffset
                 ))
             }
         }
-        tokens.add(Token(
+        tokens.push(Token(
             file, code, kind, startLine, startLineOffset, startOffset, line, lineOffset, stopOffset
         ))
     }
