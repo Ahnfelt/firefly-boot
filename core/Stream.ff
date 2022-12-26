@@ -357,7 +357,7 @@ extend self: Stream[Buffer] {
     toBuffer(): Buffer {
         let builder = Array.empty()
         self.each(builder.push)
-        Buffer.fromBufferVector(builder.toVector())
+        Buffer.fromBufferVector(builder.drain())
     }
 
     toString(encoding: String = "utf8"): String {
