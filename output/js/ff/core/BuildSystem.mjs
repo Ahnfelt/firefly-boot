@@ -110,16 +110,10 @@ return ff_core_List.Link(file_, ff_core_List.Empty())
 }
 }))
 }
-function makeOpen_(file_) {
-if(false) {
-ff_core_FileSystem.FileSystem_exists(fs_, "/")
-};
-return (() => {
-return ff_core_FileSystem.FileSystem_readStream(fs_, file_)
-})
-}
 return ff_core_List.List_map(go_(path_), ((file_) => {
-return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), makeOpen_(file_))
+return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (() => {
+return ff_core_FileSystem.FileSystem_readStream(fs_, file_)
+}))
 }))
 }
 
@@ -184,17 +178,11 @@ return ff_core_List.Link(file_, ff_core_List.Empty())
 }
 }), $c))
 }
-async function makeOpen_$(file_, $c) {
-if(false) {
-(await ff_core_FileSystem.FileSystem_exists$(fs_, "/", $c))
-};
-return (async ($c) => {
+return ff_core_List.List_map((await go_$(path_, $c)), ((file_) => {
+return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (async ($c) => {
 return (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))
-})
-}
-return (await ff_core_List.List_map$((await go_$(path_, $c)), (async (file_, $c) => {
-return ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(prefix_)), (await makeOpen_$(file_, $c)))
-}), $c))
+}))
+}))
 }
 
 export async function internalFileSystem_$(dummy_, $c) {

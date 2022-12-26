@@ -83,8 +83,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsEmitter
-export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, tailCallUsed_) {
-return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, tailCallUsed_};
+export function JsEmitter(otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, emittingAsync_, tailCallUsed_) {
+return {otherModules_, jsImporter_, emitTarget_, isMainModule_, compilerModulePath_, emittingAsync_, tailCallUsed_};
 }
 
 // type EmitTarget
@@ -116,7 +116,7 @@ export function make_(otherModules_, emitTarget_, isMainModule_, compilerModuleP
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), emitTarget_, isMainModule_, compilerModulePath_, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), emitTarget_, isMainModule_, compilerModulePath_, false, false)
 }
 
 export function fail_(at_, message_) {
@@ -355,7 +355,7 @@ export async function make_$(otherModules_, emitTarget_, isMainModule_, compiler
 return ff_compiler_JsEmitter.JsEmitter(ff_core_List.List_toMap(ff_core_List.List_map(otherModules_, ((m_) => {
 const moduleName_ = ((ff_compiler_Syntax.PackagePair_groupName(m_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(m_.file_, 3));
 return ff_core_Pair.Pair(moduleName_, m_)
-})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), emitTarget_, isMainModule_, compilerModulePath_, false)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_JsImporter.make_(), emitTarget_, isMainModule_, compilerModulePath_, false, false)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -609,8 +609,10 @@ return ff_compiler_JsEmitter.JsEmitter_emitTypeDefinition(self_, _w1)
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, _w1, false, false))
 })), ff_core_List.Link(ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, false, ""))
-})), ff_core_List.Link(ff_core_List.List_map(module_.functions_, ((_w1) => {
+})), ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_withEmittingAsync(self_, (() => {
+return ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, true, ""))
+}))
 })), ff_core_List.Link(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
@@ -625,6 +627,15 @@ const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImp
 return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
+}
+
+export function JsEmitter_withEmittingAsync(self_, body_) {
+return ff_core_Try.finally_((() => {
+self_.emittingAsync_ = true;
+return body_()
+}), (() => {
+self_.emittingAsync_ = false
+}))
 }
 
 export function JsEmitter_emitRun(self_, functions_, mainPackagePair_, bootstrapping_) {
@@ -720,8 +731,10 @@ return
 const syncMethods_ = ff_core_List.List_map(methods_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, false, ""))
 }));
-const asyncMethods_ = ff_core_List.List_map(methods_, ((_w1) => {
+const asyncMethods_ = ff_compiler_JsEmitter.JsEmitter_withEmittingAsync(self_, (() => {
+return ff_core_List.List_map(methods_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, true, ""))
+}))
 }));
 return ff_core_List.List_join(ff_core_List.List_addAll(syncMethods_, asyncMethods_), "\n\n")
 }
@@ -733,10 +746,12 @@ return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, false,
 })), ((_w1) => {
 return ff_core_String.String_dropFirst(_w1, ff_core_String.String_size("function "))
 }));
-const asyncMethods_ = ff_core_List.List_map(ff_core_List.List_map(definition_.methods_, ((_w1) => {
+const asyncMethods_ = ff_compiler_JsEmitter.JsEmitter_withEmittingAsync(self_, (() => {
+return ff_core_List.List_map(ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, true, "")
 })), ((_w1) => {
 return ("async " + ff_core_String.String_dropFirst(_w1, ff_core_String.String_size("async function ")))
+}))
 }));
 const body_ = (("{\n" + ff_core_List.List_join(ff_core_List.List_addAll(methods_, asyncMethods_), ",\n")) + "\n}");
 {
@@ -1123,7 +1138,7 @@ return
 }
 }));
 if(_guard1) {
-const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
+const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const patternParameters_ = ff_core_List.List_map(patterns_, ((_1) => {
 {
 if(_1.PVariable) {
@@ -1161,7 +1176,7 @@ if(_1.ELambda) {
 const at_ = _1.at_;
 const effect_ = _1.lambda_.effect_;
 const cases_ = _1.lambda_.cases_;
-const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
+const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const controller_ = (newAsync_
 ? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
@@ -1701,7 +1716,7 @@ const at_ = _1.at_;
 const functions_ = _1.functions_;
 const body_ = _1.body_;
 const functionStrings_ = ff_core_List.List_map(functions_, ((f_) => {
-const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(f_.signature_.effect_));
+const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(f_.signature_.effect_));
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, f_, newAsync_, "")
 }));
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
@@ -2222,8 +2237,10 @@ return ff_compiler_JsEmitter.JsEmitter_emitTypeDefinition(self_, _w1)
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitLetDefinition(self_, _w1, false, false))
 })), ff_core_List.Link(ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, false, ""))
-})), ff_core_List.Link(ff_core_List.List_map(module_.functions_, ((_w1) => {
+})), ff_core_List.Link(ff_compiler_JsEmitter.JsEmitter_withEmittingAsync(self_, (() => {
+return ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, true, ""))
+}))
 })), ff_core_List.Link(ff_core_List.List_map(module_.extends_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitExtendsDefinition(self_, _w1)
 })), ff_core_List.Link(ff_core_List.List_map(module_.instances_, ((_w1) => {
@@ -2238,6 +2255,15 @@ const jsImports_ = ff_compiler_JsImporter.JsImporter_generateImports(self_.jsImp
 return (ff_core_List.List_join(ff_core_List.List_map(ff_core_List.Link(jsImports_, parts_), ((_w1) => {
 return ff_core_List.List_join(_w1, "\n\n")
 })), "\n\n") + "\n")
+}
+
+export async function JsEmitter_withEmittingAsync$(self_, body_, $c) {
+return (await ff_core_Try.finally_$((async ($c) => {
+self_.emittingAsync_ = true;
+return (await body_($c))
+}), (async ($c) => {
+self_.emittingAsync_ = false
+}), $c))
 }
 
 export async function JsEmitter_emitRun$(self_, functions_, mainPackagePair_, bootstrapping_, $c) {
@@ -2333,8 +2359,10 @@ return
 const syncMethods_ = ff_core_List.List_map(methods_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, false, ""))
 }));
-const asyncMethods_ = ff_core_List.List_map(methods_, ((_w1) => {
+const asyncMethods_ = ff_compiler_JsEmitter.JsEmitter_withEmittingAsync(self_, (() => {
+return ff_core_List.List_map(methods_, ((_w1) => {
 return ("export " + ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, true, ""))
+}))
 }));
 return ff_core_List.List_join(ff_core_List.List_addAll(syncMethods_, asyncMethods_), "\n\n")
 }
@@ -2346,10 +2374,12 @@ return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, false,
 })), ((_w1) => {
 return ff_core_String.String_dropFirst(_w1, ff_core_String.String_size("function "))
 }));
-const asyncMethods_ = ff_core_List.List_map(ff_core_List.List_map(definition_.methods_, ((_w1) => {
+const asyncMethods_ = ff_compiler_JsEmitter.JsEmitter_withEmittingAsync(self_, (() => {
+return ff_core_List.List_map(ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, _w1, true, "")
 })), ((_w1) => {
 return ("async " + ff_core_String.String_dropFirst(_w1, ff_core_String.String_size("async function ")))
+}))
 }));
 const body_ = (("{\n" + ff_core_List.List_join(ff_core_List.List_addAll(methods_, asyncMethods_), ",\n")) + "\n}");
 {
@@ -2736,7 +2766,7 @@ return
 }
 }));
 if(_guard1) {
-const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
+const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const patternParameters_ = ff_core_List.List_map(patterns_, ((_1) => {
 {
 if(_1.PVariable) {
@@ -2774,7 +2804,7 @@ if(_1.ELambda) {
 const at_ = _1.at_;
 const effect_ = _1.lambda_.effect_;
 const cases_ = _1.lambda_.cases_;
-const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
+const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const controller_ = (newAsync_
 ? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
@@ -3314,7 +3344,7 @@ const at_ = _1.at_;
 const functions_ = _1.functions_;
 const body_ = _1.body_;
 const functionStrings_ = ff_core_List.List_map(functions_, ((f_) => {
-const newAsync_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(f_.signature_.effect_));
+const newAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(f_.signature_.effect_));
 return ff_compiler_JsEmitter.JsEmitter_emitFunctionDefinition(self_, f_, newAsync_, "")
 }));
 return ((ff_core_List.List_join(functionStrings_, "\n") + "\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, last_, async_))
@@ -3822,7 +3852,7 @@ show_(x_) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((((((((("JsEmitter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module).show_(z_.otherModules_)) + ", ") + ff_compiler_JsImporter.ff_core_Show_Show$ff_compiler_JsImporter_JsImporter.show_(z_.jsImporter_)) + ", ") + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(z_.emitTarget_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMainModule_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.compilerModulePath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCallUsed_)) + ")")
+return ((((((((((((((("JsEmitter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module).show_(z_.otherModules_)) + ", ") + ff_compiler_JsImporter.ff_core_Show_Show$ff_compiler_JsImporter_JsImporter.show_(z_.jsImporter_)) + ", ") + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(z_.emitTarget_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMainModule_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.compilerModulePath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.emittingAsync_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCallUsed_)) + ")")
 return
 }
 }
@@ -3832,7 +3862,7 @@ async show_$(x_, $c) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((((((((("JsEmitter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module).show_(z_.otherModules_)) + ", ") + ff_compiler_JsImporter.ff_core_Show_Show$ff_compiler_JsImporter_JsImporter.show_(z_.jsImporter_)) + ", ") + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(z_.emitTarget_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMainModule_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.compilerModulePath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCallUsed_)) + ")")
+return ((((((((((((((("JsEmitter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module).show_(z_.otherModules_)) + ", ") + ff_compiler_JsImporter.ff_core_Show_Show$ff_compiler_JsImporter_JsImporter.show_(z_.jsImporter_)) + ", ") + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(z_.emitTarget_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMainModule_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.compilerModulePath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.emittingAsync_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCallUsed_)) + ")")
 return
 }
 }
@@ -3944,7 +3974,7 @@ return
 }
 }
 {
-return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module).equals_(x_.otherModules_, y_.otherModules_) && (ff_compiler_JsImporter.ff_core_Equal_Equal$ff_compiler_JsImporter_JsImporter.equals_(x_.jsImporter_, y_.jsImporter_) && (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(x_.emitTarget_, y_.emitTarget_) && ((x_.isMainModule_ === y_.isMainModule_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.compilerModulePath_, y_.compilerModulePath_) && (x_.tailCallUsed_ === y_.tailCallUsed_))))))
+return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module).equals_(x_.otherModules_, y_.otherModules_) && (ff_compiler_JsImporter.ff_core_Equal_Equal$ff_compiler_JsImporter_JsImporter.equals_(x_.jsImporter_, y_.jsImporter_) && (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(x_.emitTarget_, y_.emitTarget_) && ((x_.isMainModule_ === y_.isMainModule_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.compilerModulePath_, y_.compilerModulePath_) && ((x_.emittingAsync_ === y_.emittingAsync_) && (x_.tailCallUsed_ === y_.tailCallUsed_)))))))
 return
 }
 }
@@ -3961,7 +3991,7 @@ return
 }
 }
 {
-return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module).equals_(x_.otherModules_, y_.otherModules_) && (ff_compiler_JsImporter.ff_core_Equal_Equal$ff_compiler_JsImporter_JsImporter.equals_(x_.jsImporter_, y_.jsImporter_) && (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(x_.emitTarget_, y_.emitTarget_) && ((x_.isMainModule_ === y_.isMainModule_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.compilerModulePath_, y_.compilerModulePath_) && (x_.tailCallUsed_ === y_.tailCallUsed_))))))
+return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module).equals_(x_.otherModules_, y_.otherModules_) && (ff_compiler_JsImporter.ff_core_Equal_Equal$ff_compiler_JsImporter_JsImporter.equals_(x_.jsImporter_, y_.jsImporter_) && (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(x_.emitTarget_, y_.emitTarget_) && ((x_.isMainModule_ === y_.isMainModule_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.compilerModulePath_, y_.compilerModulePath_) && ((x_.emittingAsync_ === y_.emittingAsync_) && (x_.tailCallUsed_ === y_.tailCallUsed_)))))))
 return
 }
 }
@@ -4075,11 +4105,16 @@ const compilerModulePathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_cor
 if((compilerModulePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return compilerModulePathOrdering_
 } else {
+const emittingAsyncOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.emittingAsync_, y_.emittingAsync_);
+if((emittingAsyncOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return emittingAsyncOrdering_
+} else {
 const tailCallUsedOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.tailCallUsed_, y_.tailCallUsed_);
 if((tailCallUsedOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return tailCallUsedOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -4122,11 +4157,16 @@ const compilerModulePathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_cor
 if((compilerModulePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return compilerModulePathOrdering_
 } else {
+const emittingAsyncOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.emittingAsync_, y_.emittingAsync_);
+if((emittingAsyncOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return emittingAsyncOrdering_
+} else {
 const tailCallUsedOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.tailCallUsed_, y_.tailCallUsed_);
 if((tailCallUsedOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return tailCallUsedOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }

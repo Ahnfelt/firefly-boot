@@ -8,6 +8,7 @@ type JsEmitter(
     emitTarget: EmitTarget
     isMainModule: Bool
     compilerModulePath: Option[String]
+    mutable emittingAsync: Bool
     mutable tailCallUsed: Bool
 )
 
@@ -33,6 +34,7 @@ make(
         emitTarget = emitTarget
         isMainModule = isMainModule
         compilerModulePath = compilerModulePath
+        emittingAsync = False
         tailCallUsed = False
     )
 }
@@ -56,7 +58,7 @@ extend self: JsEmitter {
             module.types.map { self.emitTypeDefinition(_) }
             module.lets.map { "export " + self.emitLetDefinition(_, False, False) }
             module.functions.map { "export " + self.emitFunctionDefinition(_, False) }
-            module.functions.map { "export " + self.emitFunctionDefinition(_, True) }
+            self.withEmittingAsync {module.functions.map { "export " + self.emitFunctionDefinition(_, True) }}
             module.extends.map { self.emitExtendsDefinition(_) }
             module.instances.map { self.emitInstanceDefinition(_) }
             if(self.isMainModule) {
@@ -70,6 +72,15 @@ extend self: JsEmitter {
         ) {["esbuild"]} else {[]}
         let jsImports = self.jsImporter.generateImports(ignoreJsImports.toSet())
         [jsImports, ...parts].map { _.join("\n\n") }.join("\n\n") + "\n"
+    }
+
+    withEmittingAsync[T](body: () => T): T {
+        Try.finally {
+            self.emittingAsync = True
+            body()
+        } {
+            self.emittingAsync = False
+        }
     }
 
     emitRun(functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {
@@ -151,14 +162,16 @@ extend self: JsEmitter {
             )
         }
         let syncMethods = methods.map { "export " + self.emitFunctionDefinition(_, False) }
-        let asyncMethods = methods.map { "export " + self.emitFunctionDefinition(_, True) }
+        let asyncMethods = self.withEmittingAsync {methods.map { "export " + self.emitFunctionDefinition(_, True) }}
         [...syncMethods, ...asyncMethods].join("\n\n")
     }
 
     emitInstanceDefinition(definition: DInstance): String {
         let name = makeDictionaryName(definition.traitName, firstTypeName(definition.typeArguments))
         let methods = definition.methods.map {self.emitFunctionDefinition(_, False)}.map { _.dropFirst("function ".size()) } // TODO
-        let asyncMethods = definition.methods.map {self.emitFunctionDefinition(_, True)}.map { "async " + _.dropFirst("async function ".size()) } // TODO
+        let asyncMethods = self.withEmittingAsync {
+            definition.methods.map {self.emitFunctionDefinition(_, True)}.map { "async " + _.dropFirst("async function ".size()) } // TODO
+        }
         let body = "{\n" + [...methods, ...asyncMethods].join(",\n") + "\n}"
         definition.constraints.{
             | [] =>
@@ -304,7 +317,7 @@ extend self: JsEmitter {
         | ELambda(at, Lambda(_, effect, [MatchCase(_, patterns, [], body)])) {
             patterns.all {| PVariable _ => True | _ => False }
         } =>
-            let newAsync = async && effectTypeIsAsync(effect)
+            let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
             let patternParameters = patterns.map {
                 | PVariable p => p.name.map(escapeKeyword).else{"_"}
                 | _ => panic("!")
@@ -314,7 +327,7 @@ extend self: JsEmitter {
             let prefix = if(newAsync) {"async "} else {""}
             "(" + prefix + "(" + parameters + ") => {\n" + self.emitStatements(body, True, newAsync) + "\n})"
         | ELambda(at, Lambda(_, effect, cases)) =>
-            let newAsync = async && effectTypeIsAsync(effect)
+            let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
             let controller = if(newAsync) {["$c"]} else {[]}
             Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
@@ -442,7 +455,7 @@ extend self: JsEmitter {
         term.{
             | EFunctions(at, functions, body) =>
                 let functionStrings = functions.map { f =>
-                    let newAsync = async && effectTypeIsAsync(f.signature.effect)
+                    let newAsync = self.emittingAsync && effectTypeIsAsync(f.signature.effect)
                     self.emitFunctionDefinition(f, newAsync)
                 }
                 functionStrings.join("\n") + "\n" + self.emitStatements(body, last, async)

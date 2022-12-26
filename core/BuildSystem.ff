@@ -126,11 +126,9 @@ internalListDirectory(fs: FileSystem, path: String): List[Pair[String, () => Str
             }
         }
     }
-    function makeOpen(file: String): () => Stream[Buffer] {
-        if(False) {fs.exists("/")} // TODO: This is a workaround for a bug in async inference: readStream is called sync
-        {fs.readStream(file)}
+    go(path).map { file =>
+        Pair(file.dropFirst(prefix.size()), {fs.readStream(file)})
     }
-    go(path).map { file => Pair(file.dropFirst(prefix.size()), makeOpen(file)) }
 }
 
 internalFileSystem(dummy: BuildSystem): FileSystem
