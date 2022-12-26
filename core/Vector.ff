@@ -76,6 +76,9 @@ extend self[T]: Vector[T] {
         }
     }
 
+    toArray(): Array[T]
+        target js sync "return {array: self_.slice()}"
+
     each(body: T => Unit): Unit
         target js sync """
             return self_.forEach(body_);
@@ -97,9 +100,6 @@ extend self[T]: Vector[T] {
             }
             return result;
         """
-
-    toArray(): Array[T]
-        target js sync "return {array: self_.slice()}"
 
 }
 
