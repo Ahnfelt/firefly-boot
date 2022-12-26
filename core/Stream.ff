@@ -325,7 +325,7 @@ extend self[T]: Stream[T] {
     }
 
     toVector(): Vector[T] {
-        self.toArray().toVector()
+        self.toArray().drain()
     }
 
     toList(): List[T] {

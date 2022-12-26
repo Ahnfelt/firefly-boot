@@ -28,7 +28,7 @@ extend self[T]: List[T] {
         [self, list].flatten()
     }
 
-    toVector(): Vector[T]
+    toArray(): Array[T]
         target js sync """
             let current = self_;
             let result = [];
@@ -36,8 +36,12 @@ extend self[T]: List[T] {
                 result.push(current.head_);
                 current = current.tail_;
             }
-            return result;
+            return {array: result};
         """
+
+    toVector(): Vector[T] {
+        self.toArray().drain()
+    }
 
     expect(index: Int): T {
         function go(list: List[T], i: Int): T {

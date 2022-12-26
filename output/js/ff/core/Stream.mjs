@@ -611,7 +611,7 @@ return array_
 }
 
 export function Stream_toVector(self_) {
-return ff_core_Array.Array_toVector(ff_core_Stream.Stream_toArray(self_))
+return ff_core_Array.Array_drain(ff_core_Stream.Stream_toArray(self_))
 }
 
 export function Stream_toList(self_) {
@@ -1136,7 +1136,7 @@ return array_
 }
 
 export async function Stream_toVector$(self_, $c) {
-return ff_core_Array.Array_toVector((await ff_core_Stream.Stream_toArray$(self_, $c)))
+return ff_core_Array.Array_drain((await ff_core_Stream.Stream_toArray$(self_, $c)))
 }
 
 export async function Stream_toList$(self_, $c) {

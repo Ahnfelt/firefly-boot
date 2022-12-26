@@ -231,7 +231,7 @@ export function List_addAll(self_, list_) {
 return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }
 
-export function List_toVector(self_) {
+export function List_toArray(self_) {
 
             let current = self_;
             let result = [];
@@ -239,8 +239,12 @@ export function List_toVector(self_) {
                 result.push(current.head_);
                 current = current.tail_;
             }
-            return result;
+            return {array: result};
         
+}
+
+export function List_toVector(self_) {
+return ff_core_Array.Array_drain(ff_core_List.List_toArray(self_))
 }
 
 export function List_expect(self_, index_) {
@@ -1176,8 +1180,12 @@ export async function List_addAll$(self_, list_, $c) {
 return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }
 
+export async function List_toArray$(self_, $c) {
+throw new Error('Function List_toArray is missing on this target in async context.');
+}
+
 export async function List_toVector$(self_, $c) {
-throw new Error('Function List_toVector is missing on this target in async context.');
+return ff_core_Array.Array_drain(ff_core_List.List_toArray(self_))
 }
 
 export async function List_expect$(self_, index_, $c) {
