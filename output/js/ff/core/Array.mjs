@@ -95,6 +95,14 @@ export function Array_size(self_) {
 return self_.array.length
 }
 
+export function Array_get(self_, index_) {
+
+            return index_ >= 0 && index_ < self_.array.length
+                ? ff_core_Option.Some(self_.array[index_])
+                : ff_core_Option.None()
+        
+}
+
 export function Array_expect(self_, index_) {
 
             if(index_ < 0 || index_ >= self_.array.length) {
@@ -195,6 +203,10 @@ throw new Error('Function Array_isEmpty is missing on this target in async conte
 
 export async function Array_size$(self_, $c) {
 throw new Error('Function Array_size is missing on this target in async context.');
+}
+
+export async function Array_get$(self_, index_, $c) {
+throw new Error('Function Array_get is missing on this target in async context.');
 }
 
 export async function Array_expect$(self_, index_, $c) {

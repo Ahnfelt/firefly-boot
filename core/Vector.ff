@@ -26,6 +26,13 @@ extend self[T]: Vector[T] {
     size(): Int
         target js sync "return self_.length"
 
+    get(index: Int): Option[T]
+        target js sync """
+            return index_ >= 0 && index_ < self_.array.length
+                ? ff_core_Option.Some(self_.array[index_])
+                : ff_core_Option.None()
+        """
+
     expect(index: Int): T
         target js sync """
             if(index_ < 0 || index_ >= self_.length) {
