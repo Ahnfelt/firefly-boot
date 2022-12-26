@@ -1,32 +1,18 @@
 type Array[T] {}
 
-range(size: Int): Array[Int]
+empty[T](): Array[T]
     target js sync """
-        return Array.from({length: size_}, (_, i) => i);
+        return [];
     """
-
-build[A, B](initial: A, body: A => Option[Pair[A, B]]): Array[B] {
-    let builder = ArrayBuilder.empty()
-    function go(state: A): Unit {
-        body(state).{
-            | None =>
-            | Some(Pair(s, x)) =>
-                builder.add(x)
-                tailcall go(s)
-        }
-    }
-    go(initial)
-    builder.drain()
-}
 
 fill[T](size: Int, value: T): Array[T]
     target js sync """
         return new Array(size_).fill(value_);
     """
 
-empty[T](): Array[T]
+range(size: Int): Array[Int]
     target js sync """
-        return [];
+        return Array.from({length: size_}, (_, i) => i);
     """
 
 extend self[T]: Array[T] {

@@ -79,43 +79,10 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function range_(size_) {
+export function empty_() {
 
-        return Array.from({length: size_}, (_, i) => i);
+        return [];
     
-}
-
-export function build_(initial_, body_) {
-const builder_ = ff_core_ArrayBuilder.empty_();
-function go_(state_) {
-_tailcall: for(;;) {
-{
-const _1 = body_(state_);
-{
-if(_1.None) {
-
-return
-}
-}
-{
-if(_1.Some) {
-const s_ = _1.value_.first_;
-const x_ = _1.value_.second_;
-ff_core_ArrayBuilder.ArrayBuilder_add(builder_, x_);
-{
-const state_r_ = s_;
-state_ = state_r_
-continue _tailcall
-}
-return
-}
-}
-}
-return
-}
-}
-go_(initial_);
-return ff_core_ArrayBuilder.ArrayBuilder_drain(builder_)
 }
 
 export function fill_(size_, value_) {
@@ -124,55 +91,22 @@ export function fill_(size_, value_) {
     
 }
 
-export function empty_() {
+export function range_(size_) {
 
-        return [];
+        return Array.from({length: size_}, (_, i) => i);
     
 }
 
-export async function range_$(size_, $c) {
-throw new Error('Function range is missing on this target in async context.');
-}
-
-export async function build_$(initial_, body_, $c) {
-const builder_ = ff_core_ArrayBuilder.empty_();
-async function go_$(state_, $c) {
-_tailcall: for(;;) {
-{
-const _1 = (await body_(state_, $c));
-{
-if(_1.None) {
-
-return
-}
-}
-{
-if(_1.Some) {
-const s_ = _1.value_.first_;
-const x_ = _1.value_.second_;
-ff_core_ArrayBuilder.ArrayBuilder_add(builder_, x_);
-{
-const state_r_ = s_;
-state_ = state_r_
-continue _tailcall
-}
-return
-}
-}
-}
-return
-}
-}
-(await go_$(initial_, $c));
-return ff_core_ArrayBuilder.ArrayBuilder_drain(builder_)
+export async function empty_$($c) {
+throw new Error('Function empty is missing on this target in async context.');
 }
 
 export async function fill_$(size_, value_, $c) {
 throw new Error('Function fill is missing on this target in async context.');
 }
 
-export async function empty_$($c) {
-throw new Error('Function empty is missing on this target in async context.');
+export async function range_$(size_, $c) {
+throw new Error('Function range is missing on this target in async context.');
 }
 
 export function Array_addAll(self_, that_) {
