@@ -127,9 +127,10 @@ extend self[T]: Stack[T] {
         self.sortUsing {Ordering.compare(body(_), body(_))}
     }
 
-    sortUsing(ordering: (T, T) => Ordering): Unit
+    sortUsing(ordering: (T, T) => Ordering): Unit {
+        internalMergeSort(self, ordering, 0, self.size())
+    }
         target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
-        // TODO: Async version
 
 }
 
@@ -158,5 +159,32 @@ instance Array[T: Show]: Show {
         }
         stack.push("].toStack()")
         stack.join()
+    }
+}
+
+internalMergeSort[T](stack: Stack[T], compare: (T, T) => Ordering, start: Int, end: Int): Unit {
+    if(end - start < 2) {} else:
+
+    mutable middle = start + ((end - start) / 2)
+    internalMergeSort(stack, compare, start, middle)
+    internalMergeSort(stack, compare, middle, end)
+
+    mutable i = start
+    mutable j = middle
+    while {i < middle && j < end} {
+        if(compare(stack.expect(i), stack.expect(j)) != OrderingAfter) {
+            i += 1
+        } else {
+            let value = stack.expect(j)
+            mutable k = j
+            while {k > i} {
+                stack.set(k, stack.expect(k - 1))
+                k -= 1
+            }
+            stack.set(i, value)
+            i += 1
+            middle += 1
+            j += 1
+        }
     }
 }

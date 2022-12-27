@@ -83,8 +83,64 @@ export function empty_() {
 return {array: []}
 }
 
+export function internalMergeSort_(stack_, compare_, start_, end_) {
+if(((end_ - start_) < 2)) {
+
+} else {
+let middle_ = (start_ + ((end_ - start_) / 2));
+ff_core_Stack.internalMergeSort_(stack_, compare_, start_, middle_);
+ff_core_Stack.internalMergeSort_(stack_, compare_, middle_, end_);
+let i_ = start_;
+let j_ = middle_;
+while(((i_ < middle_) && (j_ < end_))) {
+if((compare_(ff_core_Stack.Stack_expect(stack_, i_), ff_core_Stack.Stack_expect(stack_, j_)) !== ff_core_Ordering.OrderingAfter())) {
+i_ += 1
+} else {
+const value_ = ff_core_Stack.Stack_expect(stack_, j_);
+let k_ = j_;
+while((k_ > i_)) {
+ff_core_Stack.Stack_set(stack_, k_, ff_core_Stack.Stack_expect(stack_, (k_ - 1)));
+k_ -= 1
+};
+ff_core_Stack.Stack_set(stack_, i_, value_);
+i_ += 1;
+middle_ += 1;
+j_ += 1
+}
+}
+}
+}
+
 export async function empty_$($c) {
 throw new Error('Function empty is missing on this target in async context.');
+}
+
+export async function internalMergeSort_$(stack_, compare_, start_, end_, $c) {
+if(((end_ - start_) < 2)) {
+
+} else {
+let middle_ = (start_ + ((end_ - start_) / 2));
+(await ff_core_Stack.internalMergeSort_$(stack_, compare_, start_, middle_, $c));
+(await ff_core_Stack.internalMergeSort_$(stack_, compare_, middle_, end_, $c));
+let i_ = start_;
+let j_ = middle_;
+while(((i_ < middle_) && (j_ < end_))) {
+if(((await compare_(ff_core_Stack.Stack_expect(stack_, i_), ff_core_Stack.Stack_expect(stack_, j_), $c)) !== ff_core_Ordering.OrderingAfter())) {
+i_ += 1
+} else {
+const value_ = ff_core_Stack.Stack_expect(stack_, j_);
+let k_ = j_;
+while((k_ > i_)) {
+ff_core_Stack.Stack_set(stack_, k_, ff_core_Stack.Stack_expect(stack_, (k_ - 1)));
+k_ -= 1
+};
+ff_core_Stack.Stack_set(stack_, i_, value_);
+i_ += 1;
+middle_ += 1;
+j_ += 1
+}
+}
+}
 }
 
 export function Stack_isEmpty(self_) {
@@ -219,6 +275,12 @@ export function Stack_toList(self_, start_ = 0, end_ = 9007199254740991) {
         
 }
 
+export function Stack_sortBy(self_, body_, ff_core_Ordering_Order$S) {
+ff_core_Stack.Stack_sortUsing(self_, ((_w1, _w2) => {
+return ff_core_Ordering_Order$S.compare_(body_(_w1), body_(_w2))
+}))
+}
+
 export function Stack_sortUsing(self_, ordering_) {
 self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
@@ -319,6 +381,12 @@ throw new Error('Function Stack_toArray is missing on this target in async conte
 
 export async function Stack_toList$(self_, start_ = 0, end_ = 9007199254740991, $c) {
 throw new Error('Function Stack_toList is missing on this target in async context.');
+}
+
+export async function Stack_sortBy$(self_, body_, ff_core_Ordering_Order$S, $c) {
+(await ff_core_Stack.Stack_sortUsing$(self_, (async (_w1, _w2, $c) => {
+return ff_core_Ordering_Order$S.compare_((await body_(_w1, $c)), (await body_(_w2, $c)))
+}), $c))
 }
 
 export async function Stack_sortUsing$(self_, ordering_, $c) {
