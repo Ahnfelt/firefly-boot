@@ -175,6 +175,28 @@ export function Stack_each(self_, body_) {
         
 }
 
+export function Stack_eachWhile(self_, body_) {
+for(const value of self_.array) if(!body_(value)) break
+}
+
+export function Stack_all(self_, body_) {
+let result_ = true;
+ff_core_Stack.Stack_eachWhile(self_, ((x_) => {
+result_ = (result_ && body_(x_));
+return result_
+}));
+return result_
+}
+
+export function Stack_any(self_, body_) {
+let result_ = false;
+ff_core_Stack.Stack_eachWhile(self_, ((x_) => {
+result_ = (result_ || body_(x_));
+return (!result_)
+}));
+return result_
+}
+
 export function Stack_drain(self_) {
 const result = self_.array; self_.array = []; return result
 }
@@ -265,6 +287,28 @@ export async function Stack_each$(self_, body_, $c) {
         
 }
 
+export async function Stack_eachWhile$(self_, body_, $c) {
+for(const value of self_.array) if(!await body_(value, $c)) break
+}
+
+export async function Stack_all$(self_, body_, $c) {
+let result_ = true;
+(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $c) => {
+result_ = (result_ && (await body_(x_, $c)));
+return result_
+}), $c));
+return result_
+}
+
+export async function Stack_any$(self_, body_, $c) {
+let result_ = false;
+(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $c) => {
+result_ = (result_ || (await body_(x_, $c)));
+return (!result_)
+}), $c));
+return result_
+}
+
 export async function Stack_drain$(self_, $c) {
 throw new Error('Function Stack_drain is missing on this target in async context.');
 }
@@ -289,6 +333,31 @@ export async function Stack_join$(self_, separator_ = "", $c) {
 throw new Error('Function Stack_join is missing on this target in async context.');
 }
 
-
+export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
+show_(array_) {
+const stack_ = ff_core_Stack.empty_();
+ff_core_Stack.Stack_push(stack_, "[");
+ff_core_Array.Array_each(array_, ((x_) => {
+if((ff_core_Stack.Stack_size(stack_) > 1)) {
+ff_core_Stack.Stack_push(stack_, ", ")
+};
+ff_core_Stack.Stack_push(stack_, ff_core_Show_Show$T.show_(x_))
+}));
+ff_core_Stack.Stack_push(stack_, "].toStack()");
+return ff_core_Stack.Stack_join(stack_, "")
+},
+async show_$(array_, $c) {
+const stack_ = ff_core_Stack.empty_();
+ff_core_Stack.Stack_push(stack_, "[");
+ff_core_Array.Array_each(array_, ((x_) => {
+if((ff_core_Stack.Stack_size(stack_) > 1)) {
+ff_core_Stack.Stack_push(stack_, ", ")
+};
+ff_core_Stack.Stack_push(stack_, ff_core_Show_Show$T.show_(x_))
+}));
+ff_core_Stack.Stack_push(stack_, "].toStack()");
+return ff_core_Stack.Stack_join(stack_, "")
+}
+}}
 
 

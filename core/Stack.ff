@@ -82,9 +82,27 @@ extend self[T]: Stack[T] {
             }
         """
 
-    eachWhile(body: JsValue => Bool): Unit
+    eachWhile(body: T => Bool): Unit
         target js sync "for(const value of self_.array) if(!body_(value)) break"
         target js async "for(const value of self_.array) if(!await body_(value, $c)) break"
+
+    all(body: T => Bool): Bool {
+        mutable result = True
+        self.eachWhile {x =>
+            result = result && body(x)
+            result
+        }
+        result
+    }
+
+    any(body: T => Bool): Bool {
+        mutable result = False
+        self.eachWhile {x =>
+            result = result || body(x)
+            (!result)
+        }
+        result
+    }
 
     drain(): Array[T]
         target js sync "const result = self_.array; self_.array = []; return result"
@@ -116,4 +134,17 @@ extend self: Stack[String] {
     join(separator: String = ""): String
         target js sync "return self_.array.join(separator_)"
 
+}
+
+instance Array[T: Show]: Show {
+    show(array: Array[T]): String {
+        let stack = Stack.empty()
+        stack.push("[")
+        array.each {x =>
+            if(stack.size() > 1) {stack.push(", ")}
+            stack.push(Show.show(x))
+        }
+        stack.push("].toStack()")
+        stack.join()
+    }
 }

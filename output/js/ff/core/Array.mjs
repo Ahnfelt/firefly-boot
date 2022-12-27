@@ -97,6 +97,10 @@ export function range_(size_) {
     
 }
 
+export function internalSame_(left_, right_) {
+return left_ === right_
+}
+
 export async function empty_$($c) {
 throw new Error('Function empty is missing on this target in async context.');
 }
@@ -107,6 +111,10 @@ throw new Error('Function fill is missing on this target in async context.');
 
 export async function range_$(size_, $c) {
 throw new Error('Function range is missing on this target in async context.');
+}
+
+export async function internalSame_$(left_, right_, $c) {
+throw new Error('Function internalSame is missing on this target in async context.');
 }
 
 export function Array_addAll(self_, that_) {
@@ -205,6 +213,28 @@ export function Array_each(self_, body_) {
         
 }
 
+export function Array_eachWhile(self_, body_) {
+for(const value of self_) if(!body_(value)) break
+}
+
+export function Array_all(self_, body_) {
+let result_ = true;
+ff_core_Array.Array_eachWhile(self_, ((x_) => {
+result_ = (result_ && body_(x_));
+return result_
+}));
+return result_
+}
+
+export function Array_any(self_, body_) {
+let result_ = false;
+ff_core_Array.Array_eachWhile(self_, ((x_) => {
+result_ = (result_ || body_(x_));
+return (!result_)
+}));
+return result_
+}
+
 export function Array_map(self_, body_) {
 
             return self_.map(body_)
@@ -294,6 +324,28 @@ export async function Array_each$(self_, body_, $c) {
         
 }
 
+export async function Array_eachWhile$(self_, body_, $c) {
+for(const value of self_) if(!await body_(value, $c)) break
+}
+
+export async function Array_all$(self_, body_, $c) {
+let result_ = true;
+(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $c) => {
+result_ = (result_ && (await body_(x_, $c)));
+return result_
+}), $c));
+return result_
+}
+
+export async function Array_any$(self_, body_, $c) {
+let result_ = false;
+(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $c) => {
+result_ = (result_ || (await body_(x_, $c)));
+return (!result_)
+}), $c));
+return result_
+}
+
 export async function Array_map$(self_, body_, $c) {
 
             let result = [];
@@ -328,6 +380,101 @@ export async function Array_join$(self_, separator_ = "", $c) {
 throw new Error('Function Array_join is missing on this target in async context.');
 }
 
+export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
+show_(array_) {
+const stack_ = ff_core_Stack.empty_();
+ff_core_Stack.Stack_push(stack_, "[");
+ff_core_Array.Array_each(array_, ((x_) => {
+if((ff_core_Stack.Stack_size(stack_) > 1)) {
+ff_core_Stack.Stack_push(stack_, ", ")
+};
+ff_core_Stack.Stack_push(stack_, ff_core_Show_Show$T.show_(x_))
+}));
+ff_core_Stack.Stack_push(stack_, "].toArray()");
+return ff_core_Stack.Stack_join(stack_, "")
+},
+async show_$(array_, $c) {
+const stack_ = ff_core_Stack.empty_();
+ff_core_Stack.Stack_push(stack_, "[");
+ff_core_Array.Array_each(array_, ((x_) => {
+if((ff_core_Stack.Stack_size(stack_) > 1)) {
+ff_core_Stack.Stack_push(stack_, ", ")
+};
+ff_core_Stack.Stack_push(stack_, ff_core_Show_Show$T.show_(x_))
+}));
+ff_core_Stack.Stack_push(stack_, "].toArray()");
+return ff_core_Stack.Stack_join(stack_, "")
+}
+}}
 
+export function ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Equal_Equal$T) { return {
+equal_(left_, right_) {
+if(ff_core_Array.internalSame_(left_, right_)) {
+return true
+} else {
+if((ff_core_Array.Array_size(left_) !== ff_core_Array.Array_size(right_))) {
+return false
+} else {
+let i_ = (-1);
+return ff_core_Array.Array_all(left_, ((x_) => {
+i_ += 1;
+return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_expect(right_, i_))
+}))
+}
+}
+},
+async equal_$(left_, right_, $c) {
+if(ff_core_Array.internalSame_(left_, right_)) {
+return true
+} else {
+if((ff_core_Array.Array_size(left_) !== ff_core_Array.Array_size(right_))) {
+return false
+} else {
+let i_ = (-1);
+return ff_core_Array.Array_all(left_, ((x_) => {
+i_ += 1;
+return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_expect(right_, i_))
+}))
+}
+}
+}
+}}
+
+export function ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering_Order$T) { return {
+compare_(left_, right_) {
+if(ff_core_Array.internalSame_(left_, right_)) {
+return ff_core_Ordering.OrderingSame()
+} else {
+let ordering_ = ff_core_Ordering.OrderingSame();
+let i_ = 0;
+while((((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < ff_core_Array.Array_size(left_))) && (i_ < ff_core_Array.Array_size(right_)))) {
+ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_expect(left_, i_), ff_core_Array.Array_expect(right_, i_));
+i_ += 1
+};
+if((ordering_ !== ff_core_Ordering.OrderingSame())) {
+return ordering_
+} else {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_Array.Array_size(left_), ff_core_Array.Array_size(right_))
+}
+}
+},
+async compare_$(left_, right_, $c) {
+if(ff_core_Array.internalSame_(left_, right_)) {
+return ff_core_Ordering.OrderingSame()
+} else {
+let ordering_ = ff_core_Ordering.OrderingSame();
+let i_ = 0;
+while((((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < ff_core_Array.Array_size(left_))) && (i_ < ff_core_Array.Array_size(right_)))) {
+ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_expect(left_, i_), ff_core_Array.Array_expect(right_, i_));
+i_ += 1
+};
+if((ordering_ !== ff_core_Ordering.OrderingSame())) {
+return ordering_
+} else {
+return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_Array.Array_size(left_), ff_core_Array.Array_size(right_))
+}
+}
+}
+}}
 
 

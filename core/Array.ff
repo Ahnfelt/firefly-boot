@@ -100,9 +100,27 @@ extend self[T]: Array[T] {
             }
         """
 
-    eachWhile(body: JsValue => Bool): Unit
+    eachWhile(body: T => Bool): Unit
         target js sync "for(const value of self_) if(!body_(value)) break"
         target js async "for(const value of self_) if(!await body_(value, $c)) break"
+
+    all(body: T => Bool): Bool {
+        mutable result = True
+        self.eachWhile {x =>
+            result = result && body(x)
+            result
+        }
+        result
+    }
+
+    any(body: T => Bool): Bool {
+        mutable result = False
+        self.eachWhile {x =>
+            result = result || body(x)
+            (!result)
+        }
+        result
+    }
 
     map[S](body: T => S): Array[S]
         target js sync """
@@ -117,7 +135,6 @@ extend self[T]: Array[T] {
         """
 
 }
-
 
 extend self[T: Order]: Array[T] {
     toSet(): Set[T] {
@@ -137,3 +154,45 @@ extend self: Array[String] {
         target js sync "return self_.join(separator_)"
 
 }
+
+instance Array[T: Show]: Show {
+    show(array: Array[T]): String {
+        let stack = Stack.empty()
+        stack.push("[")
+        array.each {x =>
+            if(stack.size() > 1) {stack.push(", ")}
+            stack.push(Show.show(x))
+        }
+        stack.push("].toArray()")
+        stack.join()
+    }
+}
+
+instance Array[T: Equal]: Equal {
+    equal(left: Array[T], right: Array[T]): Bool {
+        if(internalSame(left, right)) {True} else:
+        if(left.size() != right.size()) {False} else:
+        mutable i = -1
+        left.all {x =>
+            i += 1
+            x == right.expect(i)
+        }
+    }
+}
+
+instance Array[T: Order]: Order {
+    compare(left: Array[T], right: Array[T]): Ordering {
+        if(internalSame(left, right)) {OrderingSame} else:
+        mutable ordering = OrderingSame
+        mutable i = 0
+        while {ordering == OrderingSame && i < left.size() && i < right.size()} {
+            ordering = Ordering.compare(left.expect(i), right.expect(i))
+            i += 1
+        }
+        if(ordering != OrderingSame) {ordering} else:
+        Ordering.compare(left.size(), right.size())
+    }
+}
+
+internalSame[T](left: Array[T], right: Array[T]): Bool
+    target js sync "return left_ === right_"
