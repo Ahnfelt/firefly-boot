@@ -3,6 +3,19 @@ type Stack[T] {}
 empty[T](): Stack[T]
     target js sync "return {array: []}"
 
+make[T](value: T): Stack[T]
+    target js sync "return {array: [value_]}"
+
+fill[T](size: Int, value: T): Array[T]
+    target js sync """
+        return {array: new Array(size_).fill(value_)};
+    """
+
+range(size: Int): Array[Int]
+    target js sync """
+        return {array: Array.from({length: size_}, (_, i) => i)};
+    """
+
 extend self[T]: Stack[T] {
 
     isEmpty(): Bool
@@ -72,6 +85,16 @@ extend self[T]: Stack[T] {
         target js sync "self_.array[index_] = body_(self_.array[index_])"
         target js async "self_.array[index_] = await body_(self_.array[index_], $c)"
 
+    fill(value: T, start: Int = 0, end: Int = 9007199254740991): Unit
+        target js sync """
+            self.array.fill(value_, start, end);
+        """
+
+    copy(target: Int, start: Int, end: Int): Unit
+        target js sync """
+            self.array.copyWithin(target, start, end);
+        """
+
     each(body: T => Unit): Unit
         target js sync """
             return self_.array.forEach(body_);
@@ -89,7 +112,7 @@ extend self[T]: Stack[T] {
     all(body: T => Bool): Bool {
         mutable result = True
         self.eachWhile {x =>
-            result = result && body(x)
+            result = body(x)
             result
         }
         result
@@ -98,10 +121,21 @@ extend self[T]: Stack[T] {
     any(body: T => Bool): Bool {
         mutable result = False
         self.eachWhile {x =>
-            result = result || body(x)
+            result = body(x)
             (!result)
         }
         result
+    }
+
+    indexWhere(body: T => Bool): Option[Int] {
+        mutable i = -1
+        mutable result = False
+        self.eachWhile {x =>
+            i += 1
+            result = body(x)
+            (!result)
+        }
+        if(result) {i}
     }
 
     drain(): Array[T]
@@ -122,6 +156,9 @@ extend self[T]: Stack[T] {
             }
             return result;
         """
+
+    reverse(): Unit
+        target js sync "self_.array.reverse()"
 
     sortBy[S: Order](body: T => S): Unit {
         self.sortUsing {Ordering.compare(body(_), body(_))}

@@ -83,6 +83,22 @@ export function empty_() {
 return {array: []}
 }
 
+export function make_(value_) {
+return {array: [value_]}
+}
+
+export function fill_(size_, value_) {
+
+        return {array: new Array(size_).fill(value_)};
+    
+}
+
+export function range_(size_) {
+
+        return {array: Array.from({length: size_}, (_, i) => i)};
+    
+}
+
 export function mergeSort_(stack_, compare_, start_, end_) {
 if(((end_ - start_) < 2)) {
 
@@ -113,6 +129,18 @@ j_ += 1
 
 export async function empty_$($c) {
 throw new Error('Function empty is missing on this target in async context.');
+}
+
+export async function make_$(value_, $c) {
+throw new Error('Function make is missing on this target in async context.');
+}
+
+export async function fill_$(size_, value_, $c) {
+throw new Error('Function fill is missing on this target in async context.');
+}
+
+export async function range_$(size_, $c) {
+throw new Error('Function range is missing on this target in async context.');
 }
 
 export async function mergeSort_$(stack_, compare_, start_, end_, $c) {
@@ -225,6 +253,18 @@ export function Stack_modify(self_, index_, body_) {
 self_.array[index_] = body_(self_.array[index_])
 }
 
+export function Stack_fill(self_, value_, start_ = 0, end_ = 9007199254740991) {
+
+            self.array.fill(value_, start, end);
+        
+}
+
+export function Stack_copy(self_, target_, start_, end_) {
+
+            self.array.copyWithin(target, start, end);
+        
+}
+
 export function Stack_each(self_, body_) {
 
             return self_.array.forEach(body_);
@@ -238,7 +278,7 @@ for(const value of self_.array) if(!body_(value)) break
 export function Stack_all(self_, body_) {
 let result_ = true;
 ff_core_Stack.Stack_eachWhile(self_, ((x_) => {
-result_ = (result_ && body_(x_));
+result_ = body_(x_);
 return result_
 }));
 return result_
@@ -247,10 +287,23 @@ return result_
 export function Stack_any(self_, body_) {
 let result_ = false;
 ff_core_Stack.Stack_eachWhile(self_, ((x_) => {
-result_ = (result_ || body_(x_));
+result_ = body_(x_);
 return (!result_)
 }));
 return result_
+}
+
+export function Stack_indexWhere(self_, body_) {
+let i_ = (-1);
+let result_ = false;
+ff_core_Stack.Stack_eachWhile(self_, ((x_) => {
+i_ += 1;
+result_ = body_(x_);
+return (!result_)
+}));
+if(result_) {
+return ff_core_Option.Some(i_)
+} else return ff_core_Option.None()
 }
 
 export function Stack_drain(self_) {
@@ -273,6 +326,10 @@ export function Stack_toList(self_, start_ = 0, end_ = 9007199254740991) {
             }
             return result;
         
+}
+
+export function Stack_reverse(self_) {
+self_.array.reverse()
 }
 
 export function Stack_sortBy(self_, body_, ff_core_Ordering_Order$S) {
@@ -341,6 +398,14 @@ export async function Stack_modify$(self_, index_, body_, $c) {
 self_.array[index_] = await body_(self_.array[index_], $c)
 }
 
+export async function Stack_fill$(self_, value_, start_ = 0, end_ = 9007199254740991, $c) {
+throw new Error('Function Stack_fill is missing on this target in async context.');
+}
+
+export async function Stack_copy$(self_, target_, start_, end_, $c) {
+throw new Error('Function Stack_copy is missing on this target in async context.');
+}
+
 export async function Stack_each$(self_, body_, $c) {
 
             for(let i = 0; i < self_.array.length; i++) {
@@ -356,7 +421,7 @@ for(const value of self_.array) if(!await body_(value, $c)) break
 export async function Stack_all$(self_, body_, $c) {
 let result_ = true;
 (await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $c) => {
-result_ = (result_ && (await body_(x_, $c)));
+result_ = (await body_(x_, $c));
 return result_
 }), $c));
 return result_
@@ -365,10 +430,23 @@ return result_
 export async function Stack_any$(self_, body_, $c) {
 let result_ = false;
 (await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $c) => {
-result_ = (result_ || (await body_(x_, $c)));
+result_ = (await body_(x_, $c));
 return (!result_)
 }), $c));
 return result_
+}
+
+export async function Stack_indexWhere$(self_, body_, $c) {
+let i_ = (-1);
+let result_ = false;
+(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $c) => {
+i_ += 1;
+result_ = (await body_(x_, $c));
+return (!result_)
+}), $c));
+if(result_) {
+return ff_core_Option.Some(i_)
+} else return ff_core_Option.None()
 }
 
 export async function Stack_drain$(self_, $c) {
@@ -381,6 +459,10 @@ throw new Error('Function Stack_toArray is missing on this target in async conte
 
 export async function Stack_toList$(self_, start_ = 0, end_ = 9007199254740991, $c) {
 throw new Error('Function Stack_toList is missing on this target in async context.');
+}
+
+export async function Stack_reverse$(self_, $c) {
+throw new Error('Function Stack_reverse is missing on this target in async context.');
 }
 
 export async function Stack_sortBy$(self_, body_, ff_core_Ordering_Order$S, $c) {
