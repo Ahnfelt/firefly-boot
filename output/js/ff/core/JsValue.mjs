@@ -103,7 +103,7 @@ export function JsValue_expectBool(self_) {
 return self_
 }
 
-export function JsValue_expectArray(self_) {
+export function JsValue_expectTable(self_) {
 return self_
 }
 
@@ -353,8 +353,8 @@ export async function JsValue_expectBool$(self_, $c) {
 throw new Error('Function JsValue_expectBool is missing on this target in async context.');
 }
 
-export async function JsValue_expectArray$(self_, $c) {
-throw new Error('Function JsValue_expectArray is missing on this target in async context.');
+export async function JsValue_expectTable$(self_, $c) {
+throw new Error('Function JsValue_expectTable is missing on this target in async context.');
 }
 
 export async function JsValue_expectBuffer$(self_, $c) {
@@ -601,7 +601,7 @@ export const ff_core_JsValue_IsJsValue$ff_core_Bool_Bool = {
 
 };
 
-export function ff_core_JsValue_IsJsValue$ff_core_Array_Array(ff_core_JsValue_IsJsValue$T) { return {
+export function ff_core_JsValue_IsJsValue$ff_core_Table_Table(ff_core_JsValue_IsJsValue$T) { return {
 
 }}
 

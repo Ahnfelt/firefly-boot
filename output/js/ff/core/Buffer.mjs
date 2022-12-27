@@ -84,7 +84,7 @@ return Buffer.alloc(size_)
 }
 
 export function fromBufferTable_(table_) {
-return Buffer.concat(array_)
+return Buffer.concat(table_)
 }
 
 export async function make_$(size_, $c) {

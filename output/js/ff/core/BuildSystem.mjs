@@ -270,7 +270,7 @@ return ff_core_Core.panic_("dependencyAssets not yet implemented")
 }
 
 export async function BuildSystem_arguments$(self_, $c) {
-return ff_core_Table.Table_toList(self_.array_)
+return self_.array_
 }
 
 export async function BuildSystem_tasks$(self_, $c) {

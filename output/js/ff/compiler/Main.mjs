@@ -114,8 +114,8 @@ return {BuildCommand: true, mainPath_};
 export function main_(system_) {
 let arguments_ = ff_core_NodeSystem.NodeSystem_arguments(system_);
 function consumeArgument_() {
-const first_ = ff_core_List.List_first(arguments_);
-arguments_ = ff_core_List.List_dropFirst(arguments_, 1);
+const first_ = ff_core_Table.Table_first(arguments_);
+arguments_ = ff_core_Table.Table_dropFirst(arguments_, 1);
 return first_
 }
 const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
@@ -168,7 +168,7 @@ break
 }
 }
 {
-ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((argument_) => {
+ff_core_Option.Option_each(ff_core_Table.Table_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
 }))
 break
@@ -326,8 +326,8 @@ return
 export async function main_$(system_, $c) {
 let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
 function consumeArgument_() {
-const first_ = ff_core_List.List_first(arguments_);
-arguments_ = ff_core_List.List_dropFirst(arguments_, 1);
+const first_ = ff_core_Table.Table_first(arguments_);
+arguments_ = ff_core_Table.Table_dropFirst(arguments_, 1);
 return first_
 }
 const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
@@ -380,7 +380,7 @@ break
 }
 }
 {
-ff_core_Option.Option_each(ff_core_List.List_first(arguments_), ((argument_) => {
+ff_core_Option.Option_each(ff_core_Table.Table_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
 }))
 break
@@ -498,7 +498,7 @@ export async function importAndRun_$(fs_, fireflyPath_, target_, packagePair_, m
         const cwd = process.cwd();
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(cwd + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        await main.$run$(fireflyPath_, ff_core_List.List_toTable(arguments_))
+        await main.$run$(fireflyPath_, arguments_)
     
 }
 

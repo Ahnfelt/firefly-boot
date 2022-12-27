@@ -34,8 +34,8 @@ extend self: BuildSystem {
         panic("dependencyAssets not yet implemented")
     }
 
-    arguments(): List[String]
-        target node async "return ff_core_Table.Table_toList(self_.array_)"
+    arguments(): Table[String]
+        target node async "return self_.array_"
 
     tasks(): TaskSystem
         target js async "return null"

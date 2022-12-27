@@ -134,7 +134,7 @@ throw new Error('Function NodeSystem_js is missing on this target in sync contex
 }
 
 export async function NodeSystem_arguments$(self_, $c) {
-return ff_core_Table.Table_toList(self_.array_)
+return self_.array_
 }
 
 export async function NodeSystem_assets$(self_, $c) {

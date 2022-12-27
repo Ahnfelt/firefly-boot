@@ -158,14 +158,14 @@ importAndRun(
     target: String
     packagePair: PackagePair
     mainFile: String
-    arguments: List[String]
+    arguments: Table[String]
 ): Unit
     target node async """
         const process = await import('process');
         const cwd = process.cwd();
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(cwd + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        await main.$run$(fireflyPath_, ff_core_List.List_toTable(arguments_))
+        await main.$run$(fireflyPath_, arguments_)
     """
 
 prepareFireflyDirectory(fs: FileSystem) {

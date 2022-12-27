@@ -2,8 +2,8 @@ type NodeSystem! {}
 
 extend self: NodeSystem {
 
-    arguments(): List[String]
-        target node async "return ff_core_Table.Table_toList(self_.array_)"
+    arguments(): Table[String]
+        target node async "return self_.array_"
 
     assets(): AssetSystem {
         let assetPkgSnapshotPath = "/snapshot/output/assets"

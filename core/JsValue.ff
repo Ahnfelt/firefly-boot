@@ -17,7 +17,7 @@ extend self: JsValue {
     expectBool(): Bool
         target js sync "return self_"
 
-    expectArray(): Array[JsValue]
+    expectTable(): Table[JsValue]
         target js sync "return self_"
 
     expectBuffer(): Buffer
@@ -215,7 +215,7 @@ instance Char: IsJsValue {}
 instance Int: IsJsValue {}
 instance Float: IsJsValue {}
 instance Bool: IsJsValue {}
-instance Array[T: IsJsValue]: IsJsValue {}
+instance Table[T: IsJsValue]: IsJsValue {}
 instance Error: IsJsValue {}
 instance Instant: IsJsValue {}
 instance Duration: IsJsValue {}

@@ -28,8 +28,8 @@ extend self[T]: Table[T] {
 
     get(index: Int): Option[T]
         target js sync """
-            return index_ >= 0 && index_ < self_.array.length
-                ? ff_core_Option.Some(self_.array[index_])
+            return index_ >= 0 && index_ < self_.length
+                ? ff_core_Option.Some(self_[index_])
                 : ff_core_Option.None()
         """
 
@@ -40,6 +40,10 @@ extend self[T]: Table[T] {
             }
             return self_[index_]
         """
+
+    first(): Option[T] { self.get(0) }
+
+    last(): Option[T] { self.get(self.size() - 1) }
 
     expectFirst(): T { self.expect(0) }
 

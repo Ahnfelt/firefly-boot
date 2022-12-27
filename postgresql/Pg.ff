@@ -217,47 +217,47 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withBoolVector(name: String, value: Vector[Bool]): PgStatement {
+    withBoolTable(name: String, value: Table[Bool]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableBoolVector(name: String, value: Option[Vector[Bool]]): PgStatement {
+    withNullableBoolTable(name: String, value: Option[Table[Bool]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withIntVector(name: String, value: Vector[Int]): PgStatement {
+    withIntTable(name: String, value: Table[Int]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableIntVector(name: String, value: Option[Vector[Int]]): PgStatement {
+    withNullableIntTable(name: String, value: Option[Table[Int]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withFloatVector(name: String, value: Vector[Float]): PgStatement {
+    withFloatTable(name: String, value: Table[Float]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableFloatVector(name: String, value: Option[Vector[Float]]): PgStatement {
+    withNullableFloatTable(name: String, value: Option[Table[Float]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withStringVector(name: String, value: Vector[String]): PgStatement {
+    withStringTable(name: String, value: Table[String]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableStringVector(name: String, value: Option[Vector[String]]): PgStatement {
+    withNullableStringTable(name: String, value: Option[Table[String]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withInstantVector(name: String, value: Vector[Instant]): PgStatement {
+    withInstantTable(name: String, value: Table[Instant]): PgStatement {
         let jsDate = UnsafeJs.jsSystem().global().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
@@ -266,7 +266,7 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableInstantVector(name: String, value: Option[Vector[Instant]]): PgStatement {
+    withNullableInstantTable(name: String, value: Option[Table[Instant]]): PgStatement {
         let jsDate = UnsafeJs.jsSystem().global().get("Date")
         function toJsDate(instant: Instant): JsValue {
             jsDate.new1(instant.since1970.seconds * 1000.0)
@@ -275,12 +275,12 @@ extend self: PgStatement {
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withBufferVector(name: String, value: Vector[Buffer]): PgStatement {
+    withBufferTable(name: String, value: Table[Buffer]): PgStatement {
         let p = UnsafeJs.jsSystem().value(value)
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
 
-    withNullableBufferVector(name: String, value: Option[Vector[Buffer]]): PgStatement {
+    withNullableBufferTable(name: String, value: Option[Table[Buffer]]): PgStatement {
         let p = value.map(UnsafeJs.jsSystem().value).else {UnsafeJs.jsSystem().null()}
         self.PgStatement(parameters = self.parameters.add(name, p))
     }
@@ -342,28 +342,28 @@ extend self: PgRow {
         internalGet(self, name, lower) {_.expectBuffer()}
     }
 
-    getBoolVector(name: String, lower: Bool = True): Option[Vector[Bool]] {
-        internalGet(self, name, lower) {_.expectArray().map {(_.expectBool() && True) || False}}
+    getBoolTable(name: String, lower: Bool = True): Option[Table[Bool]] {
+        internalGet(self, name, lower) {_.expectTable().map {(_.expectBool() && True) || False}}
     }
 
-    getIntVector(name: String, lower: Bool = True): Option[Vector[Int]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectInt() * 1}}
+    getIntTable(name: String, lower: Bool = True): Option[Table[Int]] {
+        internalGet(self, name, lower) {_.expectTable().map {_.expectInt() * 1}}
     }
 
-    getFloatVector(name: String, lower: Bool = True): Option[Vector[Float]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectFloat() * 1.0}}
+    getFloatTable(name: String, lower: Bool = True): Option[Table[Float]] {
+        internalGet(self, name, lower) {_.expectTable().map {_.expectFloat() * 1.0}}
     }
 
-    getStringVector(name: String, lower: Bool = True): Option[Vector[String]] {
-        internalGet(self, name, lower) {_.expectArray().map {"" + _.expectString()}}
+    getStringTable(name: String, lower: Bool = True): Option[Table[String]] {
+        internalGet(self, name, lower) {_.expectTable().map {"" + _.expectString()}}
     }
 
-    getInstantVector(name: String, lower: Bool = True): Option[Vector[Instant]] {
-        internalGet(self, name, lower) {_.expectArray().map {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}}
+    getInstantTable(name: String, lower: Bool = True): Option[Table[Instant]] {
+        internalGet(self, name, lower) {_.expectTable().map {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}}
     }
 
-    getBufferVector(name: String, lower: Bool = True): Option[Vector[Buffer]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectBuffer()}}
+    getBufferTable(name: String, lower: Bool = True): Option[Table[Buffer]] {
+        internalGet(self, name, lower) {_.expectTable().map {_.expectBuffer()}}
     }
 
 }
@@ -384,7 +384,7 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
         | None =>
             result.get("rowCount").expectInt()
         | Some(f) =>
-            let all = result.get("rows").expectArray().toList().all { row =>
+            let all = result.get("rows").expectTable().toList().all { row =>
                 f(PgRow(row))
             }
             if(all) {1} else {0}
@@ -426,7 +426,7 @@ internalBatchStatements(
             | None =>
                 result.get("rowCount").expectInt()
             | Some(f) =>
-                let all = result.get("rows").expectArray().toList().all { row =>
+                let all = result.get("rows").expectTable().toList().all { row =>
                     f(PgRow(row))
                 }
                 endBody.each {_()}
@@ -436,12 +436,12 @@ internalBatchStatements(
     results
 }
 
-internalCheckParameters(parameterNames: List[String], parameters: Map[String, JsValue]): Vector[JsValue] {
+internalCheckParameters(parameterNames: List[String], parameters: Map[String, JsValue]): Table[JsValue] {
     let arguments = parameterNames.map { name =>
         parameters.get(name).else {
             panic("No value for parameter: " + name)
         }
-    }.toVector()
+    }.toTable()
     let unusedParameters = parameters.keys().removeAll(parameterNames.toSet())
     if(unusedParameters.size() > 0) {
         panic("Unused parameters: " + unusedParameters.toList().join(", "))
