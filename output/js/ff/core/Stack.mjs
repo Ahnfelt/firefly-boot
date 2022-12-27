@@ -83,10 +83,6 @@ export function empty_() {
 return {array: []}
 }
 
-export function make_(value_) {
-return {array: [value_]}
-}
-
 export function fill_(size_, value_) {
 
         return {array: new Array(size_).fill(value_)};
@@ -129,10 +125,6 @@ j_ += 1
 
 export async function empty_$($c) {
 throw new Error('Function empty is missing on this target in async context.');
-}
-
-export async function make_$(value_, $c) {
-throw new Error('Function make is missing on this target in async context.');
 }
 
 export async function fill_$(size_, value_, $c) {

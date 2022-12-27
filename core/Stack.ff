@@ -3,9 +3,6 @@ type Stack[T] {}
 empty[T](): Stack[T]
     target js sync "return {array: []}"
 
-make[T](value: T): Stack[T]
-    target js sync "return {array: [value_]}"
-
 fill[T](size: Int, value: T): Array[T]
     target js sync """
         return {array: new Array(size_).fill(value_)};
