@@ -82,6 +82,10 @@ extend self[T]: Stack[T] {
             }
         """
 
+    eachWhile(body: JsValue => Bool): Unit
+        target js sync "for(const value of self_.array) if(!body_(value)) break"
+        target js async "for(const value of self_.array) if(!await body_(value, $c)) break"
+
     drain(): Array[T]
         target js sync "const result = self_.array; self_.array = []; return result"
 

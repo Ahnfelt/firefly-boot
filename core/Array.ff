@@ -100,6 +100,10 @@ extend self[T]: Array[T] {
             }
         """
 
+    eachWhile(body: JsValue => Bool): Unit
+        target js sync "for(const value of self_) if(!body_(value)) break"
+        target js async "for(const value of self_) if(!await body_(value, $c)) break"
+
     map[S](body: T => S): Array[S]
         target js sync """
             return self_.map(body_)
