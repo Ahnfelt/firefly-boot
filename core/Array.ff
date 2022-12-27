@@ -134,6 +134,10 @@ extend self[T]: Array[T] {
             return result;
         """
 
+    sortBy[S: Order](body: T => S): Array[T] {
+        self.sortUsing {Ordering.compare(body(_), body(_))}
+    }
+
     sortUsing(ordering: (T, T) => Ordering): Array[T] {
         let stack = self.toStack()
         stack.sortUsing(ordering)

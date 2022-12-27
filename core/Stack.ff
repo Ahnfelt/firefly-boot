@@ -123,6 +123,10 @@ extend self[T]: Stack[T] {
             return result;
         """
 
+    sortBy[S: Order](body: T => S): Unit {
+        self.sortUsing {Ordering.compare(body(_), body(_))}
+    }
+
     sortUsing(ordering: (T, T) => Ordering): Unit
         target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
         // TODO: Async version

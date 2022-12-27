@@ -241,6 +241,12 @@ export function Array_map(self_, body_) {
         
 }
 
+export function Array_sortBy(self_, body_, ff_core_Ordering_Order$S) {
+return ff_core_Array.Array_sortUsing(self_, ((_w1, _w2) => {
+return ff_core_Ordering_Order$S.compare_(body_(_w1), body_(_w2))
+}))
+}
+
 export function Array_sortUsing(self_, ordering_) {
 const stack_ = ff_core_Array.Array_toStack(self_);
 ff_core_Stack.Stack_sortUsing(stack_, ordering_);
@@ -360,6 +366,12 @@ export async function Array_map$(self_, body_, $c) {
             }
             return result;
         
+}
+
+export async function Array_sortBy$(self_, body_, ff_core_Ordering_Order$S, $c) {
+return (await ff_core_Array.Array_sortUsing$(self_, (async (_w1, _w2, $c) => {
+return ff_core_Ordering_Order$S.compare_((await body_(_w1, $c)), (await body_(_w2, $c)))
+}), $c))
 }
 
 export async function Array_sortUsing$(self_, ordering_, $c) {
