@@ -83,13 +83,13 @@ export function empty_() {
 return {array: []}
 }
 
-export function internalMergeSort_(stack_, compare_, start_, end_) {
+export function mergeSort_(stack_, compare_, start_, end_) {
 if(((end_ - start_) < 2)) {
 
 } else {
 let middle_ = (start_ + ((end_ - start_) / 2));
-ff_core_Stack.internalMergeSort_(stack_, compare_, start_, middle_);
-ff_core_Stack.internalMergeSort_(stack_, compare_, middle_, end_);
+ff_core_Stack.mergeSort_(stack_, compare_, start_, middle_);
+ff_core_Stack.mergeSort_(stack_, compare_, middle_, end_);
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
@@ -115,13 +115,13 @@ export async function empty_$($c) {
 throw new Error('Function empty is missing on this target in async context.');
 }
 
-export async function internalMergeSort_$(stack_, compare_, start_, end_, $c) {
+export async function mergeSort_$(stack_, compare_, start_, end_, $c) {
 if(((end_ - start_) < 2)) {
 
 } else {
 let middle_ = (start_ + ((end_ - start_) / 2));
-(await ff_core_Stack.internalMergeSort_$(stack_, compare_, start_, middle_, $c));
-(await ff_core_Stack.internalMergeSort_$(stack_, compare_, middle_, end_, $c));
+(await ff_core_Stack.mergeSort_$(stack_, compare_, start_, middle_, $c));
+(await ff_core_Stack.mergeSort_$(stack_, compare_, middle_, end_, $c));
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
