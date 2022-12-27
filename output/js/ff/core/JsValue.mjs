@@ -64,6 +64,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_Table from "../../ff/core/Table.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -71,8 +73,6 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type JsValue
 
@@ -198,7 +198,7 @@ for(const value of self_) if(!body_(value)) break
 }
 
 export function JsValue_call(self_, name_, arguments_) {
-return self_[name_].apply(this_, ff_core_List.List_toVector(arguments_))
+return self_[name_].apply(this_, ff_core_List.List_toTable(arguments_))
 }
 
 export function JsValue_call0(self_, name_) {
@@ -242,7 +242,7 @@ return self_[name_].call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
 }
 
 export function JsValue_callValue(self_, this_, arguments_) {
-return self_.apply(this_, ff_core_List.List_toVector(arguments_))
+return self_.apply(this_, ff_core_List.List_toTable(arguments_))
 }
 
 export function JsValue_callValue0(self_) {
@@ -286,7 +286,7 @@ return self_.call(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_)
 }
 
 export function JsValue_new(self_, this_, arguments_) {
-return new (Function.prototype.bind.apply(self_, ff_core_List.List_toVector(arguments_)))
+return new (Function.prototype.bind.apply(self_, ff_core_List.List_toTable(arguments_)))
 }
 
 export function JsValue_new0(self_) {

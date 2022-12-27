@@ -64,6 +64,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_Table from "../../ff/core/Table.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -71,8 +73,6 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type Buffer
 
@@ -83,7 +83,7 @@ export function make_(size_) {
 return Buffer.alloc(size_)
 }
 
-export function fromBufferVector_(vector_) {
+export function fromBufferTable_(table_) {
 return Buffer.concat(array_)
 }
 
@@ -91,8 +91,8 @@ export async function make_$(size_, $c) {
 throw new Error('Function make is missing on this target in async context.');
 }
 
-export async function fromBufferVector_$(vector_, $c) {
-throw new Error('Function fromBufferVector is missing on this target in async context.');
+export async function fromBufferTable_$(table_, $c) {
+throw new Error('Function fromBufferTable is missing on this target in async context.');
 }
 
 export function Buffer_size(self_) {

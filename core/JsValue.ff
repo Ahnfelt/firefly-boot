@@ -96,7 +96,7 @@ extend self: JsValue {
 
 
     call(name: String, arguments: List[JsValue]): JsValue
-        target js sync "return self_[name_].apply(this_, ff_core_List.List_toVector(arguments_))"
+        target js sync "return self_[name_].apply(this_, ff_core_List.List_toTable(arguments_))"
 
     call0(name: String): JsValue
         target js sync "return self_[name_].call(self_)"
@@ -130,7 +130,7 @@ extend self: JsValue {
 
 
     callValue(this: JsValue, arguments: List[JsValue]): JsValue
-        target js sync "return self_.apply(this_, ff_core_List.List_toVector(arguments_))"
+        target js sync "return self_.apply(this_, ff_core_List.List_toTable(arguments_))"
 
     callValue0(): JsValue
         target js sync "return self_.call(self_)"
@@ -164,7 +164,7 @@ extend self: JsValue {
 
 
     new(this: JsValue, arguments: List[JsValue]): JsValue
-        target js sync "return new (Function.prototype.bind.apply(self_, ff_core_List.List_toVector(arguments_)))"
+        target js sync "return new (Function.prototype.bind.apply(self_, ff_core_List.List_toTable(arguments_)))"
 
     new0(): JsValue
         target js sync "return new self_()"

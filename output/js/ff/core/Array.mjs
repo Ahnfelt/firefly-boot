@@ -64,6 +64,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_Table from "../../ff/core/Table.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -71,8 +73,6 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type Array
 
@@ -144,7 +144,7 @@ export function Array_pushAll(self_, value_) {
 self_.array.push(...value_.array)
 }
 
-export function Array_pushVector(self_, value_) {
+export function Array_pushTable(self_, value_) {
 self_.array.push(...value_)
 }
 
@@ -179,7 +179,7 @@ export function Array_drain(self_) {
 const result = self_.array; self_.array = []; return result
 }
 
-export function Array_toVector(self_, start_ = 0, end_ = 9007199254740991) {
+export function Array_toTable(self_, start_ = 0, end_ = 9007199254740991) {
 return self_.array.slice(start_, end_)
 }
 
@@ -241,8 +241,8 @@ export async function Array_pushAll$(self_, value_, $c) {
 throw new Error('Function Array_pushAll is missing on this target in async context.');
 }
 
-export async function Array_pushVector$(self_, value_, $c) {
-throw new Error('Function Array_pushVector is missing on this target in async context.');
+export async function Array_pushTable$(self_, value_, $c) {
+throw new Error('Function Array_pushTable is missing on this target in async context.');
 }
 
 export async function Array_pop$(self_, $c) {
@@ -269,8 +269,8 @@ export async function Array_drain$(self_, $c) {
 throw new Error('Function Array_drain is missing on this target in async context.');
 }
 
-export async function Array_toVector$(self_, start_ = 0, end_ = 9007199254740991, $c) {
-throw new Error('Function Array_toVector is missing on this target in async context.');
+export async function Array_toTable$(self_, start_ = 0, end_ = 9007199254740991, $c) {
+throw new Error('Function Array_toTable is missing on this target in async context.');
 }
 
 export async function Array_toList$(self_, start_ = 0, end_ = 9007199254740991, $c) {

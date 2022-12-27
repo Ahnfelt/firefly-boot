@@ -27,7 +27,7 @@ make(size: Int): Buffer
     target node sync "return Buffer.alloc(size_)"
     target js sync "return new Uint8Array(size_)"
 
-fromBufferVector(vector: Vector[Buffer]): Buffer
+fromBufferTable(table: Table[Buffer]): Buffer
     target node sync "return Buffer.concat(array_)"
     target js sync """
         let length = 0

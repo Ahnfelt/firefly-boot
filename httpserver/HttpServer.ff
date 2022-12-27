@@ -123,7 +123,7 @@ extend self: HttpRequest {
 extend self: HttpResponse {
 
     setHeader(name: String, values: List[String]): Unit
-        target node async "self_.setHeader(name_, ff_core_List.List_toVector(values_))"
+        target node async "self_.setHeader(name_, ff_core_List.List_toTable(values_))"
 
     writeStatus(code: Int, message: Option[String]): Unit
         target node async "self_.writeHead(code_, message_.value_)"

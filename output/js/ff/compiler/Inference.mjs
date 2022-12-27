@@ -74,6 +74,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_Table from "../../ff/core/Table.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -81,8 +83,6 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type Inference
 export function Inference(unification_) {
@@ -594,7 +594,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
-const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Vector.Vector_toList(ff_core_String.String_split(name_, 36)), 1);
+const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Table.Table_toList(ff_core_String.String_split(name_, 36)), 1);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {
@@ -2277,7 +2277,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
-const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Vector.Vector_toList(ff_core_String.String_split(name_, 36)), 1);
+const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Table.Table_toList(ff_core_String.String_split(name_, 36)), 1);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {

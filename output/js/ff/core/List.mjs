@@ -64,6 +64,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_Table from "../../ff/core/Table.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -71,8 +73,6 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type List
 const Empty$ = {Empty: true};
@@ -243,7 +243,7 @@ export function List_toArray(self_) {
         
 }
 
-export function List_toVector(self_) {
+export function List_toTable(self_) {
 return ff_core_Array.Array_drain(ff_core_List.List_toArray(self_))
 }
 
@@ -1184,7 +1184,7 @@ export async function List_toArray$(self_, $c) {
 throw new Error('Function List_toArray is missing on this target in async context.');
 }
 
-export async function List_toVector$(self_, $c) {
+export async function List_toTable$(self_, $c) {
 return ff_core_Array.Array_drain(ff_core_List.List_toArray(self_))
 }
 
@@ -2444,11 +2444,11 @@ return go_(self_, ff_core_List.Empty(), ff_core_List.Empty())
 }
 
 export function List_join(self_, separator_ = "") {
-return ff_core_Vector.Vector_join(ff_core_List.List_toVector(self_), separator_)
+return ff_core_Table.Table_join(ff_core_List.List_toTable(self_), separator_)
 }
 
 export async function List_join$(self_, separator_ = "", $c) {
-return ff_core_Vector.Vector_join(ff_core_List.List_toVector(self_), separator_)
+return ff_core_Table.Table_join(ff_core_List.List_toTable(self_), separator_)
 }
 
 export function ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T) { return {

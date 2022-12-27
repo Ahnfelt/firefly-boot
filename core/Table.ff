@@ -1,23 +1,23 @@
-type Vector[T] {}
+type Table[T] {}
 
-empty[T](): Vector[T]
+empty[T](): Table[T]
     target js sync """
         return [];
     """
 
-fill[T](size: Int, value: T): Vector[T]
+fill[T](size: Int, value: T): Table[T]
     target js sync """
         return new Array(size_).fill(value_);
     """
 
-range(size: Int): Vector[Int]
+range(size: Int): Table[Int]
     target js sync """
         return Array.from({length: size_}, (_, i) => i);
     """
 
-extend self[T]: Vector[T] {
+extend self[T]: Table[T] {
 
-    addAll(that: Vector[T]): Vector[T]
+    addAll(that: Table[T]): Table[T]
         target js sync "return self_.concat(that_)"
 
     isEmpty(): Bool
@@ -36,7 +36,7 @@ extend self[T]: Vector[T] {
     expect(index: Int): T
         target js sync """
             if(index_ < 0 || index_ >= self_.length) {
-                throw new Error('Index ' + index_ + ' is out of bounds in a vector of size ' + self_.length)
+                throw new Error('Index ' + index_ + ' is out of bounds in a table of size ' + self_.length)
             }
             return self_[index_]
         """
@@ -45,13 +45,13 @@ extend self[T]: Vector[T] {
 
     expectLast(): T { self.expect(self.size() - 1) }
 
-    dropFirst(count: Int = 1): Vector[T]
+    dropFirst(count: Int = 1): Table[T]
         target js sync "return self_.slice(count_)"
 
-    dropLast(count: Int = 1): Vector[T]
+    dropLast(count: Int = 1): Table[T]
         target js sync "return self_.slice(0, self_.length - count_)"
 
-    update(index: Int, body: T => T): Vector[T]
+    update(index: Int, body: T => T): Table[T]
         target js sync """
             let result = self_.slice();
             result[index_] = body_(result[index_]);
@@ -96,7 +96,7 @@ extend self[T]: Vector[T] {
             }
         """
 
-    map[S](body: T => S): Vector[S]
+    map[S](body: T => S): Table[S]
         target js sync """
             return self_.map(body_)
         """
@@ -111,19 +111,19 @@ extend self[T]: Vector[T] {
 }
 
 
-extend self[T: Order]: Vector[T] {
+extend self[T: Order]: Table[T] {
     toSet(): Set[T] {
         self.toList().toSet()
     }
 }
 
-extend self[K: Order, V]: Vector[Pair[K, V]] {
+extend self[K: Order, V]: Table[Pair[K, V]] {
     toMap(): Map[K, V] {
         self.toList().toMap()
     }
 }
 
-extend self: Vector[String] {
+extend self: Table[String] {
 
     join(separator: String = ""): String
         target js sync "return self_.join(separator_)"

@@ -93,7 +93,7 @@ coreImports: List[DImport] =
         "TimeSystem"
         "Try"
         "Unit"
-        "Vector"
+        "Table"
     ].map { moduleName =>
         DImport(
             at = Location("<prelude>", 1, 1),

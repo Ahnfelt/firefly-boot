@@ -84,6 +84,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_Table from "../../ff/core/Table.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -91,8 +93,6 @@ import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
-
-import * as ff_core_Vector from "../../ff/core/Vector.mjs"
 
 // type MainCommand
 const BootstrapCommand$ = {BootstrapCommand: true};
@@ -498,7 +498,7 @@ export async function importAndRun_$(fs_, fireflyPath_, target_, packagePair_, m
         const cwd = process.cwd();
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(cwd + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        await main.$run$(fireflyPath_, ff_core_List.List_toVector(arguments_))
+        await main.$run$(fireflyPath_, ff_core_List.List_toTable(arguments_))
     
 }
 

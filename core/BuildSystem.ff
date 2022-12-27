@@ -35,7 +35,7 @@ extend self: BuildSystem {
     }
 
     arguments(): List[String]
-        target node async "return ff_core_Vector.Vector_toList(self_.array_)"
+        target node async "return ff_core_Table.Table_toList(self_.array_)"
 
     tasks(): TaskSystem
         target js async "return null"
