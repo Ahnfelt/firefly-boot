@@ -79,7 +79,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function empty_() {
+export function make_() {
 return {array: []}
 }
 
@@ -123,8 +123,8 @@ j_ += 1
 }
 }
 
-export async function empty_$($c) {
-throw new Error('Function empty is missing on this target in async context.');
+export async function make_$($c) {
+throw new Error('Function make is missing on this target in async context.');
 }
 
 export async function fill_$(size_, value_, $c) {
@@ -529,7 +529,7 @@ throw new Error('Function Stack_join is missing on this target in async context.
 
 export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
 show_(array_) {
-const stack_ = ff_core_Stack.empty_();
+const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
 ff_core_Array.Array_each(array_, ((x_) => {
 if((ff_core_Stack.Stack_size(stack_) > 1)) {
@@ -541,7 +541,7 @@ ff_core_Stack.Stack_push(stack_, "].toStack()");
 return ff_core_Stack.Stack_join(stack_, "")
 },
 async show_$(array_, $c) {
-const stack_ = ff_core_Stack.empty_();
+const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
 ff_core_Array.Array_each(array_, ((x_) => {
 if((ff_core_Stack.Stack_size(stack_) > 1)) {

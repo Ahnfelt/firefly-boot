@@ -418,7 +418,7 @@ throw new Error('Function Array_join is missing on this target in async context.
 
 export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
 show_(array_) {
-const stack_ = ff_core_Stack.empty_();
+const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
 ff_core_Array.Array_each(array_, ((x_) => {
 if((ff_core_Stack.Stack_size(stack_) > 1)) {
@@ -430,7 +430,7 @@ ff_core_Stack.Stack_push(stack_, "].toArray()");
 return ff_core_Stack.Stack_join(stack_, "")
 },
 async show_$(array_, $c) {
-const stack_ = ff_core_Stack.empty_();
+const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
 ff_core_Array.Array_each(array_, ((x_) => {
 if((ff_core_Stack.Stack_size(stack_) > 1)) {

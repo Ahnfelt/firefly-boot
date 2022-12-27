@@ -319,7 +319,7 @@ extend self[T]: Stream[T] {
     }
 
     toStack(): Stack[T] {
-        let stack = Stack.empty()
+        let stack = Stack.make()
         self.each(stack.push)
         stack
     }
@@ -355,7 +355,7 @@ extend self[K: Order, V]: Stream[Pair[K, V]] {
 extend self: Stream[Buffer] {
 
     toBuffer(): Buffer {
-        let builder = Stack.empty()
+        let builder = Stack.make()
         self.each(builder.push)
         Buffer.fromBufferArray(builder.drain())
     }

@@ -83,7 +83,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function tokenize_(file_, code_) {
-const tokens_ = ff_core_Stack.empty_();
+const tokens_ = ff_core_Stack.make_();
 let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
@@ -261,7 +261,7 @@ return ff_core_Stack.Stack_drain(tokens_)
 }
 
 export async function tokenize_$(file_, code_, $c) {
-const tokens_ = ff_core_Stack.empty_();
+const tokens_ = ff_core_Stack.make_();
 let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;

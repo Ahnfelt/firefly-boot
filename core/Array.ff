@@ -173,7 +173,7 @@ extend self: Array[String] {
 
 instance Array[T: Show]: Show {
     show(array: Array[T]): String {
-        let stack = Stack.empty()
+        let stack = Stack.make()
         stack.push("[")
         array.each {x =>
             if(stack.size() > 1) {stack.push(", ")}
