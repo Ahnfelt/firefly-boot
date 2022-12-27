@@ -57,7 +57,6 @@ fail[T](at: Location, message: String): T {
 
 coreImports: List[DImport] =
     [
-        "Array"
         "AssetSystem"
         "Bool"
         "BrowserSystem"
@@ -87,6 +86,7 @@ coreImports: List[DImport] =
         "Pair"
         "Set"
         "Show"
+        "Stack"
         "Stream"
         "String"
         "TaskSystem"

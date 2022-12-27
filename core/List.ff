@@ -28,7 +28,7 @@ extend self[T]: List[T] {
         [self, list].flatten()
     }
 
-    toArray(): Array[T]
+    toStack(): Stack[T]
         target js sync """
             let current = self_;
             let result = [];
@@ -40,7 +40,7 @@ extend self[T]: List[T] {
         """
 
     toTable(): Table[T] {
-        self.toArray().drain()
+        self.toStack().drain()
     }
 
     expect(index: Int): T {

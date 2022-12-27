@@ -1,7 +1,5 @@
 
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -59,6 +57,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
+
+import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -231,7 +231,7 @@ export function List_addAll(self_, list_) {
 return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }
 
-export function List_toArray(self_) {
+export function List_toStack(self_) {
 
             let current = self_;
             let result = [];
@@ -244,7 +244,7 @@ export function List_toArray(self_) {
 }
 
 export function List_toTable(self_) {
-return ff_core_Array.Array_drain(ff_core_List.List_toArray(self_))
+return ff_core_Stack.Stack_drain(ff_core_List.List_toStack(self_))
 }
 
 export function List_expect(self_, index_) {
@@ -1180,12 +1180,12 @@ export async function List_addAll$(self_, list_, $c) {
 return ff_core_List.List_flatten(ff_core_List.Link(self_, ff_core_List.Link(list_, ff_core_List.Empty())))
 }
 
-export async function List_toArray$(self_, $c) {
-throw new Error('Function List_toArray is missing on this target in async context.');
+export async function List_toStack$(self_, $c) {
+throw new Error('Function List_toStack is missing on this target in async context.');
 }
 
 export async function List_toTable$(self_, $c) {
-return ff_core_Array.Array_drain(ff_core_List.List_toArray(self_))
+return ff_core_Stack.Stack_drain(ff_core_List.List_toStack(self_))
 }
 
 export async function List_expect$(self_, index_, $c) {

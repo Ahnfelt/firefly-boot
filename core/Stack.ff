@@ -1,9 +1,9 @@
-type Array[T] {}
+type Stack[T] {}
 
-empty[T](): Array[T]
+empty[T](): Stack[T]
     target js sync "return {array: []}"
 
-extend self[T]: Array[T] {
+extend self[T]: Stack[T] {
 
     isEmpty(): Bool
         target js sync "return self_.array.length === 0"
@@ -47,7 +47,7 @@ extend self[T]: Array[T] {
     push(value: T): Unit
         target js sync "self_.array.push(value_)"
 
-    pushAll(value: Array[T]): Unit
+    pushAll(value: Stack[T]): Unit
         target js sync "self_.array.push(...value_.array)"
 
     pushTable(value: Table[T]): Unit
@@ -107,7 +107,7 @@ extend self[T]: Array[T] {
 
 }
 
-extend self: Array[String] {
+extend self: Stack[String] {
 
     join(separator: String = ""): String
         target js sync "return self_.array.join(separator_)"

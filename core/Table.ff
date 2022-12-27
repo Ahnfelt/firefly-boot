@@ -87,7 +87,7 @@ extend self[T]: Table[T] {
         }
     }
 
-    toArray(): Array[T]
+    toStack(): Stack[T]
         target js sync "return {array: self_.slice()}"
 
     each(body: T => Unit): Unit

@@ -1,7 +1,5 @@
 
 
-import * as ff_core_Array from "../../ff/core/Array.mjs"
-
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -59,6 +57,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
+
+import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
@@ -602,20 +602,20 @@ result_ = body_(result_, _w1)
 return result_
 }
 
-export function Stream_toArray(self_) {
-const array_ = ff_core_Array.empty_();
+export function Stream_toStack(self_) {
+const stack_ = ff_core_Stack.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_Array.Array_push(array_, value_)
+ff_core_Stack.Stack_push(stack_, value_)
 }));
-return array_
+return stack_
 }
 
 export function Stream_toTable(self_) {
-return ff_core_Array.Array_drain(ff_core_Stream.Stream_toArray(self_))
+return ff_core_Stack.Stack_drain(ff_core_Stream.Stream_toStack(self_))
 }
 
 export function Stream_toList(self_) {
-return ff_core_Array.Array_toList(ff_core_Stream.Stream_toArray(self_), 0, 9007199254740991)
+return ff_core_Stack.Stack_toList(ff_core_Stream.Stream_toStack(self_), 0, 9007199254740991)
 }
 
 export async function Stream_concat$(self_, that_, $c) {
@@ -1127,20 +1127,20 @@ result_ = (await body_(result_, _w1, $c))
 return result_
 }
 
-export async function Stream_toArray$(self_, $c) {
-const array_ = ff_core_Array.empty_();
+export async function Stream_toStack$(self_, $c) {
+const stack_ = ff_core_Stack.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_Array.Array_push(array_, value_)
+ff_core_Stack.Stack_push(stack_, value_)
 }), $c));
-return array_
+return stack_
 }
 
 export async function Stream_toTable$(self_, $c) {
-return ff_core_Array.Array_drain((await ff_core_Stream.Stream_toArray$(self_, $c)))
+return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $c)))
 }
 
 export async function Stream_toList$(self_, $c) {
-return ff_core_Array.Array_toList((await ff_core_Stream.Stream_toArray$(self_, $c)), 0, 9007199254740991)
+return ff_core_Stack.Stack_toList((await ff_core_Stream.Stream_toStack$(self_, $c)), 0, 9007199254740991)
 }
 
 export function Stream_flatten(self_) {
@@ -1172,11 +1172,11 @@ return ff_core_Table.Table_toMap((await ff_core_Stream.Stream_toTable$(self_, $c
 }
 
 export function Stream_toBuffer(self_) {
-const builder_ = ff_core_Array.empty_();
+const builder_ = ff_core_Stack.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_Array.Array_push(builder_, value_)
+ff_core_Stack.Stack_push(builder_, value_)
 }));
-return ff_core_Buffer.fromBufferTable_(ff_core_Array.Array_drain(builder_))
+return ff_core_Buffer.fromBufferTable_(ff_core_Stack.Stack_drain(builder_))
 }
 
 export function Stream_toString(self_, encoding_ = "utf8") {
@@ -1184,11 +1184,11 @@ return ff_core_Buffer.Buffer_toString(ff_core_Stream.Stream_toBuffer(self_), enc
 }
 
 export async function Stream_toBuffer$(self_, $c) {
-const builder_ = ff_core_Array.empty_();
+const builder_ = ff_core_Stack.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_Array.Array_push(builder_, value_)
+ff_core_Stack.Stack_push(builder_, value_)
 }), $c));
-return ff_core_Buffer.fromBufferTable_(ff_core_Array.Array_drain(builder_))
+return ff_core_Buffer.fromBufferTable_(ff_core_Stack.Stack_drain(builder_))
 }
 
 export async function Stream_toString$(self_, encoding_ = "utf8", $c) {

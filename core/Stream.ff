@@ -318,18 +318,18 @@ extend self[T]: Stream[T] {
         result
     }
 
-    toArray(): Array[T] {
-        let array = Array.empty()
-        self.each(array.push)
-        array
+    toStack(): Stack[T] {
+        let stack = Stack.empty()
+        self.each(stack.push)
+        stack
     }
 
     toTable(): Table[T] {
-        self.toArray().drain()
+        self.toStack().drain()
     }
 
     toList(): List[T] {
-        self.toArray().toList()
+        self.toStack().toList()
     }
 
 }
@@ -355,7 +355,7 @@ extend self[K: Order, V]: Stream[Pair[K, V]] {
 extend self: Stream[Buffer] {
 
     toBuffer(): Buffer {
-        let builder = Array.empty()
+        let builder = Stack.empty()
         self.each(builder.push)
         Buffer.fromBufferTable(builder.drain())
     }
