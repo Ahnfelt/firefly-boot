@@ -265,6 +265,30 @@ export function Stack_copy(self_, target_, start_, end_) {
         
 }
 
+export function Stack_delete(self_, start_, deleteCount_) {
+
+            self.array.splice(start, deleteCount_);
+        
+}
+
+export function Stack_insert(self_, start_, value_, deleteCount_ = 0) {
+
+            self.array.splice(start, deleteCount_, value_);
+        
+}
+
+export function Stack_insertAll(self_, start_, value_, deleteCount_ = 0) {
+
+            self.array.splice(start, deleteCount_, ...value_.array);
+        
+}
+
+export function Stack_insertArray(self_, start_, value_, deleteCount_ = 0) {
+
+            self.array.splice(start, deleteCount_, ...value_);
+        
+}
+
 export function Stack_each(self_, body_) {
 
             return self_.array.forEach(body_);
@@ -404,6 +428,22 @@ throw new Error('Function Stack_fill is missing on this target in async context.
 
 export async function Stack_copy$(self_, target_, start_, end_, $c) {
 throw new Error('Function Stack_copy is missing on this target in async context.');
+}
+
+export async function Stack_delete$(self_, start_, deleteCount_, $c) {
+throw new Error('Function Stack_delete is missing on this target in async context.');
+}
+
+export async function Stack_insert$(self_, start_, value_, deleteCount_ = 0, $c) {
+throw new Error('Function Stack_insert is missing on this target in async context.');
+}
+
+export async function Stack_insertAll$(self_, start_, value_, deleteCount_ = 0, $c) {
+throw new Error('Function Stack_insertAll is missing on this target in async context.');
+}
+
+export async function Stack_insertArray$(self_, start_, value_, deleteCount_ = 0, $c) {
+throw new Error('Function Stack_insertArray is missing on this target in async context.');
 }
 
 export async function Stack_each$(self_, body_, $c) {

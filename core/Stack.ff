@@ -95,6 +95,26 @@ extend self[T]: Stack[T] {
             self.array.copyWithin(target, start, end);
         """
 
+    delete(start: Int, deleteCount: Int): Unit
+        target js sync """
+            self.array.splice(start, deleteCount_);
+        """
+
+    insert(start: Int, value: T, deleteCount: Int = 0): Unit
+        target js sync """
+            self.array.splice(start, deleteCount_, value_);
+        """
+
+    insertAll(start: Int, value: Stack[T], deleteCount: Int = 0): Unit
+        target js sync """
+            self.array.splice(start, deleteCount_, ...value_.array);
+        """
+
+    insertArray(start: Int, value: Array[T], deleteCount: Int = 0): Unit
+        target js sync """
+            self.array.splice(start, deleteCount_, ...value_);
+        """
+
     each(body: T => Unit): Unit
         target js sync """
             return self_.array.forEach(body_);
