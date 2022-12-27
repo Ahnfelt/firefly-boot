@@ -445,9 +445,10 @@ compare_(left_, right_) {
 if(ff_core_Array.internalSame_(left_, right_)) {
 return ff_core_Ordering.OrderingSame()
 } else {
-let ordering_ = ff_core_Ordering.OrderingSame();
+const size_ = ff_core_Int.Int_min(ff_core_Array.Array_size(left_), ff_core_Array.Array_size(right_));
 let i_ = 0;
-while((((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < ff_core_Array.Array_size(left_))) && (i_ < ff_core_Array.Array_size(right_)))) {
+let ordering_ = ff_core_Ordering.OrderingSame();
+while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
 ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_expect(left_, i_), ff_core_Array.Array_expect(right_, i_));
 i_ += 1
 };
@@ -462,9 +463,10 @@ async compare_$(left_, right_, $c) {
 if(ff_core_Array.internalSame_(left_, right_)) {
 return ff_core_Ordering.OrderingSame()
 } else {
-let ordering_ = ff_core_Ordering.OrderingSame();
+const size_ = ff_core_Int.Int_min(ff_core_Array.Array_size(left_), ff_core_Array.Array_size(right_));
 let i_ = 0;
-while((((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < ff_core_Array.Array_size(left_))) && (i_ < ff_core_Array.Array_size(right_)))) {
+let ordering_ = ff_core_Ordering.OrderingSame();
+while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
 ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_expect(left_, i_), ff_core_Array.Array_expect(right_, i_));
 i_ += 1
 };

@@ -135,6 +135,32 @@ n_ -= 1
 return result_
 }
 
+export function Int_min(self_, that_) {
+if((self_ < that_)) {
+return self_
+} else {
+return that_
+}
+}
+
+export function Int_max(self_, that_) {
+if((self_ > that_)) {
+return self_
+} else {
+return that_
+}
+}
+
+export function Int_clamp(self_, from_, to_) {
+if((self_ <= from_)) {
+return from_
+} else if((self_ >= to_)) {
+return to_
+} else {
+return self_
+}
+}
+
 export async function Int_abs$(self_, $c) {
 throw new Error('Function Int_abs is missing on this target in async context.');
 }
@@ -185,6 +211,32 @@ result_ = ff_core_List.Link((n_ - 1), result_);
 n_ -= 1
 };
 return result_
+}
+
+export async function Int_min$(self_, that_, $c) {
+if((self_ < that_)) {
+return self_
+} else {
+return that_
+}
+}
+
+export async function Int_max$(self_, that_, $c) {
+if((self_ > that_)) {
+return self_
+} else {
+return that_
+}
+}
+
+export async function Int_clamp$(self_, from_, to_, $c) {
+if((self_ <= from_)) {
+return from_
+} else if((self_ >= to_)) {
+return to_
+} else {
+return self_
+}
 }
 
 

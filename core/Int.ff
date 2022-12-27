@@ -46,4 +46,16 @@ extend self: Int {
         result
     }
 
+    min(that: Int): Int {
+        if(self < that) {self} else {that}
+    }
+
+    max(that: Int): Int {
+        if(self > that) {self} else {that}
+    }
+
+    clamp(from: Int, to: Int): Int {
+        if(self <= from) {from} elseIf {self >= to} {to} else {self}
+    }
+
 }

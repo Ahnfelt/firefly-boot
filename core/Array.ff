@@ -183,9 +183,10 @@ instance Array[T: Equal]: Equal {
 instance Array[T: Order]: Order {
     compare(left: Array[T], right: Array[T]): Ordering {
         if(internalSame(left, right)) {OrderingSame} else:
-        mutable ordering = OrderingSame
+        let size = left.size().min(right.size())
         mutable i = 0
-        while {ordering == OrderingSame && i < left.size() && i < right.size()} {
+        mutable ordering = OrderingSame
+        while {ordering == OrderingSame && i < size} {
             ordering = Ordering.compare(left.expect(i), right.expect(i))
             i += 1
         }
