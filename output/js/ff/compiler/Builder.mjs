@@ -18,6 +18,8 @@ import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
 import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -81,8 +83,6 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
-
-import * as ff_core_Table from "../../ff/core/Table.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -290,7 +290,7 @@ export async function internalCallPkg_$(self_, packageFile_, outputPath_, target
         return await pkg.exec([
             packageFile_,
             '--out-path', outputPath_,
-            '--target', ff_core_List.List_toTable(targets_).join(',')
+            '--target', ff_core_List.List_toArray(targets_).join(',')
         ])
     
 }

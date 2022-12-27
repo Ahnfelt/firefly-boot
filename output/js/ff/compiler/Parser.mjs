@@ -8,6 +8,8 @@ import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
 
 import * as ff_compiler_Wildcards from "../../ff/compiler/Wildcards.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -72,8 +74,6 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
-import * as ff_core_Table from "../../ff/core/Table.mjs"
-
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -97,10 +97,10 @@ export function ParsedTargets(js_, jsSync_, jsAsync_, browser_, browserSync_, br
 return {js_, jsSync_, jsAsync_, browser_, browserSync_, browserAsync_, node_, nodeSync_, nodeAsync_};
 }
 
-export const binaryOperators_ = ff_core_List.List_toTable(ff_core_List.Link(ff_core_List.Link("||", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("&&", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("!=", ff_core_List.Link("==", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("<=", ff_core_List.Link(">=", ff_core_List.Link("<", ff_core_List.Link(">", ff_core_List.Empty())))), ff_core_List.Link(ff_core_List.Link("+", ff_core_List.Link("-", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("*", ff_core_List.Link("/", ff_core_List.Link("%", ff_core_List.Empty()))), ff_core_List.Link(ff_core_List.Link("^", ff_core_List.Empty()), ff_core_List.Empty()))))))));
+export const binaryOperators_ = ff_core_List.List_toArray(ff_core_List.Link(ff_core_List.Link("||", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("&&", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("!=", ff_core_List.Link("==", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("<=", ff_core_List.Link(">=", ff_core_List.Link("<", ff_core_List.Link(">", ff_core_List.Empty())))), ff_core_List.Link(ff_core_List.Link("+", ff_core_List.Link("-", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("*", ff_core_List.Link("/", ff_core_List.Link("%", ff_core_List.Empty()))), ff_core_List.Link(ff_core_List.Link("^", ff_core_List.Empty()), ff_core_List.Empty()))))))));
 
 export function make_(packagePair_, file_, tokens_, targetIsNode_) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Table.Table_expectLast(tokens_), targetIsNode_, 0, 1)
+return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), targetIsNode_, 0, 1)
 }
 
 export function findBestTarget_(targetIsNode_, body_, targets_) {
@@ -175,7 +175,7 @@ return
 }
 
 export async function make_$(packagePair_, file_, tokens_, targetIsNode_, $c) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Table.Table_expectLast(tokens_), targetIsNode_, 0, 1)
+return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), targetIsNode_, 0, 1)
 }
 
 export async function findBestTarget_$(targetIsNode_, body_, targets_, $c) {
@@ -254,24 +254,24 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 export function Parser_current(self_) {
-if((self_.offset_ < ff_core_Table.Table_size(self_.tokens_))) {
-return ff_core_Table.Table_expect(self_.tokens_, self_.offset_)
+if((self_.offset_ < ff_core_Array.Array_size(self_.tokens_))) {
+return ff_core_Array.Array_expect(self_.tokens_, self_.offset_)
 } else {
 return self_.end_
 }
 }
 
 export function Parser_ahead(self_) {
-if(((self_.offset_ + 1) < ff_core_Table.Table_size(self_.tokens_))) {
-return ff_core_Table.Table_expect(self_.tokens_, (self_.offset_ + 1))
+if(((self_.offset_ + 1) < ff_core_Array.Array_size(self_.tokens_))) {
+return ff_core_Array.Array_expect(self_.tokens_, (self_.offset_ + 1))
 } else {
 return self_.end_
 }
 }
 
 export function Parser_aheadAhead(self_) {
-if(((self_.offset_ + 2) < ff_core_Table.Table_size(self_.tokens_))) {
-return ff_core_Table.Table_expect(self_.tokens_, (self_.offset_ + 2))
+if(((self_.offset_ + 2) < ff_core_Array.Array_size(self_.tokens_))) {
+return ff_core_Array.Array_expect(self_.tokens_, (self_.offset_ + 2))
 } else {
 return self_.end_
 }
@@ -872,7 +872,7 @@ ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
 return ff_core_String.String_expectInt(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt())))
 })()
 : 0);
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_expectInt(ff_core_Table.Table_expect(parts_, 0)), ff_core_String.String_expectInt(ff_core_Table.Table_expect(parts_, 1)), patch_)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_expectInt(ff_core_Array.Array_expect(parts_, 0)), ff_core_String.String_expectInt(ff_core_Array.Array_expect(parts_, 1)), patch_)
 } else {
 const major_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt());
 return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_expectInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
@@ -1319,10 +1319,10 @@ return ff_compiler_Parser.Parser_parseBinary(self_, 0)
 }
 
 export function Parser_parseBinary(self_, level_) {
-if((level_ >= ff_core_Table.Table_size(ff_compiler_Parser.binaryOperators_))) {
+if((level_ >= ff_core_Array.Array_size(ff_compiler_Parser.binaryOperators_))) {
 return ff_compiler_Parser.Parser_parseUnary(self_)
 } else {
-const operators_ = ff_core_Table.Table_expect(ff_compiler_Parser.binaryOperators_, level_);
+const operators_ = ff_core_Array.Array_expect(ff_compiler_Parser.binaryOperators_, level_);
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
 while(ff_core_List.List_any(operators_, ((value_) => {
@@ -1649,24 +1649,24 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 export async function Parser_current$(self_, $c) {
-if((self_.offset_ < ff_core_Table.Table_size(self_.tokens_))) {
-return ff_core_Table.Table_expect(self_.tokens_, self_.offset_)
+if((self_.offset_ < ff_core_Array.Array_size(self_.tokens_))) {
+return ff_core_Array.Array_expect(self_.tokens_, self_.offset_)
 } else {
 return self_.end_
 }
 }
 
 export async function Parser_ahead$(self_, $c) {
-if(((self_.offset_ + 1) < ff_core_Table.Table_size(self_.tokens_))) {
-return ff_core_Table.Table_expect(self_.tokens_, (self_.offset_ + 1))
+if(((self_.offset_ + 1) < ff_core_Array.Array_size(self_.tokens_))) {
+return ff_core_Array.Array_expect(self_.tokens_, (self_.offset_ + 1))
 } else {
 return self_.end_
 }
 }
 
 export async function Parser_aheadAhead$(self_, $c) {
-if(((self_.offset_ + 2) < ff_core_Table.Table_size(self_.tokens_))) {
-return ff_core_Table.Table_expect(self_.tokens_, (self_.offset_ + 2))
+if(((self_.offset_ + 2) < ff_core_Array.Array_size(self_.tokens_))) {
+return ff_core_Array.Array_expect(self_.tokens_, (self_.offset_ + 2))
 } else {
 return self_.end_
 }
@@ -2267,7 +2267,7 @@ const patch_ = (ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_curr
 return ff_core_String.String_expectInt(ff_compiler_Token.Token_raw((await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LInt(), $c))))
 })())
 : 0);
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_expectInt(ff_core_Table.Table_expect(parts_, 0)), ff_core_String.String_expectInt(ff_core_Table.Table_expect(parts_, 1)), patch_)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_expectInt(ff_core_Array.Array_expect(parts_, 0)), ff_core_String.String_expectInt(ff_core_Array.Array_expect(parts_, 1)), patch_)
 } else {
 const major_ = (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LInt(), $c));
 return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_expectInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
@@ -2714,10 +2714,10 @@ return (await ff_compiler_Parser.Parser_parseBinary$(self_, 0, $c))
 }
 
 export async function Parser_parseBinary$(self_, level_, $c) {
-if((level_ >= ff_core_Table.Table_size(ff_compiler_Parser.binaryOperators_))) {
+if((level_ >= ff_core_Array.Array_size(ff_compiler_Parser.binaryOperators_))) {
 return (await ff_compiler_Parser.Parser_parseUnary$(self_, $c))
 } else {
-const operators_ = ff_core_Table.Table_expect(ff_compiler_Parser.binaryOperators_, level_);
+const operators_ = ff_core_Array.Array_expect(ff_compiler_Parser.binaryOperators_, level_);
 let result_ = (await ff_compiler_Parser.Parser_parseBinary$(self_, (level_ + 1), $c));
 if(ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LOperator())) {
 while((await ff_core_List.List_any$(operators_, (async (value_, $c) => {

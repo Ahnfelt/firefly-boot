@@ -27,14 +27,14 @@ make(size: Int): Buffer
     target node sync "return Buffer.alloc(size_)"
     target js sync "return new Uint8Array(size_)"
 
-fromBufferTable(table: Table[Buffer]): Buffer
-    target node sync "return Buffer.concat(table_)"
+fromBufferArray(array: Array[Buffer]): Buffer
+    target node sync "return Buffer.concat(array_)"
     target js sync """
         let length = 0
-        for(let a in table_) length += a.length
+        for(let a in array_) length += a.length
         const result = new Uint8Array(length)
         let offset = 0
-        for(let a in table_) {
+        for(let a in array_) {
             result.set(a, offset)
             offset += a.length
         }

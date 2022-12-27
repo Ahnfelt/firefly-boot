@@ -10,6 +10,8 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -73,8 +75,6 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
-
-import * as ff_core_Table from "../../ff/core/Table.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -594,7 +594,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
-const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Table.Table_toList(ff_core_String.String_split(name_, 36)), 1);
+const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {
@@ -2277,7 +2277,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
-const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Table.Table_toList(ff_core_String.String_split(name_, 36)), 1);
+const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1);
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {

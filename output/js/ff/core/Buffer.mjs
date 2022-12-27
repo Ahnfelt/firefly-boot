@@ -1,5 +1,7 @@
 
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -64,8 +66,6 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
-import * as ff_core_Table from "../../ff/core/Table.mjs"
-
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -83,16 +83,16 @@ export function make_(size_) {
 return Buffer.alloc(size_)
 }
 
-export function fromBufferTable_(table_) {
-return Buffer.concat(table_)
+export function fromBufferArray_(array_) {
+return Buffer.concat(array_)
 }
 
 export async function make_$(size_, $c) {
 throw new Error('Function make is missing on this target in async context.');
 }
 
-export async function fromBufferTable_$(table_, $c) {
-throw new Error('Function fromBufferTable is missing on this target in async context.');
+export async function fromBufferArray_$(array_, $c) {
+throw new Error('Function fromBufferArray is missing on this target in async context.');
 }
 
 export function Buffer_size(self_) {

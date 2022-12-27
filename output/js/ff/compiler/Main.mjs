@@ -20,6 +20,8 @@ import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
 import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -84,8 +86,6 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
-import * as ff_core_Table from "../../ff/core/Table.mjs"
-
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -114,8 +114,8 @@ return {BuildCommand: true, mainPath_};
 export function main_(system_) {
 let arguments_ = ff_core_NodeSystem.NodeSystem_arguments(system_);
 function consumeArgument_() {
-const first_ = ff_core_Table.Table_first(arguments_);
-arguments_ = ff_core_Table.Table_dropFirst(arguments_, 1);
+const first_ = ff_core_Array.Array_first(arguments_);
+arguments_ = ff_core_Array.Array_dropFirst(arguments_, 1);
 return first_
 }
 const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
@@ -168,7 +168,7 @@ break
 }
 }
 {
-ff_core_Option.Option_each(ff_core_Table.Table_first(arguments_), ((argument_) => {
+ff_core_Option.Option_each(ff_core_Array.Array_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
 }))
 break
@@ -326,8 +326,8 @@ return
 export async function main_$(system_, $c) {
 let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
 function consumeArgument_() {
-const first_ = ff_core_Table.Table_first(arguments_);
-arguments_ = ff_core_Table.Table_dropFirst(arguments_, 1);
+const first_ = ff_core_Array.Array_first(arguments_);
+arguments_ = ff_core_Array.Array_dropFirst(arguments_, 1);
 return first_
 }
 const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
@@ -380,7 +380,7 @@ break
 }
 }
 {
-ff_core_Option.Option_each(ff_core_Table.Table_first(arguments_), ((argument_) => {
+ff_core_Option.Option_each(ff_core_Array.Array_first(arguments_), ((argument_) => {
 ff_core_Core.panic_(("Unknown argument: " + argument_))
 }))
 break

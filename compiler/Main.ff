@@ -158,7 +158,7 @@ importAndRun(
     target: String
     packagePair: PackagePair
     mainFile: String
-    arguments: Table[String]
+    arguments: Array[String]
 ): Unit
     target node async """
         const process = await import('process');

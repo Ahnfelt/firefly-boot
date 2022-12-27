@@ -6,6 +6,8 @@ import * as import$0 from 'path';
 
 import * as import$3 from 'zlib';
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -69,8 +71,6 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
-
-import * as ff_core_Table from "../../ff/core/Table.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -274,7 +274,7 @@ export async function FileSystem_writeText$(self_, file_, text_, $c) {
 export async function FileSystem_list$(self_, path_, $c) {
 
             const fsPromises = import$1
-            return ff_core_Table.Table_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
+            return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
         
 }
 

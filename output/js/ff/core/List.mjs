@@ -1,5 +1,7 @@
 
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -63,8 +65,6 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
-
-import * as ff_core_Table from "../../ff/core/Table.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -243,7 +243,7 @@ export function List_toStack(self_) {
         
 }
 
-export function List_toTable(self_) {
+export function List_toArray(self_) {
 return ff_core_Stack.Stack_drain(ff_core_List.List_toStack(self_))
 }
 
@@ -1184,7 +1184,7 @@ export async function List_toStack$(self_, $c) {
 throw new Error('Function List_toStack is missing on this target in async context.');
 }
 
-export async function List_toTable$(self_, $c) {
+export async function List_toArray$(self_, $c) {
 return ff_core_Stack.Stack_drain(ff_core_List.List_toStack(self_))
 }
 
@@ -2444,11 +2444,11 @@ return go_(self_, ff_core_List.Empty(), ff_core_List.Empty())
 }
 
 export function List_join(self_, separator_ = "") {
-return ff_core_Table.Table_join(ff_core_List.List_toTable(self_), separator_)
+return ff_core_Array.Array_join(ff_core_List.List_toArray(self_), separator_)
 }
 
 export async function List_join$(self_, separator_ = "", $c) {
-return ff_core_Table.Table_join(ff_core_List.List_toTable(self_), separator_)
+return ff_core_Array.Array_join(ff_core_List.List_toArray(self_), separator_)
 }
 
 export function ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$T) { return {

@@ -50,7 +50,7 @@ extend self[T]: Stack[T] {
     pushAll(value: Stack[T]): Unit
         target js sync "self_.array.push(...value_.array)"
 
-    pushTable(value: Table[T]): Unit
+    pushArray(value: Array[T]): Unit
         target js sync "self_.array.push(...value_)"
 
     pop(): Option[T]
@@ -82,10 +82,10 @@ extend self[T]: Stack[T] {
             }
         """
 
-    drain(): Table[T]
+    drain(): Array[T]
         target js sync "const result = self_.array; self_.array = []; return result"
 
-    toTable(start: Int = 0, end: Int = 9007199254740991): Table[T]
+    toArray(start: Int = 0, end: Int = 9007199254740991): Array[T]
         target js sync """return self_.array.slice(start_, end_)"""
 
     toList(start: Int = 0, end: Int = 9007199254740991): List[T]

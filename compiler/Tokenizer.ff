@@ -1,6 +1,6 @@
 import Token
 
-tokenize(file: String, code: String): Table[Token] {
+tokenize(file: String, code: String): Array[Token] {
 
     let tokens = Stack.empty[Token]()
     mutable line = 1

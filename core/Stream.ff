@@ -324,7 +324,7 @@ extend self[T]: Stream[T] {
         stack
     }
 
-    toTable(): Table[T] {
+    toArray(): Array[T] {
         self.toStack().drain()
     }
 
@@ -342,13 +342,13 @@ extend self[T]: Stream[Stream[T]] {
 
 extend self[T: Order]: Stream[T] {
     toSet(): Set[T] {
-        self.toTable().toSet()
+        self.toArray().toSet()
     }
 }
 
 extend self[K: Order, V]: Stream[Pair[K, V]] {
     toMap(): Map[K, V] {
-        self.toTable().toMap()
+        self.toArray().toMap()
     }
 }
 
@@ -357,7 +357,7 @@ extend self: Stream[Buffer] {
     toBuffer(): Buffer {
         let builder = Stack.empty()
         self.each(builder.push)
-        Buffer.fromBufferTable(builder.drain())
+        Buffer.fromBufferArray(builder.drain())
     }
 
     toString(encoding: String = "utf8"): String {

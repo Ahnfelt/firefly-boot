@@ -1,5 +1,7 @@
 
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -63,8 +65,6 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
-
-import * as ff_core_Table from "../../ff/core/Table.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -610,7 +610,7 @@ ff_core_Stack.Stack_push(stack_, value_)
 return stack_
 }
 
-export function Stream_toTable(self_) {
+export function Stream_toArray(self_) {
 return ff_core_Stack.Stack_drain(ff_core_Stream.Stream_toStack(self_))
 }
 
@@ -1135,7 +1135,7 @@ ff_core_Stack.Stack_push(stack_, value_)
 return stack_
 }
 
-export async function Stream_toTable$(self_, $c) {
+export async function Stream_toArray$(self_, $c) {
 return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $c)))
 }
 
@@ -1156,19 +1156,19 @@ return _w1
 }
 
 export function Stream_toSet(self_, ff_core_Ordering_Order$T) {
-return ff_core_Table.Table_toSet(ff_core_Stream.Stream_toTable(self_), ff_core_Ordering_Order$T)
+return ff_core_Array.Array_toSet(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$T)
 }
 
 export async function Stream_toSet$(self_, ff_core_Ordering_Order$T, $c) {
-return ff_core_Table.Table_toSet((await ff_core_Stream.Stream_toTable$(self_, $c)), ff_core_Ordering_Order$T)
+return ff_core_Array.Array_toSet((await ff_core_Stream.Stream_toArray$(self_, $c)), ff_core_Ordering_Order$T)
 }
 
 export function Stream_toMap(self_, ff_core_Ordering_Order$K) {
-return ff_core_Table.Table_toMap(ff_core_Stream.Stream_toTable(self_), ff_core_Ordering_Order$K)
+return ff_core_Array.Array_toMap(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$K)
 }
 
 export async function Stream_toMap$(self_, ff_core_Ordering_Order$K, $c) {
-return ff_core_Table.Table_toMap((await ff_core_Stream.Stream_toTable$(self_, $c)), ff_core_Ordering_Order$K)
+return ff_core_Array.Array_toMap((await ff_core_Stream.Stream_toArray$(self_, $c)), ff_core_Ordering_Order$K)
 }
 
 export function Stream_toBuffer(self_) {
@@ -1176,7 +1176,7 @@ const builder_ = ff_core_Stack.empty_();
 ff_core_Stream.Stream_each(self_, ((value_) => {
 ff_core_Stack.Stack_push(builder_, value_)
 }));
-return ff_core_Buffer.fromBufferTable_(ff_core_Stack.Stack_drain(builder_))
+return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
 }
 
 export function Stream_toString(self_, encoding_ = "utf8") {
@@ -1188,7 +1188,7 @@ const builder_ = ff_core_Stack.empty_();
 (await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
 ff_core_Stack.Stack_push(builder_, value_)
 }), $c));
-return ff_core_Buffer.fromBufferTable_(ff_core_Stack.Stack_drain(builder_))
+return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
 }
 
 export async function Stream_toString$(self_, encoding_ = "utf8", $c) {

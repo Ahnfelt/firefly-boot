@@ -39,7 +39,7 @@ extend self[T]: List[T] {
             return {array: result};
         """
 
-    toTable(): Table[T] {
+    toArray(): Array[T] {
         self.toStack().drain()
     }
 
@@ -415,7 +415,7 @@ extend self[K, V]: List[Pair[K, V]] {
 
 extend self: List[String] {
 
-    join(separator: String = ""): String { self.toTable().join(separator) }
+    join(separator: String = ""): String { self.toArray().join(separator) }
 
 }
 

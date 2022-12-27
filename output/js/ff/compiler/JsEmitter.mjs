@@ -8,6 +8,8 @@ import * as ff_compiler_Patterns from "../../ff/compiler/Patterns.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
+import * as ff_core_Array from "../../ff/core/Array.mjs"
+
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
@@ -71,8 +73,6 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
-
-import * as ff_core_Table from "../../ff/core/Table.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -316,7 +316,7 @@ return
 }
 
 export function escapeResolved_(word_) {
-const parts_ = ff_core_Table.Table_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
+const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
 if(ff_core_List.List_isEmpty(initialParts_)) {
 return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))
@@ -555,7 +555,7 @@ return
 }
 
 export async function escapeResolved_$(word_, $c) {
-const parts_ = ff_core_Table.Table_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
+const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
 if(ff_core_List.List_isEmpty(initialParts_)) {
 return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))

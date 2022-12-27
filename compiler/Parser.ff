@@ -5,7 +5,7 @@ import Syntax
 type Parser!(
     packagePair: PackagePair
     file: String
-    tokens: Table[Token]
+    tokens: Array[Token]
     end: Token
     targetIsNode: Bool
     mutable offset: Int
@@ -26,7 +26,7 @@ type ParsedTargets(
     nodeAsync: Option[String]
 )
 
-make(packagePair: PackagePair, file: String, tokens: Table[Token], targetIsNode: Bool): Parser {
+make(packagePair: PackagePair, file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
     Parser(
         packagePair = packagePair
         file = file
@@ -1085,7 +1085,7 @@ binaryOperators = [
     ["+", "-"]
     ["*", "/", "%"]
     ["^"]
-].toTable()
+].toArray()
 
 findBestTarget(targetIsNode: Bool, body: Option[Lambda], targets: ParsedTargets): Target {
     let foreignTarget = if(targetIsNode) {
