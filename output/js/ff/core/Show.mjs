@@ -148,6 +148,15 @@ return ("" + value_)
 }
 };
 
+export const ff_core_Show_Show$ff_core_Float_Float = {
+show_(value_) {
+return ("" + value_)
+},
+async show_$(value_, $c) {
+return ("" + value_)
+}
+};
+
 export const ff_core_Show_Show$ff_core_String_String = {
 show_(value_) {
 return JSON.stringify(value_);

@@ -40,6 +40,10 @@ instance Int: Order {
     compare(x: Int, y: Int): Ordering { fromInt(x - y) }
 }
 
+instance Float: Order {
+    compare(x: Float, y: Float): Ordering { fromFloat(x - y) }
+}
+
 instance String: Order {
     compare(x: String, y: String): Ordering
         target js sync """
@@ -93,6 +97,16 @@ fromInt(order: Int): Ordering {
     if(order < 0) {
         OrderingBefore
     } elseIf { order == 0 } {
+        OrderingSame
+    } else {
+        OrderingAfter
+    }
+}
+
+fromFloat(order: Float): Ordering {
+    if(order < 0.0) {
+        OrderingBefore
+    } elseIf { order == 0.0 } {
         OrderingSame
     } else {
         OrderingAfter

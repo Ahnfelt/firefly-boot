@@ -21,6 +21,10 @@ instance Int: Show {
     show(value: Int): String { "" + value }
 }
 
+instance Float: Show {
+    show(value: Float): String { "" + value }
+}
+
 instance String: Show {
     show(value: String): String
         target js sync "return JSON.stringify(value_);"

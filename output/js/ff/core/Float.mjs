@@ -115,6 +115,32 @@ export function Float_toFixed(self_, digits_) {
 return self_.toFixed(digits_)
 }
 
+export function Float_min(self_, that_) {
+if((self_ < that_)) {
+return self_
+} else {
+return that_
+}
+}
+
+export function Float_max(self_, that_) {
+if((self_ > that_)) {
+return self_
+} else {
+return that_
+}
+}
+
+export function Float_clamp(self_, from_, to_) {
+if((self_ <= from_)) {
+return from_
+} else if((self_ >= to_)) {
+return to_
+} else {
+return self_
+}
+}
+
 export async function Float_toInt$(self_, $c) {
 throw new Error('Function Float_toInt is missing on this target in async context.');
 }
@@ -145,6 +171,32 @@ throw new Error('Function Float_abs is missing on this target in async context.'
 
 export async function Float_toFixed$(self_, digits_, $c) {
 throw new Error('Function Float_toFixed is missing on this target in async context.');
+}
+
+export async function Float_min$(self_, that_, $c) {
+if((self_ < that_)) {
+return self_
+} else {
+return that_
+}
+}
+
+export async function Float_max$(self_, that_, $c) {
+if((self_ > that_)) {
+return self_
+} else {
+return that_
+}
+}
+
+export async function Float_clamp$(self_, from_, to_, $c) {
+if((self_ <= from_)) {
+return from_
+} else if((self_ >= to_)) {
+return to_
+} else {
+return self_
+}
 }
 
 

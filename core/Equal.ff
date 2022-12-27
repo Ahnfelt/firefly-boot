@@ -25,6 +25,11 @@ instance Int: Equal {
         target js sync """return x_ === y_"""
 }
 
+instance Float: Equal {
+    equals(x: Float, y: Float): Bool
+        target js sync """return x_ === y_"""
+}
+
 instance String: Equal {
     equals(x: String, y: String): Bool
         target js sync """return x_ === y_"""

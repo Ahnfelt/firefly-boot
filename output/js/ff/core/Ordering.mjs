@@ -116,6 +116,16 @@ return ff_core_Ordering.OrderingAfter()
 }
 }
 
+export function fromFloat_(order_) {
+if((order_ < 0.0)) {
+return ff_core_Ordering.OrderingBefore()
+} else if((order_ === 0.0)) {
+return ff_core_Ordering.OrderingSame()
+} else {
+return ff_core_Ordering.OrderingAfter()
+}
+}
+
 export function fromLessThan_(lessThan_) {
 return ((_1, _2) => {
 {
@@ -163,6 +173,16 @@ export async function fromInt_$(order_, $c) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
 } else if((order_ === 0)) {
+return ff_core_Ordering.OrderingSame()
+} else {
+return ff_core_Ordering.OrderingAfter()
+}
+}
+
+export async function fromFloat_$(order_, $c) {
+if((order_ < 0.0)) {
+return ff_core_Ordering.OrderingBefore()
+} else if((order_ === 0.0)) {
 return ff_core_Ordering.OrderingSame()
 } else {
 return ff_core_Ordering.OrderingAfter()
@@ -371,6 +391,15 @@ return ff_core_Ordering.fromInt_((x_ - y_))
 },
 async compare_$(x_, y_, $c) {
 return ff_core_Ordering.fromInt_((x_ - y_))
+}
+};
+
+export const ff_core_Ordering_Order$ff_core_Float_Float = {
+compare_(x_, y_) {
+return ff_core_Ordering.fromFloat_((x_ - y_))
+},
+async compare_$(x_, y_, $c) {
+return ff_core_Ordering.fromFloat_((x_ - y_))
 }
 };
 
