@@ -219,7 +219,7 @@ export function Stack_toList(self_, start_ = 0, end_ = 9007199254740991) {
         
 }
 
-export function Stack_sortBy(self_, ordering_) {
+export function Stack_sortUsing(self_, ordering_) {
 self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
@@ -321,8 +321,20 @@ export async function Stack_toList$(self_, start_ = 0, end_ = 9007199254740991, 
 throw new Error('Function Stack_toList is missing on this target in async context.');
 }
 
-export async function Stack_sortBy$(self_, ordering_, $c) {
-throw new Error('Function Stack_sortBy is missing on this target in async context.');
+export async function Stack_sortUsing$(self_, ordering_, $c) {
+throw new Error('Function Stack_sortUsing is missing on this target in async context.');
+}
+
+export function Stack_sort(self_, ff_core_Ordering_Order$T) {
+ff_core_Stack.Stack_sortUsing(self_, ((x_, y_) => {
+return ff_core_Ordering_Order$T.compare_(x_, y_)
+}))
+}
+
+export async function Stack_sort$(self_, ff_core_Ordering_Order$T, $c) {
+ff_core_Stack.Stack_sortUsing(self_, ((x_, y_) => {
+return ff_core_Ordering_Order$T.compare_(x_, y_)
+}))
 }
 
 export function Stack_join(self_, separator_ = "") {

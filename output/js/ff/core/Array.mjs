@@ -241,6 +241,12 @@ export function Array_map(self_, body_) {
         
 }
 
+export function Array_sortUsing(self_, ordering_) {
+const stack_ = ff_core_Array.Array_toStack(self_);
+ff_core_Stack.Stack_sortUsing(stack_, ordering_);
+return ff_core_Stack.Stack_drain(stack_)
+}
+
 export async function Array_addAll$(self_, that_, $c) {
 throw new Error('Function Array_addAll is missing on this target in async context.');
 }
@@ -356,8 +362,26 @@ export async function Array_map$(self_, body_, $c) {
         
 }
 
+export async function Array_sortUsing$(self_, ordering_, $c) {
+const stack_ = ff_core_Array.Array_toStack(self_);
+(await ff_core_Stack.Stack_sortUsing$(stack_, ordering_, $c));
+return ff_core_Stack.Stack_drain(stack_)
+}
+
+export function Array_sort(self_, ff_core_Ordering_Order$T) {
+return ff_core_Array.Array_sortUsing(self_, ((x_, y_) => {
+return ff_core_Ordering_Order$T.compare_(x_, y_)
+}))
+}
+
 export function Array_toSet(self_, ff_core_Ordering_Order$T) {
 return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
+}
+
+export async function Array_sort$(self_, ff_core_Ordering_Order$T, $c) {
+return ff_core_Array.Array_sortUsing(self_, ((x_, y_) => {
+return ff_core_Ordering_Order$T.compare_(x_, y_)
+}))
 }
 
 export async function Array_toSet$(self_, ff_core_Ordering_Order$T, $c) {
