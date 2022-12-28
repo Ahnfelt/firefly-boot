@@ -280,10 +280,10 @@ extend self[T]: List[T] {
         stack.toList()
     }
 
-    sortUsing(compare: (T, T) => Ordering): List[T] {
+    sortWith(compare: (T, T) => Ordering): List[T] {
         if(self.size() <= 1) {self} else:
         let stack = self.toStack()
-        stack.sortUsing(compare)
+        stack.sortWith(compare)
         stack.toList()
     }
 

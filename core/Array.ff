@@ -135,12 +135,12 @@ extend self[T]: Array[T] {
         """
 
     sortBy[S: Order](body: T => S): Array[T] {
-        self.sortUsing {Ordering.compare(body(_), body(_))}
+        self.sortWith {Ordering.compare(body(_), body(_))}
     }
 
-    sortUsing(ordering: (T, T) => Ordering): Array[T] {
+    sortWith(ordering: (T, T) => Ordering): Array[T] {
         let stack = self.toStack()
-        stack.sortUsing(ordering)
+        stack.sortWith(ordering)
         stack.drain()
     }
 
@@ -149,7 +149,7 @@ extend self[T]: Array[T] {
 extend self[T: Order]: Array[T] {
 
     sort(): Array[T] {
-        self.sortUsing(Ordering.compare)
+        self.sortWith(Ordering.compare)
     }
 
     toSet(): Set[T] {

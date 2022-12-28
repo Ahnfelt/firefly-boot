@@ -178,10 +178,10 @@ extend self[T]: Stack[T] {
         target js sync "self_.array.reverse()"
 
     sortBy[S: Order](body: T => S): Unit {
-        self.sortUsing {Ordering.compare(body(_), body(_))}
+        self.sortWith {Ordering.compare(body(_), body(_))}
     }
 
-    sortUsing(ordering: (T, T) => Ordering): Unit {
+    sortWith(ordering: (T, T) => Ordering): Unit {
         mergeSort(self, ordering, 0, self.size())
     }
         target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
@@ -191,7 +191,7 @@ extend self[T]: Stack[T] {
 extend self[T: Order]: Stack[T] {
 
     sort(): Unit {
-        self.sortUsing(Ordering.compare)
+        self.sortWith(Ordering.compare)
     }
 
 }
