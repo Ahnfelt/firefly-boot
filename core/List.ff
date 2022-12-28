@@ -267,7 +267,7 @@ extend self[T]: List[T] {
                 | Pair([x, ...xs], [y, ...ys]) =>
                     tailcall go(xs, ys, [Pair(x, y), ...result])
                 | _ =>
-                    reverseList(result)
+                    result.reverse()
             }
         }
         go(self, that, [])
@@ -275,30 +275,28 @@ extend self[T]: List[T] {
 
     sortBy[O: Order](body: T => O): List[T] {
         if(self.size() <= 1) {self} else:
+        let stack = self.toStack()
+        stack.sortBy(body)
+        stack.toList()
+    }
 
-        function divide(list: List[T], xs: List[T], ys: List[T]): Pair[List[T], List[T]] {
-            list.{
-                | [] => Pair(xs, ys)
-                | [x] => Pair([x, ...xs], ys)
-                | [x, y, ...tail] => tailcall divide(tail, [x, ...xs], [y, ...ys])
-            }
-        }
-        function merge(xs: List[T], ys: List[T], result: List[T]): List[T] {
-            Pair(xs, ys).{
-                | Pair([x, ...xs2], [y, ...]) {Ordering.compare(body(x), body(y)) == OrderingBefore} =>
-                    tailcall merge(xs2, ys, [x, ...result])
-                | Pair([x, ...], [y, ...ys2]) => tailcall merge(xs, ys2, [y, ...result])
-                | Pair([x, ...xs2], []) => tailcall merge(xs2, [], [x, ...result])
-                | Pair([], [y, ...ys2]) => tailcall merge([], ys2, [y, ...result])
-                | Pair([], []) => result.reverse()
-            }
-        }
-        let pair = divide(self, [], [])
-        merge(pair.first.sortBy(body), pair.second.sortBy(body), [])
+    sortUsing(compare: (T, T) => Ordering): List[T] {
+        if(self.size() <= 1) {self} else:
+        let stack = self.toStack()
+        stack.sortUsing(compare)
+        stack.toList()
     }
 
     reverse(): List[T] {
-        reverseList(self)
+        function go(list: List[T], result: List[T]): List[T] {
+            list.{
+                | [] =>
+                    result
+                | [head, ...tail] =>
+                    tailcall go(tail, [head, ...result])
+            }
+        }
+        go(self, [])
     }
 
     chunk(chunkSize: Int): List[List[T]] {
@@ -384,6 +382,17 @@ extend self[T]: List[List[T]] {
 
 }
 
+extend self[T: Order]: List[T] {
+
+    sort(): List[T] {
+        if(self.size() <= 1) {self} else:
+        let stack = self.toStack()
+        stack.sort()
+        stack.toList()
+    }
+
+}
+
 extend self[K: Order, V]: List[Pair[K, V]] {
 
     toMap(): Map[K, V] {
@@ -416,19 +425,5 @@ extend self[K, V]: List[Pair[K, V]] {
 extend self: List[String] {
 
     join(separator: String = ""): String { self.toArray().join(separator) }
-
-}
-
-reverseList[T](list: List[T]): List[T] { // Hack to work around Scala/IDEA inference bug
-
-    function go(list: List[T], result: List[T]): List[T] {
-        list.{
-            | [] =>
-                result
-            | [head, ...tail] =>
-                tailcall go(tail, [head, ...result])
-        }
-    }
-    go(list, [])
 
 }

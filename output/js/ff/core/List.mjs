@@ -127,38 +127,6 @@ return
 return go_(initial_, ff_core_List.Empty())
 }
 
-export function reverseList_(list_) {
-function go_(list_, result_) {
-_tailcall: for(;;) {
-{
-const _1 = list_;
-{
-if(_1.Empty) {
-return result_
-return
-}
-}
-{
-if(_1.Link) {
-const head_ = _1.head_;
-const tail_ = _1.tail_;
-{
-const list_r_ = tail_;
-const result_r_ = ff_core_List.Link(head_, result_);
-list_ = list_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-}
-return
-}
-}
-return go_(list_, ff_core_List.Empty())
-}
-
 export async function range_$(size_, $c) {
 throw new Error('Function range is missing on this target in async context.');
 }
@@ -193,38 +161,6 @@ return
 }
 }
 return (await go_$(initial_, ff_core_List.Empty(), $c))
-}
-
-export async function reverseList_$(list_, $c) {
-function go_(list_, result_) {
-_tailcall: for(;;) {
-{
-const _1 = list_;
-{
-if(_1.Empty) {
-return result_
-return
-}
-}
-{
-if(_1.Link) {
-const head_ = _1.head_;
-const tail_ = _1.tail_;
-{
-const list_r_ = tail_;
-const result_r_ = ff_core_List.Link(head_, result_);
-list_ = list_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-}
-return
-}
-}
-return go_(list_, ff_core_List.Empty())
 }
 
 export function List_addAll(self_, list_) {
@@ -966,7 +902,7 @@ return
 }
 }
 {
-return ff_core_List.reverseList_(result_)
+return ff_core_List.List_reverse(result_)
 return
 }
 }
@@ -980,66 +916,41 @@ export function List_sortBy(self_, body_, ff_core_Ordering_Order$O) {
 if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
-function divide_(list_, xs_, ys_) {
+const stack_ = ff_core_List.List_toStack(self_);
+ff_core_Stack.Stack_sortBy(stack_, body_, ff_core_Ordering_Order$O);
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
+}
+
+export function List_sortUsing(self_, compare_) {
+if((ff_core_List.List_size(self_) <= 1)) {
+return self_
+} else {
+const stack_ = ff_core_List.List_toStack(self_);
+ff_core_Stack.Stack_sortUsing(stack_, compare_);
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
+}
+
+export function List_reverse(self_) {
+function go_(list_, result_) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
 {
 if(_1.Empty) {
-return ff_core_Pair.Pair(xs_, ys_)
+return result_
 return
 }
 }
 {
 if(_1.Link) {
-const x_ = _1.head_;
-if(_1.tail_.Empty) {
-return ff_core_Pair.Pair(ff_core_List.Link(x_, xs_), ys_)
-return
-}
-}
-}
-{
-if(_1.Link) {
-const x_ = _1.head_;
-if(_1.tail_.Link) {
-const y_ = _1.tail_.head_;
-const tail_ = _1.tail_.tail_;
+const head_ = _1.head_;
+const tail_ = _1.tail_;
 {
 const list_r_ = tail_;
-const xs_r_ = ff_core_List.Link(x_, xs_);
-const ys_r_ = ff_core_List.Link(y_, ys_);
+const result_r_ = ff_core_List.Link(head_, result_);
 list_ = list_r_
-xs_ = xs_r_
-ys_ = ys_r_
-continue _tailcall
-}
-return
-}
-}
-}
-}
-return
-}
-}
-function merge_(xs_, ys_, result_) {
-_tailcall: for(;;) {
-{
-const _1 = ff_core_Pair.Pair(xs_, ys_);
-{
-if(_1.first_.Link) {
-const x_ = _1.first_.head_;
-const xs2_ = _1.first_.tail_;
-if(_1.second_.Link) {
-const y_ = _1.second_.head_;
-const _guard1 = (ff_core_Ordering_Order$O.compare_(body_(x_), body_(y_)) === ff_core_Ordering.OrderingBefore());
-if(_guard1) {
-{
-const xs_r_ = xs2_;
-const ys_r_ = ys_;
-const result_r_ = ff_core_List.Link(x_, result_);
-xs_ = xs_r_
-ys_ = ys_r_
 result_ = result_r_
 continue _tailcall
 }
@@ -1047,81 +958,10 @@ return
 }
 }
 }
-}
-{
-if(_1.first_.Link) {
-const x_ = _1.first_.head_;
-if(_1.second_.Link) {
-const y_ = _1.second_.head_;
-const ys2_ = _1.second_.tail_;
-{
-const xs_r_ = xs_;
-const ys_r_ = ys2_;
-const result_r_ = ff_core_List.Link(y_, result_);
-xs_ = xs_r_
-ys_ = ys_r_
-result_ = result_r_
-continue _tailcall
-}
 return
 }
 }
-}
-{
-if(_1.first_.Link) {
-const x_ = _1.first_.head_;
-const xs2_ = _1.first_.tail_;
-if(_1.second_.Empty) {
-{
-const xs_r_ = xs2_;
-const ys_r_ = ff_core_List.Empty();
-const result_r_ = ff_core_List.Link(x_, result_);
-xs_ = xs_r_
-ys_ = ys_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-}
-{
-if(_1.first_.Empty) {
-if(_1.second_.Link) {
-const y_ = _1.second_.head_;
-const ys2_ = _1.second_.tail_;
-{
-const xs_r_ = ff_core_List.Empty();
-const ys_r_ = ys2_;
-const result_r_ = ff_core_List.Link(y_, result_);
-xs_ = xs_r_
-ys_ = ys_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-}
-{
-if(_1.first_.Empty) {
-if(_1.second_.Empty) {
-return ff_core_List.List_reverse(result_)
-return
-}
-}
-}
-}
-return
-}
-}
-const pair_ = divide_(self_, ff_core_List.Empty(), ff_core_List.Empty());
-return merge_(ff_core_List.List_sortBy(pair_.first_, body_, ff_core_Ordering_Order$O), ff_core_List.List_sortBy(pair_.second_, body_, ff_core_Ordering_Order$O), ff_core_List.Empty())
-}
-}
-
-export function List_reverse(self_) {
-return ff_core_List.reverseList_(self_)
+return go_(self_, ff_core_List.Empty())
 }
 
 export function List_chunk(self_, chunkSize_) {
@@ -1907,7 +1747,7 @@ return
 }
 }
 {
-return ff_core_List.reverseList_(result_)
+return ff_core_List.List_reverse(result_)
 return
 }
 }
@@ -1921,66 +1761,41 @@ export async function List_sortBy$(self_, body_, ff_core_Ordering_Order$O, $c) {
 if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
-function divide_(list_, xs_, ys_) {
+const stack_ = ff_core_List.List_toStack(self_);
+(await ff_core_Stack.Stack_sortBy$(stack_, body_, $c, ff_core_Ordering_Order$O));
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
+}
+
+export async function List_sortUsing$(self_, compare_, $c) {
+if((ff_core_List.List_size(self_) <= 1)) {
+return self_
+} else {
+const stack_ = ff_core_List.List_toStack(self_);
+(await ff_core_Stack.Stack_sortUsing$(stack_, compare_, $c));
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
+}
+
+export async function List_reverse$(self_, $c) {
+function go_(list_, result_) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
 {
 if(_1.Empty) {
-return ff_core_Pair.Pair(xs_, ys_)
+return result_
 return
 }
 }
 {
 if(_1.Link) {
-const x_ = _1.head_;
-if(_1.tail_.Empty) {
-return ff_core_Pair.Pair(ff_core_List.Link(x_, xs_), ys_)
-return
-}
-}
-}
-{
-if(_1.Link) {
-const x_ = _1.head_;
-if(_1.tail_.Link) {
-const y_ = _1.tail_.head_;
-const tail_ = _1.tail_.tail_;
+const head_ = _1.head_;
+const tail_ = _1.tail_;
 {
 const list_r_ = tail_;
-const xs_r_ = ff_core_List.Link(x_, xs_);
-const ys_r_ = ff_core_List.Link(y_, ys_);
+const result_r_ = ff_core_List.Link(head_, result_);
 list_ = list_r_
-xs_ = xs_r_
-ys_ = ys_r_
-continue _tailcall
-}
-return
-}
-}
-}
-}
-return
-}
-}
-async function merge_$(xs_, ys_, result_, $c) {
-_tailcall: for(;;) {
-{
-const _1 = ff_core_Pair.Pair(xs_, ys_);
-{
-if(_1.first_.Link) {
-const x_ = _1.first_.head_;
-const xs2_ = _1.first_.tail_;
-if(_1.second_.Link) {
-const y_ = _1.second_.head_;
-const _guard1 = (ff_core_Ordering_Order$O.compare_((await body_(x_, $c)), (await body_(y_, $c))) === ff_core_Ordering.OrderingBefore());
-if(_guard1) {
-{
-const xs_r_ = xs2_;
-const ys_r_ = ys_;
-const result_r_ = ff_core_List.Link(x_, result_);
-xs_ = xs_r_
-ys_ = ys_r_
 result_ = result_r_
 continue _tailcall
 }
@@ -1988,81 +1803,10 @@ return
 }
 }
 }
-}
-{
-if(_1.first_.Link) {
-const x_ = _1.first_.head_;
-if(_1.second_.Link) {
-const y_ = _1.second_.head_;
-const ys2_ = _1.second_.tail_;
-{
-const xs_r_ = xs_;
-const ys_r_ = ys2_;
-const result_r_ = ff_core_List.Link(y_, result_);
-xs_ = xs_r_
-ys_ = ys_r_
-result_ = result_r_
-continue _tailcall
-}
 return
 }
 }
-}
-{
-if(_1.first_.Link) {
-const x_ = _1.first_.head_;
-const xs2_ = _1.first_.tail_;
-if(_1.second_.Empty) {
-{
-const xs_r_ = xs2_;
-const ys_r_ = ff_core_List.Empty();
-const result_r_ = ff_core_List.Link(x_, result_);
-xs_ = xs_r_
-ys_ = ys_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-}
-{
-if(_1.first_.Empty) {
-if(_1.second_.Link) {
-const y_ = _1.second_.head_;
-const ys2_ = _1.second_.tail_;
-{
-const xs_r_ = ff_core_List.Empty();
-const ys_r_ = ys2_;
-const result_r_ = ff_core_List.Link(y_, result_);
-xs_ = xs_r_
-ys_ = ys_r_
-result_ = result_r_
-continue _tailcall
-}
-return
-}
-}
-}
-{
-if(_1.first_.Empty) {
-if(_1.second_.Empty) {
-return ff_core_List.List_reverse(result_)
-return
-}
-}
-}
-}
-return
-}
-}
-const pair_ = divide_(self_, ff_core_List.Empty(), ff_core_List.Empty());
-return (await merge_$((await ff_core_List.List_sortBy$(pair_.first_, body_, $c, ff_core_Ordering_Order$O)), (await ff_core_List.List_sortBy$(pair_.second_, body_, $c, ff_core_Ordering_Order$O)), ff_core_List.Empty(), $c))
-}
-}
-
-export async function List_reverse$(self_, $c) {
-return ff_core_List.reverseList_(self_)
+return go_(self_, ff_core_List.Empty())
 }
 
 export async function List_chunk$(self_, chunkSize_, $c) {
@@ -2345,6 +2089,26 @@ return
 }
 }
 return go_(self_, ff_core_List.Empty())
+}
+
+export function List_sort(self_, ff_core_Ordering_Order$T) {
+if((ff_core_List.List_size(self_) <= 1)) {
+return self_
+} else {
+const stack_ = ff_core_List.List_toStack(self_);
+ff_core_Stack.Stack_sort(stack_, ff_core_Ordering_Order$T);
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
+}
+
+export async function List_sort$(self_, ff_core_Ordering_Order$T, $c) {
+if((ff_core_List.List_size(self_) <= 1)) {
+return self_
+} else {
+const stack_ = ff_core_List.List_toStack(self_);
+ff_core_Stack.Stack_sort(stack_, ff_core_Ordering_Order$T);
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
+}
 }
 
 export function List_toMap(self_, ff_core_Ordering_Order$K) {
