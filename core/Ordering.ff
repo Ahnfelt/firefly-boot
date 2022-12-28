@@ -18,6 +18,21 @@ notAfter[T: Order](x: T, y: T): Bool {
     compare(x, y) != OrderingAfter
 }
 
+reverse[T](compare: (T, T) => Ordering): (T, T) => Ordering {
+    {x, y => compare(x, y).{
+        | OrderingBefore => OrderingAfter
+        | OrderingSame => OrderingSame
+        | OrderingAfter => OrderingBefore
+    }}
+}
+
+pair[A, B](compareFirst: (A, A) => Ordering, compareSecond: (B, B) => Ordering): (Pair[A, B], Pair[A, B]) => Ordering {
+    {x, y => compareFirst(x.first, y.first).{
+        | OrderingSame => compareSecond(x.second, y.second)
+        | ordering => ordering
+    }}
+}
+
 instance Nothing: Order {
     compare(x: Nothing, y: Nothing): Ordering {OrderingSame}
 }

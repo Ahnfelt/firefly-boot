@@ -106,6 +106,51 @@ export function notAfter_(x_, y_, ff_core_Ordering_Order$T) {
 return (ff_core_Ordering_Order$T.compare_(x_, y_) !== ff_core_Ordering.OrderingAfter())
 }
 
+export function reverse_(compare_) {
+return ((x_, y_) => {
+{
+const _1 = compare_(x_, y_);
+{
+if(_1.OrderingBefore) {
+return ff_core_Ordering.OrderingAfter()
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_Ordering.OrderingBefore()
+return
+}
+}
+}
+})
+}
+
+export function pair_(compareFirst_, compareSecond_) {
+return ((x_, y_) => {
+{
+const _1 = compareFirst_(x_.first_, y_.first_);
+{
+if(_1.OrderingSame) {
+return compareSecond_(x_.second_, y_.second_)
+return
+}
+}
+{
+const ordering_ = _1;
+return ordering_
+return
+}
+}
+})
+}
+
 export function fromInt_(order_) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
@@ -167,6 +212,51 @@ return (ff_core_Ordering_Order$T.compare_(x_, y_) === ff_core_Ordering.OrderingA
 
 export async function notAfter_$(x_, y_, ff_core_Ordering_Order$T, $c) {
 return (ff_core_Ordering_Order$T.compare_(x_, y_) !== ff_core_Ordering.OrderingAfter())
+}
+
+export async function reverse_$(compare_, $c) {
+return (async (x_, y_, $c) => {
+{
+const _1 = (await compare_(x_, y_, $c));
+{
+if(_1.OrderingBefore) {
+return ff_core_Ordering.OrderingAfter()
+return
+}
+}
+{
+if(_1.OrderingSame) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+if(_1.OrderingAfter) {
+return ff_core_Ordering.OrderingBefore()
+return
+}
+}
+}
+})
+}
+
+export async function pair_$(compareFirst_, compareSecond_, $c) {
+return (async (x_, y_, $c) => {
+{
+const _1 = (await compareFirst_(x_.first_, y_.first_, $c));
+{
+if(_1.OrderingSame) {
+return (await compareSecond_(x_.second_, y_.second_, $c))
+return
+}
+}
+{
+const ordering_ = _1;
+return ordering_
+return
+}
+}
+})
 }
 
 export async function fromInt_$(order_, $c) {
