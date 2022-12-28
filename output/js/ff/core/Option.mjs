@@ -195,6 +195,14 @@ return
 }
 }
 
+export function Option_toStack(self_) {
+return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
+}
+
+export function Option_toArray(self_) {
+return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
+}
+
 export function Option_toStream(self_) {
 let next_ = self_;
 return ff_core_Stream.make_((() => {
@@ -444,6 +452,14 @@ return
 }
 }
 }
+}
+
+export async function Option_toStack$(self_, $c) {
+return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
+}
+
+export async function Option_toArray$(self_, $c) {
+return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 }
 
 export async function Option_toStream$(self_, $c) {
