@@ -182,7 +182,7 @@ extend self[T]: Stack[T] {
     }
 
     sortWith(ordering: (T, T) => Ordering): Unit {
-        mergeSort(self, ordering, 0, self.size())
+        sortRange(self, ordering, 0, self.size())
     }
         target js sync "self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))"
 
@@ -216,12 +216,12 @@ instance Array[T: Show]: Show {
     }
 }
 
-mergeSort[T](stack: Stack[T], compare: (T, T) => Ordering, start: Int, end: Int): Unit {
+sortRange[T](stack: Stack[T], compare: (T, T) => Ordering, start: Int, end: Int): Unit {
     if(end - start < 2) {} else:
 
     mutable middle = start + ((end - start) / 2)
-    mergeSort(stack, compare, start, middle)
-    mergeSort(stack, compare, middle, end)
+    sortRange(stack, compare, start, middle)
+    sortRange(stack, compare, middle, end)
 
     mutable i = start
     mutable j = middle

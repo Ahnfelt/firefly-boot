@@ -95,13 +95,13 @@ export function range_(size_) {
     
 }
 
-export function mergeSort_(stack_, compare_, start_, end_) {
+export function sortRange_(stack_, compare_, start_, end_) {
 if(((end_ - start_) < 2)) {
 
 } else {
 let middle_ = (start_ + ((end_ - start_) / 2));
-ff_core_Stack.mergeSort_(stack_, compare_, start_, middle_);
-ff_core_Stack.mergeSort_(stack_, compare_, middle_, end_);
+ff_core_Stack.sortRange_(stack_, compare_, start_, middle_);
+ff_core_Stack.sortRange_(stack_, compare_, middle_, end_);
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
@@ -135,13 +135,13 @@ export async function range_$(size_, $c) {
 throw new Error('Function range is missing on this target in async context.');
 }
 
-export async function mergeSort_$(stack_, compare_, start_, end_, $c) {
+export async function sortRange_$(stack_, compare_, start_, end_, $c) {
 if(((end_ - start_) < 2)) {
 
 } else {
 let middle_ = (start_ + ((end_ - start_) / 2));
-(await ff_core_Stack.mergeSort_$(stack_, compare_, start_, middle_, $c));
-(await ff_core_Stack.mergeSort_$(stack_, compare_, middle_, end_, $c));
+(await ff_core_Stack.sortRange_$(stack_, compare_, start_, middle_, $c));
+(await ff_core_Stack.sortRange_$(stack_, compare_, middle_, end_, $c));
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
