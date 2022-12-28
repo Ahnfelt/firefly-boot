@@ -922,12 +922,12 @@ return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 }
 
-export function List_sortUsing(self_, compare_) {
+export function List_sortWith(self_, compare_) {
 if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
 const stack_ = ff_core_List.List_toStack(self_);
-ff_core_Stack.Stack_sortUsing(stack_, compare_);
+ff_core_Stack.Stack_sortWith(stack_, compare_);
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 }
@@ -1767,12 +1767,12 @@ return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 }
 
-export async function List_sortUsing$(self_, compare_, $c) {
+export async function List_sortWith$(self_, compare_, $c) {
 if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
 const stack_ = ff_core_List.List_toStack(self_);
-(await ff_core_Stack.Stack_sortUsing$(stack_, compare_, $c));
+(await ff_core_Stack.Stack_sortWith$(stack_, compare_, $c));
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 }

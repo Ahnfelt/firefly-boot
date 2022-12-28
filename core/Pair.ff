@@ -17,3 +17,35 @@ extend self[A, B]: Pair[A, B] {
     }
 
 }
+
+extend self[A, A]: Pair[A, A] {
+
+    toList(): List[A] {
+        [self.first, self.second]
+    }
+
+    toArray(): Array[A] {
+        self.toList().toArray()
+    }
+
+    toStack(): Stack[A] {
+        self.toList().toStack()
+    }
+
+}
+
+extend self[A: Order]: Pair[A, A] {
+
+    toSet(): Set[A] {
+        self.toList().toSet()
+    }
+
+}
+
+extend self[A: Order, B]: Pair[A, B] {
+
+    toMap(): Map[A, B] {
+        [self].toMap()
+    }
+
+}

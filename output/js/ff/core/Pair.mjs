@@ -137,6 +137,46 @@ export async function Pair_swap$(self_, $c) {
 return ff_core_Pair.Pair(self_.second_, self_.first_)
 }
 
+export function Pair_toList(self_) {
+return ff_core_List.Link(self_.first_, ff_core_List.Link(self_.second_, ff_core_List.Empty()))
+}
+
+export function Pair_toArray(self_) {
+return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
+}
+
+export function Pair_toStack(self_) {
+return ff_core_List.List_toStack(ff_core_Pair.Pair_toList(self_))
+}
+
+export async function Pair_toList$(self_, $c) {
+return ff_core_List.Link(self_.first_, ff_core_List.Link(self_.second_, ff_core_List.Empty()))
+}
+
+export async function Pair_toArray$(self_, $c) {
+return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
+}
+
+export async function Pair_toStack$(self_, $c) {
+return ff_core_List.List_toStack(ff_core_Pair.Pair_toList(self_))
+}
+
+export function Pair_toSet(self_, ff_core_Ordering_Order$A) {
+return ff_core_List.List_toSet(ff_core_Pair.Pair_toList(self_), ff_core_Ordering_Order$A)
+}
+
+export async function Pair_toSet$(self_, ff_core_Ordering_Order$A, $c) {
+return ff_core_List.List_toSet(ff_core_Pair.Pair_toList(self_), ff_core_Ordering_Order$A)
+}
+
+export function Pair_toMap(self_, ff_core_Ordering_Order$A) {
+return ff_core_List.List_toMap(ff_core_List.Link(self_, ff_core_List.Empty()), ff_core_Ordering_Order$A)
+}
+
+export async function Pair_toMap$(self_, ff_core_Ordering_Order$A, $c) {
+return ff_core_List.List_toMap(ff_core_List.Link(self_, ff_core_List.Empty()), ff_core_Ordering_Order$A)
+}
+
 export function ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal_Equal$A, ff_core_Equal_Equal$B) { return {
 equals_(x_, y_) {
 {

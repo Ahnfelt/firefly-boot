@@ -349,12 +349,12 @@ self_.array.reverse()
 }
 
 export function Stack_sortBy(self_, body_, ff_core_Ordering_Order$S) {
-ff_core_Stack.Stack_sortUsing(self_, ((_w1, _w2) => {
+ff_core_Stack.Stack_sortWith(self_, ((_w1, _w2) => {
 return ff_core_Ordering_Order$S.compare_(body_(_w1), body_(_w2))
 }))
 }
 
-export function Stack_sortUsing(self_, ordering_) {
+export function Stack_sortWith(self_, ordering_) {
 self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
@@ -498,23 +498,23 @@ throw new Error('Function Stack_reverse is missing on this target in async conte
 }
 
 export async function Stack_sortBy$(self_, body_, ff_core_Ordering_Order$S, $c) {
-(await ff_core_Stack.Stack_sortUsing$(self_, (async (_w1, _w2, $c) => {
+(await ff_core_Stack.Stack_sortWith$(self_, (async (_w1, _w2, $c) => {
 return ff_core_Ordering_Order$S.compare_((await body_(_w1, $c)), (await body_(_w2, $c)))
 }), $c))
 }
 
-export async function Stack_sortUsing$(self_, ordering_, $c) {
-throw new Error('Function Stack_sortUsing is missing on this target in async context.');
+export async function Stack_sortWith$(self_, ordering_, $c) {
+throw new Error('Function Stack_sortWith is missing on this target in async context.');
 }
 
 export function Stack_sort(self_, ff_core_Ordering_Order$T) {
-ff_core_Stack.Stack_sortUsing(self_, ((x_, y_) => {
+ff_core_Stack.Stack_sortWith(self_, ((x_, y_) => {
 return ff_core_Ordering_Order$T.compare_(x_, y_)
 }))
 }
 
 export async function Stack_sort$(self_, ff_core_Ordering_Order$T, $c) {
-ff_core_Stack.Stack_sortUsing(self_, ((x_, y_) => {
+ff_core_Stack.Stack_sortWith(self_, ((x_, y_) => {
 return ff_core_Ordering_Order$T.compare_(x_, y_)
 }))
 }

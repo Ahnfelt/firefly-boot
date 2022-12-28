@@ -242,14 +242,14 @@ export function Array_map(self_, body_) {
 }
 
 export function Array_sortBy(self_, body_, ff_core_Ordering_Order$S) {
-return ff_core_Array.Array_sortUsing(self_, ((_w1, _w2) => {
+return ff_core_Array.Array_sortWith(self_, ((_w1, _w2) => {
 return ff_core_Ordering_Order$S.compare_(body_(_w1), body_(_w2))
 }))
 }
 
-export function Array_sortUsing(self_, ordering_) {
+export function Array_sortWith(self_, ordering_) {
 const stack_ = ff_core_Array.Array_toStack(self_);
-ff_core_Stack.Stack_sortUsing(stack_, ordering_);
+ff_core_Stack.Stack_sortWith(stack_, ordering_);
 return ff_core_Stack.Stack_drain(stack_)
 }
 
@@ -369,19 +369,19 @@ export async function Array_map$(self_, body_, $c) {
 }
 
 export async function Array_sortBy$(self_, body_, ff_core_Ordering_Order$S, $c) {
-return (await ff_core_Array.Array_sortUsing$(self_, (async (_w1, _w2, $c) => {
+return (await ff_core_Array.Array_sortWith$(self_, (async (_w1, _w2, $c) => {
 return ff_core_Ordering_Order$S.compare_((await body_(_w1, $c)), (await body_(_w2, $c)))
 }), $c))
 }
 
-export async function Array_sortUsing$(self_, ordering_, $c) {
+export async function Array_sortWith$(self_, ordering_, $c) {
 const stack_ = ff_core_Array.Array_toStack(self_);
-(await ff_core_Stack.Stack_sortUsing$(stack_, ordering_, $c));
+(await ff_core_Stack.Stack_sortWith$(stack_, ordering_, $c));
 return ff_core_Stack.Stack_drain(stack_)
 }
 
 export function Array_sort(self_, ff_core_Ordering_Order$T) {
-return ff_core_Array.Array_sortUsing(self_, ((x_, y_) => {
+return ff_core_Array.Array_sortWith(self_, ((x_, y_) => {
 return ff_core_Ordering_Order$T.compare_(x_, y_)
 }))
 }
@@ -391,7 +391,7 @@ return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Orderi
 }
 
 export async function Array_sort$(self_, ff_core_Ordering_Order$T, $c) {
-return ff_core_Array.Array_sortUsing(self_, ((x_, y_) => {
+return ff_core_Array.Array_sortWith(self_, ((x_, y_) => {
 return ff_core_Ordering_Order$T.compare_(x_, y_)
 }))
 }
