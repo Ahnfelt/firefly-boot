@@ -30,7 +30,7 @@ extend self: Deriver {
     // FromToAny
     makeFromToAnyInstances(modulePrefix: String, module: Module): List[DInstance] {
         let coreWhitelist = [].toSet() // Maybe whitelist all?
-        let missingInstance =
+        let missingInstance = // TODO: Implement FromToAny for generic types
             self.findTypesThatNeedInstances("ff:core/Any.FromToAny", modulePrefix, coreWhitelist, False, module)
         missingInstance.map {self.makeFromToAnyInstance(modulePrefix, _)}
     }
