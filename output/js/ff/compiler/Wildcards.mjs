@@ -591,12 +591,12 @@ return
 }
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Wildcards_Wildcards = {
+export const ff_core_Any_FromToAny$ff_compiler_Wildcards_Wildcards = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Wildcards.ff", 3, 6), "ff:compiler/Wildcards.Wildcards", [])', value: x_}
+return {typeTag: 'ff:compiler/Wildcards.Wildcards', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Wildcards.ff", 3, 6), "ff:compiler/Wildcards.Wildcards", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Wildcards.Wildcards' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

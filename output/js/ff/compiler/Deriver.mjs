@@ -110,43 +110,43 @@ const modulePrefix_ = ((ff_compiler_Syntax.PackagePair_groupName(module_.package
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, ff_core_List.List_addAll(module_.instances_, ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeToFromAnyInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_))))), _c.extends_, _c.lets_, _c.functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, ff_core_List.List_addAll(module_.instances_, ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeFromToAnyInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_))))), _c.extends_, _c.lets_, _c.functions_)
 return
 }
 }
 }
 
-export function Deriver_makeToFromAnyInstances(self_, modulePrefix_, module_) {
+export function Deriver_makeFromToAnyInstances(self_, modulePrefix_, module_) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.ToFromAny", modulePrefix_, coreWhitelist_, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.FromToAny", modulePrefix_, coreWhitelist_, false, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
-return ff_compiler_Deriver.Deriver_makeToFromAnyInstance(self_, modulePrefix_, _w1)
+return ff_compiler_Deriver.Deriver_makeFromToAnyInstance(self_, modulePrefix_, _w1)
 }))
 }
 
-export function Deriver_makeToFromAnyInstance(self_, modulePrefix_, declaration_) {
+export function Deriver_makeFromToAnyInstance(self_, modulePrefix_, declaration_) {
 const constraints_ = ff_core_List.List_map(declaration_.generics_, ((t_) => {
-return ff_compiler_Syntax.Constraint(declaration_.at_, "ff:core/Any.ToFromAny", ff_core_List.Link(ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty()), ff_core_List.Empty()))
+return ff_compiler_Syntax.Constraint(declaration_.at_, "ff:core/Any.FromToAny", ff_core_List.Link(ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty()), ff_core_List.Empty()))
 }));
 const typeArguments_ = ff_core_List.List_map(declaration_.generics_, ((t_) => {
 return ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty())
 }));
-const selfType_ = ff_compiler_Syntax.TConstructor(declaration_.at_, ((modulePrefix_ + ".") + declaration_.name_), typeArguments_);
-const typeTag_ = ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(selfType_);
+const selfTypeName_ = ((modulePrefix_ + ".") + declaration_.name_);
+const selfType_ = ff_compiler_Syntax.TConstructor(declaration_.at_, selfTypeName_, typeArguments_);
 const noEffect_ = ff_compiler_Syntax.TConstructor(declaration_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const toSignature_ = ff_compiler_Syntax.Signature(declaration_.at_, "toAny", ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(declaration_.at_, false, "x", selfType_, ff_core_Option.None()), ff_core_List.Empty()), ff_compiler_Syntax.TConstructor(declaration_.at_, "ff:core/Any.Any", ff_core_List.Empty()), noEffect_);
 const fromSignature_ = ff_compiler_Syntax.Signature(declaration_.at_, "fromAny", ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(declaration_.at_, false, "x", ff_compiler_Syntax.TConstructor(declaration_.at_, "ff:core/Any.Any", ff_core_List.Empty()), ff_core_Option.None()), ff_core_List.Empty()), selfType_, noEffect_);
 const wildcardPattern_ = ff_compiler_Syntax.PVariable(declaration_.at_, ff_core_Option.None());
-const toBody_ = ff_compiler_Syntax.ForeignTarget(ff_core_Option.Some((("return {typeTag: '" + typeTag_) + "', value: x_}")), ff_core_Option.None());
-const fromBody_ = ff_compiler_Syntax.ForeignTarget(ff_core_Option.Some((("return x_.typeTag == '" + typeTag_) + "' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()")), ff_core_Option.None());
+const toBody_ = ff_compiler_Syntax.ForeignTarget(ff_core_Option.Some((("return {typeTag: '" + selfTypeName_) + "', value: x_}")), ff_core_Option.None());
+const fromBody_ = ff_compiler_Syntax.ForeignTarget(ff_core_Option.Some((("return x_.typeTag === '" + selfTypeName_) + "' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()")), ff_core_Option.None());
 const toMethod_ = ff_compiler_Syntax.DFunction(declaration_.at_, toSignature_, toBody_);
 const fromMethod_ = ff_compiler_Syntax.DFunction(declaration_.at_, fromSignature_, fromBody_);
-return ff_compiler_Syntax.DInstance(declaration_.at_, declaration_.generics_, constraints_, "ff:core/Any.ToFromAny", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(toMethod_, ff_core_List.Link(fromMethod_, ff_core_List.Empty())))
+return ff_compiler_Syntax.DInstance(declaration_.at_, declaration_.generics_, constraints_, "ff:core/Any.FromToAny", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(toMethod_, ff_core_List.Link(fromMethod_, ff_core_List.Empty())))
 }
 
 export function Deriver_makeShowInstances(self_, modulePrefix_, module_) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Show.Show", modulePrefix_, coreWhitelist_, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Show.Show", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeShowInstance(self_, modulePrefix_, _w1)
 }))
@@ -194,7 +194,7 @@ return
 
 export function Deriver_makeOrderingInstances(self_, modulePrefix_, module_) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Ordering.Order", modulePrefix_, coreWhitelist_, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Ordering.Order", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeOrderingInstance(self_, modulePrefix_, _w1)
 }))
@@ -292,7 +292,7 @@ return go_(fields_)
 
 export function Deriver_makeEqualInstances(self_, modulePrefix_, module_) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/List.List", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Empty()))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Equal.Equal", modulePrefix_, coreWhitelist_, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Equal.Equal", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeEqualInstance(self_, modulePrefix_, _w1)
 }))
@@ -381,7 +381,7 @@ return
 return go_(fields_)
 }
 
-export function Deriver_findTypesThatNeedInstances(self_, traitName_, modulePrefix_, coreWhitelist_, module_) {
+export function Deriver_findTypesThatNeedInstances(self_, traitName_, modulePrefix_, coreWhitelist_, allowGenerics_, module_) {
 const typesWithInstance_ = ff_core_List.List_toSet(ff_core_List.List_collect(module_.instances_, ((_1) => {
 {
 const instance_ = _1;
@@ -402,9 +402,9 @@ return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
-return (((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
+return ((((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
 return (_w1 === "Q$")
-})))) && (!t_.newtype_)) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
+})))) && (allowGenerics_ || ff_core_List.List_isEmpty(t_.generics_))) && (!t_.newtype_)) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }))
 }
 
@@ -429,43 +429,43 @@ const modulePrefix_ = ((ff_compiler_Syntax.PackagePair_groupName(module_.package
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, ff_core_List.List_addAll(module_.instances_, ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeToFromAnyInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_))))), _c.extends_, _c.lets_, _c.functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, ff_core_List.List_addAll(module_.instances_, ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeFromToAnyInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_))))), _c.extends_, _c.lets_, _c.functions_)
 return
 }
 }
 }
 
-export async function Deriver_makeToFromAnyInstances$(self_, modulePrefix_, module_, $c) {
+export async function Deriver_makeFromToAnyInstances$(self_, modulePrefix_, module_, $c) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.ToFromAny", modulePrefix_, coreWhitelist_, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.FromToAny", modulePrefix_, coreWhitelist_, false, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
-return ff_compiler_Deriver.Deriver_makeToFromAnyInstance(self_, modulePrefix_, _w1)
+return ff_compiler_Deriver.Deriver_makeFromToAnyInstance(self_, modulePrefix_, _w1)
 }))
 }
 
-export async function Deriver_makeToFromAnyInstance$(self_, modulePrefix_, declaration_, $c) {
+export async function Deriver_makeFromToAnyInstance$(self_, modulePrefix_, declaration_, $c) {
 const constraints_ = ff_core_List.List_map(declaration_.generics_, ((t_) => {
-return ff_compiler_Syntax.Constraint(declaration_.at_, "ff:core/Any.ToFromAny", ff_core_List.Link(ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty()), ff_core_List.Empty()))
+return ff_compiler_Syntax.Constraint(declaration_.at_, "ff:core/Any.FromToAny", ff_core_List.Link(ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty()), ff_core_List.Empty()))
 }));
 const typeArguments_ = ff_core_List.List_map(declaration_.generics_, ((t_) => {
 return ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty())
 }));
-const selfType_ = ff_compiler_Syntax.TConstructor(declaration_.at_, ((modulePrefix_ + ".") + declaration_.name_), typeArguments_);
-const typeTag_ = ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(selfType_);
+const selfTypeName_ = ((modulePrefix_ + ".") + declaration_.name_);
+const selfType_ = ff_compiler_Syntax.TConstructor(declaration_.at_, selfTypeName_, typeArguments_);
 const noEffect_ = ff_compiler_Syntax.TConstructor(declaration_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const toSignature_ = ff_compiler_Syntax.Signature(declaration_.at_, "toAny", ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(declaration_.at_, false, "x", selfType_, ff_core_Option.None()), ff_core_List.Empty()), ff_compiler_Syntax.TConstructor(declaration_.at_, "ff:core/Any.Any", ff_core_List.Empty()), noEffect_);
 const fromSignature_ = ff_compiler_Syntax.Signature(declaration_.at_, "fromAny", ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Parameter(declaration_.at_, false, "x", ff_compiler_Syntax.TConstructor(declaration_.at_, "ff:core/Any.Any", ff_core_List.Empty()), ff_core_Option.None()), ff_core_List.Empty()), selfType_, noEffect_);
 const wildcardPattern_ = ff_compiler_Syntax.PVariable(declaration_.at_, ff_core_Option.None());
-const toBody_ = ff_compiler_Syntax.ForeignTarget(ff_core_Option.Some((("return {typeTag: '" + typeTag_) + "', value: x_}")), ff_core_Option.None());
-const fromBody_ = ff_compiler_Syntax.ForeignTarget(ff_core_Option.Some((("return x_.typeTag == '" + typeTag_) + "' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()")), ff_core_Option.None());
+const toBody_ = ff_compiler_Syntax.ForeignTarget(ff_core_Option.Some((("return {typeTag: '" + selfTypeName_) + "', value: x_}")), ff_core_Option.None());
+const fromBody_ = ff_compiler_Syntax.ForeignTarget(ff_core_Option.Some((("return x_.typeTag === '" + selfTypeName_) + "' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()")), ff_core_Option.None());
 const toMethod_ = ff_compiler_Syntax.DFunction(declaration_.at_, toSignature_, toBody_);
 const fromMethod_ = ff_compiler_Syntax.DFunction(declaration_.at_, fromSignature_, fromBody_);
-return ff_compiler_Syntax.DInstance(declaration_.at_, declaration_.generics_, constraints_, "ff:core/Any.ToFromAny", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(toMethod_, ff_core_List.Link(fromMethod_, ff_core_List.Empty())))
+return ff_compiler_Syntax.DInstance(declaration_.at_, declaration_.generics_, constraints_, "ff:core/Any.FromToAny", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(toMethod_, ff_core_List.Link(fromMethod_, ff_core_List.Empty())))
 }
 
 export async function Deriver_makeShowInstances$(self_, modulePrefix_, module_, $c) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Show.Show", modulePrefix_, coreWhitelist_, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Show.Show", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeShowInstance(self_, modulePrefix_, _w1)
 }))
@@ -513,7 +513,7 @@ return
 
 export async function Deriver_makeOrderingInstances$(self_, modulePrefix_, module_, $c) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Ordering.Order", modulePrefix_, coreWhitelist_, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Ordering.Order", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeOrderingInstance(self_, modulePrefix_, _w1)
 }))
@@ -611,7 +611,7 @@ return go_(fields_)
 
 export async function Deriver_makeEqualInstances$(self_, modulePrefix_, module_, $c) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/List.List", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Empty()))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Equal.Equal", modulePrefix_, coreWhitelist_, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Equal.Equal", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeEqualInstance(self_, modulePrefix_, _w1)
 }))
@@ -700,7 +700,7 @@ return
 return go_(fields_)
 }
 
-export async function Deriver_findTypesThatNeedInstances$(self_, traitName_, modulePrefix_, coreWhitelist_, module_, $c) {
+export async function Deriver_findTypesThatNeedInstances$(self_, traitName_, modulePrefix_, coreWhitelist_, allowGenerics_, module_, $c) {
 const typesWithInstance_ = ff_core_List.List_toSet(ff_core_List.List_collect(module_.instances_, ((_1) => {
 {
 const instance_ = _1;
@@ -721,9 +721,9 @@ return
 }
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return ff_core_List.List_filter(module_.types_, ((t_) => {
-return (((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
+return ((((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") !== "ff:core") || ff_core_Set.Set_contains(coreWhitelist_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) && (!ff_core_Option.Option_any(ff_core_List.List_first(t_.generics_), ((_w1) => {
 return (_w1 === "Q$")
-})))) && (!t_.newtype_)) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
+})))) && (allowGenerics_ || ff_core_List.List_isEmpty(t_.generics_))) && (!t_.newtype_)) && (!ff_core_Set.Set_contains(typesWithInstance_, ((modulePrefix_ + ".") + t_.name_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)))
 }))
 }
 
@@ -742,12 +742,12 @@ const option_ = ff_compiler_Syntax.ECall(at_, target_, noEffect_, ff_core_List.E
 return ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(at_, false, option_, "else"), false), noEffect_, ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, noEffect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Empty(), ff_core_List.Empty(), else_), ff_core_List.Empty())))), ff_core_List.Empty()), ff_core_List.Empty())
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Deriver_Deriver = {
+export const ff_core_Any_FromToAny$ff_compiler_Deriver_Deriver = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Deriver.ff", 3, 6), "ff:compiler/Deriver.Deriver", [])', value: x_}
+return {typeTag: 'ff:compiler/Deriver.Deriver', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Deriver.ff", 3, 6), "ff:compiler/Deriver.Deriver", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Deriver.Deriver' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

@@ -31,7 +31,7 @@ extend self: Deriver {
     makeFromToAnyInstances(modulePrefix: String, module: Module): List[DInstance] {
         let coreWhitelist = [].toSet() // Maybe whitelist all?
         let missingInstance =
-            self.findTypesThatNeedInstances("ff:core/Any.FromToAny", modulePrefix, coreWhitelist, module)
+            self.findTypesThatNeedInstances("ff:core/Any.FromToAny", modulePrefix, coreWhitelist, False, module)
         missingInstance.map {self.makeFromToAnyInstance(modulePrefix, _)}
     }
 
@@ -42,8 +42,8 @@ extend self: Deriver {
         let typeArguments = declaration.generics.map { t =>
             TConstructor(declaration.at, t, [])
         }
-        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
-        let typeTag = Show.show(selfType)
+        let selfTypeName = modulePrefix + "." + declaration.name
+        let selfType = TConstructor(declaration.at, selfTypeName, typeArguments)
         let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
         let toSignature = Signature(
             at = declaration.at
@@ -67,10 +67,10 @@ extend self: Deriver {
         )
         let wildcardPattern = PVariable(declaration.at, None)
         let toBody = ForeignTarget(asyncCode = None, syncCode = Some(
-            "return {typeTag: '" + typeTag + "', value: x_}"
+            "return {typeTag: '" + selfTypeName + "', value: x_}"
         ))
         let fromBody = ForeignTarget(asyncCode = None, syncCode = Some(
-            "return x_.typeTag == '" + typeTag + "' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()"
+            "return x_.typeTag === '" + selfTypeName + "' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()"
         ))
         let toMethod = DFunction(declaration.at, toSignature, toBody)
         let fromMethod = DFunction(declaration.at, fromSignature, fromBody)
@@ -91,7 +91,7 @@ extend self: Deriver {
             "ff:core/Option.Option"
         ].toSet()
         let missingInstance =
-            self.findTypesThatNeedInstances("ff:core/Show.Show", modulePrefix, coreWhitelist, module)
+            self.findTypesThatNeedInstances("ff:core/Show.Show", modulePrefix, coreWhitelist, True, module)
         missingInstance.map {self.makeShowInstance(modulePrefix, _)}
     }
 
@@ -164,7 +164,7 @@ extend self: Deriver {
             "ff:core/Option.Option"
         ].toSet()
         let missingInstance =
-            self.findTypesThatNeedInstances("ff:core/Ordering.Order", modulePrefix, coreWhitelist, module)
+            self.findTypesThatNeedInstances("ff:core/Ordering.Order", modulePrefix, coreWhitelist, True, module)
         missingInstance.map {self.makeOrderingInstance(modulePrefix, _)}
     }
 
@@ -301,7 +301,7 @@ extend self: Deriver {
             "ff:core/Pair.Pair",
         ].toSet()
         let missingInstance =
-            self.findTypesThatNeedInstances("ff:core/Equal.Equal", modulePrefix, coreWhitelist, module)
+            self.findTypesThatNeedInstances("ff:core/Equal.Equal", modulePrefix, coreWhitelist, True, module)
         missingInstance.map {self.makeEqualInstance(modulePrefix, _)}
     }
 
@@ -417,7 +417,8 @@ extend self: Deriver {
         traitName: String,
         modulePrefix: String,
         coreWhitelist: Set[String],
-        module: Module
+        allowGenerics: Bool,
+        module: Module,
     ): List[DType] {
         let typesWithInstance = module.instances.collect {
             | instance {instance.typeArguments.first() | Some(TConstructor(_, name, _))} =>
@@ -428,6 +429,7 @@ extend self: Deriver {
         module.types.filter {t =>
             (module.packagePair.groupName() != "ff:core" || coreWhitelist.contains(modulePrefix + "." + t.name)) &&
             !t.generics.first().any {_ == "Q$"} &&
+            (allowGenerics || t.generics.isEmpty()) &&
             !t.newtype &&
             !typesWithInstance.contains(modulePrefix + "." + t.name)
         }

@@ -81,16 +81,16 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function throw_(exception_, ff_core_Any_ToFromAny$E) {
-return ff_core_Error.throwAny_(ff_core_Any_ToFromAny$E.toAny_(exception_))
+export function throw_(exception_, ff_core_Any_FromToAny$E) {
+return ff_core_Error.throwAny_(ff_core_Any_FromToAny$E.toAny_(exception_))
 }
 
 export function throwAny_(exception_) {
 throw Object.assign(new Error(), {ffException: exception_})
 }
 
-export async function throw_$(exception_, ff_core_Any_ToFromAny$E, $c) {
-return ff_core_Error.throwAny_(ff_core_Any_ToFromAny$E.toAny_(exception_))
+export async function throw_$(exception_, ff_core_Any_FromToAny$E, $c) {
+return ff_core_Error.throwAny_(ff_core_Any_FromToAny$E.toAny_(exception_))
 }
 
 export async function throwAny_$(exception_, $c) {

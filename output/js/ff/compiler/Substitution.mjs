@@ -1133,12 +1133,12 @@ export async function Substitution_has$(self_, index_, $c) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Substitution_Substitution = {
+export const ff_core_Any_FromToAny$ff_compiler_Substitution_Substitution = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Substitution.ff", 3, 6), "ff:compiler/Substitution.Substitution", [])', value: x_}
+return {typeTag: 'ff:compiler/Substitution.Substitution', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Substitution.ff", 3, 6), "ff:compiler/Substitution.Substitution", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Substitution.Substitution' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

@@ -1111,12 +1111,12 @@ return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.gen
 return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Dictionaries_Dictionaries = {
+export const ff_core_Any_FromToAny$ff_compiler_Dictionaries_Dictionaries = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Dictionaries.ff", 5, 6), "ff:compiler/Dictionaries.Dictionaries", [])', value: x_}
+return {typeTag: 'ff:compiler/Dictionaries.Dictionaries', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Dictionaries.ff", 5, 6), "ff:compiler/Dictionaries.Dictionaries", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Dictionaries.Dictionaries' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

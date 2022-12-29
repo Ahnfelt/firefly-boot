@@ -3041,12 +3041,12 @@ if((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(sel
 return ff_compiler_Syntax.EList(at_, (await ff_compiler_Parser.Parser_freshUnificationVariable$(self_, at_, $c)), ff_core_Stack.Stack_toList(items_, 0, 9007199254740991))
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Parser_Poly = {
+export const ff_core_Any_FromToAny$ff_compiler_Parser_Poly = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Parser.ff", 15, 6), "ff:compiler/Parser.Poly", [])', value: x_}
+return {typeTag: 'ff:compiler/Parser.Poly', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Parser.ff", 15, 6), "ff:compiler/Parser.Poly", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Parser.Poly' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -3056,12 +3056,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Parser_ParsedTargets = {
+export const ff_core_Any_FromToAny$ff_compiler_Parser_ParsedTargets = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Parser.ff", 17, 6), "ff:compiler/Parser.ParsedTargets", [])', value: x_}
+return {typeTag: 'ff:compiler/Parser.ParsedTargets', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Parser.ff", 17, 6), "ff:compiler/Parser.ParsedTargets", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Parser.ParsedTargets' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

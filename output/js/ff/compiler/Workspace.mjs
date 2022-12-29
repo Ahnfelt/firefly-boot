@@ -264,12 +264,12 @@ return (((((self_.defaultLocation_ + packagePair_.group_) + "/") + packagePair_.
 }))
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Workspace_Workspace = {
+export const ff_core_Any_FromToAny$ff_compiler_Workspace_Workspace = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Workspace.ff", 3, 6), "ff:compiler/Workspace.Workspace", [])', value: x_}
+return {typeTag: 'ff:compiler/Workspace.Workspace', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Workspace.ff", 3, 6), "ff:compiler/Workspace.Workspace", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Workspace.Workspace' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -279,12 +279,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Workspace_WorkspaceRule = {
+export const ff_core_Any_FromToAny$ff_compiler_Workspace_WorkspaceRule = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Workspace.ff", 9, 6), "ff:compiler/Workspace.WorkspaceRule", [])', value: x_}
+return {typeTag: 'ff:compiler/Workspace.WorkspaceRule', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Workspace.ff", 9, 6), "ff:compiler/Workspace.WorkspaceRule", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Workspace.WorkspaceRule' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

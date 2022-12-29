@@ -291,12 +291,12 @@ return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.
 
 
 
-export const ff_core_Any_ToFromAny$ff_compiler_Environment_Environment = {
+export const ff_core_Any_FromToAny$ff_compiler_Environment_Environment = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Environment.ff", 3, 6), "ff:compiler/Environment.Environment", [])', value: x_}
+return {typeTag: 'ff:compiler/Environment.Environment', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Environment.ff", 3, 6), "ff:compiler/Environment.Environment", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Environment.Environment' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -306,12 +306,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Environment_Scheme = {
+export const ff_core_Any_FromToAny$ff_compiler_Environment_Scheme = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Environment.ff", 8, 6), "ff:compiler/Environment.Scheme", [])', value: x_}
+return {typeTag: 'ff:compiler/Environment.Scheme', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Environment.ff", 8, 6), "ff:compiler/Environment.Scheme", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Environment.Scheme' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -321,12 +321,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Environment_Instantiated = {
+export const ff_core_Any_FromToAny$ff_compiler_Environment_Instantiated = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Environment.ff", 16, 6), "ff:compiler/Environment.Instantiated", [])', value: x_}
+return {typeTag: 'ff:compiler/Environment.Instantiated', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Environment.ff", 16, 6), "ff:compiler/Environment.Instantiated", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Environment.Instantiated' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

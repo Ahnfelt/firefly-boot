@@ -3848,12 +3848,12 @@ export async function JsEmitter_emitArgument$(self_, argument_, async_, $c) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_JsEmitter_JsEmitter = {
+export const ff_core_Any_FromToAny$ff_compiler_JsEmitter_JsEmitter = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("JsEmitter.ff", 5, 6), "ff:compiler/JsEmitter.JsEmitter", [])', value: x_}
+return {typeTag: 'ff:compiler/JsEmitter.JsEmitter', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("JsEmitter.ff", 5, 6), "ff:compiler/JsEmitter.JsEmitter", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/JsEmitter.JsEmitter' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -3863,12 +3863,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_JsEmitter_EmitTarget = {
+export const ff_core_Any_FromToAny$ff_compiler_JsEmitter_EmitTarget = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("JsEmitter.ff", 15, 6), "ff:compiler/JsEmitter.EmitTarget", [])', value: x_}
+return {typeTag: 'ff:compiler/JsEmitter.EmitTarget', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("JsEmitter.ff", 15, 6), "ff:compiler/JsEmitter.EmitTarget", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/JsEmitter.EmitTarget' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -3878,12 +3878,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_JsEmitter_ProcessedVariantCase = {
+export const ff_core_Any_FromToAny$ff_compiler_JsEmitter_ProcessedVariantCase = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("JsEmitter.ff", 663, 6), "ff:compiler/JsEmitter.ProcessedVariantCase", [])', value: x_}
+return {typeTag: 'ff:compiler/JsEmitter.ProcessedVariantCase', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("JsEmitter.ff", 663, 6), "ff:compiler/JsEmitter.ProcessedVariantCase", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/JsEmitter.ProcessedVariantCase' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

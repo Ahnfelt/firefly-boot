@@ -1998,12 +1998,12 @@ return
 }
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Resolver_Resolver = {
+export const ff_core_Any_FromToAny$ff_compiler_Resolver_Resolver = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Resolver.ff", 3, 6), "ff:compiler/Resolver.Resolver", [])', value: x_}
+return {typeTag: 'ff:compiler/Resolver.Resolver', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Resolver.ff", 3, 6), "ff:compiler/Resolver.Resolver", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Resolver.Resolver' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -2013,12 +2013,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Resolver_ResolverState = {
+export const ff_core_Any_FromToAny$ff_compiler_Resolver_ResolverState = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Resolver.ff", 13, 6), "ff:compiler/Resolver.ResolverState", [])', value: x_}
+return {typeTag: 'ff:compiler/Resolver.ResolverState', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Resolver.ff", 13, 6), "ff:compiler/Resolver.ResolverState", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Resolver.ResolverState' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

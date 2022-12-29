@@ -96,8 +96,8 @@ export function do_(body_) {
     
 }
 
-export function catch_(body_, catchBody_, ff_core_Any_ToFromAny$E) {
-return ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.do_(body_), catchBody_, ff_core_Any_ToFromAny$E))
+export function catch_(body_, catchBody_, ff_core_Any_FromToAny$E) {
+return ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.do_(body_), catchBody_, ff_core_Any_FromToAny$E))
 }
 
 export function catchAny_(body_, catchBody_) {
@@ -122,8 +122,8 @@ export async function do_$(body_, $c) {
     
 }
 
-export async function catch_$(body_, catchBody_, ff_core_Any_ToFromAny$E, $c) {
-return ff_core_Try.Try_grab((await ff_core_Try.Try_catch$((await ff_core_Try.do_$(body_, $c)), catchBody_, $c, ff_core_Any_ToFromAny$E)))
+export async function catch_$(body_, catchBody_, ff_core_Any_FromToAny$E, $c) {
+return ff_core_Try.Try_grab((await ff_core_Try.Try_catch$((await ff_core_Try.do_$(body_, $c)), catchBody_, $c, ff_core_Any_FromToAny$E)))
 }
 
 export async function catchAny_$(body_, catchBody_, $c) {
@@ -203,14 +203,14 @@ return
 }
 }
 
-export function Try_catch(self_, body_, ff_core_Any_ToFromAny$E) {
+export function Try_catch(self_, body_, ff_core_Any_FromToAny$E) {
 {
 const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
 const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
-return ff_core_Any_ToFromAny$E.fromAny_(any_)
+return ff_core_Any_FromToAny$E.fromAny_(any_)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;
@@ -351,14 +351,14 @@ return
 }
 }
 
-export async function Try_catch$(self_, body_, ff_core_Any_ToFromAny$E, $c) {
+export async function Try_catch$(self_, body_, ff_core_Any_FromToAny$E, $c) {
 {
 const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
 const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
-return ff_core_Any_ToFromAny$E.fromAny_(any_)
+return ff_core_Any_FromToAny$E.fromAny_(any_)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;

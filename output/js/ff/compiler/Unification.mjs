@@ -1058,12 +1058,12 @@ return
 }
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Unification_Unification = {
+export const ff_core_Any_FromToAny$ff_compiler_Unification_Unification = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Unification.ff", 3, 6), "ff:compiler/Unification.Unification", [])', value: x_}
+return {typeTag: 'ff:compiler/Unification.Unification', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Unification.ff", 3, 6), "ff:compiler/Unification.Unification", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Unification.Unification' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -1073,12 +1073,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Unification_ConstraintGenerics = {
+export const ff_core_Any_FromToAny$ff_compiler_Unification_ConstraintGenerics = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Unification.ff", 11, 6), "ff:compiler/Unification.ConstraintGenerics", [])', value: x_}
+return {typeTag: 'ff:compiler/Unification.ConstraintGenerics', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Unification.ff", 11, 6), "ff:compiler/Unification.ConstraintGenerics", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Unification.ConstraintGenerics' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -1088,12 +1088,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Unification_InstanceKey = {
+export const ff_core_Any_FromToAny$ff_compiler_Unification_InstanceKey = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Unification.ff", 13, 6), "ff:compiler/Unification.InstanceKey", [])', value: x_}
+return {typeTag: 'ff:compiler/Unification.InstanceKey', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Unification.ff", 13, 6), "ff:compiler/Unification.InstanceKey", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Unification.InstanceKey' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -1103,12 +1103,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Unification_InstanceValue = {
+export const ff_core_Any_FromToAny$ff_compiler_Unification_InstanceValue = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Unification.ff", 15, 6), "ff:compiler/Unification.InstanceValue", [])', value: x_}
+return {typeTag: 'ff:compiler/Unification.InstanceValue', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Unification.ff", 15, 6), "ff:compiler/Unification.InstanceValue", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Unification.InstanceValue' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

@@ -323,12 +323,12 @@ if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List
 }
 }
 
-export const ff_core_Any_ToFromAny$ff_compiler_Dependencies_Dependencies = {
+export const ff_core_Any_FromToAny$ff_compiler_Dependencies_Dependencies = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Dependencies.ff", 6, 6), "ff:compiler/Dependencies.Dependencies", [])', value: x_}
+return {typeTag: 'ff:compiler/Dependencies.Dependencies', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Dependencies.ff", 6, 6), "ff:compiler/Dependencies.Dependencies", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Dependencies.Dependencies' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -338,12 +338,12 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
-export const ff_core_Any_ToFromAny$ff_compiler_Dependencies_ResolvedDependencies = {
+export const ff_core_Any_FromToAny$ff_compiler_Dependencies_ResolvedDependencies = {
 toAny_(x_) {
-return {typeTag: 'TConstructor(Location("Dependencies.ff", 13, 6), "ff:compiler/Dependencies.ResolvedDependencies", [])', value: x_}
+return {typeTag: 'ff:compiler/Dependencies.ResolvedDependencies', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'TConstructor(Location("Dependencies.ff", 13, 6), "ff:compiler/Dependencies.ResolvedDependencies", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag == 'ff:compiler/Dependencies.ResolvedDependencies' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
