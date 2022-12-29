@@ -153,16 +153,6 @@ export function do_(body_) {
 return body_()
 }
 
-export function try_(body_) {
-
-        try {
-            return {Success: true, value_: body_()}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    
-}
-
 export function throw_(error_) {
 throw error_
 }
@@ -244,16 +234,6 @@ return
 
 export async function do_$(body_, $c) {
 return (await body_($c))
-}
-
-export async function try_$(body_, $c) {
-
-        try {
-            return {Success: true, value_: await body_($c)}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    
 }
 
 export async function throw_$(error_, $c) {

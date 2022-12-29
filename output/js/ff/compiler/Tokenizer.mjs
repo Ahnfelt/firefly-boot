@@ -91,11 +91,11 @@ let startLineOffset_ = lineOffset_;
 const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-,;";
 let operatorCharacters_ = ff_core_Set.empty_();
 ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
-operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_expect(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
+operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
 if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
-const last_ = ff_core_Stack.Stack_expectLast(tokens_);
+const last_ = ff_core_Stack.Stack_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
 ff_core_Stack.Stack_modify(tokens_, (ff_core_Stack.Stack_size(tokens_) - 1), ((_w1) => {
 {
@@ -116,42 +116,42 @@ ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, s
 }
 let i_ = 0;
 while((i_ < ff_core_String.String_size(code_))) {
-while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_expect(code_, i_) === 32) || (ff_core_String.String_expect(code_, i_) === 9)) || (ff_core_String.String_expect(code_, i_) === 13)))) {
+while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
 i_ += 1
 };
 const start_ = i_;
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
-if((ff_core_String.String_expect(code_, i_) === 10)) {
+if((ff_core_String.String_grab(code_, i_) === 10)) {
 i_ += 1;
 line_ += 1;
 lineOffset_ = i_
-} else if(((ff_core_String.String_expect(code_, i_) === 47) && (ff_core_String.String_expect(code_, (i_ + 1)) === 47))) {
+} else if(((ff_core_String.String_grab(code_, i_) === 47) && (ff_core_String.String_grab(code_, (i_ + 1)) === 47))) {
 i_ += 2;
-while(((i_ < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) !== 10))) {
+while(((i_ < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) !== 10))) {
 i_ += 1
 }
-} else if(((ff_core_String.String_expect(code_, i_) === 47) && (ff_core_String.String_expect(code_, (i_ + 1)) === 42))) {
+} else if(((ff_core_String.String_grab(code_, i_) === 47) && (ff_core_String.String_grab(code_, (i_ + 1)) === 42))) {
 i_ += 2;
-while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_expect(code_, i_) !== 42) || (ff_core_String.String_expect(code_, (i_ + 1)) !== 47)))) {
+while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_grab(code_, i_) !== 42) || (ff_core_String.String_grab(code_, (i_ + 1)) !== 47)))) {
 if((i_ >= ff_core_String.String_size(code_))) {
 ff_core_Core.panic_((("Expected end of comment started on line " + startLine_) + ", got end of file."))
 };
-if((ff_core_String.String_expect(code_, i_) === 10)) {
+if((ff_core_String.String_grab(code_, i_) === 10)) {
 line_ += 1;
 lineOffset_ = (i_ + 1)
 };
 i_ += 1
 };
 i_ += 2
-} else if(((ff_core_String.String_expect(code_, i_) === 34) || (ff_core_String.String_expect(code_, i_) === 39))) {
-const endSign_ = ff_core_String.String_expect(code_, i_);
-let multiLine_ = (((((i_ + 2) < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) === 34)) && (ff_core_String.String_expect(code_, (i_ + 1)) === 34)) && (ff_core_String.String_expect(code_, (i_ + 2)) === 34));
+} else if(((ff_core_String.String_grab(code_, i_) === 34) || (ff_core_String.String_grab(code_, i_) === 39))) {
+const endSign_ = ff_core_String.String_grab(code_, i_);
+let multiLine_ = (((((i_ + 2) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 34)) && (ff_core_String.String_grab(code_, (i_ + 1)) === 34)) && (ff_core_String.String_grab(code_, (i_ + 2)) === 34));
 i_ += (multiLine_
 ? 3
 : 1);
-while(((i_ < ff_core_String.String_size(code_)) && (multiLine_ || (ff_core_String.String_expect(code_, i_) !== endSign_)))) {
-if((ff_core_String.String_expect(code_, i_) === 10)) {
+while(((i_ < ff_core_String.String_size(code_)) && (multiLine_ || (ff_core_String.String_grab(code_, i_) !== endSign_)))) {
+if((ff_core_String.String_grab(code_, i_) === 10)) {
 if(multiLine_) {
 line_ += 1;
 lineOffset_ = (i_ + 1)
@@ -162,10 +162,10 @@ ff_core_Core.panic_((("Unexpected end of line in string started on line " + star
 if((i_ >= ff_core_String.String_size(code_))) {
 ff_core_Core.panic_((("Expected end of string started on line " + startLine_) + ", got end of file."))
 };
-if(((ff_core_String.String_expect(code_, i_) === 92) && (ff_core_String.String_expect(code_, (i_ + 1)) !== 10))) {
+if(((ff_core_String.String_grab(code_, i_) === 92) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 10))) {
 i_ += 1
 };
-if((((((multiLine_ && ((i_ + 2) < ff_core_String.String_size(code_))) && (((i_ + 3) >= ff_core_String.String_size(code_)) || (ff_core_String.String_expect(code_, (i_ + 3)) !== 34))) && (ff_core_String.String_expect(code_, i_) === 34)) && (ff_core_String.String_expect(code_, (i_ + 1)) === 34)) && (ff_core_String.String_expect(code_, (i_ + 2)) === 34))) {
+if((((((multiLine_ && ((i_ + 2) < ff_core_String.String_size(code_))) && (((i_ + 3) >= ff_core_String.String_size(code_)) || (ff_core_String.String_grab(code_, (i_ + 3)) !== 34))) && (ff_core_String.String_grab(code_, i_) === 34)) && (ff_core_String.String_grab(code_, (i_ + 1)) === 34)) && (ff_core_String.String_grab(code_, (i_ + 2)) === 34))) {
 multiLine_ = false;
 i_ += 2
 } else {
@@ -176,34 +176,34 @@ i_ += 1;
 emitToken_(((endSign_ === 34)
 ? ff_compiler_Token.LString()
 : ff_compiler_Token.LChar()), start_, i_)
-} else if(ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expect(code_, i_))) {
-const kind_ = ((ff_core_String.String_expect(code_, i_) >= 97)
+} else if(ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grab(code_, i_))) {
+const kind_ = ((ff_core_String.String_grab(code_, i_) >= 97)
 ? ff_compiler_Token.LLower()
 : ff_compiler_Token.LUpper());
 i_ += 1;
-while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_expect(code_, i_)))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1
 };
-if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper()) && (ff_core_String.String_expect(code_, i_) === 46))) {
+if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper()) && (ff_core_String.String_grab(code_, i_) === 46))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {
 emitToken_(kind_, start_, i_)
 }
-} else if(ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, i_))) {
+} else if(ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_))) {
 let dot_ = false;
 let exponent_ = false;
-while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, i_)))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1;
-if((((ff_core_String.String_expect(code_, i_) === 101) || (ff_core_String.String_expect(code_, i_) === 69)) && (!exponent_))) {
+if((((ff_core_String.String_grab(code_, i_) === 101) || (ff_core_String.String_grab(code_, i_) === 69)) && (!exponent_))) {
 i_ += 1;
 dot_ = true;
 exponent_ = true;
-if(((ff_core_String.String_expect(code_, i_) === 43) || (ff_core_String.String_expect(code_, i_) === 45))) {
+if(((ff_core_String.String_grab(code_, i_) === 43) || (ff_core_String.String_grab(code_, i_) === 45))) {
 i_ += 1
 }
 };
-if(((((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) === 46)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, (i_ + 1)))) && (!dot_)) && (!exponent_))) {
+if(((((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 46)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, (i_ + 1)))) && (!dot_)) && (!exponent_))) {
 i_ += 1;
 dot_ = true
 }
@@ -211,47 +211,47 @@ dot_ = true
 emitToken_(((dot_ || exponent_)
 ? ff_compiler_Token.LFloat()
 : ff_compiler_Token.LInt()), start_, i_)
-} else if((ff_core_String.String_expect(code_, i_) === 95)) {
+} else if((ff_core_String.String_grab(code_, i_) === 95)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
-} else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
+} else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
-while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char))) {
 i_ += 1
 };
-const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 46))
+const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 46))
 ? ff_compiler_Token.LDot()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 44))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 44))
 ? ff_compiler_Token.LComma()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 59))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 59))
 ? ff_compiler_Token.LSemicolon()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 124))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 124))
 ? ff_compiler_Token.LPipe()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 58))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 58))
 ? ff_compiler_Token.LColon()
-: (((((i_ - start_) === 3) && (ff_core_String.String_expect(code_, (i_ - 3)) === 46)) && (ff_core_String.String_expect(code_, (i_ - 2)) === 46)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 46))
+: (((((i_ - start_) === 3) && (ff_core_String.String_grab(code_, (i_ - 3)) === 46)) && (ff_core_String.String_grab(code_, (i_ - 2)) === 46)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 46))
 ? ff_compiler_Token.LDotDotDot()
-: ((((i_ - start_) === 2) && (ff_core_String.String_expect(code_, (i_ - 2)) === 61)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 62))
+: ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 61)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 62))
 ? ff_compiler_Token.LArrowThick()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 61))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssign()
-: ((((i_ - start_) === 2) && (ff_core_String.String_expect(code_, (i_ - 2)) === 43)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 61))
+: ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 43)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssignPlus()
-: ((((i_ - start_) === 2) && (ff_core_String.String_expect(code_, (i_ - 2)) === 45)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 61))
+: ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 45)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssignMinus()
-: (((((i_ - start_) === 3) && (ff_core_String.String_expect(code_, (i_ - 3)) === 58)) && (ff_core_String.String_expect(code_, (i_ - 2)) === 58)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 61))
+: (((((i_ - start_) === 3) && (ff_core_String.String_grab(code_, (i_ - 3)) === 58)) && (ff_core_String.String_grab(code_, (i_ - 2)) === 58)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssignLink()
 : ff_compiler_Token.LOperator());
 emitToken_(o_, start_, i_)
-} else if((((ff_core_String.String_expect(code_, i_) === 40) || (ff_core_String.String_expect(code_, i_) === 91)) || (ff_core_String.String_expect(code_, i_) === 123))) {
+} else if((((ff_core_String.String_grab(code_, i_) === 40) || (ff_core_String.String_grab(code_, i_) === 91)) || (ff_core_String.String_grab(code_, i_) === 123))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_)
-} else if((((ff_core_String.String_expect(code_, i_) === 41) || (ff_core_String.String_expect(code_, i_) === 93)) || (ff_core_String.String_expect(code_, i_) === 125))) {
+} else if((((ff_core_String.String_grab(code_, i_) === 41) || (ff_core_String.String_grab(code_, i_) === 93)) || (ff_core_String.String_grab(code_, i_) === 125))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
 const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
+ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
 } else {}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
@@ -269,11 +269,11 @@ let startLineOffset_ = lineOffset_;
 const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-,;";
 let operatorCharacters_ = ff_core_Set.empty_();
 ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
-operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_expect(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
+operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
 if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
-const last_ = ff_core_Stack.Stack_expectLast(tokens_);
+const last_ = ff_core_Stack.Stack_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
 ff_core_Stack.Stack_modify(tokens_, (ff_core_Stack.Stack_size(tokens_) - 1), ((_w1) => {
 {
@@ -294,42 +294,42 @@ ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, s
 }
 let i_ = 0;
 while((i_ < ff_core_String.String_size(code_))) {
-while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_expect(code_, i_) === 32) || (ff_core_String.String_expect(code_, i_) === 9)) || (ff_core_String.String_expect(code_, i_) === 13)))) {
+while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
 i_ += 1
 };
 const start_ = i_;
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
-if((ff_core_String.String_expect(code_, i_) === 10)) {
+if((ff_core_String.String_grab(code_, i_) === 10)) {
 i_ += 1;
 line_ += 1;
 lineOffset_ = i_
-} else if(((ff_core_String.String_expect(code_, i_) === 47) && (ff_core_String.String_expect(code_, (i_ + 1)) === 47))) {
+} else if(((ff_core_String.String_grab(code_, i_) === 47) && (ff_core_String.String_grab(code_, (i_ + 1)) === 47))) {
 i_ += 2;
-while(((i_ < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) !== 10))) {
+while(((i_ < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) !== 10))) {
 i_ += 1
 }
-} else if(((ff_core_String.String_expect(code_, i_) === 47) && (ff_core_String.String_expect(code_, (i_ + 1)) === 42))) {
+} else if(((ff_core_String.String_grab(code_, i_) === 47) && (ff_core_String.String_grab(code_, (i_ + 1)) === 42))) {
 i_ += 2;
-while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_expect(code_, i_) !== 42) || (ff_core_String.String_expect(code_, (i_ + 1)) !== 47)))) {
+while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_grab(code_, i_) !== 42) || (ff_core_String.String_grab(code_, (i_ + 1)) !== 47)))) {
 if((i_ >= ff_core_String.String_size(code_))) {
 ff_core_Core.panic_((("Expected end of comment started on line " + startLine_) + ", got end of file."))
 };
-if((ff_core_String.String_expect(code_, i_) === 10)) {
+if((ff_core_String.String_grab(code_, i_) === 10)) {
 line_ += 1;
 lineOffset_ = (i_ + 1)
 };
 i_ += 1
 };
 i_ += 2
-} else if(((ff_core_String.String_expect(code_, i_) === 34) || (ff_core_String.String_expect(code_, i_) === 39))) {
-const endSign_ = ff_core_String.String_expect(code_, i_);
-let multiLine_ = (((((i_ + 2) < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) === 34)) && (ff_core_String.String_expect(code_, (i_ + 1)) === 34)) && (ff_core_String.String_expect(code_, (i_ + 2)) === 34));
+} else if(((ff_core_String.String_grab(code_, i_) === 34) || (ff_core_String.String_grab(code_, i_) === 39))) {
+const endSign_ = ff_core_String.String_grab(code_, i_);
+let multiLine_ = (((((i_ + 2) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 34)) && (ff_core_String.String_grab(code_, (i_ + 1)) === 34)) && (ff_core_String.String_grab(code_, (i_ + 2)) === 34));
 i_ += (multiLine_
 ? 3
 : 1);
-while(((i_ < ff_core_String.String_size(code_)) && (multiLine_ || (ff_core_String.String_expect(code_, i_) !== endSign_)))) {
-if((ff_core_String.String_expect(code_, i_) === 10)) {
+while(((i_ < ff_core_String.String_size(code_)) && (multiLine_ || (ff_core_String.String_grab(code_, i_) !== endSign_)))) {
+if((ff_core_String.String_grab(code_, i_) === 10)) {
 if(multiLine_) {
 line_ += 1;
 lineOffset_ = (i_ + 1)
@@ -340,10 +340,10 @@ ff_core_Core.panic_((("Unexpected end of line in string started on line " + star
 if((i_ >= ff_core_String.String_size(code_))) {
 ff_core_Core.panic_((("Expected end of string started on line " + startLine_) + ", got end of file."))
 };
-if(((ff_core_String.String_expect(code_, i_) === 92) && (ff_core_String.String_expect(code_, (i_ + 1)) !== 10))) {
+if(((ff_core_String.String_grab(code_, i_) === 92) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 10))) {
 i_ += 1
 };
-if((((((multiLine_ && ((i_ + 2) < ff_core_String.String_size(code_))) && (((i_ + 3) >= ff_core_String.String_size(code_)) || (ff_core_String.String_expect(code_, (i_ + 3)) !== 34))) && (ff_core_String.String_expect(code_, i_) === 34)) && (ff_core_String.String_expect(code_, (i_ + 1)) === 34)) && (ff_core_String.String_expect(code_, (i_ + 2)) === 34))) {
+if((((((multiLine_ && ((i_ + 2) < ff_core_String.String_size(code_))) && (((i_ + 3) >= ff_core_String.String_size(code_)) || (ff_core_String.String_grab(code_, (i_ + 3)) !== 34))) && (ff_core_String.String_grab(code_, i_) === 34)) && (ff_core_String.String_grab(code_, (i_ + 1)) === 34)) && (ff_core_String.String_grab(code_, (i_ + 2)) === 34))) {
 multiLine_ = false;
 i_ += 2
 } else {
@@ -354,34 +354,34 @@ i_ += 1;
 emitToken_(((endSign_ === 34)
 ? ff_compiler_Token.LString()
 : ff_compiler_Token.LChar()), start_, i_)
-} else if(ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expect(code_, i_))) {
-const kind_ = ((ff_core_String.String_expect(code_, i_) >= 97)
+} else if(ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grab(code_, i_))) {
+const kind_ = ((ff_core_String.String_grab(code_, i_) >= 97)
 ? ff_compiler_Token.LLower()
 : ff_compiler_Token.LUpper());
 i_ += 1;
-while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_expect(code_, i_)))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1
 };
-if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper()) && (ff_core_String.String_expect(code_, i_) === 46))) {
+if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper()) && (ff_core_String.String_grab(code_, i_) === 46))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {
 emitToken_(kind_, start_, i_)
 }
-} else if(ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, i_))) {
+} else if(ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_))) {
 let dot_ = false;
 let exponent_ = false;
-while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, i_)))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1;
-if((((ff_core_String.String_expect(code_, i_) === 101) || (ff_core_String.String_expect(code_, i_) === 69)) && (!exponent_))) {
+if((((ff_core_String.String_grab(code_, i_) === 101) || (ff_core_String.String_grab(code_, i_) === 69)) && (!exponent_))) {
 i_ += 1;
 dot_ = true;
 exponent_ = true;
-if(((ff_core_String.String_expect(code_, i_) === 43) || (ff_core_String.String_expect(code_, i_) === 45))) {
+if(((ff_core_String.String_grab(code_, i_) === 43) || (ff_core_String.String_grab(code_, i_) === 45))) {
 i_ += 1
 }
 };
-if(((((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_expect(code_, i_) === 46)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_expect(code_, (i_ + 1)))) && (!dot_)) && (!exponent_))) {
+if(((((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 46)) && ff_core_Char.Char_isAsciiDigit(ff_core_String.String_grab(code_, (i_ + 1)))) && (!dot_)) && (!exponent_))) {
 i_ += 1;
 dot_ = true
 }
@@ -389,47 +389,47 @@ dot_ = true
 emitToken_(((dot_ || exponent_)
 ? ff_compiler_Token.LFloat()
 : ff_compiler_Token.LInt()), start_, i_)
-} else if((ff_core_String.String_expect(code_, i_) === 95)) {
+} else if((ff_core_String.String_grab(code_, i_) === 95)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
-} else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
+} else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
-while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_expect(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char))) {
+while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char))) {
 i_ += 1
 };
-const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 46))
+const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 46))
 ? ff_compiler_Token.LDot()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 44))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 44))
 ? ff_compiler_Token.LComma()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 59))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 59))
 ? ff_compiler_Token.LSemicolon()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 124))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 124))
 ? ff_compiler_Token.LPipe()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 58))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 58))
 ? ff_compiler_Token.LColon()
-: (((((i_ - start_) === 3) && (ff_core_String.String_expect(code_, (i_ - 3)) === 46)) && (ff_core_String.String_expect(code_, (i_ - 2)) === 46)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 46))
+: (((((i_ - start_) === 3) && (ff_core_String.String_grab(code_, (i_ - 3)) === 46)) && (ff_core_String.String_grab(code_, (i_ - 2)) === 46)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 46))
 ? ff_compiler_Token.LDotDotDot()
-: ((((i_ - start_) === 2) && (ff_core_String.String_expect(code_, (i_ - 2)) === 61)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 62))
+: ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 61)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 62))
 ? ff_compiler_Token.LArrowThick()
-: (((i_ - start_) === 1) && (ff_core_String.String_expect(code_, (i_ - 1)) === 61))
+: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssign()
-: ((((i_ - start_) === 2) && (ff_core_String.String_expect(code_, (i_ - 2)) === 43)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 61))
+: ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 43)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssignPlus()
-: ((((i_ - start_) === 2) && (ff_core_String.String_expect(code_, (i_ - 2)) === 45)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 61))
+: ((((i_ - start_) === 2) && (ff_core_String.String_grab(code_, (i_ - 2)) === 45)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssignMinus()
-: (((((i_ - start_) === 3) && (ff_core_String.String_expect(code_, (i_ - 3)) === 58)) && (ff_core_String.String_expect(code_, (i_ - 2)) === 58)) && (ff_core_String.String_expect(code_, (i_ - 1)) === 61))
+: (((((i_ - start_) === 3) && (ff_core_String.String_grab(code_, (i_ - 3)) === 58)) && (ff_core_String.String_grab(code_, (i_ - 2)) === 58)) && (ff_core_String.String_grab(code_, (i_ - 1)) === 61))
 ? ff_compiler_Token.LAssignLink()
 : ff_compiler_Token.LOperator());
 emitToken_(o_, start_, i_)
-} else if((((ff_core_String.String_expect(code_, i_) === 40) || (ff_core_String.String_expect(code_, i_) === 91)) || (ff_core_String.String_expect(code_, i_) === 123))) {
+} else if((((ff_core_String.String_grab(code_, i_) === 40) || (ff_core_String.String_grab(code_, i_) === 91)) || (ff_core_String.String_grab(code_, i_) === 123))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_)
-} else if((((ff_core_String.String_expect(code_, i_) === 41) || (ff_core_String.String_expect(code_, i_) === 93)) || (ff_core_String.String_expect(code_, i_) === 125))) {
+} else if((((ff_core_String.String_grab(code_, i_) === 41) || (ff_core_String.String_grab(code_, i_) === 93)) || (ff_core_String.String_grab(code_, i_) === 125))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
 const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_expect(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
+ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
 } else {}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {

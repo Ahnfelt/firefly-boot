@@ -170,8 +170,8 @@ return (_w1 !== 46)
 function otherVariants_(name_) {
 const variantName_ = unqualifiedName_(name_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantName_) + 1));
-const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-return ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+const variantModule_ = ff_core_Map.Map_grab(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return ff_core_Option.Option_grab(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ === variantName_)
 })), ((variant_) => {
@@ -272,7 +272,7 @@ return
 }));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
 const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()));
-return ff_core_Try.Try_else(ff_core_Core.try_((() => {
+return ff_core_Try.Try_else(ff_core_Try.do_((() => {
 ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), guardConverted_, false, false);
 return true
 })), (() => {
@@ -287,10 +287,10 @@ return
 
 export function convertAndCheck_(modules_, cases_) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
-ff_core_Try.Try_else(ff_core_Core.try_((() => {
+ff_core_Try.Try_else(ff_core_Try.do_((() => {
 return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
 })), (() => {
-ff_compiler_Patterns.fail_(ff_core_List.List_expect(cases_, 0).at_, "Unexhaustive match")
+ff_compiler_Patterns.fail_(ff_core_List.List_grab(cases_, 0).at_, "Unexhaustive match")
 }))
 }
 
@@ -378,8 +378,8 @@ return (_w1 !== 46)
 function otherVariants_(name_) {
 const variantName_ = unqualifiedName_(name_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantName_) + 1));
-const variantModule_ = ff_core_Map.Map_expect(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-return ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+const variantModule_ = ff_core_Map.Map_grab(modules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+return ff_core_Option.Option_grab(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ === variantName_)
 })), ((variant_) => {
@@ -480,7 +480,7 @@ return
 }));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
 const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()));
-return ff_core_Try.Try_else(ff_core_Core.try_((() => {
+return ff_core_Try.Try_else(ff_core_Try.do_((() => {
 ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), guardConverted_, false, false);
 return true
 })), (() => {
@@ -495,10 +495,10 @@ return
 
 export async function convertAndCheck_$(modules_, cases_, $c) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
-ff_core_Try.Try_else(ff_core_Core.try_((() => {
+ff_core_Try.Try_else(ff_core_Try.do_((() => {
 return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
 })), (() => {
-ff_compiler_Patterns.fail_(ff_core_List.List_expect(cases_, 0).at_, "Unexhaustive match")
+ff_compiler_Patterns.fail_(ff_core_List.List_grab(cases_, 0).at_, "Unexhaustive match")
 }))
 }
 

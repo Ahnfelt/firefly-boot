@@ -105,13 +105,13 @@ ff_core_Stack.sortRange_(stack_, compare_, middle_, end_);
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
-if((compare_(ff_core_Stack.Stack_expect(stack_, i_), ff_core_Stack.Stack_expect(stack_, j_)) !== ff_core_Ordering.OrderingAfter())) {
+if((compare_(ff_core_Stack.Stack_grab(stack_, i_), ff_core_Stack.Stack_grab(stack_, j_)) !== ff_core_Ordering.OrderingAfter())) {
 i_ += 1
 } else {
-const value_ = ff_core_Stack.Stack_expect(stack_, j_);
+const value_ = ff_core_Stack.Stack_grab(stack_, j_);
 let k_ = j_;
 while((k_ > i_)) {
-ff_core_Stack.Stack_set(stack_, k_, ff_core_Stack.Stack_expect(stack_, (k_ - 1)));
+ff_core_Stack.Stack_set(stack_, k_, ff_core_Stack.Stack_grab(stack_, (k_ - 1)));
 k_ -= 1
 };
 ff_core_Stack.Stack_set(stack_, i_, value_);
@@ -145,13 +145,13 @@ let middle_ = (start_ + ((end_ - start_) / 2));
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
-if(((await compare_(ff_core_Stack.Stack_expect(stack_, i_), ff_core_Stack.Stack_expect(stack_, j_), $c)) !== ff_core_Ordering.OrderingAfter())) {
+if(((await compare_(ff_core_Stack.Stack_grab(stack_, i_), ff_core_Stack.Stack_grab(stack_, j_), $c)) !== ff_core_Ordering.OrderingAfter())) {
 i_ += 1
 } else {
-const value_ = ff_core_Stack.Stack_expect(stack_, j_);
+const value_ = ff_core_Stack.Stack_grab(stack_, j_);
 let k_ = j_;
 while((k_ > i_)) {
-ff_core_Stack.Stack_set(stack_, k_, ff_core_Stack.Stack_expect(stack_, (k_ - 1)));
+ff_core_Stack.Stack_set(stack_, k_, ff_core_Stack.Stack_grab(stack_, (k_ - 1)));
 k_ -= 1
 };
 ff_core_Stack.Stack_set(stack_, i_, value_);
@@ -179,7 +179,7 @@ export function Stack_get(self_, index_) {
         
 }
 
-export function Stack_expect(self_, index_) {
+export function Stack_grab(self_, index_) {
 
             if(index_ < 0 || index_ >= self_.array.length) {
                 throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.array.length)
@@ -188,12 +188,12 @@ export function Stack_expect(self_, index_) {
         
 }
 
-export function Stack_expectFirst(self_) {
-return ff_core_Stack.Stack_expect(self_, 0)
+export function Stack_grabFirst(self_) {
+return ff_core_Stack.Stack_grab(self_, 0)
 }
 
-export function Stack_expectLast(self_) {
-return ff_core_Stack.Stack_expect(self_, (ff_core_Stack.Stack_size(self_) - 1))
+export function Stack_grabLast(self_) {
+return ff_core_Stack.Stack_grab(self_, (ff_core_Stack.Stack_size(self_) - 1))
 }
 
 export function Stack_first(self_) {
@@ -370,16 +370,16 @@ export async function Stack_get$(self_, index_, $c) {
 throw new Error('Function Stack_get is missing on this target in async context.');
 }
 
-export async function Stack_expect$(self_, index_, $c) {
-throw new Error('Function Stack_expect is missing on this target in async context.');
+export async function Stack_grab$(self_, index_, $c) {
+throw new Error('Function Stack_grab is missing on this target in async context.');
 }
 
-export async function Stack_expectFirst$(self_, $c) {
-return ff_core_Stack.Stack_expect(self_, 0)
+export async function Stack_grabFirst$(self_, $c) {
+return ff_core_Stack.Stack_grab(self_, 0)
 }
 
-export async function Stack_expectLast$(self_, $c) {
-return ff_core_Stack.Stack_expect(self_, (ff_core_Stack.Stack_size(self_) - 1))
+export async function Stack_grabLast$(self_, $c) {
+return ff_core_Stack.Stack_grab(self_, (ff_core_Stack.Stack_size(self_) - 1))
 }
 
 export async function Stack_first$(self_, $c) {

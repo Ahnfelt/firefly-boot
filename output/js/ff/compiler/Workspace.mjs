@@ -127,8 +127,8 @@ ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
 if((ff_core_List.List_size(columns_) !== 2)) {
 ff_core_Core.panic_(("Could not parse workspace rule: " + line_))
 };
-const package_ = ff_core_List.List_expect(columns_, 0);
-const location_ = ff_core_List.List_expect(columns_, 1);
+const package_ = ff_core_List.List_grab(columns_, 0);
+const location_ = ff_core_List.List_grab(columns_, 1);
 const fixedLocation_ = (ff_core_String.String_endsWith(location_, "/")
 ? location_
 : (location_ + "/"));
@@ -140,11 +140,11 @@ const packageParts_ = ff_core_String.String_split(package_, 58);
 if((ff_core_Array.Array_size(packageParts_) !== 2)) {
 ff_core_Core.panic_(("Could not parse workspace package: " + package_))
 };
-if((ff_core_Array.Array_expect(packageParts_, 0) === "*")) {
+if((ff_core_Array.Array_grab(packageParts_, 0) === "*")) {
 ff_core_Core.panic_(("Unexpected wildcard: " + package_))
 };
-return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_expect(packageParts_, 0), ((ff_core_Array.Array_expect(packageParts_, 1) !== "*")
-? ff_core_Option.Some(ff_core_Array.Array_expect(packageParts_, 1))
+return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_grab(packageParts_, 0), ((ff_core_Array.Array_grab(packageParts_, 1) !== "*")
+? ff_core_Option.Some(ff_core_Array.Array_grab(packageParts_, 1))
 : ff_core_Option.None()), fixedLocation_))
 }
 }));
@@ -194,8 +194,8 @@ ff_core_Core.panic_(("Unexpected rule after the * rule: " + line_))
 if((ff_core_List.List_size(columns_) !== 2)) {
 ff_core_Core.panic_(("Could not parse workspace rule: " + line_))
 };
-const package_ = ff_core_List.List_expect(columns_, 0);
-const location_ = ff_core_List.List_expect(columns_, 1);
+const package_ = ff_core_List.List_grab(columns_, 0);
+const location_ = ff_core_List.List_grab(columns_, 1);
 const fixedLocation_ = (ff_core_String.String_endsWith(location_, "/")
 ? location_
 : (location_ + "/"));
@@ -207,11 +207,11 @@ const packageParts_ = ff_core_String.String_split(package_, 58);
 if((ff_core_Array.Array_size(packageParts_) !== 2)) {
 ff_core_Core.panic_(("Could not parse workspace package: " + package_))
 };
-if((ff_core_Array.Array_expect(packageParts_, 0) === "*")) {
+if((ff_core_Array.Array_grab(packageParts_, 0) === "*")) {
 ff_core_Core.panic_(("Unexpected wildcard: " + package_))
 };
-return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_expect(packageParts_, 0), ((ff_core_Array.Array_expect(packageParts_, 1) !== "*")
-? ff_core_Option.Some(ff_core_Array.Array_expect(packageParts_, 1))
+return ff_core_Option.Some(ff_compiler_Workspace.WorkspaceRule(ff_core_Array.Array_grab(packageParts_, 0), ((ff_core_Array.Array_grab(packageParts_, 1) !== "*")
+? ff_core_Option.Some(ff_core_Array.Array_grab(packageParts_, 1))
 : ff_core_Option.None()), fixedLocation_))
 }
 }));

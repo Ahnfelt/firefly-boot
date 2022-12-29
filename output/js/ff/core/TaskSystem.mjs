@@ -159,9 +159,9 @@ let live_ = ff_core_List.List_size(tasks_);
 return ff_core_TaskSystem.TaskSystem_scope(self_, ((scope_) => {
 ff_core_List.List_each(tasks_, ((task_) => {
 ff_core_TaskSystem.TaskScope_spawn(scope_, (() => {
-ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+ff_core_Try.catch_((() => {
 return ff_core_Channel.Channel_write(successChannel_, task_())
-})), ((e_) => {
+}), ((e_) => {
 live_ -= 1;
 if((live_ === 0)) {
 ff_core_Channel.Channel_write(failureChannel_, e_)
@@ -254,9 +254,9 @@ let live_ = ff_core_List.List_size(tasks_);
 return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async (scope_, $c) => {
 (await ff_core_List.List_each$(tasks_, (async (task_, $c) => {
 (await ff_core_TaskSystem.TaskScope_spawn$(scope_, (async ($c) => {
-(await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($c) => {
+(await ff_core_Try.catch_$((async ($c) => {
 return (await ff_core_Channel.Channel_write$(successChannel_, (await task_($c)), $c))
-}), $c)), (async (e_, $c) => {
+}), (async (e_, $c) => {
 live_ -= 1;
 if((live_ === 0)) {
 (await ff_core_Channel.Channel_write$(failureChannel_, e_, $c))

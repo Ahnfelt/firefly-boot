@@ -312,7 +312,7 @@ return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true)
 {
 const name_ = _1.first_;
 const lambda_ = _1.second_;
-const signature_ = ff_core_Option.Option_expect(ff_core_List.List_find(definition_.methods_, ((_w1) => {
+const signature_ = ff_core_Option.Option_grab(ff_core_List.List_find(definition_.methods_, ((_w1) => {
 return (_w1.name_ === name_)
 })));
 const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
@@ -735,7 +735,7 @@ return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 }));
 if(isFunctionType_) {
 const arguments_ = ff_core_List.List_dropLast(generics_, 1);
-const returnType_ = ff_core_List.List_expectLast(generics_);
+const returnType_ = ff_core_List.List_grabLast(generics_);
 {
 const _1 = constructor_;
 {
@@ -1257,7 +1257,7 @@ return ff_compiler_Resolver.Resolver_resolveSignature(self2_, _w1, true)
 {
 const name_ = _1.first_;
 const lambda_ = _1.second_;
-const signature_ = ff_core_Option.Option_expect(ff_core_List.List_find(definition_.methods_, ((_w1) => {
+const signature_ = ff_core_Option.Option_grab(ff_core_List.List_find(definition_.methods_, ((_w1) => {
 return (_w1.name_ === name_)
 })));
 const function1_ = ff_compiler_Syntax.DFunction(signature_.at_, signature_, ff_compiler_Syntax.FireflyTarget(lambda_));
@@ -1680,7 +1680,7 @@ return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 }));
 if(isFunctionType_) {
 const arguments_ = ff_core_List.List_dropLast(generics_, 1);
-const returnType_ = ff_core_List.List_expectLast(generics_);
+const returnType_ = ff_core_List.List_grabLast(generics_);
 {
 const _1 = constructor_;
 {

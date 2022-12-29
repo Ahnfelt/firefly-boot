@@ -137,7 +137,7 @@ export function Array_get(self_, index_) {
         
 }
 
-export function Array_expect(self_, index_) {
+export function Array_grab(self_, index_) {
 
             if(index_ < 0 || index_ >= self_.length) {
                 throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.length)
@@ -154,12 +154,12 @@ export function Array_last(self_) {
 return ff_core_Array.Array_get(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
-export function Array_expectFirst(self_) {
-return ff_core_Array.Array_expect(self_, 0)
+export function Array_grabFirst(self_) {
+return ff_core_Array.Array_grab(self_, 0)
 }
 
-export function Array_expectLast(self_) {
-return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
+export function Array_grabLast(self_) {
+return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
 export function Array_dropFirst(self_, count_ = 1) {
@@ -193,7 +193,7 @@ let index_ = 0;
 return ff_core_Stream.make_((() => {
 if((index_ < ff_core_Array.Array_size(self_))) {
 return ff_core_Option.Some((function() {
-const result_ = ff_core_Array.Array_expect(self_, index_);
+const result_ = ff_core_Array.Array_grab(self_, index_);
 index_ += 1;
 return result_
 })())
@@ -269,8 +269,8 @@ export async function Array_get$(self_, index_, $c) {
 throw new Error('Function Array_get is missing on this target in async context.');
 }
 
-export async function Array_expect$(self_, index_, $c) {
-throw new Error('Function Array_expect is missing on this target in async context.');
+export async function Array_grab$(self_, index_, $c) {
+throw new Error('Function Array_grab is missing on this target in async context.');
 }
 
 export async function Array_first$(self_, $c) {
@@ -281,12 +281,12 @@ export async function Array_last$(self_, $c) {
 return ff_core_Array.Array_get(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
-export async function Array_expectFirst$(self_, $c) {
-return ff_core_Array.Array_expect(self_, 0)
+export async function Array_grabFirst$(self_, $c) {
+return ff_core_Array.Array_grab(self_, 0)
 }
 
-export async function Array_expectLast$(self_, $c) {
-return ff_core_Array.Array_expect(self_, (ff_core_Array.Array_size(self_) - 1))
+export async function Array_grabLast$(self_, $c) {
+return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
 export async function Array_dropFirst$(self_, count_ = 1, $c) {
@@ -314,7 +314,7 @@ let index_ = 0;
 return (await ff_core_Stream.make_$((async ($c) => {
 if((index_ < ff_core_Array.Array_size(self_))) {
 return ff_core_Option.Some((await (async function() {
-const result_ = ff_core_Array.Array_expect(self_, index_);
+const result_ = ff_core_Array.Array_grab(self_, index_);
 index_ += 1;
 return result_
 })()))
@@ -454,7 +454,7 @@ return false
 let i_ = (-1);
 return ff_core_Array.Array_all(left_, ((x_) => {
 i_ += 1;
-return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_expect(right_, i_))
+return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_grab(right_, i_))
 }))
 }
 }
@@ -469,7 +469,7 @@ return false
 let i_ = (-1);
 return ff_core_Array.Array_all(left_, ((x_) => {
 i_ += 1;
-return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_expect(right_, i_))
+return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_grab(right_, i_))
 }))
 }
 }
@@ -485,7 +485,7 @@ const size_ = ff_core_Int.Int_min(ff_core_Array.Array_size(left_), ff_core_Array
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
-ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_expect(left_, i_), ff_core_Array.Array_expect(right_, i_));
+ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_grab(left_, i_), ff_core_Array.Array_grab(right_, i_));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {
@@ -503,7 +503,7 @@ const size_ = ff_core_Int.Int_min(ff_core_Array.Array_size(left_), ff_core_Array
 let i_ = 0;
 let ordering_ = ff_core_Ordering.OrderingSame();
 while(((ordering_ === ff_core_Ordering.OrderingSame()) && (i_ < size_))) {
-ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_expect(left_, i_), ff_core_Array.Array_expect(right_, i_));
+ordering_ = ff_core_Ordering_Order$T.compare_(ff_core_Array.Array_grab(left_, i_), ff_core_Array.Array_grab(right_, i_));
 i_ += 1
 };
 if((ordering_ !== ff_core_Ordering.OrderingSame())) {

@@ -63,11 +63,11 @@ extend self: Unification {
     withLocalInstances[T](instances: Map[InstanceKey, InstanceValue], body: () => T): T {
         let oldInstances = self.instances
         self.instances = self.instances.addAll(instances)
-        try {
+        Try.finally {
             body()
-        } finally {
+        } {
             self.instances = oldInstances
-        } grab()
+        }
     }
 
     freshUnificationVariable(at: Location): Type {

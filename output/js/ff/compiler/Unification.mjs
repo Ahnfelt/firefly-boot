@@ -122,7 +122,7 @@ return fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
 return
 }
 }
-}))(ff_core_List.List_expectFirst(definition_.typeArguments_));
+}))(ff_core_List.List_grabFirst(definition_.typeArguments_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, module_.packagePair_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int))
@@ -150,7 +150,7 @@ return fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
 return
 }
 }
-}))(ff_core_List.List_expectFirst(definition_.typeArguments_));
+}))(ff_core_List.List_grabFirst(definition_.typeArguments_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, module_.packagePair_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int))
@@ -163,11 +163,11 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export function Unification_withLocalInstances(self_, instances_, body_) {
 const oldInstances_ = self_.instances_;
 self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_core_Try.finally_((() => {
 return body_()
-})), (() => {
+}), (() => {
 self_.instances_ = oldInstances_
-})))
+}))
 }
 
 export function Unification_freshUnificationVariable(self_, at_) {
@@ -348,7 +348,7 @@ const _1 = ff_compiler_Unification.Unification_instantiateConstraint(self_, inst
 {
 const constraintName_ = _1.name_;
 const newGenerics_ = _1.generics_;
-ff_compiler_Unification.Unification_constrain(self_, at_, ff_core_List.List_expectFirst(newGenerics_), constraintName_, ff_core_List.List_dropFirst(newGenerics_, 1))
+ff_compiler_Unification.Unification_constrain(self_, at_, ff_core_List.List_grabFirst(newGenerics_), constraintName_, ff_core_List.List_dropFirst(newGenerics_, 1))
 return
 }
 }
@@ -613,11 +613,11 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export async function Unification_withLocalInstances$(self_, instances_, body_, $c) {
 const oldInstances_ = self_.instances_;
 self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.finally_$((async ($c) => {
 return (await body_($c))
-}), $c)), (() => {
+}), (async ($c) => {
 self_.instances_ = oldInstances_
-})))
+}), $c))
 }
 
 export async function Unification_freshUnificationVariable$(self_, at_, $c) {
@@ -798,7 +798,7 @@ const _1 = ff_compiler_Unification.Unification_instantiateConstraint(self_, inst
 {
 const constraintName_ = _1.name_;
 const newGenerics_ = _1.generics_;
-ff_compiler_Unification.Unification_constrain(self_, at_, ff_core_List.List_expectFirst(newGenerics_), constraintName_, ff_core_List.List_dropFirst(newGenerics_, 1))
+ff_compiler_Unification.Unification_constrain(self_, at_, ff_core_List.List_grabFirst(newGenerics_), constraintName_, ff_core_List.List_dropFirst(newGenerics_, 1))
 return
 }
 }

@@ -118,7 +118,7 @@ const first_ = ff_core_Array.Array_first(arguments_);
 arguments_ = ff_core_Array.Array_dropFirst(arguments_, 1);
 return first_
 }
-const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
+const fireflyPath_ = ff_core_Option.Option_grab(consumeArgument_());
 const command_ = (((_1) => {
 {
 const s_ = _1;
@@ -130,19 +130,19 @@ return
 }
 {
 if(_1 == "run") {
-return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
+return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_grab(consumeArgument_()), 3))
 return
 }
 }
 {
 if(_1 == "browser") {
-return ff_compiler_Main.BrowserCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
+return ff_compiler_Main.BrowserCommand(ff_core_String.String_dropLast(ff_core_Option.Option_grab(consumeArgument_()), 3))
 return
 }
 }
 {
 if(_1 == "build") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_grab(consumeArgument_()), 3))
 return
 }
 }
@@ -157,7 +157,7 @@ const s_ = _1;
 return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
 return
 }
-}))(ff_core_Option.Option_expect(consumeArgument_()));
+}))(ff_core_Option.Option_grab(consumeArgument_()));
 for(;;) {
 const _1 = command_;
 {
@@ -330,7 +330,7 @@ const first_ = ff_core_Array.Array_first(arguments_);
 arguments_ = ff_core_Array.Array_dropFirst(arguments_, 1);
 return first_
 }
-const fireflyPath_ = ff_core_Option.Option_expect(consumeArgument_());
+const fireflyPath_ = ff_core_Option.Option_grab(consumeArgument_());
 const command_ = (((_1) => {
 {
 const s_ = _1;
@@ -342,19 +342,19 @@ return
 }
 {
 if(_1 == "run") {
-return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
+return ff_compiler_Main.RunCommand(ff_core_String.String_dropLast(ff_core_Option.Option_grab(consumeArgument_()), 3))
 return
 }
 }
 {
 if(_1 == "browser") {
-return ff_compiler_Main.BrowserCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
+return ff_compiler_Main.BrowserCommand(ff_core_String.String_dropLast(ff_core_Option.Option_grab(consumeArgument_()), 3))
 return
 }
 }
 {
 if(_1 == "build") {
-return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_expect(consumeArgument_()), 3))
+return ff_compiler_Main.BuildCommand(ff_core_String.String_dropLast(ff_core_Option.Option_grab(consumeArgument_()), 3))
 return
 }
 }
@@ -369,7 +369,7 @@ const s_ = _1;
 return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
 return
 }
-}))(ff_core_Option.Option_expect(consumeArgument_()));
+}))(ff_core_Option.Option_grab(consumeArgument_()));
 for(;;) {
 const _1 = command_;
 {

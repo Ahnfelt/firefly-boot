@@ -114,7 +114,7 @@ return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable:
 return
 }
 }
-}))(ff_core_List.List_expectFirst(c_.generics_));
+}))(ff_core_List.List_grabFirst(c_.generics_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
@@ -144,7 +144,7 @@ return ff_compiler_Dictionaries.fail_(c_.at_, ("Unexpected unification variable:
 return
 }
 }
-}))(ff_core_List.List_expectFirst(c_.generics_));
+}))(ff_core_List.List_grabFirst(c_.generics_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
@@ -619,7 +619,7 @@ return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable"
 return
 }
 }
-}))(ff_core_List.List_expectFirst(newGenerics_));
+}))(ff_core_List.List_grabFirst(newGenerics_));
 const instance_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), (() => {
 return ff_compiler_Dictionaries.fail_(constraint_.at_, ((("Internal error - missing instance " + firstType_.name_) + ": ") + constraint_.name_))
 }));
@@ -1099,7 +1099,7 @@ return ff_compiler_Dictionaries.fail_(t_.at_, " is still a unification variable"
 return
 }
 }
-}))(ff_core_List.List_expectFirst(newGenerics_));
+}))(ff_core_List.List_grabFirst(newGenerics_));
 const instance_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), (() => {
 return ff_compiler_Dictionaries.fail_(constraint_.at_, ((("Internal error - missing instance " + firstType_.name_) + ": ") + constraint_.name_))
 }));

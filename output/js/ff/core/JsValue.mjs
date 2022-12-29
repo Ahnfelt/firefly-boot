@@ -83,31 +83,31 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function JsValue_expectString(self_) {
+export function JsValue_grabString(self_) {
 return self_
 }
 
-export function JsValue_expectChar(self_) {
+export function JsValue_grabChar(self_) {
 return self_
 }
 
-export function JsValue_expectInt(self_) {
+export function JsValue_grabInt(self_) {
 return self_
 }
 
-export function JsValue_expectFloat(self_) {
+export function JsValue_grabFloat(self_) {
 return self_
 }
 
-export function JsValue_expectBool(self_) {
+export function JsValue_grabBool(self_) {
 return self_
 }
 
-export function JsValue_expectArray(self_) {
+export function JsValue_grabArray(self_) {
 return self_
 }
 
-export function JsValue_expectBuffer(self_) {
+export function JsValue_grabBuffer(self_) {
 
             if(!(self_ instanceof Buffer)) throw new Error('Expected buffer, got '+ typeof self_);
             return self_
@@ -333,32 +333,32 @@ export function JsValue_toJson(self_, space_ = ff_core_Option.None()) {
 return JSON.stringify(self_, null, space_.value_)
 }
 
-export async function JsValue_expectString$(self_, $c) {
-throw new Error('Function JsValue_expectString is missing on this target in async context.');
+export async function JsValue_grabString$(self_, $c) {
+throw new Error('Function JsValue_grabString is missing on this target in async context.');
 }
 
-export async function JsValue_expectChar$(self_, $c) {
-throw new Error('Function JsValue_expectChar is missing on this target in async context.');
+export async function JsValue_grabChar$(self_, $c) {
+throw new Error('Function JsValue_grabChar is missing on this target in async context.');
 }
 
-export async function JsValue_expectInt$(self_, $c) {
-throw new Error('Function JsValue_expectInt is missing on this target in async context.');
+export async function JsValue_grabInt$(self_, $c) {
+throw new Error('Function JsValue_grabInt is missing on this target in async context.');
 }
 
-export async function JsValue_expectFloat$(self_, $c) {
-throw new Error('Function JsValue_expectFloat is missing on this target in async context.');
+export async function JsValue_grabFloat$(self_, $c) {
+throw new Error('Function JsValue_grabFloat is missing on this target in async context.');
 }
 
-export async function JsValue_expectBool$(self_, $c) {
-throw new Error('Function JsValue_expectBool is missing on this target in async context.');
+export async function JsValue_grabBool$(self_, $c) {
+throw new Error('Function JsValue_grabBool is missing on this target in async context.');
 }
 
-export async function JsValue_expectArray$(self_, $c) {
-throw new Error('Function JsValue_expectArray is missing on this target in async context.');
+export async function JsValue_grabArray$(self_, $c) {
+throw new Error('Function JsValue_grabArray is missing on this target in async context.');
 }
 
-export async function JsValue_expectBuffer$(self_, $c) {
-throw new Error('Function JsValue_expectBuffer is missing on this target in async context.');
+export async function JsValue_grabBuffer$(self_, $c) {
+throw new Error('Function JsValue_grabBuffer is missing on this target in async context.');
 }
 
 export async function JsValue_isString$(self_, $c) {

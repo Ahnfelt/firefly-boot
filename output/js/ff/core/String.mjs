@@ -87,7 +87,7 @@ export function String_size(self_) {
 return self_.length
 }
 
-export function String_expect(self_, index_) {
+export function String_grab(self_, index_) {
 return self_.charCodeAt(index_)
 }
 
@@ -143,12 +143,12 @@ export function String_dropLast(self_, count_ = 1) {
 return self_.slice(0, self_.length - count_)
 }
 
-export function String_expectInt(self_) {
+export function String_grabInt(self_) {
 
-            if(self_.length == 0) throw "expectInt on empty string"
+            if(self_.length == 0) throw "grabInt on empty string"
             for(let i = 0; i < self_.length; i++) {
                 let c = self_.codePointAt(i);
-                if(c < 48 || c > 57) throw "expectInt on non-digit string";
+                if(c < 48 || c > 57) throw "grabInt on non-digit string";
             }
             return parseInt(self_, 10);
         
@@ -170,15 +170,15 @@ export function String_last(self_) {
         
 }
 
-export function String_expectFirst(self_) {
+export function String_grabFirst(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
-return ff_core_Core.panic_("expectFirst() on empty string")
+return ff_core_Core.panic_("grabFirst() on empty string")
 }))
 }
 
-export function String_expectLast(self_) {
+export function String_grabLast(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
-return ff_core_Core.panic_("expectFirst() on empty string")
+return ff_core_Core.panic_("grabFirst() on empty string")
 }))
 }
 
@@ -222,8 +222,8 @@ export async function String_size$(self_, $c) {
 throw new Error('Function String_size is missing on this target in async context.');
 }
 
-export async function String_expect$(self_, index_, $c) {
-throw new Error('Function String_expect is missing on this target in async context.');
+export async function String_grab$(self_, index_, $c) {
+throw new Error('Function String_grab is missing on this target in async context.');
 }
 
 export async function String_replace$(self_, needle_, replacement_, $c) {
@@ -278,8 +278,8 @@ export async function String_dropLast$(self_, count_ = 1, $c) {
 throw new Error('Function String_dropLast is missing on this target in async context.');
 }
 
-export async function String_expectInt$(self_, $c) {
-throw new Error('Function String_expectInt is missing on this target in async context.');
+export async function String_grabInt$(self_, $c) {
+throw new Error('Function String_grabInt is missing on this target in async context.');
 }
 
 export async function String_first$(self_, $c) {
@@ -290,15 +290,15 @@ export async function String_last$(self_, $c) {
 throw new Error('Function String_last is missing on this target in async context.');
 }
 
-export async function String_expectFirst$(self_, $c) {
+export async function String_grabFirst$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
-return ff_core_Core.panic_("expectFirst() on empty string")
+return ff_core_Core.panic_("grabFirst() on empty string")
 }))
 }
 
-export async function String_expectLast$(self_, $c) {
+export async function String_grabLast$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
-return ff_core_Core.panic_("expectFirst() on empty string")
+return ff_core_Core.panic_("grabFirst() on empty string")
 }))
 }
 

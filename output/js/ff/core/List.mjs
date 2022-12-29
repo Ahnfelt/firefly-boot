@@ -183,14 +183,14 @@ export function List_toArray(self_) {
 return ff_core_Stack.Stack_drain(ff_core_List.List_toStack(self_))
 }
 
-export function List_expect(self_, index_) {
+export function List_grab(self_, index_) {
 function go_(list_, i_) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
 {
 if(_1.Empty) {
-return ff_core_Core.panic_(((("expect(" + index_) + ") on list of size ") + ff_core_List.List_size(self_)))
+return ff_core_Core.panic_(((("grab(" + index_) + ") on list of size ") + ff_core_List.List_size(self_)))
 return
 }
 }
@@ -278,15 +278,15 @@ return
 }
 }
 
-export function List_expectFirst(self_) {
+export function List_grabFirst(self_) {
 return ff_core_Option.Option_else(ff_core_List.List_first(self_), (() => {
-return ff_core_Core.panic_("expectFirst() on empty list")
+return ff_core_Core.panic_("grabFirst() on empty list")
 }))
 }
 
-export function List_expectLast(self_) {
+export function List_grabLast(self_) {
 return ff_core_Option.Option_else(ff_core_List.List_last(self_), (() => {
-return ff_core_Core.panic_("expectLast() on empty list")
+return ff_core_Core.panic_("grabLast() on empty list")
 }))
 }
 
@@ -1028,14 +1028,14 @@ export async function List_toArray$(self_, $c) {
 return ff_core_Stack.Stack_drain(ff_core_List.List_toStack(self_))
 }
 
-export async function List_expect$(self_, index_, $c) {
+export async function List_grab$(self_, index_, $c) {
 function go_(list_, i_) {
 _tailcall: for(;;) {
 {
 const _1 = list_;
 {
 if(_1.Empty) {
-return ff_core_Core.panic_(((("expect(" + index_) + ") on list of size ") + ff_core_List.List_size(self_)))
+return ff_core_Core.panic_(((("grab(" + index_) + ") on list of size ") + ff_core_List.List_size(self_)))
 return
 }
 }
@@ -1123,15 +1123,15 @@ return
 }
 }
 
-export async function List_expectFirst$(self_, $c) {
+export async function List_grabFirst$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_List.List_first(self_), (() => {
-return ff_core_Core.panic_("expectFirst() on empty list")
+return ff_core_Core.panic_("grabFirst() on empty list")
 }))
 }
 
-export async function List_expectLast$(self_, $c) {
+export async function List_grabLast$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_List.List_last(self_), (() => {
-return ff_core_Core.panic_("expectLast() on empty list")
+return ff_core_Core.panic_("grabLast() on empty list")
 }))
 }
 

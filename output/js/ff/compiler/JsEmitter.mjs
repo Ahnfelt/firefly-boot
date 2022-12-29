@@ -267,7 +267,7 @@ return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
 return
 }
 }
-}))(ff_core_List.List_expectFirst(types_)).name_
+}))(ff_core_List.List_grabFirst(types_)).name_
 }
 
 export function makeDictionaryName_(traitName_, typeName_) {
@@ -309,7 +309,7 @@ return
 }
 {
 const value_ = charLiteral_a;
-return ("" + ff_core_String.String_expect(value_, 1))
+return ("" + ff_core_String.String_grab(value_, 1))
 return
 }
 }
@@ -319,14 +319,14 @@ export function escapeResolved_(word_) {
 const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
 if(ff_core_List.List_isEmpty(initialParts_)) {
-return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))
+return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_grabLast(parts_))
 } else {
-return ((ff_core_List.List_join(initialParts_, "_") + ".") + ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_)))
+return ((ff_core_List.List_join(initialParts_, "_") + ".") + ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_grabLast(parts_)))
 }
 }
 
 export function escapeKeyword_(word_) {
-if(ff_core_Char.Char_isAsciiLower(ff_core_String.String_expectFirst(word_))) {
+if(ff_core_Char.Char_isAsciiLower(ff_core_String.String_grabFirst(word_))) {
 return (word_ + "_")
 } else {
 return word_
@@ -506,7 +506,7 @@ return ff_compiler_JsEmitter.fail_(t_.at_, " is still a unification variable")
 return
 }
 }
-}))(ff_core_List.List_expectFirst(types_)).name_
+}))(ff_core_List.List_grabFirst(types_)).name_
 }
 
 export async function makeDictionaryName_$(traitName_, typeName_, $c) {
@@ -548,7 +548,7 @@ return
 }
 {
 const value_ = charLiteral_a;
-return ("" + ff_core_String.String_expect(value_, 1))
+return ("" + ff_core_String.String_grab(value_, 1))
 return
 }
 }
@@ -558,14 +558,14 @@ export async function escapeResolved_$(word_, $c) {
 const parts_ = ff_core_Array.Array_toList(ff_core_String.String_split(ff_core_String.String_replace(ff_core_String.String_replace(word_, ":", "."), "/", "."), 46));
 const initialParts_ = ff_core_List.List_dropLast(parts_, 1);
 if(ff_core_List.List_isEmpty(initialParts_)) {
-return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_))
+return ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_grabLast(parts_))
 } else {
-return ((ff_core_List.List_join(initialParts_, "_") + ".") + ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_expectLast(parts_)))
+return ((ff_core_List.List_join(initialParts_, "_") + ".") + ff_compiler_JsEmitter.escapeKeyword_(ff_core_List.List_grabLast(parts_)))
 }
 }
 
 export async function escapeKeyword_$(word_, $c) {
-if(ff_core_Char.Char_isAsciiLower(ff_core_String.String_expectFirst(word_))) {
+if(ff_core_Char.Char_isAsciiLower(ff_core_String.String_grabFirst(word_))) {
 return (word_ + "_")
 } else {
 return word_
@@ -1181,7 +1181,7 @@ const controller_ = (newAsync_
 ? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_expect(cases_, 0).patterns_), ((_w1) => {
+const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_grab(cases_, 0).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
 }));
 const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
@@ -1222,7 +1222,7 @@ if(_1.typeArguments_.Empty) {
 if(_1.arguments_.Link) {
 const value_ = _1.arguments_.head_;
 if(_1.arguments_.tail_.Empty) {
-const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)));
+const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirst(operator_)));
 if(_guard1) {
 return ((("(" + operator_) + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, value_, async_)) + ")")
 return
@@ -1244,7 +1244,7 @@ const left_ = _1.arguments_.head_;
 if(_1.arguments_.tail_.Link) {
 const right_ = _1.arguments_.tail_.head_;
 if(_1.arguments_.tail_.tail_.Empty) {
-const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)));
+const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirst(operator_)));
 if(_guard1) {
 return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " ") + operator_) + " ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
 return
@@ -1522,7 +1522,7 @@ const ds_ = ((ff_core_List.List_size(dictionaries_) <= 1)
 : ((ff_core_List.List_isEmpty(arguments_)
 ? ""
 : ", ") + ff_core_List.List_join(ff_core_List.List_dropFirst(dictionaryStrings_, 1), ", ")));
-const d_ = ff_core_List.List_expectFirst(dictionaryStrings_);
+const d_ = ff_core_List.List_grabFirst(dictionaryStrings_);
 const asyncSuffix_ = (await_
 ? "$"
 : "");
@@ -1871,7 +1871,7 @@ ff_compiler_JsEmitter.fail_(at_, "Not yet implemented: Tail calls on trait metho
 };
 self_.tailCallUsed_ = true;
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((a_) => {
-return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_, async_)) + ";"), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_expect(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r")))))
+return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_, async_)) + ";"), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_grab(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r")))))
 })), ((_w1) => {
 return _w1
 })));
@@ -1973,7 +1973,7 @@ const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
 if(_1.first_.Link) {
 const p_ = _1.first_.head_;
 const ps_ = _1.first_.tail_;
-return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_expect(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
+return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_grab(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), last_, async_)
 return
@@ -2171,10 +2171,10 @@ return (_w1 !== 46)
 })));
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const variantModule_ = ff_core_Map.Map_grab(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 let newtype_ = false;
 let loneVariant_ = false;
-const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_grab(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ === variantName_)
 })), ((variant_) => {
@@ -2202,9 +2202,9 @@ return (_w1 !== 46)
 })));
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const variantModule_ = ff_core_Map.Map_grab(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 let newtype_ = false;
-const newArguments_ = ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+const newArguments_ = ff_core_Option.Option_grab(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ === variantName_)
 })), ((variant_) => {
@@ -2809,7 +2809,7 @@ const controller_ = (newAsync_
 ? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_expect(cases_, 0).patterns_), ((_w1) => {
+const arguments_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_grab(cases_, 0).patterns_), ((_w1) => {
 return ("_" + (_w1.first_ + 1))
 }));
 const escapedArguments_ = ff_core_List.List_map(arguments_, ((word_) => {
@@ -2850,7 +2850,7 @@ if(_1.typeArguments_.Empty) {
 if(_1.arguments_.Link) {
 const value_ = _1.arguments_.head_;
 if(_1.arguments_.tail_.Empty) {
-const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)));
+const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirst(operator_)));
 if(_guard1) {
 return ((("(" + operator_) + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, value_, async_)) + ")")
 return
@@ -2872,7 +2872,7 @@ const left_ = _1.arguments_.head_;
 if(_1.arguments_.tail_.Link) {
 const right_ = _1.arguments_.tail_.head_;
 if(_1.arguments_.tail_.tail_.Empty) {
-const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_expectFirst(operator_)));
+const _guard1 = (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grabFirst(operator_)));
 if(_guard1) {
 return (((((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " ") + operator_) + " ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
 return
@@ -3150,7 +3150,7 @@ const ds_ = ((ff_core_List.List_size(dictionaries_) <= 1)
 : ((ff_core_List.List_isEmpty(arguments_)
 ? ""
 : ", ") + ff_core_List.List_join(ff_core_List.List_dropFirst(dictionaryStrings_, 1), ", ")));
-const d_ = ff_core_List.List_expectFirst(dictionaryStrings_);
+const d_ = ff_core_List.List_grabFirst(dictionaryStrings_);
 const asyncSuffix_ = (await_
 ? "$"
 : "");
@@ -3499,7 +3499,7 @@ ff_compiler_JsEmitter.fail_(at_, "Not yet implemented: Tail calls on trait metho
 };
 self_.tailCallUsed_ = true;
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((a_) => {
-return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_, async_)) + ";"), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_expect(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_expect(a_.name_) + "_r")))))
+return ff_core_Option.Some(ff_core_Pair.Pair((((("const " + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r"))) + " = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, a_.value_, async_)) + ";"), ((ff_compiler_JsEmitter.escapeKeyword_(ff_core_Option.Option_grab(a_.name_)) + " = ") + ff_compiler_JsEmitter.escapeKeyword_((ff_core_Option.Option_grab(a_.name_) + "_r")))))
 })), ((_w1) => {
 return _w1
 })));
@@ -3601,7 +3601,7 @@ const _1 = ff_core_Pair.Pair(matchCase_.patterns_, matchCase_.guards_);
 if(_1.first_.Link) {
 const p_ = _1.first_.head_;
 const ps_ = _1.first_.tail_;
-return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_expect(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
+return ff_compiler_JsEmitter.JsEmitter_emitPattern(self_, ff_core_List.List_grab(arguments_, 0), p_, ff_core_List.List_dropFirst(arguments_, 1), (((_c) => {
 return ff_compiler_Syntax.MatchCase(_c.at_, ps_, _c.guards_, _c.body_)
 }))(matchCase_), last_, async_)
 return
@@ -3799,10 +3799,10 @@ return (_w1 !== 46)
 })));
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const variantModule_ = ff_core_Map.Map_grab(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 let newtype_ = false;
 let loneVariant_ = false;
-const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+const newArguments_ = ff_core_List.List_map(ff_core_Option.Option_grab(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ === variantName_)
 })), ((variant_) => {
@@ -3830,9 +3830,9 @@ return (_w1 !== 46)
 })));
 const variantName_ = ff_compiler_JsEmitter.escapeKeyword_(variantNameUnqualified_);
 const moduleName_ = ff_core_String.String_dropLast(name_, (ff_core_String.String_size(variantNameUnqualified_) + 1));
-const variantModule_ = ff_core_Map.Map_expect(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const variantModule_ = ff_core_Map.Map_grab(self_.otherModules_, moduleName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 let newtype_ = false;
-const newArguments_ = ff_core_Option.Option_expect(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
+const newArguments_ = ff_core_Option.Option_grab(ff_core_List.List_collectFirst(variantModule_.types_, ((definition_) => {
 return ff_core_Option.Option_map(ff_core_List.List_find(definition_.variants_, ((_w1) => {
 return (_w1.name_ === variantName_)
 })), ((variant_) => {

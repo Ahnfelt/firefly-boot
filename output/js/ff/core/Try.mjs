@@ -84,60 +84,52 @@ return {Failure: true, error_};
 
 
 
-export function make_(body_) {
-return ff_core_Core.try_(body_)
+export function do_(body_) {
+
+        try {
+            return {Success: true, value_: body_()}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    
 }
 
 export function catch_(body_, catchBody_) {
-return ff_core_Try.Try_expect(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return ff_core_Try.catch_((() => {
 return body_()
-})), ((error_) => {
+}), ((error_) => {
 return catchBody_(error_)
-})))
-}
-
-export function finallyCatch_(body_, finallyBody_, catchBody_) {
-return ff_core_Try.Try_expect(ff_core_Try.Try_catchAny(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
-return body_()
-})), (() => {
-finallyBody_()
-})), ((error_) => {
-return catchBody_(error_)
-})))
+}))
 }
 
 export function finally_(body_, finallyBody_) {
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Try.do_((() => {
 return body_()
 })), (() => {
 finallyBody_()
 })))
 }
 
-export async function make_$(body_, $c) {
-return (await ff_core_Core.try_$(body_, $c))
+export async function do_$(body_, $c) {
+
+        try {
+            return {Success: true, value_: await body_($c)}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    
 }
 
 export async function catch_$(body_, catchBody_, $c) {
-return ff_core_Try.Try_expect((await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.catch_$((async ($c) => {
 return (await body_($c))
-}), $c)), (async (error_, $c) => {
+}), (async (error_, $c) => {
 return (await catchBody_(error_, $c))
-}), $c)))
-}
-
-export async function finallyCatch_$(body_, finallyBody_, catchBody_, $c) {
-return ff_core_Try.Try_expect((await ff_core_Try.Try_catchAny$((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
-return (await body_($c))
-}), $c)), (async ($c) => {
-(await finallyBody_($c))
-}), $c)), (async (error_, $c) => {
-return (await catchBody_(error_, $c))
-}), $c)))
+}), $c))
 }
 
 export async function finally_$(body_, finallyBody_, $c) {
-return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return ff_core_Try.Try_grab((await ff_core_Try.Try_finally$((await ff_core_Try.do_$((async ($c) => {
 return (await body_($c))
 }), $c)), (async ($c) => {
 (await finallyBody_($c))
@@ -150,7 +142,7 @@ const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return ff_core_Core.try_((() => {
+return ff_core_Try.do_((() => {
 return body_(value_)
 }))
 return
@@ -189,7 +181,7 @@ return
 }
 }
 
-export function Try_expect(self_) {
+export function Try_grab(self_) {
 {
 const _1 = self_;
 {
@@ -209,35 +201,15 @@ return
 }
 }
 
-export function Try_catchAny(self_, body_) {
+export function Try_handle(self_, body_) {
 {
 const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
-return ff_core_Core.try_((() => {
+return ff_core_Try.do_((() => {
 return body_(error_)
 }))
-return
-}
-}
-{
-return self_
-return
-}
-}
-}
-
-export function Try_onThrow(self_, body_) {
-{
-const _1 = self_;
-{
-if(_1.Failure) {
-const error_ = _1.error_;
-ff_core_Core.try_((() => {
-return body_()
-}));
-return self_
 return
 }
 }
@@ -254,7 +226,7 @@ const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return ff_core_Core.try_((() => {
+return ff_core_Try.do_((() => {
 body_();
 return value_
 }))
@@ -264,7 +236,7 @@ return
 {
 if(_1.Failure) {
 {
-const _1 = ff_core_Core.try_((() => {
+const _1 = ff_core_Try.do_((() => {
 return body_()
 }));
 {
@@ -293,7 +265,7 @@ const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return (await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.do_$((async ($c) => {
 return (await body_(value_, $c))
 }), $c))
 return
@@ -332,7 +304,7 @@ return
 }
 }
 
-export async function Try_expect$(self_, $c) {
+export async function Try_grab$(self_, $c) {
 {
 const _1 = self_;
 {
@@ -352,35 +324,15 @@ return
 }
 }
 
-export async function Try_catchAny$(self_, body_, $c) {
+export async function Try_handle$(self_, body_, $c) {
 {
 const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
-return (await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.do_$((async ($c) => {
 return (await body_(error_, $c))
 }), $c))
-return
-}
-}
-{
-return self_
-return
-}
-}
-}
-
-export async function Try_onThrow$(self_, body_, $c) {
-{
-const _1 = self_;
-{
-if(_1.Failure) {
-const error_ = _1.error_;
-(await ff_core_Core.try_$((async ($c) => {
-return (await body_($c))
-}), $c));
-return self_
 return
 }
 }
@@ -397,7 +349,7 @@ const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return (await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.do_$((async ($c) => {
 (await body_($c));
 return value_
 }), $c))
@@ -407,7 +359,7 @@ return
 {
 if(_1.Failure) {
 {
-const _1 = (await ff_core_Core.try_$((async ($c) => {
+const _1 = (await ff_core_Try.do_$((async ($c) => {
 return (await body_($c))
 }), $c));
 {

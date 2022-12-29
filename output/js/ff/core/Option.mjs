@@ -329,12 +329,12 @@ return
 }
 }
 
-export function Option_expect(self_) {
+export function Option_grab(self_) {
 {
 const _1 = self_;
 {
 if(_1.None) {
-return ff_core_Core.panic_("None.expect()")
+return ff_core_Core.panic_("None.grab()")
 return
 }
 }
@@ -588,12 +588,12 @@ return
 }
 }
 
-export async function Option_expect$(self_, $c) {
+export async function Option_grab$(self_, $c) {
 {
 const _1 = self_;
 {
 if(_1.None) {
-return ff_core_Core.panic_("None.expect()")
+return ff_core_Core.panic_("None.grab()")
 return
 }
 }

@@ -105,11 +105,11 @@ return that_.next_()
 }))
 }
 }), (() => {
-ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+ff_core_Try.finally_((() => {
 return self_.close_()
-})), (() => {
+}), (() => {
 that_.close_()
-})))
+}))
 }))
 }
 
@@ -162,13 +162,13 @@ break
 }
 }
 };
-return ff_core_Option.Option_expect(result_)
+return ff_core_Option.Option_grab(result_)
 }), (() => {
-ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+ff_core_Try.finally_((() => {
 return inner_.close_()
-})), (() => {
+}), (() => {
 self_.close_()
-})))
+}))
 }))
 }
 
@@ -208,7 +208,7 @@ break
 }
 }
 };
-return ff_core_Option.Option_expect(result_)
+return ff_core_Option.Option_grab(result_)
 }), (() => {
 self_.close_()
 }))
@@ -234,11 +234,11 @@ return
 }
 }
 }), (() => {
-ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+ff_core_Try.finally_((() => {
 return self_.close_()
-})), (() => {
+}), (() => {
 that_.close_()
-})))
+}))
 }))
 }
 
@@ -422,15 +422,15 @@ self_.close_()
 }
 
 export function Stream_use(self_, body_) {
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_core_Try.finally_((() => {
 return body_(self_)
-})), (() => {
+}), (() => {
 self_.close_()
-})))
+}))
 }
 
 export function Stream_each(self_, body_) {
-ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+ff_core_Try.finally_((() => {
 let done_ = false;
 while((!done_)) {
 for(;;) {
@@ -450,13 +450,13 @@ break
 }
 }
 }
-})), (() => {
+}), (() => {
 self_.close_()
-})))
+}))
 }
 
 export function Stream_eachWhile(self_, body_) {
-ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+ff_core_Try.finally_((() => {
 let done_ = false;
 while((!done_)) {
 for(;;) {
@@ -476,9 +476,9 @@ break
 }
 }
 }
-})), (() => {
+}), (() => {
 self_.close_()
-})))
+}))
 }
 
 export function Stream_all(self_, body_) {
@@ -500,15 +500,15 @@ return result_
 }
 
 export function Stream_first(self_) {
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_core_Try.finally_((() => {
 return self_.next_()
-})), (() => {
+}), (() => {
 self_.close_()
-})))
+}))
 }
 
 export function Stream_last(self_) {
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_core_Try.finally_((() => {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
@@ -531,25 +531,25 @@ break
 }
 };
 return result_
-})), (() => {
+}), (() => {
 self_.close_()
-})))
-}
-
-export function Stream_expectFirst(self_) {
-return ff_core_Option.Option_else(ff_core_Stream.Stream_first(self_), (() => {
-return ff_core_Core.panic_("expectFirst() on empty iterator")
 }))
 }
 
-export function Stream_expectLast(self_) {
+export function Stream_grabFirst(self_) {
+return ff_core_Option.Option_else(ff_core_Stream.Stream_first(self_), (() => {
+return ff_core_Core.panic_("grabFirst() on empty iterator")
+}))
+}
+
+export function Stream_grabLast(self_) {
 return ff_core_Option.Option_else(ff_core_Stream.Stream_last(self_), (() => {
-return ff_core_Core.panic_("expectLast() on empty iterator")
+return ff_core_Core.panic_("grabLast() on empty iterator")
 }))
 }
 
 export function Stream_collectFirst(self_, body_) {
-return ff_core_Try.Try_expect(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_core_Try.finally_((() => {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
@@ -585,9 +585,9 @@ break
 }
 };
 return result_
-})), (() => {
+}), (() => {
 self_.close_()
-})))
+}))
 }
 
 export function Stream_find(self_, body_) {
@@ -630,11 +630,11 @@ return (await that_.next_($c))
 }), $c))
 }
 }), (async ($c) => {
-ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+(await ff_core_Try.finally_$((async ($c) => {
 return (await self_.close_($c))
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await that_.close_($c))
-}), $c)))
+}), $c))
 }))
 }
 
@@ -687,13 +687,13 @@ break
 }
 }
 };
-return ff_core_Option.Option_expect(result_)
+return ff_core_Option.Option_grab(result_)
 }), (async ($c) => {
-ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+(await ff_core_Try.finally_$((async ($c) => {
 return (await inner_.close_($c))
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await self_.close_($c))
-}), $c)))
+}), $c))
 }))
 }
 
@@ -733,7 +733,7 @@ break
 }
 }
 };
-return ff_core_Option.Option_expect(result_)
+return ff_core_Option.Option_grab(result_)
 }), (async ($c) => {
 (await self_.close_($c))
 }))
@@ -759,11 +759,11 @@ return
 }
 }
 }), (async ($c) => {
-ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+(await ff_core_Try.finally_$((async ($c) => {
 return (await self_.close_($c))
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await that_.close_($c))
-}), $c)))
+}), $c))
 }))
 }
 
@@ -947,15 +947,15 @@ return
 }
 
 export async function Stream_use$(self_, body_, $c) {
-return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.finally_$((async ($c) => {
 return (await body_(self_, $c))
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await self_.close_($c))
-}), $c)))
+}), $c))
 }
 
 export async function Stream_each$(self_, body_, $c) {
-ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+(await ff_core_Try.finally_$((async ($c) => {
 let done_ = false;
 while((!done_)) {
 for(;;) {
@@ -975,13 +975,13 @@ break
 }
 }
 }
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await self_.close_($c))
-}), $c)))
+}), $c))
 }
 
 export async function Stream_eachWhile$(self_, body_, $c) {
-ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+(await ff_core_Try.finally_$((async ($c) => {
 let done_ = false;
 while((!done_)) {
 for(;;) {
@@ -1001,9 +1001,9 @@ break
 }
 }
 }
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await self_.close_($c))
-}), $c)))
+}), $c))
 }
 
 export async function Stream_all$(self_, body_, $c) {
@@ -1025,15 +1025,15 @@ return result_
 }
 
 export async function Stream_first$(self_, $c) {
-return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.finally_$((async ($c) => {
 return (await self_.next_($c))
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await self_.close_($c))
-}), $c)))
+}), $c))
 }
 
 export async function Stream_last$(self_, $c) {
-return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.finally_$((async ($c) => {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
@@ -1056,25 +1056,25 @@ break
 }
 };
 return result_
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await self_.close_($c))
-}), $c)))
+}), $c))
 }
 
-export async function Stream_expectFirst$(self_, $c) {
+export async function Stream_grabFirst$(self_, $c) {
 return ff_core_Option.Option_else((await ff_core_Stream.Stream_first$(self_, $c)), (() => {
-return ff_core_Core.panic_("expectFirst() on empty iterator")
+return ff_core_Core.panic_("grabFirst() on empty iterator")
 }))
 }
 
-export async function Stream_expectLast$(self_, $c) {
+export async function Stream_grabLast$(self_, $c) {
 return ff_core_Option.Option_else((await ff_core_Stream.Stream_last$(self_, $c)), (() => {
-return ff_core_Core.panic_("expectLast() on empty iterator")
+return ff_core_Core.panic_("grabLast() on empty iterator")
 }))
 }
 
 export async function Stream_collectFirst$(self_, body_, $c) {
-return ff_core_Try.Try_expect((await ff_core_Try.Try_finally$((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_Try.finally_$((async ($c) => {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
@@ -1110,9 +1110,9 @@ break
 }
 };
 return result_
-}), $c)), (async ($c) => {
+}), (async ($c) => {
 (await self_.close_($c))
-}), $c)))
+}), $c))
 }
 
 export async function Stream_find$(self_, body_, $c) {

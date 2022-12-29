@@ -100,7 +100,7 @@ return {js_, jsSync_, jsAsync_, browser_, browserSync_, browserAsync_, node_, no
 export const binaryOperators_ = ff_core_List.List_toArray(ff_core_List.Link(ff_core_List.Link("||", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("&&", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("!=", ff_core_List.Link("==", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("<=", ff_core_List.Link(">=", ff_core_List.Link("<", ff_core_List.Link(">", ff_core_List.Empty())))), ff_core_List.Link(ff_core_List.Link("+", ff_core_List.Link("-", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("*", ff_core_List.Link("/", ff_core_List.Link("%", ff_core_List.Empty()))), ff_core_List.Link(ff_core_List.Link("^", ff_core_List.Empty()), ff_core_List.Empty()))))))));
 
 export function make_(packagePair_, file_, tokens_, targetIsNode_) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), targetIsNode_, 0, 1)
+return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_grabLast(tokens_), targetIsNode_, 0, 1)
 }
 
 export function findBestTarget_(targetIsNode_, body_, targets_) {
@@ -175,7 +175,7 @@ return
 }
 
 export async function make_$(packagePair_, file_, tokens_, targetIsNode_, $c) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_expectLast(tokens_), targetIsNode_, 0, 1)
+return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_grabLast(tokens_), targetIsNode_, 0, 1)
 }
 
 export async function findBestTarget_$(targetIsNode_, body_, targets_, $c) {
@@ -255,7 +255,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export function Parser_current(self_) {
 if((self_.offset_ < ff_core_Array.Array_size(self_.tokens_))) {
-return ff_core_Array.Array_expect(self_.tokens_, self_.offset_)
+return ff_core_Array.Array_grab(self_.tokens_, self_.offset_)
 } else {
 return self_.end_
 }
@@ -263,7 +263,7 @@ return self_.end_
 
 export function Parser_ahead(self_) {
 if(((self_.offset_ + 1) < ff_core_Array.Array_size(self_.tokens_))) {
-return ff_core_Array.Array_expect(self_.tokens_, (self_.offset_ + 1))
+return ff_core_Array.Array_grab(self_.tokens_, (self_.offset_ + 1))
 } else {
 return self_.end_
 }
@@ -271,7 +271,7 @@ return self_.end_
 
 export function Parser_aheadAhead(self_) {
 if(((self_.offset_ + 2) < ff_core_Array.Array_size(self_.tokens_))) {
-return ff_core_Array.Array_expect(self_.tokens_, (self_.offset_ + 2))
+return ff_core_Array.Array_grab(self_.tokens_, (self_.offset_ + 2))
 } else {
 return self_.end_
 }
@@ -740,8 +740,8 @@ return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field")
 };
-if((newtype_ && ff_core_List.List_expect(commonFields_, 0).mutable_)) {
-ff_compiler_Parser.Parser_fail(self_, ff_core_List.List_expect(commonFields_, 0).at_, "Newtypes can't have mutable fields")
+if((newtype_ && ff_core_List.List_grab(commonFields_, 0).mutable_)) {
+ff_compiler_Parser.Parser_fail(self_, ff_core_List.List_grab(commonFields_, 0).at_, "Newtypes can't have mutable fields")
 };
 const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_);
 return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_)
@@ -869,13 +869,13 @@ const parts_ = ff_core_String.String_split(ff_compiler_Token.Token_raw(majorMino
 const patch_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LDot())
 ? (function() {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LDot());
-return ff_core_String.String_expectInt(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt())))
+return ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt())))
 })()
 : 0);
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_expectInt(ff_core_Array.Array_expect(parts_, 0)), ff_core_String.String_expectInt(ff_core_Array.Array_expect(parts_, 1)), patch_)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt(ff_core_Array.Array_grab(parts_, 0)), ff_core_String.String_grabInt(ff_core_Array.Array_grab(parts_, 1)), patch_)
 } else {
 const major_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LInt());
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_expectInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
 }
 }
 
@@ -1193,7 +1193,7 @@ const arguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_cu
 return ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_), ff_core_List.Empty())
 })());
 if(((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LArrowThick())) && (ff_core_List.List_size(leftTypes_) === 1))) {
-return ff_core_List.List_expectFirst(leftTypes_)
+return ff_core_List.List_grabFirst(leftTypes_)
 } else {
 const arrowToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LArrowThick());
 const rightType_ = ff_compiler_Parser.Parser_parseType(self_);
@@ -1322,7 +1322,7 @@ export function Parser_parseBinary(self_, level_) {
 if((level_ >= ff_core_Array.Array_size(ff_compiler_Parser.binaryOperators_))) {
 return ff_compiler_Parser.Parser_parseUnary(self_)
 } else {
-const operators_ = ff_core_Array.Array_expect(ff_compiler_Parser.binaryOperators_, level_);
+const operators_ = ff_core_Array.Array_grab(ff_compiler_Parser.binaryOperators_, level_);
 let result_ = ff_compiler_Parser.Parser_parseBinary(self_, (level_ + 1));
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LOperator())) {
 while(ff_core_List.List_any(operators_, ((value_) => {
@@ -1650,7 +1650,7 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 
 export async function Parser_current$(self_, $c) {
 if((self_.offset_ < ff_core_Array.Array_size(self_.tokens_))) {
-return ff_core_Array.Array_expect(self_.tokens_, self_.offset_)
+return ff_core_Array.Array_grab(self_.tokens_, self_.offset_)
 } else {
 return self_.end_
 }
@@ -1658,7 +1658,7 @@ return self_.end_
 
 export async function Parser_ahead$(self_, $c) {
 if(((self_.offset_ + 1) < ff_core_Array.Array_size(self_.tokens_))) {
-return ff_core_Array.Array_expect(self_.tokens_, (self_.offset_ + 1))
+return ff_core_Array.Array_grab(self_.tokens_, (self_.offset_ + 1))
 } else {
 return self_.end_
 }
@@ -1666,7 +1666,7 @@ return self_.end_
 
 export async function Parser_aheadAhead$(self_, $c) {
 if(((self_.offset_ + 2) < ff_core_Array.Array_size(self_.tokens_))) {
-return ff_core_Array.Array_expect(self_.tokens_, (self_.offset_ + 2))
+return ff_core_Array.Array_grab(self_.tokens_, (self_.offset_ + 2))
 } else {
 return self_.end_
 }
@@ -2135,8 +2135,8 @@ return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field", $c))
 };
-if((newtype_ && ff_core_List.List_expect(commonFields_, 0).mutable_)) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_core_List.List_expect(commonFields_, 0).at_, "Newtypes can't have mutable fields", $c))
+if((newtype_ && ff_core_List.List_grab(commonFields_, 0).mutable_)) {
+(await ff_compiler_Parser.Parser_fail$(self_, ff_core_List.List_grab(commonFields_, 0).at_, "Newtypes can't have mutable fields", $c))
 };
 const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_);
 return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_)
@@ -2264,13 +2264,13 @@ const parts_ = ff_core_String.String_split(ff_compiler_Token.Token_raw(majorMino
 const patch_ = (ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LDot())
 ? (await (async function() {
 (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LDot(), $c));
-return ff_core_String.String_expectInt(ff_compiler_Token.Token_raw((await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LInt(), $c))))
+return ff_core_String.String_grabInt(ff_compiler_Token.Token_raw((await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LInt(), $c))))
 })())
 : 0);
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_expectInt(ff_core_Array.Array_expect(parts_, 0)), ff_core_String.String_expectInt(ff_core_Array.Array_expect(parts_, 1)), patch_)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(majorMinor_), ff_core_String.String_grabInt(ff_core_Array.Array_grab(parts_, 0)), ff_core_String.String_grabInt(ff_core_Array.Array_grab(parts_, 1)), patch_)
 } else {
 const major_ = (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LInt(), $c));
-return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_expectInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
+return ff_compiler_Syntax.Version(ff_compiler_Token.Token_at(major_), ff_core_String.String_grabInt(ff_compiler_Token.Token_raw(major_)), 0, 0)
 }
 }
 
@@ -2588,7 +2588,7 @@ const arguments_ = ((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Pa
 return ff_core_List.Link(ff_compiler_Syntax.TConstructor(ff_compiler_Token.Token_at(token_), (namespace_ + ff_compiler_Token.Token_raw(token_)), arguments_), ff_core_List.Empty())
 })()));
 if(((!ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LArrowThick())) && (ff_core_List.List_size(leftTypes_) === 1))) {
-return ff_core_List.List_expectFirst(leftTypes_)
+return ff_core_List.List_grabFirst(leftTypes_)
 } else {
 const arrowToken_ = (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LArrowThick(), $c));
 const rightType_ = (await ff_compiler_Parser.Parser_parseType$(self_, $c));
@@ -2717,7 +2717,7 @@ export async function Parser_parseBinary$(self_, level_, $c) {
 if((level_ >= ff_core_Array.Array_size(ff_compiler_Parser.binaryOperators_))) {
 return (await ff_compiler_Parser.Parser_parseUnary$(self_, $c))
 } else {
-const operators_ = ff_core_Array.Array_expect(ff_compiler_Parser.binaryOperators_, level_);
+const operators_ = ff_core_Array.Array_grab(ff_compiler_Parser.binaryOperators_, level_);
 let result_ = (await ff_compiler_Parser.Parser_parseBinary$(self_, (level_ + 1), $c));
 if(ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LOperator())) {
 while((await ff_core_List.List_any$(operators_, (async (value_, $c) => {

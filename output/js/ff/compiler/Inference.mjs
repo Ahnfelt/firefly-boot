@@ -121,7 +121,7 @@ return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $"
 return
 }
 }
-}))(ff_core_List.List_expectFirst(c_.generics_));
+}))(ff_core_List.List_grabFirst(c_.generics_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
@@ -156,7 +156,7 @@ return ff_compiler_Inference.fail_(c_.at_, ("Unexpected unification variable: $"
 return
 }
 }
-}))(ff_core_List.List_expectFirst(c_.generics_));
+}))(ff_core_List.List_grabFirst(c_.generics_));
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_), ff_compiler_Unification.InstanceValue(ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Syntax.PackagePair("", ""), "", c_.name_, c_.generics_))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
@@ -302,7 +302,7 @@ const ts_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 {
-const _1 = ff_core_List.List_expectLast(ts_);
+const _1 = ff_core_List.List_grabLast(ts_);
 {
 if(_1.TConstructor) {
 const n_ = _1.name_;
@@ -600,7 +600,7 @@ return (_w1.second_ === e_.field_)
 })), ((_w1) => {
 return _w1.first_
 })), ((index_) => {
-const t1_ = ff_core_List.List_expect(typeArguments_, index_);
+const t1_ = ff_core_List.List_grab(typeArguments_, index_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_);
 {
 const _1 = e_;
@@ -633,7 +633,7 @@ if(_guard1) {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_, _c.effect_)
 }))(instantiated_.scheme_.signature_);
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_expect(instantiated_.scheme_.signature_.parameters_, 0).valueType_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_grab(instantiated_.scheme_.signature_.parameters_, 0).valueType_);
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, term_)
 return
 }
@@ -678,7 +678,7 @@ return
 {
 if(_1.EWildcard) {
 const e_ = _1;
-return ff_core_Option.Option_expect(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_) => {
+return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_) => {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
 })))
@@ -1231,7 +1231,7 @@ return
 }
 }
 }))(e_.target_);
-const selfParameter_ = ff_core_List.List_expectFirst(signature_.parameters_);
+const selfParameter_ = ff_core_List.List_grabFirst(signature_.parameters_);
 const selfArgument_ = ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.Some(selfParameter_.name_), record_);
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, signature_.returnType_);
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, selfParameter_.valueType_, recordType_);
@@ -1833,7 +1833,7 @@ ff_core_List.List_each(scheme_.signature_.constraints_, ((c_) => {
 const generics_ = ff_core_List.List_map(c_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, _w1)
 }));
-ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_List.List_expectFirst(generics_), c_.name_, ff_core_List.List_dropFirst(generics_, 1))
+ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_List.List_grabFirst(generics_), c_.name_, ff_core_List.List_dropFirst(generics_, 1))
 }));
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
@@ -1985,7 +1985,7 @@ const ts_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
 {
-const _1 = ff_core_List.List_expectLast(ts_);
+const _1 = ff_core_List.List_grabLast(ts_);
 {
 if(_1.TConstructor) {
 const n_ = _1.name_;
@@ -2283,7 +2283,7 @@ return (_w1.second_ === e_.field_)
 })), ((_w1) => {
 return _w1.first_
 })), ((index_) => {
-const t1_ = ff_core_List.List_expect(typeArguments_, index_);
+const t1_ = ff_core_List.List_grab(typeArguments_, index_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, t1_);
 {
 const _1 = e_;
@@ -2316,7 +2316,7 @@ if(_guard1) {
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constraints_, ff_core_List.List_dropFirst(instantiated_.scheme_.signature_.parameters_, 1), _c.returnType_, _c.effect_)
 }))(instantiated_.scheme_.signature_);
-ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_expect(instantiated_.scheme_.signature_.parameters_, 0).valueType_);
+ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, recordType_, ff_core_List.List_grab(instantiated_.scheme_.signature_.parameters_, 0).valueType_);
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, signature_, term_)
 return
 }
@@ -2361,7 +2361,7 @@ return
 {
 if(_1.EWildcard) {
 const e_ = _1;
-return ff_core_Option.Option_expect(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_) => {
+return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_) => {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
 })))
@@ -2914,7 +2914,7 @@ return
 }
 }
 }))(e_.target_);
-const selfParameter_ = ff_core_List.List_expectFirst(signature_.parameters_);
+const selfParameter_ = ff_core_List.List_grabFirst(signature_.parameters_);
 const selfArgument_ = ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.Some(selfParameter_.name_), record_);
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, signature_.returnType_);
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, selfParameter_.valueType_, recordType_);
@@ -3516,7 +3516,7 @@ ff_core_List.List_each(scheme_.signature_.constraints_, ((c_) => {
 const generics_ = ff_core_List.List_map(c_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(self_.unification_, instantiationMap_, _w1)
 }));
-ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_List.List_expectFirst(generics_), c_.name_, ff_core_List.List_dropFirst(generics_, 1))
+ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_List.List_grabFirst(generics_), c_.name_, ff_core_List.List_dropFirst(generics_, 1))
 }));
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)

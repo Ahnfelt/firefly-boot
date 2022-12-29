@@ -21,11 +21,11 @@ extend self[T]: Stream[T] {
                 }
             }
         } {
-            try {
+            Try.finally {
                 self.close()
-            } finally {
+            } {
                 that.close()
-            } grab()
+            }
         }
     }
 
@@ -53,11 +53,11 @@ extend self[T]: Stream[T] {
             }
             result.grab()
         } {
-            try {
+            Try.finally {
                 inner.close()
-            } finally {
+            } {
                 self.close()
-            } grab()
+            }
         }
     }
 
@@ -88,11 +88,11 @@ extend self[T]: Stream[T] {
                 | _ => None
             }
         } {
-            try {
+            Try.finally {
                 self.close()
-            } finally {
+            } {
                 that.close()
-            } grab()
+            }
         }
     }
 
@@ -201,15 +201,15 @@ extend self[T]: Stream[T] {
     // Consuming methods
 
     use[R](body: Stream[T] => R): R {
-        try {
+        Try.finally {
             body(self)
-        } finally {
+        } {
             self.close()
-        } grab()
+        }
     }
 
     each(body: T => Unit): Unit {
-        try {
+        Try.finally {
             mutable done = False
             while {!done} {
                 self.next().{
@@ -217,13 +217,13 @@ extend self[T]: Stream[T] {
                     | Some(x) => body(x)
                 }
             }
-        } finally {
+        } {
             self.close()
-        } grab()
+        }
     }
 
     eachWhile(body: T => Bool): Unit {
-        try {
+        Try.finally {
             mutable done = False
             while {!done} {
                 self.next().{
@@ -231,9 +231,9 @@ extend self[T]: Stream[T] {
                     | Some(x) => done = !body(x)
                 }
             }
-        } finally {
+        } {
             self.close()
-        } grab()
+        }
     }
 
     all(body: T => Bool): Bool {
@@ -255,15 +255,15 @@ extend self[T]: Stream[T] {
     }
 
     first(): Option[T] {
-        try {
+        Try.finally {
             self.next()
-        } finally {
+        } {
             self.close()
-        } grab()
+        }
     }
 
     last(): Option[T] {
-        try {
+        Try.finally {
             mutable done = False
             mutable result = None
             while {!done} {
@@ -273,9 +273,9 @@ extend self[T]: Stream[T] {
                 }
             }
             result
-        } finally {
+        } {
             self.close()
-        } grab()
+        }
     }
 
     grabFirst(): T {
@@ -287,7 +287,7 @@ extend self[T]: Stream[T] {
     }
 
     collectFirst[R](body: T => Option[R]): Option[R] {
-        try {
+        Try.finally {
             mutable done = False
             mutable result = None
             while {!done} {
@@ -303,9 +303,9 @@ extend self[T]: Stream[T] {
                 }
             }
             result
-        } finally {
+        } {
             self.close()
-        } grab()
+        }
     }
 
     find(body: T => Bool): Option[T] {

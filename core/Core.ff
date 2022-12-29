@@ -29,22 +29,6 @@ do[T](body: () => T): T {
     body()
 }
 
-try[T](body: () => T): Try[T]
-    target js sync """
-        try {
-            return {Success: true, value_: body_()}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    """
-    target js async """
-        try {
-            return {Success: true, value_: await body_($c)}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    """
-
 throw[E, T](error: E): T
     target js sync "throw error_"
 

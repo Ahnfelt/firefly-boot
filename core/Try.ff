@@ -3,30 +3,32 @@ type Try[T] {
     Failure(error: Error)
 }
 
-make[T](body: () => T): Try[T] {
-    try(body)
-}
+do[T](body: () => T): Try[T]
+    target js sync """
+        try {
+            return {Success: true, value_: body_()}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    """
+    target js async """
+        try {
+            return {Success: true, value_: await body_($c)}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    """
 
 catch[T](body: () => T, catchBody: Error => T): T {
-    try {
+    Try.catch {
         body()
-    } catchAny { error =>
+    } { error =>
         catchBody(error)
-    } grab()
-}
-
-finallyCatch[T](body: () => T, finallyBody: () => Unit, catchBody: Error => T): T {
-    try {
-        body()
-    } finally {
-        finallyBody()
-    } catchAny { error =>
-        catchBody(error)
-    } grab()
+    }
 }
 
 finally[T](body: () => T, finallyBody: () => Unit): T {
-    try {
+    Try.do {
         body()
     } finally {
         finallyBody()
@@ -37,7 +39,7 @@ extend self[T]: Try[T] {
 
     map[S](body: T => S): Try[S] {
         self.{
-            | Success(value) => try { body(value) }
+            | Success(value) => Try.do { body(value) }
             | Failure(error) => Failure(error)
         }
     }
@@ -69,25 +71,18 @@ extend self[T]: Try[T] {
     }
     */
 
-    catchAny(body: Error => T): Try[T] {
+    handle(body: Error => T): Try[T] {
         self.{
-            | Failure(error) => try { body(error) }
-            | _ => self
-        }
-    }
-
-    onThrow(body: () => Unit): Try[T] {
-        self.{
-            | Failure(error) => try { body() }; self
+            | Failure(error) => Try.do { body(error) }
             | _ => self
         }
     }
 
     finally(body: () => Unit): Try[T] {
         self.{
-            | Success(value) => try { body(); value }
+            | Success(value) => Try.do { body(); value }
             | Failure(_) =>
-                try { body() }.{
+                Try.do { body() }.{
                     | Success(_) => self
                     | Failure(error) => Failure(error)
                 }

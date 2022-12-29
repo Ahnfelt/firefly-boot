@@ -152,8 +152,8 @@ export function Map_contains(self_, key_, ff_core_Ordering_Order$K) {
 return (!ff_core_Option.Option_isEmpty(ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K)))
 }
 
-export function Map_expect(self_, key_, ff_core_Ordering_Order$K) {
-return ff_core_Option.Option_expect(ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K))
+export function Map_grab(self_, key_, ff_core_Ordering_Order$K) {
+return ff_core_Option.Option_grab(ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K))
 }
 
 export function Map_updateOrInsert(self_, key_, update_, default_, ff_core_Ordering_Order$K) {
@@ -243,8 +243,8 @@ export async function Map_contains$(self_, key_, ff_core_Ordering_Order$K, $c) {
 return (!ff_core_Option.Option_isEmpty(ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K)))
 }
 
-export async function Map_expect$(self_, key_, ff_core_Ordering_Order$K, $c) {
-return ff_core_Option.Option_expect(ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K))
+export async function Map_grab$(self_, key_, ff_core_Ordering_Order$K, $c) {
+return ff_core_Option.Option_grab(ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K))
 }
 
 export async function Map_updateOrInsert$(self_, key_, update_, default_, ff_core_Ordering_Order$K, $c) {

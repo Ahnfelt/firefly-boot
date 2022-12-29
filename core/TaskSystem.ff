@@ -94,9 +94,9 @@ extend self: TaskSystem {
         self.scope { scope =>
             tasks.each { task =>
                 scope.spawn {
-                    try {
+                    Try.catch {
                         successChannel.write(task())
-                    } catchAny {e =>
+                    } {e =>
                         live -= 1
                         if(live == 0) {
                             failureChannel.write(e)

@@ -86,7 +86,7 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
         }
         let exhaustiveGuards = case.guards.all { g =>
             let guardConverted = convert(modules, [MatchCase(g.at, [g.pattern], [], case.body)])
-            try {
+            Try.do {
                 check([].toMap(), [], guardConverted, False, False)
                 True
             } else {
@@ -99,7 +99,7 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
 
 convertAndCheck(modules: Map[String, Module], cases: List[MatchCase]): Unit {
     let converted = convert(modules, cases)
-    try {
+    Try.do {
         check([].toMap(), [], converted, False, False)
     } else {
         fail(cases.grab(0).at, "Unexhaustive match")

@@ -99,7 +99,7 @@ export function Buffer_size(self_) {
 return self_.length
 }
 
-export function Buffer_expect(self_, index_) {
+export function Buffer_grab(self_, index_) {
 
             if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
             return self_[index_]
@@ -121,8 +121,8 @@ export async function Buffer_size$(self_, $c) {
 throw new Error('Function Buffer_size is missing on this target in async context.');
 }
 
-export async function Buffer_expect$(self_, index_, $c) {
-throw new Error('Function Buffer_expect is missing on this target in async context.');
+export async function Buffer_grab$(self_, index_, $c) {
+throw new Error('Function Buffer_grab is missing on this target in async context.');
 }
 
 export async function Buffer_set$(self_, index_, byte_, $c) {

@@ -580,7 +580,7 @@ return
 
 export function Substitution_get(self_, index_) {
 {
-const _1 = ff_core_Map.Map_expect(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
+const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
@@ -1099,7 +1099,7 @@ return
 
 export async function Substitution_get$(self_, index_, $c) {
 {
-const _1 = ff_core_Map.Map_expect(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
+const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
