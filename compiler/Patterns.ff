@@ -52,12 +52,12 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
     function otherVariants(name: String): Set[String] {
         let variantName = unqualifiedName(name)
         let moduleName = name.dropLast(variantName.size() + 1)
-        let variantModule = modules.expect(moduleName)
+        let variantModule = modules.grab(moduleName)
         variantModule.types.collectFirst { definition =>
             definition.variants.find { _.name == variantName }.map { variant =>
                 definition.variants.map { _.name }.filter { _ != variantName }.toSet()
             }
-        }.expect()
+        }.grab()
     }
     function convertPattern(pattern: MatchPattern): Option[PatternInfo] {
         | PString _ =>
@@ -102,7 +102,7 @@ convertAndCheck(modules: Map[String, Module], cases: List[MatchCase]): Unit {
     try {
         check([].toMap(), [], converted, False, False)
     } else {
-        fail(cases.expect(0).at, "Unexhaustive match")
+        fail(cases.grab(0).at, "Unexhaustive match")
     }
 }
 

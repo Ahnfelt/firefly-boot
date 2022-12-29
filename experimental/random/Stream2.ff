@@ -206,7 +206,7 @@ requestStream.parse { requestIterator =>
 }
 
 fs.readFile("test.tsv").lines().parse { lineIterator =>
-    let headers = lineIterator.next().expect().split("\t")
+    let headers = lineIterator.next().grab().split("\t")
     lineIterator.map { Pair(headers, _) }
 }.map {| Pair(headers, line) => headers.zip(line.split("\t")).toMap }
 

@@ -1,7 +1,7 @@
 trait T: ReadJs {
     readJs(value: JsValue): T { blueprint system =>
         let constructors = system.constructors()
-        Blueprint("""value.get("$tag").expectString().{\n""" +
+        Blueprint("""value.get("$tag").grabString().{\n""" +
             constructors.map { constructor =>
                 "| " + system.string(constructor.constructorName()).code + " =>\n" +
                 constructor.emit().code + "(" + constructor.fields.map { field =>

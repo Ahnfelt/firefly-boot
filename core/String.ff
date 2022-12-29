@@ -5,7 +5,7 @@ extend self: String {
     size(): Int
         target js sync "return self_.length"
 
-    expect(index: Int): Char
+    grab(index: Int): Char
         target js sync "return self_.charCodeAt(index_)"
 
     replace(needle: String, replacement: String): String
@@ -59,12 +59,12 @@ extend self: String {
     dropLast(count: Int = 1): String
         target js sync "return self_.slice(0, self_.length - count_)"
 
-    expectInt(): Int
+    grabInt(): Int
         target js sync """
-            if(self_.length == 0) throw "expectInt on empty string"
+            if(self_.length == 0) throw "grabInt on empty string"
             for(let i = 0; i < self_.length; i++) {
                 let c = self_.codePointAt(i);
-                if(c < 48 || c > 57) throw "expectInt on non-digit string";
+                if(c < 48 || c > 57) throw "grabInt on non-digit string";
             }
             return parseInt(self_, 10);
         """
@@ -83,9 +83,9 @@ extend self: String {
                 : ff_core_Option.None()
         """
 
-    expectFirst(): Char { self.first().else { panic("expectFirst() on empty string") } }
+    grabFirst(): Char { self.first().else { panic("grabFirst() on empty string") } }
 
-    expectLast(): Char { self.last().else { panic("expectFirst() on empty string") } }
+    grabLast(): Char { self.last().else { panic("grabFirst() on empty string") } }
 
     contains(substring: String) : Bool
         target js sync "return self_.includes(substring_)"

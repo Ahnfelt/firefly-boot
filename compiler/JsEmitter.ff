@@ -330,7 +330,7 @@ extend self: JsEmitter {
             let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
             let controller = if(newAsync) {["$c"]} else {[]}
             Patterns.convertAndCheck(self.otherModules, cases)
-            let arguments = cases.expect(0).patterns.pairs().map { "_" + (_.first + 1) }
+            let arguments = cases.grab(0).patterns.pairs().map { "_" + (_.first + 1) }
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
             let casesString = cases.map { "{\n" + self.emitCase(escapedArguments, _, True, newAsync) + "\n}" }.join("\n")
             let prefix = if(newAsync) {"async "} else {""}
@@ -340,9 +340,9 @@ extend self: JsEmitter {
             let await = async && effectTypeIsAsync(effect)
             let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + ")"
             if(await) {"(await " + call + ")"} else {call}
-        | ECall(at, StaticCall(operator, _, _), _, [], [value], _) {!operator.expectFirst().isAsciiLetter()} =>
+        | ECall(at, StaticCall(operator, _, _), _, [], [value], _) {!operator.grabFirst().isAsciiLetter()} =>
             "(" + operator + self.emitArgument(value, async) + ")"
-        | ECall(at, StaticCall(operator, _, _), _, [], [left, right], _) {!operator.expectFirst().isAsciiLetter()} =>
+        | ECall(at, StaticCall(operator, _, _), _, [], [left, right], _) {!operator.grabFirst().isAsciiLetter()} =>
             "(" + self.emitArgument(left, async) + " " + operator + " " + self.emitArgument(right, async) + ")"
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.import", _, _), _, _, [Argument(_, _, EString(_, url))], _) =>
             self.jsImporter.add(url.replace("\"", ""))
@@ -386,7 +386,7 @@ extend self: JsEmitter {
                 if(arguments.isEmpty()) {""} else {", "} +
                 dictionaryStrings.dropFirst().join(", ")
             }
-            let d = dictionaryStrings.expectFirst()
+            let d = dictionaryStrings.grabFirst()
             let asyncSuffix = if(await) {"$"} else {""}
             let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse()) + asyncSuffix
             let emittedArguments = arguments.map{self.emitArgument(_, async)}
@@ -495,8 +495,8 @@ extend self: JsEmitter {
                 self.tailCallUsed = True
                 let pair = arguments.map { a =>
                     Some(Pair(
-                        "const " + escapeKeyword(a.name.expect() + "_r") + " = " + self.emitTerm(a.value, async) + ";"
-                        escapeKeyword(a.name.expect()) + " = " + escapeKeyword(a.name.expect() + "_r")
+                        "const " + escapeKeyword(a.name.grab() + "_r") + " = " + self.emitTerm(a.value, async) + ";"
+                        escapeKeyword(a.name.grab()) + " = " + escapeKeyword(a.name.grab() + "_r")
                     ))
                 }.collect {_}.unzip()
                 "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
@@ -534,7 +534,7 @@ extend self: JsEmitter {
         Pair(matchCase.patterns, matchCase.guards).{
             | Pair([p, ...ps], _) =>
                 self.emitPattern(
-                    arguments.expect(0),
+                    arguments.grab(0),
                     p,
                     arguments.dropFirst(),
                     matchCase.MatchCase(patterns = ps),
@@ -627,7 +627,7 @@ extend self: JsEmitter {
         let variantNameUnqualified = name.reverse().takeWhile { _ != '.' }.reverse()
         let variantName = escapeKeyword(variantNameUnqualified)
         let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
-        let variantModule = self.otherModules.expect(moduleName)
+        let variantModule = self.otherModules.grab(moduleName)
         mutable newtype = False
         mutable loneVariant = False
         let newArguments = variantModule.types.collectFirst { definition =>
@@ -636,7 +636,7 @@ extend self: JsEmitter {
                 loneVariant = definition.variants.size() == 1
                 [...definition.commonFields.map { _.name}, ...variant.fields.map {_.name}]
             }
-        }.expect().map { field => if(newtype) { argument } else { argument + "." + escapeKeyword(field) } }
+        }.grab().map { field => if(newtype) { argument } else { argument + "." + escapeKeyword(field) } }
         ProcessedVariantCase(variantName, newtype, loneVariant, newArguments)
     }
 
@@ -644,13 +644,13 @@ extend self: JsEmitter {
         let variantNameUnqualified = name.reverse().takeWhile { _ != '.' }.reverse()
         let variantName = escapeKeyword(variantNameUnqualified)
         let moduleName = name.dropLast(variantNameUnqualified.size() + 1)
-        let variantModule = self.otherModules.expect(moduleName)
+        let variantModule = self.otherModules.grab(moduleName)
         mutable newtype = False
         let newArguments = variantModule.types.collectFirst { definition =>
             definition.variants.find { _.name == variantName }.map { variant =>
                 newtype = definition.newtype
             }
-        }.expect()
+        }.grab()
         newtype
     }
 
@@ -698,7 +698,7 @@ extractTypeName(type: Type): String {
 }
 
 firstTypeName(types: List[Type]): String {
-    types.expectFirst().{
+    types.grabFirst().{
         | TConstructor t => t
         | TVariable t => fail(t.at, " is still a unification variable")
     }.name
@@ -715,21 +715,21 @@ charLiteralToNumber(charLiteral: String): String {
     | "'\\r'" => "13"
     | "'\\\"'" => "34"
     | "'\\''" => "39"
-    | value => "" + value.expect(1).codeUnit
+    | value => "" + value.grab(1).codeUnit
 }
 
 escapeResolved(word: String): String {
     let parts = word.replace(":", ".").replace("/", ".").split('.').toList()
     let initialParts = parts.dropLast()
     if(initialParts.isEmpty()) {
-        escapeKeyword(parts.expectLast())
+        escapeKeyword(parts.grabLast())
     } else {
-        initialParts.join("_") + "." + escapeKeyword(parts.expectLast())
+        initialParts.join("_") + "." + escapeKeyword(parts.grabLast())
     }
 }
 
 escapeKeyword(word: String): String {
-    if(word.expectFirst().isAsciiLower()) {word + "_"} else {word}
+    if(word.grabFirst().isAsciiLower()) {word + "_"} else {word}
 }
 
 effectTypeIsAsync(effect: Type): Bool {

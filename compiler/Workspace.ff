@@ -39,8 +39,8 @@ parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Work
         if(columns.size() != 2) {
             panic("Could not parse workspace rule: " + line)
         }
-        let package = columns.expect(0)
-        let location = columns.expect(1)
+        let package = columns.grab(0)
+        let location = columns.grab(1)
         let fixedLocation = if(location.endsWith("/")) {location} else {location + "/"}
         if(package == "*") {
             defaultLocation = Some(fixedLocation)
@@ -50,12 +50,12 @@ parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Work
             if(packageParts.size() != 2) {
                 panic("Could not parse workspace package: " + package)
             }
-            if(packageParts.expect(0) == "*") {
+            if(packageParts.grab(0) == "*") {
                 panic("Unexpected wildcard: " + package)
             }
             Some(WorkspaceRule(
-                packageGroup = packageParts.expect(0)
-                packageName = if(packageParts.expect(1) != "*") { packageParts.expect(1) }
+                packageGroup = packageParts.grab(0)
+                packageName = if(packageParts.grab(1) != "*") { packageParts.grab(1) }
                 location = fixedLocation
             ))
         }

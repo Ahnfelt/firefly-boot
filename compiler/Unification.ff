@@ -33,7 +33,7 @@ make(modules: List[Module]): Unification {
         modules.flatMap { module =>
             let moduleName = module.file.dropLast(".ff".size())
             module.instances.map { definition =>
-                let typeName = definition.typeArguments.expectFirst().{
+                let typeName = definition.typeArguments.grabFirst().{
                     | TConstructor(_, name, _) => name
                     | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
                 }
@@ -67,7 +67,7 @@ extend self: Unification {
             body()
         } finally {
             self.instances = oldInstances
-        } expect()
+        } grab()
     }
 
     freshUnificationVariable(at: Location): Type {
@@ -131,7 +131,7 @@ extend self: Unification {
                         definition.constraints.each { constraint =>
                             self.instantiateConstraint(instantiation, constraint).{
                                 | Constraint(_, constraintName, newGenerics) =>
-                                    self.constrain(at, newGenerics.expectFirst(), constraintName, newGenerics.dropFirst())
+                                    self.constrain(at, newGenerics.grabFirst(), constraintName, newGenerics.dropFirst())
                             }
                         }
                 }

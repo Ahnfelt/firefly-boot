@@ -103,9 +103,9 @@ extend self[T]: Option[T] {
         }
     }
 
-    expect(): T {
+    grab(): T {
         self.{
-            | None => panic("None.expect()")
+            | None => panic("None.grab()")
             | Some(v) => v
         }
     }

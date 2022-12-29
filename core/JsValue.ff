@@ -2,25 +2,25 @@ type JsValue {}
 
 extend self: JsValue {
 
-    expectString(): String
+    grabString(): String
         target js sync "return self_"
 
-    expectChar(): Char
+    grabChar(): Char
         target js sync "return self_"
 
-    expectInt(): Int
+    grabInt(): Int
         target js sync "return self_"
 
-    expectFloat(): Float
+    grabFloat(): Float
         target js sync "return self_"
 
-    expectBool(): Bool
+    grabBool(): Bool
         target js sync "return self_"
 
-    expectArray(): Array[JsValue]
+    grabArray(): Array[JsValue]
         target js sync "return self_"
 
-    expectBuffer(): Buffer
+    grabBuffer(): Buffer
         target js sync """
             if(!(self_ instanceof Buffer)) throw new Error('Expected buffer, got '+ typeof self_);
             return self_

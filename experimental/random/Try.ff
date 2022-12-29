@@ -27,7 +27,7 @@ extend self[T]: Try[T] {
         | NotOk(_) => body()
     }
 
-    expect(): T {
+    grab(): T {
         | Ok(value) => value
         | NotOk(exception) => exception.rethrow()
     }

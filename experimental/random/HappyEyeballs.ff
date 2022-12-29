@@ -17,7 +17,7 @@ main(system: NodeSystem): Unit {
 }
 
 happyEyeballs(taskSystem: TaskSystem, channel: Channel[Unit], ips: List[Ip]): String {
-    let ip = ips.expectFirst()
+    let ip = ips.grabFirst()
     let nextChannel = taskSystem.channel(capacity = 2)
     taskSystem.race([
         {

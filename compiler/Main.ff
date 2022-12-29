@@ -24,13 +24,13 @@ main(system: NodeSystem): Unit {
         first
     }
 
-    let fireflyPath = consumeArgument().expect()
+    let fireflyPath = consumeArgument().grab()
 
-    let command = consumeArgument().expect().{
+    let command = consumeArgument().grab().{
         | s {s.endsWith(".ff")} => RunCommand(s.dropLast(3))
-        | "run" => RunCommand(consumeArgument().expect().dropLast(3))
-        | "browser" => BrowserCommand(consumeArgument().expect().dropLast(3))
-        | "build" => BuildCommand(consumeArgument().expect().dropLast(3))
+        | "run" => RunCommand(consumeArgument().grab().dropLast(3))
+        | "browser" => BrowserCommand(consumeArgument().grab().dropLast(3))
+        | "build" => BuildCommand(consumeArgument().grab().dropLast(3))
         | "bootstrap" => BootstrapCommand
         | s => panic("Unknown command '" + s + "'")
     }

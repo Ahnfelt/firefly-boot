@@ -5,7 +5,7 @@ extend self: Buffer {
     size(): Int
         target js sync "return self_.length"
 
-    expect(index: Int): Int
+    grab(index: Int): Int
         target js sync """
             if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
             return self_[index_]

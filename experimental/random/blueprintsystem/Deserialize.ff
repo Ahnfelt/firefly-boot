@@ -1,7 +1,7 @@
 trait T: Deserializable {
     deserialize(value: Json): T { blueprint t =>
         let constructors = t.constructors()
-        Blueprint.code("""value.get("$tag").expectString().{\n""" +
+        Blueprint.code("""value.get("$tag").grabString().{\n""" +
             constructors.map { constructor =>
                 "| " + Blueprint.string(constructor.constructorName()) + " =>\n" +
                 constructor.emit() + "(" + constructor.fields.map { field =>
@@ -21,7 +21,7 @@ instance Shape: Deserializable
 
 instance Shape: Deserializable {
     deserialize(value: Json): Shape {
-        value.get("$tag").expectString().{
+        value.get("$tag").grabString().{
             | "Circle" =>
                 Circle(
                     radius = deserialize(value.get("radius"))

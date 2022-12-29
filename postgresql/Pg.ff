@@ -70,15 +70,15 @@ extend self: PgPool {
     }
 
     connectionCount(): Int {
-        self.jsValue.get("totalCount").expectInt()
+        self.jsValue.get("totalCount").grabInt()
     }
 
     idleCount(): Int {
-        self.jsValue.get("idleCount").expectInt()
+        self.jsValue.get("idleCount").grabInt()
     }
 
     waitingCount(): Int {
-        self.jsValue.get("waitingCount").expectInt()
+        self.jsValue.get("waitingCount").grabInt()
     }
 
     transaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted): T {
@@ -98,7 +98,7 @@ extend self: PgPool {
         } finally {
             if(!done) {connection.statement("rollback").run()}
             connection.release()
-        } expect()
+        } grab()
     }
 
 }
@@ -319,51 +319,51 @@ extend self: PgStatement {
 extend self: PgRow {
 
     getBool(name: String, lower: Bool = True): Option[Bool] {
-        internalGet(self, name, lower) {(_.expectBool() && True) || False}
+        internalGet(self, name, lower) {(_.grabBool() && True) || False}
     }
 
     getInt(name: String, lower: Bool = True): Option[Int] {
-        internalGet(self, name, lower) {_.expectInt() * 1}
+        internalGet(self, name, lower) {_.grabInt() * 1}
     }
 
     getFloat(name: String, lower: Bool = True): Option[Float] {
-        internalGet(self, name, lower) {_.expectFloat() * 1.0}
+        internalGet(self, name, lower) {_.grabFloat() * 1.0}
     }
 
     getString(name: String, lower: Bool = True): Option[String] {
-        internalGet(self, name, lower) {"" + _.expectString()}
+        internalGet(self, name, lower) {"" + _.grabString()}
     }
 
     getInstant(name: String, lower: Bool = True): Option[Instant] {
-        internalGet(self, name, lower) {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}
+        internalGet(self, name, lower) {Instant(Duration(_.call0("getTime").grabInt() * 0.001))}
     }
 
     getBuffer(name: String, lower: Bool = True): Option[Buffer] {
-        internalGet(self, name, lower) {_.expectBuffer()}
+        internalGet(self, name, lower) {_.grabBuffer()}
     }
 
     getBoolArray(name: String, lower: Bool = True): Option[Array[Bool]] {
-        internalGet(self, name, lower) {_.expectArray().map {(_.expectBool() && True) || False}}
+        internalGet(self, name, lower) {_.grabArray().map {(_.grabBool() && True) || False}}
     }
 
     getIntArray(name: String, lower: Bool = True): Option[Array[Int]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectInt() * 1}}
+        internalGet(self, name, lower) {_.grabArray().map {_.grabInt() * 1}}
     }
 
     getFloatArray(name: String, lower: Bool = True): Option[Array[Float]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectFloat() * 1.0}}
+        internalGet(self, name, lower) {_.grabArray().map {_.grabFloat() * 1.0}}
     }
 
     getStringArray(name: String, lower: Bool = True): Option[Array[String]] {
-        internalGet(self, name, lower) {_.expectArray().map {"" + _.expectString()}}
+        internalGet(self, name, lower) {_.grabArray().map {"" + _.grabString()}}
     }
 
     getInstantArray(name: String, lower: Bool = True): Option[Array[Instant]] {
-        internalGet(self, name, lower) {_.expectArray().map {Instant(Duration(_.call0("getTime").expectInt() * 0.001))}}
+        internalGet(self, name, lower) {_.grabArray().map {Instant(Duration(_.call0("getTime").grabInt() * 0.001))}}
     }
 
     getBufferArray(name: String, lower: Bool = True): Option[Array[Buffer]] {
-        internalGet(self, name, lower) {_.expectArray().map {_.expectBuffer()}}
+        internalGet(self, name, lower) {_.grabArray().map {_.grabBuffer()}}
     }
 
 }
@@ -379,12 +379,12 @@ internalRunStatement(statement: PgStatement, body: Option[PgRow => Bool]): Int {
     UnsafeJs.throwIfCancelled()
     let pair = internalParseParameters(statement.sql)
     let parameters = internalCheckParameters(pair.second, statement.parameters)
-    let result = UnsafeJs.await { statement.connection.expect().jsValue.call2("query", pair.first, parameters) }
+    let result = UnsafeJs.await { statement.connection.grab().jsValue.call2("query", pair.first, parameters) }
     body.{
         | None =>
-            result.get("rowCount").expectInt()
+            result.get("rowCount").grabInt()
         | Some(f) =>
-            let all = result.get("rows").expectArray().toList().all { row =>
+            let all = result.get("rows").grabArray().toList().all { row =>
                 f(PgRow(row))
             }
             if(all) {1} else {0}
@@ -405,13 +405,13 @@ internalBatchStatements(
                 .call1("update", pair.first)
                 .call1("update", "ffpgps")
                 .call1("digest", "hex")
-            "ffpgps" + hash.expectString()
+            "ffpgps" + hash.grabString()
         }
         Pair(sql, (newSql = pair.first, parameterNames = pair.second, prepared = prepared))
     }
     let promises = statements.map { statement =>
         UnsafeJs.throwIfCancelled()
-        let record = sqlCache.expect(statement.sql)
+        let record = sqlCache.grab(statement.sql)
         let parameters = internalCheckParameters(record.parameterNames, statement.parameters)
         let query = UnsafeJs.jsSystem().object()
             .with("text", record.newSql)
@@ -424,9 +424,9 @@ internalBatchStatements(
         UnsafeJs.throwIfCancelled()
         body.{
             | None =>
-                result.get("rowCount").expectInt()
+                result.get("rowCount").grabInt()
             | Some(f) =>
-                let all = result.get("rows").expectArray().toList().all { row =>
+                let all = result.get("rows").grabArray().toList().all { row =>
                     f(PgRow(row))
                 }
                 endBody.each {_()}
@@ -456,14 +456,14 @@ internalParseParameters(statementSql: String): Pair[String, List[String]] {
     mutable last = 0
     mutable sql = ""
     while {i < statementSql.size()} {
-        if(statementSql.expect(i) == '$') {
+        if(statementSql.grab(i) == '$') {
             sql = sql + statementSql.slice(last, i)
             i += 1
             last = i
-            if(statementSql.expect(i) == '$') {
+            if(statementSql.grab(i) == '$') {
                 i += 1
             } else {
-                while {i < statementSql.size() && statementSql.expect(i).isAsciiLetterOrDigit()} {
+                while {i < statementSql.size() && statementSql.grab(i).isAsciiLetterOrDigit()} {
                     i += 1
                 }
                 let name = statementSql.slice(last, i)
@@ -490,10 +490,10 @@ main(system: NodeSystem): Unit {
 
     let pool = makePool(
         system = system
-        host = system.arguments().expect(0)
-        database = system.arguments().expect(1)
-        user = system.arguments().expect(2)
-        password = {system.arguments().expect(3)}
+        host = system.arguments().grab(0)
+        database = system.arguments().grab(1)
+        user = system.arguments().grab(2)
+        password = {system.arguments().grab(3)}
     )
 
     pool.transaction {connection =>
@@ -505,9 +505,9 @@ main(system: NodeSystem): Unit {
             .withInt("maxEntityId", 200)
             .map {row =>
                 (
-                    name = row.getString("name").expect()
-                    listCode = row.getString("listCode").expect()
-                    entityId = row.getInt("entityId").expect()
+                    name = row.getString("name").grab()
+                    listCode = row.getString("listCode").grab()
+                    entityId = row.getInt("entityId").grab()
                 )
             }
 

@@ -12,12 +12,12 @@ tokenize(file: String, code: String): Array[Token] {
     let operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;"
     mutable operatorCharacters = Set.empty[Char]()
     List.range(operatorCharactersString.size()).map { j =>
-        operatorCharacters = operatorCharacters.add(operatorCharactersString.expect(j))
+        operatorCharacters = operatorCharacters.add(operatorCharactersString.grab(j))
     }
 
     function emitToken(kind: TokenKind, startOffset: Int, stopOffset: Int): Unit {
         if(!tokens.isEmpty()) {
-            let last = tokens.expectLast()
+            let last = tokens.grabLast()
             if(last.stopLine == startLine && last.kind == LLower && kind.afterKeyword()) {
                 tokens.modify(tokens.size() - 1) {_.Token(kind = LKeyword)}
             }
@@ -37,33 +37,33 @@ tokenize(file: String, code: String): Array[Token] {
     mutable i = 0
     while { i < code.size() } {
 
-        while { i < code.size() && (code.expect(i) == ' ' || code.expect(i) == '\t' || code.expect(i) == '\r') } { i += 1 }
+        while { i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r') } { i += 1 }
 
         let start = i
         startLine = line
         startLineOffset = lineOffset
 
-        if(code.expect(i) == '\n') {
+        if(code.grab(i) == '\n') {
 
             i += 1
             line += 1
             lineOffset = i
 
-        } elseIf { code.expect(i) == '/' && code.expect(i + 1) == '/' } {
+        } elseIf { code.grab(i) == '/' && code.grab(i + 1) == '/' } {
 
             i += 2
-            while { i < code.size() && code.expect(i) != '\n' } { i += 1 }
+            while { i < code.size() && code.grab(i) != '\n' } { i += 1 }
 
-        } elseIf { code.expect(i) == '/' && code.expect(i + 1) == '*' } {
+        } elseIf { code.grab(i) == '/' && code.grab(i + 1) == '*' } {
 
             i += 2
-            while { i < code.size() && (code.expect(i) != '*' || code.expect(i + 1) != '/') } {
+            while { i < code.size() && (code.grab(i) != '*' || code.grab(i + 1) != '/') } {
                 if(i >= code.size()) {
                     panic(
                         "Expected end of comment started on line " + startLine + ", got end of file."
                     )
                 }
-                if(code.expect(i) == '\n') {
+                if(code.grab(i) == '\n') {
                     line += 1
                     lineOffset = i + 1
                 }
@@ -71,16 +71,16 @@ tokenize(file: String, code: String): Array[Token] {
             }
             i += 2
 
-        } elseIf { code.expect(i) == '"' || code.expect(i) == '\'' } {
+        } elseIf { code.grab(i) == '"' || code.grab(i) == '\'' } {
 
-            let endSign = code.expect(i)
+            let endSign = code.grab(i)
 
             mutable multiLine = i + 2 < code.size() &&
-                code.expect(i) == '"' && code.expect(i + 1) == '"' && code.expect(i + 2) == '"'
+                code.grab(i) == '"' && code.grab(i + 1) == '"' && code.grab(i + 2) == '"'
 
             i += if(multiLine) {3} else {1}
-            while {i < code.size() && (multiLine || code.expect(i) != endSign)} {
-                if(code.expect(i) == '\n') {
+            while {i < code.size() && (multiLine || code.grab(i) != endSign)} {
+                if(code.grab(i) == '\n') {
                     if(multiLine) {
                         line += 1
                         lineOffset = i + 1
@@ -95,10 +95,10 @@ tokenize(file: String, code: String): Array[Token] {
                         "Expected end of string started on line " + startLine + ", got end of file."
                     )
                 }
-                if(code.expect(i) == '\\' && code.expect(i + 1) != '\n') {i += 1}
+                if(code.grab(i) == '\\' && code.grab(i + 1) != '\n') {i += 1}
                 if(multiLine &&
-                    i + 2 < code.size() && (i + 3 >= code.size() || code.expect(i + 3) != '"') &&
-                    code.expect(i) == '"' && code.expect(i + 1) == '"' && code.expect(i + 2) == '"'
+                    i + 2 < code.size() && (i + 3 >= code.size() || code.grab(i + 3) != '"') &&
+                    code.grab(i) == '"' && code.grab(i + 1) == '"' && code.grab(i + 2) == '"'
                 ) {
                     multiLine = False
                     i += 2
@@ -109,33 +109,33 @@ tokenize(file: String, code: String): Array[Token] {
             i += 1
             emitToken(if(endSign == '"') {LString} else {LChar}, start, i)
 
-        } elseIf { code.expect(i).isAsciiLetter() } {
+        } elseIf { code.grab(i).isAsciiLetter() } {
 
-            let kind = if(code.expect(i) >= 'a') {LLower} else {LUpper}
+            let kind = if(code.grab(i) >= 'a') {LLower} else {LUpper}
             i += 1
-            while {i < code.size() && code.expect(i).isAsciiLetterOrDigit()} { i += 1 }
-            if(kind == LUpper && code.expect(i) == '.') {
+            while {i < code.size() && code.grab(i).isAsciiLetterOrDigit()} { i += 1 }
+            if(kind == LUpper && code.grab(i) == '.') {
                 i += 1
                 emitToken(LNamespace, start, i)
             } else {
                 emitToken(kind, start, i)
             }
 
-        } elseIf { code.expect(i).isAsciiDigit() } {
+        } elseIf { code.grab(i).isAsciiDigit() } {
 
             mutable dot = False
             mutable exponent = False
-            while { i < code.size() && code.expect(i).isAsciiDigit() } {
+            while { i < code.size() && code.grab(i).isAsciiDigit() } {
                 i += 1
-                if((code.expect(i) == 'e' || code.expect(i) == 'E') && !exponent) {
+                if((code.grab(i) == 'e' || code.grab(i) == 'E') && !exponent) {
                     i += 1
                     dot = True
                     exponent = True
-                    if(code.expect(i) == '+' || code.expect(i) == '-') {i += 1}
+                    if(code.grab(i) == '+' || code.grab(i) == '-') {i += 1}
                 }
                 if(
-                    i + 1 < code.size() && code.expect(i) == '.' &&
-                    code.expect(i + 1).isAsciiDigit() &&
+                    i + 1 < code.size() && code.grab(i) == '.' &&
+                    code.grab(i + 1).isAsciiDigit() &&
                     !dot && !exponent
                 ) {
                     i += 1
@@ -144,37 +144,37 @@ tokenize(file: String, code: String): Array[Token] {
             }
             emitToken(if(dot || exponent) {LFloat} else {LInt}, start, i)
 
-        } elseIf { code.expect(i) == '_' } {
+        } elseIf { code.grab(i) == '_' } {
 
             i += 1
             emitToken(LWildcard, start, i)
 
-        } elseIf { operatorCharacters.contains(code.expect(i)) } {
+        } elseIf { operatorCharacters.contains(code.grab(i)) } {
 
             i += 1
-            while { i < code.size() && operatorCharacters.contains(code.expect(i)) } {i += 1}
+            while { i < code.size() && operatorCharacters.contains(code.grab(i)) } {i += 1}
             let o =
-                if(i - start == 1 && code.expect(i - 1) == '.') {
+                if(i - start == 1 && code.grab(i - 1) == '.') {
                     LDot
-                } elseIf {i - start == 1 && code.expect(i - 1) == ','} {
+                } elseIf {i - start == 1 && code.grab(i - 1) == ','} {
                     LComma
-                } elseIf {i - start == 1 && code.expect(i - 1) == ';'} {
+                } elseIf {i - start == 1 && code.grab(i - 1) == ';'} {
                     LSemicolon
-                } elseIf {i - start == 1 && code.expect(i - 1) == '|'} {
+                } elseIf {i - start == 1 && code.grab(i - 1) == '|'} {
                     LPipe
-                } elseIf {i - start == 1 && code.expect(i - 1) == ':'} {
+                } elseIf {i - start == 1 && code.grab(i - 1) == ':'} {
                     LColon
-                } elseIf {i - start == 3 && code.expect(i - 3) == '.' && code.expect(i - 2) == '.' && code.expect(i - 1) == '.'} {
+                } elseIf {i - start == 3 && code.grab(i - 3) == '.' && code.grab(i - 2) == '.' && code.grab(i - 1) == '.'} {
                     LDotDotDot
-                } elseIf {i - start == 2 && code.expect(i - 2) == '=' && code.expect(i - 1) == '>'} {
+                } elseIf {i - start == 2 && code.grab(i - 2) == '=' && code.grab(i - 1) == '>'} {
                     LArrowThick
-                } elseIf {i - start == 1 && code.expect(i - 1) == '='} {
+                } elseIf {i - start == 1 && code.grab(i - 1) == '='} {
                     LAssign
-                } elseIf {i - start == 2 && code.expect(i - 2) == '+' && code.expect(i - 1) == '='} {
+                } elseIf {i - start == 2 && code.grab(i - 2) == '+' && code.grab(i - 1) == '='} {
                     LAssignPlus
-                } elseIf {i - start == 2 && code.expect(i - 2) == '-' && code.expect(i - 1) == '='} {
+                } elseIf {i - start == 2 && code.grab(i - 2) == '-' && code.grab(i - 1) == '='} {
                     LAssignMinus
-                } elseIf {i - start == 3 && code.expect(i - 3) == ':' && code.expect(i - 2) == ':' && code.expect(i - 1) == '='} {
+                } elseIf {i - start == 3 && code.grab(i - 3) == ':' && code.grab(i - 2) == ':' && code.grab(i - 1) == '='} {
                     LAssignLink
                 } else {
                     LOperator
@@ -182,13 +182,13 @@ tokenize(file: String, code: String): Array[Token] {
             emitToken(o, start, i)
 
         } elseIf {
-            code.expect(i) == '(' || code.expect(i) == '[' || code.expect(i) == '{'
+            code.grab(i) == '(' || code.grab(i) == '[' || code.grab(i) == '{'
         } {
             i += 1
             emitToken(LBracketLeft, start, i)
 
         } elseIf {
-            code.expect(i) == ')' || code.expect(i) == ']' || code.expect(i) == '}'
+            code.grab(i) == ')' || code.grab(i) == ']' || code.grab(i) == '}'
         } {
 
             i += 1
@@ -199,7 +199,7 @@ tokenize(file: String, code: String): Array[Token] {
         } {
 
             let column = (i - startLineOffset) + 1
-            panic("Unexpected character: " + Show.show(code.expect(i)) + " in " + file + " at line " + line + ", column " + column)
+            panic("Unexpected character: " + Show.show(code.grab(i)) + " in " + file + " at line " + line + ", column " + column)
 
         }
 

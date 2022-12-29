@@ -5,7 +5,7 @@ type Dictionary[K, V] {}
 trait K: DictionaryKey {
     add[V](js: JsValue, key: K, value: V): Unit
     has(js: JsValue, key: K): Bool
-    expect[V](js: JsValue, key: K): V
+    grab[V](js: JsValue, key: K): V
 }
 
 instance Int: DictionaryKey {

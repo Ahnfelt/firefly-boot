@@ -43,10 +43,10 @@ extend self[T]: List[T] {
         self.toStack().drain()
     }
 
-    expect(index: Int): T {
+    grab(index: Int): T {
         function go(list: List[T], i: Int): T {
             list.{
-                | [] => panic("expect(" + index + ") on list of size " + self.size())
+                | [] => panic("grab(" + index + ") on list of size " + self.size())
                 | [head, ...] {i == 0} => head
                 | [_, ...tail] => tailcall go(tail, i - 1)
             }
@@ -69,12 +69,12 @@ extend self[T]: List[T] {
         }
     }
 
-    expectFirst(): T {
-        self.first().else { panic("expectFirst() on empty list") }
+    grabFirst(): T {
+        self.first().else { panic("grabFirst() on empty list") }
     }
 
-    expectLast(): T {
-        self.last().else { panic("expectLast() on empty list") }
+    grabLast(): T {
+        self.last().else { panic("grabLast() on empty list") }
     }
 
     dropFirst(count: Int = 1): List[T] {

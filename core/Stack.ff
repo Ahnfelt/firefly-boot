@@ -28,7 +28,7 @@ extend self[T]: Stack[T] {
                 : ff_core_Option.None()
         """
 
-    expect(index: Int): T
+    grab(index: Int): T
         target js sync """
             if(index_ < 0 || index_ >= self_.array.length) {
                 throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.array.length)
@@ -36,9 +36,9 @@ extend self[T]: Stack[T] {
             return self_.array[index_]
         """
 
-    expectFirst(): T { self.expect(0) }
+    grabFirst(): T { self.grab(0) }
 
-    expectLast(): T { self.expect(self.size() - 1) }
+    grabLast(): T { self.grab(self.size() - 1) }
 
     first(): Option[T]
         target js sync """
@@ -226,13 +226,13 @@ sortRange[T](stack: Stack[T], compare: (T, T) => Ordering, start: Int, end: Int)
     mutable i = start
     mutable j = middle
     while {i < middle && j < end} {
-        if(compare(stack.expect(i), stack.expect(j)) != OrderingAfter) {
+        if(compare(stack.grab(i), stack.grab(j)) != OrderingAfter) {
             i += 1
         } else {
-            let value = stack.expect(j)
+            let value = stack.grab(j)
             mutable k = j
             while {k > i} {
-                stack.set(k, stack.expect(k - 1))
+                stack.set(k, stack.grab(k - 1))
                 k -= 1
             }
             stack.set(i, value)

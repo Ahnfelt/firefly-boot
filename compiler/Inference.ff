@@ -123,7 +123,7 @@ extend self: Inference {
         let unitName = core("Unit")
         let returnsUnit = self.unification.substitute(expected).{
             | TConstructor(_, name, ts) {name.startsWith("Function$")} =>
-                ts.expectLast().{
+                ts.grabLast().{
                     | TConstructor(_, n, []) => n == unitName
                     | _ => False
                 }
@@ -261,7 +261,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
                         fieldNames.pairs().find { _.second == e.field }.map { _.first }.map { index =>
-                            let t1 = typeArguments.expect(index)
+                            let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)
                             e.EField(record = record)
                         }.else {
@@ -278,14 +278,14 @@ extend self: Inference {
                                 self.unification.unify(
                                     e.at,
                                     recordType,
-                                    instantiated.scheme.signature.parameters.expect(0).valueType
+                                    instantiated.scheme.signature.parameters.grab(0).valueType
                                 )
                                 self.inferEtaExpansion(environment, expected, e.at, signature, term)
                             | Some(instantiated) =>
                                 /*self.unification.unify(
                                     e.at,
                                     recordType,
-                                    instantiated.scheme.signature.parameters.expect(0).valueType
+                                    instantiated.scheme.signature.parameters.grab(0).valueType
                                 )*/
                                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                                 e.EField(newtype = instantiated.scheme.isNewtype, record = record)
@@ -299,7 +299,7 @@ extend self: Inference {
                 self.lookup(environment, e.at, "_w" + e.index, []).map { instantiated =>
                     self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                     term
-                }.expect()
+                }.grab()
             | EList(at, t, items) =>
                 let listType = TConstructor(term.at, core("List"), [t])
                 self.unification.unify(at, expected, listType)
@@ -583,7 +583,7 @@ extend self: Inference {
             | DynamicCall call => call
             | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferMethodCall")
         }
-        let selfParameter = signature.parameters.expectFirst()
+        let selfParameter = signature.parameters.grabFirst()
         let selfArgument = Argument(record.at, Some(selfParameter.name), record) // Be careful not to infer again
         self.unification.unify(term.at, expected, signature.returnType)
         self.unification.unify(term.at, selfParameter.valueType, recordType)
@@ -838,7 +838,7 @@ extend self: Inference {
 
         scheme.signature.constraints.each { c =>
             let generics = c.generics.map { self.unification.instantiate(instantiationMap, _) }
-            self.unification.constrain(at, generics.expectFirst(), c.name, generics.dropFirst())
+            self.unification.constrain(at, generics.grabFirst(), c.name, generics.dropFirst())
         }
 
         let signature = scheme.signature.Signature(
@@ -860,7 +860,7 @@ extend self: Inference {
 
 constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, InstanceValue] {
     constraints.map { c =>
-        let typeName = c.generics.expectFirst().{
+        let typeName = c.generics.grabFirst().{
             | TConstructor(_, name, _) => name
             | TVariable(at, i) => fail(c.at, "Unexpected unification variable: $" + i)
         }

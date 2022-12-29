@@ -12,7 +12,7 @@ catch[T](body: () => T, catchBody: Error => T): T {
         body()
     } catchAny { error =>
         catchBody(error)
-    } expect()
+    } grab()
 }
 
 finallyCatch[T](body: () => T, finallyBody: () => Unit, catchBody: Error => T): T {
@@ -22,7 +22,7 @@ finallyCatch[T](body: () => T, finallyBody: () => Unit, catchBody: Error => T): 
         finallyBody()
     } catchAny { error =>
         catchBody(error)
-    } expect()
+    } grab()
 }
 
 finally[T](body: () => T, finallyBody: () => Unit): T {
@@ -30,7 +30,7 @@ finally[T](body: () => T, finallyBody: () => Unit): T {
         body()
     } finally {
         finallyBody()
-    } expect()
+    } grab()
 }
 
 extend self[T]: Try[T] {
@@ -53,7 +53,7 @@ extend self[T]: Try[T] {
         }
     }
 
-    expect(): T {
+    grab(): T {
         self.{
             | Success(value) => value
             | Failure(error) => error.rethrow()

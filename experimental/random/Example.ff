@@ -35,7 +35,7 @@ load(files: FileSystem, file1: String, file2: String): String {
         files.readText(file2)
     } catch(FileNotFound?) { e =>
         ""
-    } expect
+    } grab
 }
 
 type FileException(file: String) {

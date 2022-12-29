@@ -25,7 +25,7 @@ extend self[T]: Stream[T] {
                 self.close()
             } finally {
                 that.close()
-            } expect()
+            } grab()
         }
     }
 
@@ -51,13 +51,13 @@ extend self[T]: Stream[T] {
                         }
                 }
             }
-            result.expect()
+            result.grab()
         } {
             try {
                 inner.close()
             } finally {
                 self.close()
-            } expect()
+            } grab()
         }
     }
 
@@ -75,7 +75,7 @@ extend self[T]: Stream[T] {
                     | None => result = Some(None)
                 }
             }
-            result.expect()
+            result.grab()
         } {
             self.close()
         }
@@ -92,7 +92,7 @@ extend self[T]: Stream[T] {
                 self.close()
             } finally {
                 that.close()
-            } expect()
+            } grab()
         }
     }
 
@@ -205,7 +205,7 @@ extend self[T]: Stream[T] {
             body(self)
         } finally {
             self.close()
-        } expect()
+        } grab()
     }
 
     each(body: T => Unit): Unit {
@@ -219,7 +219,7 @@ extend self[T]: Stream[T] {
             }
         } finally {
             self.close()
-        } expect()
+        } grab()
     }
 
     eachWhile(body: T => Bool): Unit {
@@ -233,7 +233,7 @@ extend self[T]: Stream[T] {
             }
         } finally {
             self.close()
-        } expect()
+        } grab()
     }
 
     all(body: T => Bool): Bool {
@@ -259,7 +259,7 @@ extend self[T]: Stream[T] {
             self.next()
         } finally {
             self.close()
-        } expect()
+        } grab()
     }
 
     last(): Option[T] {
@@ -275,15 +275,15 @@ extend self[T]: Stream[T] {
             result
         } finally {
             self.close()
-        } expect()
+        } grab()
     }
 
-    expectFirst(): T {
-        self.first().else { panic("expectFirst() on empty iterator") }
+    grabFirst(): T {
+        self.first().else { panic("grabFirst() on empty iterator") }
     }
 
-    expectLast(): T {
-        self.last().else { panic("expectLast() on empty iterator") }
+    grabLast(): T {
+        self.last().else { panic("grabLast() on empty iterator") }
     }
 
     collectFirst[R](body: T => Option[R]): Option[R] {
@@ -305,7 +305,7 @@ extend self[T]: Stream[T] {
             result
         } finally {
             self.close()
-        } expect()
+        } grab()
     }
 
     find(body: T => Bool): Option[T] {

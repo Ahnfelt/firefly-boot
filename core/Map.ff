@@ -66,8 +66,8 @@ extend self[K: Order, V]: Map[K, V] {
         !self.get(key).isEmpty()
     }
 
-    expect(key: K): V {
-        self.get(key).expect()
+    grab(key: K): V {
+        self.get(key).grab()
     }
 
     updateOrInsert(key: K, update: V => V, default: () => V): Map[K, V] {

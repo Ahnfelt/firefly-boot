@@ -160,7 +160,7 @@ extend self: Substitution {
     }
 
     get(index: Int): Type {
-        self.substitution.expect(index).{
+        self.substitution.grab(index).{
             | TVariable(_, i) { self.has(i) } =>
                 let t = self.get(i)
                 self.substitution = self.substitution.add(index, t)

@@ -164,7 +164,7 @@ extend self: Dictionaries {
         let instantiationMap = typeParameters.zip(typeArguments).toMap()
         let unification = Unification.make([])
         let newGenerics = constraint.generics.map { unification.instantiate(instantiationMap, _) }
-        let firstType = newGenerics.expectFirst().{
+        let firstType = newGenerics.grabFirst().{
             | TConstructor t => t
             | TVariable t => fail(t.at, " is still a unification variable")
         }
@@ -181,7 +181,7 @@ extend self: Dictionaries {
 
 constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, InstanceValue] {
     constraints.map { c =>
-        let typeName = c.generics.expectFirst().{
+        let typeName = c.generics.grabFirst().{
             | TConstructor(_, name, _) => name
             | TVariable(_, i) => fail(c.at, "Unexpected unification variable: $" + i)
         }

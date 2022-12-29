@@ -33,7 +33,7 @@ extend self[T]: Array[T] {
                 : ff_core_Option.None()
         """
 
-    expect(index: Int): T
+    grab(index: Int): T
         target js sync """
             if(index_ < 0 || index_ >= self_.length) {
                 throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.length)
@@ -45,9 +45,9 @@ extend self[T]: Array[T] {
 
     last(): Option[T] { self.get(self.size() - 1) }
 
-    expectFirst(): T { self.expect(0) }
+    grabFirst(): T { self.grab(0) }
 
-    expectLast(): T { self.expect(self.size() - 1) }
+    grabLast(): T { self.grab(self.size() - 1) }
 
     dropFirst(count: Int = 1): Array[T]
         target js sync "return self_.slice(count_)"
@@ -80,7 +80,7 @@ extend self[T]: Array[T] {
         mutable index = 0
         Stream.make {
             if(index < self.size()) {
-                let result = self.expect(index)
+                let result = self.grab(index)
                 index += 1
                 result
             }
@@ -191,7 +191,7 @@ instance Array[T: Equal]: Equal {
         mutable i = -1
         left.all {x =>
             i += 1
-            x == right.expect(i)
+            x == right.grab(i)
         }
     }
 }
@@ -203,7 +203,7 @@ instance Array[T: Order]: Order {
         mutable i = 0
         mutable ordering = OrderingSame
         while {ordering == OrderingSame && i < size} {
-            ordering = Ordering.compare(left.expect(i), right.expect(i))
+            ordering = Ordering.compare(left.grab(i), right.grab(i))
             i += 1
         }
         if(ordering != OrderingSame) {ordering} else:

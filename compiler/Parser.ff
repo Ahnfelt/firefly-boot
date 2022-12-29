@@ -31,7 +31,7 @@ make(packagePair: PackagePair, file: String, tokens: Array[Token], targetIsNode:
         packagePair = packagePair
         file = file
         tokens = tokens
-        end = tokens.expectLast()
+        end = tokens.grabLast()
         targetIsNode = targetIsNode
         offset = 0
         nextUnificationVariableIndex = 1 // To avoid collision with the unification and resolver
@@ -45,15 +45,15 @@ extend self: Parser {
     }
     
     current(): Token {
-        if(self.offset < self.tokens.size()) { self.tokens.expect(self.offset) } else { self.end }
+        if(self.offset < self.tokens.size()) { self.tokens.grab(self.offset) } else { self.end }
     }
     
     ahead(): Token {
-        if(self.offset + 1 < self.tokens.size()) { self.tokens.expect(self.offset + 1) } else { self.end }
+        if(self.offset + 1 < self.tokens.size()) { self.tokens.grab(self.offset + 1) } else { self.end }
     }
     
     aheadAhead(): Token {
-        if(self.offset + 2 < self.tokens.size()) { self.tokens.expect(self.offset + 2) } else { self.end }
+        if(self.offset + 2 < self.tokens.size()) { self.tokens.grab(self.offset + 2) } else { self.end }
     }
     
     skip(kind: TokenKind): Token {
@@ -427,8 +427,8 @@ extend self: Parser {
         if(newtype && commonFields.size() != 1) {
             self.fail(nameToken.at(), "Newtypes must have exactly one field")
         }
-        if(newtype && commonFields.expect(0).mutable) {
-            self.fail(commonFields.expect(0).at, "Newtypes can't have mutable fields")
+        if(newtype && commonFields.grab(0).mutable) {
+            self.fail(commonFields.grab(0).at, "Newtypes can't have mutable fields")
         }
         let generics = [...effectParameter, ...poly.generics]
         DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants)
@@ -530,12 +530,12 @@ extend self: Parser {
             let parts = majorMinor.raw().split('.')
             let patch = if(self.current().is(LDot)) {
                  self.skip(LDot)
-                 self.skip(LInt).raw().expectInt()
+                 self.skip(LInt).raw().grabInt()
             } else { 0 }
-            Version(majorMinor.at(), parts.expect(0).expectInt(), parts.expect(1).expectInt(), patch)
+            Version(majorMinor.at(), parts.grab(0).grabInt(), parts.grab(1).grabInt(), patch)
         } else {
             let major = self.skip(LInt)
-            Version(major.at(), major.raw().expectInt(), 0, 0)
+            Version(major.at(), major.raw().grabInt(), 0, 0)
         }
     }
     
@@ -780,7 +780,7 @@ extend self: Parser {
             let arguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
             [TConstructor(token.at(), namespace + token.raw(), arguments)]
         }
-        if(!self.current().is(LArrowThick) && leftTypes.size() == 1) {leftTypes.expectFirst()} else {
+        if(!self.current().is(LArrowThick) && leftTypes.size() == 1) {leftTypes.grabFirst()} else {
             let arrowToken = self.skip(LArrowThick)
             let rightType = self.parseType()
             TConstructor(arrowToken.at(), "Function$" + leftTypes.size(), [...leftTypes, rightType])
@@ -860,7 +860,7 @@ extend self: Parser {
     
     parseBinary(level: Int): Term {
         if(level >= binaryOperators.size()) {self.parseUnary()} else:
-        let operators = binaryOperators.expect(level)
+        let operators = binaryOperators.grab(level)
         mutable result = self.parseBinary(level + 1)
         if(self.current().is(LOperator)) {
             while {operators.any(self.current().rawIs)} {
