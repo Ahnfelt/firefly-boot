@@ -19,12 +19,12 @@ do[T](body: () => T): Try[T]
         }
     """
 
-catch[T](body: () => T, catchBody: Error => T): T {
-    Try.catch {
-        body()
-    } { error =>
-        catchBody(error)
-    }
+catch[E: ToFromAny, T](body: () => T, catchBody: (E, Error) => T): T {
+    Try.do(body).catch(catchBody).grab()
+}
+
+catchAny[T](body: () => T, catchBody: Error => T): T {
+    Try.do(body).catchAny(catchBody).grab()
 }
 
 finally[T](body: () => T, finallyBody: () => Unit): T {
@@ -69,7 +69,7 @@ extend self[T]: Try[T] {
         }
     }
 
-    handle(body: Error => T): Try[T] {
+    catchAny(body: Error => T): Try[T] {
         self.{
             | Failure(error) => Try.do { body(error) }
             | _ => self

@@ -96,12 +96,12 @@ export function do_(body_) {
     
 }
 
-export function catch_(body_, catchBody_) {
-return ff_core_Try.catch_((() => {
-return body_()
-}), ((error_) => {
-return catchBody_(error_)
-}))
+export function catch_(body_, catchBody_, ff_core_Any_ToFromAny$E) {
+return ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.do_(body_), catchBody_, ff_core_Any_ToFromAny$E))
+}
+
+export function catchAny_(body_, catchBody_) {
+return ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Try.do_(body_), catchBody_))
 }
 
 export function finally_(body_, finallyBody_) {
@@ -122,12 +122,12 @@ export async function do_$(body_, $c) {
     
 }
 
-export async function catch_$(body_, catchBody_, $c) {
-return (await ff_core_Try.catch_$((async ($c) => {
-return (await body_($c))
-}), (async (error_, $c) => {
-return (await catchBody_(error_, $c))
-}), $c))
+export async function catch_$(body_, catchBody_, ff_core_Any_ToFromAny$E, $c) {
+return ff_core_Try.Try_grab((await ff_core_Try.Try_catch$((await ff_core_Try.do_$(body_, $c)), catchBody_, $c, ff_core_Any_ToFromAny$E)))
+}
+
+export async function catchAny_$(body_, catchBody_, $c) {
+return ff_core_Try.Try_grab((await ff_core_Try.Try_catchAny$((await ff_core_Try.do_$(body_, $c)), catchBody_, $c)))
 }
 
 export async function finally_$(body_, finallyBody_, $c) {
@@ -228,7 +228,7 @@ return
 }
 }
 
-export function Try_handle(self_, body_) {
+export function Try_catchAny(self_, body_) {
 {
 const _1 = self_;
 {
@@ -376,7 +376,7 @@ return
 }
 }
 
-export async function Try_handle$(self_, body_, $c) {
+export async function Try_catchAny$(self_, body_, $c) {
 {
 const _1 = self_;
 {
