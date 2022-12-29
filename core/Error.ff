@@ -17,8 +17,4 @@ extend self: Error {
     exception(): Option[Any]
         target js sync "return self_.ffException ? ff_core_Option.Some(self_.ffException) : ff_core_Option.None()"
 
-    /*
-    as[E: Exception](): Option[E]
-    */
-
 }
