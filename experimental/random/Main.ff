@@ -20,7 +20,8 @@ main(system: NodeSystem): Unit {
     Try.catch {
         Error.throw(people.grabFirst())
     } {
-        | Person p, error => Log.debug(p.email)
+        | Person p, error =>
+            Log.debug(p.email)
     }
 
 }

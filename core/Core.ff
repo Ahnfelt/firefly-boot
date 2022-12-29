@@ -29,8 +29,5 @@ do[T](body: () => T): T {
     body()
 }
 
-throw[E, T](error: E): T
-    target js sync "throw error_"
-
 panic[T](message: String): T
     target js sync "throw new Error(message_)"

@@ -173,8 +173,8 @@ ff_core_Channel.Channel_write(failureChannel_, e_)
 }));
 return ff_core_Channel.ChannelAction_wait(ff_core_Channel.ChannelAction_readOr(ff_core_Channel.readOr_(successChannel_, ((_w1) => {
 return _w1
-})), failureChannel_, ((error_) => {
-return ff_core_Core.throw_(error_)
+})), failureChannel_, ((_w1) => {
+return ff_core_Error.Error_rethrow(_w1)
 })))
 }), false)
 }
@@ -268,8 +268,8 @@ if((live_ === 0)) {
 }), $c));
 return (await ff_core_Channel.ChannelAction_wait$((await ff_core_Channel.ChannelAction_readOr$((await ff_core_Channel.readOr_$(successChannel_, (async (_w1, $c) => {
 return _w1
-}), $c)), failureChannel_, (async (error_, $c) => {
-return ff_core_Core.throw_(error_)
+}), $c)), failureChannel_, (async (_w1, $c) => {
+return ff_core_Error.Error_rethrow(_w1)
 }), $c)), $c))
 }), false, $c))
 }

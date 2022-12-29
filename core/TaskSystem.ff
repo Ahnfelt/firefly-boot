@@ -106,7 +106,7 @@ extend self: TaskSystem {
             }
             Channel.
                 readOr(successChannel, {_}).
-                readOr(failureChannel, throw).
+                readOr(failureChannel, {_.rethrow()}).
                 wait()
         }
     }

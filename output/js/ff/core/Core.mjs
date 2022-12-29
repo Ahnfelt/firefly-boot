@@ -155,10 +155,6 @@ export function do_(body_) {
 return body_()
 }
 
-export function throw_(error_) {
-throw error_
-}
-
 export function panic_(message_) {
 throw new Error(message_)
 }
@@ -236,10 +232,6 @@ return
 
 export async function do_$(body_, $c) {
 return (await body_($c))
-}
-
-export async function throw_$(error_, $c) {
-throw new Error('Function throw is missing on this target in async context.');
 }
 
 export async function panic_$(message_, $c) {
