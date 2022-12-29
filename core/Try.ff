@@ -62,14 +62,12 @@ extend self[T]: Try[T] {
         }
     }
 
-    /*
-    catch[E: Exception](body: (Error, E) => T): Try[T] {
+    catch[E: ToFromAny](body: (E, Error) => T): Try[T] {
         self.{
-            | Failure(error) {error.as[E]() | Some(e)} => try { body(error, e) }
+            | Failure(error) {error.exception().flatMap(Any.fromAny) | Some(e)} => do { body(e, error) }
             | _ => self
         }
     }
-    */
 
     handle(body: Error => T): Try[T] {
         self.{

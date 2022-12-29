@@ -203,6 +203,31 @@ return
 }
 }
 
+export function Try_catch(self_, body_, ff_core_Any_ToFromAny$E) {
+{
+const _1 = self_;
+{
+if(_1.Failure) {
+const error_ = _1.error_;
+const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
+return ff_core_Any_ToFromAny$E.fromAny_(any_)
+}));
+if(_guard1.Some) {
+const e_ = _guard1.value_;
+return ff_core_Try.do_((() => {
+return body_(e_, error_)
+}))
+return
+}
+}
+}
+{
+return self_
+return
+}
+}
+}
+
 export function Try_handle(self_, body_) {
 {
 const _1 = self_;
@@ -322,6 +347,31 @@ const error_ = _1.error_;
 return ff_core_Error.Error_rethrow(error_)
 return
 }
+}
+}
+}
+
+export async function Try_catch$(self_, body_, ff_core_Any_ToFromAny$E, $c) {
+{
+const _1 = self_;
+{
+if(_1.Failure) {
+const error_ = _1.error_;
+const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
+return ff_core_Any_ToFromAny$E.fromAny_(any_)
+}));
+if(_guard1.Some) {
+const e_ = _guard1.value_;
+return (await ff_core_Try.do_$((async ($c) => {
+return (await body_(e_, error_, $c))
+}), $c))
+return
+}
+}
+}
+{
+return self_
+return
 }
 }
 }

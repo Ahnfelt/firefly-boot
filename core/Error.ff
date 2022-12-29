@@ -1,5 +1,12 @@
 type Error {}
 
+throw[E: ToFromAny, T](exception: E): T {
+    throwAny(Any.toAny(exception))
+}
+
+throwAny[T](exception: Any): T
+    target js sync "throw Object.assign(new Error(), {ffException: exception_})"
+
 extend self: Error {
 
     rethrow[T](): T
@@ -13,6 +20,9 @@ extend self: Error {
 
     stack(): String
         target js sync "return self_.stack || ''"
+
+    exception(): Option[Any]
+        target js sync "return self_.ffException ? ff_core_Option.Some(self_.ffException) : ff_core_Option.None()"
 
     /*
     as[E: Exception](): Option[E]

@@ -81,9 +81,21 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function throw_(exception_, ff_core_Any_ToFromAny$E) {
+return ff_core_Error.throwAny_(ff_core_Any_ToFromAny$E.toAny_(exception_))
+}
 
+export function throwAny_(exception_) {
+throw Object.assign(new Error(), {ffException: exception_})
+}
 
+export async function throw_$(exception_, ff_core_Any_ToFromAny$E, $c) {
+return ff_core_Error.throwAny_(ff_core_Any_ToFromAny$E.toAny_(exception_))
+}
 
+export async function throwAny_$(exception_, $c) {
+throw new Error('Function throwAny is missing on this target in async context.');
+}
 
 export function Error_rethrow(self_) {
 throw self_
@@ -101,6 +113,10 @@ export function Error_stack(self_) {
 return self_.stack || ''
 }
 
+export function Error_exception(self_) {
+return self_.ffException ? ff_core_Option.Some(self_.ffException) : ff_core_Option.None()
+}
+
 export async function Error_rethrow$(self_, $c) {
 throw new Error('Function Error_rethrow is missing on this target in async context.');
 }
@@ -115,6 +131,10 @@ throw new Error('Function Error_message is missing on this target in async conte
 
 export async function Error_stack$(self_, $c) {
 throw new Error('Function Error_stack is missing on this target in async context.');
+}
+
+export async function Error_exception$(self_, $c) {
+throw new Error('Function Error_exception is missing on this target in async context.');
 }
 
 
