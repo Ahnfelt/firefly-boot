@@ -1,6 +1,6 @@
 type Error {}
 
-throw[E: ToFromAny, T](exception: E): T {
+throw[E: FromToAny, T](exception: E): T {
     throwAny(Any.toAny(exception))
 }
 

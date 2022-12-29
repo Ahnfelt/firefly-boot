@@ -19,7 +19,7 @@ do[T](body: () => T): Try[T]
         }
     """
 
-catch[E: ToFromAny, T](body: () => T, catchBody: (E, Error) => T): T {
+catch[E: FromToAny, T](body: () => T, catchBody: (E, Error) => T): T {
     Try.do(body).catch(catchBody).grab()
 }
 
@@ -62,7 +62,7 @@ extend self[T]: Try[T] {
         }
     }
 
-    catch[E: ToFromAny](body: (E, Error) => T): Try[T] {
+    catch[E: FromToAny](body: (E, Error) => T): Try[T] {
         self.{
             | Failure(error) {error.exception().flatMap(Any.fromAny) | Some(e)} => do { body(e, error) }
             | _ => self

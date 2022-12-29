@@ -19,7 +19,7 @@ extend self: Deriver {
         module.Module(
             instances = [
                 ...module.instances
-                ...self.makeToFromAnyInstances(modulePrefix, module)
+                ...self.makeFromToAnyInstances(modulePrefix, module)
                 ...self.makeShowInstances(modulePrefix, module)
                 ...self.makeEqualInstances(modulePrefix, module)
                 ...self.makeOrderingInstances(modulePrefix, module)
@@ -27,17 +27,17 @@ extend self: Deriver {
         )
     }
 
-    // ToFromAny
-    makeToFromAnyInstances(modulePrefix: String, module: Module): List[DInstance] {
+    // FromToAny
+    makeFromToAnyInstances(modulePrefix: String, module: Module): List[DInstance] {
         let coreWhitelist = [].toSet() // Maybe whitelist all?
         let missingInstance =
-            self.findTypesThatNeedInstances("ff:core/Any.ToFromAny", modulePrefix, coreWhitelist, module)
-        missingInstance.map {self.makeToFromAnyInstance(modulePrefix, _)}
+            self.findTypesThatNeedInstances("ff:core/Any.FromToAny", modulePrefix, coreWhitelist, module)
+        missingInstance.map {self.makeFromToAnyInstance(modulePrefix, _)}
     }
 
-    makeToFromAnyInstance(modulePrefix: String, declaration: DType): DInstance {
+    makeFromToAnyInstance(modulePrefix: String, declaration: DType): DInstance {
         let constraints = declaration.generics.map { t =>
-            Constraint(declaration.at, "ff:core/Any.ToFromAny", [TConstructor(declaration.at, t, [])])
+            Constraint(declaration.at, "ff:core/Any.FromToAny", [TConstructor(declaration.at, t, [])])
         }
         let typeArguments = declaration.generics.map { t =>
             TConstructor(declaration.at, t, [])
@@ -78,7 +78,7 @@ extend self: Deriver {
             at = declaration.at
             generics = declaration.generics
             constraints = constraints
-            traitName = "ff:core/Any.ToFromAny"
+            traitName = "ff:core/Any.FromToAny"
             typeArguments = [selfType]
             generatorArguments = []
             methods = [toMethod, fromMethod]
