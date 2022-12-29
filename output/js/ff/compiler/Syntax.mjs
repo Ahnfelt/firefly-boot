@@ -2,6 +2,8 @@
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -456,6 +458,516 @@ return
 }
 }
 }
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Location = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 1, 6), "ff:compiler/Syntax.Location", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 1, 6), "ff:compiler/Syntax.Location", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_CompileError = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 2, 6), "ff:compiler/Syntax.CompileError", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 2, 6), "ff:compiler/Syntax.CompileError", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_ModuleWithPackageInfo = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 12, 6), "ff:compiler/Syntax.ModuleWithPackageInfo", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 12, 6), "ff:compiler/Syntax.ModuleWithPackageInfo", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_PackageInfo = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 17, 6), "ff:compiler/Syntax.PackageInfo", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 17, 6), "ff:compiler/Syntax.PackageInfo", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Module = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 23, 6), "ff:compiler/Syntax.Module", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 23, 6), "ff:compiler/Syntax.Module", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_PackagePair = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 35, 6), "ff:compiler/Syntax.PackagePair", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 35, 6), "ff:compiler/Syntax.PackagePair", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DPackage = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 46, 6), "ff:compiler/Syntax.DPackage", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 46, 6), "ff:compiler/Syntax.DPackage", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DDependency = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 52, 6), "ff:compiler/Syntax.DDependency", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 52, 6), "ff:compiler/Syntax.DDependency", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DInclude = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 59, 6), "ff:compiler/Syntax.DInclude", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 59, 6), "ff:compiler/Syntax.DInclude", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_TargetNames = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 63, 6), "ff:compiler/Syntax.TargetNames", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 63, 6), "ff:compiler/Syntax.TargetNames", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DImport = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 67, 6), "ff:compiler/Syntax.DImport", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 67, 6), "ff:compiler/Syntax.DImport", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DFunction = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 74, 6), "ff:compiler/Syntax.DFunction", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 74, 6), "ff:compiler/Syntax.DFunction", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DLet = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 79, 6), "ff:compiler/Syntax.DLet", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 79, 6), "ff:compiler/Syntax.DLet", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DExtend = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 85, 6), "ff:compiler/Syntax.DExtend", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 85, 6), "ff:compiler/Syntax.DExtend", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DType = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 93, 6), "ff:compiler/Syntax.DType", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 93, 6), "ff:compiler/Syntax.DType", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DTrait = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 102, 6), "ff:compiler/Syntax.DTrait", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 102, 6), "ff:compiler/Syntax.DTrait", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_DInstance = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 112, 6), "ff:compiler/Syntax.DInstance", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 112, 6), "ff:compiler/Syntax.DInstance", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Term = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 122, 6), "ff:compiler/Syntax.Term", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 122, 6), "ff:compiler/Syntax.Term", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_CallTarget = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 151, 6), "ff:compiler/Syntax.CallTarget", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 151, 6), "ff:compiler/Syntax.CallTarget", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_MatchCase = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 156, 6), "ff:compiler/Syntax.MatchCase", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 156, 6), "ff:compiler/Syntax.MatchCase", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_MatchPattern = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 163, 6), "ff:compiler/Syntax.MatchPattern", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 163, 6), "ff:compiler/Syntax.MatchPattern", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_MatchGuard = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 173, 6), "ff:compiler/Syntax.MatchGuard", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 173, 6), "ff:compiler/Syntax.MatchGuard", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Dictionary = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 179, 6), "ff:compiler/Syntax.Dictionary", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 179, 6), "ff:compiler/Syntax.Dictionary", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Signature = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 187, 6), "ff:compiler/Syntax.Signature", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 187, 6), "ff:compiler/Syntax.Signature", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Lambda = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 197, 6), "ff:compiler/Syntax.Lambda", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 197, 6), "ff:compiler/Syntax.Lambda", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Variant = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 199, 6), "ff:compiler/Syntax.Variant", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 199, 6), "ff:compiler/Syntax.Variant", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Parameter = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 201, 6), "ff:compiler/Syntax.Parameter", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 201, 6), "ff:compiler/Syntax.Parameter", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Argument = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 203, 6), "ff:compiler/Syntax.Argument", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 203, 6), "ff:compiler/Syntax.Argument", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Field = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 205, 6), "ff:compiler/Syntax.Field", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 205, 6), "ff:compiler/Syntax.Field", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Constraint = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 207, 6), "ff:compiler/Syntax.Constraint", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 207, 6), "ff:compiler/Syntax.Constraint", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Target = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 209, 6), "ff:compiler/Syntax.Target", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 209, 6), "ff:compiler/Syntax.Target", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Type = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 214, 6), "ff:compiler/Syntax.Type", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 214, 6), "ff:compiler/Syntax.Type", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Safety = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 219, 6), "ff:compiler/Syntax.Safety", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 219, 6), "ff:compiler/Syntax.Safety", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Syntax_Version = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Syntax.ff", 225, 6), "ff:compiler/Syntax.Version", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Syntax.ff", 225, 6), "ff:compiler/Syntax.Version", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Syntax_Location = {
 show_(x_) {

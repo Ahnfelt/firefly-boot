@@ -20,6 +20,8 @@ import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
 import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -542,6 +544,21 @@ return
 }
 
 
+
+export const ff_core_Any_ToFromAny$ff_compiler_Main_MainCommand = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Main.ff", 11, 6), "ff:compiler/Main.MainCommand", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Main.ff", 11, 6), "ff:compiler/Main.MainCommand", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Main_MainCommand = {
 show_(x_) {

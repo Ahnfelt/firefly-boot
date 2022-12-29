@@ -4,6 +4,8 @@ import * as ff_compiler_Patterns from "../../ff/compiler/Patterns.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -507,6 +509,36 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 
+
+export const ff_core_Any_ToFromAny$ff_compiler_Patterns_PatternInfo = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Patterns.ff", 3, 6), "ff:compiler/Patterns.PatternInfo", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Patterns.ff", 3, 6), "ff:compiler/Patterns.PatternInfo", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Patterns_PatternCaseInfo = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Patterns.ff", 9, 6), "ff:compiler/Patterns.PatternCaseInfo", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Patterns.ff", 9, 6), "ff:compiler/Patterns.PatternCaseInfo", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Patterns_PatternInfo = {
 show_(x_) {

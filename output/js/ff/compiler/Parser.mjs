@@ -8,6 +8,8 @@ import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
 
 import * as ff_compiler_Wildcards from "../../ff/compiler/Wildcards.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -3038,6 +3040,36 @@ if((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(sel
 (await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LBracketRight(), "]", $c));
 return ff_compiler_Syntax.EList(at_, (await ff_compiler_Parser.Parser_freshUnificationVariable$(self_, at_, $c)), ff_core_Stack.Stack_toList(items_, 0, 9007199254740991))
 }
+
+export const ff_core_Any_ToFromAny$ff_compiler_Parser_Poly = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Parser.ff", 15, 6), "ff:compiler/Parser.Poly", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Parser.ff", 15, 6), "ff:compiler/Parser.Poly", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Parser_ParsedTargets = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Parser.ff", 17, 6), "ff:compiler/Parser.ParsedTargets", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Parser.ff", 17, 6), "ff:compiler/Parser.ParsedTargets", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Parser_Poly = {
 show_(x_) {

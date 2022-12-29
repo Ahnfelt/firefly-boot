@@ -8,6 +8,8 @@ import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -1108,6 +1110,21 @@ return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.gen
 }));
 return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
+
+export const ff_core_Any_ToFromAny$ff_compiler_Dictionaries_Dictionaries = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Dictionaries.ff", 5, 6), "ff:compiler/Dictionaries.Dictionaries", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Dictionaries.ff", 5, 6), "ff:compiler/Dictionaries.Dictionaries", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Dictionaries_Dictionaries = {
 show_(x_) {

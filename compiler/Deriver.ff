@@ -16,12 +16,72 @@ extend self: Deriver {
 
         let modulePrefix = module.packagePair.groupName() + "/" + module.file.dropLast(3)
 
-        let showInstances = self.makeShowInstances(modulePrefix, module)
-        let equalInstances = self.makeEqualInstances(modulePrefix, module)
-        let orderingInstances = self.makeOrderingInstances(modulePrefix, module)
-
         module.Module(
-            instances = [...module.instances, ...showInstances, ...equalInstances, ...orderingInstances],
+            instances = [
+                ...module.instances
+                ...self.makeToFromAnyInstances(modulePrefix, module)
+                ...self.makeShowInstances(modulePrefix, module)
+                ...self.makeEqualInstances(modulePrefix, module)
+                ...self.makeOrderingInstances(modulePrefix, module)
+            ],
+        )
+    }
+
+    // ToFromAny
+    makeToFromAnyInstances(modulePrefix: String, module: Module): List[DInstance] {
+        let coreWhitelist = [].toSet() // Maybe whitelist all?
+        let missingInstance =
+            self.findTypesThatNeedInstances("ff:core/Any.ToFromAny", modulePrefix, coreWhitelist, module)
+        missingInstance.map {self.makeToFromAnyInstance(modulePrefix, _)}
+    }
+
+    makeToFromAnyInstance(modulePrefix: String, declaration: DType): DInstance {
+        let constraints = declaration.generics.map { t =>
+            Constraint(declaration.at, "ff:core/Any.ToFromAny", [TConstructor(declaration.at, t, [])])
+        }
+        let typeArguments = declaration.generics.map { t =>
+            TConstructor(declaration.at, t, [])
+        }
+        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
+        let typeTag = Show.show(selfType)
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let toSignature = Signature(
+            at = declaration.at
+            name = "toAny"
+            generics = []
+            constraints = []
+            parameters = [Parameter(declaration.at, False, "x", selfType, None)]
+            returnType = TConstructor(declaration.at, "ff:core/Any.Any", [])
+            effect = noEffect
+        )
+        let fromSignature = Signature(
+            at = declaration.at
+            name = "fromAny"
+            generics = []
+            constraints = []
+            parameters = [
+                Parameter(declaration.at, False, "x", TConstructor(declaration.at, "ff:core/Any.Any", []), None)
+            ]
+            returnType = selfType
+            effect = noEffect
+        )
+        let wildcardPattern = PVariable(declaration.at, None)
+        let toBody = ForeignTarget(asyncCode = None, syncCode = Some(
+            "return {typeTag: '" + typeTag + "', value: x_}"
+        ))
+        let fromBody = ForeignTarget(asyncCode = None, syncCode = Some(
+            "return x_.typeTag == '" + typeTag + "' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()"
+        ))
+        let toMethod = DFunction(declaration.at, toSignature, toBody)
+        let fromMethod = DFunction(declaration.at, fromSignature, fromBody)
+        DInstance(
+            at = declaration.at
+            generics = declaration.generics
+            constraints = constraints
+            traitName = "ff:core/Any.ToFromAny"
+            typeArguments = [selfType]
+            generatorArguments = []
+            methods = [toMethod, fromMethod]
         )
     }
 

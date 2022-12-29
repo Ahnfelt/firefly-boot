@@ -76,7 +76,7 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// newtype Char
+// type Any
 
 
 
@@ -84,53 +84,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function Char_isAsciiLetter(self_) {
-return (ff_core_Char.Char_isAsciiUpper(self_) || ff_core_Char.Char_isAsciiLower(self_))
-}
 
-export function Char_isAsciiLetterOrDigit(self_) {
-return (ff_core_Char.Char_isAsciiLetter(self_) || ff_core_Char.Char_isAsciiDigit(self_))
-}
 
-export function Char_isAsciiUpper(self_) {
-return ((self_ >= 65) && (self_ <= 90))
-}
-
-export function Char_isAsciiLower(self_) {
-return ((self_ >= 97) && (self_ <= 122))
-}
-
-export function Char_isAsciiDigit(self_) {
-return ((self_ >= 48) && (self_ <= 57))
-}
-
-export function Char_toString(self_) {
-return String.fromCharCode(self_)
-}
-
-export async function Char_isAsciiLetter$(self_, $c) {
-return (ff_core_Char.Char_isAsciiUpper(self_) || ff_core_Char.Char_isAsciiLower(self_))
-}
-
-export async function Char_isAsciiLetterOrDigit$(self_, $c) {
-return (ff_core_Char.Char_isAsciiLetter(self_) || ff_core_Char.Char_isAsciiDigit(self_))
-}
-
-export async function Char_isAsciiUpper$(self_, $c) {
-return ((self_ >= 65) && (self_ <= 90))
-}
-
-export async function Char_isAsciiLower$(self_, $c) {
-return ((self_ >= 97) && (self_ <= 122))
-}
-
-export async function Char_isAsciiDigit$(self_, $c) {
-return ((self_ >= 48) && (self_ <= 57))
-}
-
-export async function Char_toString$(self_, $c) {
-throw new Error('Function Char_toString is missing on this target in async context.');
-}
 
 
 

@@ -10,6 +10,8 @@ import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
 import * as ff_compiler_Workspace from "../../ff/compiler/Workspace.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -320,6 +322,36 @@ if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c))
 }
 }
+
+export const ff_core_Any_ToFromAny$ff_compiler_Dependencies_Dependencies = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Dependencies.ff", 6, 6), "ff:compiler/Dependencies.Dependencies", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Dependencies.ff", 6, 6), "ff:compiler/Dependencies.Dependencies", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Dependencies_ResolvedDependencies = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Dependencies.ff", 13, 6), "ff:compiler/Dependencies.ResolvedDependencies", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Dependencies.ff", 13, 6), "ff:compiler/Dependencies.ResolvedDependencies", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Dependencies_Dependencies = {
 show_(x_) {

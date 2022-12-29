@@ -4,6 +4,8 @@ import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -288,6 +290,51 @@ return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.
 }
 
 
+
+export const ff_core_Any_ToFromAny$ff_compiler_Environment_Environment = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Environment.ff", 3, 6), "ff:compiler/Environment.Environment", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Environment.ff", 3, 6), "ff:compiler/Environment.Environment", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Environment_Scheme = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Environment.ff", 8, 6), "ff:compiler/Environment.Scheme", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Environment.ff", 8, 6), "ff:compiler/Environment.Scheme", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Environment_Instantiated = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Environment.ff", 16, 6), "ff:compiler/Environment.Instantiated", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Environment.ff", 16, 6), "ff:compiler/Environment.Instantiated", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Environment_Environment = {
 show_(x_) {

@@ -4,6 +4,8 @@ import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -1190,6 +1192,36 @@ return
 }
 }
 }
+
+export const ff_core_Any_ToFromAny$ff_compiler_Token_Token = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Token.ff", 3, 6), "ff:compiler/Token.Token", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Token.ff", 3, 6), "ff:compiler/Token.Token", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Token_TokenKind = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Token.ff", 52, 6), "ff:compiler/Token.TokenKind", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Token.ff", 52, 6), "ff:compiler/Token.TokenKind", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Token_Token = {
 show_(x_) {

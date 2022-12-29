@@ -4,6 +4,8 @@ import * as ff_compiler_Workspace from "../../ff/compiler/Workspace.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -261,6 +263,36 @@ return (((self_.packageDirectory_ + "/") + rule_.location_) + prefix_)
 return (((((self_.defaultLocation_ + packagePair_.group_) + "/") + packagePair_.name_) + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, version_))
 }))
 }
+
+export const ff_core_Any_ToFromAny$ff_compiler_Workspace_Workspace = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Workspace.ff", 3, 6), "ff:compiler/Workspace.Workspace", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Workspace.ff", 3, 6), "ff:compiler/Workspace.Workspace", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
+export const ff_core_Any_ToFromAny$ff_compiler_Workspace_WorkspaceRule = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Workspace.ff", 9, 6), "ff:compiler/Workspace.WorkspaceRule", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Workspace.ff", 9, 6), "ff:compiler/Workspace.WorkspaceRule", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Workspace_Workspace = {
 show_(x_) {

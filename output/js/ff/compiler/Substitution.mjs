@@ -4,6 +4,8 @@ import * as ff_compiler_Substitution from "../../ff/compiler/Substitution.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
+import * as ff_core_Any from "../../ff/core/Any.mjs"
+
 import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
@@ -1130,6 +1132,21 @@ return
 export async function Substitution_has$(self_, index_, $c) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
+
+export const ff_core_Any_ToFromAny$ff_compiler_Substitution_Substitution = {
+toAny_(x_) {
+return {typeTag: 'TConstructor(Location("Substitution.ff", 3, 6), "ff:compiler/Substitution.Substitution", [])', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag == 'TConstructor(Location("Substitution.ff", 3, 6), "ff:compiler/Substitution.Substitution", [])' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
 
 export const ff_core_Show_Show$ff_compiler_Substitution_Substitution = {
 show_(x_) {

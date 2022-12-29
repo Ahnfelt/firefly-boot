@@ -1,0 +1,6 @@
+type Any {}
+
+trait T: ToFromAny {
+    toAny(value: T): Any
+    fromAny(any: Any): Option[T]
+}
