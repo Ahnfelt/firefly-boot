@@ -155,6 +155,24 @@ export function do_(body_) {
 return body_()
 }
 
+export function try_(body_) {
+
+        try {
+            return {Success: true, value_: body_()}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    
+}
+
+export function throw_(exception_, ff_core_Any_FromToAny$E) {
+return ff_core_Core.throwAny_(ff_core_Any_FromToAny$E.toAny_(exception_))
+}
+
+export function throwAny_(exception_) {
+throw Object.assign(new Error(), {ffException: exception_})
+}
+
 export function panic_(message_) {
 throw new Error(message_)
 }
@@ -232,6 +250,24 @@ return
 
 export async function do_$(body_, $c) {
 return (await body_($c))
+}
+
+export async function try_$(body_, $c) {
+
+        try {
+            return {Success: true, value_: await body_($c)}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    
+}
+
+export async function throw_$(exception_, ff_core_Any_FromToAny$E, $c) {
+return ff_core_Core.throwAny_(ff_core_Any_FromToAny$E.toAny_(exception_))
+}
+
+export async function throwAny_$(exception_, $c) {
+throw new Error('Function throwAny is missing on this target in async context.');
 }
 
 export async function panic_$(message_, $c) {

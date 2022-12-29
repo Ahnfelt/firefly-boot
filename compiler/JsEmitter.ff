@@ -75,12 +75,12 @@ extend self: JsEmitter {
     }
 
     withEmittingAsync[T](body: () => T): T {
-        Try.finally {
+        try {
             self.emittingAsync = True
             body()
-        } {
+        } finally {
             self.emittingAsync = False
-        }
+        } grab()
     }
 
     emitRun(functions: List[DFunction], mainPackagePair: PackagePair, bootstrapping: Bool): List[String] {

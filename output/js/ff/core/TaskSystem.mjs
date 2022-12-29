@@ -161,14 +161,14 @@ let live_ = ff_core_List.List_size(tasks_);
 return ff_core_TaskSystem.TaskSystem_scope(self_, ((scope_) => {
 ff_core_List.List_each(tasks_, ((task_) => {
 ff_core_TaskSystem.TaskScope_spawn(scope_, (() => {
-ff_core_Try.catchAny_((() => {
+ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
 return ff_core_Channel.Channel_write(successChannel_, task_())
-}), ((e_) => {
+})), ((e_) => {
 live_ -= 1;
 if((live_ === 0)) {
 ff_core_Channel.Channel_write(failureChannel_, e_)
 }
-}))
+})))
 }))
 }));
 return ff_core_Channel.ChannelAction_wait(ff_core_Channel.ChannelAction_readOr(ff_core_Channel.readOr_(successChannel_, ((_w1) => {
@@ -256,14 +256,14 @@ let live_ = ff_core_List.List_size(tasks_);
 return (await ff_core_TaskSystem.TaskSystem_scope$(self_, (async (scope_, $c) => {
 (await ff_core_List.List_each$(tasks_, (async (task_, $c) => {
 (await ff_core_TaskSystem.TaskScope_spawn$(scope_, (async ($c) => {
-(await ff_core_Try.catchAny_$((async ($c) => {
+ff_core_Try.Try_grab((await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($c) => {
 return (await ff_core_Channel.Channel_write$(successChannel_, (await task_($c)), $c))
-}), (async (e_, $c) => {
+}), $c)), (async (e_, $c) => {
 live_ -= 1;
 if((live_ === 0)) {
 (await ff_core_Channel.Channel_write$(failureChannel_, e_, $c))
 }
-}), $c))
+}), $c)))
 }), $c))
 }), $c));
 return (await ff_core_Channel.ChannelAction_wait$((await ff_core_Channel.ChannelAction_readOr$((await ff_core_Channel.readOr_$(successChannel_, (async (_w1, $c) => {

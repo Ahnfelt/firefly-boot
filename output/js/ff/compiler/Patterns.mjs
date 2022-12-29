@@ -274,7 +274,7 @@ return
 }));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
 const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()));
-return ff_core_Try.Try_else(ff_core_Try.do_((() => {
+return ff_core_Try.Try_else(ff_core_Core.try_((() => {
 ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), guardConverted_, false, false);
 return true
 })), (() => {
@@ -289,7 +289,7 @@ return
 
 export function convertAndCheck_(modules_, cases_) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
-ff_core_Try.Try_else(ff_core_Try.do_((() => {
+ff_core_Try.Try_else(ff_core_Core.try_((() => {
 return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
 })), (() => {
 ff_compiler_Patterns.fail_(ff_core_List.List_grab(cases_, 0).at_, "Unexhaustive match")
@@ -482,7 +482,7 @@ return
 }));
 const exhaustiveGuards_ = ff_core_List.List_all(case_.guards_, ((g_) => {
 const guardConverted_ = ff_compiler_Patterns.convert_(modules_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(g_.at_, ff_core_List.Link(g_.pattern_, ff_core_List.Empty()), ff_core_List.Empty(), case_.body_), ff_core_List.Empty()));
-return ff_core_Try.Try_else(ff_core_Try.do_((() => {
+return ff_core_Try.Try_else(ff_core_Core.try_((() => {
 ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), guardConverted_, false, false);
 return true
 })), (() => {
@@ -497,7 +497,7 @@ return
 
 export async function convertAndCheck_$(modules_, cases_, $c) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
-ff_core_Try.Try_else(ff_core_Try.do_((() => {
+ff_core_Try.Try_else(ff_core_Core.try_((() => {
 return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
 })), (() => {
 ff_compiler_Patterns.fail_(ff_core_List.List_grab(cases_, 0).at_, "Unexhaustive match")
@@ -515,7 +515,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Patterns.PatternInfo', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Patterns.PatternInfo' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Patterns.PatternInfo' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -530,7 +530,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Patterns.PatternCaseInfo', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Patterns.PatternCaseInfo' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Patterns.PatternCaseInfo' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

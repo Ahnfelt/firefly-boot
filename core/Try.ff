@@ -3,43 +3,11 @@ type Try[T] {
     Failure(error: Error)
 }
 
-do[T](body: () => T): Try[T]
-    target js sync """
-        try {
-            return {Success: true, value_: body_()}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    """
-    target js async """
-        try {
-            return {Success: true, value_: await body_($c)}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    """
-
-catch[E: FromToAny, T](body: () => T, catchBody: (E, Error) => T): T {
-    Try.do(body).catch(catchBody).grab()
-}
-
-catchAny[T](body: () => T, catchBody: Error => T): T {
-    Try.do(body).catchAny(catchBody).grab()
-}
-
-finally[T](body: () => T, finallyBody: () => Unit): T {
-    Try.do {
-        body()
-    } finally {
-        finallyBody()
-    } grab()
-}
-
 extend self[T]: Try[T] {
 
     map[S](body: T => S): Try[S] {
         self.{
-            | Success(value) => Try.do { body(value) }
+            | Success(value) => try { body(value) }
             | Failure(error) => Failure(error)
         }
     }
@@ -64,23 +32,23 @@ extend self[T]: Try[T] {
 
     catch[E: FromToAny](body: (E, Error) => T): Try[T] {
         self.{
-            | Failure(error) {error.exception().flatMap(Any.fromAny) | Some(e)} => do { body(e, error) }
+            | Failure(error) {error.exception().flatMap(Any.fromAny) | Some(e)} => try { body(e, error) }
             | _ => self
         }
     }
 
     catchAny(body: Error => T): Try[T] {
         self.{
-            | Failure(error) => Try.do { body(error) }
+            | Failure(error) => try { body(error) }
             | _ => self
         }
     }
 
     finally(body: () => Unit): Try[T] {
         self.{
-            | Success(value) => Try.do { body(); value }
+            | Success(value) => try { body(); value }
             | Failure(_) =>
-                Try.do { body() }.{
+                try { body() }.{
                     | Success(_) => self
                     | Failure(error) => Failure(error)
                 }

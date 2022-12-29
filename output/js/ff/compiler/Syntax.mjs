@@ -464,7 +464,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Location', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Location' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Location' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -479,7 +479,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.CompileError', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.CompileError' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.CompileError' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -494,7 +494,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.ModuleWithPackageInfo', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.ModuleWithPackageInfo' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.ModuleWithPackageInfo' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -509,7 +509,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.PackageInfo', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.PackageInfo' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.PackageInfo' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -524,7 +524,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Module', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Module' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Module' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -539,7 +539,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.PackagePair', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.PackagePair' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.PackagePair' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -554,7 +554,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DPackage', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DPackage' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DPackage' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -569,7 +569,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DDependency', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DDependency' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DDependency' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -584,7 +584,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DInclude', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DInclude' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DInclude' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -599,7 +599,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.TargetNames', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.TargetNames' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.TargetNames' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -614,7 +614,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DImport', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DImport' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DImport' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -629,7 +629,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DFunction', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DFunction' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DFunction' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -644,7 +644,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DLet', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DLet' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DLet' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -659,7 +659,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DExtend', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DExtend' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DExtend' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -674,7 +674,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DType', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DType' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DType' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -689,7 +689,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DTrait', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DTrait' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DTrait' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -704,7 +704,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.DInstance', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.DInstance' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.DInstance' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -719,7 +719,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Term', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Term' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Term' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -734,7 +734,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.CallTarget', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.CallTarget' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.CallTarget' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -749,7 +749,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.MatchCase', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.MatchCase' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.MatchCase' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -764,7 +764,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.MatchPattern', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.MatchPattern' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.MatchPattern' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -779,7 +779,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.MatchGuard', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.MatchGuard' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.MatchGuard' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -794,7 +794,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Dictionary', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Dictionary' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Dictionary' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -809,7 +809,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Signature', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Signature' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Signature' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -824,7 +824,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Lambda', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Lambda' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Lambda' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -839,7 +839,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Variant', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Variant' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Variant' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -854,7 +854,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Parameter', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Parameter' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Parameter' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -869,7 +869,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Argument', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Argument' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Argument' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -884,7 +884,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Field', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Field' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Field' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -899,7 +899,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Constraint', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Constraint' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Constraint' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -914,7 +914,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Target', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Target' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Target' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -929,7 +929,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Type', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Type' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Type' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -944,7 +944,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Safety', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Safety' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Safety' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -959,7 +959,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Syntax.Version', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Syntax.Version' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Syntax.Version' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

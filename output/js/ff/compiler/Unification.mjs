@@ -165,11 +165,11 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export function Unification_withLocalInstances(self_, instances_, body_) {
 const oldInstances_ = self_.instances_;
 self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
-return ff_core_Try.finally_((() => {
+return ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return body_()
-}), (() => {
+})), (() => {
 self_.instances_ = oldInstances_
-}))
+})))
 }
 
 export function Unification_freshUnificationVariable(self_, at_) {
@@ -615,11 +615,11 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export async function Unification_withLocalInstances$(self_, instances_, body_, $c) {
 const oldInstances_ = self_.instances_;
 self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
-return (await ff_core_Try.finally_$((async ($c) => {
+return ff_core_Try.Try_grab(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
 return (await body_($c))
-}), (async ($c) => {
+}), $c)), (() => {
 self_.instances_ = oldInstances_
-}), $c))
+})))
 }
 
 export async function Unification_freshUnificationVariable$(self_, at_, $c) {
@@ -1063,7 +1063,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Unification.Unification', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Unification.Unification' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Unification.Unification' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -1078,7 +1078,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Unification.ConstraintGenerics', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Unification.ConstraintGenerics' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Unification.ConstraintGenerics' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -1093,7 +1093,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Unification.InstanceKey', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Unification.InstanceKey' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Unification.InstanceKey' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -1108,7 +1108,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Unification.InstanceValue', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Unification.InstanceValue' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Unification.InstanceValue' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

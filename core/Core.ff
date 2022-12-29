@@ -29,5 +29,28 @@ do[T](body: () => T): T {
     body()
 }
 
+try[T](body: () => T): Try[T]
+    target js sync """
+        try {
+            return {Success: true, value_: body_()}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    """
+    target js async """
+        try {
+            return {Success: true, value_: await body_($c)}
+        } catch(e) {
+            return {Failure: true, error_: e}
+        }
+    """
+
+throw[E: FromToAny, T](exception: E): T {
+    throwAny(Any.toAny(exception))
+}
+
+throwAny[T](exception: Any): T
+    target js sync "throw Object.assign(new Error(), {ffException: exception_})"
+
 panic[T](message: String): T
     target js sync "throw new Error(message_)"

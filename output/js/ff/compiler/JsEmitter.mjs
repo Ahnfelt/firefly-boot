@@ -632,12 +632,12 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export function JsEmitter_withEmittingAsync(self_, body_) {
-return ff_core_Try.finally_((() => {
+return ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 self_.emittingAsync_ = true;
 return body_()
-}), (() => {
+})), (() => {
 self_.emittingAsync_ = false
-}))
+})))
 }
 
 export function JsEmitter_emitRun(self_, functions_, mainPackagePair_, bootstrapping_) {
@@ -2260,12 +2260,12 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export async function JsEmitter_withEmittingAsync$(self_, body_, $c) {
-return (await ff_core_Try.finally_$((async ($c) => {
+return ff_core_Try.Try_grab(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
 self_.emittingAsync_ = true;
 return (await body_($c))
-}), (async ($c) => {
+}), $c)), (() => {
 self_.emittingAsync_ = false
-}), $c))
+})))
 }
 
 export async function JsEmitter_emitRun$(self_, functions_, mainPackagePair_, bootstrapping_, $c) {
@@ -3853,7 +3853,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/JsEmitter.JsEmitter', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/JsEmitter.JsEmitter' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/JsEmitter.JsEmitter' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -3868,7 +3868,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/JsEmitter.EmitTarget', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/JsEmitter.EmitTarget' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/JsEmitter.EmitTarget' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -3883,7 +3883,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/JsEmitter.ProcessedVariantCase', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/JsEmitter.ProcessedVariantCase' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/JsEmitter.ProcessedVariantCase' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

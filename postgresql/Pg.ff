@@ -84,7 +84,7 @@ extend self: PgPool {
     transaction[T](body: PgConnection => T, level: PgLevel = PgReadCommitted): T {
         let connection = self.connect()
         mutable done = False
-        Try.finally {
+        try {
             connection.statement("begin").run()
             level.{
                 | PgReadCommitted => 0 // Default level in PostgreSQL
@@ -95,10 +95,10 @@ extend self: PgPool {
             done = True
             connection.statement("commit").run()
             result
-        } {
+        } finally {
             if(!done) {connection.statement("rollback").run()}
             connection.release()
-        }
+        } grab()
     }
 
 }

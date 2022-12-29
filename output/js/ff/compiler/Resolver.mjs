@@ -2003,7 +2003,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Resolver.Resolver', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Resolver.Resolver' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Resolver.Resolver' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
@@ -2018,7 +2018,7 @@ toAny_(x_) {
 return {typeTag: 'ff:compiler/Resolver.ResolverState', value: x_}
 },
 fromAny_(x_) {
-return x_.typeTag == 'ff:compiler/Resolver.ResolverState' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+return x_.typeTag === 'ff:compiler/Resolver.ResolverState' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
 },
 async toAny_$(x_, $c) {
 throw new Error('Function toAny is missing on this target in async context.');

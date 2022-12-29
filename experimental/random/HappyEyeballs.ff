@@ -24,14 +24,14 @@ happyEyeballs(taskSystem: TaskSystem, channel: Channel[Unit], ips: List[Ip]): St
             channel.read()
             Channel.readOr(channel, {_}).timeout(Duration(0.5), {})
             nextChannel.write(Unit)
-            Try.catchAny {
+            try {
                 taskSystem.sleep(ip.seconds)
                 if(!ip.succeed) { panic("Network error") }
                 ip.ipAddress
-            } { error =>
+            } catchAny { error =>
                 nextChannel.write(Unit)
                 error.rethrow()
-            }
+            } grab()
         }
         {
             happyEyeballs(taskSystem, nextChannel, ips.dropFirst())

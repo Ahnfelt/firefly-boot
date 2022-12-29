@@ -86,57 +86,9 @@ return {Failure: true, error_};
 
 
 
-export function do_(body_) {
 
-        try {
-            return {Success: true, value_: body_()}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    
-}
 
-export function catch_(body_, catchBody_, ff_core_Any_FromToAny$E) {
-return ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.do_(body_), catchBody_, ff_core_Any_FromToAny$E))
-}
 
-export function catchAny_(body_, catchBody_) {
-return ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Try.do_(body_), catchBody_))
-}
-
-export function finally_(body_, finallyBody_) {
-return ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Try.do_((() => {
-return body_()
-})), (() => {
-finallyBody_()
-})))
-}
-
-export async function do_$(body_, $c) {
-
-        try {
-            return {Success: true, value_: await body_($c)}
-        } catch(e) {
-            return {Failure: true, error_: e}
-        }
-    
-}
-
-export async function catch_$(body_, catchBody_, ff_core_Any_FromToAny$E, $c) {
-return ff_core_Try.Try_grab((await ff_core_Try.Try_catch$((await ff_core_Try.do_$(body_, $c)), catchBody_, $c, ff_core_Any_FromToAny$E)))
-}
-
-export async function catchAny_$(body_, catchBody_, $c) {
-return ff_core_Try.Try_grab((await ff_core_Try.Try_catchAny$((await ff_core_Try.do_$(body_, $c)), catchBody_, $c)))
-}
-
-export async function finally_$(body_, finallyBody_, $c) {
-return ff_core_Try.Try_grab((await ff_core_Try.Try_finally$((await ff_core_Try.do_$((async ($c) => {
-return (await body_($c))
-}), $c)), (async ($c) => {
-(await finallyBody_($c))
-}), $c)))
-}
 
 export function Try_map(self_, body_) {
 {
@@ -144,7 +96,7 @@ const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return ff_core_Try.do_((() => {
+return ff_core_Core.try_((() => {
 return body_(value_)
 }))
 return
@@ -214,7 +166,7 @@ return ff_core_Any_FromToAny$E.fromAny_(any_)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;
-return ff_core_Try.do_((() => {
+return ff_core_Core.try_((() => {
 return body_(e_, error_)
 }))
 return
@@ -234,7 +186,7 @@ const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
-return ff_core_Try.do_((() => {
+return ff_core_Core.try_((() => {
 return body_(error_)
 }))
 return
@@ -253,7 +205,7 @@ const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return ff_core_Try.do_((() => {
+return ff_core_Core.try_((() => {
 body_();
 return value_
 }))
@@ -263,7 +215,7 @@ return
 {
 if(_1.Failure) {
 {
-const _1 = ff_core_Try.do_((() => {
+const _1 = ff_core_Core.try_((() => {
 return body_()
 }));
 {
@@ -292,7 +244,7 @@ const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return (await ff_core_Try.do_$((async ($c) => {
+return (await ff_core_Core.try_$((async ($c) => {
 return (await body_(value_, $c))
 }), $c))
 return
@@ -362,7 +314,7 @@ return ff_core_Any_FromToAny$E.fromAny_(any_)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;
-return (await ff_core_Try.do_$((async ($c) => {
+return (await ff_core_Core.try_$((async ($c) => {
 return (await body_(e_, error_, $c))
 }), $c))
 return
@@ -382,7 +334,7 @@ const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
-return (await ff_core_Try.do_$((async ($c) => {
+return (await ff_core_Core.try_$((async ($c) => {
 return (await body_(error_, $c))
 }), $c))
 return
@@ -401,7 +353,7 @@ const _1 = self_;
 {
 if(_1.Success) {
 const value_ = _1.value_;
-return (await ff_core_Try.do_$((async ($c) => {
+return (await ff_core_Core.try_$((async ($c) => {
 (await body_($c));
 return value_
 }), $c))
@@ -411,7 +363,7 @@ return
 {
 if(_1.Failure) {
 {
-const _1 = (await ff_core_Try.do_$((async ($c) => {
+const _1 = (await ff_core_Core.try_$((async ($c) => {
 return (await body_($c))
 }), $c));
 {

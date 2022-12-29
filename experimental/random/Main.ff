@@ -17,11 +17,11 @@ main(system: NodeSystem): Unit {
 
     Log.debug(Show.show(sortedPeople))
 
-    Try.catch {
-        Error.throw(people.grabFirst())
-    } {
+    try {
+        throw(people.grabFirst())
+    } catch {
         | Person p, error =>
             Log.debug(p.email)
-    }
+    } grab()
 
 }
