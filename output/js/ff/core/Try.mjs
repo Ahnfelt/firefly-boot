@@ -116,45 +116,6 @@ export function Try_flatMap(self_, body_) {
 return ff_core_Try.Try_flatten(ff_core_Try.Try_map(self_, body_))
 }
 
-export function Try_else(self_, body_) {
-{
-const _1 = self_;
-{
-if(_1.Success) {
-const value_ = _1.value_;
-return value_
-return
-}
-}
-{
-if(_1.Failure) {
-return body_()
-return
-}
-}
-}
-}
-
-export function Try_grab(self_) {
-{
-const _1 = self_;
-{
-if(_1.Success) {
-const value_ = _1.value_;
-return value_
-return
-}
-}
-{
-if(_1.Failure) {
-const error_ = _1.error_;
-return ff_core_Error.Error_rethrow(error_)
-return
-}
-}
-}
-}
-
 export function Try_catch(self_, body_, ff_core_Any_FromToAny$E) {
 {
 const _1 = self_;
@@ -238,6 +199,45 @@ return
 }
 }
 
+export function Try_else(self_, body_) {
+{
+const _1 = self_;
+{
+if(_1.Success) {
+const value_ = _1.value_;
+return value_
+return
+}
+}
+{
+if(_1.Failure) {
+return body_()
+return
+}
+}
+}
+}
+
+export function Try_grab(self_) {
+{
+const _1 = self_;
+{
+if(_1.Success) {
+const value_ = _1.value_;
+return value_
+return
+}
+}
+{
+if(_1.Failure) {
+const error_ = _1.error_;
+return ff_core_Error.Error_rethrow(error_)
+return
+}
+}
+}
+}
+
 export async function Try_map$(self_, body_, $c) {
 {
 const _1 = self_;
@@ -262,45 +262,6 @@ return
 
 export async function Try_flatMap$(self_, body_, $c) {
 return ff_core_Try.Try_flatten((await ff_core_Try.Try_map$(self_, body_, $c)))
-}
-
-export async function Try_else$(self_, body_, $c) {
-{
-const _1 = self_;
-{
-if(_1.Success) {
-const value_ = _1.value_;
-return value_
-return
-}
-}
-{
-if(_1.Failure) {
-return (await body_($c))
-return
-}
-}
-}
-}
-
-export async function Try_grab$(self_, $c) {
-{
-const _1 = self_;
-{
-if(_1.Success) {
-const value_ = _1.value_;
-return value_
-return
-}
-}
-{
-if(_1.Failure) {
-const error_ = _1.error_;
-return ff_core_Error.Error_rethrow(error_)
-return
-}
-}
-}
 }
 
 export async function Try_catch$(self_, body_, ff_core_Any_FromToAny$E, $c) {
@@ -380,6 +341,45 @@ return
 }
 }
 }
+return
+}
+}
+}
+}
+
+export async function Try_else$(self_, body_, $c) {
+{
+const _1 = self_;
+{
+if(_1.Success) {
+const value_ = _1.value_;
+return value_
+return
+}
+}
+{
+if(_1.Failure) {
+return (await body_($c))
+return
+}
+}
+}
+}
+
+export async function Try_grab$(self_, $c) {
+{
+const _1 = self_;
+{
+if(_1.Success) {
+const value_ = _1.value_;
+return value_
+return
+}
+}
+{
+if(_1.Failure) {
+const error_ = _1.error_;
+return ff_core_Error.Error_rethrow(error_)
 return
 }
 }

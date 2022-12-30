@@ -16,20 +16,6 @@ extend self[T]: Try[T] {
         self.map(body).flatten()
     }
 
-    else(body: () => T): T {
-        self.{
-            | Success(value) => value
-            | Failure(_) => body()
-        }
-    }
-
-    grab(): T {
-        self.{
-            | Success(value) => value
-            | Failure(error) => error.rethrow()
-        }
-    }
-
     catch[E: FromToAny](body: (E, Error) => T): Try[T] {
         self.{
             | Failure(error) {error.exception().flatMap(Any.fromAny) | Some(e)} => try { body(e, error) }
@@ -52,6 +38,20 @@ extend self[T]: Try[T] {
                     | Success(_) => self
                     | Failure(error) => Failure(error)
                 }
+        }
+    }
+
+    else(body: () => T): T {
+        self.{
+            | Success(value) => value
+            | Failure(_) => body()
+        }
+    }
+
+    grab(): T {
+        self.{
+            | Success(value) => value
+            | Failure(error) => error.rethrow()
         }
     }
 

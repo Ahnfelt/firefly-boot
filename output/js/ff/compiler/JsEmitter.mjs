@@ -1846,6 +1846,104 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Core.try") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a try without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_map") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a map without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_flatMap") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a flatMap without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_flatten") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a flatten without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_catch") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a catch without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_catchAny") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a catchAny without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a finally without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
 if(_1.arguments_.Empty) {
 if(async_) {
@@ -3465,6 +3563,104 @@ return ((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_.val
 return
 }
 }
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Core.try") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a try without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_map") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a map without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_flatMap") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a flatMap without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_flatten") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a flatten without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_catch") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a catch without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_catchAny") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a catchAny without a grab")
+return
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+const _guard1 = (!last_);
+if(_guard1) {
+return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a finally without a grab")
+return
 }
 }
 }

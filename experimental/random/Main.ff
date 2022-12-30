@@ -19,9 +19,8 @@ main(system: NodeSystem): Unit {
 
     try {
         throw(people.grabFirst())
-    } catch {
-        | Person p, error =>
-            Log.debug(p.email)
+    } catch {| Person p, error =>
+        Log.debug(p.email)
     } grab()
 
 }
