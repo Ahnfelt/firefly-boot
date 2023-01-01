@@ -549,6 +549,19 @@ extend self: JsEmitter {
     }
 
     emitTryCatchFinally(term: Term, last: Bool, async: Bool): Option[String] {
+        function emitCatch(catchEffect: Type, cases: List[MatchCase]): String {
+            let catchAsync = self.emittingAsync && effectTypeIsAsync(catchEffect)
+            Patterns.convertAndCheck(self.otherModules, cases)
+            let arguments = ["_exception.value_", "_error"]
+            cases.{
+                | [case] =>
+                    self.emitCase(arguments, case, False, last, catchAsync)
+                | cs =>
+                    let caseStrings =
+                        cases.map {"{\n" + self.emitCase(arguments, _, True, last, catchAsync) + "\n}"}
+                    if(last) {caseStrings.join("\n")} else {"do {\n" + caseStrings.join("\n") + "\n} while(false)"}
+            }
+        }
         term.{
             | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, [
                 Argument(_, _, ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, [
@@ -569,26 +582,36 @@ extend self: JsEmitter {
                 Argument(_, _, ELambda(_, Lambda(_, catchEffect, cases)))
             ], [dictionary]) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
-                let catchAsync = self.emittingAsync && effectTypeIsAsync(catchEffect)
                 let d = self.emitDictionary(dictionary)
-                Patterns.convertAndCheck(self.otherModules, cases)
-                let arguments = ["_exception.value_", "_error"]
-                let scopeString = cases.{
-                    | [case] =>
-                        self.emitCase(arguments, case, False, last, catchAsync)
-                    | cs =>
-                        let caseStrings =
-                            cases.map {"{\n" + self.emitCase(arguments, _, True, last, catchAsync) + "\n}"}
-                        if(last) {caseStrings.join("\n")} else {"do {\n" + caseStrings.join("\n") + "\n} while(false)"}
-                }
                 Some(
                     "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
                     "\n} catch(_error) {\n" +
                         "if(!_error.ffException) throw _error\n" +
                         "const _exception = " + d + ".fromAny_(_error.ffException)\n" +
                         "if(!_exception.Some) throw _error\n" +
-                        scopeString +
+                        emitCatch(catchEffect, cases) +
                     "\n}"
+                )
+            | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, [
+                Argument(_, _, ECall(at, StaticCall("ff:core/Try.Try_catch", _, _), _, _, [
+                    Argument(_, _, ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, [
+                        Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))
+                    ], _)),
+                    Argument(_, _, ELambda(_, Lambda(_, catchEffect, cases)))
+                ], [dictionary])),
+                Argument(_, _, ELambda(_, Lambda(_, finallyEffect, [MatchCase(_, [], [], finallyBody)])))
+            ], _) =>
+                let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
+                let finallyAsync = self.emittingAsync && effectTypeIsAsync(finallyEffect)
+                let d = self.emitDictionary(dictionary)
+                Some(
+                    "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
+                    "\n} catch(_error) {\n" +
+                        "if(!_error.ffException) throw _error\n" +
+                        "const _exception = " + d + ".fromAny_(_error.ffException)\n" +
+                        "if(!_exception.Some) throw _error\n" +
+                        emitCatch(catchEffect, cases) +
+                    "\n} finally {\n" + self.emitStatements(finallyBody, last, finallyAsync) + "\n}"
                 )
             | _ =>
                 None

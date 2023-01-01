@@ -2089,6 +2089,35 @@ return
 }
 
 export function JsEmitter_emitTryCatchFinally(self_, term_, last_, async_) {
+function emitCatch_(catchEffect_, cases_) {
+const catchAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(catchEffect_));
+ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
+const arguments_ = ff_core_List.Link("_exception.value_", ff_core_List.Link("_error", ff_core_List.Empty()));
+{
+const _1 = cases_;
+{
+if(_1.Link) {
+const case_ = _1.head_;
+if(_1.tail_.Empty) {
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, case_, false, last_, catchAsync_)
+return
+}
+}
+}
+{
+const cs_ = _1;
+const caseStrings_ = ff_core_List.List_map(cases_, ((_w1) => {
+return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, _w1, true, last_, catchAsync_)) + "\n}")
+}));
+if(last_) {
+return ff_core_List.List_join(caseStrings_, "\n")
+} else {
+return (("do {\n" + ff_core_List.List_join(caseStrings_, "\n")) + "\n} while(false)")
+}
+return
+}
+}
+}
 {
 const _1 = term_;
 {
@@ -2173,35 +2202,86 @@ if(_1.dictionaries_.Link) {
 const dictionary_ = _1.dictionaries_.head_;
 if(_1.dictionaries_.tail_.Empty) {
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
-const catchAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(catchEffect_));
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
-ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-const arguments_ = ff_core_List.Link("_exception.value_", ff_core_List.Link("_error", ff_core_List.Empty()));
-const scopeString_ = (((_1) => {
+return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n}"))
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
 {
-if(_1.Link) {
-const case_ = _1.head_;
-if(_1.tail_.Empty) {
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, case_, false, last_, catchAsync_)
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.arguments_.Link) {
+if(_1.arguments_.head_.value_.ECall) {
+const at_ = _1.arguments_.head_.value_.at_;
+if(_1.arguments_.head_.value_.target_.StaticCall) {
+if(_1.arguments_.head_.value_.target_.name_ == "ff:core/Try.Try_catch") {
+if(_1.arguments_.head_.value_.arguments_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.ECall) {
+const at_ = _1.arguments_.head_.value_.arguments_.head_.value_.at_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.target_.StaticCall) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.ELambda) {
+const tryEffect_ = _1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.effect_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.patterns_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const tryBody_ = _1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.tail_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.tail_.Link) {
+if(_1.arguments_.head_.value_.arguments_.tail_.head_.value_.ELambda) {
+const catchEffect_ = _1.arguments_.head_.value_.arguments_.tail_.head_.value_.lambda_.effect_;
+const cases_ = _1.arguments_.head_.value_.arguments_.tail_.head_.value_.lambda_.cases_;
+if(_1.arguments_.head_.value_.arguments_.tail_.tail_.Empty) {
+if(_1.arguments_.head_.value_.dictionaries_.Link) {
+const dictionary_ = _1.arguments_.head_.value_.dictionaries_.head_;
+if(_1.arguments_.head_.value_.dictionaries_.tail_.Empty) {
+if(_1.arguments_.tail_.Link) {
+if(_1.arguments_.tail_.head_.value_.ELambda) {
+const finallyEffect_ = _1.arguments_.tail_.head_.value_.lambda_.effect_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.Link) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.Empty) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const finallyBody_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.tail_.tail_.Empty) {
+const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
+const finallyAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(finallyEffect_));
+const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
+return ff_core_Option.Some(((((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, finallyAsync_)) + "\n}"))
 return
 }
 }
 }
-{
-const cs_ = _1;
-const caseStrings_ = ff_core_List.List_map(cases_, ((_w1) => {
-return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, _w1, true, last_, catchAsync_)) + "\n}")
-}));
-if(last_) {
-return ff_core_List.List_join(caseStrings_, "\n")
-} else {
-return (("do {\n" + ff_core_List.List_join(caseStrings_, "\n")) + "\n} while(false)")
 }
-return
 }
-}))(cases_);
-return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + scopeString_) + "\n}"))
-return
+}
+}
+}
+}
+}
+}
 }
 }
 }
@@ -3980,6 +4060,35 @@ return
 }
 
 export async function JsEmitter_emitTryCatchFinally$(self_, term_, last_, async_, $c) {
+function emitCatch_(catchEffect_, cases_) {
+const catchAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(catchEffect_));
+ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
+const arguments_ = ff_core_List.Link("_exception.value_", ff_core_List.Link("_error", ff_core_List.Empty()));
+{
+const _1 = cases_;
+{
+if(_1.Link) {
+const case_ = _1.head_;
+if(_1.tail_.Empty) {
+return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, case_, false, last_, catchAsync_)
+return
+}
+}
+}
+{
+const cs_ = _1;
+const caseStrings_ = ff_core_List.List_map(cases_, ((_w1) => {
+return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, _w1, true, last_, catchAsync_)) + "\n}")
+}));
+if(last_) {
+return ff_core_List.List_join(caseStrings_, "\n")
+} else {
+return (("do {\n" + ff_core_List.List_join(caseStrings_, "\n")) + "\n} while(false)")
+}
+return
+}
+}
+}
 {
 const _1 = term_;
 {
@@ -4064,35 +4173,86 @@ if(_1.dictionaries_.Link) {
 const dictionary_ = _1.dictionaries_.head_;
 if(_1.dictionaries_.tail_.Empty) {
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
-const catchAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(catchEffect_));
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
-ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-const arguments_ = ff_core_List.Link("_exception.value_", ff_core_List.Link("_error", ff_core_List.Empty()));
-const scopeString_ = (((_1) => {
+return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n}"))
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
 {
-if(_1.Link) {
-const case_ = _1.head_;
-if(_1.tail_.Empty) {
-return ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, case_, false, last_, catchAsync_)
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.arguments_.Link) {
+if(_1.arguments_.head_.value_.ECall) {
+const at_ = _1.arguments_.head_.value_.at_;
+if(_1.arguments_.head_.value_.target_.StaticCall) {
+if(_1.arguments_.head_.value_.target_.name_ == "ff:core/Try.Try_catch") {
+if(_1.arguments_.head_.value_.arguments_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.ECall) {
+const at_ = _1.arguments_.head_.value_.arguments_.head_.value_.at_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.target_.StaticCall) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.ELambda) {
+const tryEffect_ = _1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.effect_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.patterns_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const tryBody_ = _1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.arguments_.tail_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.tail_.Link) {
+if(_1.arguments_.head_.value_.arguments_.tail_.head_.value_.ELambda) {
+const catchEffect_ = _1.arguments_.head_.value_.arguments_.tail_.head_.value_.lambda_.effect_;
+const cases_ = _1.arguments_.head_.value_.arguments_.tail_.head_.value_.lambda_.cases_;
+if(_1.arguments_.head_.value_.arguments_.tail_.tail_.Empty) {
+if(_1.arguments_.head_.value_.dictionaries_.Link) {
+const dictionary_ = _1.arguments_.head_.value_.dictionaries_.head_;
+if(_1.arguments_.head_.value_.dictionaries_.tail_.Empty) {
+if(_1.arguments_.tail_.Link) {
+if(_1.arguments_.tail_.head_.value_.ELambda) {
+const finallyEffect_ = _1.arguments_.tail_.head_.value_.lambda_.effect_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.Link) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.Empty) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const finallyBody_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.tail_.tail_.Empty) {
+const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
+const finallyAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(finallyEffect_));
+const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
+return ff_core_Option.Some(((((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, finallyAsync_)) + "\n}"))
 return
 }
 }
 }
-{
-const cs_ = _1;
-const caseStrings_ = ff_core_List.List_map(cases_, ((_w1) => {
-return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, arguments_, _w1, true, last_, catchAsync_)) + "\n}")
-}));
-if(last_) {
-return ff_core_List.List_join(caseStrings_, "\n")
-} else {
-return (("do {\n" + ff_core_List.List_join(caseStrings_, "\n")) + "\n} while(false)")
 }
-return
 }
-}))(cases_);
-return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + scopeString_) + "\n}"))
-return
+}
+}
+}
+}
+}
+}
 }
 }
 }
