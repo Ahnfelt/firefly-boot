@@ -552,13 +552,15 @@ extend self: JsEmitter {
         term.{
             | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, [
                 Argument(_, _, ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, [
-                    Argument(_, _, ELambda(_, Lambda(_, effect, [MatchCase(_, [], [], tryBody)])))
+                    Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))
                 ], _)),
-                Argument(_, _, ELambda(_, Lambda(_, effect, [MatchCase(_, [], [], finallyBody)])))
+                Argument(_, _, ELambda(_, Lambda(_, finallyEffect, [MatchCase(_, [], [], finallyBody)])))
             ], _) =>
+                let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
+                let finallyAsync = self.emittingAsync && effectTypeIsAsync(finallyEffect)
                 Some(
-                    "try {\n" + self.emitStatements(tryBody, last, async) +
-                    "\n} finally {\n" + self.emitStatements(finallyBody, last, async) + "\n}"
+                    "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
+                    "\n} finally {\n" + self.emitStatements(finallyBody, last, finallyAsync) + "\n}"
                 )
             | _ =>
                 None
