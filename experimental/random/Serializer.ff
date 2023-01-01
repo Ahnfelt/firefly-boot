@@ -1,0 +1,36 @@
+// Binary format each starts with a single byte.
+// tttvvvvv - the ttt bits describe the type and the vvvvv bits describe the value.
+// If vvvvv is 111cc, then 2^cc bytes follow with the actual value. Otherwise the value is vvvvv-3.
+// If it's a string (UTF-8) or a buffer, the value describes the length, and the raw bytes then follow.
+
+type Serializer![T](
+    writeBool: Bool => Unit
+    writeChar: Char => Unit
+    writeInt: Int => Unit
+    writeFloat: Float => Unit
+    writeString: String => Unit
+    writeBuffer: Buffer => Unit
+    grab: () => T
+)
+
+trait T: Serializable {
+    makeSerializer(): Serializer[T]
+    serialize[R](serializer: Serializer[R], value: T): Unit
+}
+
+
+
+
+
+type Drawing {
+    Circle(radius: Float) // 0
+    Rectangle(width: Float, height: Float) // 1
+    Rotate(drawing: Drawing, angle: Float) // 2
+}
+
+// Then Rotate(Rectangle(5.0, 7.0), 0.3) could be serialized as:
+serializer.writeInt(2) // Tag for the third constructor
+serializer.writeInt(1) // Tag for the second constructor
+serializer.writeFloat(5.0)
+serializer.writeFloat(7.0)
+serializer.writeFloat(0.3)
