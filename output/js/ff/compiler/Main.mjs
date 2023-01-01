@@ -160,7 +160,7 @@ return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
 return
 }
 }))(ff_core_Option.Option_grab(consumeArgument_()));
-for(;;) {
+do {
 const _1 = command_;
 {
 if(_1.RunCommand) {
@@ -175,7 +175,7 @@ ff_core_Core.panic_(("Unknown argument: " + argument_))
 }))
 break
 }
-};
+} while(false);
 function buildScript_(mainFile_, mainPackagePair_, emitTarget_, resolvedDependencies_) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
@@ -213,7 +213,7 @@ ff_compiler_Builder.build_(system_, emitTarget_, mainPackagePair_, mainFile_, ((
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false)
 }
-for(;;) {
+do {
 const _1 = command_;
 {
 if(_1.RunCommand) {
@@ -262,7 +262,7 @@ ff_compiler_Builder.build_(system_, ff_compiler_JsEmitter.EmitNode(), ff_compile
 break
 }
 }
-}
+} while(false)
 }
 
 export function bundleForPkg_(system_, packagePair_, mainFile_) {
@@ -372,7 +372,7 @@ return ff_core_Core.panic_((("Unknown command '" + s_) + "'"))
 return
 }
 }))(ff_core_Option.Option_grab(consumeArgument_()));
-for(;;) {
+do {
 const _1 = command_;
 {
 if(_1.RunCommand) {
@@ -387,7 +387,7 @@ ff_core_Core.panic_(("Unknown argument: " + argument_))
 }))
 break
 }
-};
+} while(false);
 async function buildScript_$(mainFile_, mainPackagePair_, emitTarget_, resolvedDependencies_, $c) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
@@ -425,7 +425,7 @@ return
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false, $c))
 }
-for(;;) {
+do {
 const _1 = command_;
 {
 if(_1.RunCommand) {
@@ -474,7 +474,7 @@ if(_1.BootstrapCommand) {
 break
 }
 }
-}
+} while(false)
 }
 
 export async function bundleForPkg_$(system_, packagePair_, mainFile_, $c) {

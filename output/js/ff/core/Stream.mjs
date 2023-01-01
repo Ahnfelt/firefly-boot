@@ -132,7 +132,7 @@ return ff_core_Option.None()
 return ff_core_Stream.Stream((() => {
 let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
-for(;;) {
+do {
 const _1 = inner_.next_();
 {
 const i_ = _1;
@@ -143,7 +143,7 @@ break
 }
 {
 if(_1.None) {
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.None) {
@@ -158,11 +158,11 @@ inner_ = body_(o_)
 break
 }
 }
-}
+} while(false)
 break
 }
 }
-}
+} while(false)
 };
 return ff_core_Option.Option_grab(result_)
 }), (() => {
@@ -184,7 +184,7 @@ export function Stream_filter(self_, body_) {
 return ff_core_Stream.Stream((() => {
 let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.Some) {
@@ -208,7 +208,7 @@ result_ = ff_core_Option.Some(ff_core_Option.None())
 break
 }
 }
-}
+} while(false)
 };
 return ff_core_Option.Option_grab(result_)
 }), (() => {
@@ -260,7 +260,7 @@ export function Stream_dropFirst(self_, count_ = 1) {
 let remaining_ = count_;
 return ff_core_Stream.Stream((() => {
 while((remaining_ >= 1)) {
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.None) {
@@ -274,7 +274,7 @@ remaining_ -= 1
 break
 }
 }
-}
+} while(false)
 };
 return self_.next_()
 }), (() => {
@@ -323,7 +323,7 @@ return ff_core_Stream.Stream((() => {
 if((!done_)) {
 let result_ = ff_core_Option.None();
 while((!done_)) {
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.None) {
@@ -350,7 +350,7 @@ done_ = true
 break
 }
 }
-}
+} while(false)
 };
 return result_
 } else {
@@ -392,7 +392,7 @@ let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
 remaining_ -= 1;
 while((remaining_ > 0)) {
 remaining_ -= 1;
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.None) {
@@ -407,7 +407,7 @@ list_ = ff_core_List.Link(x_, list_)
 break
 }
 }
-}
+} while(false)
 };
 if((remaining_ !== (-1))) {
 remaining_ = size_
@@ -435,7 +435,7 @@ export function Stream_each(self_, body_) {
 try {
 let done_ = false;
 while((!done_)) {
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.None) {
@@ -450,7 +450,7 @@ body_(x_)
 break
 }
 }
-}
+} while(false)
 }
 } finally {
 self_.close_()
@@ -461,7 +461,7 @@ export function Stream_eachWhile(self_, body_) {
 try {
 let done_ = false;
 while((!done_)) {
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.None) {
@@ -476,7 +476,7 @@ done_ = (!body_(x_))
 break
 }
 }
-}
+} while(false)
 }
 } finally {
 self_.close_()
@@ -514,7 +514,7 @@ try {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.None) {
@@ -530,7 +530,7 @@ result_ = o_
 break
 }
 }
-}
+} while(false)
 };
 return result_
 } finally {
@@ -555,7 +555,7 @@ try {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
-for(;;) {
+do {
 const _1 = self_.next_();
 {
 if(_1.None) {
@@ -566,7 +566,7 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-for(;;) {
+do {
 const _1 = body_(x_);
 {
 if(_1.None) {
@@ -580,11 +580,11 @@ done_ = true;
 result_ = o_
 break
 }
-}
+} while(false)
 break
 }
 }
-}
+} while(false)
 };
 return result_
 } finally {
@@ -657,7 +657,7 @@ return ff_core_Option.None()
 return ff_core_Stream.Stream((async ($c) => {
 let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
-for(;;) {
+do {
 const _1 = (await inner_.next_($c));
 {
 const i_ = _1;
@@ -668,7 +668,7 @@ break
 }
 {
 if(_1.None) {
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
@@ -683,11 +683,11 @@ inner_ = (await body_(o_, $c))
 break
 }
 }
-}
+} while(false)
 break
 }
 }
-}
+} while(false)
 };
 return ff_core_Option.Option_grab(result_)
 }), (async ($c) => {
@@ -709,7 +709,7 @@ export async function Stream_filter$(self_, body_, $c) {
 return ff_core_Stream.Stream((async ($c) => {
 let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.Some) {
@@ -733,7 +733,7 @@ result_ = ff_core_Option.Some(ff_core_Option.None())
 break
 }
 }
-}
+} while(false)
 };
 return ff_core_Option.Option_grab(result_)
 }), (async ($c) => {
@@ -785,7 +785,7 @@ export async function Stream_dropFirst$(self_, count_ = 1, $c) {
 let remaining_ = count_;
 return ff_core_Stream.Stream((async ($c) => {
 while((remaining_ >= 1)) {
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
@@ -799,7 +799,7 @@ remaining_ -= 1
 break
 }
 }
-}
+} while(false)
 };
 return (await self_.next_($c))
 }), (async ($c) => {
@@ -848,7 +848,7 @@ return ff_core_Stream.Stream((async ($c) => {
 if((!done_)) {
 let result_ = ff_core_Option.None();
 while((!done_)) {
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
@@ -875,7 +875,7 @@ done_ = true
 break
 }
 }
-}
+} while(false)
 };
 return result_
 } else {
@@ -917,7 +917,7 @@ let list_ = ff_core_List.Link(x_, ff_core_List.Empty());
 remaining_ -= 1;
 while((remaining_ > 0)) {
 remaining_ -= 1;
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
@@ -932,7 +932,7 @@ list_ = ff_core_List.Link(x_, list_)
 break
 }
 }
-}
+} while(false)
 };
 if((remaining_ !== (-1))) {
 remaining_ = size_
@@ -960,7 +960,7 @@ export async function Stream_each$(self_, body_, $c) {
 try {
 let done_ = false;
 while((!done_)) {
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
@@ -975,7 +975,7 @@ const x_ = _1.value_;
 break
 }
 }
-}
+} while(false)
 }
 } finally {
 (await self_.close_($c))
@@ -986,7 +986,7 @@ export async function Stream_eachWhile$(self_, body_, $c) {
 try {
 let done_ = false;
 while((!done_)) {
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
@@ -1001,7 +1001,7 @@ done_ = (!(await body_(x_, $c)))
 break
 }
 }
-}
+} while(false)
 }
 } finally {
 (await self_.close_($c))
@@ -1039,7 +1039,7 @@ try {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
@@ -1055,7 +1055,7 @@ result_ = o_
 break
 }
 }
-}
+} while(false)
 };
 return result_
 } finally {
@@ -1080,7 +1080,7 @@ try {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
-for(;;) {
+do {
 const _1 = (await self_.next_($c));
 {
 if(_1.None) {
@@ -1091,7 +1091,7 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-for(;;) {
+do {
 const _1 = (await body_(x_, $c));
 {
 if(_1.None) {
@@ -1105,11 +1105,11 @@ done_ = true;
 result_ = o_
 break
 }
-}
+} while(false)
 break
 }
 }
-}
+} while(false)
 };
 return result_
 } finally {

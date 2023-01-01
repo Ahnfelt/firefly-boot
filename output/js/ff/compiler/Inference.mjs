@@ -1422,7 +1422,7 @@ const _guard1 = (operator_ === "-");
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
-for(;;) {
+do {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1_);
 {
 if(_1.TConstructor) {
@@ -1452,7 +1452,7 @@ break
 ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 break
 }
-};
+} while(false);
 {
 const _1 = e_;
 {
@@ -3105,7 +3105,7 @@ const _guard1 = (operator_ === "-");
 if(_guard1) {
 const t1_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
 const e1_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t1_, a1_.value_);
-for(;;) {
+do {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, t1_);
 {
 if(_1.TConstructor) {
@@ -3135,7 +3135,7 @@ break
 ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
 break
 }
-};
+} while(false);
 {
 const _1 = e_;
 {

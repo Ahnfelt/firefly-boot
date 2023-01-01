@@ -443,7 +443,7 @@ const target_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(se
 : ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword())));
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "{")) {
 const lambda_ = ff_compiler_Parser.Parser_parseLambda(self_, parameterCount_, false, false);
-for(;;) {
+do {
 const _1 = target_;
 {
 if(_1 == "js") {
@@ -482,11 +482,11 @@ break
 ff_compiler_Parser.Parser_fail(self_, at_, "Unknown target")
 break
 }
-}
+} while(false)
 } else {
 const mode_ = ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
 const code_ = processCode_(ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LString())));
-for(;;) {
+do {
 const _1 = ff_core_Pair.Pair(target_, mode_);
 {
 if(_1.first_ == "js") {
@@ -570,7 +570,7 @@ break
 ff_compiler_Parser.Parser_fail(self_, at_, "Unknown target or mode")
 break
 }
-}
+} while(false)
 }
 };
 return targets_
@@ -814,7 +814,7 @@ while(ff_compiler_Token.Token_is2(ff_compiler_Parser.Parser_current(self_), ff_c
 const token_ = (ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())
 ? ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower())
 : ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LKeyword()));
-for(;;) {
+do {
 const _1 = ff_compiler_Token.Token_raw(token_);
 {
 if(_1 == "node") {
@@ -855,7 +855,7 @@ const t_ = _1;
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_))
 break
 }
-}
+} while(false)
 };
 if(((!targets_.node_) && (!targets_.browser_))) {
 return defaultTargets_
@@ -1838,7 +1838,7 @@ const target_ = (ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_cur
 : ff_compiler_Token.Token_raw((await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LKeyword(), $c))));
 if(ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "{")) {
 const lambda_ = (await ff_compiler_Parser.Parser_parseLambda$(self_, parameterCount_, false, false, $c));
-for(;;) {
+do {
 const _1 = target_;
 {
 if(_1 == "js") {
@@ -1877,11 +1877,11 @@ break
 (await ff_compiler_Parser.Parser_fail$(self_, at_, "Unknown target", $c))
 break
 }
-}
+} while(false)
 } else {
 const mode_ = ff_compiler_Token.Token_raw((await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LKeyword(), $c)));
 const code_ = processCode_(ff_compiler_Token.Token_raw((await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LString(), $c))));
-for(;;) {
+do {
 const _1 = ff_core_Pair.Pair(target_, mode_);
 {
 if(_1.first_ == "js") {
@@ -1965,7 +1965,7 @@ break
 (await ff_compiler_Parser.Parser_fail$(self_, at_, "Unknown target or mode", $c))
 break
 }
-}
+} while(false)
 }
 };
 return targets_
@@ -2209,7 +2209,7 @@ while(ff_compiler_Token.Token_is2((await ff_compiler_Parser.Parser_current$(self
 const token_ = (ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LLower())
 ? (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LLower(), $c))
 : (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LKeyword(), $c)));
-for(;;) {
+do {
 const _1 = ff_compiler_Token.Token_raw(token_);
 {
 if(_1 == "node") {
@@ -2250,7 +2250,7 @@ const t_ = _1;
 (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_), $c))
 break
 }
-}
+} while(false)
 };
 if(((!targets_.node_) && (!targets_.browser_))) {
 return defaultTargets_

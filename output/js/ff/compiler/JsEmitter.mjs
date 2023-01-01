@@ -2008,11 +2008,13 @@ const value_ = _1.value_;
 if(_1.function_.ELambda) {
 const cases_ = _1.function_.lambda_.cases_;
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-return (((((((!last_)
-? "for(;;) "
+return ((((((((!last_)
+? "do "
 : "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ";\n") + ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
 return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link("_1", ff_core_List.Empty()), _w1, true, last_, async_)) + "\n}")
-})), "\n")) + "\n}")
+})), "\n")) + "\n}") + ((!last_)
+? " while(false)"
+: ""))
 return
 }
 }
@@ -3897,11 +3899,13 @@ const value_ = _1.value_;
 if(_1.function_.ELambda) {
 const cases_ = _1.function_.lambda_.cases_;
 ff_compiler_Patterns.convertAndCheck_(self_.otherModules_, cases_);
-return (((((((!last_)
-? "for(;;) "
+return ((((((((!last_)
+? "do "
 : "") + "{\nconst _1 = ") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ";\n") + ff_core_List.List_join(ff_core_List.List_map(cases_, ((_w1) => {
 return (("{\n" + ff_compiler_JsEmitter.JsEmitter_emitCase(self_, ff_core_List.Link("_1", ff_core_List.Empty()), _w1, true, last_, async_)) + "\n}")
-})), "\n")) + "\n}")
+})), "\n")) + "\n}") + ((!last_)
+? " while(false)"
+: ""))
 return
 }
 }
