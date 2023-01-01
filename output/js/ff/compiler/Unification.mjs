@@ -165,11 +165,11 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export function Unification_withLocalInstances(self_, instances_, body_) {
 const oldInstances_ = self_.instances_;
 self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
-return ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+try {
 return body_()
-})), (() => {
+} finally {
 self_.instances_ = oldInstances_
-})))
+}
 }
 
 export function Unification_freshUnificationVariable(self_, at_) {
@@ -615,11 +615,11 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 export async function Unification_withLocalInstances$(self_, instances_, body_, $c) {
 const oldInstances_ = self_.instances_;
 self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
-return ff_core_Try.Try_grab(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
+try {
 return (await body_($c))
-}), $c)), (() => {
+} finally {
 self_.instances_ = oldInstances_
-})))
+}
 }
 
 export async function Unification_freshUnificationVariable$(self_, at_, $c) {

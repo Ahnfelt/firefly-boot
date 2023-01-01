@@ -632,12 +632,12 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export function JsEmitter_withEmittingAsync(self_, body_) {
-return ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+try {
 self_.emittingAsync_ = true;
 return body_()
-})), (() => {
+} finally {
 self_.emittingAsync_ = false
-})))
+}
 }
 
 export function JsEmitter_emitRun(self_, functions_, mainPackagePair_, bootstrapping_) {
@@ -1944,6 +1944,26 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_grab") {
+if(_1.arguments_.Link) {
+const argument_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Empty) {
+const _guard1 = ff_compiler_JsEmitter.JsEmitter_emitTryCatchFinally(self_, argument_.value_, last_, async_);
+if(_guard1.Some) {
+const code_ = _guard1.value_;
+return code_
+return
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
 if(_1.arguments_.Empty) {
 if(async_) {
@@ -2061,6 +2081,68 @@ return
 return
 }
 }
+return
+}
+}
+}
+
+export function JsEmitter_emitTryCatchFinally(self_, term_, last_, async_) {
+{
+const _1 = term_;
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.arguments_.Link) {
+if(_1.arguments_.head_.value_.ECall) {
+const at_ = _1.arguments_.head_.value_.at_;
+if(_1.arguments_.head_.value_.target_.StaticCall) {
+if(_1.arguments_.head_.value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_.head_.value_.arguments_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.ELambda) {
+const effect_ = _1.arguments_.head_.value_.arguments_.head_.value_.lambda_.effect_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.patterns_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const tryBody_ = _1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.tail_.Empty) {
+if(_1.arguments_.tail_.Link) {
+if(_1.arguments_.tail_.head_.value_.ELambda) {
+const effect_ = _1.arguments_.tail_.head_.value_.lambda_.effect_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.Link) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.Empty) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const finallyBody_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.tail_.tail_.Empty) {
+return ff_core_Option.Some((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, async_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, async_)) + "\n}"))
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+return ff_core_Option.None()
 return
 }
 }
@@ -2358,12 +2440,12 @@ return ff_core_List.List_join(_w1, "\n\n")
 }
 
 export async function JsEmitter_withEmittingAsync$(self_, body_, $c) {
-return ff_core_Try.Try_grab(ff_core_Try.Try_finally((await ff_core_Core.try_$((async ($c) => {
+try {
 self_.emittingAsync_ = true;
 return (await body_($c))
-}), $c)), (() => {
+} finally {
 self_.emittingAsync_ = false
-})))
+}
 }
 
 export async function JsEmitter_emitRun$(self_, functions_, mainPackagePair_, bootstrapping_, $c) {
@@ -3670,6 +3752,26 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_grab") {
+if(_1.arguments_.Link) {
+const argument_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Empty) {
+const _guard1 = ff_compiler_JsEmitter.JsEmitter_emitTryCatchFinally(self_, argument_.value_, last_, async_);
+if(_guard1.Some) {
+const code_ = _guard1.value_;
+return code_
+return
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:unsafejs/UnsafeJs.throwIfCancelled") {
 if(_1.arguments_.Empty) {
 if(async_) {
@@ -3787,6 +3889,68 @@ return
 return
 }
 }
+return
+}
+}
+}
+
+export async function JsEmitter_emitTryCatchFinally$(self_, term_, last_, async_, $c) {
+{
+const _1 = term_;
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Try.Try_finally") {
+if(_1.arguments_.Link) {
+if(_1.arguments_.head_.value_.ECall) {
+const at_ = _1.arguments_.head_.value_.at_;
+if(_1.arguments_.head_.value_.target_.StaticCall) {
+if(_1.arguments_.head_.value_.target_.name_ == "ff:core/Core.try") {
+if(_1.arguments_.head_.value_.arguments_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.ELambda) {
+const effect_ = _1.arguments_.head_.value_.arguments_.head_.value_.lambda_.effect_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.Link) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.patterns_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const tryBody_ = _1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.head_.value_.arguments_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.head_.value_.arguments_.tail_.Empty) {
+if(_1.arguments_.tail_.Link) {
+if(_1.arguments_.tail_.head_.value_.ELambda) {
+const effect_ = _1.arguments_.tail_.head_.value_.lambda_.effect_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.Link) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.Empty) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const finallyBody_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.tail_.tail_.Empty) {
+return ff_core_Option.Some((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, async_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, async_)) + "\n}"))
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+return ff_core_Option.None()
 return
 }
 }

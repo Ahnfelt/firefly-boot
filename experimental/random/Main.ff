@@ -23,4 +23,18 @@ main(system: NodeSystem): Unit {
         Log.debug(p.email)
     } grab()
 
+    try {
+        Log.debug("foo")
+    } finally {
+        Log.debug("bar")
+    } grab()
+
+}
+
+returnStuff(): Int {
+    try {
+        7
+    } finally {
+        42
+    } grab()
 }

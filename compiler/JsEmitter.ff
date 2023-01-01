@@ -500,6 +500,10 @@ extend self: JsEmitter {
                 fail(at, "Statements can't be a catchAny without a grab")
             | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, _, _) {!last} =>
                 fail(at, "Statements can't be a finally without a grab")
+            | ECall(at, StaticCall("ff:core/Try.Try_grab", _, _), _, _, [argument], _) {
+                self.emitTryCatchFinally(argument.value, last, async) | Some(code)
+            } =>
+                code
             | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
                 if(async) {
                     "if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround})"
@@ -541,6 +545,23 @@ extend self: JsEmitter {
                             "return ff_core_Option.Some(" + self.emitTerm(body, async) + ")\n} else " + otherwise
                         }
                 }
+        }
+    }
+
+    emitTryCatchFinally(term: Term, last: Bool, async: Bool): Option[String] {
+        term.{
+            | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, [
+                Argument(_, _, ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, [
+                    Argument(_, _, ELambda(_, Lambda(_, effect, [MatchCase(_, [], [], tryBody)])))
+                ], _)),
+                Argument(_, _, ELambda(_, Lambda(_, effect, [MatchCase(_, [], [], finallyBody)])))
+            ], _) =>
+                Some(
+                    "try {\n" + self.emitStatements(tryBody, last, async) +
+                    "\n} finally {\n" + self.emitStatements(finallyBody, last, async) + "\n}"
+                )
+            | _ =>
+                None
         }
     }
 
