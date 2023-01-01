@@ -36,7 +36,9 @@ main(system: NodeSystem): Unit {
 returnStuff(): Int {
     try {
         7
+    } catch {| Person p, error =>
+        p.born
     } finally {
-        42
+        Log.debug("quux")
     } grab()
 }
