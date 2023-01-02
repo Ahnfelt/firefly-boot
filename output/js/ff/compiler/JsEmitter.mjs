@@ -1846,6 +1846,29 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Core.throw") {
+if(_1.arguments_.Link) {
+const argument_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const dictionary_ = _1.dictionaries_.head_;
+if(_1.dictionaries_.tail_.Empty) {
+const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
+const a_ = ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_, async_);
+return (((("throw Object.assign(new Error(), {ffException: " + d_) + ".toAny_(") + a_) + ")})")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Core.try") {
 const _guard1 = (!last_);
 if(_guard1) {
@@ -3806,6 +3829,29 @@ return ((("if(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_.val
 ? (("return ff_core_Option.Some(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), async_)) + ")\n} else return ff_core_Option.None()")
 : (ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false, async_) + "\n}")))
 return
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Core.throw") {
+if(_1.arguments_.Link) {
+const argument_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Empty) {
+if(_1.dictionaries_.Link) {
+const dictionary_ = _1.dictionaries_.head_;
+if(_1.dictionaries_.tail_.Empty) {
+const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
+const a_ = ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_, async_);
+return (((("throw Object.assign(new Error(), {ffException: " + d_) + ".toAny_(") + a_) + ")})")
+return
+}
 }
 }
 }

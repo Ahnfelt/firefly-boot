@@ -486,6 +486,10 @@ extend self: JsEmitter {
                 } else {
                     self.emitStatements(invokeImmediately(body.value), False, async) + "\n}"
                 }
+            | ECall(at, StaticCall("ff:core/Core.throw", _, _), _, _, [argument], [dictionary]) =>
+                let d = self.emitDictionary(dictionary)
+                let a = self.emitArgument(argument, async)
+                "throw Object.assign(new Error(), {ffException: " + d + ".toAny_(" + a + ")})"
             | ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, _, _) {!last} =>
                 fail(at, "Statements can't be a try without a grab")
             | ECall(at, StaticCall("ff:core/Try.Try_map", _, _), _, _, _, _) {!last} =>
