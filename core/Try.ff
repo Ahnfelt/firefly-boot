@@ -55,6 +55,13 @@ extend self[T]: Try[T] {
         }
     }
 
+    toOption(): Option[T] {
+        self.{
+            | Success(value) => Some(value)
+            | Failure(_) => None
+        }
+    }
+
 }
 
 extend self[T]: Try[Try[T]] {

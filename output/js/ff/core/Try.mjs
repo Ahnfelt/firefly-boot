@@ -238,6 +238,25 @@ return
 }
 }
 
+export function Try_toOption(self_) {
+{
+const _1 = self_;
+{
+if(_1.Success) {
+const value_ = _1.value_;
+return ff_core_Option.Some(value_)
+return
+}
+}
+{
+if(_1.Failure) {
+return ff_core_Option.None()
+return
+}
+}
+}
+}
+
 export async function Try_map$(self_, body_, $c) {
 {
 const _1 = self_;
@@ -380,6 +399,25 @@ return
 if(_1.Failure) {
 const error_ = _1.error_;
 return ff_core_Error.Error_rethrow(error_)
+return
+}
+}
+}
+}
+
+export async function Try_toOption$(self_, $c) {
+{
+const _1 = self_;
+{
+if(_1.Success) {
+const value_ = _1.value_;
+return ff_core_Option.Some(value_)
+return
+}
+}
+{
+if(_1.Failure) {
+return ff_core_Option.None()
 return
 }
 }
