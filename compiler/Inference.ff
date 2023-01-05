@@ -7,6 +7,8 @@ type Inference(
     unification: Unification
 )
 
+type TypeException(at: Location, message: String)
+
 make(modules: List[Module]): Inference {
     Inference(
         unification = Unification.make(modules)
@@ -14,7 +16,7 @@ make(modules: List[Module]): Inference {
 }
 
 fail[T](at: Location, message: String): T {
-    panic(message + " " + at.show())
+    throw(TypeException(at, message))
 }
 
 core(name: String): String {

@@ -2,6 +2,8 @@
 
 import * as ff_compiler_Unification from "../../ff/compiler/Unification.mjs"
 
+import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
+
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -102,10 +104,11 @@ return {generics_, constraints_, packagePair_, moduleName_, traitName_, typeArgu
 
 
 
-export function make_(modules_) {
-function fail_(at_, message_) {
-return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
+export function fail_(at_, message_) {
+throw Object.assign(new Error(), {ffException: ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException.toAny_(ff_compiler_Inference.TypeException(at_, message_))})
 }
+
+export function make_(modules_) {
 return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
 const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
@@ -120,7 +123,7 @@ return
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
-return fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
+return ff_compiler_Unification.fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
 return
 }
 }
@@ -128,12 +131,13 @@ return
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, module_.packagePair_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int))
+}
+
+export async function fail_$(at_, message_, $c) {
+throw Object.assign(new Error(), {ffException: ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException.toAny_(ff_compiler_Inference.TypeException(at_, message_))})
 }
 
 export async function make_$(modules_, $c) {
-function fail_(at_, message_) {
-return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
-}
 return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
 const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
@@ -148,7 +152,7 @@ return
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
-return fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
+return ff_compiler_Unification.fail_(definition_.at_, ("Unexpected unification variable: $" + i_))
 return
 }
 }
@@ -156,10 +160,6 @@ return
 return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitName_, typeName_), ff_compiler_Unification.InstanceValue(definition_.generics_, definition_.constraints_, module_.packagePair_, moduleName_, definition_.traitName_, definition_.typeArguments_))
 }))
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int))
-}
-
-export function Unification_fail(self_, at_, message_) {
-return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
 export function Unification_withLocalInstances(self_, instances_, body_) {
@@ -330,7 +330,7 @@ const g1_ = (ff_core_List.List_isEmpty(generics_)
 const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]");
-ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
+ff_compiler_Unification.fail_(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
 return
 }
 }
@@ -490,7 +490,7 @@ if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
 if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
-ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
+ff_compiler_Unification.fail_(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
 {
@@ -509,7 +509,7 @@ return
 
 export function Unification_bind(self_, at_, index_, type_) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
-ff_compiler_Unification.Unification_fail(self_, at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
+ff_compiler_Unification.fail_(at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
@@ -606,10 +606,6 @@ return
 }
 }
 }
-}
-
-export async function Unification_fail$(self_, at_, message_, $c) {
-return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
 export async function Unification_withLocalInstances$(self_, instances_, body_, $c) {
@@ -780,7 +776,7 @@ const g1_ = (ff_core_List.List_isEmpty(generics_)
 const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]");
-ff_compiler_Unification.Unification_fail(self_, at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
+ff_compiler_Unification.fail_(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
 return
 }
 }
@@ -940,7 +936,7 @@ if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
 if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
-ff_compiler_Unification.Unification_fail(self_, at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
+ff_compiler_Unification.fail_(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
 {
@@ -959,7 +955,7 @@ return
 
 export async function Unification_bind$(self_, at_, index_, type_, $c) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
-ff_compiler_Unification.Unification_fail(self_, at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
+ff_compiler_Unification.fail_(at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {

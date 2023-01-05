@@ -91,6 +91,11 @@ export function Inference(unification_) {
 return {unification_};
 }
 
+// type TypeException
+export function TypeException(at_, message_) {
+return {at_, message_};
+}
+
 
 
 export function make_(modules_) {
@@ -98,7 +103,7 @@ return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_))
 }
 
 export function fail_(at_, message_) {
-return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
+throw Object.assign(new Error(), {ffException: ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException.toAny_(ff_compiler_Inference.TypeException(at_, message_))})
 }
 
 export function core_(name_) {
@@ -133,7 +138,7 @@ return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_))
 }
 
 export async function fail_$(at_, message_, $c) {
-return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
+throw Object.assign(new Error(), {ffException: ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException.toAny_(ff_compiler_Inference.TypeException(at_, message_))})
 }
 
 export async function core_$(name_, $c) {
@@ -3544,6 +3549,21 @@ throw new Error('Function fromAny is missing on this target in async context.');
 }
 };
 
+export const ff_core_Any_FromToAny$ff_compiler_Inference_TypeException = {
+toAny_(x_) {
+return {typeTag: 'ff:compiler/Inference.TypeException', value: x_}
+},
+fromAny_(x_) {
+return x_.typeTag === 'ff:compiler/Inference.TypeException' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
+},
+async toAny_$(x_, $c) {
+throw new Error('Function toAny is missing on this target in async context.');
+},
+async fromAny_$(x_, $c) {
+throw new Error('Function fromAny is missing on this target in async context.');
+}
+};
+
 export const ff_core_Show_Show$ff_compiler_Inference_Inference = {
 show_(x_) {
 {
@@ -3561,6 +3581,29 @@ const x_a = x_;
 {
 const z_ = x_a;
 return ((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Show_Show$ff_compiler_Inference_TypeException = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((("TypeException" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.message_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((("TypeException" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.message_)) + ")")
 return
 }
 }
@@ -3598,6 +3641,43 @@ return
 }
 {
 return ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_)
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Inference_TypeException = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (x_.message_ === y_.message_))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (x_.message_ === y_.message_))
 return
 }
 }
@@ -3644,6 +3724,63 @@ if((unificationOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return unificationOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
+return
+}
+}
+}
+};
+
+export const ff_core_Ordering_Order$ff_compiler_Inference_TypeException = {
+compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+const atOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location.compare_(x_.at_, y_.at_);
+if((atOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return atOrdering_
+} else {
+const messageOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.message_, y_.message_);
+if((messageOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return messageOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+return
+}
+}
+},
+async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+const atOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location.compare_(x_.at_, y_.at_);
+if((atOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return atOrdering_
+} else {
+const messageOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.message_, y_.message_);
+if((messageOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return messageOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
 }
 return
 }

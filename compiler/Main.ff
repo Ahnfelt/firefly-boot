@@ -7,6 +7,7 @@ import Unification
 import Builder
 import Dependencies
 import JsEmitter
+import Inference
 
 type MainCommand {
     BootstrapCommand
@@ -63,21 +64,25 @@ main(system: NodeSystem): Unit {
             | EmitBrowser => "browser"
             | EmitExecutable => "executable"
         }
-        Builder.build(
-            system = system
-            emitTarget = emitTarget
-            mainPackage = mainPackagePair
-            mainModule = mainFile
-            resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-            compilerModulePath = compilerModulePath
-            tempPath = ".firefly/temporary"
-            jsOutputPath = ".firefly/output/" + targetName
-            printMeasurements = False
-        )
+        try {
+            Builder.build(
+                system = system
+                emitTarget = emitTarget
+                mainPackage = mainPackagePair
+                mainModule = mainFile
+                resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+                compilerModulePath = compilerModulePath
+                tempPath = ".firefly/temporary"
+                jsOutputPath = ".firefly/output/" + targetName
+                printMeasurements = False
+            )
+        } catch {| TypeException(at, message), error =>
+            Log.debug(message)
+            Log.debug(" at file://" + at.file + ":" + at.line + ":" + at.column)
+        } grab()
     }
 
-    command.{
-
+    function runCommand(command: MainCommand) {
         | RunCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
@@ -127,8 +132,14 @@ main(system: NodeSystem): Unit {
                 jsOutputPath = "output/js"
                 printMeasurements = True
             )
-
     }
+
+    try {
+        runCommand(command)
+    } catch {| TypeException(at, message), error =>
+        Log.debug(message)
+        Log.debug(" at file://" + at.file + ":" + at.line + ":" + at.column)
+    } grab()
 
 }
 
