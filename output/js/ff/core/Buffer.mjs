@@ -85,6 +85,10 @@ export function make_(size_, shared_ = false) {
 return new DataView(shared_ ? new SharedArrayBuffer(size_) : new ArrayBuffer(size_))
 }
 
+export function fromByteArray_(array_) {
+return new DataView(new Uint8Array(array_).buffer)
+}
+
 export function fromBufferArray_(array_) {
 
         let length = 0
@@ -102,6 +106,10 @@ export function fromBufferArray_(array_) {
 
 export async function make_$(size_, shared_ = false, $c) {
 throw new Error('Function make is missing on this target in async context.');
+}
+
+export async function fromByteArray_$(array_, $c) {
+throw new Error('Function fromByteArray is missing on this target in async context.');
 }
 
 export async function fromBufferArray_$(array_, $c) {
@@ -222,6 +230,10 @@ export function Buffer_toString(self_, encoding_ = "utf8") {
 return new TextDecoder(encoding_).decode(self_.buffer)
 }
 
+export function Buffer_toByteArray(self_) {
+return [...self_.buffer]
+}
+
 export async function Buffer_size$(self_, $c) {
 throw new Error('Function Buffer_size is missing on this target in async context.');
 }
@@ -316,6 +328,10 @@ throw new Error('Function Buffer_slice is missing on this target in async contex
 
 export async function Buffer_toString$(self_, encoding_ = "utf8", $c) {
 throw new Error('Function Buffer_toString is missing on this target in async context.');
+}
+
+export async function Buffer_toByteArray$(self_, $c) {
+throw new Error('Function Buffer_toByteArray is missing on this target in async context.');
 }
 
 

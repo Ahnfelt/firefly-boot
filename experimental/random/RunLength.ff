@@ -1,3 +1,10 @@
+main(system: NodeSystem) {
+    let inStream = [Buffer.fromByteArray([5, 5, 3, 1, 2].toArray())].toStream()
+    let outStream = runLength(inStream)
+    Log.debug("Foo")
+    outStream.each {b => Log.debug(Show.show(b.toByteArray()))}
+}
+
 runLength(stream: Stream[Buffer]): Stream[Buffer] {
     mutable outBuffer = Buffer.make(4 * 1024)
     mutable outOffset = 0
@@ -25,5 +32,5 @@ runLength(stream: Stream[Buffer]): Stream[Buffer] {
             writeByte(value)
         }
         outBuffers.drain().toStream()
-    }
+    }.concat([outBuffer].filter {_ => outOffset > 0}.map {_.slice(0, outOffset)}.toStream())
 }

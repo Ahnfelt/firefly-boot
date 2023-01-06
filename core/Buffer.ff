@@ -107,7 +107,13 @@ extend self: Buffer {
     toString(encoding: String = "utf8"): String
         target js sync "return new TextDecoder(encoding_).decode(self_.buffer)"
 
+    toByteArray(): Array[Int]
+        target js sync "return [...self_.buffer]"
+
 }
+
+fromByteArray(array: Array[Int]): Buffer
+    target js sync "return new DataView(new Uint8Array(array_).buffer)"
 
 fromBufferArray(array: Array[Buffer]): Buffer
     target js sync """
