@@ -25,7 +25,7 @@ toRunLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {
         mutable i = 0
         while {i < inBuffer.size()} {
             value = if(extraCount > 0) {value} else {inBuffer.grabUint8(i)}
-            mutable j = 0
+            mutable j = if(extraCount > 0) {-1} else {0}
             doWhile {
                 j += 1
                 j + extraCount < 256 && i + j < inBuffer.size() && inBuffer.grabUint8(i + j) == value
