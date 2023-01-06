@@ -3,6 +3,10 @@ main(system: NodeSystem) {
     inBuffers.each {b => Log.debug(Show.show(b.toByteArray()))}
     let inStream = inBuffers.toStream()
     let outStream = toRunLength(inStream)
+    printRunLength(outStream)
+}
+
+printRunLength(outStream: Stream[Buffer]) {
     let array = Buffer.fromBufferArray(outStream.toArray()).toByteArray()
     Log.debug(Show.show(array))
     let stack = Stack.make()
