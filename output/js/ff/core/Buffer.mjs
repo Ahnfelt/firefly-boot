@@ -98,7 +98,7 @@ export function fromBufferArray_(array_) {
         let offset = 0
         for(let b of array_) {
             result.set(new Uint8Array(b.buffer), offset)
-            offset += b.length
+            offset += b.buffer.length
         }
         return new DataView(arrayBuffer)
     

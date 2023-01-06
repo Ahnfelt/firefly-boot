@@ -3,7 +3,15 @@ main(system: NodeSystem) {
     inBuffers.each {b => Log.debug(Show.show(b.toByteArray()))}
     let inStream = inBuffers.toStream()
     let outStream = toRunLength(inStream)
-    outStream.each {b => Log.debug(Show.show(b.toByteArray()))}
+    let array = Buffer.fromBufferArray(outStream.toArray()).toByteArray()
+    Log.debug(Show.show(array))
+    let stack = Stack.make()
+    mutable i = 0
+    while {i < array.size()} {
+        1.to(array.grab(i)).each {_ => stack.push(array.grab(i + 1))}
+        i += 2
+    }
+    Log.debug(Show.show(stack.drain()))
 }
 
 toRunLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {
@@ -41,5 +49,16 @@ toRunLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {
         }
         outBuffers.drain().toStream()
     }
-    result.concat([outBuffer].toStream().filter {_ => outOffset > 0}.map {_.slice(0, outOffset)})
+    result.concat(
+        Stream.make {
+            if(extraCount > 0) {
+                writeByte(extraCount)
+                writeByte(value)
+            }
+            if(outOffset > 0) {
+                outBuffers.push(outBuffer.slice(0, outOffset))
+            }
+            Some(outBuffers.drain().toStream())
+        }.takeFirst(1).flatten()
+    )
 }

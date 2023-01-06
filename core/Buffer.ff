@@ -118,13 +118,13 @@ fromByteArray(array: Array[Int]): Buffer
 fromBufferArray(array: Array[Buffer]): Buffer
     target js sync """
         let length = 0
-        for(let b of array_) length += b.buffer.length
+        for(let b of array_) length += b.buffer.byteLength
         const arrayBuffer = new ArrayBuffer(length);
         const result = new Uint8Array(arrayBuffer)
         let offset = 0
         for(let b of array_) {
             result.set(new Uint8Array(b.buffer), offset)
-            offset += b.length
+            offset += b.buffer.byteLength
         }
         return new DataView(arrayBuffer)
     """
