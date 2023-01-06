@@ -529,7 +529,7 @@ export async function Stack_join$(self_, separator_ = "", $c) {
 throw new Error('Function Stack_join is missing on this target in async context.');
 }
 
-export function ff_core_Show_Show$ff_core_Array_Array(ff_core_Show_Show$T) { return {
+export function ff_core_Show_Show$ff_core_Stack_Stack(ff_core_Show_Show$T) { return {
 show_(array_) {
 const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");

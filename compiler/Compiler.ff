@@ -135,7 +135,7 @@ extend self: Compiler {
         }
         let file = moduleName + ".ff"
         let code = self.files.readText(packagePath + "/" + file)
-        let tokens = Tokenizer.tokenize(file, code)
+        let tokens = Tokenizer.tokenize(packagePath + "/" + file, code)
         let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module

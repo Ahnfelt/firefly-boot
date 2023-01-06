@@ -1,0 +1,77 @@
+type DataView {}
+
+make(size: Int, shared: Bool = False): Buffer2
+    target js sync "return new DataView(shared_ ? new SharedArrayBuffer(size_) : new ArrayBuffer(size_))"
+
+extend self: Buffer2 {
+
+    size(): Int
+        target js sync "return self_.byteLength"
+
+    shared(): Bool
+        target js sync "return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer"
+
+    grabBigInt64(byteOffset: Int, littleEndian: Bool = False): BigInt
+        target js sync "return self_.getBigInt64(byteOffset_, littleEndian_)"
+        
+    grabBigUint64(byteOffset: Int, littleEndian: Bool = False): BigInt
+        target js sync "return self_.getBigUint64(byteOffset_, littleEndian_)"
+        
+    grabFloat32(byteOffset: Int, littleEndian: Bool = False): Float
+        target js sync "return self_.getFloat32(byteOffset_, littleEndian_)"
+        
+    grabFloat64(byteOffset: Int, littleEndian: Bool = False): Float
+        target js sync "return self_.getFloat64(byteOffset_, littleEndian_)"
+        
+    grabInt16(byteOffset: Int, littleEndian: Bool = False): Int
+        target js sync "return self_.getInt16(byteOffset_, littleEndian_)"
+        
+    grabInt32(byteOffset: Int, littleEndian: Bool = False): Int
+        target js sync "return self_.getInt32(byteOffset_, littleEndian_)"
+        
+    grabInt8(byteOffset: Int, littleEndian: Bool = False): Int
+        target js sync "return self_.getInt8(byteOffset_, littleEndian_)"
+        
+    grabUint16(byteOffset: Int, littleEndian: Bool = False): Int
+        target js sync "return self_.getUint16(byteOffset_, littleEndian_)"
+        
+    grabUint32(byteOffset: Int, littleEndian: Bool = False): Int
+        target js sync "return self_.getUint32(byteOffset_, littleEndian_)"
+        
+    grabUint8(byteOffset: Int, littleEndian: Bool = False): Int
+        target js sync "return self_.getUint8(byteOffset_, littleEndian_)"
+
+    setBigInt64(byteOffset: Int, value: BigInt, littleEndian: Bool = False): Unit
+        target js sync "self_.setBigInt64(byteOffset_, littleEndian_)"
+        
+    setBigUint64(byteOffset: Int, value: BigInt, littleEndian: Bool = False): Unit
+        target js sync "self_.setBigUint64(byteOffset_, littleEndian_)"
+        
+    setFloat32(byteOffset: Int, value: Float, littleEndian: Bool = False): Unit
+        target js sync "self_.setFloat32(byteOffset_, littleEndian_)"
+        
+    setFloat64(byteOffset: Int, value: Float, littleEndian: Bool = False): Unit
+        target js sync "self_.setFloat64(byteOffset_, littleEndian_)"
+        
+    setInt16(byteOffset: Int, value: Int, littleEndian: Bool = False): Unit
+        target js sync "self_.setInt16(byteOffset_, littleEndian_)"
+        
+    setInt32(byteOffset: Int, value: Int, littleEndian: Bool = False): Unit
+        target js sync "self_.setInt32(byteOffset_, littleEndian_)"
+        
+    setInt8(byteOffset: Int, value: Int, littleEndian: Bool = False): Unit
+        target js sync "self_.setInt8(byteOffset_, littleEndian_)"
+        
+    setUint16(byteOffset: Int, value: Int, littleEndian: Bool = False): Unit
+        target js sync "self_.setUint16(byteOffset_, littleEndian_)"
+        
+    setUint32(byteOffset: Int, value: Int, littleEndian: Bool = False): Unit
+        target js sync "self_.setUint32(byteOffset_, littleEndian_)"
+        
+    setUint8(byteOffset: Int, value: Int, littleEndian: Bool = False): Unit
+        target js sync "self_.setUint8(byteOffset_, littleEndian_)"
+
+    slice(begin: Int, end: Int): Buffer2
+        target js sync "return new DataView(self_.buffer.slice(begin, end))"
+
+}

@@ -203,7 +203,7 @@ extend self: Stack[String] {
 
 }
 
-instance Array[T: Show]: Show {
+instance Stack[T: Show]: Show {
     show(array: Array[T]): String {
         let stack = Stack.make()
         stack.push("[")
