@@ -190,7 +190,7 @@ return await self_.text()
 }
 
 export async function FetchResponse_readBuffer$(self_, $c) {
-return Buffer.from(await self_.arrayBuffer())
+return new DataView(await self_.arrayBuffer())
 }
 
 

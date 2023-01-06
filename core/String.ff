@@ -125,8 +125,6 @@ extend self: String {
         """
 
     toBuffer(): Buffer
-        target js sync """
-            return Buffer.from(self_, 'utf8');
-        """
+        target js sync "return new DataView(new TextEncoder().encode(_self))"
 
 }

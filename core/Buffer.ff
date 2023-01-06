@@ -1,42 +1,124 @@
 type Buffer {}
 
+make(size: Int, shared: Bool = False): Buffer
+    target js sync "return new DataView(shared_ ? new SharedArrayBuffer(size_) : new ArrayBuffer(size_))"
+
 extend self: Buffer {
 
     size(): Int
-        target js sync "return self_.length"
+        target js sync "return self_.byteLength"
 
-    grab(index: Int): Int
+    shared(): Bool
+        target js sync "return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer"
+
+    /*grabBigInt64(byteOffset: Int, littleEndian: Bool = True): BigInt
+        target js sync "return self_.getBigInt64(byteOffset_, littleEndian_)"*/
+
+    /*grabBigUint64(byteOffset: Int, littleEndian: Bool = True): BigInt
+        target js sync "return self_.getBigUint64(byteOffset_, littleEndian_)"*/
+
+    grabUint64(byteOffset: Int, littleEndian: Bool = True): Int
         target js sync """
-            if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
-            return self_[index_]
+            const high = self_.getUint32(byteOffset_ + (littleEndian_ ? 4 : 0), littleEndian_)
+            const low = self_.getUint32(byteOffset_ + (littleEndian_ ? 0 : 4), littleEndian_)
+            const result = (high * 0x100000000) + low
+            if(!Number.isSafeInteger(result)) throw 'grabUint64 out of range (consider grabBigUint64)'
+            return result
         """
 
-    set(index: Int, byte: Int): Unit
+    grabInt64(byteOffset: Int, littleEndian: Bool = True): Int
         target js sync """
-            if(index_ < 0 || index_ >= self_.length) throw Error("Index out of bounds: " + index_)
-            self_[index_] = byte_
+            const high = self_.getInt32(byteOffset_ + (littleEndian_ ? 4 : 0), littleEndian_)
+            const low = self_.getUint32(byteOffset_ + (littleEndian_ ? 0 : 4), littleEndian_)
+            const result = (high * 0x100000000) + low
+            if(!Number.isSafeInteger(result)) throw 'grabInt64 out of range (consider grabBigInt64)'
+            return result
         """
+
+    grabFloat32(byteOffset: Int, littleEndian: Bool = True): Float
+        target js sync "return self_.getFloat32(byteOffset_, littleEndian_)"
+
+    grabFloat64(byteOffset: Int, littleEndian: Bool = True): Float
+        target js sync "return self_.getFloat64(byteOffset_, littleEndian_)"
+
+    grabInt16(byteOffset: Int, littleEndian: Bool = True): Int
+        target js sync "return self_.getInt16(byteOffset_, littleEndian_)"
+
+    grabInt32(byteOffset: Int, littleEndian: Bool = True): Int
+        target js sync "return self_.getInt32(byteOffset_, littleEndian_)"
+
+    grabInt8(byteOffset: Int): Int
+        target js sync "return self_.getInt8(byteOffset_)"
+
+    grabUint16(byteOffset: Int, littleEndian: Bool = True): Int
+        target js sync "return self_.getUint16(byteOffset_, littleEndian_)"
+
+    grabUint32(byteOffset: Int, littleEndian: Bool = True): Int
+        target js sync "return self_.getUint32(byteOffset_, littleEndian_)"
+
+    grabUint8(byteOffset: Int): Int
+        target js sync "return self_.getUint8(byteOffset_)"
+
+    /*setBigInt64(byteOffset: Int, value: BigInt, littleEndian: Bool = False): Unit
+        target js sync "self_.setBigInt64(byteOffset_, littleEndian_)"*/
+
+    /*setBigUint64(byteOffset: Int, value: BigInt, littleEndian: Bool = False): Unit
+        target js sync "self_.setBigUint64(byteOffset_, littleEndian_)"*/
+
+    setUint64(byteOffset: Int, value: Int, littleEndian: Bool = True): Int
+        target js sync """
+            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ >>> 32, littleEndian_)
+            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), value_ & 0xffffffff, littleEndian_)
+        """
+
+    setInt64(byteOffset: Int, littleEndian: Bool = True): Int
+        target js sync """
+            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ >> 32, littleEndian_)
+            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), value_ & 0xffffffff, littleEndian_)
+        """
+
+    setFloat32(byteOffset: Int, value: Float, littleEndian: Bool = True): Unit
+        target js sync "self_.setFloat32(byteOffset_, littleEndian_)"
+
+    setFloat64(byteOffset: Int, value: Float, littleEndian: Bool = True): Unit
+        target js sync "self_.setFloat64(byteOffset_, littleEndian_)"
+
+    setInt16(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit
+        target js sync "self_.setInt16(byteOffset_, littleEndian_)"
+
+    setInt32(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit
+        target js sync "self_.setInt32(byteOffset_, littleEndian_)"
+
+    setInt8(byteOffset: Int, value: Int): Unit
+        target js sync "self_.setInt8(byteOffset_)"
+
+    setUint16(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit
+        target js sync "self_.setUint16(byteOffset_, littleEndian_)"
+
+    setUint32(byteOffset: Int, value: Int, littleEndian: Bool = True): Unit
+        target js sync "self_.setUint32(byteOffset_, littleEndian_)"
+
+    setUint8(byteOffset: Int, value: Int): Unit
+        target js sync "self_.setUint8(byteOffset_)"
+
+    slice(begin: Int, end: Int): Buffer
+        target js sync "return new DataView(self_.buffer.slice(begin_, end_))"
 
     toString(encoding: String = "utf8"): String
-        target node sync "return self_.toString(encoding_)"
-        target js sync "return new TextDecoder(encoding_).decode(self_)"
+        target js sync "return new TextDecoder(encoding_).decode(self_.buffer)"
 
 }
 
-make(size: Int): Buffer
-    target node sync "return Buffer.alloc(size_)"
-    target js sync "return new Uint8Array(size_)"
-
 fromBufferArray(array: Array[Buffer]): Buffer
-    target node sync "return Buffer.concat(array_)"
     target js sync """
         let length = 0
-        for(let a in array_) length += a.length
-        const result = new Uint8Array(length)
+        for(let b of array_) length += b.buffer.length
+        const arrayBuffer = new ArrayBuffer(length);
+        const result = new Uint8Array(arrayBuffer)
         let offset = 0
-        for(let a in array_) {
-            result.set(a, offset)
-            offset += a.length
+        for(let b of array_) {
+            result.set(new Uint8Array(b.buffer), offset)
+            offset += b.length
         }
-        return result
+        return new DataView(arrayBuffer)
     """

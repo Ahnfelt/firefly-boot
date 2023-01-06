@@ -1,0 +1,29 @@
+runLength(stream: Stream[Buffer]): Stream[Buffer] {
+    mutable outBuffer = Buffer.make(4 * 1024)
+    mutable outOffset = 0
+    let outBuffers = Stack.make()
+    function writeByte(byte: Int): Unit {
+        if(outOffset >= outBuffer.size()) {
+            outBuffers.push(outBuffer)
+            outBuffer = Buffer.make(4 * 1024)
+            outOffset = 0
+        }
+        outBuffer.setUint8(outOffset, count)
+        outOffset += 1
+    }
+    stream.flatMap {inBuffer =>
+        mutable i = 0
+        while {i < buffer.size()} {
+            let value = inBuffer.grabUInt8(i)
+            mutable j = 0
+            doWhile {
+                j += 1
+                j < 256 && i + j < buffer.size() && inBuffer.grabUint8(i + j, True) == value
+            }
+            i += j
+            writeByte(j)
+            writeByte(value)
+        }
+        outBuffers.drain().toStream()
+    }
+}

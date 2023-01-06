@@ -111,7 +111,7 @@ return self_
 
 export function JsValue_grabBuffer(self_) {
 
-            if(!(self_ instanceof Buffer)) throw new Error('Expected buffer, got '+ typeof self_);
+            if(!(self_ instanceof DataView)) throw new Error('Expected buffer, got '+ typeof self_);
             return self_
         
 }

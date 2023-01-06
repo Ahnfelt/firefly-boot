@@ -114,14 +114,14 @@ export async function FileHandle_close$(self_, $c) {
 export async function FileHandle_read$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
 
             if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            await self_.read(buffer, {offset: offset_, length: length.value_, position: position.value_})
+            await self_.read(buffer_, {offset: offset_, length: length.value_, position: position.value_})
         
 }
 
 export async function FileHandle_write$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
 
             if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            await self_.write(buffer, offset_, length.value_, position.value_)
+            await self_.write(buffer_, offset_, length.value_, position.value_)
         
 }
 

@@ -215,9 +215,7 @@ export function String_all(self_, body_) {
 }
 
 export function String_toBuffer(self_) {
-
-            return Buffer.from(self_, 'utf8');
-        
+return new DataView(new TextEncoder().encode(_self))
 }
 
 export async function String_size$(self_, $c) {
