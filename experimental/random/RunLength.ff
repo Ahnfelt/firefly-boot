@@ -1,7 +1,8 @@
 main(system: NodeSystem) {
-    let inStream = [Buffer.fromByteArray([5, 5, 3, 1, 2].toArray())].toStream()
+    let inBuffers = [Buffer.fromByteArray([5, 5, 3, 1, 2].toArray())]
+    inBuffers.each {b => Log.debug(Show.show(b.toByteArray()))}
+    let inStream = inBuffers.toStream()
     let outStream = runLength(inStream)
-    Log.debug("Foo")
     outStream.each {b => Log.debug(Show.show(b.toByteArray()))}
 }
 
@@ -18,7 +19,7 @@ runLength(stream: Stream[Buffer]): Stream[Buffer] {
         outBuffer.setUint8(outOffset, byte)
         outOffset += 1
     }
-    stream.flatMap {inBuffer =>
+    let result = stream.flatMap {inBuffer =>
         mutable i = 0
         while {i < inBuffer.size()} {
             let value = inBuffer.grabUint8(i)
@@ -32,5 +33,6 @@ runLength(stream: Stream[Buffer]): Stream[Buffer] {
             writeByte(value)
         }
         outBuffers.drain().toStream()
-    }.concat([outBuffer].filter {_ => outOffset > 0}.map {_.slice(0, outOffset)}.toStream())
+    }
+    result.concat([outBuffer].toStream().filter {_ => outOffset > 0}.map {_.slice(0, outOffset)})
 }

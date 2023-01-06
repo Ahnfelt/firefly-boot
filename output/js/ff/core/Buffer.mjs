@@ -191,35 +191,35 @@ export function Buffer_setInt64(self_, byteOffset_, littleEndian_ = true) {
 }
 
 export function Buffer_setFloat32(self_, byteOffset_, value_, littleEndian_ = true) {
-self_.setFloat32(byteOffset_, littleEndian_)
+self_.setFloat32(byteOffset_, value_, littleEndian_)
 }
 
 export function Buffer_setFloat64(self_, byteOffset_, value_, littleEndian_ = true) {
-self_.setFloat64(byteOffset_, littleEndian_)
+self_.setFloat64(byteOffset_, value_, littleEndian_)
 }
 
 export function Buffer_setInt16(self_, byteOffset_, value_, littleEndian_ = true) {
-self_.setInt16(byteOffset_, littleEndian_)
+self_.setInt16(byteOffset_, value_, littleEndian_)
 }
 
 export function Buffer_setInt32(self_, byteOffset_, value_, littleEndian_ = true) {
-self_.setInt32(byteOffset_, littleEndian_)
+self_.setInt32(byteOffset_, value_, littleEndian_)
 }
 
 export function Buffer_setInt8(self_, byteOffset_, value_) {
-self_.setInt8(byteOffset_)
+self_.setInt8(byteOffset_, value_)
 }
 
 export function Buffer_setUint16(self_, byteOffset_, value_, littleEndian_ = true) {
-self_.setUint16(byteOffset_, littleEndian_)
+self_.setUint16(byteOffset_, value_, littleEndian_)
 }
 
 export function Buffer_setUint32(self_, byteOffset_, value_, littleEndian_ = true) {
-self_.setUint32(byteOffset_, littleEndian_)
+self_.setUint32(byteOffset_, value_, littleEndian_)
 }
 
 export function Buffer_setUint8(self_, byteOffset_, value_) {
-self_.setUint8(byteOffset_)
+self_.setUint8(byteOffset_, value_)
 }
 
 export function Buffer_slice(self_, begin_, end_) {
@@ -231,7 +231,7 @@ return new TextDecoder(encoding_).decode(self_.buffer)
 }
 
 export function Buffer_toByteArray(self_) {
-return [...self_.buffer]
+return [...new Uint8Array(self_.buffer)]
 }
 
 export async function Buffer_size$(self_, $c) {
