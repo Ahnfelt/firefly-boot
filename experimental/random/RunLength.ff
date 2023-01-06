@@ -8,17 +8,17 @@ runLength(stream: Stream[Buffer]): Stream[Buffer] {
             outBuffer = Buffer.make(4 * 1024)
             outOffset = 0
         }
-        outBuffer.setUint8(outOffset, count)
+        outBuffer.setUint8(outOffset, byte)
         outOffset += 1
     }
     stream.flatMap {inBuffer =>
         mutable i = 0
-        while {i < buffer.size()} {
-            let value = inBuffer.grabUInt8(i)
+        while {i < inBuffer.size()} {
+            let value = inBuffer.grabUint8(i)
             mutable j = 0
             doWhile {
                 j += 1
-                j < 256 && i + j < buffer.size() && inBuffer.grabUint8(i + j, True) == value
+                j < 256 && i + j < inBuffer.size() && inBuffer.grabUint8(i + j) == value
             }
             i += j
             writeByte(j)
