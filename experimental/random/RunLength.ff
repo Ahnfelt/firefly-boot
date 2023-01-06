@@ -1,8 +1,7 @@
 main(system: NodeSystem) {
-    let inBuffers = [Buffer.fromByteArray([5, 5, 3, 1, 2].toArray())]
-    inBuffers.each {b => Log.debug(Show.show(b.toByteArray()))}
+    let inBuffers = 1.to(100).map {_ => Buffer.fromByteArray([5, 5, 3, 1, 2].toArray())}
     let inStream = inBuffers.toStream()
-    let outStream = toRunLength(inStream)
+    let outStream = toRunLength(inStream, 3)
     printRunLength(outStream)
 }
 
