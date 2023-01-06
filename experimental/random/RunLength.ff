@@ -6,31 +6,38 @@ main(system: NodeSystem) {
     outStream.each {b => Log.debug(Show.show(b.toByteArray()))}
 }
 
-runLength(stream: Stream[Buffer]): Stream[Buffer] {
-    mutable outBuffer = Buffer.make(4 * 1024)
+runLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {
+    mutable outBuffer = Buffer.make(bufferSize)
     mutable outOffset = 0
     let outBuffers = Stack.make()
     function writeByte(byte: Int): Unit {
         if(outOffset >= outBuffer.size()) {
             outBuffers.push(outBuffer)
-            outBuffer = Buffer.make(4 * 1024)
+            outBuffer = Buffer.make(bufferSize)
             outOffset = 0
         }
         outBuffer.setUint8(outOffset, byte)
         outOffset += 1
     }
+    mutable extraCount = 0
+    mutable value = 0
     let result = stream.flatMap {inBuffer =>
         mutable i = 0
         while {i < inBuffer.size()} {
-            let value = inBuffer.grabUint8(i)
+            value = if(extraCount > 0) {value} else {inBuffer.grabUint8(i)}
             mutable j = 0
             doWhile {
                 j += 1
-                j < 256 && i + j < inBuffer.size() && inBuffer.grabUint8(i + j) == value
+                j + extraCount < 256 && i + j < inBuffer.size() && inBuffer.grabUint8(i + j) == value
             }
             i += j
-            writeByte(j)
-            writeByte(value)
+            if(i < inBuffer.size() || j + extraCount == 256) {
+                writeByte(j + extraCount)
+                writeByte(value)
+                extraCount = 0
+            } else {
+                extraCount += j
+            }
         }
         outBuffers.drain().toStream()
     }

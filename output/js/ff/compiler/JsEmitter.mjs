@@ -1825,6 +1825,45 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Core.doWhile") {
+if(_1.arguments_.Link) {
+const doWhileBody_ = _1.arguments_.head_.value_;
+if(_1.arguments_.tail_.Empty) {
+const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
+if(_guard1.ESequential) {
+const body_ = _guard1.before_;
+const condition_ = _guard1.after_;
+return ((((("while(true) {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, false, async_)) + "\nif(!") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") break") + "\n}")
+return
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Core.doWhile") {
+if(_1.arguments_.Link) {
+const doWhileBody_ = _1.arguments_.head_.value_;
+if(_1.arguments_.tail_.Empty) {
+const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
+const body_ = _guard1;
+return (("while(!" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ") {}")
+return
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Core.if") {
 if(_1.arguments_.Link) {
 const condition_ = _1.arguments_.head_;
@@ -3809,6 +3848,45 @@ if(_1.arguments_.tail_.tail_.Empty) {
 return (((("while(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, ff_compiler_JsEmitter.invokeImmediately_(condition_.value_), async_)) + ") {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false, async_)) + "\n}")
 return
 }
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Core.doWhile") {
+if(_1.arguments_.Link) {
+const doWhileBody_ = _1.arguments_.head_.value_;
+if(_1.arguments_.tail_.Empty) {
+const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
+if(_guard1.ESequential) {
+const body_ = _guard1.before_;
+const condition_ = _guard1.after_;
+return ((((("while(true) {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, body_, false, async_)) + "\nif(!") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, condition_, async_)) + ") break") + "\n}")
+return
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+const at_ = _1.at_;
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Core.doWhile") {
+if(_1.arguments_.Link) {
+const doWhileBody_ = _1.arguments_.head_.value_;
+if(_1.arguments_.tail_.Empty) {
+const _guard1 = ff_compiler_JsEmitter.invokeImmediately_(doWhileBody_);
+const body_ = _guard1;
+return (("while(!" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ") {}")
+return
 }
 }
 }

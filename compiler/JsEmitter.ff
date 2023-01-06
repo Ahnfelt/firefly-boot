@@ -478,6 +478,17 @@ extend self: JsEmitter {
             | ECall(at, StaticCall("ff:core/Core.while", _, _), _, _, [condition, body], _) =>
                 "while(" + self.emitTerm(invokeImmediately(condition.value), async) + ") {\n" +
                 self.emitStatements(invokeImmediately(body.value), False, async) + "\n}"
+            | ECall(at, StaticCall("ff:core/Core.doWhile", _, _), _, _, [Argument(_, _, doWhileBody)], _) {
+                invokeImmediately(doWhileBody) | ESequential(_, body, condition)
+            } =>
+                "while(true) {\n" +
+                self.emitStatements(body, False, async) +
+                "\nif(!" + self.emitTerm(condition, async) + ") break" +
+                "\n}"
+            | ECall(at, StaticCall("ff:core/Core.doWhile", _, _), _, _, [Argument(_, _, doWhileBody)], _) {
+                invokeImmediately(doWhileBody) | body
+            } =>
+                "while(!" + self.emitTerm(body, async) + ") {}"
             | ECall(at, StaticCall("ff:core/Core.if", _, _), _, _, [condition, body], _) =>
                 "if(" + self.emitTerm(condition.value, async) + ") {\n" +
                 if(last) {
