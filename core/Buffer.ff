@@ -110,6 +110,15 @@ extend self: Buffer {
     toByteArray(): Array[Int]
         target js sync "return [...new Uint8Array(self_.buffer)]"
 
+    toHex(): String
+        target js sync """
+            let hex = ''
+            for (let i = 0; i < self_.byteLength; i++) {
+                hex += self_.getUint8(i).toString(16).padStart(2, '0')
+            }
+            return hex
+        """
+
 }
 
 fromByteArray(array: Array[Int]): Buffer
@@ -128,3 +137,16 @@ fromBufferArray(array: Array[Buffer]): Buffer
         }
         return new DataView(arrayBuffer)
     """
+
+fromHex(hex: String): Buffer
+    target js sync """
+        const hexValues = hexString.match(/.{1,2}/g) || []
+        const numbers = hexValues.map(value => parseInt(value, 16))
+        return new DataView(new Uint8Array(numbers).buffer)
+    """
+
+instance Buffer: Show {
+    show(buffer: Buffer): String {
+        """Buffer.fromHex("""" + buffer.toHex() + """")"""
+    }
+}
