@@ -165,7 +165,7 @@ initialized_ = true;
 }))
 }
 
-export function Stream_concat(self_, that_) {
+export function Stream_addAll(self_, that_) {
 let firstDone_ = false;
 return ff_core_Stream.Stream((() => {
 if(firstDone_) {
@@ -690,7 +690,7 @@ export function Stream_toList(self_) {
 return ff_core_Stack.Stack_toList(ff_core_Stream.Stream_toStack(self_), 0, 9007199254740991)
 }
 
-export async function Stream_concat$(self_, that_, $c) {
+export async function Stream_addAll$(self_, that_, $c) {
 let firstDone_ = false;
 return ff_core_Stream.Stream((async ($c) => {
 if(firstDone_) {

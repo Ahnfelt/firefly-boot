@@ -119,6 +119,12 @@ extend self: Buffer {
             return hex
         """
 
+    toBase64(): String
+        target js sync """
+            const view = new Uint8Array(self_.buffer);
+            return btoa(String.fromCharCode(...view));
+        """
+
 }
 
 fromByteArray(array: Array[Int]): Buffer
@@ -143,6 +149,14 @@ fromHex(hex: String): Buffer
         const hexValues = hexString.match(/.{1,2}/g) || []
         const numbers = hexValues.map(value => parseInt(value, 16))
         return new DataView(new Uint8Array(numbers).buffer)
+    """
+
+fromBase64(base64: String): Buffer
+    target js sync """
+        const binaryString = atob(base64_)
+        const dataView = new DataView(new ArrayBuffer(binaryString.length))
+        dataView.setUint8(binaryString.split('').map(char => char.charCodeAt(0)))
+        return dataView
     """
 
 instance Buffer: Show {

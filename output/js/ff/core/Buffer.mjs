@@ -104,6 +104,23 @@ export function fromBufferArray_(array_) {
     
 }
 
+export function fromHex_(hex_) {
+
+        const hexValues = hexString.match(/.{1,2}/g) || []
+        const numbers = hexValues.map(value => parseInt(value, 16))
+        return new DataView(new Uint8Array(numbers).buffer)
+    
+}
+
+export function fromBase64_(base64_) {
+
+        const binaryString = atob(base64_)
+        const dataView = new DataView(new ArrayBuffer(binaryString.length))
+        dataView.setUint8(binaryString.split('').map(char => char.charCodeAt(0)))
+        return dataView
+    
+}
+
 export async function make_$(size_, shared_ = false, $c) {
 throw new Error('Function make is missing on this target in async context.');
 }
@@ -114,6 +131,14 @@ throw new Error('Function fromByteArray is missing on this target in async conte
 
 export async function fromBufferArray_$(array_, $c) {
 throw new Error('Function fromBufferArray is missing on this target in async context.');
+}
+
+export async function fromHex_$(hex_, $c) {
+throw new Error('Function fromHex is missing on this target in async context.');
+}
+
+export async function fromBase64_$(base64_, $c) {
+throw new Error('Function fromBase64 is missing on this target in async context.');
 }
 
 export function Buffer_size(self_) {
@@ -234,6 +259,23 @@ export function Buffer_toByteArray(self_) {
 return [...new Uint8Array(self_.buffer)]
 }
 
+export function Buffer_toHex(self_) {
+
+            let hex = ''
+            for (let i = 0; i < self_.byteLength; i++) {
+                hex += self_.getUint8(i).toString(16).padStart(2, '0')
+            }
+            return hex
+        
+}
+
+export function Buffer_toBase64(self_) {
+
+            const view = new Uint8Array(self_.buffer);
+            return btoa(String.fromCharCode(...view));
+        
+}
+
 export async function Buffer_size$(self_, $c) {
 throw new Error('Function Buffer_size is missing on this target in async context.');
 }
@@ -334,6 +376,21 @@ export async function Buffer_toByteArray$(self_, $c) {
 throw new Error('Function Buffer_toByteArray is missing on this target in async context.');
 }
 
+export async function Buffer_toHex$(self_, $c) {
+throw new Error('Function Buffer_toHex is missing on this target in async context.');
+}
 
+export async function Buffer_toBase64$(self_, $c) {
+throw new Error('Function Buffer_toBase64 is missing on this target in async context.');
+}
+
+export const ff_core_Show_Show$ff_core_Buffer_Buffer = {
+show_(buffer_) {
+return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(buffer_)) + `")`)
+},
+async show_$(buffer_, $c) {
+return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(buffer_)) + `")`)
+}
+};
 
 
