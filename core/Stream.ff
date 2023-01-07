@@ -38,7 +38,7 @@ init[T](body: () => Stream[T]): Stream[T] {
 
 extend self[T]: Stream[T] {
 
-    concat(that: Stream[T]): Stream[T] {
+    addAll(that: Stream[T]): Stream[T] {
         mutable firstDone = False
         Stream {
             if(firstDone) {
