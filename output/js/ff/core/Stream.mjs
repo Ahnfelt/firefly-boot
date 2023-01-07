@@ -89,10 +89,80 @@ export function make_(next_, close_ = (() => {
 return ff_core_Stream.Stream(next_, close_)
 }
 
+export function one_(body_, close_ = (() => {
+
+})) {
+let done_ = false;
+return ff_core_Stream.Stream((() => {
+if((!done_)) {
+done_ = true;
+return body_()
+} else {
+return ff_core_Option.None()
+}
+}), close_)
+}
+
+export function init_(body_) {
+let initialized_ = false;
+let stream_ = ff_core_Stream.Stream((() => {
+return ff_core_Option.None()
+}), (() => {
+
+}));
+return ff_core_Stream.Stream((() => {
+if(initialized_) {
+return stream_.next_()
+} else {
+initialized_ = true;
+stream_ = body_();
+return stream_.next_()
+}
+}), (() => {
+initialized_ = true;
+stream_.close_()
+}))
+}
+
 export async function make_$(next_, close_ = (async ($c) => {
 
 }), $c) {
 return ff_core_Stream.Stream(next_, close_)
+}
+
+export async function one_$(body_, close_ = (async ($c) => {
+
+}), $c) {
+let done_ = false;
+return ff_core_Stream.Stream((async ($c) => {
+if((!done_)) {
+done_ = true;
+return (await body_($c))
+} else {
+return ff_core_Option.None()
+}
+}), close_)
+}
+
+export async function init_$(body_, $c) {
+let initialized_ = false;
+let stream_ = ff_core_Stream.Stream((async ($c) => {
+return ff_core_Option.None()
+}), (async ($c) => {
+
+}));
+return ff_core_Stream.Stream((async ($c) => {
+if(initialized_) {
+return (await stream_.next_($c))
+} else {
+initialized_ = true;
+stream_ = (await body_($c));
+return (await stream_.next_($c))
+}
+}), (async ($c) => {
+initialized_ = true;
+(await stream_.close_($c))
+}))
 }
 
 export function Stream_concat(self_, that_) {

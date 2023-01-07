@@ -53,7 +53,7 @@ toRunLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {
         outBuffers.drain().toStream()
     }
     result.concat(
-        Stream.make {
+        Stream.init {
             if(extraCount > 0) {
                 writeByte(extraCount)
                 writeByte(value)
@@ -61,7 +61,7 @@ toRunLength(stream: Stream[Buffer], bufferSize: Int = 65536): Stream[Buffer] {
             if(outOffset > 0) {
                 outBuffers.push(outBuffer.slice(0, outOffset))
             }
-            Some(outBuffers.drain().toStream())
-        }.takeFirst(1).flatten()
+            outBuffers.drain().toStream()
+        }
     )
 }
