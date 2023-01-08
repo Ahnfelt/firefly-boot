@@ -164,3 +164,32 @@ instance Buffer: Show {
         """Buffer.fromHex("""" + buffer.toHex() + """")"""
     }
 }
+
+instance Buffer: Equal {
+    equals(left: Buffer, right: Buffer): Bool
+        target js sync """
+            if(left_.buffer.byteLength !== right_.buffer.byteLength) return false
+            if(left_.buffer === right_.buffer) return true
+            for(let i = 0; i + 4 <= left_.buffer.byteLength; i += 4) {
+                if(left_.getInt32(i) !== right_.getInt32(i)) return false
+            }
+            for(; i < left_.buffer.byteLength; i++) {
+                if(left_.getUint8(i) !== right_.getUint8(i)) return false
+            }
+            return true
+        """
+}
+
+instance Buffer: Order {
+    compare(left: Buffer, right: Buffer): Ordering
+        target js sync """
+            if(left_.buffer === right_.buffer) return ff_core_Ordering.OrderingSame()
+            const minLength = Math.min(left_.buffer.byteLength, right_.buffer.byteLength)
+            for(let i = 0; i < minLength; i++) {
+                if(left_.getUint8(i) !== right_.getUint8(i)) {
+                    return ff_core_Ordering.fromInt_(left_.getUint8(i) - right_.getUint8(i))
+                }
+            }
+            return ff_core_Ordering.fromInt_(left_.buffer.byteLength - right_.buffer.byteLength)
+        """
+}

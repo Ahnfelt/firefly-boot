@@ -393,4 +393,41 @@ return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(buffer_)) + `")`)
 }
 };
 
+export const ff_core_Equal_Equal$ff_core_Buffer_Buffer = {
+equals_(left_, right_) {
+
+            if(left_.buffer.byteLength !== right_.buffer.byteLength) return false
+            if(left_.buffer === right_.buffer) return true
+            for(let i = 0; i + 4 <= left_.buffer.byteLength; i += 4) {
+                if(left_.getInt32(i) !== right_.getInt32(i)) return false
+            }
+            for(; i < left_.buffer.byteLength; i++) {
+                if(left_.getUint8(i) !== right_.getUint8(i)) return false
+            }
+            return true
+        
+},
+async equals_$(left_, right_, $c) {
+throw new Error('Function equals is missing on this target in async context.');
+}
+};
+
+export const ff_core_Ordering_Order$ff_core_Buffer_Buffer = {
+compare_(left_, right_) {
+
+            if(left_.buffer === right_.buffer) return ff_core_Ordering.OrderingSame()
+            const minLength = Math.min(left_.buffer.byteLength, right_.buffer.byteLength)
+            for(let i = 0; i < minLength; i++) {
+                if(left_.getUint8(i) !== right_.getUint8(i)) {
+                    return ff_core_Ordering.fromInt_(left_.getUint8(i) - right_.getUint8(i))
+                }
+            }
+            return ff_core_Ordering.fromInt_(left_.buffer.byteLength - right_.buffer.byteLength)
+        
+},
+async compare_$(left_, right_, $c) {
+throw new Error('Function compare is missing on this target in async context.');
+}
+};
+
 
