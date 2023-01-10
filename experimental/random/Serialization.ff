@@ -11,7 +11,7 @@ type Serialization(
 
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
     let serialization = Serialization(Buffer.make(initialBufferSize), 4)
-    serialization.buffer.setUint32(typeHash[T]())
+    serialization.buffer.setInt32(typeHash[T]())
     serializeUsing(serialization, value)
     if(serialization.offset == serialization.buffer.size()) {
         serialization.buffer
@@ -35,11 +35,11 @@ instance Int: Serializable {
         if(serialization.offset + 8 > serialization.buffer.size()) {
             // Make a new buffer twice as big, copy it over
         }
-        serialization.buffer.setUint64(serialization.offset, value)
+        serialization.buffer.setInt64(serialization.offset, value)
         serialization.offset += 8
     }
     deserializeUsing(serialization: Serialization): Int {
-        let result = serialization.buffer.grabInt32(serialization.offset)
+        let result = serialization.buffer.grabInt64(serialization.offset)
         serialization.offset += 8
         result
     }
