@@ -33,7 +33,9 @@ instance Int: Serializable {
     typeHash(): Int {1019}
     serializeUsing(serialization: Serialization, value: Int): Unit {
         if(serialization.offset + 8 > serialization.buffer.size()) {
-            // Make a new buffer twice as big, copy it over
+            let newBuffer = Buffer.make(serialization.buffer.size() * 2)
+            newBuffer.setAll(0, serialization.buffer)
+            serialization.buffer = newBuffer
         }
         serialization.buffer.setInt64(serialization.offset, value)
         serialization.offset += 8
