@@ -1,0 +1,46 @@
+trait T: Serializable {
+    typeHash(): Int
+    serializeUsing(serialization: Serialization, value: T): Unit
+    deserializeUsing(serialization: Serialization): T
+}
+
+type Serialization(
+    mutable buffer: Buffer
+    mutable offset: Int
+)
+
+serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
+    let serialization = Serialization(Buffer.make(initialBufferSize), 4)
+    serialization.buffer.setUint32(typeHash[T]())
+    serializeUsing(serialization, value)
+    if(serialization.offset == serialization.buffer.size()) {
+        serialization.buffer
+    } else {
+        serialization.buffer.slice(0, serialization.offset)
+    }
+}
+
+deserialize[T: Serializable](buffer: Buffer): T {
+    let serialization = Serialization(buffer, 4)
+    let hash = serialization.buffer.grabInt32(0)
+    if(hash != typeHash[T]()) {
+        panic("Serialization type hash mismatch. Expected: " + typeHash[T]() + ", got: " + hash + ".")
+    }
+    deserializeUsing(serialization, value)
+}
+
+instance Int: Serializable {
+    typeHash(): Int {1019}
+    serializeUsing(serialization: Serialization, value: Int): Unit {
+        if(serialization.offset + 8 > serialization.buffer.size()) {
+            // Make a new buffer twice as big, copy it over
+        }
+        serialization.buffer.setUint64(serialization.offset, value)
+        serialization.offset += 8
+    }
+    deserializeUsing(serialization: Serialization): Int {
+        let result = serialization.buffer.grabInt64(serialization.offset)
+        serialization.offset += 8
+        result
+    }
+}
