@@ -239,6 +239,14 @@ export function Buffer_setUint8(self_, byteOffset_, value_) {
 self_.setUint8(byteOffset_, value_)
 }
 
+export function Buffer_setAll(self_, byteOffset_, buffer_) {
+
+            const sourceBuffer = new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)
+            const targetBuffer = new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)
+            targetBuffer.set(sourceBuffer, byteOffset_)
+        
+}
+
 export function Buffer_size(self_) {
 return self_.byteLength
 }
@@ -358,6 +366,10 @@ throw new Error('Function Buffer_setUint32 is missing on this target in async co
 
 export async function Buffer_setUint8$(self_, byteOffset_, value_, $c) {
 throw new Error('Function Buffer_setUint8 is missing on this target in async context.');
+}
+
+export async function Buffer_setAll$(self_, byteOffset_, buffer_, $c) {
+throw new Error('Function Buffer_setAll is missing on this target in async context.');
 }
 
 export async function Buffer_size$(self_, $c) {

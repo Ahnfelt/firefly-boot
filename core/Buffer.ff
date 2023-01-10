@@ -95,6 +95,13 @@ extend self: Buffer {
     setUint8(byteOffset: Int, value: Int): Unit
         target js sync "self_.setUint8(byteOffset_, value_)"
 
+    setAll(byteOffset: Int, buffer: Buffer): Unit
+        target js sync """
+            const sourceBuffer = new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength)
+            const targetBuffer = new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)
+            targetBuffer.set(sourceBuffer, byteOffset_)
+        """
+
     size(): Int
         target js sync "return self_.byteLength"
 
