@@ -9,15 +9,22 @@ type Serialization(
     mutable offset: Int
 )
 
+extend self: Serialization {
+    autoResize(minSpareCapacity: Int) {
+        if(self.offset + minSpareCapacity > self.buffer.size()) {
+            let minSize = self.buffer.size() + minSpareCapacity
+            let newBuffer = Buffer.make((self.buffer.size() * 2).max(minSize))
+            newBuffer.setAll(0, self.buffer)
+            self.buffer = newBuffer
+        }
+    }
+}
+
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
     let serialization = Serialization(Buffer.make(initialBufferSize), 4)
     serialization.buffer.setInt32(typeHash[T]())
     serializeUsing(serialization, value)
-    if(serialization.offset == serialization.buffer.size()) {
-        serialization.buffer
-    } else {
-        serialization.buffer.slice(0, serialization.offset)
-    }
+    serialization.buffer.view(0, serialization.offset)
 }
 
 deserialize[T: Serializable](buffer: Buffer): T {
@@ -26,17 +33,13 @@ deserialize[T: Serializable](buffer: Buffer): T {
     if(hash != typeHash[T]()) {
         panic("Serialization type hash mismatch. Expected: " + typeHash[T]() + ", got: " + hash + ".")
     }
-    deserializeUsing(serialization, value)
+    deserializeUsing(serialization)
 }
 
 instance Int: Serializable {
     typeHash(): Int {1019}
     serializeUsing(serialization: Serialization, value: Int): Unit {
-        if(serialization.offset + 8 > serialization.buffer.size()) {
-            let newBuffer = Buffer.make(serialization.buffer.size() * 2)
-            newBuffer.setAll(0, serialization.buffer)
-            serialization.buffer = newBuffer
-        }
+        serialization.autoResize(8)
         serialization.buffer.setInt64(serialization.offset, value)
         serialization.offset += 8
     }
