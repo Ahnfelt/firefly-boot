@@ -5,12 +5,6 @@ make(size: Int, shared: Bool = False): Buffer
 
 extend self: Buffer {
 
-    size(): Int
-        target js sync "return self_.byteLength"
-
-    shared(): Bool
-        target js sync "return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer"
-
     /*grabBigInt64(byteOffset: Int, littleEndian: Bool = True): BigInt
         target js sync "return self_.getBigInt64(byteOffset_, littleEndian_)"*/
 
@@ -101,8 +95,17 @@ extend self: Buffer {
     setUint8(byteOffset: Int, value: Int): Unit
         target js sync "self_.setUint8(byteOffset_, value_)"
 
-    slice(begin: Int, end: Int): Buffer
-        target js sync "return new DataView(self_.buffer.slice(begin_, end_))"
+    size(): Int
+        target js sync "return self_.byteLength"
+
+    shared(): Bool
+        target js sync "return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer"
+
+    view(begin: Int, end: Int): Buffer
+        target js sync "return new DataView(self_.buffer, self_.byteOffset + begin_, end_ - begin_)"
+
+    copy(): Buffer
+        target js sync "return new DataView(self_.buffer.slice(self_.byteOffset, self_.byteOffset + self_.byteLength))"
 
     toString(encoding: String = "utf8"): String
         target js sync "return new TextDecoder(encoding_).decode(self_.buffer)"

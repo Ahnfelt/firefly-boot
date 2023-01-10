@@ -141,14 +141,6 @@ export async function fromBase64_$(base64_, $c) {
 throw new Error('Function fromBase64 is missing on this target in async context.');
 }
 
-export function Buffer_size(self_) {
-return self_.byteLength
-}
-
-export function Buffer_shared(self_) {
-return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer
-}
-
 export function Buffer_grabUint64(self_, byteOffset_, littleEndian_ = true) {
 
             const high = self_.getUint32(byteOffset_ + (littleEndian_ ? 4 : 0), littleEndian_)
@@ -247,8 +239,20 @@ export function Buffer_setUint8(self_, byteOffset_, value_) {
 self_.setUint8(byteOffset_, value_)
 }
 
-export function Buffer_slice(self_, begin_, end_) {
-return new DataView(self_.buffer.slice(begin_, end_))
+export function Buffer_size(self_) {
+return self_.byteLength
+}
+
+export function Buffer_shared(self_) {
+return typeof SharedArrayBuffer !== 'undefined' && self_.buffer instanceof SharedArrayBuffer
+}
+
+export function Buffer_view(self_, begin_, end_) {
+return new DataView(self_.buffer, self_.byteOffset + begin_, end_ - begin_)
+}
+
+export function Buffer_copy(self_) {
+return new DataView(self_.buffer.slice(self_.byteOffset, self_.byteOffset + self_.byteLength))
 }
 
 export function Buffer_toString(self_, encoding_ = "utf8") {
@@ -274,14 +278,6 @@ export function Buffer_toBase64(self_) {
             const view = new Uint8Array(self_.buffer);
             return btoa(String.fromCharCode(...view));
         
-}
-
-export async function Buffer_size$(self_, $c) {
-throw new Error('Function Buffer_size is missing on this target in async context.');
-}
-
-export async function Buffer_shared$(self_, $c) {
-throw new Error('Function Buffer_shared is missing on this target in async context.');
 }
 
 export async function Buffer_grabUint64$(self_, byteOffset_, littleEndian_ = true, $c) {
@@ -364,8 +360,20 @@ export async function Buffer_setUint8$(self_, byteOffset_, value_, $c) {
 throw new Error('Function Buffer_setUint8 is missing on this target in async context.');
 }
 
-export async function Buffer_slice$(self_, begin_, end_, $c) {
-throw new Error('Function Buffer_slice is missing on this target in async context.');
+export async function Buffer_size$(self_, $c) {
+throw new Error('Function Buffer_size is missing on this target in async context.');
+}
+
+export async function Buffer_shared$(self_, $c) {
+throw new Error('Function Buffer_shared is missing on this target in async context.');
+}
+
+export async function Buffer_view$(self_, begin_, end_, $c) {
+throw new Error('Function Buffer_view is missing on this target in async context.');
+}
+
+export async function Buffer_copy$(self_, $c) {
+throw new Error('Function Buffer_copy is missing on this target in async context.');
 }
 
 export async function Buffer_toString$(self_, encoding_ = "utf8", $c) {

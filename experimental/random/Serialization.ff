@@ -39,7 +39,7 @@ instance Int: Serializable {
         serialization.offset += 8
     }
     deserializeUsing(serialization: Serialization): Int {
-        let result = serialization.buffer.grabInt64(serialization.offset)
+        let result = serialization.buffer.grabInt32(serialization.offset)
         serialization.offset += 8
         result
     }
