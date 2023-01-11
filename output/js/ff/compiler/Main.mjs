@@ -223,7 +223,7 @@ const at_ = _exception.value_.at_;
 const message_ = _exception.value_.message_;
 const error_ = _error;
 ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at file://" + at_.file_) + ":") + at_.line_) + ":") + at_.column_))
+ff_core_Log.debug_((((((" at file://" + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
 }
 }
 function runCommand_(command_) {
@@ -288,7 +288,7 @@ const at_ = _exception.value_.at_;
 const message_ = _exception.value_.message_;
 const error_ = _error;
 ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at file://" + at_.file_) + ":") + at_.line_) + ":") + at_.column_))
+ff_core_Log.debug_((((((" at file://" + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
 }
 }
 
@@ -460,7 +460,7 @@ const at_ = _exception.value_.at_;
 const message_ = _exception.value_.message_;
 const error_ = _error;
 ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at file://" + at_.file_) + ":") + at_.line_) + ":") + at_.column_))
+ff_core_Log.debug_((((((" at file://" + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
 }
 }
 async function runCommand_$(command_, $c) {
@@ -525,7 +525,7 @@ const at_ = _exception.value_.at_;
 const message_ = _exception.value_.message_;
 const error_ = _error;
 ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at file://" + at_.file_) + ":") + at_.line_) + ":") + at_.column_))
+ff_core_Log.debug_((((((" at file://" + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
 }
 }
 

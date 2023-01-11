@@ -78,7 +78,7 @@ main(system: NodeSystem): Unit {
             )
         } catch {| TypeException(at, message), error =>
             Log.debug(message)
-            Log.debug(" at file://" + at.file + ":" + at.line + ":" + at.column)
+            Log.debug(" at file://" + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
         } grab()
     }
 
@@ -138,7 +138,7 @@ main(system: NodeSystem): Unit {
         runCommand(command)
     } catch {| TypeException(at, message), error =>
         Log.debug(message)
-        Log.debug(" at file://" + at.file + ":" + at.line + ":" + at.column)
+        Log.debug(" at file://" + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
     } grab()
 
 }

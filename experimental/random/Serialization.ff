@@ -1,5 +1,21 @@
+serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
+    let serialization = Serialization(Buffer.make(initialBufferSize), 4)
+    serialization.buffer.setInt32(typeChecksum[T]())
+    serializeUsing(serialization, value)
+    serialization.buffer.view(0, serialization.offset)
+}
+
+deserialize[T: Serializable](buffer: Buffer): T {
+    let serialization = Serialization(buffer, 4)
+    let hash = serialization.buffer.grabInt32(0)
+    if(hash != typeChecksum[T]()) {
+        panic("Serialization type checksum mismatch. Expected: " + typeChecksum[T]() + ", got: " + hash + ".")
+    }
+    deserializeUsing(serialization)
+}
+
 trait T: Serializable {
-    typeHash(): Int
+    typeChecksum(): Int
     serializeUsing(serialization: Serialization, value: T): Unit
     deserializeUsing(serialization: Serialization): T
 }
@@ -20,24 +36,8 @@ extend self: Serialization {
     }
 }
 
-serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
-    let serialization = Serialization(Buffer.make(initialBufferSize), 4)
-    serialization.buffer.setInt32(typeHash[T]())
-    serializeUsing(serialization, value)
-    serialization.buffer.view(0, serialization.offset)
-}
-
-deserialize[T: Serializable](buffer: Buffer): T {
-    let serialization = Serialization(buffer, 4)
-    let hash = serialization.buffer.grabInt32(0)
-    if(hash != typeHash[T]()) {
-        panic("Serialization type hash mismatch. Expected: " + typeHash[T]() + ", got: " + hash + ".")
-    }
-    deserializeUsing(serialization)
-}
-
 instance Int: Serializable {
-    typeHash(): Int {1019}
+    typeChecksum(): Int {1019}
     serializeUsing(serialization: Serialization, value: Int): Unit {
         serialization.autoResize(8)
         serialization.buffer.setInt64(serialization.offset, value)
@@ -47,5 +47,19 @@ instance Int: Serializable {
         let result = serialization.buffer.grabInt64(serialization.offset)
         serialization.offset += 8
         result
+    }
+}
+
+instance Bool: Serializable {
+    typeChecksum(): Int {2017}
+    serializeUsing(serialization: Serialization, value: Bool): Unit {
+        serialization.autoResize(1)
+        serialization.buffer.setUint8(serialization.offset, if(value) {1} else {0})
+        serialization.offset += 1
+    }
+    deserializeUsing(serialization: Serialization): Bool {
+        let result = serialization.buffer.grabUint8(serialization.offset)
+        serialization.offset += 1
+        result == 1
     }
 }
