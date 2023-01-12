@@ -1,3 +1,26 @@
+type Person(id: Int, male: Bool)
+
+instance Person: Serializable {
+    typeChecksum(): Int {7}
+    serializeUsing(serialization: Serialization, value: Person): Unit {
+        serializeUsing(serialization, value.id)
+        serializeUsing(serialization, value.male)
+    }
+    deserializeUsing(serialization: Serialization): Person {
+        Person(
+            deserializeUsing(serialization),
+            deserializeUsing(serialization)
+        )
+    }
+}
+
+main(system: NodeSystem) {
+    let p = Person(5, True)
+    Log.debug(Show.show(p))
+    Log.debug(Show.show(serialize[Person](p)))
+    Log.debug(Show.show(deserialize[Person](serialize[Person](p))))
+}
+
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
     let serialization = Serialization(Buffer.make(initialBufferSize), 4)
     serialization.buffer.setInt32(0, typeChecksum[T]())
