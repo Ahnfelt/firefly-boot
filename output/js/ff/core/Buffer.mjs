@@ -195,15 +195,15 @@ return self_.getUint8(byteOffset_)
 
 export function Buffer_setUint64(self_, byteOffset_, value_, littleEndian_ = true) {
 
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ >>> 32, littleEndian_)
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), value_ & 0xffffffff, littleEndian_)
+            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >>> 16) >>> 16, littleEndian_)
+            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
         
 }
 
 export function Buffer_setInt64(self_, byteOffset_, value_, littleEndian_ = true) {
 
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ >> 32, littleEndian_)
-            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), value_ & 0xffffffff, littleEndian_)
+            self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), (value_ >> 16) >> 16, littleEndian_)
+            self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ & 0xffffffff, littleEndian_)
         
 }
 
