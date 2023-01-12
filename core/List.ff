@@ -181,6 +181,10 @@ extend self[T]: List[T] {
         go(self, [])
     }
 
+    partition(body: T => Bool): Pair[List[T], List[T]] {
+        Pair(self.filter(body), self.filter {!body(_)})
+    }
+
     map[R](body: T => R): List[R] {
         function go(list: List[T], result: List[R]): List[R] {
             list.{

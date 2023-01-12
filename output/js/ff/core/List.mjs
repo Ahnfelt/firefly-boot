@@ -628,6 +628,12 @@ return
 return go_(self_, ff_core_List.Empty())
 }
 
+export function List_partition(self_, body_) {
+return ff_core_Pair.Pair(ff_core_List.List_filter(self_, body_), ff_core_List.List_filter(self_, ((_w1) => {
+return (!body_(_w1))
+})))
+}
+
 export function List_map(self_, body_) {
 function go_(list_, result_) {
 _tailcall: for(;;) {
@@ -1471,6 +1477,12 @@ return
 }
 }
 return (await go_$(self_, ff_core_List.Empty(), $c))
+}
+
+export async function List_partition$(self_, body_, $c) {
+return ff_core_Pair.Pair((await ff_core_List.List_filter$(self_, body_, $c)), (await ff_core_List.List_filter$(self_, (async (_w1, $c) => {
+return (!(await body_(_w1, $c)))
+}), $c)))
 }
 
 export async function List_map$(self_, body_, $c) {

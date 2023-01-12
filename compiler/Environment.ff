@@ -59,8 +59,9 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
             let constraint = Constraint(definition.at, full(module, definition.name), generics)
             let outerConstraints = if(alreadyFlat) {[]} else {definition.constraints}
             definition.methods.map { methodSignature =>
+                let generics = [...definition.generics, ...methodSignature.generics].partition {_ == "Q$"}
                 let signature = methodSignature.Signature(
-                    generics = [...definition.generics, ...methodSignature.generics]
+                    generics = [...generics.first.takeFirst(1), ...generics.second]
                     constraints = [constraint, ...outerConstraints, ...methodSignature.constraints]
                 )
                 Pair(

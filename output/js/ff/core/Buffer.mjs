@@ -200,7 +200,7 @@ export function Buffer_setUint64(self_, byteOffset_, value_, littleEndian_ = tru
         
 }
 
-export function Buffer_setInt64(self_, byteOffset_, littleEndian_ = true) {
+export function Buffer_setInt64(self_, byteOffset_, value_, littleEndian_ = true) {
 
             self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ >> 32, littleEndian_)
             self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), value_ & 0xffffffff, littleEndian_)
@@ -332,7 +332,7 @@ export async function Buffer_setUint64$(self_, byteOffset_, value_, littleEndian
 throw new Error('Function Buffer_setUint64 is missing on this target in async context.');
 }
 
-export async function Buffer_setInt64$(self_, byteOffset_, littleEndian_ = true, $c) {
+export async function Buffer_setInt64$(self_, byteOffset_, value_, littleEndian_ = true, $c) {
 throw new Error('Function Buffer_setInt64 is missing on this target in async context.');
 }
 

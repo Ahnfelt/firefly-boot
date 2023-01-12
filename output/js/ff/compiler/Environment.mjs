@@ -129,8 +129,11 @@ const outerConstraints_ = (alreadyFlat_
 ? ff_core_List.Empty()
 : definition_.constraints_);
 return ff_core_List.List_map(definition_.methods_, ((methodSignature_) => {
+const generics_ = ff_core_List.List_partition(ff_core_List.List_addAll(definition_.generics_, methodSignature_.generics_), ((_w1) => {
+return (_w1 === "Q$")
+}));
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, methodSignature_.generics_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(outerConstraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(ff_core_List.List_takeFirst(generics_.first_, 1), generics_.second_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(outerConstraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_, _c.effect_)
 }))(methodSignature_);
 return ff_core_Pair.Pair(full_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
 }))
@@ -225,8 +228,11 @@ const outerConstraints_ = (alreadyFlat_
 ? ff_core_List.Empty()
 : definition_.constraints_);
 return ff_core_List.List_map(definition_.methods_, ((methodSignature_) => {
+const generics_ = ff_core_List.List_partition(ff_core_List.List_addAll(definition_.generics_, methodSignature_.generics_), ((_w1) => {
+return (_w1 === "Q$")
+}));
 const signature_ = (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(definition_.generics_, methodSignature_.generics_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(outerConstraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(ff_core_List.List_takeFirst(generics_.first_, 1), generics_.second_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(outerConstraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_, _c.effect_)
 }))(methodSignature_);
 return ff_core_Pair.Pair(full_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
 }))

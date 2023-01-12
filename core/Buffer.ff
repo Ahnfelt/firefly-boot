@@ -65,7 +65,7 @@ extend self: Buffer {
             self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), value_ & 0xffffffff, littleEndian_)
         """
 
-    setInt64(byteOffset: Int, littleEndian: Bool = True): Int
+    setInt64(byteOffset: Int, value: Int, littleEndian: Bool = True): Int
         target js sync """
             self_.setUint32(byteOffset_ + (littleEndian_ ? 0 : 4), value_ >> 32, littleEndian_)
             self_.setUint32(byteOffset_ + (littleEndian_ ? 4 : 0), value_ & 0xffffffff, littleEndian_)
