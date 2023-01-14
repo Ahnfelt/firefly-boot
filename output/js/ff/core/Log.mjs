@@ -84,12 +84,20 @@ export function debug_(value_) {
 ff_core_Log.magic_(value_)
 }
 
+export function print_(value_, ff_core_Show_Show$T) {
+ff_core_Log.magic_(ff_core_Show_Show$T.show_(value_))
+}
+
 export function magic_(value_) {
 console.log(value_)
 }
 
 export async function debug_$(value_, $c) {
 ff_core_Log.magic_(value_)
+}
+
+export async function print_$(value_, ff_core_Show_Show$T, $c) {
+ff_core_Log.magic_(ff_core_Show_Show$T.show_(value_))
 }
 
 export async function magic_$(value_, $c) {

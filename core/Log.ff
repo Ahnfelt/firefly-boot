@@ -2,7 +2,7 @@ debug(value: String): Unit {
     magic(value)
 }
 
-debugShow[T: Show](value: T): Unit {
+print[T: Show](value: T): Unit {
     magic(Show.show(value))
 }
 
