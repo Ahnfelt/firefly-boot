@@ -1,10 +1,18 @@
-debug(value: String): Unit {
-    magic(value)
+show[T: Show](value: T): Unit {
+    debug(Show.show(value))
 }
 
-print[T: Show](value: T): Unit {
-    magic(Show.show(value))
-}
+debug(value: String): Unit
+    target js sync "console.debug(value_)"
 
-magic[T](value: T): Unit
+verbose(value: String): Unit
     target js sync "console.log(value_)"
+
+info(value: String): Unit
+    target js sync "console.info(value_)"
+
+warn(value: String): Unit
+    target js sync "console.warn(value_)"
+
+error(value: String): Unit
+    target js sync "console.error(value_)"
