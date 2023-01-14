@@ -16,9 +16,9 @@ instance Person: Serializable {
 
 main(system: NodeSystem) {
     let p = Person(5, True)
-    Log.debug(Show.show(p))
-    Log.debug(Show.show(serialize(p)))
-    Log.debug(Show.show(deserialize[Person](serialize(p))))
+    Log.debugShow(p)
+    Log.debugShow(serialize(p))
+    Log.debugShow(deserialize[Person](serialize(p)))
 }
 
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
