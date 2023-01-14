@@ -1,7 +1,6 @@
 type Person(id: Int, male: Bool)
 
 instance Person: Serializable {
-    typeChecksum(): Int {7}
     serializeUsing(serialization: Serialization, value: Person): Unit {
         serializeUsing(serialization, value.id)
         serializeUsing(serialization, value.male)
@@ -12,6 +11,7 @@ instance Person: Serializable {
             deserializeUsing(serialization)
         )
     }
+    typeChecksum(): Int {7}
 }
 
 main(system: NodeSystem) {
@@ -38,9 +38,9 @@ deserialize[T: Serializable](buffer: Buffer): T {
 }
 
 trait T: Serializable {
-    typeChecksum(): Int
     serializeUsing(serialization: Serialization, value: T): Unit
     deserializeUsing(serialization: Serialization): T
+    typeChecksum(): Int
 }
 
 type Serialization(
@@ -60,7 +60,6 @@ extend self: Serialization {
 }
 
 instance Int: Serializable {
-    typeChecksum(): Int {1019}
     serializeUsing(serialization: Serialization, value: Int): Unit {
         serialization.autoResize(8)
         serialization.buffer.setInt64(serialization.offset, value)
@@ -71,10 +70,10 @@ instance Int: Serializable {
         serialization.offset += 8
         result
     }
+    typeChecksum(): Int {1019}
 }
 
 instance Bool: Serializable {
-    typeChecksum(): Int {2017}
     serializeUsing(serialization: Serialization, value: Bool): Unit {
         serialization.autoResize(1)
         serialization.buffer.setUint8(serialization.offset, if(value) {1} else {0})
@@ -85,4 +84,5 @@ instance Bool: Serializable {
         serialization.offset += 1
         result == 1
     }
+    typeChecksum(): Int {2017}
 }
