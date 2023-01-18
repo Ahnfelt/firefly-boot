@@ -118,13 +118,13 @@ instance Bool: Serializable {
 
 instance Array[T: Serializable]: Serializable {
     serializeUsing(serialization: Serialization, value: Array[T]): Unit {
-        if(value.size() < 128) {
+        if(value.size() < 255) {
             serialization.autoResize(1)
-            serialization.buffer.setUint8(serialization.offset, value.size() + 128)
+            serialization.buffer.setUint8(serialization.offset, value.size())
             serialization.offset += 1
-        } elseIf(value.size() < 1073741824) {
+        } elseIf {value.size() < 1073741824} {
             serialization.autoResize(1 + 4)
-            serialization.buffer.setUint8(serialization.offset, 0)
+            serialization.buffer.setUint8(serialization.offset, 255)
             serialization.buffer.setUint32(1 + serialization.offset, value.size())
             serialization.offset += 1 + 4
         } else {
@@ -133,10 +133,10 @@ instance Array[T: Serializable]: Serializable {
         value.each {serializeUsing(serialization, _)}
     }
     deserializeUsing(serialization: Serialization): Array[T] {
-        let sizePlus128 = serialization.buffer.grabUint8(serialization.offset)
-        if(sizePlus128 >= 128) {
+        let smallSize = serialization.buffer.grabUint8(serialization.offset)
+        if(smallSize != 255) {
             serialization.offset += 1
-            Array.fillBy(sizePlus128 - 128) {_ => deserializeUsing(serialization)}
+            Array.fillBy(smallSize) {_ => deserializeUsing(serialization)}
         } else {
             let size = serialization.buffer.grabUint32(serialization.offset + 1)
             serialization.offset += 1 + 4
@@ -149,13 +149,13 @@ instance Array[T: Serializable]: Serializable {
 instance String: Serializable {
     serializeUsing(serialization: Serialization, value: String): Unit {
         serialization.autoResize(1 + value.size())
-        serialization.buffer.setUint8(serialization.offset, value.size() + 128)
-        if(value.size() < 128 && internalSetLatin1(serialization.buffer, serialization.offset + 1, value)) {
+        serialization.buffer.setUint8(serialization.offset, value.size())
+        if(value.size() < 255 && internalSetLatin1(serialization.buffer, serialization.offset + 1, value)) {
             serialization.offset += 1 + value.size()
-        } elseIf(value.size() < 1073741824) {
+        } elseIf {value.size() < 1073741824} {
             let stringBuffer = value.toBuffer()
             serialization.autoResize(5 + stringBuffer.size())
-            serialization.buffer.setUint8(serialization.offset, 0)
+            serialization.buffer.setUint8(serialization.offset, 255)
             serialization.buffer.setUint32(serialization.offset + 1, stringBuffer.size())
             serialization.buffer.setAll(serialization.offset + 5, stringBuffer)
             serialization.offset += 5 + stringBuffer.size()
@@ -164,10 +164,10 @@ instance String: Serializable {
         }
     }
     deserializeUsing(serialization: Serialization): String {
-        let sizePlus128 = serialization.buffer.grabUint8(serialization.offset)
-        if(sizePlus128 >= 128) {
-            let result = internalGrabLatin1(serialization.buffer, serialization.offset + 1, sizePlus128 - 128)
-            serialization.offset += 1 + sizePlus128 - 128
+        let smallSize = serialization.buffer.grabUint8(serialization.offset)
+        if(smallSize != 255) {
+            let result = internalGrabLatin1(serialization.buffer, serialization.offset + 1, smallSize)
+            serialization.offset += 1 + smallSize
             result
         } else {
             let size = serialization.buffer.grabUint32(serialization.offset + 1)
