@@ -116,23 +116,6 @@ instance Bool: Serializable {
     typeChecksum(): Int {2017}
 }
 
-instance String: Serializable {
-    serializeUsing(serialization: Serialization, value: String): Unit {
-        let stringBuffer = value.toBuffer()
-        serialization.autoResize(8 + stringBuffer.size())
-        serialization.buffer.setInt64(serialization.offset, stringBuffer.size())
-        serialization.buffer.setAll(serialization.offset + 8, stringBuffer)
-        serialization.offset += 8 + stringBuffer.size()
-    }
-    deserializeUsing(serialization: Serialization): String {
-        let size = serialization.buffer.grabInt64(serialization.offset)
-        let stringBuffer = serialization.buffer.view(serialization.offset + 8, serialization.offset + 8 + size)
-        serialization.offset += 8 + size
-        stringBuffer.toString()
-    }
-    typeChecksum(): Int {3011}
-}
-
 instance Array[T: Serializable]: Serializable {
     serializeUsing(serialization: Serialization, value: Array[T]): Unit {
         serialization.autoResize(8)
@@ -147,3 +130,50 @@ instance Array[T: Serializable]: Serializable {
     }
     typeChecksum(): Int {4079}
 }
+
+instance String: Serializable {
+    serializeUsing(serialization: Serialization, value: String): Unit {
+        serialization.autoResize(1 + value.size())
+        serialization.buffer.setUint8(serialization.offset, value.size() + 128)
+        if(value.size() < 128 && internalSetLatin1(serialization.buffer, serialization.offset + 1, value)) {
+            serialization.offset += 1 + value.size()
+        } else {
+            let stringBuffer = value.toBuffer()
+            serialization.autoResize(8 + stringBuffer.size())
+            serialization.buffer.setInt64(serialization.offset, stringBuffer.size(), littleEndian = False)
+            serialization.buffer.setAll(serialization.offset + 8, stringBuffer)
+            serialization.offset += 8 + stringBuffer.size()
+        }
+    }
+    deserializeUsing(serialization: Serialization): String {
+        let sizePlus128 = serialization.buffer.grabUint8(serialization.offset)
+        if(sizePlus128 >= 128) {
+            let result = internalGrabLatin1(serialization.buffer, serialization.offset + 1, sizePlus128 - 128)
+            serialization.offset += 1 + sizePlus128 - 128
+            result
+        } else {
+            let size = serialization.buffer.grabInt64(serialization.offset, littleEndian = False)
+            let stringBuffer = serialization.buffer.view(serialization.offset + 8, serialization.offset + 8 + size)
+            serialization.offset += 8 + size
+            stringBuffer.toString()
+        }
+    }
+    typeChecksum(): Int {3011}
+}
+
+
+internalSetLatin1(self: Buffer, byteOffset: Int, value: String): Bool
+    target js sync """
+        for(let i = 0; i < value_.length; i++) {
+            let charCode = value_.charCodeAt(i)
+            if(charCode >= 256) return false
+            self_.setUint8(byteOffset_ + i, charCode)
+        }
+        return true
+    """
+
+internalGrabLatin1(self: Buffer, byteOffset: Int, size: Int): String
+    target js sync """
+        const codeUnits = new Uint8Array(self_.buffer, self_.byteOffset + byteOffset_, size_)
+        return String.fromCharCode.apply(null, codeUnits)
+    """
