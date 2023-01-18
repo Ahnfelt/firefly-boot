@@ -1,24 +1,53 @@
-type Person(id: Int, male: Bool)
+type Person(id: Int, male: Bool, name: String)
 
 instance Person: Serializable {
     serializeUsing(serialization: Serialization, value: Person): Unit {
         serializeUsing(serialization, value.id)
         serializeUsing(serialization, value.male)
+        serializeUsing(serialization, value.name)
     }
     deserializeUsing(serialization: Serialization): Person {
         Person(
-            deserializeUsing(serialization),
+            deserializeUsing(serialization)
+            deserializeUsing(serialization)
             deserializeUsing(serialization)
         )
     }
     typeChecksum(): Int {7}
 }
 
-main(system: NodeSystem) {
-    let p = Person(5, True)
+main(system: BrowserSystem) {
+    let p = Person(5, True, "Hans")
     Log.show(p)
     Log.show(serialize(p))
     Log.show(deserialize[Person](serialize(p)))
+
+    let numbers = 1.to(1000).toArray()
+
+    let serialized = serialize(numbers)
+    let deserialized = deserialize(serialized)
+    Log.show(numbers == deserialized)
+
+    function test() {
+        let persons = 1.to(1000000).map{ n =>
+            Person(n, n % 2 == 0, "Person called " + n)
+        }.toArray()
+
+        let started = system.time().elapsed()
+        let personsSerialized = serialize(persons)
+        let deserializeStarted = system.time().elapsed()
+        let personsDeserialized = deserialize(personsSerialized)
+        Log.show(Duration(system.time().elapsed().seconds - deserializeStarted.seconds))
+        Log.show(Duration(system.time().elapsed().seconds - started.seconds))
+        Log.show(persons == personsDeserialized)
+        Log.show(persons.toList().takeFirst(2))
+        Log.show(personsDeserialized.toList().takeFirst(2))
+    }
+    test()
+    //system.tasks().sleep(Duration(10.0))
+    //test()
+    //system.tasks().sleep(Duration(10.0))
+    //test()
 }
 
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
@@ -85,4 +114,36 @@ instance Bool: Serializable {
         result == 1
     }
     typeChecksum(): Int {2017}
+}
+
+instance String: Serializable {
+    serializeUsing(serialization: Serialization, value: String): Unit {
+        let stringBuffer = value.toBuffer()
+        serialization.autoResize(8 + stringBuffer.size())
+        serialization.buffer.setInt64(serialization.offset, stringBuffer.size())
+        serialization.buffer.setAll(serialization.offset + 8, stringBuffer)
+        serialization.offset += 8 + stringBuffer.size()
+    }
+    deserializeUsing(serialization: Serialization): String {
+        let size = serialization.buffer.grabInt64(serialization.offset)
+        let stringBuffer = serialization.buffer.view(serialization.offset + 8, serialization.offset + 8 + size)
+        serialization.offset += 8 + size
+        stringBuffer.toString()
+    }
+    typeChecksum(): Int {3011}
+}
+
+instance Array[T: Serializable]: Serializable {
+    serializeUsing(serialization: Serialization, value: Array[T]): Unit {
+        serialization.autoResize(8)
+        serialization.buffer.setInt64(serialization.offset, value.size())
+        serialization.offset += 8
+        value.each {serializeUsing(serialization, _)}
+    }
+    deserializeUsing(serialization: Serialization): Array[T] {
+        let size = serialization.buffer.grabInt64(serialization.offset)
+        serialization.offset += 8
+        Array.fillBy(size) {_ => deserializeUsing(serialization)}
+    }
+    typeChecksum(): Int {4079}
 }

@@ -7,3 +7,9 @@ extend self: Duration {
     }
 
 }
+
+instance Duration: Show {
+    show(value: Duration): String {
+        value.toString()
+    }
+}

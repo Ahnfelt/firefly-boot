@@ -125,6 +125,9 @@ extend self: String {
         """
 
     toBuffer(): Buffer
-        target js sync "return new DataView(new TextEncoder().encode(_self))"
+        target js sync """
+            const encoded = new TextEncoder().encode(self_)
+            return new DataView(encoded.buffer, encoded.byteOffset, encoded.byteLength)
+        """
 
 }

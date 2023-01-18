@@ -10,6 +10,11 @@ fill[T](size: Int, value: T): Array[T]
         return new Array(size_).fill(value_);
     """
 
+fillBy[T](size: Int, body: Int => T): Array[T]
+    target js sync """
+        return Array.from({length: size_}, (_, i) => body_(i));
+    """
+
 range(size: Int): Array[Int]
     target js sync """
         return Array.from({length: size_}, (_, i) => i);
@@ -185,7 +190,7 @@ instance Array[T: Show]: Show {
 }
 
 instance Array[T: Equal]: Equal {
-    equal(left: Array[T], right: Array[T]): Bool {
+    equals(left: Array[T], right: Array[T]): Bool {
         if(internalSame(left, right)) {True} else:
         if(left.size() != right.size()) {False} else:
         mutable i = -1

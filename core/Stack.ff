@@ -8,6 +8,11 @@ fill[T](size: Int, value: T): Array[T]
         return {array: new Array(size_).fill(value_)};
     """
 
+fillBy[T](size: Int, body: Int => T): Array[T]
+    target js sync """
+        return {array: Array.from({length: size_}, (_, i) => body_(i))};
+    """
+
 range(size: Int): Array[Int]
     target js sync """
         return {array: Array.from({length: size_}, (_, i) => i)};
