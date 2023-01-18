@@ -118,15 +118,30 @@ instance Bool: Serializable {
 
 instance Array[T: Serializable]: Serializable {
     serializeUsing(serialization: Serialization, value: Array[T]): Unit {
-        serialization.autoResize(8)
-        serialization.buffer.setInt64(serialization.offset, value.size())
-        serialization.offset += 8
+        if(value.size() < 128) {
+            serialization.autoResize(1)
+            serialization.buffer.setUint8(serialization.offset, value.size() + 128)
+            serialization.offset += 1
+        } elseIf(value.size() < 1073741824) {
+            serialization.autoResize(1 + 4)
+            serialization.buffer.setUint8(serialization.offset, 0)
+            serialization.buffer.setUint32(1 + serialization.offset, value.size())
+            serialization.offset += 1 + 4
+        } else {
+            panic("Can't serialize arrays where size() >= 1073741824")
+        }
         value.each {serializeUsing(serialization, _)}
     }
     deserializeUsing(serialization: Serialization): Array[T] {
-        let size = serialization.buffer.grabInt64(serialization.offset)
-        serialization.offset += 8
-        Array.fillBy(size) {_ => deserializeUsing(serialization)}
+        let sizePlus128 = serialization.buffer.grabUint8(serialization.offset)
+        if(sizePlus128 >= 128) {
+            serialization.offset += 1
+            Array.fillBy(sizePlus128 - 128) {_ => deserializeUsing(serialization)}
+        } else {
+            let size = serialization.buffer.grabUint32(serialization.offset + 1)
+            serialization.offset += 1 + 4
+            Array.fillBy(size) {_ => deserializeUsing(serialization)}
+        }
     }
     typeChecksum(): Int {4079}
 }
@@ -137,7 +152,7 @@ instance String: Serializable {
         serialization.buffer.setUint8(serialization.offset, value.size() + 128)
         if(value.size() < 128 && internalSetLatin1(serialization.buffer, serialization.offset + 1, value)) {
             serialization.offset += 1 + value.size()
-        } elseIf(value.size() < 1000000000) {
+        } elseIf(value.size() < 1073741824) {
             let stringBuffer = value.toBuffer()
             serialization.autoResize(5 + stringBuffer.size())
             serialization.buffer.setUint8(serialization.offset, 0)
@@ -145,7 +160,7 @@ instance String: Serializable {
             serialization.buffer.setAll(serialization.offset + 5, stringBuffer)
             serialization.offset += 5 + stringBuffer.size()
         } else {
-            panic("Can't serialize strings where size() >= 1000000000")
+            panic("Can't serialize strings where size() >= 1073741824")
         }
     }
     deserializeUsing(serialization: Serialization): String {
