@@ -29,15 +29,16 @@ main(system: BrowserSystem) {
     Log.show(numbers == deserialized)
 
     function test() {
-        let persons = 1.to(1000000).map{ n =>
+        let persons = 1.to(1000).map{ n =>
             Person(n, n % 2 == 0, "Person called " + n)
         }.toArray()
 
         let started = system.time().elapsed()
-        let personsSerialized = serialize(persons)
-        let deserializeStarted = system.time().elapsed()
-        let personsDeserialized = deserialize(personsSerialized)
-        Log.show(Duration(system.time().elapsed().seconds - deserializeStarted.seconds))
+        mutable personsDeserialized = Array.empty()
+        1.to(1000).each {_ =>
+            let personsSerialized = serialize(persons)
+            personsDeserialized = deserialize[Array[Person]](personsSerialized)
+        }
         Log.show(Duration(system.time().elapsed().seconds - started.seconds))
         Log.show(persons == personsDeserialized)
         Log.show(persons.toList().takeFirst(2))
