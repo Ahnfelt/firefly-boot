@@ -264,11 +264,17 @@ return new DataView(self_.buffer.slice(self_.byteOffset, self_.byteOffset + self
 }
 
 export function Buffer_toString(self_, encoding_ = "utf8") {
-return new TextDecoder(encoding_).decode(self_.buffer)
+
+            if(encoding_ === "utf8") {
+                if(typeof TextDecoder.ffSingleton === 'undefined') TextDecoder.ffSingleton = new TextDecoder()
+                return TextDecoder.ffSingleton.decode(self_)
+            }
+            return new TextDecoder().decode(self_)
+        
 }
 
 export function Buffer_toByteArray(self_) {
-return [...new Uint8Array(self_.buffer)]
+return [...new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength)]
 }
 
 export function Buffer_toHex(self_) {
@@ -283,7 +289,7 @@ export function Buffer_toHex(self_) {
 
 export function Buffer_toBase64(self_) {
 
-            const view = new Uint8Array(self_.buffer);
+            const view = new Uint8Array(self_.buffer, self_.byteOffset, self_.byteLength);
             return btoa(String.fromCharCode(...view));
         
 }

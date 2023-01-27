@@ -1507,6 +1507,51 @@ return
 }
 {
 if(_1.ECall) {
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Array.fillBy") {
+const effect_ = _1.effect_;
+if(_1.arguments_.Link) {
+const size_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+if(_1.arguments_.tail_.head_.value_.ELambda) {
+const at_ = _1.arguments_.tail_.head_.value_.at_;
+const l_ = _1.arguments_.tail_.head_.value_.lambda_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.Link) {
+const c_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.Link) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.head_.PVariable) {
+const name_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.head_.name_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.tail_.Empty) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const body_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.tail_.tail_.Empty) {
+const _guard1 = (!ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
+if(_guard1) {
+const n_ = ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_compiler_JsEmitter.escapeResolved_(_w1)
+})), (() => {
+return "i"
+}));
+return ((((((((((((((((("((() => {\n" + "const size = ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, size_, async_)) + ";\n") + "const result = [];\n") + "for(let ") + n_) + " = 0; ") + n_) + " < size; ") + n_) + "++) {\n") + "result.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ");\n") + "}\n") + "return result;\n") + "})())")
+return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
 const name_ = _1.target_.name_;
@@ -3527,6 +3572,51 @@ const _guard1 = ff_core_Set.Set_contains(ff_compiler_JsEmitter.primitiveTypes_, 
 if(_guard1) {
 return (((("(" + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, left_, async_)) + " <= ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, right_, async_)) + ")")
 return
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.ECall) {
+if(_1.target_.StaticCall) {
+if(_1.target_.name_ == "ff:core/Array.fillBy") {
+const effect_ = _1.effect_;
+if(_1.arguments_.Link) {
+const size_ = _1.arguments_.head_;
+if(_1.arguments_.tail_.Link) {
+if(_1.arguments_.tail_.head_.value_.ELambda) {
+const at_ = _1.arguments_.tail_.head_.value_.at_;
+const l_ = _1.arguments_.tail_.head_.value_.lambda_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.Link) {
+const c_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.Link) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.head_.PVariable) {
+const name_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.head_.name_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.patterns_.tail_.Empty) {
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.head_.guards_.Empty) {
+const body_ = _1.arguments_.tail_.head_.value_.lambda_.cases_.head_.body_;
+if(_1.arguments_.tail_.head_.value_.lambda_.cases_.tail_.Empty) {
+if(_1.arguments_.tail_.tail_.Empty) {
+const _guard1 = (!ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
+if(_guard1) {
+const n_ = ff_core_Option.Option_else(ff_core_Option.Option_map(name_, ((_w1) => {
+return ff_compiler_JsEmitter.escapeResolved_(_w1)
+})), (() => {
+return "i"
+}));
+return ((((((((((((((((("((() => {\n" + "const size = ") + ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, size_, async_)) + ";\n") + "const result = [];\n") + "for(let ") + n_) + " = 0; ") + n_) + " < size; ") + n_) + "++) {\n") + "result.push(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, body_, async_)) + ");\n") + "}\n") + "return result;\n") + "})())")
+return
+}
+}
+}
+}
 }
 }
 }

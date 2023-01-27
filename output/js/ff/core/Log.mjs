@@ -80,28 +80,52 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
+export function show_(value_, ff_core_Show_Show$T) {
+ff_core_Log.debug_(ff_core_Show_Show$T.show_(value_))
+}
+
 export function debug_(value_) {
-ff_core_Log.magic_(value_)
+console.debug(value_)
 }
 
-export function print_(value_, ff_core_Show_Show$T) {
-ff_core_Log.magic_(ff_core_Show_Show$T.show_(value_))
-}
-
-export function magic_(value_) {
+export function verbose_(value_) {
 console.log(value_)
 }
 
+export function info_(value_) {
+console.info(value_)
+}
+
+export function warn_(value_) {
+console.warn(value_)
+}
+
+export function error_(value_) {
+console.error(value_)
+}
+
+export async function show_$(value_, ff_core_Show_Show$T, $c) {
+ff_core_Log.debug_(ff_core_Show_Show$T.show_(value_))
+}
+
 export async function debug_$(value_, $c) {
-ff_core_Log.magic_(value_)
+throw new Error('Function debug is missing on this target in async context.');
 }
 
-export async function print_$(value_, ff_core_Show_Show$T, $c) {
-ff_core_Log.magic_(ff_core_Show_Show$T.show_(value_))
+export async function verbose_$(value_, $c) {
+throw new Error('Function verbose is missing on this target in async context.');
 }
 
-export async function magic_$(value_, $c) {
-throw new Error('Function magic is missing on this target in async context.');
+export async function info_$(value_, $c) {
+throw new Error('Function info is missing on this target in async context.');
+}
+
+export async function warn_$(value_, $c) {
+throw new Error('Function warn is missing on this target in async context.');
+}
+
+export async function error_$(value_, $c) {
+throw new Error('Function error is missing on this target in async context.');
 }
 
 

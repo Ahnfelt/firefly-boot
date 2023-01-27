@@ -91,6 +91,12 @@ export function fill_(size_, value_) {
     
 }
 
+export function fillBy_(size_, body_) {
+
+        return {array: Array.from({length: size_}, (_, i) => body_(i))};
+    
+}
+
 export function range_(size_) {
 
         return {array: Array.from({length: size_}, (_, i) => i)};
@@ -131,6 +137,10 @@ throw new Error('Function make is missing on this target in async context.');
 
 export async function fill_$(size_, value_, $c) {
 throw new Error('Function fill is missing on this target in async context.');
+}
+
+export async function fillBy_$(size_, body_, $c) {
+throw new Error('Function fillBy is missing on this target in async context.');
 }
 
 export async function range_$(size_, $c) {

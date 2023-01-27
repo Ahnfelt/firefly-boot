@@ -16,6 +16,27 @@ instance Person: Serializable {
     typeChecksum(): Int {7}
 }
 
+deserializePersonArray(buffer: Buffer): Array[Person] {
+    mutable offset = 4
+    let size = buffer.grabUint32(offset + 1)
+    offset += 1 + 4
+    let stack = Stack.make()
+    mutable i = 0
+    while {i < size} {
+        let id = buffer.grabInt64(offset)
+        offset += 8
+        let male = buffer.grabUint8(offset) == 1
+        offset += 1
+        let smallSize = buffer.grabUint8(offset)
+        let name = internalGrabLatin1(buffer, offset + 1, smallSize)
+        offset += 1 + smallSize
+        let person = Person(id, male, name)
+        stack.push(person)
+        i += 1
+    }
+    stack.drain()
+}
+
 main(system: BrowserSystem) {
     let p = Person(5, True, "Hans")
     Log.show(p)
@@ -28,21 +49,37 @@ main(system: BrowserSystem) {
     let deserialized = deserialize(serialized)
     Log.show(numbers == deserialized)
 
+    function logDuration[T](label: String, body: () => T): T {
+        let started = system.time().elapsed()
+        let result = body()
+        Log.debug(label + ": " + Show.show(Duration(system.time().elapsed().seconds - started.seconds)))
+        result
+    }
+
     function test() {
-        let persons = 1.to(1000).map{ n =>
-            Person(n, n % 2 == 0, "Person called " + n)
-        }.toArray()
+        let persons = logDuration("create") {
+            Array.fillBy(1000000) {n =>
+                Person(n, n % 2 == 0, "Person called " + n)
+            }
+        }
 
         let started = system.time().elapsed()
-        mutable personsDeserialized = Array.empty()
-        1.to(1000).each {_ =>
-            let personsSerialized = serialize(persons)
-            personsDeserialized = deserialize[Array[Person]](personsSerialized)
+        let personsSerialized = logDuration("serialize") {
+            serialize(persons)
         }
-        Log.show(Duration(system.time().elapsed().seconds - started.seconds))
-        Log.show(persons == personsDeserialized)
-        Log.show(persons.toList().takeFirst(2))
-        Log.show(personsDeserialized.toList().takeFirst(2))
+        deserialize[Array[Person]](personsSerialized) // Warmup
+        //deserializePersonArray(personsSerialized) // Warmup
+
+        /*let personsDeserialized2 = logDuration("deserialize2") {
+            deserializePersonArray(personsSerialized)
+        }*/
+        let personsDeserialized1 = logDuration("deserialize1") {
+            deserialize(personsSerialized)
+        }
+        Log.show(persons == personsDeserialized1)
+        //Log.show(personsDeserialized1 == personsDeserialized2)
+        //Log.show(persons.toList().takeFirst(2))
+        //Log.show(personsDeserialized.toList().takeFirst(2))
     }
     test()
     //system.tasks().sleep(Duration(10.0))

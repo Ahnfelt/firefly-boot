@@ -93,6 +93,12 @@ export function fill_(size_, value_) {
     
 }
 
+export function fillBy_(size_, body_) {
+
+        return Array.from({length: size_}, (_, i) => body_(i));
+    
+}
+
 export function range_(size_) {
 
         return Array.from({length: size_}, (_, i) => i);
@@ -109,6 +115,10 @@ throw new Error('Function empty is missing on this target in async context.');
 
 export async function fill_$(size_, value_, $c) {
 throw new Error('Function fill is missing on this target in async context.');
+}
+
+export async function fillBy_$(size_, body_, $c) {
+throw new Error('Function fillBy is missing on this target in async context.');
 }
 
 export async function range_$(size_, $c) {
@@ -446,7 +456,7 @@ return ff_core_Stack.Stack_join(stack_, "")
 }}
 
 export function ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Equal_Equal$T) { return {
-equal_(left_, right_) {
+equals_(left_, right_) {
 if(ff_core_Array.internalSame_(left_, right_)) {
 return true
 } else {
@@ -461,7 +471,7 @@ return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_grab(right_, i_))
 }
 }
 },
-async equal_$(left_, right_, $c) {
+async equals_$(left_, right_, $c) {
 if(ff_core_Array.internalSame_(left_, right_)) {
 return true
 } else {

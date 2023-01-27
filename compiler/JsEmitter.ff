@@ -379,6 +379,20 @@ extend self: JsEmitter {
             primitiveTypes.contains(typeName)
         } =>
             "(" + self.emitArgument(left, async) + " <= " + self.emitArgument(right, async) + ")"
+        | ECall(_, StaticCall("ff:core/Array.fillBy", _, _), effect, _, [size, Argument(_, _, ELambda(at,
+            Lambda(_, _, [MatchCase(_, [PVariable(_, name)], [], body)@c])@l
+        ))], _) {
+            !effectTypeIsAsync(effect)
+        } =>
+            let n = name.map {escapeResolved(_)}.else {"i"}
+            "((() => {\n" +
+            "const size = " + self.emitArgument(size, async) + ";\n" +
+            "const result = [];\n" +
+            "for(let " + n + " = 0; " + n + " < size; " + n + "++) {\n" +
+            "result.push(" + self.emitTerm(body, async) + ");\n" +
+            "}\n" +
+            "return result;\n" +
+            "})())"
         | ECall(at, StaticCall(name, _, True), effect, typeArguments, arguments, dictionaries) =>
             let await = async && effectTypeIsAsync(effect)
             let dictionaryStrings = dictionaries.map(self.emitDictionary)

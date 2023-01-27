@@ -215,7 +215,10 @@ export function String_all(self_, body_) {
 }
 
 export function String_toBuffer(self_) {
-return new DataView(new TextEncoder().encode(_self))
+
+            const encoded = new TextEncoder().encode(self_)
+            return new DataView(encoded.buffer, encoded.byteOffset, encoded.byteLength)
+        
 }
 
 export async function String_size$(self_, $c) {
