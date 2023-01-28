@@ -81,12 +81,16 @@ extend self[T]: Array[T] {
             return result;
         """
 
-    toStream(): Stream[T] {
+    toStream(cycle: Bool = False): Stream[T] {
         mutable index = 0
         Stream.make {
             if(index < self.size()) {
                 let result = self.grab(index)
                 index += 1
+                result
+            } elseIf {cycle && index != 0} {
+                let result = self.grab(0)
+                index = 1
                 result
             }
         }

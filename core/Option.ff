@@ -52,11 +52,11 @@ extend self[T]: Option[T] {
         self.toList().toArray()
     }
 
-    toStream(): Stream[T] {
+    toStream(cycle: Bool = False): Stream[T] {
         mutable next = self
         Stream.make {
             let result = next
-            next = None
+            if(!cycle) {next = None}
             result
         }
     }
