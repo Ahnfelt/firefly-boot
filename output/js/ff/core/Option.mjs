@@ -205,11 +205,13 @@ export function Option_toArray(self_) {
 return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 }
 
-export function Option_toStream(self_) {
+export function Option_toStream(self_, cycle_ = false) {
 let next_ = self_;
 return ff_core_Stream.make_((() => {
 const result_ = next_;
-next_ = ff_core_Option.None();
+if((!cycle_)) {
+next_ = ff_core_Option.None()
+};
 return result_
 }), (() => {
 
@@ -464,11 +466,13 @@ export async function Option_toArray$(self_, $c) {
 return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 }
 
-export async function Option_toStream$(self_, $c) {
+export async function Option_toStream$(self_, cycle_ = false, $c) {
 let next_ = self_;
 return (await ff_core_Stream.make_$((async ($c) => {
 const result_ = next_;
-next_ = ff_core_Option.None();
+if((!cycle_)) {
+next_ = ff_core_Option.None()
+};
 return result_
 }), (async ($c) => {
 

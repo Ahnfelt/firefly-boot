@@ -699,7 +699,7 @@ return go_(self_, ff_core_List.Empty())
 }
 
 export function List_collect(self_, body_) {
-return ff_core_Stream.Stream_toList(ff_core_Stream.Stream_collect(ff_core_List.List_toStream(self_), body_))
+return ff_core_Stream.Stream_toList(ff_core_Stream.Stream_collect(ff_core_List.List_toStream(self_, false), body_))
 }
 
 export function List_collectFirst(self_, body_) {
@@ -992,7 +992,7 @@ results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_)
 return ff_core_List.List_reverse(results_)
 }
 
-export function List_toStream(self_) {
+export function List_toStream(self_, cycle_ = false) {
 let remaining_ = self_;
 return ff_core_Stream.Stream((() => {
 {
@@ -1004,6 +1004,21 @@ const tail_ = _1.tail_;
 remaining_ = tail_;
 return ff_core_Option.Some(head_)
 return
+}
+}
+{
+if(_1.Empty) {
+const _guard2 = self_;
+if(_guard2.Link) {
+const head_ = _guard2.head_;
+const tail_ = _guard2.tail_;
+const _guard1 = cycle_;
+if(_guard1) {
+remaining_ = tail_;
+return ff_core_Option.Some(head_)
+return
+}
+}
 }
 }
 {
@@ -1550,7 +1565,7 @@ return (await go_$(self_, ff_core_List.Empty(), $c))
 }
 
 export async function List_collect$(self_, body_, $c) {
-return (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_collect$((await ff_core_List.List_toStream$(self_, $c)), body_, $c)), $c))
+return (await ff_core_Stream.Stream_toList$((await ff_core_Stream.Stream_collect$((await ff_core_List.List_toStream$(self_, false, $c)), body_, $c)), $c))
 }
 
 export async function List_collectFirst$(self_, body_, $c) {
@@ -1843,7 +1858,7 @@ results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_)
 return ff_core_List.List_reverse(results_)
 }
 
-export async function List_toStream$(self_, $c) {
+export async function List_toStream$(self_, cycle_ = false, $c) {
 let remaining_ = self_;
 return ff_core_Stream.Stream((async ($c) => {
 {
@@ -1855,6 +1870,21 @@ const tail_ = _1.tail_;
 remaining_ = tail_;
 return ff_core_Option.Some(head_)
 return
+}
+}
+{
+if(_1.Empty) {
+const _guard2 = self_;
+if(_guard2.Link) {
+const head_ = _guard2.head_;
+const tail_ = _guard2.tail_;
+const _guard1 = cycle_;
+if(_guard1) {
+remaining_ = tail_;
+return ff_core_Option.Some(head_)
+return
+}
+}
 }
 }
 {

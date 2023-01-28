@@ -118,8 +118,8 @@ return _w1.first_
 }))
 }
 
-export function Set_toStream(self_, ff_core_Ordering_Order$T) {
-return ff_core_Stream.Stream_map(ff_core_Map.Map_toStream(self_, ff_core_Ordering_Order$T), ((_w1) => {
+export function Set_toStream(self_, cycle_ = false, ff_core_Ordering_Order$T) {
+return ff_core_Stream.Stream_map(ff_core_Map.Map_toStream(self_, cycle_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
 }
@@ -160,8 +160,8 @@ return _w1.first_
 }))
 }
 
-export async function Set_toStream$(self_, ff_core_Ordering_Order$T, $c) {
-return (await ff_core_Stream.Stream_map$((await ff_core_Map.Map_toStream$(self_, $c, ff_core_Ordering_Order$T)), (async (_w1, $c) => {
+export async function Set_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$T, $c) {
+return (await ff_core_Stream.Stream_map$((await ff_core_Map.Map_toStream$(self_, cycle_, $c, ff_core_Ordering_Order$T)), (async (_w1, $c) => {
 return _w1.first_
 }), $c))
 }
