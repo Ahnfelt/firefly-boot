@@ -146,7 +146,7 @@ extend self[K: Order, V]: RB[K, V] {
                 | [] =>
                     if(cycle && self.{| E => False | _ => True}) {
                         stack = [self]
-                        next()
+                        tailcall next()
                     } else {
                         None
                     }
