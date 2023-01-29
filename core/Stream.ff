@@ -7,18 +7,6 @@ make[T](next: () => Option[T], close: () => Unit = {}): Stream[T] {
     Stream(next, close)
 }
 
-one[T](body: () => Option[T], close: () => Unit = {}): Stream[T] {
-    mutable done = False
-    Stream({
-        if(!done) {
-            done = True
-            body()
-        } else {
-            None
-        }
-    }, close)
-}
-
 init[T](body: () => Stream[T]): Stream[T] {
     mutable initialized = False
     mutable stream = Stream {None} {}
