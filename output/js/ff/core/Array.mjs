@@ -200,13 +200,19 @@ export function Array_toList(self_) {
         
 }
 
-export function Array_toStream(self_) {
+export function Array_toStream(self_, cycle_ = false) {
 let index_ = 0;
 return ff_core_Stream.make_((() => {
 if((index_ < ff_core_Array.Array_size(self_))) {
 return ff_core_Option.Some((function() {
 const result_ = ff_core_Array.Array_grab(self_, index_);
 index_ += 1;
+return result_
+})())
+} else if((cycle_ && (index_ !== 0))) {
+return ff_core_Option.Some((function() {
+const result_ = ff_core_Array.Array_grab(self_, 0);
+index_ = 1;
 return result_
 })())
 } else return ff_core_Option.None()
@@ -321,13 +327,19 @@ export async function Array_toList$(self_, $c) {
 throw new Error('Function Array_toList is missing on this target in async context.');
 }
 
-export async function Array_toStream$(self_, $c) {
+export async function Array_toStream$(self_, cycle_ = false, $c) {
 let index_ = 0;
 return (await ff_core_Stream.make_$((async ($c) => {
 if((index_ < ff_core_Array.Array_size(self_))) {
 return ff_core_Option.Some((await (async function() {
 const result_ = ff_core_Array.Array_grab(self_, index_);
 index_ += 1;
+return result_
+})()))
+} else if((cycle_ && (index_ !== 0))) {
+return ff_core_Option.Some((await (async function() {
+const result_ = ff_core_Array.Array_grab(self_, 0);
+index_ = 1;
 return result_
 })()))
 } else return ff_core_Option.None()

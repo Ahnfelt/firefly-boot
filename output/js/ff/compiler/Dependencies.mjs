@@ -202,7 +202,7 @@ if(ff_core_FileSystem.FileSystem_exists(fs_, dependencyPath_)) {
 ff_core_FileSystem.FileSystem_deleteDirectory(fs_, dependencyPath_)
 };
 ff_core_FileSystem.FileSystem_createDirectories(fs_, dependencyPath_);
-ff_core_FileSystem.FileSystem_writeStream(fs_, tarGzPath_, ff_core_List.List_toStream(ff_core_List.Link(buffer_, ff_core_List.Empty())), false);
+ff_core_FileSystem.FileSystem_writeStream(fs_, tarGzPath_, ff_core_List.List_toStream(ff_core_List.Link(buffer_, ff_core_List.Empty()), false), false);
 ff_compiler_Dependencies.internalExtractTarGz_(fs_, tarGzPath_, dependencyPath_);
 ff_core_FileSystem.FileSystem_rename(fs_, tarGzPath_, donePath_)
 };
@@ -294,7 +294,7 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, dependencyPath_, $c))) {
 (await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, dependencyPath_, $c))
 };
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, dependencyPath_, $c));
-(await ff_core_FileSystem.FileSystem_writeStream$(fs_, tarGzPath_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), $c)), false, $c));
+(await ff_core_FileSystem.FileSystem_writeStream$(fs_, tarGzPath_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), false, $c)), false, $c));
 (await ff_compiler_Dependencies.internalExtractTarGz_$(fs_, tarGzPath_, dependencyPath_, $c));
 (await ff_core_FileSystem.FileSystem_rename$(fs_, tarGzPath_, donePath_, $c))
 };

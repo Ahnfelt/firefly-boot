@@ -139,12 +139,17 @@ extend self[K: Order, V]: RB[K, V] {
         result.reverse()
     }
 
-    toStream(): Stream[Pair[K, V]] {
+    toStream(cycle: Bool): Stream[Pair[K, V]] {
         mutable stack = [self]
         function next(): Option[Pair[K, V]] {
             stack.{
                 | [] =>
-                    None
+                    if(cycle && self.{| E => False | _ => True}) {
+                        stack = [self]
+                        tailcall next()
+                    } else {
+                        None
+                    }
                 | [E, ...tail] =>
                     stack = tail
                     tailcall next()

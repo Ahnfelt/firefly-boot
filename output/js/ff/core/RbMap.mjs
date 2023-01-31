@@ -1489,7 +1489,7 @@ result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
 return ff_core_List.List_reverse(result_)
 }
 
-export function RB_toStream(self_, ff_core_Ordering_Order$K) {
+export function RB_toStream(self_, cycle_, ff_core_Ordering_Order$K) {
 let stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
 function next_() {
 _tailcall: for(;;) {
@@ -1497,7 +1497,27 @@ _tailcall: for(;;) {
 const _1 = stack_;
 {
 if(_1.Empty) {
+if((cycle_ && (((_1) => {
+{
+if(_1.E) {
+return false
+return
+}
+}
+{
+return true
+return
+}
+}))(self_))) {
+stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
+{
+
+
+continue _tailcall
+}
+} else {
 return ff_core_Option.None()
+}
 return
 }
 }
@@ -1686,7 +1706,7 @@ result_ = ff_core_List.Link(ff_core_Pair.Pair(k_, v_), result_)
 return ff_core_List.List_reverse(result_)
 }
 
-export async function RB_toStream$(self_, ff_core_Ordering_Order$K, $c) {
+export async function RB_toStream$(self_, cycle_, ff_core_Ordering_Order$K, $c) {
 let stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
 function next_() {
 _tailcall: for(;;) {
@@ -1694,7 +1714,27 @@ _tailcall: for(;;) {
 const _1 = stack_;
 {
 if(_1.Empty) {
+if((cycle_ && (((_1) => {
+{
+if(_1.E) {
+return false
+return
+}
+}
+{
+return true
+return
+}
+}))(self_))) {
+stack_ = ff_core_List.Link(self_, ff_core_List.Empty());
+{
+
+
+continue _tailcall
+}
+} else {
 return ff_core_Option.None()
+}
 return
 }
 }

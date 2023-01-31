@@ -246,7 +246,7 @@ self_.close_()
 
 export function Stream_collect(self_, body_) {
 return ff_core_Stream.Stream_flatMap(self_, ((_w1) => {
-return ff_core_Option.Option_toStream(body_(_w1))
+return ff_core_Option.Option_toStream(body_(_w1), false)
 }))
 }
 
@@ -771,7 +771,7 @@ try {
 
 export async function Stream_collect$(self_, body_, $c) {
 return (await ff_core_Stream.Stream_flatMap$(self_, (async (_w1, $c) => {
-return (await ff_core_Option.Option_toStream$((await body_(_w1, $c)), $c))
+return (await ff_core_Option.Option_toStream$((await body_(_w1, $c)), false, $c))
 }), $c))
 }
 

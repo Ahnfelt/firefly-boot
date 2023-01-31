@@ -38,8 +38,8 @@ extend self[K: Order, V]: Map[K, V] {
         self.redBlack.pairs()
     }
 
-    toStream(): Stream[Pair[K, V]] {
-        self.redBlack.toStream()
+    toStream(cycle: Bool = False): Stream[Pair[K, V]] {
+        self.redBlack.toStream(cycle)
     }
 
     keys(): Set[K] {

@@ -323,12 +323,15 @@ extend self[T]: List[T] {
         results.reverse()
     }
 
-    toStream(): Stream[T] {
+    toStream(cycle: Bool = False): Stream[T] {
         mutable remaining = self
         Stream(
             next = {
                 remaining.{
                     | [head, ...tail] =>
+                        remaining = tail
+                        Some(head)
+                    | [] {self | [head, ...tail]} {cycle} =>
                         remaining = tail
                         Some(head)
                     | [] =>
