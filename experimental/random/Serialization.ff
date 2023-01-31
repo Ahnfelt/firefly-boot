@@ -2,40 +2,22 @@ type Person(id: Int, male: Bool, name: String)
 
 instance Person: Serializable {
     serializeUsing(serialization: Serialization, value: Person): Unit {
+        serialization.checksum = (31 * serialization.checksum + 1019).bitOr(0)
         serializeUsing(serialization, value.id)
         serializeUsing(serialization, value.male)
         serializeUsing(serialization, value.name)
     }
     deserializeUsing(serialization: Serialization): Person {
+        serialization.checksum = (31 * serialization.checksum + 1019).bitOr(0)
         Person(
             deserializeUsing(serialization)
             deserializeUsing(serialization)
             deserializeUsing(serialization)
         )
     }
-    typeChecksum(): Int {7}
 }
 
-deserializePersonArray(buffer: Buffer): Array[Person] {
-    mutable offset = 4
-    let size = buffer.grabUint32(offset + 1)
-    offset += 1 + 4
-    let stack = Stack.make()
-    mutable i = 0
-    while {i < size} {
-        let id = buffer.grabInt64(offset)
-        offset += 8
-        let male = buffer.grabUint8(offset) == 1
-        offset += 1
-        let smallSize = buffer.grabUint8(offset)
-        let name = internalGrabLatin1(buffer, offset + 1, smallSize)
-        offset += 1 + smallSize
-        let person = Person(id, male, name)
-        stack.push(person)
-        i += 1
-    }
-    stack.drain()
-}
+type DeserializationChecksumException()
 
 main(system: BrowserSystem) {
     let p = Person(5, True, "Hans")
@@ -67,16 +49,10 @@ main(system: BrowserSystem) {
         let personsSerialized = logDuration("serialize") {
             serialize(persons)
         }
-        deserialize[Array[Person]](personsSerialized) // Warmup
-        //deserializePersonArray(personsSerialized) // Warmup
-
-        /*let personsDeserialized2 = logDuration("deserialize2") {
-            deserializePersonArray(personsSerialized)
-        }*/
-        let personsDeserialized1 = logDuration("deserialize1") {
-            deserialize(personsSerialized)
+        let personsDeserialized = logDuration("deserialize") {
+            deserialize[Array[Person]](personsSerialized)
         }
-        Log.show(persons == personsDeserialized1)
+        Log.show(persons == personsDeserialized)
         //Log.show(personsDeserialized1 == personsDeserialized2)
         //Log.show(persons.toList().takeFirst(2))
         //Log.show(personsDeserialized.toList().takeFirst(2))
@@ -89,30 +65,33 @@ main(system: BrowserSystem) {
 }
 
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
-    let serialization = Serialization(Buffer.make(initialBufferSize), 4)
-    serialization.buffer.setInt32(0, typeChecksum[T]())
+    let serialization = Serialization(Buffer.make(initialBufferSize), 0, 0)
     serializeUsing(serialization, value)
+    serialization.autoResize(4)
+    serialization.buffer.setInt32(serialization.offset, serialization.checksum)
+    serialization.offset += 4
     serialization.buffer.view(0, serialization.offset)
 }
 
 deserialize[T: Serializable](buffer: Buffer): T {
-    let serialization = Serialization(buffer, 4)
-    let hash = serialization.buffer.grabInt32(0)
-    if(hash != typeChecksum[T]()) {
-        panic("Serialization type checksum mismatch. Expected: " + typeChecksum[T]() + ", got: " + hash + ".")
+    let serialization = Serialization(buffer, 0, 0)
+    let result = deserializeUsing(serialization)
+    let checksum = serialization.buffer.grabInt32(serialization.offset)
+    if(checksum != serialization.checksum) {
+        throw(DeserializationChecksumException)
     }
-    deserializeUsing(serialization)
+    result
 }
 
 trait T: Serializable {
     serializeUsing(serialization: Serialization, value: T): Unit
     deserializeUsing(serialization: Serialization): T
-    typeChecksum(): Int
 }
 
 type Serialization(
     mutable buffer: Buffer
     mutable offset: Int
+    mutable checksum: Int
 )
 
 extend self: Serialization {
@@ -137,7 +116,6 @@ instance Int: Serializable {
         serialization.offset += 8
         result
     }
-    typeChecksum(): Int {1019}
 }
 
 instance Bool: Serializable {
@@ -151,7 +129,6 @@ instance Bool: Serializable {
         serialization.offset += 1
         result == 1
     }
-    typeChecksum(): Int {2017}
 }
 
 instance Array[T: Serializable]: Serializable {
@@ -181,7 +158,6 @@ instance Array[T: Serializable]: Serializable {
             Array.fillBy(size) {_ => deserializeUsing(serialization)}
         }
     }
-    typeChecksum(): Int {4079}
 }
 
 instance String: Serializable {
@@ -214,7 +190,6 @@ instance String: Serializable {
             stringBuffer.toString()
         }
     }
-    typeChecksum(): Int {3011}
 }
 
 
