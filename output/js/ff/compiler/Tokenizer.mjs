@@ -62,6 +62,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
+
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"

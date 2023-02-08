@@ -58,6 +58,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
+
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
@@ -89,20 +91,6 @@ export function make_(next_, close_ = (() => {
 return ff_core_Stream.Stream(next_, close_)
 }
 
-export function one_(body_, close_ = (() => {
-
-})) {
-let done_ = false;
-return ff_core_Stream.Stream((() => {
-if((!done_)) {
-done_ = true;
-return body_()
-} else {
-return ff_core_Option.None()
-}
-}), close_)
-}
-
 export function init_(body_) {
 let initialized_ = false;
 let stream_ = ff_core_Stream.Stream((() => {
@@ -128,20 +116,6 @@ export async function make_$(next_, close_ = (async ($c) => {
 
 }), $c) {
 return ff_core_Stream.Stream(next_, close_)
-}
-
-export async function one_$(body_, close_ = (async ($c) => {
-
-}), $c) {
-let done_ = false;
-return ff_core_Stream.Stream((async ($c) => {
-if((!done_)) {
-done_ = true;
-return (await body_($c))
-} else {
-return ff_core_Option.None()
-}
-}), close_)
 }
 
 export async function init_$(body_, $c) {

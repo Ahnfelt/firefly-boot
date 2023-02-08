@@ -58,6 +58,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
+
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
@@ -210,6 +212,75 @@ return
 }
 {
 return (ff_core_Equal_Equal$A.equals_(x_.first_, y_.first_) && ff_core_Equal_Equal$B.equals_(x_.second_, y_.second_))
+return
+}
+}
+}
+}}
+
+export function ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$A, ff_core_Serializable_Serializable$B) { return {
+serializeUsing_(serialization_, x_) {
+{
+const serialization_a = serialization_;
+const x_a = x_;
+{
+const value_ = x_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, value_.first_);
+ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, value_.second_)
+return
+}
+}
+},
+deserializeUsing_(serialization_) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+{
+if(_1 == 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
+return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
+return
+}
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+return
+}
+}
+},
+async serializeUsing_$(serialization_, x_, $c) {
+{
+const serialization_a = serialization_;
+const x_a = x_;
+{
+const value_ = x_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, value_.first_);
+ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, value_.second_)
+return
+}
+}
+},
+async deserializeUsing_$(serialization_, $c) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+{
+if(_1 == 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
+return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
+return
+}
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
 return
 }
 }

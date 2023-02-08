@@ -86,6 +86,7 @@ coreImports: List[DImport] =
         "Option"
         "Ordering"
         "Pair"
+        "Serializable"
         "Set"
         "Show"
         "Stack"

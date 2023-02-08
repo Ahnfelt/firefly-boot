@@ -34,8 +34,16 @@ extend self[K: Order, V]: Map[K, V] {
         Map(result)
     }
 
-    pairs(): List[Pair[K, V]] {
+    pairs(): List[Pair[K, V]] { // TODO: Remove this method (use toList)
+        self.toList()
+    }
+
+    toList(): List[Pair[K, V]] {
         self.redBlack.pairs()
+    }
+
+    toArray(): Array[Pair[K, V]] {
+        self.redBlack.pairs().toArray() // TODO: Avoid going through List
     }
 
     toStream(cycle: Bool = False): Stream[Pair[K, V]] {

@@ -11,9 +11,9 @@ import Inference
 
 type MainCommand {
     BootstrapCommand
-    RunCommand(mainPath : String)
-    BrowserCommand(mainPath : String)
-    BuildCommand(mainPath : String)
+    RunCommand(mainPath: String)
+    BrowserCommand(mainPath: String)
+    BuildCommand(mainPath: String)
 }
 
 main(system: NodeSystem): Unit {

@@ -23,13 +23,14 @@ extend self: Deriver {
                 ...self.makeShowInstances(modulePrefix, module)
                 ...self.makeEqualInstances(modulePrefix, module)
                 ...self.makeOrderingInstances(modulePrefix, module)
+                ...self.makeSerializableInstances(modulePrefix, module)
             ],
         )
     }
 
     // FromToAny
     makeFromToAnyInstances(modulePrefix: String, module: Module): List[DInstance] {
-        let coreWhitelist = [].toSet() // Maybe whitelist all?
+        let coreWhitelist = ["ff:core/Serializable.DeserializationChecksumException"].toSet() // Maybe whitelist all?
         let missingInstance = // TODO: Implement FromToAny for generic types
             self.findTypesThatNeedInstances("ff:core/Any.FromToAny", modulePrefix, coreWhitelist, False, module)
         missingInstance.map {self.makeFromToAnyInstance(modulePrefix, _)}
@@ -410,7 +411,173 @@ extend self: Deriver {
         }
         go(fields)
     }
-    
+
+    // Serializable
+    makeSerializableInstances(modulePrefix: String, module: Module): List[DInstance] {
+        let coreWhitelist = [
+            "ff:core/Option.Option"
+            "ff:core/Pair.Pair"
+        ].toSet()
+        let missingInstance =
+            self.findTypesThatNeedInstances("ff:core/Serializable.Serializable", modulePrefix, coreWhitelist, True, module)
+        missingInstance.map {self.makeSerializableInstance(modulePrefix, _)}
+    }
+
+    makeSerializableInstance(modulePrefix: String, declaration: DType): DInstance {
+        let constraints = declaration.generics.map { t =>
+            Constraint(declaration.at, "ff:core/Serializable.Serializable", [TConstructor(declaration.at, t, [])])
+        }
+        let typeArguments = declaration.generics.map { t =>
+            TConstructor(declaration.at, t, [])
+        }
+        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let serializationType = TConstructor(declaration.at, "ff:core/Serializable.Serialization", [])
+        let serializeSignature = Signature(
+            at = declaration.at
+            name = "serializeUsing"
+            generics = []
+            constraints = []
+            parameters = [
+                Parameter(declaration.at, False, "serialization", serializationType, None)
+                Parameter(declaration.at, False, "x", selfType, None)
+            ]
+            returnType = TConstructor(declaration.at, "ff:core/Unit.Unit", [])
+            effect = noEffect
+        )
+        let deserializeSignature = Signature(
+            at = declaration.at
+            name = "deserializeUsing"
+            generics = []
+            constraints = []
+            parameters = [
+                Parameter(declaration.at, False, "serialization", serializationType, None)
+            ]
+            returnType = selfType
+            effect = noEffect
+        )
+        let wildcardPattern = PVariable(declaration.at, None)
+        let serializeBody = FireflyTarget(
+            Lambda(declaration.at, noEffect, self.makeSerializeBody(modulePrefix, declaration, selfType))
+        )
+        let deserializeBody = FireflyTarget(
+            Lambda(declaration.at, noEffect, [MatchCase(
+                at = declaration.at,
+                patterns = [wildcardPattern]
+                guards = []
+                body = self.makeDeserializeBody(modulePrefix, declaration, selfType)
+            )])
+        )
+        DInstance(
+            at = declaration.at
+            generics = declaration.generics
+            constraints = constraints
+            traitName = "ff:core/Serializable.Serializable"
+            typeArguments = [selfType]
+            generatorArguments = []
+            methods = [
+                DFunction(declaration.at, serializeSignature, serializeBody)
+                DFunction(declaration.at, deserializeSignature, deserializeBody)
+            ]
+        )
+    }
+
+    makeSerializeBody(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
+        let at = declaration.at
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let wildcardPattern = PVariable(at, None)
+        declaration.variants.pairs().map {| Pair(index, variant) =>
+            let variantName = modulePrefix + "." + variant.name
+            let fields = [...declaration.commonFields, ...variant.fields]
+            let updateChecksum = self.makeUpdateChecksum(at, variantName, declaration, variant)
+            let setVariantIndex = self.makeMethodCall(
+                at = at
+                target = EField(at, False, EVariable(at, "serialization"), "buffer")
+                methodName = "setUint8"
+                arguments = [EField(at, False, EVariable(at, "serialization"), "offset"), EInt(at, "" + index)]
+            )
+            let fieldSerializations = fields.map {field =>
+                self.makeSimpleCall(at, "ff:core/Serializable.serializeUsing", [
+                    EVariable(at, "serialization")
+                    EField(at, False, EVariable(at, "value"), field.name)
+                ])
+            }
+            MatchCase(
+                at = at,
+                patterns = [wildcardPattern, PVariantAs(at, variantName, Some("value"))]
+                guards = []
+                body = [
+                    setVariantIndex
+                    EAssignField(at, "+", EVariable(at, "serialization"), "offset", EInt(at, "1"))
+                    ...fieldSerializations
+                ].foldLeft(updateChecksum) {ESequential(at, _, _)}
+            )
+        }
+    }
+
+    makeDeserializeBody(modulePrefix: String, declaration: DType, selfType: Type): Term {
+        let at = declaration.at
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let wildcardPattern = PVariable(at, None)
+        let grabVariantIndex = self.makeMethodCall(
+            at = at
+            target = EField(at, False, EVariable(at, "serialization"), "buffer")
+            methodName = "grabUint8"
+            arguments = [EField(at, False, EVariable(at, "serialization"), "offset")]
+        )
+        let intType = TConstructor(declaration.at, "ff:core/Int.Int", [])
+        let incrementOffset = EAssignField(at, "+", EVariable(at, "serialization"), "offset", EInt(at, "1"))
+        let cases = declaration.variants.pairs().map {| Pair(index, variant) =>
+            let variantName = modulePrefix + "." + variant.name
+            let fields = [...declaration.commonFields, ...variant.fields]
+            let fieldValues = fields.map {field =>
+                Argument(
+                    at
+                    None
+                    self.makeSimpleCall(at, "ff:core/Serializable.deserializeUsing", [EVariable(at, "serialization")])
+                )
+            }
+            let updateChecksum = self.makeUpdateChecksum(at, variantName, declaration, variant)
+            let makeVariant = EVariant(at, variantName, [], Some(fieldValues))
+            MatchCase(
+                at = at,
+                patterns = [PInt(at, "" + index)]
+                guards = []
+                body = ESequential(at, updateChecksum, makeVariant)
+            )
+        }
+        let otherwiseCase = MatchCase(
+            at = at,
+            patterns = [wildcardPattern]
+            guards = []
+            body = self.makeSimpleCall(at, "ff:core/Core.throw", [
+                EVariant(at, "ff:core/Serializable.DeserializationChecksumException", [], None)
+            ])
+        )
+        let matchLambda = ELambda(at, Lambda(at, noEffect, [...cases, otherwiseCase]))
+        let match = EPipe(at, EVariable(at, "variantIndex"), noEffect, matchLambda)
+        ELet(at, False, "variantIndex", intType, grabVariantIndex, ESequential(at, incrementOffset, match))
+    }
+
+    makeUpdateChecksum(at: Location, variantName: String, declaration: DType, variant: Variant): Term {
+        let fields = [...declaration.commonFields, ...variant.fields]
+        let variantChecksum = variantName.size() // TODO: Hash variantName + fields with type terms + type parameters (+ type arguments?)
+        EAssignField(at, "", EVariable(at, "serialization"), "checksum",
+            self.makeMethodCall(
+                at = at
+                target = self.makeSimpleCall(at, "+", [
+                    self.makeSimpleCall(at, "*", [
+                        EInt(at, "31")
+                        EField(at, False, EVariable(at, "serialization"), "checksum")
+                    ])
+                    EInt(at, "" + variantChecksum)
+                ])
+                methodName = "bitOr"
+                arguments = [EInt(at, "0")]
+            )
+        )
+    }
+
     // Common
 
     findTypesThatNeedInstances(
@@ -441,6 +608,12 @@ extend self: Deriver {
         ECall(at, callTarget, noEffect, [], arguments.map { e =>
             Argument(at, None, e)
         }, [])
+    }
+
+    makeMethodCall(at: Location, target: Term, methodName: String, arguments: List[Term]): Term {
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+        let method = EField(at, False, target, methodName)
+        ECall(at, DynamicCall(method, False), noEffect, [], arguments.map {Argument(at, None, _)}, [])
     }
 
     makeIf(at: Location, condition: Term, then: Term, else: Term): Term {

@@ -11,7 +11,8 @@ extend self[T: Order]: Set[T] {
     removeAll(that: Set[T]): Set[T] { Set(self.map.removeAll(that.map)) }
     contains(value: T): Bool { self.map.contains(value) }
     size(): Int { self.map.size() }
-    toList(): List[T] { self.map.pairs().map { _.first } }
+    toList(): List[T] { self.map.toList().map { _.first } }
+    toArray(): Array[T] { self.map.toArray().map { _.first } }
     toStream(cycle: Bool = False): Stream[T] { self.map.toStream(cycle).map { _.first } }
     each(body: T => Unit): Unit { self.map.each {| k, _ => body(k)} }
 }

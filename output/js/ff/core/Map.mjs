@@ -60,6 +60,8 @@ import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
 import * as ff_core_RbMap from "../../ff/core/RbMap.mjs"
 
+import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
+
 import * as ff_core_Set from "../../ff/core/Set.mjs"
 
 import * as ff_core_Show from "../../ff/core/Show.mjs"
@@ -119,7 +121,15 @@ return result_
 }
 
 export function Map_pairs(self_, ff_core_Ordering_Order$K) {
+return ff_core_Map.Map_toList(self_, ff_core_Ordering_Order$K)
+}
+
+export function Map_toList(self_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
+}
+
+export function Map_toArray(self_, ff_core_Ordering_Order$K) {
+return ff_core_List.List_toArray(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K))
 }
 
 export function Map_toStream(self_, cycle_ = false, ff_core_Ordering_Order$K) {
@@ -210,7 +220,15 @@ return result_
 }
 
 export async function Map_pairs$(self_, ff_core_Ordering_Order$K, $c) {
+return ff_core_Map.Map_toList(self_, ff_core_Ordering_Order$K)
+}
+
+export async function Map_toList$(self_, ff_core_Ordering_Order$K, $c) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
+}
+
+export async function Map_toArray$(self_, ff_core_Ordering_Order$K, $c) {
+return ff_core_List.List_toArray(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K))
 }
 
 export async function Map_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$K, $c) {

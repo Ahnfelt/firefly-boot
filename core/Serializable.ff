@@ -1,83 +1,4 @@
-type Person(id: Int, male: Bool, name: String)
-
-instance Person: Serializable {
-    serializeUsing(serialization: Serialization, value: Person): Unit {
-        | _, Alien value =>
-            serialization.checksum = (31 * serialization.checksum + 1019).bitOr(0)
-            serialization.buffer.setUint8(serialization.offset, 0)
-            serialization.offset += 1
-        | _, Person value =>
-            serialization.checksum = (31 * serialization.checksum + 7020).bitOr(0)
-            serialization.buffer.setUint8(serialization.offset, 1)
-            serialization.offset += 1
-            serializeUsing(serialization, value.id)
-            serializeUsing(serialization, value.male)
-            serializeUsing(serialization, value.name)
-    }
-    deserializeUsing(serialization: Serialization): Person {
-        let constructorNumber = serialization.buffer.grabUint8(serialization.offset)
-        serialization.offset += 1
-        constructorNumber.{
-            | 0 =>
-                serialization.checksum = (31 * serialization.checksum + 1019).bitOr(0)
-                Alien
-            | 1 =>
-                serialization.checksum = (31 * serialization.checksum + 7020).bitOr(0)
-                Person(
-                    deserializeUsing(serialization)
-                    deserializeUsing(serialization)
-                    deserializeUsing(serialization)
-                )
-        }
-    }
-}
-
 type DeserializationChecksumException()
-
-main(system: BrowserSystem) {
-    let p = Person(5, True, "Hans")
-    Log.show(p)
-    Log.show(serialize(p))
-    Log.show(deserialize[Person](serialize(p)))
-
-    let numbers = 1.to(1000).toArray()
-
-    let serialized = serialize(numbers)
-    let deserialized = deserialize(serialized)
-    Log.show(numbers == deserialized)
-
-    function logDuration[T](label: String, body: () => T): T {
-        let started = system.time().elapsed()
-        let result = body()
-        Log.debug(label + ": " + Show.show(Duration(system.time().elapsed().seconds - started.seconds)))
-        result
-    }
-
-    function test() {
-        let persons = logDuration("create") {
-            Array.fillBy(1000000) {n =>
-                Person(n, n % 2 == 0, "Person called " + n)
-            }
-        }
-
-        let started = system.time().elapsed()
-        let personsSerialized = logDuration("serialize") {
-            serialize(persons)
-        }
-        let personsDeserialized = logDuration("deserialize") {
-            deserialize[Array[Person]](personsSerialized)
-        }
-        Log.show(persons == personsDeserialized)
-        //Log.show(personsDeserialized1 == personsDeserialized2)
-        //Log.show(persons.toList().takeFirst(2))
-        //Log.show(personsDeserialized.toList().takeFirst(2))
-    }
-    test()
-    //system.tasks().sleep(Duration(10.0))
-    //test()
-    //system.tasks().sleep(Duration(10.0))
-    //test()
-}
 
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
     let serialization = Serialization(Buffer.make(initialBufferSize), 0, 0)
@@ -172,6 +93,33 @@ instance Array[T: Serializable]: Serializable {
             serialization.offset += 1 + 4
             Array.fillBy(size) {_ => deserializeUsing(serialization)}
         }
+    }
+}
+
+instance List[T: Serializable]: Serializable {
+    serializeUsing(serialization: Serialization, value: List[T]): Unit {
+        serializeUsing(serialization, value.toArray())
+    }
+    deserializeUsing(serialization: Serialization): List[T] {
+        deserializeUsing[Array[T]](serialization).toList()
+    }
+}
+
+instance Set[T: Serializable: Order]: Serializable {
+    serializeUsing(serialization: Serialization, value: Set[T]): Unit {
+        serializeUsing(serialization, value.toArray())
+    }
+    deserializeUsing(serialization: Serialization): Set[T] {
+        deserializeUsing[Array[T]](serialization).toSet()
+    }
+}
+
+instance Map[K: Serializable: Order, V: Serializable]: Serializable {
+    serializeUsing(serialization: Serialization, value: Map[K, V]): Unit {
+        serializeUsing(serialization, value.toArray())
+    }
+    deserializeUsing(serialization: Serialization): Map[K, V] {
+        deserializeUsing[Array[Pair[K, V]]](serialization).toMap()
     }
 }
 
