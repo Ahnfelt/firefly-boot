@@ -1,0 +1,45 @@
+main(system: NodeSystem) {
+
+    function logDuration[T](label: String, body: () => T): T {
+        let started = system.time().elapsed()
+        let result = body()
+        Log.debug(label + ": " + Show.show(Duration(system.time().elapsed().seconds - started.seconds)))
+        result
+    }
+
+    function test() {
+        let array = Array.fillBy(1000) {_}
+        let list = array.toList()
+        logDuration("array.map") {
+            mutable i = 0
+            while {i < 1000} {
+                array.map {_ + 1}
+                i += 1
+            }
+        }
+        logDuration("list.map") {
+            mutable i = 0
+            while {i < 1000} {
+                list.map {_ + 1}
+                i += 1
+            }
+        }
+        logDuration("array.sort") {
+            mutable i = 0
+            while {i < 1000} {
+                array.sort()
+                i += 1
+            }
+        }
+        logDuration("list.sort") {
+            mutable i = 0
+            while {i < 1000} {
+                list.sort()
+                i += 1
+            }
+        }
+    }
+
+    test()
+
+}
