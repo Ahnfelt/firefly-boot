@@ -72,6 +72,25 @@ extend self[T]: Array[T] {
             return result;
         """
 
+    chunk(chunkSize: Int): Array[Array[T]] {
+        let results = Stack.make()
+        let result = Stack.make()
+        mutable added = 0
+        self.each { item =>
+            if(added < chunkSize) {
+                added += 1
+            } else {
+                results.push(result.drain())
+                added = 1
+            }
+            result.push(item)
+        }
+        if(added != 0) {
+            results.push(result.drain())
+        }
+        results.drain()
+    }
+
     toList(): List[T]
         target js sync """
             let result = ff_core_List.Empty();

@@ -313,8 +313,8 @@ extend self[T]: List[T] {
                 added += 1
             } else {
                 results = [result.reverse(), ...results]
-                result = []
-                added = 0
+                result = [item]
+                added = 1
             }
         }
         if(added != 0) {
