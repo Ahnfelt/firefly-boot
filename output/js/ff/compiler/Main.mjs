@@ -1,4 +1,4 @@
-
+import * as import$0 from 'url';
 
 import * as ff_compiler_Main from "../../ff/compiler/Main.mjs"
 
@@ -124,7 +124,7 @@ const first_ = ff_core_Array.Array_first(arguments_);
 arguments_ = ff_core_Array.Array_dropFirst(arguments_, 1);
 return first_
 }
-const fireflyPath_ = ff_core_Option.Option_grab(consumeArgument_());
+const fireflyPath_ = ff_compiler_Main.detectFireflyPath_();
 const command_ = (((_1) => {
 {
 const s_ = _1;
@@ -354,6 +354,18 @@ return
 }))
 }
 
+export function detectFireflyPath_() {
+
+        const url = import$0;
+        const suffix = '/output/js/ff/compiler/Main.mjs';
+        const moduleUrl = import.meta.url;
+        if(!import.meta.url.endsWith(suffix)) {
+            throw 'Expected module path to end with: ' + suffix + ", but got: " + moduleUrl;
+        }
+        return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)));
+    
+}
+
 export async function main_$(system_, $c) {
 let arguments_ = (await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c));
 function consumeArgument_() {
@@ -361,7 +373,7 @@ const first_ = ff_core_Array.Array_first(arguments_);
 arguments_ = ff_core_Array.Array_dropFirst(arguments_, 1);
 return first_
 }
-const fireflyPath_ = ff_core_Option.Option_grab(consumeArgument_());
+const fireflyPath_ = ff_compiler_Main.detectFireflyPath_();
 const command_ = (((_1) => {
 {
 const s_ = _1;
@@ -595,6 +607,10 @@ return
 }
 }))(definition_.signature_.parameters_))
 }))
+}
+
+export async function detectFireflyPath_$($c) {
+throw new Error('Function detectFireflyPath is missing on this target in async context.');
 }
 
 

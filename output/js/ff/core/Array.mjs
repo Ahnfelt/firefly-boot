@@ -192,6 +192,25 @@ export function Array_update(self_, index_, body_) {
         
 }
 
+export function Array_chunk(self_, chunkSize_) {
+const results_ = ff_core_Stack.make_();
+const result_ = ff_core_Stack.make_();
+let added_ = 0;
+ff_core_Array.Array_each(self_, ((item_) => {
+if((added_ < chunkSize_)) {
+added_ += 1
+} else {
+ff_core_Stack.Stack_push(results_, ff_core_Stack.Stack_drain(result_));
+added_ = 1
+};
+ff_core_Stack.Stack_push(result_, item_)
+}));
+if((added_ !== 0)) {
+ff_core_Stack.Stack_push(results_, ff_core_Stack.Stack_drain(result_))
+};
+return ff_core_Stack.Stack_drain(results_)
+}
+
 export function Array_toList(self_) {
 
             let result = ff_core_List.Empty();
@@ -323,6 +342,25 @@ export async function Array_update$(self_, index_, body_, $c) {
             result[index_] = await body_(result[index_], $c);
             return result;
         
+}
+
+export async function Array_chunk$(self_, chunkSize_, $c) {
+const results_ = ff_core_Stack.make_();
+const result_ = ff_core_Stack.make_();
+let added_ = 0;
+ff_core_Array.Array_each(self_, ((item_) => {
+if((added_ < chunkSize_)) {
+added_ += 1
+} else {
+ff_core_Stack.Stack_push(results_, ff_core_Stack.Stack_drain(result_));
+added_ = 1
+};
+ff_core_Stack.Stack_push(result_, item_)
+}));
+if((added_ !== 0)) {
+ff_core_Stack.Stack_push(results_, ff_core_Stack.Stack_drain(result_))
+};
+return ff_core_Stack.Stack_drain(results_)
 }
 
 export async function Array_toList$(self_, $c) {

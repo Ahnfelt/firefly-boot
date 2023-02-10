@@ -25,7 +25,7 @@ main(system: NodeSystem): Unit {
         first
     }
 
-    let fireflyPath = consumeArgument().grab()
+    let fireflyPath = detectFireflyPath()
 
     let command = consumeArgument().grab().{
         | s {s.endsWith(".ff")} => RunCommand(s.dropLast(3))
@@ -202,3 +202,14 @@ detectBuildMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): Boo
         }
     }
 }
+
+detectFireflyPath(): String
+    target node sync """
+        import * as url from 'url';
+        const suffix = '/output/js/ff/compiler/Main.mjs';
+        const moduleUrl = import.meta.url;
+        if(!import.meta.url.endsWith(suffix)) {
+            throw 'Expected module path to end with: ' + suffix + ", but got: " + moduleUrl;
+        }
+        return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)));
+    """

@@ -984,8 +984,8 @@ result_ = ff_core_List.Link(item_, result_);
 added_ += 1
 } else {
 results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_);
-result_ = ff_core_List.Empty();
-added_ = 0
+result_ = ff_core_List.Link(item_, ff_core_List.Empty());
+added_ = 1
 }
 }));
 if((added_ !== 0)) {
@@ -1850,8 +1850,8 @@ result_ = ff_core_List.Link(item_, result_);
 added_ += 1
 } else {
 results_ = ff_core_List.Link(ff_core_List.List_reverse(result_), results_);
-result_ = ff_core_List.Empty();
-added_ = 0
+result_ = ff_core_List.Link(item_, ff_core_List.Empty());
+added_ = 1
 }
 }));
 if((added_ !== 0)) {

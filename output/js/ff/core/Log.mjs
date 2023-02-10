@@ -86,6 +86,10 @@ export function show_(value_, ff_core_Show_Show$T) {
 ff_core_Log.debug_(ff_core_Show_Show$T.show_(value_))
 }
 
+export function debugDynamic_(value_) {
+console.debug(value_)
+}
+
 export function debug_(value_) {
 console.debug(value_)
 }
@@ -108,6 +112,10 @@ console.error(value_)
 
 export async function show_$(value_, ff_core_Show_Show$T, $c) {
 ff_core_Log.debug_(ff_core_Show_Show$T.show_(value_))
+}
+
+export async function debugDynamic_$(value_, $c) {
+throw new Error('Function debugDynamic is missing on this target in async context.');
 }
 
 export async function debug_$(value_, $c) {
