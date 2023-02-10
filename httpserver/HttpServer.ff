@@ -73,6 +73,10 @@ extend self: HttpRequest {
         self.readStream().toString(encoding.else {self.encoding().else {"utf8"}})
     }
 
+    readBuffer(): Buffer {
+        self.readStream().toBuffer()
+    }
+
     readStream(): Stream[Buffer]
         target node async """
             import * as http from 'http'

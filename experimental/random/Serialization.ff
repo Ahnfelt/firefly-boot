@@ -2,26 +2,18 @@ type Person(id: Int, male: Bool, name: String)
 
 instance Person: Serializable {
     serializeUsing(serialization: Serialization, value: Person): Unit {
-        | _, Alien value =>
-            serialization.checksum = (31 * serialization.checksum + 1019).bitOr(0)
-            serialization.buffer.setUint8(serialization.offset, 0)
-            serialization.offset += 1
-        | _, Person value =>
-            serialization.checksum = (31 * serialization.checksum + 7020).bitOr(0)
-            serialization.buffer.setUint8(serialization.offset, 1)
-            serialization.offset += 1
-            serializeUsing(serialization, value.id)
-            serializeUsing(serialization, value.male)
-            serializeUsing(serialization, value.name)
+        serialization.checksum = (31 * serialization.checksum + 7020).bitOr(0)
+        serialization.buffer.setUint8(serialization.offset, 1)
+        serialization.offset += 1
+        serializeUsing(serialization, value.id)
+        serializeUsing(serialization, value.male)
+        serializeUsing(serialization, value.name)
     }
     deserializeUsing(serialization: Serialization): Person {
         let constructorNumber = serialization.buffer.grabUint8(serialization.offset)
         serialization.offset += 1
         constructorNumber.{
             | 0 =>
-                serialization.checksum = (31 * serialization.checksum + 1019).bitOr(0)
-                Alien
-            | 1 =>
                 serialization.checksum = (31 * serialization.checksum + 7020).bitOr(0)
                 Person(
                     deserializeUsing(serialization)

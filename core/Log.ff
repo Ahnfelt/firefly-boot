@@ -2,6 +2,9 @@ show[T: Show](value: T): Unit {
     debug(Show.show(value))
 }
 
+debugDynamic[T](value: T): Unit
+    target js sync "console.debug(value_)"
+
 debug(value: String): Unit
     target js sync "console.debug(value_)"
 

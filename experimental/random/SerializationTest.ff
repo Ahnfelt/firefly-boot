@@ -1,0 +1,46 @@
+type Person(id: Int, male: Bool, name: String)
+
+main(system: BrowserSystem) {
+    let p = Person(5, True, "Hans")
+    Log.show(p)
+    Log.show(Serializable.serialize(p))
+    Log.show(Serializable.deserialize[Person](Serializable.serialize(p)))
+
+    let numbers = 1.to(1000).toArray()
+
+    let serialized = Serializable.serialize(numbers)
+    let deserialized = Serializable.deserialize(serialized)
+    Log.show(numbers == deserialized)
+
+    function logDuration[T](label: String, body: () => T): T {
+        let started = system.time().elapsed()
+        let result = body()
+        Log.debug(label + ": " + Show.show(Duration(system.time().elapsed().seconds - started.seconds)))
+        result
+    }
+
+    function test() {
+        let persons = logDuration("create") {
+            Array.fillBy(1000000) {n =>
+                Person(n, n % 2 == 0, "Person called " + n)
+            }
+        }
+
+        let started = system.time().elapsed()
+        let personsSerialized = logDuration("serialize") {
+            Serializable.serialize(persons)
+        }
+        let personsDeserialized = logDuration("deserialize") {
+            Serializable.deserialize[Array[Person]](personsSerialized)
+        }
+        Log.show(persons == personsDeserialized)
+        //Log.show(personsDeserialized1 == personsDeserialized2)
+        //Log.show(persons.toList().takeFirst(2))
+        //Log.show(personsDeserialized.toList().takeFirst(2))
+    }
+    test()
+    //system.tasks().sleep(Duration(10.0))
+    //test()
+    //system.tasks().sleep(Duration(10.0))
+    //test()
+}
