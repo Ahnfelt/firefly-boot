@@ -16,7 +16,7 @@ extend self[T]: Try[T] {
         self.map(body).flatten()
     }
 
-    catch[E: FromToAny](body: (E, Error) => T): Try[T] {
+    catch[E: HasAnyTag](body: (E, Error) => T): Try[T] {
         self.{
             | Failure(error) {error.exception().flatMap(Any.fromAny) | Some(e)} => try { body(e, error) }
             | _ => self

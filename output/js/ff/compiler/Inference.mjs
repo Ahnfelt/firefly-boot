@@ -105,7 +105,7 @@ return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_))
 }
 
 export function fail_(at_, message_) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)})
 }
 
 export function core_(name_) {
@@ -140,7 +140,7 @@ return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_))
 }
 
 export async function fail_$(at_, message_, $c) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)})
 }
 
 export async function core_$(name_, $c) {
@@ -3536,7 +3536,7 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 }))
 }
 
-export const ff_core_Any_FromToAny$ff_compiler_Inference_Inference = {
+export const ff_core_Any_HasAnyTag$ff_compiler_Inference_Inference = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Inference.Inference" + "[") + "]"))
 },
@@ -3545,7 +3545,7 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/Inference.Inference" + "[") + 
 }
 };
 
-export const ff_core_Any_FromToAny$ff_compiler_Inference_TypeException = {
+export const ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Inference.TypeException" + "[") + "]"))
 },
@@ -3806,7 +3806,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -3838,7 +3838,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -3874,7 +3874,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -3907,7 +3907,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

@@ -1135,7 +1135,7 @@ export async function Substitution_has$(self_, index_, $c) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
-export const ff_core_Any_FromToAny$ff_compiler_Substitution_Substitution = {
+export const ff_core_Any_HasAnyTag$ff_compiler_Substitution_Substitution = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Substitution.Substitution" + "[") + "]"))
 },
@@ -1279,7 +1279,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1311,7 +1311,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

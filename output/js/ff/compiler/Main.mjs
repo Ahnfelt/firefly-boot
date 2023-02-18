@@ -219,7 +219,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false)
 } catch(_error) {
 if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException)
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)
 if(!_exception.Some) throw _error
 const at_ = _exception.value_.at_;
 const message_ = _exception.value_.message_;
@@ -284,7 +284,7 @@ try {
 runCommand_(command_)
 } catch(_error) {
 if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException)
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)
 if(!_exception.Some) throw _error
 const at_ = _exception.value_.at_;
 const message_ = _exception.value_.message_;
@@ -468,7 +468,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false, $c))
 } catch(_error) {
 if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException)
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)
 if(!_exception.Some) throw _error
 const at_ = _exception.value_.at_;
 const message_ = _exception.value_.message_;
@@ -533,7 +533,7 @@ try {
 (await runCommand_$(command_, $c))
 } catch(_error) {
 if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException)
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)
 if(!_exception.Some) throw _error
 const at_ = _exception.value_.at_;
 const message_ = _exception.value_.message_;
@@ -615,7 +615,7 @@ throw new Error('Function detectFireflyPath is missing on this target in async c
 
 
 
-export const ff_core_Any_FromToAny$ff_compiler_Main_MainCommand = {
+export const ff_core_Any_HasAnyTag$ff_compiler_Main_MainCommand = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Main.MainCommand" + "[") + "]"))
 },
@@ -1055,7 +1055,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1139,7 +1139,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

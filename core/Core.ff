@@ -45,7 +45,7 @@ try[T](body: () => T): Try[T]
         }
     """
 
-throw[E: FromToAny, T](exception: E): T {
+throw[E: HasAnyTag, T](exception: E): T {
     throwAny(Any.toAny(exception))
 }
 

@@ -1113,7 +1113,7 @@ return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.gen
 return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
 
-export const ff_core_Any_FromToAny$ff_compiler_Dictionaries_Dictionaries = {
+export const ff_core_Any_HasAnyTag$ff_compiler_Dictionaries_Dictionaries = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Dictionaries.Dictionaries" + "[") + "]"))
 },
@@ -1257,7 +1257,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1289,7 +1289,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

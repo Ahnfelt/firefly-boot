@@ -105,7 +105,7 @@ const serialization_ = ff_core_Serializable.Serialization(buffer_, 0, 0);
 const result_ = ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_);
 const checksum_ = ff_core_Buffer.Buffer_grabInt32(serialization_.buffer_, serialization_.offset_, true);
 if((checksum_ !== serialization_.checksum_)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 };
 return result_
 }
@@ -142,7 +142,7 @@ const serialization_ = ff_core_Serializable.Serialization(buffer_, 0, 0);
 const result_ = ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_);
 const checksum_ = ff_core_Buffer.Buffer_grabInt32(serialization_.buffer_, serialization_.offset_, true);
 if((checksum_ !== serialization_.checksum_)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 };
 return result_
 }
@@ -416,7 +416,7 @@ return ff_core_Buffer.Buffer_toString(stringBuffer_, "utf8")
 }
 };
 
-export const ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException = {
+export const ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:core/Serializable.DeserializationChecksumException" + "[") + "]"))
 },

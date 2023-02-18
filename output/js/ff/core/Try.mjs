@@ -118,14 +118,14 @@ export function Try_flatMap(self_, body_) {
 return ff_core_Try.Try_flatten(ff_core_Try.Try_map(self_, body_))
 }
 
-export function Try_catch(self_, body_, ff_core_Any_FromToAny$E) {
+export function Try_catch(self_, body_, ff_core_Any_HasAnyTag$E) {
 {
 const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
 const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
-return ff_core_Any.fromAny_(any_, ff_core_Any_FromToAny$E)
+return ff_core_Any.fromAny_(any_, ff_core_Any_HasAnyTag$E)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;
@@ -285,14 +285,14 @@ export async function Try_flatMap$(self_, body_, $c) {
 return ff_core_Try.Try_flatten((await ff_core_Try.Try_map$(self_, body_, $c)))
 }
 
-export async function Try_catch$(self_, body_, ff_core_Any_FromToAny$E, $c) {
+export async function Try_catch$(self_, body_, ff_core_Any_HasAnyTag$E, $c) {
 {
 const _1 = self_;
 {
 if(_1.Failure) {
 const error_ = _1.error_;
 const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
-return ff_core_Any.fromAny_(any_, ff_core_Any_FromToAny$E)
+return ff_core_Any.fromAny_(any_, ff_core_Any_HasAnyTag$E)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;

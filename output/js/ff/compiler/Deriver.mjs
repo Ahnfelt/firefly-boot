@@ -112,23 +112,23 @@ const modulePrefix_ = ((ff_compiler_Syntax.PackagePair_groupName(module_.package
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, ff_core_List.List_addAll(module_.instances_, ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeFromToAnyInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)))))), _c.extends_, _c.lets_, _c.functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, ff_core_List.List_addAll(module_.instances_, ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)))))), _c.extends_, _c.lets_, _c.functions_)
 return
 }
 }
 }
 
-export function Deriver_makeFromToAnyInstances(self_, modulePrefix_, module_) {
+export function Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.FromToAny", modulePrefix_, coreWhitelist_, true, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
-return ff_compiler_Deriver.Deriver_makeFromToAnyInstance(self_, modulePrefix_, _w1)
+return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _w1)
 }))
 }
 
-export function Deriver_makeFromToAnyInstance(self_, modulePrefix_, declaration_) {
+export function Deriver_makeHasAnyTagInstance(self_, modulePrefix_, declaration_) {
 const constraints_ = ff_core_List.List_map(declaration_.generics_, ((t_) => {
-return ff_compiler_Syntax.Constraint(declaration_.at_, "ff:core/Any.FromToAny", ff_core_List.Link(ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty()), ff_core_List.Empty()))
+return ff_compiler_Syntax.Constraint(declaration_.at_, "ff:core/Any.HasAnyTag", ff_core_List.Link(ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty()), ff_core_List.Empty()))
 }));
 const typeArguments_ = ff_core_List.List_map(declaration_.generics_, ((t_) => {
 return ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty())
@@ -146,7 +146,7 @@ const body_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, no
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "+", ff_core_List.Link(a_, ff_core_List.Link(b_, ff_core_List.Empty())), ff_core_List.Empty())
 })), ff_core_List.Empty()), ff_core_List.Empty())), ff_core_List.Empty())));
 const method_ = ff_compiler_Syntax.DFunction(at_, signature_, body_);
-return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Any.FromToAny", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(method_, ff_core_List.Empty()))
+return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Any.HasAnyTag", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(method_, ff_core_List.Empty()))
 }
 
 export function Deriver_makeShowInstances(self_, modulePrefix_, module_) {
@@ -525,23 +525,23 @@ const modulePrefix_ = ((ff_compiler_Syntax.PackagePair_groupName(module_.package
 const _1 = module_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, ff_core_List.List_addAll(module_.instances_, ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeFromToAnyInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)))))), _c.extends_, _c.lets_, _c.functions_)
+return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, _c.traits_, ff_core_List.List_addAll(module_.instances_, ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeShowInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeEqualInstances(self_, modulePrefix_, module_), ff_core_List.List_addAll(ff_compiler_Deriver.Deriver_makeOrderingInstances(self_, modulePrefix_, module_), ff_compiler_Deriver.Deriver_makeSerializableInstances(self_, modulePrefix_, module_)))))), _c.extends_, _c.lets_, _c.functions_)
 return
 }
 }
 }
 
-export async function Deriver_makeFromToAnyInstances$(self_, modulePrefix_, module_, $c) {
+export async function Deriver_makeHasAnyTagInstances$(self_, modulePrefix_, module_, $c) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.FromToAny", modulePrefix_, coreWhitelist_, true, module_);
+const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
-return ff_compiler_Deriver.Deriver_makeFromToAnyInstance(self_, modulePrefix_, _w1)
+return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _w1)
 }))
 }
 
-export async function Deriver_makeFromToAnyInstance$(self_, modulePrefix_, declaration_, $c) {
+export async function Deriver_makeHasAnyTagInstance$(self_, modulePrefix_, declaration_, $c) {
 const constraints_ = ff_core_List.List_map(declaration_.generics_, ((t_) => {
-return ff_compiler_Syntax.Constraint(declaration_.at_, "ff:core/Any.FromToAny", ff_core_List.Link(ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty()), ff_core_List.Empty()))
+return ff_compiler_Syntax.Constraint(declaration_.at_, "ff:core/Any.HasAnyTag", ff_core_List.Link(ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty()), ff_core_List.Empty()))
 }));
 const typeArguments_ = ff_core_List.List_map(declaration_.generics_, ((t_) => {
 return ff_compiler_Syntax.TConstructor(declaration_.at_, t_, ff_core_List.Empty())
@@ -559,7 +559,7 @@ const body_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lambda(at_, no
 return ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "+", ff_core_List.Link(a_, ff_core_List.Link(b_, ff_core_List.Empty())), ff_core_List.Empty())
 })), ff_core_List.Empty()), ff_core_List.Empty())), ff_core_List.Empty())));
 const method_ = ff_compiler_Syntax.DFunction(at_, signature_, body_);
-return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Any.FromToAny", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(method_, ff_core_List.Empty()))
+return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Any.HasAnyTag", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(method_, ff_core_List.Empty()))
 }
 
 export async function Deriver_makeShowInstances$(self_, modulePrefix_, module_, $c) {
@@ -932,7 +932,7 @@ const option_ = ff_compiler_Syntax.ECall(at_, target_, noEffect_, ff_core_List.E
 return ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(at_, false, option_, "else"), false), noEffect_, ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, noEffect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Empty(), ff_core_List.Empty(), else_), ff_core_List.Empty())))), ff_core_List.Empty()), ff_core_List.Empty())
 }
 
-export const ff_core_Any_FromToAny$ff_compiler_Deriver_Deriver = {
+export const ff_core_Any_HasAnyTag$ff_compiler_Deriver_Deriver = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]"))
 },
@@ -1065,7 +1065,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1096,7 +1096,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

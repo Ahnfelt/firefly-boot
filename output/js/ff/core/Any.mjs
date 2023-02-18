@@ -86,16 +86,16 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function toAny_(value_, ff_core_Any_FromToAny$T) {
+export function toAny_(value_, ff_core_Any_HasAnyTag$T) {
 
-        const anyTag = ff_core_Any_FromToAny$T.anyTag_()
+        const anyTag = ff_core_Any_HasAnyTag$T.anyTag_()
         return {anyTag: anyTag, value: value_}
     
 }
 
-export function fromAny_(any_, ff_core_Any_FromToAny$T) {
+export function fromAny_(any_, ff_core_Any_HasAnyTag$T) {
 
-        const anyTag = ff_core_Any_FromToAny$T.anyTag_()
+        const anyTag = ff_core_Any_HasAnyTag$T.anyTag_()
         return any_.anyTag === anyTag ? ff_core_Option.Some(any_.value) : ff_core_Option.None()
     
 }
@@ -106,11 +106,11 @@ export function internalAnyTag_(tag_) {
     
 }
 
-export async function toAny_$(value_, ff_core_Any_FromToAny$T, $c) {
+export async function toAny_$(value_, ff_core_Any_HasAnyTag$T, $c) {
 throw new Error('Function toAny is missing on this target in async context.');
 }
 
-export async function fromAny_$(any_, ff_core_Any_FromToAny$T, $c) {
+export async function fromAny_$(any_, ff_core_Any_HasAnyTag$T, $c) {
 throw new Error('Function fromAny is missing on this target in async context.');
 }
 

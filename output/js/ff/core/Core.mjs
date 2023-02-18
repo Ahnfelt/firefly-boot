@@ -167,8 +167,8 @@ export function try_(body_) {
     
 }
 
-export function throw_(exception_, ff_core_Any_FromToAny$E) {
-return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_FromToAny$E))
+export function throw_(exception_, ff_core_Any_HasAnyTag$E) {
+return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E))
 }
 
 export function throwAny_(exception_) {
@@ -264,8 +264,8 @@ export async function try_$(body_, $c) {
     
 }
 
-export async function throw_$(exception_, ff_core_Any_FromToAny$E, $c) {
-return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_FromToAny$E))
+export async function throw_$(exception_, ff_core_Any_HasAnyTag$E, $c) {
+return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E))
 }
 
 export async function throwAny_$(exception_, $c) {
