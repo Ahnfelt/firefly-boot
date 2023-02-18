@@ -1941,7 +1941,7 @@ const dictionary_ = _1.dictionaries_.head_;
 if(_1.dictionaries_.tail_.Empty) {
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
 const a_ = ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_, async_);
-return (((("throw Object.assign(new Error(), {ffException: " + d_) + ".toAny_(") + a_) + ")})")
+return (((("throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a_) + ", ") + d_) + ")})")
 return
 }
 }
@@ -2312,7 +2312,7 @@ const dictionary_ = _1.dictionaries_.head_;
 if(_1.dictionaries_.tail_.Empty) {
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
-return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n}"))
+return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ff_core_Any.fromAny_(_error.ffException, ") + d_) + ")\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n}"))
 return
 }
 }
@@ -2378,7 +2378,7 @@ if(_1.arguments_.tail_.tail_.Empty) {
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const finallyAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(finallyEffect_));
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
-return ff_core_Option.Some(((((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, finallyAsync_)) + "\n}"))
+return ff_core_Option.Some(((((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ff_core_Any.fromAny_(_error.ffException, ") + d_) + ")\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, finallyAsync_)) + "\n}"))
 return
 }
 }
@@ -4019,7 +4019,7 @@ const dictionary_ = _1.dictionaries_.head_;
 if(_1.dictionaries_.tail_.Empty) {
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
 const a_ = ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, argument_, async_);
-return (((("throw Object.assign(new Error(), {ffException: " + d_) + ".toAny_(") + a_) + ")})")
+return (((("throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a_) + ", ") + d_) + ")})")
 return
 }
 }
@@ -4390,7 +4390,7 @@ const dictionary_ = _1.dictionaries_.head_;
 if(_1.dictionaries_.tail_.Empty) {
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
-return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n}"))
+return ff_core_Option.Some(((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ff_core_Any.fromAny_(_error.ffException, ") + d_) + ")\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n}"))
 return
 }
 }
@@ -4456,7 +4456,7 @@ if(_1.arguments_.tail_.tail_.Empty) {
 const tryAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(tryEffect_));
 const finallyAsync_ = (self_.emittingAsync_ && ff_compiler_JsEmitter.effectTypeIsAsync_(finallyEffect_));
 const d_ = ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, dictionary_);
-return ff_core_Option.Some(((((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ") + d_) + ".fromAny_(_error.ffException)\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, finallyAsync_)) + "\n}"))
+return ff_core_Option.Some(((((((((((("try {\n" + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, tryBody_, last_, tryAsync_)) + "\n} catch(_error) {\n") + "if(!_error.ffException) throw _error\n") + "const _exception = ff_core_Any.fromAny_(_error.ffException, ") + d_) + ")\n") + "if(!_exception.Some) throw _error\n") + emitCatch_(catchEffect_, cases_)) + "\n} finally {\n") + ff_compiler_JsEmitter.JsEmitter_emitStatements(self_, finallyBody_, last_, finallyAsync_)) + "\n}"))
 return
 }
 }
@@ -4751,47 +4751,29 @@ return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
 export const ff_core_Any_FromToAny$ff_compiler_JsEmitter_JsEmitter = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/JsEmitter.JsEmitter', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.JsEmitter" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/JsEmitter.JsEmitter' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.JsEmitter" + "[") + "]"))
 }
 };
 
 export const ff_core_Any_FromToAny$ff_compiler_JsEmitter_EmitTarget = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/JsEmitter.EmitTarget', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.EmitTarget" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/JsEmitter.EmitTarget' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.EmitTarget" + "[") + "]"))
 }
 };
 
 export const ff_core_Any_FromToAny$ff_compiler_JsEmitter_ProcessedVariantCase = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/JsEmitter.ProcessedVariantCase', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.ProcessedVariantCase" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/JsEmitter.ProcessedVariantCase' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.ProcessedVariantCase" + "[") + "]"))
 }
 };
 
@@ -5334,7 +5316,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -5372,7 +5354,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -5456,7 +5438,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -5537,7 +5519,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -5575,7 +5557,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -5610,7 +5592,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

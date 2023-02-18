@@ -125,7 +125,7 @@ const _1 = self_;
 if(_1.Failure) {
 const error_ = _1.error_;
 const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
-return ff_core_Any_FromToAny$E.fromAny_(any_)
+return ff_core_Any.fromAny_(any_, ff_core_Any_FromToAny$E)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;
@@ -292,7 +292,7 @@ const _1 = self_;
 if(_1.Failure) {
 const error_ = _1.error_;
 const _guard1 = ff_core_Option.Option_flatMap(ff_core_Error.Error_exception(error_), ((any_) => {
-return ff_core_Any_FromToAny$E.fromAny_(any_)
+return ff_core_Any.fromAny_(any_, ff_core_Any_FromToAny$E)
 }));
 if(_guard1.Some) {
 const e_ = _guard1.value_;

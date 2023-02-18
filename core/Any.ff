@@ -1,6 +1,30 @@
 type Any {}
+type AnyTag[T] {}
 
 trait T: FromToAny {
-    toAny(value: T): Any
-    fromAny(any: Any): Option[T]
+    anyTag(): AnyTag[T]
 }
+
+toAny[T: FromToAny](value: T): Any
+    target js sync """
+        const anyTag = ff_core_Any_FromToAny$T.anyTag_()
+        return {anyTag: anyTag, value: value_}
+    """
+
+fromAny[T: FromToAny](any: Any): Option[T]
+    target js sync """
+        const anyTag = ff_core_Any_FromToAny$T.anyTag_()
+        return any_.anyTag === anyTag ? ff_core_Option.Some(any_.value) : ff_core_Option.None()
+    """
+
+extend self[T]: AnyTag[T] {
+    show(): String
+        target js sync """
+            return self_
+        """
+}
+
+internalAnyTag[T](tag: String): AnyTag[T]
+    target js sync """
+        return tag_
+    """

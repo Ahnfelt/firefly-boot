@@ -514,7 +514,7 @@ extend self: JsEmitter {
             | ECall(at, StaticCall("ff:core/Core.throw", _, _), _, _, [argument], [dictionary]) =>
                 let d = self.emitDictionary(dictionary)
                 let a = self.emitArgument(argument, async)
-                "throw Object.assign(new Error(), {ffException: " + d + ".toAny_(" + a + ")})"
+                "throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a + ", " + d + ")})"
             | ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, _, _) {!last} =>
                 fail(at, "Statements can't be a try without a grab")
             | ECall(at, StaticCall("ff:core/Try.Try_map", _, _), _, _, _, _) {!last} =>
@@ -616,7 +616,7 @@ extend self: JsEmitter {
                     "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
                     "\n} catch(_error) {\n" +
                         "if(!_error.ffException) throw _error\n" +
-                        "const _exception = " + d + ".fromAny_(_error.ffException)\n" +
+                        "const _exception = ff_core_Any.fromAny_(_error.ffException, " + d + ")\n" +
                         "if(!_exception.Some) throw _error\n" +
                         emitCatch(catchEffect, cases) +
                     "\n}"
@@ -637,7 +637,7 @@ extend self: JsEmitter {
                     "try {\n" + self.emitStatements(tryBody, last, tryAsync) +
                     "\n} catch(_error) {\n" +
                         "if(!_error.ffException) throw _error\n" +
-                        "const _exception = " + d + ".fromAny_(_error.ffException)\n" +
+                        "const _exception = ff_core_Any.fromAny_(_error.ffException, " + d + ")\n" +
                         "if(!_exception.Some) throw _error\n" +
                         emitCatch(catchEffect, cases) +
                     "\n} finally {\n" + self.emitStatements(finallyBody, last, finallyAsync) + "\n}"

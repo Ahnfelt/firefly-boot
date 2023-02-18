@@ -31,8 +31,8 @@ extend self: Deriver {
     // FromToAny
     makeFromToAnyInstances(modulePrefix: String, module: Module): List[DInstance] {
         let coreWhitelist = ["ff:core/Serializable.DeserializationChecksumException"].toSet() // Maybe whitelist all?
-        let missingInstance = // TODO: Implement FromToAny for generic types
-            self.findTypesThatNeedInstances("ff:core/Any.FromToAny", modulePrefix, coreWhitelist, False, module)
+        let missingInstance =
+            self.findTypesThatNeedInstances("ff:core/Any.FromToAny", modulePrefix, coreWhitelist, True, module)
         missingInstance.map {self.makeFromToAnyInstance(modulePrefix, _)}
     }
 
@@ -44,45 +44,44 @@ extend self: Deriver {
             TConstructor(declaration.at, t, [])
         }
         let selfTypeName = modulePrefix + "." + declaration.name
-        let selfType = TConstructor(declaration.at, selfTypeName, typeArguments)
-        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
-        let toSignature = Signature(
-            at = declaration.at
-            name = "toAny"
+        let at = declaration.at
+        let selfType = TConstructor(at, selfTypeName, typeArguments)
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+        let signature = Signature(
+            at = at
+            name = "anyTag"
             generics = []
             constraints = []
-            parameters = [Parameter(declaration.at, False, "x", selfType, None)]
-            returnType = TConstructor(declaration.at, "ff:core/Any.Any", [])
+            parameters = []
+            returnType = TConstructor(at, "ff:core/Any.AnyTag", [selfType])
             effect = noEffect
         )
-        let fromSignature = Signature(
-            at = declaration.at
-            name = "fromAny"
-            generics = []
-            constraints = []
-            parameters = [
-                Parameter(declaration.at, False, "x", TConstructor(declaration.at, "ff:core/Any.Any", []), None)
-            ]
-            returnType = selfType
-            effect = noEffect
+        let typeArgumentStrings = typeArguments.map {
+            self.makeMethodCall(at, self.makeSimpleCall(at, "ff:core/Any.anyTag", [], [_]), "show", [])
+        }
+        let strings =
+            [EString(at, "\"[\""), ...typeArgumentStrings.insertBetween([EString(at, "\",\"")]), EString(at, "\"]\"")]
+        let body = FireflyTarget(
+            Lambda(at, noEffect, [MatchCase(
+                at = at,
+                patterns = []
+                guards = []
+                body = self.makeSimpleCall(at, "ff:core/Any.internalAnyTag", [
+                    strings.foldLeft(EString(at, "\"" + selfTypeName + "\"")) {a, b =>
+                        self.makeSimpleCall(at, "+", [a, b])
+                    }
+                ])
+            )])
         )
-        let wildcardPattern = PVariable(declaration.at, None)
-        let toBody = ForeignTarget(asyncCode = None, syncCode = Some(
-            "return {typeTag: '" + selfTypeName + "', value: x_}"
-        ))
-        let fromBody = ForeignTarget(asyncCode = None, syncCode = Some(
-            "return x_.typeTag === '" + selfTypeName + "' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()"
-        ))
-        let toMethod = DFunction(declaration.at, toSignature, toBody)
-        let fromMethod = DFunction(declaration.at, fromSignature, fromBody)
+        let method = DFunction(at, signature, body)
         DInstance(
-            at = declaration.at
+            at = at
             generics = declaration.generics
             constraints = constraints
             traitName = "ff:core/Any.FromToAny"
             typeArguments = [selfType]
             generatorArguments = []
-            methods = [toMethod, fromMethod]
+            methods = [method]
         )
     }
 
@@ -602,10 +601,10 @@ extend self: Deriver {
         }
     }
 
-    makeSimpleCall(at: Location, name: String, arguments: List[Term]): Term {
+    makeSimpleCall(at: Location, name: String, arguments: List[Term], typeArguments: List[Type] = []): Term {
         let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let callTarget = DynamicCall(EVariable(at, name), tailCall = False)
-        ECall(at, callTarget, noEffect, [], arguments.map { e =>
+        ECall(at, callTarget, noEffect, typeArguments, arguments.map { e =>
             Argument(at, None, e)
         }, [])
     }

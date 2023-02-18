@@ -326,32 +326,20 @@ if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List
 }
 
 export const ff_core_Any_FromToAny$ff_compiler_Dependencies_Dependencies = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/Dependencies.Dependencies', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.Dependencies" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/Dependencies.Dependencies' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.Dependencies" + "[") + "]"))
 }
 };
 
 export const ff_core_Any_FromToAny$ff_compiler_Dependencies_ResolvedDependencies = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/Dependencies.ResolvedDependencies', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependencies" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/Dependencies.ResolvedDependencies' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependencies" + "[") + "]"))
 }
 };
 
@@ -660,7 +648,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -695,7 +683,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -733,7 +721,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -768,7 +756,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

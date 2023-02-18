@@ -107,7 +107,7 @@ return {generics_, constraints_, packagePair_, moduleName_, traitName_, typeArgu
 
 
 export function fail_(at_, message_) {
-throw Object.assign(new Error(), {ffException: ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException.toAny_(ff_compiler_Inference.TypeException(at_, message_))})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException)})
 }
 
 export function make_(modules_) {
@@ -136,7 +136,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitNa
 }
 
 export async function fail_$(at_, message_, $c) {
-throw Object.assign(new Error(), {ffException: ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException.toAny_(ff_compiler_Inference.TypeException(at_, message_))})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_FromToAny$ff_compiler_Inference_TypeException)})
 }
 
 export async function make_$(modules_, $c) {
@@ -1057,62 +1057,38 @@ return
 }
 
 export const ff_core_Any_FromToAny$ff_compiler_Unification_Unification = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/Unification.Unification', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.Unification" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/Unification.Unification' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.Unification" + "[") + "]"))
 }
 };
 
 export const ff_core_Any_FromToAny$ff_compiler_Unification_ConstraintGenerics = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/Unification.ConstraintGenerics', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.ConstraintGenerics" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/Unification.ConstraintGenerics' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.ConstraintGenerics" + "[") + "]"))
 }
 };
 
 export const ff_core_Any_FromToAny$ff_compiler_Unification_InstanceKey = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/Unification.InstanceKey', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.InstanceKey" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/Unification.InstanceKey' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.InstanceKey" + "[") + "]"))
 }
 };
 
 export const ff_core_Any_FromToAny$ff_compiler_Unification_InstanceValue = {
-toAny_(x_) {
-return {typeTag: 'ff:compiler/Unification.InstanceValue', value: x_}
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.InstanceValue" + "[") + "]"))
 },
-fromAny_(x_) {
-return x_.typeTag === 'ff:compiler/Unification.InstanceValue' ? ff_core_Option.Some(x_.value) : ff_core_Option.None()
-},
-async toAny_$(x_, $c) {
-throw new Error('Function toAny is missing on this target in async context.');
-},
-async fromAny_$(x_, $c) {
-throw new Error('Function fromAny is missing on this target in async context.');
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.InstanceValue" + "[") + "]"))
 }
 };
 
@@ -1686,7 +1662,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1722,7 +1698,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1758,7 +1734,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1791,7 +1767,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1827,7 +1803,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1860,7 +1836,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1900,7 +1876,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
@@ -1937,7 +1913,7 @@ return
 }
 }
 {
-throw Object.assign(new Error(), {ffException: ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException.toAny_(ff_core_Serializable.DeserializationChecksumException())})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_FromToAny$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }
