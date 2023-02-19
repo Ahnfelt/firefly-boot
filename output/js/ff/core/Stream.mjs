@@ -1234,11 +1234,11 @@ const builder_ = ff_core_Stack.make_();
 (await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
 ff_core_Stack.Stack_push(builder_, _w1)
 }), $c));
-return (await ff_core_Buffer.fromBufferArray_$(ff_core_Stack.Stack_drain(builder_), $c))
+return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
 }
 
 export async function Stream_toString$(self_, encoding_ = "utf8", $c) {
-return (await ff_core_Buffer.Buffer_toString$((await ff_core_Stream.Stream_toBuffer$(self_, $c)), encoding_, $c))
+return ff_core_Buffer.Buffer_toString((await ff_core_Stream.Stream_toBuffer$(self_, $c)), encoding_)
 }
 
 

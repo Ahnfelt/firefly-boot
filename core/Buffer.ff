@@ -1,4 +1,4 @@
-class Buffer {}
+sync class Buffer {}
 
 make(size: Int, shared: Bool = False): Buffer
     target js sync "return new DataView(shared_ ? new SharedArrayBuffer(size_) : new ArrayBuffer(size_))"

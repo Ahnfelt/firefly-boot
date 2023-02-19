@@ -430,37 +430,37 @@ extend self: Deriver {
             TConstructor(declaration.at, t, [])
         }
         let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
-        let qEffect = TConstructor(declaration.at, "Q$", [])
-        let serializationType = TConstructor(declaration.at, "ff:core/Serializable.Serialization", [qEffect])
+        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let serializationType = TConstructor(declaration.at, "ff:core/Serializable.Serialization", [])
         let serializeSignature = Signature(
             at = declaration.at
             name = "serializeUsing"
-            generics = ["Q$"]
+            generics = []
             constraints = []
             parameters = [
                 Parameter(declaration.at, False, "serialization", serializationType, None)
                 Parameter(declaration.at, False, "x", selfType, None)
             ]
             returnType = TConstructor(declaration.at, "ff:core/Unit.Unit", [])
-            effect = qEffect
+            effect = noEffect
         )
         let deserializeSignature = Signature(
             at = declaration.at
             name = "deserializeUsing"
-            generics = ["Q$"]
+            generics = []
             constraints = []
             parameters = [
                 Parameter(declaration.at, False, "serialization", serializationType, None)
             ]
             returnType = selfType
-            effect = qEffect
+            effect = noEffect
         )
         let wildcardPattern = PVariable(declaration.at, None)
         let serializeBody = FireflyTarget(
-            Lambda(declaration.at, qEffect, self.makeSerializeBody(modulePrefix, declaration, selfType))
+            Lambda(declaration.at, noEffect, self.makeSerializeBody(modulePrefix, declaration, selfType))
         )
         let deserializeBody = FireflyTarget(
-            Lambda(declaration.at, qEffect, [MatchCase(
+            Lambda(declaration.at, noEffect, [MatchCase(
                 at = declaration.at,
                 patterns = [wildcardPattern]
                 guards = []
@@ -515,7 +515,7 @@ extend self: Deriver {
 
     makeDeserializeBody(modulePrefix: String, declaration: DType, selfType: Type): Term {
         let at = declaration.at
-        let qEffect = TConstructor(declaration.at, "Q$", [])
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         let grabVariantIndex = self.makeMethodCall(
             at = at
@@ -552,8 +552,8 @@ extend self: Deriver {
                 EVariant(at, "ff:core/Serializable.DeserializationChecksumException", [], None)
             ])
         )
-        let matchLambda = ELambda(at, Lambda(at, qEffect, [...cases, otherwiseCase]))
-        let match = EPipe(at, EVariable(at, "variantIndex"), qEffect, matchLambda)
+        let matchLambda = ELambda(at, Lambda(at, noEffect, [...cases, otherwiseCase]))
+        let match = EPipe(at, EVariable(at, "variantIndex"), noEffect, matchLambda)
         ELet(at, False, "variantIndex", intType, grabVariantIndex, ESequential(at, incrementOffset, match))
     }
 

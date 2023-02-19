@@ -2203,30 +2203,30 @@ const x_a = x_;
 {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 0, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_$(serialization_, value_.file_, $c));
-(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_$(serialization_, value_.code_, $c));
-(await ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.serializeUsing_$(serialization_, value_.kind_, $c));
-(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.startLine_, $c));
-(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.startLineOffset_, $c));
-(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.startOffset_, $c));
-(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.stopLine_, $c));
-(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.stopLineOffset_, $c));
-(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.stopOffset_, $c))
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.file_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.code_);
+ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.serializeUsing_(serialization_, value_.kind_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startLine_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startLineOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopLine_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopLineOffset_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopOffset_)
 return
 }
 }
 },
 async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
-return ff_compiler_Token.Token((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_$(serialization_, $c)), (await ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)))
+return ff_compiler_Token.Token(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
 return
 }
 }
@@ -2664,7 +2664,7 @@ const x_a = x_;
 if(x_a.LEnd) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 0, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
 return
 }
@@ -2673,7 +2673,7 @@ return
 if(x_a.LString) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 1, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1
 return
 }
@@ -2682,7 +2682,7 @@ return
 if(x_a.LChar) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 2, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 2);
 serialization_.offset_ += 1
 return
 }
@@ -2691,7 +2691,7 @@ return
 if(x_a.LInt) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 3, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 3);
 serialization_.offset_ += 1
 return
 }
@@ -2700,7 +2700,7 @@ return
 if(x_a.LFloat) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 4, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
 serialization_.offset_ += 1
 return
 }
@@ -2709,7 +2709,7 @@ return
 if(x_a.LKeyword) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 26), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 5, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 5);
 serialization_.offset_ += 1
 return
 }
@@ -2718,7 +2718,7 @@ return
 if(x_a.LNamespace) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 6, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 6);
 serialization_.offset_ += 1
 return
 }
@@ -2727,7 +2727,7 @@ return
 if(x_a.LLower) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 7, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 7);
 serialization_.offset_ += 1
 return
 }
@@ -2736,7 +2736,7 @@ return
 if(x_a.LUpper) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 8, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 8);
 serialization_.offset_ += 1
 return
 }
@@ -2745,7 +2745,7 @@ return
 if(x_a.LWildcard) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 9, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 9);
 serialization_.offset_ += 1
 return
 }
@@ -2754,7 +2754,7 @@ return
 if(x_a.LBracketLeft) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 10, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 10);
 serialization_.offset_ += 1
 return
 }
@@ -2763,7 +2763,7 @@ return
 if(x_a.LBracketRight) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 11, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 11);
 serialization_.offset_ += 1
 return
 }
@@ -2772,7 +2772,7 @@ return
 if(x_a.LOperator) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 27), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 12, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 12);
 serialization_.offset_ += 1
 return
 }
@@ -2781,7 +2781,7 @@ return
 if(x_a.LComma) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 13, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 13);
 serialization_.offset_ += 1
 return
 }
@@ -2790,7 +2790,7 @@ return
 if(x_a.LSeparator) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 14, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 14);
 serialization_.offset_ += 1
 return
 }
@@ -2799,7 +2799,7 @@ return
 if(x_a.LDot) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 22), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 15, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 15);
 serialization_.offset_ += 1
 return
 }
@@ -2808,7 +2808,7 @@ return
 if(x_a.LSemicolon) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 16, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 16);
 serialization_.offset_ += 1
 return
 }
@@ -2817,7 +2817,7 @@ return
 if(x_a.LPipe) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 17, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 17);
 serialization_.offset_ += 1
 return
 }
@@ -2826,7 +2826,7 @@ return
 if(x_a.LColon) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 24), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 18, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 18);
 serialization_.offset_ += 1
 return
 }
@@ -2835,7 +2835,7 @@ return
 if(x_a.LDotDotDot) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 28), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 19, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 19);
 serialization_.offset_ += 1
 return
 }
@@ -2844,7 +2844,7 @@ return
 if(x_a.LArrowThick) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 20, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 20);
 serialization_.offset_ += 1
 return
 }
@@ -2853,7 +2853,7 @@ return
 if(x_a.LAssign) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 21, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 21);
 serialization_.offset_ += 1
 return
 }
@@ -2862,7 +2862,7 @@ return
 if(x_a.LAssignPlus) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 22, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 22);
 serialization_.offset_ += 1
 return
 }
@@ -2871,7 +2871,7 @@ return
 if(x_a.LAssignMinus) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 23, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 23);
 serialization_.offset_ += 1
 return
 }
@@ -2880,7 +2880,7 @@ return
 if(x_a.LAssignLink) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 24, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 24);
 serialization_.offset_ += 1
 return
 }
@@ -2888,7 +2888,7 @@ return
 }
 },
 async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;

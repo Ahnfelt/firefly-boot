@@ -949,7 +949,7 @@ const x_a = x_;
 if(x_a.None) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 0, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1
 return
 }
@@ -958,16 +958,16 @@ return
 if(x_a.Some) {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
-(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 1, $c));
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 1);
 serialization_.offset_ += 1;
-(await ff_core_Serializable_Serializable$T.serializeUsing_$(serialization_, value_.value_, $c))
+ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, value_.value_)
 return
 }
 }
 }
 },
 async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
@@ -981,7 +981,7 @@ return
 {
 if(_1 == 1) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 19), 0);
-return ff_core_Option.Some((await ff_core_Serializable_Serializable$T.deserializeUsing_$(serialization_, $c)))
+return ff_core_Option.Some(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_))
 return
 }
 }

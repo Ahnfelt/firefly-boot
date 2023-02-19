@@ -24,7 +24,7 @@ trait T: Serializable {
     deserializeUsing(serialization: Serialization): T
 }
 
-class Serialization(
+sync class Serialization(
     mutable buffer: Buffer
     mutable offset: Int
     mutable checksum: Int
