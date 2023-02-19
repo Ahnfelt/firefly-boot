@@ -3,14 +3,14 @@ import Syntax
 import Tokenizer
 import Workspace
 
-type Dependencies(
+data Dependencies(
     workspace: Workspace
     mutable packages: Map[PackagePair, PackageInfo]
     mutable packagePaths: Map[PackagePair, String]
     mutable singleFilePackages: Set[PackagePair]
 )
 
-type ResolvedDependencies(
+data ResolvedDependencies(
     mainPackagePair: PackagePair
     packages: Map[PackagePair, PackageInfo]
     packagePaths: Map[PackagePair, String]

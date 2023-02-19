@@ -93,7 +93,7 @@ instance List[T: Order]: Order {
     }
 }
 
-type Ordering {
+data Ordering {
     OrderingBefore
     OrderingSame
     OrderingAfter

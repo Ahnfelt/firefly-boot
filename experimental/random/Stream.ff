@@ -1,4 +1,4 @@
-type Stream[T](consume: (T => Bool) => Bool)
+data Stream[T](consume: (T => Bool) => Bool)
 
 extend self[T]: Stream[T] {
 

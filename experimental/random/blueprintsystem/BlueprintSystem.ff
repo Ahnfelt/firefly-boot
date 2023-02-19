@@ -1,7 +1,7 @@
-type BlueprintSystem {}
-type ConstructorBlueprint {}
-type FieldBlueprint {}
-type TypeBlueprint {}
+data BlueprintSystem {}
+data ConstructorBlueprint {}
+data FieldBlueprint {}
+data TypeBlueprint {}
 newtype Blueprint(code: String)
 
 extend self: BlueprintSystem {

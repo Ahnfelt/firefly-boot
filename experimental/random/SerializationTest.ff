@@ -1,4 +1,4 @@
-type Person(id: Int, male: Bool, name: String)
+data Person(id: Int, male: Bool, name: String)
 
 main(system: BrowserSystem) {
     let p = Person(5, True, "Hans")

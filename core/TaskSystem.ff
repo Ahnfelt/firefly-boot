@@ -1,6 +1,6 @@
-type TaskSystem! {}
+class TaskSystem {}
 
-type TaskScope! {}
+class TaskScope {}
 
 extend self: TaskScope {
 

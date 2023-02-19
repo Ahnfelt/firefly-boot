@@ -2,7 +2,7 @@ import Syntax
 import Unification
 import Environment
 
-type Dictionaries(
+data Dictionaries(
     instances: Map[InstanceKey, InstanceValue]
 )
 

@@ -1,4 +1,4 @@
-type BrowserSystem! {}
+class BrowserSystem {}
 
 extend self: BrowserSystem {
 

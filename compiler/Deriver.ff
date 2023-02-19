@@ -1,6 +1,6 @@
 import Syntax
 
-type Deriver()
+data Deriver()
 
 make(): Deriver {
     Deriver()

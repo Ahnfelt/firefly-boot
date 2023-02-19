@@ -1,12 +1,12 @@
 import Syntax
 
-type PatternInfo(
+data PatternInfo(
     variant: String
     otherVariants: Set[String]
     fields: List[Pair[String, PatternInfo]]
 )
 
-type PatternCaseInfo(
+data PatternCaseInfo(
     fields: List[Pair[String, PatternInfo]]
     guard: Bool
 )

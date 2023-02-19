@@ -1,4 +1,4 @@
-type Error {}
+data Error {}
 
 extend self: Error {
 

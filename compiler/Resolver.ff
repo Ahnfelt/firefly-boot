@@ -1,6 +1,6 @@
 import Syntax
 
-type Resolver(
+data Resolver(
     variables: Map[String, String]
     variants: Map[String, String]
     types: Map[String, String]
@@ -10,7 +10,7 @@ type Resolver(
     state: ResolverState
 )
 
-type ResolverState(mutable nextUnificationVariableIndex: Int)
+data ResolverState(mutable nextUnificationVariableIndex: Int)
 
 make(): Resolver {
     Resolver(

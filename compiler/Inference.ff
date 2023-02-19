@@ -3,11 +3,11 @@ import Unification
 import Environment
 import Substitution
 
-type Inference(
+data Inference(
     unification: Unification
 )
 
-type TypeException(at: Location, message: String)
+data TypeException(at: Location, message: String)
 
 make(modules: List[Module]): Inference {
     Inference(

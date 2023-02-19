@@ -1,12 +1,12 @@
-type Body(term: Int)
+data Body(term: Int)
 
-type Constructor(
+data Constructor(
     name: String
     arity: Int
     span: Int
 )
 
-type Pattern {
+data Pattern {
     PVariable(name: String)
     PConstructor(
         constructor: Constructor
@@ -14,11 +14,11 @@ type Pattern {
     )
 }
 
-type Match(
+data Match(
     rules: List[Pair[Pattern, Body]]
 )
 
-type TermDescription {
+data TermDescription {
     Positive(
         constructor: Constructor
         descriptions: List[TermDescription]
@@ -26,17 +26,17 @@ type TermDescription {
     Negative(constructors: Set[String])
 }
 
-type Context(
+data Context(
     list: List[Pair[Constructor, List[TermDescription]]]
 )
 
-type MatchResult {
+data MatchResult {
     Yes
     No
     Maybe
 }
 
-type Access{
+data Access{
     Object
     Select(
         index: Int
@@ -44,7 +44,7 @@ type Access{
     )
 }
 
-type Decision {
+data Decision {
     Failure
     Success(body: Body)
     IfEqual(
@@ -55,7 +55,7 @@ type Decision {
     )
 }
 
-type Work(
+data Work(
     patterns: List[Pattern]
     objects: List[Access]
     descriptions: List[TermDescription]

@@ -1,6 +1,6 @@
 import Syntax
 
-type JsImporter(
+data JsImporter(
     mutable imports: Map[String, String]
 )
 

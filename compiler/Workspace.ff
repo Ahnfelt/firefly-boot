@@ -1,12 +1,12 @@
 import Syntax
 
-type Workspace(
+data Workspace(
     rules: List[WorkspaceRule]
     defaultLocation: String
     packageDirectory: String
 )
 
-type WorkspaceRule(
+data WorkspaceRule(
     packageGroup: String
     packageName: Option[String]
     location: String

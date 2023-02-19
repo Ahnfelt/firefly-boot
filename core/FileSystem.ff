@@ -1,4 +1,4 @@
-type FileSystem! {}
+class FileSystem {}
 
 extend self: FileSystem {
 

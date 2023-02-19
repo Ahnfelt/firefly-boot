@@ -12,7 +12,7 @@ trait T: Deserializable {
     }
 }
 
-type Shape {
+data Shape {
     Circle(radius: Float)
     Rectangle(width: Float, height: Float)
 }

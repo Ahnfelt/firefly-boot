@@ -1,6 +1,6 @@
-type BuildSystem! {}
-type BrowserCode!(packageGroup: String, packageName: String, mainFile: String, assetSystem: AssetSystem)
-type BrowserBundle!(assetSystem: AssetSystem)
+class BuildSystem {}
+class BrowserCode(packageGroup: String, packageName: String, mainFile: String, assetSystem: AssetSystem)
+class BrowserBundle(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
 

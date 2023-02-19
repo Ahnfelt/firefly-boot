@@ -1,4 +1,4 @@
-type TimeSystem {}
+data TimeSystem {}
 
 extend self: TimeSystem {
 

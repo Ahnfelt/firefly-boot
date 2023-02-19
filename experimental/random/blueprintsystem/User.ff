@@ -1,2 +1,2 @@
-type User(id: Int, email: String)
+data User(id: Int, email: String)
 

@@ -1,4 +1,4 @@
-type String {}
+data String {}
 
 extend self: String {
 

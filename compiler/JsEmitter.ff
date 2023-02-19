@@ -2,7 +2,7 @@ import Syntax
 import Patterns
 import JsImporter
 
-type JsEmitter(
+data JsEmitter(
     otherModules: Map[String, Module]
     jsImporter: JsImporter
     emitTarget: EmitTarget
@@ -12,7 +12,7 @@ type JsEmitter(
     mutable tailCallUsed: Bool
 )
 
-type EmitTarget {
+data EmitTarget {
     EmitNode
     EmitBrowser
     EmitBuild
@@ -779,7 +779,7 @@ extend self: JsEmitter {
 
 }
 
-type ProcessedVariantCase(
+data ProcessedVariantCase(
     variantName: String
     newtype: Bool
     loneVariant: Bool

@@ -1,4 +1,4 @@
-type JsValue {}
+data JsValue {}
 
 extend self: JsValue {
 

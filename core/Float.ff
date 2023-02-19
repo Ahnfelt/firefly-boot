@@ -1,4 +1,4 @@
-type Float {}
+data Float {}
 
 extend self: Float {
 

@@ -1,6 +1,6 @@
 // https://datatracker.ietf.org/doc/html/rfc8305#section-5
 
-type Ip(ipAddress: String, seconds: Duration, succeed: Bool)
+data Ip(ipAddress: String, seconds: Duration, succeed: Bool)
 
 main(system: NodeSystem): Unit {
     let ips = [

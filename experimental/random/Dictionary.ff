@@ -1,6 +1,6 @@
-type JsValue {}
+data JsValue {}
 
-type Dictionary[K, V] {}
+data Dictionary[K, V] {}
 
 trait K: DictionaryKey {
     add[V](js: JsValue, key: K, value: V): Unit

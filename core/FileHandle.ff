@@ -1,4 +1,4 @@
-type FileHandle! {}
+class FileHandle {}
 
 extend self: FileHandle {
 

@@ -1,4 +1,4 @@
-type List[T] {
+data List[T] {
     Empty
     Link(head: T, tail: List[T])
 }

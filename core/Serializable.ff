@@ -1,4 +1,4 @@
-type DeserializationChecksumException()
+data DeserializationChecksumException()
 
 serialize[T: Serializable](value: T, initialBufferSize: Int = 1024): Buffer {
     let serialization = Serialization(Buffer.make(initialBufferSize), 0, 0)
@@ -24,7 +24,7 @@ trait T: Serializable {
     deserializeUsing(serialization: Serialization): T
 }
 
-type Serialization(
+data Serialization(
     mutable buffer: Buffer
     mutable offset: Int
     mutable checksum: Int

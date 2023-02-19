@@ -1,7 +1,7 @@
 // This may solve VDOM props, but what about "render props"?
 // https://reactjs.org/docs/render-props.html
 
-type Tag[M] {
+data Tag[M] {
     ComponentTag(component: ComponentConstructor[M], key: Option[String])
     ElementTag(name: String, tags: List[Tag[M]], key: Option[String])
     AttributeTag(name: String, value: String)
@@ -10,7 +10,7 @@ type Tag[M] {
     TextTag(text: String)
 }
 
-type ComponentConstructor[M]() {}
+data ComponentConstructor[M]() {}
 
 extend self: Tag[M] {
     map[T](body: M => T): Tag[T] {

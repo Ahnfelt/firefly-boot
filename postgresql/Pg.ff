@@ -3,8 +3,8 @@ import UnsafeJs from ff:unsafejs
 newtype PgPool!(jsValue: JsValue)
 newtype PgConnection!(jsValue: JsValue)
 newtype PgRow(jsValue: JsValue)
-type PgStatement!(sql: String, parameters: Map[String, JsValue], connection: Option[PgConnection])
-type PgLevel {
+class PgStatement(sql: String, parameters: Map[String, JsValue], connection: Option[PgConnection])
+data PgLevel {
     PgReadCommitted
     PgRepeatableRead
     PgSerializable

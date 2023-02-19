@@ -1,4 +1,4 @@
-type S3Bucket
+data S3Bucket
 
 extend self: S3Bucket {
 

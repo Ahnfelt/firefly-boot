@@ -1,4 +1,4 @@
-type Iterator[T](
+data Iterator[T](
     next: () => Option[T]
     close: () => Unit
 )
@@ -27,7 +27,7 @@ extend self: Iterator[T] {
 
 }
 
-type Stream[T](open: () => Iterator[T])
+data Stream[T](open: () => Iterator[T])
 
 extend self: Stream[A] {
 

@@ -386,7 +386,7 @@ ff_core_Stack.Stack_push(extends_, ff_compiler_Parser.Parser_parseExtendDefiniti
 ff_core_Stack.Stack_push(traits_, ff_compiler_Parser.Parser_parseTraitDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "instance"))) {
 ff_core_Stack.Stack_push(instances_, ff_compiler_Parser.Parser_parseInstanceDefinition(self_))
-} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "type") || ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "newtype")))) {
+} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs3(ff_compiler_Parser.Parser_current(self_), "data", "class", "newtype"))) {
 ff_core_Stack.Stack_push(types_, ff_compiler_Parser.Parser_parseTypeDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
 ff_core_Stack.Stack_push(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.packagePair_))
@@ -705,18 +705,17 @@ return ff_compiler_Syntax.DInstance(ff_compiler_Token.Token_at(nameToken_), poly
 
 export function Parser_parseTypeDefinition(self_) {
 const newtype_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "newtype");
+const effectParameter_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "class")
+? ff_core_List.Link("Q$", ff_core_List.Empty())
+: ff_core_List.Empty());
 if(newtype_) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "newtype")
+} else if(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty())) {
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "data")
 } else {
-ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "type")
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "class")
 };
 const nameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LUpper());
-const effectParameter_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "!"))
-? ff_core_List.Empty()
-: (function() {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
-return ff_core_List.Link("Q$", ff_core_List.Empty())
-})());
 const poly_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "["))
 ? ff_compiler_Parser.Poly(ff_core_List.Empty(), ff_core_List.Empty())
 : ff_compiler_Parser.Parser_parseTypeParameters(self_));
@@ -1781,7 +1780,7 @@ ff_core_Stack.Stack_push(extends_, (await ff_compiler_Parser.Parser_parseExtendD
 ff_core_Stack.Stack_push(traits_, (await ff_compiler_Parser.Parser_parseTraitDefinition$(self_, $c)))
 } else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "instance"))) {
 ff_core_Stack.Stack_push(instances_, (await ff_compiler_Parser.Parser_parseInstanceDefinition$(self_, $c)))
-} else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && (ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "type") || ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "newtype")))) {
+} else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs3((await ff_compiler_Parser.Parser_current$(self_, $c)), "data", "class", "newtype"))) {
 ff_core_Stack.Stack_push(types_, (await ff_compiler_Parser.Parser_parseTypeDefinition$(self_, $c)))
 } else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "import"))) {
 ff_core_Stack.Stack_push(imports_, (await ff_compiler_Parser.Parser_parseImportDefinition$(self_, self_.packagePair_, $c)))
@@ -2100,18 +2099,17 @@ return ff_compiler_Syntax.DInstance(ff_compiler_Token.Token_at(nameToken_), poly
 
 export async function Parser_parseTypeDefinition$(self_, $c) {
 const newtype_ = ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "newtype");
+const effectParameter_ = (ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "class")
+? ff_core_List.Link("Q$", ff_core_List.Empty())
+: ff_core_List.Empty());
 if(newtype_) {
 (await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "newtype", $c))
+} else if(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty())) {
+(await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "data", $c))
 } else {
-(await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "type", $c))
+(await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "class", $c))
 };
 const nameToken_ = (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LUpper(), $c));
-const effectParameter_ = ((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "!"))
-? ff_core_List.Empty()
-: (await (async function() {
-(await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LOperator(), $c));
-return ff_core_List.Link("Q$", ff_core_List.Empty())
-})()));
 const poly_ = ((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "["))
 ? ff_compiler_Parser.Poly(ff_core_List.Empty(), ff_core_List.Empty())
 : (await ff_compiler_Parser.Parser_parseTypeParameters$(self_, $c)));

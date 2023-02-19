@@ -1,32 +1,32 @@
 // Two fields, zero fields and a particular field
 
-type GFields[A, B](
+data GFields[A, B](
     first: A
     second: B
 )
 
-type GNoFields()
+data GNoFields()
 
-type GField[S, V](value: V)
+data GField[S, V](value: V)
 
 
 // Two constructors, zero constructors and a particular constructor
 
-type GConstructors[L, R] {
+data GConstructors[L, R] {
     GLeft(value: L)
     GRight(value: R)
 }
 
-type GNoConstructors {}
+data GNoConstructors {}
 
-type GConstructor[S, V](value: V)
+data GConstructor[S, V](value: V)
 
 trait T: Generic[R] {
     toGeneric(value: T): R
     fromGeneric(generic: R): T
 }
 
-type Person(name : String, age : Int)
+data Person(name : String, age : Int)
 
 // Mål: Show på Person
 // Vej: Person -> R -> String

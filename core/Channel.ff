@@ -1,4 +1,4 @@
-type Channel![T] {}
+class Channel[T] {}
 
 extend self[T]: Channel[T] {
 
@@ -13,7 +13,7 @@ extend self[T]: Channel[T] {
 }
 
 
-type ChannelAction![T] {}
+class ChannelAction[T] {}
 
 extend self[T]: ChannelAction[T] {
 

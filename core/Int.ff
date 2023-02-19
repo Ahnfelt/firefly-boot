@@ -1,4 +1,4 @@
-type Int {}
+data Int {}
 
 extend self: Int {
 

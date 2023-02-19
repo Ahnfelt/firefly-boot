@@ -19,7 +19,7 @@ self.join(separator: String): String @[String] @Order[T] { todo() }
 
 // Term.ff only contains the Term type
 
-type Term(at: Location) {
+data Term(at: Location) {
     EString(value: String)
     EChar(value: String)
     EInt(value: String)
@@ -58,7 +58,7 @@ self.toString(): String {
 
 // Bool.ff only contains the Bool type
 
-type Bool {
+data Bool {
     False
     True
 }

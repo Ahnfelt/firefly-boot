@@ -1,27 +1,27 @@
 import Blueprint
 import Pretty
 
-type User(id: Int, email: String)
+data User(id: Int, email: String)
 
 
 //instance User: Pretty
 
-type UserIdField {}
+data UserIdField {}
 instance UserIdField: BpFieldSymbol {
     fieldName(): String { "id" }
 }
 
-type UserEmailField {}
+data UserEmailField {}
 instance UserEmailField: BpFieldSymbol {
     fieldName(): String { "email" }
 }
 
-type UserUserConstructor {}
+data UserUserConstructor {}
 instance UserUserConstructor: BpConstructorSymbol {
     constructorName(): String { "User" }
 }
 
-type UserType {}
+data UserType {}
 instance UserType: BpTypeSymbol {
     typeName(): String { "User" }
     packageName(): String { "ff:blueprints" }

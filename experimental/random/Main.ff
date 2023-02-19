@@ -1,4 +1,4 @@
-type Person(
+data Person(
     email: String
     name: String
     born: Int

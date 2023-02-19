@@ -1,4 +1,4 @@
-type Stream![T](
+class Stream[T](
     next: () => Option[T]
     close: () => Unit
 )

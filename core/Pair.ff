@@ -1,4 +1,4 @@
-type Pair[A, B](first: A, second: B) {
+data Pair[A, B](first: A, second: B) {
     Pair()
 }
 

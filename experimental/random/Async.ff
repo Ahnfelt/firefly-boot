@@ -1,6 +1,6 @@
 import Syntax
 
-type Async()
+data Async()
 
 make(): Async {
     Async()

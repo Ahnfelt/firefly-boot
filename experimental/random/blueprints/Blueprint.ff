@@ -1,30 +1,30 @@
 // Two fields, zero fields and a particular field
 
-type BpFields[A, B](
+data BpFields[A, B](
     first: A
     second: B
 )
 
-type BpNoFields()
+data BpNoFields()
 
-type BpField[S, V](value: V)
+data BpField[S, V](value: V)
 
 
 // Two constructors, zero constructors and a particular constructor
 
-type BpConstructors[L, R] {
+data BpConstructors[L, R] {
     BpLeft(value: L)
     BpRight(value: R)
 }
 
-type BpNoConstructors {}
+data BpNoConstructors {}
 
-type BpConstructor[S, V](value: V)
+data BpConstructor[S, V](value: V)
 
 
 // Type declarations
 
-type BpType[S, C](constructors: C)
+data BpType[S, C](constructors: C)
 
 
 // Names and such

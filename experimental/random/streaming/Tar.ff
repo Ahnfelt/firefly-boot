@@ -1,4 +1,4 @@
-type TarEntry(name: String, stream: Stream[Buffer])
+data TarEntry(name: String, stream: Stream[Buffer])
 
 archive(stream: Stream[TarEntry]): Stream[Buffer] {panic("TODO")}
 

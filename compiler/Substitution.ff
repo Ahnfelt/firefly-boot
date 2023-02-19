@@ -1,6 +1,6 @@
 import Syntax
 
-type Substitution(mutable substitution: Map[Int, Type])
+data Substitution(mutable substitution: Map[Int, Type])
 
 core(name: String): String {
     "ff:core/" + name + "." + name

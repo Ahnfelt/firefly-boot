@@ -1,4 +1,4 @@
-type Array[T] {}
+data Array[T] {}
 
 empty[T](): Array[T]
     target js sync """

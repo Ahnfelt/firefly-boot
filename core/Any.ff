@@ -1,5 +1,5 @@
-type Any {}
-type AnyTag[T] {}
+data Any {}
+data AnyTag[T] {}
 
 trait T: HasAnyTag {
     anyTag(): AnyTag[T]

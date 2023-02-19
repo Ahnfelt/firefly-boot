@@ -1,7 +1,7 @@
-type FetchSystem! {}
-type FetchBody! {}
-type FetchResponse! {}
-type FetchRedirect {
+class FetchSystem {}
+class FetchBody {}
+class FetchResponse {}
+data FetchRedirect {
     RedirectFollow
     RedirectError
     RedirectManual

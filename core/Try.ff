@@ -1,4 +1,4 @@
-type Try[T] {
+data Try[T] {
     Success(value: T)
     Failure(error: Error)
 }

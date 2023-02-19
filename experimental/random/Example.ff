@@ -13,7 +13,7 @@ map[A, B](list: List[A], body: A => B): List[B] {
     | Link(head, tail), _ => Link(body(head), map(tail, body))
 }
 
-type Stack {
+data Stack {
     EmptyStack
     PushStack(value: Int, stack: Stack)
 }
@@ -38,7 +38,7 @@ load(files: FileSystem, file1: String, file2: String): String {
     } grab
 }
 
-type FileException(file: String) {
+data FileException(file: String) {
     FileNotFound
     AccessDenied
 }

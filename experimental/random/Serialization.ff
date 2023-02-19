@@ -1,4 +1,4 @@
-type Person(id: Int, male: Bool, name: String)
+data Person(id: Int, male: Bool, name: String)
 
 instance Person: Serializable {
     serializeUsing(serialization: Serialization, value: Person): Unit {
@@ -24,7 +24,7 @@ instance Person: Serializable {
     }
 }
 
-type DeserializationChecksumException()
+data DeserializationChecksumException()
 
 main(system: BrowserSystem) {
     let p = Person(5, True, "Hans")
@@ -95,7 +95,7 @@ trait T: Serializable {
     deserializeUsing(serialization: Serialization): T
 }
 
-type Serialization(
+data Serialization(
     mutable buffer: Buffer
     mutable offset: Int
     mutable checksum: Int

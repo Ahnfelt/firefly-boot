@@ -10,7 +10,7 @@ test2(foo: Option[Int], bar: Option[Int]): Option[Int] {
     f(foo, bar)
 }
 
-type Moo(x: Int)
+data Moo(x: Int)
 
 extend self: Moo {
     test3(moo: Moo): Moo {
@@ -18,12 +18,12 @@ extend self: Moo {
     }
 }
 */
-type Color {
+data Color {
     R
     B
 }
 
-type RB[K, V] {
+data RB[K, V] {
     E
     T(color : Color, left: RB[K, V], key: K, value: V)
 }

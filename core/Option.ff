@@ -1,4 +1,4 @@
-type Option[T] {
+data Option[T] {
     None
     Some(value: T)
 }

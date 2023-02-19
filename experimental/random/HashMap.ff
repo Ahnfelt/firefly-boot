@@ -1,4 +1,4 @@
-type HashMap[K, V] {}
+data HashMap[K, V] {}
 
 empty() { panic("magic") }
     target js sync "return new Map()"

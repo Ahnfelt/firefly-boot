@@ -1,5 +1,5 @@
-type HttpRequest! {}
-type HttpResponse! {}
+class HttpRequest {}
+class HttpResponse {}
 
 listen(system: NodeSystem, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit
     target node async """

@@ -1,5 +1,5 @@
-type Location(file: String, line: Int, column: Int)
-type CompileError(at: Location, message: String)
+data Location(file: String, line: Int, column: Int)
+data CompileError(at: Location, message: String)
 
 extend self: Location {
     show(): String {
@@ -9,18 +9,18 @@ extend self: Location {
     }
 }
 
-type ModuleWithPackageInfo(
+data ModuleWithPackageInfo(
     packageInfo: Option[PackageInfo]
     module: Module
 )
 
-type PackageInfo(
+data PackageInfo(
     package: DPackage
     dependencies: List[DDependency]
     includes: List[DInclude]
 )
 
-type Module(
+data Module(
     file: String
     packagePair: PackagePair
     imports: List[DImport]
@@ -32,7 +32,7 @@ type Module(
     functions: List[DFunction]
 )
 
-type PackagePair(
+data PackagePair(
     group: String
     name: String
 )
@@ -43,46 +43,46 @@ extend self: PackagePair {
     }
 }
 
-type DPackage(
+data DPackage(
     at: Location
     packagePair: PackagePair
     version: Version
     targets: TargetNames
 )
-type DDependency(
+data DDependency(
     at: Location
     packagePair: PackagePair
     version: Version
     safety: Safety
     targets: TargetNames
 )
-type DInclude(
+data DInclude(
     at: Location
     path: String
 )
-type TargetNames(
+data TargetNames(
     node: Bool
     browser: Bool
 )
-type DImport(
+data DImport(
     at: Location,
     alias: String,
     package: PackagePair,
     directory: List[String],
     file: String
 )
-type DFunction(
+data DFunction(
     at: Location,
     signature: Signature,
     body: Target
 )
-type DLet(
+data DLet(
     at: Location,
     name: String,
     variableType: Type,
     value: Term
 )
-type DExtend(
+data DExtend(
     at: Location,
     name: String,
     generics: List[String],
@@ -90,7 +90,7 @@ type DExtend(
     type: Type,
     methods: List[DFunction],
 )
-type DType(
+data DType(
     at: Location
     newtype: Bool
     name: String
@@ -99,7 +99,7 @@ type DType(
     commonFields: List[Parameter]
     variants: List[Variant]
 )
-type DTrait(
+data DTrait(
     at: Location,
     name: String,
     generics: List[String],
@@ -109,7 +109,7 @@ type DTrait(
     methodDefaults: List[Pair[String, Lambda]],
     methodGenerators: List[Pair[String, Lambda]],
 )
-type DInstance(
+data DInstance(
     at: Location,
     generics: List[String],
     constraints: List[Constraint],
@@ -119,7 +119,7 @@ type DInstance(
     methods: List[DFunction],
 )
 
-type Term(at: Location) {
+data Term(at: Location) {
     EString(value: String)
     EChar(value: String)
     EInt(value: String)
@@ -148,19 +148,19 @@ type Term(at: Location) {
     EWildcard(index: Int)
 }
 
-type CallTarget {
+data CallTarget {
     DynamicCall(function: Term, tailCall: Bool)
     StaticCall(name: String, tailCall: Bool, instanceCall: Bool)
 }
 
-type MatchCase(
+data MatchCase(
     at: Location
     patterns: List[MatchPattern]
     guards: List[MatchGuard]
     body: Term
 )
 
-type MatchPattern(at: Location) {
+data MatchPattern(at: Location) {
     PString(value: String)
     PInt(value: String)
     PChar(value: String)
@@ -170,13 +170,13 @@ type MatchPattern(at: Location) {
     PAlias(pattern: MatchPattern, variable: String)
 }
 
-type MatchGuard(
+data MatchGuard(
     at: Location
     term: Term
     pattern: MatchPattern
 )
 
-type Dictionary(
+data Dictionary(
     packagePair: PackagePair
     moduleName: String
     traitName: String
@@ -184,7 +184,7 @@ type Dictionary(
     dictionaries: List[Dictionary]
 )
 
-type Signature(
+data Signature(
     at: Location
     name: String
     generics: List[String]
@@ -194,35 +194,35 @@ type Signature(
     effect: Type
 )
 
-type Lambda(at: Location, effect: Type, cases: List[MatchCase])
+data Lambda(at: Location, effect: Type, cases: List[MatchCase])
 
-type Variant(at: Location, name: String, fields: List[Parameter])
+data Variant(at: Location, name: String, fields: List[Parameter])
 
-type Parameter(at: Location, mutable: Bool, name: String, valueType: Type, default: Option[Term])
+data Parameter(at: Location, mutable: Bool, name: String, valueType: Type, default: Option[Term])
 
-type Argument(at: Location, name: Option[String], value: Term)
+data Argument(at: Location, name: Option[String], value: Term)
 
-type Field(at: Location, name: String, value: Term)
+data Field(at: Location, name: String, value: Term)
 
-type Constraint(at: Location, name: String, generics: List[Type])
+data Constraint(at: Location, name: String, generics: List[Type])
 
-type Target {
+data Target {
     FireflyTarget(lambda : Lambda)
     ForeignTarget(syncCode : Option[String], asyncCode : Option[String])
 }
 
-type Type(at: Location) {
+data Type(at: Location) {
     TConstructor(name: String, generics: List[Type])
     TVariable(index: Int)
 }
 
-type Safety {
+data Safety {
     Safe
     Unsafe
     Trusted
 }
 
-type Version(at: Location, major: Int, minor: Int, patch: Int)
+data Version(at: Location, major: Int, minor: Int, patch: Int)
 
 extend self: Type {
     show(): String {

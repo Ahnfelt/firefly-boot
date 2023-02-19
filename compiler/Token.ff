@@ -1,6 +1,6 @@
 import Syntax
 
-type Token(
+data Token(
     file: String,
     code: String,
     kind: TokenKind,
@@ -49,7 +49,7 @@ extend token: Token {
 
 }
 
-type TokenKind {
+data TokenKind {
     LEnd
     LString
     LChar

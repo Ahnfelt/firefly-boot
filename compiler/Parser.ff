@@ -2,7 +2,7 @@ import Token
 import Wildcards
 import Syntax
 
-type Parser!(
+class Parser(
     packagePair: PackagePair
     file: String
     tokens: Array[Token]
@@ -12,9 +12,9 @@ type Parser!(
     mutable nextUnificationVariableIndex: Int
 )
 
-type Poly(generics: List[String], constraints: List[Constraint])
+data Poly(generics: List[String], constraints: List[Constraint])
 
-type ParsedTargets(
+data ParsedTargets(
     js: Option[Lambda]
     jsSync: Option[String]
     jsAsync: Option[String]
@@ -164,7 +164,7 @@ extend self: Parser {
                 traits.push(self.parseTraitDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("instance")} {
                 instances.push(self.parseInstanceDefinition())
-            } elseIf {self.current().is(LKeyword) && (self.current().rawIs("type") || self.current().rawIs("newtype"))} {
+            } elseIf {self.current().is(LKeyword) && self.current().rawIs3("data", "class", "newtype")} {
                 types.push(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
                 imports.push(self.parseImportDefinition(self.packagePair))
@@ -403,9 +403,15 @@ extend self: Parser {
 
     parseTypeDefinition(): DType {
         let newtype = self.current().rawIs("newtype")
-        if(newtype) { self.rawSkip(LKeyword, "newtype") } else { self.rawSkip(LKeyword, "type") }
+        let effectParameter = if(self.current().rawIs("class")) {["Q$"]} else {[]}
+        if(newtype) {
+            self.rawSkip(LKeyword, "newtype")
+        } elseIf {effectParameter == []} {
+            self.rawSkip(LKeyword, "data")
+        } else {
+            self.rawSkip(LKeyword, "class")
+        }
         let nameToken = self.skip(LUpper)
-        let effectParameter = if(!self.current().rawIs("!")) {[]} else {self.skip(LOperator); ["Q$"]}
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
         let variants = if(newtype || !self.current().rawIs("{")) {

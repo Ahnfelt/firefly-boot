@@ -9,7 +9,7 @@ import Dependencies
 import JsEmitter
 import Inference
 
-type MainCommand {
+data MainCommand {
     BootstrapCommand
     RunCommand(mainPath: String)
     BrowserCommand(mainPath: String)

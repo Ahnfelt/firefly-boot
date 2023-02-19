@@ -1,11 +1,11 @@
 // Based on https://www.cs.kent.ac.uk/people/staff/smk/redblack/Untyped.hs
 
-type Color {
+data Color {
     R
     B
 }
 
-type RB[K, V] {
+data RB[K, V] {
     E
     T(color : Color, left: RB[K, V], key: K, value: V, right: RB[K, V])
 }

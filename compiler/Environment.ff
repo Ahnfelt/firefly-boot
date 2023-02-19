@@ -1,11 +1,11 @@
 import Syntax
 
-type Environment(
+data Environment(
     symbols: Map[String, Scheme]
     effect: Type
 )
 
-type Scheme(
+data Scheme(
     isVariable: Bool
     isMutable: Bool
     isNewtype: Bool
@@ -13,7 +13,7 @@ type Scheme(
     signature: Signature
 )
 
-type Instantiated(
+data Instantiated(
     typeArguments: List[Pair[String, Type]]
     scheme: Scheme
 )
