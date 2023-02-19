@@ -1,6 +1,6 @@
 import Syntax
 
-data Wildcards(mutable seenWildcards : Int)
+class Wildcards(mutable seenWildcards : Int)
 
 make(): Wildcards {
     Wildcards(0)

@@ -261,8 +261,8 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable_Serializable$A.serializeUsing_(serialization_, value_.first_);
-ff_core_Serializable_Serializable$B.serializeUsing_(serialization_, value_.second_)
+(await ff_core_Serializable_Serializable$A.serializeUsing_$(serialization_, value_.first_, $c));
+(await ff_core_Serializable_Serializable$B.serializeUsing_$(serialization_, value_.second_, $c))
 return
 }
 }
@@ -275,7 +275,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
-return ff_core_Pair.Pair(ff_core_Serializable_Serializable$A.deserializeUsing_(serialization_), ff_core_Serializable_Serializable$B.deserializeUsing_(serialization_))
+return ff_core_Pair.Pair((await ff_core_Serializable_Serializable$A.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable_Serializable$B.deserializeUsing_$(serialization_, $c)))
 return
 }
 }

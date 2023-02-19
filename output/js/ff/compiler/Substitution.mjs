@@ -149,8 +149,8 @@ export function Substitution_substituteFunctionDefinition(self_, definition_) {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((definition_) => {
-return ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_)
+return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteLambda(self_, _w1)
 })))
 return
 }
@@ -162,10 +162,10 @@ export function Substitution_substituteSignature(self_, signature_) {
 const _1 = signature_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((constraint_) => {
-return ff_compiler_Substitution.Substitution_substituteConstraint(self_, constraint_)
-})), ff_core_List.List_map(signature_.parameters_, ((parameter_) => {
-return ff_compiler_Substitution.Substitution_substituteParameter(self_, parameter_)
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteConstraint(self_, _w1)
+})), ff_core_List.List_map(signature_.parameters_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteParameter(self_, _w1)
 })), ff_compiler_Substitution.Substitution_substituteType(self_, signature_.returnType_), ff_compiler_Substitution.Substitution_substituteType(self_, signature_.effect_))
 return
 }
@@ -177,8 +177,8 @@ export function Substitution_substituteConstraint(self_, constraint_) {
 const _1 = constraint_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.List_map(constraint_.generics_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
+return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.List_map(constraint_.generics_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, _w1)
 })))
 return
 }
@@ -190,8 +190,8 @@ export function Substitution_substituteParameter(self_, parameter_) {
 const _1 = parameter_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, parameter_.valueType_), ff_core_Option.Option_map(parameter_.default_, ((term_) => {
-return ff_compiler_Substitution.Substitution_substituteTerm(self_, term_)
+return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, parameter_.valueType_), ff_core_Option.Option_map(parameter_.default_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteTerm(self_, _w1)
 })))
 return
 }
@@ -364,11 +364,11 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, _w1)
 })), ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
-return ff_core_List.List_map(_w1, ((argument_) => {
-return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)
+return ff_core_List.List_map(_w1, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteArgument(self_, _w1)
 }))
 })))
 return
@@ -384,8 +384,8 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
+return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, _w1)
 })))
 return
 }
@@ -400,8 +400,8 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((field_) => {
-return ff_compiler_Substitution.Substitution_substituteField(self_, field_)
+return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteField(self_, _w1)
 })))
 return
 }
@@ -451,10 +451,10 @@ return e_.target_
 return
 }
 }
-}))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
-})), ff_core_List.List_map(e_.arguments_, ((argument_) => {
-return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)
+}))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteType(self_, _w1)
+})), ff_core_List.List_map(e_.arguments_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteArgument(self_, _w1)
 })), _c.dictionaries_)
 return
 }
@@ -469,8 +469,8 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((field_) => {
-return ff_compiler_Substitution.Substitution_substituteField(self_, field_)
+return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteField(self_, _w1)
 })))
 return
 }
@@ -485,8 +485,8 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EFunctions(_c.at_, ff_core_List.List_map(e_.functions_, ((definition_) => {
-return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, definition_)
+return ff_compiler_Syntax.EFunctions(_c.at_, ff_core_List.List_map(e_.functions_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
 })), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.body_))
 return
 }
@@ -617,18 +617,18 @@ return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff
 }
 
 export async function Substitution_substituteModule$(self_, module_, $c) {
-const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
-return ff_compiler_Substitution.Substitution_substituteLetDefinition(self_, _w1)
-}));
-const functions_ = ff_core_List.List_map(module_.functions_, ((_w1) => {
-return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
-}));
-const extends_ = ff_core_List.List_map(module_.extends_, ((_w1) => {
-return ff_compiler_Substitution.Substitution_substituteExtendDefinition(self_, _w1)
-}));
-const instances_ = ff_core_List.List_map(module_.instances_, ((_w1) => {
-return ff_compiler_Substitution.Substitution_substituteInstanceDefinition(self_, _w1)
-}));
+const lets_ = (await ff_core_List.List_map$(module_.lets_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteLetDefinition$(self_, _w1, $c))
+}), $c));
+const functions_ = (await ff_core_List.List_map$(module_.functions_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteFunctionDefinition$(self_, _w1, $c))
+}), $c));
+const extends_ = (await ff_core_List.List_map$(module_.extends_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteExtendDefinition$(self_, _w1, $c))
+}), $c));
+const instances_ = (await ff_core_List.List_map$(module_.instances_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteInstanceDefinition$(self_, _w1, $c))
+}), $c));
 {
 const _1 = module_;
 {
@@ -644,7 +644,7 @@ export async function Substitution_substituteLetDefinition$(self_, definition_, 
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DLet(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.variableType_), ff_compiler_Substitution.Substitution_substituteTerm(self_, definition_.value_))
+return ff_compiler_Syntax.DLet(_c.at_, _c.name_, (await ff_compiler_Substitution.Substitution_substituteType$(self_, definition_.variableType_, $c)), (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, definition_.value_, $c)))
 return
 }
 }
@@ -655,9 +655,9 @@ export async function Substitution_substituteExtendDefinition$(self_, definition
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
-})))
+return ff_compiler_Syntax.DExtend(_c.at_, _c.name_, _c.generics_, _c.constraints_, _c.type_, (await ff_core_List.List_map$(definition_.methods_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteFunctionDefinition$(self_, _w1, $c))
+}), $c)))
 return
 }
 }
@@ -668,9 +668,9 @@ export async function Substitution_substituteFunctionDefinition$(self_, definiti
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DFunction(_c.at_, ff_compiler_Substitution.Substitution_substituteSignature(self_, definition_.signature_), ff_compiler_Syntax.Target_mapFirefly(definition_.body_, ((definition_) => {
-return ff_compiler_Substitution.Substitution_substituteLambda(self_, definition_)
-})))
+return ff_compiler_Syntax.DFunction(_c.at_, (await ff_compiler_Substitution.Substitution_substituteSignature$(self_, definition_.signature_, $c)), (await ff_compiler_Syntax.Target_mapFirefly$(definition_.body_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteLambda$(self_, _w1, $c))
+}), $c)))
 return
 }
 }
@@ -681,11 +681,11 @@ export async function Substitution_substituteSignature$(self_, signature_, $c) {
 const _1 = signature_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((constraint_) => {
-return ff_compiler_Substitution.Substitution_substituteConstraint(self_, constraint_)
-})), ff_core_List.List_map(signature_.parameters_, ((parameter_) => {
-return ff_compiler_Substitution.Substitution_substituteParameter(self_, parameter_)
-})), ff_compiler_Substitution.Substitution_substituteType(self_, signature_.returnType_), ff_compiler_Substitution.Substitution_substituteType(self_, signature_.effect_))
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, (await ff_core_List.List_map$(signature_.constraints_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteConstraint$(self_, _w1, $c))
+}), $c)), (await ff_core_List.List_map$(signature_.parameters_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteParameter$(self_, _w1, $c))
+}), $c)), (await ff_compiler_Substitution.Substitution_substituteType$(self_, signature_.returnType_, $c)), (await ff_compiler_Substitution.Substitution_substituteType$(self_, signature_.effect_, $c)))
 return
 }
 }
@@ -696,9 +696,9 @@ export async function Substitution_substituteConstraint$(self_, constraint_, $c)
 const _1 = constraint_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, ff_core_List.List_map(constraint_.generics_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
-})))
+return ff_compiler_Syntax.Constraint(_c.at_, _c.name_, (await ff_core_List.List_map$(constraint_.generics_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteType$(self_, _w1, $c))
+}), $c)))
 return
 }
 }
@@ -709,9 +709,9 @@ export async function Substitution_substituteParameter$(self_, parameter_, $c) {
 const _1 = parameter_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, parameter_.valueType_), ff_core_Option.Option_map(parameter_.default_, ((term_) => {
-return ff_compiler_Substitution.Substitution_substituteTerm(self_, term_)
-})))
+return ff_compiler_Syntax.Parameter(_c.at_, _c.mutable_, _c.name_, (await ff_compiler_Substitution.Substitution_substituteType$(self_, parameter_.valueType_, $c)), (await ff_core_Option.Option_map$(parameter_.default_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, _w1, $c))
+}), $c)))
 return
 }
 }
@@ -722,9 +722,9 @@ export async function Substitution_substituteInstanceDefinition$(self_, definiti
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, _w1)
-})))
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, (await ff_core_List.List_map$(definition_.methods_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteFunctionDefinition$(self_, _w1, $c))
+}), $c)))
 return
 }
 }
@@ -735,25 +735,25 @@ export async function Substitution_substituteLambda$(self_, definition_, $c) {
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Lambda(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, definition_.effect_), ff_core_List.List_map(definition_.cases_, ((case_) => {
+return ff_compiler_Syntax.Lambda(_c.at_, (await ff_compiler_Substitution.Substitution_substituteType$(self_, definition_.effect_, $c)), (await ff_core_List.List_map$(definition_.cases_, (async (case_, $c) => {
 {
 const _1 = case_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, ff_core_List.List_map(case_.guards_, ((g_) => {
+return ff_compiler_Syntax.MatchCase(_c.at_, _c.patterns_, (await ff_core_List.List_map$(case_.guards_, (async (g_, $c) => {
 {
 const _1 = g_;
 {
 const _c = _1;
-return ff_compiler_Syntax.MatchGuard(_c.at_, ff_compiler_Substitution.Substitution_substituteTerm(self_, g_.term_), _c.pattern_)
+return ff_compiler_Syntax.MatchGuard(_c.at_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, g_.term_, $c)), _c.pattern_)
 return
 }
 }
-})), ff_compiler_Substitution.Substitution_substituteTerm(self_, case_.body_))
+}), $c)), (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, case_.body_, $c)))
 return
 }
 }
-})))
+}), $c)))
 return
 }
 }
@@ -799,7 +799,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), _c.field_)
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.record_, $c)), _c.field_)
 return
 }
 }
@@ -820,14 +820,14 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EList(_c.at_, ff_compiler_Substitution.Substitution_substituteType(self_, e_.elementType_), ff_core_List.List_map(e_.items_, ((_1) => {
+return ff_compiler_Syntax.EList(_c.at_, (await ff_compiler_Substitution.Substitution_substituteType$(self_, e_.elementType_, $c)), (await ff_core_List.List_map$(e_.items_, (async (_1, $c) => {
 {
 const item_ = _1.first_;
 const b_ = _1.second_;
-return ff_core_Pair.Pair(ff_compiler_Substitution.Substitution_substituteTerm(self_, item_), b_)
+return ff_core_Pair.Pair((await ff_compiler_Substitution.Substitution_substituteTerm$(self_, item_, $c)), b_)
 return
 }
-})))
+}), $c)))
 return
 }
 }
@@ -841,7 +841,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.before_), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.after_))
+return ff_compiler_Syntax.ESequential(_c.at_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.before_, $c)), (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.after_, $c)))
 return
 }
 }
@@ -855,7 +855,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, ff_compiler_Substitution.Substitution_substituteType(self_, e_.valueType_), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.value_), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.body_))
+return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, (await ff_compiler_Substitution.Substitution_substituteType$(self_, e_.valueType_, $c)), (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.value_, $c)), (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.body_, $c)))
 return
 }
 }
@@ -869,7 +869,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ELambda(_c.at_, ff_compiler_Substitution.Substitution_substituteLambda(self_, e_.lambda_))
+return ff_compiler_Syntax.ELambda(_c.at_, (await ff_compiler_Substitution.Substitution_substituteLambda$(self_, e_.lambda_, $c)))
 return
 }
 }
@@ -883,13 +883,13 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
-})), ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
-return ff_core_List.List_map(_w1, ((argument_) => {
-return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)
-}))
-})))
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, (await ff_core_List.List_map$(e_.typeArguments_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteType$(self_, _w1, $c))
+}), $c)), (await ff_core_Option.Option_map$(e_.arguments_, (async (_w1, $c) => {
+return (await ff_core_List.List_map$(_w1, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteArgument$(self_, _w1, $c))
+}), $c))
+}), $c)))
 return
 }
 }
@@ -903,9 +903,9 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, ff_core_List.List_map(e_.typeArguments_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
-})))
+return ff_compiler_Syntax.EVariantIs(_c.at_, _c.name_, (await ff_core_List.List_map$(e_.typeArguments_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteType$(self_, _w1, $c))
+}), $c)))
 return
 }
 }
@@ -919,9 +919,9 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((field_) => {
-return ff_compiler_Substitution.Substitution_substituteField(self_, field_)
-})))
+return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.record_, $c)), (await ff_core_List.List_map$(e_.arguments_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteField$(self_, _w1, $c))
+}), $c)))
 return
 }
 }
@@ -935,7 +935,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.value_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.function_))
+return ff_compiler_Syntax.EPipe(_c.at_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.value_, $c)), (await ff_compiler_Substitution.Substitution_substituteType$(self_, e_.effect_, $c)), (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.function_, $c)))
 return
 }
 }
@@ -949,7 +949,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, (((_1) => {
+return ff_compiler_Syntax.ECall(_c.at_, (await ((async (_1, $c) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -957,7 +957,7 @@ const call_ = _1;
 const _1 = call_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DynamicCall(ff_compiler_Substitution.Substitution_substituteTerm(self_, call_.function_), _c.tailCall_)
+return ff_compiler_Syntax.DynamicCall((await ff_compiler_Substitution.Substitution_substituteTerm$(self_, call_.function_, $c)), _c.tailCall_)
 return
 }
 }
@@ -970,11 +970,11 @@ return e_.target_
 return
 }
 }
-}))(e_.target_), ff_compiler_Substitution.Substitution_substituteType(self_, e_.effect_), ff_core_List.List_map(e_.typeArguments_, ((type_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, type_)
-})), ff_core_List.List_map(e_.arguments_, ((argument_) => {
-return ff_compiler_Substitution.Substitution_substituteArgument(self_, argument_)
-})), _c.dictionaries_)
+}))(e_.target_)), (await ff_compiler_Substitution.Substitution_substituteType$(self_, e_.effect_, $c)), (await ff_core_List.List_map$(e_.typeArguments_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteType$(self_, _w1, $c))
+}), $c)), (await ff_core_List.List_map$(e_.arguments_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteArgument$(self_, _w1, $c))
+}), $c)), _c.dictionaries_)
 return
 }
 }
@@ -988,9 +988,9 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((field_) => {
-return ff_compiler_Substitution.Substitution_substituteField(self_, field_)
-})))
+return ff_compiler_Syntax.ERecord(_c.at_, (await ff_core_List.List_map$(e_.fields_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteField$(self_, _w1, $c))
+}), $c)))
 return
 }
 }
@@ -1004,9 +1004,9 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EFunctions(_c.at_, ff_core_List.List_map(e_.functions_, ((definition_) => {
-return ff_compiler_Substitution.Substitution_substituteFunctionDefinition(self_, definition_)
-})), ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.body_))
+return ff_compiler_Syntax.EFunctions(_c.at_, (await ff_core_List.List_map$(e_.functions_, (async (_w1, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteFunctionDefinition$(self_, _w1, $c))
+}), $c)), (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.body_, $c)))
 return
 }
 }
@@ -1020,7 +1020,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.value_))
+return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.value_, $c)))
 return
 }
 }
@@ -1034,7 +1034,7 @@ const e_ = _1;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.record_), _c.field_, ff_compiler_Substitution.Substitution_substituteTerm(self_, e_.value_))
+return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.record_, $c)), _c.field_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, e_.value_, $c)))
 return
 }
 }
@@ -1049,7 +1049,7 @@ export async function Substitution_substituteArgument$(self_, argument_, $c) {
 const _1 = argument_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, argument_.value_))
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, argument_.value_, $c)))
 return
 }
 }
@@ -1060,7 +1060,7 @@ export async function Substitution_substituteField$(self_, field_, $c) {
 const _1 = field_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Substitution.Substitution_substituteTerm(self_, field_.value_))
+return ff_compiler_Syntax.Field(_c.at_, _c.name_, (await ff_compiler_Substitution.Substitution_substituteTerm$(self_, field_.value_, $c)))
 return
 }
 }
@@ -1074,8 +1074,8 @@ const type_a = type_;
 if(type_a.TVariable) {
 const at_ = type_a.at_;
 const i_ = type_a.index_;
-if(ff_compiler_Substitution.Substitution_has(self_, i_)) {
-return ff_compiler_Substitution.Substitution_substituteType(self_, ff_compiler_Substitution.Substitution_get(self_, i_))
+if((await ff_compiler_Substitution.Substitution_has$(self_, i_, $c))) {
+return (await ff_compiler_Substitution.Substitution_substituteType$(self_, (await ff_compiler_Substitution.Substitution_get$(self_, i_, $c)), $c))
 } else {
 return ff_compiler_Syntax.TConstructor(at_, ff_compiler_Substitution.core_("Nothing"), ff_core_List.Empty())
 }
@@ -1089,9 +1089,9 @@ const t_ = type_a;
 const _1 = t_;
 {
 const _c = _1;
-return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, ff_core_List.List_map(t_.generics_, ((t_) => {
-return ff_compiler_Substitution.Substitution_substituteType(self_, t_)
-})))
+return ff_compiler_Syntax.TConstructor(_c.at_, _c.name_, (await ff_core_List.List_map$(t_.generics_, (async (t_, $c) => {
+return (await ff_compiler_Substitution.Substitution_substituteType$(self_, t_, $c))
+}), $c)))
 return
 }
 }
@@ -1107,9 +1107,9 @@ const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff
 {
 if(_1.TVariable) {
 const i_ = _1.index_;
-const _guard1 = ff_compiler_Substitution.Substitution_has(self_, i_);
+const _guard1 = (await ff_compiler_Substitution.Substitution_has$(self_, i_, $c));
 if(_guard1) {
-const t_ = ff_compiler_Substitution.Substitution_get(self_, i_);
+const t_ = (await ff_compiler_Substitution.Substitution_get$(self_, i_, $c));
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, t_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 return t_
 return
@@ -1135,187 +1135,6 @@ export async function Substitution_has$(self_, index_, $c) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
-export const ff_core_Any_HasAnyTag$ff_compiler_Substitution_Substitution = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Substitution.Substitution" + "[") + "]"))
-},
-async anyTag_$($c) {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Substitution.Substitution" + "[") + "]"))
-}
-};
 
-export const ff_core_Show_Show$ff_compiler_Substitution_Substitution = {
-show_(x_) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((("Substitution" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.substitution_)) + ")")
-return
-}
-}
-},
-async show_$(x_, $c) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((("Substitution" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.substitution_)) + ")")
-return
-}
-}
-}
-};
-
-export const ff_core_Equal_Equal$ff_compiler_Substitution_Substitution = {
-equals_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.substitution_, y_.substitution_)
-return
-}
-}
-},
-async equals_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.substitution_, y_.substitution_)
-return
-}
-}
-}
-};
-
-export const ff_core_Ordering_Order$ff_compiler_Substitution_Substitution = {
-compare_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const substitutionOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.substitution_, y_.substitution_);
-if((substitutionOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return substitutionOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-return
-}
-}
-},
-async compare_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const substitutionOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.substitution_, y_.substitution_);
-if((substitutionOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return substitutionOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-return
-}
-}
-}
-};
-
-export const ff_core_Serializable_Serializable$ff_compiler_Substitution_Substitution = {
-serializeUsing_(serialization_, x_) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, value_.substitution_)
-return
-}
-}
-},
-deserializeUsing_(serialization_) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
-return ff_compiler_Substitution.Substitution(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-},
-async serializeUsing_$(serialization_, x_, $c) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, value_.substitution_)
-return
-}
-}
-},
-async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
-return ff_compiler_Substitution.Substitution(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-}
-};
 
 

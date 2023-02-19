@@ -422,6 +422,9 @@ extend self: Parser {
             while {!self.current().is(LBracketRight)} {
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
+                if(effectParameter == [] && variantFields.any {_.mutable}) {
+                    self.fail(variantFields.find {_.mutable}.grab().at, "Only classes can have mutable fields")
+                }
                 variantsBuilder.push(
                     Variant(variantNameToken.at(), variantNameToken.raw(), variantFields)
                 )
@@ -433,8 +436,8 @@ extend self: Parser {
         if(newtype && commonFields.size() != 1) {
             self.fail(nameToken.at(), "Newtypes must have exactly one field")
         }
-        if(newtype && commonFields.grab(0).mutable) {
-            self.fail(commonFields.grab(0).at, "Newtypes can't have mutable fields")
+        if(effectParameter == [] && commonFields.any {_.mutable}) {
+            self.fail(commonFields.find {_.mutable}.grab().at, "Only classes can have mutable fields")
         }
         let generics = [...effectParameter, ...poly.generics]
         DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants)

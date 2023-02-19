@@ -360,7 +360,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.body_))
+return ff_compiler_Syntax.ELet(_c.at_, _c.mutable_, _c.name_, _c.valueType_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.value_, $c)), (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.body_, $c)))
 return
 }
 }
@@ -374,7 +374,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ESequential(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.before_), ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.after_))
+return ff_compiler_Syntax.ESequential(_c.at_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.before_, $c)), (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.after_, $c)))
 return
 }
 }
@@ -388,7 +388,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
+return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.value_, $c)))
 return
 }
 }
@@ -402,7 +402,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_))
+return ff_compiler_Syntax.EAssignField(_c.at_, _c.operator_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.record_, $c)), _c.field_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.value_, $c)))
 return
 }
 }
@@ -416,7 +416,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EPipe(_c.at_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.value_), _c.effect_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.function_))
+return ff_compiler_Syntax.EPipe(_c.at_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.value_, $c)), _c.effect_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.function_, $c)))
 return
 }
 }
@@ -430,7 +430,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECall(_c.at_, (((_1) => {
+return ff_compiler_Syntax.ECall(_c.at_, (await ((async (_1, $c) => {
 {
 if(_1.DynamicCall) {
 const call_ = _1;
@@ -438,7 +438,7 @@ const call_ = _1;
 const _1 = call_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DynamicCall(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, call_.function_), _c.tailCall_)
+return ff_compiler_Syntax.DynamicCall((await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, call_.function_, $c)), _c.tailCall_)
 return
 }
 }
@@ -449,16 +449,16 @@ return
 return ff_compiler_Wildcards.fail_(e_.at_, "Internal error: Static calls not expected in the Wildcards phase")
 return
 }
-}))(e_.target_), _c.effect_, _c.typeArguments_, ff_core_List.List_map(e_.arguments_, ((a_) => {
+}))(e_.target_)), _c.effect_, _c.typeArguments_, (await ff_core_List.List_map$(e_.arguments_, (async (a_, $c) => {
 {
 const _1 = a_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, a_.value_, $c)))
 return
 }
 }
-})), _c.dictionaries_)
+}), $c)), _c.dictionaries_)
 return
 }
 }
@@ -472,14 +472,14 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, ff_core_List.List_map(e_.items_, ((_1) => {
+return ff_compiler_Syntax.EList(_c.at_, _c.elementType_, (await ff_core_List.List_map$(e_.items_, (async (_1, $c) => {
 {
 const item_ = _1.first_;
 const spread_ = _1.second_;
-return ff_core_Pair.Pair(ff_compiler_Wildcards.Wildcards_fixWildcards(self_, item_), spread_)
+return ff_core_Pair.Pair((await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, item_, $c)), spread_)
 return
 }
-})))
+}), $c)))
 return
 }
 }
@@ -493,16 +493,16 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), ff_core_List.List_map(e_.arguments_, ((a_) => {
+return ff_compiler_Syntax.ECopy(_c.at_, _c.name_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.record_, $c)), (await ff_core_List.List_map$(e_.arguments_, (async (a_, $c) => {
 {
 const _1 = a_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
+return ff_compiler_Syntax.Field(_c.at_, _c.name_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, a_.value_, $c)))
 return
 }
 }
-})))
+}), $c)))
 return
 }
 }
@@ -516,18 +516,18 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, _c.typeArguments_, ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
-return ff_core_List.List_map(_w1, ((a_) => {
+return ff_compiler_Syntax.EVariant(_c.at_, _c.name_, _c.typeArguments_, (await ff_core_Option.Option_map$(e_.arguments_, (async (_w1, $c) => {
+return (await ff_core_List.List_map$(_w1, (async (a_, $c) => {
 {
 const _1 = a_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Argument(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
+return ff_compiler_Syntax.Argument(_c.at_, _c.name_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, a_.value_, $c)))
 return
 }
 }
-}))
-})))
+}), $c))
+}), $c)))
 return
 }
 }
@@ -541,16 +541,16 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.ERecord(_c.at_, ff_core_List.List_map(e_.fields_, ((a_) => {
+return ff_compiler_Syntax.ERecord(_c.at_, (await ff_core_List.List_map$(e_.fields_, (async (a_, $c) => {
 {
 const _1 = a_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Field(_c.at_, _c.name_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, a_.value_))
+return ff_compiler_Syntax.Field(_c.at_, _c.name_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, a_.value_, $c)))
 return
 }
 }
-})))
+}), $c)))
 return
 }
 }
@@ -564,7 +564,7 @@ const e_ = term_a;
 const _1 = e_;
 {
 const _c = _1;
-return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, ff_compiler_Wildcards.Wildcards_fixWildcards(self_, e_.record_), _c.field_)
+return ff_compiler_Syntax.EField(_c.at_, _c.newtype_, (await ff_compiler_Wildcards.Wildcards_fixWildcards$(self_, e_.record_, $c)), _c.field_)
 return
 }
 }
@@ -593,187 +593,6 @@ return
 }
 }
 
-export const ff_core_Any_HasAnyTag$ff_compiler_Wildcards_Wildcards = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Wildcards.Wildcards" + "[") + "]"))
-},
-async anyTag_$($c) {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Wildcards.Wildcards" + "[") + "]"))
-}
-};
 
-export const ff_core_Show_Show$ff_compiler_Wildcards_Wildcards = {
-show_(x_) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((("Wildcards" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.seenWildcards_)) + ")")
-return
-}
-}
-},
-async show_$(x_, $c) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((("Wildcards" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.seenWildcards_)) + ")")
-return
-}
-}
-}
-};
-
-export const ff_core_Equal_Equal$ff_compiler_Wildcards_Wildcards = {
-equals_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (x_.seenWildcards_ === y_.seenWildcards_)
-return
-}
-}
-},
-async equals_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (x_.seenWildcards_ === y_.seenWildcards_)
-return
-}
-}
-}
-};
-
-export const ff_core_Ordering_Order$ff_compiler_Wildcards_Wildcards = {
-compare_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const seenWildcardsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.seenWildcards_, y_.seenWildcards_);
-if((seenWildcardsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return seenWildcardsOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-return
-}
-}
-},
-async compare_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const seenWildcardsOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.seenWildcards_, y_.seenWildcards_);
-if((seenWildcardsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return seenWildcardsOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-return
-}
-}
-}
-};
-
-export const ff_core_Serializable_Serializable$ff_compiler_Wildcards_Wildcards = {
-serializeUsing_(serialization_, x_) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.seenWildcards_)
-return
-}
-}
-},
-deserializeUsing_(serialization_) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Wildcards.Wildcards(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-},
-async serializeUsing_$(serialization_, x_, $c) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.seenWildcards_)
-return
-}
-}
-},
-async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Wildcards.Wildcards(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-}
-};
 
 

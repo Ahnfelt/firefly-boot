@@ -3,7 +3,7 @@ import Syntax
 import Tokenizer
 import Workspace
 
-data Dependencies(
+class Dependencies(
     workspace: Workspace
     mutable packages: Map[PackagePair, PackageInfo]
     mutable packagePaths: Map[PackagePair, String]

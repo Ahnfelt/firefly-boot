@@ -750,8 +750,8 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).serializeUsing_(serialization_, value_.symbols_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, value_.effect_)
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).serializeUsing_$(serialization_, value_.symbols_, $c));
+(await ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_$(serialization_, value_.effect_, $c))
 return
 }
 }
@@ -764,7 +764,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
-return ff_compiler_Environment.Environment(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_))
+return ff_compiler_Environment.Environment((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).deserializeUsing_$(serialization_, $c)), (await ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_$(serialization_, $c)))
 return
 }
 }
@@ -822,11 +822,11 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.isVariable_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.isMutable_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.isNewtype_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.isTraitMethod_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Signature.serializeUsing_(serialization_, value_.signature_)
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_$(serialization_, value_.isVariable_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_$(serialization_, value_.isMutable_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_$(serialization_, value_.isNewtype_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_$(serialization_, value_.isTraitMethod_, $c));
+(await ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Signature.serializeUsing_$(serialization_, value_.signature_, $c))
 return
 }
 }
@@ -839,7 +839,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 30), 0);
-return ff_compiler_Environment.Scheme(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Signature.deserializeUsing_(serialization_))
+return ff_compiler_Environment.Scheme((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_$(serialization_, $c)), (await ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Signature.deserializeUsing_$(serialization_, $c)))
 return
 }
 }
@@ -894,8 +894,8 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type)).serializeUsing_(serialization_, value_.typeArguments_);
-ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme.serializeUsing_(serialization_, value_.scheme_)
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type)).serializeUsing_$(serialization_, value_.typeArguments_, $c));
+(await ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme.serializeUsing_$(serialization_, value_.scheme_, $c))
 return
 }
 }
@@ -908,7 +908,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 36), 0);
-return ff_compiler_Environment.Instantiated(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type)).deserializeUsing_(serialization_), ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme.deserializeUsing_(serialization_))
+return ff_compiler_Environment.Instantiated((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type)).deserializeUsing_$(serialization_, $c)), (await ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme.deserializeUsing_$(serialization_, $c)))
 return
 }
 }

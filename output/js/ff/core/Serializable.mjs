@@ -185,7 +185,7 @@ serialization_.offset_ += 8;
 return result_
 },
 async serializeUsing_$(serialization_, value_, $c) {
-ff_core_Serializable.Serialization_autoResize(serialization_, 8);
+(await ff_core_Serializable.Serialization_autoResize$(serialization_, 8, $c));
 ff_core_Buffer.Buffer_setInt64(serialization_.buffer_, serialization_.offset_, value_, true);
 serialization_.offset_ += 8
 },
@@ -210,7 +210,7 @@ serialization_.offset_ += 1;
 return (result_ === 1)
 },
 async serializeUsing_$(serialization_, value_, $c) {
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+(await ff_core_Serializable.Serialization_autoResize$(serialization_, 1, $c));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, (value_
 ? 1
 : 0));
@@ -245,67 +245,47 @@ deserializeUsing_(serialization_) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 if((smallSize_ !== 255)) {
 serialization_.offset_ += 1;
-return ((() => {
-const size = smallSize_;
-const result = [];
-for(let i = 0; i < size; i++) {
-result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
-}
-return result;
-})())
+return ff_core_Array.fillBy_(smallSize_, ((_) => {
+return ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_)
+}))
 } else {
 const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
 serialization_.offset_ += (1 + 4);
-return ((() => {
-const size = size_;
-const result = [];
-for(let i = 0; i < size; i++) {
-result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
-}
-return result;
-})())
+return ff_core_Array.fillBy_(size_, ((_) => {
+return ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_)
+}))
 }
 },
 async serializeUsing_$(serialization_, value_, $c) {
 if((ff_core_Array.Array_size(value_) < 255)) {
-ff_core_Serializable.Serialization_autoResize(serialization_, 1);
+(await ff_core_Serializable.Serialization_autoResize$(serialization_, 1, $c));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_Array.Array_size(value_));
 serialization_.offset_ += 1
 } else if((ff_core_Array.Array_size(value_) < 1073741824)) {
-ff_core_Serializable.Serialization_autoResize(serialization_, (1 + 4));
+(await ff_core_Serializable.Serialization_autoResize$(serialization_, (1 + 4), $c));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
 ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), ff_core_Array.Array_size(value_), true);
 serialization_.offset_ += (1 + 4)
 } else {
 ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
 };
-ff_core_Array.Array_each(value_, ((_w1) => {
-ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
-}))
+(await ff_core_Array.Array_each$(value_, (async (_w1, $c) => {
+(await ff_core_Serializable_Serializable$T.serializeUsing_$(serialization_, _w1, $c))
+}), $c))
 },
 async deserializeUsing_$(serialization_, $c) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 if((smallSize_ !== 255)) {
 serialization_.offset_ += 1;
-return ((() => {
-const size = smallSize_;
-const result = [];
-for(let i = 0; i < size; i++) {
-result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
-}
-return result;
-})())
+return (await ff_core_Array.fillBy_$(smallSize_, (async (_, $c) => {
+return (await ff_core_Serializable_Serializable$T.deserializeUsing_$(serialization_, $c))
+}), $c))
 } else {
 const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
 serialization_.offset_ += (1 + 4);
-return ((() => {
-const size = size_;
-const result = [];
-for(let i = 0; i < size; i++) {
-result.push(ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_));
-}
-return result;
-})())
+return (await ff_core_Array.fillBy_$(size_, (async (_, $c) => {
+return (await ff_core_Serializable_Serializable$T.deserializeUsing_$(serialization_, $c))
+}), $c))
 }
 }
 }}
@@ -318,10 +298,10 @@ deserializeUsing_(serialization_) {
 return ff_core_Array.Array_toList(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_))
 },
 async serializeUsing_$(serialization_, value_, $c) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_List.List_toArray(value_))
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_$(serialization_, ff_core_List.List_toArray(value_), $c))
 },
 async deserializeUsing_$(serialization_, $c) {
-return ff_core_Array.Array_toList(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_))
+return ff_core_Array.Array_toList((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_$(serialization_, $c)))
 }
 }}
 
@@ -333,10 +313,10 @@ deserializeUsing_(serialization_) {
 return ff_core_Array.Array_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
 },
 async serializeUsing_$(serialization_, value_, $c) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_Set.Set_toArray(value_, ff_core_Ordering_Order$T))
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_$(serialization_, ff_core_Set.Set_toArray(value_, ff_core_Ordering_Order$T), $c))
 },
 async deserializeUsing_$(serialization_, $c) {
-return ff_core_Array.Array_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
+return ff_core_Array.Array_toSet((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_$(serialization_, $c)), ff_core_Ordering_Order$T)
 }
 }}
 
@@ -348,10 +328,10 @@ deserializeUsing_(serialization_) {
 return ff_core_Array.Array_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
 },
 async serializeUsing_$(serialization_, value_, $c) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_Map.Map_toArray(value_, ff_core_Ordering_Order$K))
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).serializeUsing_$(serialization_, ff_core_Map.Map_toArray(value_, ff_core_Ordering_Order$K), $c))
 },
 async deserializeUsing_$(serialization_, $c) {
-return ff_core_Array.Array_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
+return ff_core_Array.Array_toMap((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_$(serialization_, $c)), ff_core_Ordering_Order$K)
 }
 }}
 
@@ -386,13 +366,13 @@ return ff_core_Buffer.Buffer_toString(stringBuffer_, "utf8")
 }
 },
 async serializeUsing_$(serialization_, value_, $c) {
-ff_core_Serializable.Serialization_autoResize(serialization_, (1 + ff_core_String.String_size(value_)));
+(await ff_core_Serializable.Serialization_autoResize$(serialization_, (1 + ff_core_String.String_size(value_)), $c));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_String.String_size(value_));
 if(((ff_core_String.String_size(value_) < 255) && ff_core_Serializable.internalSetLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), value_))) {
 serialization_.offset_ += (1 + ff_core_String.String_size(value_))
 } else if((ff_core_String.String_size(value_) < 1073741824)) {
 const stringBuffer_ = ff_core_String.String_toBuffer(value_);
-ff_core_Serializable.Serialization_autoResize(serialization_, (5 + ff_core_Buffer.Buffer_size(stringBuffer_)));
+(await ff_core_Serializable.Serialization_autoResize$(serialization_, (5 + ff_core_Buffer.Buffer_size(stringBuffer_)), $c));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
 ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (serialization_.offset_ + 1), ff_core_Buffer.Buffer_size(stringBuffer_), true);
 ff_core_Buffer.Buffer_setAll(serialization_.buffer_, (serialization_.offset_ + 5), stringBuffer_);

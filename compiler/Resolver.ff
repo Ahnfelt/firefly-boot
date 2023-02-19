@@ -1,6 +1,6 @@
 import Syntax
 
-data Resolver(
+class Resolver(
     variables: Map[String, String]
     variants: Map[String, String]
     types: Map[String, String]
@@ -10,7 +10,7 @@ data Resolver(
     state: ResolverState
 )
 
-data ResolverState(mutable nextUnificationVariableIndex: Int)
+class ResolverState(mutable nextUnificationVariableIndex: Int)
 
 make(): Resolver {
     Resolver(
@@ -108,7 +108,7 @@ extend self: Resolver {
         if(!definition.generics.first().any {_ == "Q$"}) {
             [...definition.commonFields, ...definition.variants.flatMap {_.fields}].each { f =>
                 if(self2.containsAsyncType(f.valueType)) {
-                    fail(f.at, "Type '" + definition.name + "' has not been marked with '!', but is potentially async due to the type of the '" + f.name + "' field")
+                    fail(f.at, "Only classes can contain fields of concrete class types")
                 }
             }
         }
@@ -473,7 +473,7 @@ extend self: Resolver {
             }
             let isFunctionType = name.startsWith("Function$")
             isFunctionType || self.asyncTypes.contains(constructor.name) ||
-            constructor.generics.any(self.containsAsyncType)
+            constructor.generics.any {self.containsAsyncType(_)}
     }
 
 }

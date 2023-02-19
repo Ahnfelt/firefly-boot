@@ -2197,15 +2197,15 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.file_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.code_);
-ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.serializeUsing_(serialization_, value_.kind_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startLine_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startLineOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.startOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopLine_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopLineOffset_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.stopOffset_)
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_$(serialization_, value_.file_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_$(serialization_, value_.code_, $c));
+(await ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.serializeUsing_$(serialization_, value_.kind_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.startLine_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.startLineOffset_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.startOffset_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.stopLine_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.stopLineOffset_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_$(serialization_, value_.stopOffset_, $c))
 return
 }
 }
@@ -2218,7 +2218,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
-return ff_compiler_Token.Token(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
+return ff_compiler_Token.Token((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_$(serialization_, $c)), (await ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_TokenKind.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_$(serialization_, $c)))
 return
 }
 }

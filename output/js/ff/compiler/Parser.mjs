@@ -732,6 +732,13 @@ const variantNameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Toke
 const variantFields_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseFunctionParameters(self_, true));
+if((ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty()) && ff_core_List.List_any(variantFields_, ((_w1) => {
+return _w1.mutable_
+})))) {
+ff_compiler_Parser.Parser_fail(self_, ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
+return _w1.mutable_
+}))).at_, "Only classes can have mutable fields")
+};
 ff_core_Stack.Stack_push(variantsBuilder_, ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(variantNameToken_), ff_compiler_Token.Token_raw(variantNameToken_), variantFields_));
 if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon())
@@ -743,8 +750,12 @@ return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field")
 };
-if((newtype_ && ff_core_List.List_grab(commonFields_, 0).mutable_)) {
-ff_compiler_Parser.Parser_fail(self_, ff_core_List.List_grab(commonFields_, 0).at_, "Newtypes can't have mutable fields")
+if((ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty()) && ff_core_List.List_any(commonFields_, ((_w1) => {
+return _w1.mutable_
+})))) {
+ff_compiler_Parser.Parser_fail(self_, ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
+return _w1.mutable_
+}))).at_, "Only classes can have mutable fields")
 };
 const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_);
 return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_)
@@ -2126,6 +2137,13 @@ const variantNameToken_ = (await ff_compiler_Parser.Parser_skip$(self_, ff_compi
 const variantFields_ = ((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "("))
 ? ff_core_List.Empty()
 : (await ff_compiler_Parser.Parser_parseFunctionParameters$(self_, true, $c)));
+if((ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty()) && ff_core_List.List_any(variantFields_, ((_w1) => {
+return _w1.mutable_
+})))) {
+(await ff_compiler_Parser.Parser_fail$(self_, ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
+return _w1.mutable_
+}))).at_, "Only classes can have mutable fields", $c))
+};
 ff_core_Stack.Stack_push(variantsBuilder_, ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(variantNameToken_), ff_compiler_Token.Token_raw(variantNameToken_), variantFields_));
 if((!ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LBracketRight()))) {
 (await ff_compiler_Parser.Parser_skipSeparator$(self_, ff_compiler_Token.LSemicolon(), $c))
@@ -2137,8 +2155,12 @@ return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field", $c))
 };
-if((newtype_ && ff_core_List.List_grab(commonFields_, 0).mutable_)) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_core_List.List_grab(commonFields_, 0).at_, "Newtypes can't have mutable fields", $c))
+if((ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty()) && ff_core_List.List_any(commonFields_, ((_w1) => {
+return _w1.mutable_
+})))) {
+(await ff_compiler_Parser.Parser_fail$(self_, ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
+return _w1.mutable_
+}))).at_, "Only classes can have mutable fields", $c))
 };
 const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_);
 return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_)
@@ -3406,8 +3428,8 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.generics_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).serializeUsing_(serialization_, value_.constraints_)
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.generics_, $c));
+(await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).serializeUsing_$(serialization_, value_.constraints_, $c))
 return
 }
 }
@@ -3420,7 +3442,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
-return ff_compiler_Parser.Poly(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_(serialization_))
+return ff_compiler_Parser.Poly((await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_$(serialization_, $c)), (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).deserializeUsing_$(serialization_, $c)))
 return
 }
 }
@@ -3482,15 +3504,15 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).serializeUsing_(serialization_, value_.js_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.jsSync_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.jsAsync_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).serializeUsing_(serialization_, value_.browser_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.browserSync_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.browserAsync_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).serializeUsing_(serialization_, value_.node_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.nodeSync_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.nodeAsync_)
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).serializeUsing_$(serialization_, value_.js_, $c));
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.jsSync_, $c));
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.jsAsync_, $c));
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).serializeUsing_$(serialization_, value_.browser_, $c));
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.browserSync_, $c));
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.browserAsync_, $c));
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).serializeUsing_$(serialization_, value_.node_, $c));
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.nodeSync_, $c));
+(await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.nodeAsync_, $c))
 return
 }
 }
@@ -3503,7 +3525,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
-return ff_compiler_Parser.ParsedTargets(ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
+return ff_compiler_Parser.ParsedTargets((await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_$(serialization_, $c)), (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_$(serialization_, $c)), (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_$(serialization_, $c)), (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_$(serialization_, $c)), (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_$(serialization_, $c)), (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_$(serialization_, $c)), (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).deserializeUsing_$(serialization_, $c)), (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_$(serialization_, $c)), (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_$(serialization_, $c)))
 return
 }
 }

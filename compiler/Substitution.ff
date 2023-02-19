@@ -1,6 +1,6 @@
 import Syntax
 
-data Substitution(mutable substitution: Map[Int, Type])
+class Substitution(mutable substitution: Map[Int, Type])
 
 core(name: String): String {
     "ff:core/" + name + "." + name
@@ -39,14 +39,14 @@ extend self: Substitution {
     substituteFunctionDefinition(definition: DFunction): DFunction {
         definition.DFunction(
             signature = self.substituteSignature(definition.signature)
-            body = definition.body.mapFirefly(self.substituteLambda)
+            body = definition.body.mapFirefly {self.substituteLambda(_)}
         )
     }
 
     substituteSignature(signature: Signature): Signature {
         signature.Signature(
-            constraints = signature.constraints.map(self.substituteConstraint)
-            parameters = signature.parameters.map(self.substituteParameter)
+            constraints = signature.constraints.map {self.substituteConstraint(_)}
+            parameters = signature.parameters.map {self.substituteParameter(_)}
             returnType = self.substituteType(signature.returnType)
             effect = self.substituteType(signature.effect)
         )
@@ -54,14 +54,14 @@ extend self: Substitution {
 
     substituteConstraint(constraint: Constraint): Constraint {
         constraint.Constraint(
-            generics = constraint.generics.map(self.substituteType)
+            generics = constraint.generics.map {self.substituteType(_)}
         )
     }
 
     substituteParameter(parameter: Parameter): Parameter {
         parameter.Parameter(
             valueType = self.substituteType(parameter.valueType)
-            default = parameter.default.map(self.substituteTerm)
+            default = parameter.default.map {self.substituteTerm(_)}
         )
     }
 
@@ -107,15 +107,15 @@ extend self: Substitution {
             )
             | ELambda e => e.ELambda(lambda = self.substituteLambda(e.lambda))
             | EVariant e => e.EVariant(
-                typeArguments = e.typeArguments.map(self.substituteType)
-                arguments = e.arguments.map { _.map(self.substituteArgument) }
+                typeArguments = e.typeArguments.map {self.substituteType(_)}
+                arguments = e.arguments.map { _.map {self.substituteArgument(_)} }
             )
             | EVariantIs e => e.EVariantIs(
-                typeArguments = e.typeArguments.map(self.substituteType)
+                typeArguments = e.typeArguments.map {self.substituteType(_)}
             )
             | ECopy e => e.ECopy(
                 record = self.substituteTerm(e.record)
-                arguments = e.arguments.map(self.substituteField)
+                arguments = e.arguments.map {self.substituteField(_)}
             )
             | EPipe e => e.EPipe(
                 value = self.substituteTerm(e.value)
@@ -128,12 +128,12 @@ extend self: Substitution {
                     | StaticCall _ => e.target
                 }
                 effect = self.substituteType(e.effect)
-                typeArguments = e.typeArguments.map(self.substituteType)
-                arguments = e.arguments.map(self.substituteArgument)
+                typeArguments = e.typeArguments.map {self.substituteType(_)}
+                arguments = e.arguments.map {self.substituteArgument(_)}
             )
-            | ERecord e => e.ERecord(fields = e.fields.map(self.substituteField))
+            | ERecord e => e.ERecord(fields = e.fields.map {self.substituteField(_)})
             | EFunctions e => e.EFunctions(
-                functions = e.functions.map(self.substituteFunctionDefinition)
+                functions = e.functions.map {self.substituteFunctionDefinition(_)}
                 body = self.substituteTerm(e.body)
             )
             | EAssign e => e.EAssign(value = self.substituteTerm(e.value))
