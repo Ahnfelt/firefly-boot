@@ -162,7 +162,7 @@ return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
 }
 
 export async function Pair_toStack$(self_, $c) {
-return ff_core_List.List_toStack(ff_core_Pair.Pair_toList(self_))
+return (await ff_core_List.List_toStack$(ff_core_Pair.Pair_toList(self_), $c))
 }
 
 export function Pair_toSet(self_, ff_core_Ordering_Order$A) {
@@ -259,7 +259,7 @@ const x_a = x_;
 {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 17), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 0, $c));
 serialization_.offset_ += 1;
 (await ff_core_Serializable_Serializable$A.serializeUsing_$(serialization_, value_.first_, $c));
 (await ff_core_Serializable_Serializable$B.serializeUsing_$(serialization_, value_.second_, $c))
@@ -268,7 +268,7 @@ return
 }
 },
 async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+const variantIndex_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;

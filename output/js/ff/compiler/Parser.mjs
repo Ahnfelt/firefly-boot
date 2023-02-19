@@ -3426,7 +3426,7 @@ const x_a = x_;
 {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 23), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 0, $c));
 serialization_.offset_ += 1;
 (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.generics_, $c));
 (await ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Constraint).serializeUsing_$(serialization_, value_.constraints_, $c))
@@ -3435,7 +3435,7 @@ return
 }
 },
 async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+const variantIndex_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;
@@ -3502,7 +3502,7 @@ const x_a = x_;
 {
 const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 0, $c));
 serialization_.offset_ += 1;
 (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Lambda).serializeUsing_$(serialization_, value_.js_, $c));
 (await ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_$(serialization_, value_.jsSync_, $c));
@@ -3518,7 +3518,7 @@ return
 }
 },
 async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+const variantIndex_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
 serialization_.offset_ += 1;
 {
 const _1 = variantIndex_;

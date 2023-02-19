@@ -1,4 +1,4 @@
-data JsValue {}
+data JsValue {} // TODO: This should be a class, but would it incur too much async? Test
 
 extend self: JsValue {
 

@@ -104,17 +104,17 @@ return ff_core_Pair.Pair(result_, duration_)
 }
 
 export async function TimeSystem_now$(self_, $c) {
-throw new Error('Function TimeSystem_now is missing on this target in async context.');
+return Date.now() * 0.001
 }
 
 export async function TimeSystem_elapsed$(self_, $c) {
-throw new Error('Function TimeSystem_elapsed is missing on this target in async context.');
+return performance.now() * 0.001
 }
 
 export async function TimeSystem_measure$(self_, body_, $c) {
-const start_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
+const start_ = (await ff_core_TimeSystem.TimeSystem_elapsed$(self_, $c));
 const result_ = (await body_($c));
-const stop_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
+const stop_ = (await ff_core_TimeSystem.TimeSystem_elapsed$(self_, $c));
 const duration_ = (stop_ - start_);
 return ff_core_Pair.Pair(result_, duration_)
 }

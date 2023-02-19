@@ -417,7 +417,7 @@ show_(buffer_) {
 return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(buffer_)) + `")`)
 },
 async show_$(buffer_, $c) {
-return ((`Buffer.fromHex("` + ff_core_Buffer.Buffer_toHex(buffer_)) + `")`)
+return ((`Buffer.fromHex("` + (await ff_core_Buffer.Buffer_toHex$(buffer_, $c))) + `")`)
 }
 };
 

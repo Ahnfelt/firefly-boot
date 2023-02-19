@@ -129,18 +129,18 @@ export function internalGrabLatin1_(self_, byteOffset_, size_) {
 }
 
 export async function serialize_$(value_, initialBufferSize_ = 1024, ff_core_Serializable_Serializable$T, $c) {
-const serialization_ = ff_core_Serializable.Serialization(ff_core_Buffer.make_(initialBufferSize_, false), 0, 0);
-ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, value_);
-ff_core_Serializable.Serialization_autoResize(serialization_, 4);
-ff_core_Buffer.Buffer_setInt32(serialization_.buffer_, serialization_.offset_, serialization_.checksum_, true);
+const serialization_ = ff_core_Serializable.Serialization((await ff_core_Buffer.make_$(initialBufferSize_, false, $c)), 0, 0);
+(await ff_core_Serializable_Serializable$T.serializeUsing_$(serialization_, value_, $c));
+(await ff_core_Serializable.Serialization_autoResize$(serialization_, 4, $c));
+(await ff_core_Buffer.Buffer_setInt32$(serialization_.buffer_, serialization_.offset_, serialization_.checksum_, true, $c));
 serialization_.offset_ += 4;
-return ff_core_Buffer.Buffer_view(serialization_.buffer_, 0, serialization_.offset_)
+return (await ff_core_Buffer.Buffer_view$(serialization_.buffer_, 0, serialization_.offset_, $c))
 }
 
 export async function deserialize_$(buffer_, ff_core_Serializable_Serializable$T, $c) {
 const serialization_ = ff_core_Serializable.Serialization(buffer_, 0, 0);
-const result_ = ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_);
-const checksum_ = ff_core_Buffer.Buffer_grabInt32(serialization_.buffer_, serialization_.offset_, true);
+const result_ = (await ff_core_Serializable_Serializable$T.deserializeUsing_$(serialization_, $c));
+const checksum_ = (await ff_core_Buffer.Buffer_grabInt32$(serialization_.buffer_, serialization_.offset_, true, $c));
 if((checksum_ !== serialization_.checksum_)) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 };
@@ -165,10 +165,10 @@ self_.buffer_ = newBuffer_
 }
 
 export async function Serialization_autoResize$(self_, minSpareCapacity_, $c) {
-if(((self_.offset_ + minSpareCapacity_) > ff_core_Buffer.Buffer_size(self_.buffer_))) {
-const minSize_ = (ff_core_Buffer.Buffer_size(self_.buffer_) + minSpareCapacity_);
-const newBuffer_ = ff_core_Buffer.make_(ff_core_Int.Int_max((ff_core_Buffer.Buffer_size(self_.buffer_) * 2), minSize_), false);
-ff_core_Buffer.Buffer_setAll(newBuffer_, 0, self_.buffer_);
+if(((self_.offset_ + minSpareCapacity_) > (await ff_core_Buffer.Buffer_size$(self_.buffer_, $c)))) {
+const minSize_ = ((await ff_core_Buffer.Buffer_size$(self_.buffer_, $c)) + minSpareCapacity_);
+const newBuffer_ = (await ff_core_Buffer.make_$(ff_core_Int.Int_max(((await ff_core_Buffer.Buffer_size$(self_.buffer_, $c)) * 2), minSize_), false, $c));
+(await ff_core_Buffer.Buffer_setAll$(newBuffer_, 0, self_.buffer_, $c));
 self_.buffer_ = newBuffer_
 }
 }
@@ -186,11 +186,11 @@ return result_
 },
 async serializeUsing_$(serialization_, value_, $c) {
 (await ff_core_Serializable.Serialization_autoResize$(serialization_, 8, $c));
-ff_core_Buffer.Buffer_setInt64(serialization_.buffer_, serialization_.offset_, value_, true);
+(await ff_core_Buffer.Buffer_setInt64$(serialization_.buffer_, serialization_.offset_, value_, true, $c));
 serialization_.offset_ += 8
 },
 async deserializeUsing_$(serialization_, $c) {
-const result_ = ff_core_Buffer.Buffer_grabInt64(serialization_.buffer_, serialization_.offset_, true);
+const result_ = (await ff_core_Buffer.Buffer_grabInt64$(serialization_.buffer_, serialization_.offset_, true, $c));
 serialization_.offset_ += 8;
 return result_
 }
@@ -211,13 +211,13 @@ return (result_ === 1)
 },
 async serializeUsing_$(serialization_, value_, $c) {
 (await ff_core_Serializable.Serialization_autoResize$(serialization_, 1, $c));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, (value_
+(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, (value_
 ? 1
-: 0));
+: 0), $c));
 serialization_.offset_ += 1
 },
 async deserializeUsing_$(serialization_, $c) {
-const result_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+const result_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
 serialization_.offset_ += 1;
 return (result_ === 1)
 }
@@ -259,12 +259,12 @@ return ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_)
 async serializeUsing_$(serialization_, value_, $c) {
 if((ff_core_Array.Array_size(value_) < 255)) {
 (await ff_core_Serializable.Serialization_autoResize$(serialization_, 1, $c));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_Array.Array_size(value_));
+(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, ff_core_Array.Array_size(value_), $c));
 serialization_.offset_ += 1
 } else if((ff_core_Array.Array_size(value_) < 1073741824)) {
 (await ff_core_Serializable.Serialization_autoResize$(serialization_, (1 + 4), $c));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
-ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (1 + serialization_.offset_), ff_core_Array.Array_size(value_), true);
+(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 255, $c));
+(await ff_core_Buffer.Buffer_setUint32$(serialization_.buffer_, (1 + serialization_.offset_), ff_core_Array.Array_size(value_), true, $c));
 serialization_.offset_ += (1 + 4)
 } else {
 ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
@@ -274,14 +274,14 @@ ff_core_Core.panic_("Can't serialize arrays where size() >= 1073741824")
 }), $c))
 },
 async deserializeUsing_$(serialization_, $c) {
-const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+const smallSize_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
 if((smallSize_ !== 255)) {
 serialization_.offset_ += 1;
 return (await ff_core_Array.fillBy_$(smallSize_, (async (_, $c) => {
 return (await ff_core_Serializable_Serializable$T.deserializeUsing_$(serialization_, $c))
 }), $c))
 } else {
-const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
+const size_ = (await ff_core_Buffer.Buffer_grabUint32$(serialization_.buffer_, (serialization_.offset_ + 1), true, $c));
 serialization_.offset_ += (1 + 4);
 return (await ff_core_Array.fillBy_$(size_, (async (_, $c) => {
 return (await ff_core_Serializable_Serializable$T.deserializeUsing_$(serialization_, $c))
@@ -367,31 +367,31 @@ return ff_core_Buffer.Buffer_toString(stringBuffer_, "utf8")
 },
 async serializeUsing_$(serialization_, value_, $c) {
 (await ff_core_Serializable.Serialization_autoResize$(serialization_, (1 + ff_core_String.String_size(value_)), $c));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_String.String_size(value_));
-if(((ff_core_String.String_size(value_) < 255) && ff_core_Serializable.internalSetLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), value_))) {
+(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, ff_core_String.String_size(value_), $c));
+if(((ff_core_String.String_size(value_) < 255) && (await ff_core_Serializable.internalSetLatin1_$(serialization_.buffer_, (serialization_.offset_ + 1), value_, $c)))) {
 serialization_.offset_ += (1 + ff_core_String.String_size(value_))
 } else if((ff_core_String.String_size(value_) < 1073741824)) {
-const stringBuffer_ = ff_core_String.String_toBuffer(value_);
-(await ff_core_Serializable.Serialization_autoResize$(serialization_, (5 + ff_core_Buffer.Buffer_size(stringBuffer_)), $c));
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 255);
-ff_core_Buffer.Buffer_setUint32(serialization_.buffer_, (serialization_.offset_ + 1), ff_core_Buffer.Buffer_size(stringBuffer_), true);
-ff_core_Buffer.Buffer_setAll(serialization_.buffer_, (serialization_.offset_ + 5), stringBuffer_);
-serialization_.offset_ += (5 + ff_core_Buffer.Buffer_size(stringBuffer_))
+const stringBuffer_ = (await ff_core_String.String_toBuffer$(value_, $c));
+(await ff_core_Serializable.Serialization_autoResize$(serialization_, (5 + (await ff_core_Buffer.Buffer_size$(stringBuffer_, $c))), $c));
+(await ff_core_Buffer.Buffer_setUint8$(serialization_.buffer_, serialization_.offset_, 255, $c));
+(await ff_core_Buffer.Buffer_setUint32$(serialization_.buffer_, (serialization_.offset_ + 1), (await ff_core_Buffer.Buffer_size$(stringBuffer_, $c)), true, $c));
+(await ff_core_Buffer.Buffer_setAll$(serialization_.buffer_, (serialization_.offset_ + 5), stringBuffer_, $c));
+serialization_.offset_ += (5 + (await ff_core_Buffer.Buffer_size$(stringBuffer_, $c)))
 } else {
 ff_core_Core.panic_("Can't serialize strings where size() >= 1073741824")
 }
 },
 async deserializeUsing_$(serialization_, $c) {
-const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+const smallSize_ = (await ff_core_Buffer.Buffer_grabUint8$(serialization_.buffer_, serialization_.offset_, $c));
 if((smallSize_ !== 255)) {
-const result_ = ff_core_Serializable.internalGrabLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), smallSize_);
+const result_ = (await ff_core_Serializable.internalGrabLatin1_$(serialization_.buffer_, (serialization_.offset_ + 1), smallSize_, $c));
 serialization_.offset_ += (1 + smallSize_);
 return result_
 } else {
-const size_ = ff_core_Buffer.Buffer_grabUint32(serialization_.buffer_, (serialization_.offset_ + 1), true);
-const stringBuffer_ = ff_core_Buffer.Buffer_view(serialization_.buffer_, (serialization_.offset_ + 5), ((serialization_.offset_ + 5) + size_));
+const size_ = (await ff_core_Buffer.Buffer_grabUint32$(serialization_.buffer_, (serialization_.offset_ + 1), true, $c));
+const stringBuffer_ = (await ff_core_Buffer.Buffer_view$(serialization_.buffer_, (serialization_.offset_ + 5), ((serialization_.offset_ + 5) + size_), $c));
 serialization_.offset_ += (5 + size_);
-return ff_core_Buffer.Buffer_toString(stringBuffer_, "utf8")
+return (await ff_core_Buffer.Buffer_toString$(stringBuffer_, "utf8", $c))
 }
 }
 };

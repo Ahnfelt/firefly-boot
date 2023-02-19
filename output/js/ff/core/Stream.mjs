@@ -650,8 +650,8 @@ return result_
 
 export function Stream_toStack(self_) {
 const stack_ = ff_core_Stack.make_();
-ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_Stack.Stack_push(stack_, value_)
+ff_core_Stream.Stream_each(self_, ((_w1) => {
+ff_core_Stack.Stack_push(stack_, _w1)
 }));
 return stack_
 }
@@ -1174,19 +1174,19 @@ return result_
 }
 
 export async function Stream_toStack$(self_, $c) {
-const stack_ = ff_core_Stack.make_();
-(await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_Stack.Stack_push(stack_, value_)
+const stack_ = (await ff_core_Stack.make_$($c));
+(await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
+(await ff_core_Stack.Stack_push$(stack_, _w1, $c))
 }), $c));
 return stack_
 }
 
 export async function Stream_toArray$(self_, $c) {
-return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $c)))
+return (await ff_core_Stack.Stack_drain$((await ff_core_Stream.Stream_toStack$(self_, $c)), $c))
 }
 
 export async function Stream_toList$(self_, $c) {
-return ff_core_Stack.Stack_toList((await ff_core_Stream.Stream_toStack$(self_, $c)), 0, 9007199254740991)
+return (await ff_core_Stack.Stack_toList$((await ff_core_Stream.Stream_toStack$(self_, $c)), 0, 9007199254740991, $c))
 }
 
 export function Stream_flatten(self_) {
@@ -1219,8 +1219,8 @@ return ff_core_Array.Array_toMap((await ff_core_Stream.Stream_toArray$(self_, $c
 
 export function Stream_toBuffer(self_) {
 const builder_ = ff_core_Stack.make_();
-ff_core_Stream.Stream_each(self_, ((value_) => {
-ff_core_Stack.Stack_push(builder_, value_)
+ff_core_Stream.Stream_each(self_, ((_w1) => {
+ff_core_Stack.Stack_push(builder_, _w1)
 }));
 return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
 }
@@ -1231,14 +1231,14 @@ return ff_core_Buffer.Buffer_toString(ff_core_Stream.Stream_toBuffer(self_), enc
 
 export async function Stream_toBuffer$(self_, $c) {
 const builder_ = ff_core_Stack.make_();
-(await ff_core_Stream.Stream_each$(self_, (async (value_, $c) => {
-ff_core_Stack.Stack_push(builder_, value_)
+(await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
+ff_core_Stack.Stack_push(builder_, _w1)
 }), $c));
-return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
+return (await ff_core_Buffer.fromBufferArray_$(ff_core_Stack.Stack_drain(builder_), $c))
 }
 
 export async function Stream_toString$(self_, encoding_ = "utf8", $c) {
-return ff_core_Buffer.Buffer_toString((await ff_core_Stream.Stream_toBuffer$(self_, $c)), encoding_)
+return (await ff_core_Buffer.Buffer_toString$((await ff_core_Stream.Stream_toBuffer$(self_, $c)), encoding_, $c))
 }
 
 

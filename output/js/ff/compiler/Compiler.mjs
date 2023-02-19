@@ -248,9 +248,9 @@ return ff_core_FileSystem.FileSystem_writeText(self_.files_, jsFile_, js_)
 }
 
 export async function Compiler_measure$(self_, phase_, packagePair_, moduleName_, body_, $c) {
-const start_ = (ff_core_TimeSystem.TimeSystem_elapsed(self_.time_) - self_.phaseDurationDelta_);
+const start_ = ((await ff_core_TimeSystem.TimeSystem_elapsed$(self_.time_, $c)) - self_.phaseDurationDelta_);
 const result_ = (await body_($c));
-const stop_ = (ff_core_TimeSystem.TimeSystem_elapsed(self_.time_) - self_.phaseDurationDelta_);
+const stop_ = ((await ff_core_TimeSystem.TimeSystem_elapsed$(self_.time_, $c)) - self_.phaseDurationDelta_);
 const duration_ = (stop_ - start_);
 self_.phaseDurationDelta_ = (self_.phaseDurationDelta_ + duration_);
 const text_ = ((((phase_ + " ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")) + "/") + moduleName_);
