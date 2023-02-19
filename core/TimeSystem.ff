@@ -1,14 +1,12 @@
-class TimeSystem {}
+sync class TimeSystem {}
 
 extend self: TimeSystem {
 
     now(): Instant
         target js sync "return Date.now() * 0.001"
-        target js async "return Date.now() * 0.001"
 
     elapsed(): Duration
         target js sync "return performance.now() * 0.001"
-        target js async "return performance.now() * 0.001"
 
     measure[R](body: () => R): Pair[R, Duration] {
         let start = self.elapsed()
