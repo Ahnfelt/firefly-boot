@@ -159,16 +159,16 @@ let middle_ = (start_ + ((end_ - start_) / 2));
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
-if(((await compare_((await ff_core_Stack.Stack_grab$(stack_, i_, $c)), (await ff_core_Stack.Stack_grab$(stack_, j_, $c)), $c)) !== ff_core_Ordering.OrderingAfter())) {
+if(((await compare_(ff_core_Stack.Stack_grab(stack_, i_), ff_core_Stack.Stack_grab(stack_, j_), $c)) !== ff_core_Ordering.OrderingAfter())) {
 i_ += 1
 } else {
-const value_ = (await ff_core_Stack.Stack_grab$(stack_, j_, $c));
+const value_ = ff_core_Stack.Stack_grab(stack_, j_);
 let k_ = j_;
 while((k_ > i_)) {
-(await ff_core_Stack.Stack_set$(stack_, k_, (await ff_core_Stack.Stack_grab$(stack_, (k_ - 1), $c)), $c));
+ff_core_Stack.Stack_set(stack_, k_, ff_core_Stack.Stack_grab(stack_, (k_ - 1)));
 k_ -= 1
 };
-(await ff_core_Stack.Stack_set$(stack_, i_, value_, $c));
+ff_core_Stack.Stack_set(stack_, i_, value_);
 i_ += 1;
 middle_ += 1;
 j_ += 1
@@ -389,11 +389,11 @@ throw new Error('Function Stack_grab is missing on this target in async context.
 }
 
 export async function Stack_grabFirst$(self_, $c) {
-return (await ff_core_Stack.Stack_grab$(self_, 0, $c))
+return ff_core_Stack.Stack_grab(self_, 0)
 }
 
 export async function Stack_grabLast$(self_, $c) {
-return (await ff_core_Stack.Stack_grab$(self_, ((await ff_core_Stack.Stack_size$(self_, $c)) - 1), $c))
+return ff_core_Stack.Stack_grab(self_, (ff_core_Stack.Stack_size(self_) - 1))
 }
 
 export async function Stack_first$(self_, $c) {
@@ -528,9 +528,9 @@ return ff_core_Ordering_Order$T.compare_(x_, y_)
 }
 
 export async function Stack_sort$(self_, ff_core_Ordering_Order$T, $c) {
-(await ff_core_Stack.Stack_sortWith$(self_, (async (x_, y_, $c) => {
+ff_core_Stack.Stack_sortWith(self_, ((x_, y_) => {
 return ff_core_Ordering_Order$T.compare_(x_, y_)
-}), $c))
+}))
 }
 
 export function Stack_join(self_, separator_ = "") {

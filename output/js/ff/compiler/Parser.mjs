@@ -386,7 +386,7 @@ ff_core_Stack.Stack_push(extends_, ff_compiler_Parser.Parser_parseExtendDefiniti
 ff_core_Stack.Stack_push(traits_, ff_compiler_Parser.Parser_parseTraitDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "instance"))) {
 ff_core_Stack.Stack_push(instances_, ff_compiler_Parser.Parser_parseInstanceDefinition(self_))
-} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs3(ff_compiler_Parser.Parser_current(self_), "data", "class", "newtype"))) {
+} else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs4(ff_compiler_Parser.Parser_current(self_), "data", "class", "sync", "newtype"))) {
 ff_core_Stack.Stack_push(types_, ff_compiler_Parser.Parser_parseTypeDefinition(self_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
 ff_core_Stack.Stack_push(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.packagePair_))
@@ -708,10 +708,14 @@ const newtype_ = ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current
 const effectParameter_ = (ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "class")
 ? ff_core_List.Link("Q$", ff_core_List.Empty())
 : ff_core_List.Empty());
-if(newtype_) {
+const allowMutable_ = ff_compiler_Token.Token_rawIs2(ff_compiler_Parser.Parser_current(self_), "class", "sync");
+if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "newtype")) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "newtype")
-} else if(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty())) {
+} else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "data")) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "data")
+} else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "sync")) {
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "sync");
+ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "class")
 } else {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LKeyword(), "class")
 };
@@ -732,7 +736,7 @@ const variantNameToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Toke
 const variantFields_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "("))
 ? ff_core_List.Empty()
 : ff_compiler_Parser.Parser_parseFunctionParameters(self_, true));
-if((ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty()) && ff_core_List.List_any(variantFields_, ((_w1) => {
+if(((!allowMutable_) && ff_core_List.List_any(variantFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
 ff_compiler_Parser.Parser_fail(self_, ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
@@ -750,7 +754,7 @@ return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field")
 };
-if((ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty()) && ff_core_List.List_any(commonFields_, ((_w1) => {
+if(((!allowMutable_) && ff_core_List.List_any(commonFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
 ff_compiler_Parser.Parser_fail(self_, ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
@@ -1791,7 +1795,7 @@ ff_core_Stack.Stack_push(extends_, (await ff_compiler_Parser.Parser_parseExtendD
 ff_core_Stack.Stack_push(traits_, (await ff_compiler_Parser.Parser_parseTraitDefinition$(self_, $c)))
 } else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "instance"))) {
 ff_core_Stack.Stack_push(instances_, (await ff_compiler_Parser.Parser_parseInstanceDefinition$(self_, $c)))
-} else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs3((await ff_compiler_Parser.Parser_current$(self_, $c)), "data", "class", "newtype"))) {
+} else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs4((await ff_compiler_Parser.Parser_current$(self_, $c)), "data", "class", "sync", "newtype"))) {
 ff_core_Stack.Stack_push(types_, (await ff_compiler_Parser.Parser_parseTypeDefinition$(self_, $c)))
 } else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "import"))) {
 ff_core_Stack.Stack_push(imports_, (await ff_compiler_Parser.Parser_parseImportDefinition$(self_, self_.packagePair_, $c)))
@@ -2113,10 +2117,14 @@ const newtype_ = ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_
 const effectParameter_ = (ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "class")
 ? ff_core_List.Link("Q$", ff_core_List.Empty())
 : ff_core_List.Empty());
-if(newtype_) {
+const allowMutable_ = ff_compiler_Token.Token_rawIs2((await ff_compiler_Parser.Parser_current$(self_, $c)), "class", "sync");
+if(ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "newtype")) {
 (await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "newtype", $c))
-} else if(ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty())) {
+} else if(ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "data")) {
 (await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "data", $c))
+} else if(ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "sync")) {
+(await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "sync", $c));
+(await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "class", $c))
 } else {
 (await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LKeyword(), "class", $c))
 };
@@ -2137,7 +2145,7 @@ const variantNameToken_ = (await ff_compiler_Parser.Parser_skip$(self_, ff_compi
 const variantFields_ = ((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "("))
 ? ff_core_List.Empty()
 : (await ff_compiler_Parser.Parser_parseFunctionParameters$(self_, true, $c)));
-if((ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty()) && ff_core_List.List_any(variantFields_, ((_w1) => {
+if(((!allowMutable_) && ff_core_List.List_any(variantFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
 (await ff_compiler_Parser.Parser_fail$(self_, ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
@@ -2155,7 +2163,7 @@ return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field", $c))
 };
-if((ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(effectParameter_, ff_core_List.Empty()) && ff_core_List.List_any(commonFields_, ((_w1) => {
+if(((!allowMutable_) && ff_core_List.List_any(commonFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
 (await ff_compiler_Parser.Parser_fail$(self_, ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {

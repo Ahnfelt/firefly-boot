@@ -1792,9 +1792,9 @@ export async function List_sortBy$(self_, body_, ff_core_Ordering_Order$O, $c) {
 if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
-const stack_ = (await ff_core_List.List_toStack$(self_, $c));
+const stack_ = ff_core_List.List_toStack(self_);
 (await ff_core_Stack.Stack_sortBy$(stack_, body_, $c, ff_core_Ordering_Order$O));
-return (await ff_core_Stack.Stack_toList$(stack_, 0, 9007199254740991, $c))
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 }
 
@@ -1802,9 +1802,9 @@ export async function List_sortWith$(self_, compare_, $c) {
 if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
-const stack_ = (await ff_core_List.List_toStack$(self_, $c));
+const stack_ = ff_core_List.List_toStack(self_);
 (await ff_core_Stack.Stack_sortWith$(stack_, compare_, $c));
-return (await ff_core_Stack.Stack_toList$(stack_, 0, 9007199254740991, $c))
+return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 }
 

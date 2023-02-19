@@ -1174,19 +1174,19 @@ return result_
 }
 
 export async function Stream_toStack$(self_, $c) {
-const stack_ = (await ff_core_Stack.make_$($c));
+const stack_ = ff_core_Stack.make_();
 (await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
-(await ff_core_Stack.Stack_push$(stack_, _w1, $c))
+ff_core_Stack.Stack_push(stack_, _w1)
 }), $c));
 return stack_
 }
 
 export async function Stream_toArray$(self_, $c) {
-return (await ff_core_Stack.Stack_drain$((await ff_core_Stream.Stream_toStack$(self_, $c)), $c))
+return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $c)))
 }
 
 export async function Stream_toList$(self_, $c) {
-return (await ff_core_Stack.Stack_toList$((await ff_core_Stream.Stream_toStack$(self_, $c)), 0, 9007199254740991, $c))
+return ff_core_Stack.Stack_toList((await ff_core_Stream.Stream_toStack$(self_, $c)), 0, 9007199254740991)
 }
 
 export function Stream_flatten(self_) {

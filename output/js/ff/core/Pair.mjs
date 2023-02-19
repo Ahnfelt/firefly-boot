@@ -162,7 +162,7 @@ return ff_core_List.List_toArray(ff_core_Pair.Pair_toList(self_))
 }
 
 export async function Pair_toStack$(self_, $c) {
-return (await ff_core_List.List_toStack$(ff_core_Pair.Pair_toList(self_), $c))
+return ff_core_List.List_toStack(ff_core_Pair.Pair_toList(self_))
 }
 
 export function Pair_toSet(self_, ff_core_Ordering_Order$A) {

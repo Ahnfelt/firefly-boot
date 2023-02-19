@@ -1,4 +1,4 @@
-class Stack[T] {}
+sync class Stack[T] {}
 
 make[T](): Stack[T]
     target js sync "return {array: []}"

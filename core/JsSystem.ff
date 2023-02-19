@@ -1,4 +1,4 @@
-data JsSystem {} // TODO: It has to be async if the async ffi is to be called - solve in the compiler?
+sync class JsSystem {} // TODO: It has to be async if the async ffi is to be called - solve in the compiler?
 
 extend self: JsSystem {
 

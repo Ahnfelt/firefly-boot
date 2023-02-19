@@ -461,7 +461,7 @@ return
 }
 
 export async function Option_toStack$(self_, $c) {
-return (await ff_core_List.List_toStack$(ff_core_Option.Option_toList(self_), $c))
+return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
 }
 
 export async function Option_toArray$(self_, $c) {

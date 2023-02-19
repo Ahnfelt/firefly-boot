@@ -439,9 +439,9 @@ return ff_core_Ordering_Order$S.compare_((await body_(_w1, $c)), (await body_(_w
 }
 
 export async function Array_sortWith$(self_, ordering_, $c) {
-const stack_ = (await ff_core_Array.Array_toStack$(self_, $c));
+const stack_ = ff_core_Array.Array_toStack(self_);
 (await ff_core_Stack.Stack_sortWith$(stack_, ordering_, $c));
-return (await ff_core_Stack.Stack_drain$(stack_, $c))
+return ff_core_Stack.Stack_drain(stack_)
 }
 
 export function Array_sort(self_, ff_core_Ordering_Order$T) {

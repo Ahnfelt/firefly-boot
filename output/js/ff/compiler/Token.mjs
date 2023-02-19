@@ -227,6 +227,10 @@ export function Token_rawIs3(token_, value1_, value2_, value3_) {
 return ((ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_)) || ff_compiler_Token.Token_rawIs(token_, value3_))
 }
 
+export function Token_rawIs4(token_, value1_, value2_, value3_, value4_) {
+return (((ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_)) || ff_compiler_Token.Token_rawIs(token_, value3_)) || ff_compiler_Token.Token_rawIs(token_, value4_))
+}
+
 export async function Token_at$(token_, $c) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
 }
@@ -257,6 +261,10 @@ return (ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Toke
 
 export async function Token_rawIs3$(token_, value1_, value2_, value3_, $c) {
 return ((ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_)) || ff_compiler_Token.Token_rawIs(token_, value3_))
+}
+
+export async function Token_rawIs4$(token_, value1_, value2_, value3_, value4_, $c) {
+return (((ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_)) || ff_compiler_Token.Token_rawIs(token_, value3_)) || ff_compiler_Token.Token_rawIs(token_, value4_))
 }
 
 export function TokenKind_beforeSeparator(self_) {
