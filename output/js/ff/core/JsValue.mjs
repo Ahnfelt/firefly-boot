@@ -79,7 +79,10 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type JsValue
-
+const JsValue$ = {JsValue: true};
+export function JsValue() {
+return JsValue$;
+}
 
 
 
