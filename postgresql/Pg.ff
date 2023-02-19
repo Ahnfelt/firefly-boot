@@ -1,8 +1,8 @@
 import UnsafeJs from ff:unsafejs
 
-newtype PgPool!(jsValue: JsValue)
-newtype PgConnection!(jsValue: JsValue)
-newtype PgRow(jsValue: JsValue)
+class PgPool(jsValue: JsValue)
+class PgConnection(jsValue: JsValue)
+class PgRow(jsValue: JsValue) // TODO: Should be a sync class, make deriver not touch those
 class PgStatement(sql: String, parameters: Map[String, JsValue], connection: Option[PgConnection])
 data PgLevel {
     PgReadCommitted

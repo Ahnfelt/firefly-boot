@@ -752,6 +752,7 @@ ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), "}")
 return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 })());
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
+ff_core_Log.show_(commonFields_, ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter));
 ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field")
 };
 if(((!allowMutable_) && ff_core_List.List_any(commonFields_, ((_w1) => {
@@ -2161,6 +2162,7 @@ if((!ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_,
 return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 })()));
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
+ff_core_Log.show_(commonFields_, ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter));
 (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field", $c))
 };
 if(((!allowMutable_) && ff_core_List.List_any(commonFields_, ((_w1) => {

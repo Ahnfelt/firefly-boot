@@ -438,6 +438,7 @@ extend self: Parser {
             variantsBuilder.toList()
         }
         if(newtype && commonFields.size() != 1) {
+            Log.show(commonFields)
             self.fail(nameToken.at(), "Newtypes must have exactly one field")
         }
         if(!allowMutable && commonFields.any {_.mutable}) {
