@@ -58,7 +58,7 @@ extend self: Resolver {
                 | Some(module) =>
                     resolver = resolver.processDefinitions(module, Some(import.alias))
                 | None =>
-                    fail(import.at, "No such module: " + import.file)
+                    throw(CompileError(import.at, "No such module: " + import.file))
             }
         }
         resolver
@@ -108,7 +108,7 @@ extend self: Resolver {
         if(!definition.generics.first().any {_ == "Q$"}) {
             [...definition.commonFields, ...definition.variants.flatMap {_.fields}].each { f =>
                 if(self2.containsAsyncType(f.valueType)) {
-                    fail(f.at, "Only classes can contain fields of concrete class types")
+                    throw(CompileError(f.at, "Only classes can contain fields of concrete class types"))
                 }
             }
         }
@@ -161,7 +161,7 @@ extend self: Resolver {
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         let traitName = self2.traits.get(definition.traitName).else {
-            fail(definition.at, "No such trait: " + definition.traitName)
+            throw(CompileError(definition.at, "No such trait: " + definition.traitName))
         }
         definition.DInstance(
             constraints = definition.constraints.map { self2.resolveConstraint(_, True) }
@@ -206,7 +206,7 @@ extend self: Resolver {
         | EVariable e, _ =>
             self.variables.get(e.name).map { e.EVariable(name = _) }.else {
                 if(e.name.first().any { _.isAsciiLetter() }) {
-                    fail(e.at, "No such variable: " + e.name)
+                    throw(CompileError(e.at, "No such variable: " + e.name))
                 } else {
                     term
                 }
@@ -218,20 +218,20 @@ extend self: Resolver {
         | EVariant(at, name, typeArguments, arguments), _ =>
             EVariant(
                 at = at
-                name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
+                name = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
                 typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
                 arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value, topLevel)) }}
             )
         | EVariantIs(at, name, typeArguments), _ =>
             EVariantIs(
                 at = at
-                name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
+                name = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
                 typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
             )
         | ECopy(at, name, record, arguments), _ =>
             ECopy(
                 at = at
-                name = self.variants.get(name).else { fail(at, "No such variant: " + name) }
+                name = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
                 record = self.resolveTerm(record, topLevel)
                 arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value, topLevel)) }
             )
@@ -257,14 +257,14 @@ extend self: Resolver {
                 dictionaries = dictionaries
             )
         | ECall(at, StaticCall _, _, _, _, _), _ =>
-            fail(at, "Internal error: Static calls not expected in the Resolver phase")
+            throw(CompileError(at, "Internal error: Static calls not expected in the Resolver phase"))
         | ERecord(at, fields), _ =>
             ERecord(
                 at = at
                 fields = fields.map { f => f.Field(value = self.resolveTerm(f.value, topLevel)) }
             )
         | EWildcard e, _ =>
-            if(e.index == 0) { fail(e.at, "Unbound wildcard") }
+            if(e.index == 0) { throw(CompileError(e.at, "Unbound wildcard")) }
             e.EWildcard()
         | EFunctions(at, functions, body), _ =>
             let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap()
@@ -291,7 +291,9 @@ extend self: Resolver {
             EAssign(
                 at = at
                 operator = operator
-                variable = self.variables.get(variable).else { fail(at, "No such variable: " + variable) }
+                variable = self.variables.get(variable).else {
+                    throw(CompileError(at, "No such variable: " + variable))
+                }
                 value = self.resolveTerm(value, topLevel)
             )
         | EAssignField(at, operator, record, field, value), _ =>
@@ -311,7 +313,9 @@ extend self: Resolver {
             let name = if(constructor.name.contains("$")) {
                 constructor.name
             } else {
-                self.types.get(constructor.name).else { fail(constructor.at, "No such type: " + constructor.name) }
+                self.types.get(constructor.name).else {
+                    throw(CompileError(constructor.at, "No such type: " + constructor.name))
+                }
             }
             let isFunctionType = name.startsWith("Function$")
             let effect = if(isFunctionType || self.asyncTypes.contains(constructor.name)) {
@@ -347,7 +351,9 @@ extend self: Resolver {
 
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
         let name =
-            self.traits.get(constraint.name).else { fail(constraint.at, "No such trait: " + constraint.name) }
+            self.traits.get(constraint.name).else {
+                throw(CompileError(constraint.at, "No such trait: " + constraint.name))
+            }
         constraint.Constraint(
             name = name
             generics = constraint.generics.map { self.resolveType(_, topLevel) }
@@ -376,7 +382,7 @@ extend self: Resolver {
             )
         }
         newSignature.generics.find { name => self.typeParameters.contains(name) }.each { name =>
-            fail(signature.at, "Type parameter " + name + " is already in scope")
+            throw(CompileError(signature.at, "Type parameter " + name + " is already in scope"))
         }
         let self2 = self.withSignature(newSignature)
         newSignature.Signature(
@@ -451,11 +457,11 @@ extend self: Resolver {
         | PVariable _ =>
             pattern
         | PVariant(at, name, patterns) =>
-            let newName = self.variants.get(name).else { fail(at, "No such variant: " + name) }
+            let newName = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
             let newPatterns = patterns.map { self.resolvePattern(_) }
             PVariant(at, newName, newPatterns)
         | PVariantAs(at, name, variable) =>
-            let newName = self.variants.get(name).else { fail(at, "No such variant: " + name) }
+            let newName = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
             PVariantAs(at, newName, variable)
         | PAlias(at, pattern, variable) =>
             let newPattern = self.resolvePattern(pattern)
@@ -469,7 +475,9 @@ extend self: Resolver {
             let name = if(constructor.name.contains("$")) {
                 constructor.name
             } else {
-                self.types.get(constructor.name).else { fail(constructor.at, "No such type: " + constructor.name) }
+                self.types.get(constructor.name).else {
+                    throw(CompileError(constructor.at, "No such type: " + constructor.name))
+                }
             }
             let isFunctionType = name.startsWith("Function$")
             isFunctionType || self.asyncTypes.contains(constructor.name) ||

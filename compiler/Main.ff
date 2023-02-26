@@ -11,38 +11,16 @@ import Inference
 
 data MainCommand {
     BootstrapCommand
-    RunCommand(mainPath: String)
+    RunCommand(mainPath: String, argument: List[String])
     BrowserCommand(mainPath: String)
     BuildCommand(mainPath: String)
 }
 
+data CommandLineError(problem: String)
+
 main(system: NodeSystem): Unit {
 
-    mutable arguments = system.arguments()
-    function consumeArgument(): Option[String] {
-        let first = arguments.first()
-        arguments = arguments.dropFirst()
-        first
-    }
-
     let fireflyPath = detectFireflyPath()
-
-    let command = consumeArgument().grab().{
-        | s {s.endsWith(".ff")} => RunCommand(s.dropLast(3))
-        | "run" => RunCommand(consumeArgument().grab().dropLast(3))
-        | "browser" => BrowserCommand(consumeArgument().grab().dropLast(3))
-        | "build" => BuildCommand(consumeArgument().grab().dropLast(3))
-        | "bootstrap" => BootstrapCommand
-        | s => panic("Unknown command '" + s + "'")
-    }
-
-    command.{
-        | RunCommand(moduleName) =>
-        | _ =>
-            arguments.first().each { argument =>
-                panic("Unknown argument: " + argument)
-            }
-    }
 
     function buildScript(
         mainFile: String,
@@ -76,14 +54,14 @@ main(system: NodeSystem): Unit {
                 jsOutputPath = ".firefly/output/" + targetName
                 printMeasurements = False
             )
-        } catch {| TypeException(at, message), error =>
+        } catch {| CompileError(at, message), error =>
             Log.debug(message)
             Log.debug(" at file://" + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
         } grab()
     }
 
     function runCommand(command: MainCommand) {
-        | RunCommand(mainFile) =>
+        | RunCommand(mainFile, arguments) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
                 packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
@@ -110,7 +88,7 @@ main(system: NodeSystem): Unit {
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBuild, fixedDependencies)
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitExecutable, fixedDependencies)
             bundleForPkg(system, resolvedDependencies.mainPackagePair, mainFile)
-            importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, mainFile, arguments)
+            importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, mainFile, [])
 
         | BootstrapCommand =>
             Builder.build(
@@ -135,12 +113,64 @@ main(system: NodeSystem): Unit {
     }
 
     try {
+        let command = parseCommandLine(system.arguments().toList())
         runCommand(command)
-    } catch {| TypeException(at, message), error =>
+    } catch {| CommandLineError(message), error =>
+            Log.debug(message)
+    } catch {| CompileError(at, message), error =>
         Log.debug(message)
         Log.debug(" at file://" + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
     } grab()
+}
 
+usageString = """
+usage: firefly <main-file> [<main-arguments>] | <command> [<command-arguments>]
+
+These are the commands:
+   run <main-file> [<main-arguments>]    Run the main file with the provided arguments
+   browser <main-file>                   Compile the main file for the browser
+   build <main-file>                     Build the main file
+   bootstrap                             Bootstrap the compiler
+"""
+
+parseCommandLine(arguments: List[String]): MainCommand {
+    | [mainFile, ...mainArguments] { mainFile.removeLast(".ff") | Some(mainName) } =>
+        RunCommand(mainName, mainArguments)
+    | ["run", ...runArguments] =>
+        runArguments.{
+            | [mainFile, ...mainArguments] { mainFile.removeLast(".ff") | Some(mainName) } =>
+                RunCommand(mainName, mainArguments)
+            | _ => throw(CommandLineError(
+                "You must specify a Firefly file (.ff) as first argument to run."  + usageString
+            ))
+        }
+    | ["browser", ...browserArguments] =>
+        browserArguments.{
+            | [mainFile] { mainFile.removeLast(".ff") | Some(mainName) } =>
+                BrowserCommand(mainName)
+            | [_, _, ..._] => throw(CommandLineError(
+                "You must only specify a single argument to browser."  + usageString
+            ))
+            | _ => throw(CommandLineError(
+                "You must specify a Firefly file (.ff) as the argument to browser."  + usageString
+            ))
+        }
+    | ["build", ...buildArguments] =>
+        buildArguments.{
+            | [mainFile] { mainFile.removeLast(".ff") | Some(mainName) } =>
+                BuildCommand(mainName)
+            | [_, _, ..._] => throw(CommandLineError(
+                "You must only specify a single argument to build."  + usageString
+            ))
+            | _ => throw(CommandLineError(
+                "You must specify a Firefly file (.ff) as the argument to build."  + usageString
+            ))
+        }
+    | ["bootstrap", _] =>
+        throw(CommandLineError("bootstrap takes no arguments" + usageString))
+    | ["bootstrap"] => BootstrapCommand
+    | [] => throw(CommandLineError("You must specify a command or a main file to run." + usageString))
+    | [s, ..._] => throw(CommandLineError("Unknown command '" + s + "'" + usageString))
 }
 
 bundleForPkg(system: NodeSystem, packagePair: PackagePair, mainFile: String) {
@@ -169,7 +199,7 @@ importAndRun(
     target: String
     packagePair: PackagePair
     mainFile: String
-    arguments: Array[String]
+    arguments: List[String]
 ): Unit
     target node async """
         const process = await import('process');

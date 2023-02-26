@@ -96,6 +96,14 @@ extend self: String {
     endsWith(prefix: String) : Bool
         target js sync "return self_.endsWith(prefix_)"
 
+    removeFirst(prefix: String): Option[String] {
+        if(self.startsWith(prefix)) {Some(self.dropFirst(prefix.size()))} else {None}
+    }
+
+    removeLast(suffix: String): Option[String] {
+        if(self.endsWith(suffix)) {Some(self.dropLast(suffix.size()))} else {None}
+    }
+
     any(body: Char => Bool): Bool
         target js sync """
             for(let i = 0; i < self_.length; i++) {

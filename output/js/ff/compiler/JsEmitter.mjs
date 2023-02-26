@@ -1958,7 +1958,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Core.try") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a try without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a try without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1972,7 +1972,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_map") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a map without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a map without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1986,7 +1986,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_flatMap") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a flatMap without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatMap without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2000,7 +2000,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_flatten") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a flatten without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatten without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2014,7 +2014,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_catch") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a catch without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catch without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2028,7 +2028,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_catchAny") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a catchAny without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catchAny without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2042,7 +2042,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_finally") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a finally without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a finally without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2096,7 +2096,7 @@ const instanceCall_ = _1.target_.instanceCall_;
 const effect_ = _1.effect_;
 const arguments_ = _1.arguments_;
 if(instanceCall_) {
-ff_compiler_JsEmitter.fail_(at_, "Not yet implemented: Tail calls on trait methods.")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Not yet implemented: Tail calls on trait methods."), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.tailCallUsed_ = true;
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect(ff_core_List.List_map(arguments_, ((a_) => {
@@ -4036,7 +4036,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Core.try") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a try without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a try without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -4050,7 +4050,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_map") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a map without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a map without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -4064,7 +4064,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_flatMap") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a flatMap without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatMap without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -4078,7 +4078,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_flatten") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a flatten without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a flatten without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -4092,7 +4092,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_catch") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a catch without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catch without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -4106,7 +4106,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_catchAny") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a catchAny without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a catchAny without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -4120,7 +4120,7 @@ if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Try.Try_finally") {
 const _guard1 = (!last_);
 if(_guard1) {
-return ff_compiler_JsEmitter.fail_(at_, "Statements can't be a finally without a grab")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Statements can't be a finally without a grab"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -4174,7 +4174,7 @@ const instanceCall_ = _1.target_.instanceCall_;
 const effect_ = _1.effect_;
 const arguments_ = _1.arguments_;
 if(instanceCall_) {
-ff_compiler_JsEmitter.fail_(at_, "Not yet implemented: Tail calls on trait methods.")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Not yet implemented: Tail calls on trait methods."), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.tailCallUsed_ = true;
 const pair_ = ff_core_List.List_unzip(ff_core_List.List_collect((await ff_core_List.List_map$(arguments_, (async (a_, $c) => {

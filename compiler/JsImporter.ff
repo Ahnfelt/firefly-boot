@@ -31,13 +31,13 @@ extend self: JsImporter {
         if(!rest.startsWith("import * as ")) {code} else:
         let rest2 = rest.dropFirst("import * as ".size())
         let name = rest2.takeWhile {_.isAsciiLetterOrDigit()}
-        if(name.size() == 0) {fail(at, "Expected alias after \"import * as \"")}
+        if(name.size() == 0) {throw(CompileError(at, "Expected alias after \"import * as \""))}
         let rest3 = rest2.dropFirst(name.size())
-        if(!rest3.startsWith(" from '")) {fail(at, "Expected \" from '\" after \"import * as ...\"")}
+        if(!rest3.startsWith(" from '")) {throw(CompileError(at, "Expected \" from '\" after \"import * as ...\""))}
         let rest4 = rest3.dropFirst(" from '".size())
         let url = rest4.takeWhile {_ != '\''}
-        if(url.size() == 0) {fail(at, "Expected module name after \" from '\"")}
-        if(url.any{_ == '\n'}) {fail(at, "Unclosed module name string")}
+        if(url.size() == 0) {throw(CompileError(at, "Expected module name after \" from '\""))}
+        if(url.any{_ == '\n'}) {throw(CompileError(at, "Unclosed module name string"))}
         let rest5 = rest4.dropFirst(url.size() + 1)
         let importName = self.add(url)
         space + "const " + name + " = " + importName + self.process(at, rest5)

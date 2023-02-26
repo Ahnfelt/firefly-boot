@@ -102,7 +102,7 @@ convertAndCheck(modules: Map[String, Module], cases: List[MatchCase]): Unit {
     try {
         check([].toMap(), [], converted, False, False)
     } else {
-        fail(cases.grab(0).at, "Unexhaustive match")
+        throw(CompileError(cases.grab(0).at, "Unexhaustive match"))
     }
 }
 

@@ -107,7 +107,7 @@ return {generics_, constraints_, packagePair_, moduleName_, traitName_, typeArgu
 
 
 export function fail_(at_, message_) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 
 export function make_(modules_) {
@@ -136,7 +136,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitNa
 }
 
 export async function fail_$(at_, message_, $c) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 
 export async function make_$(modules_, $c) {
@@ -332,7 +332,7 @@ const g1_ = (ff_core_List.List_isEmpty(generics_)
 const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]");
-ff_compiler_Unification.fail_(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -492,7 +492,7 @@ if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
 if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
-ff_compiler_Unification.fail_(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_))))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
 {
@@ -511,7 +511,7 @@ return
 
 export function Unification_bind(self_, at_, index_, type_) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
-ff_compiler_Unification.fail_(at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_))))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
@@ -778,7 +778,7 @@ const g1_ = (ff_core_List.List_isEmpty(generics_)
 const g2_ = (ff_core_List.List_isEmpty(generics2_)
 ? ""
 : "[...]");
-ff_compiler_Unification.fail_(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((((("No such instance: " + name_) + g2_) + ": ") + constraintName_) + g1_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -938,7 +938,7 @@ if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
 if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
-ff_compiler_Unification.fail_(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show((await ff_compiler_Unification.Unification_substitute$(self_, t1_, $c)))) + " vs. ") + ff_compiler_Syntax.Type_show((await ff_compiler_Unification.Unification_substitute$(self_, t2_, $c)))))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show((await ff_compiler_Unification.Unification_substitute$(self_, t1_, $c)))) + " vs. ") + ff_compiler_Syntax.Type_show((await ff_compiler_Unification.Unification_substitute$(self_, t2_, $c))))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 (await ff_core_List.List_each$(ff_core_List.List_zip(generics1_, generics2_), (async (_1, $c) => {
 {
@@ -957,7 +957,7 @@ return
 
 export async function Unification_bind$(self_, at_, index_, type_, $c) {
 if((await ff_compiler_Unification.Unification_occursIn$(self_, index_, type_, $c))) {
-ff_compiler_Unification.fail_(at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show((await ff_compiler_Unification.Unification_substitute$(self_, type_, $c)))))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show((await ff_compiler_Unification.Unification_substitute$(self_, type_, $c))))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 (await ff_core_Option.Option_each$(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), (async (map_, $c) => {

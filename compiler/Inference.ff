@@ -7,8 +7,6 @@ class Inference(
     unification: Unification
 )
 
-data TypeException(at: Location, message: String)
-
 make(modules: List[Module]): Inference {
     Inference(
         unification = Unification.make(modules)
@@ -16,7 +14,7 @@ make(modules: List[Module]): Inference {
 }
 
 fail[T](at: Location, message: String): T {
-    throw(TypeException(at, message))
+    throw(CompileError(at, message))
 }
 
 core(name: String): String {
@@ -195,18 +193,18 @@ extend self: Inference {
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
             | PVariantAs(at, name, None) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
-                    fail(at, "No such variant: " + name)
+                    throw(CompileError(at, "No such variant: " + name))
                 }
                 if(instantiated.scheme.isNewtype) {
-                    fail(at, "This kind of pattern is not allowed for newtypes")
+                    throw(CompileError(at, "This kind of pattern is not allowed for newtypes"))
                 }
                 Map.empty()
             | PVariantAs(at, name, Some(variable)) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
-                    fail(at, "No such variant: " + name)
+                    throw(CompileError(at, "No such variant: " + name))
                 }
                 if(instantiated.scheme.isNewtype) {
-                     fail(at, "This kind of pattern is not allowed for newtypes")
+                     throw(CompileError(at, "This kind of pattern is not allowed for newtypes"))
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
@@ -215,13 +213,13 @@ extend self: Inference {
                 [Pair(variable, recordType)].toMap()
             | PVariant(at, name, patterns) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
-                    fail(at, "No such variant: " + name)
+                    throw(CompileError(at, "No such variant: " + name))
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
                 if(patterns.size() != instantiated.scheme.signature.parameters.size()) {
-                    fail(at, "Wrong number of subpatterns, expected " +
+                    throw(CompileError(at, "Wrong number of subpatterns, expected " +
                         instantiated.scheme.signature.parameters.size() + ", got " + patterns.size() + "."
-                    )
+                    ))
                 }
                 patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
@@ -254,7 +252,7 @@ extend self: Inference {
                         )
                     }
                 } else {
-                    fail(e.at, "Symbol not in scope: " + e.name)
+                    throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
             | EField e =>
                 let recordType = self.unification.freshUnificationVariable(e.at)
@@ -267,7 +265,7 @@ extend self: Inference {
                             self.unification.unify(e.at, expected, t1)
                             e.EField(record = record)
                         }.else {
-                            fail(e.at, "No such field " + e.field + " on type: " + t.show())
+                            throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show()))
                         }
                     | TConstructor(_, name, typeArguments)@t =>
                         let methodName = name + "_" + e.field
@@ -292,10 +290,10 @@ extend self: Inference {
                                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                                 e.EField(newtype = instantiated.scheme.isNewtype, record = record)
                             | None =>
-                                fail(e.at, "No such field " + e.field + " on type: " + t.show())
+                                throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show()))
                         }
                     | TVariable(_, index) =>
-                        fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
+                        throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
             | EWildcard e =>
                 self.lookup(environment, e.at, "_w" + e.index, []).map { instantiated =>
@@ -348,7 +346,7 @@ extend self: Inference {
                 ELambda(at, lambda)
             | EVariant e =>
                 let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
-                    fail(e.at, "Symbol not in scope: " + e.name)
+                    throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                 let arguments = e.arguments.map {
@@ -360,7 +358,7 @@ extend self: Inference {
                 )
             | EVariantIs e =>
                 let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
-                    fail(e.at, "Symbol not in scope: " + e.name)
+                    throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
                 let recordType =
@@ -376,15 +374,15 @@ extend self: Inference {
                 )
             | ECopy e =>
                 let scheme = self.lookup(environment, e.at, e.name, []).else {
-                    fail(e.at, "Symbol not in scope: " + e.name)
+                    throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }.scheme
                 if(scheme.isNewtype) {
-                    fail(e.at, "Newtypes can't be copied")
+                    throw(CompileError(e.at, "Newtypes can't be copied"))
                 }
                 let signature = scheme.signature
                 let parameterNames = signature.parameters.map { _.name }
                 e.arguments.find { a => !parameterNames.any { _ == a.name } }.each {
-                    | Field(at, name, value) => fail(at, "Unknown parameter: " + name)
+                    | Field(at, name, value) => throw(CompileError(at, "Unknown parameter: " + name))
                 }
                 let arguments = parameterNames.map { name =>
                     e.arguments.find { _.name == name }.map {
@@ -440,7 +438,7 @@ extend self: Inference {
                                         )
                                     }
                                 | None =>
-                                    fail(variableAt, "No such function: " + x)
+                                    throw(CompileError(variableAt, "No such function: " + x))
                             }
                         }
                     | EField f =>
@@ -465,10 +463,14 @@ extend self: Inference {
                                     | Some(instantiated) =>
                                         self.inferLambdaCall(environment, expected, e2)
                                     | None =>
-                                        fail(f.at, "No such field " + f.field + " on type: " + t.show())
+                                        throw(CompileError(f.at,
+                                            "No such field " + f.field + " on type: " + t.show()
+                                        ))
                                 }
                             | TVariable(_, index) =>
-                                fail(f.at, "No such field " + f.field + " on unknown type: $" + index)
+                                throw(CompileError(f.at,
+                                    "No such field " + f.field + " on unknown type: $" + index
+                                ))
                         }
                     | _ =>
                         self.inferLambdaCall(environment, expected, term)
@@ -513,17 +515,17 @@ extend self: Inference {
                             value = value
                         )
                     } else {
-                        fail(e.at, "Symbol is not mutable: " + e.variable)
+                        throw(CompileError(e.at, "Symbol is not mutable: " + e.variable))
                     }
                 } else {
-                    fail(e.at, "Symbol not in scope: " + e.variable)
+                    throw(CompileError(e.at, "Symbol not in scope: " + e.variable))
                 }
             | EAssignField e =>
                 let recordType = self.unification.freshUnificationVariable(e.at)
                 let record = self.inferTerm(environment, recordType, e.record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
-                        fail(e.at, "Can't assign fields of anonymous records: " + e.field)
+                        throw(CompileError(e.at, "Can't assign fields of anonymous records: " + e.field))
                     | TConstructor(_, name, typeArguments)@t =>
                         let methodName = name + "_" + e.field
                         self.lookup(environment, e.at, methodName, typeArguments).{
@@ -541,12 +543,14 @@ extend self: Inference {
                                     value = value
                                 )
                             | Some(instantiated) =>
-                                fail(e.at, "Can't assign an immutable field " + e.field + " on type: " + t.show())
+                                throw(CompileError(e.at,
+                                    "Can't assign an immutable field " + e.field + " on type: " + t.show()
+                                ))
                             | None =>
-                                fail(e.at, "No such field " + e.field + " on type: " + t.show())
+                                throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show()))
                         }
                     | TVariable(_, index) =>
-                        fail(e.at, "No such field " + e.field + " on unknown type: $" + index)
+                        throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
         }
     }
@@ -563,7 +567,7 @@ extend self: Inference {
         if(operator == "+" || operator == "-") {
             self.unification.unify(at, t, TConstructor(at, core("Int"), []))
         } elseIf {operator != ""} {
-            fail(at, "Only +=, -= and = assignments are supported. Got: " + operator + "=")
+            throw(CompileError(at, "Only +=, -= and = assignments are supported. Got: " + operator + "="))
         }
         let newValue = self.inferTerm(environment, t, value)
         self.unification.unify(at, expected, TConstructor(at, core("Unit"), []))
@@ -628,7 +632,7 @@ extend self: Inference {
         let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
         let call = e.target.{
             | DynamicCall call {!call.tailCall} => call
-            | DynamicCall _ => fail(e.at, "Tailcalls not supported on lambda functions")
+            | DynamicCall _ => throw(CompileError(e.at, "Tailcalls not supported on lambda functions"))
             | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferLambdaCall")
         }
         let effect = self.unification.freshUnificationVariable(term.at)
@@ -641,12 +645,12 @@ extend self: Inference {
         let function = self.inferTerm(environment, functionType, call.function)
         let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
             argument.name.each { name =>
-                fail(argument.at, "Named argument not allowed here: " + name)
+                throw(CompileError(argument.at, "Named argument not allowed here: " + name))
             }
             argument.Argument(value = self.inferTerm(environment, t, argument.value))
         }
         e.typeArguments.first().each { typeArgument =>
-            fail(typeArgument.at, "Type arguments not allowed here")
+            throw(CompileError(typeArgument.at, "Type arguments not allowed here"))
         }
         self.unification.affect(term.at, effect, environment.effect)
         e.ECall(
@@ -679,7 +683,7 @@ extend self: Inference {
                     | TConstructor(_, name, []) {name == core("Int")} =>
                         self.unification.unify(e.at, expected, t1)
                     | _ =>
-                        fail(e.at, "Operators on unknown types not currently supported")
+                        throw(CompileError(e.at, "Operators on unknown types not currently supported"))
                 }
                 e.ECall(target = target, arguments = [a1.Argument(value = e1)])
             | [a1, a2] {
@@ -729,9 +733,9 @@ extend self: Inference {
                         self.unification.unify(e.at, t2, t1)
                         self.unification.unify(e.at, expected, t2)
                     | Some(_), Some(_) =>
-                        fail(e.at, "Operators on these types not currently supported")
+                        throw(CompileError(e.at, "Operators on these types not currently supported"))
                     | None, None =>
-                        fail(e.at, "Operators on unknown types not currently supported")
+                        throw(CompileError(e.at, "Operators on unknown types not currently supported"))
                 }
                 chooseType(magic(t1), magic(t2))
                 e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
@@ -818,11 +822,11 @@ extend self: Inference {
                 }
                 if(scheme.signature.generics.size() != newTypeArguments.size()) {
                     let extra = newTypeArguments.size() - typeArguments.size()
-                    fail(at,
+                    throw(CompileError(at,
                         "Wrong number of type arguments for " + symbol +
                         ", expected " + (scheme.signature.generics.size() - extra) +
                         ", got " + (newTypeArguments.size() - extra)
-                    )
+                    ))
                 }
                 scheme.signature.generics.zip(newTypeArguments)
             } else {

@@ -59,7 +59,7 @@ extend self: Parser {
     skip(kind: TokenKind): Token {
         let c = self.current()
         if(c.kind != kind) {
-            self.fail(c.at(), "Expected " + Show.show(kind) + ", got " + c.raw())
+            throw(CompileError(c.at(), "Expected " + Show.show(kind) + ", got " + c.raw()))
         }
         self.offset += 1
         c
@@ -68,10 +68,10 @@ extend self: Parser {
     rawSkip(kind: TokenKind, value: String): Token {
         let c = self.current()
         if(c.kind != kind) {
-            self.fail(c.at(), "Expected " + Show.show(kind) + " " + value + ", got " + c.raw())
+            throw(CompileError(c.at(), "Expected " + Show.show(kind) + " " + value + ", got " + c.raw()))
         }
         if(!c.rawIs(value)) {
-            self.fail(c.at(), "Expected " + value + " got " + c.raw())
+            throw(CompileError(c.at(), "Expected " + value + " got " + c.raw()))
         }
         self.offset += 1
         c
@@ -98,7 +98,7 @@ extend self: Parser {
     parseModuleWithoutPackageInfo(): Module {
         let moduleWithPackageInfo = self.parseModuleWithPackageInfo()
         moduleWithPackageInfo.packageInfo.each { info =>
-            self.fail(info.package.at, "Package and dependencies already declared in package.ff")
+            throw(CompileError(info.package.at, "Package and dependencies already declared in package.ff"))
         }
         moduleWithPackageInfo.module
     }
@@ -126,7 +126,7 @@ extend self: Parser {
             )
         }
         if(self.current().is(LKeyword) && self.current().rawIs("package")) {
-            self.fail(self.current().at(), "Duplicate package definition")
+            throw(CompileError(self.current().at(), "Duplicate package definition"))
         }
         /* TODO: if(self.package != None && self.current().is(LKeyword) && self.current().rawIs("dependency")) {
             self.fail(self.current().at(), "Dependencies must be defined in the same file as the package declaration")
@@ -169,11 +169,17 @@ extend self: Parser {
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
                 imports.push(self.parseImportDefinition(self.packagePair))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("include")} {
-                self.fail(self.current().at(), "Includes must be at the top of the file or below 'package'")
+                throw(CompileError(self.current().at(),
+                    "Includes must be at the top of the file or below 'package'"
+                ))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
-                self.fail(self.current().at(), "Dependencies must be at the top of the file or below 'package'")
+                throw(CompileError(self.current().at(),
+                "Dependencies must be at the top of the file or below 'package'"
+            ))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("package")} {
-                self.fail(self.current().at(), "Package definition must be at the top of the file")
+                throw(CompileError(self.current().at(),
+                    "Package definition must be at the top of the file"
+                ))
             } else {
                 self.skip(LEnd)
             }
@@ -235,41 +241,41 @@ extend self: Parser {
                 let lambda = self.parseLambda(parameterCount)
                 target.{
                     | "js" =>
-                        if(targets.jsSync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.jsSync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(js = Some(lambda))
                     | "browser" =>
-                        if(targets.browserSync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.browserSync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(browser = Some(lambda))
                     | "node" =>
-                        if(targets.nodeAsync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.nodeAsync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(node = Some(lambda))
                     | _ =>
-                        self.fail(at, "Unknown target")
+                        throw(CompileError(at, "Unknown target"))
                 }
             } else {
                 let mode = self.skip(LKeyword).raw()
                 let code = processCode(self.skip(LString).raw())
                 Pair(target, mode).{
                     | Pair("js", "sync") =>
-                        if(targets.jsSync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.jsSync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(jsSync = Some(code))
                     | Pair("js", "async") =>
-                        if(targets.jsAsync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.jsAsync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(jsAsync = Some(code))
                     | Pair("browser", "sync") =>
-                        if(targets.browserSync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.browserSync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(browserSync = Some(code))
                     | Pair("browser", "async") =>
-                        if(targets.browserAsync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.browserAsync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(browserAsync = Some(code))
                     | Pair("node", "sync") =>
-                        if(targets.nodeSync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.nodeSync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(nodeSync = Some(code))
                     | Pair("node", "async") =>
-                        if(targets.nodeAsync != None) { self.fail(at, "Duplicate target definition") }
+                        if(targets.nodeAsync != None) { throw(CompileError(at, "Duplicate target definition")) }
                         targets = targets.ParsedTargets(nodeAsync = Some(code))
                     | Pair(_, _) =>
-                        self.fail(at, "Unknown target or mode")
+                        throw(CompileError(at, "Unknown target or mode"))
                 }
             }
         }
@@ -427,7 +433,9 @@ extend self: Parser {
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
                 if(!allowMutable && variantFields.any {_.mutable}) {
-                    self.fail(variantFields.find {_.mutable}.grab().at, "Only classes can have mutable fields")
+                    throw(CompileError(variantFields.find {_.mutable}.grab().at,
+                        "Only classes can have mutable fields"
+                    ))
                 }
                 variantsBuilder.push(
                     Variant(variantNameToken.at(), variantNameToken.raw(), variantFields)
@@ -439,10 +447,10 @@ extend self: Parser {
         }
         if(newtype && commonFields.size() != 1) {
             Log.show(commonFields)
-            self.fail(nameToken.at(), "Newtypes must have exactly one field")
+            throw(CompileError(nameToken.at(), "Newtypes must have exactly one field"))
         }
         if(!allowMutable && commonFields.any {_.mutable}) {
-            self.fail(commonFields.find {_.mutable}.grab().at, "Only classes can have mutable fields")
+            throw(CompileError(commonFields.find {_.mutable}.grab().at, "Only classes can have mutable fields"))
         }
         let generics = [...effectParameter, ...poly.generics]
         DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants)
@@ -524,11 +532,11 @@ extend self: Parser {
         while { self.current().is2(LKeyword, LLower) } {
             let token = if(self.current().is(LLower)) {self.skip(LLower)} else {self.skip(LKeyword)}
             token.raw().{
-                | "node" {targets.node} => self.fail(token.at(), "Duplicate target name")
+                | "node" {targets.node} => throw(CompileError(token.at(), "Duplicate target name"))
                 | "node" => targets = targets.TargetNames(node = True)
-                | "browser" {targets.browser} => self.fail(token.at(), "Duplicate target name")
+                | "browser" {targets.browser} => throw(CompileError(token.at(), "Duplicate target name"))
                 | "browser" => targets = targets.TargetNames(browser = True)
-                | t => self.fail(token.at(), "Unexpected target: " + t)
+                | t => throw(CompileError(token.at(), "Unexpected target: " + t))
             }
         }
         if(!targets.node && !targets.browser) {
@@ -569,10 +577,10 @@ extend self: Parser {
             part = part + "-" + readPart()
         }
         if(part.any { _.isAsciiUpper() }) {
-            self.fail(at, "Package names and paths must not contain upper case letters: " + part)
+            throw(CompileError(at, "Package names and paths must not contain upper case letters: " + part))
         }
         if(part.any { _ == '_' } || part.any { _ == '.' }) {
-            self.fail(at, "Package names and paths must not contain underscores or dots: " + part)
+            throw(CompileError(at, "Package names and paths must not contain underscores or dots: " + part))
         }
         part
     }
@@ -835,7 +843,7 @@ extend self: Parser {
         term.{
             | EVariable(_, name) => EAssign(token.at(), operator, name, value)
             | EField e => EAssignField(token.at(), operator, e.record, e.field, value)
-            | _ => self.fail(token.at(), "Only variables and fields are assignable")
+            | _ => throw(CompileError(token.at(), "Only variables and fields are assignable"))
         }
     }
     
@@ -988,7 +996,7 @@ extend self: Parser {
             let token = self.skip(LWildcard)
             EWildcard(token.at(), 0)
         } else {
-            self.fail(self.current().at(), "Expected atom, got " + self.current().raw())
+            throw(CompileError(self.current().at(), "Expected atom, got " + self.current().raw()))
         }
     }
 
@@ -1057,7 +1065,7 @@ extend self: Parser {
                 PVariant(p.at, "ff:core/List.Link", [p, convertListPattern(p.at, ps)])
             | _, [Pair(p, True)] => p
             | _, [Pair(p, True), ...] =>
-                self.fail(p.at, "Invalid pattern: ... is only allowed for the last element in a list")
+                throw(CompileError(p.at, "Invalid pattern: ... is only allowed for the last element in a list"))
         }
         let items = Stack.make[Pair[MatchPattern, Bool]]()
         let at = self.rawSkip(LBracketLeft, "[").at()

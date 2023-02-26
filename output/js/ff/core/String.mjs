@@ -198,6 +198,22 @@ export function String_endsWith(self_, prefix_) {
 return self_.endsWith(prefix_)
 }
 
+export function String_removeFirst(self_, prefix_) {
+if(ff_core_String.String_startsWith(self_, prefix_, 0)) {
+return ff_core_Option.Some(ff_core_String.String_dropFirst(self_, ff_core_String.String_size(prefix_)))
+} else {
+return ff_core_Option.None()
+}
+}
+
+export function String_removeLast(self_, suffix_) {
+if(ff_core_String.String_endsWith(self_, suffix_)) {
+return ff_core_Option.Some(ff_core_String.String_dropLast(self_, ff_core_String.String_size(suffix_)))
+} else {
+return ff_core_Option.None()
+}
+}
+
 export function String_any(self_, body_) {
 
             for(let i = 0; i < self_.length; i++) {
@@ -317,6 +333,22 @@ throw new Error('Function String_startsWith is missing on this target in async c
 
 export async function String_endsWith$(self_, prefix_, $c) {
 throw new Error('Function String_endsWith is missing on this target in async context.');
+}
+
+export async function String_removeFirst$(self_, prefix_, $c) {
+if(ff_core_String.String_startsWith(self_, prefix_, 0)) {
+return ff_core_Option.Some(ff_core_String.String_dropFirst(self_, ff_core_String.String_size(prefix_)))
+} else {
+return ff_core_Option.None()
+}
+}
+
+export async function String_removeLast$(self_, suffix_, $c) {
+if(ff_core_String.String_endsWith(self_, suffix_)) {
+return ff_core_Option.Some(ff_core_String.String_dropLast(self_, ff_core_String.String_size(suffix_)))
+} else {
+return ff_core_Option.None()
+}
 }
 
 export async function String_any$(self_, body_, $c) {

@@ -93,11 +93,6 @@ export function Inference(unification_) {
 return {unification_};
 }
 
-// type TypeException
-export function TypeException(at_, message_) {
-return {at_, message_};
-}
-
 
 
 export function make_(modules_) {
@@ -105,7 +100,7 @@ return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_))
 }
 
 export function fail_(at_, message_) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 
 export function core_(name_) {
@@ -140,7 +135,7 @@ return ff_compiler_Inference.Inference((await ff_compiler_Unification.make_$(mod
 }
 
 export async function fail_$(at_, message_, $c) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Inference.TypeException(at_, message_), ff_compiler_Inference.ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 
 export async function core_$(name_, $c) {
@@ -478,10 +473,10 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 if(_1.variable_.None) {
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
-return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 if(instantiated_.scheme_.isNewtype_) {
-ff_compiler_Inference.fail_(at_, "This kind of pattern is not allowed for newtypes")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_Map.empty_()
 return
@@ -495,10 +490,10 @@ const name_ = _1.name_;
 if(_1.variable_.Some) {
 const variable_ = _1.variable_.value_;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
-return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 if(instantiated_.scheme_.isNewtype_) {
-ff_compiler_Inference.fail_(at_, "This kind of pattern is not allowed for newtypes")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
@@ -520,11 +515,11 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
-return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
 if((ff_core_List.List_size(patterns_) !== ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_))) {
-ff_compiler_Inference.fail_(at_, (((("Wrong number of subpatterns, expected " + ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) + ", got ") + ff_core_List.List_size(patterns_)) + "."))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (((("Wrong number of subpatterns, expected " + ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) + ", got ") + ff_core_List.List_size(patterns_)) + ".")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1) => {
 {
@@ -584,7 +579,7 @@ return term_
 return ff_compiler_Inference.Inference_inferEtaExpansion(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_)
 }
 })), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
 return
 }
@@ -620,7 +615,7 @@ return
 }
 }
 })), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
 return
 }
@@ -665,7 +660,7 @@ return
 }
 {
 if(_1.None) {
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -676,7 +671,7 @@ return
 {
 if(_1.TVariable) {
 const index_ = _1.index_;
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -806,7 +801,7 @@ return
 if(_1.EVariant) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 const arguments_ = ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
@@ -829,7 +824,7 @@ return
 if(_1.EVariantIs) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
@@ -858,10 +853,10 @@ return
 if(_1.ECopy) {
 const e_ = _1;
 const scheme_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })).scheme_;
 if(scheme_.isNewtype_) {
-ff_compiler_Inference.fail_(e_.at_, "Newtypes can't be copied")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Newtypes can't be copied"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const signature_ = scheme_.signature_;
 const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
@@ -876,7 +871,7 @@ return (_w1 === a_.name_)
 const at_ = _1.at_;
 const name_ = _1.name_;
 const value_ = _1.value_;
-ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("Unknown parameter: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }));
@@ -965,7 +960,7 @@ return
 }
 {
 if(_1.None) {
-return ff_compiler_Inference.fail_(variableAt_, ("No such function: " + x_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1014,7 +1009,7 @@ return
 }
 {
 if(_1.None) {
-return ff_compiler_Inference.fail_(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1025,7 +1020,7 @@ return
 {
 if(_1.TVariable) {
 const index_ = _1.index_;
-return ff_compiler_Inference.fail_(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1115,10 +1110,10 @@ return
 }
 }
 } else {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 })), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.variable_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
 return
 }
@@ -1137,7 +1132,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
-return ff_compiler_Inference.fail_(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1171,13 +1166,13 @@ return
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-return ff_compiler_Inference.fail_(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
 {
 if(_1.None) {
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1188,7 +1183,7 @@ return
 {
 if(_1.TVariable) {
 const index_ = _1.index_;
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1204,7 +1199,7 @@ const t_ = signature_.returnType_;
 if(((operator_ === "+") || (operator_ === "-"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_List.Empty()))
 } else if((operator_ !== "")) {
-ff_compiler_Inference.fail_(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "="))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {};
 const newValue_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, value_);
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty()));
@@ -1329,7 +1324,7 @@ return
 }
 {
 if(_1.DynamicCall) {
-return ff_compiler_Inference.fail_(e_.at_, "Tailcalls not supported on lambda functions")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1351,7 +1346,7 @@ const arguments_ = ff_core_List.List_map(ff_core_List.List_zip(e_.arguments_, ar
 const argument_ = _1.first_;
 const t_ = _1.second_;
 ff_core_Option.Option_each(argument_.name_, ((name_) => {
-ff_compiler_Inference.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, ("Named argument not allowed here: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 {
 const _1 = argument_;
@@ -1365,7 +1360,7 @@ return
 }
 }));
 ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_) => {
-ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(typeArgument_.at_, "Type arguments not allowed here"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, effect_, environment_.effect_);
 {
@@ -1456,7 +1451,7 @@ break
 }
 }
 {
-ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 } while(false);
@@ -1674,7 +1669,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-ff_compiler_Inference.fail_(e_.at_, "Operators on these types not currently supported")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1682,7 +1677,7 @@ return
 {
 if(_1.None) {
 if(_2.None) {
-ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1818,7 +1813,7 @@ return (_w1 === "Q$")
 : typeArguments_);
 if((ff_core_List.List_size(scheme_.signature_.generics_) !== ff_core_List.List_size(newTypeArguments_))) {
 const extra_ = (ff_core_List.List_size(newTypeArguments_) - ff_core_List.List_size(typeArguments_));
-ff_compiler_Inference.fail_(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (ff_core_List.List_size(scheme_.signature_.generics_) - extra_)) + ", got ") + (ff_core_List.List_size(newTypeArguments_) - extra_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (ff_core_List.List_size(scheme_.signature_.generics_) - extra_)) + ", got ") + (ff_core_List.List_size(newTypeArguments_) - extra_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_List.List_zip(scheme_.signature_.generics_, newTypeArguments_)
 })()
@@ -2161,10 +2156,10 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 if(_1.variable_.None) {
 const instantiated_ = ff_core_Option.Option_else((await ff_compiler_Inference.Inference_lookup$(self_, environment_, at_, name_, ff_core_List.Empty(), $c)), (() => {
-return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 if(instantiated_.scheme_.isNewtype_) {
-ff_compiler_Inference.fail_(at_, "This kind of pattern is not allowed for newtypes")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_Map.empty_()
 return
@@ -2178,10 +2173,10 @@ const name_ = _1.name_;
 if(_1.variable_.Some) {
 const variable_ = _1.variable_.value_;
 const instantiated_ = ff_core_Option.Option_else((await ff_compiler_Inference.Inference_lookup$(self_, environment_, at_, name_, ff_core_List.Empty(), $c)), (() => {
-return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 if(instantiated_.scheme_.isNewtype_) {
-ff_compiler_Inference.fail_(at_, "This kind of pattern is not allowed for newtypes")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 (await ff_compiler_Unification.Unification_unify$(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_, $c));
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
@@ -2203,11 +2198,11 @@ const at_ = _1.at_;
 const name_ = _1.name_;
 const patterns_ = _1.patterns_;
 const instantiated_ = ff_core_Option.Option_else((await ff_compiler_Inference.Inference_lookup$(self_, environment_, at_, name_, ff_core_List.Empty(), $c)), (() => {
-return ff_compiler_Inference.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 (await ff_compiler_Unification.Unification_unify$(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_, $c));
 if((ff_core_List.List_size(patterns_) !== ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_))) {
-ff_compiler_Inference.fail_(at_, (((("Wrong number of subpatterns, expected " + ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) + ", got ") + ff_core_List.List_size(patterns_)) + "."))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (((("Wrong number of subpatterns, expected " + ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) + ", got ") + ff_core_List.List_size(patterns_)) + ".")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_List.List_foldLeft((await ff_core_List.List_map$(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), (async (_1, $c) => {
 {
@@ -2267,7 +2262,7 @@ return term_
 return (await ff_compiler_Inference.Inference_inferEtaExpansion$(self_, environment_, expected_, e_.at_, instantiated_.scheme_.signature_, term_, $c))
 }
 }), $c)), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
 return
 }
@@ -2303,7 +2298,7 @@ return
 }
 }
 }), $c)), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
 return
 }
@@ -2348,7 +2343,7 @@ return
 }
 {
 if(_1.None) {
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2359,7 +2354,7 @@ return
 {
 if(_1.TVariable) {
 const index_ = _1.index_;
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2489,7 +2484,7 @@ return
 if(_1.EVariant) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else((await ff_compiler_Inference.Inference_lookup$(self_, environment_, e_.at_, e_.name_, e_.typeArguments_, $c)), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 (await ff_compiler_Unification.Unification_unify$(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_, $c));
 const arguments_ = (await ff_core_Option.Option_map$(e_.arguments_, (async (_w1, $c) => {
@@ -2512,7 +2507,7 @@ return
 if(_1.EVariantIs) {
 const e_ = _1;
 const instantiated_ = ff_core_Option.Option_else((await ff_compiler_Inference.Inference_lookup$(self_, environment_, e_.at_, e_.name_, e_.typeArguments_, $c)), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const parameters_ = ff_core_List.List_sortBy(instantiated_.scheme_.signature_.parameters_, ((_w1) => {
 return _w1.name_
@@ -2541,10 +2536,10 @@ return
 if(_1.ECopy) {
 const e_ = _1;
 const scheme_ = ff_core_Option.Option_else((await ff_compiler_Inference.Inference_lookup$(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty(), $c)), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })).scheme_;
 if(scheme_.isNewtype_) {
-ff_compiler_Inference.fail_(e_.at_, "Newtypes can't be copied")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Newtypes can't be copied"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const signature_ = scheme_.signature_;
 const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
@@ -2559,7 +2554,7 @@ return (_w1 === a_.name_)
 const at_ = _1.at_;
 const name_ = _1.name_;
 const value_ = _1.value_;
-ff_compiler_Inference.fail_(at_, ("Unknown parameter: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("Unknown parameter: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }));
@@ -2648,7 +2643,7 @@ return
 }
 {
 if(_1.None) {
-return ff_compiler_Inference.fail_(variableAt_, ("No such function: " + x_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(variableAt_, ("No such function: " + x_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2697,7 +2692,7 @@ return
 }
 {
 if(_1.None) {
-return ff_compiler_Inference.fail_(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2708,7 +2703,7 @@ return
 {
 if(_1.TVariable) {
 const index_ = _1.index_;
-return ff_compiler_Inference.fail_(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, ((("No such field " + f_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2798,10 +2793,10 @@ return
 }
 }
 } else {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol is not mutable: " + e_.variable_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }), $c)), (() => {
-return ff_compiler_Inference.fail_(e_.at_, ("Symbol not in scope: " + e_.variable_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }))
 return
 }
@@ -2820,7 +2815,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
-return ff_compiler_Inference.fail_(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Can't assign fields of anonymous records: " + e_.field_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2854,13 +2849,13 @@ return
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-return ff_compiler_Inference.fail_(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("Can't assign an immutable field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
 {
 if(_1.None) {
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on type: ") + ff_compiler_Syntax.Type_show(t_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2871,7 +2866,7 @@ return
 {
 if(_1.TVariable) {
 const index_ = _1.index_;
-return ff_compiler_Inference.fail_(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ((("No such field " + e_.field_) + " on unknown type: $") + index_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2887,7 +2882,7 @@ const t_ = signature_.returnType_;
 if(((operator_ === "+") || (operator_ === "-"))) {
 (await ff_compiler_Unification.Unification_unify$(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_List.Empty()), $c))
 } else if((operator_ !== "")) {
-ff_compiler_Inference.fail_(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "="))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (("Only +=, -= and = assignments are supported. Got: " + operator_) + "=")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {};
 const newValue_ = (await ff_compiler_Inference.Inference_inferTerm$(self_, environment_, t_, value_, $c));
 (await ff_compiler_Unification.Unification_unify$(self_.unification_, at_, expected_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Unit"), ff_core_List.Empty()), $c));
@@ -3012,7 +3007,7 @@ return
 }
 {
 if(_1.DynamicCall) {
-return ff_compiler_Inference.fail_(e_.at_, "Tailcalls not supported on lambda functions")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Tailcalls not supported on lambda functions"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -3034,7 +3029,7 @@ const arguments_ = (await ff_core_List.List_map$(ff_core_List.List_zip(e_.argume
 const argument_ = _1.first_;
 const t_ = _1.second_;
 ff_core_Option.Option_each(argument_.name_, ((name_) => {
-ff_compiler_Inference.fail_(argument_.at_, ("Named argument not allowed here: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(argument_.at_, ("Named argument not allowed here: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 {
 const _1 = argument_;
@@ -3048,7 +3043,7 @@ return
 }
 }), $c));
 ff_core_Option.Option_each(ff_core_List.List_first(e_.typeArguments_), ((typeArgument_) => {
-ff_compiler_Inference.fail_(typeArgument_.at_, "Type arguments not allowed here")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(typeArgument_.at_, "Type arguments not allowed here"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 (await ff_compiler_Unification.Unification_affect$(self_.unification_, term_.at_, effect_, environment_.effect_, $c));
 {
@@ -3139,7 +3134,7 @@ break
 }
 }
 {
-ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 } while(false);
@@ -3357,7 +3352,7 @@ return
 {
 if(_1.Some) {
 if(_2.Some) {
-ff_compiler_Inference.fail_(e_.at_, "Operators on these types not currently supported")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on these types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -3365,7 +3360,7 @@ return
 {
 if(_1.None) {
 if(_2.None) {
-ff_compiler_Inference.fail_(e_.at_, "Operators on unknown types not currently supported")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Operators on unknown types not currently supported"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -3501,7 +3496,7 @@ return (_w1 === "Q$")
 : typeArguments_);
 if((ff_core_List.List_size(scheme_.signature_.generics_) !== ff_core_List.List_size(newTypeArguments_))) {
 const extra_ = (ff_core_List.List_size(newTypeArguments_) - ff_core_List.List_size(typeArguments_));
-ff_compiler_Inference.fail_(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (ff_core_List.List_size(scheme_.signature_.generics_) - extra_)) + ", got ") + (ff_core_List.List_size(newTypeArguments_) - extra_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (ff_core_List.List_size(scheme_.signature_.generics_) - extra_)) + ", got ") + (ff_core_List.List_size(newTypeArguments_) - extra_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_List.List_zip(scheme_.signature_.generics_, newTypeArguments_)
 })())
@@ -3536,199 +3531,6 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 }), $c))
 }
 
-export const ff_core_Any_HasAnyTag$ff_compiler_Inference_TypeException = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Inference.TypeException" + "[") + "]"))
-},
-async anyTag_$($c) {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Inference.TypeException" + "[") + "]"))
-}
-};
 
-export const ff_core_Show_Show$ff_compiler_Inference_TypeException = {
-show_(x_) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((((("TypeException" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.message_)) + ")")
-return
-}
-}
-},
-async show_$(x_, $c) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((((("TypeException" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location.show_(z_.at_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.message_)) + ")")
-return
-}
-}
-}
-};
-
-export const ff_core_Equal_Equal$ff_compiler_Inference_TypeException = {
-equals_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (x_.message_ === y_.message_))
-return
-}
-}
-},
-async equals_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(x_.at_, y_.at_) && (x_.message_ === y_.message_))
-return
-}
-}
-}
-};
-
-export const ff_core_Ordering_Order$ff_compiler_Inference_TypeException = {
-compare_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const atOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location.compare_(x_.at_, y_.at_);
-if((atOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return atOrdering_
-} else {
-const messageOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.message_, y_.message_);
-if((messageOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return messageOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-return
-}
-}
-},
-async compare_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const atOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location.compare_(x_.at_, y_.at_);
-if((atOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return atOrdering_
-} else {
-const messageOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.message_, y_.message_);
-if((messageOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return messageOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-return
-}
-}
-}
-};
-
-export const ff_core_Serializable_Serializable$ff_compiler_Inference_TypeException = {
-serializeUsing_(serialization_, x_) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, value_.at_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.message_)
-return
-}
-}
-},
-deserializeUsing_(serialization_) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
-return ff_compiler_Inference.TypeException(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-},
-async serializeUsing_$(serialization_, x_, $c) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.serializeUsing_(serialization_, value_.at_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.message_)
-return
-}
-}
-},
-async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
-return ff_compiler_Inference.TypeException(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-}
-};
 
 

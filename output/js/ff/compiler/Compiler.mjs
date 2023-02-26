@@ -178,7 +178,7 @@ const newModuleName_ = (ff_core_List.List_join(ff_core_List.List_map(import_.dir
 return (_w1 + "/")
 })), "") + import_.file_);
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
-ff_compiler_Compiler.fail_(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":")))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_compiler_Compiler.Compiler_parse(self_, newPackagePair_, newModuleName_)
 }))
@@ -302,7 +302,7 @@ const newModuleName_ = (ff_core_List.List_join(ff_core_List.List_map(import_.dir
 return (_w1 + "/")
 })), "") + import_.file_);
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
-ff_compiler_Compiler.fail_(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":")))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackagePair_, newModuleName_, $c))
 }), $c))

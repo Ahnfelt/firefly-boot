@@ -162,7 +162,7 @@ return
 }
 {
 if(_1.None) {
-ff_compiler_Resolver.fail_(import_.at_, ("No such module: " + import_.file_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -250,7 +250,7 @@ ff_core_List.List_each(ff_core_List.List_addAll(definition_.commonFields_, ff_co
 return _w1.fields_
 }))), ((f_) => {
 if(ff_compiler_Resolver.Resolver_containsAsyncType(self2_, f_.valueType_)) {
-ff_compiler_Resolver.fail_(f_.at_, "Only classes can contain fields of concrete class types")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, "Only classes can contain fields of concrete class types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }))
 };
@@ -350,7 +350,7 @@ const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_);
 const traitName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self2_.traits_, definition_.traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(definition_.at_, ("No such trait: " + definition_.traitName_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + definition_.traitName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 {
 const _1 = definition_;
@@ -451,7 +451,7 @@ return
 if(ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
 }))) {
-return ff_compiler_Resolver.fail_(e_.at_, ("No such variable: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("No such variable: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {
 return term_
 }
@@ -482,7 +482,7 @@ const name_ = term_a.name_;
 const typeArguments_ = term_a.typeArguments_;
 const arguments_ = term_a.arguments_;
 return ff_compiler_Syntax.EVariant(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 })), ff_core_Option.Option_map(arguments_, ((_w1) => {
@@ -506,7 +506,7 @@ const at_ = term_a.at_;
 const name_ = term_a.name_;
 const typeArguments_ = term_a.typeArguments_;
 return ff_compiler_Syntax.EVariantIs(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 })))
@@ -520,7 +520,7 @@ const name_ = term_a.name_;
 const record_ = term_a.record_;
 const arguments_ = term_a.arguments_;
 return ff_compiler_Syntax.ECopy(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, record_, topLevel_), ff_core_List.List_map(arguments_, ((f_) => {
 {
 const _1 = f_;
@@ -601,7 +601,7 @@ return
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
-return ff_compiler_Resolver.fail_(at_, "Internal error: Static calls not expected in the Resolver phase")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -627,7 +627,7 @@ return
 if(term_a.EWildcard) {
 const e_ = term_a;
 if((e_.index_ === 0)) {
-ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Unbound wildcard"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 {
 const _1 = e_;
@@ -692,7 +692,7 @@ const operator_ = term_a.operator_;
 const variable_ = term_a.variable_;
 const value_ = term_a.value_;
 return ff_compiler_Syntax.EAssign(at_, operator_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variables_, variable_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variable: " + variable_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variable: " + variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_))
 return
 }
@@ -728,7 +728,7 @@ const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(constructor_.at_, ("No such type: " + constructor_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })));
 const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0);
 const effect_ = ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
@@ -778,7 +778,7 @@ return ff_compiler_Resolver.Resolver_freshUnificationVariable(self_, at_)
 
 export function Resolver_resolveConstraint(self_, constraint_, topLevel_) {
 const name_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traits_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(constraint_.at_, ("No such trait: " + constraint_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constraint_.at_, ("No such trait: " + constraint_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 {
 const _1 = constraint_;
@@ -821,7 +821,7 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constrain
 ff_core_Option.Option_each(ff_core_List.List_find(newSignature_.generics_, ((name_) => {
 return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ((name_) => {
-ff_compiler_Resolver.fail_(signature_.at_, (("Type parameter " + name_) + " is already in scope"))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, (("Type parameter " + name_) + " is already in scope")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const self2_ = ff_compiler_Resolver.Resolver_withSignature(self_, newSignature_);
 {
@@ -993,7 +993,7 @@ const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
 const patterns_ = pattern_a.patterns_;
 const newName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const newPatterns_ = ff_core_List.List_map(patterns_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
@@ -1008,7 +1008,7 @@ const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
 const variable_ = pattern_a.variable_;
 const newName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 return ff_compiler_Syntax.PVariantAs(at_, newName_, variable_)
 return
@@ -1043,7 +1043,7 @@ const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(constructor_.at_, ("No such type: " + constructor_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })));
 const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0);
 return ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) || ff_core_List.List_any(constructor_.generics_, ((_w1) => {
@@ -1107,7 +1107,7 @@ return
 }
 {
 if(_1.None) {
-ff_compiler_Resolver.fail_(import_.at_, ("No such module: " + import_.file_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("No such module: " + import_.file_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1195,7 +1195,7 @@ return (_w1 === "Q$")
 return _w1.fields_
 }))), (async (f_, $c) => {
 if((await ff_compiler_Resolver.Resolver_containsAsyncType$(self2_, f_.valueType_, $c))) {
-ff_compiler_Resolver.fail_(f_.at_, "Only classes can contain fields of concrete class types")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(f_.at_, "Only classes can contain fields of concrete class types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }), $c))
 };
@@ -1295,7 +1295,7 @@ const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.state_)
 }))(self_);
 const traitName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self2_.traits_, definition_.traitName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(definition_.at_, ("No such trait: " + definition_.traitName_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(definition_.at_, ("No such trait: " + definition_.traitName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 {
 const _1 = definition_;
@@ -1396,7 +1396,7 @@ return
 if(ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
 return ff_core_Char.Char_isAsciiLetter(_w1)
 }))) {
-return ff_compiler_Resolver.fail_(e_.at_, ("No such variable: " + e_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("No such variable: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {
 return term_
 }
@@ -1427,7 +1427,7 @@ const name_ = term_a.name_;
 const typeArguments_ = term_a.typeArguments_;
 const arguments_ = term_a.arguments_;
 return ff_compiler_Syntax.EVariant(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), (await ff_core_List.List_map$(typeArguments_, (async (_w1, $c) => {
 return (await ff_compiler_Resolver.Resolver_resolveType$(self_, _w1, topLevel_, $c))
 }), $c)), (await ff_core_Option.Option_map$(arguments_, (async (_w1, $c) => {
@@ -1451,7 +1451,7 @@ const at_ = term_a.at_;
 const name_ = term_a.name_;
 const typeArguments_ = term_a.typeArguments_;
 return ff_compiler_Syntax.EVariantIs(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), (await ff_core_List.List_map$(typeArguments_, (async (_w1, $c) => {
 return (await ff_compiler_Resolver.Resolver_resolveType$(self_, _w1, topLevel_, $c))
 }), $c)))
@@ -1465,7 +1465,7 @@ const name_ = term_a.name_;
 const record_ = term_a.record_;
 const arguments_ = term_a.arguments_;
 return ff_compiler_Syntax.ECopy(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), (await ff_compiler_Resolver.Resolver_resolveTerm$(self_, record_, topLevel_, $c)), (await ff_core_List.List_map$(arguments_, (async (f_, $c) => {
 {
 const _1 = f_;
@@ -1546,7 +1546,7 @@ return
 if(term_a.ECall) {
 const at_ = term_a.at_;
 if(term_a.target_.StaticCall) {
-return ff_compiler_Resolver.fail_(at_, "Internal error: Static calls not expected in the Resolver phase")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Internal error: Static calls not expected in the Resolver phase"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1572,7 +1572,7 @@ return
 if(term_a.EWildcard) {
 const e_ = term_a;
 if((e_.index_ === 0)) {
-ff_compiler_Resolver.fail_(e_.at_, "Unbound wildcard")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Unbound wildcard"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 {
 const _1 = e_;
@@ -1637,7 +1637,7 @@ const operator_ = term_a.operator_;
 const variable_ = term_a.variable_;
 const value_ = term_a.value_;
 return ff_compiler_Syntax.EAssign(at_, operator_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variables_, variable_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variable: " + variable_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variable: " + variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), (await ff_compiler_Resolver.Resolver_resolveTerm$(self_, value_, topLevel_, $c)))
 return
 }
@@ -1673,7 +1673,7 @@ const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(constructor_.at_, ("No such type: " + constructor_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })));
 const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0);
 const effect_ = ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
@@ -1723,7 +1723,7 @@ return (await ff_compiler_Resolver.Resolver_freshUnificationVariable$(self_, at_
 
 export async function Resolver_resolveConstraint$(self_, constraint_, topLevel_, $c) {
 const name_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.traits_, constraint_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(constraint_.at_, ("No such trait: " + constraint_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constraint_.at_, ("No such trait: " + constraint_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 {
 const _1 = constraint_;
@@ -1766,7 +1766,7 @@ return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, _c.constrain
 ff_core_Option.Option_each(ff_core_List.List_find(newSignature_.generics_, ((name_) => {
 return ff_core_Set.Set_contains(self_.typeParameters_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ((name_) => {
-ff_compiler_Resolver.fail_(signature_.at_, (("Type parameter " + name_) + " is already in scope"))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(signature_.at_, (("Type parameter " + name_) + " is already in scope")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const self2_ = (await ff_compiler_Resolver.Resolver_withSignature$(self_, newSignature_, $c));
 {
@@ -1938,7 +1938,7 @@ const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
 const patterns_ = pattern_a.patterns_;
 const newName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const newPatterns_ = (await ff_core_List.List_map$(patterns_, (async (_w1, $c) => {
 return (await ff_compiler_Resolver.Resolver_resolvePattern$(self_, _w1, $c))
@@ -1953,7 +1953,7 @@ const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
 const variable_ = pattern_a.variable_;
 const newName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(at_, ("No such variant: " + name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 return ff_compiler_Syntax.PVariantAs(at_, newName_, variable_)
 return
@@ -1988,7 +1988,7 @@ const constructor_ = type_a;
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_compiler_Resolver.fail_(constructor_.at_, ("No such type: " + constructor_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })));
 const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0);
 return ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) || (await ff_core_List.List_any$(constructor_.generics_, (async (_w1, $c) => {

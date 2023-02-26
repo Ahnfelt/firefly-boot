@@ -139,23 +139,23 @@ const name_ = ff_core_String.String_takeWhile(rest2_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
 }));
 if((ff_core_String.String_size(name_) === 0)) {
-ff_compiler_JsImporter.fail_(at_, "Expected alias after \"import * as \"")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected alias after \"import * as \""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const rest3_ = ff_core_String.String_dropFirst(rest2_, ff_core_String.String_size(name_));
 if((!ff_core_String.String_startsWith(rest3_, " from '", 0))) {
-ff_compiler_JsImporter.fail_(at_, "Expected \" from '\" after \"import * as ...\"")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected \" from '\" after \"import * as ...\""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const rest4_ = ff_core_String.String_dropFirst(rest3_, ff_core_String.String_size(" from '"));
 const url_ = ff_core_String.String_takeWhile(rest4_, ((_w1) => {
 return (_w1 !== 39)
 }));
 if((ff_core_String.String_size(url_) === 0)) {
-ff_compiler_JsImporter.fail_(at_, "Expected module name after \" from '\"")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected module name after \" from '\""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if(ff_core_String.String_any(url_, ((_w1) => {
 return (_w1 === 10)
 }))) {
-ff_compiler_JsImporter.fail_(at_, "Unclosed module name string")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unclosed module name string"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const rest5_ = ff_core_String.String_dropFirst(rest4_, (ff_core_String.String_size(url_) + 1));
 const importName_ = ff_compiler_JsImporter.JsImporter_add(self_, url_);
@@ -212,23 +212,23 @@ const name_ = ff_core_String.String_takeWhile(rest2_, ((_w1) => {
 return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
 }));
 if((ff_core_String.String_size(name_) === 0)) {
-ff_compiler_JsImporter.fail_(at_, "Expected alias after \"import * as \"")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected alias after \"import * as \""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const rest3_ = ff_core_String.String_dropFirst(rest2_, ff_core_String.String_size(name_));
 if((!ff_core_String.String_startsWith(rest3_, " from '", 0))) {
-ff_compiler_JsImporter.fail_(at_, "Expected \" from '\" after \"import * as ...\"")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected \" from '\" after \"import * as ...\""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const rest4_ = ff_core_String.String_dropFirst(rest3_, ff_core_String.String_size(" from '"));
 const url_ = ff_core_String.String_takeWhile(rest4_, ((_w1) => {
 return (_w1 !== 39)
 }));
 if((ff_core_String.String_size(url_) === 0)) {
-ff_compiler_JsImporter.fail_(at_, "Expected module name after \" from '\"")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Expected module name after \" from '\""), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if(ff_core_String.String_any(url_, ((_w1) => {
 return (_w1 === 10)
 }))) {
-ff_compiler_JsImporter.fail_(at_, "Unclosed module name string")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unclosed module name string"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const rest5_ = ff_core_String.String_dropFirst(rest4_, (ff_core_String.String_size(url_) + 1));
 const importName_ = (await ff_compiler_JsImporter.JsImporter_add$(self_, url_, $c));

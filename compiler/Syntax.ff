@@ -1,5 +1,4 @@
 data Location(file: String, line: Int, column: Int)
-data CompileError(at: Location, message: String)
 
 extend self: Location {
     show(): String {
@@ -8,6 +7,8 @@ extend self: Location {
         ", column " + self.column
     }
 }
+
+data CompileError(at: Location, message: String)
 
 data ModuleWithPackageInfo(
     packageInfo: Option[PackageInfo]

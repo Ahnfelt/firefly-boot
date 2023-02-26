@@ -284,7 +284,7 @@ return self_.end_
 export function Parser_skip(self_, kind_) {
 const c_ = ff_compiler_Parser.Parser_current(self_);
 if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind)) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.offset_ += 1;
 return c_
@@ -293,10 +293,10 @@ return c_
 export function Parser_rawSkip(self_, kind_, value_) {
 const c_ = ff_compiler_Parser.Parser_current(self_);
 if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind)) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if((!ff_compiler_Token.Token_rawIs(c_, value_))) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_)))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.offset_ += 1;
 return c_
@@ -323,7 +323,7 @@ return ff_compiler_Parser.Parser_skip(self_, kind_)
 export function Parser_parseModuleWithoutPackageInfo(self_) {
 const moduleWithPackageInfo_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(self_);
 ff_core_Option.Option_each(moduleWithPackageInfo_.packageInfo_, ((info_) => {
-ff_compiler_Parser.Parser_fail(self_, info_.package_.at_, "Package and dependencies already declared in package.ff")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(info_.package_.at_, "Package and dependencies already declared in package.ff"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 return moduleWithPackageInfo_.module_
 }
@@ -348,7 +348,7 @@ return p_
 })()
 : ff_compiler_Syntax.DPackage(location_, self_.packagePair_, ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(self_.targetIsNode_, (!self_.targetIsNode_))));
 if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Duplicate package definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const dependencies_ = ff_core_Stack.make_();
 while((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
@@ -391,11 +391,11 @@ ff_core_Stack.Stack_push(types_, ff_compiler_Parser.Parser_parseTypeDefinition(s
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "import"))) {
 ff_core_Stack.Stack_push(imports_, ff_compiler_Parser.Parser_parseImportDefinition(self_, self_.packagePair_))
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "include"))) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Includes must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "dependency"))) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Dependencies must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "package"))) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Package definition must be at the top of the file")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Package definition must be at the top of the file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LEnd())
 };
@@ -450,7 +450,7 @@ const _1 = target_;
 {
 if(_1 == "js") {
 if(ff_core_Equal.notEquals_(targets_.jsSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(ff_core_Option.Some(lambda_), _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -461,7 +461,7 @@ break
 {
 if(_1 == "browser") {
 if(ff_core_Equal.notEquals_(targets_.browserSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, ff_core_Option.Some(lambda_), _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -472,7 +472,7 @@ break
 {
 if(_1 == "node") {
 if(ff_core_Equal.notEquals_(targets_.nodeAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, ff_core_Option.Some(lambda_), _c.nodeSync_, _c.nodeAsync_)
@@ -481,7 +481,7 @@ break
 }
 }
 {
-ff_compiler_Parser.Parser_fail(self_, at_, "Unknown target")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unknown target"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 } while(false)
@@ -494,7 +494,7 @@ const _1 = ff_core_Pair.Pair(target_, mode_);
 if(_1.first_ == "js") {
 if(_1.second_ == "sync") {
 if(ff_core_Equal.notEquals_(targets_.jsSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, ff_core_Option.Some(code_), _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -507,7 +507,7 @@ break
 if(_1.first_ == "js") {
 if(_1.second_ == "async") {
 if(ff_core_Equal.notEquals_(targets_.jsAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, ff_core_Option.Some(code_), _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -520,7 +520,7 @@ break
 if(_1.first_ == "browser") {
 if(_1.second_ == "sync") {
 if(ff_core_Equal.notEquals_(targets_.browserSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, ff_core_Option.Some(code_), _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -533,7 +533,7 @@ break
 if(_1.first_ == "browser") {
 if(_1.second_ == "async") {
 if(ff_core_Equal.notEquals_(targets_.browserAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, ff_core_Option.Some(code_), _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -546,7 +546,7 @@ break
 if(_1.first_ == "node") {
 if(_1.second_ == "sync") {
 if(ff_core_Equal.notEquals_(targets_.nodeSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, ff_core_Option.Some(code_), _c.nodeAsync_)
@@ -559,7 +559,7 @@ break
 if(_1.first_ == "node") {
 if(_1.second_ == "async") {
 if(ff_core_Equal.notEquals_(targets_.nodeAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-ff_compiler_Parser.Parser_fail(self_, at_, "Duplicate target definition")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, ff_core_Option.Some(code_))
@@ -569,7 +569,7 @@ break
 }
 }
 {
-ff_compiler_Parser.Parser_fail(self_, at_, "Unknown target or mode")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unknown target or mode"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 } while(false)
@@ -739,9 +739,9 @@ const variantFields_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parse
 if(((!allowMutable_) && ff_core_List.List_any(variantFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
-ff_compiler_Parser.Parser_fail(self_, ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
 return _w1.mutable_
-}))).at_, "Only classes can have mutable fields")
+}))).at_, "Only classes can have mutable fields"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_Stack.Stack_push(variantsBuilder_, ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(variantNameToken_), ff_compiler_Token.Token_raw(variantNameToken_), variantFields_));
 if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
@@ -753,14 +753,14 @@ return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 })());
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 ff_core_Log.show_(commonFields_, ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter));
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if(((!allowMutable_) && ff_core_List.List_any(commonFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
-ff_compiler_Parser.Parser_fail(self_, ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
 return _w1.mutable_
-}))).at_, "Only classes can have mutable fields")
+}))).at_, "Only classes can have mutable fields"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_);
 return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_)
@@ -837,7 +837,7 @@ const _1 = ff_compiler_Token.Token_raw(token_);
 if(_1 == "node") {
 const _guard1 = targets_.node_;
 if(_guard1) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), "Duplicate target name")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 }
@@ -854,7 +854,7 @@ break
 if(_1 == "browser") {
 const _guard1 = targets_.browser_;
 if(_guard1) {
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), "Duplicate target name")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 }
@@ -869,7 +869,7 @@ break
 }
 {
 const t_ = _1;
-ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 } while(false)
@@ -920,14 +920,14 @@ part_ = ((part_ + "-") + readPart_())
 if(ff_core_String.String_any(part_, ((_w1) => {
 return ff_core_Char.Char_isAsciiUpper(_w1)
 }))) {
-ff_compiler_Parser.Parser_fail(self_, at_, ("Package names and paths must not contain upper case letters: " + part_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain upper case letters: " + part_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if((ff_core_String.String_any(part_, ((_w1) => {
 return (_w1 === 95)
 })) || ff_core_String.String_any(part_, ((_w1) => {
 return (_w1 === 46)
 })))) {
-ff_compiler_Parser.Parser_fail(self_, at_, ("Package names and paths must not contain underscores or dots: " + part_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain underscores or dots: " + part_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return part_
 }
@@ -1289,7 +1289,7 @@ return
 }
 }
 {
-return ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1500,7 +1500,7 @@ return result_
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard());
 return ff_compiler_Syntax.EWildcard(ff_compiler_Token.Token_at(token_), 0)
 } else {
-return ff_compiler_Parser.Parser_fail(self_, ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), ("Expected atom, got " + ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_current(self_))))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), ("Expected atom, got " + ff_compiler_Token.Token_raw(ff_compiler_Parser.Parser_current(self_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 
@@ -1620,7 +1620,7 @@ return
 if(items_a.Link) {
 const p_ = items_a.head_.first_;
 if(items_a.head_.second_) {
-return ff_compiler_Parser.Parser_fail(self_, p_.at_, "Invalid pattern: ... is only allowed for the last element in a list")
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -1694,7 +1694,7 @@ return self_.end_
 export async function Parser_skip$(self_, kind_, $c) {
 const c_ = (await ff_compiler_Parser.Parser_current$(self_, $c));
 if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind)) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_)), $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.offset_ += 1;
 return c_
@@ -1703,10 +1703,10 @@ return c_
 export async function Parser_rawSkip$(self_, kind_, value_, $c) {
 const c_ = (await ff_compiler_Parser.Parser_current$(self_, $c));
 if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind)) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_)), $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if((!ff_compiler_Token.Token_rawIs(c_, value_))) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_)), $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.offset_ += 1;
 return c_
@@ -1732,9 +1732,9 @@ return (await ff_compiler_Parser.Parser_skip$(self_, kind_, $c))
 
 export async function Parser_parseModuleWithoutPackageInfo$(self_, $c) {
 const moduleWithPackageInfo_ = (await ff_compiler_Parser.Parser_parseModuleWithPackageInfo$(self_, $c));
-(await ff_core_Option.Option_each$(moduleWithPackageInfo_.packageInfo_, (async (info_, $c) => {
-(await ff_compiler_Parser.Parser_fail$(self_, info_.package_.at_, "Package and dependencies already declared in package.ff", $c))
-}), $c));
+ff_core_Option.Option_each(moduleWithPackageInfo_.packageInfo_, ((info_) => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(info_.package_.at_, "Package and dependencies already declared in package.ff"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}));
 return moduleWithPackageInfo_.module_
 }
 
@@ -1758,7 +1758,7 @@ return p_
 })())
 : ff_compiler_Syntax.DPackage(location_, self_.packagePair_, ff_compiler_Syntax.Version(location_, 0, 0, 0), ff_compiler_Syntax.TargetNames(self_.targetIsNode_, (!self_.targetIsNode_))));
 if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "package"))) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), "Duplicate package definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), "Duplicate package definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const dependencies_ = ff_core_Stack.make_();
 while((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "dependency"))) {
@@ -1801,11 +1801,11 @@ ff_core_Stack.Stack_push(types_, (await ff_compiler_Parser.Parser_parseTypeDefin
 } else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "import"))) {
 ff_core_Stack.Stack_push(imports_, (await ff_compiler_Parser.Parser_parseImportDefinition$(self_, self_.packagePair_, $c)))
 } else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "include"))) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), "Includes must be at the top of the file or below 'package'", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), "Includes must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "dependency"))) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), "Dependencies must be at the top of the file or below 'package'", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), "Dependencies must be at the top of the file or below 'package'"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else if((ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LKeyword()) && ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(self_, $c)), "package"))) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), "Package definition must be at the top of the file", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), "Package definition must be at the top of the file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 } else {
 (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LEnd(), $c))
 };
@@ -1860,7 +1860,7 @@ const _1 = target_;
 {
 if(_1 == "js") {
 if(ff_core_Equal.notEquals_(targets_.jsSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(ff_core_Option.Some(lambda_), _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -1871,7 +1871,7 @@ break
 {
 if(_1 == "browser") {
 if(ff_core_Equal.notEquals_(targets_.browserSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, ff_core_Option.Some(lambda_), _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -1882,7 +1882,7 @@ break
 {
 if(_1 == "node") {
 if(ff_core_Equal.notEquals_(targets_.nodeAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, ff_core_Option.Some(lambda_), _c.nodeSync_, _c.nodeAsync_)
@@ -1891,7 +1891,7 @@ break
 }
 }
 {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Unknown target", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unknown target"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 } while(false)
@@ -1904,7 +1904,7 @@ const _1 = ff_core_Pair.Pair(target_, mode_);
 if(_1.first_ == "js") {
 if(_1.second_ == "sync") {
 if(ff_core_Equal.notEquals_(targets_.jsSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, ff_core_Option.Some(code_), _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -1917,7 +1917,7 @@ break
 if(_1.first_ == "js") {
 if(_1.second_ == "async") {
 if(ff_core_Equal.notEquals_(targets_.jsAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, ff_core_Option.Some(code_), _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -1930,7 +1930,7 @@ break
 if(_1.first_ == "browser") {
 if(_1.second_ == "sync") {
 if(ff_core_Equal.notEquals_(targets_.browserSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, ff_core_Option.Some(code_), _c.browserAsync_, _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -1943,7 +1943,7 @@ break
 if(_1.first_ == "browser") {
 if(_1.second_ == "async") {
 if(ff_core_Equal.notEquals_(targets_.browserAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, ff_core_Option.Some(code_), _c.node_, _c.nodeSync_, _c.nodeAsync_)
@@ -1956,7 +1956,7 @@ break
 if(_1.first_ == "node") {
 if(_1.second_ == "sync") {
 if(ff_core_Equal.notEquals_(targets_.nodeSync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, ff_core_Option.Some(code_), _c.nodeAsync_)
@@ -1969,7 +1969,7 @@ break
 if(_1.first_ == "node") {
 if(_1.second_ == "async") {
 if(ff_core_Equal.notEquals_(targets_.nodeAsync_, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Duplicate target definition", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Duplicate target definition"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 targets_ = (((_c) => {
 return ff_compiler_Parser.ParsedTargets(_c.js_, _c.jsSync_, _c.jsAsync_, _c.browser_, _c.browserSync_, _c.browserAsync_, _c.node_, _c.nodeSync_, ff_core_Option.Some(code_))
@@ -1979,7 +1979,7 @@ break
 }
 }
 {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, "Unknown target or mode", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "Unknown target or mode"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 } while(false)
@@ -2149,9 +2149,9 @@ const variantFields_ = ((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parse
 if(((!allowMutable_) && ff_core_List.List_any(variantFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(variantFields_, ((_w1) => {
 return _w1.mutable_
-}))).at_, "Only classes can have mutable fields", $c))
+}))).at_, "Only classes can have mutable fields"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_Stack.Stack_push(variantsBuilder_, ff_compiler_Syntax.Variant(ff_compiler_Token.Token_at(variantNameToken_), ff_compiler_Token.Token_raw(variantNameToken_), variantFields_));
 if((!ff_compiler_Token.Token_is((await ff_compiler_Parser.Parser_current$(self_, $c)), ff_compiler_Token.LBracketRight()))) {
@@ -2163,14 +2163,14 @@ return ff_core_Stack.Stack_toList(variantsBuilder_, 0, 9007199254740991)
 })()));
 if((newtype_ && (ff_core_List.List_size(commonFields_) !== 1))) {
 ff_core_Log.show_(commonFields_, ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Parameter));
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(nameToken_), "Newtypes must have exactly one field"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if(((!allowMutable_) && ff_core_List.List_any(commonFields_, ((_w1) => {
 return _w1.mutable_
 })))) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_core_Option.Option_grab(ff_core_List.List_find(commonFields_, ((_w1) => {
 return _w1.mutable_
-}))).at_, "Only classes can have mutable fields", $c))
+}))).at_, "Only classes can have mutable fields"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const generics_ = ff_core_List.List_addAll(effectParameter_, poly_.generics_);
 return ff_compiler_Syntax.DType(ff_compiler_Token.Token_at(nameToken_), newtype_, ff_compiler_Token.Token_raw(nameToken_), generics_, poly_.constraints_, commonFields_, variants_)
@@ -2247,7 +2247,7 @@ const _1 = ff_compiler_Token.Token_raw(token_);
 if(_1 == "node") {
 const _guard1 = targets_.node_;
 if(_guard1) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(token_), "Duplicate target name", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 }
@@ -2264,7 +2264,7 @@ break
 if(_1 == "browser") {
 const _guard1 = targets_.browser_;
 if(_guard1) {
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(token_), "Duplicate target name", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Duplicate target name"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 }
@@ -2279,7 +2279,7 @@ break
 }
 {
 const t_ = _1;
-(await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_), $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), ("Unexpected target: " + t_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 break
 }
 } while(false)
@@ -2330,14 +2330,14 @@ part_ = ((part_ + "-") + (await readPart_$($c)))
 if(ff_core_String.String_any(part_, ((_w1) => {
 return ff_core_Char.Char_isAsciiUpper(_w1)
 }))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, ("Package names and paths must not contain upper case letters: " + part_), $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain upper case letters: " + part_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 if((ff_core_String.String_any(part_, ((_w1) => {
 return (_w1 === 95)
 })) || ff_core_String.String_any(part_, ((_w1) => {
 return (_w1 === 46)
 })))) {
-(await ff_compiler_Parser.Parser_fail$(self_, at_, ("Package names and paths must not contain underscores or dots: " + part_), $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("Package names and paths must not contain underscores or dots: " + part_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return part_
 }
@@ -2699,7 +2699,7 @@ return
 }
 }
 {
-return (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(token_), "Only variables and fields are assignable"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -2910,7 +2910,7 @@ return result_
 const token_ = (await ff_compiler_Parser.Parser_skip$(self_, ff_compiler_Token.LWildcard(), $c));
 return ff_compiler_Syntax.EWildcard(ff_compiler_Token.Token_at(token_), 0)
 } else {
-return (await ff_compiler_Parser.Parser_fail$(self_, ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), ("Expected atom, got " + ff_compiler_Token.Token_raw((await ff_compiler_Parser.Parser_current$(self_, $c)))), $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at((await ff_compiler_Parser.Parser_current$(self_, $c))), ("Expected atom, got " + ff_compiler_Token.Token_raw((await ff_compiler_Parser.Parser_current$(self_, $c))))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 }
 
@@ -2995,7 +2995,7 @@ return _w1.first_
 }
 
 export async function Parser_parseListPattern$(self_, $c) {
-async function convertListPattern_$(at_, items_, $c) {
+function convertListPattern_(at_, items_) {
 {
 const at_a = at_;
 const items_a = items_;
@@ -3010,7 +3010,7 @@ if(items_a.Link) {
 const p_ = items_a.head_.first_;
 if(!items_a.head_.second_) {
 const ps_ = items_a.tail_;
-return ff_compiler_Syntax.PVariant(p_.at_, "ff:core/List.Link", ff_core_List.Link(p_, ff_core_List.Link((await convertListPattern_$(p_.at_, ps_, $c)), ff_core_List.Empty())))
+return ff_compiler_Syntax.PVariant(p_.at_, "ff:core/List.Link", ff_core_List.Link(p_, ff_core_List.Link(convertListPattern_(p_.at_, ps_), ff_core_List.Empty())))
 return
 }
 }
@@ -3030,7 +3030,7 @@ return
 if(items_a.Link) {
 const p_ = items_a.head_.first_;
 if(items_a.head_.second_) {
-return (await ff_compiler_Parser.Parser_fail$(self_, p_.at_, "Invalid pattern: ... is only allowed for the last element in a list", $c))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(p_.at_, "Invalid pattern: ... is only allowed for the last element in a list"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 return
 }
 }
@@ -3053,7 +3053,7 @@ if((!ff_compiler_Token.Token_rawIs((await ff_compiler_Parser.Parser_current$(sel
 }
 };
 (await ff_compiler_Parser.Parser_rawSkip$(self_, ff_compiler_Token.LBracketRight(), "]", $c));
-return (await convertListPattern_$(at_, ff_core_Stack.Stack_toList(items_, 0, 9007199254740991), $c))
+return convertListPattern_(at_, ff_core_Stack.Stack_toList(items_, 0, 9007199254740991))
 }
 
 export async function Parser_parseList$(self_, $c) {

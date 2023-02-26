@@ -516,19 +516,19 @@ extend self: JsEmitter {
                 let a = self.emitArgument(argument, async)
                 "throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(" + a + ", " + d + ")})"
             | ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, _, _) {!last} =>
-                fail(at, "Statements can't be a try without a grab")
+                throw(CompileError(at, "Statements can't be a try without a grab"))
             | ECall(at, StaticCall("ff:core/Try.Try_map", _, _), _, _, _, _) {!last} =>
-                fail(at, "Statements can't be a map without a grab")
+                throw(CompileError(at, "Statements can't be a map without a grab"))
             | ECall(at, StaticCall("ff:core/Try.Try_flatMap", _, _), _, _, _, _) {!last} =>
-                fail(at, "Statements can't be a flatMap without a grab")
+                throw(CompileError(at, "Statements can't be a flatMap without a grab"))
             | ECall(at, StaticCall("ff:core/Try.Try_flatten", _, _), _, _, _, _) {!last} =>
-                fail(at, "Statements can't be a flatten without a grab")
+                throw(CompileError(at, "Statements can't be a flatten without a grab"))
             | ECall(at, StaticCall("ff:core/Try.Try_catch", _, _), _, _, _, _) {!last} =>
-                fail(at, "Statements can't be a catch without a grab")
+                throw(CompileError(at, "Statements can't be a catch without a grab"))
             | ECall(at, StaticCall("ff:core/Try.Try_catchAny", _, _), _, _, _, _) {!last} =>
-                fail(at, "Statements can't be a catchAny without a grab")
+                throw(CompileError(at, "Statements can't be a catchAny without a grab"))
             | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, _, _) {!last} =>
-                fail(at, "Statements can't be a finally without a grab")
+                throw(CompileError(at, "Statements can't be a finally without a grab"))
             | ECall(at, StaticCall("ff:core/Try.Try_grab", _, _), _, _, [argument], _) {
                 self.emitTryCatchFinally(argument.value, last, async) | Some(code)
             } =>
@@ -538,7 +538,7 @@ extend self: JsEmitter {
                     "if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround})"
                 } else {""}
             | ECall(at, StaticCall(name, True, instanceCall), effect, _, arguments, _) =>
-                if(instanceCall) { fail(at, "Not yet implemented: Tail calls on trait methods.") }
+                if(instanceCall) { throw(CompileError(at, "Not yet implemented: Tail calls on trait methods.")) }
                 self.tailCallUsed = True
                 let pair = arguments.map { a =>
                     Some(Pair(

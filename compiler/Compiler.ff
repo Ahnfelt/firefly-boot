@@ -156,7 +156,7 @@ extend self: Compiler {
             let newPackagePair = import.package
             let newModuleName = import.directory.map { _ + "/" }.join("") + import.file
             if(!self.packagePaths.contains(newPackagePair)) {
-                fail(import.at, "Missing dependency declaration for: " + newPackagePair.groupName())
+                throw(CompileError(import.at, "Missing dependency declaration for: " + newPackagePair.groupName()))
             }
             self.parse(newPackagePair, newModuleName)
         }
