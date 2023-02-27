@@ -1,12 +1,11 @@
 main(system: NodeSystem) {
-    Log.debugDynamic(system.arguments())
-    let outputFileName = system.arguments().toList().grabFirst()
-    let fileNames = system.arguments().toList().dropFirst()
+    let outputFileName = system.arguments().grabFirst()
+    let fileNames = system.arguments().dropFirst()
     let result = cat(system.files(), fileNames)
     system.files().writeStream(outputFileName, result)
 }
 
-cat(fs: FileSystem, fileNames: List[String]): Stream[Buffer] {
+cat(fs: FileSystem, fileNames: Array[String]): Stream[Buffer] {
     fileNames.toStream().flatMap {fileName =>
         fs.readStream(fileName)
     }
