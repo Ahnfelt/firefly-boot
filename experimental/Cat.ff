@@ -1,0 +1,12 @@
+main(system: NodeSystem) {
+    let outputFileName = system.arguments().grabFirst()
+    let fileNames = system.arguments().dropFirst()
+    let result = cat(system.files(), fileNames)
+    system.files().writeStream(outputFileName, result)
+}
+
+cat(fs: FileSystem, fileNames: Array[String]): Stream[Buffer] {
+    fileNames.toStream().flatMap {fileName =>
+        fs.readStream(fileName)
+    }
+}

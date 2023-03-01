@@ -37,6 +37,7 @@ nodeMain(system: NodeSystem): Unit {
             response.writeText(system.assets().readText("/browser/" + path))
 
         } elseIf {request.path() == "/rhyme"} {
+
             let buffer = request.readBuffer()
             let deserialized = Serializable.deserialize(buffer)
             let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + deserialized)

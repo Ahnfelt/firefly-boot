@@ -757,7 +757,7 @@ export async function importAndRun_$(fs_, fireflyPath_, target_, packagePair_, m
         const cwd = process.cwd();
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
         const main = await import(cwd + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
-        await main.$run$(fireflyPath_, arguments_)
+        await main.$run$(fireflyPath_, ff_core_List.List_toArray(arguments_))
     
 }
 
