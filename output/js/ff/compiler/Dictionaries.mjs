@@ -464,7 +464,7 @@ const _guard1 = ff_core_Map.Map_get(functions_, target_.name_, ff_core_Ordering.
 if(_guard1.Some) {
 const signature_ = _guard1.value_;
 const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1) => {
-return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, signature_.generics_, typeArguments_, _w1)
+return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, signature_.generics_, typeArguments_, _w1)
 }));
 return ff_compiler_Syntax.ECall(at_, (((_c) => {
 return ff_compiler_Syntax.StaticCall(_c.name_, _c.tailCall_, _c.instanceCall_)
@@ -602,7 +602,7 @@ return
 }
 }
 
-export function Dictionaries_makeDictionary(self_, typeParameters_, typeArguments_, constraint_) {
+export function Dictionaries_makeDictionary(self_, at_, typeParameters_, typeArguments_, constraint_) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty());
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
@@ -625,10 +625,10 @@ return
 }
 }))(ff_core_List.List_grabFirst(newGenerics_));
 const instance_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), (() => {
-return ff_compiler_Dictionaries.fail_(constraint_.at_, ((("Internal error - missing instance " + firstType_.name_) + ": ") + constraint_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Missing instance " + firstType_.name_) + ": ") + constraint_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
-return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.generics_, firstType_.generics_, c_)
+return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, instance_.generics_, firstType_.generics_, c_)
 }));
 return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
@@ -944,7 +944,7 @@ const _guard1 = ff_core_Map.Map_get(functions_, target_.name_, ff_core_Ordering.
 if(_guard1.Some) {
 const signature_ = _guard1.value_;
 const dictionaries_ = ff_core_List.List_map(signature_.constraints_, ((_w1) => {
-return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, signature_.generics_, typeArguments_, _w1)
+return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, signature_.generics_, typeArguments_, _w1)
 }));
 return ff_compiler_Syntax.ECall(at_, (((_c) => {
 return ff_compiler_Syntax.StaticCall(_c.name_, _c.tailCall_, _c.instanceCall_)
@@ -1082,7 +1082,7 @@ return
 }
 }
 
-export async function Dictionaries_makeDictionary$(self_, typeParameters_, typeArguments_, constraint_, $c) {
+export async function Dictionaries_makeDictionary$(self_, at_, typeParameters_, typeArguments_, constraint_, $c) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty());
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
@@ -1105,10 +1105,10 @@ return
 }
 }))(ff_core_List.List_grabFirst(newGenerics_));
 const instance_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.instances_, ff_compiler_Unification.InstanceKey(constraint_.name_, firstType_.name_), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), (() => {
-return ff_compiler_Dictionaries.fail_(constraint_.at_, ((("Internal error - missing instance " + firstType_.name_) + ": ") + constraint_.name_))
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Missing instance " + firstType_.name_) + ": ") + constraint_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 const dictionaries_ = ff_core_List.List_map(instance_.constraints_, ((c_) => {
-return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, instance_.generics_, firstType_.generics_, c_)
+return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, instance_.generics_, firstType_.generics_, c_)
 }));
 return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }

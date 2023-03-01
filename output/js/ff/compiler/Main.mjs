@@ -165,20 +165,9 @@ return
 }
 }
 }))(emitTarget_);
-try {
 ff_compiler_Builder.build_(system_, emitTarget_, mainPackagePair_, mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false)
-} catch(_error) {
-if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
-if(!_exception.Some) throw _error
-const at_ = _exception.value_.at_;
-const message_ = _exception.value_.message_;
-const error_ = _error;
-ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at file://" + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
-}
 }
 function runCommand_(command_) {
 {
@@ -514,20 +503,9 @@ return
 }
 }
 }))(emitTarget_);
-try {
 (await ff_compiler_Builder.build_$(system_, emitTarget_, mainPackagePair_, mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false, $c))
-} catch(_error) {
-if(!_error.ffException) throw _error
-const _exception = ff_core_Any.fromAny_(_error.ffException, ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)
-if(!_exception.Some) throw _error
-const at_ = _exception.value_.at_;
-const message_ = _exception.value_.message_;
-const error_ = _error;
-ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at file://" + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
-}
 }
 async function runCommand_$(command_, $c) {
 {

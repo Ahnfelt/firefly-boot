@@ -116,7 +116,7 @@ extend self: Dictionaries {
                 functions.get(target.name) | Some(signature)
             } =>
                 let dictionaries = signature.constraints.map {
-                    self.makeDictionary(signature.generics, typeArguments, _)
+                    self.makeDictionary(at, signature.generics, typeArguments, _)
                 }
                 ECall(
                     at = at
@@ -160,7 +160,12 @@ extend self: Dictionaries {
         field.Field(value = self.processTerm(functions, field.value))
     }
 
-    makeDictionary(typeParameters: List[String], typeArguments: List[Type], constraint: Constraint): Dictionary {
+    makeDictionary(
+        at: Location,
+        typeParameters: List[String],
+        typeArguments: List[Type],
+        constraint: Constraint
+    ): Dictionary {
         let instantiationMap = typeParameters.zip(typeArguments).toMap()
         let unification = Unification.make([])
         let newGenerics = constraint.generics.map { unification.instantiate(instantiationMap, _) }
@@ -169,10 +174,10 @@ extend self: Dictionaries {
             | TVariable t => fail(t.at, " is still a unification variable")
         }
         let instance = self.instances.get(InstanceKey(constraint.name, firstType.name)).else {
-            fail(constraint.at, "Internal error - missing instance " + firstType.name + ": " + constraint.name)
+            throw(CompileError(at, "Missing instance " + firstType.name + ": " + constraint.name))
         }
         let dictionaries = instance.constraints.map { c =>
-            self.makeDictionary(instance.generics, firstType.generics, c)
+            self.makeDictionary(at, instance.generics, firstType.generics, c)
         }
         Dictionary(instance.packagePair, instance.moduleName, constraint.name, firstType.name, dictionaries)
     }

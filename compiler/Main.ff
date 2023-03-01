@@ -42,22 +42,17 @@ main(system: NodeSystem): Unit {
             | EmitBrowser => "browser"
             | EmitExecutable => "executable"
         }
-        try {
-            Builder.build(
-                system = system
-                emitTarget = emitTarget
-                mainPackage = mainPackagePair
-                mainModule = mainFile
-                resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-                compilerModulePath = compilerModulePath
-                tempPath = ".firefly/temporary"
-                jsOutputPath = ".firefly/output/" + targetName
-                printMeasurements = False
-            )
-        } catch {| CompileError(at, message), error =>
-            Log.debug(message)
-            Log.debug(" at file://" + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
-        } grab()
+        Builder.build(
+            system = system
+            emitTarget = emitTarget
+            mainPackage = mainPackagePair
+            mainModule = mainFile
+            resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+            compilerModulePath = compilerModulePath
+            tempPath = ".firefly/temporary"
+            jsOutputPath = ".firefly/output/" + targetName
+            printMeasurements = False
+        )
     }
 
     function runCommand(command: MainCommand) {
