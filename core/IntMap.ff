@@ -51,11 +51,15 @@ extend self[V]: IntMap[V] {
     }
 
     toList(): List[Pair[Int, V]] {
-        self.toStack().toList()
+        self.toArray().toList()
     }
 
     toStream(): Stream[Pair[Int, V]] {
-        self.toStack().toStream()
+        self.toArray().toStream()
+    }
+
+    toMap(): Map[Int, V] {
+        self.toArray().toMap()
     }
 
     keys(): List[Int] {

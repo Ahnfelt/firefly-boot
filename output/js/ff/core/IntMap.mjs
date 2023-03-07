@@ -150,11 +150,15 @@ return ff_core_Stack.Stack_drain(ff_core_IntMap.IntMap_toStack(self_))
 }
 
 export function IntMap_toList(self_) {
-return ff_core_Stack.Stack_toList(ff_core_IntMap.IntMap_toStack(self_), 0, 9007199254740991)
+return ff_core_Array.Array_toList(ff_core_IntMap.IntMap_toArray(self_))
 }
 
 export function IntMap_toStream(self_) {
-return ff_core_Stack.Stack_toStream(ff_core_IntMap.IntMap_toStack(self_), 0, 9007199254740991)
+return ff_core_Array.Array_toStream(ff_core_IntMap.IntMap_toArray(self_), false)
+}
+
+export function IntMap_toMap(self_) {
+return ff_core_Array.Array_toMap(ff_core_IntMap.IntMap_toArray(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
 export function IntMap_keys(self_) {
@@ -222,11 +226,15 @@ return ff_core_Stack.Stack_drain(ff_core_IntMap.IntMap_toStack(self_))
 }
 
 export async function IntMap_toList$(self_, $c) {
-return ff_core_Stack.Stack_toList(ff_core_IntMap.IntMap_toStack(self_), 0, 9007199254740991)
+return ff_core_Array.Array_toList(ff_core_IntMap.IntMap_toArray(self_))
 }
 
 export async function IntMap_toStream$(self_, $c) {
-return (await ff_core_Stack.Stack_toStream$(ff_core_IntMap.IntMap_toStack(self_), 0, 9007199254740991, $c))
+return (await ff_core_Array.Array_toStream$(ff_core_IntMap.IntMap_toArray(self_), false, $c))
+}
+
+export async function IntMap_toMap$(self_, $c) {
+return ff_core_Array.Array_toMap(ff_core_IntMap.IntMap_toArray(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
 export async function IntMap_keys$(self_, $c) {

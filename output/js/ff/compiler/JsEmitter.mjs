@@ -1936,33 +1936,6 @@ return
 if(_1.ECall) {
 const at_ = _1.at_;
 if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/IntMap.IntMap_set") {
-if(_1.arguments_.Link) {
-const map_ = _1.arguments_.head_;
-if(_1.arguments_.tail_.Link) {
-const key_ = _1.arguments_.tail_.head_;
-if(_1.arguments_.tail_.tail_.Link) {
-const value_ = _1.arguments_.tail_.tail_.head_;
-if(_1.arguments_.tail_.tail_.tail_.Empty) {
-if(_1.dictionaries_.Empty) {
-const m_ = ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, map_, async_);
-const k_ = ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, key_, async_);
-const v_ = ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, value_, async_);
-return (((((m_ + ".set(") + k_) + ", ") + v_) + ")")
-return
-}
-}
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
-const at_ = _1.at_;
-if(_1.target_.StaticCall) {
 if(_1.target_.name_ == "ff:core/Core.throw") {
 if(_1.arguments_.Link) {
 const argument_ = _1.arguments_.head_;
@@ -4030,33 +4003,6 @@ return ((("if(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, condit
 ? (("return ff_core_Option.Some(" + (await ff_compiler_JsEmitter.JsEmitter_emitTerm$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), async_, $c))) + ")\n} else return ff_core_Option.None()")
 : ((await ff_compiler_JsEmitter.JsEmitter_emitStatements$(self_, ff_compiler_JsEmitter.invokeImmediately_(body_.value_), false, async_, $c)) + "\n}")))
 return
-}
-}
-}
-}
-}
-}
-}
-{
-if(_1.ECall) {
-const at_ = _1.at_;
-if(_1.target_.StaticCall) {
-if(_1.target_.name_ == "ff:core/IntMap.IntMap_set") {
-if(_1.arguments_.Link) {
-const map_ = _1.arguments_.head_;
-if(_1.arguments_.tail_.Link) {
-const key_ = _1.arguments_.tail_.head_;
-if(_1.arguments_.tail_.tail_.Link) {
-const value_ = _1.arguments_.tail_.tail_.head_;
-if(_1.arguments_.tail_.tail_.tail_.Empty) {
-if(_1.dictionaries_.Empty) {
-const m_ = (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, map_, async_, $c));
-const k_ = (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, key_, async_, $c));
-const v_ = (await ff_compiler_JsEmitter.JsEmitter_emitArgument$(self_, value_, async_, $c));
-return (((((m_ + ".set(") + k_) + ", ") + v_) + ")")
-return
-}
-}
 }
 }
 }
