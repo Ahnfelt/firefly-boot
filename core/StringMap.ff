@@ -74,4 +74,42 @@ extend self[V]: StringMap[V] {
         stack.toList()
     }
 
+    copy(): StringMap[V]
+        target js sync "return new Map(self_)"
+
+}
+
+extend self[V: Show]: StringMap[V] {
+    show(): String {
+        self.toList().show() + ".toStringMap()" // TODO
+    }
+}
+
+instance StringMap[V: Show]: Show {
+    show(self: StringMap[V]): String {
+        self.show()
+    }
+}
+
+instance StringMap[V: Equal]: Equal {
+    equals(self: StringMap[V], that: StringMap[V]): Bool {
+        self.toArray() == that.toArray()
+    }
+}
+
+instance StringMap[V: Order]: Order {
+    compare(self: StringMap[V], that: StringMap[V]): Ordering {
+        Ordering.compare(self.toArray(), that.toArray())
+    }
+}
+
+instance StringMap[V: Serializable]: Serializable {
+    serializeUsing(serialization: Serialization, self: StringMap[V]): Unit {
+        Serializable.serializeUsing(serialization, self.toArray())
+    }
+    deserializeUsing(serialization: Serialization): StringMap[V] {
+        let result = make()
+        Serializable.deserializeUsing[Array[Pair[String, V]]](serialization).each {| Pair(k, v) => result.set(k, v)}
+        result
+    }
 }

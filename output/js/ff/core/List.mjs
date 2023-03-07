@@ -1961,6 +1961,14 @@ return
 }))
 }
 
+export function List_show(self_, ff_core_Show_Show$T) {
+return ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T).show_(self_)
+}
+
+export async function List_show$(self_, ff_core_Show_Show$T, $c) {
+return ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$T).show_(self_)
+}
+
 export function List_flatten(self_) {
 function finish_(list_, result_) {
 _tailcall: for(;;) {

@@ -177,6 +177,10 @@ ff_core_Stack.Stack_push(stack_, v_)
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
+export function IntMap_copy(self_) {
+return new Map(self_)
+}
+
 export async function IntMap_get$(self_, key_, $c) {
 throw new Error('Function IntMap_get is missing on this target in async context.');
 }
@@ -253,6 +257,25 @@ ff_core_Stack.Stack_push(stack_, v_)
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
+export async function IntMap_copy$(self_, $c) {
+throw new Error('Function IntMap_copy is missing on this target in async context.');
+}
 
+export function IntMap_show(self_, ff_core_Show_Show$V) {
+return (ff_core_List.List_show(ff_core_IntMap.IntMap_toList(self_), ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Show_Show$V)) + ".toIntMap()")
+}
+
+export async function IntMap_show$(self_, ff_core_Show_Show$V, $c) {
+return (ff_core_List.List_show(ff_core_IntMap.IntMap_toList(self_), ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Show_Show$V)) + ".toIntMap()")
+}
+
+export function ff_core_Show_Show$ff_core_IntMap_IntMap(ff_core_Show_Show$V) { return {
+show_(self_) {
+return ff_core_IntMap.IntMap_show(self_, ff_core_Show_Show$V)
+},
+async show_$(self_, $c) {
+return ff_core_IntMap.IntMap_show(self_, ff_core_Show_Show$V)
+}
+}}
 
 

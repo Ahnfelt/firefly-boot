@@ -369,6 +369,14 @@ extend self[T: Order]: List[T] {
 
 }
 
+extend self[T: Show]: List[T] {
+
+    show(): String {
+        Show.show(self)
+    }
+
+}
+
 extend self[T]: List[List[T]] {
 
     flatten(): List[T] {

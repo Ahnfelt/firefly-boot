@@ -177,6 +177,10 @@ ff_core_Stack.Stack_push(stack_, v_)
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
+export function StringMap_copy(self_) {
+return new Map(self_)
+}
+
 export async function StringMap_get$(self_, key_, $c) {
 throw new Error('Function StringMap_get is missing on this target in async context.');
 }
@@ -253,6 +257,76 @@ ff_core_Stack.Stack_push(stack_, v_)
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
+export async function StringMap_copy$(self_, $c) {
+throw new Error('Function StringMap_copy is missing on this target in async context.');
+}
 
+export function StringMap_show(self_, ff_core_Show_Show$V) {
+return (ff_core_List.List_show(ff_core_StringMap.StringMap_toList(self_), ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Show_Show$V)) + ".toStringMap()")
+}
+
+export async function StringMap_show$(self_, ff_core_Show_Show$V, $c) {
+return (ff_core_List.List_show(ff_core_StringMap.StringMap_toList(self_), ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Show_Show$V)) + ".toStringMap()")
+}
+
+export function ff_core_Show_Show$ff_core_StringMap_StringMap(ff_core_Show_Show$V) { return {
+show_(self_) {
+return ff_core_StringMap.StringMap_show(self_, ff_core_Show_Show$V)
+},
+async show_$(self_, $c) {
+return ff_core_StringMap.StringMap_show(self_, ff_core_Show_Show$V)
+}
+}}
+
+export function ff_core_Equal_Equal$ff_core_StringMap_StringMap(ff_core_Equal_Equal$V) { return {
+equals_(self_, that_) {
+return ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Equal_Equal$V)).equals_(ff_core_StringMap.StringMap_toArray(self_), ff_core_StringMap.StringMap_toArray(that_))
+},
+async equals_$(self_, that_, $c) {
+return ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Equal_Equal$V)).equals_(ff_core_StringMap.StringMap_toArray(self_), ff_core_StringMap.StringMap_toArray(that_))
+}
+}}
+
+export function ff_core_Ordering_Order$ff_core_StringMap_StringMap(ff_core_Ordering_Order$V) { return {
+compare_(self_, that_) {
+return ff_core_Array.ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering_Order$V)).compare_(ff_core_StringMap.StringMap_toArray(self_), ff_core_StringMap.StringMap_toArray(that_))
+},
+async compare_$(self_, that_, $c) {
+return ff_core_Array.ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering_Order$V)).compare_(ff_core_StringMap.StringMap_toArray(self_), ff_core_StringMap.StringMap_toArray(that_))
+}
+}}
+
+export function ff_core_Serializable_Serializable$ff_core_StringMap_StringMap(ff_core_Serializable_Serializable$V) { return {
+serializeUsing_(serialization_, self_) {
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_StringMap.StringMap_toArray(self_))
+},
+deserializeUsing_(serialization_) {
+const result_ = ff_core_StringMap.make_();
+ff_core_Array.Array_each(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+ff_core_StringMap.StringMap_set(result_, k_, v_)
+return
+}
+}));
+return result_
+},
+async serializeUsing_$(serialization_, self_, $c) {
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_StringMap.StringMap_toArray(self_))
+},
+async deserializeUsing_$(serialization_, $c) {
+const result_ = ff_core_StringMap.make_();
+ff_core_Array.Array_each(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+ff_core_StringMap.StringMap_set(result_, k_, v_)
+return
+}
+}));
+return result_
+}
+}}
 
 
