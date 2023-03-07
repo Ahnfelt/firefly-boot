@@ -90,20 +90,20 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function Duration_toString(self_, digits_ = 3) {
+export function Duration_show(self_, digits_ = 3) {
 return (ff_core_Float.Float_toFixed(self_, digits_) + " s")
 }
 
-export async function Duration_toString$(self_, digits_ = 3, $c) {
+export async function Duration_show$(self_, digits_ = 3, $c) {
 return (ff_core_Float.Float_toFixed(self_, digits_) + " s")
 }
 
 export const ff_core_Show_Show$ff_core_Duration_Duration = {
 show_(value_) {
-return ff_core_Duration.Duration_toString(value_, 3)
+return ff_core_Duration.Duration_show(value_, 3)
 },
 async show_$(value_, $c) {
-return ff_core_Duration.Duration_toString(value_, 3)
+return ff_core_Duration.Duration_show(value_, 3)
 }
 };
 

@@ -252,10 +252,10 @@ export function Stack_pop(self_) {
 
 export function Stack_set(self_, index_, value_) {
 
-            if(index_ < 0 || index_ >= self_.array.length) {
+            if(index_ < 0 || index_ > self_.array.length) {
                 ff_core_Try.internalThrowGrabException_()
             }
-            self_.array[index_] = value
+            self_.array[index_] = value_
         
 }
 
