@@ -3,6 +3,7 @@ main(system: NodeSystem): Unit {
     testIntMap(system)
     testStringMap(system)
     testStack(system)
+    testRawMap()
 }
 
 testStringMap(system: NodeSystem) {
@@ -53,3 +54,14 @@ testStack(system: NodeSystem) {
     Log.debug("Stack: " + measurement.second.show())
 }
 
+testRawMap()
+    target js sync """
+        const start = performance.now();
+        const map = new Map();
+        let i = 0;
+        while(i < 1000000) {
+            map.set(i, i);
+            i += 1
+        }
+        console.log("RawMap: " + (performance.now() - start) + " ms")
+    """
