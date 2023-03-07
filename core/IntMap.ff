@@ -109,7 +109,7 @@ instance IntMap[V: Serializable]: Serializable {
     }
     deserializeUsing(serialization: Serialization): IntMap[V] {
         let result = make()
-        Serializable.deserializeUsing[Array[Pair[String, V]]](serialization).each {| Pair(k, v) => result.set(k, v)}
+        Serializable.deserializeUsing[Array[Pair[Int, V]]](serialization).each {| Pair(k, v) => result.set(k, v)}
         result
     }
 }

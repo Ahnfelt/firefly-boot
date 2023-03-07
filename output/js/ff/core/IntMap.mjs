@@ -278,4 +278,55 @@ return ff_core_IntMap.IntMap_show(self_, ff_core_Show_Show$V)
 }
 }}
 
+export function ff_core_Equal_Equal$ff_core_IntMap_IntMap(ff_core_Equal_Equal$V) { return {
+equals_(self_, that_) {
+return ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Equal_Equal$V)).equals_(ff_core_IntMap.IntMap_toArray(self_), ff_core_IntMap.IntMap_toArray(that_))
+},
+async equals_$(self_, that_, $c) {
+return ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Equal_Equal$V)).equals_(ff_core_IntMap.IntMap_toArray(self_), ff_core_IntMap.IntMap_toArray(that_))
+}
+}}
+
+export function ff_core_Ordering_Order$ff_core_IntMap_IntMap(ff_core_Ordering_Order$V) { return {
+compare_(self_, that_) {
+return ff_core_Array.ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Ordering_Order$V)).compare_(ff_core_IntMap.IntMap_toArray(self_), ff_core_IntMap.IntMap_toArray(that_))
+},
+async compare_$(self_, that_, $c) {
+return ff_core_Array.ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Ordering_Order$V)).compare_(ff_core_IntMap.IntMap_toArray(self_), ff_core_IntMap.IntMap_toArray(that_))
+}
+}}
+
+export function ff_core_Serializable_Serializable$ff_core_IntMap_IntMap(ff_core_Serializable_Serializable$V) { return {
+serializeUsing_(serialization_, self_) {
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_IntMap.IntMap_toArray(self_))
+},
+deserializeUsing_(serialization_) {
+const result_ = ff_core_IntMap.make_();
+ff_core_Array.Array_each(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+ff_core_IntMap.IntMap_set(result_, k_, v_)
+return
+}
+}));
+return result_
+},
+async serializeUsing_$(serialization_, self_, $c) {
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_IntMap.IntMap_toArray(self_))
+},
+async deserializeUsing_$(serialization_, $c) {
+const result_ = ff_core_IntMap.make_();
+ff_core_Array.Array_each(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ((_1) => {
+{
+const k_ = _1.first_;
+const v_ = _1.second_;
+ff_core_IntMap.IntMap_set(result_, k_, v_)
+return
+}
+}));
+return result_
+}
+}}
+
 
