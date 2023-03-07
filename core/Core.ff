@@ -54,3 +54,5 @@ throwAny[T](exception: Any): T
 
 panic[T](message: String): T
     target js sync "throw new Error(message_)"
+
+data GrabException()

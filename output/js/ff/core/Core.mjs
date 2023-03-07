@@ -38,6 +38,8 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
+import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -70,6 +72,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -78,7 +82,11 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-
+// type GrabException
+const GrabException$ = {GrabException: true};
+export function GrabException() {
+return GrabException$;
+}
 
 
 
@@ -278,6 +286,13 @@ throw new Error('Function panic is missing on this target in async context.');
 
 
 
-
+export const ff_core_Any_HasAnyTag$ff_core_Core_GrabException = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:core/Core.GrabException" + "[") + "]"))
+},
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:core/Core.GrabException" + "[") + "]"))
+}
+};
 
 

@@ -75,3 +75,7 @@ extend self[T]: Try[Try[T]] {
     }
 
 }
+
+internalThrowGrabException[T](): T {
+    throw(GrabException())
+}

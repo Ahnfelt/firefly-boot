@@ -105,7 +105,7 @@ extend self[T]: Option[T] {
 
     grab(): T {
         self.{
-            | None => panic("None.grab()")
+            | None => Try.internalThrowGrabException()
             | Some(v) => v
         }
     }

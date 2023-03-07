@@ -42,6 +42,8 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
+import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -73,6 +75,8 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
+
+import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -119,7 +123,7 @@ return
 }
 
 export function Deriver_makeHasAnyTagInstances(self_, modulePrefix_, module_) {
-const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Link("ff:core/Core.GrabException", ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _w1)
@@ -531,7 +535,7 @@ return
 }
 
 export async function Deriver_makeHasAnyTagInstances$(self_, modulePrefix_, module_, $c) {
-const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Link("ff:core/Core.GrabException", ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
 return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _w1)

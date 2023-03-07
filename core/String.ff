@@ -6,7 +6,12 @@ extend self: String {
         target js sync "return self_.length"
 
     grab(index: Int): Char
-        target js sync "return self_.charCodeAt(index_)"
+        target js sync """
+            if(index_ < 0 || index_ >= self_.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            return self_.charCodeAt(index_)
+        """
 
     replace(needle: String, replacement: String): String
         target js sync "return self_.replaceAll(needle_, replacement_)"
@@ -61,10 +66,12 @@ extend self: String {
 
     grabInt(): Int
         target js sync """
-            if(self_.length == 0) throw "grabInt on empty string"
+            if(self_.length == 0) {
+                ff_core_Try.internalThrowGrabException_()
+            }
             for(let i = 0; i < self_.length; i++) {
-                let c = self_.codePointAt(i);
-                if(c < 48 || c > 57) throw "grabInt on non-digit string";
+                const c = self_.codePointAt(i)
+                if(c < 48 || c > 57) ff_core_Try.internalThrowGrabException_()
             }
             return parseInt(self_, 10);
         """
@@ -83,17 +90,17 @@ extend self: String {
                 : ff_core_Option.None()
         """
 
-    grabFirst(): Char { self.first().else { panic("grabFirst() on empty string") } }
+    grabFirst(): Char { self.first().else {Try.internalThrowGrabException()} }
 
-    grabLast(): Char { self.last().else { panic("grabFirst() on empty string") } }
+    grabLast(): Char { self.last().else {Try.internalThrowGrabException()} }
 
-    contains(substring: String) : Bool
+    contains(substring: String): Bool
         target js sync "return self_.includes(substring_)"
 
-    startsWith(prefix: String, offset: Int = 0) : Bool
+    startsWith(prefix: String, offset: Int = 0): Bool
         target js sync "return self_.startsWith(prefix_, offset_)"
 
-    endsWith(prefix: String) : Bool
+    endsWith(prefix: String): Bool
         target js sync "return self_.endsWith(prefix_)"
 
     removeFirst(prefix: String): Option[String] {

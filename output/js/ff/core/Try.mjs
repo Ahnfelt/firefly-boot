@@ -38,6 +38,8 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
+import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -70,6 +72,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -88,9 +92,13 @@ return {Failure: true, error_};
 
 
 
+export function internalThrowGrabException_() {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 
-
-
+export async function internalThrowGrabException_$($c) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Core.GrabException(), ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)})
+}
 
 export function Try_map(self_, body_) {
 {

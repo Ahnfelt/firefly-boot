@@ -46,7 +46,7 @@ extend self[T]: List[T] {
     grab(index: Int): T {
         function go(list: List[T], i: Int): T {
             list.{
-                | [] => panic("grab(" + index + ") on list of size " + self.size())
+                | [] => Try.internalThrowGrabException()
                 | [head, ...] {i == 0} => head
                 | [_, ...tail] => tailcall go(tail, i - 1)
             }
@@ -70,11 +70,11 @@ extend self[T]: List[T] {
     }
 
     grabFirst(): T {
-        self.first().else { panic("grabFirst() on empty list") }
+        self.first().else { Try.internalThrowGrabException() }
     }
 
     grabLast(): T {
-        self.last().else { panic("grabLast() on empty list") }
+        self.last().else { Try.internalThrowGrabException() }
     }
 
     dropFirst(count: Int = 1): List[T] {

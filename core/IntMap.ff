@@ -1,0 +1,74 @@
+sync class IntMap[V] {}
+
+make[V](): IntMap[V]
+    target js sync "return new Map()"
+
+extend self[V]: IntMap[V] {
+
+    get(key: Int): Option[V]
+        target js sync "return self_.has(key_) ? ff_core_Option.Some(self_.get(key_)) : ff_core_Option.None()"
+
+    grab(key: Int): V
+        target js sync """
+            const result = self_.get(key_)
+            if(key_ === void 0 && !self_.has(key_)) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            return result
+        """
+
+    set(key: Int, value: V): Unit
+        target js sync "self_.set(key_, value_)"
+
+    has(key: Int): Bool
+        target js sync "return self_.has(key_)"
+
+    remove(key: Int): Bool
+        target js sync "return self_.delete(key_)"
+
+    clear(): Unit
+        target js sync "self_.clear()"
+
+    size(): Int
+        target js sync "return self_.size"
+
+    each(body: (Int, V) => Unit): Bool
+        target js sync "return self_.forEach((v, k) => body_(k, v))"
+        target js async "for(const [k, v] of self_) await body_(k, v)"
+
+    eachWhile(body: (Int, V) => Bool): Bool
+        target js sync "for(const [k, v] of self_) if(!body_(k, v)) break"
+        target js async "for(const [k, v] of self_) if(!await body_(k, v)) break"
+
+    toStack(): Stack[Pair[Int, V]] {
+        let stack = Stack.make()
+        self.each {k, v => stack.push(Pair(k, v))}
+        stack
+    }
+
+    toArray(): Array[Pair[Int, V]] {
+        self.toStack().drain()
+    }
+
+    toList(): List[Pair[Int, V]] {
+        self.toStack().toList()
+    }
+
+    toStream(): Stream[Pair[Int, V]] {
+        self.toStack().toStream()
+    }
+
+    keys(): List[Int] {
+        let stack = Stack.make()
+        self.each {k, v => stack.push(k)}
+        stack.toList()
+    }
+
+    values(): List[V] {
+        let stack = Stack.make()
+        self.each {k, v => stack.push(v)}
+        stack.toList()
+    }
+
+}
+

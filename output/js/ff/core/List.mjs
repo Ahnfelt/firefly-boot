@@ -38,6 +38,8 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
+import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -69,6 +71,8 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
+
+import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -194,7 +198,7 @@ _tailcall: for(;;) {
 const _1 = list_;
 {
 if(_1.Empty) {
-return ff_core_Core.panic_(((("grab(" + index_) + ") on list of size ") + ff_core_List.List_size(self_)))
+return ff_core_Try.internalThrowGrabException_()
 return
 }
 }
@@ -284,13 +288,13 @@ return
 
 export function List_grabFirst(self_) {
 return ff_core_Option.Option_else(ff_core_List.List_first(self_), (() => {
-return ff_core_Core.panic_("grabFirst() on empty list")
+return ff_core_Try.internalThrowGrabException_()
 }))
 }
 
 export function List_grabLast(self_) {
 return ff_core_Option.Option_else(ff_core_List.List_last(self_), (() => {
-return ff_core_Core.panic_("grabLast() on empty list")
+return ff_core_Try.internalThrowGrabException_()
 }))
 }
 
@@ -1060,7 +1064,7 @@ _tailcall: for(;;) {
 const _1 = list_;
 {
 if(_1.Empty) {
-return ff_core_Core.panic_(((("grab(" + index_) + ") on list of size ") + ff_core_List.List_size(self_)))
+return ff_core_Try.internalThrowGrabException_()
 return
 }
 }
@@ -1150,13 +1154,13 @@ return
 
 export async function List_grabFirst$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_List.List_first(self_), (() => {
-return ff_core_Core.panic_("grabFirst() on empty list")
+return ff_core_Try.internalThrowGrabException_()
 }))
 }
 
 export async function List_grabLast$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_List.List_last(self_), (() => {
-return ff_core_Core.panic_("grabLast() on empty list")
+return ff_core_Try.internalThrowGrabException_()
 }))
 }
 

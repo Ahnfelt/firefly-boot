@@ -38,6 +38,8 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
+import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -69,6 +71,8 @@ import * as ff_core_Stack from "../../ff/core/Stack.mjs"
 import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
+
+import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
@@ -196,7 +200,7 @@ export function Stack_get(self_, index_) {
 export function Stack_grab(self_, index_) {
 
             if(index_ < 0 || index_ >= self_.array.length) {
-                throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.array.length)
+                ff_core_Try.internalThrowGrabException_()
             }
             return self_.array[index_]
         
@@ -248,15 +252,20 @@ export function Stack_pop(self_) {
 
 export function Stack_set(self_, index_, value_) {
 
-            if(index < 0 || index > self.array.length) {
-                throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.array.length)
+            if(index_ < 0 || index_ >= self_.array.length) {
+                ff_core_Try.internalThrowGrabException_()
             }
             self_.array[index_] = value
         
 }
 
 export function Stack_modify(self_, index_, body_) {
-self_.array[index_] = body_(self_.array[index_])
+
+            if(index_ < 0 || index_ >= self_.array.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            self_.array[index_] = body_(self_.array[index_])
+        
 }
 
 export function Stack_fill(self_, value_, start_ = 0, end_ = 9007199254740991) {
@@ -358,6 +367,10 @@ export function Stack_toList(self_, start_ = 0, end_ = 9007199254740991) {
         
 }
 
+export function Stack_toStream(self_, start_ = 0, end_ = 9007199254740991) {
+return ff_core_Array.Array_toStream(ff_core_Stack.Stack_toArray(self_, start_, end_), false)
+}
+
 export function Stack_reverse(self_) {
 self_.array.reverse()
 }
@@ -425,7 +438,12 @@ throw new Error('Function Stack_set is missing on this target in async context.'
 }
 
 export async function Stack_modify$(self_, index_, body_, $c) {
-self_.array[index_] = await body_(self_.array[index_], $c)
+
+            if(index_ < 0 || index_ >= self_.array.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            self_.array[index_] = await body_(self_.array[index_], $c)
+        
 }
 
 export async function Stack_fill$(self_, value_, start_ = 0, end_ = 9007199254740991, $c) {
@@ -505,6 +523,10 @@ throw new Error('Function Stack_toArray is missing on this target in async conte
 
 export async function Stack_toList$(self_, start_ = 0, end_ = 9007199254740991, $c) {
 throw new Error('Function Stack_toList is missing on this target in async context.');
+}
+
+export async function Stack_toStream$(self_, start_ = 0, end_ = 9007199254740991, $c) {
+return (await ff_core_Array.Array_toStream$(ff_core_Stack.Stack_toArray(self_, start_, end_), false, $c))
 }
 
 export async function Stack_reverse$(self_, $c) {

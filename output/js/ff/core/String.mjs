@@ -38,6 +38,8 @@ import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
 import * as ff_core_Int from "../../ff/core/Int.mjs"
 
+import * as ff_core_IntMap from "../../ff/core/IntMap.mjs"
+
 import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
@@ -70,6 +72,8 @@ import * as ff_core_Stream from "../../ff/core/Stream.mjs"
 
 import * as ff_core_String from "../../ff/core/String.mjs"
 
+import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
+
 import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
@@ -92,7 +96,12 @@ return self_.length
 }
 
 export function String_grab(self_, index_) {
-return self_.charCodeAt(index_)
+
+            if(index_ < 0 || index_ >= self_.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
+            return self_.charCodeAt(index_)
+        
 }
 
 export function String_replace(self_, needle_, replacement_) {
@@ -149,10 +158,12 @@ return self_.slice(0, self_.length - count_)
 
 export function String_grabInt(self_) {
 
-            if(self_.length == 0) throw "grabInt on empty string"
+            if(self_.length == 0) {
+                ff_core_Try.internalThrowGrabException_()
+            }
             for(let i = 0; i < self_.length; i++) {
-                let c = self_.codePointAt(i);
-                if(c < 48 || c > 57) throw "grabInt on non-digit string";
+                const c = self_.codePointAt(i)
+                if(c < 48 || c > 57) ff_core_Try.internalThrowGrabException_()
             }
             return parseInt(self_, 10);
         
@@ -176,13 +187,13 @@ export function String_last(self_) {
 
 export function String_grabFirst(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
-return ff_core_Core.panic_("grabFirst() on empty string")
+return ff_core_Try.internalThrowGrabException_()
 }))
 }
 
 export function String_grabLast(self_) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
-return ff_core_Core.panic_("grabFirst() on empty string")
+return ff_core_Try.internalThrowGrabException_()
 }))
 }
 
@@ -313,13 +324,13 @@ throw new Error('Function String_last is missing on this target in async context
 
 export async function String_grabFirst$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
-return ff_core_Core.panic_("grabFirst() on empty string")
+return ff_core_Try.internalThrowGrabException_()
 }))
 }
 
 export async function String_grabLast$(self_, $c) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
-return ff_core_Core.panic_("grabFirst() on empty string")
+return ff_core_Try.internalThrowGrabException_()
 }))
 }
 

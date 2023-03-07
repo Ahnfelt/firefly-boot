@@ -41,7 +41,7 @@ extend self[T]: Array[T] {
     grab(index: Int): T
         target js sync """
             if(index_ < 0 || index_ >= self_.length) {
-                throw new Error('Index ' + index_ + ' is out of bounds in an array of size ' + self_.length)
+                ff_core_Try.internalThrowGrabException_()
             }
             return self_[index_]
         """
@@ -62,11 +62,17 @@ extend self[T]: Array[T] {
 
     update(index: Int, body: T => T): Array[T]
         target js sync """
+            if(index_ < 0 || index_ >= self_.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
             let result = self_.slice();
             result[index_] = body_(result[index_]);
             return result;
         """
         target js async """
+            if(index_ < 0 || index_ >= self_.length) {
+                ff_core_Try.internalThrowGrabException_()
+            }
             let result = self_.slice();
             result[index_] = await body_(result[index_], $c);
             return result;
