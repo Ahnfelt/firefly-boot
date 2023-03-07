@@ -77,10 +77,10 @@ extend self[T]: Stack[T] {
 
     set(index: Int, value: T): Unit
         target js sync """
-            if(index_ < 0 || index_ >= self_.array.length) {
+            if(index_ < 0 || index_ > self_.array.length) {
                 ff_core_Try.internalThrowGrabException_()
             }
-            self_.array[index_] = value
+            self_.array[index_] = value_
         """
 
     modify(index: Int, body: T => T): Unit

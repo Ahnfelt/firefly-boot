@@ -2,6 +2,7 @@ main(system: NodeSystem): Unit {
     testMap(system)
     testIntMap(system)
     testStringMap(system)
+    testStack(system)
 }
 
 testStringMap(system: NodeSystem) {
@@ -39,3 +40,16 @@ testMap(system: NodeSystem) {
     }
     Log.debug("Map: " + measurement.second.show())
 }
+
+testStack(system: NodeSystem) {
+    let measurement = system.time().measure {
+        let map = [].toStack()
+        mutable i = 0
+        while {i < 1000000} {
+            map.set(i, i)
+            i += 1
+        }
+    }
+    Log.debug("Stack: " + measurement.second.show())
+}
+
