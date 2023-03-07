@@ -2,7 +2,7 @@ newtype Duration(seconds: Float)
 
 extend self: Duration {
 
-    toString(digits: Int = 3): String {
+    show(digits: Int = 3): String {
         self.seconds.toFixed(digits) + " s"
     }
 
@@ -10,6 +10,6 @@ extend self: Duration {
 
 instance Duration: Show {
     show(value: Duration): String {
-        value.toString()
+        value.show()
     }
 }

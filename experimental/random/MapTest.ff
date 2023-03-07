@@ -1,0 +1,41 @@
+main(system: NodeSystem): Unit {
+    testMap(system)
+    testIntMap(system)
+    testStringMap(system)
+}
+
+testStringMap(system: NodeSystem) {
+    let measurement = system.time().measure {
+        let map = StringMap.make()
+        mutable i = 0
+        while {i < 1000000} {
+            map.set("" + i, i)
+            i += 1
+        }
+    }
+    Log.debug("StringMap: " + measurement.second.show())
+}
+
+testIntMap(system: NodeSystem) {
+    let measurement = system.time().measure {
+        let map = IntMap.make()
+        mutable i = 0
+        while {i < 1000000} {
+            map.set(i, i)
+            i += 1
+        }
+    }
+    Log.debug("IntMap: " + measurement.second.show())
+}
+
+testMap(system: NodeSystem) {
+    let measurement = system.time().measure {
+        mutable map = [].toMap()
+        mutable i = 0
+        while {i < 1000000} {
+            map = map.add(i, i)
+            i += 1
+        }
+    }
+    Log.debug("Map: " + measurement.second.show())
+}
