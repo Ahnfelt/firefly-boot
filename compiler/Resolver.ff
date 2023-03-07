@@ -1,6 +1,6 @@
 import Syntax
 
-class Resolver(
+sync class Resolver(
     variables: Map[String, String]
     variants: Map[String, String]
     types: Map[String, String]
@@ -10,7 +10,7 @@ class Resolver(
     state: ResolverState
 )
 
-class ResolverState(mutable nextUnificationVariableIndex: Int)
+sync class ResolverState(mutable nextUnificationVariableIndex: Int)
 
 make(): Resolver {
     Resolver(

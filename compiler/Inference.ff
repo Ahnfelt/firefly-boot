@@ -3,7 +3,7 @@ import Unification
 import Environment
 import Substitution
 
-class Inference(
+sync class Inference(
     unification: Unification
 )
 

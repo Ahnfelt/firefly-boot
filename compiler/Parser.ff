@@ -2,7 +2,7 @@ import Token
 import Wildcards
 import Syntax
 
-class Parser(
+sync class Parser(
     packagePair: PackagePair
     file: String
     tokens: Array[Token]
