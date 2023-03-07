@@ -3,7 +3,7 @@
 // If vvvvv is 111cc, then 2^cc bytes follow with the actual value. Otherwise the value is vvvvv-3.
 // If it's a string (UTF-8) or a buffer, the value describes the length, and the raw bytes then follow.
 
-class Serializer[T](
+capability Serializer[T](
     writeBool: Bool => Unit
     writeChar: Char => Unit
     writeInt: Int => Unit

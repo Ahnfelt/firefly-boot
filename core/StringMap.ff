@@ -1,4 +1,4 @@
-sync class StringMap[V] {}
+class StringMap[V] {}
 
 make[V](): StringMap[V]
     target js sync "return new Map()"

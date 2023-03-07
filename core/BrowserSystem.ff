@@ -1,4 +1,4 @@
-class BrowserSystem {}
+capability BrowserSystem {}
 
 extend self: BrowserSystem {
 

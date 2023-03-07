@@ -8,7 +8,7 @@ import JsEmitter
 import Dictionaries
 import Dependencies
 
-class Compiler(
+capability Compiler(
     emitTarget: EmitTarget
     files: FileSystem
     time: TimeSystem

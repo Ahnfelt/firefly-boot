@@ -2,7 +2,7 @@ import Token
 import Wildcards
 import Syntax
 
-sync class Parser(
+class Parser(
     packagePair: PackagePair
     file: String
     tokens: Array[Token]
@@ -164,7 +164,7 @@ extend self: Parser {
                 traits.push(self.parseTraitDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("instance")} {
                 instances.push(self.parseInstanceDefinition())
-            } elseIf {self.current().is(LKeyword) && self.current().rawIs4("data", "class", "sync", "newtype")} {
+            } elseIf {self.current().is(LKeyword) && self.current().rawIs4("data", "class", "capability", "newtype")} {
                 types.push(self.parseTypeDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
                 imports.push(self.parseImportDefinition(self.packagePair))
@@ -409,17 +409,16 @@ extend self: Parser {
 
     parseTypeDefinition(): DType {
         let newtype = self.current().rawIs("newtype")
-        let effectParameter = if(self.current().rawIs("class")) {["Q$"]} else {[]}
-        let allowMutable = self.current().rawIs2("class", "sync")
+        let effectParameter = if(self.current().rawIs("capability")) {["Q$"]} else {[]}
+        let allowMutable = self.current().rawIs2("class", "capability")
         if(self.current().rawIs("newtype")) {
             self.rawSkip(LKeyword, "newtype")
         } elseIf {self.current().rawIs("data")} {
             self.rawSkip(LKeyword, "data")
-        } elseIf {self.current().rawIs("sync")} {
-            self.rawSkip(LKeyword, "sync")
+        } elseIf {self.current().rawIs("class")} {
             self.rawSkip(LKeyword, "class")
         } else {
-            self.rawSkip(LKeyword, "class")
+            self.rawSkip(LKeyword, "capability")
         }
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
@@ -450,7 +449,10 @@ extend self: Parser {
             throw(CompileError(nameToken.at(), "Newtypes must have exactly one field"))
         }
         if(!allowMutable && commonFields.any {_.mutable}) {
-            throw(CompileError(commonFields.find {_.mutable}.grab().at, "Only classes can have mutable fields"))
+            throw(CompileError(
+                commonFields.find {_.mutable}.grab().at,
+                "Only classes and capabilities can have mutable fields"
+            ))
         }
         let generics = [...effectParameter, ...poly.generics]
         DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants)

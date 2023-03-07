@@ -1,6 +1,6 @@
 import Syntax
 
-sync class JsImporter(
+class JsImporter(
     mutable imports: Map[String, String]
 )
 

@@ -1,4 +1,4 @@
-class Stream[T](
+capability Stream[T](
     next: () => Option[T]
     close: () => Unit
 )

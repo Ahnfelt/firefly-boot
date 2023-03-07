@@ -1,6 +1,6 @@
-class TaskSystem {}
+capability TaskSystem {}
 
-class TaskScope {}
+capability TaskScope {}
 
 extend self: TaskScope {
 

@@ -1,4 +1,4 @@
-class FileSystem {}
+capability FileSystem {}
 
 extend self: FileSystem {
 

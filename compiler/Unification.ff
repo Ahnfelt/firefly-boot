@@ -1,7 +1,7 @@
 import Syntax
 import Inference
 
-sync class Unification(
+class Unification(
     mutable substitution: Map[Int, Type],
     mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
     mutable nextUnificationVariableIndex: Int

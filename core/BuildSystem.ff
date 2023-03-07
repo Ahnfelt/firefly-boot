@@ -1,6 +1,6 @@
-class BuildSystem {}
-class BrowserCode(packageGroup: String, packageName: String, mainFile: String, assetSystem: AssetSystem)
-class BrowserBundle(assetSystem: AssetSystem)
+capability BuildSystem {}
+capability BrowserCode(packageGroup: String, packageName: String, mainFile: String, assetSystem: AssetSystem)
+capability BrowserBundle(assetSystem: AssetSystem)
 
 extend self: BuildSystem {
 

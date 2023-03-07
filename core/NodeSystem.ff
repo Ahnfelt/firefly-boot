@@ -1,4 +1,4 @@
-class NodeSystem {}
+capability NodeSystem {}
 
 extend self: NodeSystem {
 

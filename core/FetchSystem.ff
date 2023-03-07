@@ -1,6 +1,6 @@
-class FetchSystem {}
-class FetchBody {}
-class FetchResponse {}
+capability FetchSystem {}
+capability FetchBody {}
+capability FetchResponse {}
 data FetchRedirect {
     RedirectFollow
     RedirectError

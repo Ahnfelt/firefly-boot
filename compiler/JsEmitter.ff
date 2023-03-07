@@ -2,7 +2,7 @@ import Syntax
 import Patterns
 import JsImporter
 
-sync class JsEmitter(
+class JsEmitter(
     otherModules: Map[String, Module]
     jsImporter: JsImporter
     emitTarget: EmitTarget

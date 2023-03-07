@@ -1,4 +1,4 @@
-sync class IntMap[V] {}
+class IntMap[V] {}
 
 make[V](): IntMap[V]
     target js sync "return new Map()"

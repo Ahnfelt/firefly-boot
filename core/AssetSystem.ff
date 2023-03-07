@@ -1,4 +1,4 @@
-class AssetSystem(
+capability AssetSystem(
     files: Map[String, () => Stream[Buffer]]
 )
 

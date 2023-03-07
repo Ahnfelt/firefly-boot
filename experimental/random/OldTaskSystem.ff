@@ -1,4 +1,4 @@
-class TaskSystem {}
+capability TaskSystem {}
 
 extend self: TaskSystem {
 

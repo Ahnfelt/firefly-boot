@@ -1,4 +1,4 @@
-sync class TimeSystem {}
+class TimeSystem {}
 
 extend self: TimeSystem {
 
