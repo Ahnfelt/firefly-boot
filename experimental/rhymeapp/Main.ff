@@ -44,7 +44,7 @@ nodeMain(system: NodeSystem): Unit {
             let json = system.js().parseJson(result.readText())
             let rhyme = json.get(0).get("word").grabString()
             response.setHeader("Access-Control-Allow-Origin", ["*"])
-            response.writeText("")
+            response.writeText(rhyme)
 
         } else {
 
