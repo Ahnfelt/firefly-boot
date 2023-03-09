@@ -79,6 +79,8 @@ extend self[V]: IntMap[V] {
 
 }
 
+// These instances are only here to satisfy the automatic deriving, which currently kicks in for class types (this should be fixed)
+
 extend self[V: Show]: IntMap[V] {
     show(): String {
         self.toList().show() + ".toIntMap()" // TODO

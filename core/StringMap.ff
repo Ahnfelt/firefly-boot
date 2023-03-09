@@ -79,6 +79,8 @@ extend self[V]: StringMap[V] {
 
 }
 
+// These instances are only here to satisfy the automatic deriving, which currently kicks in for class types (this should be fixed)
+
 extend self[V: Show]: StringMap[V] {
     show(): String {
         self.toList().show() + ".toStringMap()" // TODO

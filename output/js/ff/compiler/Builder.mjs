@@ -176,7 +176,7 @@ const json_ = `{
                 "firefly-main": "Main.bundle.js"
             },
             "devDependencies": {
-                "pkg": "^5.8.1"
+                "pkg": "^5.8.0"
             },
             "pkg": {
                 "scripts": "Main.bundle.js",
@@ -274,7 +274,7 @@ const json_ = `{
                 "firefly-main": "Main.bundle.js"
             },
             "devDependencies": {
-                "pkg": "^5.8.1"
+                "pkg": "^5.8.0"
             },
             "pkg": {
                 "scripts": "Main.bundle.js",

@@ -128,10 +128,7 @@ return (_w1 !== 46)
 }));
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
-{
-const _1 = module_;
-{
-const _c = _1;
+const module2_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.traits_, ((_w1) => {
@@ -145,6 +142,33 @@ return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
 })), ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true)
 })))
+}))(module_);
+ff_core_List.List_each(module2_.instances_, ((_w1) => {
+ff_core_List.List_each(_w1.typeArguments_, ((_w1) => {
+ff_compiler_Resolver.Resolver_checkInstanceType(self3_, _w1)
+}))
+}));
+return module2_
+}
+
+export function Resolver_checkInstanceType(self_, type_) {
+{
+const _1 = type_;
+{
+if(_1.TConstructor) {
+const name_ = _1.name_;
+const typeArguments_ = _1.generics_;
+if(ff_core_Set.Set_contains(self_.asyncTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(type_.at_, "Traits must not be instantiated for capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+};
+ff_core_List.List_each(typeArguments_, ((_w1) => {
+ff_compiler_Resolver.Resolver_checkInstanceType(self_, _w1)
+}))
+return
+}
+}
+{
+
 return
 }
 }
@@ -1073,10 +1097,7 @@ return (_w1 !== 46)
 }));
 const self2_ = ff_compiler_Resolver.Resolver_processImports(self_, module_.imports_, otherModules_);
 const self3_ = ff_compiler_Resolver.Resolver_processDefinitions(self2_, module_, ff_core_Option.None());
-{
-const _1 = module_;
-{
-const _c = _1;
+const module2_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, ff_core_List.List_map(module_.types_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveTypeDefinition(self3_, _w1)
 })), ff_core_List.List_map(module_.traits_, ((_w1) => {
@@ -1090,6 +1111,33 @@ return ff_compiler_Resolver.Resolver_resolveLetDefinition(self3_, _w1, true)
 })), ff_core_List.List_map(module_.functions_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self3_, _w1, true)
 })))
+}))(module_);
+ff_core_List.List_each(module2_.instances_, ((_w1) => {
+ff_core_List.List_each(_w1.typeArguments_, ((_w1) => {
+ff_compiler_Resolver.Resolver_checkInstanceType(self3_, _w1)
+}))
+}));
+return module2_
+}
+
+export async function Resolver_checkInstanceType$(self_, type_, $c) {
+{
+const _1 = type_;
+{
+if(_1.TConstructor) {
+const name_ = _1.name_;
+const typeArguments_ = _1.generics_;
+if(ff_core_Set.Set_contains(self_.asyncTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(type_.at_, "Traits must not be instantiated for capability types"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+};
+ff_core_List.List_each(typeArguments_, ((_w1) => {
+ff_compiler_Resolver.Resolver_checkInstanceType(self_, _w1)
+}))
+return
+}
+}
+{
+
 return
 }
 }
