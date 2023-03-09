@@ -242,7 +242,7 @@ const at_ = _1.at_;
 const message_ = _1.message_;
 const error_ = _2;
 ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at file://" + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
+ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError))
@@ -580,7 +580,7 @@ const at_ = _1.at_;
 const message_ = _1.message_;
 const error_ = _2;
 ff_core_Log.debug_(message_);
-ff_core_Log.debug_((((((" at file://" + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
+ff_core_Log.debug_((((((" at " + ff_core_String.String_replace(at_.file_, "./", "")) + ":") + at_.line_) + ":") + at_.column_))
 return
 }
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError))
