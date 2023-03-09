@@ -8,7 +8,7 @@ main(system: NodeSystem): Unit {
     Log.show([
         Pair(4, 2)
         Pair(3, 4)
-    ].toMap()))
+    ].toMap())
     Log.show([1, 2, 3].flatMap {x => [x, x * 2]})
     Log.show([6, 4, 36, 8, 9, 5, 4, 2, 12, 2, 34, 4, 5, 65].toSet().toStream().toList())
     Log.show([6, 4, 36, 8, 9, 5, 4, 2, 12, 2, 34, 4, 5, 65].toSet().toList())
