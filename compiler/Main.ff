@@ -114,7 +114,7 @@ main(system: NodeSystem): Unit {
             Log.debug(message)
     } catch {| CompileError(at, message), error =>
         Log.debug(message)
-        Log.debug(" at file://" + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
+        Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)
     } grab()
 }
 
