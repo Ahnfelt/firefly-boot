@@ -40,6 +40,33 @@ extend self: NodeSystem {
     js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
 
+    readStream(): Stream[Buffer]
+        target js async """
+            return ff_core_FileSystem.internalReadStream_$(() => process.stdin)
+        """
+
+    writeBuffer(buffer: Buffer): Unit
+        target js async "process.stdout.write(new Uint8Array(buffer_.buffer))"
+
+    writeStream(stream: Stream[Buffer]): Unit {
+        stream.each {self.writeBuffer(_)}
+    }
+
+    writeText(text: String): Unit {
+        self.writeBuffer(text.toBuffer())
+    }
+
+    writeErrorBuffer(buffer: Buffer): Unit
+        target js async "process.stderr.write(new Uint8Array(buffer_.buffer))"
+
+    writeErrorStream(stream: Stream[Buffer]): Unit {
+        stream.each {self.writeErrorBuffer(_)}
+    }
+
+    writeErrorText(text: String): Unit {
+        self.writeErrorBuffer(text.toBuffer())
+    }
+
 }
 
 internalAssets(system: NodeSystem): AssetSystem

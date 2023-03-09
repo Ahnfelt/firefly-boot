@@ -126,6 +126,10 @@ return (_w1 !== 46)
 })))
 }
 
+export function internalReadStream_(createReadStream_) {
+throw new Error('Function internalReadStream is missing on this target in sync context.');
+}
+
 export async function directoryName_$(path_, $c) {
 const directory_ = ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 !== 47)
@@ -157,6 +161,50 @@ return (_w1 !== 47)
 })), ((_w1) => {
 return (_w1 !== 46)
 })))
+}
+
+export async function internalReadStream_$(createReadStream_, $c) {
+
+        let c = null
+        let readable = null
+        let doResolve = null
+        let doReject = null
+        let seenError = null
+        const abort = () => {
+            if(c != null) {
+                c.signal.removeEventListener('abort', abort)
+                readable.close()
+            }
+        }
+        function open($c) {
+            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            c = $c
+            readable = createReadStream_()
+            readable.on('readable', () => {
+                if(doResolve != null) doResolve()
+            })
+            readable.on('error', error => {
+                seenError = error
+                if(doReject != null) doReject(error)
+            })
+            readable.on('close', () => {
+                if(doResolve != null) doResolve()
+            })
+            $c.signal.addEventListener('abort', abort)
+        }
+        return ff_core_Stream.Stream(async function go($c) {
+            if(c == null) open($c)
+            let buffer = readable.read()
+            if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer))
+            if(seenError != null) throw seenError
+            if(readable.destroyed) return ff_core_Option.None()
+            let promise = new Promise((resolve, reject) => {
+                doResolve = () => {doResolve = null; doReject = null; resolve()}
+                doReject = error => {doResolve = null; doReject = null; reject(error)}
+            }).then(() => go($c))
+            return await promise
+        }, abort)
+    
 }
 
 export function FileSystem_copy(self_, fromPath_, toPath_) {
@@ -350,45 +398,7 @@ throw new Error('Function FileSystem_getAbsolutePath is missing on this target i
 export async function FileSystem_readStream$(self_, file_, $c) {
 
             const fs = import$2
-            let c = null
-            let readable = null
-            let doResolve = null
-            let doReject = null
-            let seenError = null
-            const abort = () => {
-                if(c != null) {
-                    c.signal.removeEventListener('abort', abort)
-                    readable.close()
-                }
-            }
-            function open($c) {
-                if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-                c = $c
-                readable = fs.createReadStream(file_)
-                readable.on('readable', () => {
-                    if(doResolve != null) doResolve()
-                })
-                readable.on('error', error => {
-                    seenError = error
-                    if(doReject != null) doReject(error)
-                })
-                readable.on('close', () => {
-                    if(doResolve != null) doResolve()
-                })
-                $c.signal.addEventListener('abort', abort)
-            }
-            return ff_core_Stream.Stream(async function go($c) {
-                if(c == null) open($c)
-                let buffer = readable.read()
-                if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer))
-                if(seenError != null) throw seenError
-                if(readable.destroyed) return ff_core_Option.None()
-                let promise = new Promise((resolve, reject) => {
-                    doResolve = () => {doResolve = null; doReject = null; resolve()}
-                    doReject = error => {doResolve = null; doReject = null; reject(error)}
-                }).then(() => go($c))
-                return await promise
-            }, abort)
+            return ff_core_FileSystem.internalReadStream_$(() => fs.createReadStream(file_))
         
 }
 

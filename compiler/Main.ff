@@ -111,7 +111,7 @@ main(system: NodeSystem): Unit {
         let command = parseCommandLine(system.arguments().toList())
         runCommand(command)
     } catch {| CommandLineError(message), error =>
-            Log.debug(message)
+        Log.debug(message)
     } catch {| CompileError(at, message), error =>
         Log.debug(message)
         Log.debug(" at " + at.file.replace("./", "") + ":" + at.line + ":" + at.column)

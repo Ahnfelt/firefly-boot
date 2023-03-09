@@ -1,0 +1,4 @@
+main(system: NodeSystem) {
+    let stream = system.readStream()
+    system.writeStream(stream)
+}

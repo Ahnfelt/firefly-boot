@@ -141,6 +141,38 @@ export function NodeSystem_js(self_) {
 throw new Error('Function NodeSystem_js is missing on this target in sync context.');
 }
 
+export function NodeSystem_readStream(self_) {
+throw new Error('Function NodeSystem_readStream is missing on this target in sync context.');
+}
+
+export function NodeSystem_writeBuffer(self_, buffer_) {
+throw new Error('Function NodeSystem_writeBuffer is missing on this target in sync context.');
+}
+
+export function NodeSystem_writeStream(self_, stream_) {
+ff_core_Stream.Stream_each(stream_, ((_w1) => {
+ff_core_NodeSystem.NodeSystem_writeBuffer(self_, _w1)
+}))
+}
+
+export function NodeSystem_writeText(self_, text_) {
+ff_core_NodeSystem.NodeSystem_writeBuffer(self_, ff_core_String.String_toBuffer(text_))
+}
+
+export function NodeSystem_writeErrorBuffer(self_, buffer_) {
+throw new Error('Function NodeSystem_writeErrorBuffer is missing on this target in sync context.');
+}
+
+export function NodeSystem_writeErrorStream(self_, stream_) {
+ff_core_Stream.Stream_each(stream_, ((_w1) => {
+ff_core_NodeSystem.NodeSystem_writeErrorBuffer(self_, _w1)
+}))
+}
+
+export function NodeSystem_writeErrorText(self_, text_) {
+ff_core_NodeSystem.NodeSystem_writeErrorBuffer(self_, ff_core_String.String_toBuffer(text_))
+}
+
 export async function NodeSystem_arguments$(self_, $c) {
 return self_.array_
 }
@@ -185,6 +217,40 @@ return null
 
 export async function NodeSystem_js$(self_, $c) {
 return typeof globalThis !== 'undefined' ? globalThis : window
+}
+
+export async function NodeSystem_readStream$(self_, $c) {
+
+            return ff_core_FileSystem.internalReadStream_$(() => process.stdin)
+        
+}
+
+export async function NodeSystem_writeBuffer$(self_, buffer_, $c) {
+process.stdout.write(new Uint8Array(buffer_.buffer))
+}
+
+export async function NodeSystem_writeStream$(self_, stream_, $c) {
+(await ff_core_Stream.Stream_each$(stream_, (async (_w1, $c) => {
+(await ff_core_NodeSystem.NodeSystem_writeBuffer$(self_, _w1, $c))
+}), $c))
+}
+
+export async function NodeSystem_writeText$(self_, text_, $c) {
+(await ff_core_NodeSystem.NodeSystem_writeBuffer$(self_, ff_core_String.String_toBuffer(text_), $c))
+}
+
+export async function NodeSystem_writeErrorBuffer$(self_, buffer_, $c) {
+process.stderr.write(new Uint8Array(buffer_.buffer))
+}
+
+export async function NodeSystem_writeErrorStream$(self_, stream_, $c) {
+(await ff_core_Stream.Stream_each$(stream_, (async (_w1, $c) => {
+(await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(self_, _w1, $c))
+}), $c))
+}
+
+export async function NodeSystem_writeErrorText$(self_, text_, $c) {
+(await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(self_, ff_core_String.String_toBuffer(text_), $c))
 }
 
 
