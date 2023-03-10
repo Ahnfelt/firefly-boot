@@ -210,8 +210,17 @@ return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, _w1)
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((instanceFunction_) => {
+const methodName_ = instanceFunction_.signature_.name_;
+const traitName_ = definition_.traitName_;
+const traitMethodName_ = (ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(traitName_), ((_w1) => {
+return (_w1 !== 46)
+}))) + methodName_);
+const traitMethod_ = ff_core_Option.Option_else(ff_core_Map.Map_get(environment_.symbols_, traitMethodName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ((("Trait " + traitName_) + " has no such method: ") + methodName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}));
+const newInstanceFunction_ = ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, instanceFunction_);
+return newInstanceFunction_
 })))
 return
 }
@@ -1893,8 +1902,17 @@ return ff_compiler_Unification.Unification_withLocalInstances(self_.unification_
 const _1 = definition_;
 {
 const _c = _1;
-return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
-return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, _w1)
+return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((instanceFunction_) => {
+const methodName_ = instanceFunction_.signature_.name_;
+const traitName_ = definition_.traitName_;
+const traitMethodName_ = (ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(traitName_), ((_w1) => {
+return (_w1 !== 46)
+}))) + methodName_);
+const traitMethod_ = ff_core_Option.Option_else(ff_core_Map.Map_get(environment_.symbols_, traitMethodName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(instanceFunction_.at_, ((("Trait " + traitName_) + " has no such method: ") + methodName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}));
+const newInstanceFunction_ = ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment_, instanceFunction_);
+return newInstanceFunction_
 })))
 return
 }
