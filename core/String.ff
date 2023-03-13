@@ -58,6 +58,21 @@ extend self: String {
     split(char: Char): Array[String]
         target js sync "return self_.split(String.fromCharCode(char_))"
 
+    splitFirst(char: Char): Option[Pair[String, String]]
+        target js sync """
+            const array = self_.split(String.fromCharCode(char_), 2)
+            return array.length === 2
+                ? ff_core_Option.Some(ff_core_Pair.Pair(array[0], array[1]))
+                : ff_core_Option.None()
+        """
+
+    lines(): List[String]
+        target js sync """
+            return ff_core_Array.Array_toList(self_.split(
+                new RegExp("[" + String.fromCharCode(13) + "]?[" + String.fromCharCode(10) + "]", "g")
+            ))
+        """
+
     dropFirst(count: Int = 1): String
         target js sync "return self_.slice(count_)"
 

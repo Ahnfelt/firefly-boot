@@ -381,4 +381,24 @@ extend self: Stream[Buffer] {
         self.toBuffer().toString(encoding)
     }
 
+    readBytes(bytes: Int): Pair[Array[Buffer], Stream[Buffer]] {
+        if(bytes <= 0) {Pair([].toArray(), self)} else:
+        let buffers = Stack.make()
+        mutable buffer = self.next().grab()
+        mutable taken = 0
+        mutable remainder = None
+        while {remainder == None} {
+            let needed = bytes - taken
+            if(needed > buffer.size()) {
+                buffers.push(buffer)
+                taken += buffer.size()
+                buffer = self.next().grab()
+            } else {
+                buffers.push(buffer.view(0, needed))
+                remainder = Some(buffer.view(needed, buffer.size()))
+            }
+        }
+        Pair(buffers.drain(), remainder.toStream().addAll(self))
+    }
+
 }

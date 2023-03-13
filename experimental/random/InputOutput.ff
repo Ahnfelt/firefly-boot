@@ -1,0 +1,23 @@
+capability Writer(
+    writeBuffer: Buffer => Unit
+)
+
+extend self: Writer {
+
+    writeStream(stream: Stream[Buffer]): Unit {
+
+    }
+
+    writeText(text: String, encoding: String = "utf8"): Unit {
+
+    }
+
+}
+
+main(system: NodeSystem) {
+    let in: Stream[Buffer] = system.in
+    system.out.writeStream(in)
+    system.err.writeStream(in)
+    system.out.writeText("Hello")
+    system.err.writeText("Hello")
+}
