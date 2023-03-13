@@ -51,7 +51,21 @@ extend self: Inference {
         let instances = constraintsToInstances(definition.constraints)
         self.unification.withLocalInstances(instances) {
             definition.DInstance(
-                methods = definition.methods.map { self.inferFunctionDefinition(environment, _) }
+                // TODO: Check that the methods adhere to the instantiated trait method signatures
+                // It needs to look at the instantiated trait, e.g. `trait T: Show` and `instance Foo: Show`
+                // gives an instantiation `T = Foo`, which should be applied to all the methods before checking.
+                methods = definition.methods.map {instanceFunction =>
+                    let methodName = instanceFunction.signature.name
+                    let traitName = definition.traitName
+                    let traitMethodName = traitName.reverse().dropWhile {_ != '.'}.reverse() + methodName
+                    let traitMethod = environment.symbols.get(traitMethodName).else {
+                        throw(CompileError(instanceFunction.at,
+                            "Trait " + traitName + " has no such method: " + methodName
+                        ))
+                    }
+                    let newInstanceFunction = self.inferFunctionDefinition(environment, instanceFunction)
+                    newInstanceFunction
+                }
             )
         }
     }

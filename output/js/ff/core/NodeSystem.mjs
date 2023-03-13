@@ -159,6 +159,10 @@ export function NodeSystem_writeText(self_, text_) {
 ff_core_NodeSystem.NodeSystem_writeBuffer(self_, ff_core_String.String_toBuffer(text_))
 }
 
+export function NodeSystem_writeLine(self_, text_) {
+ff_core_NodeSystem.NodeSystem_writeText(self_, (text_ + "\n"))
+}
+
 export function NodeSystem_writeErrorBuffer(self_, buffer_) {
 throw new Error('Function NodeSystem_writeErrorBuffer is missing on this target in sync context.');
 }
@@ -171,6 +175,10 @@ ff_core_NodeSystem.NodeSystem_writeErrorBuffer(self_, _w1)
 
 export function NodeSystem_writeErrorText(self_, text_) {
 ff_core_NodeSystem.NodeSystem_writeErrorBuffer(self_, ff_core_String.String_toBuffer(text_))
+}
+
+export function NodeSystem_writeErrorLine(self_, text_) {
+ff_core_NodeSystem.NodeSystem_writeErrorText(self_, (text_ + "\n"))
 }
 
 export async function NodeSystem_arguments$(self_, $c) {
@@ -239,6 +247,10 @@ export async function NodeSystem_writeText$(self_, text_, $c) {
 (await ff_core_NodeSystem.NodeSystem_writeBuffer$(self_, ff_core_String.String_toBuffer(text_), $c))
 }
 
+export async function NodeSystem_writeLine$(self_, text_, $c) {
+(await ff_core_NodeSystem.NodeSystem_writeText$(self_, (text_ + "\n"), $c))
+}
+
 export async function NodeSystem_writeErrorBuffer$(self_, buffer_, $c) {
 process.stderr.write(new Uint8Array(buffer_.buffer))
 }
@@ -251,6 +263,10 @@ export async function NodeSystem_writeErrorStream$(self_, stream_, $c) {
 
 export async function NodeSystem_writeErrorText$(self_, text_, $c) {
 (await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(self_, ff_core_String.String_toBuffer(text_), $c))
+}
+
+export async function NodeSystem_writeErrorLine$(self_, text_, $c) {
+(await ff_core_NodeSystem.NodeSystem_writeErrorText$(self_, (text_ + "\n"), $c))
 }
 
 

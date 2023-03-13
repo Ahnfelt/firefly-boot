@@ -173,7 +173,7 @@ export async function internalReadStream_$(createReadStream_, $c) {
         const abort = () => {
             if(c != null) {
                 c.signal.removeEventListener('abort', abort)
-                readable.close()
+                readable.destroy()
             }
         }
         function open($c) {
