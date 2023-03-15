@@ -19,9 +19,10 @@ main(system: NodeSystem) {
     let headersPair = parseHeaders(system.readStream())
     let headers = headersPair.first
     let rest = headersPair.second
-    let length = headers.grab("content-length")
-    Log.debug(length)
-    Log.debug(Buffer.fromBufferArray(rest.readBytes(5).first).toString())
+    let length = headers.grab("content-length").grabInt()
+    let body = Buffer.fromBufferArray(rest.readBytes(length).first).toString()
+    let json = system.js().parseJson(body)
+    Log.show(json.get("x").grabInt())
 }
 
 /*parseRequest(input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
@@ -57,8 +58,7 @@ parseHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
     buffers.push(buffer.view(0, offset))
     let headers = Buffer.fromBufferArray(buffers.drain()).toString()
     let map = headers.lines().filter {_.size() != 0}.map {line =>
-        Log.show(line)
-        line.splitFirst(':').grab().mapFirst {_.lower()}
+        line.splitFirst(':').grab().mapFirst {_.lower()} //.mapSecond {_.trim()}
     }.toMap()
     Pair(map, [buffer.view(offset, buffer.size())].toStream().addAll(input))
 }
