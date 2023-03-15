@@ -7,6 +7,8 @@ capability Request(
     object: JsValue
 )
 
+data BadRequestException(reason: String)
+
 /*extend self: LanguageServer {
 
     handleRequest(request: LanguageServerRequest): LanguageServerResponse {
@@ -16,20 +18,33 @@ capability Request(
 }*/
 
 main(system: NodeSystem) {
-    let headersPair = parseHeaders(system.readStream())
-    let headers = headersPair.first
-    let rest = headersPair.second
-    let length = headers.grab("content-length").grabInt()
-    let body = Buffer.fromBufferArray(rest.readBytes(length).first).toString()
-    let json = system.js().parseJson(body)
-    Log.show(json.get("x").grabInt())
+    try {
+        let requestPair = parseRequest(system, system.readStream())
+        let request = requestPair.first
+        let json = request.object
+        Log.show(json.get("x").grabInt())
+    } catch {| BadRequestException(reason), error =>
+         system.writeErrorText(reason + "\n")
+    } grab()
 }
 
-/*parseRequest(input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
-
-    Log.debug(headers)
-
-}*/
+parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
+    let headersPair = parseHeaders(input)
+    let headers = headersPair.first
+    let rest = headersPair.second
+    let length = headers
+        .get("content-length").else {throw(BadRequestException("'content-length' header is missing"))}
+        .getInt().else {throw(BadRequestException("Value for 'content-length' is not an integer"))}
+    let bodyPair = rest.readBytes(length)
+    let body = Buffer.fromBufferArray(bodyPair.first).toString()
+    let json = try {
+        system.js().parseJson(body)
+    } catchAny { error =>
+        throw(BadRequestException("Invalid JSON in request body"))
+    } grab()
+    let request = Request(headers, json)
+    Pair(request, bodyPair.second)
+}
 
 parseHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
     let buffers = Stack.make()

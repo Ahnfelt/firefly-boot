@@ -79,6 +79,18 @@ extend self: String {
     dropLast(count: Int = 1): String
         target js sync "return self_.slice(0, self_.length - count_)"
 
+    getInt(): Option[Int]
+        target js sync """
+            if(self_.length == 0) {
+                return ff_core_Option.None()
+            }
+            for(let i = 0; i < self_.length; i++) {
+                const c = self_.codePointAt(i)
+                if(c < 48 || c > 57) ff_core_Option.None()
+            }
+            return ff_core_Option.Some(parseInt(self_, 10));
+        """
+
     grabInt(): Int
         target js sync """
             if(self_.length == 0) {

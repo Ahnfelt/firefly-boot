@@ -1233,6 +1233,29 @@ export function Stream_toString(self_, encoding_ = "utf8") {
 return ff_core_Buffer.Buffer_toString(ff_core_Stream.Stream_toBuffer(self_), encoding_)
 }
 
+export function Stream_readBytes(self_, bytes_) {
+if((bytes_ <= 0)) {
+return ff_core_Pair.Pair(ff_core_List.List_toArray(ff_core_List.Empty()), self_)
+} else {
+const buffers_ = ff_core_Stack.make_();
+let buffer_ = ff_core_Option.Option_grab(self_.next_());
+let taken_ = 0;
+let remainder_ = ff_core_Option.None();
+while(ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Buffer.ff_core_Equal_Equal$ff_core_Buffer_Buffer).equals_(remainder_, ff_core_Option.None())) {
+const needed_ = (bytes_ - taken_);
+if((needed_ > ff_core_Buffer.Buffer_size(buffer_))) {
+ff_core_Stack.Stack_push(buffers_, buffer_);
+taken_ += ff_core_Buffer.Buffer_size(buffer_);
+buffer_ = ff_core_Option.Option_grab(self_.next_())
+} else {
+ff_core_Stack.Stack_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
+remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff_core_Buffer.Buffer_size(buffer_)))
+}
+};
+return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(buffers_), ff_core_Stream.Stream_addAll(ff_core_Option.Option_toStream(remainder_, false), self_))
+}
+}
+
 export async function Stream_toBuffer$(self_, $c) {
 const builder_ = ff_core_Stack.make_();
 (await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
@@ -1243,6 +1266,29 @@ return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
 
 export async function Stream_toString$(self_, encoding_ = "utf8", $c) {
 return ff_core_Buffer.Buffer_toString((await ff_core_Stream.Stream_toBuffer$(self_, $c)), encoding_)
+}
+
+export async function Stream_readBytes$(self_, bytes_, $c) {
+if((bytes_ <= 0)) {
+return ff_core_Pair.Pair(ff_core_List.List_toArray(ff_core_List.Empty()), self_)
+} else {
+const buffers_ = ff_core_Stack.make_();
+let buffer_ = ff_core_Option.Option_grab((await self_.next_($c)));
+let taken_ = 0;
+let remainder_ = ff_core_Option.None();
+while(ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Buffer.ff_core_Equal_Equal$ff_core_Buffer_Buffer).equals_(remainder_, ff_core_Option.None())) {
+const needed_ = (bytes_ - taken_);
+if((needed_ > ff_core_Buffer.Buffer_size(buffer_))) {
+ff_core_Stack.Stack_push(buffers_, buffer_);
+taken_ += ff_core_Buffer.Buffer_size(buffer_);
+buffer_ = ff_core_Option.Option_grab((await self_.next_($c)))
+} else {
+ff_core_Stack.Stack_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
+remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff_core_Buffer.Buffer_size(buffer_)))
+}
+};
+return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(buffers_), (await ff_core_Stream.Stream_addAll$((await ff_core_Option.Option_toStream$(remainder_, false, $c)), self_, $c)))
+}
 }
 
 

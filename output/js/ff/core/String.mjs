@@ -148,12 +148,42 @@ export function String_split(self_, char_) {
 return self_.split(String.fromCharCode(char_))
 }
 
+export function String_splitFirst(self_, char_) {
+
+            const array = self_.split(String.fromCharCode(char_), 2)
+            return array.length === 2
+                ? ff_core_Option.Some(ff_core_Pair.Pair(array[0], array[1]))
+                : ff_core_Option.None()
+        
+}
+
+export function String_lines(self_) {
+
+            return ff_core_Array.Array_toList(self_.split(
+                new RegExp("[" + String.fromCharCode(13) + "]?[" + String.fromCharCode(10) + "]", "g")
+            ))
+        
+}
+
 export function String_dropFirst(self_, count_ = 1) {
 return self_.slice(count_)
 }
 
 export function String_dropLast(self_, count_ = 1) {
 return self_.slice(0, self_.length - count_)
+}
+
+export function String_getInt(self_) {
+
+            if(self_.length == 0) {
+                return ff_core_Option.None()
+            }
+            for(let i = 0; i < self_.length; i++) {
+                const c = self_.codePointAt(i)
+                if(c < 48 || c > 57) ff_core_Option.None()
+            }
+            return ff_core_Option.Some(parseInt(self_, 10));
+        
 }
 
 export function String_grabInt(self_) {
@@ -302,12 +332,24 @@ export async function String_split$(self_, char_, $c) {
 throw new Error('Function String_split is missing on this target in async context.');
 }
 
+export async function String_splitFirst$(self_, char_, $c) {
+throw new Error('Function String_splitFirst is missing on this target in async context.');
+}
+
+export async function String_lines$(self_, $c) {
+throw new Error('Function String_lines is missing on this target in async context.');
+}
+
 export async function String_dropFirst$(self_, count_ = 1, $c) {
 throw new Error('Function String_dropFirst is missing on this target in async context.');
 }
 
 export async function String_dropLast$(self_, count_ = 1, $c) {
 throw new Error('Function String_dropLast is missing on this target in async context.');
+}
+
+export async function String_getInt$(self_, $c) {
+throw new Error('Function String_getInt is missing on this target in async context.');
 }
 
 export async function String_grabInt$(self_, $c) {
