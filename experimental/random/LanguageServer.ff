@@ -28,14 +28,17 @@ capability ResultOrError {
 
 main(system: NodeSystem) {
     try {
-        let requestPair = parseRequest(system, system.readStream())
-        let request = requestPair.first
-        let message = parseRequestMessage(request.object)
-        handleRequestMessage(system.js(), message).each{ response =>
-            let json = response.toJson(Some("    "))
-            system.writeText(json + "\n")
-        }
-        Log.show("message parsed")
+        mutable input = system.readStream()
+        //while {True} {
+            let requestPair = parseRequest(system, input)
+            input = requestPair.second
+            let request = requestPair.first
+            let message = parseRequestMessage(request.object)
+            handleRequestMessage(system.js(), message).each{ response =>
+                let json = response.toJson(Some("    "))
+                system.writeText(json + "\n")
+            }
+        //}
     } catch {| BadRequestException(reason), error =>
          system.writeErrorText(reason + "\n")
     } grab()
@@ -148,6 +151,7 @@ handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
 
 makeResponseMessage(js: JsSystem, id : MessageId, result : ResultOrError) : JsValue {
     let o = js.object()
+    o.set("jsonrpc", "2.0")
     id.{
         | MessageIdInt(id) => o.set("id", id)
         | MessageIdString(id) => o.set("id", id)
@@ -161,7 +165,6 @@ makeResponseMessage(js: JsSystem, id : MessageId, result : ResultOrError) : JsVa
             e.set("message", message)
             o.set("error", e)
     }
-    o.set("jsonrpc", "2.0")
     o
 }
 
