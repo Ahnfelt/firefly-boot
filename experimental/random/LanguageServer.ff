@@ -31,24 +31,17 @@ main(system: NodeSystem) {
 parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
     let headersPair = parseHeaders(input)
     let headers = headersPair.first
-    let rest = headersPair.second
-    let length = headers
+    let contentLength = headers
         .get("content-length").else {throw(BadRequestException("'content-length' header is missing"))}
         .getInt().else {throw(BadRequestException("Value for 'content-length' is not an integer"))}
-    let bodyPair = rest.readBytes(length)
-    let body = Buffer.fromBufferArray(bodyPair.first).toString()
-    let json = try {
-        system.js().parseJson(body)
-    } catchAny { error =>
-        throw(BadRequestException("Invalid JSON in request body"))
-    } grab()
-    let request = Request(headers, json)
-    Pair(request, bodyPair.second)
+    let bodyPair = parseBody(system.js(), contentLength, headersPair.second)
+    bodyPair.mapFirst {body => Request(headers, body)}
 }
 
 parseHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
     let buffers = Stack.make()
-    mutable buffer = input.next().grab()
+    mutable buffer = input.next()
+        .else{throw(BadRequestException("End of input while parsing request headers"))}
     mutable offset = 0
     mutable lastWasNewline = False
     mutable done = False
@@ -67,17 +60,30 @@ parseHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
         if(offset == buffer.size()) {
             offset = 0
             buffers.push(buffer)
-            buffer = input.next().grab()
+            buffer = input.next()
+                .else{throw(BadRequestException("End of input while parsing request headers"))}
         }
     }
     buffers.push(buffer.view(0, offset))
     let headers = Buffer.fromBufferArray(buffers.drain()).toString()
-    let map = headers.lines().filter {_.size() != 0}.map {line =>
-        line.splitFirst(':').grab().mapFirst {_.lower()} //.mapSecond {_.trim()}
+    let map = headers.lines().pairs().filter {_.second.size() != 0}.map {| Pair(i, line) =>
+        line.splitFirst(':').else {throw(BadRequestException("Invalid header at line " + i))}
+            .mapFirst {_.lower()} //.mapSecond {_.trim()}
     }.toMap()
     Pair(map, [buffer.view(offset, buffer.size())].toStream().addAll(input))
 }
 
-/*parseBody(contentLength: Int, input: Stream[Buffer]): Pair[JsValue, Stream[Buffer]] {
-
-}*/
+parseBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[JsValue, Stream[Buffer]] {
+    let bodyPair = try {
+        input.readBytes(contentLength) // Should Stream.readBytes return an option?
+    } catchAny { error =>
+        throw(BadRequestException("End of input while parsing request body"))
+    } grab()
+    let body = Buffer.fromBufferArray(bodyPair.first).toString()
+    let json = try {
+        js.parseJson(body)
+    } catchAny { error =>
+        throw(BadRequestException("Invalid JSON in request body"))
+    } grab()
+    Pair(json, bodyPair.second)
+}
