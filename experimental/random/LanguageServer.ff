@@ -2,43 +2,56 @@ class LanguageServer(
     mutable openFiles: Map[String, String]
 )
 
+data BadRequestException(reason: String)
+
 capability Request(
     headers: Map[String, String]
     object: JsValue
 )
 
-data BadRequestException(reason: String)
+capability RequestMessage(
+    id: Option[MessageId] // None when the request is a Notification Message
+    method: String
+    parameters: Map[String, JsValue]
+)
 
-/*extend self: LanguageServer {
+data MessageId {
+    MessageIdInt(id: Int)
+    MessageIdString(id: String)
+}
 
-    handleRequest(request: LanguageServerRequest): LanguageServerResponse {
+capability ResultOrError {
+    Result(result: JsValue)
+    Error(code: Int, message: String)
+}
 
-    }
-
-}*/
 
 main(system: NodeSystem) {
     try {
         let requestPair = parseRequest(system, system.readStream())
         let request = requestPair.first
-        let json = request.object
-        Log.show(json.get("x").grabInt())
+        let message = parseRequestMessage(request.object)
+        handleRequestMessage(system.js(), message).each{ response =>
+            let json = response.toJson(Some("    "))
+            system.writeText(json + "\n")
+        }
+        Log.show("message parsed")
     } catch {| BadRequestException(reason), error =>
          system.writeErrorText(reason + "\n")
     } grab()
 }
 
 parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
-    let headersPair = parseHeaders(input)
+    let headersPair = parseRequestHeaders(input)
     let headers = headersPair.first
     let contentLength = headers
         .get("content-length").else {throw(BadRequestException("'content-length' header is missing"))}
         .getInt().else {throw(BadRequestException("Value for 'content-length' is not an integer"))}
-    let bodyPair = parseBody(system.js(), contentLength, headersPair.second)
+    let bodyPair = parseRequestBody(system.js(), contentLength, headersPair.second)
     bodyPair.mapFirst {body => Request(headers, body)}
 }
 
-parseHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
+parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
     let buffers = Stack.make()
     mutable buffer = input.next()
         .else{throw(BadRequestException("End of input while parsing request headers"))}
@@ -73,7 +86,7 @@ parseHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
     Pair(map, [buffer.view(offset, buffer.size())].toStream().addAll(input))
 }
 
-parseBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[JsValue, Stream[Buffer]] {
+parseRequestBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[JsValue, Stream[Buffer]] {
     let bodyPair = try {
         input.readBytes(contentLength) // Should Stream.readBytes return an option?
     } catchAny { error =>
@@ -86,4 +99,76 @@ parseBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[JsValue
         throw(BadRequestException("Invalid JSON in request body"))
     } grab()
     Pair(json, bodyPair.second)
+}
+
+parseRequestMessage(object: JsValue): RequestMessage {
+    let id = object.getOwn("id").map { id =>
+        if(id.isInt()) {
+            MessageIdInt(id.grabInt())
+        } elseIf {id.isString()} {
+            MessageIdString(id.grabString())
+        } else {
+            throw(BadRequestException("Bad JSON-RPC id, int or string expected"))
+        }
+    }
+
+    let method = object.getOwn("method").{
+        | None => throw(BadRequestException("Bad JSON-RPC, missing method"))
+        | Some(m) {!m.isString()} => throw(BadRequestException("Bad JSON-RPC method, string expected"))
+        | Some(m) => m.grabString()
+    }
+
+    let parameters = object.getOwn("params").{
+        | None => [].toMap()
+        | Some(o) {!o.isObject()} => throw(BadRequestException("Bad JSON-RPC params, object expected"))
+        | Some(o) => o.grabMap()
+    }
+
+    RequestMessage(id, method, parameters)
+}
+
+handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
+    message.id.{
+        // Notification Message
+        | None =>
+            message.method.{
+                | "initialized" => {}
+                | _ => {}
+            }
+            None
+        // Request Message
+        | Some(id) =>
+            let result = message.method.{
+                | "initialize" => handleInitialize(js, message.parameters)
+                | _ => handleUnsupported(js)
+            }
+            Some(makeResponseMessage(js, id, result))
+    }
+}
+
+makeResponseMessage(js: JsSystem, id : MessageId, result : ResultOrError) : JsValue {
+    let o = js.object()
+    id.{
+        | MessageIdInt(id) => o.set("id", id)
+        | MessageIdString(id) => o.set("id", id)
+    }
+    result.{
+        | Result(result) =>
+            o.set("result", result)
+        | Error(code, message) =>
+            let e = js.object()
+            e.set("code", code)
+            e.set("message", message)
+            o.set("error", e)
+    }
+    o.set("jsonrpc", "2.0")
+    o
+}
+
+handleUnsupported(js: JsSystem): ResultOrError {
+    Error(1234, "Unsupported method")
+}
+
+handleInitialize(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
+    Result(js.value("Initialized firefly language server")) // TODO
 }

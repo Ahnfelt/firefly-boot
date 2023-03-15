@@ -48,7 +48,7 @@ extend self: JsValue {
         target js sync "return Array.isArray(self_)"
 
     isObject(): Bool
-        target js sync "return self != null && typeof self_ === 'object'"
+        target js sync "return self_ != null && typeof self_ === 'object'"
 
     isFunction(): Bool
         target js sync "return typeof self_ === 'function'"
@@ -71,6 +71,11 @@ extend self: JsValue {
 
     get[K: IsJsValue](key: K): JsValue
         target js sync "return self_[key_]"
+
+    // TODO rename
+    getOwn(key: String): Option[JsValue] {
+        if(self.hasOwn(key)) {Some(self.get(key))} else {None}
+    }
 
     set[K: IsJsValue, V: IsJsValue](key: K, value: V): Unit
         target js sync "self_[key_] = value_"
@@ -200,8 +205,20 @@ extend self: JsValue {
     toJson(space: Option[String] = None): String
         target js sync "return JSON.stringify(self_, null, space_.value_)"
 
+    grabPairs(): List[Pair[String, JsValue]]
+        target js sync """
+            if(!(self_ instanceof Object)) throw new Error('Expected object, got '+ typeof self_);;
+            let result = ff_core_List.Empty();
+            Object.getOwnPropertyNames(self_).forEach((name, i) => {
+                let pair = ff_core_Pair.Pair(name, self_[name]);
+                result = ff_core_List.Link(pair, result);
+            })
+            return result;
+        """
 
-    //toMap(): Map[String, JsValue] // TODO
+    grabMap(): Map[String, JsValue] {
+        self.grabPairs().toMap()
+    }
     //toArray(): Array[JsValue] // TODO
     //toList(): List[JsValue] // TODO
     // TODO: JS operators
