@@ -56,8 +56,9 @@ parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Bu
 
 parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buffer]] {
     let buffers = Stack.make()
-    mutable buffer = input.next()
-        .else{throw(BadRequestException("End of input while parsing request headers"))}
+    mutable buffer = input.next().else {
+        throw(BadRequestException("End of input while parsing request headers"))
+    }
     mutable offset = 0
     mutable droppingInitialNewlines = True
     mutable lastWasNewline = False
