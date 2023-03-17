@@ -151,6 +151,7 @@ handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
         | Some(id) =>
             let result = message.method.{
                 | "initialize" => handleInitialize(js, message.parameters)
+                | "hover" => handleHover(js, message.parameters)
                 | _ => handleUnsupported(js)
             }
             Some(makeResponseMessage(js, id, result))
@@ -182,4 +183,10 @@ handleUnsupported(js: JsSystem): ResultOrError {
 
 handleInitialize(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
     Result(js.value("Initialized firefly language server")) // TODO
+}
+
+handleHover(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
+    let o = js.object()
+    o.set("contents", "Wow")
+    Result(o)
 }
