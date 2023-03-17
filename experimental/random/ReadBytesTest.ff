@@ -1,0 +1,10 @@
+main(system: NodeSystem) {
+    read(read(system.readStream()))
+}
+
+read(input: Stream[Buffer]): Stream[Buffer] {
+    let pair = input.readBytes(10)
+    let arrayBuffer = pair.first
+    Log.show(arrayBuffer)
+    pair.second
+}

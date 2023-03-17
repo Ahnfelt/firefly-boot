@@ -29,7 +29,7 @@ capability ResultOrError {
 main(system: NodeSystem) {
     try {
         mutable input = system.readStream()
-        //while {True} {
+        while {True} {
             let requestPair = parseRequest(system, input)
             input = requestPair.second
             let request = requestPair.first
@@ -38,7 +38,7 @@ main(system: NodeSystem) {
                 let json = response.toJson(Some("    "))
                 system.writeText(json + "\n")
             }
-        //}
+        }
     } catch {| BadRequestException(reason), error =>
          system.writeErrorText(reason + "\n")
     } grab()
@@ -59,11 +59,21 @@ parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buf
     mutable buffer = input.next()
         .else{throw(BadRequestException("End of input while parsing request headers"))}
     mutable offset = 0
+    mutable droppingInitialNewlines = True
     mutable lastWasNewline = False
     mutable done = False
     while {!done} {
+        if(offset == buffer.size()) {
+            offset = 0
+            buffers.push(buffer)
+            buffer = input.next().else {
+                throw(BadRequestException("End of input while parsing request headers"))
+            }
+        }
         let byte = buffer.grabUint8(offset)
-        if(byte == '\n'.codeUnit) {
+        if(droppingInitialNewlines && (byte == '\n'.codeUnit || byte == '\r'.codeUnit)) {
+            // Skip
+        } elseIf {byte == '\n'.codeUnit} {
             if(lastWasNewline) {
                 done = True
             } else {
@@ -71,20 +81,17 @@ parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buf
             }
         } elseIf {byte != '\r'.codeUnit && lastWasNewline} {
             lastWasNewline = False
+        } else {
+            droppingInitialNewlines = False
         }
         offset += 1
-        if(offset == buffer.size()) {
-            offset = 0
-            buffers.push(buffer)
-            buffer = input.next()
-                .else{throw(BadRequestException("End of input while parsing request headers"))}
-        }
     }
     buffers.push(buffer.view(0, offset))
     let headers = Buffer.fromBufferArray(buffers.drain()).toString()
     let map = headers.lines().pairs().filter {_.second.size() != 0}.map {| Pair(i, line) =>
-        line.splitFirst(':').else {throw(BadRequestException("Invalid header at line " + i))}
-            .mapFirst {_.lower()} //.mapSecond {_.trim()}
+        line.splitFirst(':').else {
+            throw(BadRequestException("Invalid header at line " + i + " '" + line + "'"))
+        }.mapFirst {_.lower()} //.mapSecond {_.trim()}
     }.toMap()
     Pair(map, [buffer.view(offset, buffer.size())].toStream().addAll(input))
 }
@@ -99,7 +106,7 @@ parseRequestBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[
     let json = try {
         js.parseJson(body)
     } catchAny { error =>
-        throw(BadRequestException("Invalid JSON in request body"))
+        throw(BadRequestException("Invalid JSON in request body: " + body))
     } grab()
     Pair(json, bodyPair.second)
 }
@@ -135,8 +142,8 @@ handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
         // Notification Message
         | None =>
             message.method.{
-                | "initialized" => {}
-                | _ => {}
+                | "initialized" =>
+                | _ =>
             }
             None
         // Request Message
