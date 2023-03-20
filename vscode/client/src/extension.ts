@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { workspace, extensions, ExtensionContext } from 'vscode';
+import * as vscode from 'vscode';
 
 import {
     LanguageClient,
@@ -10,9 +10,21 @@ import {
 
 let client: LanguageClient;
 
-export function activate(context: ExtensionContext) {
+export function activate(context: vscode.ExtensionContext) {
 
     let fireflyPath = process.env.FIREFLY_HOME // Start code from the vscode directory with: FIREFLY_HOME=$PWD/.. code .
+
+    const commandName = 'firefly.run';
+    const commandHandler = () => {
+        const editor = vscode.window.activeTextEditor;
+        if(editor) {
+            const fileName = vscode.workspace.asRelativePath(editor.document.fileName);;
+            const terminal = vscode.window.createTerminal('Firefly');
+            terminal.show();
+            terminal.sendText(`$FIREFLY_HOME/firefly.sh "${fileName}"`);
+        }
+    };
+    context.subscriptions.push(vscode.commands.registerCommand(commandName, commandHandler));
 
     const runOrDebug = {
         command: fireflyPath + '/firefly.sh',
@@ -20,6 +32,7 @@ export function activate(context: ExtensionContext) {
         options: {cwd: fireflyPath + '/experimental/random'},
         transport: TransportKind.stdio // ipc
     };
+
     const serverOptions: ServerOptions = {
         run: runOrDebug,
         debug: runOrDebug
@@ -28,7 +41,7 @@ export function activate(context: ExtensionContext) {
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ scheme: 'file', language: 'firefly' }],
         synchronize: {
-            fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
+            fileEvents: vscode.workspace.createFileSystemWatcher('**/.clientrc')
         }
     };
 

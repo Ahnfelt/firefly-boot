@@ -37,7 +37,13 @@
 		"snippets": [{
 			"language": "firefly",
 			"path": "./snippets.json"
-		}]
+		}],
+		"commands": [
+			{
+				"command": "firefly.run",
+				"title": "Run Current Firefly Main File"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
