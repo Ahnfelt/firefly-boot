@@ -186,11 +186,11 @@ handleInitialize(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError
     let o = js.object()
         .with("capabilities",
             js.object()
-                .with("hoverProvider", True)
+                .with("hoverProvider", False)
                 .with("diagnosticProvider",
                     js.object()
                         .with("interFileDependencies", True)
-                        .with("workspaceDiagnostics", True)
+                        .with("workspaceDiagnostics", False)
                 )
         )
     Result(o)
