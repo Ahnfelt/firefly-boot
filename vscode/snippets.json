@@ -1,5 +1,5 @@
 {
-	"Main function": {
+	"main": {
 		"prefix": "main",
 		"body": [
 			"main(system: NodeSystem) {",
@@ -8,7 +8,7 @@
 		],
 		"description": "Main function"
 	},
-	"Node main function": {
+	"nodeMain": {
 		"prefix": "node",
 		"body": [
 			"nodeMain(system: NodeSystem) {",
@@ -17,7 +17,7 @@
 		],
 		"description": "Node main function"
 	},
-	"Browser main function": {
+	"browserMain": {
 		"prefix": "browser",
 		"body": [
 			"browserMain(system: BrowserSystem) {",
