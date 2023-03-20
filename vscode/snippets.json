@@ -85,5 +85,28 @@
 			"import $1 from $2:$3"
 		],
 		"description": "Import declaration"
+	},
+	"function": {
+		"prefix": "function",
+		"body": [
+			"function $1($2): $3 {",
+			"    $0",
+			"}"
+		],
+		"description": "Function definition"
+	},
+	"let": {
+		"prefix": "let",
+		"body": [
+			"let $1 = $0"
+		],
+		"description": "Immutable variable definition"
+	},
+	"mutable": {
+		"prefix": "mutable",
+		"body": [
+			"mutable $1 = $0"
+		],
+		"description": "Mutable variable definition"
 	}
 }
