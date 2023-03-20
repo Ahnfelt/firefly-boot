@@ -1,0 +1,80 @@
+{
+	"Main function": {
+		"prefix": "main",
+		"body": [
+			"main(system: NodeSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Main function"
+	},
+	"Node main function": {
+		"prefix": "node",
+		"body": [
+			"nodeMain(system: NodeSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Node main function"
+	},
+	"Browser main function": {
+		"prefix": "browser",
+		"body": [
+			"browserMain(system: BrowserSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Browser main function"
+	},
+	"extend": {
+		"prefix": "extend",
+		"body": [
+			"extend ${1:self}: $2 {",
+			"    $0",
+			"}"
+		],
+		"description": "Extend a type with methods"
+	},
+	"data": {
+		"prefix": "data",
+		"body": [
+			"data ${1}($2) {$0}"
+		],
+		"description": "Data type declaration"
+	},
+	"class": {
+		"prefix": "class",
+		"body": [
+			"class ${1}($2) {$0}"
+		],
+		"description": "Class type declaration"
+	},
+	"capability": {
+		"prefix": "capability",
+		"body": [
+			"capability ${1}($2) {$0}"
+		],
+		"description": "Capability type declaration"
+	},
+	"package": {
+		"prefix": "package",
+		"body": [
+			"package $1:$2:$3"
+		],
+		"description": "Package declaration"
+	},
+	"dependency": {
+		"prefix": "dependency",
+		"body": [
+			"dependency $1:$2:$3"
+		],
+		"description": "Dependency declaration"
+	},
+	"import": {
+		"prefix": "import",
+		"body": [
+			"import $1 from $2:$3"
+		],
+		"description": "Import declaration"
+	}
+}

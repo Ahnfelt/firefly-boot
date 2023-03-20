@@ -21,7 +21,25 @@
 		"languages": [{
 			"id": "firefly",
 			"extensions": [".ff"]
-		}]
+		}],
+		"problemMatchers": [{
+			"name": "firefly-problem",
+			"owner": "firefly",
+			"fileLocation": ["relative", "${workspaceRoot}"],
+			"pattern":[{
+				"regexp": "^(.*)\\r?\\n at (.*)[:]([0-9]+)[:]([0-9]+)$",
+				"message": 1,
+				"file": 2,
+				"line": 3,
+				"column": 4
+			}]
+		}],
+		"snippets": [
+			{
+				"language": "firefly",
+				"path": "./snippets.json"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
