@@ -182,11 +182,22 @@ handleUnsupported(js: JsSystem): ResultOrError {
 }
 
 handleInitialize(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
-    Result(js.value("Initialized firefly language server")) // TODO
+    // Save workspaceFolders
+    let o = js.object()
+        .with("capabilities",
+            js.object()
+                .with("hoverProvider", True)
+                .with("diagnosticProvider",
+                    js.object()
+                        .with("interFileDependencies", True)
+                        .with("workspaceDiagnostics", True)
+                )
+        )
+    Result(o)
 }
 
 handleHover(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
-    let o = js.object()
-    o.set("contents", "Wow")
+    let o = js.object().with("contents", "TODO")
     Result(o)
 }
+
