@@ -34,12 +34,10 @@
 				"column": 4
 			}]
 		}],
-		"snippets": [
-			{
-				"language": "firefly",
-				"path": "./snippets.json"
-			}
-		]
+		"snippets": [{
+			"language": "firefly",
+			"path": "./snippets.json"
+		}]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
