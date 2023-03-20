@@ -26,6 +26,15 @@
 		],
 		"description": "Browser main function"
 	},
+	"buildMain": {
+		"prefix": "build",
+		"body": [
+			"buildMain(system: BuildSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Build main function"
+	},
 	"extend": {
 		"prefix": "extend",
 		"body": [
