@@ -41,12 +41,4 @@ returnStuff(): Int {
     } finally {
         Log.debug("quux")
     } grab()
-
-    try {
-        
-    } catch {| MyError e, error =>
-        
-    } finally {
-        
-    } grab()
 }

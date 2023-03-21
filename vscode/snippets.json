@@ -148,5 +148,39 @@
 			"} grab()"
 		],
 		"description": "Try catch finanlly expression"
+	},
+	"while": {
+		"prefix": "while",
+		"body": [
+			"while {$1} {",
+			"    $0",
+			"}"
+		],
+		"description": "While expression"
+	},
+	"do": {
+		"prefix": "do",
+		"body": [
+			"do {",
+			"    $0",
+			"}"
+		],
+		"description": "Do expression"
+	},
+	"dowhile": {
+		"prefix": "dowhile",
+		"body": [
+			"doWhile {",
+			"    $0",
+			"}"
+		],
+		"description": "Do while expression"
+	},
+	"log": {
+		"prefix": "log",
+		"body": [
+			"Log.debug(\"$1: \" + $1)"
+		],
+		"description": "Log expression"
 	}
 }
