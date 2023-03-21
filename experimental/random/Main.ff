@@ -41,4 +41,12 @@ returnStuff(): Int {
     } finally {
         Log.debug("quux")
     } grab()
+
+    try {
+        
+    } catch {| CombineError e, error =>
+        
+    } finally {
+        
+    } grab()
 }

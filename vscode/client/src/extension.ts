@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
             const fileName = vscode.workspace.asRelativePath(editor.document.fileName);;
             const terminal = vscode.window.createTerminal('Firefly');
             terminal.show();
-            terminal.sendText(`$FIREFLY_HOME/firefly.sh "${fileName}"`);
+            terminal.sendText(`${fireflyPath}/firefly.sh "${fileName}"`);
         }
     };
     context.subscriptions.push(vscode.commands.registerCommand(commandName, commandHandler));

@@ -108,5 +108,45 @@
 			"mutable $1 = $0"
 		],
 		"description": "Mutable variable definition"
+	},
+	"if": {
+		"prefix": "if",
+		"body": [
+			"if($1) {",
+			"    $0",
+			"}"
+		],
+		"description": "If expression"
+	},
+	"else": {
+		"prefix": "else",
+		"body": [
+			"else {",
+			"    $0",
+			"}"
+		],
+		"description": "Else expression part"
+	},
+	"elseif": {
+		"prefix": "elseif",
+		"body": [
+			"elseIf {$1} {",
+			"    $0",
+			"}"
+		],
+		"description": "ElseIf expression part"
+	},
+	"try": {
+		"prefix": "try",
+		"body": [
+			"try {",
+			"    $1",
+			"} catch {| $2, error =>",
+			"    $3",
+			"} finally {",
+			"    $0",
+			"} grab()"
+		],
+		"description": "Try catch finanlly expression"
 	}
 }
