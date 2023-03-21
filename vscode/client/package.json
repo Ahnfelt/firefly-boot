@@ -1,0 +1,22 @@
+{
+	"name": "firefly-client",
+	"description": "Firefly language server client",
+	"author": "Firefly team",
+	"license": "MIT",
+	"version": "0.0.1",
+	"publisher": "Firefly team",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Ahnfelt/firefly-boot"
+	},
+	"engines": {
+		"vscode": "^1.75.0"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^8.1.0"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.75.1",
+		"@vscode/test-electron": "^2.2.3"
+	}
+}

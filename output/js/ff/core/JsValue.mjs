@@ -153,7 +153,7 @@ return Array.isArray(self_)
 }
 
 export function JsValue_isObject(self_) {
-return self != null && typeof self_ === 'object'
+return self_ != null && typeof self_ === 'object'
 }
 
 export function JsValue_isFunction(self_) {
@@ -182,6 +182,14 @@ return typeof self_ === 'number' && isFinite(self_)
 
 export function JsValue_get(self_, key_, ff_core_JsValue_IsJsValue$K) {
 return self_[key_]
+}
+
+export function JsValue_getOwn(self_, key_) {
+if(ff_core_JsValue.JsValue_hasOwn(self_, key_)) {
+return ff_core_Option.Some(ff_core_JsValue.JsValue_get(self_, key_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String))
+} else {
+return ff_core_Option.None()
+}
 }
 
 export function JsValue_set(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V) {
@@ -344,6 +352,22 @@ export function JsValue_toJson(self_, space_ = ff_core_Option.None()) {
 return JSON.stringify(self_, null, space_.value_)
 }
 
+export function JsValue_grabPairs(self_) {
+
+            if(!(self_ instanceof Object)) throw new Error('Expected object, got '+ typeof self_);;
+            let result = ff_core_List.Empty();
+            Object.getOwnPropertyNames(self_).forEach((name, i) => {
+                let pair = ff_core_Pair.Pair(name, self_[name]);
+                result = ff_core_List.Link(pair, result);
+            })
+            return result;
+        
+}
+
+export function JsValue_grabMap(self_) {
+return ff_core_List.List_toMap(ff_core_JsValue.JsValue_grabPairs(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+
 export async function JsValue_grabString$(self_, $c) {
 throw new Error('Function JsValue_grabString is missing on this target in async context.');
 }
@@ -426,6 +450,14 @@ throw new Error('Function JsValue_isFinite is missing on this target in async co
 
 export async function JsValue_get$(self_, key_, ff_core_JsValue_IsJsValue$K, $c) {
 throw new Error('Function JsValue_get is missing on this target in async context.');
+}
+
+export async function JsValue_getOwn$(self_, key_, $c) {
+if(ff_core_JsValue.JsValue_hasOwn(self_, key_)) {
+return ff_core_Option.Some(ff_core_JsValue.JsValue_get(self_, key_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String))
+} else {
+return ff_core_Option.None()
+}
 }
 
 export async function JsValue_set$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $c) {
@@ -586,6 +618,14 @@ throw new Error('Function JsValue_new9 is missing on this target in async contex
 
 export async function JsValue_toJson$(self_, space_ = ff_core_Option.None(), $c) {
 throw new Error('Function JsValue_toJson is missing on this target in async context.');
+}
+
+export async function JsValue_grabPairs$(self_, $c) {
+throw new Error('Function JsValue_grabPairs is missing on this target in async context.');
+}
+
+export async function JsValue_grabMap$(self_, $c) {
+return ff_core_List.List_toMap(ff_core_JsValue.JsValue_grabPairs(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
 export const ff_core_JsValue_IsJsValue$ff_core_JsValue_JsValue = {

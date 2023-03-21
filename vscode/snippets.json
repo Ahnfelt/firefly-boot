@@ -1,0 +1,112 @@
+{
+	"main": {
+		"prefix": "main",
+		"body": [
+			"main(system: NodeSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Main function"
+	},
+	"nodeMain": {
+		"prefix": "node",
+		"body": [
+			"nodeMain(system: NodeSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Node main function"
+	},
+	"browserMain": {
+		"prefix": "browser",
+		"body": [
+			"browserMain(system: BrowserSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Browser main function"
+	},
+	"buildMain": {
+		"prefix": "build",
+		"body": [
+			"buildMain(system: BuildSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Build main function"
+	},
+	"extend": {
+		"prefix": "extend",
+		"body": [
+			"extend ${1:self}: $2 {",
+			"    $0",
+			"}"
+		],
+		"description": "Extend a type with methods"
+	},
+	"data": {
+		"prefix": "data",
+		"body": [
+			"data ${1}($2) {$0}"
+		],
+		"description": "Data type declaration"
+	},
+	"class": {
+		"prefix": "class",
+		"body": [
+			"class ${1}($2) {$0}"
+		],
+		"description": "Class type declaration"
+	},
+	"capability": {
+		"prefix": "capability",
+		"body": [
+			"capability ${1}($2) {$0}"
+		],
+		"description": "Capability type declaration"
+	},
+	"package": {
+		"prefix": "package",
+		"body": [
+			"package $1:$2:$3"
+		],
+		"description": "Package declaration"
+	},
+	"dependency": {
+		"prefix": "dependency",
+		"body": [
+			"dependency $1:$2:$3"
+		],
+		"description": "Dependency declaration"
+	},
+	"import": {
+		"prefix": "import",
+		"body": [
+			"import $1 from $2:$3"
+		],
+		"description": "Import declaration"
+	},
+	"function": {
+		"prefix": "function",
+		"body": [
+			"function $1($2): $3 {",
+			"    $0",
+			"}"
+		],
+		"description": "Function definition"
+	},
+	"let": {
+		"prefix": "let",
+		"body": [
+			"let $1 = $0"
+		],
+		"description": "Immutable variable definition"
+	},
+	"mutable": {
+		"prefix": "mutable",
+		"body": [
+			"mutable $1 = $0"
+		],
+		"description": "Mutable variable definition"
+	}
+}

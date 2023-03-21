@@ -1,0 +1,63 @@
+{
+	"name": "firefly",
+	"description": "Firefly language support",
+	"author": "Firefly team",
+	"license": "MIT",
+	"version": "1.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Ahnfelt/firefly-boot"
+	},
+	"publisher": "Firefly team",
+	"categories": ["Programming Languages"],
+	"keywords": [
+		"multi-root ready"
+	],
+	"engines": {
+		"vscode": "^1.75.0"
+	},
+	"main": "./client/out/extension",
+	"contributes": {
+		"languages": [{
+			"id": "firefly",
+			"extensions": [".ff"]
+		}],
+		"problemMatchers": [{
+			"name": "firefly-problem",
+			"owner": "firefly",
+			"fileLocation": ["relative", "${workspaceRoot}"],
+			"pattern":[{
+				"regexp": "^(.*)\\r?\\n at (.*)[:]([0-9]+)[:]([0-9]+)$",
+				"message": 1,
+				"file": 2,
+				"line": 3,
+				"column": 4
+			}]
+		}],
+		"snippets": [{
+			"language": "firefly",
+			"path": "./snippets.json"
+		}],
+		"commands": [
+			{
+				"command": "firefly.run",
+				"title": "Run Current Firefly Main File"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -b",
+		"watch": "tsc -b -w",
+		"postinstall": "cd client && npm install && cd .."
+	},
+	"devDependencies": {
+		"@types/mocha": "^9.1.0",
+		"@types/node": "^16.11.7",
+		"@typescript-eslint/eslint-plugin": "^5.54.0",
+		"@typescript-eslint/parser": "^5.54.0",
+		"eslint": "^8.35.0",
+		"mocha": "^9.2.1",
+		"typescript": "^4.9.5"
+	}
+}
