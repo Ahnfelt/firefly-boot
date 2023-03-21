@@ -46,7 +46,7 @@ extend self: NodeSystem {
         """
 
     writeBuffer(buffer: Buffer): Unit
-        target js async "process.stdout.write(new Uint8Array(buffer_.buffer))"
+        target js async "process.stdout.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))"
 
     writeStream(stream: Stream[Buffer]): Unit {
         stream.each {self.writeBuffer(_)}
@@ -61,7 +61,7 @@ extend self: NodeSystem {
     }
 
     writeErrorBuffer(buffer: Buffer): Unit
-        target js async "process.stderr.write(new Uint8Array(buffer_.buffer))"
+        target js async "process.stderr.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))"
 
     writeErrorStream(stream: Stream[Buffer]): Unit {
         stream.each {self.writeErrorBuffer(_)}
