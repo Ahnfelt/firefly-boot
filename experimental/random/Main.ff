@@ -44,7 +44,7 @@ returnStuff(): Int {
 
     try {
         
-    } catch {| CombineError e, error =>
+    } catch {| MyError e, error =>
         
     } finally {
         

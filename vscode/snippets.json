@@ -141,7 +141,7 @@
 		"body": [
 			"try {",
 			"    $1",
-			"} catch {| $2, error =>",
+			"} catch {| ${2:MyException e}, error =>",
 			"    $3",
 			"} finally {",
 			"    $0",
