@@ -1,0 +1,188 @@
+{
+    "name": "Firefly",
+    "scopeName": "source.firefly",
+    "fileTypes": [".ff"],
+    "uuid": "4f8c685b-2623-4a57-9ef6-51445872c8d4",
+    "patterns": [{"include": "#all"}],
+    "repository": {
+        "all": {"patterns": [
+            {"include": "#comment"},
+            {"include": "#char"},
+            {"include": "#string"},
+            {"include": "#string-multiline"},
+            {"include": "#number"},
+            {"include": "#keyword"}, 
+            {"include": "#field-or-call"},
+            {"include": "#upper"},
+            {"include": "#lower"},
+            {"include": "#curly-expression"},
+            {"include": "#round-expression"}
+        ]},
+        "keyword": {
+            "name": "keyword.declaration.firefly",
+            "match": "\\b(data|class|capability|import|dependency|package|include|extend|tailcall|function|let|mutable|firefly|trait|instance|newtype|private|safe|unsafe|trust|target)\\b(?=[ ]*[A-Za-z0-9\"'])"
+        },
+        "field-or-call": {
+            "name": "entity.name.function.member.firefly",
+            "match": "(?<=[.}][ ]*)[a-z][A-Za-z0-9]*\\b|\\b[a-z][A-Za-z0-9]*(?=[ ]*[({])"
+        },
+        "upper": {
+            "name": "entity.name.type.firefly",
+            "match": "\\b[A-Z][A-Za-z0-9]*\\b"
+        },
+        "lower": {
+            "name": "entity.name.variable.firefly",
+            "match": "\\b[a-z][A-Za-z0-9]*\\b"
+        },
+        "round-expression": {
+            "begin": "\\(",
+            "end": "\\)",
+            "beginCaptures": {
+              "0": {"name": "punctuation.paren.open.firefly"}
+            },
+            "endCaptures": {
+              "0": {"name": "punctuation.paren.close.firefly"}
+            },
+            "name": "expression.group",
+            "patterns": [{"include": "#all"}]
+        },
+        "curly-expression": {
+            "begin": "\\{",
+            "end": "\\}",
+            "beginCaptures": {
+              "0": {"name": "punctuation.curly.open.firefly"}
+            },
+            "endCaptures": {
+              "0": {"name": "punctuation.curly.close.firefly"}
+            },
+            "name": "expression.scope",
+            "patterns": [{"include": "#all"}]
+        },
+		"char": {
+			"name": "string.quoted.single.firefly",
+			"begin": "'",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.firefly"
+				}
+			},
+			"end": "(')|((?:[^\\\\\\n])$)",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.definition.string.end.firefly"
+				},
+				"2": {
+					"name": "invalid.illegal.newline.firefly"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#string-character-escape"
+				}
+			]
+		},
+		"string": {
+			"name": "string.quoted.double.firefly",
+			"begin": "\"",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.firefly"
+				}
+			},
+			"end": "(\")|((?:[^\\\\\\n])$)",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.definition.string.end.firefly"
+				},
+				"2": {
+					"name": "invalid.illegal.newline.firefly"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#string-character-escape"
+				}
+			]
+		},
+		"string-multiline": {
+			"name": "string.quoted.multiline.firefly",
+			"begin": "\"\"\"",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.firefly"
+				}
+			},
+			"end": "\"\"\"",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.firefly"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#string-character-escape"
+				}
+			]
+		},
+		"string-character-escape": {
+			"name": "constant.character.escape.firefly",
+			"match": "\\\\(x\\h{2}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.|$)"
+		},
+        "number": {
+			"patterns": [
+				{
+					"name": "constant.numeric.hex.firefly",
+					"match": "\\b0(x|X)[0-9a-fA-F]+\\b"
+				},
+				{
+					"name": "constant.numeric.binary.firefly",
+					"match": "\\b0(b|B)[01]+\\b"
+				},
+				{
+					"name": "constant.numeric.decimal.firefly",
+					"match": "\\b[0-9]+([.][0-9]+)?([eE][+-]?[0-9]+)?\\b"
+				}
+            ]
+        },
+        "comment": {
+			"patterns": [
+				{
+					"name": "comment.block.firefly",
+					"begin": "/\\*",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.firefly"
+						}
+					},
+					"end": "\\*/",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.firefly"
+						}
+					}
+				},
+				{
+					"begin": "(^[ \\t]+)?(?=//)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.whitespace.comment.leading.firefly"
+						}
+					},
+					"end": "(?=$)",
+					"patterns": [
+						{
+							"name": "comment.line.double-slash.firefly",
+							"begin": "//",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.comment.firefly"
+								}
+							},
+							"end": "(?=$)"
+						}
+					]
+				}
+			]
+		}       
+    }
+}
