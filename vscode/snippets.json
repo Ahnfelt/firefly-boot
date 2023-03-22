@@ -149,6 +149,13 @@
 		],
 		"description": "Try catch finanlly expression"
 	},
+	"throw": {
+		"prefix": "throw",
+		"body": [
+			"throw(${1:MyException()})"
+		],
+		"description": "Throw expression"
+	},
 	"while": {
 		"prefix": "while",
 		"body": [
