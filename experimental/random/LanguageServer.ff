@@ -27,7 +27,6 @@ capability ResultOrError {
 
 
 main(system: NodeSystem) {
-    system.files().writeText("lsp-debug.txt", "")
     try {
         mutable input = system.readStream()
         while {True} {
@@ -35,12 +34,11 @@ main(system: NodeSystem) {
             input = requestPair.second
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
-            system.files().writeText("lsp-debug.txt", system.files().readText("lsp-debug.txt") + "\n\n\n\nRequest:\n" + request.object.toJson(Some("  ")))
             handleRequestMessage(system.js(), message).each{ response =>
                 let json = response.toJson(Some("    "))
-                system.files().writeText("lsp-debug.txt", system.files().readText("lsp-debug.txt") + "\n\nResponse:\n" + json)
                 system.writeText(json + "\n")
             }
+            system.writeText(makeDiagnoseNotification(system.js()).toJson(Some("    ")) + "\n")
         }
     } catch {| BadRequestException(reason), error =>
          system.writeErrorText(reason + "\n")
@@ -200,7 +198,9 @@ handleInitialize(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError
                 .with("openClose", True)
                 .with("change", 1 /* TextDocumentSyncKind.Full */)
             )
-            .with("hoverProvider", False)
+            .with("hoverProvider", True)
+            .with("definitionProvider", True)
+            .with("typeDefinitionProvider", True)
             .with("diagnosticProvider", js.object()
                 .with("interFileDependencies", True)
                 .with("workspaceDiagnostics", True)
@@ -229,3 +229,28 @@ handleHover(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
     Result(o)
 }
 
+makeNotificationMessage(js: JsSystem, method : String, params: JsValue) : JsValue {
+    js.object()
+        .with("jsonrpc", "2.0")
+        .with("method", method)
+        .with("params", params)
+}
+
+makeDiagnoseNotification(js: JsSystem) : JsValue {
+    let diagnostic = js.object()
+        .with("range", js.object()
+            .with("start", js.object()
+                .with("line", "1").with("character", "7")
+            )
+            .with("start", js.object()
+                .with("end", "1").with("character", "21")
+            )
+        )
+        .with("severity", 1 /* Error */)
+        .with("message", "Hurray!")
+
+    let params = js.object()
+        .with("uri", "file:///home/werk/projects/firefly-boot/experimental/random/LanguageServer.ff")
+        .with("diagnostics", [diagnostic].toArray())
+    makeNotificationMessage(js, "textDocument/publishDiagnostics", params)
+}

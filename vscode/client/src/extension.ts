@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
     const serverOptions: ServerOptions = {
         run: runOrDebug,
         debug: runOrDebug
-    };
+    };  
 
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ scheme: 'file', language: 'firefly' }],
