@@ -58,131 +58,131 @@
             "name": "expression.scope",
             "patterns": [{"include": "#all"}]
         },
-		"char": {
-			"name": "string.quoted.single.firefly",
-			"begin": "'",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.definition.string.begin.firefly"
-				}
-			},
-			"end": "(')|((?:[^\\\\\\n])$)",
-			"endCaptures": {
-				"1": {
-					"name": "punctuation.definition.string.end.firefly"
-				},
-				"2": {
-					"name": "invalid.illegal.newline.firefly"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#string-character-escape"
-				}
-			]
-		},
-		"string": {
-			"name": "string.quoted.double.firefly",
-			"begin": "\"",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.definition.string.begin.firefly"
-				}
-			},
-			"end": "(\")|((?:[^\\\\\\n])$)",
-			"endCaptures": {
-				"1": {
-					"name": "punctuation.definition.string.end.firefly"
-				},
-				"2": {
-					"name": "invalid.illegal.newline.firefly"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#string-character-escape"
-				}
-			]
-		},
-		"string-multiline": {
-			"name": "string.quoted.multiline.firefly",
-			"begin": "\"\"\"",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.definition.string.begin.firefly"
-				}
-			},
-			"end": "\"\"\"",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.definition.string.end.firefly"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#string-character-escape"
-				}
-			]
-		},
-		"string-character-escape": {
-			"name": "constant.character.escape.firefly",
-			"match": "\\\\(x\\h{2}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.|$)"
-		},
+        "char": {
+            "name": "string.quoted.single.firefly",
+            "begin": "'",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.begin.firefly"
+                }
+            },
+            "end": "(')|((?:[^\\\\\\n])$)",
+            "endCaptures": {
+                "1": {
+                    "name": "punctuation.definition.string.end.firefly"
+                },
+                "2": {
+                    "name": "invalid.illegal.newline.firefly"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#string-character-escape"
+                }
+            ]
+        },
+        "string": {
+            "name": "string.quoted.double.firefly",
+            "begin": "\"",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.begin.firefly"
+                }
+            },
+            "end": "(\")|((?:[^\\\\\\n])$)",
+            "endCaptures": {
+                "1": {
+                    "name": "punctuation.definition.string.end.firefly"
+                },
+                "2": {
+                    "name": "invalid.illegal.newline.firefly"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#string-character-escape"
+                }
+            ]
+        },
+        "string-multiline": {
+            "name": "string.quoted.multiline.firefly",
+            "begin": "\"\"\"",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.begin.firefly"
+                }
+            },
+            "end": "\"\"\"",
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.end.firefly"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#string-character-escape"
+                }
+            ]
+        },
+        "string-character-escape": {
+            "name": "constant.character.escape.firefly",
+            "match": "\\\\(x\\h{2}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.|$)"
+        },
         "number": {
-			"patterns": [
-				{
-					"name": "constant.numeric.hex.firefly",
-					"match": "\\b0(x|X)[0-9a-fA-F]+\\b"
-				},
-				{
-					"name": "constant.numeric.binary.firefly",
-					"match": "\\b0(b|B)[01]+\\b"
-				},
-				{
-					"name": "constant.numeric.decimal.firefly",
-					"match": "\\b[0-9]+([.][0-9]+)?([eE][+-]?[0-9]+)?\\b"
-				}
+            "patterns": [
+                {
+                    "name": "constant.numeric.hex.firefly",
+                    "match": "\\b0(x|X)[0-9a-fA-F]+\\b"
+                },
+                {
+                    "name": "constant.numeric.binary.firefly",
+                    "match": "\\b0(b|B)[01]+\\b"
+                },
+                {
+                    "name": "constant.numeric.decimal.firefly",
+                    "match": "\\b[0-9]+([.][0-9]+)?([eE][+-]?[0-9]+)?\\b"
+                }
             ]
         },
         "comment": {
-			"patterns": [
-				{
-					"name": "comment.block.firefly",
-					"begin": "/\\*",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.definition.comment.firefly"
-						}
-					},
-					"end": "\\*/",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.definition.comment.firefly"
-						}
-					}
-				},
-				{
-					"begin": "(^[ \\t]+)?(?=//)",
-					"beginCaptures": {
-						"1": {
-							"name": "punctuation.whitespace.comment.leading.firefly"
-						}
-					},
-					"end": "(?=$)",
-					"patterns": [
-						{
-							"name": "comment.line.double-slash.firefly",
-							"begin": "//",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.definition.comment.firefly"
-								}
-							},
-							"end": "(?=$)"
-						}
-					]
-				}
-			]
-		}       
+            "patterns": [
+                {
+                    "name": "comment.block.firefly",
+                    "begin": "/\\*",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.firefly"
+                        }
+                    },
+                    "end": "\\*/",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.firefly"
+                        }
+                    }
+                },
+                {
+                    "begin": "(^[ \\t]+)?(?=//)",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "punctuation.whitespace.comment.leading.firefly"
+                        }
+                    },
+                    "end": "(?=$)",
+                    "patterns": [
+                        {
+                            "name": "comment.line.double-slash.firefly",
+                            "begin": "//",
+                            "beginCaptures": {
+                                "0": {
+                                    "name": "punctuation.definition.comment.firefly"
+                                }
+                            },
+                            "end": "(?=$)"
+                        }
+                    ]
+                }
+            ]
+        }       
     }
 }
