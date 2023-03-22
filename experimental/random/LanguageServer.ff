@@ -27,6 +27,7 @@ capability ResultOrError {
 
 
 main(system: NodeSystem) {
+    system.files().writeText("lsp-debug.txt", "")
     try {
         mutable input = system.readStream()
         while {True} {
@@ -34,8 +35,10 @@ main(system: NodeSystem) {
             input = requestPair.second
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
+            system.files().writeText("lsp-debug.txt", system.files().readText("lsp-debug.txt") + "\n\n\n\nRequest:\n" + request.object.toJson(Some("  ")))
             handleRequestMessage(system.js(), message).each{ response =>
                 let json = response.toJson(Some("    "))
+                system.files().writeText("lsp-debug.txt", system.files().readText("lsp-debug.txt") + "\n\nResponse:\n" + json)
                 system.writeText(json + "\n")
             }
         }
