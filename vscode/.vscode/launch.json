@@ -8,6 +8,7 @@
 			"runtimeExecutable": "${execPath}",
 			"args": ["--extensionDevelopmentPath=${workspaceRoot}"],
 			"outFiles": ["${workspaceRoot}/client/out/**/*.js"],
+			"env": {"FIREFLY_HOME": "${workspaceRoot}/.."},
 			"preLaunchTask": {
 				"type": "npm",
 				"script": "watch"
