@@ -22,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
             const terminal = vscode.window.createTerminal('Firefly');
             terminal.show();
             terminal.sendText(`${fireflyPath}/firefly.sh "${fileName}"`);
+            //terminal.sendText(`rm -f lsp-debug.txt; tee -a lsp-debug.txt | ${fireflyPath}/firefly.sh "${fileName}" | tee -a lsp-debug.txt`);
         }
     };
     context.subscriptions.push(vscode.commands.registerCommand(commandName, commandHandler));
