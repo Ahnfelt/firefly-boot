@@ -185,16 +185,41 @@ handleUnsupported(js: JsSystem): ResultOrError {
 }
 
 handleInitialize(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
-    // Save workspaceFolders
-    let o = js.object()
-        .with("capabilities",
+    let anyFireflyFile = js.object()
+        .with("filters", [
             js.object()
-                .with("hoverProvider", False)
-                .with("diagnosticProvider",
-                    js.object()
-                        .with("interFileDependencies", True)
-                        .with("workspaceDiagnostics", False)
+                .with("pattern", js.object()
+                    .with("glob", "**/*.ff")
+                    .with("matches", "file")
                 )
+        ].toArray())
+
+    let o = js.object()
+        .with("capabilities", js.object()
+            .with("textDocumentSync", js.object()
+                .with("openClose", True)
+                .with("change", 1 /* TextDocumentSyncKind.Full */)
+            )
+            .with("hoverProvider", False)
+            .with("diagnosticProvider", js.object()
+                .with("interFileDependencies", True)
+                .with("workspaceDiagnostics", True)
+            )
+            .with("workspace", js.object()
+                .with("workspaceFolders", js.object()
+                     .with("supported", True)
+                     .with("changeNotifications", True)
+                )
+                .with("fileOperations", js.object()
+                     .with("didCreate", anyFireflyFile)
+                     .with("didRename", anyFireflyFile)
+                     .with("didDelete", anyFireflyFile)
+                )
+            )
+        )
+        .with("serverInfo", js.object()
+            .with("name", "Firefly Language Server")
+            .with("version", "0.0.0")
         )
     Result(o)
 }
