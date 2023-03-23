@@ -20,7 +20,13 @@
     "contributes": {
         "languages": [{
             "id": "firefly",
-            "extensions": [".ff"]
+            "extensions": [".ff"],
+            "aliases": ["Firefly", "ff"],
+            "configuration": "./language-configuration.json",
+            "icon": {
+                "light": "./icons/firefly-light.png",
+                "dark": "./icons/firefly-dark.png"
+            }
         }],
         "grammars": [
             {
