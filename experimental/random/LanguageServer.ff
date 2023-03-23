@@ -166,7 +166,7 @@ makeResponse(body: JsValue): String {
     json
 }
 
-makeResponseMessage(js: JsSystem, id : MessageId, result : ResultOrError) : JsValue {
+makeResponseMessage(js: JsSystem, id: MessageId, result : ResultOrError) : JsValue {
     let o = js.object()
     o.set("jsonrpc", "2.0")
     id.{
@@ -189,7 +189,7 @@ handleUnsupported(js: JsSystem): ResultOrError {
     Error(1234, "Unsupported method")
 }
 
-handleInitialize(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
+handleInitialize(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
     let anyFireflyFile = js.object()
         .with("filters", [
             js.object()
@@ -231,19 +231,19 @@ handleInitialize(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError
     Result(o)
 }
 
-handleHover(js: JsSystem, parameters : Map[String, JsValue]): ResultOrError {
+handleHover(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
     let o = js.object().with("contents", "TODO")
     Result(o)
 }
 
-makeNotificationMessage(js: JsSystem, method : String, params: JsValue) : JsValue {
+makeNotificationMessage(js: JsSystem, method: String, params: JsValue) : JsValue {
     js.object()
         .with("jsonrpc", "2.0")
         .with("method", method)
         .with("params", params)
 }
 
-makeDiagnoseNotification(js: JsSystem) : JsValue {
+makeDiagnoseNotification(js: JsSystem): JsValue {
     let diagnostic = js.object()
         .with("range", js.object()
             .with("start", js.object()
