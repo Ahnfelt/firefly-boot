@@ -34,11 +34,10 @@ main(system: NodeSystem) {
             input = requestPair.second
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
-            handleRequestMessage(system.js(), message).each{ response =>
-                let json = response.toJson(Some("    "))
-                system.writeText(json + "\n")
+            handleRequestMessage(system.js(), message).each{ body =>
+                system.writeText(makeResponse(body))
             }
-            system.writeText(makeDiagnoseNotification(system.js()).toJson(Some("    ")) + "\n")
+            //system.writeText(makeResponse(makeDiagnoseNotification(system.js())))
         }
     } catch {| BadRequestException(reason), error =>
          system.writeErrorText(reason + "\n")
@@ -157,6 +156,14 @@ handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
             }
             Some(makeResponseMessage(js, id, result))
     }
+}
+
+makeResponse(body: JsValue): String {
+    let json = body.toJson(Some("    "))
+    let length = json.size()
+    "Content-Length: " + length + "\r\n" +
+    "\r\n" +
+    json
 }
 
 makeResponseMessage(js: JsSystem, id : MessageId, result : ResultOrError) : JsValue {
