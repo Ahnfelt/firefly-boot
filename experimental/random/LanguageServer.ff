@@ -34,11 +34,10 @@ main(system: NodeSystem) {
             input = requestPair.second
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
-            handleRequestMessage(system.js(), message).each{ response =>
-                let json = response.toJson(Some("    "))
-                system.writeText(json + "\n")
+            handleRequestMessage(system.js(), message).each{ body =>
+                system.writeText(makeResponse(body))
             }
-            system.writeText(makeDiagnoseNotification(system.js()).toJson(Some("    ")) + "\n")
+            //system.writeText(makeResponse(makeDiagnoseNotification(system.js())))
         }
     } catch {| BadRequestException(reason), error =>
          system.writeErrorText(reason + "\n")
@@ -159,6 +158,14 @@ handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
     }
 }
 
+makeResponse(body: JsValue): String {
+    let json = body.toJson(Some("    "))
+    let length = json.size()
+    "Content-Length: " + length + "\r\n" +
+    "\r\n" +
+    json
+}
+
 makeResponseMessage(js: JsSystem, id : MessageId, result : ResultOrError) : JsValue {
     let o = js.object()
     o.set("jsonrpc", "2.0")
@@ -242,15 +249,16 @@ makeDiagnoseNotification(js: JsSystem) : JsValue {
             .with("start", js.object()
                 .with("line", "1").with("character", "7")
             )
-            .with("start", js.object()
-                .with("end", "1").with("character", "21")
+            .with("end", js.object()
+                .with("line", "1").with("character", "21")
             )
         )
         .with("severity", 1 /* Error */)
         .with("message", "Hurray!")
 
     let params = js.object()
-        .with("uri", "file:///home/werk/projects/firefly-boot/experimental/random/LanguageServer.ff")
+        //.with("uri", "file:///home/werk/projects/firefly-boot/experimental/random/LanguageServer.ff")
+        .with("uri", "file:///Users/ahnfelt/Downloads/firefly-boot/experimental/random/LanguageServer.ff")
         .with("diagnostics", [diagnostic].toArray())
     makeNotificationMessage(js, "textDocument/publishDiagnostics", params)
 }
