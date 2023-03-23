@@ -16,8 +16,13 @@
             {"include": "#upper-dot"},
             {"include": "#upper"},
             {"include": "#lower"},
-            {"include": "#curly-expression"},
-            {"include": "#round-expression"}
+            {"include": "#ugly-colon"},
+            {"include": "#ugly-comma"},
+            {"include": "#ugly-arrow"},
+            {"include": "#ugly-pipe"},
+            {"include": "#ugly-round"},
+            {"include": "#ugly-square"},
+            {"include": "#ugly-curly"}
         ]},
         "keyword": {
             "name": "keyword.declaration.firefly",
@@ -38,30 +43,6 @@
         "lower": {
             "name": "entity.name.variable.firefly",
             "match": "\\b[a-z][A-Za-z0-9]*\\b"
-        },
-        "round-expression": {
-            "begin": "\\(",
-            "end": "\\)",
-            "beginCaptures": {
-              "0": {"name": "punctuation.paren.open.firefly"}
-            },
-            "endCaptures": {
-              "0": {"name": "punctuation.paren.close.firefly"}
-            },
-            "name": "expression.group",
-            "patterns": [{"include": "#all"}]
-        },
-        "curly-expression": {
-            "begin": "\\{",
-            "end": "\\}",
-            "beginCaptures": {
-              "0": {"name": "punctuation.curly.open.firefly"}
-            },
-            "endCaptures": {
-              "0": {"name": "punctuation.curly.close.firefly"}
-            },
-            "name": "expression.scope",
-            "patterns": [{"include": "#all"}]
         },
         "char": {
             "name": "string.quoted.single.firefly",
@@ -188,6 +169,34 @@
                     ]
                 }
             ]
-        }       
+        },
+        "ugly-colon": {
+            "name": "invalid.ugly.colon.firefly",
+            "match": "(?<=[ ])[:]"
+        },
+        "ugly-comma": {
+            "name": "invalid.ugly.comma.firefly",
+            "match": "(?<=[ ])[,]|[,](?![ ])"
+        },
+        "ugly-arrow": {
+            "name": "invalid.ugly.arrow.firefly",
+            "match": "(?<=[A-Za-z0-9])[=][>]|[=][>](?![ ]|$)"
+        },
+        "ugly-pipe": {
+            "name": "invalid.ugly.pipe.firefly",
+            "match": "(?<=[{][ ]+)[|]|[|](?![ ]|$)"
+        },
+        "ugly-round": {
+            "name": "invalid.ugly.round.firefly",
+            "match": "(?<=[A-Za-z0-9][ ]+)[(]|[(](?=[ ])"
+        },
+        "ugly-square": {
+            "name": "invalid.ugly.square.firefly",
+            "match": "(?<=[A-Za-z0-9])[ ]+[\\[]|[\\[](?=[ ])"
+        },
+        "ugly-curly": {
+            "name": "invalid.ugly.curly.firefly",
+            "match": "(?<=[A-Za-z0-9])[{]|[{](?=[ ])|[}](?=[a-z])"
+        }
     }
 }

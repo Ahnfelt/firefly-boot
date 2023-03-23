@@ -34,7 +34,7 @@ main(system: NodeSystem) {
             input = requestPair.second
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
-            handleRequestMessage(system.js(), message).each{ body =>
+            handleRequestMessage(system.js(), message).each {body =>
                 system.writeText(makeResponse(body))
             }
             //system.writeText(makeResponse(makeDiagnoseNotification(system.js())))
@@ -100,20 +100,20 @@ parseRequestHeaders(input: Stream[Buffer]): Pair[Map[String, String], Stream[Buf
 parseRequestBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[JsValue, Stream[Buffer]] {
     let bodyPair = try {
         input.readBytes(contentLength) // Should Stream.readBytes return an option?
-    } catchAny { error =>
+    } catchAny {error =>
         throw(BadRequestException("End of input while parsing request body"))
     } grab()
     let body = Buffer.fromBufferArray(bodyPair.first).toString()
     let json = try {
         js.parseJson(body)
-    } catchAny { error =>
+    } catchAny {error =>
         throw(BadRequestException("Invalid JSON in request body: " + body))
     } grab()
     Pair(json, bodyPair.second)
 }
 
 parseRequestMessage(object: JsValue): RequestMessage {
-    let id = object.getOwn("id").map { id =>
+    let id = object.getOwn("id").map {id =>
         if(id.isInt()) {
             MessageIdInt(id.grabInt())
         } elseIf {id.isString()} {
@@ -166,7 +166,7 @@ makeResponse(body: JsValue): String {
     json
 }
 
-makeResponseMessage(js: JsSystem, id: MessageId, result : ResultOrError) : JsValue {
+makeResponseMessage(js: JsSystem, id: MessageId, result: ResultOrError): JsValue {
     let o = js.object()
     o.set("jsonrpc", "2.0")
     id.{
@@ -236,7 +236,7 @@ handleHover(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
     Result(o)
 }
 
-makeNotificationMessage(js: JsSystem, method: String, params: JsValue) : JsValue {
+makeNotificationMessage(js: JsSystem, method: String, params: JsValue): JsValue {
     js.object()
         .with("jsonrpc", "2.0")
         .with("method", method)
