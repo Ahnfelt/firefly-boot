@@ -1,0 +1,11 @@
+**/.idea/
+**/.firefly/output/
+**/.firefly/temporary/
+**/node_modules/
+**/*_?_?_?.tar.gz
+
+/package-lock.json
+/vscode/client/out/
+/experimental/random/lsp-debug.txt
+/output/temporary
+/output/temporaryjs
