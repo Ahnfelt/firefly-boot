@@ -22,14 +22,13 @@ export function activate(context: vscode.ExtensionContext) {
             const terminal = vscode.window.createTerminal('Firefly');
             terminal.show();
             terminal.sendText(`${fireflyPath}/firefly.sh "${fileName}"`);
-            //terminal.sendText(`rm -f lsp-debug.txt; tee -a lsp-debug.txt | ${fireflyPath}/firefly.sh "${fileName}" | tee -a lsp-debug.txt`);
         }
     };
     context.subscriptions.push(vscode.commands.registerCommand(commandName, commandHandler));
-
     const runOrDebug = {
-        command: fireflyPath + '/firefly.sh',
-        args: ['LanguageServer.ff'],
+        //command: fireflyPath + '/firefly.sh',
+        //args: ['LanguageServer.ff'],
+        command: "./languageServer.sh",
         options: {cwd: fireflyPath + '/experimental/random'},
         transport: TransportKind.stdio // ipc
     };
@@ -41,9 +40,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ scheme: 'file', language: 'firefly' }],
-        synchronize: {
-            fileEvents: vscode.workspace.createFileSystemWatcher('**/.clientrc')
-        }
+        //synchronize: {
+        //    fileEvents: vscode.workspace.createFileSystemWatcher('**/.clientrc')
+        //}
     };
 
     client = new LanguageClient(
