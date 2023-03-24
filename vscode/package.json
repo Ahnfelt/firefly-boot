@@ -9,7 +9,9 @@
         "url": "https://github.com/Ahnfelt/firefly-boot"
     },
     "publisher": "Firefly team",
-    "categories": ["Programming Languages"],
+    "categories": [
+        "Programming Languages"
+    ],
     "keywords": [
         "multi-root ready"
     ],
@@ -18,16 +20,23 @@
     },
     "main": "./client/out/extension",
     "contributes": {
-        "languages": [{
-            "id": "firefly",
-            "extensions": [".ff"],
-            "aliases": ["Firefly", "ff"],
-            "configuration": "./language-configuration.json",
-            "icon": {
-                "light": "./icons/firefly-light.png",
-                "dark": "./icons/firefly-dark.png"
+        "languages": [
+            {
+                "id": "firefly",
+                "extensions": [
+                    ".ff"
+                ],
+                "aliases": [
+                    "Firefly",
+                    "ff"
+                ],
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./icons/firefly-light.png",
+                    "dark": "./icons/firefly-dark.png"
+                }
             }
-        }],
+        ],
         "grammars": [
             {
                 "language": "firefly",
@@ -38,22 +47,31 @@
                 }
             }
         ],
-        "problemMatchers": [{
-            "name": "firefly-problem",
-            "owner": "firefly",
-            "fileLocation": ["relative", "${workspaceRoot}"],
-            "pattern":[{
-                "regexp": "^(.*)\\r?\\n at (.*)[:]([0-9]+)[:]([0-9]+)$",
-                "message": 1,
-                "file": 2,
-                "line": 3,
-                "column": 4
-            }]
-        }],
-        "snippets": [{
-            "language": "firefly",
-            "path": "./snippets.json"
-        }],
+        "problemMatchers": [
+            {
+                "name": "firefly-problem",
+                "owner": "firefly",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": [
+                    {
+                        "regexp": "^(.*)\\r?\\n at (.*)[:]([0-9]+)[:]([0-9]+)$",
+                        "message": 1,
+                        "file": 2,
+                        "line": 3,
+                        "column": 4
+                    }
+                ]
+            }
+        ],
+        "snippets": [
+            {
+                "language": "firefly",
+                "path": "./snippets.json"
+            }
+        ],
         "commands": [
             {
                 "command": "firefly.run",
