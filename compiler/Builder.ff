@@ -8,15 +8,15 @@ import Dependencies
 import JsEmitter
 
 build(
-    system: NodeSystem,
+    system: NodeSystem
     emitTarget: EmitTarget
-    mainPackage : PackagePair
-    mainModule : String
+    mainPackage: PackagePair
+    mainModule: String
     resolvedDependencies: ResolvedDependencies
     compilerModulePath: Option[String]
-    tempPath : String
-    jsOutputPath : String
-    printMeasurements : Bool
+    tempPath: String
+    jsOutputPath: String
+    printMeasurements: Bool
 ): Unit {
 
     let fs = system.files()
@@ -83,10 +83,10 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
 }
 
 internalCreateExecutable(
-    self: BuildSystem,
-    mainJsFile: String = ".firefly/output/executable/Main.bundle.js",
-    outputPath: String = ".firefly/output",
-    targets: List[String] = ["host"],
+    self: BuildSystem
+    mainJsFile: String = ".firefly/output/executable/Main.bundle.js"
+    outputPath: String = ".firefly/output"
+    targets: List[String] = ["host"]
     assets: AssetSystem = AssetSystem.create()
 ): Unit
     target node {

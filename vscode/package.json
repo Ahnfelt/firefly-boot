@@ -30,9 +30,13 @@
         }],
         "grammars": [
             {
-              "language": "firefly",
-              "scopeName": "source.firefly",
-              "path": "./syntaxes/firefly.tmGrammar.json"
+                "language": "firefly",
+                "scopeName": "source.firefly",
+                "path": "./syntaxes/firefly.tmGrammar.json",
+                "embeddedLanguages": {
+                    "source.js": "javascript",
+                    "meta.embedded.block.javascript": "javascript"
+                }
             }
         ],
         "problemMatchers": [{
