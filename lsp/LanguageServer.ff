@@ -151,6 +151,7 @@ handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
         | Some(id) =>
             let result = message.method.{
                 | "initialize" => handleInitialize(js, message.parameters)
+                | "textDocument/diagnostic" => handleDiagnostic(js, message.parameters)
                 | "hover" => handleHover(js, message.parameters)
                 | _ => handleUnsupported(js)
             }
@@ -205,14 +206,14 @@ handleInitialize(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError 
                 .with("openClose", True)
                 .with("change", 1 /* TextDocumentSyncKind.Full */)
             )
-            .with("hoverProvider", True)
-            .with("definitionProvider", True)
-            .with("typeDefinitionProvider", True)
+            .with("hoverProvider", False)
+            //.with("definitionProvider", True)
+            //.with("typeDefinitionProvider", True)
             .with("diagnosticProvider", js.object()
                 .with("interFileDependencies", True)
-                .with("workspaceDiagnostics", True)
+                .with("workspaceDiagnostics", False)
             )
-            .with("workspace", js.object()
+            /*.with("workspace", js.object()
                 .with("workspaceFolders", js.object()
                      .with("supported", True)
                      .with("changeNotifications", True)
@@ -222,12 +223,32 @@ handleInitialize(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError 
                      .with("didRename", anyFireflyFile)
                      .with("didDelete", anyFireflyFile)
                 )
-            )
+            )*/
         )
         .with("serverInfo", js.object()
             .with("name", "Firefly Language Server")
             .with("version", "0.0.0")
         )
+    Result(o)
+}
+
+handleDiagnostic(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
+    let diagnostic = js.object()
+        .with("range", js.object()
+            .with("start", js.object()
+                .with("line", "1").with("character", "7")
+            )
+            .with("end", js.object()
+                .with("line", "1").with("character", "21")
+            )
+        )
+        .with("severity", 1 /* Error */)
+        .with("message", "Hurray!")
+
+    let o = js.object()
+        .with("kind", "full")
+        .with("items", [diagnostic].toArray())
+
     Result(o)
 }
 
@@ -241,24 +262,4 @@ makeNotificationMessage(js: JsSystem, method: String, params: JsValue): JsValue 
         .with("jsonrpc", "2.0")
         .with("method", method)
         .with("params", params)
-}
-
-makeDiagnoseNotification(js: JsSystem): JsValue {
-    let diagnostic = js.object()
-        .with("range", js.object()
-            .with("start", js.object()
-                .with("line", "1").with("character", "7")
-            )
-            .with("end", js.object()
-                .with("line", "1").with("character", "21")
-            )
-        )
-        .with("severity", 1 /* Error */)
-        .with("message", "Hurray!")
-
-    let params = js.object()
-        //.with("uri", "file:///home/werk/projects/firefly-boot/experimental/random/LanguageServer.ff")
-        .with("uri", "file:///Users/ahnfelt/Downloads/firefly-boot/experimental/random/LanguageServer.ff")
-        .with("diagnostics", [diagnostic].toArray())
-    makeNotificationMessage(js, "textDocument/publishDiagnostics", params)
 }
