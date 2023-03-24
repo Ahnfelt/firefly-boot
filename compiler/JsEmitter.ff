@@ -595,7 +595,7 @@ extend self: JsEmitter {
             | ECall(at, StaticCall("ff:core/Try.Try_finally", _, _), _, _, [
                 Argument(_, _, ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, [
                     Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))
-                ], _)),
+                ], _))
                 Argument(_, _, ELambda(_, Lambda(_, finallyEffect, [MatchCase(_, [], [], finallyBody)])))
             ], _) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
@@ -607,7 +607,7 @@ extend self: JsEmitter {
             | ECall(at, StaticCall("ff:core/Try.Try_catch", _, _), _, _, [
                 Argument(_, _, ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, [
                     Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))
-                ], _)),
+                ], _))
                 Argument(_, _, ELambda(_, Lambda(_, catchEffect, cases)))
             ], [dictionary]) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
@@ -625,9 +625,9 @@ extend self: JsEmitter {
                 Argument(_, _, ECall(at, StaticCall("ff:core/Try.Try_catch", _, _), _, _, [
                     Argument(_, _, ECall(at, StaticCall("ff:core/Core.try", _, _), _, _, [
                         Argument(_, _, ELambda(_, Lambda(_, tryEffect, [MatchCase(_, [], [], tryBody)])))
-                    ], _)),
+                    ], _))
                     Argument(_, _, ELambda(_, Lambda(_, catchEffect, cases)))
-                ], [dictionary])),
+                ], [dictionary]))
                 Argument(_, _, ELambda(_, Lambda(_, finallyEffect, [MatchCase(_, [], [], finallyBody)])))
             ], _) =>
                 let tryAsync = self.emittingAsync && effectTypeIsAsync(tryEffect)
@@ -651,12 +651,12 @@ extend self: JsEmitter {
         Pair(matchCase.patterns, matchCase.guards).{
             | Pair([p, ...ps], _) =>
                 self.emitPattern(
-                    arguments.grab(0),
-                    p,
-                    arguments.dropFirst(),
-                    matchCase.MatchCase(patterns = ps),
-                    jump,
-                    last,
+                    arguments.grab(0)
+                    p
+                    arguments.dropFirst()
+                    matchCase.MatchCase(patterns = ps)
+                    jump
+                    last
                     async
                 )
             | Pair([], [guard, ...guards]) =>

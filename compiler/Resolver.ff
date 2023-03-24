@@ -225,7 +225,7 @@ extend self: Resolver {
                 }
             }
         | EList(at, t, items), _ =>
-            EList(at, self.resolveType(t, topLevel), items.map { | Pair(item, spread) =>
+            EList(at, self.resolveType(t, topLevel), items.map {| Pair(item, spread) =>
                 Pair(self.resolveTerm(item, topLevel), spread)
             })
         | EVariant(at, name, typeArguments, arguments), _ =>

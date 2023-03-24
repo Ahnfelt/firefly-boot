@@ -225,7 +225,7 @@ extend self: Deriver {
             | [variant] =>
                 let fields = [...declaration.commonFields, ...variant.fields]
                 [sameCase, MatchCase(
-                    at = at,
+                    at = at
                     patterns = [wildcardPattern, wildcardPattern]
                     guards = []
                     body = self.makeOrderingFields(modulePrefix, declaration, fields)
@@ -250,7 +250,7 @@ extend self: Deriver {
                 let numberCases = declaration.variants.pairs().map {| Pair(index, variant) =>
                     let variantName = modulePrefix + "." + variant.name
                     MatchCase(
-                        at = at,
+                        at = at
                         patterns = [PVariantAs(at, variantName, None)]
                         guards = []
                         body = EInt(at, "" + index)
@@ -273,11 +273,11 @@ extend self: Deriver {
         }
     }
 
-    makeOrderingFields(modulePrefix: String, declaration: DType, fields : List[Parameter]): Term {
+    makeOrderingFields(modulePrefix: String, declaration: DType, fields: List[Parameter]): Term {
         let at = declaration.at
         let orderingType = TConstructor(declaration.at, "ff:core/Ordering.Ordering", [])
         let orderingSame = EVariant(at, "ff:core/Ordering.OrderingSame", [], None)
-        function go(fields : List[Parameter]): Term {
+        function go(fields: List[Parameter]): Term {
             | [] =>
                 orderingSame
             | [head, ...tail] =>
@@ -299,9 +299,9 @@ extend self: Deriver {
     // Equal
     makeEqualInstances(modulePrefix: String, module: Module): List[DInstance] {
         let coreWhitelist = [
-            "ff:core/Option.Option",
-            "ff:core/List.List",
-            "ff:core/Pair.Pair",
+            "ff:core/Option.Option"
+            "ff:core/List.List"
+            "ff:core/Pair.Pair"
         ].toSet()
         let missingInstance =
             self.findTypesThatNeedInstances("ff:core/Equal.Equal", modulePrefix, coreWhitelist, True, module)
@@ -349,11 +349,11 @@ extend self: Deriver {
         let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         let sameCase = MatchCase(
-            at = at,
+            at = at
             patterns = [wildcardPattern, wildcardPattern]
             guards = [MatchGuard(
-                at,
-                self.makeSimpleCall(at, "===", [EVariable(at, "x"), EVariable(at, "y")]),
+                at
+                self.makeSimpleCall(at, "===", [EVariable(at, "x"), EVariable(at, "y")])
                 PVariant(at, "ff:core/Bool.True", [])
             )]
             body = EVariant(at, "ff:core/Bool.True", [], None)
@@ -362,7 +362,7 @@ extend self: Deriver {
             | [variant] =>
                 let fields = [...declaration.commonFields, ...variant.fields]
                 [sameCase, MatchCase(
-                    at = at,
+                    at = at
                     patterns = [wildcardPattern, wildcardPattern]
                     guards = []
                     body = self.makeEqualFields(modulePrefix, declaration, fields)
@@ -375,14 +375,14 @@ extend self: Deriver {
                     let variantName = modulePrefix + "." + variant.name
                     let fields = [...declaration.commonFields, ...variant.fields]
                     MatchCase(
-                        at = at,
+                        at = at
                         patterns = [PVariantAs(at, variantName, Some("x")), PVariantAs(at, variantName, Some("y"))]
                         guards = []
                         body = self.makeEqualFields(modulePrefix, declaration, fields)
                     )
                 }
                 let differentVariant = MatchCase(
-                    at = at,
+                    at = at
                     patterns = [wildcardPattern, wildcardPattern]
                     guards = []
                     body = EVariant(at, "ff:core/Bool.False", [], None)
@@ -391,9 +391,9 @@ extend self: Deriver {
         }
     }
 
-    makeEqualFields(modulePrefix: String, declaration: DType, fields : List[Parameter]): Term {
+    makeEqualFields(modulePrefix: String, declaration: DType, fields: List[Parameter]): Term {
         let at = declaration.at
-        function go(fields : List[Parameter]): Term {
+        function go(fields: List[Parameter]): Term {
             | [] =>
                 EVariant(at, "ff:core/Bool.True", [], None)
             | [head] =>
@@ -563,7 +563,7 @@ extend self: Deriver {
     makeUpdateChecksum(at: Location, variantName: String, declaration: DType, variant: Variant): Term {
         let fields = [...declaration.commonFields, ...variant.fields]
         let variantChecksum = variantName.size() // TODO: Hash variantName + fields with type terms + type parameters (+ type arguments?)
-        EAssignField(at, "", EVariable(at, "serialization"), "checksum",
+        EAssignField(at, "", EVariable(at, "serialization"), "checksum"
             self.makeMethodCall(
                 at = at
                 target = self.makeSimpleCall(at, "+", [
@@ -582,11 +582,11 @@ extend self: Deriver {
     // Common
 
     findTypesThatNeedInstances(
-        traitName: String,
-        modulePrefix: String,
-        coreWhitelist: Set[String],
-        allowGenerics: Bool,
-        module: Module,
+        traitName: String
+        modulePrefix: String
+        coreWhitelist: Set[String]
+        allowGenerics: Bool
+        module: Module
     ): List[DType] {
         let typesWithInstance = module.instances.collect {
             | instance {instance.typeArguments.first() | Some(TConstructor(_, name, _))} =>
@@ -621,7 +621,7 @@ extend self: Deriver {
         let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let target = DynamicCall(EVariable(at, "ff:core/Core.if"), tailCall = False)
         let option = ECall(at, target, noEffect, [], [
-            Argument(at, None, condition),
+            Argument(at, None, condition)
             Argument(at, None, ELambda(at, Lambda(at, noEffect, [MatchCase(at, [], [], then)])))
         ], [])
         ECall(at, DynamicCall(EField(at, False, option, "else"), tailCall = False), noEffect, [], [

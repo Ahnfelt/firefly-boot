@@ -407,7 +407,7 @@ extend self: Inference {
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
                 let effect = self.unification.freshUnificationVariable(e.at)
-                let term = EPipe(e.at, e.record, effect,
+                let term = EPipe(e.at, e.record, effect
                     ELambda(e.at, Lambda(e.at, effect, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], [], body)]))
                 )
                 self.inferTerm(environment, expected, term)
@@ -442,12 +442,12 @@ extend self: Inference {
                                     } else {
                                         let signature = instantiated.scheme.signature
                                         self.inferFunctionCall(
-                                            environment,
-                                            expected,
-                                            signature,
+                                            environment
+                                            expected
+                                            signature
                                             instantiated.scheme.isTraitMethod
-                                            instantiated.typeArguments,
-                                            term,
+                                            instantiated.typeArguments
+                                            term
                                             x
                                         )
                                     }
@@ -477,12 +477,12 @@ extend self: Inference {
                                     | Some(instantiated) =>
                                         self.inferLambdaCall(environment, expected, e2)
                                     | None =>
-                                        throw(CompileError(f.at,
+                                        throw(CompileError(f.at
                                             "No such field " + f.field + " on type: " + t.show()
                                         ))
                                 }
                             | TVariable(_, index) =>
-                                throw(CompileError(f.at,
+                                throw(CompileError(f.at
                                     "No such field " + f.field + " on unknown type: $" + index
                                 ))
                         }
@@ -557,7 +557,7 @@ extend self: Inference {
                                     value = value
                                 )
                             | Some(instantiated) =>
-                                throw(CompileError(e.at,
+                                throw(CompileError(e.at
                                     "Can't assign an immutable field " + e.field + " on type: " + t.show()
                                 ))
                             | None =>
@@ -836,7 +836,7 @@ extend self: Inference {
                 }
                 if(scheme.signature.generics.size() != newTypeArguments.size()) {
                     let extra = newTypeArguments.size() - typeArguments.size()
-                    throw(CompileError(at,
+                    throw(CompileError(at
                         "Wrong number of type arguments for " + symbol +
                         ", expected " + (scheme.signature.generics.size() - extra) +
                         ", got " + (newTypeArguments.size() - extra)

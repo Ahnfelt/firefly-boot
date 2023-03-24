@@ -95,7 +95,7 @@ main(system: NodeSystem): Unit {
                     mainPackagePair = PackagePair("ff", "compiler")
                     packages = [].toMap() // Only used for includes currently
                     packagePaths = [
-                        Pair(PackagePair("ff","compiler"), "compiler")
+                        Pair(PackagePair("ff", "compiler"), "compiler")
                         Pair(PackagePair("ff", "core"), "core")
                     ].toMap()
                     singleFilePackages = [].toSet()

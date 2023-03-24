@@ -169,15 +169,15 @@ extend self: Parser {
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("import")} {
                 imports.push(self.parseImportDefinition(self.packagePair))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("include")} {
-                throw(CompileError(self.current().at(),
+                throw(CompileError(self.current().at()
                     "Includes must be at the top of the file or below 'package'"
                 ))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
-                throw(CompileError(self.current().at(),
+                throw(CompileError(self.current().at()
                 "Dependencies must be at the top of the file or below 'package'"
             ))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("package")} {
-                throw(CompileError(self.current().at(),
+                throw(CompileError(self.current().at()
                     "Package definition must be at the top of the file"
                 ))
             } else {
@@ -310,11 +310,11 @@ extend self: Parser {
         }
         self.rawSkip(LBracketRight, "}")
         DExtend(
-            nameToken.at(),
-            nameToken.raw(),
-            poly.generics,
-            poly.constraints,
-            type,
+            nameToken.at()
+            nameToken.raw()
+            poly.generics
+            poly.constraints
+            type
             methods.toList()
         )
     }
@@ -358,13 +358,13 @@ extend self: Parser {
             signatures.toList()
         }
         DTrait(
-            nameToken.at(),
-            nameToken.raw(),
-            [typeParameterToken.raw(), ...poly.generics],
-            [...constraints.toList(), ...poly.constraints],
-            generatorParameters,
-            methodSignatures,
-            methodDefaults.toList(),
+            nameToken.at()
+            nameToken.raw()
+            [typeParameterToken.raw(), ...poly.generics]
+            [...constraints.toList(), ...poly.constraints]
+            generatorParameters
+            methodSignatures
+            methodDefaults.toList()
             methodGenerators.toList()
         )
     }

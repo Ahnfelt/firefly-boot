@@ -2,8 +2,8 @@ import Syntax
 import Inference
 
 class Unification(
-    mutable substitution: Map[Int, Type],
-    mutable constraints: Map[Int, Map[String, ConstraintGenerics]],
+    mutable substitution: Map[Int, Type]
+    mutable constraints: Map[Int, Map[String, ConstraintGenerics]]
     mutable nextUnificationVariableIndex: Int
     mutable instances: Map[InstanceKey, InstanceValue]
     mutable affects: Map[Int, Set[Int]]
@@ -14,11 +14,11 @@ data ConstraintGenerics(at: Location, generics: List[Type])
 data InstanceKey(traitName: String, typeName: String)
 
 data InstanceValue(
-    generics: List[String],
-    constraints: List[Constraint],
-    packagePair: PackagePair,
-    moduleName: String,
-    traitName: String,
+    generics: List[String]
+    constraints: List[Constraint]
+    packagePair: PackagePair
+    moduleName: String
+    traitName: String
     typeArguments: List[Type]
 )
 

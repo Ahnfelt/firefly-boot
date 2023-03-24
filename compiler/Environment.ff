@@ -40,7 +40,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
 
     let functions =
         module.functions.map { d => Pair(
-            full(module, d.signature.name),
+            full(module, d.signature.name)
             Scheme(False, False, False, False, d.signature)
         )}
 
@@ -48,7 +48,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         module.lets.map { d =>
             let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
             Pair(
-                full(module, d.name),
+                full(module, d.name)
                 Scheme(True, False, False, False, Signature(d.at, d.name, [], [], [], d.variableType, noEffect))
             )
         }
@@ -65,7 +65,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
                     constraints = [constraint, ...outerConstraints, ...methodSignature.constraints]
                 )
                 Pair(
-                    full(module, signature.name),
+                    full(module, signature.name)
                     Scheme(False, False, False, True, signature)
                 )
             }
@@ -84,7 +84,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
                         let normalGenerics = method.signature.generics.filter {_ != "Q$"}
                         let outerGenerics = if(alreadyFlat) {[]} else {d.generics}
                         Pair(
-                            prefix + method.signature.name,
+                            prefix + method.signature.name
                             Scheme(False, False, False, False, method.signature.Signature(
                                 generics = [...effect, ...outerGenerics, ...normalGenerics]
                                 constraints = [...d.constraints, ...method.signature.constraints]
@@ -103,7 +103,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
             d.commonFields.map { f =>
                 let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
                 Pair(
-                    full(module, prefix + f.name),
+                    full(module, prefix + f.name)
                     Scheme(True, f.mutable, d.newtype, False, Signature(
                         at = f.at
                         name = f.name
@@ -125,13 +125,13 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
             d.variants.map { variant =>
                 let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
                 Pair(
-                    full(module, variant.name),
+                    full(module, variant.name)
                     Scheme(False, False, d.newtype, False, Signature(
-                        variant.at,
-                        variant.name,
-                        generics = d.generics,
-                        constraints = d.constraints,
-                        parameters = [...d.commonFields, ...variant.fields],
+                        variant.at
+                        variant.name
+                        generics = d.generics
+                        constraints = d.constraints
+                        parameters = [...d.commonFields, ...variant.fields]
                         returnType = returnType
                         effect = noEffect
                     ))

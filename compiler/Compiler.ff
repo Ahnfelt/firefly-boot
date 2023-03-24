@@ -46,7 +46,7 @@ make(
         derivedModules = Map.empty()
         inferredModules = Map.empty()
         emittedModules = Set.empty()
-        phaseDurations = [],
+        phaseDurations = []
         phaseDurationDelta = Duration(0.0)
     )
 }
@@ -100,10 +100,10 @@ coreImports: List[DImport] =
         "Unit"
     ].map { moduleName =>
         DImport(
-            at = Location("<prelude>", 1, 1),
-            alias = moduleName,
-            package = PackagePair("ff", "core"),
-            directory = [],
+            at = Location("<prelude>", 1, 1)
+            alias = moduleName
+            package = PackagePair("ff", "core")
+            directory = []
             file = moduleName
         )
     }

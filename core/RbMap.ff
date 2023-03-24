@@ -7,7 +7,7 @@ data Color {
 
 data RB[K, V] {
     E
-    T(color : Color, left: RB[K, V], key: K, value: V, right: RB[K, V])
+    T(color: Color, left: RB[K, V], key: K, value: V, right: RB[K, V])
 }
 
 insert[K: Order, V](x: K, xv: V, s: RB[K, V]): RB[K, V] {
@@ -116,7 +116,7 @@ extend self[K: Order, V]: RB[K, V] {
     get(key: K): Option[V] {
         self.{
             | E_ => None
-            | T(_, a, y, yv, b,) => Ordering.compare(key, y).{
+            | T(_, a, y, yv, b) => Ordering.compare(key, y).{
                 | OrderingBefore => a.get(key)
                 | OrderingAfter => b.get(key)
                 | OrderingSame => Some(yv)

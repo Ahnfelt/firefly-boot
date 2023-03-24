@@ -39,7 +39,7 @@ data PackagePair(
 )
 
 extend self: PackagePair {
-    groupName(delimiter : String = ":"): String {
+    groupName(delimiter: String = ":"): String {
         self.group + delimiter + self.name
     }
 }
@@ -66,30 +66,30 @@ data TargetNames(
     browser: Bool
 )
 data DImport(
-    at: Location,
-    alias: String,
-    package: PackagePair,
-    directory: List[String],
+    at: Location
+    alias: String
+    package: PackagePair
+    directory: List[String]
     file: String
 )
 data DFunction(
-    at: Location,
-    signature: Signature,
+    at: Location
+    signature: Signature
     body: Target
 )
 data DLet(
-    at: Location,
-    name: String,
-    variableType: Type,
+    at: Location
+    name: String
+    variableType: Type
     value: Term
 )
 data DExtend(
-    at: Location,
-    name: String,
-    generics: List[String],
-    constraints: List[Constraint],
-    type: Type,
-    methods: List[DFunction],
+    at: Location
+    name: String
+    generics: List[String]
+    constraints: List[Constraint]
+    type: Type
+    methods: List[DFunction]
 )
 data DType(
     at: Location
@@ -101,23 +101,23 @@ data DType(
     variants: List[Variant]
 )
 data DTrait(
-    at: Location,
-    name: String,
-    generics: List[String],
-    constraints: List[Constraint],
-    generatorParameters: List[Parameter],
-    methods: List[Signature],
-    methodDefaults: List[Pair[String, Lambda]],
-    methodGenerators: List[Pair[String, Lambda]],
+    at: Location
+    name: String
+    generics: List[String]
+    constraints: List[Constraint]
+    generatorParameters: List[Parameter]
+    methods: List[Signature]
+    methodDefaults: List[Pair[String, Lambda]]
+    methodGenerators: List[Pair[String, Lambda]]
 )
 data DInstance(
-    at: Location,
-    generics: List[String],
-    constraints: List[Constraint],
-    traitName: String,
-    typeArguments: List[Type],
-    generatorArguments: List[Argument],
-    methods: List[DFunction],
+    at: Location
+    generics: List[String]
+    constraints: List[Constraint]
+    traitName: String
+    typeArguments: List[Type]
+    generatorArguments: List[Argument]
+    methods: List[DFunction]
 )
 
 data Term(at: Location) {
@@ -208,8 +208,8 @@ data Field(at: Location, name: String, value: Term)
 data Constraint(at: Location, name: String, generics: List[Type])
 
 data Target {
-    FireflyTarget(lambda : Lambda)
-    ForeignTarget(syncCode : Option[String], asyncCode : Option[String])
+    FireflyTarget(lambda: Lambda)
+    ForeignTarget(syncCode: Option[String], asyncCode: Option[String])
 }
 
 data Type(at: Location) {

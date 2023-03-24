@@ -16,10 +16,10 @@ extend self: Substitution {
         let instances = module.instances.map { self.substituteInstanceDefinition(_) }
         module.Module(
             //traits = traits,
-            instances = instances,
-            extends = extends,
-            lets = lets,
-            functions = functions,
+            instances = instances
+            extends = extends
+            lets = lets
+            functions = functions
         )
     }
 

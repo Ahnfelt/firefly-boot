@@ -123,7 +123,7 @@ extend self[T: Equal]: Option[T] {
 
 extend self[T]: Option[Option[T]] {
 
-    flatten() : Option[T] {
+    flatten(): Option[T] {
         self.{
             | None => None
             | Some(v) => v

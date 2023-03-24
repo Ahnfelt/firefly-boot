@@ -1,14 +1,14 @@
 import Syntax
 
 data Token(
-    file: String,
-    code: String,
-    kind: TokenKind,
-    startLine: Int,
-    startLineOffset: Int,
-    startOffset: Int,
-    stopLine: Int,
-    stopLineOffset: Int,
+    file: String
+    code: String
+    kind: TokenKind
+    startLine: Int
+    startLineOffset: Int
+    startOffset: Int
+    stopLine: Int
+    stopLineOffset: Int
     stopOffset: Int
 )
 

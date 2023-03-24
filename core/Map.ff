@@ -10,7 +10,7 @@ extend self[K: Order, V]: Map[K, V] {
         Map(RbMap.insert(key, value, self.redBlack))
     }
 
-    addAll(that: Map[K, V]) : Map[K, V] {
+    addAll(that: Map[K, V]): Map[K, V] {
         mutable result = self.redBlack
         that.redBlack.each { k, v =>
             result = RbMap.insert(k, v, result)
@@ -26,7 +26,7 @@ extend self[K: Order, V]: Map[K, V] {
         Map(RbMap.delete(key, self.redBlack))
     }
 
-    removeAll(that: Map[K, V]) : Map[K, V] {
+    removeAll(that: Map[K, V]): Map[K, V] {
         mutable result = self.redBlack
         that.redBlack.each {| k, _ =>
             result = RbMap.delete(k, result)
