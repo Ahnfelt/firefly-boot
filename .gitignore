@@ -1,6 +1,7 @@
 **/.idea/
 **/.firefly/output/
 **/.firefly/temporary/
+**/.firefly/dependencies/
 **/node_modules/
 **/*_?_?_?.tar.gz
 
