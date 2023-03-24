@@ -32,9 +32,8 @@
             {
                 "language": "firefly",
                 "scopeName": "source.firefly",
-                "path": "./syntaxes/firefly.tmGrammar.json",
+                "path": "./syntaxes/firefly.tmLanguage.json",
                 "embeddedLanguages": {
-                    "source.js": "javascript",
                     "meta.embedded.block.javascript": "javascript"
                 }
             }
