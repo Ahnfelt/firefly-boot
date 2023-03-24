@@ -25,11 +25,12 @@ export function activate(context: vscode.ExtensionContext) {
         }
     };
     context.subscriptions.push(vscode.commands.registerCommand(commandName, commandHandler));
+
     const runOrDebug = {
         //command: fireflyPath + '/firefly.sh',
         //args: ['LanguageServer.ff'],
         command: "./languageServer.sh",
-        options: {cwd: fireflyPath + '/experimental/random'},
+        options: {cwd: fireflyPath + '/lsp'},
         transport: TransportKind.stdio // ipc
     };
 

@@ -10,3 +10,7 @@
 /experimental/random/lsp-debug.txt
 /output/temporary
 /output/temporaryjs
+
+/lsp/stdin.txt
+/lsp/stdout.txt
+/lsp/stderr.txt
