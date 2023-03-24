@@ -9,6 +9,7 @@
             {"include": "#comment"},
             {"include": "#char"},
             {"include": "#target-js"},
+            {"include": "#target-js-singleline"},
             {"include": "#target-js-multiline"},
             {"include": "#string"},
             {"include": "#string-multiline"},
@@ -98,6 +99,32 @@
                 }
             ]
         },
+        "target-js-singleline": {
+            "contentName": "meta.embedded.block.javascript",
+            "begin": "\\b(js|node|browser)[ ]+(sync|async)[ ]+(\"\"\")(?![ \t\r]*$)",
+            "beginCaptures": {
+                "1": {
+                    "name": "keyword.declaration.firefly"
+                },
+                "2": {
+                    "name": "keyword.declaration.firefly"
+                },
+                "3": {
+                    "name": "punctuation.definition.string.begin.firefly"
+                }
+            },
+            "end": "\"\"\"(?!\")",
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.end.firefly"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#string-character-escape"
+                }
+            ]
+        },
         "target-js-multiline": {
             "contentName": "meta.embedded.block.javascript",
             "begin": "\\b(js|node|browser)[ ]+(sync|async)[ ]+(\"\"\")",
@@ -126,7 +153,7 @@
                     "include": "source.js"
                 }
             ]
-        },
+        },        
         "string": {
             "name": "string.quoted.double.firefly",
             "begin": "\"(?!\"\")",
