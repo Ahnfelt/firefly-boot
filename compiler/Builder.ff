@@ -21,7 +21,7 @@ build(
 
     let fs = system.files()
 
-    if(fs.exists(tempPath)) { fs.deleteDirectory( tempPath) }
+    if(fs.exists(tempPath)) {fs.deleteDirectory(tempPath)}
     fs.createDirectory(tempPath)
 
     let jsPathFile = tempPath + "/js"
@@ -31,9 +31,9 @@ build(
         let compiler =
             Compiler.make(emitTarget, fs, system.time(), compilerModulePath, jsPathFile, resolvedDependencies)
         compiler.emit(mainPackage, mainModule, isMainModule = True)
-        if(printMeasurements) { compiler.printMeasurements() }
-        resolvedDependencies.packagePaths.each { packagePair, packagePath =>
-            resolvedDependencies.packages.get(packagePair).each { packageInfo =>
+        if(printMeasurements) {compiler.printMeasurements()}
+        resolvedDependencies.packagePaths.each {packagePair, packagePath =>
+            resolvedDependencies.packages.get(packagePair).each {packageInfo =>
                 processIncludes(fs, jsPathFile, packagePath, packageInfo)
             }
         }
@@ -41,14 +41,20 @@ build(
     }
 
     if(success) {
-        if(fs.exists(jsOutputPath)) { fs.deleteDirectory(jsOutputPath) }
-        fs.rename(jsPathFile, jsOutputPath)
+        if(fs.exists(jsOutputPath)) {fs.deleteDirectory(jsOutputPath)}
+        try {
+            fs.rename(jsPathFile, jsOutputPath)
+        } catchAny {_ =>
+            // VSCode WSL race condition workaround
+            system.tasks().sleep(Duration(0.1))
+            fs.rename(jsPathFile, jsOutputPath)
+        } grab()
     }
 
 }
 
-processIncludes(fs : FileSystem, jsPathFile: String, packagePath: String, info: PackageInfo): Unit {
-    info.includes.each { include =>
+processIncludes(fs: FileSystem, jsPathFile: String, packagePath: String, info: PackageInfo): Unit {
+    info.includes.each {include =>
         fs.copy(
             packagePath + "/.firefly/include/" + include.path
             jsPathFile + "/" + info.package.packagePair.groupName("/") + "/" + include.path

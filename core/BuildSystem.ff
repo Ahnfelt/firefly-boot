@@ -119,7 +119,7 @@ internalNodeCallEsBuild(
 internalListDirectory(fs: FileSystem, path: String): List[Pair[String, () => Stream[Buffer]]] {
     let prefix = if(path.endsWith("/")) {path.dropLast(1)} else {path}
     function go(currentPath: String): List[String] {
-        fs.list(currentPath).flatMap { file =>
+        fs.list(currentPath).flatMap {file =>
             if(fs.isDirectory(file)) {
                 go(file)
             } else {
@@ -127,7 +127,7 @@ internalListDirectory(fs: FileSystem, path: String): List[Pair[String, () => Str
             }
         }
     }
-    go(path).map { file =>
+    go(path).map {file =>
         Pair(file.dropFirst(prefix.size()), {fs.readStream(file)})
     }
 }

@@ -129,7 +129,12 @@ if(success_) {
 if(ff_core_FileSystem.FileSystem_exists(fs_, jsOutputPath_)) {
 ff_core_FileSystem.FileSystem_deleteDirectory(fs_, jsOutputPath_)
 };
+ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
+return ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
+})), ((_) => {
+ff_core_TaskSystem.TaskSystem_sleep(ff_core_NodeSystem.NodeSystem_tasks(system_), 0.1);
 ff_core_FileSystem.FileSystem_rename(fs_, jsPathFile_, jsOutputPath_)
+})))
 }
 }
 
@@ -227,7 +232,12 @@ if(success_) {
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_, $c))) {
 (await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, jsOutputPath_, $c))
 };
+ff_core_Try.Try_grab((await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($c) => {
+return (await ff_core_FileSystem.FileSystem_rename$(fs_, jsPathFile_, jsOutputPath_, $c))
+}), $c)), (async (_, $c) => {
+(await ff_core_TaskSystem.TaskSystem_sleep$((await ff_core_NodeSystem.NodeSystem_tasks$(system_, $c)), 0.1, $c));
 (await ff_core_FileSystem.FileSystem_rename$(fs_, jsPathFile_, jsOutputPath_, $c))
+}), $c)))
 }
 }
 
