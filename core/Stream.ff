@@ -296,11 +296,11 @@ extend self[T]: Stream[T] {
     }
 
     grabFirst(): T {
-        self.first().else { panic("grabFirst() on empty iterator") }
+        self.first().else {panic("grabFirst() on empty iterator")}
     }
 
     grabLast(): T {
-        self.last().else { panic("grabLast() on empty iterator") }
+        self.last().else {panic("grabLast() on empty iterator")}
     }
 
     collectFirst[R](body: T => Option[R]): Option[R] {
