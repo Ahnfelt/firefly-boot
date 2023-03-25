@@ -45,7 +45,7 @@ build(
         try {
             fs.rename(jsPathFile, jsOutputPath)
         } catchAny {_ =>
-            // VSCode WSL race condition workaround
+            // VSCode WSL race condition (?) workaround
             system.tasks().sleep(Duration(0.1))
             fs.rename(jsPathFile, jsOutputPath)
         } grab()
