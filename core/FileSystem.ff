@@ -4,9 +4,9 @@ extend self: FileSystem {
 
     copy(fromPath: String, toPath: String): Unit {
         if(self.isDirectory(fromPath)) {
-            if(self.exists(toPath)) { self.deleteDirectory(toPath) }
+            if(self.exists(toPath)) {self.deleteDirectory(toPath) }
             self.createDirectory(toPath)
-            self.list(fromPath).each { file =>
+            self.list(fromPath).each {file =>
                 self.copy(file, toPath + "/" + file.reverse().takeWhile {_ != '/'}.reverse())
             }
         } else {
@@ -67,7 +67,7 @@ extend self: FileSystem {
         """
 
     deleteDirectory(path: String): Unit {
-        self.list(path).each { file =>
+        self.list(path).each {file =>
             if(self.isDirectory(file)) {
                 self.deleteDirectory(file)
             } else {
@@ -196,20 +196,20 @@ extend self: FileSystem {
 }
 
 directoryName(path: String): String {
-    let directory = path.reverse().dropWhile { _ != '/' }.dropFirst(1).reverse()
+    let directory = path.reverse().dropWhile {_ != '/'}.dropFirst(1).reverse()
     if(directory == "") {"."} else {directory}
 }
 
 baseName(path: String): String {
-    path.reverse().takeWhile { _ != '/' }.reverse()
+    path.reverse().takeWhile {_ != '/'}.reverse()
 }
 
 prefixName(path: String): String {
-    path.reverse().takeWhile { _ != '/' }.reverse().takeWhile { _ != '.' }
+    path.reverse().takeWhile {_ != '/'}.reverse().takeWhile {_ != '.'}
 }
 
 suffixName(path: String): String {
-    path.reverse().takeWhile { _ != '/' }.takeWhile { _ != '.' }.reverse()
+    path.reverse().takeWhile {_ != '/'}.takeWhile {_ != '.'}.reverse()
 }
 
 internalReadStream(createReadStream: () => JsValue): Stream[Buffer]
