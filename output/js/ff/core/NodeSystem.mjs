@@ -234,7 +234,7 @@ export async function NodeSystem_readStream$(self_, $c) {
 }
 
 export async function NodeSystem_writeBuffer$(self_, buffer_, $c) {
-process.stdout.write(new Uint8Array(buffer_.buffer))
+process.stdout.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))
 }
 
 export async function NodeSystem_writeStream$(self_, stream_, $c) {
@@ -252,7 +252,7 @@ export async function NodeSystem_writeLine$(self_, text_, $c) {
 }
 
 export async function NodeSystem_writeErrorBuffer$(self_, buffer_, $c) {
-process.stderr.write(new Uint8Array(buffer_.buffer))
+process.stderr.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))
 }
 
 export async function NodeSystem_writeErrorStream$(self_, stream_, $c) {

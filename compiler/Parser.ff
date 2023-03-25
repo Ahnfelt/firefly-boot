@@ -45,15 +45,15 @@ extend self: Parser {
     }
     
     current(): Token {
-        if(self.offset < self.tokens.size()) { self.tokens.grab(self.offset) } else { self.end }
+        if(self.offset < self.tokens.size()) {self.tokens.grab(self.offset)} else {self.end}
     }
     
     ahead(): Token {
-        if(self.offset + 1 < self.tokens.size()) { self.tokens.grab(self.offset + 1) } else { self.end }
+        if(self.offset + 1 < self.tokens.size()) {self.tokens.grab(self.offset + 1)} else {self.end}
     }
     
     aheadAhead(): Token {
-        if(self.offset + 2 < self.tokens.size()) { self.tokens.grab(self.offset + 2) } else { self.end }
+        if(self.offset + 2 < self.tokens.size()) {self.tokens.grab(self.offset + 2)} else {self.end}
     }
     
     skip(kind: TokenKind): Token {
@@ -97,7 +97,7 @@ extend self: Parser {
 
     parseModuleWithoutPackageInfo(): Module {
         let moduleWithPackageInfo = self.parseModuleWithPackageInfo()
-        moduleWithPackageInfo.packageInfo.each { info =>
+        moduleWithPackageInfo.packageInfo.each {info =>
             throw(CompileError(info.package.at, "Package and dependencies already declared in package.ff"))
         }
         moduleWithPackageInfo.module
@@ -115,13 +115,13 @@ extend self: Parser {
         let location = self.current().at()
         let package = if(self.current().is(LKeyword) && self.current().rawIs("package")) {
             let p = self.parsePackageDefinition()
-            if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+            if(!self.current().is(LEnd)) {self.skipSeparator(LSemicolon)}
             p
         } else {
             DPackage(
-                location,
-                self.packagePair,
-                Version(location, 0, 0, 0),
+                location
+                self.packagePair
+                Version(location, 0, 0, 0)
                 TargetNames(node = self.targetIsNode, browser = !self.targetIsNode)
             )
         }
@@ -134,12 +134,12 @@ extend self: Parser {
         let dependencies = Stack.make[DDependency]()
         while {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
             dependencies.push(self.parseDependencyDefinition(package.targets))
-            if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+            if(!self.current().is(LEnd)) {self.skipSeparator(LSemicolon)}
         }
         let includes = Stack.make[DInclude]()
         while {self.current().is(LKeyword) && self.current().rawIs("include")} {
             includes.push(self.parseIncludeDefinition())
-            if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+            if(!self.current().is(LEnd)) {self.skipSeparator(LSemicolon)}
         }
         // TODO: When this method is called directly for package.ff, check that the whole file has been consumed
         PackageInfo(package, dependencies.toList(), includes.toList())
@@ -183,7 +183,7 @@ extend self: Parser {
             } else {
                 self.skip(LEnd)
             }
-            if(!self.current().is(LEnd)) { self.skipSeparator(LSemicolon) }
+            if(!self.current().is(LEnd)) {self.skipSeparator(LSemicolon)}
         }
 
         Module(
@@ -204,7 +204,7 @@ extend self: Parser {
         let variableType = if(self.current().is(LColon)) {
             self.skip(LColon)
             self.parseType()
-        } else { self.freshUnificationVariable(nameToken.at()) }
+        } else {self.freshUnificationVariable(nameToken.at())}
         self.skip(LAssign)
         let value = self.parseTerm()
         DLet(nameToken.at(), nameToken.raw(), variableType, value)
@@ -233,7 +233,7 @@ extend self: Parser {
                 .replace("\\\\", "\\")
         }
         mutable targets = ParsedTargets(None, None, None, None, None, None, None, None, None)
-        while { self.currentIsSeparator(LSemicolon) && self.ahead().is(LKeyword) && self.ahead().rawIs("target") } {
+        while {self.currentIsSeparator(LSemicolon) && self.ahead().is(LKeyword) && self.ahead().rawIs("target")} {
             self.skip(LSeparator)
             let at = self.skip(LKeyword).at()
             let target = if(self.current().is(LLower)) {self.skip(LLower).raw()} else {self.skip(LKeyword).raw()}
@@ -241,13 +241,13 @@ extend self: Parser {
                 let lambda = self.parseLambda(parameterCount)
                 target.{
                     | "js" =>
-                        if(targets.jsSync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.jsSync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(js = Some(lambda))
                     | "browser" =>
-                        if(targets.browserSync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.browserSync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(browser = Some(lambda))
                     | "node" =>
-                        if(targets.nodeAsync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.nodeAsync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(node = Some(lambda))
                     | _ =>
                         throw(CompileError(at, "Unknown target"))
@@ -257,22 +257,22 @@ extend self: Parser {
                 let code = processCode(self.skip(LString).raw())
                 Pair(target, mode).{
                     | Pair("js", "sync") =>
-                        if(targets.jsSync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.jsSync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(jsSync = Some(code))
                     | Pair("js", "async") =>
-                        if(targets.jsAsync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.jsAsync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(jsAsync = Some(code))
                     | Pair("browser", "sync") =>
-                        if(targets.browserSync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.browserSync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(browserSync = Some(code))
                     | Pair("browser", "async") =>
-                        if(targets.browserAsync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.browserAsync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(browserAsync = Some(code))
                     | Pair("node", "sync") =>
-                        if(targets.nodeSync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.nodeSync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(nodeSync = Some(code))
                     | Pair("node", "async") =>
-                        if(targets.nodeAsync != None) { throw(CompileError(at, "Duplicate target definition")) }
+                        if(targets.nodeAsync != None) {throw(CompileError(at, "Duplicate target definition"))}
                         targets = targets.ParsedTargets(nodeAsync = Some(code))
                     | Pair(_, _) =>
                         throw(CompileError(at, "Unknown target or mode"))
@@ -299,14 +299,14 @@ extend self: Parser {
     parseExtendDefinition(): DExtend {
         self.rawSkip(LKeyword, "extend")
         let nameToken = self.skip(LLower)
-        let poly = if(self.current().rawIs("[")) { self.parseTypeParameters() } else { Poly([], []) }
+        let poly = if(self.current().rawIs("[")) {self.parseTypeParameters()} else {Poly([], [])}
         self.skip(LColon)
         let type = self.parseType()
         self.rawSkip(LBracketLeft, "{")
         let methods = Stack.make[DFunction]()
-        while { !self.current().is(LBracketRight) } {
+        while {!self.current().is(LBracketRight)} {
             methods.push(self.parseFunctionDefinition())
-            if(!self.current().is(LBracketRight)) { self.skipSeparator(LSemicolon) }
+            if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
         }
         self.rawSkip(LBracketRight, "}")
         DExtend(
@@ -352,7 +352,7 @@ extend self: Parser {
                         methodDefaults.push(Pair(signature.name, body))
                     }
                 }
-                if(!self.current().is(LBracketRight)) { self.skipSeparator(LSemicolon) }
+                if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
             signatures.toList()
@@ -374,7 +374,7 @@ extend self: Parser {
         let token = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
         let typeArguments = Stack.make[Type]()
-        typeArguments.push(TConstructor(token.at(), token.raw(), poly.generics.map { TConstructor(token.at(), _, []) }))
+        typeArguments.push(TConstructor(token.at(), token.raw(), poly.generics.map {TConstructor(token.at(), _, [])}))
         self.skip(LColon)
         let nameToken = self.skip(LUpper)
         if(self.current().rawIs("[")) {
@@ -432,7 +432,7 @@ extend self: Parser {
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
                 if(!allowMutable && variantFields.any {_.mutable}) {
-                    throw(CompileError(variantFields.find {_.mutable}.grab().at,
+                    throw(CompileError(variantFields.find {_.mutable}.grab().at
                         "Only classes can have mutable fields"
                     ))
                 }
@@ -450,7 +450,7 @@ extend self: Parser {
         }
         if(!allowMutable && commonFields.any {_.mutable}) {
             throw(CompileError(
-                commonFields.find {_.mutable}.grab().at,
+                commonFields.find {_.mutable}.grab().at
                 "Only classes and capabilities can have mutable fields"
             ))
         }
@@ -461,7 +461,7 @@ extend self: Parser {
     parseImportDefinition(currentPackagePair: PackagePair): DImport {
         let importToken = self.rawSkip(LKeyword, "import")
         let path = Stack.make[String]()
-        while { self.current().is(LLower) } {
+        while {self.current().is(LLower)} {
             path.push(self.parseDashedName())
             self.skip(LDot)
         }
@@ -469,7 +469,7 @@ extend self: Parser {
         let alias = if(self.current().rawIs("as")) {
             self.rawSkip(LKeyword, "as")
             self.skip(LUpper).raw()
-        } else { file }
+        } else {file}
         let packagePair = if(self.current().rawIs("from")) {
             self.rawSkip(LKeyword, "from")
             let userName = self.parseDashedName()
@@ -506,8 +506,8 @@ extend self: Parser {
         self.skip(LColon)
         let version = self.parseVersion()
         let safety = (
-            if(self.current().rawIs("trusted")) { Trusted } else:
-            if(self.current().rawIs("unsafe")) { Unsafe } else:
+            if(self.current().rawIs("trusted")) {Trusted} else:
+            if(self.current().rawIs("unsafe")) {Unsafe} else:
             Safe
         )
         let targets = self.parseTargetNames(defaultTargetNames)
@@ -531,7 +531,7 @@ extend self: Parser {
 
     parseTargetNames(defaultTargets: TargetNames): TargetNames {
         mutable targets = TargetNames(False, False)
-        while { self.current().is2(LKeyword, LLower) } {
+        while {self.current().is2(LKeyword, LLower)} {
             let token = if(self.current().is(LLower)) {self.skip(LLower)} else {self.skip(LKeyword)}
             token.raw().{
                 | "node" {targets.node} => throw(CompileError(token.at(), "Duplicate target name"))
@@ -555,7 +555,7 @@ extend self: Parser {
             let patch = if(self.current().is(LDot)) {
                  self.skip(LDot)
                  self.skip(LInt).raw().grabInt()
-            } else { 0 }
+            } else {0}
             Version(majorMinor.at(), parts.grab(0).grabInt(), parts.grab(1).grabInt(), patch)
         } else {
             let major = self.skip(LInt)
@@ -568,20 +568,20 @@ extend self: Parser {
         function readPart(): String {
             if(self.current().is(LInt)) {
                 let prefix = self.skip(LInt).raw()
-                if(self.current().is(LLower)) { prefix + self.skip(LLower).raw() } else { prefix }
+                if(self.current().is(LLower)) {prefix + self.skip(LLower).raw()} else {prefix}
             } else {
                 self.skip(LLower).raw()
             }
         }
         mutable part = readPart()
-        while { self.current().rawIs("-") } {
+        while {self.current().rawIs("-")} {
             self.skip(LOperator)
             part = part + "-" + readPart()
         }
-        if(part.any { _.isAsciiUpper() }) {
+        if(part.any {_.isAsciiUpper()}) {
             throw(CompileError(at, "Package names and paths must not contain upper case letters: " + part))
         }
-        if(part.any { _ == '_' } || part.any { _ == '.' }) {
+        if(part.any {_ == '_'} || part.any {_ == '.'}) {
             throw(CompileError(at, "Package names and paths must not contain underscores or dots: " + part))
         }
         part
@@ -605,7 +605,7 @@ extend self: Parser {
                     ))
                 }
             }
-            if(!self.current().is(LBracketRight)) { self.skip(LComma) }
+            if(!self.current().is(LBracketRight)) {self.skip(LComma)}
         }
         self.rawSkip(LBracketRight, "]")
         Poly(parameters.toList(), constraints.toList())
@@ -670,8 +670,8 @@ extend self: Parser {
     }
     
     parseLambda(
-        defaultParameterCount: Int = 0,
-        ignoreGenerateKeyword: Bool = False,
+        defaultParameterCount: Int = 0
+        ignoreGenerateKeyword: Bool = False
         allowColon: Bool = False
     ): Lambda {
         let colon = allowColon && self.current().is(LColon)
@@ -699,9 +699,9 @@ extend self: Parser {
             let wildcards = Wildcards.make()
             let e = wildcards.fixWildcards(term)
             let arguments = if(wildcards.seenWildcards != 0) {
-                List.range(wildcards.seenWildcards).map { i => PVariable(token.at(), Some("_w" + (i + 1))) }
+                List.range(wildcards.seenWildcards).map {i => PVariable(token.at(), Some("_w" + (i + 1)))}
             } else {
-                List.range(defaultParameterCount).map { i => PVariable(token.at(), None) }
+                List.range(defaultParameterCount).map {i => PVariable(token.at(), None)}
             }
             [MatchCase(token.at(), arguments, [], e)]
         }
@@ -776,7 +776,7 @@ extend self: Parser {
                 if(self.current().is(LLower)) {
                     let asToken = self.skip(LLower)
                     PVariantAs(token.at(), token.raw(), Some(asToken.raw()))
-                } elseIf { self.current().is(LWildcard) } {
+                } elseIf {self.current().is(LWildcard)} {
                     self.skip(LWildcard)
                     PVariantAs(token.at(), token.raw(), None)
                 } else {
@@ -788,7 +788,7 @@ extend self: Parser {
             let atToken = self.skip(LOperator)
             let asToken = self.skip(LLower)
             PAlias(atToken.at(), pattern, asToken.raw())
-        } else { pattern }
+        } else {pattern}
     }
     
     parseType(): Type {
@@ -853,7 +853,7 @@ extend self: Parser {
         let mutable = self.current().rawIs("mutable")
         if(mutable) {self.rawSkip(LKeyword, "mutable")} else {self.rawSkip(LKeyword, "let")}
         let nameToken = self.skip(LLower)
-        let valueType = if(!self.current().is(LColon)) { self.freshUnificationVariable(nameToken.at()) } else {
+        let valueType = if(!self.current().is(LColon)) {self.freshUnificationVariable(nameToken.at())} else {
             self.skip(LColon)
             self.parseType()
         }
@@ -923,7 +923,7 @@ extend self: Parser {
         let tailCall = if(self.current().is(LKeyword) && self.current().rawIs("tailcall")) {
             self.skip(LKeyword)
             True
-        } else { False }
+        } else {False}
         mutable result = self.parseAtom()
         while {self.current().is(LBracketLeft) || self.current().is(LColon) || self.current().is(LDot)} {
             if(self.current().is(LDot)) {
@@ -1006,7 +1006,7 @@ extend self: Parser {
         let token = self.skip(LUpper)
         let name = prefix + token.raw()
         let typeArguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
-        if(self.current().rawIs("?")) { self.skip(LOperator); EVariantIs(token.at(), name, typeArguments) } else:
+        if(self.current().rawIs("?")) {self.skip(LOperator); EVariantIs(token.at(), name, typeArguments)} else:
         let arguments = Some(self.parseFunctionArguments(True))
         EVariant(token.at(), name, typeArguments, arguments.map {_.first})
     }
@@ -1044,7 +1044,7 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.toList().sortBy { _.first }
+        fields.toList().sortBy {_.first}
     }
     
     parseRecordPattern(): List[Pair[String, MatchPattern]] {
@@ -1057,11 +1057,11 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
-        fields.toList().sortBy { _.first }
+        fields.toList().sortBy {_.first}
     }
 
     parseListPattern(): MatchPattern {
-        function convertListPattern(at : Location, items : List[Pair[MatchPattern, Bool]]) : MatchPattern {
+        function convertListPattern(at: Location, items: List[Pair[MatchPattern, Bool]]): MatchPattern {
             | _, [] => PVariant(at, "ff:core/List.Empty", [])
             | _, [Pair(p, False), ...ps] =>
                 PVariant(p.at, "ff:core/List.Link", [p, convertListPattern(p.at, ps)])
@@ -1073,7 +1073,7 @@ extend self: Parser {
         let at = self.rawSkip(LBracketLeft, "[").at()
         while {!self.current().rawIs("]")} {
             let spread = self.current().is(LDotDotDot)
-            if(spread) { self.skip(LDotDotDot) }
+            if(spread) {self.skip(LDotDotDot)}
             let pattern = if(spread && self.current().rawIs("]")) {
                 PVariable(self.current().at(), None)
             } else {
@@ -1091,7 +1091,7 @@ extend self: Parser {
         let at = self.rawSkip(LBracketLeft, "[").at()
         while {!self.current().rawIs("]")} {
             let spread = self.current().is(LDotDotDot)
-            if(spread) { self.skip(LDotDotDot) }
+            if(spread) {self.skip(LDotDotDot)}
             items.push(Pair(self.parseTerm(), spread))
             if(!self.current().rawIs("]")) {self.skipSeparator(LComma)}
         }

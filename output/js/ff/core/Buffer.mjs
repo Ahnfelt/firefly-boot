@@ -103,7 +103,7 @@ export function fromBufferArray_(array_) {
         const result = new Uint8Array(arrayBuffer)
         let offset = 0
         for(let b of array_) {
-            result.set(new Uint8Array(b.buffer, 0, b.byteLength), offset)
+            result.set(new Uint8Array(b.buffer, b.byteOffset, b.byteLength), offset)
             offset += b.byteLength
         }
         return new DataView(arrayBuffer)

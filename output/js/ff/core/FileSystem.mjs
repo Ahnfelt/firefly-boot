@@ -195,7 +195,7 @@ export async function internalReadStream_$(createReadStream_, $c) {
         return ff_core_Stream.Stream(async function go($c) {
             if(c == null) open($c)
             let buffer = readable.read()
-            if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer))
+            if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer, buffer.byteOffset, buffer.length))
             if(seenError != null) throw seenError
             if(readable.destroyed) return ff_core_Option.None()
             let promise = new Promise((resolve, reject) => {
@@ -408,7 +408,7 @@ export async function FileSystem_writeStream$(self_, file_, stream_, createOnly_
             let writeable = fs.createWriteStream(file_, {flags: createOnly_ ? 'wx' : 'w'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
-                    if(!writeable.write(new Uint8Array(buffer.buffer))) {
+                    if(!writeable.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))) {
                         await new Promise((resolve, reject) => {
                             $c.signal.addEventListener('abort', reject)
                             writeable.once('drain', () => {
@@ -430,7 +430,7 @@ export async function FileSystem_appendStream$(self_, file_, stream_, $c) {
             let writeable = fs.createWriteStream(file_, {flags: 'a'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
-                    if(!writeable.write(new Uint8Array(buffer.buffer))) {
+                    if(!writeable.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))) {
                         await new Promise((resolve, reject) => {
                             $c.signal.addEventListener('abort', reject)
                             writeable.once('drain', () => {
@@ -480,10 +480,10 @@ export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
                 if(seenError != null) throw seenError
                 if(!decompress.readable) return ff_core_Option.None()
                 let buffer = decompress.read()
-                if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer))
+                if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer, buffer.byteOffset, buffer.length))
                 buffer = (await stream_.next_($c)).value_
                 if(buffer == null) decompress.end()
-                let wait = buffer == null || !decompress.write(new Uint8Array(buffer.buffer))
+                let wait = buffer == null || !decompress.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))
                 if(seenError != null) throw seenError
                 if(!wait) return go($c)
                 let promise = new Promise((resolve, reject) => {
