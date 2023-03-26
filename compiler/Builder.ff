@@ -42,13 +42,7 @@ build(
 
     if(success) {
         if(fs.exists(jsOutputPath)) {fs.deleteDirectory(jsOutputPath)}
-        try {
-            fs.rename(jsPathFile, jsOutputPath)
-        } catchAny {_ =>
-            // VSCode WSL race condition (?) workaround
-            system.tasks().sleep(Duration(0.1))
-            fs.rename(jsPathFile, jsOutputPath)
-        } grab()
+        fs.rename(jsPathFile, jsOutputPath)
     }
 
 }

@@ -23,7 +23,7 @@ main(system: NodeSystem): Unit {
     let fireflyPath = detectFireflyPath()
 
     function buildScript(
-        mainFile: String,
+        mainFile: String
         mainPackagePair: PackagePair
         emitTarget: EmitTarget
         resolvedDependencies: ResolvedDependencies

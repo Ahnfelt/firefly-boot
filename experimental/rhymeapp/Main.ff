@@ -8,11 +8,11 @@ browserMain(system: BrowserSystem): Unit {
     let output = document.call1("getElementById", "output")
     let button = document.call1("getElementById", "button")
 
-    let handler = system.js().shield { system.js().function1 { event =>
+    let handler = system.js().shield {system.js().function1 {event =>
         let text = input.get("value").grabString()
         let serialized = Serializable.serialize(text)
         let result = system.fetch().fetch("http://localhost:8080/rhyme",
-            method = "POST",
+            method = "POST"
             body = Some(FetchSystem.bodyBuffer(serialized))
         )
         output.set("innerText", result.readText())
@@ -23,7 +23,7 @@ browserMain(system: BrowserSystem): Unit {
 }
 
 nodeMain(system: NodeSystem): Unit {
-    HttpServer.listen(system, "localhost", 8080) { request, response =>
+    HttpServer.listen(system, "localhost", 8080) {request, response =>
 
         if(request.path() == "/") {
 
