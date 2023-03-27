@@ -1212,7 +1212,10 @@ const value_ = _1.value_;
 const effect_ = _1.effect_;
 const function_ = _1.function_;
 const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
-const call_ = (((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")");
+const c_ = (await_
+? ", $c"
+: "");
+const call_ = ((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + c_) + ")");
 if(await_) {
 return (("(await " + call_) + ")")
 } else {
@@ -3290,7 +3293,10 @@ const value_ = _1.value_;
 const effect_ = _1.effect_;
 const function_ = _1.function_;
 const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
-const call_ = (((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + ")");
+const c_ = (await_
+? ", $c"
+: "");
+const call_ = ((((("(" + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, function_, async_)) + ")(") + ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, value_, async_)) + c_) + ")");
 if(await_) {
 return (("(await " + call_) + ")")
 } else {

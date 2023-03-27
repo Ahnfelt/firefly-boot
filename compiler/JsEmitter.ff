@@ -338,7 +338,8 @@ extend self: JsEmitter {
             "{\n" + caseStrings.join("\n") + "\n})"
         | EPipe(at, value, effect, function) =>
             let await = async && effectTypeIsAsync(effect)
-            let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + ")"
+            let c = if(await) {", $c"} else {""}
+            let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + c + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ECall(at, StaticCall(operator, _, _), _, [], [value], _) {!operator.grabFirst().isAsciiLetter()} =>
             "(" + operator + self.emitArgument(value, async) + ")"
@@ -538,9 +539,9 @@ extend self: JsEmitter {
                     "if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround})"
                 } else {""}
             | ECall(at, StaticCall(name, True, instanceCall), effect, _, arguments, _) =>
-                if(instanceCall) { throw(CompileError(at, "Not yet implemented: Tail calls on trait methods.")) }
+                if(instanceCall) {throw(CompileError(at, "Not yet implemented: Tail calls on trait methods."))}
                 self.tailCallUsed = True
-                let pair = arguments.map { a =>
+                let pair = arguments.map {a =>
                     Some(Pair(
                         "const " + escapeKeyword(a.name.grab() + "_r") + " = " + self.emitTerm(a.value, async) + ";"
                         escapeKeyword(a.name.grab()) + " = " + escapeKeyword(a.name.grab() + "_r")
@@ -549,21 +550,21 @@ extend self: JsEmitter {
                 "{\n" + pair.first.join("\n") + "\n" + pair.second.join("\n") + "\ncontinue _tailcall\n}"
             | EPipe(at, value, _, ELambda(_, Lambda(_, _, cases))) =>
                 Patterns.convertAndCheck(self.otherModules, cases)
-                if(!last) { "do " }.else { "" } +
+                if(!last) {"do "}.else {""} +
                 "{\nconst _1 = " + self.emitTerm(value, async) + ";\n" +
-                cases.map { "{\n" + self.emitCase(["_1"], _, True, last, async) + "\n}" }.join("\n") +
-                "\n}" + if(!last) { " while(false)" }.else { "" }
+                cases.map {"{\n" + self.emitCase(["_1"], _, True, last, async) + "\n}"}.join("\n") +
+                "\n}" + if(!last) {" while(false)"}.else {""}
             | _ =>
                 detectIfElse(term).{
                     | [] =>
-                        if(last) { "return " + self.emitTerm(term, async) } else { self.emitTerm(term, async) }
+                        if(last) {"return " + self.emitTerm(term, async)} else {self.emitTerm(term, async)}
                     | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
                         let initial = "{\n" + self.emitStatements(elseBody, last, async) + "\n}"
                         list.foldLeft(initial) {| otherwise, Pair(condition, body) =>
                             "if(" + self.emitTerm(condition, async) + ") {\n" +
                             self.emitStatements(body, last, async) + "\n} else " + otherwise
                         }
-                    | list { !last } =>
+                    | list {!last} =>
                         list.foldLeft("{}") {| otherwise, Pair(condition, body) =>
                             "if(" + self.emitTerm(condition, async) + ") {\n" +
                             self.emitStatements(body, last, async) + "\n} else " + otherwise
