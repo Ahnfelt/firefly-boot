@@ -77,7 +77,24 @@
                 "command": "firefly.run",
                 "title": "Run Current Firefly Main File"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Firefly language support configuration",
+            "properties": {
+                "firefly.trace.server": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
+					"default": "verbose",
+					"description": "Traces the communication between VS Code and the language server."
+				}
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

@@ -1,7 +1,0 @@
-dependency ff:compiler:0.0.0
-import Builder from ff:compiler
-import Syntax from ff:compiler
-
-main(system: NodeSystem) {
-    Builder.check(system, ".", "LanguageServer.ff")
-}

@@ -49,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
     };
 
     client = new LanguageClient(
-        'fireflyLsp',
+        'firefly',
         'Firefly Language Server',
         serverOptions,
         clientOptions
