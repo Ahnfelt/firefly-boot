@@ -1,4 +1,117 @@
+import JsEmitter from ff:compiler
+import Builder from ff:compiler
+import Syntax from ff:compiler
 
 class Handler(
     mutable workspaceUri: Option[String]
 )
+
+capability ResultOrError {
+    Result(result: JsValue)
+    Error(code: Int, message: String)
+}
+
+extend self: Handler {
+
+    handleNotification(system: NodeSystem, method: String, parameters: Map[String, JsValue]): Unit {
+        method.{
+            | "initialized" =>
+            | _ =>
+        }   
+    }
+
+    handleRequest(system: NodeSystem, method: String, parameters: Map[String, JsValue]): ResultOrError {
+        method.{
+            | "initialize" => self.handleInitialize(system.js(), parameters)
+            | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
+            | "hover" => self.handleHover(system.js(), parameters)
+            | _ => self.handleUnsupported(system.js())
+        }
+    }   
+    
+    handleUnsupported(js: JsSystem): ResultOrError {
+        Error(1234, "Unsupported method")
+    }
+    
+    handleInitialize(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let anyFireflyFile = js.object()
+            .with("filters", [
+                js.object()
+                    .with("pattern", js.object()
+                        .with("glob", "**/*.ff")
+                        .with("matches", "file")
+                    )
+            ].toArray())
+    
+        let o = js.object()
+            .with("capabilities", js.object()
+                .with("textDocumentSync", js.object()
+                    .with("openClose", True)
+                    .with("change", 1 /* TextDocumentSyncKind.Full */)
+                )
+                .with("hoverProvider", False)
+                //.with("definitionProvider", True)
+                //.with("typeDefinitionProvider", True)
+                .with("diagnosticProvider", js.object()
+                    .with("interFileDependencies", True)
+                    .with("workspaceDiagnostics", False)
+                )
+                /*.with("workspace", js.object()
+                    .with("workspaceFolders", js.object()
+                         .with("supported", True)
+                         .with("changeNotifications", True)
+                    )
+                    .with("fileOperations", js.object()
+                         .with("didCreate", anyFireflyFile)
+                         .with("didRename", anyFireflyFile)
+                         .with("didDelete", anyFireflyFile)
+                    )
+                )*/
+            )
+            .with("serverInfo", js.object()
+                .with("name", "Firefly Language Server")
+                .with("version", "0.0.0")
+            )
+        Result(o)
+    }
+    
+    handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let js = system.js()
+        let uri = parameters.grab("textDocument").get("uri").grabString()
+        let file = uri.split('/').grabLast() // TODO
+        let diagnostics = try {
+            Builder.check(system, ".", file)
+            []
+        } catch {| CompileError(at, message), error =>
+            let diagnostic = js.object()
+                .with("range", js.object()
+                    .with("start", js.object()
+                        .with("line", at.line - 1).with("character", at.column - 1)
+                    )
+                    .with("end", js.object()
+                        .with("line", at.line - 1).with("character", at.column)
+                    )
+                )
+                .with("severity", 1 /* Error */)
+                .with("message", message)
+            [diagnostic]
+        } grab()
+    
+        let o = js.object()
+            .with("kind", "full")
+            .with("items", diagnostics.toArray())
+        Result(o)
+    }
+    
+    handleHover(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let o = js.object().with("contents", "TODO")
+        Result(o)
+    }
+    
+    makeNotificationMessage(js: JsSystem, method: String, params: JsValue): JsValue {
+        js.object()
+            .with("jsonrpc", "2.0")
+            .with("method", method)
+            .with("params", params)
+    }
+}
