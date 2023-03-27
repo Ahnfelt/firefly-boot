@@ -1,3 +1,8 @@
+dependency ff:compiler:0.0.0
+import JsEmitter from ff:compiler
+import Builder from ff:compiler
+import Syntax from ff:compiler
+
 class LanguageServer(
     mutable openFiles: Map[String, String]
 )
@@ -34,7 +39,7 @@ main(system: NodeSystem) {
             input = requestPair.second
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
-            handleRequestMessage(system.js(), message).each {body =>
+            handleRequestMessage(system, message).each {body =>
                 system.writeText(makeResponse(body))
             }
             //system.writeText(makeResponse(makeDiagnoseNotification(system.js())))
@@ -138,7 +143,7 @@ parseRequestMessage(object: JsValue): RequestMessage {
     RequestMessage(id, method, parameters)
 }
 
-handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
+handleRequestMessage(system: NodeSystem, message: RequestMessage): Option[JsValue] {
     message.id.{
         // Notification Message
         | None =>
@@ -150,12 +155,12 @@ handleRequestMessage(js: JsSystem, message: RequestMessage): Option[JsValue] {
         // Request Message
         | Some(id) =>
             let result = message.method.{
-                | "initialize" => handleInitialize(js, message.parameters)
-                | "textDocument/diagnostic" => handleDiagnostic(js, message.parameters)
-                | "hover" => handleHover(js, message.parameters)
-                | _ => handleUnsupported(js)
+                | "initialize" => handleInitialize(system.js(), message.parameters)
+                | "textDocument/diagnostic" => handleDiagnostic(system, message.parameters)
+                | "hover" => handleHover(system.js(), message.parameters)
+                | _ => handleUnsupported(system.js())
             }
-            Some(makeResponseMessage(js, id, result))
+            Some(makeResponseMessage(system.js(), id, result))
     }
 }
 
@@ -232,23 +237,30 @@ handleInitialize(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError 
     Result(o)
 }
 
-handleDiagnostic(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
-    let diagnostic = js.object()
-        .with("range", js.object()
-            .with("start", js.object()
-                .with("line", 0).with("character", 6)
+handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+    let js = system.js()
+
+    let diagnostics = try {
+        //Builder.check(system, ".", "LanguageServer.ff")
+        []
+    } catch {| CompileError(at, message), error =>
+        let diagnostic = js.object()
+            .with("range", js.object()
+                .with("start", js.object()
+                    .with("line", at.line).with("character", at.column)
+                )
+                .with("end", js.object()
+                    .with("line", at.line).with("character", at.column + 1)
+                )
             )
-            .with("end", js.object()
-                .with("line", 0).with("character", 20)
-            )
-        )
-        .with("severity", 1 /* Error */)
-        .with("message", "Hurray!")
+            .with("severity", 1 /* Error */)
+            .with("message", message)
+        [diagnostic]
+    } grab()
 
     let o = js.object()
         .with("kind", "full")
-        .with("items", [/*diagnostic*/].toArray())
-
+        .with("items", diagnostics.toArray())
     Result(o)
 }
 

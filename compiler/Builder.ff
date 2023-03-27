@@ -82,6 +82,21 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
     )
 }
 
+check(system: NodeSystem, fireflyPath: String, mainFile: String) {
+    let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
+    let fixedDependencies = resolvedDependencies.ResolvedDependencies(
+        packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
+    )
+    let fixedPackagePaths = if(fixedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
+        fixedDependencies.packagePaths
+    } else {
+        fixedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+    }
+    let fixedResolvedDependencies = fixedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+    let compiler = Compiler.make(EmitBuild, system.files(), system.time(), None, ".firefly/temporary/lsp", fixedResolvedDependencies)
+    compiler.infer(resolvedDependencies.mainPackagePair, mainFile.dropLast(".ff".size()))
+}
+
 internalCreateExecutable(
     self: BuildSystem
     mainJsFile: String = ".firefly/output/executable/Main.bundle.js"
