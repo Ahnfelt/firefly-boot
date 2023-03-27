@@ -241,16 +241,16 @@ handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOr
     let js = system.js()
 
     let diagnostics = try {
-        //Builder.check(system, ".", "LanguageServer.ff")
+        Builder.check(system, ".", "LanguageServer.ff")
         []
     } catch {| CompileError(at, message), error =>
         let diagnostic = js.object()
             .with("range", js.object()
                 .with("start", js.object()
-                    .with("line", at.line).with("character", at.column)
+                    .with("line", at.line - 1).with("character", at.column - 1)
                 )
                 .with("end", js.object()
-                    .with("line", at.line).with("character", at.column + 1)
+                    .with("line", at.line - 1).with("character", at.column)
                 )
             )
             .with("severity", 1 /* Error */)
