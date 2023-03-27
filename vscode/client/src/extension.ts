@@ -28,8 +28,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     const runOrDebug = {
         //command: fireflyPath + '/firefly.sh',
-        //args: ['LanguageServer.ff'],
-        command: "./languageServer.sh",
+        //command: "./languageServer.sh",
+        module: fireflyPath + '/output/js/ff/compiler/Main.mjs',
+        args: ['LanguageServer.ff'],
+        //args: [fireflyPath + '/lsp/LanguageServer.ff'],
         options: {cwd: fireflyPath + '/lsp'},
         transport: TransportKind.stdio // ipc
     };

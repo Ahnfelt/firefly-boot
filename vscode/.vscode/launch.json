@@ -6,9 +6,9 @@
 			"request": "launch",
 			"name": "Launch Client",
 			"runtimeExecutable": "${execPath}",
-			"args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-			"outFiles": ["${workspaceRoot}/client/out/**/*.js"],
-			"env": {"FIREFLY_HOME": "${workspaceRoot}/.."},
+			"args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+			"outFiles": ["${workspaceFolder}/client/out/**/*.js"],
+			"env": {"FIREFLY_HOME": "${workspaceFolder}/.."},
 			"preLaunchTask": {
 				"type": "npm",
 				"script": "watch"

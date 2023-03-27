@@ -11,7 +11,8 @@ browserMain(system: BrowserSystem): Unit {
     let handler = system.js().shield {system.js().function1 {event =>
         let text = input.get("value").grabString()
         let serialized = Serializable.serialize(text)
-        let result = system.fetch().fetch("http://localhost:8080/rhyme",
+        let result = system.fetch().fetch(
+            url = "http://localhost:8080/rhyme"
             method = "POST"
             body = Some(FetchSystem.bodyBuffer(serialized))
         )

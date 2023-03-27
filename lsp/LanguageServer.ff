@@ -247,7 +247,7 @@ handleDiagnostic(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError 
 
     let o = js.object()
         .with("kind", "full")
-        .with("items", [/*diagnostic*/].toArray())
+        .with("items", [diagnostic].toArray())
 
     Result(o)
 }

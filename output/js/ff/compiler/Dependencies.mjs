@@ -190,7 +190,7 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 
 export function Dependencies_fetchDependency(self_, fs_, fetch_, dependency_) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
-if(ff_core_String.String_contains(location_, ":")) {
+if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
 const packagePair_ = dependency_.packagePair_;
 const dependenciesPath_ = ".firefly/dependencies";
@@ -282,7 +282,7 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 
 export async function Dependencies_fetchDependency$(self_, fs_, fetch_, dependency_, $c) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
-if(ff_core_String.String_contains(location_, ":")) {
+if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
 const packagePair_ = dependency_.packagePair_;
 const dependenciesPath_ = ".firefly/dependencies";

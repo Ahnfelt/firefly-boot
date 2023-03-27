@@ -69,7 +69,7 @@ extend self: Dependencies {
         dependency: DDependency
     ): String {
         let location = self.workspace.findPackageLocation(dependency.packagePair, dependency.version)
-        if(location.contains(":")) {
+        if(location.contains(":") && !location.dropFirst(1).startsWith(":")) {
             if(location.startsWith("http://") || location.startsWith("https://")) {
                 let packagePair = dependency.packagePair
                 let dependenciesPath = ".firefly/dependencies"

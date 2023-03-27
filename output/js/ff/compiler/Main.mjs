@@ -468,7 +468,8 @@ export function detectFireflyPath_() {
         if(!import.meta.url.endsWith(suffix)) {
             throw 'Expected module path to end with: ' + suffix + ", but got: " + moduleUrl;
         }
-        return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)));
+        return '' + new URL(moduleUrl.slice(0, -suffix.length))
+        //return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)));
     
 }
 
@@ -759,8 +760,9 @@ export async function importAndRun_$(fs_, fireflyPath_, target_, packagePair_, m
 
         const process = await import('process');
         const cwd = process.cwd();
+        const workingDirectory = cwd.indexOf(':') == 1 ? 'file:///' + cwd : cwd;
         const packagePath = packagePair_.group_ + "/" + packagePair_.name_
-        const main = await import(cwd + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
+        const main = await import(workingDirectory + "/.firefly/output/" + target_ + "/" + packagePath + "/" + mainFile_ + ".mjs");
         await main.$run$(fireflyPath_, ff_core_List.List_toArray(arguments_))
     
 }
