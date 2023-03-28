@@ -3,7 +3,7 @@ import Builder from ff:compiler
 import Syntax from ff:compiler
 
 class Handler(
-    mutable workspaceUri: Option[String]
+    mutable rootUri: Option[String]
 )
 
 capability ResultOrError {
@@ -34,6 +34,8 @@ extend self: Handler {
     }
     
     handleInitialize(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
+        self.rootUri = Some(parameters.grab("rootUri").grabString())
+
         let anyFireflyFile = js.object()
             .with("filters", [
                 js.object()
@@ -80,7 +82,7 @@ extend self: Handler {
         let uri = parameters.grab("textDocument").get("uri").grabString()
         let file = uri.split('/').grabLast() // TODO
         let diagnostics = try {
-            Builder.check(system, ".", file)
+            Builder.check(system, ".", uri)
             []
         } catch {| CompileError(at, message), error =>
             let diagnostic = js.object()
