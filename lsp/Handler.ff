@@ -80,7 +80,6 @@ extend self: Handler {
     handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
-        let file = uri.split('/').grabLast() // TODO
         let diagnostics = try {
             Builder.check(system, ".", uri)
             []

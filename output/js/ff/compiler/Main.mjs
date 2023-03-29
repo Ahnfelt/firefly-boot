@@ -118,6 +118,9 @@ return {BrowserCommand: true, mainPath_};
 export function BuildCommand(mainPath_) {
 return {BuildCommand: true, mainPath_};
 }
+export function CheckCommand(filePath_) {
+return {CheckCommand: true, filePath_};
+}
 
 // type CommandLineError
 export function CommandLineError(problem_) {
@@ -131,6 +134,7 @@ These are the commands:
    run <main-file> [<main-arguments>]    Run the main file with the provided arguments
    browser <main-file>                   Compile the main file for the browser
    build <main-file>                     Build the main file
+   check <firefly-file>                  Check the firefly source file for errors
    bootstrap                             Bootstrap the compiler
 `;
 
@@ -215,6 +219,13 @@ buildScript_(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEm
 buildScript_(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), fixedDependencies_);
 ff_compiler_Main.bundleForPkg_(system_, resolvedDependencies_.mainPackagePair_, mainFile_);
 ff_compiler_Main.importAndRun_(ff_core_NodeSystem.NodeSystem_files(system_), fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, mainFile_, ff_core_List.Empty())
+return
+}
+}
+{
+if(command_a.CheckCommand) {
+const filePath_ = command_a.filePath_;
+ff_compiler_Builder.check_(system_, fireflyPath_, filePath_)
 return
 }
 }
@@ -349,6 +360,41 @@ return
 if(_1.Link) {
 if(_1.tail_.Link) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+return
+}
+}
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+return
+}
+}
+return
+}
+}
+}
+{
+if(arguments_a.Link) {
+if(arguments_a.head_ == "check") {
+const checkArguments_ = arguments_a.tail_;
+{
+const _1 = checkArguments_;
+{
+if(_1.Link) {
+const fileName_ = _1.head_;
+if(_1.tail_.Empty) {
+const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
+if(_guard1.Some) {
+return ff_compiler_Main.CheckCommand(fileName_)
+return
+}
+}
+}
+}
+{
+if(_1.Link) {
+if(_1.tail_.Link) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
 }
@@ -558,6 +604,13 @@ return
 }
 }
 {
+if(command_a.CheckCommand) {
+const filePath_ = command_a.filePath_;
+(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, $c))
+return
+}
+}
+{
 if(command_a.BootstrapCommand) {
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), "compiler"), ff_core_List.Link(ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), "core"), ff_core_List.Empty())), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), "output/temporary", "output/js", true, $c))
 return
@@ -688,6 +741,41 @@ return
 if(_1.Link) {
 if(_1.tail_.Link) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+return
+}
+}
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must specify a Firefly file (.ff) as the argument to build." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
+return
+}
+}
+return
+}
+}
+}
+{
+if(arguments_a.Link) {
+if(arguments_a.head_ == "check") {
+const checkArguments_ = arguments_a.tail_;
+{
+const _1 = checkArguments_;
+{
+if(_1.Link) {
+const fileName_ = _1.head_;
+if(_1.tail_.Empty) {
+const _guard1 = ff_core_String.String_removeLast(fileName_, ".ff");
+if(_guard1.Some) {
+return ff_compiler_Main.CheckCommand(fileName_)
+return
+}
+}
+}
+}
+{
+if(_1.Link) {
+if(_1.tail_.Link) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Main.CommandLineError(("You must only specify a single argument to check." + ff_compiler_Main.usageString_)), ff_compiler_Main.ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError)})
 return
 }
 }
@@ -862,6 +950,13 @@ return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_
 return
 }
 }
+{
+if(x_a.CheckCommand) {
+const z_ = x_a;
+return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
+return
+}
+}
 }
 },
 async show_$(x_, $c) {
@@ -892,6 +987,13 @@ return
 if(x_a.BuildCommand) {
 const z_ = x_a;
 return ((("BuildCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.mainPath_)) + ")")
+return
+}
+}
+{
+if(x_a.CheckCommand) {
+const z_ = x_a;
+return ((("CheckCommand" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.filePath_)) + ")")
 return
 }
 }
@@ -965,6 +1067,16 @@ return
 }
 }
 {
+if(x_a.CheckCommand) {
+const x_ = x_a;
+if(y_a.CheckCommand) {
+const y_ = y_a;
+return (x_.filePath_ === y_.filePath_)
+return
+}
+}
+}
+{
 return false
 return
 }
@@ -1007,6 +1119,16 @@ const x_ = x_a;
 if(y_a.BuildCommand) {
 const y_ = y_a;
 return (x_.mainPath_ === y_.mainPath_)
+return
+}
+}
+}
+{
+if(x_a.CheckCommand) {
+const x_ = x_a;
+if(y_a.CheckCommand) {
+const y_ = y_a;
+return (x_.filePath_ === y_.filePath_)
 return
 }
 }
@@ -1119,6 +1241,21 @@ return
 }
 }
 {
+if(x_a.CheckCommand) {
+const x_ = x_a;
+if(y_a.CheckCommand) {
+const y_ = y_a;
+const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.filePath_, y_.filePath_);
+if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return filePathOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+}
+}
+{
 function number_(z_) {
 {
 const z_a = z_;
@@ -1143,6 +1280,12 @@ return
 {
 if(z_a.BuildCommand) {
 return 3
+return
+}
+}
+{
+if(z_a.CheckCommand) {
+return 4
 return
 }
 }
@@ -1215,6 +1358,21 @@ return
 }
 }
 {
+if(x_a.CheckCommand) {
+const x_ = x_a;
+if(y_a.CheckCommand) {
+const y_ = y_a;
+const filePathOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.filePath_, y_.filePath_);
+if((filePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return filePathOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+return
+}
+}
+}
+{
 function number_(z_) {
 {
 const z_a = z_;
@@ -1239,6 +1397,12 @@ return
 {
 if(z_a.BuildCommand) {
 return 3
+return
+}
+}
+{
+if(z_a.CheckCommand) {
+return 4
 return
 }
 }
@@ -1343,6 +1507,16 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 return
 }
 }
+{
+if(x_a.CheckCommand) {
+const value_ = x_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.filePath_)
+return
+}
+}
 }
 },
 deserializeUsing_(serialization_) {
@@ -1375,6 +1549,13 @@ return
 if(_1 == 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return
+}
+}
+{
+if(_1 == 4) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
 }
 }
@@ -1428,6 +1609,16 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 return
 }
 }
+{
+if(x_a.CheckCommand) {
+const value_ = x_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 4);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.filePath_)
+return
+}
+}
 }
 },
 async deserializeUsing_$(serialization_, $c) {
@@ -1460,6 +1651,13 @@ return
 if(_1 == 3) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
 return ff_compiler_Main.BuildCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return
+}
+}
+{
+if(_1 == 4) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 29), 0);
+return ff_compiler_Main.CheckCommand(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
 return
 }
 }

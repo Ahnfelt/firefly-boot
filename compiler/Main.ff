@@ -14,6 +14,7 @@ data MainCommand {
     RunCommand(mainPath: String, argument: List[String])
     BrowserCommand(mainPath: String)
     BuildCommand(mainPath: String)
+    CheckCommand(filePath: String)
 }
 
 data CommandLineError(problem: String)
@@ -84,7 +85,8 @@ main(system: NodeSystem): Unit {
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitExecutable, fixedDependencies)
             bundleForPkg(system, resolvedDependencies.mainPackagePair, mainFile)
             importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, mainFile, [])
-
+        | CheckCommand(filePath) => 
+            Builder.check(system, fireflyPath, filePath)
         | BootstrapCommand =>
             Builder.build(
                 system = system
@@ -125,6 +127,7 @@ These are the commands:
    run <main-file> [<main-arguments>]    Run the main file with the provided arguments
    browser <main-file>                   Compile the main file for the browser
    build <main-file>                     Build the main file
+   check <firefly-file>                  Check the firefly source file for errors
    bootstrap                             Bootstrap the compiler
 """
 
@@ -156,6 +159,17 @@ parseCommandLine(arguments: List[String]): MainCommand {
                 BuildCommand(mainName)
             | [_, _, ..._] => throw(CommandLineError(
                 "You must only specify a single argument to build."  + usageString
+            ))
+            | _ => throw(CommandLineError(
+                "You must specify a Firefly file (.ff) as the argument to build."  + usageString
+            ))
+        }
+    | ["check", ...checkArguments] =>
+        checkArguments.{
+            | [fileName] { fileName.removeLast(".ff") | Some(_) } =>
+                CheckCommand(fileName)
+            | [_, _, ..._] => throw(CommandLineError(
+                "You must only specify a single argument to check."  + usageString
             ))
             | _ => throw(CommandLineError(
                 "You must specify a Firefly file (.ff) as the argument to build."  + usageString
