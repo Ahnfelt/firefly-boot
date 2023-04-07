@@ -20,9 +20,9 @@ check(
 ): Unit {
     Pair(fields, cases).{
         | Pair([Pair(f, PatternInfo p), ...fs], cs) =>
-            let vs = variants.get(f).else { p.otherVariants.add(p.variant) }
+            let vs = variants.get(f).else {p.otherVariants.add(p.variant)}
             if(vs.contains(p.variant)) {
-                let newFields = p.fields.map { _.mapFirst { f + "." + p.variant + "_" + _ } }
+                let newFields = p.fields.map {_.mapFirst {f + "." + p.variant + "_" + _}}
                 if(vs.size() == 1) {
                     check(variants.add(f, vs), [...newFields, ...fs], cs, True, guard)
                 } else {
@@ -32,11 +32,11 @@ check(
             } else {
                 check(variants, [], cs, False, guard)
             }
-        | _ { success && !guard } =>
+        | _ {success && !guard} =>
         | Pair([], [PatternCaseInfo(fs, g), ...cs]) =>
             check(variants, fs, cs, True, g)
         | Pair([], []) =>
-            let remaining = variants.pairs().filter { _.second.size() != 0 }.map {| Pair(f, vs) =>
+            let remaining = variants.pairs().filter {_.second.size() != 0}.map {| Pair(f, vs) =>
                 f + " could be " + Show.show(vs.toList())
             }
             if(remaining.size() != 0) {
@@ -47,15 +47,15 @@ check(
 
 convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseInfo] {
     function unqualifiedName(name: String): String {
-        name.reverse().takeWhile { _ != '.' }.reverse()
+        name.reverse().takeWhile {_ != '.'}.reverse()
     }
     function otherVariants(name: String): Set[String] {
         let variantName = unqualifiedName(name)
         let moduleName = name.dropLast(variantName.size() + 1)
         let variantModule = modules.grab(moduleName)
-        variantModule.types.collectFirst { definition =>
-            definition.variants.find { _.name == variantName }.map { variant =>
-                definition.variants.map { _.name }.filter { _ != variantName }.toSet()
+        variantModule.types.collectFirst {definition =>
+            definition.variants.find {_.name == variantName}.map {variant =>
+                definition.variants.map {_.name}.filter {_ != variantName}.toSet()
             }
         }.grab()
     }
@@ -84,7 +84,7 @@ convert(modules: Map[String, Module], cases: List[MatchCase]): List[PatternCaseI
             | Pair(i, Some(p)) => Some(Pair("" + i, p))
             | _ => None
         }
-        let exhaustiveGuards = case.guards.all { g =>
+        let exhaustiveGuards = case.guards.all {g =>
             let guardConverted = convert(modules, [MatchCase(g.at, [g.pattern], [], case.body)])
             try {
                 check([].toMap(), [], guardConverted, False, False)

@@ -45,7 +45,7 @@
         },
         "lower": {
             "name": "entity.name.variable.firefly",
-            "match": "\\b[a-z][A-Za-z0-9]*\\b"
+            "match": "\\b[a-z_][A-Za-z0-9_]*\\b"
         },
         "char": {
             "name": "string.quoted.single.firefly",
