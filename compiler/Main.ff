@@ -59,34 +59,30 @@ main(system: NodeSystem): Unit {
     function runCommand(command: MainCommand) {
         | RunCommand(mainFile, arguments) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
-            let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".") // TODO: This path is wrong
-            )
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitNode, fixedDependencies)
-            importAndRun(system.files(), fireflyPath, "node", resolvedDependencies.mainPackagePair, mainFile, arguments)
+            let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
+            buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
+            importAndRun(system.files(), fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)
 
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
-            let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".") // TODO: This path is wrong
-            )
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, fixedDependencies)
-            bundleForBrowser(system, resolvedDependencies.mainPackagePair, mainFile)
+            let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
+            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
+            bundleForBrowser(system, resolvedDependencies.mainPackagePair, localMainFile)
 
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
-            let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".") // TODO: This path is wrong
-            )
             prepareFireflyDirectory(system.files())
-            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBuild, fixedDependencies)
-            buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitExecutable, fixedDependencies)
-            bundleForPkg(system, resolvedDependencies.mainPackagePair, mainFile)
-            importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, mainFile, [])
+            let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
+            buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)
+            buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitExecutable, resolvedDependencies)
+            bundleForPkg(system, resolvedDependencies.mainPackagePair, localMainFile)
+            importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
+
         | CheckCommand(filePath) => 
             Builder.check(system, fireflyPath, filePath)
+        
         | BootstrapCommand =>
             Builder.build(
                 system = system
@@ -132,11 +128,11 @@ These are the commands:
 """
 
 parseCommandLine(arguments: List[String]): MainCommand {
-    | [mainFile, ...mainArguments] { mainFile.removeLast(".ff") | Some(mainName) } =>
+    | [mainFile, ...mainArguments] {mainFile.removeLast(".ff") | Some(mainName)} =>
         RunCommand(mainName, mainArguments)
     | ["run", ...runArguments] =>
         runArguments.{
-            | [mainFile, ...mainArguments] { mainFile.removeLast(".ff") | Some(mainName) } =>
+            | [mainFile, ...mainArguments] {mainFile.removeLast(".ff") | Some(mainName)} =>
                 RunCommand(mainName, mainArguments)
             | _ => throw(CommandLineError(
                 "You must specify a Firefly file (.ff) as first argument to run."  + usageString
@@ -144,7 +140,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
         }
     | ["browser", ...browserArguments] =>
         browserArguments.{
-            | [mainFile] { mainFile.removeLast(".ff") | Some(mainName) } =>
+            | [mainFile] {mainFile.removeLast(".ff") | Some(mainName)} =>
                 BrowserCommand(mainName)
             | [_, _, ..._] => throw(CommandLineError(
                 "You must only specify a single argument to browser."  + usageString
@@ -155,7 +151,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
         }
     | ["build", ...buildArguments] =>
         buildArguments.{
-            | [mainFile] { mainFile.removeLast(".ff") | Some(mainName) } =>
+            | [mainFile] {mainFile.removeLast(".ff") | Some(mainName)} =>
                 BuildCommand(mainName)
             | [_, _, ..._] => throw(CommandLineError(
                 "You must only specify a single argument to build."  + usageString
@@ -166,7 +162,7 @@ parseCommandLine(arguments: List[String]): MainCommand {
         }
     | ["check", ...checkArguments] =>
         checkArguments.{
-            | [fileName] { fileName.removeLast(".ff") | Some(_) } =>
+            | [fileName] {fileName.removeLast(".ff") | Some(_)} =>
                 CheckCommand(fileName)
             | [_, _, ..._] => throw(CommandLineError(
                 "You must only specify a single argument to check."  + usageString

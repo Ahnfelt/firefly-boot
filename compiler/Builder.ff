@@ -58,13 +58,10 @@ processIncludes(fs: FileSystem, jsPathFile: String, packagePath: String, info: P
 
 buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, target: String) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
-    let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-        packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".") // TODO: This path is wrong
-    )
-    let fixedPackagePaths = if(fixedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
-        fixedDependencies.packagePaths
+    let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
+        resolvedDependencies.packagePaths
     } else {
-        fixedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+        resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
     }
     if(target != "browser") {
         panic("buildViaBuildSystem is currently limited to browser target only - the restriction can be lifted")
@@ -74,7 +71,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
         emitTarget = EmitBrowser
         mainPackage = resolvedDependencies.mainPackagePair
         mainModule = mainFile.dropLast(".ff".size())
-        resolvedDependencies = fixedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+        resolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
         compilerModulePath = None
         tempPath = ".firefly/temporary"
         jsOutputPath = ".firefly/output/" + target
@@ -84,15 +81,12 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
 
 check(system: NodeSystem, fireflyPath: String, mainFile: String) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
-    let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-        packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".") // TODO: This path is wrong
-    )
-    let fixedPackagePaths = if(fixedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
-        fixedDependencies.packagePaths
+    let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
+        resolvedDependencies.packagePaths
     } else {
-        fixedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+        resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
     }
-    let fixedResolvedDependencies = fixedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+    let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
     let compiler = Compiler.make(EmitBuild, system.files(), system.time(), None, ".firefly/temporary/lsp", fixedResolvedDependencies)
     compiler.infer(resolvedDependencies.mainPackagePair, mainFile.dropLast(".ff".size()))
 }

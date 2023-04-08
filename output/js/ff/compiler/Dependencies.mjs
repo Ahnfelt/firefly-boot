@@ -111,7 +111,29 @@ const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.Lis
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), fixedPath_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_);
-return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, self_.packagePaths_, self_.singleFilePackages_)
+const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, ff_compiler_Dependencies.findScriptPackageLocation_(fs_, fixedPath_), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, packagePaths_, self_.singleFilePackages_)
+}
+
+export function findScriptPackageLocation_(fs_, path_) {
+const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
+const packageDirectory_ = (ff_core_String.String_endsWith(fixedPath_, ".ff")
+? ff_core_FileSystem.directoryName_(fixedPath_)
+: fixedPath_);
+const fixedPackageDirectory_ = ((packageDirectory_ === "")
+? "."
+: packageDirectory_);
+function go_(directory_) {
+const fireflyDirectory_ = (directory_ + "/.firefly");
+if(ff_core_FileSystem.FileSystem_exists(fs_, fireflyDirectory_)) {
+return directory_
+} else if(ff_core_FileSystem.FileSystem_exists(fs_, (directory_ + "/.."))) {
+return ff_compiler_Dependencies.findScriptPackageLocation_(fs_, (directory_ + "/.."))
+} else {
+return fixedPackageDirectory_
+}
+}
+return go_(fixedPackageDirectory_)
 }
 
 export function checkPackagePairs_(dependencyPair_, packagePair_) {
@@ -131,7 +153,29 @@ const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.Lis
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), fixedPath_, $c));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c));
-return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, self_.packagePaths_, self_.singleFilePackages_)
+const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, (await ff_compiler_Dependencies.findScriptPackageLocation_$(fs_, fixedPath_, $c)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, packagePaths_, self_.singleFilePackages_)
+}
+
+export async function findScriptPackageLocation_$(fs_, path_, $c) {
+const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
+const packageDirectory_ = (ff_core_String.String_endsWith(fixedPath_, ".ff")
+? ff_core_FileSystem.directoryName_(fixedPath_)
+: fixedPath_);
+const fixedPackageDirectory_ = ((packageDirectory_ === "")
+? "."
+: packageDirectory_);
+async function go_$(directory_, $c) {
+const fireflyDirectory_ = (directory_ + "/.firefly");
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, fireflyDirectory_, $c))) {
+return directory_
+} else if((await ff_core_FileSystem.FileSystem_exists$(fs_, (directory_ + "/.."), $c))) {
+return (await ff_compiler_Dependencies.findScriptPackageLocation_$(fs_, (directory_ + "/.."), $c))
+} else {
+return fixedPackageDirectory_
+}
+}
+return (await go_$(fixedPackageDirectory_, $c))
 }
 
 export async function checkPackagePairs_$(dependencyPair_, packagePair_, $c) {

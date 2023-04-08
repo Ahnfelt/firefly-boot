@@ -128,12 +128,30 @@ process(fs: FileSystem, fetch: FetchSystem, path: String): ResolvedDependencies 
     let packageInfo = self.loadPackageInfo(fs, PackagePair("script", "script"), fixedPath)
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(fs, fetch, newDependencies)
+    let packagePaths = self.packagePaths.add(packageInfo.package.packagePair, findScriptPackageLocation(fs, fixedPath))
     ResolvedDependencies(
         mainPackagePair = packageInfo.package.packagePair
         packages = self.packages
-        packagePaths = self.packagePaths
+        packagePaths = packagePaths
         singleFilePackages = self.singleFilePackages
     )
+}
+
+findScriptPackageLocation(fs: FileSystem, path: String): String {
+    let fixedPath = path.replace("\\", "/")
+    let packageDirectory = if(fixedPath.endsWith(".ff")) {FileSystem.directoryName(fixedPath)} else {fixedPath}
+    let fixedPackageDirectory = if(packageDirectory == "") {"."} else {packageDirectory}
+    function go(directory: String): String {
+        let fireflyDirectory = directory + "/.firefly"
+        if(fs.exists(fireflyDirectory)) {
+            directory
+        } elseIf {fs.exists(directory + "/..")} {
+            findScriptPackageLocation(fs, directory + "/..")
+        } else {
+            fixedPackageDirectory
+        }
+    }
+    go(fixedPackageDirectory)
 }
 
 checkPackagePairs(dependencyPair: PackagePair, packagePair: PackagePair): Unit {
