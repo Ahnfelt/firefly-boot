@@ -24,7 +24,7 @@ extend self: Dependencies {
         packagePair: PackagePair
         path: String
     ): PackageInfo {
-        let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
+        let packageDirectory = if(path.endsWith(".ff")) {FileSystem.directoryName(path) + "/"} else {path}
         let sharedPackageFile = packageDirectory + "/.firefly/package.ff"
         let packageFile = if(fs.exists(sharedPackageFile)) {
             sharedPackageFile
@@ -40,7 +40,7 @@ extend self: Dependencies {
     }
 
     addCoreDependencyIfMissing(info: PackageInfo): PackageInfo {
-        if(info.dependencies.any { d =>
+        if(info.dependencies.any {d =>
             d.packagePair.group == "ff" && d.packagePair.name == "core"
         }) {
             info
@@ -60,7 +60,7 @@ extend self: Dependencies {
         packageInfo: PackageInfo
     ): List[DDependency] {
         self.packages = self.packages.add(packageInfo.package.packagePair, packageInfo)
-        packageInfo.dependencies.filter { !self.packages.contains(_.packagePair) }
+        packageInfo.dependencies.filter {!self.packages.contains(_.packagePair)}
     }
 
     fetchDependency(
@@ -106,14 +106,14 @@ extend self: Dependencies {
         dependencies: List[DDependency]
     ): Unit {
         // Remember to check for cycles
-        let packageInfos = dependencies.map { dependency =>
+        let packageInfos = dependencies.map {dependency =>
             let path = self.fetchDependency(fs, fetch, dependency)
             self.packagePaths = self.packagePaths.add(dependency.packagePair, path)
             let packageInfo = self.loadPackageInfo(fs, dependency.packagePair, path)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
             packageInfo
         }
-        let newDependencies = packageInfos.flatMap { self.processPackageInfo(_) }
+        let newDependencies = packageInfos.flatMap {self.processPackageInfo(_)}
         if(newDependencies != []) {
             self.processDependencies(fs, fetch, newDependencies)
         }
@@ -122,9 +122,10 @@ extend self: Dependencies {
 }
 
 process(fs: FileSystem, fetch: FetchSystem, path: String): ResolvedDependencies {
-    let workspace = Workspace.loadWorkspace(fs, path)
+    let fixedPath = path.replace("\\", "/")
+    let workspace = Workspace.loadWorkspace(fs, fixedPath)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())
-    let packageInfo = self.loadPackageInfo(fs, PackagePair("script", "script"), path)
+    let packageInfo = self.loadPackageInfo(fs, PackagePair("script", "script"), fixedPath)
     let newDependencies = self.processPackageInfo(packageInfo)
     self.processDependencies(fs, fetch, newDependencies)
     ResolvedDependencies(
@@ -135,7 +136,7 @@ process(fs: FileSystem, fetch: FetchSystem, path: String): ResolvedDependencies 
     )
 }
 
-checkPackagePairs(dependencyPair : PackagePair, packagePair: PackagePair): Unit {
+checkPackagePairs(dependencyPair: PackagePair, packagePair: PackagePair): Unit {
     if(
         packagePair.group != dependencyPair.group ||
         packagePair.name != dependencyPair.name

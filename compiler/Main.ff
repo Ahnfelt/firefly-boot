@@ -60,7 +60,7 @@ main(system: NodeSystem): Unit {
         | RunCommand(mainFile, arguments) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
+                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".") // TODO: This path is wrong
             )
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitNode, fixedDependencies)
@@ -69,7 +69,7 @@ main(system: NodeSystem): Unit {
         | BrowserCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
+                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".") // TODO: This path is wrong
             )
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, fixedDependencies)
@@ -78,7 +78,7 @@ main(system: NodeSystem): Unit {
         | BuildCommand(mainFile) =>
             let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
             let fixedDependencies = resolvedDependencies.ResolvedDependencies(
-                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".")
+                packagePaths = resolvedDependencies.packagePaths.add(resolvedDependencies.mainPackagePair, ".") // TODO: This path is wrong
             )
             prepareFireflyDirectory(system.files())
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBuild, fixedDependencies)
@@ -234,7 +234,7 @@ detectBuildMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): Boo
     let tokens = Tokenizer.tokenize(file, code)
     let parser = Parser.make(PackagePair("script", "script"), file, tokens, False)
     let module = parser.parseModuleWithPackageInfo().module
-    module.functions.any { definition =>
+    module.functions.any {definition =>
         (definition.signature.name == "buildMain" || definition.signature.name == "main") &&
         definition.signature.parameters.{ // This is a bit wrong, since BrowserSystem may be aliased or qualified
             | [Parameter p] {p.valueType | TConstructor(_, "BuildSystem", _)} => True

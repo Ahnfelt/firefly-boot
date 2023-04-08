@@ -105,9 +105,10 @@ return {mainPackagePair_, packages_, packagePaths_, singleFilePackages_};
 
 
 export function process_(fs_, fetch_, path_) {
-const workspace_ = ff_compiler_Workspace.loadWorkspace_(fs_, path_);
+const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
+const workspace_ = ff_compiler_Workspace.loadWorkspace_(fs_, fixedPath_);
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), path_);
+const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), fixedPath_);
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_);
 return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, self_.packagePaths_, self_.singleFilePackages_)
@@ -124,9 +125,10 @@ throw new Error('Function internalExtractTarGz is missing on this target in sync
 }
 
 export async function process_$(fs_, fetch_, path_, $c) {
-const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, path_, $c));
+const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
+const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, fixedPath_, $c));
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), path_, $c));
+const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), fixedPath_, $c));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
 (await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c));
 return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, self_.packagePaths_, self_.singleFilePackages_)
@@ -147,7 +149,7 @@ export async function internalExtractTarGz_$(fs_, tarGzPath_, path_, $c) {
 
 export function Dependencies_loadPackageInfo(self_, fs_, packagePair_, path_) {
 const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
-? ff_core_FileSystem.directoryName_(path_)
+? (ff_core_FileSystem.directoryName_(path_) + "/")
 : path_);
 const sharedPackageFile_ = (packageDirectory_ + "/.firefly/package.ff");
 const packageFile_ = (ff_core_FileSystem.FileSystem_exists(fs_, sharedPackageFile_)
@@ -239,7 +241,7 @@ ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, ne
 
 export async function Dependencies_loadPackageInfo$(self_, fs_, packagePair_, path_, $c) {
 const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
-? ff_core_FileSystem.directoryName_(path_)
+? (ff_core_FileSystem.directoryName_(path_) + "/")
 : path_);
 const sharedPackageFile_ = (packageDirectory_ + "/.firefly/package.ff");
 const packageFile_ = ((await ff_core_FileSystem.FileSystem_exists$(fs_, sharedPackageFile_, $c))

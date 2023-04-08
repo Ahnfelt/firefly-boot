@@ -15,6 +15,7 @@
             {"include": "#string-multiline"},
             {"include": "#number"},
             {"include": "#keyword"}, 
+            {"include": "#spread"}, 
             {"include": "#field-or-call"},
             {"include": "#upper-dot"},
             {"include": "#upper"},
@@ -31,9 +32,13 @@
             "name": "keyword.declaration.firefly",
             "match": "\\b(data|class|capability|import|from|dependency|package|include|extend|tailcall|function|let|mutable|firefly|trait|instance|newtype|private|safe|unsafe|trust|target)\\b(?=[ ]*[A-Za-z0-9\"'])"
         },
+        "spread": {
+            "name": "punctuation.spread.firefly",
+            "match": "[.][.][.]"
+        },
         "field-or-call": {
             "name": "entity.name.function.member.firefly",
-            "match": "(?<=[.}][ ]*)[a-z][A-Za-z0-9]*\\b|\\b[a-z][A-Za-z0-9]*(?=[ ]*[({])"
+            "match": "(?<=[^.][.}][ ]*)[a-z][A-Za-z0-9]*\\b|\\b[a-z][A-Za-z0-9]*(?=[ ]*[({])"
         },
         "upper-dot": {
             "name": "entity.name.namespace.firefly",
@@ -275,15 +280,15 @@
         },
         "ugly-round": {
             "name": "invalid.ugly.round.firefly",
-            "match": "(?<=[A-Za-z0-9][ ]+)[(]|[(](?=[ ])"
+            "match": "(?<=[A-Za-z0-9][ ]+)[(]|[(](?=[ ]+[^/])"
         },
         "ugly-square": {
             "name": "invalid.ugly.square.firefly",
-            "match": "(?<=[A-Za-z0-9])[ ]+[\\[]|[\\[](?=[ ])"
+            "match": "(?<=[A-Za-z0-9])[ ]+[\\[]|[\\[](?=[ ]+[^/])"
         },
         "ugly-curly": {
             "name": "invalid.ugly.curly.firefly",
-            "match": "(?<=[A-Za-z0-9])[{]|[{](?=[ ])|[}](?=[a-z])"
+            "match": "(?<=[A-Za-z0-9])[{]|[{](?=[ ]+[^/])|[}](?=[a-z])"
         }
     }
 }

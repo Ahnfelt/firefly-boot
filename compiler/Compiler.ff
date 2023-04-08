@@ -98,7 +98,7 @@ coreImports: List[DImport] =
         "TimeSystem"
         "Try"
         "Unit"
-    ].map { moduleName =>
+    ].map {moduleName =>
         DImport(
             at = Location("<prelude>", 1, 1)
             alias = moduleName
@@ -122,7 +122,7 @@ extend self: Compiler {
     }
 
     printMeasurements(): Unit {
-        let worst = self.phaseDurations.sortBy { (_.second.seconds + 1000000.0) + "" }.takeLast(5).reverse()
+        let worst = self.phaseDurations.sortBy {(_.second.seconds + 1000000.0) + ""}.takeLast(5).reverse()
         worst.each {| Pair(text, duration) =>
             Log.debug(text + ":\t" + duration.show())
         }
@@ -154,9 +154,9 @@ extend self: Compiler {
     }
 
     imports(module: Module): List[Module] {
-        module.imports.map { import =>
+        module.imports.map {import =>
             let newPackagePair = import.package
-            let newModuleName = import.directory.map { _ + "/" }.join("") + import.file
+            let newModuleName = import.directory.map {_ + "/"}.join("") + import.file
             if(!self.packagePaths.contains(newPackagePair)) {
                 throw(CompileError(import.at, "Missing dependency declaration for: " + newPackagePair.groupName()))
             }
@@ -195,7 +195,7 @@ extend self: Compiler {
         self.measure("Infer", packagePair, moduleName):
 
         let module = self.derive(packagePair, moduleName)
-        let otherModules = self.imports(module).map { i =>
+        let otherModules = self.imports(module).map {i =>
             self.derive(i.packagePair, FileSystem.prefixName(i.file))
         }
         let inferredModule = Inference.make([module, ...otherModules]).inferModule(module, otherModules)
@@ -212,7 +212,7 @@ extend self: Compiler {
         self.emittedModules = self.emittedModules.add(packageName + ":" + moduleName)
 
         let module = self.infer(packagePair, moduleName)
-        let otherModules = self.imports(module).map { i =>
+        let otherModules = self.imports(module).map {i =>
             let newModuleName = FileSystem.prefixName(i.file)
             self.emit(i.packagePair, newModuleName, isMainModule = False)
             self.infer(i.packagePair, newModuleName)

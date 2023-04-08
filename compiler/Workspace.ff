@@ -15,7 +15,7 @@ data WorkspaceRule(
 centralLocation = "http://ting.ahnfelt.dk/firefly/repository/"
 
 loadWorkspace(fs: FileSystem, path: String): Workspace {
-    let packageDirectory = if(path.endsWith(".ff")) { FileSystem.directoryName(path) } else { path }
+    let packageDirectory = if(path.endsWith(".ff")) {FileSystem.directoryName(path)} else {path}
     let fixedPackageDirectory = if(packageDirectory == "") {"."} else {packageDirectory}
     let workspaceFile = fixedPackageDirectory + "/.firefly-workspace"
     if(fs.exists(workspaceFile)) {
@@ -31,7 +31,7 @@ parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Work
     let text = fs.readText(path)
     mutable defaultLocation = None
     let lines = text.split('\n').toList().map {_.replace("\r", "").takeWhile {_ != '#'}}.filter {_.size() != 0}
-    let rules = lines.collect { line =>
+    let rules = lines.collect {line =>
         let columns = line.replace("\t", " ").split(' ').toList().filter {_.size() != 0}
         defaultLocation.each {_ =>
             panic("Unexpected rule after the * rule: " + line)
@@ -55,7 +55,7 @@ parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Work
             }
             Some(WorkspaceRule(
                 packageGroup = packageParts.grab(0)
-                packageName = if(packageParts.grab(1) != "*") { packageParts.grab(1) }
+                packageName = if(packageParts.grab(1) != "*") {packageParts.grab(1)}
                 location = fixedLocation
             ))
         }
@@ -66,10 +66,10 @@ parseWorkspaceFile(fs: FileSystem, path: String, packageDirectory: String): Work
 extend self: Workspace {
 
     findPackageLocation(packagePair: PackagePair, version: Version): String {
-        self.rules.find { rule =>
+        self.rules.find {rule =>
             rule.packageGroup == packagePair.group && rule.packageName.all {_ == packagePair.name}
-        }.map { rule =>
-            let prefix = if(rule.packageName == None) { packagePair.name + "/" } else { "" }
+        }.map {rule =>
+            let prefix = if(rule.packageName == None) {packagePair.name + "/"} else {""}
             if(rule.location.contains(":")) {
                 rule.location + prefix + tarGzName(packagePair, version)
             } else {
