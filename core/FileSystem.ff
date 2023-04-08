@@ -83,12 +83,6 @@ extend self: FileSystem {
             await fsPromises.rename(fromPath_, toPath_)
         """
 
-    getAbsolutePath(path: String): String
-        target node sync """
-            import * as path from 'path'
-            return path.resolve(path_)
-        """
-
     readStream(file: String): Stream[Buffer]
         target node async """
             import * as fs from 'fs'
@@ -191,6 +185,17 @@ extend self: FileSystem {
         target node async """
             import * as fsPromises from 'fs/promises'
             return await fsPromises.open(file, flags)
+        """
+
+    absolutePath(path: String): String
+        target node async """
+            import * as path from 'path'
+            return path.resolve(path_)
+        """
+
+    workingDirectory(): String
+        target node async """
+            return process.cwd()
         """
 
 }
