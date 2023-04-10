@@ -24,7 +24,7 @@ build[A, B](initial: A, body: A => Option[Pair[A, B]]): List[B] {
 
 extend self[T]: List[T] {
 
-    addAll(list: List[T]) : List[T] {
+    addAll(list: List[T]): List[T] {
         [self, list].flatten()
     }
 
@@ -70,11 +70,11 @@ extend self[T]: List[T] {
     }
 
     grabFirst(): T {
-        self.first().else { Try.internalThrowGrabException() }
+        self.first().else {Try.internalThrowGrabException()}
     }
 
     grabLast(): T {
-        self.last().else { Try.internalThrowGrabException() }
+        self.last().else {Try.internalThrowGrabException()}
     }
 
     dropFirst(count: Int = 1): List[T] {
@@ -172,7 +172,7 @@ extend self[T]: List[T] {
             list.{
                 | [] =>
                     result.reverse()
-                | [head, ...tail] { body(head) } =>
+                | [head, ...tail] {body(head)} =>
                     tailcall go(tail, [head, ...result])
                 | [_, ...tail] =>
                     tailcall go(tail, result)
@@ -353,7 +353,7 @@ extend self[T]: List[T] {
 extend self[T: Order]: List[T] {
 
     toSet(): Set[T] {
-        self.foldLeft(Set.empty[T]()) { set, value => set.add(value) }
+        self.foldLeft(Set.empty[T]()) {set, value => set.add(value)}
     }
 
     distinct(): List[T] {
@@ -411,12 +411,12 @@ extend self[T: Order]: List[T] {
 extend self[K: Order, V]: List[Pair[K, V]] {
 
     toMap(): Map[K, V] {
-        self.foldLeft(Map.empty[K, V]()) { map, pair => map.add(pair.first, pair.second) }
+        self.foldLeft(Map.empty[K, V]()) {map, pair => map.add(pair.first, pair.second)}
     }
 
     group(): Map[K, List[V]] {
         let initial: List[Pair[K, List[V]]] = []
-        self.foldLeft(initial.toMap()) { map, pair => map.addToList(pair.first, pair.second) }
+        self.foldLeft(initial.toMap()) {map, pair => map.addToList(pair.first, pair.second)}
     }
 
 }
@@ -439,6 +439,6 @@ extend self[K, V]: List[Pair[K, V]] {
 
 extend self: List[String] {
 
-    join(separator: String = ""): String { self.toArray().join(separator) }
+    join(separator: String = ""): String {self.toArray().join(separator)}
 
 }

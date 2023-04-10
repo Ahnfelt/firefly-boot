@@ -1,6 +1,8 @@
 import JsEmitter from ff:compiler
 import Builder from ff:compiler
 import Syntax from ff:compiler
+import Tokenizer from ff:compiler
+import Token from ff:compiler
 
 class Handler(
     mutable rootUri: Option[String]
@@ -92,13 +94,35 @@ extend self: Handler {
             Builder.check(system, ".", fixedPath, self.virtualFiles)
             []
         } catch {| CompileError(at, message), error =>
+            let fallback = (
+                startLine = at.line - 1
+                startColumn = at.column - 1
+                endLine = at.line - 1
+                endColumn = at.column
+            )
+            let position = fallback /*try { // Bug in code generator that puts $c before the ToFromAny dictionary for catch above
+                let code = self.virtualFiles.get(path).else {system.files().readText(path)}
+                let tokens = Tokenizer.tokenize(path, code)
+                let token = tokens.toStream()
+                    .dropWhile {_.at().line < at.line}
+                    .dropWhile {_.at().column < at.column}
+                    .first()
+                token.map {t => (
+                    startLine = at.line - 1
+                    startColumn = at.column - 1
+                    endLine = t.stopLine - 1
+                    endColumn = t.stopOffset - t.stopLineOffset
+                )}.else {fallback}
+            } catchAny {_ =>
+                fallback
+            } grab()*/
             let diagnostic = js.object()
                 .with("range", js.object()
                     .with("start", js.object()
-                        .with("line", at.line - 1).with("character", at.column - 1)
+                        .with("line", position.startLine).with("character", position.startColumn)
                     )
                     .with("end", js.object()
-                        .with("line", at.line - 1).with("character", at.column)
+                        .with("line", position.endLine).with("character", position.endColumn)
                     )
                 )
                 .with("severity", 1 /* Error */)
