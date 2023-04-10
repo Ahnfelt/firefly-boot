@@ -2,6 +2,8 @@
 
 import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
+import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
+
 import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
@@ -123,6 +125,10 @@ ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compi
 ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0;
+function throwError_(message_) {
+const column_ = ((i_ - startLineOffset_) + 1);
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (column_ + 1)), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 while((i_ < ff_core_String.String_size(code_))) {
 while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
 i_ += 1
@@ -143,7 +149,7 @@ i_ += 1
 i_ += 2;
 while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_grab(code_, i_) !== 42) || (ff_core_String.String_grab(code_, (i_ + 1)) !== 47)))) {
 if((i_ >= ff_core_String.String_size(code_))) {
-ff_core_Core.panic_((("Expected end of comment started on line " + startLine_) + ", got end of file."))
+throwError_((("Expected end of comment started on line " + startLine_) + ", got end of file."))
 };
 if((ff_core_String.String_grab(code_, i_) === 10)) {
 line_ += 1;
@@ -164,11 +170,11 @@ if(multiLine_) {
 line_ += 1;
 lineOffset_ = (i_ + 1)
 } else {
-ff_core_Core.panic_((("Unexpected end of line in string started on line " + startLine_) + "."))
+throwError_("Unexpected end of line in string.")
 }
 };
 if((i_ >= ff_core_String.String_size(code_))) {
-ff_core_Core.panic_((("Expected end of string started on line " + startLine_) + ", got end of file."))
+throwError_((("Expected end of string started on line " + startLine_) + ", got end of file."))
 };
 if(((ff_core_String.String_grab(code_, i_) === 92) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 10))) {
 i_ += 1
@@ -258,8 +264,7 @@ emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_)
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
-const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
+throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))))
 } else {}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
@@ -301,6 +306,10 @@ ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compi
 ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
 }
 let i_ = 0;
+function throwError_(message_) {
+const column_ = ((i_ - startLineOffset_) + 1);
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (column_ + 1)), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 while((i_ < ff_core_String.String_size(code_))) {
 while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
 i_ += 1
@@ -321,7 +330,7 @@ i_ += 1
 i_ += 2;
 while(((i_ < ff_core_String.String_size(code_)) && ((ff_core_String.String_grab(code_, i_) !== 42) || (ff_core_String.String_grab(code_, (i_ + 1)) !== 47)))) {
 if((i_ >= ff_core_String.String_size(code_))) {
-ff_core_Core.panic_((("Expected end of comment started on line " + startLine_) + ", got end of file."))
+throwError_((("Expected end of comment started on line " + startLine_) + ", got end of file."))
 };
 if((ff_core_String.String_grab(code_, i_) === 10)) {
 line_ += 1;
@@ -342,11 +351,11 @@ if(multiLine_) {
 line_ += 1;
 lineOffset_ = (i_ + 1)
 } else {
-ff_core_Core.panic_((("Unexpected end of line in string started on line " + startLine_) + "."))
+throwError_("Unexpected end of line in string.")
 }
 };
 if((i_ >= ff_core_String.String_size(code_))) {
-ff_core_Core.panic_((("Expected end of string started on line " + startLine_) + ", got end of file."))
+throwError_((("Expected end of string started on line " + startLine_) + ", got end of file."))
 };
 if(((ff_core_String.String_grab(code_, i_) === 92) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 10))) {
 i_ += 1
@@ -436,8 +445,7 @@ emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_)
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
-const column_ = ((i_ - startLineOffset_) + 1);
-ff_core_Core.panic_(((((((("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))) + " in ") + file_) + " at line ") + line_) + ", column ") + column_))
+throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))))
 } else {}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {

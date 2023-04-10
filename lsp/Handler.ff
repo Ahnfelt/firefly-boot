@@ -31,7 +31,7 @@ extend self: Handler {
             | "hover" => self.handleHover(system.js(), parameters)
             | _ => self.handleUnsupported(system.js())
         }
-    }   
+    }
     
     handleUnsupported(js: JsSystem): ResultOrError {
         Error(1234, "Unsupported method")

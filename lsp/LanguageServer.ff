@@ -156,7 +156,7 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
         }
     } catchAny {error =>
         system.files().writeText("lsp-failure.txt", error.name() + ": " + error.message())
-        None
+        error.rethrow()
     } grab()
 }
 
