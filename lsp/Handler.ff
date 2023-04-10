@@ -80,8 +80,11 @@ extend self: Handler {
     handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
+        let absolutePath = FileSystem.urlToPath(uri)
+        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
+        let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", uri)
+            Builder.check(system, ".", fixedPath)
             []
         } catch {| CompileError(at, message), error =>
             let diagnostic = js.object()

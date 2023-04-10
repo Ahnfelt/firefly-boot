@@ -259,3 +259,21 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer]
             return await promise
         }, abort)
     """
+
+urlToPath(fileUrl: String): String
+    target node sync """
+        import * as url from 'url';
+        return url.fileURLToPath(new URL(fileUrl_));
+    """
+
+pathToUrl(path: String): String
+    target node sync """
+        import * as url from 'url';
+        return '' + url.pathToFileURL(path_);
+    """
+
+relative(fromPath: String, toPath: String): String
+    target node sync """
+        import * as path from 'path';
+        return path.relative(fromPath_, toPath_);
+    """

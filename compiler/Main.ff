@@ -241,12 +241,10 @@ detectBuildMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): Boo
 
 detectFireflyPath(): String
     target node sync """
-        import * as url from 'url';
         const suffix = '/output/js/ff/compiler/Main.mjs';
         const moduleUrl = import.meta.url;
         if(!import.meta.url.endsWith(suffix)) {
             throw 'Expected module path to end with: ' + suffix + ", but got: " + moduleUrl;
         }
         return '' + new URL(moduleUrl.slice(0, -suffix.length))
-        //return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)));
     """

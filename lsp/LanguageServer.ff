@@ -41,7 +41,7 @@ main(system: NodeSystem) {
          system.writeErrorText(reason + "\n")
     } grab()
 }
-    
+
 parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
     let headersPair = parseRequestHeaders(input)
     let headers = headersPair.first

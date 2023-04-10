@@ -87,8 +87,9 @@ check(system: NodeSystem, fireflyPath: String, mainFile: String) {
         resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
     }
     let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-    let compiler = Compiler.make(EmitBuild, system.files(), system.time(), None, ".firefly/temporary/lsp", fixedResolvedDependencies)
-    compiler.infer(resolvedDependencies.mainPackagePair, mainFile.dropLast(".ff".size()))
+    let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
+    let compiler = Compiler.make(EmitBuild, system.files(), system.time(), None, ".firefly/temporary", fixedResolvedDependencies)
+    compiler.infer(resolvedDependencies.mainPackagePair, localMainFile.dropLast(".ff".size()))
 }
 
 internalCreateExecutable(
