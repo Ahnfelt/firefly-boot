@@ -103,24 +103,24 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_) {
-return {emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
+export function Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_) {
+return {emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_};
 }
 
 export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Any", ff_core_List.Link("Array", ff_core_List.Link("AssetSystem", ff_core_List.Link("Bool", ff_core_List.Link("BrowserSystem", ff_core_List.Link("Buffer", ff_core_List.Link("BuildSystem", ff_core_List.Link("Channel", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("Equal", ff_core_List.Link("Error", ff_core_List.Link("FetchSystem", ff_core_List.Link("FileHandle", ff_core_List.Link("FileSystem", ff_core_List.Link("Float", ff_core_List.Link("Instant", ff_core_List.Link("Int", ff_core_List.Link("IntMap", ff_core_List.Link("JsValue", ff_core_List.Link("JsSystem", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("NodeSystem", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Ordering", ff_core_List.Link("Pair", ff_core_List.Link("Serializable", ff_core_List.Link("Set", ff_core_List.Link("Show", ff_core_List.Link("Stack", ff_core_List.Link("Stream", ff_core_List.Link("String", ff_core_List.Link("StringMap", ff_core_List.Link("TaskSystem", ff_core_List.Link("TimeSystem", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty()))))))))))))))))))))))))))))))))))))))))), ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_List.Empty(), moduleName_)
 }));
 
-export function make_(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_) {
-return ff_compiler_Compiler.Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
+export function make_(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_) {
+return ff_compiler_Compiler.Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
 }
 
 export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, $c) {
-return ff_compiler_Compiler.Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
+export async function make_$(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, $c) {
+return ff_compiler_Compiler.Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -160,8 +160,11 @@ const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.packag
 return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
 }));
 const file_ = (moduleName_ + ".ff");
-const code_ = ff_core_FileSystem.FileSystem_readText(self_.files_, ((packagePath_ + "/") + file_));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(((packagePath_ + "/") + file_), code_);
+const path_ = ff_core_FileSystem.relative_(ff_core_FileSystem.FileSystem_workingDirectory(self_.files_), ((packagePath_ + "/") + file_));
+const code_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.virtualFiles_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+return ff_core_FileSystem.FileSystem_readText(self_.files_, path_)
+}));
+const tokens_ = ff_compiler_Tokenizer.tokenize_(path_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget));
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
@@ -284,8 +287,11 @@ const packagePath_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.packag
 return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
 }));
 const file_ = (moduleName_ + ".ff");
-const code_ = (await ff_core_FileSystem.FileSystem_readText$(self_.files_, ((packagePath_ + "/") + file_), $c));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(((packagePath_ + "/") + file_), code_);
+const path_ = ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(self_.files_, $c)), ((packagePath_ + "/") + file_));
+const code_ = (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.virtualFiles_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
+return (await ff_core_FileSystem.FileSystem_readText$(self_.files_, path_, $c))
+}), $c));
+const tokens_ = ff_compiler_Tokenizer.tokenize_(path_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget));
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_

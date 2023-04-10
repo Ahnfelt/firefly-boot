@@ -2,7 +2,7 @@ import RbMap
 
 newtype Map[K, V](redBlack: RB[K, V])
 
-empty[K, V](): Map[K, V] { Map(E) }
+empty[K, V](): Map[K, V] {Map(E)}
 
 extend self[K: Order, V]: Map[K, V] {
 
@@ -12,7 +12,7 @@ extend self[K: Order, V]: Map[K, V] {
 
     addAll(that: Map[K, V]): Map[K, V] {
         mutable result = self.redBlack
-        that.redBlack.each { k, v =>
+        that.redBlack.each {k, v =>
             result = RbMap.insert(k, v, result)
         }
         Map(result)

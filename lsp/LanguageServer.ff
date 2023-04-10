@@ -24,7 +24,7 @@ data MessageId {
 
 
 main(system: NodeSystem) {
-    let handler = Handler(None)
+    let handler = Handler(None, Map.empty())
     try {
         mutable input = system.readStream()
         while {True} {
@@ -145,14 +145,19 @@ makeResponse(body: JsValue): String {
 }
 
 handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): Option[JsValue] {
-    message.id.{
-        | None => 
-            handler.handleNotification(system, message.method, message.parameters)
-            None
-        | Some(id) =>
-            let result = handler.handleRequest(system, message.method, message.parameters)
-            Some(makeResponseMessage(system.js(), id, result))
-    }
+    try {
+        message.id.{
+            | None => 
+                handler.handleNotification(system, message.method, message.parameters)
+                None
+            | Some(id) =>
+                let result = handler.handleRequest(system, message.method, message.parameters)
+                Some(makeResponseMessage(system.js(), id, result))
+        }
+    } catchAny {error =>
+        system.files().writeText("lsp-failure.txt", error.name() + ": " + error.message())
+        None
+    } grab()
 }
 
 makeResponseMessage(js: JsSystem, id: MessageId, result: ResultOrError): JsValue {

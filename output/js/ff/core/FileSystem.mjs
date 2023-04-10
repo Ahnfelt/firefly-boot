@@ -1,10 +1,12 @@
-import * as import$1 from 'fs';
+import * as import$3 from 'fs';
 
-import * as import$0 from 'fs/promises';
+import * as import$2 from 'fs/promises';
 
-import * as import$3 from 'path';
+import * as import$1 from 'path';
 
-import * as import$2 from 'zlib';
+import * as import$0 from 'url';
+
+import * as import$4 from 'zlib';
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
@@ -130,6 +132,27 @@ export function internalReadStream_(createReadStream_) {
 throw new Error('Function internalReadStream is missing on this target in sync context.');
 }
 
+export function urlToPath_(fileUrl_) {
+
+        const url = import$0;
+        return url.fileURLToPath(new URL(fileUrl_));
+    
+}
+
+export function pathToUrl_(path_) {
+
+        const url = import$0;
+        return '' + url.pathToFileURL(path_);
+    
+}
+
+export function relative_(fromPath_, toPath_) {
+
+        const path = import$1;
+        return path.relative(fromPath_, toPath_);
+    
+}
+
 export async function directoryName_$(path_, $c) {
 const directory_ = ff_core_String.String_reverse(ff_core_String.String_dropFirst(ff_core_String.String_dropWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 !== 47)
@@ -207,6 +230,18 @@ export async function internalReadStream_$(createReadStream_, $c) {
     
 }
 
+export async function urlToPath_$(fileUrl_, $c) {
+throw new Error('Function urlToPath is missing on this target in async context.');
+}
+
+export async function pathToUrl_$(path_, $c) {
+throw new Error('Function pathToUrl is missing on this target in async context.');
+}
+
+export async function relative_$(fromPath_, toPath_, $c) {
+throw new Error('Function relative is missing on this target in async context.');
+}
+
 export function FileSystem_copy(self_, fromPath_, toPath_) {
 if(ff_core_FileSystem.FileSystem_isDirectory(self_, fromPath_)) {
 if(ff_core_FileSystem.FileSystem_exists(self_, toPath_)) {
@@ -229,6 +264,10 @@ throw new Error('Function FileSystem_readText is missing on this target in sync 
 
 export function FileSystem_writeText(self_, file_, text_) {
 throw new Error('Function FileSystem_writeText is missing on this target in sync context.');
+}
+
+export function FileSystem_appendText(self_, file_, text_) {
+throw new Error('Function FileSystem_appendText is missing on this target in sync context.');
 }
 
 export function FileSystem_list(self_, path_) {
@@ -316,35 +355,42 @@ return (_w1 !== 47)
 
 export async function FileSystem_readText$(self_, file_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})
         
 }
 
 export async function FileSystem_writeText$(self_, file_, text_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
+        
+}
+
+export async function FileSystem_appendText$(self_, file_, text_, $c) {
+
+            const fsPromises = import$2
+            await fsPromises.appendFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
         
 }
 
 export async function FileSystem_list$(self_, path_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             return ff_core_Array.Array_toList((await fsPromises.readdir(path_)).map(f => path_ + '/' + f))
         
 }
 
 export async function FileSystem_exists$(self_, path_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             return await fsPromises.access(path_).then(() => true).catch(() => false)
         
 }
 
 export async function FileSystem_isDirectory$(self_, path_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             try {
                 return (await fsPromises.lstat(path_)).isDirectory();
             } catch(e) {
@@ -355,21 +401,21 @@ export async function FileSystem_isDirectory$(self_, path_, $c) {
 
 export async function FileSystem_createDirectory$(self_, path_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             await fsPromises.mkdir(path_)
         
 }
 
 export async function FileSystem_createDirectories$(self_, path_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             await fsPromises.mkdir(path_, {recursive: true})
         
 }
 
 export async function FileSystem_delete$(self_, path_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             try { await fsPromises.rmdir(path_) } catch(_) { await fsPromises.rm(path_) }
         
 }
@@ -387,21 +433,21 @@ if((await ff_core_FileSystem.FileSystem_isDirectory$(self_, file_, $c))) {
 
 export async function FileSystem_rename$(self_, fromPath_, toPath_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             await fsPromises.rename(fromPath_, toPath_)
         
 }
 
 export async function FileSystem_readStream$(self_, file_, $c) {
 
-            const fs = import$1
+            const fs = import$3
             return ff_core_FileSystem.internalReadStream_$(() => fs.createReadStream(file_))
         
 }
 
 export async function FileSystem_writeStream$(self_, file_, stream_, createOnly_ = false, $c) {
 
-            const fs = import$1
+            const fs = import$3
             let writeable = fs.createWriteStream(file_, {flags: createOnly_ ? 'wx' : 'w'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
@@ -423,7 +469,7 @@ export async function FileSystem_writeStream$(self_, file_, stream_, createOnly_
 
 export async function FileSystem_appendStream$(self_, file_, stream_, $c) {
 
-            const fs = import$1
+            const fs = import$3
             let writeable = fs.createWriteStream(file_, {flags: 'a'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
@@ -445,7 +491,7 @@ export async function FileSystem_appendStream$(self_, file_, stream_, $c) {
 
 export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
 
-            const zlib = import$2
+            const zlib = import$4
             let c = null
             let decompress = null
             let doResolve = null
@@ -496,14 +542,14 @@ export async function FileSystem_decompressGzipStream$(self_, stream_, $c) {
 
 export async function FileSystem_open$(self_, file_, flags_, $c) {
 
-            const fsPromises = import$0
+            const fsPromises = import$2
             return await fsPromises.open(file, flags)
         
 }
 
 export async function FileSystem_absolutePath$(self_, path_, $c) {
 
-            const path = import$3
+            const path = import$1
             return path.resolve(path_)
         
 }

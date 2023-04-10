@@ -4,6 +4,7 @@ import Syntax from ff:compiler
 
 class Handler(
     mutable rootUri: Option[String]
+    mutable virtualFiles: Map[String, String]
 )
 
 capability ResultOrError {
@@ -11,11 +12,14 @@ capability ResultOrError {
     Error(code: Int, message: String)
 }
 
+data LanguageServerException(message: String)
+
 extend self: Handler {
 
     handleNotification(system: NodeSystem, method: String, parameters: Map[String, JsValue]): Unit {
         method.{
             | "initialized" =>
+            | "textDocument/didChange" => self.handleDidChange(system, parameters)
             | _ =>
         }   
     }
@@ -84,7 +88,7 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath)
+            Builder.check(system, ".", fixedPath, self.virtualFiles)
             []
         } catch {| CompileError(at, message), error =>
             let diagnostic = js.object()
@@ -105,6 +109,20 @@ extend self: Handler {
             .with("kind", "full")
             .with("items", diagnostics.toArray())
         Result(o)
+    }
+
+    handleDidChange(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
+        let js = system.js()
+        let uri = parameters.grab("textDocument").get("uri").grabString()
+        let absolutePath = FileSystem.urlToPath(uri)
+        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
+        let fixedPath = path.replace("\\", "/")
+        let contentChanges = parameters.grab("contentChanges").grabArray()
+        if(contentChanges.size() != 1) {throw(LanguageServerException("Expected a single element in contentChanges"))} else: 
+        let contentChange = contentChanges.grab(0)
+        if(!contentChange.get("range").isNullOrUndefined()) {throw(LanguageServerException("Expected a complete contentChange"))} else:
+        let content = contentChange.get("text").grabString()
+        self.virtualFiles = self.virtualFiles.add(path, content)
     }
     
     handleHover(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {

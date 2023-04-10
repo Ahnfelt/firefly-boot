@@ -28,8 +28,15 @@ build(
     fs.createDirectories(jsPathFile)
 
     let success = do {
-        let compiler =
-            Compiler.make(emitTarget, fs, system.time(), compilerModulePath, jsPathFile, resolvedDependencies)
+        let compiler = Compiler.make(
+            emitTarget, 
+            fs, 
+            system.time(), 
+            compilerModulePath, 
+            jsPathFile, 
+            resolvedDependencies, 
+            Map.empty()
+        )
         compiler.emit(mainPackage, mainModule, isMainModule = True)
         if(printMeasurements) {compiler.printMeasurements()}
         resolvedDependencies.packagePaths.each {packagePair, packagePath =>
@@ -79,7 +86,7 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
     )
 }
 
-check(system: NodeSystem, fireflyPath: String, mainFile: String) {
+check(system: NodeSystem, fireflyPath: String, mainFile: String, virtualFiles: Map[String, String]) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
         resolvedDependencies.packagePaths
@@ -88,7 +95,15 @@ check(system: NodeSystem, fireflyPath: String, mainFile: String) {
     }
     let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
     let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
-    let compiler = Compiler.make(EmitBuild, system.files(), system.time(), None, ".firefly/temporary", fixedResolvedDependencies)
+    let compiler = Compiler.make(
+        EmitBuild, 
+        system.files(), 
+        system.time(), 
+        None, 
+        ".firefly/temporary", 
+        fixedResolvedDependencies, 
+        virtualFiles
+    )
     compiler.infer(resolvedDependencies.mainPackagePair, localMainFile.dropLast(".ff".size()))
 }
 

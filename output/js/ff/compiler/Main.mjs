@@ -1,4 +1,4 @@
-import * as import$0 from 'url';
+
 
 import * as ff_compiler_Main from "../../ff/compiler/Main.mjs"
 
@@ -219,7 +219,7 @@ return
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-ff_compiler_Builder.check_(system_, fireflyPath_, filePath_)
+ff_compiler_Builder.check_(system_, fireflyPath_, filePath_, ff_core_Map.empty_())
 return
 }
 }
@@ -502,14 +502,12 @@ return
 
 export function detectFireflyPath_() {
 
-        const url = import$0;
         const suffix = '/output/js/ff/compiler/Main.mjs';
         const moduleUrl = import.meta.url;
         if(!import.meta.url.endsWith(suffix)) {
             throw 'Expected module path to end with: ' + suffix + ", but got: " + moduleUrl;
         }
         return '' + new URL(moduleUrl.slice(0, -suffix.length))
-        //return url.fileURLToPath(new URL(moduleUrl.slice(0, -suffix.length)));
     
 }
 
@@ -594,7 +592,7 @@ return
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, $c))
+(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), $c))
 return
 }
 }

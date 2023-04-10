@@ -16,6 +16,7 @@ capability Compiler(
     jsOutputPath: String
     packagePaths: Map[PackagePair, String]
     singleFilePackages: Set[PackagePair]
+    virtualFiles: Map[String, String]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable derivedModules: Map[String, Module]
@@ -32,6 +33,7 @@ make(
     compilerModulePath: Option[String]
     jsOutputPath: String
     resolvedDependencies: ResolvedDependencies
+    virtualFiles: Map[String, String]
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
@@ -41,6 +43,7 @@ make(
         jsOutputPath = jsOutputPath
         packagePaths = resolvedDependencies.packagePaths
         singleFilePackages = resolvedDependencies.singleFilePackages
+        virtualFiles = virtualFiles
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
         derivedModules = Map.empty()
@@ -132,13 +135,13 @@ extend self: Compiler {
         let packageName = packagePair.groupName()
         self.parsedModules.get(packageName + ":" + moduleName).else:
         self.measure("Parse", packagePair, moduleName):
-
         let packagePath = self.packagePaths.get(packagePair).else {
             panic("Internal error - package path missing: " + packagePair.groupName())
         }
         let file = moduleName + ".ff"
-        let code = self.files.readText(packagePath + "/" + file)
-        let tokens = Tokenizer.tokenize(packagePath + "/" + file, code)
+        let path = FileSystem.relative(self.files.workingDirectory(), packagePath + "/" + file)
+        let code = self.virtualFiles.get(path).else {self.files.readText(path)}
+        let tokens = Tokenizer.tokenize(path, code)
         let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module

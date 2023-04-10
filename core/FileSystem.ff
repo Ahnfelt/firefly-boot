@@ -26,6 +26,12 @@ extend self: FileSystem {
             await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
         """
 
+    appendText(file: String, text: String): Unit
+        target node async """
+            import * as fsPromises from 'fs/promises'
+            await fsPromises.appendFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
+        """
+
     list(path: String): List[String]
         target node async """
             import * as fsPromises from 'fs/promises'
