@@ -20,6 +20,7 @@ extend self: Handler {
         method.{
             | "initialized" =>
             | "textDocument/didChange" => self.handleDidChange(system, parameters)
+            | "textDocument/didClose" => self.handleDidClose(system, parameters)
             | _ =>
         }   
     }
@@ -124,7 +125,16 @@ extend self: Handler {
         let content = contentChange.get("text").grabString()
         self.virtualFiles = self.virtualFiles.add(path, content)
     }
-    
+
+    handleDidClose(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
+        let js = system.js()
+        let uri = parameters.grab("textDocument").get("uri").grabString()
+        let absolutePath = FileSystem.urlToPath(uri)
+        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
+        let fixedPath = path.replace("\\", "/")
+        self.virtualFiles = self.virtualFiles.remove(path)
+    }
+
     handleHover(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
         let o = js.object().with("contents", "TODO")
         Result(o)
