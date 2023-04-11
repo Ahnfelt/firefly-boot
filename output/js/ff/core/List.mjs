@@ -1797,7 +1797,7 @@ if((ff_core_List.List_size(self_) <= 1)) {
 return self_
 } else {
 const stack_ = ff_core_List.List_toStack(self_);
-(await ff_core_Stack.Stack_sortBy$(stack_, body_, $c, ff_core_Ordering_Order$O));
+(await ff_core_Stack.Stack_sortBy$(stack_, body_, ff_core_Ordering_Order$O, $c));
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 }

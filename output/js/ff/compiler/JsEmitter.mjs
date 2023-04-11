@@ -1573,11 +1573,7 @@ const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const dictionaryStrings_ = ff_core_List.List_map(dictionaries_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, _w1)
 }));
-const ds_ = ((ff_core_List.List_size(dictionaries_) <= 1)
-? ""
-: ((ff_core_List.List_isEmpty(arguments_)
-? ""
-: ", ") + ff_core_List.List_join(ff_core_List.List_dropFirst(dictionaryStrings_, 1), ", ")));
+const ds_ = ff_core_List.List_dropFirst(dictionaryStrings_, 1);
 const d_ = ff_core_List.List_grabFirst(dictionaryStrings_);
 const asyncSuffix_ = (await_
 ? "$"
@@ -1591,7 +1587,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 const controller_ = (await_
 ? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
-const call_ = ((((((d_ + ".") + n_) + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ds_) + ")");
+const call_ = (((((d_ + ".") + n_) + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, ff_core_List.List_addAll(ds_, controller_)), ", ")) + ")");
 if(await_) {
 return (("(await " + call_) + ")")
 } else {
@@ -1616,13 +1612,9 @@ const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
 {
 if(_1.Empty) {
 const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
-const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
-? ""
-: ((ff_core_List.List_isEmpty(arguments_)
-? ""
-: ", ") + ff_core_List.List_join(ff_core_List.List_map(dictionaries_, ((_w1) => {
+const ds_ = ff_core_List.List_map(dictionaries_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, _w1)
-})), ", ")));
+}));
 const functionCode_ = (ff_compiler_JsEmitter.escapeResolved_(name_) + (await_
 ? "$"
 : ""));
@@ -1632,7 +1624,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 const controller_ = (await_
 ? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
-const call_ = ((((functionCode_ + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ds_) + ")");
+const call_ = (((functionCode_ + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, ff_core_List.List_addAll(ds_, controller_)), ", ")) + ")");
 if(await_) {
 return (("(await " + call_) + ")")
 } else {
@@ -3654,11 +3646,7 @@ const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
 const dictionaryStrings_ = ff_core_List.List_map(dictionaries_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, _w1)
 }));
-const ds_ = ((ff_core_List.List_size(dictionaries_) <= 1)
-? ""
-: ((ff_core_List.List_isEmpty(arguments_)
-? ""
-: ", ") + ff_core_List.List_join(ff_core_List.List_dropFirst(dictionaryStrings_, 1), ", ")));
+const ds_ = ff_core_List.List_dropFirst(dictionaryStrings_, 1);
 const d_ = ff_core_List.List_grabFirst(dictionaryStrings_);
 const asyncSuffix_ = (await_
 ? "$"
@@ -3672,7 +3660,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 const controller_ = (await_
 ? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
-const call_ = ((((((d_ + ".") + n_) + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ds_) + ")");
+const call_ = (((((d_ + ".") + n_) + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, ff_core_List.List_addAll(ds_, controller_)), ", ")) + ")");
 if(await_) {
 return (("(await " + call_) + ")")
 } else {
@@ -3697,13 +3685,9 @@ const _1 = ff_compiler_JsEmitter.detectIfElse_(term_);
 {
 if(_1.Empty) {
 const await_ = (async_ && ff_compiler_JsEmitter.effectTypeIsAsync_(effect_));
-const ds_ = (ff_core_List.List_isEmpty(dictionaries_)
-? ""
-: ((ff_core_List.List_isEmpty(arguments_)
-? ""
-: ", ") + ff_core_List.List_join(ff_core_List.List_map(dictionaries_, ((_w1) => {
+const ds_ = ff_core_List.List_map(dictionaries_, ((_w1) => {
 return ff_compiler_JsEmitter.JsEmitter_emitDictionary(self_, _w1)
-})), ", ")));
+}));
 const functionCode_ = (ff_compiler_JsEmitter.escapeResolved_(name_) + (await_
 ? "$"
 : ""));
@@ -3713,7 +3697,7 @@ return ff_compiler_JsEmitter.JsEmitter_emitArgument(self_, _w1, async_)
 const controller_ = (await_
 ? ff_core_List.Link("$c", ff_core_List.Empty())
 : ff_core_List.Empty());
-const call_ = ((((functionCode_ + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, controller_), ", ")) + ds_) + ")");
+const call_ = (((functionCode_ + "(") + ff_core_List.List_join(ff_core_List.List_addAll(emittedArguments_, ff_core_List.List_addAll(ds_, controller_)), ", ")) + ")");
 if(await_) {
 return (("(await " + call_) + ")")
 } else {

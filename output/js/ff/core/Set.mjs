@@ -179,7 +179,7 @@ return _w1.first_
 }
 
 export async function Set_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$T, $c) {
-return (await ff_core_Stream.Stream_map$((await ff_core_Map.Map_toStream$(self_, cycle_, $c, ff_core_Ordering_Order$T)), (async (_w1, $c) => {
+return (await ff_core_Stream.Stream_map$((await ff_core_Map.Map_toStream$(self_, cycle_, ff_core_Ordering_Order$T, $c)), (async (_w1, $c) => {
 return _w1.first_
 }), $c))
 }
@@ -187,7 +187,7 @@ return _w1.first_
 export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $c) {
 (await ff_core_Map.Map_each$(self_, (async (k_, _, $c) => {
 (await body_(k_, $c))
-}), $c, ff_core_Ordering_Order$T))
+}), ff_core_Ordering_Order$T, $c))
 }
 
 export function ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal_Equal$A, ff_core_Ordering_Order$A) { return {

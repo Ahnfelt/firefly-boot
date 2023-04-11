@@ -100,7 +100,7 @@ extend self: Handler {
                 endLine = at.line - 1
                 endColumn = at.column
             )
-            let position = fallback /*try { // Bug in code generator that puts $c before the ToFromAny dictionary for catch above
+            let position = try { // Bug in code generator that puts $c before the ToFromAny dictionary for catch above
                 let code = self.virtualFiles.get(path).else {system.files().readText(path)}
                 let tokens = Tokenizer.tokenize(path, code)
                 let token = tokens.toStream()
@@ -115,7 +115,7 @@ extend self: Handler {
                 )}.else {fallback}
             } catchAny {_ =>
                 fallback
-            } grab()*/
+            } grab()
             let diagnostic = js.object()
                 .with("range", js.object()
                     .with("start", js.object()

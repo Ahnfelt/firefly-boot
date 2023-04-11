@@ -236,7 +236,7 @@ return ff_core_List.List_toArray(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_
 }
 
 export async function Map_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$K, $c) {
-return (await ff_core_RbMap.RB_toStream$(self_, cycle_, $c, ff_core_Ordering_Order$K))
+return (await ff_core_RbMap.RB_toStream$(self_, cycle_, ff_core_Ordering_Order$K, $c))
 }
 
 export async function Map_keys$(self_, ff_core_Ordering_Order$K, $c) {
@@ -256,11 +256,11 @@ return ff_core_RbMap.RB_size(self_, ff_core_Ordering_Order$K)
 }
 
 export async function Map_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1, $c) {
-return (await ff_core_RbMap.RB_map$(self_, body_, $c, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1))
+return (await ff_core_RbMap.RB_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1, $c))
 }
 
 export async function Map_mapValues$(self_, body_, ff_core_Ordering_Order$K, $c) {
-return (await ff_core_RbMap.RB_mapValues$(self_, body_, $c, ff_core_Ordering_Order$K))
+return (await ff_core_RbMap.RB_mapValues$(self_, body_, ff_core_Ordering_Order$K, $c))
 }
 
 export async function Map_contains$(self_, key_, ff_core_Ordering_Order$K, $c) {
@@ -291,7 +291,7 @@ return
 }
 
 export async function Map_each$(self_, body_, ff_core_Ordering_Order$K, $c) {
-(await ff_core_RbMap.RB_each$(self_, body_, $c, ff_core_Ordering_Order$K))
+(await ff_core_RbMap.RB_each$(self_, body_, ff_core_Ordering_Order$K, $c))
 }
 
 export function Map_addToList(self_, key_, value_, ff_core_Ordering_Order$K) {
