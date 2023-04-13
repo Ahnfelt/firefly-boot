@@ -429,6 +429,81 @@ const _1 = type_;
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
+if(_1.generics_.Link) {
+if(_1.generics_.tail_.Link) {
+const r_ = _1.generics_.tail_.head_;
+if(_1.generics_.tail_.tail_.Empty) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+return ("() => " + go_(r_))
+return
+}
+}
+}
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+if(_1.generics_.Link) {
+if(_1.generics_.tail_.Link) {
+const a_ = _1.generics_.tail_.head_;
+if(_1.generics_.tail_.tail_.Link) {
+const r_ = _1.generics_.tail_.tail_.head_;
+if(_1.generics_.tail_.tail_.tail_.Empty) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+return ((go_(a_) + " => ") + go_(r_))
+return
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+const as_ = ff_core_List.List_dropLast(ff_core_List.List_dropFirst(generics_, 1), 1);
+const r_ = ff_core_List.List_grabFirst(ff_core_List.List_takeLast(generics_, 1));
+return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(as_, 1), ((_w1) => {
+return go_(_w1)
+})), ", ")) + ") => ") + go_(r_))
+return
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
+const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
+if(_guard1) {
+const as_ = ff_core_List.List_zip(ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1), generics_);
+return (("(" + ff_core_List.List_join(ff_core_List.List_map(as_, ((_1) => {
+{
+const label_ = _1.first_;
+const t_ = _1.second_;
+return ((label_ + ": ") + go_(t_))
+return
+}
+})), ", ")) + ")")
+return
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
 const generics_ = _1.generics_;
 const shortenedName_ = shortenType_(name_);
 const chosenName_ = (((_1) => {
@@ -522,6 +597,81 @@ shortenTypes_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_
 function go_(type_) {
 {
 const _1 = type_;
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+if(_1.generics_.Link) {
+if(_1.generics_.tail_.Link) {
+const r_ = _1.generics_.tail_.head_;
+if(_1.generics_.tail_.tail_.Empty) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+return ("() => " + go_(r_))
+return
+}
+}
+}
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+if(_1.generics_.Link) {
+if(_1.generics_.tail_.Link) {
+const a_ = _1.generics_.tail_.head_;
+if(_1.generics_.tail_.tail_.Link) {
+const r_ = _1.generics_.tail_.tail_.head_;
+if(_1.generics_.tail_.tail_.tail_.Empty) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+return ((go_(a_) + " => ") + go_(r_))
+return
+}
+}
+}
+}
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+const as_ = ff_core_List.List_dropLast(ff_core_List.List_dropFirst(generics_, 1), 1);
+const r_ = ff_core_List.List_grabFirst(ff_core_List.List_takeLast(generics_, 1));
+return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(as_, 1), ((_w1) => {
+return go_(_w1)
+})), ", ")) + ") => ") + go_(r_))
+return
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
+const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
+if(_guard1) {
+const as_ = ff_core_List.List_zip(ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1), generics_);
+return (("(" + ff_core_List.List_join(ff_core_List.List_map(as_, ((_1) => {
+{
+const label_ = _1.first_;
+const t_ = _1.second_;
+return ((label_ + ": ") + go_(t_))
+return
+}
+})), ", ")) + ")")
+return
+}
+}
+}
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
