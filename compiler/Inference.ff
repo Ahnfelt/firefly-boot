@@ -6,7 +6,7 @@ import Substitution
 class Inference(
     unification: Unification
     hoverAt: Option[Location]
-    mutable hoverResult: Option[String]
+    mutable hoverResult: Option[Type]
 )
 
 make(modules: List[Module], hoverAt: Option[Location]): Inference {
@@ -42,7 +42,9 @@ extend self: Inference {
             lets = lets,
             functions = functions,
         )
-        Substitution(self.unification.substitution).substituteModule(result)
+        let subsititution = Substitution(self.unification.substitution)
+        self.hoverResult = self.hoverResult.map {subsititution.substituteType(_)}
+        subsititution.substituteModule(result)
     }
 
     inferTraitDefinition(environment: Environment, definition: DTrait): DTrait {
@@ -874,7 +876,7 @@ extend self: Inference {
         )
 
         if(self.hoverAt.contains(at)) {
-            self.hoverResult = Some(self.unification.substitute(returnType).show())
+            self.hoverResult = Some(returnType)
         }
 
         Instantiated(

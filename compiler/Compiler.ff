@@ -209,7 +209,7 @@ extend self: Compiler {
         let inference = Inference.make([module, ...otherModules], self.hoverAt)
         let inferredModule = inference.inferModule(module, otherModules)
         if(!inference.hoverResult.isEmpty()) {
-            self.hoverResult = inference.hoverResult
+            self.hoverResult = inference.hoverResult.map {_.show()}
         }
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
 
