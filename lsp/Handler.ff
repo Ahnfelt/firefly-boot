@@ -206,9 +206,9 @@ extend self: Handler {
         }
         token.map {t => TokenLocation(
             startLine = t.startLine
-            startColumn = t.startOffset - t.startLineOffset + 1
+            startColumn = 1 + t.startOffset - t.startLineOffset
             endLine = t.stopLine
-            endColumn = t.stopOffset - t.stopLineOffset + 1
+            endColumn = 1 + t.stopOffset - t.stopLineOffset
             raw = t.raw()
         )}
     }
