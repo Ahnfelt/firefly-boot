@@ -262,6 +262,9 @@ extend self: Type {
                     let as = generics.dropFirst().dropLast()
                     let r = generics.takeLast().grabFirst()
                     "(" + as.dropLast().map {go(_)}.join(", ") + ") => " + go(r)
+                | TConstructor(at, name, generics) {name.startsWith("Record$")} =>
+                    let as = name.split('$').toList().dropFirst().zip(generics)
+                    "(" + as.map {| Pair(label, t) => label + ": " + go(t)}.join(", ") + ")"
                 | TConstructor(at, name, generics) =>
                     let shortenedName = shortenType(name)
                     let chosenName = seenTypes.grab(shortenedName).{
