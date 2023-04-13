@@ -369,19 +369,160 @@ export async function PackagePair_groupName$(self_, delimiter_ = ":", $c) {
 return ((self_.group_ + delimiter_) + self_.name_)
 }
 
-export function Type_show(self_) {
+export function Type_show(self_, shownTypes_ = ff_core_List.Empty()) {
+let seenTypes_ = ff_core_Map.empty_();
+const typeNames_ = ff_core_List.List_toStream(ff_core_List.List_map(ff_core_Int.Int_to(97, 122), ((_w1) => {
+return ff_core_Char.Char_toString(_w1)
+})), false);
+function shortenType_(qualified_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(qualified_), ((_w1) => {
+return (_w1 !== 46)
+})))
+}
+function shortenTypes_(types_) {
+ff_core_List.List_each(types_, ((_1) => {
 {
-const _1 = self_;
+if(_1.TConstructor) {
+const name_ = _1.name_;
+const typeArguments_ = _1.generics_;
+const shortenedName_ = shortenType_(name_);
+do {
+const _1 = ff_core_Map.Map_get(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+{
+if(_1.None) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+break
+}
+}
+{
+if(_1.Some) {
+const qualified_ = _1.value_;
+if((name_ !== qualified_)) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+break
+}
+}
+} while(false);
+shortenTypes_(typeArguments_)
+return
+}
+}
+{
+if(_1.TVariable) {
+const index_ = _1.index_;
+if((!ff_core_Map.Map_contains(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, ("$" + index_), ff_core_Option.Option_else(typeNames_.next_(), (() => {
+return ("$" + index_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+return
+}
+}
+}))
+}
+shortenTypes_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
+function go_(type_) {
+{
+const _1 = type_;
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+if(_1.generics_.Link) {
+if(_1.generics_.tail_.Link) {
+const r_ = _1.generics_.tail_.head_;
+if(_1.generics_.tail_.tail_.Empty) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+return ("() => " + go_(r_))
+return
+}
+}
+}
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+if(_1.generics_.Link) {
+if(_1.generics_.tail_.Link) {
+const a_ = _1.generics_.tail_.head_;
+if(_1.generics_.tail_.tail_.Link) {
+const r_ = _1.generics_.tail_.tail_.head_;
+if(_1.generics_.tail_.tail_.tail_.Empty) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+return ((go_(a_) + " => ") + go_(r_))
+return
+}
+}
+}
+}
+}
+}
+}
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const generics_ = _1.generics_;
-if(ff_core_List.List_isEmpty(generics_)) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+const as_ = ff_core_List.List_dropLast(ff_core_List.List_dropFirst(generics_, 1), 1);
+const r_ = ff_core_List.List_grabFirst(ff_core_List.List_takeLast(generics_, 1));
+return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(as_, 1), ((_w1) => {
+return go_(_w1)
+})), ", ")) + ") => ") + go_(r_))
+return
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
+const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
+if(_guard1) {
+const as_ = ff_core_List.List_zip(ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1), generics_);
+return (("(" + ff_core_List.List_join(ff_core_List.List_map(as_, ((_1) => {
+{
+const label_ = _1.first_;
+const t_ = _1.second_;
+return ((label_ + ": ") + go_(t_))
+return
+}
+})), ", ")) + ")")
+return
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
+const shortenedName_ = shortenType_(name_);
+const chosenName_ = (((_1) => {
+{
+if(_1 == "") {
 return name_
+return
+}
+}
+{
+return shortenedName_
+return
+}
+}))(ff_core_Map.Map_grab(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+if(ff_core_List.List_isEmpty(generics_)) {
+return chosenName_
 } else {
-return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
-return ff_compiler_Syntax.Type_show(_w1)
+return (((chosenName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return go_(_w1)
 })), ", ")) + "]")
 }
 return
@@ -391,26 +532,169 @@ return
 if(_1.TVariable) {
 const at_ = _1.at_;
 const index_ = _1.index_;
-return ("$" + index_)
+return ff_core_Map.Map_grab(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
 }
+}
+return go_(self_)
 }
 
-export async function Type_show$(self_, $c) {
+export async function Type_show$(self_, shownTypes_ = ff_core_List.Empty(), $c) {
+let seenTypes_ = ff_core_Map.empty_();
+const typeNames_ = ff_core_List.List_toStream(ff_core_List.List_map(ff_core_Int.Int_to(97, 122), ((_w1) => {
+return ff_core_Char.Char_toString(_w1)
+})), false);
+function shortenType_(qualified_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(qualified_), ((_w1) => {
+return (_w1 !== 46)
+})))
+}
+function shortenTypes_(types_) {
+ff_core_List.List_each(types_, ((_1) => {
 {
-const _1 = self_;
+if(_1.TConstructor) {
+const name_ = _1.name_;
+const typeArguments_ = _1.generics_;
+const shortenedName_ = shortenType_(name_);
+do {
+const _1 = ff_core_Map.Map_get(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+{
+if(_1.None) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+break
+}
+}
+{
+if(_1.Some) {
+const qualified_ = _1.value_;
+if((name_ !== qualified_)) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+break
+}
+}
+} while(false);
+shortenTypes_(typeArguments_)
+return
+}
+}
+{
+if(_1.TVariable) {
+const index_ = _1.index_;
+if((!ff_core_Map.Map_contains(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, ("$" + index_), ff_core_Option.Option_else(typeNames_.next_(), (() => {
+return ("$" + index_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+return
+}
+}
+}))
+}
+shortenTypes_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
+function go_(type_) {
+{
+const _1 = type_;
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+if(_1.generics_.Link) {
+if(_1.generics_.tail_.Link) {
+const r_ = _1.generics_.tail_.head_;
+if(_1.generics_.tail_.tail_.Empty) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+return ("() => " + go_(r_))
+return
+}
+}
+}
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+if(_1.generics_.Link) {
+if(_1.generics_.tail_.Link) {
+const a_ = _1.generics_.tail_.head_;
+if(_1.generics_.tail_.tail_.Link) {
+const r_ = _1.generics_.tail_.tail_.head_;
+if(_1.generics_.tail_.tail_.tail_.Empty) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+return ((go_(a_) + " => ") + go_(r_))
+return
+}
+}
+}
+}
+}
+}
+}
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const generics_ = _1.generics_;
-if(ff_core_List.List_isEmpty(generics_)) {
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+const as_ = ff_core_List.List_dropLast(ff_core_List.List_dropFirst(generics_, 1), 1);
+const r_ = ff_core_List.List_grabFirst(ff_core_List.List_takeLast(generics_, 1));
+return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(as_, 1), ((_w1) => {
+return go_(_w1)
+})), ", ")) + ") => ") + go_(r_))
+return
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
+const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
+if(_guard1) {
+const as_ = ff_core_List.List_zip(ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1), generics_);
+return (("(" + ff_core_List.List_join(ff_core_List.List_map(as_, ((_1) => {
+{
+const label_ = _1.first_;
+const t_ = _1.second_;
+return ((label_ + ": ") + go_(t_))
+return
+}
+})), ", ")) + ")")
+return
+}
+}
+}
+{
+if(_1.TConstructor) {
+const at_ = _1.at_;
+const name_ = _1.name_;
+const generics_ = _1.generics_;
+const shortenedName_ = shortenType_(name_);
+const chosenName_ = (((_1) => {
+{
+if(_1 == "") {
 return name_
+return
+}
+}
+{
+return shortenedName_
+return
+}
+}))(ff_core_Map.Map_grab(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+if(ff_core_List.List_isEmpty(generics_)) {
+return chosenName_
 } else {
-return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
-return ff_compiler_Syntax.Type_show(_w1)
+return (((chosenName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return go_(_w1)
 })), ", ")) + "]")
 }
 return
@@ -420,11 +704,13 @@ return
 if(_1.TVariable) {
 const at_ = _1.at_;
 const index_ = _1.index_;
-return ("$" + index_)
+return ff_core_Map.Map_grab(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
 }
+}
+return go_(self_)
 }
 
 export function Target_mapFirefly(self_, body_) {

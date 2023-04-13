@@ -176,9 +176,15 @@ extend self: Handler {
         let hoverResult = try {
             Builder.check(system, ".", fixedPath, self.virtualFiles, Some(hoverAt))
         } catch {| CompileError(at, message), error =>
+            system.writeErrorText(message)
             None
         } grab()
-        let o = js.object().with("contents", hoverResult.map {js.value(_)}.else {js.null()})
+        let o = js.object().with("contents", 
+            hoverResult.map {js.object()
+                .with("kind", "markdown")
+                .with("value", "```\n" + _ + "\n```")
+            }.else {js.null()}
+        )
         Result(o)
     }
     

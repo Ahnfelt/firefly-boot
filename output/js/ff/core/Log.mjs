@@ -87,7 +87,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function show_(value_, ff_core_Show_Show$T) {
-ff_core_Log.debug_(ff_core_Show_Show$T.show_(value_))
+ff_core_Log.trace_(ff_core_Show_Show$T.show_(value_))
 }
 
 export function debugDynamic_(value_) {
@@ -114,8 +114,12 @@ export function error_(value_) {
 console.error(value_)
 }
 
+export function trace_(value_) {
+process.stderr.write(value_ + String.fromCharCode(10))
+}
+
 export async function show_$(value_, ff_core_Show_Show$T, $c) {
-ff_core_Log.debug_(ff_core_Show_Show$T.show_(value_))
+ff_core_Log.trace_(ff_core_Show_Show$T.show_(value_))
 }
 
 export async function debugDynamic_$(value_, $c) {
@@ -140,6 +144,10 @@ throw new Error('Function warn is missing on this target in async context.');
 
 export async function error_$(value_, $c) {
 throw new Error('Function error is missing on this target in async context.');
+}
+
+export async function trace_$(value_, $c) {
+throw new Error('Function trace is missing on this target in async context.');
 }
 
 

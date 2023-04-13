@@ -227,7 +227,9 @@ return ff_compiler_Compiler.Compiler_derive(self_, i_.packagePair_, ff_core_File
 const inference_ = ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_), self_.hoverAt_);
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_);
 if((!ff_core_Option.Option_isEmpty(inference_.hoverResult_))) {
-self_.hoverResult_ = inference_.hoverResult_
+self_.hoverResult_ = ff_core_Option.Option_map(inference_.hoverResult_, ((t_) => {
+return ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty())
+}))
 };
 const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(ff_core_List.Link(module_, otherModules_)), inferredModule_, otherModules_);
 self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -358,7 +360,9 @@ return (await ff_compiler_Compiler.Compiler_derive$(self_, i_.packagePair_, ff_c
 const inference_ = ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_), self_.hoverAt_);
 const inferredModule_ = ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_);
 if((!ff_core_Option.Option_isEmpty(inference_.hoverResult_))) {
-self_.hoverResult_ = inference_.hoverResult_
+self_.hoverResult_ = ff_core_Option.Option_map(inference_.hoverResult_, ((t_) => {
+return ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty())
+}))
 };
 const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(ff_core_List.Link(module_, otherModules_)), inferredModule_, otherModules_);
 self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
