@@ -254,6 +254,14 @@ extend self: Type {
         shortenTypes([...shownTypes, self])
         function go(type: Type): String {
             type.{
+                | TConstructor(at, name, [_, r]) {name.startsWith("Function$")} =>
+                    "() => " + go(r)
+                | TConstructor(at, name, [_, a, r]) {name.startsWith("Function$")} =>
+                    go(a) + " => " + go(r)
+                | TConstructor(at, name, generics) {name.startsWith("Function$")} =>
+                    let as = generics.dropFirst().dropLast()
+                    let r = generics.takeLast().grabFirst()
+                    "(" + as.dropLast().map {go(_)}.join(", ") + ") => " + go(r)
                 | TConstructor(at, name, generics) =>
                     let shortenedName = shortenType(name)
                     let chosenName = seenTypes.grab(shortenedName).{
