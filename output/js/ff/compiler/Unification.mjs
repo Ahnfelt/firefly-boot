@@ -496,7 +496,7 @@ if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
 if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_), ff_core_List.Link(t1_, ff_core_List.Link(t2_, ff_core_List.Empty())))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_), ff_core_List.Link(t1_, ff_core_List.Link(t2_, ff_core_List.Empty()))))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
 {
@@ -515,7 +515,7 @@ return
 
 export function Unification_bind(self_, at_, index_, type_) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), ff_core_List.Link(type_, ff_core_List.Empty()))) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_), ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {
@@ -942,7 +942,7 @@ if(t2_a.TConstructor) {
 const name2_ = t2_a.name_;
 const generics2_ = t2_a.generics_;
 if(((name1_ !== name2_) || (ff_core_List.List_size(generics1_) !== ff_core_List.List_size(generics2_)))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Type mismatch: " + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t1_), ff_core_List.Link(t1_, ff_core_List.Link(t2_, ff_core_List.Empty())))) + " vs. ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, t2_), ff_core_List.Link(t1_, ff_core_List.Link(t2_, ff_core_List.Empty()))))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_List.List_each(ff_core_List.List_zip(generics1_, generics2_), ((_1) => {
 {
@@ -961,7 +961,7 @@ return
 
 export async function Unification_bind$(self_, at_, index_, type_, $c) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: $" + index_) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_)))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), ff_core_List.Link(type_, ff_core_List.Empty()))) + " = ") + ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_, type_), ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 self_.substitution_ = ff_core_Map.Map_add(self_.substitution_, index_, type_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 ff_core_Option.Option_each(ff_core_Map.Map_get(self_.constraints_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((map_) => {

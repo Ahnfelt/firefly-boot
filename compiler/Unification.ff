@@ -159,10 +159,8 @@ extend self: Unification {
         | _, _, TVariable(_, i) => self.bind(at, i, t1)
         | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
             if(name1 != name2 || generics1.size() != generics2.size()) {
-                //Log.debug(t1.at.show())
-                //Log.debug(t2.at.show())
-                throw(CompileError(at,
-                    "Type mismatch: " + self.substitute(t1).show() + " vs. " + self.substitute(t2).show()
+                throw(CompileError(at
+                    "Type mismatch: " + self.substitute(t1).show([t1, t2]) + " vs. " + self.substitute(t2).show([t1, t2])
                 ))
             }
             generics1.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
@@ -170,7 +168,7 @@ extend self: Unification {
 
     bind(at: Location, index: Int, type: Type): Unit {
         if(self.occursIn(index, type)) {
-            throw(CompileError(at, "Infinite type: $" + index + " = " + self.substitute(type).show()))
+            throw(CompileError(at, "Infinite type: " + TVariable(at, index).show([type]) + " = " + self.substitute(type).show()))
         }
         self.substitution = self.substitution.add(index, type)
         self.constraints.get(index).each { map =>

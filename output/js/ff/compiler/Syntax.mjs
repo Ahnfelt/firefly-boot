@@ -369,7 +369,53 @@ export async function PackagePair_groupName$(self_, delimiter_ = ":", $c) {
 return ((self_.group_ + delimiter_) + self_.name_)
 }
 
-export function Type_show(self_) {
+export function Type_show(self_, shownTypes_ = ff_core_List.Empty()) {
+let seenTypes_ = ff_core_Map.empty_();
+const typeNames_ = ff_core_List.List_toStream(ff_core_List.List_map(ff_core_Int.Int_to(97, 122), ((_w1) => {
+return ff_core_Char.Char_toString(_w1)
+})), false);
+function go_(types_) {
+ff_core_List.List_each(types_, ((_1) => {
+{
+if(_1.TConstructor) {
+const name_ = _1.name_;
+const typeArguments_ = _1.generics_;
+do {
+const _1 = ff_core_Map.Map_get(seenTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+{
+if(_1.None) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, name_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+break
+}
+}
+{
+if(_1.Some) {
+const qualified_ = _1.value_;
+if((name_ !== qualified_)) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, name_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+break
+}
+}
+} while(false);
+go_(typeArguments_)
+return
+}
+}
+{
+if(_1.TVariable) {
+const index_ = _1.index_;
+if((!ff_core_Map.Map_contains(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, ("$" + index_), ff_core_Option.Option_else(typeNames_.next_(), (() => {
+return ("$" + index_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+return
+}
+}
+}))
+}
+go_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
 {
 const _1 = self_;
 {
@@ -377,11 +423,26 @@ if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const generics_ = _1.generics_;
-if(ff_core_List.List_isEmpty(generics_)) {
+const shortName_ = (((_1) => {
+{
+if(_1 == "") {
 return name_
+return
+}
+}
+{
+const qualified_ = _1;
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(qualified_), ((_w1) => {
+return (_w1 !== 46)
+})))
+return
+}
+}))(ff_core_Map.Map_grab(seenTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+if(ff_core_List.List_isEmpty(generics_)) {
+return shortName_
 } else {
-return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
-return ff_compiler_Syntax.Type_show(_w1)
+return (((shortName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return ff_compiler_Syntax.Type_show(_w1, ff_core_List.Empty())
 })), ", ")) + "]")
 }
 return
@@ -391,14 +452,60 @@ return
 if(_1.TVariable) {
 const at_ = _1.at_;
 const index_ = _1.index_;
-return ("$" + index_)
+return ff_core_Map.Map_grab(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
 }
 }
 
-export async function Type_show$(self_, $c) {
+export async function Type_show$(self_, shownTypes_ = ff_core_List.Empty(), $c) {
+let seenTypes_ = ff_core_Map.empty_();
+const typeNames_ = ff_core_List.List_toStream(ff_core_List.List_map(ff_core_Int.Int_to(97, 122), ((_w1) => {
+return ff_core_Char.Char_toString(_w1)
+})), false);
+function go_(types_) {
+ff_core_List.List_each(types_, ((_1) => {
+{
+if(_1.TConstructor) {
+const name_ = _1.name_;
+const typeArguments_ = _1.generics_;
+do {
+const _1 = ff_core_Map.Map_get(seenTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+{
+if(_1.None) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, name_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+break
+}
+}
+{
+if(_1.Some) {
+const qualified_ = _1.value_;
+if((name_ !== qualified_)) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, name_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+break
+}
+}
+} while(false);
+go_(typeArguments_)
+return
+}
+}
+{
+if(_1.TVariable) {
+const index_ = _1.index_;
+if((!ff_core_Map.Map_contains(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))) {
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, ("$" + index_), ff_core_Option.Option_else(typeNames_.next_(), (() => {
+return ("$" + index_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+}
+return
+}
+}
+}))
+}
+go_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
 {
 const _1 = self_;
 {
@@ -406,11 +513,26 @@ if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const generics_ = _1.generics_;
-if(ff_core_List.List_isEmpty(generics_)) {
+const shortName_ = (((_1) => {
+{
+if(_1 == "") {
 return name_
+return
+}
+}
+{
+const qualified_ = _1;
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(qualified_), ((_w1) => {
+return (_w1 !== 46)
+})))
+return
+}
+}))(ff_core_Map.Map_grab(seenTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+if(ff_core_List.List_isEmpty(generics_)) {
+return shortName_
 } else {
-return (((name_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
-return ff_compiler_Syntax.Type_show(_w1)
+return (((shortName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return ff_compiler_Syntax.Type_show(_w1, ff_core_List.Empty())
 })), ", ")) + "]")
 }
 return
@@ -420,7 +542,7 @@ return
 if(_1.TVariable) {
 const at_ = _1.at_;
 const index_ = _1.index_;
-return ("$" + index_)
+return ff_core_Map.Map_grab(seenTypes_, ("$" + index_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
 }
