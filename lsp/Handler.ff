@@ -16,6 +16,15 @@ capability ResultOrError {
 
 data LanguageServerException(message: String)
 
+data TokenLocation(
+    startLine: Int
+    startColumn: Int
+    endLine: Int
+    endColumn: Int
+    raw: String
+)
+
+
 extend self: Handler {
 
     handleNotification(system: NodeSystem, method: String, parameters: Map[String, JsValue]): Unit {
@@ -94,35 +103,25 @@ extend self: Handler {
             Builder.check(system, ".", fixedPath, self.virtualFiles, None)
             []
         } catch {| CompileError(at, message), error =>
-            let fallback = (
+            let fallback = TokenLocation(
                 startLine = at.line - 1
                 startColumn = at.column - 1
                 endLine = at.line - 1
                 endColumn = at.column
+                raw = ""
             )
-            let position = try { // Bug in code generator that puts $c before the ToFromAny dictionary for catch above
-                let code = self.virtualFiles.get(path).else {system.files().readText(path)}
-                let tokens = Tokenizer.tokenize(path, code)
-                let token = tokens.toStream()
-                    .dropWhile {_.at().line < at.line}
-                    .dropWhile {_.at().column < at.column}
-                    .first()
-                token.map {t => (
-                    startLine = at.line - 1
-                    startColumn = at.column - 1
-                    endLine = t.stopLine - 1
-                    endColumn = t.stopOffset - t.stopLineOffset
-                )}.else {fallback}
+            let position = try {
+                self.findToken(system, path, at.line, at.column).else {fallback}
             } catchAny {_ =>
                 fallback
             } grab()
             let diagnostic = js.object()
                 .with("range", js.object()
                     .with("start", js.object()
-                        .with("line", position.startLine).with("character", position.startColumn)
+                        .with("line", position.startLine - 1).with("character", position.startColumn - 1)
                     )
                     .with("end", js.object()
-                        .with("line", position.endLine).with("character", position.endColumn)
+                        .with("line", position.endLine - 1).with("character", position.endColumn - 1)
                     )
                 )
                 .with("severity", 1 /* Error */)
@@ -165,12 +164,15 @@ extend self: Handler {
         let absolutePath = FileSystem.urlToPath(uri)
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
+        let line = parameters.grab("position").get("line").grabInt() + 1
+        let column = parameters.grab("position").get("character").grabInt() + 1
+        let token = self.findToken(system, path, line, column)
         let hoverAt = Location(
             file = fixedPath
-            line = parameters.grab("position").get("line").grabInt() + 1
-            column = parameters.grab("position").get("character").grabInt() + 1
+            line = token.map{_.startLine}.else{line}
+            column = token.map{_.startColumn}.else{column}
         )
-        system.writeErrorText(Show.show(hoverAt))
+        system.writeErrorText(Show.show(hoverAt) + " - " + Show.show(token))
         let hoverResult = try {
             Builder.check(system, ".", fixedPath, self.virtualFiles, Some(hoverAt))
         } catch {| CompileError(at, message), error =>
@@ -186,4 +188,21 @@ extend self: Handler {
             .with("method", method)
             .with("params", params)
     }
+
+    findToken(system: NodeSystem, path: String, line: Int, column: Int): Option[TokenLocation] {
+        let code = self.virtualFiles.get(path).else {system.files().readText(path)}
+        let tokens = Tokenizer.tokenize(path, code)
+        let token = tokens.toStream()
+            .dropWhile {_.at().line < line}
+            .dropWhile {_.at().column < column}
+            .first()
+        token.map {t => TokenLocation(
+            startLine = t.startLine
+            startColumn = t.startOffset - t.startLineOffset + 1
+            endLine = t.stopLine
+            endColumn = t.stopOffset - t.stopLineOffset + 1
+            raw = t.raw()
+        )}
+    }
+
 }
