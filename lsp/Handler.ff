@@ -169,14 +169,14 @@ extend self: Handler {
         let token = self.findToken(system, path, line, column)
         let hoverAt = Location(
             file = fixedPath
-            line = token.map{_.startLine}.else{line}
-            column = token.map{_.startColumn}.else{column}
+            line = token.map {_.startLine}.else {line}
+            column = token.map {_.startColumn}.else {column}
         )
-        system.writeErrorText(Show.show(hoverAt) + " - " + Show.show(token))
+        Log.trace(Show.show(hoverAt) + " - " + Show.show(token))
         let hoverResult = try {
             Builder.check(system, ".", fixedPath, self.virtualFiles, Some(hoverAt))
         } catch {| CompileError(at, message), error =>
-            system.writeErrorText(message)
+            Log.trace(message)
             None
         } grab()
         let o = js.object().with("contents", 
@@ -198,10 +198,12 @@ extend self: Handler {
     findToken(system: NodeSystem, path: String, line: Int, column: Int): Option[TokenLocation] {
         let code = self.virtualFiles.get(path).else {system.files().readText(path)}
         let tokens = Tokenizer.tokenize(path, code)
-        let token = tokens.toStream()
-            .dropWhile {_.at().line < line}
-            .dropWhile {_.at().column < column}
-            .first()
+        let token = tokens.toStream().find {token =>
+            line >= token.startLine && line <= token.stopLine && (
+                (line > token.startLine || column >= (1 + token.startOffset - token.startLineOffset)) &&
+                (line < token.stopLine || column < (1 + token.stopOffset - token.stopLineOffset))
+            )
+        }
         token.map {t => TokenLocation(
             startLine = t.startLine
             startColumn = t.startOffset - t.startLineOffset + 1
