@@ -166,7 +166,7 @@ extend self: Handler {
         let fixedPath = path.replace("\\", "/")
         let line = parameters.grab("position").get("line").grabInt() + 1
         let column = parameters.grab("position").get("character").grabInt() + 1
-        let token = self.findToken(system, path, line, column)
+        let token = self.findToken(system, fixedPath, line, column)
         let hoverAt = Location(
             file = fixedPath
             line = token.map {_.startLine}.else {line}
