@@ -17,6 +17,7 @@ capability Compiler(
     packagePaths: Map[PackagePair, String]
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
+    hoverAt: Option[Location]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable derivedModules: Map[String, Module]
@@ -24,6 +25,7 @@ capability Compiler(
     mutable emittedModules: Set[String]
     mutable phaseDurations: List[Pair[String, Duration]]
     mutable phaseDurationDelta: Duration
+    mutable hoverResult: Option[String]
 )
 
 make(
@@ -34,6 +36,7 @@ make(
     jsOutputPath: String
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
+    hoverAt: Option[Location]
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
@@ -44,6 +47,7 @@ make(
         packagePaths = resolvedDependencies.packagePaths
         singleFilePackages = resolvedDependencies.singleFilePackages
         virtualFiles = virtualFiles
+        hoverAt = hoverAt
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
         derivedModules = Map.empty()
@@ -51,6 +55,7 @@ make(
         emittedModules = Set.empty()
         phaseDurations = []
         phaseDurationDelta = Duration(0.0)
+        hoverResult = None
     )
 }
 
@@ -201,7 +206,11 @@ extend self: Compiler {
         let otherModules = self.imports(module).map {i =>
             self.derive(i.packagePair, FileSystem.prefixName(i.file))
         }
-        let inferredModule = Inference.make([module, ...otherModules]).inferModule(module, otherModules)
+        let inference = Inference.make([module, ...otherModules], self.hoverAt)
+        let inferredModule = inference.inferModule(module, otherModules)
+        if(!inference.hoverResult.isEmpty()) {
+            self.hoverResult = inference.hoverResult
+        }
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
 
         self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)

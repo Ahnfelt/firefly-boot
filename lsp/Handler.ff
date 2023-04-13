@@ -31,7 +31,7 @@ extend self: Handler {
         method.{
             | "initialize" => self.handleInitialize(system.js(), parameters)
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
-            | "hover" => self.handleHover(system.js(), parameters)
+            | "textDocument/hover" => self.handleHover(system, parameters)
             | _ => self.handleUnsupported(system.js())
         }
     }
@@ -58,7 +58,7 @@ extend self: Handler {
                     .with("openClose", True)
                     .with("change", 1 /* TextDocumentSyncKind.Full */)
                 )
-                .with("hoverProvider", False)
+                .with("hoverProvider", True)
                 //.with("definitionProvider", True)
                 //.with("typeDefinitionProvider", True)
                 .with("diagnosticProvider", js.object()
@@ -91,7 +91,7 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles)
+            Builder.check(system, ".", fixedPath, self.virtualFiles, None)
             []
         } catch {| CompileError(at, message), error =>
             let fallback = (
@@ -159,8 +159,24 @@ extend self: Handler {
         self.virtualFiles = self.virtualFiles.remove(path)
     }
 
-    handleHover(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let o = js.object().with("contents", "TODO")
+    handleHover(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let js = system.js()
+        let uri = parameters.grab("textDocument").get("uri").grabString()
+        let absolutePath = FileSystem.urlToPath(uri)
+        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
+        let fixedPath = path.replace("\\", "/")
+        let hoverAt = Location(
+            file = fixedPath
+            line = parameters.grab("position").get("line").grabInt() + 1
+            column = parameters.grab("position").get("character").grabInt() + 1
+        )
+        system.writeErrorText(Show.show(hoverAt))
+        let hoverResult = try {
+            Builder.check(system, ".", fixedPath, self.virtualFiles, Some(hoverAt))
+        } catch {| CompileError(at, message), error =>
+            None
+        } grab()
+        let o = js.object().with("contents", hoverResult.map {js.value(_)}.else {js.null()})
         Result(o)
     }
     

@@ -219,7 +219,7 @@ return
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-ff_compiler_Builder.check_(system_, fireflyPath_, filePath_, ff_core_Map.empty_())
+ff_compiler_Builder.check_(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_core_Option.None())
 return
 }
 }
@@ -592,7 +592,7 @@ return
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), $c))
+(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_core_Option.None(), $c))
 return
 }
 }

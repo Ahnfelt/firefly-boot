@@ -93,14 +93,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Inference
-export function Inference(unification_) {
-return {unification_};
+export function Inference(unification_, hoverAt_, hoverResult_) {
+return {unification_, hoverAt_, hoverResult_};
 }
 
 
 
-export function make_(modules_) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_))
+export function make_(modules_, hoverAt_) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_), hoverAt_, ff_core_Option.None())
 }
 
 export function fail_(at_, message_) {
@@ -134,8 +134,8 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function make_$(modules_, $c) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_))
+export async function make_$(modules_, hoverAt_, $c) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_), hoverAt_, ff_core_Option.None())
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -1855,6 +1855,9 @@ ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_L
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
 }))(scheme_.signature_);
+if(ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.hoverResult_ = ff_core_Option.Some(ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_.unification_, returnType_)))
+};
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)
 }))(scheme_))
@@ -3547,6 +3550,9 @@ ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_L
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
 }))(scheme_.signature_);
+if(ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.hoverResult_ = ff_core_Option.Some(ff_compiler_Syntax.Type_show(ff_compiler_Unification.Unification_substitute(self_.unification_, returnType_)))
+};
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)
 }))(scheme_))
@@ -3568,7 +3574,7 @@ show_(x_) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ")")
+return ((((((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.hoverResult_)) + ")")
 return
 }
 }
@@ -3578,7 +3584,7 @@ async show_$(x_, $c) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ")")
+return ((((((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.hoverResult_)) + ")")
 return
 }
 }
@@ -3598,7 +3604,7 @@ return
 }
 }
 {
-return ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_)
+return (ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverAt_, y_.hoverAt_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.hoverResult_, y_.hoverResult_)))
 return
 }
 }
@@ -3615,7 +3621,7 @@ return
 }
 }
 {
-return ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_)
+return (ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverAt_, y_.hoverAt_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.hoverResult_, y_.hoverResult_)))
 return
 }
 }
@@ -3639,7 +3645,17 @@ const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_c
 if((unificationOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return unificationOrdering_
 } else {
+const hoverAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.hoverAt_, y_.hoverAt_);
+if((hoverAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return hoverAtOrdering_
+} else {
+const hoverResultOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.hoverResult_, y_.hoverResult_);
+if((hoverResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return hoverResultOrdering_
+} else {
 return ff_core_Ordering.OrderingSame()
+}
+}
 }
 return
 }
@@ -3661,7 +3677,17 @@ const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_c
 if((unificationOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return unificationOrdering_
 } else {
+const hoverAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.hoverAt_, y_.hoverAt_);
+if((hoverAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return hoverAtOrdering_
+} else {
+const hoverResultOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.hoverResult_, y_.hoverResult_);
+if((hoverResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return hoverResultOrdering_
+} else {
 return ff_core_Ordering.OrderingSame()
+}
+}
 }
 return
 }
@@ -3679,7 +3705,9 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.serializeUsing_(serialization_, value_.unification_)
+ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.serializeUsing_(serialization_, value_.unification_);
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.hoverAt_);
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.hoverResult_)
 return
 }
 }
@@ -3692,7 +3720,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_))
+return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 return
 }
 }
@@ -3711,7 +3739,9 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
-ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.serializeUsing_(serialization_, value_.unification_)
+ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.serializeUsing_(serialization_, value_.unification_);
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.hoverAt_);
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.hoverResult_)
 return
 }
 }
@@ -3724,7 +3754,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_))
+return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
 return
 }
 }

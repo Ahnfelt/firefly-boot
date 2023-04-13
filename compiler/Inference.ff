@@ -5,11 +5,15 @@ import Substitution
 
 class Inference(
     unification: Unification
+    hoverAt: Option[Location]
+    mutable hoverResult: Option[String]
 )
 
-make(modules: List[Module]): Inference {
+make(modules: List[Module], hoverAt: Option[Location]): Inference {
     Inference(
         unification = Unification.make(modules)
+        hoverAt = hoverAt
+        hoverResult = None
     )
 }
 
@@ -868,6 +872,10 @@ extend self: Inference {
             returnType = returnType
             effect = effect
         )
+
+        if(self.hoverAt.contains(at)) {
+            self.hoverResult = Some(self.unification.substitute(returnType).show())
+        }
 
         Instantiated(
             typeArguments = instantiation

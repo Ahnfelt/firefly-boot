@@ -81,7 +81,7 @@ main(system: NodeSystem): Unit {
             importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
 
         | CheckCommand(filePath) => 
-            Builder.check(system, fireflyPath, filePath, Map.empty())
+            Builder.check(system, fireflyPath, filePath, Map.empty(), None)
         
         | BootstrapCommand =>
             Builder.build(
