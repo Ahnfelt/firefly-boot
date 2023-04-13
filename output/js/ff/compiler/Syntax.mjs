@@ -374,17 +374,23 @@ let seenTypes_ = ff_core_Map.empty_();
 const typeNames_ = ff_core_List.List_toStream(ff_core_List.List_map(ff_core_Int.Int_to(97, 122), ((_w1) => {
 return ff_core_Char.Char_toString(_w1)
 })), false);
-function go_(types_) {
+function shortenType_(qualified_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(qualified_), ((_w1) => {
+return (_w1 !== 46)
+})))
+}
+function shortenTypes_(types_) {
 ff_core_List.List_each(types_, ((_1) => {
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
+const shortenedName_ = shortenType_(name_);
 do {
-const _1 = ff_core_Map.Map_get(seenTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const _1 = ff_core_Map.Map_get(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
 if(_1.None) {
-seenTypes_ = ff_core_Map.Map_add(seenTypes_, name_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 break
 }
 }
@@ -392,13 +398,13 @@ break
 if(_1.Some) {
 const qualified_ = _1.value_;
 if((name_ !== qualified_)) {
-seenTypes_ = ff_core_Map.Map_add(seenTypes_, name_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 break
 }
 }
 } while(false);
-go_(typeArguments_)
+shortenTypes_(typeArguments_)
 return
 }
 }
@@ -415,15 +421,17 @@ return
 }
 }))
 }
-go_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
+shortenTypes_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
+function go_(type_) {
 {
-const _1 = self_;
+const _1 = type_;
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const generics_ = _1.generics_;
-const shortName_ = (((_1) => {
+const shortenedName_ = shortenType_(name_);
+const chosenName_ = (((_1) => {
 {
 if(_1 == "") {
 return name_
@@ -431,18 +439,15 @@ return
 }
 }
 {
-const qualified_ = _1;
-return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(qualified_), ((_w1) => {
-return (_w1 !== 46)
-})))
+return shortenedName_
 return
 }
-}))(ff_core_Map.Map_grab(seenTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+}))(ff_core_Map.Map_grab(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 if(ff_core_List.List_isEmpty(generics_)) {
-return shortName_
+return chosenName_
 } else {
-return (((shortName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
-return ff_compiler_Syntax.Type_show(_w1, ff_core_List.Empty())
+return (((chosenName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return go_(_w1)
 })), ", ")) + "]")
 }
 return
@@ -457,6 +462,8 @@ return
 }
 }
 }
+}
+return go_(self_)
 }
 
 export async function Type_show$(self_, shownTypes_ = ff_core_List.Empty(), $c) {
@@ -464,17 +471,23 @@ let seenTypes_ = ff_core_Map.empty_();
 const typeNames_ = ff_core_List.List_toStream(ff_core_List.List_map(ff_core_Int.Int_to(97, 122), ((_w1) => {
 return ff_core_Char.Char_toString(_w1)
 })), false);
-function go_(types_) {
+function shortenType_(qualified_) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(qualified_), ((_w1) => {
+return (_w1 !== 46)
+})))
+}
+function shortenTypes_(types_) {
 ff_core_List.List_each(types_, ((_1) => {
 {
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
+const shortenedName_ = shortenType_(name_);
 do {
-const _1 = ff_core_Map.Map_get(seenTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const _1 = ff_core_Map.Map_get(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 {
 if(_1.None) {
-seenTypes_ = ff_core_Map.Map_add(seenTypes_, name_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 break
 }
 }
@@ -482,13 +495,13 @@ break
 if(_1.Some) {
 const qualified_ = _1.value_;
 if((name_ !== qualified_)) {
-seenTypes_ = ff_core_Map.Map_add(seenTypes_, name_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+seenTypes_ = ff_core_Map.Map_add(seenTypes_, shortenedName_, "", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 break
 }
 }
 } while(false);
-go_(typeArguments_)
+shortenTypes_(typeArguments_)
 return
 }
 }
@@ -505,15 +518,17 @@ return
 }
 }))
 }
-go_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
+shortenTypes_(ff_core_List.List_addAll(shownTypes_, ff_core_List.Link(self_, ff_core_List.Empty())));
+function go_(type_) {
 {
-const _1 = self_;
+const _1 = type_;
 {
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
 const generics_ = _1.generics_;
-const shortName_ = (((_1) => {
+const shortenedName_ = shortenType_(name_);
+const chosenName_ = (((_1) => {
 {
 if(_1 == "") {
 return name_
@@ -521,18 +536,15 @@ return
 }
 }
 {
-const qualified_ = _1;
-return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(qualified_), ((_w1) => {
-return (_w1 !== 46)
-})))
+return shortenedName_
 return
 }
-}))(ff_core_Map.Map_grab(seenTypes_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
+}))(ff_core_Map.Map_grab(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
 if(ff_core_List.List_isEmpty(generics_)) {
-return shortName_
+return chosenName_
 } else {
-return (((shortName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
-return ff_compiler_Syntax.Type_show(_w1, ff_core_List.Empty())
+return (((chosenName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return go_(_w1)
 })), ", ")) + "]")
 }
 return
@@ -547,6 +559,8 @@ return
 }
 }
 }
+}
+return go_(self_)
 }
 
 export function Target_mapFirefly(self_, body_) {

@@ -229,37 +229,45 @@ extend self: Type {
     show(shownTypes: List[Type] = []): String {
         mutable seenTypes = Map.empty()
         let typeNames = 'a'.codeUnit.to('z'.codeUnit).map {Char(_).toString()}.toStream()
-        function go(types: List[Type]) {
+        function shortenType(qualified: String): String {
+            qualified.reverse().takeWhile {_ != '.'}.reverse()
+        }
+        function shortenTypes(types: List[Type]) {
             types.each {
                 | TConstructor(_, name, typeArguments) =>
-                    seenTypes.get(name).{
+                    let shortenedName = shortenType(name)
+                    seenTypes.get(shortenedName).{
                         | None => 
-                            seenTypes = seenTypes.add(name, name)
+                            seenTypes = seenTypes.add(shortenedName, name)
                         | Some(qualified) => 
                             if(name != qualified) {
-                                seenTypes = seenTypes.add(name, "")
+                                seenTypes = seenTypes.add(shortenedName, "")
                             }
                     }
-                    go(typeArguments)
+                    shortenTypes(typeArguments)
                 | TVariable(_, index) =>
                     if(!seenTypes.contains("$" + index)) {
                         seenTypes = seenTypes.add("$" + index, typeNames.next().else {"$" + index})
                     }
             }
         }
-        go([...shownTypes, self])
-        self.{
-            | TConstructor(at, name, generics) =>
-                let shortName = seenTypes.grab(name).{
-                    | "" => name
-                    | qualified => qualified.reverse().takeWhile {_ != '.'}.reverse()
-                }
-                if(generics.isEmpty()) {shortName} else {
-                    shortName + "[" + generics.map {_.show()}.join(", ") + "]"
-                }
-            | TVariable(at, index) =>
-                seenTypes.grab("$" + index)
+        shortenTypes([...shownTypes, self])
+        function go(type: Type): String {
+            type.{
+                | TConstructor(at, name, generics) =>
+                    let shortenedName = shortenType(name)
+                    let chosenName = seenTypes.grab(shortenedName).{
+                        | "" => name
+                        | _ => shortenedName
+                    }
+                    if(generics.isEmpty()) {chosenName} else {
+                        chosenName + "[" + generics.map {go(_)}.join(", ") + "]"
+                    }
+                | TVariable(at, index) =>
+                    seenTypes.grab("$" + index)
+            }
         }
+        go(self)
     }
 }
 

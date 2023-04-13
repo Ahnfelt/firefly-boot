@@ -1,5 +1,5 @@
 show[T: Show](value: T): Unit {
-    debug(Show.show(value))
+    trace(Show.show(value))
 }
 
 debugDynamic[T](value: T): Unit
@@ -19,3 +19,6 @@ warn(value: String): Unit
 
 error(value: String): Unit
     target js sync "console.error(value_)"
+
+trace(value: String): Unit
+    target js sync "process.stderr.write(value_ + String.fromCharCode(10))"

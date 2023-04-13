@@ -193,3 +193,5 @@ extend self: Handler {
             .with("params", params)
     }
 }
+
+data Float()

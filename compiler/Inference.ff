@@ -875,7 +875,7 @@ extend self: Inference {
             effect = effect
         )
 
-        if(self.hoverAt.contains(at)) {
+        if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
             self.hoverResult = Some(returnType)
         }
 
