@@ -844,7 +844,7 @@ extend self: Parser {
         let value = self.parseTerm()
         term.{
             | EVariable(_, name) => EAssign(token.at(), operator, name, value)
-            | EField e => EAssignField(token.at(), operator, e.record, e.field, value)
+            | EField e => EAssignField(e.at, operator, e.record, e.field, value)
             | _ => throw(CompileError(token.at(), "Only variables and fields are assignable"))
         }
     }

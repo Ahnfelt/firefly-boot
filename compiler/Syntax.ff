@@ -271,8 +271,13 @@ extend self: Type {
                         | "" => name
                         | _ => shortenedName
                     }
-                    if(generics.isEmpty()) {chosenName} else {
-                        chosenName + "[" + generics.map {go(_)}.join(", ") + "]"
+                    let filteredGenerics = generics.filter {
+                        // Hack to hide the effect, only works when the effect is Q$
+                        | TConstructor(_, "Q$", _) => False
+                        | _ => True
+                    }
+                    if(filteredGenerics.isEmpty()) {chosenName} else {
+                        chosenName + "[" + filteredGenerics.map {go(_)}.join(", ") + "]"
                     }
                 | TVariable(at, index) =>
                     seenTypes.grab("$" + index)
