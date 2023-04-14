@@ -944,7 +944,7 @@ extend self: Parser {
                 let arguments = self.parseFunctionArguments(True)
                 let effect = self.freshUnificationVariable(at)
                 let target = DynamicCall(result, tailCall)
-                result = ECall(at, target, effect, typeArguments, arguments.first, [])
+                result = ECall(result.at, target, effect, typeArguments, arguments.first, [])
                 if(arguments.second && self.current().is(LLower)) {
                     let token = self.skip(LLower)
                     result = EField(token.at(), False, result, token.raw())
