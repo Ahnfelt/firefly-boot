@@ -460,6 +460,9 @@ return
 if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.None) {
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
+self_.hoverResult_ = ff_core_Option.Some(expected_)
+};
 return ff_core_Map.empty_()
 return
 }
@@ -470,6 +473,9 @@ if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
+self_.hoverResult_ = ff_core_Option.Some(expected_)
+};
 return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, expected_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
@@ -480,6 +486,9 @@ if(_1.PAlias) {
 const at_ = _1.at_;
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
+self_.hoverResult_ = ff_core_Option.Some(expected_)
+};
 return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, expected_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
@@ -488,24 +497,7 @@ return
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.variable_.None) {
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
-if(instantiated_.scheme_.isNewtype_) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-};
-return ff_core_Map.empty_()
-return
-}
-}
-}
-{
-if(_1.PVariantAs) {
-const at_ = _1.at_;
-const name_ = _1.name_;
-if(_1.variable_.Some) {
-const variable_ = _1.variable_.value_;
+const variableOption_ = _1.variable_;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
@@ -521,9 +513,13 @@ return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
 })));
-return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(variable_, recordType_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+if(ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.hoverResult_ = ff_core_Option.Some(recordType_)
+};
+return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variableOption_), ((_w1) => {
+return ff_core_Pair.Pair(_w1, recordType_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
-}
 }
 }
 {
@@ -794,6 +790,9 @@ const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, 
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
+if((ff_core_Option.Option_contains(self_.hoverAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
+self_.hoverResult_ = ff_core_Option.Some(scheme_.signature_.returnType_)
+};
 {
 const _1 = e_;
 {
@@ -2159,6 +2158,9 @@ return
 if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.None) {
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
+self_.hoverResult_ = ff_core_Option.Some(expected_)
+};
 return ff_core_Map.empty_()
 return
 }
@@ -2169,6 +2171,9 @@ if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
+self_.hoverResult_ = ff_core_Option.Some(expected_)
+};
 return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, expected_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
@@ -2179,6 +2184,9 @@ if(_1.PAlias) {
 const at_ = _1.at_;
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
+self_.hoverResult_ = ff_core_Option.Some(expected_)
+};
 return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, expected_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
 }
@@ -2187,24 +2195,7 @@ return
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-if(_1.variable_.None) {
-const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-}));
-if(instantiated_.scheme_.isNewtype_) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, "This kind of pattern is not allowed for newtypes"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-};
-return ff_core_Map.empty_()
-return
-}
-}
-}
-{
-if(_1.PVariantAs) {
-const at_ = _1.at_;
-const name_ = _1.name_;
-if(_1.variable_.Some) {
-const variable_ = _1.variable_.value_;
+const variableOption_ = _1.variable_;
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, at_, name_, ff_core_List.Empty()), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
@@ -2220,9 +2211,13 @@ return _w1.name_
 })), "$")), ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.valueType_
 })));
-return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(variable_, recordType_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
+if(ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.hoverResult_ = ff_core_Option.Some(recordType_)
+};
+return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variableOption_), ((_w1) => {
+return ff_core_Pair.Pair(_w1, recordType_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
-}
 }
 }
 {
@@ -2493,6 +2488,9 @@ const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, 
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
+if((ff_core_Option.Option_contains(self_.hoverAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
+self_.hoverResult_ = ff_core_Option.Some(scheme_.signature_.returnType_)
+};
 {
 const _1 = e_;
 {

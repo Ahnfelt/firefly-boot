@@ -1177,10 +1177,10 @@ return ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(token_), ff_compil
 } else {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())) {
 const asToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
-return ff_compiler_Syntax.PVariantAs(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_Option.Some(ff_compiler_Token.Token_raw(asToken_)))
+return ff_compiler_Syntax.PVariantAs(ff_compiler_Token.Token_at(asToken_), ff_compiler_Token.Token_raw(token_), ff_core_Option.Some(ff_compiler_Token.Token_raw(asToken_)))
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LWildcard())) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard());
-return ff_compiler_Syntax.PVariantAs(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_Option.None())
+const wildcardToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard());
+return ff_compiler_Syntax.PVariantAs(ff_compiler_Token.Token_at(wildcardToken_), ff_compiler_Token.Token_raw(token_), ff_core_Option.None())
 } else {
 return ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_List.Empty())
 }
@@ -1189,7 +1189,7 @@ return ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(token_), ff_compil
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "@")) {
 const atToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
 const asToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
-return ff_compiler_Syntax.PAlias(ff_compiler_Token.Token_at(atToken_), pattern_, ff_compiler_Token.Token_raw(asToken_))
+return ff_compiler_Syntax.PAlias(ff_compiler_Token.Token_at(asToken_), pattern_, ff_compiler_Token.Token_raw(asToken_))
 } else {
 return pattern_
 }
@@ -2586,10 +2586,10 @@ return ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(token_), ff_compil
 } else {
 if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower())) {
 const asToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
-return ff_compiler_Syntax.PVariantAs(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_Option.Some(ff_compiler_Token.Token_raw(asToken_)))
+return ff_compiler_Syntax.PVariantAs(ff_compiler_Token.Token_at(asToken_), ff_compiler_Token.Token_raw(token_), ff_core_Option.Some(ff_compiler_Token.Token_raw(asToken_)))
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LWildcard())) {
-ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard());
-return ff_compiler_Syntax.PVariantAs(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_Option.None())
+const wildcardToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LWildcard());
+return ff_compiler_Syntax.PVariantAs(ff_compiler_Token.Token_at(wildcardToken_), ff_compiler_Token.Token_raw(token_), ff_core_Option.None())
 } else {
 return ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(token_), ff_compiler_Token.Token_raw(token_), ff_core_List.Empty())
 }
@@ -2598,7 +2598,7 @@ return ff_compiler_Syntax.PVariant(ff_compiler_Token.Token_at(token_), ff_compil
 if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "@")) {
 const atToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LOperator());
 const asToken_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
-return ff_compiler_Syntax.PAlias(ff_compiler_Token.Token_at(atToken_), pattern_, ff_compiler_Token.Token_raw(asToken_))
+return ff_compiler_Syntax.PAlias(ff_compiler_Token.Token_at(asToken_), pattern_, ff_compiler_Token.Token_raw(asToken_))
 } else {
 return pattern_
 }

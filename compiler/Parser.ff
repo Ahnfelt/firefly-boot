@@ -775,10 +775,10 @@ extend self: Parser {
             } else {
                 if(self.current().is(LLower)) {
                     let asToken = self.skip(LLower)
-                    PVariantAs(token.at(), token.raw(), Some(asToken.raw()))
+                    PVariantAs(asToken.at(), token.raw(), Some(asToken.raw()))
                 } elseIf {self.current().is(LWildcard)} {
-                    self.skip(LWildcard)
-                    PVariantAs(token.at(), token.raw(), None)
+                    let wildcardToken = self.skip(LWildcard)
+                    PVariantAs(wildcardToken.at(), token.raw(), None)
                 } else {
                     PVariant(token.at(), token.raw(), [])
                 }
@@ -787,7 +787,7 @@ extend self: Parser {
         if(self.current().rawIs("@")) {
             let atToken = self.skip(LOperator)
             let asToken = self.skip(LLower)
-            PAlias(atToken.at(), pattern, asToken.raw())
+            PAlias(asToken.at(), pattern, asToken.raw())
         } else {pattern}
     }
     

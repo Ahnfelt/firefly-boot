@@ -206,20 +206,21 @@ extend self: Inference {
             | PChar _ =>
                 literal("Char")
             | PVariable(at, None) =>
+                if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
+                    self.hoverResult = Some(expected)
+                }
                 Map.empty()
             | PVariable(at, Some(name)) =>
+                if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
+                    self.hoverResult = Some(expected)
+                }
                 [Pair(name, expected)].toMap()
             | PAlias(at, pattern, variable) =>
+                if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
+                    self.hoverResult = Some(expected)
+                }
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
-            | PVariantAs(at, name, None) =>
-                let instantiated = self.lookup(environment, at, name, []).else {
-                    throw(CompileError(at, "No such variant: " + name))
-                }
-                if(instantiated.scheme.isNewtype) {
-                    throw(CompileError(at, "This kind of pattern is not allowed for newtypes"))
-                }
-                Map.empty()
-            | PVariantAs(at, name, Some(variable)) =>
+            | PVariantAs(at, name, variableOption) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
                     throw(CompileError(at, "No such variant: " + name))
                 }
@@ -230,7 +231,10 @@ extend self: Inference {
                 let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
-                [Pair(variable, recordType)].toMap()
+                if(self.hoverAt.contains(at)) {
+                    self.hoverResult = Some(recordType)
+                }
+                variableOption.toList().map {Pair(_, recordType)}.toMap()
             | PVariant(at, name, patterns) =>
                 let instantiated = self.lookup(environment, at, name, []).else {
                     throw(CompileError(at, "No such variant: " + name))
@@ -357,6 +361,9 @@ extend self: Inference {
                 let scheme =
                     Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType, noEffect))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
+                if(self.hoverAt.contains(e.at) && self.hoverResult.isEmpty()) {
+                    self.hoverResult = Some(scheme.signature.returnType)
+                }
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
                     body = self.inferTerm(environment2, expected, e.body)
