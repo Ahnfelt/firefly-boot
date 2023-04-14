@@ -111,7 +111,7 @@ extend self: Handler {
                 raw = ""
             )
             let position = try {
-                self.findToken(system, path, at.line, at.column).else {fallback}
+                self.findToken(system, fixedPath, at.line, at.column).else {fallback}
             } catchAny {_ =>
                 fallback
             } grab()

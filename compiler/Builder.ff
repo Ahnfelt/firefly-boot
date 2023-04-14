@@ -110,7 +110,7 @@ check(
         ".firefly/temporary"
         fixedResolvedDependencies
         virtualFiles
-        hoverAt = hoverAt
+        hoverAt
     )
     compiler.infer(resolvedDependencies.mainPackagePair, localMainFile.dropLast(".ff".size()))
     compiler.hoverResult

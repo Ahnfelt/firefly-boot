@@ -38,7 +38,7 @@ main(system: NodeSystem) {
             //system.writeText(makeResponse(makeDiagnoseNotification(system.js())))
         }
     } catch {| BadRequestException(reason), error =>
-         system.writeErrorText(reason + "\n")
+        Log.trace(reason)
     } grab()
 }
 
