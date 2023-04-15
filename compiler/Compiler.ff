@@ -222,7 +222,8 @@ extend self: Compiler {
             inference.inferModule(module, otherModules)
         } finally {
             if(!inference.hoverResult.isEmpty()) {
-                self.hoverResult = inference.hoverResult.map {_.show()}
+                let extra = inference.hoverResultEffect.{| Some(TConstructor(_, "Q$", _)) => " // async" | _ => ""}
+                self.hoverResult = inference.hoverResult.map {_.show() + extra}
             }
             if(!inference.hoverResultAt.isEmpty()) {
                 self.hoverResultAt = inference.hoverResultAt

@@ -7,6 +7,7 @@ class Inference(
     unification: Unification
     hoverAt: Option[Location]
     mutable hoverResult: Option[Type]
+    mutable hoverResultEffect: Option[Type]
     mutable hoverResultAt: Option[Location]
 )
 
@@ -15,6 +16,7 @@ make(modules: List[Module], hoverAt: Option[Location]): Inference {
         unification = Unification.make(modules)
         hoverAt = hoverAt
         hoverResult = None
+        hoverResultEffect = None
         hoverResultAt = None
     )
 }
@@ -46,6 +48,7 @@ extend self: Inference {
         )
         let subsititution = Substitution(self.unification.substitution)
         self.hoverResult = self.hoverResult.map {subsititution.substituteType(_)}
+        self.hoverResultEffect = self.hoverResultEffect.map {subsititution.substituteType(_)}
         subsititution.substituteModule(result)
     }
 
@@ -886,6 +889,7 @@ extend self: Inference {
 
         if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
             self.hoverResult = Some(returnType)
+            self.hoverResultEffect = Some(effect)
             self.hoverResultAt = Some(scheme.signature.at)
         }
 
