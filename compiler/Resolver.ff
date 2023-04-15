@@ -4,28 +4,31 @@ class Resolver(
     variables: Map[String, String]
     variants: Map[String, String]
     types: Map[String, String]
+    typeLocations: Map[String, Location]
     asyncTypes: Set[String]
     typeParameters: Set[String]
     traits: Map[String, String]
     state: ResolverState
+    hoverAt: Option[Location]
 )
 
-class ResolverState(mutable nextUnificationVariableIndex: Int)
+class ResolverState(
+    mutable nextUnificationVariableIndex: Int, 
+    mutable hoverResultAt: Option[Location]
+)
 
-make(): Resolver {
+make(hoverAt: Option[Location]): Resolver {
     Resolver(
         variables = [].toMap()
         variants = [].toMap()
         types = [].toMap()
+        typeLocations = [].toMap()
         asyncTypes = [].toSet()
         typeParameters = [].toSet()
         traits = [].toMap()
-        state = ResolverState(nextUnificationVariableIndex = 2) // To avoid collision with the parser and unification
+        state = ResolverState(nextUnificationVariableIndex = 2, None) // To avoid collision with the parser and unification
+        hoverAt = hoverAt
     )
-}
-
-fail[T](at: Location, message: String): T {
-    panic(message + " " + at.show())
 }
 
 extend self: Resolver {
@@ -97,13 +100,15 @@ extend self: Resolver {
         let traitMethods = module.traits.flatMap { _.methods }.flatMap { entry(_.name, False) }.toMap()
         let traits = module.traits.flatMap { entry(_.name, True) }.toMap()
         let types = module.types.flatMap { entry(_.name, True) }.toMap()
+        let typeLocations = module.types.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}} }.toMap()
         let asyncTypes = module.types.filter { _.generics.first().any {_ == "Q$"} }
             .flatMap { entry(_.name, True).map {_.first} }.toSet()
         let variants = module.types.flatMap { _.variants }.flatMap { entry(_.name, True) }.toMap()
-        Resolver(
+        self.Resolver(
             variables = self.variables.addAll(lets).addAll(functions).addAll(traitMethods)
             variants = self.variants.addAll(variants)
             types = self.types.addAll(types)
+            typeLocations = self.typeLocations.addAll(typeLocations)
             asyncTypes = self.asyncTypes.addAll(asyncTypes)
             typeParameters = [].toSet()
             traits = self.traits.addAll(traits)
@@ -160,7 +165,7 @@ extend self: Resolver {
                 let function2 = self2.resolveFunctionDefinition(function1, True)
                 Pair(name, function2.body.{
                     | FireflyTarget(lambda) => lambda
-                    | _ => fail(signature.at, "Internal error: Expected method default to be a lambda")
+                    | _ => throw(CompileError(signature.at, "Internal error: Expected method default to be a lambda"))
                 })
             }
         )
@@ -317,6 +322,11 @@ extend self: Resolver {
         | TVariable _, _ =>
             type
         | TConstructor constructor, _ =>
+            self.typeLocations.get(constructor.name).each {at =>
+                if(self.hoverAt.contains(type.at)) {
+                    self.state.hoverResultAt = Some(at)
+                }
+            }
             let name = if(constructor.name.contains("$")) {
                 constructor.name
             } else {

@@ -182,7 +182,15 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName)
         let otherModules = self.imports(module)
-        let result = Resolver.make().resolveModule(module, otherModules)
+        let resolver = Resolver.make(self.hoverAt)
+        let result = try {
+            resolver.resolveModule(module, otherModules)
+        } finally {
+            if(!resolver.state.hoverResultAt.isEmpty()) {
+                Log.show(resolver.state.hoverResultAt)
+                self.hoverResultAt = resolver.state.hoverResultAt
+            }
+        } grab() 
 
         self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)
         result
