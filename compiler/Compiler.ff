@@ -25,7 +25,7 @@ capability Compiler(
     mutable emittedModules: Set[String]
     mutable phaseDurations: List[Pair[String, Duration]]
     mutable phaseDurationDelta: Duration
-    mutable hoverResult: Option[String]
+    mutable hoverResult: Option[Pair[String, String]]
     mutable hoverResultAt: Option[Location]
 )
 
@@ -222,8 +222,11 @@ extend self: Compiler {
             inference.inferModule(module, otherModules)
         } finally {
             if(!inference.hoverResult.isEmpty()) {
-                let extra = inference.hoverResultEffect.{| Some(TConstructor(_, "Q$", _)) => " // async" | _ => ""}
-                self.hoverResult = inference.hoverResult.map {_.show() + extra}
+                let asynchronous = inference.hoverResultEffect.{
+                    | Some(TConstructor(_, "Q$", _)) => "This call may be asynchronous." 
+                    | _ => ""
+                }
+                self.hoverResult = inference.hoverResult.map {Pair(_.show(), asynchronous)}
             }
             if(!inference.hoverResultAt.isEmpty()) {
                 self.hoverResultAt = inference.hoverResultAt

@@ -92,7 +92,7 @@ check(
     fireflyPath: String, 
     mainFile: String, 
     virtualFiles: Map[String, String], 
-    hoverAt: Option[Pair[Location, (Option[String], Option[Location]) => Unit]]
+    hoverAt: Option[Pair[Location, (Option[Pair[String, String]], Option[Location]) => Unit]]
 ) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {

@@ -196,10 +196,12 @@ extend self: Handler {
             }.else {js.null()}
         } else {
             js.object().with("contents", 
-                hoverResult.map {js.object()
-                    .with("kind", "markdown")
-                    .with("value", "```\n" + _ + "\n```")
-                }.else {js.null()}
+                hoverResult.{
+                    | None => js.null()
+                    | Some(Pair(t, q)) => js.object()
+                        .with("kind", "markdown")
+                        .with("value", "```\n" + t + "\n```\n" + if(q == "") {""} else {"*" + q + "*"})
+                }
             )
         }
         Result(o)
