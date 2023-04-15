@@ -468,15 +468,15 @@ return
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-const generics_ = _1.generics_;
+if(_1.generics_.Link) {
+const generics_ = _1.generics_.tail_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
-const as_ = ff_core_List.List_dropLast(ff_core_List.List_dropFirst(generics_, 1), 1);
-const r_ = ff_core_List.List_grabFirst(ff_core_List.List_takeLast(generics_, 1));
-return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(as_, 1), ((_w1) => {
+return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(generics_, 1), ((_w1) => {
 return go_(_w1)
-})), ", ")) + ") => ") + go_(r_))
+})), ", ")) + ") => ") + go_(ff_core_List.List_grabLast(generics_)))
 return
+}
 }
 }
 }
@@ -654,15 +654,15 @@ return
 if(_1.TConstructor) {
 const at_ = _1.at_;
 const name_ = _1.name_;
-const generics_ = _1.generics_;
+if(_1.generics_.Link) {
+const generics_ = _1.generics_.tail_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
-const as_ = ff_core_List.List_dropLast(ff_core_List.List_dropFirst(generics_, 1), 1);
-const r_ = ff_core_List.List_grabFirst(ff_core_List.List_takeLast(generics_, 1));
-return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(as_, 1), ((_w1) => {
+return ((("(" + ff_core_List.List_join(ff_core_List.List_map(ff_core_List.List_dropLast(generics_, 1), ((_w1) => {
 return go_(_w1)
-})), ", ")) + ") => ") + go_(r_))
+})), ", ")) + ") => ") + go_(ff_core_List.List_grabLast(generics_)))
 return
+}
 }
 }
 }

@@ -133,6 +133,7 @@ while((i_ < ff_core_String.String_size(code_))) {
 while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
 i_ += 1
 };
+if((i_ < ff_core_String.String_size(code_))) {
 const start_ = i_;
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
@@ -266,6 +267,7 @@ emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
 throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))))
 } else {}
+}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
@@ -314,6 +316,7 @@ while((i_ < ff_core_String.String_size(code_))) {
 while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
 i_ += 1
 };
+if((i_ < ff_core_String.String_size(code_))) {
 const start_ = i_;
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
@@ -447,6 +450,7 @@ emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
 throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))))
 } else {}
+}
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)

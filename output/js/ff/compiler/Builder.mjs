@@ -168,7 +168,7 @@ try {
 ff_compiler_Compiler.Compiler_infer(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localMainFile_, ff_core_String.String_size(".ff")))
 } finally {
 ff_core_Option.Option_each(hoverAt_, ((_w1) => {
-_w1.second_(compiler_.hoverResult_)
+_w1.second_(compiler_.hoverResult_, compiler_.hoverResultAt_)
 }))
 }
 }
@@ -284,7 +284,7 @@ try {
 (await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localMainFile_, ff_core_String.String_size(".ff")), $c))
 } finally {
 (await ff_core_Option.Option_each$(hoverAt_, (async (_w1, $c) => {
-(await _w1.second_(compiler_.hoverResult_, $c))
+(await _w1.second_(compiler_.hoverResult_, compiler_.hoverResultAt_, $c))
 }), $c))
 }
 }

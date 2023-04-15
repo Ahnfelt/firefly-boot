@@ -48,6 +48,8 @@ tokenize(file: String, code: String): Array[Token] {
     while {i < code.size()} {
 
         while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {i += 1}
+        
+        if(i < code.size()):
 
         let start = i
         startLine = line
