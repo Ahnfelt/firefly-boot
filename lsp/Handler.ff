@@ -146,7 +146,7 @@ extend self: Handler {
         let contentChange = contentChanges.grab(0)
         if(!contentChange.get("range").isNullOrUndefined()) {throw(LanguageServerException("Expected a complete contentChange"))} else:
         let content = contentChange.get("text").grabString()
-        self.virtualFiles = self.virtualFiles.add(path, content)
+        self.virtualFiles = self.virtualFiles.add(fixedPath, content)
     }
 
     handleDidClose(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
@@ -155,7 +155,7 @@ extend self: Handler {
         let absolutePath = FileSystem.urlToPath(uri)
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
-        self.virtualFiles = self.virtualFiles.remove(path)
+        self.virtualFiles = self.virtualFiles.remove(fixedPath)
     }
 
     handleHover(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
