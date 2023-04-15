@@ -208,10 +208,13 @@ extend self: Compiler {
             self.derive(i.packagePair, FileSystem.prefixName(i.file))
         }
         let inference = Inference.make([module, ...otherModules], self.hoverAt)
-        let inferredModule = inference.inferModule(module, otherModules)
-        if(!inference.hoverResult.isEmpty()) {
-            self.hoverResult = inference.hoverResult.map {t => t.show()}
-        }
+        let inferredModule = try {
+            inference.inferModule(module, otherModules)
+        } finally {
+            if(!inference.hoverResult.isEmpty()) {
+                self.hoverResult = inference.hoverResult.map {_.show()}
+            }
+        } grab() 
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
 
         self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)

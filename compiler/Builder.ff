@@ -92,8 +92,8 @@ check(
     fireflyPath: String, 
     mainFile: String, 
     virtualFiles: Map[String, String], 
-    hoverAt: Option[Location]
-): Option[String] {
+    hoverAt: Option[Pair[Location, Option[String] => Unit]]
+) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
         resolvedDependencies.packagePaths
@@ -110,10 +110,13 @@ check(
         ".firefly/temporary"
         fixedResolvedDependencies
         virtualFiles
-        hoverAt
+        hoverAt.map {_.first}
     )
-    compiler.infer(resolvedDependencies.mainPackagePair, localMainFile.dropLast(".ff".size()))
-    compiler.hoverResult
+    try {
+        compiler.infer(resolvedDependencies.mainPackagePair, localMainFile.dropLast(".ff".size()))
+    } finally {
+        hoverAt.each {_.second(compiler.hoverResult)}
+    } grab()
 }
 
 internalCreateExecutable(

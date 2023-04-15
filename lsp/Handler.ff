@@ -173,11 +173,12 @@ extend self: Handler {
             column = token.map {_.startColumn}.else {column}
         )
         Log.trace(Show.show(hoverAt) + " - " + Show.show(token))
-        let hoverResult = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles, Some(hoverAt))
+        mutable hoverResult = None
+        try {
+            let hover = Some(Pair(hoverAt, {hoverResult = _}))
+            Builder.check(system, ".", fixedPath, self.virtualFiles, hover)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
-            None
         } grab()
         let o = js.object().with("contents", 
             hoverResult.map {js.object()
