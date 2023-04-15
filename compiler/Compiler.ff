@@ -26,6 +26,7 @@ capability Compiler(
     mutable phaseDurations: List[Pair[String, Duration]]
     mutable phaseDurationDelta: Duration
     mutable hoverResult: Option[String]
+    mutable hoverResultAt: Option[Location]
 )
 
 make(
@@ -56,6 +57,7 @@ make(
         phaseDurations = []
         phaseDurationDelta = Duration(0.0)
         hoverResult = None
+        hoverResultAt = None
     )
 }
 
@@ -213,6 +215,11 @@ extend self: Compiler {
         } finally {
             if(!inference.hoverResult.isEmpty()) {
                 self.hoverResult = inference.hoverResult.map {_.show()}
+            }
+            if(!inference.hoverResultAt.isEmpty()) {
+                self.hoverResultAt = inference.hoverResultAt.map {at =>
+                    at.Location(file = FileSystem.pathToUrl(self.files.absolutePath(at.file)))
+                }
             }
         } grab() 
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)

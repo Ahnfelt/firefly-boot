@@ -7,6 +7,7 @@ class Inference(
     unification: Unification
     hoverAt: Option[Location]
     mutable hoverResult: Option[Type]
+    mutable hoverResultAt: Option[Location]
 )
 
 make(modules: List[Module], hoverAt: Option[Location]): Inference {
@@ -14,6 +15,7 @@ make(modules: List[Module], hoverAt: Option[Location]): Inference {
         unification = Unification.make(modules)
         hoverAt = hoverAt
         hoverResult = None
+        hoverResultAt = None
     )
 }
 
@@ -884,6 +886,7 @@ extend self: Inference {
 
         if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
             self.hoverResult = Some(returnType)
+            self.hoverResultAt = Some(scheme.signature.at)
         }
 
         Instantiated(

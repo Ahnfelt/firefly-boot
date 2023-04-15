@@ -92,7 +92,7 @@ check(
     fireflyPath: String, 
     mainFile: String, 
     virtualFiles: Map[String, String], 
-    hoverAt: Option[Pair[Location, Option[String] => Unit]]
+    hoverAt: Option[Pair[Location, (Option[String], Option[Location]) => Unit]]
 ) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
@@ -115,7 +115,7 @@ check(
     try {
         compiler.infer(resolvedDependencies.mainPackagePair, localMainFile.dropLast(".ff".size()))
     } finally {
-        hoverAt.each {_.second(compiler.hoverResult)}
+        hoverAt.each {_.second(compiler.hoverResult, compiler.hoverResultAt)}
     } grab()
 }
 

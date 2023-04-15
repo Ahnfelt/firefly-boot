@@ -258,10 +258,8 @@ extend self: Type {
                     "() => " + go(r)
                 | TConstructor(at, name, [_, a, r]) {name.startsWith("Function$")} =>
                     go(a) + " => " + go(r)
-                | TConstructor(at, name, generics) {name.startsWith("Function$")} =>
-                    let as = generics.dropFirst().dropLast()
-                    let r = generics.takeLast().grabFirst()
-                    "(" + as.dropLast().map {go(_)}.join(", ") + ") => " + go(r)
+                | TConstructor(at, name, [_, ...generics]) {name.startsWith("Function$")} =>
+                    "(" + generics.dropLast().map {go(_)}.join(", ") + ") => " + go(generics.grabLast())
                 | TConstructor(at, name, generics) {name.startsWith("Record$")} =>
                     let as = name.split('$').toList().dropFirst().zip(generics)
                     "(" + as.map {| Pair(label, t) => label + ": " + go(t)}.join(", ") + ")"

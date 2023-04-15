@@ -40,7 +40,8 @@ extend self: Handler {
         method.{
             | "initialize" => self.handleInitialize(system.js(), parameters)
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
-            | "textDocument/hover" => self.handleHover(system, parameters)
+            | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
+            | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
             | _ => self.handleUnsupported(system.js())
         }
     }
@@ -68,7 +69,7 @@ extend self: Handler {
                     .with("change", 1 /* TextDocumentSyncKind.Full */)
                 )
                 .with("hoverProvider", True)
-                //.with("definitionProvider", True)
+                .with("definitionProvider", True)
                 //.with("typeDefinitionProvider", True)
                 .with("diagnosticProvider", js.object()
                     .with("interFileDependencies", True)
@@ -158,7 +159,7 @@ extend self: Handler {
         self.virtualFiles = self.virtualFiles.remove(fixedPath)
     }
 
-    handleHover(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+    handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
         let absolutePath = FileSystem.urlToPath(uri)
@@ -174,18 +175,33 @@ extend self: Handler {
         )
         Log.trace(Show.show(hoverAt) + " - " + Show.show(token))
         mutable hoverResult = None
+        mutable hoverResultAt = None
         try {
-            let hover = Some(Pair(hoverAt, {hoverResult = _}))
+            let hover = Some(Pair(hoverAt, {result, at => hoverResult = result; hoverResultAt = at}))
             Builder.check(system, ".", fixedPath, self.virtualFiles, hover)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
-        let o = js.object().with("contents", 
-            hoverResult.map {js.object()
-                .with("kind", "markdown")
-                .with("value", "```\n" + _ + "\n```")
+        let o = if(goToDefinition) {
+            hoverResultAt.map {at => js.object()
+                .with("uri", at.file)
+                .with("range", js.object()
+                    .with("start", js.object()
+                        .with("line", at.line - 1).with("character", at.column - 1)
+                    )
+                    .with("end", js.object()
+                        .with("line", at.line - 1).with("character", at.column - 1)
+                    )
+                )
             }.else {js.null()}
-        )
+        } else {
+            js.object().with("contents", 
+                hoverResult.map {js.object()
+                    .with("kind", "markdown")
+                    .with("value", "```\n" + _ + "\n```")
+                }.else {js.null()}
+            )
+        }
         Result(o)
     }
     
