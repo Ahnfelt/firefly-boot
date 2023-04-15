@@ -518,10 +518,24 @@ return shortenedName_
 return
 }
 }))(ff_core_Map.Map_grab(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-if(ff_core_List.List_isEmpty(generics_)) {
+const filteredGenerics_ = ff_core_List.List_filter(generics_, ((_1) => {
+{
+if(_1.TConstructor) {
+if(_1.name_ == "Q$") {
+return false
+return
+}
+}
+}
+{
+return true
+return
+}
+}));
+if(ff_core_List.List_isEmpty(filteredGenerics_)) {
 return chosenName_
 } else {
-return (((chosenName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return (((chosenName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(filteredGenerics_, ((_w1) => {
 return go_(_w1)
 })), ", ")) + "]")
 }
@@ -690,10 +704,24 @@ return shortenedName_
 return
 }
 }))(ff_core_Map.Map_grab(seenTypes_, shortenedName_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String));
-if(ff_core_List.List_isEmpty(generics_)) {
+const filteredGenerics_ = ff_core_List.List_filter(generics_, ((_1) => {
+{
+if(_1.TConstructor) {
+if(_1.name_ == "Q$") {
+return false
+return
+}
+}
+}
+{
+return true
+return
+}
+}));
+if(ff_core_List.List_isEmpty(filteredGenerics_)) {
 return chosenName_
 } else {
-return (((chosenName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(generics_, ((_w1) => {
+return (((chosenName_ + "[") + ff_core_List.List_join(ff_core_List.List_map(filteredGenerics_, ((_w1) => {
 return go_(_w1)
 })), ", ")) + "]")
 }

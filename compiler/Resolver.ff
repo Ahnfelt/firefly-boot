@@ -217,13 +217,7 @@ extend self: Resolver {
         | EInt _, _ => term
         | EFloat _, _ => term
         | EVariable e, _ =>
-            self.variables.get(e.name).map { e.EVariable(name = _) }.else {
-                if(e.name.first().any { _.isAsciiLetter() }) {
-                    throw(CompileError(e.at, "No such variable: " + e.name))
-                } else {
-                    term
-                }
-            }
+            self.variables.get(e.name).map { e.EVariable(name = _) }.else {term}
         | EList(at, t, items), _ =>
             EList(at, self.resolveType(t, topLevel), items.map {| Pair(item, spread) =>
                 Pair(self.resolveTerm(item, topLevel), spread)

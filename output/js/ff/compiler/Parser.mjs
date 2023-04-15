@@ -1279,15 +1279,16 @@ const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 const _1 = term_;
 {
 if(_1.EVariable) {
+const at_ = _1.at_;
 const name_ = _1.name_;
-return ff_compiler_Syntax.EAssign(ff_compiler_Token.Token_at(token_), operator_, name_, value_)
+return ff_compiler_Syntax.EAssign(at_, operator_, name_, value_)
 return
 }
 }
 {
 if(_1.EField) {
 const e_ = _1;
-return ff_compiler_Syntax.EAssignField(ff_compiler_Token.Token_at(token_), operator_, e_.record_, e_.field_, value_)
+return ff_compiler_Syntax.EAssignField(e_.at_, operator_, e_.record_, e_.field_, value_)
 return
 }
 }
@@ -1445,7 +1446,7 @@ const typeArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parse
 const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, true);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, at_);
 const target_ = ff_compiler_Syntax.DynamicCall(result_, tailCall_);
-result_ = ff_compiler_Syntax.ECall(at_, target_, effect_, typeArguments_, arguments_.first_, ff_core_List.Empty());
+result_ = ff_compiler_Syntax.ECall(result_.at_, target_, effect_, typeArguments_, arguments_.first_, ff_core_List.Empty());
 if((arguments_.second_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()))) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, ff_compiler_Token.Token_raw(token_))
@@ -2688,15 +2689,16 @@ const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
 const _1 = term_;
 {
 if(_1.EVariable) {
+const at_ = _1.at_;
 const name_ = _1.name_;
-return ff_compiler_Syntax.EAssign(ff_compiler_Token.Token_at(token_), operator_, name_, value_)
+return ff_compiler_Syntax.EAssign(at_, operator_, name_, value_)
 return
 }
 }
 {
 if(_1.EField) {
 const e_ = _1;
-return ff_compiler_Syntax.EAssignField(ff_compiler_Token.Token_at(token_), operator_, e_.record_, e_.field_, value_)
+return ff_compiler_Syntax.EAssignField(e_.at_, operator_, e_.record_, e_.field_, value_)
 return
 }
 }
@@ -2854,7 +2856,7 @@ const typeArguments_ = ((!ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parse
 const arguments_ = ff_compiler_Parser.Parser_parseFunctionArguments(self_, true);
 const effect_ = ff_compiler_Parser.Parser_freshUnificationVariable(self_, at_);
 const target_ = ff_compiler_Syntax.DynamicCall(result_, tailCall_);
-result_ = ff_compiler_Syntax.ECall(at_, target_, effect_, typeArguments_, arguments_.first_, ff_core_List.Empty());
+result_ = ff_compiler_Syntax.ECall(result_.at_, target_, effect_, typeArguments_, arguments_.first_, ff_core_List.Empty());
 if((arguments_.second_ && ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LLower()))) {
 const token_ = ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LLower());
 result_ = ff_compiler_Syntax.EField(ff_compiler_Token.Token_at(token_), false, result_, ff_compiler_Token.Token_raw(token_))

@@ -161,10 +161,11 @@ return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compi
 }));
 const file_ = (moduleName_ + ".ff");
 const path_ = ff_core_FileSystem.relative_(ff_core_FileSystem.FileSystem_workingDirectory(self_.files_), ((packagePath_ + "/") + file_));
-const code_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.virtualFiles_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-return ff_core_FileSystem.FileSystem_readText(self_.files_, path_)
+const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
+const code_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.virtualFiles_, fixedPath_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+return ff_core_FileSystem.FileSystem_readText(self_.files_, fixedPath_)
 }));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(path_, code_);
+const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget));
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
@@ -225,12 +226,15 @@ const otherModules_ = ff_core_List.List_map(ff_compiler_Compiler.Compiler_import
 return ff_compiler_Compiler.Compiler_derive(self_, i_.packagePair_, ff_core_FileSystem.prefixName_(i_.file_))
 }));
 const inference_ = ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_), self_.hoverAt_);
-const inferredModule_ = ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_);
+const inferredModule_ = ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_)
+})), (() => {
 if((!ff_core_Option.Option_isEmpty(inference_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Option_map(inference_.hoverResult_, ((t_) => {
-return ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty())
+self_.hoverResult_ = ff_core_Option.Option_map(inference_.hoverResult_, ((_w1) => {
+return ff_compiler_Syntax.Type_show(_w1, ff_core_List.Empty())
 }))
-};
+}
+})));
 const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(ff_core_List.Link(module_, otherModules_)), inferredModule_, otherModules_);
 self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
@@ -294,10 +298,11 @@ return ff_core_Core.panic_(("Internal error - package path missing: " + ff_compi
 }));
 const file_ = (moduleName_ + ".ff");
 const path_ = ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(self_.files_, $c)), ((packagePath_ + "/") + file_));
-const code_ = (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.virtualFiles_, path_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
-return (await ff_core_FileSystem.FileSystem_readText$(self_.files_, path_, $c))
+const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
+const code_ = (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.virtualFiles_, fixedPath_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
+return (await ff_core_FileSystem.FileSystem_readText$(self_.files_, fixedPath_, $c))
 }), $c));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(path_, code_);
+const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget));
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
@@ -358,12 +363,15 @@ const otherModules_ = (await ff_core_List.List_map$((await ff_compiler_Compiler.
 return (await ff_compiler_Compiler.Compiler_derive$(self_, i_.packagePair_, ff_core_FileSystem.prefixName_(i_.file_), $c))
 }), $c));
 const inference_ = ff_compiler_Inference.make_(ff_core_List.Link(module_, otherModules_), self_.hoverAt_);
-const inferredModule_ = ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_);
+const inferredModule_ = ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
+return ff_compiler_Inference.Inference_inferModule(inference_, module_, otherModules_)
+})), (() => {
 if((!ff_core_Option.Option_isEmpty(inference_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Option_map(inference_.hoverResult_, ((t_) => {
-return ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty())
+self_.hoverResult_ = ff_core_Option.Option_map(inference_.hoverResult_, ((_w1) => {
+return ff_compiler_Syntax.Type_show(_w1, ff_core_List.Empty())
 }))
-};
+}
+})));
 const result_ = ff_compiler_Dictionaries.Dictionaries_processModule(ff_compiler_Dictionaries.make_(ff_core_List.Link(module_, otherModules_)), inferredModule_, otherModules_);
 self_.inferredModules_ = ff_core_Map.Map_add(self_.inferredModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_

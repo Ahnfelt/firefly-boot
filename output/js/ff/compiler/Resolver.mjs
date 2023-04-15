@@ -476,13 +476,7 @@ return
 }
 }
 })), (() => {
-if(ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
-return ff_core_Char.Char_isAsciiLetter(_w1)
-}))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("No such variable: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-} else {
 return term_
-}
 }))
 return
 }
@@ -1445,13 +1439,7 @@ return
 }
 }
 })), (() => {
-if(ff_core_Option.Option_any(ff_core_String.String_first(e_.name_), ((_w1) => {
-return ff_core_Char.Char_isAsciiLetter(_w1)
-}))) {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("No such variable: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
-} else {
 return term_
-}
 }))
 return
 }

@@ -161,9 +161,16 @@ const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
-const compiler_ = ff_compiler_Compiler.make_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_time(system_), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, hoverAt_);
-ff_compiler_Compiler.Compiler_infer(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localMainFile_, ff_core_String.String_size(".ff")));
-return compiler_.hoverResult_
+const compiler_ = ff_compiler_Compiler.make_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_time(system_), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, ff_core_Option.Option_map(hoverAt_, ((_w1) => {
+return _w1.first_
+})));
+try {
+ff_compiler_Compiler.Compiler_infer(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localMainFile_, ff_core_String.String_size(".ff")))
+} finally {
+ff_core_Option.Option_each(hoverAt_, ((_w1) => {
+_w1.second_(compiler_.hoverResult_)
+}))
+}
 }
 
 export function internalCreateExecutable_(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_()) {
@@ -270,9 +277,16 @@ const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
-const compiler_ = (await ff_compiler_Compiler.make_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, hoverAt_, $c));
-(await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localMainFile_, ff_core_String.String_size(".ff")), $c));
-return compiler_.hoverResult_
+const compiler_ = (await ff_compiler_Compiler.make_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, ff_core_Option.Option_map(hoverAt_, ((_w1) => {
+return _w1.first_
+})), $c));
+try {
+(await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localMainFile_, ff_core_String.String_size(".ff")), $c))
+} finally {
+(await ff_core_Option.Option_each$(hoverAt_, (async (_w1, $c) => {
+(await _w1.second_(compiler_.hoverResult_, $c))
+}), $c))
+}
 }
 
 export async function internalCreateExecutable_$(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_(), $c) {
