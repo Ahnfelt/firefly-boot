@@ -217,9 +217,7 @@ extend self: Compiler {
                 self.hoverResult = inference.hoverResult.map {_.show()}
             }
             if(!inference.hoverResultAt.isEmpty()) {
-                self.hoverResultAt = inference.hoverResultAt.map {at =>
-                    at.Location(file = FileSystem.pathToUrl(self.files.absolutePath(at.file)))
-                }
+                self.hoverResultAt = inference.hoverResultAt
             }
         } grab() 
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)

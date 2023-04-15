@@ -184,7 +184,7 @@ extend self: Handler {
         } grab()
         let o = if(goToDefinition) {
             hoverResultAt.map {at => js.object()
-                .with("uri", at.file)
+                .with("uri", FileSystem.pathToUrl(system.files().absolutePath(at.file)))
                 .with("range", js.object()
                     .with("start", js.object()
                         .with("line", at.line - 1).with("character", at.column - 1)
