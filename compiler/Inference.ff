@@ -10,7 +10,7 @@ class Inference(
     mutable hoverResult: Option[Type]
     mutable hoverResultEffect: Option[Type]
     mutable hoverResultAt: Option[Location]
-    mutable completionResult: List[String]
+    mutable completionResult: List[Pair[String, Type]]
 )
 
 make(modules: List[Module], hoverAt: Option[Location], completionAt: Option[Location]): Inference {
@@ -53,6 +53,7 @@ extend self: Inference {
         let subsititution = Substitution(self.unification.substitution)
         self.hoverResult = self.hoverResult.map {subsititution.substituteType(_)}
         self.hoverResultEffect = self.hoverResultEffect.map {subsititution.substituteType(_)}
+        self.completionResult = self.completionResult.map {_.mapSecond {subsititution.substituteType(_)}}
         subsititution.substituteModule(result)
     }
 
@@ -294,7 +295,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
                         if(self.completionAt.contains(e.at)) {
-                            self.completionResult = fieldNames
+                            self.completionResult = fieldNames.zip(typeArguments)
                         }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)

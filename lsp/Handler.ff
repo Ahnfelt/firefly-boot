@@ -238,9 +238,13 @@ extend self: Handler {
         Log.trace(Show.show(completionAt) + " - " + Show.show(token))
         let o = js.object()
             .with("isIncomplete", False)
-            .with("items", completionResult.toArray().map {label =>
+            .with("items", completionResult.toArray().map {| Pair(label, type) =>
                 js.object()
+                    .with("kind", 5) // CompletionItemKind.Field
                     .with("label", label)
+                    .with("labelDetails", js.object()
+                        .with("detail", ": " + type)
+                    )
             })
         Result(o)
     }
