@@ -222,7 +222,7 @@ extend self: Compiler {
         let otherModules = self.imports(module).map {i =>
             self.derive(i.packagePair, FileSystem.prefixName(i.file))
         }
-        let inference = Inference.make([module, ...otherModules], self.hoverAt)
+        let inference = Inference.make([module, ...otherModules], self.hoverAt, self.completionAt)
         let inferredModule = try {
             inference.inferModule(module, otherModules)
         } finally {
@@ -231,10 +231,13 @@ extend self: Compiler {
                     | Some(TConstructor(_, "Q$", _)) => "This call may be asynchronous." 
                     | _ => ""
                 }
-                self.hoverResult = inference.hoverResult.map {Pair(_.show(), asynchronous)}
+                self.hoverResult = inference.hoverResult.map {Pair(_.show([]), asynchronous)}
             }
             if(!inference.hoverResultAt.isEmpty()) {
                 self.hoverResultAt = inference.hoverResultAt
+            }
+            if(!inference.completionResult.isEmpty()) {
+                self.completionResult = inference.completionResult
             }
         } grab() 
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)

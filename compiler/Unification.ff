@@ -171,7 +171,7 @@ extend self: Unification {
     bind(at: Location, index: Int, type: Type): Unit {
         if(self.occursIn(index, type)) {
             let t = self.substitute(type)
-            throw(CompileError(at, "Infinite type: " + TVariable(at, index).show([t]) + " = " + t.show()))
+            throw(CompileError(at, "Infinite type: " + TVariable(at, index).show([t]) + " = " + t.show([])))
         }
         self.substitution = self.substitution.add(index, type)
         self.constraints.get(index).each { map =>

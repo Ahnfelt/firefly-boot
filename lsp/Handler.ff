@@ -234,15 +234,12 @@ extend self: Handler {
             Log.trace(message)
         } grab()
         Log.trace(Show.show(completionAt) + " - " + Show.show(token))
-        let o = Some([]).{
-            | None => js.null()
-            | Some(list) => js.object()
-                .with("isIncomplete", False)
-                .with("items", list.toArray().map {label =>
-                    js.object()
-                        .with("label", label)
-                })
-        }
+        let o = js.object()
+            .with("isIncomplete", False)
+            .with("items", completionResult.toArray().map {label =>
+                js.object()
+                    .with("label", label)
+            })
         Result(o)
     }
     

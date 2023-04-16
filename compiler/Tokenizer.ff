@@ -5,6 +5,7 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
 
     let completionLine = completionAt.filter {_.file == file}.map {_.line}.else {-1}
     let completionColumn = completionAt.filter {_.file == file}.map {_.column}.else {-1}
+    mutable emitCompletionToken = completionLine != -1
 
     let tokens = Stack.make[Token]()
     mutable line = 1
@@ -36,6 +37,17 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
         tokens.push(Token(
             file, code, kind, startLine, startLineOffset, startOffset, line, lineOffset, stopOffset
         ))
+        if(emitCompletionToken && completionLine >= startLine && (
+            (completionLine > startLine || completionColumn >= (1 + startOffset - startLineOffset)) &&
+            (completionLine != line || completionColumn < (1 + stopOffset - lineOffset))
+        )) {
+            emitCompletionToken = False
+            if(completionLine < line || (kind != LLower && kind != LUpper)) {
+                tokens.push(Token(
+                    file, code, LLower, line, lineOffset, stopOffset, line, lineOffset, stopOffset
+                ))
+            }
+        }
     }
 
     mutable i = 0
@@ -128,7 +140,7 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
 
             let kind = if(code.grab(i) >= 'a') {LLower} else {LUpper}
             i += 1
-            while {i < code.size() && code.grab(i).isAsciiLetterOrDigit()} { i += 1 }
+            while {i < code.size() && code.grab(i).isAsciiLetterOrDigit()} {i += 1}
             if(kind == LUpper && code.grab(i) == '.') {
                 i += 1
                 emitToken(LNamespace, start, i)
@@ -195,13 +207,6 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
                     LOperator
                 }
 
-            if(
-                line == completionLine && 1 + i - lineOffset == completionColumn - 1 &&
-                o == LDot && i < code.size() && !code.grab(i).isAsciiLetter() && code.grab(i) != '{'
-            ) {
-                emitToken(LLower, i, i)
-            }
-            
             emitToken(o, start, i)
 
         } elseIf {

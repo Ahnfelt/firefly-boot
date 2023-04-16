@@ -6,18 +6,22 @@ import Substitution
 class Inference(
     unification: Unification
     hoverAt: Option[Location]
+    completionAt: Option[Location]
     mutable hoverResult: Option[Type]
     mutable hoverResultEffect: Option[Type]
     mutable hoverResultAt: Option[Location]
+    mutable completionResult: List[String]
 )
 
-make(modules: List[Module], hoverAt: Option[Location]): Inference {
+make(modules: List[Module], hoverAt: Option[Location], completionAt: Option[Location]): Inference {
     Inference(
         unification = Unification.make(modules)
         hoverAt = hoverAt
+        completionAt = completionAt
         hoverResult = None
         hoverResultEffect = None
         hoverResultAt = None
+        completionResult = []
     )
 }
 
@@ -34,17 +38,17 @@ extend self: Inference {
     inferModule(module: Module, otherModules: List[Module]): Module {
         let environment = Environment.make(module, otherModules, alreadyFlat = False)
 
-        let lets = module.lets.map { self.inferLetDefinition(environment, _) }
-        let functions = module.functions.map { self.inferFunctionDefinition(environment, _) }
-        let extends = module.extends.map { self.inferExtendDefinition(environment, _) }
-        let traits = module.traits.map { self.inferTraitDefinition(environment, _) }
-        let instances = module.instances.map { self.inferInstanceDefinition(environment, _) }
+        let lets = module.lets.map {self.inferLetDefinition(environment, _)}
+        let functions = module.functions.map {self.inferFunctionDefinition(environment, _)}
+        let extends = module.extends.map {self.inferExtendDefinition(environment, _)}
+        let traits = module.traits.map {self.inferTraitDefinition(environment, _)}
+        let instances = module.instances.map {self.inferInstanceDefinition(environment, _)}
         let result = module.Module(
-            traits = traits,
-            instances = instances,
-            extends = extends,
-            lets = lets,
-            functions = functions,
+            traits = traits
+            instances = instances
+            extends = extends
+            lets = lets
+            functions = functions
         )
         let subsititution = Substitution(self.unification.substitution)
         self.hoverResult = self.hoverResult.map {subsititution.substituteType(_)}
@@ -70,7 +74,7 @@ extend self: Inference {
                     let traitName = definition.traitName
                     let traitMethodName = traitName.reverse().dropWhile {_ != '.'}.reverse() + methodName
                     let traitMethod = environment.symbols.get(traitMethodName).else {
-                        throw(CompileError(instanceFunction.at,
+                        throw(CompileError(instanceFunction.at
                             "Trait " + traitName + " has no such method: " + methodName
                         ))
                     }
@@ -96,15 +100,15 @@ extend self: Inference {
             valueType = definition.type
             default = None
         )
-        let functions = definition.methods.map { method =>
+        let functions = definition.methods.map {method =>
             let signature = method.signature.Signature(
                 generics = [...definition.generics, ...method.signature.generics]
                 constraints = [...definition.constraints, ...method.signature.constraints]
                 parameters = [selfParameter, ...method.signature.parameters]
             )
-            let body = method.body.mapFirefly { lambda =>
+            let body = method.body.mapFirefly {lambda =>
                 lambda.Lambda(
-                    cases = lambda.cases.map { case =>
+                    cases = lambda.cases.map {case =>
                         case.MatchCase(
                             patterns = [PVariable(method.at, None), ...case.patterns]
                         )
@@ -123,17 +127,17 @@ extend self: Inference {
     }
 
     inferFunctionDefinition(environment: Environment, definition: DFunction): DFunction {
-        let parameters = definition.signature.parameters.map { p =>
+        let parameters = definition.signature.parameters.map {p =>
             let noEffect = TConstructor(p.at, "ff:core/Nothing.Nothing", [])
             let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType, noEffect))
             Pair(p.name, scheme)
         }
         let parameterMap = parameters.toMap()
         let environment2 = environment.Environment(symbols = environment.symbols.addAll(parameterMap))
-        let parameterTypes = parameters.map { _.second.signature.returnType }
+        let parameterTypes = parameters.map {_.second.signature.returnType}
         let functionType = TConstructor(
-            definition.at,
-            "Function$" + parameterTypes.size(),
+            definition.at
+            "Function$" + parameterTypes.size()
             [definition.signature.effect, ...parameterTypes, definition.signature.returnType]
         )
         let instances = constraintsToInstances(definition.signature.constraints)
@@ -154,38 +158,38 @@ extend self: Inference {
                 }
             | _ => False
         }
-        let cases = if(!returnsUnit) { lambda.cases } else {
-            lambda.cases.map { c =>
+        let cases = if(!returnsUnit) {lambda.cases} else {
+            lambda.cases.map {c =>
                 c.MatchCase(body = ESequential(c.at, c.body, EVariant(c.at, unitName, [], None)))
             }
         }
         let newEnvironment = environment.Environment(effect = lambda.effect)
         lambda.Lambda(
-            cases = cases.map { self.inferMatchCase(newEnvironment, expected, _) }
+            cases = cases.map {self.inferMatchCase(newEnvironment, expected, _)}
         )
     }
 
     inferMatchCase(environment: Environment, expected: Type, case: MatchCase): MatchCase {
-        let parameterTypes = case.patterns.map { self.unification.freshUnificationVariable(_.at) }
+        let parameterTypes = case.patterns.map {self.unification.freshUnificationVariable(_.at)}
         let returnType = self.unification.freshUnificationVariable(case.at)
         let functionType = TConstructor(
-            case.at,
-            "Function$" + case.patterns.size(),
+            case.at
+            "Function$" + case.patterns.size()
             [environment.effect, ...parameterTypes, returnType]
         )
         self.unification.unify(case.at, expected, functionType)
         let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
-            let symbols = self.inferPattern(environment, t, c).mapValues { name, type =>
+            let symbols = self.inferPattern(environment, t, c).mapValues {name, type =>
                 let noEffect = TConstructor(c.at, "ff:core/Nothing.Nothing", [])
                 Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type, noEffect))
             }
             environment.Environment(symbols = environment1.symbols.addAll(symbols))
         }
         mutable guards = []
-        let environment3 = case.guards.foldLeft(environment1) { environment2, g =>
+        let environment3 = case.guards.foldLeft(environment1) {environment2, g =>
             let guardType = self.unification.freshUnificationVariable(g.at)
             let guardTerm = self.inferTerm(environment2, guardType, g.term)
-            let symbols = self.inferPattern(environment2, guardType, g.pattern).mapValues { name, type =>
+            let symbols = self.inferPattern(environment2, guardType, g.pattern).mapValues {name, type =>
                 let noEffect = TConstructor(g.at, "ff:core/Nothing.Nothing", [])
                 Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type, noEffect))
             }
@@ -289,12 +293,15 @@ extend self: Inference {
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
+                        if(self.completionAt.contains(e.at)) {
+                            self.completionResult = fieldNames
+                        }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)
                             e.EField(record = record)
                         }.else {
-                            throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show()))
+                            throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
                     | TConstructor(_, name, typeArguments)@t =>
                         let methodName = name + "_" + e.field
@@ -319,7 +326,7 @@ extend self: Inference {
                                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                                 e.EField(newtype = instantiated.scheme.isNewtype, record = record)
                             | None =>
-                                throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show()))
+                                throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
                     | TVariable(_, index) =>
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
@@ -496,7 +503,7 @@ extend self: Inference {
                                         self.inferLambdaCall(environment, expected, e2)
                                     | None =>
                                         throw(CompileError(f.at
-                                            "No such field " + f.field + " on type: " + t.show()
+                                            "No such field " + f.field + " on type: " + t.show([])
                                         ))
                                 }
                             | TVariable(_, index) =>
@@ -576,10 +583,10 @@ extend self: Inference {
                                 )
                             | Some(instantiated) =>
                                 throw(CompileError(e.at
-                                    "Can't assign an immutable field " + e.field + " on type: " + t.show()
+                                    "Can't assign an immutable field " + e.field + " on type: " + t.show([])
                                 ))
                             | None =>
-                                throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show()))
+                                throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
                     | TVariable(_, index) =>
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
@@ -616,7 +623,7 @@ extend self: Inference {
         recordType: Type
         name: String
     ): Term {
-        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected")}
         let call = e.target.{
             | DynamicCall call => call
             | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferMethodCall")
@@ -636,15 +643,15 @@ extend self: Inference {
     }
 
     inferFunctionCall(
-        environment: Environment,
-        expected: Type,
-        signature: Signature,
+        environment: Environment
+        expected: Type
+        signature: Signature
         instanceCall: Bool
-        instantiation: List[Pair[String, Type]],
-        term: Term,
+        instantiation: List[Pair[String, Type]]
+        term: Term
         name: String
     ): Term {
-        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected")}
         let call = e.target.{
             | DynamicCall call => call
             | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferFunctionCall")
@@ -654,34 +661,34 @@ extend self: Inference {
         self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
             target = StaticCall(name, instanceCall = instanceCall, tailCall = call.tailCall)
-            typeArguments = instantiation.map { _.second }
+            typeArguments = instantiation.map {_.second}
             arguments = arguments
             effect = signature.effect
         )
     }
 
     inferLambdaCall(environment: Environment, expected: Type, term: Term): Term {
-        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected") }
+        let e = term.{| ECall e => e | _ => fail(term.at, "Call expected")}
         let call = e.target.{
             | DynamicCall call {!call.tailCall} => call
             | DynamicCall _ => throw(CompileError(e.at, "Tailcalls not supported on lambda functions"))
             | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferLambdaCall")
         }
         let effect = self.unification.freshUnificationVariable(term.at)
-        let argumentTypes = e.arguments.map { self.unification.freshUnificationVariable(_.at) }
+        let argumentTypes = e.arguments.map {self.unification.freshUnificationVariable(_.at)}
         let functionType = TConstructor(e.at, "Function$" + e.arguments.size(), [
             effect
             ...argumentTypes
             expected
         ])
         let function = self.inferTerm(environment, functionType, call.function)
-        let arguments = e.arguments.zip(argumentTypes).map { | Pair(argument, t) =>
-            argument.name.each { name =>
+        let arguments = e.arguments.zip(argumentTypes).map {| Pair(argument, t) =>
+            argument.name.each {name =>
                 throw(CompileError(argument.at, "Named argument not allowed here: " + name))
             }
             argument.Argument(value = self.inferTerm(environment, t, argument.value))
         }
-        e.typeArguments.first().each { typeArgument =>
+        e.typeArguments.first().each {typeArgument =>
             throw(CompileError(typeArgument.at, "Type arguments not allowed here"))
         }
         self.unification.affect(term.at, effect, environment.effect)
@@ -783,18 +790,18 @@ extend self: Inference {
         signature: Signature
         term: Term
     ): Term {
-        let parameters = signature.parameters.filter { _.default.isEmpty() }.map { p =>
+        let parameters = signature.parameters.filter {_.default.isEmpty()}.map {p =>
             p.name
         }
         let effect1 = self.unification.freshUnificationVariable(at)
-        let body = ECall(at, DynamicCall(term, False), effect1, [], parameters.map { x =>
+        let body = ECall(at, DynamicCall(term, False), effect1, [], parameters.map {x =>
             Argument(at, Some(x), EVariable(at, x))
         }, [])
         let effect2 = self.unification.freshUnificationVariable(at)
         let lambda = ELambda(at, Lambda(at, effect2, [MatchCase(
-            at = at,
-            patterns = parameters.map { PVariable(at, Some(_)) },
-            guards = [],
+            at = at
+            patterns = parameters.map {PVariable(at, Some(_))}
+            guards = []
             body = body
         )]))
         self.inferTerm(environment.Environment(effect = effect2), expected, lambda)
@@ -807,10 +814,10 @@ extend self: Inference {
         arguments: List[Argument]
     ): List[Argument] {
         mutable remainingArguments = arguments
-        let newArguments = parameters.map { p =>
+        let newArguments = parameters.map {p =>
             let t = p.valueType
             function defaultArgument(): Argument {
-                p.default.map { e =>
+                p.default.map {e =>
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
                 }.else {
@@ -862,20 +869,20 @@ extend self: Inference {
                 }
                 scheme.signature.generics.zip(newTypeArguments)
             } else {
-                scheme.signature.generics.map { name =>
+                scheme.signature.generics.map {name =>
                     Pair(name, self.unification.freshUnificationVariable(at))
                 }
             }
 
         let instantiationMap = instantiation.toMap()
-        let parameters = scheme.signature.parameters.map { p =>
+        let parameters = scheme.signature.parameters.map {p =>
             p.Parameter(valueType = self.unification.instantiate(instantiationMap, p.valueType))
         }
         let returnType = self.unification.instantiate(instantiationMap, scheme.signature.returnType)
         let effect = self.unification.instantiate(instantiationMap, scheme.signature.effect)
 
-        scheme.signature.constraints.each { c =>
-            let generics = c.generics.map { self.unification.instantiate(instantiationMap, _) }
+        scheme.signature.constraints.each {c =>
+            let generics = c.generics.map {self.unification.instantiate(instantiationMap, _)}
             self.unification.constrain(at, generics.grabFirst(), c.name, generics.dropFirst())
         }
 
@@ -903,7 +910,7 @@ extend self: Inference {
 }
 
 constraintsToInstances(constraints: List[Constraint]): Map[InstanceKey, InstanceValue] {
-    constraints.map { c =>
+    constraints.map {c =>
         let typeName = c.generics.grabFirst().{
             | TConstructor(_, name, _) => name
             | TVariable(at, i) => fail(c.at, "Unexpected unification variable: $" + i)
