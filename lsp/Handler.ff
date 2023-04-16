@@ -42,6 +42,7 @@ extend self: Handler {
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
             | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
             | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
+            | "textDocument/completion" => self.handleCompletion(system, parameters)
             | _ => self.handleUnsupported(system.js())
         }
     }
@@ -74,6 +75,10 @@ extend self: Handler {
                 .with("diagnosticProvider", js.object()
                     .with("interFileDependencies", True)
                     .with("workspaceDiagnostics", False)
+                )
+                .with("completionProvider", js.object()
+                    .with("triggerCharacters", js.array(["."].map {js.value(_)}))
+                    .with("allCommitCharacters", js.array([".", ",", ";", ")", "}", "]"].map {js.value(_)}))
                 )
                 /*.with("workspace", js.object()
                     .with("workspaceFolders", js.object()
@@ -203,6 +208,33 @@ extend self: Handler {
                         .with("value", "```\n" + t + "\n```\n" + if(q == "") {""} else {"*" + q + "*"})
                 }
             )
+        }
+        Result(o)
+    }
+    
+    handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let js = system.js()
+        let uri = parameters.grab("textDocument").get("uri").grabString()
+        let absolutePath = FileSystem.urlToPath(uri)
+        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
+        let fixedPath = path.replace("\\", "/")
+        let line = parameters.grab("position").get("line").grabInt() + 1
+        let column = parameters.grab("position").get("character").grabInt() + 1
+        let token = self.findToken(system, fixedPath, line, column)
+        let hoverAt = Location(
+            file = fixedPath
+            line = token.map {_.startLine}.else {line}
+            column = token.map {_.startColumn}.else {column}
+        )
+        Log.trace(Show.show(hoverAt) + " - " + Show.show(token))
+        let o = Some([]).{
+            | None => js.null()
+            | Some(list) => js.object()
+                .with("isIncomplete", False)
+                .with("items", js.array([
+                    //js.object()
+                    //    .with("label", "hello")
+                ]))
         }
         Result(o)
     }
