@@ -106,7 +106,7 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles, None)
+            Builder.check(system, ".", fixedPath, self.virtualFiles, None, None)
             []
         } catch {| CompileError(at, message), error =>
             let fallback = TokenLocation(
@@ -183,7 +183,7 @@ extend self: Handler {
         mutable hoverResultAt = None
         try {
             let hover = Some(Pair(hoverAt, {result, at => hoverResult = result; hoverResultAt = at}))
-            Builder.check(system, ".", fixedPath, self.virtualFiles, hover)
+            Builder.check(system, ".", fixedPath, self.virtualFiles, hover, None)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -221,20 +221,27 @@ extend self: Handler {
         let line = parameters.grab("position").get("line").grabInt() + 1
         let column = parameters.grab("position").get("character").grabInt() + 1
         let token = self.findToken(system, fixedPath, line, column)
-        let hoverAt = Location(
+        let completionAt = Location(
             file = fixedPath
             line = token.map {_.startLine}.else {line}
             column = token.map {_.startColumn}.else {column}
         )
-        Log.trace(Show.show(hoverAt) + " - " + Show.show(token))
+        mutable completionResult = []
+        try {
+            let completion = Some(Pair(completionAt, {completionResult = _}))
+            Builder.check(system, ".", fixedPath, self.virtualFiles, None, completion)
+        } catch {| CompileError(at, message), error =>
+            Log.trace(message)
+        } grab()
+        Log.trace(Show.show(completionAt) + " - " + Show.show(token))
         let o = Some([]).{
             | None => js.null()
             | Some(list) => js.object()
                 .with("isIncomplete", False)
-                .with("items", js.array([
-                    //js.object()
-                    //    .with("label", "hello")
-                ]))
+                .with("items", list.toArray().map {label =>
+                    js.object()
+                        .with("label", label)
+                })
         }
         Result(o)
     }
@@ -248,7 +255,7 @@ extend self: Handler {
 
     findToken(system: NodeSystem, path: String, line: Int, column: Int): Option[TokenLocation] {
         let code = self.virtualFiles.get(path).else {system.files().readText(path)}
-        let tokens = Tokenizer.tokenize(path, code)
+        let tokens = Tokenizer.tokenize(path, code, None)
         let token = tokens.toStream().find {token =>
             line >= token.startLine && line <= token.stopLine && (
                 (line > token.startLine || column >= (1 + token.startOffset - token.startLineOffset)) &&

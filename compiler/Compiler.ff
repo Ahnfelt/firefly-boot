@@ -18,6 +18,7 @@ capability Compiler(
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
     hoverAt: Option[Location]
+    completionAt: Option[Location]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable derivedModules: Map[String, Module]
@@ -27,6 +28,7 @@ capability Compiler(
     mutable phaseDurationDelta: Duration
     mutable hoverResult: Option[Pair[String, String]]
     mutable hoverResultAt: Option[Location]
+    mutable completionResult: List[String]
 )
 
 make(
@@ -38,6 +40,7 @@ make(
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
     hoverAt: Option[Location]
+    completionAt: Option[Location]
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
@@ -49,6 +52,7 @@ make(
         singleFilePackages = resolvedDependencies.singleFilePackages
         virtualFiles = virtualFiles
         hoverAt = hoverAt
+        completionAt = completionAt
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
         derivedModules = Map.empty()
@@ -58,6 +62,7 @@ make(
         phaseDurationDelta = Duration(0.0)
         hoverResult = None
         hoverResultAt = None
+        completionResult = []
     )
 }
 
@@ -149,7 +154,7 @@ extend self: Compiler {
         let path = FileSystem.relative(self.files.workingDirectory(), packagePath + "/" + file)
         let fixedPath = path.replace("\\", "/")
         let code = self.virtualFiles.get(fixedPath).else {self.files.readText(fixedPath)}
-        let tokens = Tokenizer.tokenize(fixedPath, code)
+        let tokens = Tokenizer.tokenize(fixedPath, code, self.completionAt)
         let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module
