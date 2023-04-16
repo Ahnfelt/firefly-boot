@@ -21,6 +21,21 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
     }
 
     function emitToken(kind: TokenKind, startOffset: Int, stopOffset: Int): Unit {
+        if(emitCompletionToken && !tokens.isEmpty()) {
+            let last = tokens.grabLast()
+            if(completionLine <= startLine && (
+                completionLine < startLine || completionColumn <= 1 + startOffset - startLineOffset
+            )) {
+                emitCompletionToken = False
+                if(last.kind == LDot && (startOffset > last.stopOffset || (kind != LLower && kind != LUpper))) {
+                    tokens.push(Token(
+                        file, code, LLower
+                        last.stopLine, last.stopLineOffset, last.stopOffset
+                        last.stopLine, last.stopLineOffset, last.stopOffset
+                    ))
+                }
+            }
+        }
         if(!tokens.isEmpty()) {
             let last = tokens.grabLast()
             if(last.stopLine == startLine && last.kind == LLower && kind.afterKeyword()) {
@@ -35,19 +50,10 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
             }
         }
         tokens.push(Token(
-            file, code, kind, startLine, startLineOffset, startOffset, line, lineOffset, stopOffset
+            file, code, kind
+            startLine, startLineOffset, startOffset
+            line, lineOffset, stopOffset
         ))
-        if(emitCompletionToken && completionLine >= startLine && (
-            (completionLine > startLine || completionColumn >= (1 + startOffset - startLineOffset)) &&
-            (completionLine != line || completionColumn < (1 + stopOffset - lineOffset))
-        )) {
-            emitCompletionToken = False
-            if(completionLine < line || (kind != LLower && kind != LUpper)) {
-                tokens.push(Token(
-                    file, code, LLower, line, lineOffset, stopOffset, line, lineOffset, stopOffset
-                ))
-            }
-        }
     }
 
     mutable i = 0
