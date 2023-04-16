@@ -28,7 +28,7 @@ capability Compiler(
     mutable phaseDurationDelta: Duration
     mutable hoverResult: Option[Pair[String, String]]
     mutable hoverResultAt: Option[Location]
-    mutable completionResult: List[Pair[String, String]]
+    mutable completionResult: List[CompletionInfo]
 )
 
 make(
@@ -237,7 +237,7 @@ extend self: Compiler {
                 self.hoverResultAt = inference.hoverResultAt
             }
             if(!inference.completionResult.isEmpty()) {
-                self.completionResult = inference.completionResult.map {_.mapSecond {_.show([])}}
+                self.completionResult = inference.completionResult
             }
         } grab() 
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)

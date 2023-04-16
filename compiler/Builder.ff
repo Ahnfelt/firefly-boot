@@ -94,7 +94,7 @@ check(
     mainFile: String, 
     virtualFiles: Map[String, String], 
     hoverAt: Option[Pair[Location, (Option[Pair[String, String]], Option[Location]) => Unit]]
-    completionAt: Option[Pair[Location, List[Pair[String, String]] => Unit]]
+    completionAt: Option[Pair[Location, List[CompletionInfo] => Unit]]
 ) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {

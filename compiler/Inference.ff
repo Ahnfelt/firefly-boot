@@ -10,7 +10,7 @@ class Inference(
     mutable hoverResult: Option[Type]
     mutable hoverResultEffect: Option[Type]
     mutable hoverResultAt: Option[Location]
-    mutable completionResult: List[Pair[String, Type]]
+    mutable completionResult: List[CompletionInfo]
 )
 
 make(modules: List[Module], hoverAt: Option[Location], completionAt: Option[Location]): Inference {
@@ -53,7 +53,9 @@ extend self: Inference {
         let subsititution = Substitution(self.unification.substitution)
         self.hoverResult = self.hoverResult.map {subsititution.substituteType(_)}
         self.hoverResultEffect = self.hoverResultEffect.map {subsititution.substituteType(_)}
-        self.completionResult = self.completionResult.map {_.mapSecond {subsititution.substituteType(_)}}
+        self.completionResult = self.completionResult.map {r => 
+            r.CompletionInfo(type = subsititution.substituteType(r.type))
+        }
         subsititution.substituteModule(result)
     }
 
@@ -295,7 +297,10 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
                         if(self.completionAt.contains(e.at)) {
-                            self.completionResult = fieldNames.zip(typeArguments)
+                            self.completionResult = fieldNames.zip(typeArguments).map {
+                                | Pair(fieldName, typeArgument) => 
+                                    CompletionInfo(fieldName, fieldName, typeArgument)
+                            }
                         }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
@@ -305,8 +310,36 @@ extend self: Inference {
                             throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
                     | TConstructor(_, name, typeArguments)@t =>
-                        let methodName = name + "_" + e.field
-                        self.lookup(environment, e.at, methodName, typeArguments).{
+                        let memberPrefix = name + "_"
+                        if(self.completionAt.contains(e.at)) {
+                            mutable members = Stack.make()
+                            environment.symbols.each {| memberName, memberScheme =>
+                                if(memberName.startsWith(memberPrefix)) {
+                                    let pair = if(!memberScheme.isVariable) {
+                                        let required = memberScheme.signature.parameters
+                                            .dropFirst().filter {_.default.isEmpty()}.pairs().map {
+                                                | Pair(index, p) => 
+                                                    Pair(p.name, "${" + (index + 1) + ":" + p.name + "}")
+                                            }
+                                        let optional = if(
+                                            required.size() != memberScheme.signature.parameters.size() - 1
+                                        ) {"..."}
+                                        Pair(
+                                            "(" + [...required.map {_.first}, ...optional.toList()].join(", ") + ")"
+                                            "(" + required.map {_.second}.join(", ") + ")$0"
+                                        )
+                                    } else {Pair("", "")}
+                                    members.push(CompletionInfo(
+                                        label = memberName.dropFirst(memberPrefix.size()) + pair.first
+                                        snippet = memberName.dropFirst(memberPrefix.size()) + pair.second
+                                        type = memberScheme.signature.returnType)
+                                    )
+                                }
+                            }
+                            self.completionResult = members.toList()
+                        }
+                        let memberName = memberPrefix + e.field
+                        self.lookup(environment, e.at, memberName, typeArguments).{
                             | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                 let signature = instantiated.scheme.signature.Signature(
                                     // Drop self for eta expansion

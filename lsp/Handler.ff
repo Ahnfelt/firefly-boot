@@ -238,13 +238,15 @@ extend self: Handler {
         Log.trace(Show.show(completionAt) + " - " + Show.show(token))
         let o = js.object()
             .with("isIncomplete", False)
-            .with("items", completionResult.toArray().map {| Pair(label, type) =>
+            .with("items", completionResult.toArray().map {| CompletionInfo i =>
                 js.object()
-                    .with("kind", 5) // CompletionItemKind.Field
-                    .with("label", label)
+                    .with("kind", if(i.label.any {_ == '('}) {2} else {5}) // Method or Field
+                    .with("label", i.label)
                     .with("labelDetails", js.object()
-                        .with("detail", ": " + type)
+                        .with("detail", ": " + i.type.show([]))
                     )
+                    .with("insertText", i.snippet)
+                    .with("insertTextFormat", 2) // Snippet
             })
         Result(o)
     }
