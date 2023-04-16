@@ -332,8 +332,8 @@ extend self: Inference {
                                     members.push(CompletionInfo(
                                         label = memberName.dropFirst(memberPrefix.size()) + pair.first
                                         snippet = memberName.dropFirst(memberPrefix.size()) + pair.second
-                                        type = memberScheme.signature.returnType)
-                                    )
+                                        type = memberScheme.signature.returnType
+                                    ))
                                 }
                             }
                             self.completionResult = members.toList()
