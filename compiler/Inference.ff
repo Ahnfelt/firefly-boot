@@ -233,9 +233,9 @@ extend self: Inference {
                      throw(CompileError(at, "This kind of pattern is not allowed for newtypes"))
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
-                let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
+                let parameters = instantiated.scheme.signature.parameters.sortBy {_.name}
                 let recordType =
-                    TConstructor(at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
+                    TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
                 if(self.hoverAt.contains(at)) {
                     self.hoverResult = Some(recordType)
                 }
@@ -252,7 +252,7 @@ extend self: Inference {
                 }
                 patterns.zip(instantiated.scheme.signature.parameters).map {| Pair(pattern, parameter) =>
                     self.inferPattern(environment, parameter.valueType, pattern)
-                }.foldLeft(Map.empty[String, Type]()) { _.addAll(_) }
+                }.foldLeft(Map.empty[String, Type]()) {_.addAll(_)}
         }
     }
 
@@ -267,16 +267,16 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
-                self.lookup(environment, e.at, e.name, []).map { instantiated =>
+                self.lookup(environment, e.at, e.name, []).map {instantiated =>
                     if(instantiated.scheme.isVariable) {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                         term
                     } else {
                         self.inferEtaExpansion(
-                            environment,
-                            expected,
-                            e.at,
-                            instantiated.scheme.signature,
+                            environment
+                            expected
+                            e.at
+                            instantiated.scheme.signature
                             term
                         )
                     }
@@ -289,7 +289,7 @@ extend self: Inference {
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
-                        fieldNames.pairs().find { _.second == e.field }.map { _.first }.map { index =>
+                        fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)
                             e.EField(record = record)
@@ -305,8 +305,8 @@ extend self: Inference {
                                     parameters = instantiated.scheme.signature.parameters.dropFirst(1)
                                 )
                                 self.unification.unify(
-                                    e.at,
-                                    recordType,
+                                    e.at
+                                    recordType
                                     instantiated.scheme.signature.parameters.grab(0).valueType
                                 )
                                 self.inferEtaExpansion(environment, expected, e.at, signature, term)
@@ -325,22 +325,22 @@ extend self: Inference {
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
             | EWildcard e =>
-                self.lookup(environment, e.at, "_w" + e.index, []).map { instantiated =>
+                self.lookup(environment, e.at, "_w" + e.index, []).map {instantiated =>
                     self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                     term
                 }.grab()
             | EList(at, t, items) =>
                 let listType = TConstructor(term.at, core("List"), [t])
                 self.unification.unify(at, expected, listType)
-                EList(at, t, items.map { | Pair(item, spread) =>
-                    Pair(self.inferTerm(environment, if(spread) { listType } else { t }, item), spread)
+                EList(at, t, items.map {| Pair(item, spread) =>
+                    Pair(self.inferTerm(environment, if(spread) {listType} else {t}, item), spread)
                 })
             | ESequential(at, before, after) =>
                 let newExpected = self.unification.freshUnificationVariable(at)
                 before.{
                     | EPipe(at1, value, effect1, ELambda(at2, Lambda(at3, effect3, cases))) =>
                         let e = EVariant(at, "ff:core/Unit.Unit", [], None)
-                        let newCases = cases.map { case => case.MatchCase(body = ESequential(case.at, case.body, e)) }
+                        let newCases = cases.map {case => case.MatchCase(body = ESequential(case.at, case.body, e))}
                         let newPipe = EPipe(at1, value, effect1, ELambda(at2, Lambda(at3, effect3, newCases)))
                         after.{
                             | EVariant(at, "ff:core/Unit.Unit", _, _) =>
@@ -385,24 +385,24 @@ extend self: Inference {
                     self.inferArguments(e.at, environment, instantiated.scheme.signature.parameters, _)
                 }
                 e.EVariant(
-                    typeArguments = instantiated.typeArguments.map { _.second }
+                    typeArguments = instantiated.typeArguments.map {_.second}
                     arguments = arguments
                 )
             | EVariantIs e =>
                 let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
-                let parameters = instantiated.scheme.signature.parameters.sortBy { _.name }
+                let parameters = instantiated.scheme.signature.parameters.sortBy {_.name}
                 let recordType =
-                    TConstructor(e.at, "Record$" + parameters.map { _.name }.join("$"), parameters.map { _.valueType })
+                    TConstructor(e.at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
                 let functionType = TConstructor(e.at, "Function$1", [
-                    self.unification.freshUnificationVariable(e.at),
+                    self.unification.freshUnificationVariable(e.at)
                     instantiated.scheme.signature.returnType
                     TConstructor(e.at, core("Option"), [recordType])
                 ])
                 self.unification.unify(e.at, expected, functionType)
                 e.EVariantIs(
-                    typeArguments = instantiated.typeArguments.map { _.second }
+                    typeArguments = instantiated.typeArguments.map {_.second}
                 )
             | ECopy e =>
                 let scheme = self.lookup(environment, e.at, e.name, []).else {
@@ -412,12 +412,12 @@ extend self: Inference {
                     throw(CompileError(e.at, "Newtypes can't be copied"))
                 }
                 let signature = scheme.signature
-                let parameterNames = signature.parameters.map { _.name }
-                e.arguments.find { a => !parameterNames.any { _ == a.name } }.each {
+                let parameterNames = signature.parameters.map {_.name}
+                e.arguments.find {a => !parameterNames.any {_ == a.name}}.each {
                     | Field(at, name, value) => throw(CompileError(at, "Unknown parameter: " + name))
                 }
-                let arguments = parameterNames.map { name =>
-                    e.arguments.find { _.name == name }.map {
+                let arguments = parameterNames.map {name =>
+                    e.arguments.find {_.name == name}.map {
                         | Field(at, _, value) => Argument(at, Some(name), value)
                     }.else {
                         Argument(e.at, Some(name), EField(e.at, False, EVariable(e.at, "_c"), name))
@@ -432,8 +432,8 @@ extend self: Inference {
             | EPipe e =>
                 let valueType = self.unification.freshUnificationVariable(e.at)
                 let functionType = TConstructor(e.at, "Function$1", [
-                    e.effect,
-                    valueType,
+                    e.effect
+                    valueType
                     expected
                 ])
                 let value = self.inferTerm(environment, valueType, e.value)
@@ -450,7 +450,7 @@ extend self: Inference {
                 }
                 call.function.{
                     | EVariable(variableAt, x) =>
-                        if(x.first().any { c => c != '_' && !c.isAsciiLetter() }) {
+                        if(x.first().any {c => c != '_' && !c.isAsciiLetter()}) {
                             self.inferOperator(environment, expected, x, term)
                         } else {
                             self.lookup(environment, e.at, x, e.typeArguments).{
@@ -509,7 +509,7 @@ extend self: Inference {
                 }
             | ERecord e =>
                 let fields = e.fields.sortBy {_.name}
-                let fieldTypes = fields.map { self.unification.freshUnificationVariable(_.at) }
+                let fieldTypes = fields.map {self.unification.freshUnificationVariable(_.at)}
                 let recordType =
                     TConstructor(e.at, "Record$" + fields.map {_.name}.join("$"), fieldTypes)
                 self.unification.unify(e.at, expected, recordType)
@@ -520,20 +520,20 @@ extend self: Inference {
                     fields = newFields
                 )
             | EFunctions(at, functions, body) =>
-                let functionMap = functions.map { f =>
+                let functionMap = functions.map {f =>
                     let scheme = Scheme(False, False, False, False, f.signature)
                     Pair(f.signature.name, scheme)
                 }.toMap()
                 let environment2 = environment.Environment(symbols = environment.symbols.addAll(functionMap))
-                let newFunctions = functions.map { self.inferFunctionDefinition(environment2, _) }
+                let newFunctions = functions.map {self.inferFunctionDefinition(environment2, _)}
                 let newBody = self.inferTerm(environment2, expected, body)
                 EFunctions(
-                    at = at,
-                    functions = newFunctions,
+                    at = at
+                    functions = newFunctions
                     body = newBody
                 )
             | EAssign e =>
-                self.lookup(environment, e.at, e.variable, []).map { instantiated =>
+                self.lookup(environment, e.at, e.variable, []).map {instantiated =>
                     if(instantiated.scheme.isMutable) {
                         let value = self.inferAssignment(
                             environment = environment
@@ -607,12 +607,12 @@ extend self: Inference {
     }
 
     inferMethodCall(
-        environment: Environment,
-        expected: Type,
-        signature: Signature,
-        instantiation: List[Pair[String, Type]],
-        term: Term,
-        record: Term,
+        environment: Environment
+        expected: Type
+        signature: Signature
+        instantiation: List[Pair[String, Type]]
+        term: Term
+        record: Term
         recordType: Type
         name: String
     ): Term {
@@ -629,7 +629,7 @@ extend self: Inference {
         self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
             target = StaticCall(name, instanceCall = False, tailCall = call.tailCall)
-            typeArguments = instantiation.map { _.second }
+            typeArguments = instantiation.map {_.second}
             arguments = [selfArgument, ...arguments]
             effect = signature.effect
         )

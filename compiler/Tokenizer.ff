@@ -196,11 +196,13 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
                 }
 
             if(
-                line != completionLine || 1 + i - lineOffset != completionColumn ||
-                o != LDot || i >= code.size() || code.grab(i).isAsciiLetter() || code.grab(i) == '{'
+                line == completionLine && 1 + i - lineOffset == completionColumn - 1 &&
+                o == LDot && i < code.size() && !code.grab(i).isAsciiLetter() && code.grab(i) != '{'
             ) {
-                emitToken(o, start, i)
+                emitToken(LLower, i, i)
             }
+            
+            emitToken(o, start, i)
 
         } elseIf {
             code.grab(i) == '(' || code.grab(i) == '[' || code.grab(i) == '{'
