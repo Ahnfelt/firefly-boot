@@ -266,9 +266,23 @@ extend self: Handler {
             line = token.map {_.startLine}.else {line}
             column = token.map {_.startColumn}.else {column}
         )
-        mutable referencesResult = []
         Log.trace("handleReferences: " + Show.show(referencesAt) + " - " + Show.show(token))
-        let o = js.array(referencesResult)
+        mutable hoverResult = None
+        mutable hoverResultAt = None
+        try {
+            let hover = Some(Pair(referencesAt, {result, at => hoverResult = result; hoverResultAt = at}))
+            Builder.check(system, ".", fixedPath, self.virtualFiles, hover, None)
+        } catch {| CompileError(at, message), error =>
+            Log.trace(message)
+        } grab()
+        let o = hoverResult.{
+            | None => js.null()
+            | Some(Pair(t, q)) => 
+                Log.trace("handleReferences t: " + t)
+                Log.trace("handleReferences q: " + q)
+                Log.trace("handleReferences hoverResultAt: " + Show.show(hoverResultAt))
+                js.array([])
+        }
         Result(o)
     }    
     
