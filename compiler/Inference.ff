@@ -312,31 +312,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t =>
                         let memberPrefix = name + "_"
                         if(self.completionAt.contains(e.at)) {
-                            mutable members = Stack.make()
-                            environment.symbols.each {| memberName, memberScheme =>
-                                if(memberName.startsWith(memberPrefix)) {
-                                    let pair = if(!memberScheme.isVariable) {
-                                        let required = memberScheme.signature.parameters
-                                            .dropFirst().filter {_.default.isEmpty()}.pairs().map {
-                                                | Pair(index, p) => 
-                                                    Pair(p.name, "${" + (index + 1) + ":" + p.name + "}")
-                                            }
-                                        let optional = if(
-                                            required.size() != memberScheme.signature.parameters.size() - 1
-                                        ) {"..."}
-                                        Pair(
-                                            "(" + [...required.map {_.first}, ...optional.toList()].join(", ") + ")"
-                                            "(" + required.map {_.second}.join(", ") + ")$0"
-                                        )
-                                    } else {Pair("", "")}
-                                    members.push(CompletionInfo(
-                                        label = memberName.dropFirst(memberPrefix.size()) + pair.first
-                                        snippet = memberName.dropFirst(memberPrefix.size()) + pair.second
-                                        type = memberScheme.signature.returnType
-                                    ))
-                                }
-                            }
-                            self.completionResult = members.toList()
+                            self.completeMember(environment, memberPrefix)
                         }
                         let memberName = memberPrefix + e.field
                         self.lookup(environment, e.at, memberName, typeArguments).{
@@ -939,6 +915,56 @@ extend self: Inference {
             scheme = scheme.Scheme(signature = signature)
         )
 
+    }
+
+    completeMember(environment: Environment, memberPrefix: String): Unit {
+        mutable members = Stack.make()
+        environment.symbols.each {| memberName, memberScheme =>
+            if(memberName.startsWith(memberPrefix)) {
+                let pair = if(!memberScheme.isVariable) {
+                    let trailing = memberScheme.signature.parameters.dropFirst().last().flatMap {p =>
+                        p.valueType.{
+                            | TConstructor(_, name, typeArguments) {name.startsWith("Function$")} =>
+                                let arguments = typeArguments.dropFirst().dropLast()
+                                Some(Pair(
+                                    " {" + p.name + "(" + arguments.map {_ => "_"}.join(", ") + ")}"
+                                    " {${0:" + p.name + "(" + arguments.map {_ => "_"}.join(", ") + ")}}"
+                                ))
+                            | _ => 
+                                None
+                        }
+                    }
+                    let allRequired = memberScheme.signature.parameters
+                        .dropFirst().filter {_.default.isEmpty()}
+                    let required = 
+                        if(trailing.isEmpty()) {allRequired} else {allRequired.dropLast()}.pairs().map {
+                            | Pair(index, p) => 
+                                Pair(p.name, "${" + (index + 1) + ":" + p.name + "}")
+                        }
+                    let optional = if(
+                        allRequired.size() != memberScheme.signature.parameters.size() - 1
+                    ) {"..."}
+                    Pair(
+                        if(trailing.isEmpty() || !required.isEmpty()) {
+                            "(" + [...required.map {_.first}, ...optional.toList()].join(", ") + ")"
+                        } else {
+                            ""
+                        } + trailing.map {_.first}.else {""}
+                        if(trailing.isEmpty() || !required.isEmpty()) {
+                            "(" + required.map {_.second}.join(", ") + ")"
+                        } else {
+                            ""
+                        } + trailing.map {_.second}.else {"$0"}
+                    )
+                } else {Pair("", "")}
+                members.push(CompletionInfo(
+                    label = memberName.dropFirst(memberPrefix.size()) + pair.first
+                    snippet = memberName.dropFirst(memberPrefix.size()) + pair.second
+                    type = memberScheme.signature.returnType
+                ))
+            }
+        }
+        self.completionResult = members.toList()        
     }
 
 }
