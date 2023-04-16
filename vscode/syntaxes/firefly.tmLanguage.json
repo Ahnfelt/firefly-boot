@@ -38,7 +38,7 @@
         },
         "field-or-call": {
             "name": "entity.name.function.member.firefly",
-            "match": "(?<=[^.][.}][ ]*)[a-z][A-Za-z0-9]*\\b|\\b[a-z][A-Za-z0-9]*(?=[ ]*[({\\[])"
+            "match": "(?<=[^.][.}][ ]*)[a-z][A-Za-z0-9]*\\b|(?<!\\bextend[ \\t]+)\\b[a-z][A-Za-z0-9]*(?=[ ]*[({\\[])"
         },
         "upper-dot": {
             "name": "entity.name.namespace.firefly",
