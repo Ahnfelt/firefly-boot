@@ -496,7 +496,11 @@ extend self: Inference {
                         let e2 = e.ECall(target = call.DynamicCall(function = f.EField(record = record)))
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, _)@t =>
-                                let methodName = name + "_" + f.field
+                                let memberPrefix = name + "_"
+                                if(self.completionAt.contains(f.at)) {
+                                    self.completeMember(environment, memberPrefix)
+                                }
+                                let methodName = memberPrefix + f.field
                                 self.lookup(environment, f.at, methodName, []).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                         self.inferMethodCall(
