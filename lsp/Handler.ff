@@ -215,7 +215,8 @@ extend self: Handler {
             .with("isIncomplete", False)
             .with("items", completionResult.toArray().map {| CompletionInfo i =>
                 js.object()
-                    .with("kind", if(i.label.any {_ == '('}) {2} else {5}) // Method or Field
+                    // Method/Function or Field/Variable
+                    .with("kind", if(i.label.any {_ == '('}) {2} else {5} + if(i.member) {0} else {1})
                     .with("label", i.label)
                     .with("labelDetails", js.object()
                         .with("detail", ": " + i.type.show([]))
@@ -255,8 +256,7 @@ extend self: Handler {
                     Log.trace(message)
                 } grab()
         
-
-                let clientLocations = [definedAt, ...referencesResult].map{ location => 
+                let clientLocations = [definedAt, ...referencesResult].map {location => 
                     self.toClientLocation(system, location)
                 }
                 js.array(clientLocations)

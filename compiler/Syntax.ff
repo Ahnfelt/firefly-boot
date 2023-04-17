@@ -228,6 +228,7 @@ data Version(at: Location, major: Int, minor: Int, patch: Int)
 data CompletionInfo(
     label: String
     snippet: String
+    member: Bool
     type: Type
     documentation: String
 )

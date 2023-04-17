@@ -272,6 +272,12 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
+                if(self.completionAt.contains(e.at)) {
+                    let unqualifiedEnvironment = environment.symbols.toList().filter {| Pair(name, _) => 
+                        name.all {_.isAsciiLetterOrDigit()}
+                    }.toMap()
+                    self.completion(environment.Environment(symbols = unqualifiedEnvironment), "", False)
+                }
                 self.lookup(environment, e.at, e.name, []).map {instantiated =>
                     if(instantiated.scheme.isVariable) {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
@@ -297,7 +303,7 @@ extend self: Inference {
                         if(self.completionAt.contains(e.at)) {
                             self.completionResult = fieldNames.zip(typeArguments).map {
                                 | Pair(fieldName, typeArgument) => 
-                                    CompletionInfo(fieldName, fieldName, typeArgument, "")
+                                    CompletionInfo(fieldName, fieldName, True, typeArgument, "")
                             }
                         }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
@@ -310,7 +316,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t =>
                         let memberPrefix = name + "_"
                         if(self.completionAt.contains(e.at)) {
-                            self.completeMember(environment, memberPrefix)
+                            self.completion(environment, memberPrefix, True)
                         }
                         let memberName = memberPrefix + e.field
                         self.lookup(environment, e.at, memberName, typeArguments).{
@@ -496,7 +502,7 @@ extend self: Inference {
                             | TConstructor(_, name, _)@t =>
                                 let memberPrefix = name + "_"
                                 if(self.completionAt.contains(f.at)) {
-                                    self.completeMember(environment, memberPrefix)
+                                    self.completion(environment, memberPrefix, True)
                                 }
                                 let methodName = memberPrefix + f.field
                                 self.lookup(environment, f.at, methodName, []).{
@@ -921,12 +927,13 @@ extend self: Inference {
 
     }
 
-    completeMember(environment: Environment, memberPrefix: String): Unit {
-        mutable members = Stack.make()
+    completion(environment: Environment, prefix: String, member: Bool): Unit {
+        let members = Stack.make()
         environment.symbols.each {| memberName, memberScheme =>
-            if(memberName.startsWith(memberPrefix)) {
+            if(memberName.startsWith(prefix)) {
+                let realParameters = memberScheme.signature.parameters.dropFirst(if(member) {1} else {0})
                 let pair = if(!memberScheme.isVariable) {
-                    let trailing = memberScheme.signature.parameters.dropFirst().last().flatMap {p =>
+                    let trailing = realParameters.last().flatMap {p =>
                         p.valueType.{
                             | TConstructor(_, name, typeArguments) {name.startsWith("Function$")} =>
                                 let arguments = typeArguments.dropFirst().dropLast()
@@ -938,15 +945,14 @@ extend self: Inference {
                                 None
                         }
                     }
-                    let allRequired = memberScheme.signature.parameters
-                        .dropFirst().filter {_.default.isEmpty()}
+                    let allRequired = realParameters.filter {_.default.isEmpty()}
                     let required = 
                         if(trailing.isEmpty()) {allRequired} else {allRequired.dropLast()}.pairs().map {
                             | Pair(index, p) => 
                                 Pair(p.name, "${" + (index + 1) + ":" + p.name + "}")
                         }
                     let optional = if(
-                        allRequired.size() != memberScheme.signature.parameters.size() - 1
+                        allRequired.size() != realParameters.size()
                     ) {"..."}
                     Pair(
                         if(trailing.isEmpty() || !required.isEmpty()) {
@@ -961,13 +967,14 @@ extend self: Inference {
                         } + trailing.map {_.second}.else {"$0"}
                     )
                 } else {Pair("", "")}
-                let shortName = memberName.dropFirst(memberPrefix.size())
+                let shortName = memberName.dropFirst(prefix.size())
+                let returnType = self.unification.substitute(memberScheme.signature.returnType)
                 let documentation = if(memberScheme.isVariable) {
-                    if(memberScheme.isMutable) {"mutable "} else {""} +
+                    if(memberScheme.isMutable) {"mutable "} elseIf {!member} {"let "} else {""} +
                     shortName +
-                    ": " + memberScheme.signature.returnType.show([])
+                    ": " + returnType.show([])
                 } else {
-                    let selfType = memberScheme.signature.parameters.first().map {_.valueType}
+                    let selfType = memberScheme.signature.parameters.first().filter {_ => member}.map {_.valueType}
                     let generics = selfType.map {
                         | TConstructor(_, _, gs) => 
                             // TODO: Needs constraints as well
@@ -976,9 +983,10 @@ extend self: Inference {
                         | _ => 
                             ""
                     }.else {""}
-                    let parameters = if(memberScheme.signature.parameters.dropFirst().isEmpty()) {""} else {
-                        "\n" + memberScheme.signature.parameters.dropFirst().map {p =>
-                            if(p.mutable) {"        mutable "} else {"        "} +
+                    let selfIndent = selfType.map {_ => "    "}.else {""}
+                    let parameters = if(realParameters.isEmpty()) {""} else {
+                        "\n" + realParameters.map {p =>
+                            if(p.mutable) {selfIndent + "    mutable "} else {selfIndent + "    "} +
                             p.name + ": " + p.valueType.show([]) +
                             p.default.map {
                                 | EVariant(_, n, _, None) => n
@@ -992,17 +1000,19 @@ extend self: Inference {
                                 | EList(_, _, _) => "[...]"
                                 | _ => " = ..."
                             }.map {" = " + _}.else {""}
-                        }.join("\n") + "\n    "
+                        }.join("\n") + "\n" + selfIndent
                     }
+                    let functionPrefix = if(!member) {"function "} else {""}
                     selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
-                    "    " + shortName + generics + "(" + parameters + "): " + 
-                    memberScheme.signature.returnType.show([]) + 
-                    "\n}"
+                    selfIndent + functionPrefix + shortName + generics + "(" + parameters + "): " + 
+                    returnType.show([]) + 
+                    selfType.map {_ => "\n}"}.else {""}
                 }
                 members.push(CompletionInfo(
                     label = shortName + pair.first
                     snippet = shortName + pair.second
-                    type = memberScheme.signature.returnType
+                    member = True
+                    type = returnType
                     documentation = documentation
                 ))
             }
