@@ -967,10 +967,17 @@ extend self: Inference {
                     shortName +
                     ": " + memberScheme.signature.returnType.show([])
                 } else {
-                    let generics = ""
+                    let selfType = memberScheme.signature.parameters.first().map {_.valueType}
+                    let generics = selfType.map {
+                        | TConstructor(_, _, gs) => 
+                            let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
+                            if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+                        | _ => 
+                            ""
+                    }.else {""}
                     let parameters = if(memberScheme.signature.parameters.dropFirst().isEmpty()) {""} else {
                         "\n" + memberScheme.signature.parameters.dropFirst().map {p =>
-                            if(p.mutable) {"    mutable "} else {"    "} +
+                            if(p.mutable) {"        mutable "} else {"        "} +
                             p.name + ": " + p.valueType.show([]) +
                             p.default.map {
                                 | EVariant(_, n, _, None) => n
@@ -984,10 +991,12 @@ extend self: Inference {
                                 | EList(_, _, _) => "[...]"
                                 | _ => " = ..."
                             }.map {" = " + _}.else {""}
-                        }.join("\n") + "\n"
+                        }.join("\n") + "\n    "
                     }
-                    shortName + generics + "(" + parameters + "): " + 
-                    memberScheme.signature.returnType.show([])
+                    selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
+                    "    " + shortName + generics + "(" + parameters + "): " + 
+                    memberScheme.signature.returnType.show([]) + 
+                    "\n}"
                 }
                 members.push(CompletionInfo(
                     label = shortName + pair.first
