@@ -970,6 +970,7 @@ extend self: Inference {
                     let selfType = memberScheme.signature.parameters.first().map {_.valueType}
                     let generics = selfType.map {
                         | TConstructor(_, _, gs) => 
+                            // TODO: Needs constraints as well
                             let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
                             if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
                         | _ => 
@@ -1006,7 +1007,7 @@ extend self: Inference {
                 ))
             }
         }
-        self.completionResult = members.toList()        
+        self.completionResult = members.toList()
     }
 
 }
