@@ -932,7 +932,7 @@ extend self: Inference {
                                 let arguments = typeArguments.dropFirst().dropLast()
                                 Some(Pair(
                                     " {" + p.name + "(" + arguments.map {_ => "_"}.join(", ") + ")}"
-                                    " {${0:" + p.name + "(" + arguments.map {_ => "_"}.join(", ") + ")}}"
+                                    " {$0}"
                                 ))
                             | _ => 
                                 None
