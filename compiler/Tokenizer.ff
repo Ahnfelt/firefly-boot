@@ -185,6 +185,14 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
         } elseIf {operatorCharacters.contains(code.grab(i))} {
 
             i += 1
+            
+            if(code.grab(i - 1) == '.' && i + 1 < code.size() && code.grab(i) == '.' && code.grab(i + 1) != '.') {
+                emitToken(LDot, start, i)
+                let newStart = i
+                i += 1
+                emitToken(LDot, newStart, i)
+            } else:
+
             while {i < code.size() && operatorCharacters.contains(code.grab(i))} {i += 1}
             let o =
                 if(i - start == 1 && code.grab(i - 1) == '.') {
