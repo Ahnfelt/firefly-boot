@@ -19,6 +19,7 @@ capability Compiler(
     virtualFiles: Map[String, String]
     hoverAt: Option[Location]
     completionAt: Option[Location]
+    referencesTo: Option[Location]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable derivedModules: Map[String, Module]
@@ -28,6 +29,7 @@ capability Compiler(
     mutable phaseDurationDelta: Duration
     mutable hoverResult: HoverInfo
     mutable completionResult: List[CompletionInfo]
+    mutable referencesResult: List[Location]
 )
 
 make(
@@ -40,6 +42,7 @@ make(
     virtualFiles: Map[String, String]
     hoverAt: Option[Location]
     completionAt: Option[Location]
+    referencesTo: Option[Location]
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
@@ -52,6 +55,7 @@ make(
         virtualFiles = virtualFiles
         hoverAt = hoverAt
         completionAt = completionAt
+        referencesTo = referencesTo
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
         derivedModules = Map.empty()
@@ -61,6 +65,7 @@ make(
         phaseDurationDelta = Duration(0.0)
         hoverResult = HoverInfo(None, None, None)
         completionResult = []
+        referencesResult = []
     )
 }
 
@@ -185,13 +190,14 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName)
         let otherModules = self.imports(module)
-        let resolver = Resolver.make(self.hoverAt)
+        let resolver = Resolver.make(self.hoverAt, self.referencesTo)
         let result = try {
             resolver.resolveModule(module, otherModules)
         } finally {
             resolver.state.hoverResult.at.each {at => 
                 self.hoverResult = self.hoverResult.HoverInfo(at = Some(at))
             }
+            self.referencesResult = resolver.state.referencesResult
         } grab() 
 
         self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)

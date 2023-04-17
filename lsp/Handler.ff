@@ -17,6 +17,7 @@ capability ResultOrError {
 data LanguageServerException(message: String)
 
 data TokenLocation(
+    file: String
     startLine: Int
     startColumn: Int
     endLine: Int
@@ -40,9 +41,9 @@ extend self: Handler {
         method.{
             | "initialize" => self.handleInitialize(system.js(), parameters)
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
+            | "textDocument/completion" => self.handleCompletion(system, parameters)
             | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
             | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
-            | "textDocument/completion" => self.handleCompletion(system, parameters)
             | "textDocument/references" => self.handleReferences(system, parameters)
             | _ => self.handleUnsupported(system.js())
         }
@@ -108,10 +109,11 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles, None, None)
+            Builder.check(system, ".", fixedPath, self.virtualFiles, None, None, None)
             []
         } catch {| CompileError(at, message), error =>
             let fallback = TokenLocation(
+                file = fixedPath
                 startLine = at.line - 1
                 startColumn = at.column - 1
                 endLine = at.line - 1
@@ -165,41 +167,44 @@ extend self: Handler {
         let fixedPath = path.replace("\\", "/")
         self.virtualFiles = self.virtualFiles.remove(fixedPath)
     }
-
-    handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
-        let js = system.js()
-        let uri = parameters.grab("textDocument").get("uri").grabString()
-        let absolutePath = FileSystem.urlToPath(uri)
-        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
-        let fixedPath = path.replace("\\", "/")
-        let line = parameters.grab("position").get("line").grabInt() + 1
-        let column = parameters.grab("position").get("character").grabInt() + 1
-        let token = self.findToken(system, fixedPath, line, column)
-        let hoverAt = Location(
-            file = fixedPath
-            line = token.map {_.startLine}.else {line}
-            column = token.map {_.startColumn}.else {column}
-        )
-        //Log.trace(Show.show(hoverAt) + " - " + Show.show(token))
-        mutable hoverResult = HoverInfo(None, None, None)
+    
+    handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let completionAt = self.grabFixedLocation(system, parameters)
+        mutable completionResult = []
         try {
-            let hover = Some(Pair(hoverAt, {hoverResult = _}))
-            Builder.check(system, ".", fixedPath, self.virtualFiles, hover, None)
+            let completion = Some(Pair(completionAt, {completionResult = _}))
+            Builder.check(system, ".", completionAt.file, self.virtualFiles, None, completion, None)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
+        let js = system.js()
+        let o = js.object()
+            .with("isIncomplete", False)
+            .with("items", completionResult.toArray().map {| CompletionInfo i =>
+                js.object()
+                    .with("kind", if(i.label.any {_ == '('}) {2} else {5}) // Method or Field
+                    .with("label", i.label)
+                    .with("labelDetails", js.object()
+                        .with("detail", ": " + i.type.show([]))
+                    )
+                    .with("insertText", i.snippet)
+                    .with("insertTextFormat", 2) // Snippet
+            })
+        Result(o)
+    }
+    
+    handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
+        let hoverAt = self.grabFixedLocation(system, parameters)
+        mutable hoverResult = HoverInfo(None, None, None)
+        try {
+            let hover = Some(Pair(hoverAt, {hoverResult = _}))
+            Builder.check(system, ".", hoverAt.file, self.virtualFiles, hover, None, None)
+        } catch {| CompileError(at, message), error =>
+            Log.trace(message)
+        } grab()
+        let js = system.js()
         let o = if(goToDefinition) {
-            hoverResult.at.map {at => js.object()
-                .with("uri", FileSystem.pathToUrl(system.files().absolutePath(at.file)))
-                .with("range", js.object()
-                    .with("start", js.object()
-                        .with("line", at.line - 1).with("character", at.column - 1)
-                    )
-                    .with("end", js.object()
-                        .with("line", at.line - 1).with("character", at.column - 1)
-                    )
-                )
-            }.else {js.null()}
+            hoverResult.at.map {at => self.toClientLocation(system, at)}.else {js.null()}
         } else {
             js.object().with("contents", 
                 hoverResult.{
@@ -220,73 +225,41 @@ extend self: Handler {
         }
         Result(o)
     }
-    
-    handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let js = system.js()
-        let uri = parameters.grab("textDocument").get("uri").grabString()
-        let absolutePath = FileSystem.urlToPath(uri)
-        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
-        let fixedPath = path.replace("\\", "/")
-        let line = parameters.grab("position").get("line").grabInt() + 1
-        let column = parameters.grab("position").get("character").grabInt() + 1
-        let token = self.findToken(system, fixedPath, line, column)
-        let completionAt = Location(
-            file = fixedPath
-            line = token.map {_.startLine}.else {line}
-            column = token.map {_.startColumn}.else {column}
-        )
-        mutable completionResult = []
-        try {
-            let completion = Some(Pair(completionAt, {completionResult = _}))
-            Builder.check(system, ".", fixedPath, self.virtualFiles, None, completion)
-        } catch {| CompileError(at, message), error =>
-            Log.trace(message)
-        } grab()
-        Log.trace(Show.show(completionAt) + " - " + Show.show(token))
-        let o = js.object()
-            .with("isIncomplete", False)
-            .with("items", completionResult.toArray().map {| CompletionInfo i =>
-                js.object()
-                    .with("kind", if(i.label.any {_ == '('}) {2} else {5}) // Method or Field
-                    .with("label", i.label)
-                    .with("labelDetails", js.object()
-                        .with("detail", ": " + i.type.show([]))
-                    )
-                    .with("insertText", i.snippet)
-                    .with("insertTextFormat", 2) // Snippet
-            })
-        Result(o)
-    }
 
     handleReferences(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let js = system.js()
-        let uri = parameters.grab("textDocument").get("uri").grabString()
-        let absolutePath = FileSystem.urlToPath(uri)
-        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
-        let fixedPath = path.replace("\\", "/")
-        let line = parameters.grab("position").get("line").grabInt() + 1
-        let column = parameters.grab("position").get("character").grabInt() + 1
-        let includeDeclaration = parameters.grab("context").get("includeDeclaration").grabBool()
-        let token = self.findToken(system, fixedPath, line, column)
-        let referencesAt = Location(
-            file = fixedPath
-            line = token.map {_.startLine}.else {line}
-            column = token.map {_.startColumn}.else {column}
-        )
-        Log.trace("handleReferences: " + Show.show(referencesAt) + " - " + Show.show(token))
+        let referencesAt = self.grabFixedLocation(system, parameters)
         mutable hoverResult = HoverInfo(None, None, None)
         try {
             let hover = Some(Pair(referencesAt, {hoverResult = _}))
-            Builder.check(system, ".", fixedPath, self.virtualFiles, hover, None)
+            Builder.check(system, ".", referencesAt.file, self.virtualFiles, hover, None, None)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
 
-        // let qualifiedName = ...
-        // let locations : List[Location] = Builder.findReferences(workspacePath, qualifiedName)
+        Log.show(hoverResult.at)
+        let js = system.js()
+        let o = hoverResult.at.{
+            | Some(definedAt) => 
+                // TODO search all files in workspace
+                //let locations: List[Location] = Builder.findReferences(referencesAt.file, definedAt) 
 
-        Log.show(hoverResult)
-        Result(js.array([]))
+                mutable referencesResult = []
+                try {
+                    let references = Some(Pair(definedAt, {referencesResult = _}))
+                    Builder.check(system, ".", referencesAt.file, self.virtualFiles, None, None, references)
+                } catch {| CompileError(at, message), error =>
+                    Log.trace(message)
+                } grab()
+        
+
+                let clientLocations = referencesResult.map{ location => 
+                    self.toClientLocation(system, location)
+                }
+                js.array(clientLocations)
+            | None => 
+                js.null()
+        }
+        Result(o)
     }    
     
     makeNotificationMessage(js: JsSystem, method: String, params: JsValue): JsValue {
@@ -309,12 +282,44 @@ extend self: Handler {
             )
         }
         token.map {t => TokenLocation(
+            file = path
             startLine = t.startLine
             startColumn = 1 + t.startOffset - t.startLineOffset
             endLine = t.stopLine
             endColumn = 1 + t.stopOffset - t.stopLineOffset
             raw = t.raw()
         )}
+    }
+
+    grabFixedLocation(system: NodeSystem, parameters: Map[String, JsValue]): Location {
+        let uri = parameters.grab("textDocument").get("uri").grabString()
+        let absolutePath = FileSystem.urlToPath(uri)
+        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
+        let fixedPath = path.replace("\\", "/")
+        let line = parameters.grab("position").get("line").grabInt() + 1
+        let column = parameters.grab("position").get("character").grabInt() + 1
+        let token = self.findToken(system, fixedPath, line, column)
+        Location(
+            file = fixedPath
+            line = token.map {_.startLine}.else {line}
+            column = token.map {_.startColumn}.else {column}
+        )
+    }
+
+    toClientLocation(system: NodeSystem, at: Location): JsValue {
+        let js = system.js()
+        js.object()
+            .with("uri", FileSystem.pathToUrl(system.files().absolutePath(at.file)))
+            .with("range", js.object()
+                .with("start", js.object()
+                    .with("line", at.line - 1)
+                    .with("character", at.column - 1)
+                )
+                .with("end", js.object()
+                    .with("line", at.line - 1)
+                    .with("character", at.column - 1)
+                )
+            )
     }
 
 }

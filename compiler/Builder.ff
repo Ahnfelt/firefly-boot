@@ -38,6 +38,7 @@ build(
             Map.empty()
             hoverAt = None
             completionAt = None
+            referencesTo = None
         )
         compiler.emit(mainPackage, mainModule, isMainModule = True)
         if(printMeasurements) {compiler.printMeasurements()}
@@ -95,6 +96,7 @@ check(
     virtualFiles: Map[String, String], 
     hoverAt: Option[Pair[Location, HoverInfo => Unit]]
     completionAt: Option[Pair[Location, List[CompletionInfo] => Unit]]
+    referencesTo: Option[Pair[Location, List[Location] => Unit]]
 ) {
     let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
@@ -113,13 +115,15 @@ check(
         fixedResolvedDependencies
         virtualFiles
         hoverAt.map {_.first}
-        completionAt.map {_.first} 
+        completionAt.map {_.first}
+        referencesTo.map {_.first}
     )
     try {
         compiler.infer(resolvedDependencies.mainPackagePair, localMainFile.dropLast(".ff".size()))
     } finally {
         hoverAt.each {_.second(compiler.hoverResult)}
         completionAt.each {_.second(compiler.completionResult)}
+        referencesTo.each {_.second(compiler.referencesResult)}
     } grab()
 }
 

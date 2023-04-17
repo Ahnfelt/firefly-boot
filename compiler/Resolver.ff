@@ -11,14 +11,16 @@ class Resolver(
     traitLocations: Map[String, Location]
     state: ResolverState
     hoverAt: Option[Location]
+    referencesTo: Option[Location]
 )
 
 class ResolverState(
-    mutable nextUnificationVariableIndex: Int, 
+    mutable nextUnificationVariableIndex: Int
     mutable hoverResult: HoverInfo
+    mutable referencesResult: List[Location]
 )
 
-make(hoverAt: Option[Location]): Resolver {
+make(hoverAt: Option[Location], referencesTo: Option[Location]): Resolver {
     Resolver(
         variables = [].toMap()
         variants = [].toMap()
@@ -31,8 +33,10 @@ make(hoverAt: Option[Location]): Resolver {
         state = ResolverState(
             nextUnificationVariableIndex = 2
             hoverResult = HoverInfo(None, None, None)
+            referencesResult = []
         ) // To avoid collision with the parser and unification
         hoverAt = hoverAt
+        referencesTo = referencesTo
     )
 }
 
@@ -332,6 +336,9 @@ extend self: Resolver {
             self.typeLocations.get(constructor.name).each {at =>
                 if(self.hoverAt.contains(type.at)) {
                     self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
+                }
+                if(self.referencesTo.contains(at)) {
+                    self.state.referencesResult = [...self.state.referencesResult, at]
                 }
             }
             let name = if(constructor.name.contains("$")) {
