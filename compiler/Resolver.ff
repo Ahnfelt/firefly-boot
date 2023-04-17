@@ -30,7 +30,7 @@ make(hoverAt: Option[Location]): Resolver {
         traitLocations = [].toMap()
         state = ResolverState(
             nextUnificationVariableIndex = 2
-            hoverResult = HoverInfo(None, None, None, None)
+            hoverResult = HoverInfo(None, None, None)
         ) // To avoid collision with the parser and unification
         hoverAt = hoverAt
     )

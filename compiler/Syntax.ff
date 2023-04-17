@@ -233,7 +233,6 @@ data CompletionInfo(
 
 data HoverInfo(
     at: Option[Location]
-    qualifiedName: Option[String]
     type: Option[Type]
     effect: Option[Type]
 )

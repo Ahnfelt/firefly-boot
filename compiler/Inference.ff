@@ -16,7 +16,7 @@ make(modules: List[Module], hoverAt: Option[Location], completionAt: Option[Loca
         unification = Unification.make(modules)
         hoverAt = hoverAt
         completionAt = completionAt
-        hoverResult = HoverInfo(None, None, None, None)
+        hoverResult = HoverInfo(None, None, None)
         completionResult = []
     )
 }

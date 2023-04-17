@@ -181,7 +181,7 @@ extend self: Handler {
             column = token.map {_.startColumn}.else {column}
         )
         //Log.trace(Show.show(hoverAt) + " - " + Show.show(token))
-        mutable hoverResult = HoverInfo(None, None, None, None)
+        mutable hoverResult = HoverInfo(None, None, None)
         try {
             let hover = Some(Pair(hoverAt, {hoverResult = _}))
             Builder.check(system, ".", fixedPath, self.virtualFiles, hover, None)
@@ -203,7 +203,7 @@ extend self: Handler {
         } else {
             js.object().with("contents", 
                 hoverResult.{
-                    | HoverInfo(_, _, Some(t), q) => 
+                    | HoverInfo(_, Some(t), q) => 
                         let extra = q.{
                             | Some(TConstructor(_, "Q$", _)) =>
                                 "This call may be asynchronous."
@@ -274,7 +274,7 @@ extend self: Handler {
             column = token.map {_.startColumn}.else {column}
         )
         Log.trace("handleReferences: " + Show.show(referencesAt) + " - " + Show.show(token))
-        mutable hoverResult = HoverInfo(None, None, None, None)
+        mutable hoverResult = HoverInfo(None, None, None)
         try {
             let hover = Some(Pair(referencesAt, {hoverResult = _}))
             Builder.check(system, ".", fixedPath, self.virtualFiles, hover, None)
