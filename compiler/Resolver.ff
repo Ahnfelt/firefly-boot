@@ -15,7 +15,7 @@ class Resolver(
 
 class ResolverState(
     mutable nextUnificationVariableIndex: Int, 
-    mutable hoverResultAt: Option[Location]
+    mutable hoverResult: HoverInfo
 )
 
 make(hoverAt: Option[Location]): Resolver {
@@ -28,7 +28,10 @@ make(hoverAt: Option[Location]): Resolver {
         typeParameters = [].toSet()
         traits = [].toMap()
         traitLocations = [].toMap()
-        state = ResolverState(nextUnificationVariableIndex = 2, None) // To avoid collision with the parser and unification
+        state = ResolverState(
+            nextUnificationVariableIndex = 2
+            hoverResult = HoverInfo(None, None, None, None)
+        ) // To avoid collision with the parser and unification
         hoverAt = hoverAt
     )
 }
@@ -328,7 +331,7 @@ extend self: Resolver {
         | TConstructor constructor, _ =>
             self.typeLocations.get(constructor.name).each {at =>
                 if(self.hoverAt.contains(type.at)) {
-                    self.state.hoverResultAt = Some(at)
+                    self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
                 }
             }
             let name = if(constructor.name.contains("$")) {
@@ -373,7 +376,7 @@ extend self: Resolver {
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
         self.traitLocations.get(constraint.name).each {at =>
             if(self.hoverAt.contains(constraint.at)) {
-                self.state.hoverResultAt = Some(at)
+                self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
             }
         }
         let name =

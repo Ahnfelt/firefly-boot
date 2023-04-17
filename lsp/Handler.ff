@@ -181,16 +181,15 @@ extend self: Handler {
             column = token.map {_.startColumn}.else {column}
         )
         //Log.trace(Show.show(hoverAt) + " - " + Show.show(token))
-        mutable hoverResult = None
-        mutable hoverResultAt = None
+        mutable hoverResult = HoverInfo(None, None, None, None)
         try {
-            let hover = Some(Pair(hoverAt, {result, at => hoverResult = result; hoverResultAt = at}))
+            let hover = Some(Pair(hoverAt, {hoverResult = _}))
             Builder.check(system, ".", fixedPath, self.virtualFiles, hover, None)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
         let o = if(goToDefinition) {
-            hoverResultAt.map {at => js.object()
+            hoverResult.at.map {at => js.object()
                 .with("uri", FileSystem.pathToUrl(system.files().absolutePath(at.file)))
                 .with("range", js.object()
                     .with("start", js.object()
@@ -204,10 +203,18 @@ extend self: Handler {
         } else {
             js.object().with("contents", 
                 hoverResult.{
-                    | None => js.null()
-                    | Some(Pair(t, q)) => js.object()
-                        .with("kind", "markdown")
-                        .with("value", "```\n" + t + "\n```\n" + if(q == "") {""} else {"*" + q + "*"})
+                    | HoverInfo(_, _, Some(t), q) => 
+                        let extra = q.{
+                            | Some(TConstructor(_, "Q$", _)) =>
+                                "This call may be asynchronous."
+                            | _ => 
+                                ""
+                        }
+                        js.object()
+                            .with("kind", "markdown")
+                            .with("value", "```\n" + t.show([]) + "\n```\n" + if(extra == "") {""} else {"*" + extra + "*"})
+                    | _ => 
+                        js.null()
                 }
             )
         }
@@ -267,23 +274,19 @@ extend self: Handler {
             column = token.map {_.startColumn}.else {column}
         )
         Log.trace("handleReferences: " + Show.show(referencesAt) + " - " + Show.show(token))
-        mutable hoverResult = None
-        mutable hoverResultAt = None
+        mutable hoverResult = HoverInfo(None, None, None, None)
         try {
-            let hover = Some(Pair(referencesAt, {result, at => hoverResult = result; hoverResultAt = at}))
+            let hover = Some(Pair(referencesAt, {hoverResult = _}))
             Builder.check(system, ".", fixedPath, self.virtualFiles, hover, None)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
-        let o = hoverResult.{
-            | None => js.null()
-            | Some(Pair(t, q)) => 
-                Log.trace("handleReferences t: " + t)
-                Log.trace("handleReferences q: " + q)
-                Log.trace("handleReferences hoverResultAt: " + Show.show(hoverResultAt))
-                js.array([])
-        }
-        Result(o)
+
+        // let qualifiedName = ...
+        // let locations : List[Location] = Builder.findReferences(workspacePath, qualifiedName)
+
+        Log.show(hoverResult)
+        Result(js.array([]))
     }    
     
     makeNotificationMessage(js: JsSystem, method: String, params: JsValue): JsValue {

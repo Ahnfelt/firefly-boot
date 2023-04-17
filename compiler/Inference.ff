@@ -7,9 +7,7 @@ class Inference(
     unification: Unification
     hoverAt: Option[Location]
     completionAt: Option[Location]
-    mutable hoverResult: Option[Type]
-    mutable hoverResultEffect: Option[Type]
-    mutable hoverResultAt: Option[Location]
+    mutable hoverResult: HoverInfo
     mutable completionResult: List[CompletionInfo]
 )
 
@@ -18,9 +16,7 @@ make(modules: List[Module], hoverAt: Option[Location], completionAt: Option[Loca
         unification = Unification.make(modules)
         hoverAt = hoverAt
         completionAt = completionAt
-        hoverResult = None
-        hoverResultEffect = None
-        hoverResultAt = None
+        hoverResult = HoverInfo(None, None, None, None)
         completionResult = []
     )
 }
@@ -51,8 +47,10 @@ extend self: Inference {
             functions = functions
         )
         let subsititution = Substitution(self.unification.substitution)
-        self.hoverResult = self.hoverResult.map {subsititution.substituteType(_)}
-        self.hoverResultEffect = self.hoverResultEffect.map {subsititution.substituteType(_)}
+        self.hoverResult = self.hoverResult.HoverInfo(
+            type = self.hoverResult.type.map {subsititution.substituteType(_)}
+            effect = self.hoverResult.effect.map {subsititution.substituteType(_)}
+        )
         self.completionResult = self.completionResult.map {r => 
             r.CompletionInfo(type = subsititution.substituteType(r.type))
         }
@@ -218,18 +216,18 @@ extend self: Inference {
             | PChar _ =>
                 literal("Char")
             | PVariable(at, None) =>
-                if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
-                    self.hoverResult = Some(expected)
+                if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
+                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(expected))
                 }
                 Map.empty()
             | PVariable(at, Some(name)) =>
-                if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
-                    self.hoverResult = Some(expected)
+                if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
+                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(expected))
                 }
                 [Pair(name, expected)].toMap()
             | PAlias(at, pattern, variable) =>
-                if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
-                    self.hoverResult = Some(expected)
+                if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
+                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(expected))
                 }
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
             | PVariantAs(at, name, variableOption) =>
@@ -244,7 +242,7 @@ extend self: Inference {
                 let recordType =
                     TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
                 if(self.hoverAt.contains(at)) {
-                    self.hoverResult = Some(recordType)
+                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(expected))
                 }
                 variableOption.toList().map {Pair(_, recordType)}.toMap()
             | PVariant(at, name, patterns) =>
@@ -383,8 +381,8 @@ extend self: Inference {
                 let scheme =
                     Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType, noEffect))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
-                if(self.hoverAt.contains(e.at) && self.hoverResult.isEmpty()) {
-                    self.hoverResult = Some(scheme.signature.returnType)
+                if(self.hoverAt.contains(e.at) && self.hoverResult.at.isEmpty()) {
+                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(scheme.signature.returnType))
                 }
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
@@ -908,10 +906,12 @@ extend self: Inference {
             effect = effect
         )
 
-        if(self.hoverAt.contains(at) && self.hoverResult.isEmpty()) {
-            self.hoverResult = Some(returnType)
-            self.hoverResultEffect = Some(effect)
-            self.hoverResultAt = Some(scheme.signature.at)
+        if(self.hoverAt.contains(at) && self.hoverResult.type.isEmpty()) {
+            self.hoverResult = self.hoverResult.HoverInfo(
+                at = Some(scheme.signature.at)
+                type = Some(returnType)
+                effect = Some(effect)
+            )
         }
 
         Instantiated(

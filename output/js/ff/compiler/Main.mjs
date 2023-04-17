@@ -219,7 +219,7 @@ return
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-ff_compiler_Builder.check_(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_core_Option.None())
+ff_compiler_Builder.check_(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_core_Option.None(), ff_core_Option.None())
 return
 }
 }
@@ -473,7 +473,7 @@ ff_core_FileSystem.FileSystem_createDirectory(fs_, ".firefly/output")
 export function detectBuildMain_(fs_, packagePair_, mainFile_) {
 const file_ = (mainFile_ + ".ff");
 const code_ = ff_core_FileSystem.FileSystem_readText(fs_, file_);
-const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
+const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_, ff_core_Option.None());
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_core_List.List_any(module_.functions_, ((definition_) => {
@@ -592,7 +592,7 @@ return
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_core_Option.None(), $c))
+(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_core_Option.None(), ff_core_Option.None(), $c))
 return
 }
 }
@@ -853,7 +853,7 @@ if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly", $c)))) {
 export async function detectBuildMain_$(fs_, packagePair_, mainFile_, $c) {
 const file_ = (mainFile_ + ".ff");
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, file_, $c));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_);
+const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_, ff_core_Option.None());
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false);
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
 return ff_core_List.List_any(module_.functions_, ((definition_) => {

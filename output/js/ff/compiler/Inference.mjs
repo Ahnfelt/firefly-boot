@@ -93,14 +93,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Inference
-export function Inference(unification_, hoverAt_, hoverResult_, hoverResultAt_) {
-return {unification_, hoverAt_, hoverResult_, hoverResultAt_};
+export function Inference(unification_, hoverAt_, completionAt_, hoverResult_, completionResult_) {
+return {unification_, hoverAt_, completionAt_, hoverResult_, completionResult_};
 }
 
 
 
-export function make_(modules_, hoverAt_) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_), hoverAt_, ff_core_Option.None(), ff_core_Option.None())
+export function make_(modules_, hoverAt_, completionAt_) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_), hoverAt_, completionAt_, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty())
 }
 
 export function fail_(at_, message_) {
@@ -134,8 +134,8 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function make_$(modules_, hoverAt_, $c) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_), hoverAt_, ff_core_Option.None(), ff_core_Option.None())
+export async function make_$(modules_, hoverAt_, completionAt_, $c) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_), hoverAt_, completionAt_, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty())
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -190,8 +190,22 @@ const result_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
 }))(module_);
 const subsititution_ = ff_compiler_Substitution.Substitution(self_.unification_.substitution_);
-self_.hoverResult_ = ff_core_Option.Option_map(self_.hoverResult_, ((_w1) => {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Option_map(self_.hoverResult_.type_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteType(subsititution_, _w1)
+})), ff_core_Option.Option_map(self_.hoverResult_.effect_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteType(subsititution_, _w1)
+})))
+}))(self_.hoverResult_);
+self_.completionResult_ = ff_core_List.List_map(self_.completionResult_, ((r_) => {
+{
+const _1 = r_;
+{
+const _c = _1;
+return ff_compiler_Syntax.CompletionInfo(_c.label_, _c.snippet_, ff_compiler_Substitution.Substitution_substituteType(subsititution_, r_.type_))
+return
+}
+}
 }));
 return ff_compiler_Substitution.Substitution_substituteModule(subsititution_, result_)
 }
@@ -460,8 +474,10 @@ return
 if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.None) {
-if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(expected_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(expected_), _c.effect_)
+}))(self_.hoverResult_)
 };
 return ff_core_Map.empty_()
 return
@@ -473,8 +489,10 @@ if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
-if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(expected_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(expected_), _c.effect_)
+}))(self_.hoverResult_)
 };
 return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, expected_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
@@ -486,8 +504,10 @@ if(_1.PAlias) {
 const at_ = _1.at_;
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
-if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(expected_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(expected_), _c.effect_)
+}))(self_.hoverResult_)
 };
 return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, expected_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
@@ -514,7 +534,9 @@ return _w1.name_
 return _w1.valueType_
 })));
 if(ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-self_.hoverResult_ = ff_core_Option.Some(recordType_)
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(expected_), _c.effect_)
+}))(self_.hoverResult_)
 };
 return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variableOption_), ((_w1) => {
 return ff_core_Pair.Pair(_w1, recordType_)
@@ -612,6 +634,16 @@ const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
 const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1);
+if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.completionResult_ = ff_core_List.List_map(ff_core_List.List_zip(fieldNames_, typeArguments_), ((_1) => {
+{
+const fieldName_ = _1.first_;
+const typeArgument_ = _1.second_;
+return ff_compiler_Syntax.CompletionInfo(fieldName_, fieldName_, typeArgument_)
+return
+}
+}))
+};
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {
@@ -639,9 +671,13 @@ const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
-const methodName_ = ((name_ + "_") + e_.field_);
+const memberPrefix_ = (name_ + "_");
+if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completeMember(self_, environment_, memberPrefix_)
+};
+const memberName_ = (memberPrefix_ + e_.field_);
 {
-const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, methodName_, typeArguments_);
+const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, memberName_, typeArguments_);
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
@@ -790,8 +826,10 @@ const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, 
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
-if((ff_core_Option.Option_contains(self_.hoverAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(scheme_.signature_.returnType_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(scheme_.signature_.returnType_), _c.effect_)
+}))(self_.hoverResult_)
 };
 {
 const _1 = e_;
@@ -1003,7 +1041,11 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, re
 const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
-const methodName_ = ((name_ + "_") + f_.field_);
+const memberPrefix_ = (name_ + "_");
+if(ff_core_Option.Option_contains(self_.completionAt_, f_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completeMember(self_, environment_, memberPrefix_)
+};
+const methodName_ = (memberPrefix_ + f_.field_);
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, f_.at_, methodName_, ff_core_List.Empty());
 {
@@ -1858,14 +1900,87 @@ ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_L
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
 }))(scheme_.signature_);
-if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(returnType_);
-self_.hoverResultAt_ = ff_core_Option.Some(scheme_.signature_.at_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.type_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(scheme_.signature_.at_), _c.qualifiedName_, ff_core_Option.Some(returnType_), ff_core_Option.Some(effect_))
+}))(self_.hoverResult_)
 };
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)
 }))(scheme_))
 }))
+}
+
+export function Inference_completeMember(self_, environment_, memberPrefix_) {
+let members_ = ff_core_Stack.make_();
+ff_core_Map.Map_each(environment_.symbols_, ((memberName_, memberScheme_) => {
+if(ff_core_String.String_startsWith(memberName_, memberPrefix_, 0)) {
+const pair_ = ((!memberScheme_.isVariable_)
+? (function() {
+const trailing_ = ff_core_Option.Option_flatMap(ff_core_List.List_last(ff_core_List.List_dropFirst(memberScheme_.signature_.parameters_, 1)), ((p_) => {
+{
+const _1 = p_.valueType_;
+{
+if(_1.TConstructor) {
+const name_ = _1.name_;
+const typeArguments_ = _1.generics_;
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+const arguments_ = ff_core_List.List_dropLast(ff_core_List.List_dropFirst(typeArguments_, 1), 1);
+return ff_core_Option.Some(ff_core_Pair.Pair(((((" {" + p_.name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_) => {
+return "_"
+})), ", ")) + ")}"), ((((" {${0:" + p_.name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_) => {
+return "_"
+})), ", ")) + ")}}")))
+return
+}
+}
+}
+{
+return ff_core_Option.None()
+return
+}
+}
+}));
+const allRequired_ = ff_core_List.List_filter(ff_core_List.List_dropFirst(memberScheme_.signature_.parameters_, 1), ((_w1) => {
+return ff_core_Option.Option_isEmpty(_w1.default_)
+}));
+const required_ = ff_core_List.List_map(ff_core_List.List_pairs((ff_core_Option.Option_isEmpty(trailing_)
+? allRequired_
+: ff_core_List.List_dropLast(allRequired_, 1))), ((_1) => {
+{
+const index_ = _1.first_;
+const p_ = _1.second_;
+return ff_core_Pair.Pair(p_.name_, (((("${" + (index_ + 1)) + ":") + p_.name_) + "}"))
+return
+}
+}));
+const optional_ = ((ff_core_List.List_size(allRequired_) !== (ff_core_List.List_size(memberScheme_.signature_.parameters_) - 1))
+? ff_core_Option.Some("...")
+: ff_core_Option.None());
+return ff_core_Pair.Pair((((ff_core_Option.Option_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
+? (("(" + ff_core_List.List_join(ff_core_List.List_addAll(ff_core_List.List_map(required_, ((_w1) => {
+return _w1.first_
+})), ff_core_Option.Option_toList(optional_)), ", ")) + ")")
+: "") + ff_core_Option.Option_else(ff_core_Option.Option_map(trailing_, ((_w1) => {
+return _w1.first_
+})), (() => {
+return ""
+}))), (((ff_core_Option.Option_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
+? (("(" + ff_core_List.List_join(ff_core_List.List_map(required_, ((_w1) => {
+return _w1.second_
+})), ", ")) + ")")
+: "") + ff_core_Option.Option_else(ff_core_Option.Option_map(trailing_, ((_w1) => {
+return _w1.second_
+})), (() => {
+return "$0"
+}))))
+})()
+: ff_core_Pair.Pair("", ""));
+ff_core_Stack.Stack_push(members_, ff_compiler_Syntax.CompletionInfo((ff_core_String.String_dropFirst(memberName_, ff_core_String.String_size(memberPrefix_)) + pair_.first_), (ff_core_String.String_dropFirst(memberName_, ff_core_String.String_size(memberPrefix_)) + pair_.second_), memberScheme_.signature_.returnType_))
+}
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+self_.completionResult_ = ff_core_Stack.Stack_toList(members_, 0, 9007199254740991)
 }
 
 export async function Inference_inferModule$(self_, module_, otherModules_, $c) {
@@ -1889,8 +2004,22 @@ const result_ = (((_c) => {
 return ff_compiler_Syntax.Module(_c.file_, _c.packagePair_, _c.imports_, _c.types_, traits_, instances_, extends_, lets_, functions_)
 }))(module_);
 const subsititution_ = ff_compiler_Substitution.Substitution(self_.unification_.substitution_);
-self_.hoverResult_ = ff_core_Option.Option_map(self_.hoverResult_, ((_w1) => {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Option_map(self_.hoverResult_.type_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteType(subsititution_, _w1)
+})), ff_core_Option.Option_map(self_.hoverResult_.effect_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteType(subsititution_, _w1)
+})))
+}))(self_.hoverResult_);
+self_.completionResult_ = ff_core_List.List_map(self_.completionResult_, ((r_) => {
+{
+const _1 = r_;
+{
+const _c = _1;
+return ff_compiler_Syntax.CompletionInfo(_c.label_, _c.snippet_, ff_compiler_Substitution.Substitution_substituteType(subsititution_, r_.type_))
+return
+}
+}
 }));
 return ff_compiler_Substitution.Substitution_substituteModule(subsititution_, result_)
 }
@@ -2159,8 +2288,10 @@ return
 if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.None) {
-if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(expected_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(expected_), _c.effect_)
+}))(self_.hoverResult_)
 };
 return ff_core_Map.empty_()
 return
@@ -2172,8 +2303,10 @@ if(_1.PVariable) {
 const at_ = _1.at_;
 if(_1.name_.Some) {
 const name_ = _1.name_.value_;
-if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(expected_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(expected_), _c.effect_)
+}))(self_.hoverResult_)
 };
 return ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(name_, expected_), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
@@ -2185,8 +2318,10 @@ if(_1.PAlias) {
 const at_ = _1.at_;
 const pattern_ = _1.pattern_;
 const variable_ = _1.variable_;
-if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(expected_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(expected_), _c.effect_)
+}))(self_.hoverResult_)
 };
 return ff_core_Map.Map_add(ff_compiler_Inference.Inference_inferPattern(self_, environment_, expected_, pattern_), variable_, expected_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 return
@@ -2213,7 +2348,9 @@ return _w1.name_
 return _w1.valueType_
 })));
 if(ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-self_.hoverResult_ = ff_core_Option.Some(recordType_)
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(expected_), _c.effect_)
+}))(self_.hoverResult_)
 };
 return ff_core_List.List_toMap(ff_core_List.List_map(ff_core_Option.Option_toList(variableOption_), ((_w1) => {
 return ff_core_Pair.Pair(_w1, recordType_)
@@ -2311,6 +2448,16 @@ const typeArguments_ = _1.generics_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Record$", 0);
 if(_guard1) {
 const fieldNames_ = ff_core_List.List_dropFirst(ff_core_Array.Array_toList(ff_core_String.String_split(name_, 36)), 1);
+if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.completionResult_ = ff_core_List.List_map(ff_core_List.List_zip(fieldNames_, typeArguments_), ((_1) => {
+{
+const fieldName_ = _1.first_;
+const typeArgument_ = _1.second_;
+return ff_compiler_Syntax.CompletionInfo(fieldName_, fieldName_, typeArgument_)
+return
+}
+}))
+};
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
 })), ((_w1) => {
@@ -2338,9 +2485,13 @@ const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
-const methodName_ = ((name_ + "_") + e_.field_);
+const memberPrefix_ = (name_ + "_");
+if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completeMember(self_, environment_, memberPrefix_)
+};
+const memberName_ = (memberPrefix_ + e_.field_);
 {
-const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, methodName_, typeArguments_);
+const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, memberName_, typeArguments_);
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
@@ -2489,8 +2640,10 @@ const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, 
 const environment2_ = (((_c) => {
 return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.effect_)
 }))(environment_);
-if((ff_core_Option.Option_contains(self_.hoverAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(scheme_.signature_.returnType_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(_c.at_, _c.qualifiedName_, ff_core_Option.Some(scheme_.signature_.returnType_), _c.effect_)
+}))(self_.hoverResult_)
 };
 {
 const _1 = e_;
@@ -2702,7 +2855,11 @@ const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, re
 const t_ = _1;
 if(_1.TConstructor) {
 const name_ = _1.name_;
-const methodName_ = ((name_ + "_") + f_.field_);
+const memberPrefix_ = (name_ + "_");
+if(ff_core_Option.Option_contains(self_.completionAt_, f_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completeMember(self_, environment_, memberPrefix_)
+};
+const methodName_ = (memberPrefix_ + f_.field_);
 {
 const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, f_.at_, methodName_, ff_core_List.Empty());
 {
@@ -3557,14 +3714,87 @@ ff_compiler_Unification.Unification_constrain(self_.unification_, at_, ff_core_L
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.Empty(), ff_core_List.Empty(), parameters_, returnType_, effect_)
 }))(scheme_.signature_);
-if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_))) {
-self_.hoverResult_ = ff_core_Option.Some(returnType_);
-self_.hoverResultAt_ = ff_core_Option.Some(scheme_.signature_.at_)
+if((ff_core_Option.Option_contains(self_.hoverAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.type_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(scheme_.signature_.at_), _c.qualifiedName_, ff_core_Option.Some(returnType_), ff_core_Option.Some(effect_))
+}))(self_.hoverResult_)
 };
 return ff_compiler_Environment.Instantiated(instantiation_, (((_c) => {
 return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtype_, _c.isTraitMethod_, signature_)
 }))(scheme_))
 }))
+}
+
+export async function Inference_completeMember$(self_, environment_, memberPrefix_, $c) {
+let members_ = ff_core_Stack.make_();
+ff_core_Map.Map_each(environment_.symbols_, ((memberName_, memberScheme_) => {
+if(ff_core_String.String_startsWith(memberName_, memberPrefix_, 0)) {
+const pair_ = ((!memberScheme_.isVariable_)
+? (function() {
+const trailing_ = ff_core_Option.Option_flatMap(ff_core_List.List_last(ff_core_List.List_dropFirst(memberScheme_.signature_.parameters_, 1)), ((p_) => {
+{
+const _1 = p_.valueType_;
+{
+if(_1.TConstructor) {
+const name_ = _1.name_;
+const typeArguments_ = _1.generics_;
+const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
+if(_guard1) {
+const arguments_ = ff_core_List.List_dropLast(ff_core_List.List_dropFirst(typeArguments_, 1), 1);
+return ff_core_Option.Some(ff_core_Pair.Pair(((((" {" + p_.name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_) => {
+return "_"
+})), ", ")) + ")}"), ((((" {${0:" + p_.name_) + "(") + ff_core_List.List_join(ff_core_List.List_map(arguments_, ((_) => {
+return "_"
+})), ", ")) + ")}}")))
+return
+}
+}
+}
+{
+return ff_core_Option.None()
+return
+}
+}
+}));
+const allRequired_ = ff_core_List.List_filter(ff_core_List.List_dropFirst(memberScheme_.signature_.parameters_, 1), ((_w1) => {
+return ff_core_Option.Option_isEmpty(_w1.default_)
+}));
+const required_ = ff_core_List.List_map(ff_core_List.List_pairs((ff_core_Option.Option_isEmpty(trailing_)
+? allRequired_
+: ff_core_List.List_dropLast(allRequired_, 1))), ((_1) => {
+{
+const index_ = _1.first_;
+const p_ = _1.second_;
+return ff_core_Pair.Pair(p_.name_, (((("${" + (index_ + 1)) + ":") + p_.name_) + "}"))
+return
+}
+}));
+const optional_ = ((ff_core_List.List_size(allRequired_) !== (ff_core_List.List_size(memberScheme_.signature_.parameters_) - 1))
+? ff_core_Option.Some("...")
+: ff_core_Option.None());
+return ff_core_Pair.Pair((((ff_core_Option.Option_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
+? (("(" + ff_core_List.List_join(ff_core_List.List_addAll(ff_core_List.List_map(required_, ((_w1) => {
+return _w1.first_
+})), ff_core_Option.Option_toList(optional_)), ", ")) + ")")
+: "") + ff_core_Option.Option_else(ff_core_Option.Option_map(trailing_, ((_w1) => {
+return _w1.first_
+})), (() => {
+return ""
+}))), (((ff_core_Option.Option_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
+? (("(" + ff_core_List.List_join(ff_core_List.List_map(required_, ((_w1) => {
+return _w1.second_
+})), ", ")) + ")")
+: "") + ff_core_Option.Option_else(ff_core_Option.Option_map(trailing_, ((_w1) => {
+return _w1.second_
+})), (() => {
+return "$0"
+}))))
+})()
+: ff_core_Pair.Pair("", ""));
+ff_core_Stack.Stack_push(members_, ff_compiler_Syntax.CompletionInfo((ff_core_String.String_dropFirst(memberName_, ff_core_String.String_size(memberPrefix_)) + pair_.first_), (ff_core_String.String_dropFirst(memberName_, ff_core_String.String_size(memberPrefix_)) + pair_.second_), memberScheme_.signature_.returnType_))
+}
+}), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+self_.completionResult_ = ff_core_Stack.Stack_toList(members_, 0, 9007199254740991)
 }
 
 export const ff_core_Any_HasAnyTag$ff_compiler_Inference_Inference = {
@@ -3582,7 +3812,7 @@ show_(x_) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.hoverResult_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverResultAt_)) + ")")
+return ((((((((((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.completionAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_HoverInfo.show_(z_.hoverResult_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompletionInfo).show_(z_.completionResult_)) + ")")
 return
 }
 }
@@ -3592,7 +3822,7 @@ async show_$(x_, $c) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type).show_(z_.hoverResult_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverResultAt_)) + ")")
+return ((((((((((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.completionAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_HoverInfo.show_(z_.hoverResult_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompletionInfo).show_(z_.completionResult_)) + ")")
 return
 }
 }
@@ -3612,7 +3842,7 @@ return
 }
 }
 {
-return (ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverAt_, y_.hoverAt_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.hoverResult_, y_.hoverResult_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverResultAt_, y_.hoverResultAt_))))
+return (ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverAt_, y_.hoverAt_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.completionAt_, y_.completionAt_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_HoverInfo.equals_(x_.hoverResult_, y_.hoverResult_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_CompletionInfo).equals_(x_.completionResult_, y_.completionResult_)))))
 return
 }
 }
@@ -3629,7 +3859,7 @@ return
 }
 }
 {
-return (ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverAt_, y_.hoverAt_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type).equals_(x_.hoverResult_, y_.hoverResult_) && ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverResultAt_, y_.hoverResultAt_))))
+return (ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverAt_, y_.hoverAt_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.completionAt_, y_.completionAt_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_HoverInfo.equals_(x_.hoverResult_, y_.hoverResult_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_CompletionInfo).equals_(x_.completionResult_, y_.completionResult_)))))
 return
 }
 }
@@ -3657,15 +3887,20 @@ const hoverAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Op
 if((hoverAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return hoverAtOrdering_
 } else {
-const hoverResultOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.hoverResult_, y_.hoverResult_);
+const completionAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.completionAt_, y_.completionAt_);
+if((completionAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return completionAtOrdering_
+} else {
+const hoverResultOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_HoverInfo.compare_(x_.hoverResult_, y_.hoverResult_);
 if((hoverResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return hoverResultOrdering_
 } else {
-const hoverResultAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.hoverResultAt_, y_.hoverResultAt_);
-if((hoverResultAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return hoverResultAtOrdering_
+const completionResultOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompletionInfo).compare_(x_.completionResult_, y_.completionResult_);
+if((completionResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return completionResultOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -3694,15 +3929,20 @@ const hoverAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Op
 if((hoverAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return hoverAtOrdering_
 } else {
-const hoverResultOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Type).compare_(x_.hoverResult_, y_.hoverResult_);
+const completionAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.completionAt_, y_.completionAt_);
+if((completionAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return completionAtOrdering_
+} else {
+const hoverResultOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_HoverInfo.compare_(x_.hoverResult_, y_.hoverResult_);
 if((hoverResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return hoverResultOrdering_
 } else {
-const hoverResultAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.hoverResultAt_, y_.hoverResultAt_);
-if((hoverResultAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return hoverResultAtOrdering_
+const completionResultOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompletionInfo).compare_(x_.completionResult_, y_.completionResult_);
+if((completionResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return completionResultOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -3725,8 +3965,9 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.serializeUsing_(serialization_, value_.unification_);
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.hoverAt_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, value_.hoverResult_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.hoverResultAt_)
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.completionAt_);
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_HoverInfo.serializeUsing_(serialization_, value_.hoverResult_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_CompletionInfo).serializeUsing_(serialization_, value_.completionResult_)
 return
 }
 }
@@ -3739,7 +3980,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_))
+return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_HoverInfo.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_CompletionInfo).deserializeUsing_(serialization_))
 return
 }
 }
@@ -3760,8 +4001,9 @@ ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0
 serialization_.offset_ += 1;
 ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.serializeUsing_(serialization_, value_.unification_);
 ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.hoverAt_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).serializeUsing_(serialization_, value_.hoverResult_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.hoverResultAt_)
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.completionAt_);
+ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_HoverInfo.serializeUsing_(serialization_, value_.hoverResult_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_CompletionInfo).serializeUsing_(serialization_, value_.completionResult_)
 return
 }
 }
@@ -3774,7 +4016,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_))
+return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_HoverInfo.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_CompletionInfo).deserializeUsing_(serialization_))
 return
 }
 }

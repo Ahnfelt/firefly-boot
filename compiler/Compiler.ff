@@ -26,8 +26,7 @@ capability Compiler(
     mutable emittedModules: Set[String]
     mutable phaseDurations: List[Pair[String, Duration]]
     mutable phaseDurationDelta: Duration
-    mutable hoverResult: Option[Pair[String, String]]
-    mutable hoverResultAt: Option[Location]
+    mutable hoverResult: HoverInfo
     mutable completionResult: List[CompletionInfo]
 )
 
@@ -60,8 +59,7 @@ make(
         emittedModules = Set.empty()
         phaseDurations = []
         phaseDurationDelta = Duration(0.0)
-        hoverResult = None
-        hoverResultAt = None
+        hoverResult = HoverInfo(None, None, None, None)
         completionResult = []
     )
 }
@@ -191,9 +189,8 @@ extend self: Compiler {
         let result = try {
             resolver.resolveModule(module, otherModules)
         } finally {
-            if(!resolver.state.hoverResultAt.isEmpty()) {
-                Log.show(resolver.state.hoverResultAt)
-                self.hoverResultAt = resolver.state.hoverResultAt
+            resolver.state.hoverResult.at.each {at => 
+                self.hoverResult = self.hoverResult.HoverInfo(at = Some(at))
             }
         } grab() 
 
@@ -226,15 +223,8 @@ extend self: Compiler {
         let inferredModule = try {
             inference.inferModule(module, otherModules)
         } finally {
-            if(!inference.hoverResult.isEmpty()) {
-                let asynchronous = inference.hoverResultEffect.{
-                    | Some(TConstructor(_, "Q$", _)) => "This call may be asynchronous." 
-                    | _ => ""
-                }
-                self.hoverResult = inference.hoverResult.map {Pair(_.show([]), asynchronous)}
-            }
-            if(!inference.hoverResultAt.isEmpty()) {
-                self.hoverResultAt = inference.hoverResultAt
+            if(!inference.hoverResult.at.isEmpty()) {
+                self.hoverResult = inference.hoverResult
             }
             if(!inference.completionResult.isEmpty()) {
                 self.completionResult = inference.completionResult
