@@ -385,6 +385,9 @@ extend self: Resolver {
             if(self.hoverAt.contains(constraint.at)) {
                 self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
             }
+            if(self.referencesTo.contains(at)) {
+                self.state.referencesResult = [...self.state.referencesResult, at]
+            }            
         }
         let name =
             self.traits.get(constraint.name).else {

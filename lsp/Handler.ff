@@ -256,7 +256,7 @@ extend self: Handler {
                 } grab()
         
 
-                let clientLocations = referencesResult.map{ location => 
+                let clientLocations = [definedAt, ...referencesResult].map{ location => 
                     self.toClientLocation(system, location)
                 }
                 js.array(clientLocations)
