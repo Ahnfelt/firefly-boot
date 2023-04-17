@@ -297,7 +297,7 @@ extend self: Inference {
                         if(self.completionAt.contains(e.at)) {
                             self.completionResult = fieldNames.zip(typeArguments).map {
                                 | Pair(fieldName, typeArgument) => 
-                                    CompletionInfo(fieldName, fieldName, typeArgument)
+                                    CompletionInfo(fieldName, fieldName, typeArgument, "")
                             }
                         }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
@@ -961,10 +961,39 @@ extend self: Inference {
                         } + trailing.map {_.second}.else {"$0"}
                     )
                 } else {Pair("", "")}
+                let shortName = memberName.dropFirst(memberPrefix.size())
+                let documentation = if(memberScheme.isVariable) {
+                    if(memberScheme.isMutable) {"mutable "} else {""} +
+                    shortName +
+                    ": " + memberScheme.signature.returnType.show([])
+                } else {
+                    let generics = ""
+                    let parameters = if(memberScheme.signature.parameters.dropFirst().isEmpty()) {""} else {
+                        "\n" + memberScheme.signature.parameters.dropFirst().map {p =>
+                            if(p.mutable) {"    mutable "} else {"    "} +
+                            p.name + ": " + p.valueType.show([]) +
+                            p.default.map {
+                                | EVariant(_, n, _, None) => n
+                                | EVariant(_, n, _, _) => n + "(...)"
+                                | EChar(_, v) => v
+                                | EInt(_, v) => v
+                                | EFloat(_, v) => v
+                                | EString(_, v) => v.replace("```", "'''")
+                                | ELambda(_, _) => "{...}"
+                                | EList(_, _, []) => "[]"
+                                | EList(_, _, _) => "[...]"
+                                | _ => " = ..."
+                            }.map {" = " + _}.else {""}
+                        }.join("\n") + "\n"
+                    }
+                    shortName + generics + "(" + parameters + "): " + 
+                    memberScheme.signature.returnType.show([])
+                }
                 members.push(CompletionInfo(
-                    label = memberName.dropFirst(memberPrefix.size()) + pair.first
-                    snippet = memberName.dropFirst(memberPrefix.size()) + pair.second
+                    label = shortName + pair.first
+                    snippet = shortName + pair.second
                     type = memberScheme.signature.returnType
+                    documentation = documentation
                 ))
             }
         }
