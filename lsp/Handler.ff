@@ -301,8 +301,11 @@ extend self: Handler {
         let tokens = Tokenizer.tokenize(path, code, None)
         let token = tokens.toStream().find {token =>
             line >= token.startLine && line <= token.stopLine && (
-                (line > token.startLine || column >= (1 + token.startOffset - token.startLineOffset)) &&
-                (line < token.stopLine || column < (1 + token.stopOffset - token.stopLineOffset))
+                (line > token.startLine || column >= 1 + token.startOffset - token.startLineOffset) &&
+                (line < token.stopLine || column < 1 + token.stopOffset - token.stopLineOffset || (
+                    (token.kind == LLower || token.kind == LUpper) && 
+                    column == 1 + token.stopOffset - token.stopLineOffset
+                ))
             )
         }
         token.map {t => TokenLocation(
@@ -313,5 +316,6 @@ extend self: Handler {
             raw = t.raw()
         )}
     }
+    // foo.xyz
 
 }
