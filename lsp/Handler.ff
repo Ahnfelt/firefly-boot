@@ -240,13 +240,13 @@ extend self: Handler {
             Log.trace(message)
         } grab()
 
-        Log.show(hoverResult.at)
+        Log.trace("handleReferences hoverResult: " + Show.show(hoverResult))
+
         let js = system.js()
         let o = hoverResult.at.{
             | Some(definedAt) => 
+                Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 // TODO search all files in workspace
-                //let locations: List[Location] = Builder.findReferences(referencesAt.file, definedAt) 
-
                 mutable referencesResult = []
                 try {
                     let references = Some(Pair(definedAt, {referencesResult = _}))
