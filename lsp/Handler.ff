@@ -168,31 +168,6 @@ extend self: Handler {
         self.virtualFiles = self.virtualFiles.remove(fixedPath)
     }
     
-    handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let completionAt = self.grabFixedLocation(system, parameters)
-        mutable completionResult = []
-        try {
-            let completion = Some(Pair(completionAt, {completionResult = _}))
-            Builder.check(system, ".", completionAt.file, self.virtualFiles, None, completion, None)
-        } catch {| CompileError(at, message), error =>
-            Log.trace(message)
-        } grab()
-        let js = system.js()
-        let o = js.object()
-            .with("isIncomplete", False)
-            .with("items", completionResult.toArray().map {| CompletionInfo i =>
-                js.object()
-                    .with("kind", if(i.label.any {_ == '('}) {2} else {5}) // Method or Field
-                    .with("label", i.label)
-                    .with("labelDetails", js.object()
-                        .with("detail", ": " + i.type.show([]))
-                    )
-                    .with("insertText", i.snippet)
-                    .with("insertTextFormat", 2) // Snippet
-            })
-        Result(o)
-    }
-    
     handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
         let hoverAt = self.grabFixedLocation(system, parameters)
         mutable hoverResult = HoverInfo(None, None, None)
@@ -223,6 +198,35 @@ extend self: Handler {
                 }
             )
         }
+        Result(o)
+    }
+    
+    handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let completionAt = self.grabFixedLocation(system, parameters)
+        mutable completionResult = []
+        try {
+            let completion = Some(Pair(completionAt, {completionResult = _}))
+            Builder.check(system, ".", completionAt.file, self.virtualFiles, None, completion, None)
+        } catch {| CompileError(at, message), error =>
+            Log.trace(message)
+        } grab()
+        let js = system.js()
+        let o = js.object()
+            .with("isIncomplete", False)
+            .with("items", completionResult.toArray().map {| CompletionInfo i =>
+                js.object()
+                    .with("kind", if(i.label.any {_ == '('}) {2} else {5}) // Method or Field
+                    .with("label", i.label)
+                    .with("labelDetails", js.object()
+                        .with("detail", ": " + i.type.show([]))
+                    )
+                    .with("insertText", i.snippet)
+                    .with("insertTextFormat", 2) // Snippet
+                    .with("documentation", js.object()
+                        .with("kind", "markdown")
+                        .with("value", "```\n" + i.documentation + "\n```")
+                    )
+            })
         Result(o)
     }
 
