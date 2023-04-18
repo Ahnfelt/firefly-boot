@@ -1,1 +1,1 @@
-Error: 
+Error: ENOENT: no such file or directory, open 'package.ff'
