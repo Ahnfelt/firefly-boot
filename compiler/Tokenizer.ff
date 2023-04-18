@@ -36,17 +36,6 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
                             last.stopLine, last.stopLineOffset, last.stopOffset
                             last.stopLine, last.stopLineOffset, last.stopOffset
                         ))
-                    } elseIf {completionLine < startLine || completionColumn < startColumn || nonIdentifier} {
-                        function emitFakeToken(kind: TokenKind) {
-                            tokens.push(Token(
-                                file, code, kind
-                                startLine, startLineOffset, startOffset
-                                startLine, startLineOffset, startOffset
-                            ))
-                        }
-                        if(last.kind.beforeSeparator()) {emitFakeToken(LSeparator)}
-                        emitFakeToken(LLower) // This won't be in the right completionAt spot
-                        if(last.kind.afterSeparator()) {emitFakeToken(LSeparator)}
                     }
                 }
             }
