@@ -2,6 +2,7 @@ import Syntax
 
 class Resolver(
     variables: Map[String, String]
+    variableLocations: Map[String, Location]
     variants: Map[String, String]
     types: Map[String, String]
     typeLocations: Map[String, Location]
@@ -23,6 +24,7 @@ class ResolverState(
 make(hoverAt: Option[Location], referencesTo: Option[Location]): Resolver {
     Resolver(
         variables = [].toMap()
+        variableLocations = [].toMap()
         variants = [].toMap()
         types = [].toMap()
         typeLocations = [].toMap()
@@ -233,7 +235,16 @@ extend self: Resolver {
         | EInt _, _ => term
         | EFloat _, _ => term
         | EVariable e, _ =>
-            self.variables.get(e.name).map { e.EVariable(name = _) }.else {term}
+            let at = self.variableLocations.get(e.name)
+            if(self.hoverAt.contains(e.at)) {
+                at.each {at =>
+                    self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
+                }
+            }
+            if(at.any {self.referencesTo.contains(_)}) {
+                self.state.referencesResult = [...self.state.referencesResult, e.at]
+            }
+            self.variables.get(e.name).map {e.EVariable(name = _)}.else {term}
         | EList(at, t, items), _ =>
             EList(at, self.resolveType(t, topLevel), items.map {| Pair(item, spread) =>
                 Pair(self.resolveTerm(item, topLevel), spread)
@@ -275,8 +286,8 @@ extend self: Resolver {
                 at = at
                 target = target.DynamicCall(function = self.resolveTerm(target.function, topLevel))
                 effect = self.resolveType(effect, topLevel)
-                typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
-                arguments = arguments.map { a => a.Argument(value = self.resolveTerm(a.value, topLevel)) }
+                typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
+                arguments = arguments.map {a => a.Argument(value = self.resolveTerm(a.value, topLevel))}
                 dictionaries = dictionaries
             )
         | ECall(at, StaticCall _, _, _, _, _), _ =>
@@ -284,21 +295,24 @@ extend self: Resolver {
         | ERecord(at, fields), _ =>
             ERecord(
                 at = at
-                fields = fields.map { f => f.Field(value = self.resolveTerm(f.value, topLevel)) }
+                fields = fields.map {f => f.Field(value = self.resolveTerm(f.value, topLevel))}
             )
         | EWildcard e, _ =>
-            if(e.index == 0) { throw(CompileError(e.at, "Unbound wildcard")) }
+            if(e.index == 0) {throw(CompileError(e.at, "Unbound wildcard"))}
             e.EWildcard()
         | EFunctions(at, functions, body), _ =>
-            let functionMap = functions.map { _.signature.name }.map { name => Pair(name, name) }.toMap()
+            let functionMap = functions.map {_.signature.name}.map {name => Pair(name, name)}.toMap()
             let self2 = self.Resolver(variables = self.variables.addAll(functionMap))
             EFunctions(
-                at = at,
-                functions = functions.map { self2.resolveFunctionDefinition(_, topLevel) },
+                at = at
+                functions = functions.map {self2.resolveFunctionDefinition(_, topLevel)}
                 body = self2.resolveTerm(body, topLevel)
             )
         | ELet e, _ =>
-            let self2 = self.Resolver(variables = self.variables.add(e.name, e.name))
+            let self2 = self.Resolver(
+                variables = self.variables.add(e.name, e.name)
+                variableLocations = self.variableLocations.add(e.name, e.at)
+            )
             e.ELet(
                 valueType = self.resolveType(e.valueType, topLevel)
                 value = self.resolveTerm(e.value, topLevel)
@@ -437,10 +451,12 @@ extend self: Resolver {
     }
 
     withSignature(signature: Signature): Resolver {
-        let variableMap = signature.parameters.map { _.name }.map { name => Pair(name, name) }.toMap()
-        let typeMap = signature.generics.map { name => Pair(name, name) }.toMap()
+        let variableMap = signature.parameters.map {_.name}.map {name => Pair(name, name)}.toMap()
+        let variableLocationMap = signature.parameters.map {p => Pair(p.name, p.at)}.toMap()
+        let typeMap = signature.generics.map {name => Pair(name, name)}.toMap()
         self.Resolver(
             variables = self.variables.addAll(variableMap)
+            variableLocations = self.variableLocations.addAll(variableLocationMap)
             typeParameters = self.typeParameters.addAll(signature.generics.toSet())
             types = self.types.addAll(typeMap)
             asyncTypes = self.asyncTypes.removeAll(signature.generics.toSet())
@@ -448,28 +464,31 @@ extend self: Resolver {
     }
 
     resolveCase(case: MatchCase, topLevel: Bool): MatchCase {
-        function findVariables(pattern: MatchPattern): Map[String, String] {
+        function findVariables(pattern: MatchPattern): Map[String, Pair[Location, String]] {
             | PString _ =>
                 Map.empty()
             | PInt _ =>
                 Map.empty()
             | PChar _ =>
                 Map.empty()
-            | PVariable(_, Some(name)) =>
-                [Pair(name, name)].toMap()
+            | PVariable(at, Some(name)) =>
+                [Pair(name, Pair(at, name))].toMap()
             | PVariable(_, None) =>
                 Map.empty()
             | PVariant(_, _, patterns) =>
-                patterns.map(findVariables).foldLeft(Map.empty[String, String]()) {_.addAll(_)}
-            | PVariantAs(_, _, variable) =>
-                variable.toList().map { x => Pair(x, x) }.toMap()
-            | PAlias(_, pattern, variable) =>
-                [Pair(variable, variable)].toMap().addAll(findVariables(pattern))
+                patterns.map(findVariables).foldLeft(Map.empty()) {_.addAll(_)}
+            | PVariantAs(at, _, variable) =>
+                variable.toList().map {x => Pair(x, Pair(at, x))}.toMap()
+            | PAlias(at, pattern, variable) =>
+                [Pair(variable, Pair(at, variable))].toMap().addAll(findVariables(pattern))
         }
-        let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty[String, String]()) {_.addAll(_)}
+        let variableMap = case.patterns.map(findVariables).foldLeft(Map.empty()) {_.addAll(_)}
         mutable guards = []
-        let variableMap2 = case.guards.foldLeft(variableMap) { variableMap1, g =>
-            let self2 = self.Resolver(variables = self.variables.addAll(variableMap1))
+        let variableMap2 = case.guards.foldLeft(variableMap) {variableMap1, g =>
+            let self2 = self.Resolver(
+                variables = self.variables.addAll(variableMap1.mapValues {_, p => p.second})
+                variableLocations = self.variableLocations.addAll(variableMap1.mapValues {_, p => p.first})
+            )
             let guard = g.MatchGuard(
                 term = self2.resolveTerm(g.term, topLevel)
                 pattern = self2.resolvePattern(g.pattern)
@@ -477,10 +496,13 @@ extend self: Resolver {
             guards = [guard, ...guards]
             variableMap1.addAll(findVariables(guard.pattern))
         }
-        let self3 = self.Resolver(variables = self.variables.addAll(variableMap2))
+        let self3 = self.Resolver(
+            variables = self.variables.addAll(variableMap2.mapValues {_, p => p.second})
+            variableLocations = self.variableLocations.addAll(variableMap2.mapValues {_, p => p.first})
+        )
         MatchCase(
             at = case.at
-            patterns = case.patterns.map { self.resolvePattern(_) }
+            patterns = case.patterns.map {self.resolvePattern(_)}
             guards = guards.reverse()
             body = self3.resolveTerm(case.body, topLevel)
         )
@@ -496,11 +518,11 @@ extend self: Resolver {
         | PVariable _ =>
             pattern
         | PVariant(at, name, patterns) =>
-            let newName = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
-            let newPatterns = patterns.map { self.resolvePattern(_) }
+            let newName = self.variants.get(name).else {throw(CompileError(at, "No such variant: " + name))}
+            let newPatterns = patterns.map {self.resolvePattern(_)}
             PVariant(at, newName, newPatterns)
         | PVariantAs(at, name, variable) =>
-            let newName = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
+            let newName = self.variants.get(name).else {throw(CompileError(at, "No such variant: " + name))}
             PVariantAs(at, newName, variable)
         | PAlias(at, pattern, variable) =>
             let newPattern = self.resolvePattern(pattern)
