@@ -217,17 +217,26 @@ extend self: Inference {
                 literal("Char")
             | PVariable(at, None) =>
                 if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
-                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(expected))
+                    self.hoverResult = self.hoverResult.HoverInfo(
+                        at = Some(at)
+                        type = Some(expected)
+                    )
                 }
                 Map.empty()
             | PVariable(at, Some(name)) =>
                 if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
-                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(expected))
+                    self.hoverResult = self.hoverResult.HoverInfo(
+                        at = Some(at)
+                        type = Some(expected)
+                    )
                 }
                 [Pair(name, expected)].toMap()
             | PAlias(at, pattern, variable) =>
                 if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
-                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(expected))
+                    self.hoverResult = self.hoverResult.HoverInfo(
+                        at = Some(at)
+                        type = Some(expected)
+                    )
                 }
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
             | PVariantAs(at, name, variableOption) =>
@@ -395,7 +404,10 @@ extend self: Inference {
                     Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType, noEffect))
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
                 if(self.hoverAt.contains(e.at) && self.hoverResult.at.isEmpty()) {
-                    self.hoverResult = self.hoverResult.HoverInfo(type = Some(scheme.signature.returnType))
+                    self.hoverResult = self.hoverResult.HoverInfo(
+                        at = Some(e.at)
+                        type = Some(scheme.signature.returnType)
+                    )
                 }
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
@@ -859,6 +871,12 @@ extend self: Inference {
                 | _ =>
                     remainingArguments.find {_.name.contains(p.name)}.map {| Argument(at, _, e) =>
                         remainingArguments = remainingArguments.filter {!_.name.contains(p.name)}
+                        if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
+                            self.hoverResult = self.hoverResult.HoverInfo(
+                                at = Some(p.at)
+                                type = Some(t)
+                            )
+                        }
                         let e2 = self.inferTerm(environment, t, e)
                         Argument(at, Some(p.name), e2)
                     }.else {
@@ -977,7 +995,7 @@ extend self: Inference {
                 let shortName = memberName.dropFirst(prefix.size())
                 let returnType = self.unification.substitute(memberScheme.signature.returnType)
                 let documentation = if(memberScheme.isVariable) {
-                    if(memberScheme.isMutable) {"mutable "} elseIf {!member} {"let "} else {""} +
+                    if(memberScheme.isMutable) {"mutable "} else {""} +
                     shortName +
                     ": " + returnType.show([])
                 } else {
