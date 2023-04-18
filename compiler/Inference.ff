@@ -1011,7 +1011,7 @@ extend self: Inference {
                 members.push(CompletionInfo(
                     label = shortName + pair.first
                     snippet = shortName + pair.second
-                    member = True
+                    member = member
                     type = returnType
                     documentation = documentation
                 ))
