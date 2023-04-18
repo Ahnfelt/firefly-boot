@@ -1013,8 +1013,12 @@ extend self: Inference {
                             if(p.mutable) {selfIndent + "    mutable "} else {selfIndent + "    "} +
                             p.name + ": " + p.valueType.show([]) +
                             p.default.map {
-                                | EVariant(_, n, _, None) => n
-                                | EVariant(_, n, _, _) => n + "(...)"
+                                | EVariant(_, n, _, None) =>
+                                    n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+                                | EVariant(_, n, _, Some([])) =>
+                                    n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+                                | EVariant(_, n, _, _) => 
+                                    n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse() + "(...)"
                                 | EChar(_, v) => v
                                 | EInt(_, v) => v
                                 | EFloat(_, v) => v

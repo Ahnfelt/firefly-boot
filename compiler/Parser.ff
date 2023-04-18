@@ -653,7 +653,7 @@ extend self: Parser {
                     Some(token)
                 } else {None}
                 let value = self.parseTerm()
-                arguments.push(Argument(nameToken.map{_.at()}.else{value.at}, nameToken.map{_.raw()}, value))
+                arguments.push(Argument(nameToken.map {_.at()}.else {value.at}, nameToken.map {_.raw()}, value))
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
             }
             self.rawSkip(LBracketRight, ")")
