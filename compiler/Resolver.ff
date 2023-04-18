@@ -366,7 +366,7 @@ extend self: Resolver {
             let effect = if(isFunctionType || self.asyncTypes.contains(constructor.name)) {
                 [self.makeEffectArgument(constructor.at, topLevel)]
             } else {[]}
-            let generics = constructor.generics.map { self.resolveType(_, topLevel) }
+            let generics = constructor.generics.map {self.resolveType(_, topLevel)}
             if(isFunctionType) {
                 let arguments = generics.dropLast()
                 let returnType = generics.grabLast()

@@ -103,24 +103,24 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Compiler
-export function Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, hoverAt_, completionAt_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_, hoverResult_, completionResult_) {
-return {emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, hoverAt_, completionAt_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_, hoverResult_, completionResult_};
+export function Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_, hoverResult_, completionResult_, referencesResult_) {
+return {emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, packagePaths_, singleFilePackages_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, parsedModules_, resolvedModules_, derivedModules_, inferredModules_, emittedModules_, phaseDurations_, phaseDurationDelta_, hoverResult_, completionResult_, referencesResult_};
 }
 
 export const coreImports_ = ff_core_List.List_map(ff_core_List.Link("Any", ff_core_List.Link("Array", ff_core_List.Link("AssetSystem", ff_core_List.Link("Bool", ff_core_List.Link("BrowserSystem", ff_core_List.Link("Buffer", ff_core_List.Link("BuildSystem", ff_core_List.Link("Channel", ff_core_List.Link("Char", ff_core_List.Link("Core", ff_core_List.Link("Duration", ff_core_List.Link("Equal", ff_core_List.Link("Error", ff_core_List.Link("FetchSystem", ff_core_List.Link("FileHandle", ff_core_List.Link("FileSystem", ff_core_List.Link("Float", ff_core_List.Link("Instant", ff_core_List.Link("Int", ff_core_List.Link("IntMap", ff_core_List.Link("JsValue", ff_core_List.Link("JsSystem", ff_core_List.Link("List", ff_core_List.Link("Log", ff_core_List.Link("Map", ff_core_List.Link("NodeSystem", ff_core_List.Link("Nothing", ff_core_List.Link("Option", ff_core_List.Link("Ordering", ff_core_List.Link("Pair", ff_core_List.Link("Serializable", ff_core_List.Link("Set", ff_core_List.Link("Show", ff_core_List.Link("Stack", ff_core_List.Link("Stream", ff_core_List.Link("String", ff_core_List.Link("StringMap", ff_core_List.Link("TaskSystem", ff_core_List.Link("TimeSystem", ff_core_List.Link("Try", ff_core_List.Link("Unit", ff_core_List.Empty()))))))))))))))))))))))))))))))))))))))))), ((moduleName_) => {
 return ff_compiler_Syntax.DImport(ff_compiler_Syntax.Location("<prelude>", 1, 1), moduleName_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_core_List.Empty(), moduleName_)
 }));
 
-export function make_(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, hoverAt_, completionAt_) {
-return ff_compiler_Compiler.Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, hoverAt_, completionAt_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty())
+export function make_(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, hoverAt_, completionAt_, referencesTo_) {
+return ff_compiler_Compiler.Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty(), ff_core_List.Empty())
 }
 
 export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, hoverAt_, completionAt_, $c) {
-return ff_compiler_Compiler.Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, hoverAt_, completionAt_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty())
+export async function make_$(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, $c) {
+return ff_compiler_Compiler.Compiler(emitTarget_, files_, time_, compilerModulePath_, jsOutputPath_, resolvedDependencies_.packagePaths_, resolvedDependencies_.singleFilePackages_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Map.empty_(), ff_core_Set.empty_(), ff_core_List.Empty(), 0.0, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty(), ff_core_List.Empty())
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -198,15 +198,16 @@ return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.resolvedModules_, ((
 return ff_compiler_Compiler.Compiler_measure(self_, "Resolve", packagePair_, moduleName_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_parse(self_, packagePair_, moduleName_);
 const otherModules_ = ff_compiler_Compiler.Compiler_imports(self_, module_);
-const resolver_ = ff_compiler_Resolver.make_(self_.hoverAt_);
+const resolver_ = ff_compiler_Resolver.make_(self_.hoverAt_, self_.referencesTo_);
 const result_ = ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return ff_compiler_Resolver.Resolver_resolveModule(resolver_, module_, otherModules_)
 })), (() => {
 ff_core_Option.Option_each(resolver_.state_.hoverResult_.at_, ((at_) => {
 self_.hoverResult_ = (((_c) => {
-return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(at_), _c.qualifiedName_, _c.type_, _c.effect_)
+return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(at_), _c.type_, _c.effect_)
 }))(self_.hoverResult_)
-}))
+}));
+self_.referencesResult_ = ff_core_List.List_addAll(self_.referencesResult_, resolver_.state_.referencesResult_)
 })));
 self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
@@ -345,15 +346,16 @@ return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.resolvedModu
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Resolve", packagePair_, moduleName_, (async ($c) => {
 const module_ = (await ff_compiler_Compiler.Compiler_parse$(self_, packagePair_, moduleName_, $c));
 const otherModules_ = (await ff_compiler_Compiler.Compiler_imports$(self_, module_, $c));
-const resolver_ = ff_compiler_Resolver.make_(self_.hoverAt_);
+const resolver_ = ff_compiler_Resolver.make_(self_.hoverAt_, self_.referencesTo_);
 const result_ = ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return ff_compiler_Resolver.Resolver_resolveModule(resolver_, module_, otherModules_)
 })), (() => {
 ff_core_Option.Option_each(resolver_.state_.hoverResult_.at_, ((at_) => {
 self_.hoverResult_ = (((_c) => {
-return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(at_), _c.qualifiedName_, _c.type_, _c.effect_)
+return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(at_), _c.type_, _c.effect_)
 }))(self_.hoverResult_)
-}))
+}));
+self_.referencesResult_ = ff_core_List.List_addAll(self_.referencesResult_, resolver_.state_.referencesResult_)
 })));
 self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_

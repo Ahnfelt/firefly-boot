@@ -255,6 +255,12 @@ i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
 } else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
+if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
+emitToken_(ff_compiler_Token.LDot(), start_, i_);
+const newStart_ = i_;
+i_ += 1;
+emitToken_(ff_compiler_Token.LDot(), newStart_, i_)
+} else {
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char))) {
 i_ += 1
 };
@@ -282,6 +288,7 @@ const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1
 ? ff_compiler_Token.LAssignLink()
 : ff_compiler_Token.LOperator());
 emitToken_(o_, start_, i_)
+}
 } else if((((ff_core_String.String_grab(code_, i_) === 40) || (ff_core_String.String_grab(code_, i_) === 91)) || (ff_core_String.String_grab(code_, i_) === 123))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_)
@@ -462,6 +469,12 @@ i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
 } else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
+if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
+emitToken_(ff_compiler_Token.LDot(), start_, i_);
+const newStart_ = i_;
+i_ += 1;
+emitToken_(ff_compiler_Token.LDot(), newStart_, i_)
+} else {
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char))) {
 i_ += 1
 };
@@ -489,6 +502,7 @@ const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1
 ? ff_compiler_Token.LAssignLink()
 : ff_compiler_Token.LOperator());
 emitToken_(o_, start_, i_)
+}
 } else if((((ff_core_String.String_grab(code_, i_) === 40) || (ff_core_String.String_grab(code_, i_) === 91)) || (ff_core_String.String_grab(code_, i_) === 123))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_)
