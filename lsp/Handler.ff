@@ -200,7 +200,7 @@ extend self: Handler {
             .with("items", completionResult.toArray().map {| CompletionInfo i =>
                 js.object()
                     // Method/Function or Field/Variable
-                    .with("kind", if(i.label.any {_ == '('}) {2} else {5} + if(i.member) {0} else {1})
+                    .with("kind", if(i.label.any {c => c == '(' || c == '{'}) {2} else {5} + if(i.member) {0} else {1})
                     .with("label", i.label)
                     .with("labelDetails", js.object()
                         .with("detail", ": " + i.type.show([]))
@@ -308,22 +308,6 @@ extend self: Handler {
             line = token.startLine
             column = token.startColumn
         )
-    }
-
-    toClientLocation(system: NodeSystem, at: Location, size: Int): JsValue {
-        let js = system.js()
-        js.object()
-            .with("uri", FileSystem.pathToUrl(system.files().absolutePath(at.file)))
-            .with("range", js.object()
-                .with("start", js.object()
-                    .with("line", at.line - 1)
-                    .with("character", at.column - 1)
-                )
-                .with("end", js.object()
-                    .with("line", at.line - 1)
-                    .with("character", size + at.column - 1)
-                )
-            )
     }
 
     tokenLocationToLspLocation(system: NodeSystem, tokenLocation: TokenLocation): JsValue {

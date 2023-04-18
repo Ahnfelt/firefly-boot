@@ -307,7 +307,7 @@ extend self[T]: List[T] {
         mutable results = []
         mutable result = []
         mutable added = 0
-        self.each { item =>
+        self.each {item =>
             if(added < chunkSize) {
                 result = [item, ...result]
                 added += 1
