@@ -311,7 +311,7 @@ extend self: Inference {
                             self.unification.unify(e.at, expected, t1)
                             if(self.hoverAt.contains(e.at) && self.hoverResult.type.isEmpty()) {
                                 self.hoverResult = self.hoverResult.HoverInfo(
-                                    at = None // TODO: If from a pattern match, use location of true field
+                                    at = Some(e.at) // TODO: If from a pattern match, use location of true field
                                     type = Some(t1)
                                     effect = None
                                 )
