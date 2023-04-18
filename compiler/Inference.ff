@@ -1008,9 +1008,10 @@ extend self: Inference {
                     let generics = selfType.map {
                         | TConstructor(_, _, gs) => 
                             // TODO: Needs constraints as well
+                            // TODO: This drops the wrong number of type parameters - more environment needed
                             let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
                             if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
-                        | _ => 
+                        | _ =>
                             ""
                     }.else {""}
                     let selfIndent = selfType.map {_ => "    "}.else {""}
