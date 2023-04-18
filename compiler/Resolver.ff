@@ -338,7 +338,7 @@ extend self: Resolver {
                     self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
                 }
                 if(self.referencesTo.contains(at)) {
-                    self.state.referencesResult = [...self.state.referencesResult, at]
+                    self.state.referencesResult = [...self.state.referencesResult, constructor.at]
                 }
             }
             let name = if(constructor.name.contains("$")) {

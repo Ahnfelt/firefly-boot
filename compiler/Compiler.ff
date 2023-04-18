@@ -197,7 +197,7 @@ extend self: Compiler {
             resolver.state.hoverResult.at.each {at => 
                 self.hoverResult = self.hoverResult.HoverInfo(at = Some(at))
             }
-            self.referencesResult = resolver.state.referencesResult
+            self.referencesResult = [...self.referencesResult, ...resolver.state.referencesResult]
         } grab() 
 
         self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)

@@ -112,28 +112,9 @@ extend self: Handler {
             Builder.check(system, ".", fixedPath, self.virtualFiles, None, None, None)
             []
         } catch {| CompileError(at, message), error =>
-            let fallback = TokenLocation(
-                file = fixedPath
-                startLine = at.line - 1
-                startColumn = at.column - 1
-                endLine = at.line - 1
-                endColumn = at.column
-                raw = ""
-            )
-            let position = try {
-                self.findToken(system, fixedPath, at.line, at.column).else {fallback}
-            } catchAny {_ =>
-                fallback
-            } grab()
+            let tokenLocation = self.findToken(system, at)
             let diagnostic = js.object()
-                .with("range", js.object()
-                    .with("start", js.object()
-                        .with("line", position.startLine - 1).with("character", position.startColumn - 1)
-                    )
-                    .with("end", js.object()
-                        .with("line", position.endLine - 1).with("character", position.endColumn - 1)
-                    )
-                )
+                .with("range", self.tokenLocationToLspRange(js, tokenLocation))
                 .with("severity", 1 /* Error */)
                 .with("message", message)
             [diagnostic]
@@ -179,7 +160,10 @@ extend self: Handler {
         } grab()
         let js = system.js()
         let o = if(goToDefinition) {
-            hoverResult.at.map {at => self.toClientLocation(system, at)}.else {js.null()}
+            hoverResult.at.map {at => 
+                let token = self.findToken(system, at)
+                self.tokenLocationToLspLocation(system, token)
+            }.else {js.null()}
         } else {
             js.object().with("contents", 
                 hoverResult.{
@@ -250,14 +234,18 @@ extend self: Handler {
                 // TODO search all files in workspace
                 mutable referencesResult = []
                 try {
-                    let references = Some(Pair(definedAt, {referencesResult = _}))
+                    let references = Some(Pair(definedAt, {r => 
+                        Log.trace("Set referencesResult: " + Show.show(r))
+                        referencesResult = r
+                    }))
                     Builder.check(system, ".", referencesAt.file, self.virtualFiles, None, None, references)
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()
         
-                let clientLocations = [definedAt, ...referencesResult].map {location => 
-                    self.toClientLocation(system, location)
+                let clientLocations = [definedAt, ...referencesResult].map {at => 
+                    let token = self.findToken(system, at)
+                    self.tokenLocationToLspLocation(system, token)
                 }
                 js.array(clientLocations)
             | None => 
@@ -273,26 +261,38 @@ extend self: Handler {
             .with("params", params)
     }
 
-    findToken(system: NodeSystem, path: String, line: Int, column: Int): Option[TokenLocation] {
-        let code = self.virtualFiles.get(path).else {system.files().readText(path)}
-        let tokens = Tokenizer.tokenize(path, code, None)
-        let token = tokens.toStream().find {token =>
-            line >= token.startLine && line <= token.stopLine && (
-                (line > token.startLine || column >= 1 + token.startOffset - token.startLineOffset) &&
-                (line < token.stopLine || column < 1 + token.stopOffset - token.stopLineOffset || (
-                    (token.kind == LLower || token.kind == LUpper) && 
-                    column == 1 + token.stopOffset - token.stopLineOffset
-                ))
-            )
-        }
-        token.map {t => TokenLocation(
-            file = path
-            startLine = t.startLine
-            startColumn = 1 + t.startOffset - t.startLineOffset
-            endLine = t.stopLine
-            endColumn = 1 + t.stopOffset - t.stopLineOffset
-            raw = t.raw()
-        )}
+    findToken(system: NodeSystem, at: Location): TokenLocation {
+        let fallback = TokenLocation(
+            file = at.file
+            startLine = at.line - 1
+            startColumn = at.column - 1
+            endLine = at.line - 1
+            endColumn = at.column
+            raw = ""
+        )
+        try {
+            let code = self.virtualFiles.get(at.file).else {system.files().readText(at.file)}
+            let tokens = Tokenizer.tokenize(at.file, code, None)
+            let token = tokens.toStream().find {token =>
+                at.line >= token.startLine && at.line <= token.stopLine && (
+                    (at.line > token.startLine || at.column >= 1 + token.startOffset - token.startLineOffset) &&
+                    (at.line < token.stopLine || at.column < 1 + token.stopOffset - token.stopLineOffset || (
+                        (token.kind == LLower || token.kind == LUpper) && 
+                        at.column == 1 + token.stopOffset - token.stopLineOffset
+                    ))
+                )
+            }
+            token.map {t => TokenLocation(
+                file = t.file
+                startLine = t.startLine
+                startColumn = 1 + t.startOffset - t.startLineOffset
+                endLine = t.stopLine
+                endColumn = 1 + t.stopOffset - t.stopLineOffset
+                raw = t.raw()
+            )}.else {fallback}
+        } catchAny {_ =>
+            fallback
+        } grab()
     }
 
     grabFixedLocation(system: NodeSystem, parameters: Map[String, JsValue]): Location {
@@ -302,15 +302,15 @@ extend self: Handler {
         let fixedPath = path.replace("\\", "/")
         let line = parameters.grab("position").get("line").grabInt() + 1
         let column = parameters.grab("position").get("character").grabInt() + 1
-        let token = self.findToken(system, fixedPath, line, column)
+        let token = self.findToken(system, Location(fixedPath, line, column))
         Location(
             file = fixedPath
-            line = token.map {_.startLine}.else {line}
-            column = token.map {_.startColumn}.else {column}
+            line = token.startLine
+            column = token.startColumn
         )
     }
 
-    toClientLocation(system: NodeSystem, at: Location): JsValue {
+    toClientLocation(system: NodeSystem, at: Location, size: Int): JsValue {
         let js = system.js()
         js.object()
             .with("uri", FileSystem.pathToUrl(system.files().absolutePath(at.file)))
@@ -321,8 +321,27 @@ extend self: Handler {
                 )
                 .with("end", js.object()
                     .with("line", at.line - 1)
-                    .with("character", at.column - 1)
+                    .with("character", size + at.column - 1)
                 )
+            )
+    }
+
+    tokenLocationToLspLocation(system: NodeSystem, tokenLocation: TokenLocation): JsValue {
+        let js = system.js()
+        js.object()
+            .with("uri", FileSystem.pathToUrl(system.files().absolutePath(tokenLocation.file)))
+            .with("range", self.tokenLocationToLspRange(js, tokenLocation))
+    }
+
+    tokenLocationToLspRange(js: JsSystem, tokenLocation: TokenLocation): JsValue {
+        js.object()
+            .with("start", js.object()
+                .with("line", tokenLocation.startLine - 1)
+                .with("character", tokenLocation.startColumn - 1)
+            )
+            .with("end", js.object()
+                .with("line", tokenLocation.endLine - 1)
+                .with("character", tokenLocation.endColumn - 1)
             )
     }
 
