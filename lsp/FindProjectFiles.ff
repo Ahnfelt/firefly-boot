@@ -1,0 +1,50 @@
+data ProjectFiles(
+    projectRoot: String
+    packageFile: Option[String]
+    files: List[String]
+)
+
+main(system: NodeSystem) {
+    system.arguments().toList().{
+        | [url] => 
+            let projects = findProjectFiles(system.files(), url)
+            projects.each{ p => 
+                p.packageFile.{
+                    | Some(packageFile) => 
+                        Log.trace(packageFile)
+                        p.files.each{Log.trace("  " + _)}
+                    | None => 
+                        p.files.each{Log.trace(_)}
+                }
+                Log.trace("")
+            }
+        | _ => 
+    }
+}
+
+findProjectFiles(fs: FileSystem, rootUri: String): List[ProjectFiles] {
+    let files = findFireflyFiles(fs, rootUri)
+    let split = files.partition{ _.endsWith(".firefly/package.ff")}
+    let packageFiles = split.first
+    mutable codeFiles = split.second
+    let multiFileProjects = packageFiles.map{ packageFile => 
+        let projectRoot = packageFile.removeLast(".firefly/package.ff").grab()
+        let files = codeFiles.filter{ _.startsWith(projectRoot) }
+        let filesSet = files.toSet()
+        codeFiles = codeFiles.filter{ file => !filesSet.contains(file)}
+        ProjectFiles(projectRoot, Some(packageFile), files)
+    }
+    let singleFileProjects = codeFiles.map{ file => 
+        let projectRoot = file.reverse().dropWhile {_ != '/'}.reverse()
+        ProjectFiles(projectRoot, None, [file])
+    }
+    [...multiFileProjects, ...singleFileProjects]
+}
+
+findFireflyFiles(fs: FileSystem, rootUri: String): List[String] {
+    let split = fs.list(rootUri).partition{fs.isDirectory(_)}
+    let directories = split.first
+    let fireflyFiles = split.second.filter{_.endsWith(".ff")}
+    let fixedFiles = fireflyFiles.map{_.replace("\\", "/")}
+    [...fixedFiles, ...directories.flatMap{findFireflyFiles(fs, _)}]
+}
