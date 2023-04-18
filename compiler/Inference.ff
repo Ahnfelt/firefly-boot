@@ -960,10 +960,9 @@ extend self: Inference {
                 let pair = if(!memberScheme.isVariable) {
                     let trailing = realParameters.last().flatMap {p =>
                         p.valueType.{
-                            | TConstructor(_, name, typeArguments) {name.startsWith("Function$")} =>
-                                let arguments = typeArguments.dropFirst().dropLast()
+                            | TConstructor(_, name, _) {name.startsWith("Function$")} =>
                                 Some(Pair(
-                                    " {" + p.name + "(" + arguments.map {_ => "_"}.join(", ") + ")}"
+                                    " {...}"
                                     " {$0}"
                                 ))
                             | _ => 
