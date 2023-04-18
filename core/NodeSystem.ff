@@ -11,7 +11,7 @@ extend self: NodeSystem {
             let fs = self.files()
             function streams(path: String): List[Pair[String, () => Stream[Buffer]]] {
                 let files = fs.list(path)
-                files.flatMap { file =>
+                files.flatMap {file =>
                     if(fs.isDirectory(file)) {
                         streams(file)
                     } else {
@@ -39,6 +39,9 @@ extend self: NodeSystem {
 
     js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
+
+    exit[T](exitCode: Int = 0): T
+        target js async "process.exit(exitCode_)"
 
     readStream(): Stream[Buffer]
         target js async """

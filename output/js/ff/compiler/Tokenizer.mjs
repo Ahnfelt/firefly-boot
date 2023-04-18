@@ -107,7 +107,6 @@ return _w1.column_
 })), (() => {
 return (-1)
 }));
-let emitCompletionToken_ = (completionLine_ !== (-1));
 const tokens_ = ff_core_Stack.make_();
 let line_ = 1;
 let lineOffset_ = 0;
@@ -119,15 +118,6 @@ ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCha
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
-if((emitCompletionToken_ && (!ff_core_Stack.Stack_isEmpty(tokens_)))) {
-const last_ = ff_core_Stack.Stack_grabLast(tokens_);
-if(((completionLine_ <= startLine_) && ((completionLine_ < startLine_) || (completionColumn_ <= ((1 + startOffset_) - startLineOffset_))))) {
-emitCompletionToken_ = false;
-if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LDot()) && ((startOffset_ > last_.stopOffset_) || (ff_core_Equal.notEquals_(kind_, ff_compiler_Token.LLower(), ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind) && ff_core_Equal.notEquals_(kind_, ff_compiler_Token.LUpper(), ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind))))) {
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LLower(), last_.stopLine_, last_.stopLineOffset_, last_.stopOffset_, last_.stopLine_, last_.stopLineOffset_, last_.stopOffset_))
-}
-}
-};
 if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
 const last_ = ff_core_Stack.Stack_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
@@ -154,13 +144,25 @@ const column_ = ((i_ - startLineOffset_) + 1);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (column_ + 1)), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 while((i_ < ff_core_String.String_size(code_))) {
+startLine_ = line_;
+startLineOffset_ = lineOffset_;
+if((completionLine_ === line_)) {
+while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
+if((completionColumn_ === ((1 + i_) - lineOffset_))) {
+emitToken_(ff_compiler_Token.LLower(), i_, i_)
+};
+i_ += 1
+};
+if((((i_ < ff_core_String.String_size(code_)) && (completionColumn_ === ((1 + i_) - lineOffset_))) && (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grab(code_, i_))))) {
+emitToken_(ff_compiler_Token.LLower(), i_, i_)
+}
+} else {
 while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
 i_ += 1
+}
 };
 if((i_ < ff_core_String.String_size(code_))) {
 const start_ = i_;
-startLine_ = line_;
-startLineOffset_ = lineOffset_;
 if((ff_core_String.String_grab(code_, i_) === 10)) {
 i_ += 1;
 line_ += 1;
@@ -321,7 +323,6 @@ return _w1.column_
 })), (() => {
 return (-1)
 }));
-let emitCompletionToken_ = (completionLine_ !== (-1));
 const tokens_ = ff_core_Stack.make_();
 let line_ = 1;
 let lineOffset_ = 0;
@@ -333,15 +334,6 @@ ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCha
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
 }));
 function emitToken_(kind_, startOffset_, stopOffset_) {
-if((emitCompletionToken_ && (!ff_core_Stack.Stack_isEmpty(tokens_)))) {
-const last_ = ff_core_Stack.Stack_grabLast(tokens_);
-if(((completionLine_ <= startLine_) && ((completionLine_ < startLine_) || (completionColumn_ <= ((1 + startOffset_) - startLineOffset_))))) {
-emitCompletionToken_ = false;
-if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LDot()) && ((startOffset_ > last_.stopOffset_) || (ff_core_Equal.notEquals_(kind_, ff_compiler_Token.LLower(), ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind) && ff_core_Equal.notEquals_(kind_, ff_compiler_Token.LUpper(), ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind))))) {
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LLower(), last_.stopLine_, last_.stopLineOffset_, last_.stopOffset_, last_.stopLine_, last_.stopLineOffset_, last_.stopOffset_))
-}
-}
-};
 if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
 const last_ = ff_core_Stack.Stack_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
@@ -368,13 +360,25 @@ const column_ = ((i_ - startLineOffset_) + 1);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (column_ + 1)), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 while((i_ < ff_core_String.String_size(code_))) {
+startLine_ = line_;
+startLineOffset_ = lineOffset_;
+if((completionLine_ === line_)) {
+while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
+if((completionColumn_ === ((1 + i_) - lineOffset_))) {
+emitToken_(ff_compiler_Token.LLower(), i_, i_)
+};
+i_ += 1
+};
+if((((i_ < ff_core_String.String_size(code_)) && (completionColumn_ === ((1 + i_) - lineOffset_))) && (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grab(code_, i_))))) {
+emitToken_(ff_compiler_Token.LLower(), i_, i_)
+}
+} else {
 while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
 i_ += 1
+}
 };
 if((i_ < ff_core_String.String_size(code_))) {
 const start_ = i_;
-startLine_ = line_;
-startLineOffset_ = lineOffset_;
 if((ff_core_String.String_grab(code_, i_) === 10)) {
 i_ += 1;
 line_ += 1;

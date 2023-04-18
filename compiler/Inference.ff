@@ -964,20 +964,20 @@ extend self: Inference {
             if(memberName.startsWith(prefix)) {
                 let realParameters = memberScheme.signature.parameters.dropFirst(if(member) {1} else {0})
                 let pair = if(!memberScheme.isVariable) {
-                    let trailing = realParameters.last().flatMap {p =>
+                    let trailing = realParameters.pairs().reverse().map {| Pair(i, p) =>
                         p.valueType.{
                             | TConstructor(_, name, _) {name.startsWith("Function$")} =>
                                 Some(Pair(
                                     " {...}"
-                                    " {$0}"
+                                    " {$" + (i + 1) + "}"
                                 ))
                             | _ => 
                                 None
                         }
-                    }
+                    }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
                     let allRequired = realParameters.filter {_.default.isEmpty()}
                     let required = 
-                        if(trailing.isEmpty()) {allRequired} else {allRequired.dropLast()}.pairs().map {
+                        allRequired.dropLast(trailing.size()).pairs().map {
                             | Pair(index, p) => 
                                 Pair(p.name, "${" + (index + 1) + ":" + p.name + "}")
                         }
@@ -989,12 +989,12 @@ extend self: Inference {
                             "(" + [...required.map {_.first}, ...optional.toList()].join(", ") + ")"
                         } else {
                             ""
-                        } + trailing.map {_.first}.else {""}
+                        } + trailing.map {_.first}.join()
                         if(trailing.isEmpty() || !required.isEmpty()) {
                             "(" + required.map {_.second}.join(", ") + ")"
                         } else {
                             ""
-                        } + trailing.map {_.second}.else {"$0"}
+                        } + if(trailing.isEmpty()) {"$0"} else {trailing.map {_.second}.join()}
                     )
                 } else {Pair("", "")}
                 let shortName = memberName.dropFirst(prefix.size())

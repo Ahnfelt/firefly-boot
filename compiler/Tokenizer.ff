@@ -5,7 +5,6 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
 
     let completionLine = completionAt.filter {_.file == file}.map {_.line}.else {-1}
     let completionColumn = completionAt.filter {_.file == file}.map {_.column}.else {-1}
-    mutable emitCompletionToken = completionLine != -1
 
     let tokens = Stack.make[Token]()
     mutable line = 1
@@ -21,21 +20,6 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
     }
 
     function emitToken(kind: TokenKind, startOffset: Int, stopOffset: Int): Unit {
-        if(emitCompletionToken && !tokens.isEmpty()) {
-            let last = tokens.grabLast()
-            if(completionLine <= startLine && (
-                completionLine < startLine || completionColumn <= 1 + startOffset - startLineOffset
-            )) {
-                emitCompletionToken = False
-                if(last.kind == LDot && (startOffset > last.stopOffset || (kind != LLower && kind != LUpper))) {
-                    tokens.push(Token(
-                        file, code, LLower
-                        last.stopLine, last.stopLineOffset, last.stopOffset
-                        last.stopLine, last.stopLineOffset, last.stopOffset
-                    ))
-                }
-            }
-        }
         if(!tokens.isEmpty()) {
             let last = tokens.grabLast()
             if(last.stopLine == startLine && last.kind == LLower && kind.afterKeyword()) {
@@ -68,13 +52,27 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
 
     while {i < code.size()} {
 
-        while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {i += 1}
+        startLine = line
+        startLineOffset = lineOffset
+
+        if(completionLine == line) {
+            while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {
+                if(completionColumn == 1 + i - lineOffset) {
+                    emitToken(LLower, i, i)
+                }
+                i += 1
+            }
+            if(i < code.size() && completionColumn == 1 + i - lineOffset && !code.grab(i).isAsciiLetter()) {
+                emitToken(LLower, i, i)
+            }
+            Unit // Think about how to avoid requiring this
+        } else {
+            while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {i += 1}
+        }
         
         if(i < code.size()):
 
         let start = i
-        startLine = line
-        startLineOffset = lineOffset
 
         if(code.grab(i) == '\n') {
 

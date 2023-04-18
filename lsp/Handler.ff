@@ -33,6 +33,7 @@ extend self: Handler {
             | "initialized" =>
             | "textDocument/didChange" => self.handleDidChange(system, parameters)
             | "textDocument/didClose" => self.handleDidClose(system, parameters)
+            | "exit" => system.exit(0)
             | _ =>
         }   
     }
@@ -45,6 +46,7 @@ extend self: Handler {
             | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
             | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
             | "textDocument/references" => self.handleReferences(system, parameters)
+            | "shutdown" => Result(system.js().null())
             | _ => self.handleUnsupported(system.js())
         }
     }
@@ -264,10 +266,10 @@ extend self: Handler {
     findToken(system: NodeSystem, at: Location): TokenLocation {
         let fallback = TokenLocation(
             file = at.file
-            startLine = at.line - 1
-            startColumn = at.column - 1
-            endLine = at.line - 1
-            endColumn = at.column
+            startLine = at.line
+            startColumn = at.column
+            endLine = at.line
+            endColumn = at.column + 1
             raw = ""
         )
         try {

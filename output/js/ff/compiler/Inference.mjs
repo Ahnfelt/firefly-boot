@@ -302,6 +302,11 @@ export function Inference_inferFunctionDefinition(self_, environment_, definitio
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_, noEffect_));
+if((ff_core_Option.Option_contains(self_.hoverAt_, p_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(p_.at_), ff_core_Option.Some(p_.valueType_), _c.effect_)
+}))(self_.hoverResult_)
+};
 return ff_core_Pair.Pair(p_.name_, scheme_)
 }));
 const parameterMap_ = ff_core_List.List_toMap(parameters_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -1944,7 +1949,10 @@ const realParameters_ = ff_core_List.List_dropFirst(memberScheme_.signature_.par
 : 0));
 const pair_ = ((!memberScheme_.isVariable_)
 ? (function() {
-const trailing_ = ff_core_Option.Option_flatMap(ff_core_List.List_last(realParameters_), ((p_) => {
+const trailing_ = ff_core_List.List_reverse(ff_core_Stream.Stream_toList(ff_core_Stream.Stream_collect(ff_core_Stream.Stream_takeWhile(ff_core_List.List_toStream(ff_core_List.List_map(ff_core_List.List_reverse(ff_core_List.List_pairs(realParameters_)), ((_1) => {
+{
+const i_ = _1.first_;
+const p_ = _1.second_;
 {
 const _1 = p_.valueType_;
 {
@@ -1952,7 +1960,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
-return ff_core_Option.Some(ff_core_Pair.Pair(" {...}", " {$0}"))
+return ff_core_Option.Some(ff_core_Pair.Pair(" {...}", ((" {$" + (i_ + 1)) + "}")))
 return
 }
 }
@@ -1962,13 +1970,17 @@ return ff_core_Option.None()
 return
 }
 }
-}));
+return
+}
+})), false), ((_w1) => {
+return ff_core_Equal.notEquals_(_w1, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)))
+})), ((_w1) => {
+return _w1
+}))));
 const allRequired_ = ff_core_List.List_filter(realParameters_, ((_w1) => {
 return ff_core_Option.Option_isEmpty(_w1.default_)
 }));
-const required_ = ff_core_List.List_map(ff_core_List.List_pairs((ff_core_Option.Option_isEmpty(trailing_)
-? allRequired_
-: ff_core_List.List_dropLast(allRequired_, 1))), ((_1) => {
+const required_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_dropLast(allRequired_, ff_core_List.List_size(trailing_))), ((_1) => {
 {
 const index_ = _1.first_;
 const p_ = _1.second_;
@@ -1979,23 +1991,21 @@ return
 const optional_ = ((ff_core_List.List_size(allRequired_) !== ff_core_List.List_size(realParameters_))
 ? ff_core_Option.Some("...")
 : ff_core_Option.None());
-return ff_core_Pair.Pair((((ff_core_Option.Option_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
+return ff_core_Pair.Pair((((ff_core_List.List_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
 ? (("(" + ff_core_List.List_join(ff_core_List.List_addAll(ff_core_List.List_map(required_, ((_w1) => {
 return _w1.first_
 })), ff_core_Option.Option_toList(optional_)), ", ")) + ")")
-: "") + ff_core_Option.Option_else(ff_core_Option.Option_map(trailing_, ((_w1) => {
+: "") + ff_core_List.List_join(ff_core_List.List_map(trailing_, ((_w1) => {
 return _w1.first_
-})), (() => {
-return ""
-}))), (((ff_core_Option.Option_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
+})), "")), (((ff_core_List.List_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
 ? (("(" + ff_core_List.List_join(ff_core_List.List_map(required_, ((_w1) => {
 return _w1.second_
 })), ", ")) + ")")
-: "") + ff_core_Option.Option_else(ff_core_Option.Option_map(trailing_, ((_w1) => {
+: "") + (ff_core_List.List_isEmpty(trailing_)
+? "$0"
+: ff_core_List.List_join(ff_core_List.List_map(trailing_, ((_w1) => {
 return _w1.second_
-})), (() => {
-return "$0"
-}))))
+})), ""))))
 })()
 : ff_core_Pair.Pair("", ""));
 const shortName_ = ff_core_String.String_dropFirst(memberName_, ff_core_String.String_size(prefix_));
@@ -2045,7 +2055,9 @@ return (((((p_.mutable_
 if(_1.EVariant) {
 const n_ = _1.name_;
 if(_1.arguments_.None) {
-return n_
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(n_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})))
 return
 }
 }
@@ -2053,7 +2065,22 @@ return
 {
 if(_1.EVariant) {
 const n_ = _1.name_;
-return (n_ + "(...)")
+if(_1.arguments_.Some) {
+if(_1.arguments_.value_.Empty) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(n_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})))
+return
+}
+}
+}
+}
+{
+if(_1.EVariant) {
+const n_ = _1.name_;
+return (ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(n_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+}))) + "(...)")
 return
 }
 }
@@ -2269,6 +2296,11 @@ export async function Inference_inferFunctionDefinition$(self_, environment_, de
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_, noEffect_));
+if((ff_core_Option.Option_contains(self_.hoverAt_, p_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
+self_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(p_.at_), ff_core_Option.Some(p_.valueType_), _c.effect_)
+}))(self_.hoverResult_)
+};
 return ff_core_Pair.Pair(p_.name_, scheme_)
 }));
 const parameterMap_ = ff_core_List.List_toMap(parameters_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -3911,7 +3943,10 @@ const realParameters_ = ff_core_List.List_dropFirst(memberScheme_.signature_.par
 : 0));
 const pair_ = ((!memberScheme_.isVariable_)
 ? (function() {
-const trailing_ = ff_core_Option.Option_flatMap(ff_core_List.List_last(realParameters_), ((p_) => {
+const trailing_ = ff_core_List.List_reverse(ff_core_Stream.Stream_toList(ff_core_Stream.Stream_collect(ff_core_Stream.Stream_takeWhile(ff_core_List.List_toStream(ff_core_List.List_map(ff_core_List.List_reverse(ff_core_List.List_pairs(realParameters_)), ((_1) => {
+{
+const i_ = _1.first_;
+const p_ = _1.second_;
 {
 const _1 = p_.valueType_;
 {
@@ -3919,7 +3954,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 const _guard1 = ff_core_String.String_startsWith(name_, "Function$", 0);
 if(_guard1) {
-return ff_core_Option.Some(ff_core_Pair.Pair(" {...}", " {$0}"))
+return ff_core_Option.Some(ff_core_Pair.Pair(" {...}", ((" {$" + (i_ + 1)) + "}")))
 return
 }
 }
@@ -3929,13 +3964,17 @@ return ff_core_Option.None()
 return
 }
 }
-}));
+return
+}
+})), false), ((_w1) => {
+return ff_core_Equal.notEquals_(_w1, ff_core_Option.None(), ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)))
+})), ((_w1) => {
+return _w1
+}))));
 const allRequired_ = ff_core_List.List_filter(realParameters_, ((_w1) => {
 return ff_core_Option.Option_isEmpty(_w1.default_)
 }));
-const required_ = ff_core_List.List_map(ff_core_List.List_pairs((ff_core_Option.Option_isEmpty(trailing_)
-? allRequired_
-: ff_core_List.List_dropLast(allRequired_, 1))), ((_1) => {
+const required_ = ff_core_List.List_map(ff_core_List.List_pairs(ff_core_List.List_dropLast(allRequired_, ff_core_List.List_size(trailing_))), ((_1) => {
 {
 const index_ = _1.first_;
 const p_ = _1.second_;
@@ -3946,23 +3985,21 @@ return
 const optional_ = ((ff_core_List.List_size(allRequired_) !== ff_core_List.List_size(realParameters_))
 ? ff_core_Option.Some("...")
 : ff_core_Option.None());
-return ff_core_Pair.Pair((((ff_core_Option.Option_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
+return ff_core_Pair.Pair((((ff_core_List.List_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
 ? (("(" + ff_core_List.List_join(ff_core_List.List_addAll(ff_core_List.List_map(required_, ((_w1) => {
 return _w1.first_
 })), ff_core_Option.Option_toList(optional_)), ", ")) + ")")
-: "") + ff_core_Option.Option_else(ff_core_Option.Option_map(trailing_, ((_w1) => {
+: "") + ff_core_List.List_join(ff_core_List.List_map(trailing_, ((_w1) => {
 return _w1.first_
-})), (() => {
-return ""
-}))), (((ff_core_Option.Option_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
+})), "")), (((ff_core_List.List_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
 ? (("(" + ff_core_List.List_join(ff_core_List.List_map(required_, ((_w1) => {
 return _w1.second_
 })), ", ")) + ")")
-: "") + ff_core_Option.Option_else(ff_core_Option.Option_map(trailing_, ((_w1) => {
+: "") + (ff_core_List.List_isEmpty(trailing_)
+? "$0"
+: ff_core_List.List_join(ff_core_List.List_map(trailing_, ((_w1) => {
 return _w1.second_
-})), (() => {
-return "$0"
-}))))
+})), ""))))
 })()
 : ff_core_Pair.Pair("", ""));
 const shortName_ = ff_core_String.String_dropFirst(memberName_, ff_core_String.String_size(prefix_));
@@ -4012,7 +4049,9 @@ return (((((p_.mutable_
 if(_1.EVariant) {
 const n_ = _1.name_;
 if(_1.arguments_.None) {
-return n_
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(n_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})))
 return
 }
 }
@@ -4020,7 +4059,22 @@ return
 {
 if(_1.EVariant) {
 const n_ = _1.name_;
-return (n_ + "(...)")
+if(_1.arguments_.Some) {
+if(_1.arguments_.value_.Empty) {
+return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(n_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+})))
+return
+}
+}
+}
+}
+{
+if(_1.EVariant) {
+const n_ = _1.name_;
+return (ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(n_), ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+}))) + "(...)")
 return
 }
 }
