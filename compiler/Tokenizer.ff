@@ -23,16 +23,31 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
     function emitToken(kind: TokenKind, startOffset: Int, stopOffset: Int): Unit {
         if(emitCompletionToken && !tokens.isEmpty()) {
             let last = tokens.grabLast()
+            let startColumn = 1 + startOffset - startLineOffset
             if(completionLine <= startLine && (
-                completionLine < startLine || completionColumn <= 1 + startOffset - startLineOffset
+                completionLine < startLine || completionColumn <= startColumn
             )) {
                 emitCompletionToken = False
-                if(last.kind == LDot && (startOffset > last.stopOffset || (kind != LLower && kind != LUpper))) {
-                    tokens.push(Token(
-                        file, code, LLower
-                        last.stopLine, last.stopLineOffset, last.stopOffset
-                        last.stopLine, last.stopLineOffset, last.stopOffset
-                    ))
+                let nonIdentifier = kind != LLower && kind != LUpper
+                if(startOffset > last.stopOffset || nonIdentifier) {
+                    if(last.kind == LDot) {
+                        tokens.push(Token(
+                            file, code, LLower
+                            last.stopLine, last.stopLineOffset, last.stopOffset
+                            last.stopLine, last.stopLineOffset, last.stopOffset
+                        ))
+                    } elseIf {completionLine < startLine || completionColumn < startColumn || nonIdentifier} {
+                        function emitFakeToken(kind: TokenKind) {
+                            tokens.push(Token(
+                                file, code, kind
+                                startLine, startLineOffset, startOffset
+                                startLine, startLineOffset, startOffset
+                            ))
+                        }
+                        if(last.kind.beforeSeparator()) {emitFakeToken(LSeparator)}
+                        emitFakeToken(LLower) // This won't be in the right completionAt spot
+                        if(last.kind.afterSeparator()) {emitFakeToken(LSeparator)}
+                    }
                 }
             }
         }
