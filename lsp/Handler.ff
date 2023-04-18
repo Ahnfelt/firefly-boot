@@ -167,26 +167,28 @@ extend self: Handler {
                 self.tokenLocationToLspLocation(system, token)
             }.else {js.null()}
         } else {
-            js.object().with("contents", 
-                hoverResult.{
-                    | HoverInfo(_, Some(t), q) => 
-                        let extra = q.{
-                            | Some(TConstructor(_, "Q$", _)) =>
-                                "This call may be asynchronous."
-                            | _ => 
-                                ""
-                        }
+            hoverResult.{
+                | HoverInfo(_, Some(t), q) => 
+                    let extra = q.{
+                        | Some(TConstructor(_, "Q$", _)) =>
+                            "This call may be asynchronous."
+                        | _ => 
+                            ""
+                    }
+                    js.object().with("contents", 
                         js.object()
                             .with("kind", "markdown")
-                            .with("value", "```\n" + t.show([]) + "\n```\n" + if(extra == "") {""} else {"*" + extra + "*"})
-                    | _ => 
-                        js.null()
-                }
-            )
+                            .with("value", 
+                                "```\n" + t.show([]) + "\n```\n" + 
+                                if(extra == "") {""} else {"*" + extra + "*"})
+                    )
+                | _ => 
+                    js.null()
+            }
         }
         Result(o)
     }
-    
+
     handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let completionAt = self.grabFixedLocation(system, parameters)
         mutable completionResult = []
