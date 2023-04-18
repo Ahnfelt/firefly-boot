@@ -33,6 +33,7 @@ extend self: Handler {
             | "initialized" =>
             | "textDocument/didChange" => self.handleDidChange(system, parameters)
             | "textDocument/didClose" => self.handleDidClose(system, parameters)
+            | "exit" => system.exit(0)
             | _ =>
         }   
     }
@@ -45,6 +46,7 @@ extend self: Handler {
             | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
             | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
             | "textDocument/references" => self.handleReferences(system, parameters)
+            | "shutdown" => Result(system.js().null())
             | _ => self.handleUnsupported(system.js())
         }
     }

@@ -141,6 +141,10 @@ export function NodeSystem_js(self_) {
 throw new Error('Function NodeSystem_js is missing on this target in sync context.');
 }
 
+export function NodeSystem_exit(self_, exitCode_ = 0) {
+throw new Error('Function NodeSystem_exit is missing on this target in sync context.');
+}
+
 export function NodeSystem_readStream(self_) {
 throw new Error('Function NodeSystem_readStream is missing on this target in sync context.');
 }
@@ -225,6 +229,10 @@ return null
 
 export async function NodeSystem_js$(self_, $c) {
 return typeof globalThis !== 'undefined' ? globalThis : window
+}
+
+export async function NodeSystem_exit$(self_, exitCode_ = 0, $c) {
+process.exit(exitCode_)
 }
 
 export async function NodeSystem_readStream$(self_, $c) {
