@@ -91,8 +91,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Parser
-export function Parser(packagePair_, file_, tokens_, end_, targetIsNode_, offset_, nextUnificationVariableIndex_) {
-return {packagePair_, file_, tokens_, end_, targetIsNode_, offset_, nextUnificationVariableIndex_};
+export function Parser(packagePair_, file_, tokens_, end_, targetIsNode_, attemptFixes_, offset_, nextUnificationVariableIndex_) {
+return {packagePair_, file_, tokens_, end_, targetIsNode_, attemptFixes_, offset_, nextUnificationVariableIndex_};
 }
 
 // type Poly
@@ -107,8 +107,8 @@ return {js_, jsSync_, jsAsync_, browser_, browserSync_, browserAsync_, node_, no
 
 export const binaryOperators_ = ff_core_List.List_toArray(ff_core_List.Link(ff_core_List.Link("||", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("&&", ff_core_List.Empty()), ff_core_List.Link(ff_core_List.Link("!=", ff_core_List.Link("==", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("<=", ff_core_List.Link(">=", ff_core_List.Link("<", ff_core_List.Link(">", ff_core_List.Empty())))), ff_core_List.Link(ff_core_List.Link("+", ff_core_List.Link("-", ff_core_List.Empty())), ff_core_List.Link(ff_core_List.Link("*", ff_core_List.Link("/", ff_core_List.Link("%", ff_core_List.Empty()))), ff_core_List.Link(ff_core_List.Link("^", ff_core_List.Empty()), ff_core_List.Empty()))))))));
 
-export function make_(packagePair_, file_, tokens_, targetIsNode_) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_grabLast(tokens_), targetIsNode_, 0, 1)
+export function make_(packagePair_, file_, tokens_, targetIsNode_, attemptFixes_) {
+return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_grabLast(tokens_), targetIsNode_, attemptFixes_, 0, 1)
 }
 
 export function findBestTarget_(targetIsNode_, body_, targets_) {
@@ -182,8 +182,8 @@ return
 }
 }
 
-export async function make_$(packagePair_, file_, tokens_, targetIsNode_, $c) {
-return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_grabLast(tokens_), targetIsNode_, 0, 1)
+export async function make_$(packagePair_, file_, tokens_, targetIsNode_, attemptFixes_, $c) {
+return ff_compiler_Parser.Parser(packagePair_, file_, tokens_, ff_core_Array.Array_grabLast(tokens_), targetIsNode_, attemptFixes_, 0, 1)
 }
 
 export async function findBestTarget_$(targetIsNode_, body_, targets_, $c) {
@@ -297,10 +297,18 @@ return c_
 export function Parser_rawSkip(self_, kind_, value_) {
 const c_ = ff_compiler_Parser.Parser_current(self_);
 if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind)) {
+if((self_.attemptFixes_ && (((value_ === ")") || (value_ === "]")) || (value_ === "}")))) {
+
+} else {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 if((!ff_compiler_Token.Token_rawIs(c_, value_))) {
+if((self_.attemptFixes_ && (((value_ === ")") || (value_ === "]")) || (value_ === "}")))) {
+self_.offset_ -= 1
+} else {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 self_.offset_ += 1;
 return c_
@@ -1707,10 +1715,18 @@ return c_
 export async function Parser_rawSkip$(self_, kind_, value_, $c) {
 const c_ = ff_compiler_Parser.Parser_current(self_);
 if(ff_core_Equal.notEquals_(c_.kind_, kind_, ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind)) {
+if((self_.attemptFixes_ && (((value_ === ")") || (value_ === "]")) || (value_ === "}")))) {
+
+} else {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((((("Expected " + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_TokenKind.show_(kind_)) + " ") + value_) + ", got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 if((!ff_compiler_Token.Token_rawIs(c_, value_))) {
+if((self_.attemptFixes_ && (((value_ === ")") || (value_ === "]")) || (value_ === "}")))) {
+self_.offset_ -= 1
+} else {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Token.Token_at(c_), ((("Expected " + value_) + " got ") + ff_compiler_Token.Token_raw(c_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
 };
 self_.offset_ += 1;
 return c_
@@ -3110,7 +3126,7 @@ show_(x_) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((((((((((("Parser" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Array.ff_core_Show_Show$ff_core_Array_Array(ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_Token).show_(z_.tokens_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_Token.show_(z_.end_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.targetIsNode_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.offset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.nextUnificationVariableIndex_)) + ")")
+return ((((((((((((((((("Parser" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Array.ff_core_Show_Show$ff_core_Array_Array(ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_Token).show_(z_.tokens_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_Token.show_(z_.end_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.targetIsNode_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.attemptFixes_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.offset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.nextUnificationVariableIndex_)) + ")")
 return
 }
 }
@@ -3120,7 +3136,7 @@ async show_$(x_, $c) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((((((((((("Parser" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Array.ff_core_Show_Show$ff_core_Array_Array(ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_Token).show_(z_.tokens_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_Token.show_(z_.end_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.targetIsNode_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.offset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.nextUnificationVariableIndex_)) + ")")
+return ((((((((((((((((("Parser" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.packagePair_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.file_)) + ", ") + ff_core_Array.ff_core_Show_Show$ff_core_Array_Array(ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_Token).show_(z_.tokens_)) + ", ") + ff_compiler_Token.ff_core_Show_Show$ff_compiler_Token_Token.show_(z_.end_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.targetIsNode_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.attemptFixes_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.offset_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Int_Int.show_(z_.nextUnificationVariableIndex_)) + ")")
 return
 }
 }
@@ -3186,7 +3202,7 @@ return
 }
 }
 {
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.file_ === y_.file_) && (ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_Token).equals_(x_.tokens_, y_.tokens_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_Token.equals_(x_.end_, y_.end_) && ((x_.targetIsNode_ === y_.targetIsNode_) && ((x_.offset_ === y_.offset_) && (x_.nextUnificationVariableIndex_ === y_.nextUnificationVariableIndex_)))))))
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.file_ === y_.file_) && (ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_Token).equals_(x_.tokens_, y_.tokens_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_Token.equals_(x_.end_, y_.end_) && ((x_.targetIsNode_ === y_.targetIsNode_) && ((x_.attemptFixes_ === y_.attemptFixes_) && ((x_.offset_ === y_.offset_) && (x_.nextUnificationVariableIndex_ === y_.nextUnificationVariableIndex_))))))))
 return
 }
 }
@@ -3203,7 +3219,7 @@ return
 }
 }
 {
-return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.file_ === y_.file_) && (ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_Token).equals_(x_.tokens_, y_.tokens_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_Token.equals_(x_.end_, y_.end_) && ((x_.targetIsNode_ === y_.targetIsNode_) && ((x_.offset_ === y_.offset_) && (x_.nextUnificationVariableIndex_ === y_.nextUnificationVariableIndex_)))))))
+return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.packagePair_, y_.packagePair_) && ((x_.file_ === y_.file_) && (ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_Token).equals_(x_.tokens_, y_.tokens_) && (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_Token.equals_(x_.end_, y_.end_) && ((x_.targetIsNode_ === y_.targetIsNode_) && ((x_.attemptFixes_ === y_.attemptFixes_) && ((x_.offset_ === y_.offset_) && (x_.nextUnificationVariableIndex_ === y_.nextUnificationVariableIndex_))))))))
 return
 }
 }
@@ -3317,6 +3333,10 @@ const targetIsNodeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bo
 if((targetIsNodeOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return targetIsNodeOrdering_
 } else {
+const attemptFixesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.attemptFixes_, y_.attemptFixes_);
+if((attemptFixesOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return attemptFixesOrdering_
+} else {
 const offsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.offset_, y_.offset_);
 if((offsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return offsetOrdering_
@@ -3326,6 +3346,7 @@ if((nextUnificationVariableIndexOrdering_ !== ff_core_Ordering.OrderingSame())) 
 return nextUnificationVariableIndexOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -3369,6 +3390,10 @@ const targetIsNodeOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bo
 if((targetIsNodeOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return targetIsNodeOrdering_
 } else {
+const attemptFixesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.attemptFixes_, y_.attemptFixes_);
+if((attemptFixesOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return attemptFixesOrdering_
+} else {
 const offsetOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(x_.offset_, y_.offset_);
 if((offsetOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return offsetOrdering_
@@ -3378,6 +3403,7 @@ if((nextUnificationVariableIndexOrdering_ !== ff_core_Ordering.OrderingSame())) 
 return nextUnificationVariableIndexOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -3590,6 +3616,7 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token).serializeUsing_(serialization_, value_.tokens_);
 ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token.serializeUsing_(serialization_, value_.end_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.targetIsNode_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.attemptFixes_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.offset_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.nextUnificationVariableIndex_)
 return
@@ -3604,7 +3631,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
-return ff_compiler_Parser.Parser(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token).deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
+return ff_compiler_Parser.Parser(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token).deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
 return
 }
 }
@@ -3628,6 +3655,7 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token).serializeUsing_(serialization_, value_.tokens_);
 ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token.serializeUsing_(serialization_, value_.end_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.targetIsNode_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.attemptFixes_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.offset_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.serializeUsing_(serialization_, value_.nextUnificationVariableIndex_)
 return
@@ -3642,7 +3670,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 25), 0);
-return ff_compiler_Parser.Parser(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token).deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
+return ff_compiler_Parser.Parser(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token).deserializeUsing_(serialization_), ff_compiler_Token.ff_core_Serializable_Serializable$ff_compiler_Token_Token.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int.deserializeUsing_(serialization_))
 return
 }
 }
