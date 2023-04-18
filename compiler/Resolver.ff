@@ -409,16 +409,16 @@ extend self: Resolver {
             }
         constraint.Constraint(
             name = name
-            generics = constraint.generics.map { self.resolveType(_, topLevel) }
+            generics = constraint.generics.map {self.resolveType(_, topLevel)}
         )
     }
 
     resolveFunctionDefinition(definition: DFunction, topLevel: Bool): DFunction {
         let signature = self.resolveSignature(definition.signature, topLevel)
         let self2 = self.withSignature(signature)
-        let body = definition.body.mapFirefly { lambda => lambda.Lambda(
+        let body = definition.body.mapFirefly {lambda => lambda.Lambda(
             effect = signature.effect
-            cases = lambda.cases.map { self2.resolveCase(_, False) }
+            cases = lambda.cases.map {self2.resolveCase(_, False)}
         )}
         DFunction(definition.at, signature, body)
     }
@@ -434,16 +434,16 @@ extend self: Resolver {
                 effect = self.freshUnificationVariable(signature.at)
             )
         }
-        newSignature.generics.find { name => self.typeParameters.contains(name) }.each { name =>
+        newSignature.generics.find {name => self.typeParameters.contains(name)}.each {name =>
             throw(CompileError(signature.at, "Type parameter " + name + " is already in scope"))
         }
         let self2 = self.withSignature(newSignature)
         newSignature.Signature(
-            constraints = newSignature.constraints.map { self2.resolveConstraint(_, topLevel) }
-            parameters = newSignature.parameters.map { p =>
+            constraints = newSignature.constraints.map {self2.resolveConstraint(_, topLevel)}
+            parameters = newSignature.parameters.map {p =>
                 p.Parameter(
                     valueType = self2.resolveType(p.valueType, topLevel)
-                    default = p.default.map { self2.resolveTerm(_, topLevel) }
+                    default = p.default.map {self2.resolveTerm(_, topLevel)}
                 )
             }
             returnType = self2.resolveType(newSignature.returnType, topLevel)

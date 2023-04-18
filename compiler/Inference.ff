@@ -131,6 +131,12 @@ extend self: Inference {
         let parameters = definition.signature.parameters.map {p =>
             let noEffect = TConstructor(p.at, "ff:core/Nothing.Nothing", [])
             let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType, noEffect))
+            if(self.hoverAt.contains(p.at) && self.hoverResult.at.isEmpty()) {
+                self.hoverResult = self.hoverResult.HoverInfo(
+                    at = Some(p.at)
+                    type = Some(p.valueType)
+                )
+            }
             Pair(p.name, scheme)
         }
         let parameterMap = parameters.toMap()
