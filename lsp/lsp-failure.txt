@@ -1,1 +1,1 @@
-Error: 
+Error: Dependency declaration and package declaration disagree on package name: ff:core vs.  ff:core
