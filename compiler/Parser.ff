@@ -8,6 +8,7 @@ class Parser(
     tokens: Array[Token]
     end: Token
     targetIsNode: Bool
+    attemptFixes: Bool
     mutable offset: Int
     mutable nextUnificationVariableIndex: Int
 )
@@ -26,13 +27,14 @@ data ParsedTargets(
     nodeAsync: Option[String]
 )
 
-make(packagePair: PackagePair, file: String, tokens: Array[Token], targetIsNode: Bool): Parser {
+make(packagePair: PackagePair, file: String, tokens: Array[Token], targetIsNode: Bool, attemptFixes: Bool): Parser {
     Parser(
         packagePair = packagePair
         file = file
         tokens = tokens
         end = tokens.grabLast()
         targetIsNode = targetIsNode
+        attemptFixes = attemptFixes
         offset = 0
         nextUnificationVariableIndex = 1 // To avoid collision with the unification and resolver
     )
@@ -68,9 +70,11 @@ extend self: Parser {
     rawSkip(kind: TokenKind, value: String): Token {
         let c = self.current()
         if(c.kind != kind) {
+            if(self.attemptFixes && (value == ")" || value == "]" || value == "}")) {} else:
             throw(CompileError(c.at(), "Expected " + Show.show(kind) + " " + value + ", got " + c.raw()))
         }
         if(!c.rawIs(value)) {
+            if(self.attemptFixes && (value == ")" || value == "]" || value == "}")) {self.offset -= 1} else:
             throw(CompileError(c.at(), "Expected " + value + " got " + c.raw()))
         }
         self.offset += 1

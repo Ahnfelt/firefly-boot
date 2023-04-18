@@ -228,7 +228,7 @@ detectBuildMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): Boo
     let file = mainFile + ".ff"
     let code = fs.readText(file)
     let tokens = Tokenizer.tokenize(file, code, None)
-    let parser = Parser.make(PackagePair("script", "script"), file, tokens, False)
+    let parser = Parser.make(PackagePair("script", "script"), file, tokens, False, False)
     let module = parser.parseModuleWithPackageInfo().module
     module.functions.any {definition =>
         (definition.signature.name == "buildMain" || definition.signature.name == "main") &&

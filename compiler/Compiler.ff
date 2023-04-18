@@ -158,7 +158,8 @@ extend self: Compiler {
         let fixedPath = path.replace("\\", "/")
         let code = self.virtualFiles.get(fixedPath).else {self.files.readText(fixedPath)}
         let tokens = Tokenizer.tokenize(fixedPath, code, self.completionAt)
-        let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser)
+        let attemptFixes = !self.hoverAt.isEmpty() || !self.completionAt.isEmpty()
+        let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser, attemptFixes)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module
         } else {
@@ -167,7 +168,6 @@ extend self: Compiler {
         let result = module.Module(
             imports = [...coreImports, ...module.imports]
         )
-
         self.parsedModules = self.parsedModules.add(packageName + ":" + moduleName, result)
         result
     }
