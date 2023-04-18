@@ -9,7 +9,7 @@
 	"logg": {
 		"prefix": "Logg",
 		"body": [
-			"Log.trace(\"${RELATIVE_FILEPATH/[\\\\]/\\//g} $RANDOM_HEX\")"
+			"Log.trace(\"$TM_FILENAME_BASE $RANDOM_HEX\")"
 		],
 		"description": "Trace location"
 	}
