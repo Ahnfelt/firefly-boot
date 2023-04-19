@@ -103,7 +103,7 @@ check(
     let packages = fs.isDirectory(path).{
         | True => findPackageFiles(fs, path)
         | False => 
-            let fixedPath = FileSystem.baseName(path.replace("\\", "/"))
+            let fixedPath = path.replace("\\", "/")
             [PackageFiles(FileSystem.directoryName(fixedPath), None, [fixedPath])] // TODO
     }
 
