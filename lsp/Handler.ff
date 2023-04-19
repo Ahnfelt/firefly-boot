@@ -45,7 +45,8 @@ extend self: Handler {
             | "textDocument/completion" => self.handleCompletion(system, parameters)
             | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
             | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
-            | "textDocument/references" => self.handleReferences(system, parameters)
+            | "textDocument/references" => self.handleReferences(system, parameters, local = False)
+            | "textDocument/documentHighlight" => self.handleReferences(system, parameters, local = True)
             | "shutdown" => Result(system.js().null())
             | _ => self.handleUnsupported(system.js())
         }
@@ -76,6 +77,7 @@ extend self: Handler {
                 .with("hoverProvider", True)
                 .with("definitionProvider", True)
                 //.with("typeDefinitionProvider", True)
+                .with("documentHighlightProvider", True)
                 .with("diagnosticProvider", js.object()
                     .with("interFileDependencies", True)
                     .with("workspaceDiagnostics", False)
@@ -219,7 +221,7 @@ extend self: Handler {
         Result(o)
     }
 
-    handleReferences(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+    handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {
         let referencesAt = self.grabFixedLocation(system, parameters)
         mutable hoverResult = HoverInfo(None, None, None)
         try {
@@ -242,7 +244,8 @@ extend self: Handler {
                         Log.trace("Set referencesResult: " + Show.show(r))
                         referencesResult = [...referencesResult, ...r]
                     }))
-                    Builder.check(system, ".", self.rootUri.grab(), self.virtualFiles, None, None, references, False)
+                    let path = if(local) {referencesAt.file} else {self.rootUri.grab()}
+                    Builder.check(system, ".", path, self.virtualFiles, None, None, references, False)
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()
