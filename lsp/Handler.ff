@@ -111,7 +111,7 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles, None, None, None)
+            Builder.check(system, ".", fixedPath, self.virtualFiles, None, None, None, True)
             []
         } catch {| CompileError(at, message), error =>
             let tokenLocation = self.findToken(system, at)
@@ -156,7 +156,7 @@ extend self: Handler {
         mutable hoverResult = HoverInfo(None, None, None)
         try {
             let hover = Some(Pair(hoverAt, {hoverResult = _}))
-            Builder.check(system, ".", hoverAt.file, self.virtualFiles, hover, None, None)
+            Builder.check(system, ".", hoverAt.file, self.virtualFiles, hover, None, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -194,7 +194,7 @@ extend self: Handler {
         mutable completionResult = []
         try {
             let completion = Some(Pair(completionAt, {completionResult = _}))
-            Builder.check(system, ".", completionAt.file, self.virtualFiles, None, completion, None)
+            Builder.check(system, ".", completionAt.file, self.virtualFiles, None, completion, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -224,7 +224,7 @@ extend self: Handler {
         mutable hoverResult = HoverInfo(None, None, None)
         try {
             let hover = Some(Pair(referencesAt, {hoverResult = _}))
-            Builder.check(system, ".", referencesAt.file, self.virtualFiles, hover, None, None)
+            Builder.check(system, ".", referencesAt.file, self.virtualFiles, hover, None, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -240,9 +240,9 @@ extend self: Handler {
                 try {
                     let references = Some(Pair(definedAt, {r => 
                         Log.trace("Set referencesResult: " + Show.show(r))
-                        referencesResult = r
+                        referencesResult = [...referencesResult, ...r]
                     }))
-                    Builder.check(system, ".", referencesAt.file, self.virtualFiles, None, None, references)
+                    Builder.check(system, ".", self.rootUri.grab(), self.virtualFiles, None, None, references, False)
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()

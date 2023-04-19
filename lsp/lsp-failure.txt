@@ -1,1 +1,1 @@
-Error: ENOENT: no such file or directory, open 'C:\Users\joaki\IdeaProjects\firefly-boot\lsp\Tok.ff'
+Error: ENOENT: no such file or directory, open 'firefly-boot'

@@ -92,39 +92,92 @@ buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, t
 check(
     system: NodeSystem, 
     fireflyPath: String, 
-    mainFile: String, 
+    path: String, 
     virtualFiles: Map[String, String], 
     hoverAt: Option[Pair[Location, HoverInfo => Unit]]
     completionAt: Option[Pair[Location, List[CompletionInfo] => Unit]]
     referencesTo: Option[Pair[Location, List[Location] => Unit]]
+    infer: Bool
 ) {
-    let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
-    let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
-        resolvedDependencies.packagePaths
-    } else {
-        resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+    let fs = system.files()
+    let packages = fs.isDirectory(path).{
+        | True => findPackageFiles(fs, path)
+        | False => 
+            let fixedPath = FileSystem.baseName(path.replace("\\", "/"))
+            [PackageFiles(FileSystem.directoryName(fixedPath), None, [fixedPath])] // TODO
     }
-    let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
-    let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
-    let compiler = Compiler.make(
-        EmitBuild
-        system.files()
-        system.time() 
-        None
-        ".firefly/temporary"
-        fixedResolvedDependencies
-        virtualFiles
-        hoverAt.map {_.first}
-        completionAt.map {_.first}
-        referencesTo.map {_.first}
-    )
-    try {
-        compiler.infer(resolvedDependencies.mainPackagePair, localMainFile.dropLast(".ff".size()))
-    } finally {
-        hoverAt.each {_.second(compiler.hoverResult)}
-        completionAt.each {_.second(compiler.completionResult)}
-        referencesTo.each {_.second(compiler.referencesResult)}
-    } grab()
+
+    packages.each {package => 
+        Log.show(package)
+        let firstFile = package.files.grabFirst()
+        let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), firstFile)
+        let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
+            resolvedDependencies.packagePaths
+        } else {
+            resolvedDependencies.packagePaths.add(PackagePair("ff", "core"), fireflyPath + "/core")
+        }
+        let fixedResolvedDependencies = resolvedDependencies.ResolvedDependencies(packagePaths = fixedPackagePaths)
+        let compiler = Compiler.make(
+            EmitBuild
+            system.files()
+            system.time() 
+            None
+            ".firefly/temporary"
+            fixedResolvedDependencies
+            virtualFiles
+            hoverAt.map {_.first}
+            completionAt.map {_.first}
+            referencesTo.map {_.first}
+        )
+        package.files.each {file =>
+            try {
+                if(infer) {
+                    compiler.infer(resolvedDependencies.mainPackagePair, file.dropLast(".ff".size()))
+                } else {
+                    compiler.resolve(resolvedDependencies.mainPackagePair, file.dropLast(".ff".size()))
+                }
+            } finally {
+                hoverAt.each {_.second(compiler.hoverResult)}
+                completionAt.each {_.second(compiler.completionResult)}
+                referencesTo.each {_.second(compiler.referencesResult)}
+            } grab()
+        }
+    }
+
+}
+
+data PackageFiles(
+    root: String
+    packageFile: Option[String]
+    files: List[String]
+)
+
+
+findPackageFiles(fs: FileSystem, rootUri: String): List[PackageFiles] {
+    let files = findFireflyFiles(fs, rootUri)
+    let split = files.partition {_.endsWith(".firefly/package.ff")}
+    let packageFiles = split.first
+    mutable codeFiles = split.second
+    let multiFileProjects = packageFiles.map {packageFile => 
+        let projectRoot = packageFile.removeLast(".firefly/package.ff").grab()
+        let files = codeFiles.filter {_.startsWith(projectRoot) }
+        let filesSet = files.toSet()
+        codeFiles = codeFiles.filter {file => !filesSet.contains(file)}
+        PackageFiles(projectRoot, Some(packageFile), files)
+    }
+    let singleFileProjects = codeFiles.map {file => 
+        let projectRoot = file.reverse().dropWhile {_ != '/'}.reverse()
+        PackageFiles(projectRoot, None, [file])
+    }
+    [...multiFileProjects, ...singleFileProjects]
+}
+
+findFireflyFiles(fs: FileSystem, rootUri: String): List[String] {
+    let split = fs.list(rootUri).partition {fs.isDirectory(_)}
+    let directories = split.first
+    let fireflyFiles = split.second.filter {_.endsWith(".ff")}
+    let fixedFiles = fireflyFiles.map {_.replace("\\", "/")}
+    [...fixedFiles, ...directories.flatMap {findFireflyFiles(fs, _)}]
 }
 
 internalCreateExecutable(
