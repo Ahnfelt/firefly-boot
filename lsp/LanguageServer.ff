@@ -34,8 +34,7 @@ main(system: NodeSystem) {
             let message = parseRequestMessage(request.object)
             handleRequestMessage(system, handler, message).each {body =>
                 let json = body.toJson(Some("    ")).toBuffer()
-                let length = json.size()
-                system.writeText("Content-Length: " + length + "\r\n\r\n")
+                system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
                 system.writeBuffer(json)
             }
         }
