@@ -203,21 +203,22 @@ extend self: Resolver {
     }
 
     resolveExtendDefinition(definition: DExtend): DExtend {
-        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
+        let generics = definition.generics.map {g => Pair(g, g)}.toMap()
         let selfWithNoQ = self.Resolver(
             types = self.types.addAll(generics)
             asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
             variables = self.variables.add(definition.name, definition.name)
+            variableLocations = self.variableLocations.add(definition.name, definition.at)
         )
         let selfWithQ = selfWithNoQ.Resolver(
             types = selfWithNoQ.types.add("Q$", "Q$")
             typeParameters = selfWithNoQ.typeParameters.add("Q$")
         )
         definition.DExtend(
-            constraints = definition.constraints.map { selfWithQ.resolveConstraint(_, True) }
+            constraints = definition.constraints.map {selfWithQ.resolveConstraint(_, True)}
             type = selfWithQ.resolveType(definition.type, True)
-            methods = definition.methods.map { selfWithNoQ.resolveFunctionDefinition(_, True) }
+            methods = definition.methods.map {selfWithNoQ.resolveFunctionDefinition(_, True)}
         )
     }
 

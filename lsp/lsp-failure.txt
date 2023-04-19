@@ -1,1 +1,1 @@
-Error: ENOENT: no such file or directory, open 'firefly-boot'
+Error: ENOENT: no such file or directory, open 'C:\Users\joaki\IdeaProjects\firefly-boot\lsp\Resolver.ff'
