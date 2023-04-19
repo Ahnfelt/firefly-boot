@@ -329,6 +329,9 @@ extend self: Resolver {
                 after = self.resolveTerm(after, topLevel)
             )
         | EAssign(at, operator, variable, value), _ =>
+            if(self.referencesTo.any {r => self.variableLocations.get(variable).any {r == _}}) {
+                self.state.referencesResult = [...self.state.referencesResult, at]
+            }
             EAssign(
                 at = at
                 operator = operator

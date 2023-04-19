@@ -240,9 +240,12 @@ extend self: Handler {
                 // TODO search all files in workspace
                 mutable referencesResult = []
                 try {
-                    let references = Some(Pair(definedAt, {r => 
-                        Log.trace("Set referencesResult: " + Show.show(r))
-                        referencesResult = [...referencesResult, ...r]
+                    let references = Some(Pair[Location, List[Location] => Unit](definedAt, {newReferences => 
+                        let filteredReferences = if(local) {
+                            newReferences.filter {_.file == referencesAt.file}
+                        } else {newReferences}
+                        Log.trace("Set referencesResult: " + Show.show(filteredReferences))
+                        referencesResult = [...referencesResult, ...filteredReferences]
                     }))
                     let path = referencesAt.file // TODO: Crashes a lot: if(local) {referencesAt.file} else {self.rootUri.grab()}
                     Builder.check(system, ".", path, self.virtualFiles, None, None, references, True)
