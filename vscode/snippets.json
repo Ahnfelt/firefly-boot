@@ -1,13 +1,197 @@
 {
+	"main": {
+		"prefix": "_main",
+		"body": [
+			"main(system: NodeSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Main function"
+	},
+	"nodeMain": {
+		"prefix": "_node",
+		"body": [
+			"nodeMain(system: NodeSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Node main function"
+	},
+	"browserMain": {
+		"prefix": "_browser",
+		"body": [
+			"browserMain(system: BrowserSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Browser main function"
+	},
+	"buildMain": {
+		"prefix": "_build",
+		"body": [
+			"buildMain(system: BuildSystem) {",
+			"    $0",
+			"}"
+		],
+		"description": "Build main function"
+	},
+	"extend": {
+		"prefix": "_extend",
+		"body": [
+			"extend ${1:self}: $2 {",
+			"    $0",
+			"}"
+		],
+		"description": "Extend a type with methods"
+	},
+	"data": {
+		"prefix": "_data",
+		"body": [
+			"data ${1}($2) {$0}"
+		],
+		"description": "Data type declaration"
+	},
+	"class": {
+		"prefix": "_class",
+		"body": [
+			"class ${1}($2) {$0}"
+		],
+		"description": "Class type declaration"
+	},
+	"capability": {
+		"prefix": "_capability",
+		"body": [
+			"capability ${1}($2) {$0}"
+		],
+		"description": "Capability type declaration"
+	},
+	"package": {
+		"prefix": "_package",
+		"body": [
+			"package $1:$2:$3"
+		],
+		"description": "Package declaration"
+	},
+	"dependency": {
+		"prefix": "_dependency",
+		"body": [
+			"dependency $1:$2:$3"
+		],
+		"description": "Dependency declaration"
+	},
+	"import": {
+		"prefix": "_import",
+		"body": [
+			"import $1 from $2:$3"
+		],
+		"description": "Import declaration"
+	},
+	"function": {
+		"prefix": "_function",
+		"body": [
+			"function $1($2): $3 {",
+			"    $0",
+			"}"
+		],
+		"description": "Function definition"
+	},
+	"let": {
+		"prefix": "_let",
+		"body": [
+			"let $1 = $0"
+		],
+		"description": "Immutable variable definition"
+	},
+	"mutable": {
+		"prefix": "_mutable",
+		"body": [
+			"mutable $1 = $0"
+		],
+		"description": "Mutable variable definition"
+	},
+	"if": {
+		"prefix": "_if",
+		"body": [
+			"if($1) {",
+			"    $0",
+			"}"
+		],
+		"description": "If expression"
+	},
+	"else": {
+		"prefix": "_else",
+		"body": [
+			"else {",
+			"    $0",
+			"}"
+		],
+		"description": "Else expression part"
+	},
+	"elseif": {
+		"prefix": "_elseif",
+		"body": [
+			"elseIf {$1} {",
+			"    $0",
+			"}"
+		],
+		"description": "ElseIf expression part"
+	},
+	"try": {
+		"prefix": "_try",
+		"body": [
+			"try {",
+			"    $1",
+			"} catch {| ${2:MyException e}, error =>",
+			"    $3",
+			"} finally {",
+			"    $0",
+			"} grab()"
+		],
+		"description": "Try catch finanlly expression"
+	},
+	"throw": {
+		"prefix": "_throw",
+		"body": [
+			"throw(${1:MyException()})"
+		],
+		"description": "Throw expression"
+	},
+	"while": {
+		"prefix": "_while",
+		"body": [
+			"while {$1} {",
+			"    $0",
+			"}"
+		],
+		"description": "While expression"
+	},
+	"do": {
+		"prefix": "_do",
+		"body": [
+			"do {",
+			"    $0",
+			"}"
+		],
+		"description": "Do expression"
+	},
+	"dowhile": {
+		"prefix": "_dowhile",
+		"body": [
+			"doWhile {",
+			"    $0",
+			"}"
+		],
+		"description": "Do while expression"
+	},
 	"log": {
-		"prefix": "Log",
+		"prefix": "_log",
 		"body": [
 			"Log.trace(\"$1: \" + $1)"
 		],
 		"description": "Trace expression"
 	},
 	"logg": {
-		"prefix": "Logg",
+		"prefix": "_logg",
 		"body": [
 			"Log.trace(\"$TM_FILENAME_BASE $RANDOM_HEX\")"
 		],
