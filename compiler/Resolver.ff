@@ -163,15 +163,15 @@ extend self: Resolver {
     }
 
     resolveTraitDefinition(definition: DTrait): DTrait {
-        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
+        let generics = definition.generics.map {g => Pair(g, g)}.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
             asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         definition.DTrait(
-            constraints = definition.constraints.map { self2.resolveConstraint(_, True) },
-            methods = definition.methods.map { self2.resolveSignature(_, True) },
+            constraints = definition.constraints.map {self2.resolveConstraint(_, True)}
+            methods = definition.methods.map {self2.resolveSignature(_, True)}
             methodDefaults = definition.methodDefaults.map {| Pair(name, lambda) =>
                 let signature = definition.methods.find {_.name == name}.grab()
                 let function1 = DFunction(signature.at, signature, FireflyTarget(lambda))
@@ -223,7 +223,10 @@ extend self: Resolver {
     }
 
     resolveLetDefinition(definition: DLet, topLevel: Bool): DLet {
-        let self2 = self.Resolver(variables = self.variables.add(definition.name, definition.name))
+        let self2 = self.Resolver(
+            variables = self.variables.add(definition.name, definition.name)
+            variableLocations = self.variableLocations.add(definition.name, definition.at)
+        )
         definition.DLet(
             variableType = self.resolveType(definition.variableType, topLevel)
             value = self.resolveTerm(definition.value, True)
