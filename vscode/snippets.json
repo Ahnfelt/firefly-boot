@@ -9,7 +9,7 @@
 		"description": "Main function"
 	},
 	"nodeMain": {
-		"prefix": "_node",
+		"prefix": "_nodeMain",
 		"body": [
 			"nodeMain(system: NodeSystem) {",
 			"    $0",
@@ -18,7 +18,7 @@
 		"description": "Node main function"
 	},
 	"browserMain": {
-		"prefix": "_browser",
+		"prefix": "_browserMain",
 		"body": [
 			"browserMain(system: BrowserSystem) {",
 			"    $0",
@@ -27,7 +27,7 @@
 		"description": "Browser main function"
 	},
 	"buildMain": {
-		"prefix": "_build",
+		"prefix": "_buildMain",
 		"body": [
 			"buildMain(system: BuildSystem) {",
 			"    $0",
