@@ -238,14 +238,11 @@ extend self: Handler {
             | Some(definedAt) => 
                 Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 // TODO search all files in workspace
-                mutable referencesResult = []
+                let referencesResult = [definedAt].toStack()
                 try {
-                    let references = Some(Pair[Location, List[Location] => Unit](definedAt, {newReferences => 
-                        let filteredReferences = if(local) {
-                            newReferences.filter {_.file == referencesAt.file}
-                        } else {newReferences}
-                        Log.trace("Set referencesResult: " + Show.show(filteredReferences))
-                        referencesResult = [...referencesResult, ...filteredReferences]
+                    let references = Some(Pair[Location, List[Location] => Unit](definedAt, {r => 
+                        Log.trace("Set referencesResult: " + Show.show(r))
+                        referencesResult.pushArray(r.toArray())
                     }))
                     let path = referencesAt.file // TODO: Crashes a lot: if(local) {referencesAt.file} else {self.rootUri.grab()}
                     Builder.check(system, ".", path, self.virtualFiles, None, None, references, True)
@@ -253,7 +250,9 @@ extend self: Handler {
                     Log.trace(message)
                 } grab()
         
-                let clientLocations = [definedAt, ...referencesResult].map {at => 
+                let clientLocations = referencesResult.toList().filter {
+                    !local || _.file == referencesAt.file
+                }.map {at => 
                     let token = self.findToken(system, at)
                     self.tokenLocationToLspLocation(system, token)
                 }
