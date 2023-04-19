@@ -244,8 +244,8 @@ extend self: Handler {
                         Log.trace("Set referencesResult: " + Show.show(r))
                         referencesResult = [...referencesResult, ...r]
                     }))
-                    let path = if(local) {referencesAt.file} else {self.rootUri.grab()}
-                    Builder.check(system, ".", path, self.virtualFiles, None, None, references, False)
+                    let path = referencesAt.file // TODO: Crashes a lot: if(local) {referencesAt.file} else {self.rootUri.grab()}
+                    Builder.check(system, ".", path, self.virtualFiles, None, None, references, True)
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()

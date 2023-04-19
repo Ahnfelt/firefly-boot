@@ -103,8 +103,7 @@ check(
     let packages = fs.isDirectory(path).{
         | True => findPackageFiles(fs, path)
         | False => 
-            let fixedPath = path.replace("\\", "/")
-            [PackageFiles(FileSystem.directoryName(fixedPath), None, [fixedPath])] // TODO
+            [PackageFiles(FileSystem.directoryName(path), None, [path])] // TODO
     }
 
     packages.each {package => 
@@ -130,11 +129,12 @@ check(
             referencesTo.map {_.first}
         )
         package.files.each {file =>
+            let localFile = FileSystem.baseName(file.replace("\\", "/"))
             try {
                 if(infer) {
-                    compiler.infer(resolvedDependencies.mainPackagePair, file.dropLast(".ff".size()))
+                    compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
                 } else {
-                    compiler.resolve(resolvedDependencies.mainPackagePair, file.dropLast(".ff".size()))
+                    compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
                 }
             } finally {
                 hoverAt.each {_.second(compiler.hoverResult)}
