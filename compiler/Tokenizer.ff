@@ -1,7 +1,7 @@
 import Token
 import Syntax
 
-tokenize(file: String, code: String, completionAt: Option[Location]): Array[Token] {
+tokenize(file: String, code: String, completionAt: Option[Location], attemptFixes: Bool): Array[Token] {
 
     let completionLine = completionAt.filter {_.file == file}.map {_.line}.else {-1}
     let completionColumn = completionAt.filter {_.file == file}.map {_.column}.else {-1}
@@ -45,7 +45,7 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
     function throwError(message: String) {
         let column = (i - startLineOffset) + 1
         throw(CompileError(
-            Location(file, line, column + 1)
+            Location(file, line, column)
             message
         ))
     }
@@ -239,6 +239,7 @@ tokenize(file: String, code: String, completionAt: Option[Location]): Array[Toke
             i < code.size()
         } {
 
+            if(attemptFixes) {i += 1} else:
             throwError("Unexpected character: " + Show.show(code.grab(i)))
 
         }

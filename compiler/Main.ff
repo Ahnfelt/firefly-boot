@@ -227,8 +227,8 @@ prepareFireflyDirectory(fs: FileSystem) {
 detectBuildMain(fs: FileSystem, packagePair: PackagePair, mainFile: String): Bool {
     let file = mainFile + ".ff"
     let code = fs.readText(file)
-    let tokens = Tokenizer.tokenize(file, code, None)
-    let parser = Parser.make(PackagePair("script", "script"), file, tokens, False, False)
+    let tokens = Tokenizer.tokenize(file, code, None, True)
+    let parser = Parser.make(PackagePair("script", "script"), file, tokens, False, True)
     let module = parser.parseModuleWithPackageInfo().module
     module.functions.any {definition =>
         (definition.signature.name == "buildMain" || definition.signature.name == "main") &&

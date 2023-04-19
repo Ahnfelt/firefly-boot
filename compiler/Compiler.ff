@@ -157,8 +157,8 @@ extend self: Compiler {
         let path = FileSystem.relative(self.files.workingDirectory(), packagePath + "/" + file)
         let fixedPath = path.replace("\\", "/")
         let code = self.virtualFiles.get(fixedPath).else {self.files.readText(fixedPath)}
-        let tokens = Tokenizer.tokenize(fixedPath, code, self.completionAt)
         let attemptFixes = !self.hoverAt.isEmpty() || !self.completionAt.isEmpty()
+        let tokens = Tokenizer.tokenize(fixedPath, code, self.completionAt, attemptFixes)
         let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser, attemptFixes)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module

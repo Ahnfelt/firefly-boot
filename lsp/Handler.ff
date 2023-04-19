@@ -279,7 +279,7 @@ extend self: Handler {
         )
         try {
             let code = self.virtualFiles.get(at.file).else {system.files().readText(at.file)}
-            let tokens = Tokenizer.tokenize(at.file, code, None)
+            let tokens = Tokenizer.tokenize(at.file, code, None, True)
             let token = tokens.toStream().find {token =>
                 at.line >= token.startLine && at.line <= token.stopLine && (
                     (at.line > token.startLine || at.column >= 1 + token.startOffset - token.startLineOffset) &&
