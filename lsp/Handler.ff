@@ -127,7 +127,6 @@ extend self: Handler {
         let o = js.object()
             .with("kind", "full")
             .with("items", diagnostics.toArray())
-        Log.trace("Diagnostics: " + o.toJson())
         Result(o)
     }
 

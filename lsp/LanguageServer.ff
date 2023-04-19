@@ -33,9 +33,11 @@ main(system: NodeSystem) {
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
             handleRequestMessage(system, handler, message).each {body =>
-                system.writeText(makeResponse(body))
+                let json = body.toJson(Some("    ")).toBuffer()
+                let length = json.size()
+                system.writeText("Content-Length: " + length + "\r\n\r\n")
+                system.writeBuffer(json)
             }
-            //system.writeText(makeResponse(makeDiagnoseNotification(system.js())))
         }
     } catch {| BadRequestException(reason), error =>
         Log.trace(reason)
@@ -136,14 +138,6 @@ parseRequestMessage(object: JsValue): RequestMessage {
     RequestMessage(id, method, parameters)
 }
 
-makeResponse(body: JsValue): String {
-    let json = body.toJson(Some("    "))
-    let length = json.size()
-    "Content-Length: " + length + "\r\n" +
-    "\r\n" +
-    json
-}
-
 handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): Option[JsValue] {
     try {
         message.id.{
@@ -155,7 +149,7 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
                 Some(makeResponseMessage(system.js(), id, result))
         }
     } catchAny {error =>
-        system.files().writeText("lsp-failure.txt", error.name() + ": " + error.message())
+        //system.files().writeText("lsp-failure.txt", error.name() + ": " + error.message())
         error.rethrow()
     } grab()
 }
