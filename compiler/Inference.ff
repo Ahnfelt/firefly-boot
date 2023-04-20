@@ -992,7 +992,7 @@ extend self: Inference {
                         ""
                     } + trailing.map {_.first}.join()
                     if(copy) {
-                        "(${1|" + required.map {_.first}.map {f => f + " = " + f + ""}.join(",") + "|}$0)"
+                        "(${1|" + realParameters.map {_.name}.map {f => f + " = " + f + ""}.join(",") + "|}$0)"
                     } else {
                         if(trailing.isEmpty() || !required.isEmpty()) {
                             "(" + required.map {_.second}.join(", ") + ")"
