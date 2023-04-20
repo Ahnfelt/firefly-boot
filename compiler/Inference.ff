@@ -1000,8 +1000,10 @@ extend self: Inference {
             } else {Pair("", "")}
             let returnType = self.unification.substitute(memberScheme.signature.returnType)
             let documentation = if(memberScheme.isVariable || variantWithoutParameters) {
+                let methodGenerics = memberScheme.signature.generics
+                let generics = if(member || methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
                 if(memberScheme.isMutable) {"mutable "} else {""} +
-                unqualifiedName +
+                unqualifiedName + generics +
                 ": " + returnType.show([])
             } else {
                 let selfType = memberScheme.signature.parameters.first().filter {_ => member}.map {_.valueType}
@@ -1013,7 +1015,10 @@ extend self: Inference {
                         if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
                     | _ =>
                         ""
-                }.else {""}
+                }.else {
+                    let methodGenerics = memberScheme.signature.generics
+                    if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+                }
                 let selfIndent = selfType.map {_ => "    "}.else {""}
                 let parameters = if(realParameters.isEmpty()) {""} else {
                     "\n" + realParameters.map {p =>
