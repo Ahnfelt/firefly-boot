@@ -101,8 +101,11 @@ check(
 ) {
     let fs = system.files()
     let packages = fs.isDirectory(path).{
-        | True => findPackageFiles(fs, path)
+        | True => 
+            Log.trace("fs.isDirectory(path): True" )
+            findPackageFiles(fs, path)
         | False => 
+            Log.trace("fs.isDirectory(path): False" )
             [PackageFiles(FileSystem.directoryName(path), None, [path])] // TODO
     }
 
@@ -163,11 +166,19 @@ findPackageFiles(fs: FileSystem, rootUri: String): List[PackageFiles] {
         let files = codeFiles.filter {_.startsWith(projectRoot) }
         let filesSet = files.toSet()
         codeFiles = codeFiles.filter {file => !filesSet.contains(file)}
-        PackageFiles(projectRoot, Some(packageFile), files)
+            PackageFiles(
+                FileSystem.relative(fs.workingDirectory(), projectRoot), 
+                Some(FileSystem.relative(fs.workingDirectory(), packageFile)), 
+                files.map {FileSystem.relative(fs.workingDirectory(), _)}
+            )
     }
     let singleFileProjects = codeFiles.map {file => 
         let projectRoot = file.reverse().dropWhile {_ != '/'}.reverse()
-        PackageFiles(projectRoot, None, [file])
+        PackageFiles(
+            FileSystem.relative(fs.workingDirectory(), projectRoot), 
+            None, 
+            [FileSystem.relative(fs.workingDirectory(), file)]
+        )
     }
     [...multiFileProjects, ...singleFileProjects]
 }
