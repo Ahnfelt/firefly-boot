@@ -958,12 +958,12 @@ extend self: Inference {
 
         let members = Stack.make()
 
-        function makeCompletion(memberName: String, memberScheme: Scheme) {
+        function makeCompletion(prefix: String, memberName: String, memberScheme: Scheme, copy: Bool) {
             let shortName = memberName.dropFirst(prefix.size())
             let unqualifiedName = shortName.reverse().takeWhile {_ != '.'}.reverse()
             let upper = unqualifiedName.first().any {_.isAsciiUpper()}
             let variantWithoutParameters = upper && memberScheme.signature.parameters.isEmpty()
-            let realParameters = memberScheme.signature.parameters.dropFirst(if(member) {1} else {0})
+            let realParameters = memberScheme.signature.parameters.dropFirst(if(member && !copy) {1} else {0})
             let pair = if(!memberScheme.isVariable && !variantWithoutParameters) {
                 let trailing = realParameters.pairs().reverse().map {| Pair(i, p) =>
                     p.valueType.{
@@ -991,11 +991,15 @@ extend self: Inference {
                     } else {
                         ""
                     } + trailing.map {_.first}.join()
-                    if(trailing.isEmpty() || !required.isEmpty()) {
-                        "(" + required.map {_.second}.join(", ") + ")"
+                    if(copy) {
+                        "(${1|" + required.map {_.first}.map {f => f + " = " + f + ""}.join(",") + "|}$0)"
                     } else {
-                        ""
-                    } + if(trailing.isEmpty()) {"$0"} else {trailing.map {_.second}.join()}
+                        if(trailing.isEmpty() || !required.isEmpty()) {
+                            "(" + required.map {_.second}.join(", ") + ")"
+                        } else {
+                            ""
+                        } + if(trailing.isEmpty()) {"$0"} else {trailing.map {_.second}.join()}
+                    }
                 )
             } else {Pair("", "")}
             let returnType = self.unification.substitute(memberScheme.signature.returnType)
@@ -1006,7 +1010,7 @@ extend self: Inference {
                 unqualifiedName + generics +
                 ": " + returnType.show([])
             } else {
-                let selfType = memberScheme.signature.parameters.first().filter {_ => member}.map {_.valueType}
+                let selfType = memberScheme.signature.parameters.first().filter {_ => member && !copy}.map {_.valueType}
                 let generics = selfType.map {
                     | TConstructor(_, _, gs) => 
                         // TODO: Needs constraints as well
@@ -1051,7 +1055,7 @@ extend self: Inference {
             members.push(CompletionInfo(
                 label = shortName + pair.first
                 snippet = shortName + pair.second
-                member = member
+                member = member && !copy
                 type = returnType
                 documentation = documentation
             ))
@@ -1063,20 +1067,33 @@ extend self: Inference {
                     Some(pair)
                 | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
                     Some(pair.mapFirst {_.dropFirst("ff:core/Core.".size())})
-                | Pair(shortName, longName) {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
+                | Pair(shortName, scheme) {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
                     short.reverse().takeWhile {_ != '.'}.reverse() | shorter
                 } {shorter.all {_.isAsciiLetterOrDigit()} && shorter.first().any {_.isAsciiUpper()}} => 
-                    Some(Pair(shorter, longName))
+                    Some(Pair(shorter, scheme))
                 | _ => 
                     None
             }.toMap()
         } else {
+            let shorterPrefix = prefix.dropLast() //.reverse().dropWhile {_ != '.'}.reverse()
+            environment.symbols.each {
+                | shortName, scheme {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
+                    short.reverse().takeWhile {_ != '.'}.reverse() | shorter
+                } {shorter.all {_.isAsciiLetterOrDigit()} && shorter.first().any {_.isAsciiUpper()}} => 
+                    let returnType = self.unification.substitute(scheme.signature.returnType)
+                    returnType.{
+                        | TConstructor(_, name, _) {name.startsWith(shorterPrefix)} =>
+                            makeCompletion("", shorter, scheme, True)
+                        | _ =>
+                    }
+                | _, _ => 
+            }
             environment.symbols
         }
 
         symbols.each {memberName, memberScheme =>
             if(memberName.startsWith(prefix)) {
-                makeCompletion(memberName, memberScheme)
+                makeCompletion(prefix, memberName, memberScheme, False)
             }
         }
         self.completionResult = members.toList()
