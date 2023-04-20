@@ -287,12 +287,7 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
-                if(self.completionAt.contains(e.at)) {
-                    let unqualifiedEnvironment = environment.symbols.toList().filter {| Pair(name, _) => 
-                        name.all {_.isAsciiLetterOrDigit()}
-                    }.toMap()
-                    self.completion(environment.Environment(symbols = unqualifiedEnvironment), "", False)
-                }
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False)}
                 self.lookup(environment, e.at, e.name, []).map {instantiated =>
                     if(instantiated.scheme.isVariable) {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
@@ -423,6 +418,7 @@ extend self: Inference {
                 let lambda = self.inferLambda(environment, expected, l)
                 ELambda(at, lambda)
             | EVariant e =>
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False)}
                 let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
@@ -959,97 +955,123 @@ extend self: Inference {
     }
 
     completion(environment: Environment, prefix: String, member: Bool): Unit {
+
         let members = Stack.make()
-        environment.symbols.each {| memberName, memberScheme =>
-            if(memberName.startsWith(prefix)) {
-                let realParameters = memberScheme.signature.parameters.dropFirst(if(member) {1} else {0})
-                let pair = if(!memberScheme.isVariable) {
-                    let trailing = realParameters.pairs().reverse().map {| Pair(i, p) =>
-                        p.valueType.{
-                            | TConstructor(_, name, _) {name.startsWith("Function$")} =>
-                                Some(Pair(
-                                    " {...}"
-                                    " {$" + (i + 1) + "}"
-                                ))
-                            | _ => 
-                                None
-                        }
-                    }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
-                    let allRequired = realParameters.filter {_.default.isEmpty()}
-                    let required = 
-                        allRequired.dropLast(trailing.size()).pairs().map {
-                            | Pair(index, p) => 
-                                Pair(p.name, "${" + (index + 1) + ":" + p.name + "}")
-                        }
-                    let optional = if(
-                        allRequired.size() != realParameters.size()
-                    ) {"..."}
-                    Pair(
-                        if(trailing.isEmpty() || !required.isEmpty()) {
-                            "(" + [...required.map {_.first}, ...optional.toList()].join(", ") + ")"
-                        } else {
-                            ""
-                        } + trailing.map {_.first}.join()
-                        if(trailing.isEmpty() || !required.isEmpty()) {
-                            "(" + required.map {_.second}.join(", ") + ")"
-                        } else {
-                            ""
-                        } + if(trailing.isEmpty()) {"$0"} else {trailing.map {_.second}.join()}
-                    )
-                } else {Pair("", "")}
-                let shortName = memberName.dropFirst(prefix.size())
-                let returnType = self.unification.substitute(memberScheme.signature.returnType)
-                let documentation = if(memberScheme.isVariable) {
-                    if(memberScheme.isMutable) {"mutable "} else {""} +
-                    shortName +
-                    ": " + returnType.show([])
-                } else {
-                    let selfType = memberScheme.signature.parameters.first().filter {_ => member}.map {_.valueType}
-                    let generics = selfType.map {
-                        | TConstructor(_, _, gs) => 
-                            // TODO: Needs constraints as well
-                            // TODO: This drops the wrong number of type parameters - more environment needed
-                            let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
-                            if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
-                        | _ =>
-                            ""
-                    }.else {""}
-                    let selfIndent = selfType.map {_ => "    "}.else {""}
-                    let parameters = if(realParameters.isEmpty()) {""} else {
-                        "\n" + realParameters.map {p =>
-                            if(p.mutable) {selfIndent + "    mutable "} else {selfIndent + "    "} +
-                            p.name + ": " + p.valueType.show([]) +
-                            p.default.map {
-                                | EVariant(_, n, _, None) =>
-                                    n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-                                | EVariant(_, n, _, Some([])) =>
-                                    n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-                                | EVariant(_, n, _, _) => 
-                                    n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse() + "(...)"
-                                | EChar(_, v) => v
-                                | EInt(_, v) => v
-                                | EFloat(_, v) => v
-                                | EString(_, v) => v.replace("```", "'''")
-                                | ELambda(_, _) => "{...}"
-                                | EList(_, _, []) => "[]"
-                                | EList(_, _, _) => "[...]"
-                                | _ => " = ..."
-                            }.map {" = " + _}.else {""}
-                        }.join("\n") + "\n" + selfIndent
+
+        function makeCompletion(memberName: String, memberScheme: Scheme) {
+            let shortName = memberName.dropFirst(prefix.size())
+            let unqualifiedName = shortName.reverse().takeWhile {_ != '.'}.reverse()
+            let upper = unqualifiedName.first().any {_.isAsciiUpper()}
+            let variantWithoutParameters = upper && memberScheme.signature.parameters.isEmpty()
+            let realParameters = memberScheme.signature.parameters.dropFirst(if(member) {1} else {0})
+            let pair = if(!memberScheme.isVariable && !variantWithoutParameters) {
+                let trailing = realParameters.pairs().reverse().map {| Pair(i, p) =>
+                    p.valueType.{
+                        | TConstructor(_, name, _) {name.startsWith("Function$")} =>
+                            Some(Pair(
+                                " {...}"
+                                " {$" + (i + 1) + "}"
+                            ))
+                        | _ => 
+                            None
                     }
-                    let functionPrefix = if(!member) {"function "} else {""}
-                    selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
-                    selfIndent + functionPrefix + shortName + generics + "(" + parameters + "): " + 
-                    returnType.show([]) + 
-                    selfType.map {_ => "\n}"}.else {""}
+                }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
+                let allRequired = realParameters.filter {_.default.isEmpty()}
+                let required = 
+                    allRequired.dropLast(trailing.size()).pairs().map {
+                        | Pair(index, p) => 
+                            Pair(p.name, "${" + (index + 1) + ":" + p.name + "}")
+                    }
+                let optional = if(
+                    allRequired.size() != realParameters.size()
+                ) {"..."}
+                Pair(
+                    if(trailing.isEmpty() || !required.isEmpty()) {
+                        "(" + [...required.map {_.first}, ...optional.toList()].join(", ") + ")"
+                    } else {
+                        ""
+                    } + trailing.map {_.first}.join()
+                    if(trailing.isEmpty() || !required.isEmpty()) {
+                        "(" + required.map {_.second}.join(", ") + ")"
+                    } else {
+                        ""
+                    } + if(trailing.isEmpty()) {"$0"} else {trailing.map {_.second}.join()}
+                )
+            } else {Pair("", "")}
+            let returnType = self.unification.substitute(memberScheme.signature.returnType)
+            let documentation = if(memberScheme.isVariable || variantWithoutParameters) {
+                if(memberScheme.isMutable) {"mutable "} else {""} +
+                unqualifiedName +
+                ": " + returnType.show([])
+            } else {
+                let selfType = memberScheme.signature.parameters.first().filter {_ => member}.map {_.valueType}
+                let generics = selfType.map {
+                    | TConstructor(_, _, gs) => 
+                        // TODO: Needs constraints as well
+                        // TODO: This drops the wrong number of type parameters - more environment needed
+                        let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
+                        if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+                    | _ =>
+                        ""
+                }.else {""}
+                let selfIndent = selfType.map {_ => "    "}.else {""}
+                let parameters = if(realParameters.isEmpty()) {""} else {
+                    "\n" + realParameters.map {p =>
+                        if(p.mutable) {selfIndent + "    mutable "} else {selfIndent + "    "} +
+                        p.name + ": " + p.valueType.show([]) +
+                        p.default.map {
+                            | EVariant(_, n, _, None) =>
+                                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+                            | EVariant(_, n, _, Some([])) =>
+                                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+                            | EVariant(_, n, _, _) => 
+                                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse() + "(...)"
+                            | EChar(_, v) => v
+                            | EInt(_, v) => v
+                            | EFloat(_, v) => v
+                            | EString(_, v) => v.replace("```", "'''")
+                            | ELambda(_, _) => "{...}"
+                            | EList(_, _, []) => "[]"
+                            | EList(_, _, _) => "[...]"
+                            | _ => " = ..."
+                        }.map {" = " + _}.else {""}
+                    }.join("\n") + "\n" + selfIndent
                 }
-                members.push(CompletionInfo(
-                    label = shortName + pair.first
-                    snippet = shortName + pair.second
-                    member = member
-                    type = returnType
-                    documentation = documentation
-                ))
+                selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
+                selfIndent + unqualifiedName + 
+                generics + "(" + parameters + "): " + 
+                returnType.show([]) + 
+                selfType.map {_ => "\n}"}.else {""}
+            }
+            members.push(CompletionInfo(
+                label = shortName + pair.first
+                snippet = shortName + pair.second
+                member = member
+                type = returnType
+                documentation = documentation
+            ))
+        }
+
+        let symbols = if(prefix == "") {
+            environment.symbols.toList().collect {
+                | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} => 
+                    Some(pair)
+                | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
+                    Some(pair.mapFirst {_.dropFirst("ff:core/Core.".size())})
+                | Pair(shortName, longName) {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
+                    short.reverse().takeWhile {_ != '.'}.reverse() | shorter
+                } {shorter.all {_.isAsciiLetterOrDigit()} && shorter.first().any {_.isAsciiUpper()}} => 
+                    Some(Pair(shorter, longName))
+                | _ => 
+                    None
+            }.toMap()
+        } else {
+            environment.symbols
+        }
+
+        symbols.each {memberName, memberScheme =>
+            if(memberName.startsWith(prefix)) {
+                makeCompletion(memberName, memberScheme)
             }
         }
         self.completionResult = members.toList()

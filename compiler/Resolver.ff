@@ -262,9 +262,9 @@ extend self: Resolver {
         | EVariant(at, name, typeArguments, arguments), _ =>
             EVariant(
                 at = at
-                name = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
-                typeArguments = typeArguments.map { self.resolveType(_, topLevel) }
-                arguments = arguments.map { _.map { a => a.Argument(value = self.resolveTerm(a.value, topLevel)) }}
+                name = self.variants.get(name).else {name}
+                typeArguments = typeArguments.map {self.resolveType(_, topLevel)}
+                arguments = arguments.map {_.map {a => a.Argument(value = self.resolveTerm(a.value, topLevel))}}
             )
         | EVariantIs(at, name, typeArguments), _ =>
             EVariantIs(
