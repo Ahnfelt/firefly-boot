@@ -315,6 +315,7 @@ extend self: Inference {
                                 | Pair(fieldName, typeArgument) => 
                                     CompletionInfo(fieldName, fieldName, True, typeArgument, "")
                             }
+                            self.completion(environment, name, True)
                         }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
@@ -1075,13 +1076,17 @@ extend self: Inference {
                     None
             }.toMap()
         } else {
-            let shorterPrefix = prefix.dropLast() //.reverse().dropWhile {_ != '.'}.reverse()
+            let shorterPrefix = prefix.dropLast()
+            let recordFields = prefix.split('$').dropFirst().toSet()
             environment.symbols.each {
                 | shortName, scheme {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
                     short.reverse().takeWhile {_ != '.'}.reverse() | shorter
                 } {shorter.all {_.isAsciiLetterOrDigit()} && shorter.first().any {_.isAsciiUpper()}} => 
-                    let returnType = self.unification.substitute(scheme.signature.returnType)
-                    returnType.{
+                    scheme.signature.returnType.{
+                        | _ {prefix.startsWith("Record$")} =>
+                            if(scheme.signature.parameters.any {recordFields.contains(_.name)}) {
+                                makeCompletion("", shorter, scheme, True)
+                            }
                         | TConstructor(_, name, _) {name.startsWith(shorterPrefix)} =>
                             makeCompletion("", shorter, scheme, True)
                         | _ =>
@@ -1096,7 +1101,7 @@ extend self: Inference {
                 makeCompletion(prefix, memberName, memberScheme, False)
             }
         }
-        self.completionResult = members.toList()
+        self.completionResult = [...self.completionResult, ...members.toList()]
     }
 
 }
