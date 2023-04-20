@@ -1023,7 +1023,7 @@ extend self: Parser {
         let prefix = namespace + extraNamespace
         let token = self.skip(LUpper)
         let name = prefix + token.raw()
-        let fields = self.parseRecord()
+        let fields = if(self.attemptFixes && !self.current().rawIs("(")) {[]} else {self.parseRecord()}
         ECopy(token.at(), name, record, fields)
     }
     

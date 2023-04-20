@@ -53,7 +53,7 @@ extend self: Inference {
         )
         self.completionResult = self.completionResult.map {r => 
             r.CompletionInfo(type = subsititution.substituteType(r.type))
-        }
+        }.distinct()
         subsititution.substituteModule(result)
     }
 

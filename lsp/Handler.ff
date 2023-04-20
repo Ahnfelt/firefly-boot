@@ -203,7 +203,7 @@ extend self: Handler {
         let js = system.js()
         let o = js.object()
             .with("isIncomplete", False)
-            .with("items", completionResult.toArray().map {| CompletionInfo i =>
+            .with("items", completionResult.distinct().toArray().map {| CompletionInfo i =>
                 js.object()
                     // Constructor or Method/Function or Field/Variable
                     .with("kind", 

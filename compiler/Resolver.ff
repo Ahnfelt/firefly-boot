@@ -275,15 +275,15 @@ extend self: Resolver {
         | ECopy(at, name, record, arguments), _ =>
             ECopy(
                 at = at
-                name = self.variants.get(name).else { throw(CompileError(at, "No such variant: " + name)) }
+                name = self.variants.get(name).else {name}
                 record = self.resolveTerm(record, topLevel)
-                arguments = arguments.map { f => f.Field(value = self.resolveTerm(f.value, topLevel)) }
+                arguments = arguments.map {f => f.Field(value = self.resolveTerm(f.value, topLevel))}
             )
         | EField e, _ =>
             e.EField(record = self.resolveTerm(e.record, topLevel))
         | ELambda(at, Lambda(lambdaAt, _, cases)), _ =>
             let effect = self.makeEffectArgument(lambdaAt, topLevel)
-            ELambda(at, Lambda(lambdaAt, effect, cases.map { self.resolveCase(_, topLevel) }))
+            ELambda(at, Lambda(lambdaAt, effect, cases.map {self.resolveCase(_, topLevel)}))
         | EPipe(at, value, effect, function), _ =>
             EPipe(
                 at = at
