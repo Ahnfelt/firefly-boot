@@ -40,14 +40,14 @@ extend self: Deriver {
     }
 
     makeHasAnyTagInstance(modulePrefix: String, declaration: DType): DInstance {
-        let constraints = declaration.generics.map { t =>
-            Constraint(declaration.at, "ff:core/Any.HasAnyTag", [TConstructor(declaration.at, t, [])])
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let constraints = declaration.generics.map {t =>
+            Constraint(at, "ff:core/Any.HasAnyTag", [TConstructor(at, t, [])])
         }
-        let typeArguments = declaration.generics.map { t =>
-            TConstructor(declaration.at, t, [])
+        let typeArguments = declaration.generics.map {t =>
+            TConstructor(at, t, [])
         }
         let selfTypeName = modulePrefix + "." + declaration.name
-        let at = declaration.at
         let selfType = TConstructor(at, selfTypeName, typeArguments)
         let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let signature = Signature(
@@ -99,29 +99,30 @@ extend self: Deriver {
     }
 
     makeShowInstance(modulePrefix: String, declaration: DType): DInstance {
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
         let constraints = declaration.generics.map { t =>
-            Constraint(declaration.at, "ff:core/Show.Show", [TConstructor(declaration.at, t, [])])
+            Constraint(at, "ff:core/Show.Show", [TConstructor(at, t, [])])
         }
         let typeArguments = declaration.generics.map { t =>
-            TConstructor(declaration.at, t, [])
+            TConstructor(at, t, [])
         }
-        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
-        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let selfType = TConstructor(at, modulePrefix + "." + declaration.name, typeArguments)
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let signature = Signature(
-            at = declaration.at
+            at = at
             name = "show"
             generics = []
             constraints = []
-            parameters = [Parameter(declaration.at, False, "x", selfType, None)]
-            returnType = TConstructor(declaration.at, "ff:core/String.String", [])
+            parameters = [Parameter(at, False, "x", selfType, None)]
+            returnType = TConstructor(at, "ff:core/String.String", [])
             effect = noEffect
         )
         let body = FireflyTarget(
-            Lambda(declaration.at, noEffect, self.makeShowCases(modulePrefix, declaration, selfType))
+            Lambda(at, noEffect, self.makeShowCases(modulePrefix, declaration, selfType))
         )
-        let showMethod = DFunction(declaration.at, signature, body)
+        let showMethod = DFunction(at, signature, body)
         DInstance(
-            at = declaration.at
+            at = at
             generics = declaration.generics
             constraints = constraints
             traitName = "ff:core/Show.Show"
@@ -132,8 +133,8 @@ extend self: Deriver {
     }
 
     makeShowCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
-        let at = declaration.at
-        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         declaration.variants.{
             | variants =>
@@ -172,32 +173,33 @@ extend self: Deriver {
     }
 
     makeOrderingInstance(modulePrefix: String, declaration: DType): DInstance {
-        let constraints = declaration.generics.map { t =>
-            Constraint(declaration.at, "ff:core/Ordering.Order", [TConstructor(declaration.at, t, [])])
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let constraints = declaration.generics.map {t =>
+            Constraint(at, "ff:core/Ordering.Order", [TConstructor(at, t, [])])
         }
-        let typeArguments = declaration.generics.map { t =>
-            TConstructor(declaration.at, t, [])
+        let typeArguments = declaration.generics.map {t =>
+            TConstructor(at, t, [])
         }
-        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
-        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let selfType = TConstructor(at, modulePrefix + "." + declaration.name, typeArguments)
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let signature = Signature(
-            at = declaration.at
+            at = at
             name = "compare"
             generics = []
             constraints = []
             parameters = [
-                Parameter(declaration.at, False, "x", selfType, None)
-                Parameter(declaration.at, False, "y", selfType, None)
+                Parameter(at, False, "x", selfType, None)
+                Parameter(at, False, "y", selfType, None)
             ]
-            returnType = TConstructor(declaration.at, "ff:core/Ordering.Ordering", [])
+            returnType = TConstructor(at, "ff:core/Ordering.Ordering", [])
             effect = noEffect
         )
         let body = FireflyTarget(
-            Lambda(declaration.at, noEffect, self.makeOrderingCases(modulePrefix, declaration, selfType))
+            Lambda(at, noEffect, self.makeOrderingCases(modulePrefix, declaration, selfType))
         )
-        let compareMethod = DFunction(declaration.at, signature, body)
+        let compareMethod = DFunction(at, signature, body)
         DInstance(
-            at = declaration.at
+            at = at
             generics = declaration.generics
             constraints = constraints
             traitName = "ff:core/Ordering.Order"
@@ -208,8 +210,8 @@ extend self: Deriver {
     }
 
     makeOrderingCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
-        let at = declaration.at
-        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         let sameCase = MatchCase(
             at = at,
@@ -244,7 +246,7 @@ extend self: Deriver {
                         body = self.makeOrderingFields(modulePrefix, declaration, fields)
                     )
                 }
-                let intType = TConstructor(declaration.at, "ff:core/Int.Int", [])
+                let intType = TConstructor(at, "ff:core/Int.Int", [])
                 let numberSignature =
                     Signature(at, "number", [], [], [Parameter(at, False, "z", selfType, None)], intType, noEffect)
                 let numberCases = declaration.variants.pairs().map {| Pair(index, variant) =>
@@ -274,8 +276,8 @@ extend self: Deriver {
     }
 
     makeOrderingFields(modulePrefix: String, declaration: DType, fields: List[Parameter]): Term {
-        let at = declaration.at
-        let orderingType = TConstructor(declaration.at, "ff:core/Ordering.Ordering", [])
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let orderingType = TConstructor(at, "ff:core/Ordering.Ordering", [])
         let orderingSame = EVariant(at, "ff:core/Ordering.OrderingSame", [], None)
         function go(fields: List[Parameter]): Term {
             | [] =>
@@ -309,32 +311,33 @@ extend self: Deriver {
     }
 
     makeEqualInstance(modulePrefix: String, declaration: DType): DInstance {
-        let constraints = declaration.generics.map { t =>
-            Constraint(declaration.at, "ff:core/Equal.Equal", [TConstructor(declaration.at, t, [])])
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let constraints = declaration.generics.map {t =>
+            Constraint(at, "ff:core/Equal.Equal", [TConstructor(at, t, [])])
         }
-        let typeArguments = declaration.generics.map { t =>
-            TConstructor(declaration.at, t, [])
+        let typeArguments = declaration.generics.map {t =>
+            TConstructor(at, t, [])
         }
-        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
-        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let selfType = TConstructor(at, modulePrefix + "." + declaration.name, typeArguments)
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let signature = Signature(
-            at = declaration.at
+            at = at
             name = "equals"
             generics = []
             constraints = []
             parameters = [
-                Parameter(declaration.at, False, "x", selfType, None)
-                Parameter(declaration.at, False, "y", selfType, None)
+                Parameter(at, False, "x", selfType, None)
+                Parameter(at, False, "y", selfType, None)
             ]
-            returnType = TConstructor(declaration.at, "ff:core/Bool.Bool", [])
+            returnType = TConstructor(at, "ff:core/Bool.Bool", [])
             effect = noEffect
         )
         let body = FireflyTarget(
-            Lambda(declaration.at, noEffect, self.makeEqualsCases(modulePrefix, declaration, selfType))
+            Lambda(at, noEffect, self.makeEqualsCases(modulePrefix, declaration, selfType))
         )
-        let equalsMethod = DFunction(declaration.at, signature, body)
+        let equalsMethod = DFunction(at, signature, body)
         DInstance(
-            at = declaration.at
+            at = at
             generics = declaration.generics
             constraints = constraints
             traitName = "ff:core/Equal.Equal"
@@ -345,8 +348,8 @@ extend self: Deriver {
     }
 
     makeEqualsCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
-        let at = declaration.at
-        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         let sameCase = MatchCase(
             at = at
@@ -392,7 +395,7 @@ extend self: Deriver {
     }
 
     makeEqualFields(modulePrefix: String, declaration: DType, fields: List[Parameter]): Term {
-        let at = declaration.at
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
         function go(fields: List[Parameter]): Term {
             | [] =>
                 EVariant(at, "ff:core/Bool.True", [], None)
@@ -426,66 +429,67 @@ extend self: Deriver {
     }
 
     makeSerializableInstance(modulePrefix: String, declaration: DType): DInstance {
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
         let constraints = declaration.generics.map { t =>
-            Constraint(declaration.at, "ff:core/Serializable.Serializable", [TConstructor(declaration.at, t, [])])
+            Constraint(at, "ff:core/Serializable.Serializable", [TConstructor(at, t, [])])
         }
         let typeArguments = declaration.generics.map { t =>
-            TConstructor(declaration.at, t, [])
+            TConstructor(at, t, [])
         }
-        let selfType = TConstructor(declaration.at, modulePrefix + "." + declaration.name, typeArguments)
-        let noEffect = TConstructor(declaration.at, "ff:core/Nothing.Nothing", [])
-        let serializationType = TConstructor(declaration.at, "ff:core/Serializable.Serialization", [])
+        let selfType = TConstructor(at, modulePrefix + "." + declaration.name, typeArguments)
+        let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
+        let serializationType = TConstructor(at, "ff:core/Serializable.Serialization", [])
         let serializeSignature = Signature(
-            at = declaration.at
+            at = at
             name = "serializeUsing"
             generics = []
             constraints = []
             parameters = [
-                Parameter(declaration.at, False, "serialization", serializationType, None)
-                Parameter(declaration.at, False, "x", selfType, None)
+                Parameter(at, False, "serialization", serializationType, None)
+                Parameter(at, False, "x", selfType, None)
             ]
-            returnType = TConstructor(declaration.at, "ff:core/Unit.Unit", [])
+            returnType = TConstructor(at, "ff:core/Unit.Unit", [])
             effect = noEffect
         )
         let deserializeSignature = Signature(
-            at = declaration.at
+            at = at
             name = "deserializeUsing"
             generics = []
             constraints = []
             parameters = [
-                Parameter(declaration.at, False, "serialization", serializationType, None)
+                Parameter(at, False, "serialization", serializationType, None)
             ]
             returnType = selfType
             effect = noEffect
         )
-        let wildcardPattern = PVariable(declaration.at, None)
+        let wildcardPattern = PVariable(at, None)
         let serializeBody = FireflyTarget(
-            Lambda(declaration.at, noEffect, self.makeSerializeBody(modulePrefix, declaration, selfType))
+            Lambda(at, noEffect, self.makeSerializeBody(modulePrefix, declaration, selfType))
         )
         let deserializeBody = FireflyTarget(
-            Lambda(declaration.at, noEffect, [MatchCase(
-                at = declaration.at,
+            Lambda(at, noEffect, [MatchCase(
+                at = at
                 patterns = [wildcardPattern]
                 guards = []
                 body = self.makeDeserializeBody(modulePrefix, declaration, selfType)
             )])
         )
         DInstance(
-            at = declaration.at
+            at = at
             generics = declaration.generics
             constraints = constraints
             traitName = "ff:core/Serializable.Serializable"
             typeArguments = [selfType]
             generatorArguments = []
             methods = [
-                DFunction(declaration.at, serializeSignature, serializeBody)
-                DFunction(declaration.at, deserializeSignature, deserializeBody)
+                DFunction(at, serializeSignature, serializeBody)
+                DFunction(at, deserializeSignature, deserializeBody)
             ]
         )
     }
 
     makeSerializeBody(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
-        let at = declaration.at
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
         let wildcardPattern = PVariable(at, None)
         declaration.variants.pairs().map {| Pair(index, variant) =>
             let variantName = modulePrefix + "." + variant.name
@@ -517,7 +521,7 @@ extend self: Deriver {
     }
 
     makeDeserializeBody(modulePrefix: String, declaration: DType, selfType: Type): Term {
-        let at = declaration.at
+        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
         let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         let grabVariantIndex = self.makeMethodCall(
@@ -526,7 +530,7 @@ extend self: Deriver {
             methodName = "grabUint8"
             arguments = [EField(at, False, EVariable(at, "serialization"), "offset")]
         )
-        let intType = TConstructor(declaration.at, "ff:core/Int.Int", [])
+        let intType = TConstructor(at, "ff:core/Int.Int", [])
         let incrementOffset = EAssignField(at, "+", EVariable(at, "serialization"), "offset", EInt(at, "1"))
         let cases = declaration.variants.pairs().map {| Pair(index, variant) =>
             let variantName = modulePrefix + "." + variant.name

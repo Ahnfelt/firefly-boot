@@ -61,6 +61,7 @@ extend self: Parser {
     skip(kind: TokenKind): Token {
         let c = self.current()
         if(c.kind != kind) {
+            if(self.attemptFixes && kind == LUpper && c.kind == LLower) {} else:
             throw(CompileError(c.at(), "Expected " + Show.show(kind) + ", got " + c.raw()))
         }
         self.offset += 1

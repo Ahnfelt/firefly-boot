@@ -130,32 +130,38 @@ extend self: Resolver {
     }
 
     resolveTypeDefinition(definition: DType): DType {
-        let generics = definition.generics.map { g => Pair(g, g) }.toMap()
+        if(self.hoverAt.contains(definition.at)) {
+            self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(definition.at))
+        }
+        if(self.referencesTo.contains(definition.at)) {
+            self.state.referencesResult = [...self.state.referencesResult, definition.at]
+        }
+        let generics = definition.generics.map {g => Pair(g, g)}.toMap()
         let self2 = self.Resolver(
             types = self.types.addAll(generics)
             asyncTypes = self.asyncTypes.removeAll(definition.generics.toSet())
             typeParameters = self.typeParameters.addAll(definition.generics.toSet())
         )
         if(!definition.generics.first().any {_ == "Q$"}) {
-            [...definition.commonFields, ...definition.variants.flatMap {_.fields}].each { f =>
+            [...definition.commonFields, ...definition.variants.flatMap {_.fields}].each {f =>
                 if(self2.containsAsyncType(f.valueType)) {
                     throw(CompileError(f.at, "Only capabilities can contain fields of concrete capability types"))
                 }
             }
         }
         definition.DType(
-            constraints = definition.constraints.map { self2.resolveConstraint(_, True) }
-            commonFields = definition.commonFields.map { f =>
+            constraints = definition.constraints.map {self2.resolveConstraint(_, True)}
+            commonFields = definition.commonFields.map {f =>
                 f.Parameter(
                     valueType = self2.resolveType(f.valueType, True)
-                    default = f.default.map { self2.resolveTerm(_, True) }
+                    default = f.default.map {self2.resolveTerm(_, True)}
                 )
             }
-            variants = definition.variants.map { v =>
-                v.Variant(fields = v.fields.map { f =>
+            variants = definition.variants.map {v =>
+                v.Variant(fields = v.fields.map {f =>
                     f.Parameter(
                         valueType = self2.resolveType(f.valueType, True)
-                        default = f.default.map { self2.resolveTerm(_, True) }
+                        default = f.default.map {self2.resolveTerm(_, True) }
                     )
                 })
             }

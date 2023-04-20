@@ -212,7 +212,7 @@ extend self: Handler {
                         .with("detail", ": " + i.type.show([]))
                     )
                     .with("insertText", i.snippet)
-                    .with("insertTextFormat", 2) // Snippet
+                    .with("insertTextFormat", 2 /* Snippet */)
                     .with("documentation", js.object()
                         .with("kind", "markdown")
                         .with("value", "```\n" + i.documentation + "\n```")
