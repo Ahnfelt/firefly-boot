@@ -1021,7 +1021,7 @@ extend self: Inference {
                     | _ =>
                         ""
                 }.else {
-                    let methodGenerics = memberScheme.signature.generics
+                    let methodGenerics = memberScheme.signature.generics.filter {_ != "Q$"}
                     if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
                 }
                 let selfIndent = selfType.map {_ => "    "}.else {""}
