@@ -427,6 +427,7 @@ extend self: Parser {
         }
         let nameToken = self.skip(LUpper)
         let poly = if(!self.current().rawIs("[")) {Poly([], [])} else {self.parseTypeParameters()}
+        if(!self.current().rawIs("(") && !self.current().rawIs("{")) {self.rawSkip(LBracketLeft, "{")}
         let commonFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
         let variants = if(newtype || !self.current().rawIs("{")) {
             [Variant(nameToken.at(), nameToken.raw(), [])]

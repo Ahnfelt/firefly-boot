@@ -1,4 +1,4 @@
-class JsValue
+class JsValue {}
 
 extend self: JsValue {
 
