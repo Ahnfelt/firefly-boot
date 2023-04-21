@@ -1136,7 +1136,7 @@ extend self: Inference {
             } +
             " => " + if(index == 0) {"$0"} else {""}
         }
-        let snippets = if(inside) {""} else {"{"} + 
+        let snippet = if(inside) {""} else {"{"} + 
             if(snippetParts.size() != 1) {
                 "\n" + snippetParts.map {"    " + _}.join("\n") + "\n"
             } else {
@@ -1145,10 +1145,10 @@ extend self: Inference {
             if(inside) {""} else {"}"}
         self.completionResult = [...self.completionResult, CompletionInfo(
             label = label
-            snippet = snippets
+            snippet = snippet
             member = True
             type = TConstructor(Location("", 0, 0), "exhausive match", [])
-            documentation = "// Exhaustive pattern match"
+            documentation = snippet.replace("$0", "")
         )]
     }
 
