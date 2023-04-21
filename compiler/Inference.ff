@@ -1093,6 +1093,13 @@ extend self: Inference {
                     }
                 | _, _ => 
             }
+            members.push(CompletionInfo(
+                label = "{| ...}" + environment.symbols.toList().filter {_.first.startsWith(shorterPrefix)}.map {_.first}.join(", ")
+                snippet = "{| ...}" + environment.symbols.toList().filter {_.first.startsWith(shorterPrefix)}.map {_.first}.join(", ")
+                member = True
+                type = self.unification.freshUnificationVariable(Location("", 0, 0))
+                documentation = "// Exhaustive pattern match"
+            ))
             environment.symbols
         }
 
