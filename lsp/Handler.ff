@@ -211,8 +211,9 @@ extend self: Handler {
             .with("isIncomplete", False)
             .with("items", completionResult.distinct().toArray().map {| CompletionInfo i =>
                 js.object()
-                    // Constructor or Method/Function or Field/Variable
+                    // EnumMember or Constructor or Method/Function or Field/Variable
                     .with("kind", 
+                        if(i.label.first().any {c => c == '{' || c == '|'}) {22} else:
                         if(i.label.first().any {_.isAsciiUpper()}) {4} else:
                         if(i.label.any {c => c == '(' || c == '{'}) {2} else {5} + if(i.member) {0} else {1}
                     )
