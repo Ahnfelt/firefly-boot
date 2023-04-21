@@ -1093,11 +1093,34 @@ extend self: Inference {
                     }
                 | _, _ => 
             }
+            let variants = environment.symbols.toList().filter {s => 
+                !s.first.contains("_") &&
+                s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
+                s.second.signature.returnType.{
+                    | TConstructor(_, n, _) => n == shorterPrefix 
+                    | _ => False
+                }
+            }
+            let label = "{" + variants.map {
+                "| " + _.first.reverse().takeWhile {_ != '.'}.reverse() + "(...) => ..."
+            }.join(" ") + "}"
+            let snippetParts = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
+                "| " + name.reverse().takeWhile {_ != '.'}.reverse() + 
+                if(scheme.signature.parameters.isEmpty()) {""} else {
+                    "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
+                } +
+                " => " + if(index == 0) {"$0"} else {""}
+            }
+            let snippets = "{" + if(snippetParts.size() != 1) {
+                "\n" + snippetParts.map {"    " + _}.join("\n") + "\n"
+            } else {
+                snippetParts.join(" ")
+            } + "}"
             members.push(CompletionInfo(
-                label = "{| ...}" + environment.symbols.toList().filter {_.first.startsWith(shorterPrefix)}.map {_.first}.join(", ")
-                snippet = "{| ...}" + environment.symbols.toList().filter {_.first.startsWith(shorterPrefix)}.map {_.first}.join(", ")
+                label = label
+                snippet = snippets
                 member = True
-                type = self.unification.freshUnificationVariable(Location("", 0, 0))
+                type = TConstructor(Location("", 0, 0), "exhausive match", [])
                 documentation = "// Exhaustive pattern match"
             ))
             environment.symbols
