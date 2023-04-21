@@ -416,8 +416,8 @@ extend self: Inference {
                     body = self.inferTerm(environment2, expected, e.body)
                 )
             | ELambda(at, l) =>
-                if(!self.completionAt.isEmpty()) {
-                    if(l.cases.{| [c] {c.body | EVariable e} => self.completionAt.contains(e.at) | _ => False}) {
+                if(!self.completionAt.isEmpty() && self.completionAt.contains(at.Location(column = at.column + 1))) {
+                    if(l.cases.size() == 1) {
                         self.unification.substitute(expected).{
                             | TConstructor(_, name, [_, TConstructor(_, n, _), _]) {name == "Function$1"} =>
                                 self.exhaustiveMatchCompletion(environment, n + "_", True)
@@ -1136,7 +1136,8 @@ extend self: Inference {
             } +
             " => " + if(index == 0) {"$0"} else {""}
         }
-        let snippet = if(inside) {""} else {"{"} + 
+        let snippet = 
+            if(inside) {""} else {"{"} + 
             if(snippetParts.size() != 1) {
                 "\n" + snippetParts.map {"    " + _}.join("\n") + "\n"
             } else {
@@ -1148,7 +1149,7 @@ extend self: Inference {
             snippet = snippet
             member = True
             type = TConstructor(Location("", 0, 0), "exhausive match", [])
-            documentation = snippet.replace("$0", "")
+            documentation = snippetParts.join("\n")
         )]
     }
 
