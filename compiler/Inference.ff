@@ -416,6 +416,15 @@ extend self: Inference {
                     body = self.inferTerm(environment2, expected, e.body)
                 )
             | ELambda(at, l) =>
+                if(!self.completionAt.isEmpty()) {
+                    if(l.cases.{| [c] {c.body | EVariable e} => self.completionAt.contains(e.at) | _ => False}) {
+                        self.unification.substitute(expected).{
+                            | TConstructor(_, name, [_, TConstructor(_, n, _), _]) {name == "Function$1"} =>
+                                self.exhaustiveMatchCompletion(environment, n + "_", True)
+                            | _ =>
+                        }
+                    }
+                }
                 let lambda = self.inferLambda(environment, expected, l)
                 ELambda(at, lambda)
             | EVariant e =>
@@ -1093,36 +1102,7 @@ extend self: Inference {
                     }
                 | _, _ => 
             }
-            let variants = environment.symbols.toList().filter {s => 
-                !s.first.contains("_") &&
-                s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
-                s.second.signature.returnType.{
-                    | TConstructor(_, n, _) => n == shorterPrefix 
-                    | _ => False
-                }
-            }
-            let label = "{" + variants.map {
-                "| " + _.first.reverse().takeWhile {_ != '.'}.reverse() + "(...) => ..."
-            }.join(" ") + "}"
-            let snippetParts = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
-                "| " + name.reverse().takeWhile {_ != '.'}.reverse() + 
-                if(scheme.signature.parameters.isEmpty()) {""} else {
-                    "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
-                } +
-                " => " + if(index == 0) {"$0"} else {""}
-            }
-            let snippets = "{" + if(snippetParts.size() != 1) {
-                "\n" + snippetParts.map {"    " + _}.join("\n") + "\n"
-            } else {
-                snippetParts.join(" ")
-            } + "}"
-            members.push(CompletionInfo(
-                label = label
-                snippet = snippets
-                member = True
-                type = TConstructor(Location("", 0, 0), "exhausive match", [])
-                documentation = "// Exhaustive pattern match"
-            ))
+            self.exhaustiveMatchCompletion(environment, prefix, False)
             environment.symbols
         }
 
@@ -1132,6 +1112,42 @@ extend self: Inference {
             }
         }
         self.completionResult = [...self.completionResult, ...members.toList()]
+    }
+
+    exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool): Unit {
+        let shorterPrefix = prefix.dropLast()
+        let variants = environment.symbols.toList().filter {s => 
+            !s.first.contains("_") &&
+            s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
+            s.second.signature.returnType.{
+                | TConstructor(_, n, _) => n == shorterPrefix 
+                | _ => False
+            }
+        }
+        let label = "{" + variants.map {
+            "| " + _.first.reverse().takeWhile {_ != '.'}.reverse() + "(...) => ..."
+        }.join(" ") + "}"
+        let snippetParts = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
+            "| " + name.reverse().takeWhile {_ != '.'}.reverse() + 
+            if(scheme.signature.parameters.isEmpty()) {""} else {
+                "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
+            } +
+            " => " + if(index == 0) {"$0"} else {""}
+        }
+        let snippets = if(inside) {""} else {"{"} + 
+            if(snippetParts.size() != 1) {
+                "\n" + snippetParts.map {"    " + _}.join("\n") + "\n"
+            } else {
+                snippetParts.join(" ")
+            } + 
+            if(inside) {""} else {"}"}
+        self.completionResult = [...self.completionResult, CompletionInfo(
+            label = label
+            snippet = snippets
+            member = True
+            type = TConstructor(Location("", 0, 0), "exhausive match", [])
+            documentation = "// Exhaustive pattern match"
+        )]
     }
 
 }
