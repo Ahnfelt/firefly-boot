@@ -1150,7 +1150,7 @@ extend self: Inference {
             label = label
             snippet = snippet
             member = True
-            type = TConstructor(Location("", 0, 0), "exhausive match", [])
+            type = TConstructor(Location("", 0, 0), "exhaustive match", [])
             documentation = "// Exhaustive match:\n" + snippetParts.join("\n").replace("$0", "")
         )]
     }
