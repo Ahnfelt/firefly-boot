@@ -532,9 +532,7 @@ extend self: Inference {
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, _)@t =>
                                 let memberPrefix = name + "_"
-                                if(self.completionAt.contains(f.at)) {
-                                    self.completion(environment, memberPrefix, True)
-                                }
+                                if(self.completionAt.contains(f.at)) {self.completion(environment, memberPrefix, True)}
                                 let methodName = memberPrefix + f.field
                                 self.lookup(environment, f.at, methodName, []).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
@@ -589,6 +587,7 @@ extend self: Inference {
                     body = newBody
                 )
             | EAssign e =>
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False)}
                 self.lookup(environment, e.at, e.variable, []).map {instantiated =>
                     if(instantiated.scheme.isMutable) {
                         let value = self.inferAssignment(
@@ -615,7 +614,9 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         throw(CompileError(e.at, "Can't assign fields of anonymous records: " + e.field))
                     | TConstructor(_, name, typeArguments)@t =>
-                        let methodName = name + "_" + e.field
+                        let memberPrefix = name + "_"
+                        if(self.completionAt.contains(e.at)) {self.completion(environment, memberPrefix, True)}
+                        let methodName = memberPrefix + e.field
                         self.lookup(environment, e.at, methodName, typeArguments).{
                             | Some(instantiated) {instantiated.scheme.isMutable} =>
                                 let value = self.inferAssignment(
