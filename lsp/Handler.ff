@@ -7,7 +7,13 @@ import Token from ff:compiler
 class Handler(
     mutable rootUri: Option[String]
     mutable virtualFiles: Map[String, String]
+    mutable cancelledRequests: Set[MessageId]
 )
+
+data MessageId {
+    MessageIdInt(id: Int)
+    MessageIdString(id: String)
+}
 
 capability ResultOrError {
     Result(result: JsValue)

@@ -17,14 +17,9 @@ capability RequestMessage(
     parameters: Map[String, JsValue]
 )
 
-data MessageId {
-    MessageIdInt(id: Int)
-    MessageIdString(id: String)
-}
-
 
 main(system: NodeSystem) {
-    let handler = Handler(None, Map.empty())
+    let handler = Handler(None, Map.empty(), [].toSet())
     try {
         mutable input = system.readStream()
         while {True} {
@@ -112,15 +107,7 @@ parseRequestBody(js: JsSystem, contentLength: Int, input: Stream[Buffer]): Pair[
 }
 
 parseRequestMessage(object: JsValue): RequestMessage {
-    let id = object.getOwn("id").map {id =>
-        if(id.isInt()) {
-            MessageIdInt(id.grabInt())
-        } elseIf {id.isString()} {
-            MessageIdString(id.grabString())
-        } else {
-            throw(BadRequestException("Bad JSON-RPC id, int or string expected"))
-        }
-    }
+    let id = object.getOwn("id").map {parseMessageId(_)}
 
     let method = object.getOwn("method").{
         | None => throw(BadRequestException("Bad JSON-RPC, missing method"))
@@ -137,12 +124,30 @@ parseRequestMessage(object: JsValue): RequestMessage {
     RequestMessage(id, method, parameters)
 }
 
+parseMessageId(id: JsValue): MessageId {
+    if(id.isInt()) {
+        MessageIdInt(id.grabInt())
+    } elseIf {id.isString()} {
+        MessageIdString(id.grabString())
+    } else {
+        throw(BadRequestException("Bad JSON-RPC id, int or string expected"))
+    }
+}
+
 handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): Option[JsValue] {
     try {
         message.id.{
+            | None {message.method == "$/cancelRequest"} => // TODO: Needs to read ahead to cancel anything
+                handler.cancelledRequests = handler.cancelledRequests.add(
+                    parseMessageId(message.parameters.grab("id"))
+                )
+                None
             | None => 
                 handler.handleNotification(system, message.method, message.parameters)
                 None
+            | Some(id) {handler.cancelledRequests.contains(id)} =>
+                handler.cancelledRequests = handler.cancelledRequests.remove(id)
+                Some(makeResponseMessage(system.js(), id, Error(-32800, "Request cancelled")))
             | Some(id) =>
                 let result = handler.handleRequest(system, message.method, message.parameters)
                 Some(makeResponseMessage(system.js(), id, result))
