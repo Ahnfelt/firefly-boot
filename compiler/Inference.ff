@@ -976,12 +976,12 @@ extend self: Inference {
             let variantWithoutParameters = upper && memberScheme.signature.parameters.isEmpty()
             let realParameters = memberScheme.signature.parameters.dropFirst(if(member && !copy) {1} else {0})
             let pair = if(!memberScheme.isVariable && !variantWithoutParameters) {
-                let trailing = realParameters.pairs().reverse().map {| Pair(i, p) =>
+                let trailing = realParameters.pairs().reverse().map {| Pair(index, p) =>
                     p.valueType.{
                         | TConstructor(_, name, _) {name.startsWith("Function$")} =>
                             Some(Pair(
                                 " {...}"
-                                " {$" + (i + 1) + "}"
+                                if(index == 0) {" {$0}"} else {" {}"}
                             ))
                         | _ => 
                             None
@@ -991,7 +991,7 @@ extend self: Inference {
                 let required = 
                     allRequired.dropLast(trailing.size()).pairs().map {
                         | Pair(index, p) => 
-                            Pair(p.name, "${" + (index + 1) + ":" + p.name + "}")
+                            Pair(p.name, if(index == 0) {"${1:" + p.name + "}"} else {p.name})
                     }
                 let optional = if(
                     allRequired.size() != realParameters.size()
@@ -1003,13 +1003,13 @@ extend self: Inference {
                         ""
                     } + trailing.map {_.first}.join()
                     if(copy) {
-                        "(${1|" + realParameters.map {_.name}.map {f => f + " = " + f + ""}.join(",") + "|}$0)"
+                        "(${1|" + realParameters.map {_.name}.map {f => f + " = "}.join(",") + "|}$0)"
                     } else {
                         if(trailing.isEmpty() || !required.isEmpty()) {
                             "(" + required.map {_.second}.join(", ") + ")"
                         } else {
                             ""
-                        } + if(trailing.isEmpty()) {"$0"} else {trailing.map {_.second}.join()}
+                        } + if(trailing.isEmpty()) {""} else {trailing.map {_.second}.join()}
                     }
                 )
             } else {Pair("", "")}
@@ -1086,6 +1086,7 @@ extend self: Inference {
                     None
             }.toMap()
         } else {
+            self.exhaustiveMatchCompletion(environment, prefix, False)
             let shorterPrefix = prefix.dropLast()
             let recordFields = prefix.split('$').dropFirst().toSet()
             environment.symbols.each {
@@ -1098,12 +1099,13 @@ extend self: Inference {
                                 makeCompletion("", shorter, scheme, True)
                             }
                         | TConstructor(_, name, _) {name.startsWith(shorterPrefix)} =>
-                            makeCompletion("", shorter, scheme, True)
+                            if(!scheme.signature.parameters.isEmpty()) {
+                                makeCompletion("", shorter, scheme, True)
+                            }
                         | _ =>
                     }
                 | _, _ => 
             }
-            self.exhaustiveMatchCompletion(environment, prefix, False)
             environment.symbols
         }
 
@@ -1127,8 +1129,9 @@ extend self: Inference {
         }
         if(variants.isEmpty()) {} else:
         let label = if(inside) {""} else {"{"} + 
-            variants.map {
-                "| " + _.first.reverse().takeWhile {_ != '.'}.reverse() + "(...) => ..."
+            variants.map {v =>
+                "| " + v.first.reverse().takeWhile {_ != '.'}.reverse() + 
+                if(v.second.signature.parameters.isEmpty()) {""} else {"(...)"} + " => ..."
             }.join(" ") +
             if(inside) {""} else {"}"}
         let snippetParts = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
