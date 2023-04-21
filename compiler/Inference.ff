@@ -1125,6 +1125,7 @@ extend self: Inference {
                 | _ => False
             }
         }
+        if(variants.isEmpty()) {} else:
         let label = if(inside) {""} else {"{"} + 
             variants.map {
                 "| " + _.first.reverse().takeWhile {_ != '.'}.reverse() + "(...) => ..."
