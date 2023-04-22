@@ -1195,15 +1195,18 @@ extend self: Inference {
             | _ =>
                 []
         }
-        let completions = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
-            let label = 
-                name.reverse().takeWhile {_ != '.'}.reverse() + 
+        let completions = variants.map {| Pair(name, scheme) => 
+            let shortName = name.reverse().takeWhile {_ != '.'}.reverse()
+            let snippet = 
+                shortName +
                 if(scheme.signature.parameters.isEmpty()) {""} else {
-                    "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
+                    "(" + scheme.signature.parameters.map {_.name}.pairs().map {| Pair(i, n) =>
+                        if(i == 0) {"${1:" + n + "}"} else {n}
+                    }.join(", ") + ")"
                 }
             let generics = scheme.signature.generics.filter {_ != "Q$"}
             let documentation = 
-                name.reverse().takeWhile {_ != '.'}.reverse() + 
+                shortName + 
                 if(generics.isEmpty()) {""} else {"[" + generics.join(", ") + "]"} +
                 if(scheme.signature.parameters.isEmpty()) {""} else {
                     "(\n" + scheme.signature.parameters.map {
@@ -1211,8 +1214,8 @@ extend self: Inference {
                     }.join("\n") + "\n)"
                 } + ": " + scheme.signature.returnType.show([])
             CompletionInfo(
-                label = label
-                snippet = label
+                label = snippet.replace("${1:", "").replace("}", "")
+                snippet = snippet
                 member = False
                 type = expected
                 documentation = documentation
