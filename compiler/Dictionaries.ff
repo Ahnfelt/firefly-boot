@@ -7,7 +7,7 @@ data Dictionaries(
 )
 
 make(modules: List[Module]): Dictionaries {
-    Dictionaries(Unification.make(modules).instances)
+    Dictionaries(Unification.make(modules, False).instances)
 }
 
 fail[T](at: Location, message: String): T {
@@ -167,7 +167,7 @@ extend self: Dictionaries {
         constraint: Constraint
     ): Dictionary {
         let instantiationMap = typeParameters.zip(typeArguments).toMap()
-        let unification = Unification.make([])
+        let unification = Unification.make([], False)
         let newGenerics = constraint.generics.map { unification.instantiate(instantiationMap, _) }
         let firstType = newGenerics.grabFirst().{
             | TConstructor t => t

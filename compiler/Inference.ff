@@ -13,7 +13,7 @@ class Inference(
 
 make(modules: List[Module], hoverAt: Option[Location], completionAt: Option[Location]): Inference {
     Inference(
-        unification = Unification.make(modules)
+        unification = Unification.make(modules, !completionAt.isEmpty())
         hoverAt = hoverAt
         completionAt = completionAt
         hoverResult = HoverInfo(None, None, None)
@@ -301,6 +301,8 @@ extend self: Inference {
                             term
                         )
                     }
+                } elseIf {!self.completionAt.isEmpty()} {
+                    term
                 } else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
@@ -871,7 +873,11 @@ extend self: Inference {
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
                 }.else {
-                    fail(at, "Missing argument: " + p.name)
+                    if(self.completionAt.isEmpty()) {
+                        fail(at, "Missing argument: " + p.name)
+                    } else {
+                        Argument(at, Some(p.name), EVariable(at, ""))
+                    }
                 }
             }
             remainingArguments.{
@@ -897,9 +903,11 @@ extend self: Inference {
                     }
             }
         }
-        remainingArguments.first().each {
-            | Argument(at, None, _) => fail(at, "Too many arguments")
-            | Argument(at, Some(name), _) => fail(at, "Unknown argument: " + name)
+        if(self.completionAt.isEmpty()) {
+            remainingArguments.first().each {
+                | Argument(at, None, _) => fail(at, "Too many arguments")
+                | Argument(at, Some(name), _) => fail(at, "Unknown argument: " + name)
+            }
         }
         newArguments
     }

@@ -7,6 +7,7 @@ class Unification(
     mutable nextUnificationVariableIndex: Int
     mutable instances: Map[InstanceKey, InstanceValue]
     mutable affects: Map[Int, Set[Int]]
+    attemptFixes: Bool
 )
 
 data ConstraintGenerics(at: Location, generics: List[Type])
@@ -26,7 +27,7 @@ fail[T](at: Location, message: String): T {
     throw(CompileError(at, message))
 }
 
-make(modules: List[Module]): Unification {
+make(modules: List[Module], attemptFixes: Bool): Unification {
 
     Unification(
         Map.empty()
@@ -53,6 +54,7 @@ make(modules: List[Module]): Unification {
             }
         }.toMap()
         [].toMap()
+        attemptFixes
     )
 }
 
@@ -117,7 +119,9 @@ extend self: Unification {
                     | None =>
                         let g1 = if(generics.isEmpty()) { "" } else { "[...]" }
                         let g2 = if(generics2.isEmpty()) { "" } else { "[...]" }
-                        throw(CompileError(at, "No such instance: " + name + g2 + ": " + constraintName + g1))
+                        if(!self.attemptFixes) {
+                            throw(CompileError(at, "No such instance: " + name + g2 + ": " + constraintName + g1))
+                        }
                     | Some(definition) =>
                         let unificationVariables = definition.generics.map {_ => self.freshUnificationVariable(at) }
                         let instantiation = definition.generics.zip(unificationVariables).toMap()
@@ -161,9 +165,11 @@ extend self: Unification {
             if(name1 != name2 || generics1.size() != generics2.size()) {
                 let t3 = self.substitute(t1)
                 let t4 = self.substitute(t2)
-                throw(CompileError(at
-                    "Type mismatch: " + t3.show([t3, t4]) + " vs. " + t4.show([t3, t4])
-                ))
+                if(!self.attemptFixes) {
+                    throw(CompileError(at
+                        "Type mismatch: " + t3.show([t3, t4]) + " vs. " + t4.show([t3, t4])
+                    ))
+                }
             }
             generics1.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
     }
