@@ -1095,6 +1095,21 @@ extend self: Inference {
         }
 
         let symbols = if(prefix == "") {
+            self.completionResult = [...self.completionResult, ...environment.imports.toList().map {
+                | Pair(alias, i) =>
+                    let module = i.directory.map {_ + "/"}.join() + i.file
+                    let packageModule = i.package.groupName() + "/" + module
+                    let asAlias = if(i.alias != i.file) {" as " + i.alias} else {""}
+                    CompletionInfo(
+                        label = i.alias + "."
+                        snippet = i.alias + "."
+                        member = False
+                        type = TConstructor(Location("", 0, 0), packageModule, [])
+                        documentation = 
+                            "// Module imported via:\n" +
+                            "import " + module + asAlias + " from " + i.package.groupName()
+                    )
+            }]
             environment.symbols.toList().collect {
                 | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} => 
                     Some(pair)

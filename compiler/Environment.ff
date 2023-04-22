@@ -2,6 +2,7 @@ import Syntax
 
 data Environment(
     symbols: Map[String, Scheme]
+    imports: Map[String, DImport]
     effect: Type
 )
 
@@ -21,8 +22,9 @@ data Instantiated(
 make(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment {
     Environment(
         symbols = processModule(module, True, alreadyFlat).symbols.addAll(
-            otherModules.map { processModule(_, False, False).symbols }.foldLeft(Map.empty()) { _.addAll(_) }
+            otherModules.map {processModule(_, False, False).symbols}.foldLeft(Map.empty()) {_.addAll(_)}
         )
+        imports = module.imports.map {i => Pair(i.alias, i)}.toMap()
         effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
     )
 }
@@ -39,13 +41,13 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
     }
 
     let functions =
-        module.functions.map { d => Pair(
+        module.functions.map {d => Pair(
             full(module, d.signature.name)
             Scheme(False, False, False, False, d.signature)
         )}
 
     let lets =
-        module.lets.map { d =>
+        module.lets.map {d =>
             let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
             Pair(
                 full(module, d.name)
@@ -54,11 +56,11 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         }
 
     let traitMethods =
-        module.traits.flatMap { definition =>
-            let generics = definition.generics.map { name => TConstructor(definition.at, name, []) }
+        module.traits.flatMap {definition =>
+            let generics = definition.generics.map {name => TConstructor(definition.at, name, [])}
             let constraint = Constraint(definition.at, full(module, definition.name), generics)
             let outerConstraints = if(alreadyFlat) {[]} else {definition.constraints}
-            definition.methods.map { methodSignature =>
+            definition.methods.map {methodSignature =>
                 let generics = [...definition.generics, ...methodSignature.generics].partition {_ == "Q$"}
                 let signature = methodSignature.Signature(
                     generics = [...generics.first.takeFirst(1), ...generics.second]
@@ -72,14 +74,14 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         }
 
     let extends =
-        module.extends.flatMap { d =>
+        module.extends.flatMap {d =>
             d.type.{
                 | TVariable t =>
                     fail(t.at, "Unexpected type variable: $" + t.index)
                 | TConstructor t =>
                     let prefix = t.name + "_"
                     let selfParameter = Parameter(d.at, False, d.name, d.type, None)
-                    d.methods.map { method =>
+                    d.methods.map {method =>
                         let effect = method.signature.generics.filter {_ == "Q$"}
                         let normalGenerics = method.signature.generics.filter {_ != "Q$"}
                         let outerGenerics = if(alreadyFlat) {[]} else {d.generics}
@@ -96,11 +98,11 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         }
 
     let fields =
-        module.types.flatMap { d =>
+        module.types.flatMap {d =>
             let prefix = d.name + "_"
-            let t = TConstructor(d.at, d.name, d.generics.map { g => TConstructor(d.at, g, []) })
+            let t = TConstructor(d.at, d.name, d.generics.map {g => TConstructor(d.at, g, [])})
             let selfParameter = Parameter(d.at, False, d.name, t, None)
-            d.commonFields.map { f =>
+            d.commonFields.map {f =>
                 let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
                 Pair(
                     full(module, prefix + f.name)
@@ -118,11 +120,11 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         }
 
     let variants =
-        module.types.flatMap { d =>
-            let returnType = TConstructor(d.at, full(module, d.name), d.generics.map { typeParameter =>
+        module.types.flatMap {d =>
+            let returnType = TConstructor(d.at, full(module, d.name), d.generics.map {typeParameter =>
                 TConstructor(d.at, typeParameter, [])
             })
-            d.variants.map { variant =>
+            d.variants.map {variant =>
                 let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
                 Pair(
                     full(module, variant.name)
@@ -140,5 +142,5 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         }
 
     let effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
-    Environment([...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap(), effect)
+    Environment([...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap(), [].toMap(), effect)
 }
