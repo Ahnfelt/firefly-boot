@@ -531,11 +531,11 @@ extend self: Resolver {
         | PVariable _ =>
             pattern
         | PVariant(at, name, patterns) =>
-            let newName = self.variants.get(name).else {throw(CompileError(at, "No such variant: " + name))}
+            let newName = self.variants.get(name).else {name}
             let newPatterns = patterns.map {self.resolvePattern(_)}
             PVariant(at, newName, newPatterns)
         | PVariantAs(at, name, variable) =>
-            let newName = self.variants.get(name).else {throw(CompileError(at, "No such variant: " + name))}
+            let newName = self.variants.get(name).else {name}
             PVariantAs(at, newName, variable)
         | PAlias(at, pattern, variable) =>
             let newPattern = self.resolvePattern(pattern)
