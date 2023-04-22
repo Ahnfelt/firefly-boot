@@ -222,6 +222,7 @@ extend self: Inference {
             | PChar _ =>
                 literal("Char")
             | PVariable(at, None) =>
+                if(self.completionAt.contains(at)) {self.patternCompletion(environment, expected)}
                 if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
                     self.hoverResult = self.hoverResult.HoverInfo(
                         at = Some(at)
@@ -230,6 +231,7 @@ extend self: Inference {
                 }
                 Map.empty()
             | PVariable(at, Some(name)) =>
+                if(self.completionAt.contains(at)) {self.patternCompletion(environment, expected)}
                 if(self.hoverAt.contains(at) && self.hoverResult.at.isEmpty()) {
                     self.hoverResult = self.hoverResult.HoverInfo(
                         at = Some(at)
@@ -246,6 +248,7 @@ extend self: Inference {
                 }
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
             | PVariantAs(at, name, variableOption) =>
+                if(self.completionAt.contains(at)) {self.patternCompletion(environment, expected)}
                 let instantiated = self.lookup(environment, at, name, []).else {
                     throw(CompileError(at, "No such variant: " + name))
                 }
@@ -261,6 +264,7 @@ extend self: Inference {
                 }
                 variableOption.toList().map {Pair(_, recordType)}.toMap()
             | PVariant(at, name, patterns) =>
+                if(self.completionAt.contains(at)) {self.patternCompletion(environment, expected)}
                 let instantiated = self.lookup(environment, at, name, []).else {
                     throw(CompileError(at, "No such variant: " + name))
                 }
@@ -1072,24 +1076,7 @@ extend self: Inference {
                 let selfIndent = selfType.map {_ => "    "}.else {""}
                 let parameters = if(realParameters.isEmpty()) {""} else {
                     "\n" + realParameters.map {p =>
-                        if(p.mutable) {selfIndent + "    mutable "} else {selfIndent + "    "} +
-                        p.name + ": " + p.valueType.show([]) +
-                        p.default.map {
-                            | EVariant(_, n, _, None) =>
-                                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-                            | EVariant(_, n, _, Some([])) =>
-                                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-                            | EVariant(_, n, _, _) => 
-                                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse() + "(...)"
-                            | EChar(_, v) => v
-                            | EInt(_, v) => v
-                            | EFloat(_, v) => v
-                            | EString(_, v) => v.replace("```", "'''")
-                            | ELambda(_, _) => "{...}"
-                            | EList(_, _, []) => "[]"
-                            | EList(_, _, _) => "[...]"
-                            | _ => " = ..."
-                        }.map {" = " + _}.else {""}
+                        self.showCompletionParameter(selfIndent + "    ", p)
                     }.join("\n") + "\n" + selfIndent
                 }
                 selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
@@ -1191,6 +1178,68 @@ extend self: Inference {
             type = TConstructor(Location("", 0, 0), "exhaustive match", [])
             documentation = "// Exhaustive match:\n" + snippetParts.join("\n").replace("$0", "")
         )]
+    }
+
+    patternCompletion(environment: Environment, expected: Type): Unit {
+        let variants = self.unification.substitute(expected).{
+            | TConstructor(_, name, _) =>
+                let prefix = name
+                environment.symbols.toList().filter {s => 
+                    !s.first.contains("_") &&
+                    s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
+                    s.second.signature.returnType.{
+                        | TConstructor(_, n, _) => n == prefix 
+                        | _ => False
+                    }
+                }
+            | _ =>
+                []
+        }
+        let completions = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
+            let label = 
+                name.reverse().takeWhile {_ != '.'}.reverse() + 
+                if(scheme.signature.parameters.isEmpty()) {""} else {
+                    "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
+                }
+            let generics = scheme.signature.generics.filter {_ != "Q$"}
+            let documentation = 
+                name.reverse().takeWhile {_ != '.'}.reverse() + 
+                if(generics.isEmpty()) {""} else {"[" + generics.join(", ") + "]"} +
+                if(scheme.signature.parameters.isEmpty()) {""} else {
+                    "(\n" + scheme.signature.parameters.map {
+                        self.showCompletionParameter("    ", _)
+                    }.join("\n") + "\n)"
+                } + ": " + scheme.signature.returnType.show([])
+            CompletionInfo(
+                label = label
+                snippet = label
+                member = False
+                type = expected
+                documentation = documentation
+            )
+        }
+        self.completionResult = [...self.completionResult, ...completions]
+    }
+
+    showCompletionParameter(indentation: String, parameter: Parameter): String {
+        if(parameter.mutable) {indentation + "mutable "} else {indentation} +
+        parameter.name + ": " + parameter.valueType.show([]) +
+        parameter.default.map {
+            | EVariant(_, n, _, None) =>
+                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+            | EVariant(_, n, _, Some([])) =>
+                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+            | EVariant(_, n, _, _) => 
+                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse() + "(...)"
+            | EChar(_, v) => v
+            | EInt(_, v) => v
+            | EFloat(_, v) => v
+            | EString(_, v) => v.replace("```", "'''")
+            | ELambda(_, _) => "{...}"
+            | EList(_, _, []) => "[]"
+            | EList(_, _, _) => "[...]"
+            | _ => " = ..."
+        }.map {" = " + _}.else {""}
     }
 
 }
