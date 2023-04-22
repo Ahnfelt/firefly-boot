@@ -265,7 +265,7 @@ extend self: Inference {
                     throw(CompileError(at, "No such variant: " + name))
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
-                if(patterns.size() != instantiated.scheme.signature.parameters.size()) {
+                if(patterns.size() != instantiated.scheme.signature.parameters.size() && self.completionAt.isEmpty()) {
                     throw(CompileError(at, "Wrong number of subpatterns, expected " +
                         instantiated.scheme.signature.parameters.size() + ", got " + patterns.size() + "."
                     ))
@@ -301,9 +301,7 @@ extend self: Inference {
                             term
                         )
                     }
-                } elseIf {!self.completionAt.isEmpty()} {
-                    term
-                } else {
+                }.else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
             | EField e =>
@@ -330,6 +328,8 @@ extend self: Inference {
                                 )
                             }
                             e.EField(record = record)
+                        }.elseIf {!self.completionAt.isEmpty()} {
+                            term
                         }.else {
                             throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
@@ -362,6 +362,8 @@ extend self: Inference {
                             | None =>
                                 throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
+                    | TVariable(_, _) {!self.completionAt.isEmpty()} =>
+                        term
                     | TVariable(_, index) =>
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
@@ -498,6 +500,7 @@ extend self: Inference {
                     function = function
                 )
             | ECall e =>
+                if(!self.completionAt.isEmpty() && e.target.{| StaticCall _ => True | _ => False}) {term} else:
                 let call = e.target.{
                     | DynamicCall call => call
                     | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in the Inference phase")
@@ -555,6 +558,8 @@ extend self: Inference {
                                             "No such field " + f.field + " on type: " + t.show([])
                                         ))
                                 }
+                            | TVariable _ {!self.completionAt.isEmpty()} =>
+                                self.inferLambdaCall(environment, expected, e2)
                             | TVariable(_, index) =>
                                 throw(CompileError(f.at
                                     "No such field " + f.field + " on unknown type: $" + index
@@ -603,6 +608,8 @@ extend self: Inference {
                         e.EAssign(
                             value = value
                         )
+                    } elseIf {!self.completionAt.isEmpty()} {
+                        term
                     } else {
                         throw(CompileError(e.at, "Symbol is not mutable: " + e.variable))
                     }
@@ -640,6 +647,8 @@ extend self: Inference {
                             | None =>
                                 throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
+                    | TVariable(_, _) {!self.completionAt.isEmpty()} =>
+                        term
                     | TVariable(_, index) =>
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
@@ -773,6 +782,7 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, t1)
                     | TConstructor(_, name, []) {name == core("Int")} =>
                         self.unification.unify(e.at, expected, t1)
+                    | _ {!self.completionAt.isEmpty()} =>
                     | _ =>
                         throw(CompileError(e.at, "Operators on unknown types not currently supported"))
                 }
@@ -823,6 +833,7 @@ extend self: Inference {
                     | None, Some(_) =>
                         self.unification.unify(e.at, t2, t1)
                         self.unification.unify(e.at, expected, t2)
+                    | _, _ {!self.completionAt.isEmpty()} =>
                     | Some(_), Some(_) =>
                         throw(CompileError(e.at, "Operators on these types not currently supported"))
                     | None, None =>
@@ -830,6 +841,8 @@ extend self: Inference {
                 }
                 chooseType(magic(t1), magic(t2))
                 e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
+            | _ {!self.completionAt.isEmpty()} =>
+                term
             | _ =>
                 fail(e.at, "Unknown operator: " + operator)
         }
@@ -913,6 +926,20 @@ extend self: Inference {
     }
 
     lookup(environment: Environment, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
+        self.lookupOption(environment, at, symbol, typeArguments).elseIf {!self.completionAt.isEmpty()} {
+            Instantiated([], Scheme(True, False, False, False, Signature(
+                at
+                symbol
+                []
+                []
+                []
+                self.unification.freshUnificationVariable(at)
+                self.unification.freshUnificationVariable(at)
+            )))
+        }
+    }
+
+    lookupOption(environment: Environment, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
 
         environment.symbols.get(symbol).map: scheme =>
 
@@ -923,7 +950,7 @@ extend self: Inference {
                 } else {
                     typeArguments
                 }
-                if(scheme.signature.generics.size() != newTypeArguments.size()) {
+                if(scheme.signature.generics.size() != newTypeArguments.size() && self.completionAt.isEmpty()) {
                     let extra = newTypeArguments.size() - typeArguments.size()
                     throw(CompileError(at
                         "Wrong number of type arguments for " + symbol +
