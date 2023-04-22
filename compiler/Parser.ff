@@ -719,15 +719,19 @@ extend self: Parser {
     parseCase(): MatchCase {
         let token = self.skip(LPipe)
         let patterns = Stack.make[MatchPattern]()
-        while {!self.current().is(LArrowThick) && !self.current().rawIs("{")} {
+        while {!self.current().is3(LArrowThick, LPipe, LBracketRight) && !self.current().rawIs("{")} {
             patterns.push(self.parsePattern())
-            if(!self.current().is(LArrowThick) && !self.current().rawIs("{")) {self.skip(LComma)}
+            if(!self.current().is3(LArrowThick, LPipe, LBracketRight) && !self.current().rawIs("{")) {
+                self.skip(LComma)
+            }
         }
         let guards = Stack.make[MatchGuard]()
         while {self.current().rawIs("{")} {
             guards.push(self.parseCaseGuard())
         }
-        self.skip(LArrowThick)
+        if(!self.attemptFixes || !self.current().is2(LPipe, LBracketRight)) {
+            self.skip(LArrowThick)
+        }
         let body = self.parseStatements()
         MatchCase(token.at(), patterns.toList(), guards.toList(), body)
     }
