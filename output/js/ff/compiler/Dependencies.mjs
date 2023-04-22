@@ -203,7 +203,7 @@ self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packa
 return path_
 })());
 const code_ = ff_core_FileSystem.FileSystem_readText(fs_, packageFile_);
-const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None());
+const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None(), true);
 const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, false);
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
@@ -295,7 +295,7 @@ self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packa
 return path_
 })()));
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, packageFile_, $c));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None());
+const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None(), true);
 const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, false);
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)

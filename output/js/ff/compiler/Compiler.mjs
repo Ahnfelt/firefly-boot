@@ -165,8 +165,8 @@ const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
 const code_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.virtualFiles_, fixedPath_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_core_FileSystem.FileSystem_readText(self_.files_, fixedPath_)
 }));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_, self_.completionAt_);
 const attemptFixes_ = ((!ff_core_Option.Option_isEmpty(self_.hoverAt_)) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
+const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_, self_.completionAt_, attemptFixes_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), attemptFixes_);
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
@@ -314,8 +314,8 @@ const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
 const code_ = (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.virtualFiles_, fixedPath_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
 return (await ff_core_FileSystem.FileSystem_readText$(self_.files_, fixedPath_, $c))
 }), $c));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_, self_.completionAt_);
 const attemptFixes_ = ((!ff_core_Option.Option_isEmpty(self_.hoverAt_)) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
+const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_, self_.completionAt_, attemptFixes_);
 const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), attemptFixes_);
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_

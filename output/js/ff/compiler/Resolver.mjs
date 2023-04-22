@@ -278,6 +278,14 @@ return
 }
 
 export function Resolver_resolveTypeDefinition(self_, definition_) {
+if(ff_core_Option.Option_contains(self_.hoverAt_, definition_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.state_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(definition_.at_), _c.type_, _c.effect_)
+}))(self_.state_.hoverResult_)
+};
+if(ff_core_Option.Option_contains(self_.referencesTo_, definition_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.state_.referencesResult_ = ff_core_List.List_addAll(self_.state_.referencesResult_, ff_core_List.Link(definition_.at_, ff_core_List.Empty()))
+};
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -414,7 +422,7 @@ const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.gene
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const selfWithNoQ_ = (((_c) => {
-return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variableLocations_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.typeLocations_, ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
+return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_add(self_.variableLocations_, definition_.name_, definition_.at_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.typeLocations_, ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
 }))(self_);
 const selfWithQ_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variableLocations_, _c.variants_, ff_core_Map.Map_add(selfWithNoQ_.types_, "Q$", "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.typeLocations_, _c.asyncTypes_, ff_core_Set.Set_add(selfWithNoQ_.typeParameters_, "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
@@ -435,7 +443,7 @@ return
 
 export function Resolver_resolveLetDefinition(self_, definition_, topLevel_) {
 const self2_ = (((_c) => {
-return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variableLocations_, _c.variants_, _c.types_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
+return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_add(self_.variableLocations_, definition_.name_, definition_.at_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
 }))(self_);
 {
 const _1 = definition_;
@@ -530,7 +538,7 @@ const name_ = term_a.name_;
 const typeArguments_ = term_a.typeArguments_;
 const arguments_ = term_a.arguments_;
 return ff_compiler_Syntax.EVariant(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+return name_
 })), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 })), ff_core_Option.Option_map(arguments_, ((_w1) => {
@@ -568,7 +576,7 @@ const name_ = term_a.name_;
 const record_ = term_a.record_;
 const arguments_ = term_a.arguments_;
 return ff_compiler_Syntax.ECopy(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+return name_
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, record_, topLevel_), ff_core_List.List_map(arguments_, ((f_) => {
 {
 const _1 = f_;
@@ -739,6 +747,13 @@ const at_ = term_a.at_;
 const operator_ = term_a.operator_;
 const variable_ = term_a.variable_;
 const value_ = term_a.value_;
+if(ff_core_Option.Option_any(self_.referencesTo_, ((r_) => {
+return ff_core_Option.Option_any(ff_core_Map.Map_get(self_.variableLocations_, variable_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(r_, _w1)
+}))
+}))) {
+self_.state_.referencesResult_ = ff_core_List.List_addAll(self_.state_.referencesResult_, ff_core_List.Link(at_, ff_core_List.Empty()))
+};
 return ff_compiler_Syntax.EAssign(at_, operator_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variables_, variable_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variable: " + variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_))
@@ -1075,7 +1090,7 @@ const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
 const patterns_ = pattern_a.patterns_;
 const newName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+return name_
 }));
 const newPatterns_ = ff_core_List.List_map(patterns_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
@@ -1090,7 +1105,7 @@ const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
 const variable_ = pattern_a.variable_;
 const newName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+return name_
 }));
 return ff_compiler_Syntax.PVariantAs(at_, newName_, variable_)
 return
@@ -1309,6 +1324,14 @@ return
 }
 
 export async function Resolver_resolveTypeDefinition$(self_, definition_, $c) {
+if(ff_core_Option.Option_contains(self_.hoverAt_, definition_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.state_.hoverResult_ = (((_c) => {
+return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(definition_.at_), _c.type_, _c.effect_)
+}))(self_.state_.hoverResult_)
+};
+if(ff_core_Option.Option_contains(self_.referencesTo_, definition_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+self_.state_.referencesResult_ = ff_core_List.List_addAll(self_.state_.referencesResult_, ff_core_List.Link(definition_.at_, ff_core_List.Empty()))
+};
 const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.generics_, ((g_) => {
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
@@ -1445,7 +1468,7 @@ const generics_ = ff_core_List.List_toMap(ff_core_List.List_map(definition_.gene
 return ff_core_Pair.Pair(g_, g_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const selfWithNoQ_ = (((_c) => {
-return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variableLocations_, _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.typeLocations_, ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
+return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_add(self_.variableLocations_, definition_.name_, definition_.at_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, ff_core_Map.Map_addAll(self_.types_, generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.typeLocations_, ff_core_Set.Set_removeAll(self_.asyncTypes_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Set.Set_addAll(self_.typeParameters_, ff_core_List.List_toSet(definition_.generics_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
 }))(self_);
 const selfWithQ_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(_c.variables_, _c.variableLocations_, _c.variants_, ff_core_Map.Map_add(selfWithNoQ_.types_, "Q$", "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.typeLocations_, _c.asyncTypes_, ff_core_Set.Set_add(selfWithNoQ_.typeParameters_, "Q$", ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
@@ -1466,7 +1489,7 @@ return
 
 export async function Resolver_resolveLetDefinition$(self_, definition_, topLevel_, $c) {
 const self2_ = (((_c) => {
-return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variableLocations_, _c.variants_, _c.types_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
+return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, definition_.name_, definition_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_add(self_.variableLocations_, definition_.name_, definition_.at_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.hoverAt_, _c.referencesTo_)
 }))(self_);
 {
 const _1 = definition_;
@@ -1561,7 +1584,7 @@ const name_ = term_a.name_;
 const typeArguments_ = term_a.typeArguments_;
 const arguments_ = term_a.arguments_;
 return ff_compiler_Syntax.EVariant(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+return name_
 })), ff_core_List.List_map(typeArguments_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveType(self_, _w1, topLevel_)
 })), ff_core_Option.Option_map(arguments_, ((_w1) => {
@@ -1599,7 +1622,7 @@ const name_ = term_a.name_;
 const record_ = term_a.record_;
 const arguments_ = term_a.arguments_;
 return ff_compiler_Syntax.ECopy(at_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+return name_
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, record_, topLevel_), ff_core_List.List_map(arguments_, ((f_) => {
 {
 const _1 = f_;
@@ -1770,6 +1793,13 @@ const at_ = term_a.at_;
 const operator_ = term_a.operator_;
 const variable_ = term_a.variable_;
 const value_ = term_a.value_;
+if(ff_core_Option.Option_any(self_.referencesTo_, ((r_) => {
+return ff_core_Option.Option_any(ff_core_Map.Map_get(self_.variableLocations_, variable_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_w1) => {
+return ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location.equals_(r_, _w1)
+}))
+}))) {
+self_.state_.referencesResult_ = ff_core_List.List_addAll(self_.state_.referencesResult_, ff_core_List.Link(at_, ff_core_List.Empty()))
+};
 return ff_compiler_Syntax.EAssign(at_, operator_, ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variables_, variable_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variable: " + variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 })), ff_compiler_Resolver.Resolver_resolveTerm(self_, value_, topLevel_))
@@ -2106,7 +2136,7 @@ const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
 const patterns_ = pattern_a.patterns_;
 const newName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+return name_
 }));
 const newPatterns_ = ff_core_List.List_map(patterns_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolvePattern(self_, _w1)
@@ -2121,7 +2151,7 @@ const at_ = pattern_a.at_;
 const name_ = pattern_a.name_;
 const variable_ = pattern_a.variable_;
 const newName_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.variants_, name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+return name_
 }));
 return ff_compiler_Syntax.PVariantAs(at_, newName_, variable_)
 return

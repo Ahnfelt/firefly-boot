@@ -100,7 +100,10 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-
+// type PackageFiles
+export function PackageFiles(root_, packageFile_, files_) {
+return {root_, packageFile_, files_};
+}
 
 
 
@@ -152,15 +155,34 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
 
-export function check_(system_, fireflyPath_, mainFile_, virtualFiles_, hoverAt_, completionAt_, referencesTo_) {
-const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_fetch(system_), mainFile_);
+export function check_(system_, fireflyPath_, path_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, infer_) {
+const fs_ = ff_core_NodeSystem.NodeSystem_files(system_);
+const packages_ = (((_1) => {
+{
+if(_1) {
+ff_core_Log.trace_("fs.isDirectory(path): True");
+return ff_compiler_Builder.findPackageFiles_(fs_, path_)
+return
+}
+}
+{
+if(!_1) {
+ff_core_Log.trace_("fs.isDirectory(path): False");
+return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_FileSystem.directoryName_(path_), ff_core_Option.None(), ff_core_List.Link(path_, ff_core_List.Empty())), ff_core_List.Empty())
+return
+}
+}
+}))(ff_core_FileSystem.FileSystem_isDirectory(fs_, path_));
+ff_core_List.List_each(packages_, ((package_) => {
+ff_core_Log.show_(package_, ff_compiler_Builder.ff_core_Show_Show$ff_compiler_Builder_PackageFiles);
+const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_fetch(system_), firstFile_);
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
-const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
 const compiler_ = ff_compiler_Compiler.make_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_time(system_), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, ff_core_Option.Option_map(hoverAt_, ((_w1) => {
 return _w1.first_
 })), ff_core_Option.Option_map(completionAt_, ((_w1) => {
@@ -168,8 +190,14 @@ return _w1.first_
 })), ff_core_Option.Option_map(referencesTo_, ((_w1) => {
 return _w1.first_
 })));
+ff_core_List.List_each(package_.files_, ((file_) => {
+const localFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(file_, "\\", "/"));
 try {
-ff_compiler_Compiler.Compiler_infer(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localMainFile_, ff_core_String.String_size(".ff")))
+if(infer_) {
+ff_compiler_Compiler.Compiler_infer(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")))
+} else {
+ff_compiler_Compiler.Compiler_resolve(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")))
+}
 } finally {
 ff_core_Option.Option_each(hoverAt_, ((_w1) => {
 _w1.second_(compiler_.hoverResult_)
@@ -181,6 +209,53 @@ ff_core_Option.Option_each(referencesTo_, ((_w1) => {
 _w1.second_(compiler_.referencesResult_)
 }))
 }
+}))
+}))
+}
+
+export function findPackageFiles_(fs_, rootUri_) {
+const files_ = ff_compiler_Builder.findFireflyFiles_(fs_, rootUri_);
+const split_ = ff_core_List.List_partition(files_, ((_w1) => {
+return ff_core_String.String_endsWith(_w1, ".firefly/package.ff")
+}));
+const packageFiles_ = split_.first_;
+let codeFiles_ = split_.second_;
+const multiFileProjects_ = ff_core_List.List_map(packageFiles_, ((packageFile_) => {
+const projectRoot_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast(packageFile_, ".firefly/package.ff"));
+const files_ = ff_core_List.List_filter(codeFiles_, ((_w1) => {
+return ff_core_String.String_startsWith(_w1, projectRoot_, 0)
+}));
+const filesSet_ = ff_core_List.List_toSet(files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+codeFiles_ = ff_core_List.List_filter(codeFiles_, ((file_) => {
+return (!ff_core_Set.Set_contains(filesSet_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+}));
+return ff_compiler_Builder.PackageFiles(ff_core_FileSystem.relative_(ff_core_FileSystem.FileSystem_workingDirectory(fs_), projectRoot_), ff_core_Option.Some(ff_core_FileSystem.relative_(ff_core_FileSystem.FileSystem_workingDirectory(fs_), packageFile_)), ff_core_List.List_map(files_, ((_w1) => {
+return ff_core_FileSystem.relative_(ff_core_FileSystem.FileSystem_workingDirectory(fs_), _w1)
+})))
+}));
+const singleFileProjects_ = ff_core_List.List_map(codeFiles_, ((file_) => {
+const projectRoot_ = ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(file_), ((_w1) => {
+return (_w1 !== 47)
+})));
+return ff_compiler_Builder.PackageFiles(ff_core_FileSystem.relative_(ff_core_FileSystem.FileSystem_workingDirectory(fs_), projectRoot_), ff_core_Option.None(), ff_core_List.Link(ff_core_FileSystem.relative_(ff_core_FileSystem.FileSystem_workingDirectory(fs_), file_), ff_core_List.Empty()))
+}));
+return ff_core_List.List_addAll(multiFileProjects_, singleFileProjects_)
+}
+
+export function findFireflyFiles_(fs_, rootUri_) {
+const split_ = ff_core_List.List_partition(ff_core_FileSystem.FileSystem_list(fs_, rootUri_), ((_w1) => {
+return ff_core_FileSystem.FileSystem_isDirectory(fs_, _w1)
+}));
+const directories_ = split_.first_;
+const fireflyFiles_ = ff_core_List.List_filter(split_.second_, ((_w1) => {
+return ff_core_String.String_endsWith(_w1, ".ff")
+}));
+const fixedFiles_ = ff_core_List.List_map(fireflyFiles_, ((_w1) => {
+return ff_core_String.String_replace(_w1, "\\", "/")
+}));
+return ff_core_List.List_addAll(fixedFiles_, ff_core_List.List_flatMap(directories_, ((_w1) => {
+return ff_compiler_Builder.findFireflyFiles_(fs_, _w1)
+})))
 }
 
 export function internalCreateExecutable_(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_()) {
@@ -278,15 +353,34 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
 
-export async function check_$(system_, fireflyPath_, mainFile_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, $c) {
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), mainFile_, $c));
+export async function check_$(system_, fireflyPath_, path_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, infer_, $c) {
+const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
+const packages_ = (await ((async (_1, $c) => {
+{
+if(_1) {
+ff_core_Log.trace_("fs.isDirectory(path): True");
+return (await ff_compiler_Builder.findPackageFiles_$(fs_, path_, $c))
+return
+}
+}
+{
+if(!_1) {
+ff_core_Log.trace_("fs.isDirectory(path): False");
+return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_FileSystem.directoryName_(path_), ff_core_Option.None(), ff_core_List.Link(path_, ff_core_List.Empty())), ff_core_List.Empty())
+return
+}
+}
+}))((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, path_, $c)), $c));
+(await ff_core_List.List_each$(packages_, (async (package_, $c) => {
+ff_core_Log.show_(package_, ff_compiler_Builder.ff_core_Show_Show$ff_compiler_Builder_PackageFiles);
+const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), firstFile_, $c));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
-const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
 const compiler_ = (await ff_compiler_Compiler.make_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, ff_core_Option.Option_map(hoverAt_, ((_w1) => {
 return _w1.first_
 })), ff_core_Option.Option_map(completionAt_, ((_w1) => {
@@ -294,8 +388,14 @@ return _w1.first_
 })), ff_core_Option.Option_map(referencesTo_, ((_w1) => {
 return _w1.first_
 })), $c));
+(await ff_core_List.List_each$(package_.files_, (async (file_, $c) => {
+const localFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(file_, "\\", "/"));
 try {
-(await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localMainFile_, ff_core_String.String_size(".ff")), $c))
+if(infer_) {
+(await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $c))
+} else {
+(await ff_compiler_Compiler.Compiler_resolve$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $c))
+}
 } finally {
 (await ff_core_Option.Option_each$(hoverAt_, (async (_w1, $c) => {
 (await _w1.second_(compiler_.hoverResult_, $c))
@@ -307,6 +407,53 @@ try {
 (await _w1.second_(compiler_.referencesResult_, $c))
 }), $c))
 }
+}), $c))
+}), $c))
+}
+
+export async function findPackageFiles_$(fs_, rootUri_, $c) {
+const files_ = (await ff_compiler_Builder.findFireflyFiles_$(fs_, rootUri_, $c));
+const split_ = ff_core_List.List_partition(files_, ((_w1) => {
+return ff_core_String.String_endsWith(_w1, ".firefly/package.ff")
+}));
+const packageFiles_ = split_.first_;
+let codeFiles_ = split_.second_;
+const multiFileProjects_ = (await ff_core_List.List_map$(packageFiles_, (async (packageFile_, $c) => {
+const projectRoot_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast(packageFile_, ".firefly/package.ff"));
+const files_ = ff_core_List.List_filter(codeFiles_, ((_w1) => {
+return ff_core_String.String_startsWith(_w1, projectRoot_, 0)
+}));
+const filesSet_ = ff_core_List.List_toSet(files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+codeFiles_ = ff_core_List.List_filter(codeFiles_, ((file_) => {
+return (!ff_core_Set.Set_contains(filesSet_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+}));
+return ff_compiler_Builder.PackageFiles(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), projectRoot_), ff_core_Option.Some(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), packageFile_)), (await ff_core_List.List_map$(files_, (async (_w1, $c) => {
+return ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), _w1)
+}), $c)))
+}), $c));
+const singleFileProjects_ = (await ff_core_List.List_map$(codeFiles_, (async (file_, $c) => {
+const projectRoot_ = ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(file_), ((_w1) => {
+return (_w1 !== 47)
+})));
+return ff_compiler_Builder.PackageFiles(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), projectRoot_), ff_core_Option.None(), ff_core_List.Link(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), file_), ff_core_List.Empty()))
+}), $c));
+return ff_core_List.List_addAll(multiFileProjects_, singleFileProjects_)
+}
+
+export async function findFireflyFiles_$(fs_, rootUri_, $c) {
+const split_ = (await ff_core_List.List_partition$((await ff_core_FileSystem.FileSystem_list$(fs_, rootUri_, $c)), (async (_w1, $c) => {
+return (await ff_core_FileSystem.FileSystem_isDirectory$(fs_, _w1, $c))
+}), $c));
+const directories_ = split_.first_;
+const fireflyFiles_ = ff_core_List.List_filter(split_.second_, ((_w1) => {
+return ff_core_String.String_endsWith(_w1, ".ff")
+}));
+const fixedFiles_ = ff_core_List.List_map(fireflyFiles_, ((_w1) => {
+return ff_core_String.String_replace(_w1, "\\", "/")
+}));
+return ff_core_List.List_addAll(fixedFiles_, (await ff_core_List.List_flatMap$(directories_, (async (_w1, $c) => {
+return (await ff_compiler_Builder.findFireflyFiles_$(fs_, _w1, $c))
+}), $c)))
 }
 
 export async function internalCreateExecutable_$(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_(), $c) {
@@ -367,6 +514,211 @@ export async function internalFileSystem_$(dummy_, $c) {
 
 
 
+export const ff_core_Any_HasAnyTag$ff_compiler_Builder_PackageFiles = {
+anyTag_() {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Builder.PackageFiles" + "[") + "]"))
+},
+async anyTag_$($c) {
+return ff_core_Any.internalAnyTag_((("ff:compiler/Builder.PackageFiles" + "[") + "]"))
+}
+};
 
+export const ff_core_Show_Show$ff_compiler_Builder_PackageFiles = {
+show_(x_) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((("PackageFiles" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.root_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packageFile_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.files_)) + ")")
+return
+}
+}
+},
+async show_$(x_, $c) {
+{
+const x_a = x_;
+{
+const z_ = x_a;
+return ((((((("PackageFiles" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.root_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packageFile_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.files_)) + ")")
+return
+}
+}
+}
+};
+
+export const ff_core_Equal_Equal$ff_compiler_Builder_PackageFiles = {
+equals_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return ((x_.root_ === y_.root_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packageFile_, y_.packageFile_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.files_, y_.files_)))
+return
+}
+}
+},
+async equals_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return true
+return
+}
+}
+{
+return ((x_.root_ === y_.root_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packageFile_, y_.packageFile_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.files_, y_.files_)))
+return
+}
+}
+}
+};
+
+export const ff_core_Ordering_Order$ff_compiler_Builder_PackageFiles = {
+compare_(x_, y_) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+const rootOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.root_, y_.root_);
+if((rootOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return rootOrdering_
+} else {
+const packageFileOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.packageFile_, y_.packageFile_);
+if((packageFileOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return packageFileOrdering_
+} else {
+const filesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.files_, y_.files_);
+if((filesOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return filesOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+return
+}
+}
+},
+async compare_$(x_, y_, $c) {
+{
+const x_a = x_;
+const y_a = y_;
+{
+const _guard1 = (x_ === y_);
+if(_guard1) {
+return ff_core_Ordering.OrderingSame()
+return
+}
+}
+{
+const rootOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.root_, y_.root_);
+if((rootOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return rootOrdering_
+} else {
+const packageFileOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.packageFile_, y_.packageFile_);
+if((packageFileOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return packageFileOrdering_
+} else {
+const filesOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.files_, y_.files_);
+if((filesOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return filesOrdering_
+} else {
+return ff_core_Ordering.OrderingSame()
+}
+}
+}
+return
+}
+}
+}
+};
+
+export const ff_core_Serializable_Serializable$ff_compiler_Builder_PackageFiles = {
+serializeUsing_(serialization_, x_) {
+{
+const serialization_a = serialization_;
+const x_a = x_;
+{
+const value_ = x_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.root_);
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.packageFile_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.files_)
+return
+}
+}
+},
+deserializeUsing_(serialization_) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+{
+if(_1 == 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
+return ff_compiler_Builder.PackageFiles(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
+return
+}
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+return
+}
+}
+},
+async serializeUsing_$(serialization_, x_, $c) {
+{
+const serialization_a = serialization_;
+const x_a = x_;
+{
+const value_ = x_a;
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
+ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
+serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.root_);
+ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.packageFile_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.files_)
+return
+}
+}
+},
+async deserializeUsing_$(serialization_, $c) {
+const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
+serialization_.offset_ += 1;
+{
+const _1 = variantIndex_;
+{
+if(_1 == 0) {
+serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 32), 0);
+return ff_compiler_Builder.PackageFiles(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_))
+return
+}
+}
+{
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
+return
+}
+}
+}
+};
 
 

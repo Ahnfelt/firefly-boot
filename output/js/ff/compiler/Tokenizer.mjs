@@ -92,7 +92,7 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function tokenize_(file_, code_, completionAt_) {
+export function tokenize_(file_, code_, completionAt_, attemptFixes_) {
 const completionLine_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(completionAt_, ((_w1) => {
 return (_w1.file_ === file_)
 })), ((_w1) => {
@@ -141,7 +141,7 @@ ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, s
 let i_ = 0;
 function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (column_ + 1)), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 while((i_ < ff_core_String.String_size(code_))) {
 startLine_ = line_;
@@ -154,7 +154,10 @@ emitToken_(ff_compiler_Token.LLower(), i_, i_)
 i_ += 1
 };
 if((((i_ < ff_core_String.String_size(code_)) && (completionColumn_ === ((1 + i_) - lineOffset_))) && (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grab(code_, i_))))) {
-emitToken_(ff_compiler_Token.LLower(), i_, i_)
+emitToken_(ff_compiler_Token.LLower(), i_, i_);
+if((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 95))) {
+i_ += 1
+}
 }
 } else {
 while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
@@ -260,6 +263,9 @@ i_ += 1;
 if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
 emitToken_(ff_compiler_Token.LDot(), start_, i_);
 const newStart_ = i_;
+if((!ff_core_Option.Option_isEmpty(completionAt_))) {
+emitToken_(ff_compiler_Token.LLower(), newStart_, newStart_)
+};
 i_ += 1;
 emitToken_(ff_compiler_Token.LDot(), newStart_, i_)
 } else {
@@ -298,7 +304,11 @@ emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_)
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
+if(attemptFixes_) {
+i_ += 1
+} else {
 throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))))
+}
 } else {}
 }
 };
@@ -308,7 +318,7 @@ emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 return ff_core_Stack.Stack_drain(tokens_)
 }
 
-export async function tokenize_$(file_, code_, completionAt_, $c) {
+export async function tokenize_$(file_, code_, completionAt_, attemptFixes_, $c) {
 const completionLine_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(completionAt_, ((_w1) => {
 return (_w1.file_ === file_)
 })), ((_w1) => {
@@ -357,7 +367,7 @@ ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, s
 let i_ = 0;
 function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (column_ + 1)), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 while((i_ < ff_core_String.String_size(code_))) {
 startLine_ = line_;
@@ -370,7 +380,10 @@ emitToken_(ff_compiler_Token.LLower(), i_, i_)
 i_ += 1
 };
 if((((i_ < ff_core_String.String_size(code_)) && (completionColumn_ === ((1 + i_) - lineOffset_))) && (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grab(code_, i_))))) {
-emitToken_(ff_compiler_Token.LLower(), i_, i_)
+emitToken_(ff_compiler_Token.LLower(), i_, i_);
+if((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 95))) {
+i_ += 1
+}
 }
 } else {
 while(((i_ < ff_core_String.String_size(code_)) && (((ff_core_String.String_grab(code_, i_) === 32) || (ff_core_String.String_grab(code_, i_) === 9)) || (ff_core_String.String_grab(code_, i_) === 13)))) {
@@ -476,6 +489,9 @@ i_ += 1;
 if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
 emitToken_(ff_compiler_Token.LDot(), start_, i_);
 const newStart_ = i_;
+if((!ff_core_Option.Option_isEmpty(completionAt_))) {
+emitToken_(ff_compiler_Token.LLower(), newStart_, newStart_)
+};
 i_ += 1;
 emitToken_(ff_compiler_Token.LDot(), newStart_, i_)
 } else {
@@ -514,7 +530,11 @@ emitToken_(ff_compiler_Token.LBracketLeft(), start_, i_)
 i_ += 1;
 emitToken_(ff_compiler_Token.LBracketRight(), start_, i_)
 } else if((i_ < ff_core_String.String_size(code_))) {
+if(attemptFixes_) {
+i_ += 1
+} else {
 throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_Char_Char.show_(ff_core_String.String_grab(code_, i_))))
+}
 } else {}
 }
 };

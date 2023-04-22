@@ -98,7 +98,7 @@ return {instances_};
 
 
 export function make_(modules_) {
-return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_).instances_)
+return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_, false).instances_)
 }
 
 export function fail_(at_, message_) {
@@ -128,7 +128,7 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 }
 
 export async function make_$(modules_, $c) {
-return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_).instances_)
+return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_, false).instances_)
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -608,7 +608,7 @@ return
 
 export function Dictionaries_makeDictionary(self_, at_, typeParameters_, typeArguments_, constraint_) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty());
+const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty(), false);
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));
@@ -1088,7 +1088,7 @@ return
 
 export async function Dictionaries_makeDictionary$(self_, at_, typeParameters_, typeArguments_, constraint_, $c) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
-const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty());
+const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty(), false);
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
 return ff_compiler_Unification.Unification_instantiate(unification_, instantiationMap_, _w1)
 }));
