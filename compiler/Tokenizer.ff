@@ -13,7 +13,7 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
     mutable startLine = line
     mutable startLineOffset = lineOffset
 
-    let operatorCharactersString = "!@#$%&/=?+|^~*<>.:-,;"
+    let operatorCharactersString = "!@#$%&/=?+|^~*<>.:-;"
     mutable operatorCharacters = Set.empty[Char]()
     List.range(operatorCharactersString.size()).map {j =>
         operatorCharacters = operatorCharacters.add(operatorCharactersString.grab(j))
@@ -181,6 +181,11 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
             i += 1
             emitToken(LWildcard, start, i)
 
+        } elseIf {code.grab(i) == ','} {
+
+            i += 1
+            emitToken(LComma, start, i)
+
         } elseIf {operatorCharacters.contains(code.grab(i))} {
 
             i += 1
@@ -197,8 +202,6 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
             let o =
                 if(i - start == 1 && code.grab(i - 1) == '.') {
                     LDot
-                } elseIf {i - start == 1 && code.grab(i - 1) == ','} {
-                    LComma
                 } elseIf {i - start == 1 && code.grab(i - 1) == ';'} {
                     LSemicolon
                 } elseIf {i - start == 1 && code.grab(i - 1) == '|'} {
