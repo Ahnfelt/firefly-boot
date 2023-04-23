@@ -1198,13 +1198,12 @@ extend self: Inference {
         if(typeName == "") {} else:
         if(typeName == "ff:core/List.List") {
             self.completionResult = [...self.completionResult, 
-                CompletionInfo("[]", "[]", False, expected, "// Empty list pattern")
-                CompletionInfo("[first, ...rest]", "[${1:first}, ...rest]", False, expected, "// Non-empty list pattern")
+                CompletionInfo("[...]", "[${0:first, ...rest}]", False, expected, "// List pattern")
             ]
         } else:
         if(typeName == "ff:core/String.String") {
             self.completionResult = [...self.completionResult, 
-                CompletionInfo("\"\"", "\"\"", False, expected, "// Empty string pattern")
+                CompletionInfo("\"...\"", "\"$0\"", False, expected, "// String pattern")
             ]
         } else:
         if(typeName == "ff:core/Int.Int") {
