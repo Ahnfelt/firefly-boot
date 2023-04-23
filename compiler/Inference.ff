@@ -291,7 +291,7 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False)}
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, Some(expected))}
                 self.lookup(environment, e.at, e.name, []).map {instantiated =>
                     if(instantiated.scheme.isVariable) {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
@@ -319,7 +319,7 @@ extend self: Inference {
                                 | Pair(fieldName, typeArgument) => 
                                     CompletionInfo(fieldName, fieldName, True, typeArgument, "")
                             }
-                            self.completion(environment, name, True)
+                            self.completion(environment, name, True, Some(expected))
                         }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
@@ -340,7 +340,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t =>
                         let memberPrefix = name + "_"
                         if(self.completionAt.contains(e.at)) {
-                            self.completion(environment, memberPrefix, True)
+                            self.completion(environment, memberPrefix, True, Some(expected))
                         }
                         let memberName = memberPrefix + e.field
                         self.lookup(environment, e.at, memberName, typeArguments).{
@@ -436,7 +436,7 @@ extend self: Inference {
                 let lambda = self.inferLambda(environment, expected, l)
                 ELambda(at, lambda)
             | EVariant e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False)}
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, Some(expected))}
                 let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
@@ -541,7 +541,9 @@ extend self: Inference {
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, _)@t =>
                                 let memberPrefix = name + "_"
-                                if(self.completionAt.contains(f.at)) {self.completion(environment, memberPrefix, True)}
+                                if(self.completionAt.contains(f.at)) {
+                                    self.completion(environment, memberPrefix, True, Some(expected))
+                                }
                                 let methodName = memberPrefix + f.field
                                 self.lookup(environment, f.at, methodName, []).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
@@ -598,7 +600,7 @@ extend self: Inference {
                     body = newBody
                 )
             | EAssign e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False)}
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, Some(expected))}
                 self.lookup(environment, e.at, e.variable, []).map {instantiated =>
                     if(instantiated.scheme.isMutable) {
                         let value = self.inferAssignment(
@@ -628,7 +630,9 @@ extend self: Inference {
                         throw(CompileError(e.at, "Can't assign fields of anonymous records: " + e.field))
                     | TConstructor(_, name, typeArguments)@t =>
                         let memberPrefix = name + "_"
-                        if(self.completionAt.contains(e.at)) {self.completion(environment, memberPrefix, True)}
+                        if(self.completionAt.contains(e.at)) {
+                            self.completion(environment, memberPrefix, True, Some(expected))
+                        }
                         let methodName = memberPrefix + e.field
                         self.lookup(environment, e.at, methodName, typeArguments).{
                             | Some(instantiated) {instantiated.scheme.isMutable} =>
@@ -1004,7 +1008,12 @@ extend self: Inference {
 
     }
 
-    completion(environment: Environment, prefix: String, member: Bool): Unit {
+    completion(environment: Environment, prefix: String, member: Bool, expected: Option[Type]): Unit {
+
+        let expectedName = expected.{
+            | Some(TConstructor(_, n, _)) => n
+            | _ => "##"
+        }
 
         let members = Stack.make()
 
@@ -1089,6 +1098,7 @@ extend self: Inference {
                 member = member && !copy
                 type = returnType
                 documentation = documentation
+                preselect = returnType.{| TConstructor(_, n, _) => n == expectedName | _ => False}
             ))
         }
 

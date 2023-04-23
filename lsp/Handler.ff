@@ -225,6 +225,7 @@ extend self: Handler {
                         if(i.label.any {c => c == '(' || c == '{'}) {2} else {5} + if(i.member) {0} else {1}
                     )
                     .with("sortText", sortText)
+                    .with("preselect", i.preselect)
                     .with("label", i.label)
                     .with("labelDetails", js.object()
                         .with("detail", ": " + i.type.show([]))
