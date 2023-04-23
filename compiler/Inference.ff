@@ -1150,6 +1150,16 @@ extend self: Inference {
     }
 
     exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool): Unit {
+        if(prefix == "ff:core/List.List_") {
+            let curly = if(inside) {Pair("", "")} else {Pair("{", "}")}
+            self.completionResult = [...self.completionResult, CompletionInfo(
+                label = curly.first + "| [] => ... | [first, ...rest] => ..." + curly.second
+                snippet = curly.first + "\n    | [] => $0\n    | [first, ...rest] =>\n" + curly.second
+                member = True
+                type = TConstructor(Location("", 0, 0), "exhaustive match", [])
+                documentation = "// Exhaustive list match"
+            )]
+        } else:
         let shorterPrefix = prefix.dropLast()
         let variants = environment.symbols.toList().filter {s => 
             !s.first.contains("_") &&
