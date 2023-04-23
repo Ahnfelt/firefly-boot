@@ -90,7 +90,7 @@ extend self: Handler {
                 )
                 .with("completionProvider", js.object()
                     .with("triggerCharacters", js.array(["."].map {js.value(_)}))
-                    .with("allCommitCharacters", js.array([",", ";"].map {js.value(_)}))
+                    .with("allCommitCharacters", js.array([";"].map {js.value(_)}))
                 )
                 .with("referencesProvider", True)
                 /*.with("workspace", js.object()
@@ -210,6 +210,13 @@ extend self: Handler {
         let o = js.object()
             .with("isIncomplete", False)
             .with("items", completionResult.distinct().toArray().map {| CompletionInfo i =>
+                let isAlpha = i.label.first().any {_.isAsciiLetter()}
+                let isLower = i.label.first().any {_.isAsciiLower()}
+                let isUnqualified = !i.label.takeWhile {c => c != '(' && c != '[' && c != '{'}.contains(".")
+                let isVariable = isLower && !i.label.contains("(") && !i.label.contains("{")
+                let sortText = 9 - (
+                    isVariable.toInt() + isUnqualified.toInt() + isAlpha.toInt() + isLower.toInt()
+                ) + i.label.lower()
                 js.object()
                     // EnumMember or Constructor or Method/Function or Field/Variable
                     .with("kind", 
@@ -217,6 +224,7 @@ extend self: Handler {
                         if(i.label.first().any {_.isAsciiUpper()}) {4} else:
                         if(i.label.any {c => c == '(' || c == '{'}) {2} else {5} + if(i.member) {0} else {1}
                     )
+                    .with("sortText", sortText)
                     .with("label", i.label)
                     .with("labelDetails", js.object()
                         .with("detail", ": " + i.type.show([]))
