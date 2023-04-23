@@ -1027,17 +1027,11 @@ extend self: Inference {
                     }
                 }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
                 let allRequired = realParameters.filter {_.default.isEmpty()}
-                let required = 
-                    allRequired.dropLast(trailing.size()).pairs().map {
-                        | Pair(index, p) => 
-                            Pair(p.name, if(index == 0) {"${1:" + p.name + "}"} else {p.name})
-                    }
-                let optional = if(
-                    allRequired.size() != realParameters.size()
-                ) {"..."}
+                let required =  allRequired.dropLast(trailing.size()).map {_.name}
+                let optional = if(allRequired.size() != realParameters.size()) {"..."}
                 Pair(
                     if(trailing.isEmpty() || !required.isEmpty()) {
-                        "(" + [...required.map {_.first}, ...optional.toList()].join(", ") + ")"
+                        "(" + [...required, ...optional.toList()].join(", ") + ")"
                     } else {
                         ""
                     } + trailing.map {_.first}.join()
@@ -1045,7 +1039,11 @@ extend self: Inference {
                         "(${1|" + realParameters.map {_.name}.map {f => f + " = "}.join(",") + "|}$0)"
                     } else {
                         if(trailing.isEmpty() || !required.isEmpty()) {
-                            "(" + required.map {_.second}.join(", ") + ")"
+                            if(required.isEmpty()) {
+                                "(" + required.join(", ") + ")"
+                            } else {
+                                "(${0:" + required.join(", ") + "})"
+                            }
                         } else {
                             ""
                         } + if(trailing.isEmpty()) {""} else {trailing.map {_.second}.join()}
@@ -1236,9 +1234,7 @@ extend self: Inference {
             let snippet = 
                 shortName +
                 if(scheme.signature.parameters.isEmpty()) {""} else {
-                    "(" + scheme.signature.parameters.map {_.name}.pairs().map {| Pair(i, n) =>
-                        if(i == 0) {"${1:" + n + "}"} else {n}
-                    }.join(", ") + ")"
+                    "(${0:" + scheme.signature.parameters.map {_.name}.join(", ") + "})"
                 }
             let generics = scheme.signature.generics.filter {_ != "Q$"}
             let documentation = 
@@ -1250,7 +1246,7 @@ extend self: Inference {
                     }.join("\n") + "\n)"
                 } + ": " + scheme.signature.returnType.show([])
             CompletionInfo(
-                label = snippet.replace("${1:", "").replace("}", "")
+                label = snippet.replace("${0:", "").replace("}", "")
                 snippet = snippet
                 member = False
                 type = expected

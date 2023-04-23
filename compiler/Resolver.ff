@@ -573,9 +573,7 @@ extend self: Resolver {
             let generics = self.typeGenerics.find {k, _ => k == typeName}.toList().flatMap {_.second}
             let realGenerics = generics.filter {_ != "Q$"}
             let label = typeName + if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
-            let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[" + 
-                realGenerics.pairs().map {| Pair(i, g) => if(i == 0) {"${0:" + g + "}"} else {g}}.join(", ") + 
-            "]"}
+            let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[${0:" + realGenerics.join(", ") + "}]"}
             CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), "// Type")
         }
         self.state.completionResult = [...self.state.completionResult, ...completions]
