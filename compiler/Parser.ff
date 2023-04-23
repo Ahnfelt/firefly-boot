@@ -861,7 +861,7 @@ extend self: Parser {
     
     parseLet(): Term {
         let mutable = self.current().rawIs("mutable")
-        if(mutable) {self.rawSkip(LKeyword, "mutable")} else {self.rawSkip(LKeyword, "let")}
+        let keywordToken = if(mutable) {self.rawSkip(LKeyword, "mutable")} else {self.rawSkip(LKeyword, "let")}
         let nameToken = self.skip(LLower)
         let valueType = if(!self.current().is(LColon)) {self.freshUnificationVariable(nameToken.at())} else {
             self.skip(LColon)
@@ -873,7 +873,7 @@ extend self: Parser {
             self.skipSeparator(LSemicolon)
             self.parseStatements()
         } else {
-            EVariant(self.current().at(), "Unit", [], None)
+            EVariant(keywordToken.at(), "Unit", [], None)
         }
         ELet(nameToken.at(), mutable, nameToken.raw(), valueType, value, body)
     }
