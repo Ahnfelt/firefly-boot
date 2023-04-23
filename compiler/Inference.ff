@@ -1191,19 +1191,36 @@ extend self: Inference {
     }
 
     patternCompletion(environment: Environment, expected: Type): Unit {
-        let variants = self.unification.substitute(expected).{
-            | TConstructor(_, name, _) =>
-                let prefix = name
-                environment.symbols.toList().filter {s => 
-                    !s.first.contains("_") &&
-                    s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
-                    s.second.signature.returnType.{
-                        | TConstructor(_, n, _) => n == prefix 
-                        | _ => False
-                    }
+        let typeName = self.unification.substitute(expected).{
+            | TConstructor(_, name, _) => name
+            | _ => ""
+        }
+        if(typeName == "") {} else:
+        if(typeName == "ff:core/List.List") {
+            self.completionResult = [...self.completionResult, 
+                CompletionInfo("[]", "[]", False, expected, "// Empty list pattern")
+                CompletionInfo("[first, ...rest]", "[${1:first}, ...rest]", False, expected, "// Non-empty list pattern")
+            ]
+        } else:
+        if(typeName == "ff:core/String.String") {
+            self.completionResult = [...self.completionResult, 
+                CompletionInfo("\"\"", "\"\"", False, expected, "// Empty string pattern")
+            ]
+        } else:
+        if(typeName == "ff:core/Int.Int") {
+            self.completionResult = [...self.completionResult, 
+                CompletionInfo("0", "0", False, expected, "// Zero pattern")
+            ]
+        } else:
+        let variants = do {
+            environment.symbols.toList().filter {s => 
+                !s.first.contains("_") &&
+                s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
+                s.second.signature.returnType.{
+                    | TConstructor(_, n, _) => n == typeName 
+                    | _ => False
                 }
-            | _ =>
-                []
+            }
         }
         let completions = variants.map {| Pair(name, scheme) => 
             let shortName = name.reverse().takeWhile {_ != '.'}.reverse()
