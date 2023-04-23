@@ -89,6 +89,14 @@ extend self[K: Order, V]: Map[K, V] {
         self.redBlack.each(body)
     }
 
+    eachWhile(body: (K, V) => Bool): Bool {
+        self.redBlack.eachWhile(body)
+    }
+
+    find(body: (K, V) => Bool): Option[Pair[K, V]] {
+        self.redBlack.find(body)
+    }
+
 }
 
 extend self[K: Order, V]: Map[K, List[V]] {

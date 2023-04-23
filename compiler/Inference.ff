@@ -2,6 +2,7 @@ import Syntax
 import Unification
 import Environment
 import Substitution
+import Deriver as Der // Just remove this
 
 class Inference(
     unification: Unification
@@ -1100,13 +1101,19 @@ extend self: Inference {
                     Some(pair)
                 | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
                     Some(pair.mapFirst {_.dropFirst("ff:core/Core.".size())})
-                | Pair(shortName, scheme) {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
+                | Pair(name, scheme) {name.dropWhile {_ != '/'}.dropFirst() | short} {
                     short.reverse().takeWhile {_ != '.'}.reverse() | shorter
                 } {shorter.all {_.isAsciiLetterOrDigit()}} =>
                     if(shorter.first().any {_.isAsciiUpper()}) {
                         Some(Pair(shorter, scheme))
                     } else {
-                        Some(Pair(short, scheme))
+                        let module = name.dropLast(shorter.size() + 1)
+                        let alias = environment.imports.find {_, i =>
+                            module == i.package.groupName() + "/" + i.directory.map {_ + "/"}.join() + i.file
+                        }
+                        alias.map {| Pair(alias, i) => 
+                            Pair(alias + short.dropFirst(i.file.size()), scheme)
+                        }
                     }
                 | _ => 
                     None
