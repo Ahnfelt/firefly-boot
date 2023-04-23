@@ -195,6 +195,14 @@ export function Map_each(self_, body_, ff_core_Ordering_Order$K) {
 ff_core_RbMap.RB_each(self_, body_, ff_core_Ordering_Order$K)
 }
 
+export function Map_eachWhile(self_, body_, ff_core_Ordering_Order$K) {
+return ff_core_RbMap.RB_eachWhile(self_, body_, ff_core_Ordering_Order$K)
+}
+
+export function Map_find(self_, body_, ff_core_Ordering_Order$K) {
+return ff_core_RbMap.RB_find(self_, body_, ff_core_Ordering_Order$K)
+}
+
 export async function Map_add$(self_, key_, value_, ff_core_Ordering_Order$K, $c) {
 return ff_core_RbMap.insert_(key_, value_, self_, ff_core_Ordering_Order$K)
 }
@@ -292,6 +300,14 @@ return
 
 export async function Map_each$(self_, body_, ff_core_Ordering_Order$K, $c) {
 (await ff_core_RbMap.RB_each$(self_, body_, ff_core_Ordering_Order$K, $c))
+}
+
+export async function Map_eachWhile$(self_, body_, ff_core_Ordering_Order$K, $c) {
+return (await ff_core_RbMap.RB_eachWhile$(self_, body_, ff_core_Ordering_Order$K, $c))
+}
+
+export async function Map_find$(self_, body_, ff_core_Ordering_Order$K, $c) {
+return (await ff_core_RbMap.RB_find$(self_, body_, ff_core_Ordering_Order$K, $c))
 }
 
 export function Map_addToList(self_, key_, value_, ff_core_Ordering_Order$K) {

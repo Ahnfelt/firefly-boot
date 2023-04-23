@@ -1610,6 +1610,28 @@ return
 }
 }
 
+export function RB_eachWhile(self_, body_, ff_core_Ordering_Order$K) {
+{
+const _1 = self_;
+{
+if(_1.E) {
+return true
+return
+}
+}
+{
+if(_1.T) {
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+return ((ff_core_RbMap.RB_eachWhile(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K) && body_(k_, v_)) && ff_core_RbMap.RB_eachWhile(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K))
+return
+}
+}
+}
+}
+
 export function RB_map(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K2) {
 let result_ = ff_core_RbMap.E();
 ff_core_RbMap.RB_each(self_, ((k_, v_) => {
@@ -1640,6 +1662,19 @@ return
 }
 }
 }
+}
+
+export function RB_find(self_, body_, ff_core_Ordering_Order$K) {
+let result_ = ff_core_Option.None();
+ff_core_RbMap.RB_eachWhile(self_, ((k_, v_) => {
+if(body_(k_, v_)) {
+result_ = ff_core_Option.Some(ff_core_Pair.Pair(k_, v_));
+return false
+} else {
+return true
+}
+}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K);
+return result_
 }
 
 export async function RB_get$(self_, key_, ff_core_Ordering_Order$K, $c) {
@@ -1827,6 +1862,28 @@ return
 }
 }
 
+export async function RB_eachWhile$(self_, body_, ff_core_Ordering_Order$K, $c) {
+{
+const _1 = self_;
+{
+if(_1.E) {
+return true
+return
+}
+}
+{
+if(_1.T) {
+const l_ = _1.left_;
+const k_ = _1.key_;
+const v_ = _1.value_;
+const r_ = _1.right_;
+return (((await ff_core_RbMap.RB_eachWhile$(l_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $c)) && (await body_(k_, v_, $c))) && (await ff_core_RbMap.RB_eachWhile$(r_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $c)))
+return
+}
+}
+}
+}
+
 export async function RB_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K2, $c) {
 let result_ = ff_core_RbMap.E();
 (await ff_core_RbMap.RB_each$(self_, (async (k_, v_, $c) => {
@@ -1857,6 +1914,19 @@ return
 }
 }
 }
+}
+
+export async function RB_find$(self_, body_, ff_core_Ordering_Order$K, $c) {
+let result_ = ff_core_Option.None();
+(await ff_core_RbMap.RB_eachWhile$(self_, (async (k_, v_, $c) => {
+if((await body_(k_, v_, $c))) {
+result_ = ff_core_Option.Some(ff_core_Pair.Pair(k_, v_));
+return false
+} else {
+return true
+}
+}), ff_core_Ordering_Order$K, ff_core_Ordering_Order$K, $c));
+return result_
 }
 
 

@@ -1335,8 +1335,12 @@ return ff_compiler_Parser.Parser_parseType(self_)
 })());
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign());
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
+const body_ = (ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon())
+? (function() {
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon());
-const body_ = ff_compiler_Parser.Parser_parseStatements(self_);
+return ff_compiler_Parser.Parser_parseStatements(self_)
+})()
+: ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Unit", ff_core_List.Empty(), ff_core_Option.None()));
 return ff_compiler_Syntax.ELet(ff_compiler_Token.Token_at(nameToken_), mutable_, ff_compiler_Token.Token_raw(nameToken_), valueType_, value_, body_)
 }
 
@@ -2764,8 +2768,12 @@ return ff_compiler_Parser.Parser_parseType(self_)
 })()));
 ff_compiler_Parser.Parser_skip(self_, ff_compiler_Token.LAssign());
 const value_ = ff_compiler_Parser.Parser_parseTerm(self_);
+const body_ = (ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LSemicolon())
+? (await (async function() {
 ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LSemicolon());
-const body_ = ff_compiler_Parser.Parser_parseStatements(self_);
+return ff_compiler_Parser.Parser_parseStatements(self_)
+})())
+: ff_compiler_Syntax.EVariant(ff_compiler_Token.Token_at(ff_compiler_Parser.Parser_current(self_)), "Unit", ff_core_List.Empty(), ff_core_Option.None()));
 return ff_compiler_Syntax.ELet(ff_compiler_Token.Token_at(nameToken_), mutable_, ff_compiler_Token.Token_raw(nameToken_), valueType_, value_, body_)
 }
 

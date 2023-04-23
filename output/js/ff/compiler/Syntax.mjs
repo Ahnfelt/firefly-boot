@@ -348,8 +348,8 @@ return {at_, major_, minor_, patch_};
 }
 
 // type CompletionInfo
-export function CompletionInfo(label_, snippet_, member_, type_, documentation_) {
-return {label_, snippet_, member_, type_, documentation_};
+export function CompletionInfo(label_, snippet_, member_, type_, documentation_, preselect_) {
+return {label_, snippet_, member_, type_, documentation_, preselect_};
 }
 
 // type HoverInfo
@@ -2345,7 +2345,7 @@ show_(x_) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((((((("CompletionInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.label_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.snippet_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.type_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.documentation_)) + ")")
+return ((((((((((((("CompletionInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.label_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.snippet_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.type_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.documentation_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.preselect_)) + ")")
 return
 }
 }
@@ -2355,7 +2355,7 @@ async show_$(x_, $c) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((((((("CompletionInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.label_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.snippet_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.type_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.documentation_)) + ")")
+return ((((((((((((("CompletionInfo" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.label_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.snippet_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.member_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.type_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.documentation_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.preselect_)) + ")")
 return
 }
 }
@@ -4316,7 +4316,7 @@ return
 }
 }
 {
-return ((x_.label_ === y_.label_) && ((x_.snippet_ === y_.snippet_) && ((x_.member_ === y_.member_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.type_, y_.type_) && (x_.documentation_ === y_.documentation_)))))
+return ((x_.label_ === y_.label_) && ((x_.snippet_ === y_.snippet_) && ((x_.member_ === y_.member_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.type_, y_.type_) && ((x_.documentation_ === y_.documentation_) && (x_.preselect_ === y_.preselect_))))))
 return
 }
 }
@@ -4333,7 +4333,7 @@ return
 }
 }
 {
-return ((x_.label_ === y_.label_) && ((x_.snippet_ === y_.snippet_) && ((x_.member_ === y_.member_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.type_, y_.type_) && (x_.documentation_ === y_.documentation_)))))
+return ((x_.label_ === y_.label_) && ((x_.snippet_ === y_.snippet_) && ((x_.member_ === y_.member_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.type_, y_.type_) && ((x_.documentation_ === y_.documentation_) && (x_.preselect_ === y_.preselect_))))))
 return
 }
 }
@@ -8940,7 +8940,12 @@ const documentationOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_S
 if((documentationOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return documentationOrdering_
 } else {
+const preselectOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.preselect_, y_.preselect_);
+if((preselectOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return preselectOrdering_
+} else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -8982,7 +8987,12 @@ const documentationOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_S
 if((documentationOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return documentationOrdering_
 } else {
+const preselectOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.preselect_, y_.preselect_);
+if((preselectOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return preselectOrdering_
+} else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -12693,7 +12703,8 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.snippet_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.member_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, value_.type_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.documentation_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.documentation_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.preselect_)
 return
 }
 }
@@ -12706,7 +12717,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
-return ff_compiler_Syntax.CompletionInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Syntax.CompletionInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
 return
 }
 }
@@ -12729,7 +12740,8 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.ser
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.snippet_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.member_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, value_.type_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.documentation_)
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.documentation_);
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.preselect_)
 return
 }
 }
@@ -12742,7 +12754,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 33), 0);
-return ff_compiler_Syntax.CompletionInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_))
+return ff_compiler_Syntax.CompletionInfo(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
 return
 }
 }

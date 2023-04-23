@@ -142,6 +142,20 @@ body_(k_)
 }), ff_core_Ordering_Order$T)
 }
 
+export function Set_eachWhile(self_, body_, ff_core_Ordering_Order$T) {
+return ff_core_Map.Map_eachWhile(self_, ((k_, _) => {
+return body_(k_)
+}), ff_core_Ordering_Order$T)
+}
+
+export function Set_find(self_, body_, ff_core_Ordering_Order$T) {
+return ff_core_Option.Option_map(ff_core_Map.Map_find(self_, ((k_, _) => {
+return body_(k_)
+}), ff_core_Ordering_Order$T), ((_w1) => {
+return _w1.first_
+}))
+}
+
 export async function Set_add$(self_, value_, ff_core_Ordering_Order$T, $c) {
 return ff_core_Map.Map_add(self_, value_, (void 0), ff_core_Ordering_Order$T)
 }
@@ -188,6 +202,20 @@ export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $c) {
 (await ff_core_Map.Map_each$(self_, (async (k_, _, $c) => {
 (await body_(k_, $c))
 }), ff_core_Ordering_Order$T, $c))
+}
+
+export async function Set_eachWhile$(self_, body_, ff_core_Ordering_Order$T, $c) {
+return (await ff_core_Map.Map_eachWhile$(self_, (async (k_, _, $c) => {
+return (await body_(k_, $c))
+}), ff_core_Ordering_Order$T, $c))
+}
+
+export async function Set_find$(self_, body_, ff_core_Ordering_Order$T, $c) {
+return ff_core_Option.Option_map((await ff_core_Map.Map_find$(self_, (async (k_, _, $c) => {
+return (await body_(k_, $c))
+}), ff_core_Ordering_Order$T, $c)), ((_w1) => {
+return _w1.first_
+}))
 }
 
 export function ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal_Equal$A, ff_core_Ordering_Order$A) { return {

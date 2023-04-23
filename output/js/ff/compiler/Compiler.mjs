@@ -199,7 +199,7 @@ return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.resolvedModules_, ((
 return ff_compiler_Compiler.Compiler_measure(self_, "Resolve", packagePair_, moduleName_, (() => {
 const module_ = ff_compiler_Compiler.Compiler_parse(self_, packagePair_, moduleName_);
 const otherModules_ = ff_compiler_Compiler.Compiler_imports(self_, module_);
-const resolver_ = ff_compiler_Resolver.make_(self_.hoverAt_, self_.referencesTo_);
+const resolver_ = ff_compiler_Resolver.make_(self_.hoverAt_, self_.referencesTo_, self_.completionAt_);
 const result_ = ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return ff_compiler_Resolver.Resolver_resolveModule(resolver_, module_, otherModules_)
 })), (() => {
@@ -208,7 +208,10 @@ self_.hoverResult_ = (((_c) => {
 return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(at_), _c.type_, _c.effect_)
 }))(self_.hoverResult_)
 }));
-self_.referencesResult_ = ff_core_List.List_addAll(self_.referencesResult_, resolver_.state_.referencesResult_)
+self_.referencesResult_ = ff_core_List.List_addAll(self_.referencesResult_, resolver_.state_.referencesResult_);
+if((!ff_core_List.List_isEmpty(resolver_.state_.completionResult_))) {
+self_.completionResult_ = resolver_.state_.completionResult_
+}
 })));
 self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
@@ -348,7 +351,7 @@ return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.resolvedModu
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Resolve", packagePair_, moduleName_, (async ($c) => {
 const module_ = (await ff_compiler_Compiler.Compiler_parse$(self_, packagePair_, moduleName_, $c));
 const otherModules_ = (await ff_compiler_Compiler.Compiler_imports$(self_, module_, $c));
-const resolver_ = ff_compiler_Resolver.make_(self_.hoverAt_, self_.referencesTo_);
+const resolver_ = ff_compiler_Resolver.make_(self_.hoverAt_, self_.referencesTo_, self_.completionAt_);
 const result_ = ff_core_Try.Try_grab(ff_core_Try.Try_finally(ff_core_Core.try_((() => {
 return ff_compiler_Resolver.Resolver_resolveModule(resolver_, module_, otherModules_)
 })), (() => {
@@ -357,7 +360,10 @@ self_.hoverResult_ = (((_c) => {
 return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(at_), _c.type_, _c.effect_)
 }))(self_.hoverResult_)
 }));
-self_.referencesResult_ = ff_core_List.List_addAll(self_.referencesResult_, resolver_.state_.referencesResult_)
+self_.referencesResult_ = ff_core_List.List_addAll(self_.referencesResult_, resolver_.state_.referencesResult_);
+if((!ff_core_List.List_isEmpty(resolver_.state_.completionResult_))) {
+self_.completionResult_ = resolver_.state_.completionResult_
+}
 })));
 self_.resolvedModules_ = ff_core_Map.Map_add(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), result_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 return result_
