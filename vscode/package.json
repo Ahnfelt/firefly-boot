@@ -69,7 +69,7 @@
         "snippets": [
             {
                 "language": "firefly",
-                "path": "./snippets.json"
+                "path": "./snippets-none.json"
             }
         ],
         "commands": [
