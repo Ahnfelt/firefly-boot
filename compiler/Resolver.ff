@@ -569,12 +569,14 @@ extend self: Resolver {
     }
 
     typeCompletion(): Unit {
-        let completions = self.types.keys().toList().filter {n => n.all {_.isAsciiLetterOrDigit()}}.map {typeName =>
+        let completions = self.types.toList().filter {| Pair(n, full) => 
+            n.all {_.isAsciiLetterOrDigit()}
+        }.map {| Pair(typeName, full) =>
             let generics = self.typeGenerics.find {k, _ => k == typeName}.toList().flatMap {_.second}
             let realGenerics = generics.filter {_ != "Q$"}
             let label = typeName + if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
             let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[${0:" + realGenerics.join(", ") + "}]"}
-            CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), "// Type")
+            CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), full)
         }
         self.state.completionResult = [...self.state.completionResult, ...completions]
     }
