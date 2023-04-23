@@ -1,0 +1,10 @@
+{
+    "iconDefinitions": {
+        "firefly-file": {
+            "iconPath": "./firefly-icon.png"
+        }
+    },
+    "fileExtensions": {
+        ".ff": "firefly-file"
+    }
+}
