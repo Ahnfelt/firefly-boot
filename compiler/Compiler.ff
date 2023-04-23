@@ -191,7 +191,7 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName)
         let otherModules = self.imports(module)
-        let resolver = Resolver.make(self.hoverAt, self.referencesTo)
+        let resolver = Resolver.make(self.hoverAt, self.referencesTo, self.completionAt)
         let result = try {
             resolver.resolveModule(module, otherModules)
         } finally {
@@ -199,6 +199,9 @@ extend self: Compiler {
                 self.hoverResult = self.hoverResult.HoverInfo(at = Some(at))
             }
             self.referencesResult = [...self.referencesResult, ...resolver.state.referencesResult]
+            if(!resolver.state.completionResult.isEmpty()) {
+                self.completionResult = resolver.state.completionResult
+            }
         } grab() 
 
         self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)

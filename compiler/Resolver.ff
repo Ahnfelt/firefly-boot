@@ -5,6 +5,7 @@ class Resolver(
     variableLocations: Map[String, Location]
     variants: Map[String, String]
     types: Map[String, String]
+    typeGenerics: Map[String, List[String]]
     typeLocations: Map[String, Location]
     asyncTypes: Set[String]
     typeParameters: Set[String]
@@ -13,20 +14,23 @@ class Resolver(
     state: ResolverState
     hoverAt: Option[Location]
     referencesTo: Option[Location]
+    completionAt: Option[Location]
 )
 
 class ResolverState(
     mutable nextUnificationVariableIndex: Int
     mutable hoverResult: HoverInfo
     mutable referencesResult: List[Location]
+    mutable completionResult: List[CompletionInfo]
 )
 
-make(hoverAt: Option[Location], referencesTo: Option[Location]): Resolver {
+make(hoverAt: Option[Location], referencesTo: Option[Location], completionAt: Option[Location]): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()
         variants = [].toMap()
         types = [].toMap()
+        typeGenerics = [].toMap()
         typeLocations = [].toMap()
         asyncTypes = [].toSet()
         typeParameters = [].toSet()
@@ -36,9 +40,11 @@ make(hoverAt: Option[Location], referencesTo: Option[Location]): Resolver {
             nextUnificationVariableIndex = 2
             hoverResult = HoverInfo(None, None, None)
             referencesResult = []
+            completionResult = []
         ) // To avoid collision with the parser and unification
         hoverAt = hoverAt
         referencesTo = referencesTo
+        completionAt = completionAt
     )
 }
 
@@ -112,6 +118,7 @@ extend self: Resolver {
         let traits = module.traits.flatMap { entry(_.name, True) }.toMap()
         let traitLocations = module.traits.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}} }.toMap()
         let types = module.types.flatMap { entry(_.name, True) }.toMap()
+        let typeGenerics = module.types.flatMap {d => entry(d.name, True).map {p => Pair(p.first, d.generics)}}.toMap()
         let typeLocations = module.types.flatMap {d => entry(d.name, True).map {_.mapSecond {_ => d.at}} }.toMap()
         let asyncTypes = module.types.filter { _.generics.first().any {_ == "Q$"} }
             .flatMap { entry(_.name, True).map {_.first} }.toSet()
@@ -120,6 +127,7 @@ extend self: Resolver {
             variables = self.variables.addAll(lets).addAll(functions).addAll(traitMethods)
             variants = self.variants.addAll(variants)
             types = self.types.addAll(types)
+            typeGenerics = self.typeGenerics.addAll(typeGenerics)
             typeLocations = self.typeLocations.addAll(typeLocations)
             asyncTypes = self.asyncTypes.addAll(asyncTypes)
             typeParameters = [].toSet()
@@ -358,8 +366,10 @@ extend self: Resolver {
 
     resolveType(type: Type, topLevel: Bool): Type {
         | TVariable _, _ =>
+            if(self.completionAt.contains(type.at)) {self.typeCompletion()}
             type
         | TConstructor constructor, _ =>
+            if(self.completionAt.contains(type.at)) {self.typeCompletion()}
             self.typeLocations.get(constructor.name).each {at =>
                 if(self.hoverAt.contains(type.at)) {
                     self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
@@ -556,6 +566,19 @@ extend self: Resolver {
             let isFunctionType = name.startsWith("Function$")
             isFunctionType || self.asyncTypes.contains(constructor.name) ||
             constructor.generics.any {self.containsAsyncType(_)}
+    }
+
+    typeCompletion(): Unit {
+        let completions = self.types.keys().toList().filter {n => n.all {_.isAsciiLetterOrDigit()}}.map {typeName =>
+            let generics = self.typeGenerics.find {k, v => k == typeName}.toList().flatMap {_.second}
+            let realGenerics = generics.filter {_ != "Q$"}
+            let label = typeName + if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
+            let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[" + 
+                realGenerics.pairs().map {| Pair(i, g) => if(i == 0) {"${0:" + g + "}"} else {g}}.join(", ") + 
+            "]"}
+            CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), "// Type")
+        }
+        self.state.completionResult = [...self.state.completionResult, ...completions]
     }
 
 }
