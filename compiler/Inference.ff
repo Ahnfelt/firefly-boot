@@ -1208,7 +1208,7 @@ extend self: Inference {
         } else:
         if(typeName == "ff:core/Int.Int") {
             self.completionResult = [...self.completionResult, 
-                CompletionInfo("0", "0", False, expected, "// Zero pattern")
+                CompletionInfo("0", "0", False, expected, "// Int pattern")
             ]
         } else:
         let variants = do {
