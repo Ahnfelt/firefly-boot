@@ -202,7 +202,9 @@ self_.completionResult_ = ff_core_List.List_distinct(ff_core_List.List_map(self_
 const _1 = r_;
 {
 const _c = _1;
-return ff_compiler_Syntax.CompletionInfo(_c.label_, _c.snippet_, _c.member_, ff_compiler_Substitution.Substitution_substituteType(subsititution_, r_.type_), _c.documentation_, _c.preselect_)
+return ff_compiler_Syntax.CompletionInfo(_c.label_, _c.snippet_, _c.member_, ff_compiler_Substitution.Substitution_substituteType(subsititution_, r_.type_), _c.documentation_, ff_core_Option.Option_map(r_.expectedType_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteType(subsititution_, _w1)
+})))
 return
 }
 }
@@ -624,7 +626,7 @@ return
 if(_1.EVariable) {
 const e_ = _1;
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, "", false, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), ((instantiated_) => {
 if(instantiated_.scheme_.isVariable_) {
@@ -659,11 +661,11 @@ self_.completionResult_ = ff_core_List.List_map(ff_core_List.List_zip(fieldNames
 {
 const fieldName_ = _1.first_;
 const typeArgument_ = _1.second_;
-return ff_compiler_Syntax.CompletionInfo(fieldName_, fieldName_, true, typeArgument_, "", false)
+return ff_compiler_Syntax.CompletionInfo(fieldName_, fieldName_, true, typeArgument_, "", ff_core_Option.Some(expected_))
 return
 }
 }));
-ff_compiler_Inference.Inference_completion(self_, environment_, name_, true, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, name_, true, expected_)
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
@@ -703,7 +705,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const memberPrefix_ = (name_ + "_");
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, expected_)
 };
 const memberName_ = (memberPrefix_ + e_.field_);
 {
@@ -928,7 +930,7 @@ return
 if(_1.EVariant) {
 const e_ = _1;
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, "", false, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
 };
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -1133,7 +1135,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 const memberPrefix_ = (name_ + "_");
 if(ff_core_Option.Option_contains(self_.completionAt_, f_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, expected_)
 };
 const methodName_ = (memberPrefix_ + f_.field_);
 {
@@ -1257,7 +1259,7 @@ return
 if(_1.EAssign) {
 const e_ = _1;
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, "", false, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.variable_, ff_core_List.Empty()), ((instantiated_) => {
 if(instantiated_.scheme_.isMutable_) {
@@ -1307,7 +1309,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const memberPrefix_ = (name_ + "_");
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, expected_)
 };
 const methodName_ = (memberPrefix_ + e_.field_);
 {
@@ -2072,12 +2074,10 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 export function Inference_completion(self_, environment_, prefix_, member_, expected_) {
 const expectedName_ = (((_1) => {
 {
-if(_1.Some) {
-if(_1.value_.TConstructor) {
-const n_ = _1.value_.name_;
+if(_1.TConstructor) {
+const n_ = _1.name_;
 return n_
 return
-}
 }
 }
 {
@@ -2226,19 +2226,7 @@ return "\n}"
 return ""
 })))
 })());
-ff_core_Stack.Stack_push(members_, ff_compiler_Syntax.CompletionInfo((shortName_ + pair_.first_), (shortName_ + pair_.second_), (member_ && (!copy_)), returnType_, documentation_, (((_1) => {
-{
-if(_1.TConstructor) {
-const n_ = _1.name_;
-return (n_ === expectedName_)
-return
-}
-}
-{
-return false
-return
-}
-}))(returnType_)))
+ff_core_Stack.Stack_push(members_, ff_compiler_Syntax.CompletionInfo((shortName_ + pair_.first_), (shortName_ + pair_.second_), (member_ && (!copy_)), returnType_, documentation_, ff_core_Option.Some(expected_)))
 }
 const symbols_ = ((prefix_ === "")
 ? ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_toList(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
@@ -2382,7 +2370,7 @@ if((prefix_ === "ff:core/List.List_")) {
 const curly_ = (inside_
 ? ff_core_Pair.Pair("", "")
 : ff_core_Pair.Pair("{", "}"));
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo(((curly_.first_ + "| [] => ... | [first, ...rest] => ...") + curly_.second_), ((curly_.first_ + "\n    | [] => $0\n    | [first, ...rest] =>\n") + curly_.second_), true, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "exhaustive match", ff_core_List.Empty()), "// Exhaustive list match", false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo(((curly_.first_ + "| [] => ... | [first, ...rest] => ...") + curly_.second_), ((curly_.first_ + "\n    | [] => $0\n    | [first, ...rest] =>\n") + curly_.second_), true, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "exhaustive match", ff_core_List.Empty()), "// Exhaustive list match", ff_core_Option.None()), ff_core_List.Empty()))
 } else {
 const shorterPrefix_ = ff_core_String.String_dropLast(prefix_, 1);
 const variants_ = ff_core_List.List_filter(ff_core_Map.Map_toList(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((s_) => {
@@ -2444,7 +2432,7 @@ return ("    " + _w1)
 : ff_core_List.List_join(snippetParts_, " "))) + (inside_
 ? ""
 : "}"));
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo(label_, snippet_, true, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "exhaustive match", ff_core_List.Empty()), ("// Exhaustive match:\n" + ff_core_String.String_replace(ff_core_List.List_join(snippetParts_, "\n"), "$0", "")), false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo(label_, snippet_, true, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "exhaustive match", ff_core_List.Empty()), ("// Exhaustive match:\n" + ff_core_String.String_replace(ff_core_List.List_join(snippetParts_, "\n"), "$0", "")), ff_core_Option.None()), ff_core_List.Empty()))
 }
 }
 }
@@ -2467,13 +2455,13 @@ if((typeName_ === "")) {
 
 } else {
 if((typeName_ === "ff:core/List.List")) {
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("[...]", "[${0:first, ...rest}]", false, expected_, "// List pattern", false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("[...]", "[${0:first, ...rest}]", false, expected_, "// List pattern", ff_core_Option.Some(expected_)), ff_core_List.Empty()))
 } else {
 if((typeName_ === "ff:core/String.String")) {
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("\"...\"", "\"$0\"", false, expected_, "// String pattern", false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("\"...\"", "\"$0\"", false, expected_, "// String pattern", ff_core_Option.Some(expected_)), ff_core_List.Empty()))
 } else {
 if((typeName_ === "ff:core/Int.Int")) {
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("0", "0", false, expected_, "// Int pattern", false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("0", "0", false, expected_, "// Int pattern", ff_core_Option.Some(expected_)), ff_core_List.Empty()))
 } else {
 const variants_ = ff_core_Core.do_((() => {
 return ff_core_List.List_filter(ff_core_Map.Map_toList(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((s_) => {
@@ -2518,7 +2506,7 @@ const documentation_ = ((((shortName_ + (ff_core_List.List_isEmpty(generics_)
 : (("(\n" + ff_core_List.List_join(ff_core_List.List_map(scheme_.signature_.parameters_, ((_w1) => {
 return ff_compiler_Inference.Inference_showCompletionParameter(self_, "    ", _w1)
 })), "\n")) + "\n)"))) + ": ") + ff_compiler_Syntax.Type_show(scheme_.signature_.returnType_, ff_core_List.Empty()));
-return ff_compiler_Syntax.CompletionInfo(ff_core_String.String_replace(ff_core_String.String_replace(snippet_, "${0:", ""), "}", ""), snippet_, false, expected_, documentation_, false)
+return ff_compiler_Syntax.CompletionInfo(ff_core_String.String_replace(ff_core_String.String_replace(snippet_, "${0:", ""), "}", ""), snippet_, false, expected_, documentation_, ff_core_Option.Some(expected_))
 return
 }
 }));
@@ -2658,7 +2646,9 @@ self_.completionResult_ = ff_core_List.List_distinct(ff_core_List.List_map(self_
 const _1 = r_;
 {
 const _c = _1;
-return ff_compiler_Syntax.CompletionInfo(_c.label_, _c.snippet_, _c.member_, ff_compiler_Substitution.Substitution_substituteType(subsititution_, r_.type_), _c.documentation_, _c.preselect_)
+return ff_compiler_Syntax.CompletionInfo(_c.label_, _c.snippet_, _c.member_, ff_compiler_Substitution.Substitution_substituteType(subsititution_, r_.type_), _c.documentation_, ff_core_Option.Option_map(r_.expectedType_, ((_w1) => {
+return ff_compiler_Substitution.Substitution_substituteType(subsititution_, _w1)
+})))
 return
 }
 }
@@ -3080,7 +3070,7 @@ return
 if(_1.EVariable) {
 const e_ = _1;
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, "", false, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, ff_core_List.Empty()), ((instantiated_) => {
 if(instantiated_.scheme_.isVariable_) {
@@ -3115,11 +3105,11 @@ self_.completionResult_ = ff_core_List.List_map(ff_core_List.List_zip(fieldNames
 {
 const fieldName_ = _1.first_;
 const typeArgument_ = _1.second_;
-return ff_compiler_Syntax.CompletionInfo(fieldName_, fieldName_, true, typeArgument_, "", false)
+return ff_compiler_Syntax.CompletionInfo(fieldName_, fieldName_, true, typeArgument_, "", ff_core_Option.Some(expected_))
 return
 }
 }));
-ff_compiler_Inference.Inference_completion(self_, environment_, name_, true, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, name_, true, expected_)
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_elseIf(ff_core_Option.Option_map(ff_core_Option.Option_map(ff_core_List.List_find(ff_core_List.List_pairs(fieldNames_), ((_w1) => {
 return (_w1.second_ === e_.field_)
@@ -3159,7 +3149,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const memberPrefix_ = (name_ + "_");
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, expected_)
 };
 const memberName_ = (memberPrefix_ + e_.field_);
 {
@@ -3384,7 +3374,7 @@ return
 if(_1.EVariant) {
 const e_ = _1;
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, "", false, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
 };
 const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.name_, e_.typeArguments_), (() => {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol not in scope: " + e_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -3589,7 +3579,7 @@ if(_1.TConstructor) {
 const name_ = _1.name_;
 const memberPrefix_ = (name_ + "_");
 if(ff_core_Option.Option_contains(self_.completionAt_, f_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, expected_)
 };
 const methodName_ = (memberPrefix_ + f_.field_);
 {
@@ -3713,7 +3703,7 @@ return
 if(_1.EAssign) {
 const e_ = _1;
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, "", false, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
 };
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, e_.variable_, ff_core_List.Empty()), ((instantiated_) => {
 if(instantiated_.scheme_.isMutable_) {
@@ -3763,7 +3753,7 @@ const name_ = _1.name_;
 const typeArguments_ = _1.generics_;
 const memberPrefix_ = (name_ + "_");
 if(ff_core_Option.Option_contains(self_.completionAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
-ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, ff_core_Option.Some(expected_))
+ff_compiler_Inference.Inference_completion(self_, environment_, memberPrefix_, true, expected_)
 };
 const methodName_ = (memberPrefix_ + e_.field_);
 {
@@ -4528,12 +4518,10 @@ return ff_compiler_Environment.Scheme(_c.isVariable_, _c.isMutable_, _c.isNewtyp
 export async function Inference_completion$(self_, environment_, prefix_, member_, expected_, $c) {
 const expectedName_ = (((_1) => {
 {
-if(_1.Some) {
-if(_1.value_.TConstructor) {
-const n_ = _1.value_.name_;
+if(_1.TConstructor) {
+const n_ = _1.name_;
 return n_
 return
-}
 }
 }
 {
@@ -4682,19 +4670,7 @@ return "\n}"
 return ""
 })))
 })());
-ff_core_Stack.Stack_push(members_, ff_compiler_Syntax.CompletionInfo((shortName_ + pair_.first_), (shortName_ + pair_.second_), (member_ && (!copy_)), returnType_, documentation_, (((_1) => {
-{
-if(_1.TConstructor) {
-const n_ = _1.name_;
-return (n_ === expectedName_)
-return
-}
-}
-{
-return false
-return
-}
-}))(returnType_)))
+ff_core_Stack.Stack_push(members_, ff_compiler_Syntax.CompletionInfo((shortName_ + pair_.first_), (shortName_ + pair_.second_), (member_ && (!copy_)), returnType_, documentation_, ff_core_Option.Some(expected_)))
 }
 const symbols_ = ((prefix_ === "")
 ? ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_toList(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
@@ -4838,7 +4814,7 @@ if((prefix_ === "ff:core/List.List_")) {
 const curly_ = (inside_
 ? ff_core_Pair.Pair("", "")
 : ff_core_Pair.Pair("{", "}"));
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo(((curly_.first_ + "| [] => ... | [first, ...rest] => ...") + curly_.second_), ((curly_.first_ + "\n    | [] => $0\n    | [first, ...rest] =>\n") + curly_.second_), true, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "exhaustive match", ff_core_List.Empty()), "// Exhaustive list match", false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo(((curly_.first_ + "| [] => ... | [first, ...rest] => ...") + curly_.second_), ((curly_.first_ + "\n    | [] => $0\n    | [first, ...rest] =>\n") + curly_.second_), true, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "exhaustive match", ff_core_List.Empty()), "// Exhaustive list match", ff_core_Option.None()), ff_core_List.Empty()))
 } else {
 const shorterPrefix_ = ff_core_String.String_dropLast(prefix_, 1);
 const variants_ = ff_core_List.List_filter(ff_core_Map.Map_toList(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((s_) => {
@@ -4900,7 +4876,7 @@ return ("    " + _w1)
 : ff_core_List.List_join(snippetParts_, " "))) + (inside_
 ? ""
 : "}"));
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo(label_, snippet_, true, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "exhaustive match", ff_core_List.Empty()), ("// Exhaustive match:\n" + ff_core_String.String_replace(ff_core_List.List_join(snippetParts_, "\n"), "$0", "")), false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo(label_, snippet_, true, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "exhaustive match", ff_core_List.Empty()), ("// Exhaustive match:\n" + ff_core_String.String_replace(ff_core_List.List_join(snippetParts_, "\n"), "$0", "")), ff_core_Option.None()), ff_core_List.Empty()))
 }
 }
 }
@@ -4923,13 +4899,13 @@ if((typeName_ === "")) {
 
 } else {
 if((typeName_ === "ff:core/List.List")) {
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("[...]", "[${0:first, ...rest}]", false, expected_, "// List pattern", false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("[...]", "[${0:first, ...rest}]", false, expected_, "// List pattern", ff_core_Option.Some(expected_)), ff_core_List.Empty()))
 } else {
 if((typeName_ === "ff:core/String.String")) {
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("\"...\"", "\"$0\"", false, expected_, "// String pattern", false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("\"...\"", "\"$0\"", false, expected_, "// String pattern", ff_core_Option.Some(expected_)), ff_core_List.Empty()))
 } else {
 if((typeName_ === "ff:core/Int.Int")) {
-self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("0", "0", false, expected_, "// Int pattern", false), ff_core_List.Empty()))
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo("0", "0", false, expected_, "// Int pattern", ff_core_Option.Some(expected_)), ff_core_List.Empty()))
 } else {
 const variants_ = ff_core_Core.do_((() => {
 return ff_core_List.List_filter(ff_core_Map.Map_toList(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((s_) => {
@@ -4974,7 +4950,7 @@ const documentation_ = ((((shortName_ + (ff_core_List.List_isEmpty(generics_)
 : (("(\n" + ff_core_List.List_join(ff_core_List.List_map(scheme_.signature_.parameters_, ((_w1) => {
 return ff_compiler_Inference.Inference_showCompletionParameter(self_, "    ", _w1)
 })), "\n")) + "\n)"))) + ": ") + ff_compiler_Syntax.Type_show(scheme_.signature_.returnType_, ff_core_List.Empty()));
-return ff_compiler_Syntax.CompletionInfo(ff_core_String.String_replace(ff_core_String.String_replace(snippet_, "${0:", ""), "}", ""), snippet_, false, expected_, documentation_, false)
+return ff_compiler_Syntax.CompletionInfo(ff_core_String.String_replace(ff_core_String.String_replace(snippet_, "${0:", ""), "}", ""), snippet_, false, expected_, documentation_, ff_core_Option.Some(expected_))
 return
 }
 }));

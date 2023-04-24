@@ -112,7 +112,7 @@ let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
 let startLineOffset_ = lineOffset_;
-const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-,;";
+const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-;";
 let operatorCharacters_ = ff_core_Set.empty_();
 ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
@@ -258,6 +258,9 @@ emitToken_(((dot_ || exponent_)
 } else if((ff_core_String.String_grab(code_, i_) === 95)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
+} else if((ff_core_String.String_grab(code_, i_) === 44)) {
+i_ += 1;
+emitToken_(ff_compiler_Token.LComma(), start_, i_)
 } else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
 if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
@@ -274,8 +277,6 @@ i_ += 1
 };
 const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 46))
 ? ff_compiler_Token.LDot()
-: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 44))
-? ff_compiler_Token.LComma()
 : (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 59))
 ? ff_compiler_Token.LSemicolon()
 : (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 124))
@@ -338,7 +339,7 @@ let line_ = 1;
 let lineOffset_ = 0;
 let startLine_ = line_;
 let startLineOffset_ = lineOffset_;
-const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-,;";
+const operatorCharactersString_ = "!@#$%&/=?+|^~*<>.:-;";
 let operatorCharacters_ = ff_core_Set.empty_();
 ff_core_List.List_map(ff_core_List.range_(ff_core_String.String_size(operatorCharactersString_)), ((j_) => {
 operatorCharacters_ = ff_core_Set.Set_add(operatorCharacters_, ff_core_String.String_grab(operatorCharactersString_, j_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)
@@ -484,6 +485,9 @@ emitToken_(((dot_ || exponent_)
 } else if((ff_core_String.String_grab(code_, i_) === 95)) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LWildcard(), start_, i_)
+} else if((ff_core_String.String_grab(code_, i_) === 44)) {
+i_ += 1;
+emitToken_(ff_compiler_Token.LComma(), start_, i_)
 } else if(ff_core_Set.Set_contains(operatorCharacters_, ff_core_String.String_grab(code_, i_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Char_Char)) {
 i_ += 1;
 if(((((ff_core_String.String_grab(code_, (i_ - 1)) === 46) && ((i_ + 1) < ff_core_String.String_size(code_))) && (ff_core_String.String_grab(code_, i_) === 46)) && (ff_core_String.String_grab(code_, (i_ + 1)) !== 46))) {
@@ -500,8 +504,6 @@ i_ += 1
 };
 const o_ = ((((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 46))
 ? ff_compiler_Token.LDot()
-: (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 44))
-? ff_compiler_Token.LComma()
 : (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 59))
 ? ff_compiler_Token.LSemicolon()
 : (((i_ - start_) === 1) && (ff_core_String.String_grab(code_, (i_ - 1)) === 124))

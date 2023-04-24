@@ -173,8 +173,10 @@ extend self: Unification {
                     generics1.dropLast().zip(generics2.dropLast()).each {| Pair(t3, t4) => self.unify(at, t3, t4)}
                     generics1.takeLast().zip(generics2.takeLast()).each {| Pair(t3, t4) => self.unify(at, t3, t4)}
                 }
+                Unit // TODO: Think about how to avoid writing this
+            } else {
+                generics1.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
             }
-            generics1.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
     }
 
     bind(at: Location, index: Int, type: Type): Unit {
