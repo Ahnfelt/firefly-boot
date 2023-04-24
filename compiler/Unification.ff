@@ -163,9 +163,9 @@ extend self: Unification {
         | _, _, TVariable(_, i) => self.bind(at, i, t1)
         | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
             if(name1 != name2 || generics1.size() != generics2.size()) {
-                let t3 = self.substitute(t1)
-                let t4 = self.substitute(t2)
                 if(!self.attemptFixes) {
+                    let t3 = self.substitute(t1)
+                    let t4 = self.substitute(t2)
                     throw(CompileError(at
                         "Type mismatch: " + t3.show([t3, t4]) + " vs. " + t4.show([t3, t4])
                     ))
