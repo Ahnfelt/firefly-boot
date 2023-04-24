@@ -33,9 +33,9 @@ make(modules: List[Module], attemptFixes: Bool): Unification {
         Map.empty()
         Map.empty()
         3 // To avoid collision with the parser and resolver
-        modules.flatMap { module =>
+        modules.flatMap {module =>
             let moduleName = module.file.dropLast(".ff".size())
-            module.instances.map { definition =>
+            module.instances.map {definition =>
                 let typeName = definition.typeArguments.grabFirst().{
                     | TConstructor(_, name, _) => name
                     | TVariable(_, i) => fail(definition.at, "Unexpected unification variable: $" + i)
@@ -83,8 +83,8 @@ extend self: Unification {
                 | None => type
             }
         | _, TConstructor(at, name, generics) =>
-            TConstructor(at, name, generics.map { self.instantiate(instantiation, _) })
-        | _, TVariable(_, i) { self.get(i) | Some(t) } =>
+            TConstructor(at, name, generics.map {self.instantiate(instantiation, _)})
+        | _, TVariable(_, i) {self.get(i) | Some(t)} =>
             self.instantiate(instantiation, t)
         | _, TVariable(_, i) =>
             type
@@ -92,12 +92,12 @@ extend self: Unification {
     
     instantiateConstraint(instantiation: Map[String, Type], constraint: Constraint): Constraint {
         | _, Constraint(at, name, generics) =>
-            Constraint(at, name, generics.map { self.instantiate(instantiation, _) })
+            Constraint(at, name, generics.map {self.instantiate(instantiation, _)})
     }
 
     constrain(at: Location, type: Type, constraintName: String, generics: List[Type]): Unit {
         type.{
-            | TVariable(_, i) { self.get(i) | Some(t) } =>
+            | TVariable(_, i) {self.get(i) | Some(t)} =>
                 self.constrain(at, t, constraintName, generics)
             | TVariable(_, i) =>
                 self.constraints.get(i).{
@@ -117,8 +117,8 @@ extend self: Unification {
             | TConstructor(_, name, generics2) =>
                 self.instances.get(InstanceKey(constraintName, name)).{
                     | None =>
-                        let g1 = if(generics.isEmpty()) { "" } else { "[...]" }
-                        let g2 = if(generics2.isEmpty()) { "" } else { "[...]" }
+                        let g1 = if(generics.isEmpty()) {""} else {"[...]"}
+                        let g2 = if(generics2.isEmpty()) {""} else {"[...]"}
                         if(!self.attemptFixes) {
                             throw(CompileError(at, "No such instance: " + name + g2 + ": " + constraintName + g1))
                         }
@@ -130,7 +130,7 @@ extend self: Unification {
                         )
                         let traitType2 = TConstructor(at, constraintName, [type, ...generics])
                         self.unify(at, traitType1, traitType2)
-                        definition.constraints.each { constraint =>
+                        definition.constraints.each {constraint =>
                             self.instantiateConstraint(instantiation, constraint).{
                                 | Constraint(_, constraintName, newGenerics) =>
                                     self.constrain(at, newGenerics.grabFirst(), constraintName, newGenerics.dropFirst())
@@ -142,7 +142,7 @@ extend self: Unification {
 
     get(index: Int): Option[Type] {
         self.substitution.get(index).map {
-            | TVariable(_, i) { self.substitution.get(i) | Some(t) } =>
+            | TVariable(_, i) {self.substitution.get(i) | Some(t)} =>
                 self.substitution = self.substitution.add(index, t)
                 t
             | t => t
@@ -150,15 +150,15 @@ extend self: Unification {
     }
 
     substitute(type: Type): Type {
-        | TVariable(_, i) { self.get(i) | Some(t) } => self.substitute(t)
+        | TVariable(_, i) {self.get(i) | Some(t)} => self.substitute(t)
         | TVariable(_, _) => type
-        | TConstructor t => t.TConstructor(generics = t.generics.map { t => self.substitute(t) })
+        | TConstructor t => t.TConstructor(generics = t.generics.map {t => self.substitute(t)})
     }
 
     unify(at: Location, t1: Type, t2: Type): Unit {
-        | _, TVariable(_, i1), TVariable(_, i2) { i1 == i2 } =>
-        | _, TVariable(_, i), _ { self.get(i) | Some(t) } => self.unify(at, t, t2)
-        | _, _, TVariable(_, i) { self.get(i) | Some(t) } => self.unify(at, t1, t)
+        | _, TVariable(_, i1), TVariable(_, i2) {i1 == i2} =>
+        | _, TVariable(_, i), _ {self.get(i) | Some(t)} => self.unify(at, t, t2)
+        | _, _, TVariable(_, i) {self.get(i) | Some(t)} => self.unify(at, t1, t)
         | _, TVariable(_, i), _ => self.bind(at, i, t2)
         | _, _, TVariable(_, i) => self.bind(at, i, t1)
         | _, TConstructor(_, name1, generics1), TConstructor(_, name2, generics2) =>
@@ -169,6 +169,9 @@ extend self: Unification {
                     throw(CompileError(at
                         "Type mismatch: " + t3.show([t3, t4]) + " vs. " + t4.show([t3, t4])
                     ))
+                } elseIf {name1.startsWith("Function$") && name2.startsWith("Function$")} {
+                    generics1.dropLast().zip(generics2.dropLast()).each {| Pair(t3, t4) => self.unify(at, t3, t4)}
+                    generics1.takeLast().zip(generics2.takeLast()).each {| Pair(t3, t4) => self.unify(at, t3, t4)}
                 }
             }
             generics1.zip(generics2).each {| Pair(t1, t2) => self.unify(at, t1, t2) }
@@ -180,15 +183,15 @@ extend self: Unification {
             throw(CompileError(at, "Infinite type: " + TVariable(at, index).show([t]) + " = " + t.show([])))
         }
         self.substitution = self.substitution.add(index, type)
-        self.constraints.get(index).each { map =>
+        self.constraints.get(index).each {map =>
             self.constraints = self.constraints.remove(index)
             map.pairs().each {| Pair(name, ConstraintGenerics(at2, generics)) =>
                 self.constrain(at2, type, name, generics)
             }
         }
-        self.affects.get(index).each { affected =>
+        self.affects.get(index).each {affected =>
             self.affects.remove(index)
-            affected.each { i =>
+            affected.each {i =>
                 self.affect(at, type, TVariable(at, i))
             }
         }
@@ -207,9 +210,9 @@ extend self: Unification {
     }
 
     occursIn(index: Int, t: Type): Bool {
-        | _, TVariable(_, i) { self.get(i) | Some(type) } => self.occursIn(index, type)
+        | _, TVariable(_, i) {self.get(i) | Some(type)} => self.occursIn(index, type)
         | _, TVariable(_, i) => i == index
-        | _, TConstructor(_, _, generics) => generics.any { t => self.occursIn(index, t) }
+        | _, TConstructor(_, _, generics) => generics.any {t => self.occursIn(index, t)}
     }
     
 }
