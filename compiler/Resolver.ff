@@ -576,7 +576,7 @@ extend self: Resolver {
             let realGenerics = generics.filter {_ != "Q$"}
             let label = typeName + if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
             let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[${0:" + realGenerics.join(", ") + "}]"}
-            CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), full)
+            CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), full, None)
         }
         self.state.completionResult = [...self.state.completionResult, ...completions]
     }
