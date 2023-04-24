@@ -908,6 +908,16 @@ extend self: Inference {
                 | [] =>
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
+                    if(self.completionAt.contains(at)) {
+                        self.completionResult = [...self.completionResult, CompletionInfo(
+                            label = p.name + " = ..."
+                            snippet = p.name + " = "
+                            member = False
+                            type = p.valueType
+                            documentation = self.showCompletionParameter("", p)
+                            expectedType = None
+                        )]
+                    }
                     remainingArguments = remaining
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
