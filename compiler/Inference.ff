@@ -908,16 +908,7 @@ extend self: Inference {
                 | [] =>
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
-                    if(self.completionAt.contains(at)) {
-                        self.completionResult = [...self.completionResult, CompletionInfo(
-                            label = p.name + " = ..."
-                            snippet = p.name + " = "
-                            member = False
-                            type = p.valueType
-                            documentation = self.showCompletionParameter("", p)
-                            expectedType = None
-                        )]
-                    }
+                    if(self.completionAt.contains(at)) {self.namedParameterCompletion(p)}
                     remainingArguments = remaining
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
@@ -1280,6 +1271,17 @@ extend self: Inference {
             )
         }
         self.completionResult = [...self.completionResult, ...completions]
+    }
+
+    namedParameterCompletion(parameter: Parameter): Unit {
+        self.completionResult = [...self.completionResult, CompletionInfo(
+            label = parameter.name + " = ..."
+            snippet = parameter.name + " = "
+            member = False
+            type = parameter.valueType
+            documentation = self.showCompletionParameter("", parameter)
+            expectedType = None
+        )]
     }
 
     showCompletionParameter(indentation: String, parameter: Parameter): String {
