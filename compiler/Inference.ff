@@ -52,7 +52,10 @@ extend self: Inference {
             effect = self.hoverResult.effect.map {subsititution.substituteType(_)}
         )
         self.completionResult = self.completionResult.map {r => 
-            r.CompletionInfo(type = subsititution.substituteType(r.type))
+            r.CompletionInfo(
+                type = subsititution.substituteType(r.type)
+                expectedType = r.expectedType.map {subsititution.substituteType(_)}
+            )
         }.distinct()
         subsititution.substituteModule(result)
     }
@@ -291,7 +294,7 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, Some(expected))}
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, expected)}
                 self.lookup(environment, e.at, e.name, []).map {instantiated =>
                     if(instantiated.scheme.isVariable) {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
@@ -317,9 +320,9 @@ extend self: Inference {
                         if(self.completionAt.contains(e.at)) {
                             self.completionResult = fieldNames.zip(typeArguments).map {
                                 | Pair(fieldName, typeArgument) => 
-                                    CompletionInfo(fieldName, fieldName, True, typeArgument, "")
+                                    CompletionInfo(fieldName, fieldName, True, typeArgument, "", Some(expected))
                             }
-                            self.completion(environment, name, True, Some(expected))
+                            self.completion(environment, name, True, expected)
                         }
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
@@ -340,7 +343,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t =>
                         let memberPrefix = name + "_"
                         if(self.completionAt.contains(e.at)) {
-                            self.completion(environment, memberPrefix, True, Some(expected))
+                            self.completion(environment, memberPrefix, True, expected)
                         }
                         let memberName = memberPrefix + e.field
                         self.lookup(environment, e.at, memberName, typeArguments).{
@@ -436,7 +439,7 @@ extend self: Inference {
                 let lambda = self.inferLambda(environment, expected, l)
                 ELambda(at, lambda)
             | EVariant e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, Some(expected))}
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, expected)}
                 let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
@@ -542,7 +545,7 @@ extend self: Inference {
                             | TConstructor(_, name, _)@t =>
                                 let memberPrefix = name + "_"
                                 if(self.completionAt.contains(f.at)) {
-                                    self.completion(environment, memberPrefix, True, Some(expected))
+                                    self.completion(environment, memberPrefix, True, expected)
                                 }
                                 let methodName = memberPrefix + f.field
                                 self.lookup(environment, f.at, methodName, []).{
@@ -600,7 +603,7 @@ extend self: Inference {
                     body = newBody
                 )
             | EAssign e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, Some(expected))}
+                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, expected)}
                 self.lookup(environment, e.at, e.variable, []).map {instantiated =>
                     if(instantiated.scheme.isMutable) {
                         let value = self.inferAssignment(
@@ -631,7 +634,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t =>
                         let memberPrefix = name + "_"
                         if(self.completionAt.contains(e.at)) {
-                            self.completion(environment, memberPrefix, True, Some(expected))
+                            self.completion(environment, memberPrefix, True, expected)
                         }
                         let methodName = memberPrefix + e.field
                         self.lookup(environment, e.at, methodName, typeArguments).{
@@ -905,6 +908,7 @@ extend self: Inference {
                 | [] =>
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
+                    if(self.completionAt.contains(at)) {self.namedParameterCompletion(p)}
                     remainingArguments = remaining
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
@@ -1008,10 +1012,10 @@ extend self: Inference {
 
     }
 
-    completion(environment: Environment, prefix: String, member: Bool, expected: Option[Type]): Unit {
+    completion(environment: Environment, prefix: String, member: Bool, expected: Type): Unit {
 
         let expectedName = expected.{
-            | Some(TConstructor(_, n, _)) => n
+            | TConstructor(_, n, _) => n
             | _ => "##"
         }
 
@@ -1098,7 +1102,7 @@ extend self: Inference {
                 member = member && !copy
                 type = returnType
                 documentation = documentation
-                preselect = returnType.{| TConstructor(_, n, _) => n == expectedName | _ => False}
+                expectedType = Some(expected)
             ))
         }
 
@@ -1166,6 +1170,7 @@ extend self: Inference {
                 member = True
                 type = TConstructor(Location("", 0, 0), "exhaustive match", [])
                 documentation = "// Exhaustive list match"
+                expectedType = None
             )]
         } else:
         let shorterPrefix = prefix.dropLast()
@@ -1205,6 +1210,7 @@ extend self: Inference {
             member = True
             type = TConstructor(Location("", 0, 0), "exhaustive match", [])
             documentation = "// Exhaustive match:\n" + snippetParts.join("\n").replace("$0", "")
+            expectedType = None
         )]
     }
 
@@ -1216,17 +1222,17 @@ extend self: Inference {
         if(typeName == "") {} else:
         if(typeName == "ff:core/List.List") {
             self.completionResult = [...self.completionResult, 
-                CompletionInfo("[...]", "[${0:first, ...rest}]", False, expected, "// List pattern")
+                CompletionInfo("[...]", "[${0:first, ...rest}]", False, expected, "// List pattern", Some(expected))
             ]
         } else:
         if(typeName == "ff:core/String.String") {
             self.completionResult = [...self.completionResult, 
-                CompletionInfo("\"...\"", "\"$0\"", False, expected, "// String pattern")
+                CompletionInfo("\"...\"", "\"$0\"", False, expected, "// String pattern", Some(expected))
             ]
         } else:
         if(typeName == "ff:core/Int.Int") {
             self.completionResult = [...self.completionResult, 
-                CompletionInfo("0", "0", False, expected, "// Int pattern")
+                CompletionInfo("0", "0", False, expected, "// Int pattern", Some(expected))
             ]
         } else:
         let variants = do {
@@ -1261,9 +1267,21 @@ extend self: Inference {
                 member = False
                 type = expected
                 documentation = documentation
+                expectedType = Some(expected)
             )
         }
         self.completionResult = [...self.completionResult, ...completions]
+    }
+
+    namedParameterCompletion(parameter: Parameter): Unit {
+        self.completionResult = [...self.completionResult, CompletionInfo(
+            label = parameter.name + " = ..."
+            snippet = parameter.name + " = "
+            member = False
+            type = parameter.valueType
+            documentation = self.showCompletionParameter("", parameter)
+            expectedType = None
+        )]
     }
 
     showCompletionParameter(indentation: String, parameter: Parameter): String {

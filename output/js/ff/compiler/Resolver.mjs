@@ -1191,7 +1191,7 @@ const label_ = (typeName_ + (ff_core_List.List_isEmpty(realGenerics_)
 const snippet_ = (typeName_ + (ff_core_List.List_isEmpty(realGenerics_)
 ? ""
 : (("[${0:" + ff_core_List.List_join(realGenerics_, ", ")) + "}]")));
-return ff_compiler_Syntax.CompletionInfo(label_, snippet_, false, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "type", ff_core_List.Empty()), full_, false)
+return ff_compiler_Syntax.CompletionInfo(label_, snippet_, false, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "type", ff_core_List.Empty()), full_, ff_core_Option.None())
 return
 }
 }));
@@ -2283,7 +2283,7 @@ const label_ = (typeName_ + (ff_core_List.List_isEmpty(realGenerics_)
 const snippet_ = (typeName_ + (ff_core_List.List_isEmpty(realGenerics_)
 ? ""
 : (("[${0:" + ff_core_List.List_join(realGenerics_, ", ")) + "}]")));
-return ff_compiler_Syntax.CompletionInfo(label_, snippet_, false, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "type", ff_core_List.Empty()), full_, false)
+return ff_compiler_Syntax.CompletionInfo(label_, snippet_, false, ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location("", 0, 0), "type", ff_core_List.Empty()), full_, ff_core_Option.None())
 return
 }
 }));

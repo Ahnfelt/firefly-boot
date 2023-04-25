@@ -231,7 +231,7 @@ data CompletionInfo(
     member: Bool
     type: Type
     documentation: String
-    preselect: Bool = False
+    expectedType: Option[Type]
 )
 
 data HoverInfo(

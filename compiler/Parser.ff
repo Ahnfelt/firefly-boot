@@ -653,13 +653,14 @@ extend self: Parser {
         if(self.current().rawIs("(")){
             self.rawSkip(LBracketLeft, "(")
             while {!self.current().is(LBracketRight)} {
+                let argumentToken = self.current()
                 let nameToken = if(self.current().is(LLower) && self.ahead().is(LAssign)) {
                     let token = self.skip(LLower)
                     self.skip(LAssign)
                     Some(token)
                 } else {None}
                 let value = self.parseTerm()
-                arguments.push(Argument(nameToken.map {_.at()}.else {value.at}, nameToken.map {_.raw()}, value))
+                arguments.push(Argument(argumentToken.at(), nameToken.map {_.raw()}, value))
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
             }
             self.rawSkip(LBracketRight, ")")
