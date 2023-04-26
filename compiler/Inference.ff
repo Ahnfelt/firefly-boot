@@ -928,7 +928,13 @@ extend self: Inference {
                                 | _ => False
                             }.toList().size() > 1
                         )
-                        self.namedParameterCompletion(p, preselect)
+                        let precedingAnonymousArguments = 
+                            arguments.dropLast(remaining.size() + 1).filter {_.name.isEmpty()}.size()
+                        parameters.filter {p => 
+                            !arguments.any {_.name.contains(p.name)}
+                        }.dropFirst(precedingAnonymousArguments).each {p =>
+                            self.namedParameterCompletion(p, preselect)
+                        }
                     }
                     remainingArguments = remaining
                     let e2 = self.inferTerm(environment, t, e)
