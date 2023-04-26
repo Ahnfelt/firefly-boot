@@ -447,7 +447,7 @@ extend self: Inference {
                 }
                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                 let arguments = e.arguments.map {
-                    self.inferArguments(e.at, environment, instantiated.scheme.signature.parameters, _)
+                    self.inferArguments(e.at, e.name, environment, instantiated.scheme.signature.parameters, _)
                 }
                 e.EVariant(
                     typeArguments = instantiated.typeArguments.map {_.second}
@@ -716,7 +716,7 @@ extend self: Inference {
         let selfArgument = Argument(record.at, Some(selfParameter.name), record) // Be careful not to infer again
         self.unification.unify(term.at, expected, signature.returnType)
         self.unification.unify(term.at, selfParameter.valueType, recordType)
-        let arguments = self.inferArguments(term.at, environment, signature.parameters.dropFirst(), e.arguments)
+        let arguments = self.inferArguments(term.at, name, environment, signature.parameters.dropFirst(), e.arguments)
         self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
             target = StaticCall(name, instanceCall = False, tailCall = call.tailCall)
@@ -741,7 +741,7 @@ extend self: Inference {
             | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferFunctionCall")
         }
         self.unification.unify(e.at, expected, signature.returnType)
-        let arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments)
+        let arguments = self.inferArguments(e.at, name, environment, signature.parameters, e.arguments)
         self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
             target = StaticCall(name, instanceCall = instanceCall, tailCall = call.tailCall)
@@ -897,6 +897,7 @@ extend self: Inference {
 
     inferArguments(
         callAt: Location
+        callName: String
         environment: Environment
         parameters: List[Parameter]
         arguments: List[Argument]
@@ -921,6 +922,11 @@ extend self: Inference {
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
                     if(self.completionAt.contains(at)) {
+                        if([
+                            "ff:core/Equal.equals", "ff:core/Equal.notEquals"
+                            "ff:core/Ordering.before", "ff:core/Ordering.notBefore"
+                            "ff:core/Ordering.after", "ff:core/Ordering.notAfter"
+                        ].any {_ == callName}) {} else:
                         let preselect = arguments.any {!_.name.isEmpty()} || (
                             callAt.line != at.line && 
                             parameters.reverse().toStream().map {_.valueType}.dropWhile {
@@ -958,7 +964,7 @@ extend self: Inference {
         if(self.completionAt.isEmpty()) {
             remainingArguments.first().each {
                 | Argument(callAt, None, _) => fail(callAt, "Too many arguments")
-                | Argument(callAt, Some(name), _) => fail(callAt, "Unknown argument: " + name)
+                | Argument(callAt, Some(n), _) => fail(callAt, "Unknown argument: " + n)
             }
         }
         newArguments
