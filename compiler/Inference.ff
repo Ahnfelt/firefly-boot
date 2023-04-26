@@ -285,6 +285,7 @@ extend self: Inference {
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
         function literal(coreTypeName: String): Term {
+            if(self.completionAt.contains(term.at)) {self.completion(environment, "", False, expected)}
             self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), []))
             term
         }
@@ -375,6 +376,7 @@ extend self: Inference {
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
             | EWildcard e =>
+                if(self.completionAt.contains(term.at)) {self.completion(environment, "", False, expected)}
                 self.lookup(environment, e.at, "_w" + e.index, []).map {instantiated =>
                     self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                     term
@@ -523,6 +525,7 @@ extend self: Inference {
                 }
                 call.function.{
                     | EVariable(variableAt, x) =>
+                        if(self.completionAt.contains(variableAt)) {self.completion(environment, "", False, expected)}
                         if(x.first().any {c => c != '_' && !c.isAsciiLetter()}) {
                             self.inferOperator(environment, expected, x, term)
                         } else {

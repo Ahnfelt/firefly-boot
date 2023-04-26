@@ -62,9 +62,12 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
                 }
                 i += 1
             }
-            if(i < code.size() && completionColumn == 1 + i - lineOffset && !code.grab(i).isAsciiLetter()) {
-                emitToken(LLower, i, i)
-                if(i + 1 < code.size() && code.grab(i) == '_') {i += 1}
+            if(i < code.size() && completionColumn == 1 + i - lineOffset) {
+                let c = code.grab(i)
+                if(!c.isAsciiLetterOrDigit() && c != '_' && c != '\'' && c != '"') {
+                    emitToken(LLower, i, i)
+                    if(i + 1 < code.size() && code.grab(i) == '_') {i += 1}
+                }
             }
             Unit // Think about how to avoid requiring this
         } else {
