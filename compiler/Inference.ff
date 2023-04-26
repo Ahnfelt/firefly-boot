@@ -1085,11 +1085,7 @@ extend self: Inference {
                         "(${1|" + realParameters.map {_.name}.map {f => f + " = "}.join(",") + "|}$0)"
                     } else {
                         if(trailing.isEmpty() || !required.isEmpty()) {
-                            if(required.isEmpty()) {
-                                "(" + required.join(", ") + ")"
-                            } else {
-                                "(${0:" + required.join(", ") + "})"
-                            }
+                            if(required.isEmpty()) {"()"} else {"($0)"}
                         } else {
                             ""
                         } + if(trailing.isEmpty()) {""} else {trailing.map {_.second}.join()}
