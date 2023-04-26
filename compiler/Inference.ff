@@ -475,6 +475,15 @@ extend self: Inference {
                     throw(CompileError(e.at, "Newtypes can't be copied"))
                 }
                 let signature = scheme.signature
+                if(!self.completionAt.isEmpty()) {
+                    e.arguments.each {a => 
+                        if(self.completionAt.contains(a.at)) {
+                            signature.parameters.filter {p => !e.arguments.any {_.name == p.name}}.each {p =>
+                                self.namedParameterCompletion(p, True)
+                            }
+                        }
+                    }
+                }
                 let parameterNames = signature.parameters.map {_.name}
                 e.arguments.find {a => !parameterNames.any {_ == a.name}}.each {
                     | Field(at, name, value) => throw(CompileError(at, "Unknown parameter: " + name))
