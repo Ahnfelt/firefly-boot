@@ -220,7 +220,7 @@ extend self: Handler {
                     isAlpha.toInt() + isLower.toInt()
                 )} + i.label.lower()
                 let preselect = Pair(i.type, i.expectedType).{
-                    | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2 && !isParameter
+                    | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2
                     | _ => False
                 }
                 js.object()

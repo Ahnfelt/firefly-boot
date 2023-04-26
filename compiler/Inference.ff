@@ -884,7 +884,7 @@ extend self: Inference {
     }
 
     inferArguments(
-        at: Location
+        callAt: Location
         environment: Environment
         parameters: List[Parameter]
         arguments: List[Argument]
@@ -895,12 +895,12 @@ extend self: Inference {
             function defaultArgument(): Argument {
                 p.default.map {e =>
                     let e2 = self.inferTerm(environment, t, e)
-                    Argument(at, Some(p.name), e2)
+                    Argument(callAt, Some(p.name), e2)
                 }.else {
                     if(self.completionAt.isEmpty()) {
-                        fail(at, "Missing argument: " + p.name)
+                        fail(callAt, "Missing argument: " + p.name)
                     } else {
-                        Argument(at, Some(p.name), EVariable(at, ""))
+                        Argument(callAt, Some(p.name), EVariable(callAt, ""))
                     }
                 }
             }
@@ -908,7 +908,7 @@ extend self: Inference {
                 | [] =>
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
-                    if(self.completionAt.contains(at)) {self.namedParameterCompletion(p)}
+                    if(self.completionAt.contains(at)) {self.namedParameterCompletion(callAt, at, p)}
                     remainingArguments = remaining
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
@@ -930,8 +930,8 @@ extend self: Inference {
         }
         if(self.completionAt.isEmpty()) {
             remainingArguments.first().each {
-                | Argument(at, None, _) => fail(at, "Too many arguments")
-                | Argument(at, Some(name), _) => fail(at, "Unknown argument: " + name)
+                | Argument(callAt, None, _) => fail(callAt, "Too many arguments")
+                | Argument(callAt, Some(name), _) => fail(callAt, "Unknown argument: " + name)
             }
         }
         newArguments
@@ -1273,14 +1273,14 @@ extend self: Inference {
         self.completionResult = [...self.completionResult, ...completions]
     }
 
-    namedParameterCompletion(parameter: Parameter): Unit {
+    namedParameterCompletion(callAt: Location, argumentAt: Location, parameter: Parameter): Unit {
         self.completionResult = [...self.completionResult, CompletionInfo(
             label = parameter.name + " = ..."
             snippet = parameter.name + " = "
             member = False
             type = parameter.valueType
             documentation = self.showCompletionParameter("", parameter)
-            expectedType = None
+            expectedType = if(callAt.line != argumentAt.line) {parameter.valueType}
         )]
     }
 
