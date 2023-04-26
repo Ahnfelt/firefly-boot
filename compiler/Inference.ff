@@ -908,7 +908,14 @@ extend self: Inference {
                 | [] =>
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
-                    if(self.completionAt.contains(at)) {self.namedParameterCompletion(p, callAt.line != at.line)}
+                    if(self.completionAt.contains(at)) {
+                        let preselect = callAt.line != at.line && 
+                            parameters.reverse().toStream().map {_.valueType}.dropWhile {
+                                | TConstructor(_, n, _) => n.startsWith("Function$")
+                                | _ => False
+                            }.toList().size() > 1
+                        self.namedParameterCompletion(p, preselect)
+                    }
                     remainingArguments = remaining
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
