@@ -146,7 +146,7 @@ findScriptPackageLocation(fs: FileSystem, path: String): String {
         if(fs.exists(fireflyDirectory)) {
             directory
         } elseIf {fs.exists(directory + "/..")} {
-            findScriptPackageLocation(fs, directory + "/..")
+            go(directory + "/..")
         } else {
             fixedPackageDirectory
         }
