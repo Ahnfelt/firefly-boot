@@ -1140,9 +1140,11 @@ extend self: Inference {
                 | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} => 
                     Some(pair)
                 | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
-                    Some(pair.mapFirst {_.dropFirst("ff:core/Core.".size())})
-                | Pair(name, _)@pair {name.startsWith(environment.modulePrefix)} => 
-                    Some(pair.mapFirst {_.dropFirst(environment.modulePrefix.size())})
+                    Some(pair.Pair(first = name.dropFirst("ff:core/Core.".size())))
+                | Pair(name, _)@pair {name.startsWith(environment.modulePrefix)} {
+                    name.dropFirst(environment.modulePrefix.size()) | n
+                } {n.all {_.isAsciiLetterOrDigit()}} => 
+                    Some(pair.Pair(first = n))
                 | Pair(name, scheme) {name.dropWhile {_ != '/'}.dropFirst() | short} {
                     short.reverse().takeWhile {_ != '.'}.reverse() | shorter
                 } {shorter.all {_.isAsciiLetterOrDigit()}} =>
