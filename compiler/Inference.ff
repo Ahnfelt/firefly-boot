@@ -1145,6 +1145,8 @@ extend self: Inference {
                     Some(pair)
                 | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
                     Some(pair.mapFirst {_.dropFirst("ff:core/Core.".size())})
+                | Pair(name, _)@pair {name.startsWith(environment.modulePrefix)} => 
+                    Some(pair.mapFirst {_.dropFirst(environment.modulePrefix.size())})
                 | Pair(name, scheme) {name.dropWhile {_ != '/'}.dropFirst() | short} {
                     short.reverse().takeWhile {_ != '.'}.reverse() | shorter
                 } {shorter.all {_.isAsciiLetterOrDigit()}} =>
