@@ -918,11 +918,13 @@ extend self: Inference {
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
                     if(self.completionAt.contains(at)) {
-                        let preselect = callAt.line != at.line && 
+                        let preselect = arguments.any {!_.name.isEmpty()} || (
+                            callAt.line != at.line && 
                             parameters.reverse().toStream().map {_.valueType}.dropWhile {
                                 | TConstructor(_, n, _) => n.startsWith("Function$")
                                 | _ => False
                             }.toList().size() > 1
+                        )
                         self.namedParameterCompletion(p, preselect)
                     }
                     remainingArguments = remaining
