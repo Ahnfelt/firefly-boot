@@ -6,8 +6,7 @@ class LspHook(
     targetAt: Location
     sourceAt: Location
     inferTypes: Bool
-    resolver: Stack[ResolveHook]
-    inference: Stack[InferHook]
+    result: Stack[ResultHook]
 )
 
 disabled(): LspHook {
@@ -19,8 +18,7 @@ make(targetAt: Option[Location], sourceAt: Option[Location], inferTypes: Bool): 
         targetAt = targetAt.else {Location("^lsp", -7, -7)}
         sourceAt = sourceAt.else {Location("^lsp", -7, -7)}
         inferTypes = inferTypes
-        resolver = [].toStack()
-        inference = [].toStack()
+        result = [].toStack()
     )
 }
 
@@ -47,7 +45,7 @@ data SymbolHook(
     definedAt: Location
 )
 
-class ResolveHook {
+class ResultHook {
     ResolveSymbolHook(
         symbol: SymbolHook
         annotation: Option[Type]
@@ -55,22 +53,27 @@ class ResolveHook {
     ResolveTypeHook(
         symbol: SymbolHook
     )
-}
-
-class InferHook(unification: Unification, environment: Environment) {
     InferTermHook(
+        unification: Unification
+        environment: Environment
         expected: Type
         term: Term
         recordType: Option[Type]
     )
     InferPatternHook(
+        unification: Unification
+        environment: Environment
         expected: Type
         pattern: MatchPattern
     )
     InferParameterHook(
+        unification: Unification
+        environment: Environment
         parameter: Parameter
     )
     InferArgumentHook(
+        unification: Unification
+        environment: Environment
         isCopy: Bool
         callAt: Location
         callName: String
@@ -79,6 +82,8 @@ class InferHook(unification: Unification, environment: Environment) {
         argumentIndex: Int
     )
     InferLookupHook(
+        unification: Unification
+        environment: Environment
         symbol: SymbolHook
         instantiated: Instantiated
     )

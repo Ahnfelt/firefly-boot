@@ -176,8 +176,9 @@ extend self: Handler {
         } grab()
         let js = system.js()
         // TODO: Find the InferLookupHook instead of assuming it's the top one
+        // TODO: Use more of the hooks for hover
         let o = if(goToDefinition) {
-            lspHook.inference.pop().map {
+            lspHook.result.pop().map {
                 | InferLookupHook h => 
                     let token = self.findToken(system, h.symbol.definedAt)
                     self.tokenLocationToLspLocation(system, token)
@@ -185,7 +186,7 @@ extend self: Handler {
                     js.null()
             }.else {js.null()}
         } else {
-            lspHook.inference.pop().map {
+            lspHook.result.pop().map {
                 | InferLookupHook h => 
                     let t = h.unification.substitute(h.instantiated.scheme.signature.returnType)
                     let q = h.unification.substitute(h.instantiated.scheme.signature.effect)
@@ -280,23 +281,29 @@ extend self: Handler {
     }
 
     handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {
-        let referencesAt = self.grabFixedLocation(system, parameters)
-        mutable hoverResult = HoverInfo(None, None, None)
-        let temporaryLspHook = LspHook.make(targetAt = Some(referencesAt), sourceAt = None, inferTypes = True)
+        let targetAt = self.grabFixedLocation(system, parameters)
+        let temporaryLspHook = LspHook.make(targetAt = Some(targetAt), sourceAt = None, inferTypes = True)
         try {
-            let hover = Some(Pair(referencesAt, {hoverResult = _})) // TODO: Use lspHook
-            Builder.check(system, ".", referencesAt.file, self.virtualFiles, temporaryLspHook, None, None, True)
+            Builder.check(system, ".", targetAt.file, self.virtualFiles, temporaryLspHook, None, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
 
-        Log.trace("handleReferences hoverResult: " + Show.show(hoverResult))
+        let definedAtOption = temporaryLspHook.result.toArray().map {
+            | ResolveSymbolHook(symbol, annotation) => 
+                Some(symbol.definedAt)
+            | ResolveTypeHook(symbol) => 
+                Some(symbol.definedAt)
+            | InferLookupHook(_, _, symbol, _) => 
+                Some(symbol.definedAt)
+            | _ =>
+                None
+        }.first().flatten()
 
         let js = system.js()
-        let o = hoverResult.at.{
+        let o = definedAtOption.{
             | Some(definedAt) => 
                 Log.trace("handleReferences definedAt: " + Show.show(definedAt))
-                // TODO search all files in workspace
                 let referencesResult = [definedAt].toStack()
                 let lspHook = LspHook.make(targetAt = None, sourceAt = Some(definedAt), inferTypes = True)
                 try {
@@ -304,7 +311,7 @@ extend self: Handler {
                         Log.trace("Set referencesResult: " + Show.show(r))
                         referencesResult.pushArray(r.toArray())
                     }))
-                    let path = if(local) {referencesAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
+                    let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
                     Log.trace("path: " + path)
                     Builder.check(system, ".", path, self.virtualFiles, lspHook, None, references, True)
                 } catch {| CompileError(at, message), error =>
@@ -312,7 +319,7 @@ extend self: Handler {
                 } grab()
         
                 let clientLocations = referencesResult.toList().filter {
-                    !local || _.file == referencesAt.file
+                    !local || _.file == targetAt.file
                 }.map {at => 
                     let token = self.findToken(system, at)
                     self.tokenLocationToLspLocation(system, token)

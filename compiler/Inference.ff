@@ -130,7 +130,7 @@ extend self: Inference {
             let noEffect = TConstructor(p.at, "ff:core/Nothing.Nothing", [])
             let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType, noEffect))
             if(self.lspHook.isTarget(p.at)) {
-                self.lspHook.inference.push(
+                self.lspHook.result.push(
                     InferParameterHook(self.unification, environment, p)
                 )
             }
@@ -208,7 +208,7 @@ extend self: Inference {
 
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
         if(self.lspHook.isTarget(pattern.at)) {
-            self.lspHook.inference.push(
+            self.lspHook.result.push(
                 InferPatternHook(self.unification, environment, expected, pattern)
             )
         }
@@ -263,7 +263,7 @@ extend self: Inference {
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
         if(self.lspHook.isTarget(term.at)) {
-            self.lspHook.inference.push(
+            self.lspHook.result.push(
                 InferTermHook(self.unification, environment, expected, term, None)
             )
         }
@@ -298,8 +298,8 @@ extend self: Inference {
             | EField e =>
                 let recordType = self.unification.freshUnificationVariable(e.at)
                 if(self.lspHook.isTarget(term.at)) {
-                    self.lspHook.inference.pop()
-                    self.lspHook.inference.push(
+                    self.lspHook.result.pop()
+                    self.lspHook.result.push(
                         InferTermHook(self.unification, environment, expected, term, Some(recordType))
                     )
                 }        
@@ -463,7 +463,7 @@ extend self: Inference {
                 if(self.lspHook.isEnabled()) {
                     e.arguments.pairs().each {| Pair(i, a) => 
                         if(self.lspHook.isTarget(a.at)) {
-                            self.lspHook.inference.push(
+                            self.lspHook.result.push(
                                 InferArgumentHook( // TODO: Use e.arguments
                                     self.unification, environment
                                     True, term.at, e.name, signature.parameters, [], i
@@ -547,8 +547,8 @@ extend self: Inference {
                     | EField f =>
                         let recordType = self.unification.freshUnificationVariable(f.at)
                         if(self.lspHook.isTarget(term.at)) {
-                            self.lspHook.inference.pop()
-                            self.lspHook.inference.push(
+                            self.lspHook.result.pop()
+                            self.lspHook.result.push(
                                 InferTermHook(self.unification, environment, expected, term, Some(recordType))
                             )
                         }      
@@ -906,7 +906,7 @@ extend self: Inference {
         if(self.lspHook.isEnabled()) {
             arguments.pairs().each {| Pair(i, a) => 
                 if(self.lspHook.isTarget(a.at)) {
-                    self.lspHook.inference.push(
+                    self.lspHook.result.push(
                         InferArgumentHook(
                             self.unification, environment
                             False, callAt, callName, parameters, arguments, i
@@ -1044,7 +1044,7 @@ extend self: Inference {
 
         if(self.lspHook.isTarget(at)) {
             let symbolHook = SymbolHook(symbol, at, scheme.signature.at)
-            self.lspHook.inference.push(
+            self.lspHook.result.push(
                 InferLookupHook(self.unification, environment, symbolHook, instantiated)
             )
         }

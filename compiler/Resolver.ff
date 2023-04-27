@@ -138,7 +138,7 @@ extend self: Resolver {
 
     resolveTypeDefinition(definition: DType): DType {
         if(self.lspHook.isTarget(definition.at)) {
-            self.lspHook.resolver.push(
+            self.lspHook.result.push(
                 ResolveTypeHook(SymbolHook(definition.name, definition.at, definition.at))
             )
         }
@@ -367,14 +367,14 @@ extend self: Resolver {
         | TConstructor constructor, _ =>
             if(self.completionAt.contains(type.at)) {self.typeCompletion()}
             if(self.lspHook.isTarget(type.at)) {
-                self.lspHook.resolver.push(
+                self.lspHook.result.push(
                     ResolveTypeHook(SymbolHook(constructor.name, type.at, type.at))
                 )
             }
             self.typeLocations.get(constructor.name).each {at =>
                 if(self.lspHook.isTarget(type.at)) {
-                    self.lspHook.resolver.pop()
-                    self.lspHook.resolver.push(
+                    self.lspHook.result.pop()
+                    self.lspHook.result.push(
                         ResolveTypeHook(SymbolHook(constructor.name, type.at, at))
                     )
                 }
@@ -423,14 +423,14 @@ extend self: Resolver {
 
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
         if(self.lspHook.isTarget(constraint.at)) {
-            self.lspHook.resolver.push(
+            self.lspHook.result.push(
                 ResolveTypeHook(SymbolHook(constraint.name, constraint.at, constraint.at))
             )
         }
         self.traitLocations.get(constraint.name).each {at =>
             if(self.lspHook.isTarget(constraint.at)) {
-                self.lspHook.resolver.pop()
-                self.lspHook.resolver.push(
+                self.lspHook.result.pop()
+                self.lspHook.result.push(
                     ResolveTypeHook(SymbolHook(constraint.name, constraint.at, at))
                 )
             }
