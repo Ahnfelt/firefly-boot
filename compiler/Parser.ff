@@ -461,7 +461,7 @@ extend self: Parser {
             ))
         }
         let generics = [...effectParameter, ...poly.generics]
-        DType(nameToken.at(), newtype, nameToken.raw(), generics, poly.constraints, commonFields, variants)
+        DType(nameToken.at(), newtype, !allowMutable, nameToken.raw(), generics, poly.constraints, commonFields, variants)
     }
     
     parseImportDefinition(currentPackagePair: PackagePair): DImport {

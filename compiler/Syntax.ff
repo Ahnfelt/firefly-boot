@@ -94,6 +94,7 @@ data DExtend(
 data DType(
     at: Location
     newtype: Bool
+    data: Bool
     name: String
     generics: List[String]
     constraints: List[Constraint]

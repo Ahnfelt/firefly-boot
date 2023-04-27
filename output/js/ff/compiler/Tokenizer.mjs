@@ -153,10 +153,13 @@ emitToken_(ff_compiler_Token.LLower(), i_, i_)
 };
 i_ += 1
 };
-if((((i_ < ff_core_String.String_size(code_)) && (completionColumn_ === ((1 + i_) - lineOffset_))) && (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grab(code_, i_))))) {
+if(((i_ < ff_core_String.String_size(code_)) && (completionColumn_ === ((1 + i_) - lineOffset_)))) {
+const c_ = ff_core_String.String_grab(code_, i_);
+if(((((!ff_core_Char.Char_isAsciiLetterOrDigit(c_)) && (c_ !== 95)) && (c_ !== 39)) && (c_ !== 34))) {
 emitToken_(ff_compiler_Token.LLower(), i_, i_);
 if((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 95))) {
 i_ += 1
+}
 }
 }
 } else {
@@ -380,10 +383,13 @@ emitToken_(ff_compiler_Token.LLower(), i_, i_)
 };
 i_ += 1
 };
-if((((i_ < ff_core_String.String_size(code_)) && (completionColumn_ === ((1 + i_) - lineOffset_))) && (!ff_core_Char.Char_isAsciiLetter(ff_core_String.String_grab(code_, i_))))) {
+if(((i_ < ff_core_String.String_size(code_)) && (completionColumn_ === ((1 + i_) - lineOffset_)))) {
+const c_ = ff_core_String.String_grab(code_, i_);
+if(((((!ff_core_Char.Char_isAsciiLetterOrDigit(c_)) && (c_ !== 95)) && (c_ !== 39)) && (c_ !== 34))) {
 emitToken_(ff_compiler_Token.LLower(), i_, i_);
 if((((i_ + 1) < ff_core_String.String_size(code_)) && (ff_core_String.String_grab(code_, i_) === 95))) {
 i_ += 1
+}
 }
 }
 } else {

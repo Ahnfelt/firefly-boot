@@ -8,6 +8,8 @@ import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
 
 import * as ff_compiler_JsEmitter from "../../ff/compiler/JsEmitter.mjs"
 
+import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
+
 import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
 
 import * as ff_compiler_Resolver from "../../ff/compiler/Resolver.mjs"
@@ -116,7 +118,7 @@ ff_core_FileSystem.FileSystem_createDirectory(fs_, tempPath_);
 const jsPathFile_ = (tempPath_ + "/js");
 ff_core_FileSystem.FileSystem_createDirectories(fs_, jsPathFile_);
 const success_ = ff_core_Core.do_((() => {
-const compiler_ = ff_compiler_Compiler.make_(emitTarget_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), compilerModulePath_, jsPathFile_, resolvedDependencies_, ff_core_Map.empty_(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None());
+const compiler_ = ff_compiler_Compiler.make_(emitTarget_, fs_, ff_core_NodeSystem.NodeSystem_time(system_), compilerModulePath_, jsPathFile_, resolvedDependencies_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None());
 ff_compiler_Compiler.Compiler_emit(compiler_, mainPackage_, mainModule_, true);
 if(printMeasurements_) {
 ff_compiler_Compiler.Compiler_printMeasurements(compiler_)
@@ -155,7 +157,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false)
 }
 
-export function check_(system_, fireflyPath_, path_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, infer_) {
+export function check_(system_, fireflyPath_, path_, virtualFiles_, lspHook_, hoverAt_, completionAt_, referencesTo_, infer_) {
 const fs_ = ff_core_NodeSystem.NodeSystem_files(system_);
 const packages_ = (((_1) => {
 {
@@ -183,7 +185,7 @@ const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packa
 const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
-const compiler_ = ff_compiler_Compiler.make_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_time(system_), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, ff_core_Option.Option_map(hoverAt_, ((_w1) => {
+const compiler_ = ff_compiler_Compiler.make_(ff_compiler_JsEmitter.EmitBuild(), ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_time(system_), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, lspHook_, ff_core_Option.Option_map(hoverAt_, ((_w1) => {
 return _w1.first_
 })), ff_core_Option.Option_map(completionAt_, ((_w1) => {
 return _w1.first_
@@ -314,7 +316,7 @@ if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
 const jsPathFile_ = (tempPath_ + "/js");
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $c));
 const success_ = (await ff_core_Core.do_$((async ($c) => {
-const compiler_ = (await ff_compiler_Compiler.make_$(emitTarget_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), compilerModulePath_, jsPathFile_, resolvedDependencies_, ff_core_Map.empty_(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), $c));
+const compiler_ = (await ff_compiler_Compiler.make_$(emitTarget_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), compilerModulePath_, jsPathFile_, resolvedDependencies_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), $c));
 (await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, true, $c));
 if(printMeasurements_) {
 (await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c))
@@ -353,7 +355,7 @@ return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.pac
 }))(resolvedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
 }
 
-export async function check_$(system_, fireflyPath_, path_, virtualFiles_, hoverAt_, completionAt_, referencesTo_, infer_, $c) {
+export async function check_$(system_, fireflyPath_, path_, virtualFiles_, lspHook_, hoverAt_, completionAt_, referencesTo_, infer_, $c) {
 const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
 const packages_ = (await ((async (_1, $c) => {
 {
@@ -381,7 +383,7 @@ const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packa
 const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
-const compiler_ = (await ff_compiler_Compiler.make_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, ff_core_Option.Option_map(hoverAt_, ((_w1) => {
+const compiler_ = (await ff_compiler_Compiler.make_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, lspHook_, ff_core_Option.Option_map(hoverAt_, ((_w1) => {
 return _w1.first_
 })), ff_core_Option.Option_map(completionAt_, ((_w1) => {
 return _w1.first_

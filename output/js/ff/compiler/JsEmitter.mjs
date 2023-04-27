@@ -4744,15 +4744,6 @@ export async function JsEmitter_emitArgument$(self_, argument_, async_, $c) {
 return ff_compiler_JsEmitter.JsEmitter_emitTerm(self_, argument_.value_, async_)
 }
 
-export const ff_core_Any_HasAnyTag$ff_compiler_JsEmitter_JsEmitter = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.JsEmitter" + "[") + "]"))
-},
-async anyTag_$($c) {
-return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.JsEmitter" + "[") + "]"))
-}
-};
-
 export const ff_core_Any_HasAnyTag$ff_compiler_JsEmitter_EmitTarget = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.EmitTarget" + "[") + "]"))
@@ -4768,29 +4759,6 @@ return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.ProcessedVariantCase
 },
 async anyTag_$($c) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/JsEmitter.ProcessedVariantCase" + "[") + "]"))
-}
-};
-
-export const ff_core_Show_Show$ff_compiler_JsEmitter_JsEmitter = {
-show_(x_) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((((((((((((((("JsEmitter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module).show_(z_.otherModules_)) + ", ") + ff_compiler_JsImporter.ff_core_Show_Show$ff_compiler_JsImporter_JsImporter.show_(z_.jsImporter_)) + ", ") + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(z_.emitTarget_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMainModule_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.compilerModulePath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.emittingAsync_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCallUsed_)) + ")")
-return
-}
-}
-},
-async show_$(x_, $c) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((((((((((((((("JsEmitter" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Module).show_(z_.otherModules_)) + ", ") + ff_compiler_JsImporter.ff_core_Show_Show$ff_compiler_JsImporter_JsImporter.show_(z_.jsImporter_)) + ", ") + ff_compiler_JsEmitter.ff_core_Show_Show$ff_compiler_JsEmitter_EmitTarget.show_(z_.emitTarget_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.isMainModule_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.compilerModulePath_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.emittingAsync_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_Bool_Bool.show_(z_.tailCallUsed_)) + ")")
-return
-}
-}
 }
 };
 
@@ -4886,43 +4854,6 @@ return
 }
 };
 
-export const ff_core_Equal_Equal$ff_compiler_JsEmitter_JsEmitter = {
-equals_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module).equals_(x_.otherModules_, y_.otherModules_) && (ff_compiler_JsImporter.ff_core_Equal_Equal$ff_compiler_JsImporter_JsImporter.equals_(x_.jsImporter_, y_.jsImporter_) && (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(x_.emitTarget_, y_.emitTarget_) && ((x_.isMainModule_ === y_.isMainModule_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.compilerModulePath_, y_.compilerModulePath_) && ((x_.emittingAsync_ === y_.emittingAsync_) && (x_.tailCallUsed_ === y_.tailCallUsed_)))))))
-return
-}
-}
-},
-async equals_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Module).equals_(x_.otherModules_, y_.otherModules_) && (ff_compiler_JsImporter.ff_core_Equal_Equal$ff_compiler_JsImporter_JsImporter.equals_(x_.jsImporter_, y_.jsImporter_) && (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(x_.emitTarget_, y_.emitTarget_) && ((x_.isMainModule_ === y_.isMainModule_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.compilerModulePath_, y_.compilerModulePath_) && ((x_.emittingAsync_ === y_.emittingAsync_) && (x_.tailCallUsed_ === y_.tailCallUsed_)))))))
-return
-}
-}
-}
-};
-
 export const ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget = {
 equals_(x_, y_) {
 {
@@ -4991,113 +4922,6 @@ return
 }
 {
 return ((x_.variantName_ === y_.variantName_) && ((x_.newtype_ === y_.newtype_) && ((x_.loneVariant_ === y_.loneVariant_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.arguments_, y_.arguments_))))
-return
-}
-}
-}
-};
-
-export const ff_core_Ordering_Order$ff_compiler_JsEmitter_JsEmitter = {
-compare_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const otherModulesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Module).compare_(x_.otherModules_, y_.otherModules_);
-if((otherModulesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return otherModulesOrdering_
-} else {
-const jsImporterOrdering_ = ff_compiler_JsImporter.ff_core_Ordering_Order$ff_compiler_JsImporter_JsImporter.compare_(x_.jsImporter_, y_.jsImporter_);
-if((jsImporterOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return jsImporterOrdering_
-} else {
-const emitTargetOrdering_ = ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget.compare_(x_.emitTarget_, y_.emitTarget_);
-if((emitTargetOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return emitTargetOrdering_
-} else {
-const isMainModuleOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isMainModule_, y_.isMainModule_);
-if((isMainModuleOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return isMainModuleOrdering_
-} else {
-const compilerModulePathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.compilerModulePath_, y_.compilerModulePath_);
-if((compilerModulePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return compilerModulePathOrdering_
-} else {
-const emittingAsyncOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.emittingAsync_, y_.emittingAsync_);
-if((emittingAsyncOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return emittingAsyncOrdering_
-} else {
-const tailCallUsedOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.tailCallUsed_, y_.tailCallUsed_);
-if((tailCallUsedOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return tailCallUsedOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-}
-}
-}
-return
-}
-}
-},
-async compare_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const otherModulesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Module).compare_(x_.otherModules_, y_.otherModules_);
-if((otherModulesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return otherModulesOrdering_
-} else {
-const jsImporterOrdering_ = ff_compiler_JsImporter.ff_core_Ordering_Order$ff_compiler_JsImporter_JsImporter.compare_(x_.jsImporter_, y_.jsImporter_);
-if((jsImporterOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return jsImporterOrdering_
-} else {
-const emitTargetOrdering_ = ff_compiler_JsEmitter.ff_core_Ordering_Order$ff_compiler_JsEmitter_EmitTarget.compare_(x_.emitTarget_, y_.emitTarget_);
-if((emitTargetOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return emitTargetOrdering_
-} else {
-const isMainModuleOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.isMainModule_, y_.isMainModule_);
-if((isMainModuleOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return isMainModuleOrdering_
-} else {
-const compilerModulePathOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.compilerModulePath_, y_.compilerModulePath_);
-if((compilerModulePathOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return compilerModulePathOrdering_
-} else {
-const emittingAsyncOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.emittingAsync_, y_.emittingAsync_);
-if((emittingAsyncOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return emittingAsyncOrdering_
-} else {
-const tailCallUsedOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_Bool_Bool.compare_(x_.tailCallUsed_, y_.tailCallUsed_);
-if((tailCallUsedOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return tailCallUsedOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-}
-}
-}
 return
 }
 }
@@ -5270,85 +5094,6 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
-return
-}
-}
-}
-};
-
-export const ff_core_Serializable_Serializable$ff_compiler_JsEmitter_JsEmitter = {
-serializeUsing_(serialization_, x_) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Module).serializeUsing_(serialization_, value_.otherModules_);
-ff_compiler_JsImporter.ff_core_Serializable_Serializable$ff_compiler_JsImporter_JsImporter.serializeUsing_(serialization_, value_.jsImporter_);
-ff_compiler_JsEmitter.ff_core_Serializable_Serializable$ff_compiler_JsEmitter_EmitTarget.serializeUsing_(serialization_, value_.emitTarget_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.isMainModule_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.compilerModulePath_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.emittingAsync_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.tailCallUsed_)
-return
-}
-}
-},
-deserializeUsing_(serialization_) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_JsEmitter.JsEmitter(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Module).deserializeUsing_(serialization_), ff_compiler_JsImporter.ff_core_Serializable_Serializable$ff_compiler_JsImporter_JsImporter.deserializeUsing_(serialization_), ff_compiler_JsEmitter.ff_core_Serializable_Serializable$ff_compiler_JsEmitter_EmitTarget.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-},
-async serializeUsing_$(serialization_, x_, $c) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Module).serializeUsing_(serialization_, value_.otherModules_);
-ff_compiler_JsImporter.ff_core_Serializable_Serializable$ff_compiler_JsImporter_JsImporter.serializeUsing_(serialization_, value_.jsImporter_);
-ff_compiler_JsEmitter.ff_core_Serializable_Serializable$ff_compiler_JsEmitter_EmitTarget.serializeUsing_(serialization_, value_.emitTarget_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.isMainModule_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.compilerModulePath_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.emittingAsync_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.serializeUsing_(serialization_, value_.tailCallUsed_)
-return
-}
-}
-},
-async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_JsEmitter.JsEmitter(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Module).deserializeUsing_(serialization_), ff_compiler_JsImporter.ff_core_Serializable_Serializable$ff_compiler_JsImporter_JsImporter.deserializeUsing_(serialization_), ff_compiler_JsEmitter.ff_core_Serializable_Serializable$ff_compiler_JsEmitter_EmitTarget.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Bool_Bool.deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

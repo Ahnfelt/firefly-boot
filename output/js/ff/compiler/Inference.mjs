@@ -4,6 +4,8 @@ import * as ff_compiler_Inference from "../../ff/compiler/Inference.mjs"
 
 import * as ff_compiler_Environment from "../../ff/compiler/Environment.mjs"
 
+import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
+
 import * as ff_compiler_Substitution from "../../ff/compiler/Substitution.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -93,14 +95,14 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Inference
-export function Inference(unification_, hoverAt_, completionAt_, hoverResult_, completionResult_) {
-return {unification_, hoverAt_, completionAt_, hoverResult_, completionResult_};
+export function Inference(unification_, lspHook_, hoverAt_, completionAt_, hoverResult_, completionResult_) {
+return {unification_, lspHook_, hoverAt_, completionAt_, hoverResult_, completionResult_};
 }
 
 
 
-export function make_(modules_, hoverAt_, completionAt_) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_, (!ff_core_Option.Option_isEmpty(completionAt_))), hoverAt_, completionAt_, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty())
+export function make_(modules_, lspHook_, hoverAt_, completionAt_) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_, (ff_compiler_LspHook.LspHook_isEnabled(lspHook_) || (!ff_core_Option.Option_isEmpty(completionAt_)))), lspHook_, hoverAt_, completionAt_, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty())
 }
 
 export function fail_(at_, message_) {
@@ -134,8 +136,8 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function make_$(modules_, hoverAt_, completionAt_, $c) {
-return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_, (!ff_core_Option.Option_isEmpty(completionAt_))), hoverAt_, completionAt_, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty())
+export async function make_$(modules_, lspHook_, hoverAt_, completionAt_, $c) {
+return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_, (ff_compiler_LspHook.LspHook_isEnabled(lspHook_) || (!ff_core_Option.Option_isEmpty(completionAt_)))), lspHook_, hoverAt_, completionAt_, ff_compiler_Syntax.HoverInfo(ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None()), ff_core_List.Empty())
 }
 
 export async function fail_$(at_, message_, $c) {
@@ -304,6 +306,9 @@ export function Inference_inferFunctionDefinition(self_, environment_, definitio
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_, noEffect_));
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, p_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferParameterHook(self_.unification_, environment_, p_))
+};
 if((ff_core_Option.Option_contains(self_.hoverAt_, p_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
 self_.hoverResult_ = (((_c) => {
 return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(p_.at_), ff_core_Option.Some(p_.valueType_), _c.effect_)
@@ -313,7 +318,7 @@ return ff_core_Pair.Pair(p_.name_, scheme_)
 }));
 const parameterMap_ = ff_core_List.List_toMap(parameters_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, parameterMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment_.symbols_, parameterMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 }))(environment_);
 const parameterTypes_ = ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
@@ -381,7 +386,7 @@ return
 }
 })));
 const newEnvironment_ = (((_c) => {
-return ff_compiler_Environment.Environment(_c.symbols_, _c.imports_, lambda_.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.imports_, lambda_.effect_)
 }))(environment_);
 {
 const _1 = lambda_;
@@ -415,7 +420,7 @@ return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syn
 const _1 = environment_;
 {
 const _c = _1;
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment1_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment1_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 return
 }
 }
@@ -437,7 +442,7 @@ return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
 const _1 = environment2_;
 {
 const _c = _1;
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment2_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment2_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 return
 }
 }
@@ -453,6 +458,9 @@ return
 }
 
 export function Inference_inferPattern(self_, environment_, expected_, pattern_) {
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, pattern_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferPatternHook(self_.unification_, environment_, expected_, pattern_))
+};
 function literal_(coreTypeName_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()));
 return ff_core_Map.empty_()
@@ -572,7 +580,7 @@ const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
-if(((ff_core_List.List_size(patterns_) !== ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+if((((ff_core_List.List_size(patterns_) !== ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (((("Wrong number of subpatterns, expected " + ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) + ", got ") + ff_core_List.List_size(patterns_)) + ".")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1) => {
@@ -592,7 +600,13 @@ return
 }
 
 export function Inference_inferTerm(self_, environment_, expected_, term_) {
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, term_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferTermHook(self_.unification_, environment_, expected_, term_, ff_core_Option.None()))
+};
 function literal_(coreTypeName_) {
+if(ff_core_Option.Option_contains(self_.completionAt_, term_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
+};
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()));
 return term_
 }
@@ -645,6 +659,10 @@ return
 if(_1.EField) {
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, term_.at_)) {
+ff_core_Stack.Stack_pop(self_.lspHook_.inference_);
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferTermHook(self_.unification_, environment_, expected_, term_, ff_core_Option.Some(recordType_)))
+};
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_);
@@ -688,7 +706,7 @@ return
 }
 }
 })), (() => {
-return (!ff_core_Option.Option_isEmpty(self_.completionAt_))
+return (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)))
 }), (() => {
 return term_
 })), (() => {
@@ -751,7 +769,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 return term_
 return
@@ -772,6 +790,9 @@ return
 {
 if(_1.EWildcard) {
 const e_ = _1;
+if(ff_core_Option.Option_contains(self_.completionAt_, term_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
+};
 return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_) => {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
@@ -865,7 +886,7 @@ const e_ = _1;
 const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_, noEffect_));
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 }))(environment_);
 if((ff_core_Option.Option_contains(self_.hoverAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
 self_.hoverResult_ = (((_c) => {
@@ -937,7 +958,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 const arguments_ = ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
-return ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, environment_, instantiated_.scheme_.signature_.parameters_, _w1)
+return ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, e_.name_, environment_, instantiated_.scheme_.signature_.parameters_, _w1)
 }));
 {
 const _1 = e_;
@@ -991,6 +1012,31 @@ if(scheme_.isNewtype_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Newtypes can't be copied"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const signature_ = scheme_.signature_;
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+ff_core_List.List_each(ff_core_List.List_pairs(e_.arguments_), ((_1) => {
+{
+const i_ = _1.first_;
+const a_ = _1.second_;
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, a_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferArgumentHook(self_.unification_, environment_, true, term_.at_, e_.name_, signature_.parameters_, ff_core_List.Empty(), i_))
+}
+return
+}
+}))
+};
+if((!ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+ff_core_List.List_each(e_.arguments_, ((a_) => {
+if(ff_core_Option.Option_contains(self_.completionAt_, a_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_core_List.List_each(ff_core_List.List_filter(signature_.parameters_, ((p_) => {
+return (!ff_core_List.List_any(e_.arguments_, ((_w1) => {
+return (_w1.name_ === p_.name_)
+})))
+})), ((p_) => {
+ff_compiler_Inference.Inference_namedParameterCompletion(self_, p_, true)
+}))
+}
+}))
+};
 const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
 }));
@@ -1050,7 +1096,7 @@ return
 {
 if(_1.ECall) {
 const e_ = _1;
-if(((!ff_core_Option.Option_isEmpty(self_.completionAt_)) && (((_1) => {
+if(((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_))) && (((_1) => {
 {
 if(_1.StaticCall) {
 return true
@@ -1085,6 +1131,9 @@ const _1 = call_.function_;
 if(_1.EVariable) {
 const variableAt_ = _1.at_;
 const x_ = _1.name_;
+if(ff_core_Option.Option_contains(self_.completionAt_, variableAt_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
+};
 if(ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
 return ((c_ !== 95) && (!ff_core_Char.Char_isAsciiLetter(c_)))
 }))) {
@@ -1119,6 +1168,10 @@ return
 if(_1.EField) {
 const f_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, f_.at_);
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, term_.at_)) {
+ff_core_Stack.Stack_pop(self_.lspHook_.inference_);
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferTermHook(self_.unification_, environment_, expected_, term_, ff_core_Option.Some(recordType_)))
+};
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, f_.record_);
 const e2_ = (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, (((_c) => {
@@ -1169,7 +1222,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 return
@@ -1245,7 +1298,7 @@ const scheme_ = ff_compiler_Environment.Scheme(false, false, false, false, f_.si
 return ff_core_Pair.Pair(f_.signature_.name_, scheme_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment_.symbols_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 }))(environment_);
 const newFunctions_ = ff_core_List.List_map(functions_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment2_, _w1)
@@ -1272,7 +1325,7 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 return
 }
 }
-} else if((!ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+} else if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)))) {
 return term_
 } else {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -1351,7 +1404,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 return term_
 return
@@ -1417,7 +1470,7 @@ const selfParameter_ = ff_core_List.List_grabFirst(signature_.parameters_);
 const selfArgument_ = ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.Some(selfParameter_.name_), record_);
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, signature_.returnType_);
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, selfParameter_.valueType_, recordType_);
-const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, term_.at_, environment_, ff_core_List.List_dropFirst(signature_.parameters_, 1), e_.arguments_);
+const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, term_.at_, name_, environment_, ff_core_List.List_dropFirst(signature_.parameters_, 1), e_.arguments_);
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signature_.effect_, environment_.effect_);
 {
 const _1 = e_;
@@ -1461,7 +1514,7 @@ return
 }
 }))(e_.target_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, signature_.returnType_);
-const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, environment_, signature_.parameters_, e_.arguments_);
+const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, name_, environment_, signature_.parameters_, e_.arguments_);
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signature_.effect_, environment_.effect_);
 {
 const _1 = e_;
@@ -1629,7 +1682,7 @@ break
 }
 }
 {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 
 break
@@ -1852,7 +1905,7 @@ return
 }
 }
 {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 
 return
@@ -1895,7 +1948,7 @@ return
 }
 }
 {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 return term_
 return
@@ -1923,23 +1976,35 @@ const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, e
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
 })), ff_core_List.Empty(), body_), ff_core_List.Empty())));
 return ff_compiler_Inference.Inference_inferTerm(self_, (((_c) => {
-return ff_compiler_Environment.Environment(_c.symbols_, _c.imports_, effect2_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.imports_, effect2_)
 }))(environment_), expected_, lambda_)
 }
 
-export function Inference_inferArguments(self_, at_, environment_, parameters_, arguments_) {
+export function Inference_inferArguments(self_, callAt_, callName_, environment_, parameters_, arguments_) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+ff_core_List.List_each(ff_core_List.List_pairs(arguments_), ((_1) => {
+{
+const i_ = _1.first_;
+const a_ = _1.second_;
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, a_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferArgumentHook(self_.unification_, environment_, false, callAt_, callName_, parameters_, arguments_, i_))
+}
+return
+}
+}))
+};
 let remainingArguments_ = arguments_;
 const newArguments_ = ff_core_List.List_map(parameters_, ((p_) => {
 const t_ = p_.valueType_;
 function defaultArgument_() {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(p_.default_, ((e_) => {
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
-return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
+return ff_compiler_Syntax.Argument(callAt_, ff_core_Option.Some(p_.name_), e2_)
 })), (() => {
-if(ff_core_Option.Option_isEmpty(self_.completionAt_)) {
-return ff_compiler_Inference.fail_(at_, ("Missing argument: " + p_.name_))
+if(((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+return ff_compiler_Inference.fail_(callAt_, ("Missing argument: " + p_.name_))
 } else {
-return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), ff_compiler_Syntax.EVariable(at_, ""))
+return ff_compiler_Syntax.Argument(callAt_, ff_core_Option.Some(p_.name_), ff_compiler_Syntax.EVariable(callAt_, ""))
 }
 }))
 }
@@ -1957,6 +2022,41 @@ const at_ = _1.head_.at_;
 if(_1.head_.name_.None) {
 const e_ = _1.head_.value_;
 const remaining_ = _1.tail_;
+if(ff_core_Option.Option_contains(self_.completionAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+if(ff_core_List.List_any(ff_core_List.Link("ff:core/Equal.equals", ff_core_List.Link("ff:core/Equal.notEquals", ff_core_List.Link("ff:core/Ordering.before", ff_core_List.Link("ff:core/Ordering.notBefore", ff_core_List.Link("ff:core/Ordering.after", ff_core_List.Link("ff:core/Ordering.notAfter", ff_core_List.Empty())))))), ((_w1) => {
+return (_w1 === callName_)
+}))) {
+
+} else {
+const preselect_ = (ff_core_List.List_any(arguments_, ((_w1) => {
+return (!ff_core_Option.Option_isEmpty(_w1.name_))
+})) || ((callAt_.line_ !== at_.line_) && (ff_core_List.List_size(ff_core_Stream.Stream_toList(ff_core_Stream.Stream_dropWhile(ff_core_Stream.Stream_map(ff_core_List.List_toStream(ff_core_List.List_reverse(parameters_), false), ((_w1) => {
+return _w1.valueType_
+})), ((_1) => {
+{
+if(_1.TConstructor) {
+const n_ = _1.name_;
+return ff_core_String.String_startsWith(n_, "Function$", 0)
+return
+}
+}
+{
+return false
+return
+}
+})))) > 1)));
+const precedingAnonymousArguments_ = ff_core_List.List_size(ff_core_List.List_filter(ff_core_List.List_dropLast(arguments_, (ff_core_List.List_size(remaining_) + 1)), ((_w1) => {
+return ff_core_Option.Option_isEmpty(_w1.name_)
+})));
+ff_core_List.List_each(ff_core_List.List_dropFirst(ff_core_List.List_filter(parameters_, ((p_) => {
+return (!ff_core_List.List_any(arguments_, ((_w1) => {
+return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
+})))
+})), precedingAnonymousArguments_), ((p_) => {
+ff_compiler_Inference.Inference_namedParameterCompletion(self_, p_, preselect_)
+}))
+}
+};
 remainingArguments_ = remaining_;
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
@@ -1990,20 +2090,20 @@ return
 }
 }
 }));
-if(ff_core_Option.Option_isEmpty(self_.completionAt_)) {
+if(((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
 ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) => {
 {
-const at_ = _1.at_;
+const callAt_ = _1.at_;
 if(_1.name_.None) {
-ff_compiler_Inference.fail_(at_, "Too many arguments")
+ff_compiler_Inference.fail_(callAt_, "Too many arguments")
 return
 }
 }
 {
-const at_ = _1.at_;
+const callAt_ = _1.at_;
 if(_1.name_.Some) {
-const name_ = _1.name_.value_;
-ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
+const n_ = _1.name_.value_;
+ff_compiler_Inference.fail_(callAt_, ("Unknown argument: " + n_))
 return
 }
 }
@@ -2014,7 +2114,7 @@ return newArguments_
 
 export function Inference_lookup(self_, environment_, at_, symbol_, typeArguments_) {
 return ff_core_Option.Option_elseIf(ff_compiler_Inference.Inference_lookupOption(self_, environment_, at_, symbol_, typeArguments_), (() => {
-return (!ff_core_Option.Option_isEmpty(self_.completionAt_))
+return (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)))
 }), (() => {
 return ff_compiler_Environment.Instantiated(ff_core_List.Empty(), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, symbol_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_))))
 }))
@@ -2029,7 +2129,7 @@ return (_w1 === "Q$")
 })))
 ? ff_core_List.Link(ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), typeArguments_)
 : typeArguments_);
-if(((ff_core_List.List_size(scheme_.signature_.generics_) !== ff_core_List.List_size(newTypeArguments_)) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+if((((ff_core_List.List_size(scheme_.signature_.generics_) !== ff_core_List.List_size(newTypeArguments_)) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
 const extra_ = (ff_core_List.List_size(newTypeArguments_) - ff_core_List.List_size(typeArguments_));
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (ff_core_List.List_size(scheme_.signature_.generics_) - extra_)) + ", got ") + (ff_core_List.List_size(newTypeArguments_) - extra_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -2151,8 +2251,8 @@ return (f_ + " = ")
 })), ",")) + "|}$0)")
 : (((ff_core_List.List_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
 ? (ff_core_List.List_isEmpty(required_)
-? (("(" + ff_core_List.List_join(required_, ", ")) + ")")
-: (("(${0:" + ff_core_List.List_join(required_, ", ")) + "})"))
+? "()"
+: "($0)")
 : "") + (ff_core_List.List_isEmpty(trailing_)
 ? ""
 : ff_core_List.List_join(ff_core_List.List_map(trailing_, ((_w1) => {
@@ -2246,10 +2346,28 @@ const pair_ = _1;
 const name_ = _1.first_;
 const _guard1 = ff_core_String.String_startsWith(name_, "ff:core/Core.", 0);
 if(_guard1) {
-return ff_core_Option.Some(ff_core_Pair.Pair_mapFirst(pair_, ((_w1) => {
-return ff_core_String.String_dropFirst(_w1, ff_core_String.String_size("ff:core/Core."))
-})))
+return ff_core_Option.Some((((_c) => {
+return ff_core_Pair.Pair(ff_core_String.String_dropFirst(name_, ff_core_String.String_size("ff:core/Core.")), _c.second_)
+}))(pair_))
 return
+}
+}
+{
+const pair_ = _1;
+const name_ = _1.first_;
+const _guard3 = ff_core_String.String_startsWith(name_, environment_.modulePrefix_, 0);
+if(_guard3) {
+const _guard2 = ff_core_String.String_dropFirst(name_, ff_core_String.String_size(environment_.modulePrefix_));
+const n_ = _guard2;
+const _guard1 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+}));
+if(_guard1) {
+return ff_core_Option.Some((((_c) => {
+return ff_core_Pair.Pair(n_, _c.second_)
+}))(pair_))
+return
+}
 }
 }
 {
@@ -2517,6 +2635,12 @@ self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, comp
 }
 }
 
+export function Inference_namedParameterCompletion(self_, parameter_, preselect_) {
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo((parameter_.name_ + " = ..."), (parameter_.name_ + " = "), false, parameter_.valueType_, ff_compiler_Inference.Inference_showCompletionParameter(self_, "", parameter_), (preselect_
+? ff_core_Option.Some(parameter_.valueType_)
+: ff_core_Option.None())), ff_core_List.Empty()))
+}
+
 export function Inference_showCompletionParameter(self_, indentation_, parameter_) {
 return (((((parameter_.mutable_
 ? (indentation_ + "mutable ")
@@ -2748,6 +2872,9 @@ export async function Inference_inferFunctionDefinition$(self_, environment_, de
 const parameters_ = ff_core_List.List_map(definition_.signature_.parameters_, ((p_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(p_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const scheme_ = ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(p_.at_, p_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), p_.valueType_, noEffect_));
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, p_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferParameterHook(self_.unification_, environment_, p_))
+};
 if((ff_core_Option.Option_contains(self_.hoverAt_, p_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
 self_.hoverResult_ = (((_c) => {
 return ff_compiler_Syntax.HoverInfo(ff_core_Option.Some(p_.at_), ff_core_Option.Some(p_.valueType_), _c.effect_)
@@ -2757,7 +2884,7 @@ return ff_core_Pair.Pair(p_.name_, scheme_)
 }));
 const parameterMap_ = ff_core_List.List_toMap(parameters_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, parameterMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment_.symbols_, parameterMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 }))(environment_);
 const parameterTypes_ = ff_core_List.List_map(parameters_, ((_w1) => {
 return _w1.second_.signature_.returnType_
@@ -2825,7 +2952,7 @@ return
 }
 })));
 const newEnvironment_ = (((_c) => {
-return ff_compiler_Environment.Environment(_c.symbols_, _c.imports_, lambda_.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.imports_, lambda_.effect_)
 }))(environment_);
 {
 const _1 = lambda_;
@@ -2859,7 +2986,7 @@ return ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syn
 const _1 = environment_;
 {
 const _c = _1;
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment1_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment1_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 return
 }
 }
@@ -2881,7 +3008,7 @@ return ff_compiler_Syntax.MatchGuard(_c.at_, guardTerm_, _c.pattern_)
 const _1 = environment2_;
 {
 const _c = _1;
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment2_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment2_.symbols_, symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 return
 }
 }
@@ -2897,6 +3024,9 @@ return
 }
 
 export async function Inference_inferPattern$(self_, environment_, expected_, pattern_, $c) {
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, pattern_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferPatternHook(self_.unification_, environment_, expected_, pattern_))
+};
 function literal_(coreTypeName_) {
 ff_compiler_Unification.Unification_unify(self_.unification_, pattern_.at_, expected_, ff_compiler_Syntax.TConstructor(pattern_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()));
 return ff_core_Map.empty_()
@@ -3016,7 +3146,7 @@ const instantiated_ = ff_core_Option.Option_else(ff_compiler_Inference.Inference
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ("No such variant: " + name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, instantiated_.scheme_.signature_.returnType_);
-if(((ff_core_List.List_size(patterns_) !== ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+if((((ff_core_List.List_size(patterns_) !== ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, (((("Wrong number of subpatterns, expected " + ff_core_List.List_size(instantiated_.scheme_.signature_.parameters_)) + ", got ") + ff_core_List.List_size(patterns_)) + ".")), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 return ff_core_List.List_foldLeft(ff_core_List.List_map(ff_core_List.List_zip(patterns_, instantiated_.scheme_.signature_.parameters_), ((_1) => {
@@ -3036,7 +3166,13 @@ return
 }
 
 export async function Inference_inferTerm$(self_, environment_, expected_, term_, $c) {
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, term_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferTermHook(self_.unification_, environment_, expected_, term_, ff_core_Option.None()))
+};
 function literal_(coreTypeName_) {
+if(ff_core_Option.Option_contains(self_.completionAt_, term_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
+};
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, ff_compiler_Syntax.TConstructor(term_.at_, ff_compiler_Inference.core_(coreTypeName_), ff_core_List.Empty()));
 return term_
 }
@@ -3089,6 +3225,10 @@ return
 if(_1.EField) {
 const e_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, e_.at_);
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, term_.at_)) {
+ff_core_Stack.Stack_pop(self_.lspHook_.inference_);
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferTermHook(self_.unification_, environment_, expected_, term_, ff_core_Option.Some(recordType_)))
+};
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, e_.record_);
 {
 const _1 = ff_compiler_Unification.Unification_substitute(self_.unification_, recordType_);
@@ -3132,7 +3272,7 @@ return
 }
 }
 })), (() => {
-return (!ff_core_Option.Option_isEmpty(self_.completionAt_))
+return (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)))
 }), (() => {
 return term_
 })), (() => {
@@ -3195,7 +3335,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 return term_
 return
@@ -3216,6 +3356,9 @@ return
 {
 if(_1.EWildcard) {
 const e_ = _1;
+if(ff_core_Option.Option_contains(self_.completionAt_, term_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
+};
 return ff_core_Option.Option_grab(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, e_.at_, ("_w" + e_.index_), ff_core_List.Empty()), ((instantiated_) => {
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 return term_
@@ -3309,7 +3452,7 @@ const e_ = _1;
 const noEffect_ = ff_compiler_Syntax.TConstructor(e_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const scheme_ = ff_compiler_Environment.Scheme(true, e_.mutable_, false, false, ff_compiler_Syntax.Signature(e_.at_, e_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), e_.valueType_, noEffect_));
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_add(environment_.symbols_, e_.name_, scheme_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 }))(environment_);
 if((ff_core_Option.Option_contains(self_.hoverAt_, e_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location) && ff_core_Option.Option_isEmpty(self_.hoverResult_.at_))) {
 self_.hoverResult_ = (((_c) => {
@@ -3381,7 +3524,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }));
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, instantiated_.scheme_.signature_.returnType_);
 const arguments_ = ff_core_Option.Option_map(e_.arguments_, ((_w1) => {
-return ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, environment_, instantiated_.scheme_.signature_.parameters_, _w1)
+return ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, e_.name_, environment_, instantiated_.scheme_.signature_.parameters_, _w1)
 }));
 {
 const _1 = e_;
@@ -3435,6 +3578,31 @@ if(scheme_.isNewtype_) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, "Newtypes can't be copied"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 const signature_ = scheme_.signature_;
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+ff_core_List.List_each(ff_core_List.List_pairs(e_.arguments_), ((_1) => {
+{
+const i_ = _1.first_;
+const a_ = _1.second_;
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, a_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferArgumentHook(self_.unification_, environment_, true, term_.at_, e_.name_, signature_.parameters_, ff_core_List.Empty(), i_))
+}
+return
+}
+}))
+};
+if((!ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+ff_core_List.List_each(e_.arguments_, ((a_) => {
+if(ff_core_Option.Option_contains(self_.completionAt_, a_.at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_core_List.List_each(ff_core_List.List_filter(signature_.parameters_, ((p_) => {
+return (!ff_core_List.List_any(e_.arguments_, ((_w1) => {
+return (_w1.name_ === p_.name_)
+})))
+})), ((p_) => {
+ff_compiler_Inference.Inference_namedParameterCompletion(self_, p_, true)
+}))
+}
+}))
+};
 const parameterNames_ = ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return _w1.name_
 }));
@@ -3494,7 +3662,7 @@ return
 {
 if(_1.ECall) {
 const e_ = _1;
-if(((!ff_core_Option.Option_isEmpty(self_.completionAt_)) && (((_1) => {
+if(((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_))) && (((_1) => {
 {
 if(_1.StaticCall) {
 return true
@@ -3529,6 +3697,9 @@ const _1 = call_.function_;
 if(_1.EVariable) {
 const variableAt_ = _1.at_;
 const x_ = _1.name_;
+if(ff_core_Option.Option_contains(self_.completionAt_, variableAt_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+ff_compiler_Inference.Inference_completion(self_, environment_, "", false, expected_)
+};
 if(ff_core_Option.Option_any(ff_core_String.String_first(x_), ((c_) => {
 return ((c_ !== 95) && (!ff_core_Char.Char_isAsciiLetter(c_)))
 }))) {
@@ -3563,6 +3734,10 @@ return
 if(_1.EField) {
 const f_ = _1;
 const recordType_ = ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, f_.at_);
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, term_.at_)) {
+ff_core_Stack.Stack_pop(self_.lspHook_.inference_);
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferTermHook(self_.unification_, environment_, expected_, term_, ff_core_Option.Some(recordType_)))
+};
 const record_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, recordType_, f_.record_);
 const e2_ = (((_c) => {
 return ff_compiler_Syntax.ECall(_c.at_, (((_c) => {
@@ -3613,7 +3788,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 return ff_compiler_Inference.Inference_inferLambdaCall(self_, environment_, expected_, e2_)
 return
@@ -3689,7 +3864,7 @@ const scheme_ = ff_compiler_Environment.Scheme(false, false, false, false, f_.si
 return ff_core_Pair.Pair(f_.signature_.name_, scheme_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const environment2_ = (((_c) => {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(environment_.symbols_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, ff_core_Map.Map_addAll(environment_.symbols_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.imports_, _c.effect_)
 }))(environment_);
 const newFunctions_ = ff_core_List.List_map(functions_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferFunctionDefinition(self_, environment2_, _w1)
@@ -3716,7 +3891,7 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 return
 }
 }
-} else if((!ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+} else if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)))) {
 return term_
 } else {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -3795,7 +3970,7 @@ return
 }
 {
 if(_1.TVariable) {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 return term_
 return
@@ -3861,7 +4036,7 @@ const selfParameter_ = ff_core_List.List_grabFirst(signature_.parameters_);
 const selfArgument_ = ff_compiler_Syntax.Argument(record_.at_, ff_core_Option.Some(selfParameter_.name_), record_);
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, expected_, signature_.returnType_);
 ff_compiler_Unification.Unification_unify(self_.unification_, term_.at_, selfParameter_.valueType_, recordType_);
-const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, term_.at_, environment_, ff_core_List.List_dropFirst(signature_.parameters_, 1), e_.arguments_);
+const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, term_.at_, name_, environment_, ff_core_List.List_dropFirst(signature_.parameters_, 1), e_.arguments_);
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signature_.effect_, environment_.effect_);
 {
 const _1 = e_;
@@ -3905,7 +4080,7 @@ return
 }
 }))(e_.target_);
 ff_compiler_Unification.Unification_unify(self_.unification_, e_.at_, expected_, signature_.returnType_);
-const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, environment_, signature_.parameters_, e_.arguments_);
+const arguments_ = ff_compiler_Inference.Inference_inferArguments(self_, e_.at_, name_, environment_, signature_.parameters_, e_.arguments_);
 ff_compiler_Unification.Unification_affect(self_.unification_, term_.at_, signature_.effect_, environment_.effect_);
 {
 const _1 = e_;
@@ -4073,7 +4248,7 @@ break
 }
 }
 {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 
 break
@@ -4296,7 +4471,7 @@ return
 }
 }
 {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 
 return
@@ -4339,7 +4514,7 @@ return
 }
 }
 {
-const _guard1 = (!ff_core_Option.Option_isEmpty(self_.completionAt_));
+const _guard1 = (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)));
 if(_guard1) {
 return term_
 return
@@ -4367,23 +4542,35 @@ const lambda_ = ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, e
 return ff_compiler_Syntax.PVariable(at_, ff_core_Option.Some(_w1))
 })), ff_core_List.Empty(), body_), ff_core_List.Empty())));
 return ff_compiler_Inference.Inference_inferTerm(self_, (((_c) => {
-return ff_compiler_Environment.Environment(_c.symbols_, _c.imports_, effect2_)
+return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.imports_, effect2_)
 }))(environment_), expected_, lambda_)
 }
 
-export async function Inference_inferArguments$(self_, at_, environment_, parameters_, arguments_, $c) {
+export async function Inference_inferArguments$(self_, callAt_, callName_, environment_, parameters_, arguments_, $c) {
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+ff_core_List.List_each(ff_core_List.List_pairs(arguments_), ((_1) => {
+{
+const i_ = _1.first_;
+const a_ = _1.second_;
+if(ff_compiler_LspHook.LspHook_isTarget(self_.lspHook_, a_.at_)) {
+ff_core_Stack.Stack_push(self_.lspHook_.inference_, ff_compiler_LspHook.InferArgumentHook(self_.unification_, environment_, false, callAt_, callName_, parameters_, arguments_, i_))
+}
+return
+}
+}))
+};
 let remainingArguments_ = arguments_;
 const newArguments_ = ff_core_List.List_map(parameters_, ((p_) => {
 const t_ = p_.valueType_;
 function defaultArgument_() {
 return ff_core_Option.Option_else(ff_core_Option.Option_map(p_.default_, ((e_) => {
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
-return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
+return ff_compiler_Syntax.Argument(callAt_, ff_core_Option.Some(p_.name_), e2_)
 })), (() => {
-if(ff_core_Option.Option_isEmpty(self_.completionAt_)) {
-return ff_compiler_Inference.fail_(at_, ("Missing argument: " + p_.name_))
+if(((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+return ff_compiler_Inference.fail_(callAt_, ("Missing argument: " + p_.name_))
 } else {
-return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), ff_compiler_Syntax.EVariable(at_, ""))
+return ff_compiler_Syntax.Argument(callAt_, ff_core_Option.Some(p_.name_), ff_compiler_Syntax.EVariable(callAt_, ""))
 }
 }))
 }
@@ -4401,6 +4588,41 @@ const at_ = _1.head_.at_;
 if(_1.head_.name_.None) {
 const e_ = _1.head_.value_;
 const remaining_ = _1.tail_;
+if(ff_core_Option.Option_contains(self_.completionAt_, at_, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location)) {
+if(ff_core_List.List_any(ff_core_List.Link("ff:core/Equal.equals", ff_core_List.Link("ff:core/Equal.notEquals", ff_core_List.Link("ff:core/Ordering.before", ff_core_List.Link("ff:core/Ordering.notBefore", ff_core_List.Link("ff:core/Ordering.after", ff_core_List.Link("ff:core/Ordering.notAfter", ff_core_List.Empty())))))), ((_w1) => {
+return (_w1 === callName_)
+}))) {
+
+} else {
+const preselect_ = (ff_core_List.List_any(arguments_, ((_w1) => {
+return (!ff_core_Option.Option_isEmpty(_w1.name_))
+})) || ((callAt_.line_ !== at_.line_) && (ff_core_List.List_size(ff_core_Stream.Stream_toList(ff_core_Stream.Stream_dropWhile(ff_core_Stream.Stream_map(ff_core_List.List_toStream(ff_core_List.List_reverse(parameters_), false), ((_w1) => {
+return _w1.valueType_
+})), ((_1) => {
+{
+if(_1.TConstructor) {
+const n_ = _1.name_;
+return ff_core_String.String_startsWith(n_, "Function$", 0)
+return
+}
+}
+{
+return false
+return
+}
+})))) > 1)));
+const precedingAnonymousArguments_ = ff_core_List.List_size(ff_core_List.List_filter(ff_core_List.List_dropLast(arguments_, (ff_core_List.List_size(remaining_) + 1)), ((_w1) => {
+return ff_core_Option.Option_isEmpty(_w1.name_)
+})));
+ff_core_List.List_each(ff_core_List.List_dropFirst(ff_core_List.List_filter(parameters_, ((p_) => {
+return (!ff_core_List.List_any(arguments_, ((_w1) => {
+return ff_core_Option.Option_contains(_w1.name_, p_.name_, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String)
+})))
+})), precedingAnonymousArguments_), ((p_) => {
+ff_compiler_Inference.Inference_namedParameterCompletion(self_, p_, preselect_)
+}))
+}
+};
 remainingArguments_ = remaining_;
 const e2_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, t_, e_);
 return ff_compiler_Syntax.Argument(at_, ff_core_Option.Some(p_.name_), e2_)
@@ -4434,20 +4656,20 @@ return
 }
 }
 }));
-if(ff_core_Option.Option_isEmpty(self_.completionAt_)) {
+if(((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
 ff_core_Option.Option_each(ff_core_List.List_first(remainingArguments_), ((_1) => {
 {
-const at_ = _1.at_;
+const callAt_ = _1.at_;
 if(_1.name_.None) {
-ff_compiler_Inference.fail_(at_, "Too many arguments")
+ff_compiler_Inference.fail_(callAt_, "Too many arguments")
 return
 }
 }
 {
-const at_ = _1.at_;
+const callAt_ = _1.at_;
 if(_1.name_.Some) {
-const name_ = _1.name_.value_;
-ff_compiler_Inference.fail_(at_, ("Unknown argument: " + name_))
+const n_ = _1.name_.value_;
+ff_compiler_Inference.fail_(callAt_, ("Unknown argument: " + n_))
 return
 }
 }
@@ -4458,7 +4680,7 @@ return newArguments_
 
 export async function Inference_lookup$(self_, environment_, at_, symbol_, typeArguments_, $c) {
 return ff_core_Option.Option_elseIf(ff_compiler_Inference.Inference_lookupOption(self_, environment_, at_, symbol_, typeArguments_), (() => {
-return (!ff_core_Option.Option_isEmpty(self_.completionAt_))
+return (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) || (!ff_core_Option.Option_isEmpty(self_.completionAt_)))
 }), (() => {
 return ff_compiler_Environment.Instantiated(ff_core_List.Empty(), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(at_, symbol_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_))))
 }))
@@ -4473,7 +4695,7 @@ return (_w1 === "Q$")
 })))
 ? ff_core_List.Link(ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, at_), typeArguments_)
 : typeArguments_);
-if(((ff_core_List.List_size(scheme_.signature_.generics_) !== ff_core_List.List_size(newTypeArguments_)) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
+if((((ff_core_List.List_size(scheme_.signature_.generics_) !== ff_core_List.List_size(newTypeArguments_)) && (!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) && ff_core_Option.Option_isEmpty(self_.completionAt_))) {
 const extra_ = (ff_core_List.List_size(newTypeArguments_) - ff_core_List.List_size(typeArguments_));
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((((("Wrong number of type arguments for " + symbol_) + ", expected ") + (ff_core_List.List_size(scheme_.signature_.generics_) - extra_)) + ", got ") + (ff_core_List.List_size(newTypeArguments_) - extra_))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
@@ -4595,8 +4817,8 @@ return (f_ + " = ")
 })), ",")) + "|}$0)")
 : (((ff_core_List.List_isEmpty(trailing_) || (!ff_core_List.List_isEmpty(required_)))
 ? (ff_core_List.List_isEmpty(required_)
-? (("(" + ff_core_List.List_join(required_, ", ")) + ")")
-: (("(${0:" + ff_core_List.List_join(required_, ", ")) + "})"))
+? "()"
+: "($0)")
 : "") + (ff_core_List.List_isEmpty(trailing_)
 ? ""
 : ff_core_List.List_join(ff_core_List.List_map(trailing_, ((_w1) => {
@@ -4690,10 +4912,28 @@ const pair_ = _1;
 const name_ = _1.first_;
 const _guard1 = ff_core_String.String_startsWith(name_, "ff:core/Core.", 0);
 if(_guard1) {
-return ff_core_Option.Some(ff_core_Pair.Pair_mapFirst(pair_, ((_w1) => {
-return ff_core_String.String_dropFirst(_w1, ff_core_String.String_size("ff:core/Core."))
-})))
+return ff_core_Option.Some((((_c) => {
+return ff_core_Pair.Pair(ff_core_String.String_dropFirst(name_, ff_core_String.String_size("ff:core/Core.")), _c.second_)
+}))(pair_))
 return
+}
+}
+{
+const pair_ = _1;
+const name_ = _1.first_;
+const _guard3 = ff_core_String.String_startsWith(name_, environment_.modulePrefix_, 0);
+if(_guard3) {
+const _guard2 = ff_core_String.String_dropFirst(name_, ff_core_String.String_size(environment_.modulePrefix_));
+const n_ = _guard2;
+const _guard1 = ff_core_String.String_all(n_, ((_w1) => {
+return ff_core_Char.Char_isAsciiLetterOrDigit(_w1)
+}));
+if(_guard1) {
+return ff_core_Option.Some((((_c) => {
+return ff_core_Pair.Pair(n_, _c.second_)
+}))(pair_))
+return
+}
 }
 }
 {
@@ -4961,6 +5201,12 @@ self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, comp
 }
 }
 
+export async function Inference_namedParameterCompletion$(self_, parameter_, preselect_, $c) {
+self_.completionResult_ = ff_core_List.List_addAll(self_.completionResult_, ff_core_List.Link(ff_compiler_Syntax.CompletionInfo((parameter_.name_ + " = ..."), (parameter_.name_ + " = "), false, parameter_.valueType_, ff_compiler_Inference.Inference_showCompletionParameter(self_, "", parameter_), (preselect_
+? ff_core_Option.Some(parameter_.valueType_)
+: ff_core_Option.None())), ff_core_List.Empty()))
+}
+
 export async function Inference_showCompletionParameter$(self_, indentation_, parameter_, $c) {
 return (((((parameter_.mutable_
 ? (indentation_ + "mutable ")
@@ -5057,235 +5303,6 @@ return ""
 })))
 }
 
-export const ff_core_Any_HasAnyTag$ff_compiler_Inference_Inference = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Inference.Inference" + "[") + "]"))
-},
-async anyTag_$($c) {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Inference.Inference" + "[") + "]"))
-}
-};
 
-export const ff_core_Show_Show$ff_compiler_Inference_Inference = {
-show_(x_) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((((((((((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.completionAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_HoverInfo.show_(z_.hoverResult_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompletionInfo).show_(z_.completionResult_)) + ")")
-return
-}
-}
-},
-async show_$(x_, $c) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((((((((((("Inference" + "(") + ff_compiler_Unification.ff_core_Show_Show$ff_compiler_Unification_Unification.show_(z_.unification_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.hoverAt_)) + ", ") + ff_core_Option.ff_core_Show_Show$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Location).show_(z_.completionAt_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_HoverInfo.show_(z_.hoverResult_)) + ", ") + ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_CompletionInfo).show_(z_.completionResult_)) + ")")
-return
-}
-}
-}
-};
-
-export const ff_core_Equal_Equal$ff_compiler_Inference_Inference = {
-equals_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverAt_, y_.hoverAt_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.completionAt_, y_.completionAt_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_HoverInfo.equals_(x_.hoverResult_, y_.hoverResult_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_CompletionInfo).equals_(x_.completionResult_, y_.completionResult_)))))
-return
-}
-}
-},
-async equals_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_compiler_Unification.ff_core_Equal_Equal$ff_compiler_Unification_Unification.equals_(x_.unification_, y_.unification_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.hoverAt_, y_.hoverAt_) && (ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Location).equals_(x_.completionAt_, y_.completionAt_) && (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_HoverInfo.equals_(x_.hoverResult_, y_.hoverResult_) && ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_CompletionInfo).equals_(x_.completionResult_, y_.completionResult_)))))
-return
-}
-}
-}
-};
-
-export const ff_core_Ordering_Order$ff_compiler_Inference_Inference = {
-compare_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_Unification.compare_(x_.unification_, y_.unification_);
-if((unificationOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return unificationOrdering_
-} else {
-const hoverAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.hoverAt_, y_.hoverAt_);
-if((hoverAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return hoverAtOrdering_
-} else {
-const completionAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.completionAt_, y_.completionAt_);
-if((completionAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return completionAtOrdering_
-} else {
-const hoverResultOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_HoverInfo.compare_(x_.hoverResult_, y_.hoverResult_);
-if((hoverResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return hoverResultOrdering_
-} else {
-const completionResultOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompletionInfo).compare_(x_.completionResult_, y_.completionResult_);
-if((completionResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return completionResultOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-}
-return
-}
-}
-},
-async compare_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const unificationOrdering_ = ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_Unification.compare_(x_.unification_, y_.unification_);
-if((unificationOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return unificationOrdering_
-} else {
-const hoverAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.hoverAt_, y_.hoverAt_);
-if((hoverAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return hoverAtOrdering_
-} else {
-const completionAtOrdering_ = ff_core_Option.ff_core_Ordering_Order$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_Location).compare_(x_.completionAt_, y_.completionAt_);
-if((completionAtOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return completionAtOrdering_
-} else {
-const hoverResultOrdering_ = ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_HoverInfo.compare_(x_.hoverResult_, y_.hoverResult_);
-if((hoverResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return hoverResultOrdering_
-} else {
-const completionResultOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_CompletionInfo).compare_(x_.completionResult_, y_.completionResult_);
-if((completionResultOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return completionResultOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-}
-return
-}
-}
-}
-};
-
-export const ff_core_Serializable_Serializable$ff_compiler_Inference_Inference = {
-serializeUsing_(serialization_, x_) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.serializeUsing_(serialization_, value_.unification_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.hoverAt_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.completionAt_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_HoverInfo.serializeUsing_(serialization_, value_.hoverResult_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_CompletionInfo).serializeUsing_(serialization_, value_.completionResult_)
-return
-}
-}
-},
-deserializeUsing_(serialization_) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_HoverInfo.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_CompletionInfo).deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-},
-async serializeUsing_$(serialization_, x_, $c) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.serializeUsing_(serialization_, value_.unification_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.hoverAt_);
-ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).serializeUsing_(serialization_, value_.completionAt_);
-ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_HoverInfo.serializeUsing_(serialization_, value_.hoverResult_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_CompletionInfo).serializeUsing_(serialization_, value_.completionResult_)
-return
-}
-}
-},
-async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 31), 0);
-return ff_compiler_Inference.Inference(ff_compiler_Unification.ff_core_Serializable_Serializable$ff_compiler_Unification_Unification.deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_core_Option.ff_core_Serializable_Serializable$ff_core_Option_Option(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Location).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_HoverInfo.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_List_List(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_CompletionInfo).deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-}
-};
 
 

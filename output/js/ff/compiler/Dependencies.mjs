@@ -124,11 +124,11 @@ const fixedPackageDirectory_ = ((packageDirectory_ === "")
 ? "."
 : packageDirectory_);
 function go_(directory_) {
-const fireflyDirectory_ = (directory_ + "/.firefly");
-if(ff_core_FileSystem.FileSystem_exists(fs_, fireflyDirectory_)) {
+const packageFile_ = (directory_ + "/.firefly/package.ff");
+if(ff_core_FileSystem.FileSystem_exists(fs_, packageFile_)) {
 return directory_
 } else if(ff_core_FileSystem.FileSystem_exists(fs_, (directory_ + "/.."))) {
-return ff_compiler_Dependencies.findScriptPackageLocation_(fs_, (directory_ + "/.."))
+return go_((directory_ + "/.."))
 } else {
 return fixedPackageDirectory_
 }
@@ -166,11 +166,11 @@ const fixedPackageDirectory_ = ((packageDirectory_ === "")
 ? "."
 : packageDirectory_);
 async function go_$(directory_, $c) {
-const fireflyDirectory_ = (directory_ + "/.firefly");
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, fireflyDirectory_, $c))) {
+const packageFile_ = (directory_ + "/.firefly/package.ff");
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, packageFile_, $c))) {
 return directory_
 } else if((await ff_core_FileSystem.FileSystem_exists$(fs_, (directory_ + "/.."), $c))) {
-return (await ff_compiler_Dependencies.findScriptPackageLocation_$(fs_, (directory_ + "/.."), $c))
+return (await go_$((directory_ + "/.."), $c))
 } else {
 return fixedPackageDirectory_
 }
@@ -375,44 +375,12 @@ if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List
 }
 }
 
-export const ff_core_Any_HasAnyTag$ff_compiler_Dependencies_Dependencies = {
-anyTag_() {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.Dependencies" + "[") + "]"))
-},
-async anyTag_$($c) {
-return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.Dependencies" + "[") + "]"))
-}
-};
-
 export const ff_core_Any_HasAnyTag$ff_compiler_Dependencies_ResolvedDependencies = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependencies" + "[") + "]"))
 },
 async anyTag_$($c) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependencies" + "[") + "]"))
-}
-};
-
-export const ff_core_Show_Show$ff_compiler_Dependencies_Dependencies = {
-show_(x_) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((((((((("Dependencies" + "(") + ff_compiler_Workspace.ff_core_Show_Show$ff_compiler_Workspace_Workspace.show_(z_.workspace_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
-return
-}
-}
-},
-async show_$(x_, $c) {
-{
-const x_a = x_;
-{
-const z_ = x_a;
-return ((((((((("Dependencies" + "(") + ff_compiler_Workspace.ff_core_Show_Show$ff_compiler_Workspace_Workspace.show_(z_.workspace_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
-return
-}
-}
 }
 };
 
@@ -433,43 +401,6 @@ const x_a = x_;
 {
 const z_ = x_a;
 return ((((((((("ResolvedDependencies" + "(") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair.show_(z_.mainPackagePair_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackageInfo).show_(z_.packages_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Show.ff_core_Show_Show$ff_core_String_String).show_(z_.packagePaths_)) + ", ") + ff_core_Set.ff_core_Show_Show$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).show_(z_.singleFilePackages_)) + ")")
-return
-}
-}
-}
-};
-
-export const ff_core_Equal_Equal$ff_compiler_Dependencies_Dependencies = {
-equals_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_compiler_Workspace.ff_core_Equal_Equal$ff_compiler_Workspace_Workspace.equals_(x_.workspace_, y_.workspace_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packages_, y_.packages_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packagePaths_, y_.packagePaths_) && ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).equals_(x_.singleFilePackages_, y_.singleFilePackages_))))
-return
-}
-}
-},
-async equals_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return true
-return
-}
-}
-{
-return (ff_compiler_Workspace.ff_core_Equal_Equal$ff_compiler_Workspace_Workspace.equals_(x_.workspace_, y_.workspace_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packages_, y_.packages_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packagePaths_, y_.packagePaths_) && ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).equals_(x_.singleFilePackages_, y_.singleFilePackages_))))
 return
 }
 }
@@ -507,83 +438,6 @@ return
 }
 {
 return (ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair.equals_(x_.mainPackagePair_, y_.mainPackagePair_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackageInfo).equals_(x_.packages_, y_.packages_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String).equals_(x_.packagePaths_, y_.packagePaths_) && ff_core_Set.ff_core_Equal_Equal$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).equals_(x_.singleFilePackages_, y_.singleFilePackages_))))
-return
-}
-}
-}
-};
-
-export const ff_core_Ordering_Order$ff_compiler_Dependencies_Dependencies = {
-compare_(x_, y_) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const workspaceOrdering_ = ff_compiler_Workspace.ff_core_Ordering_Order$ff_compiler_Workspace_Workspace.compare_(x_.workspace_, y_.workspace_);
-if((workspaceOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return workspaceOrdering_
-} else {
-const packagesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackageInfo).compare_(x_.packages_, y_.packages_);
-if((packagesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagesOrdering_
-} else {
-const packagePathsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.packagePaths_, y_.packagePaths_);
-if((packagePathsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagePathsOrdering_
-} else {
-const singleFilePackagesOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).compare_(x_.singleFilePackages_, y_.singleFilePackages_);
-if((singleFilePackagesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return singleFilePackagesOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
-return
-}
-}
-},
-async compare_$(x_, y_, $c) {
-{
-const x_a = x_;
-const y_a = y_;
-{
-const _guard1 = (x_ === y_);
-if(_guard1) {
-return ff_core_Ordering.OrderingSame()
-return
-}
-}
-{
-const workspaceOrdering_ = ff_compiler_Workspace.ff_core_Ordering_Order$ff_compiler_Workspace_Workspace.compare_(x_.workspace_, y_.workspace_);
-if((workspaceOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return workspaceOrdering_
-} else {
-const packagesOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackageInfo).compare_(x_.packages_, y_.packages_);
-if((packagesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagesOrdering_
-} else {
-const packagePathsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String).compare_(x_.packagePaths_, y_.packagePaths_);
-if((packagePathsOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return packagePathsOrdering_
-} else {
-const singleFilePackagesOrdering_ = ff_core_Set.ff_core_Ordering_Order$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).compare_(x_.singleFilePackages_, y_.singleFilePackages_);
-if((singleFilePackagesOrdering_ !== ff_core_Ordering.OrderingSame())) {
-return singleFilePackagesOrdering_
-} else {
-return ff_core_Ordering.OrderingSame()
-}
-}
-}
-}
 return
 }
 }
@@ -661,79 +515,6 @@ return ff_core_Ordering.OrderingSame()
 }
 }
 }
-return
-}
-}
-}
-};
-
-export const ff_core_Serializable_Serializable$ff_compiler_Dependencies_Dependencies = {
-serializeUsing_(serialization_, x_) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_compiler_Workspace.ff_core_Serializable_Serializable$ff_compiler_Workspace_Workspace.serializeUsing_(serialization_, value_.workspace_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, value_.packages_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.packagePaths_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).serializeUsing_(serialization_, value_.singleFilePackages_)
-return
-}
-}
-},
-deserializeUsing_(serialization_) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
-return ff_compiler_Dependencies.Dependencies(ff_compiler_Workspace.ff_core_Serializable_Serializable$ff_compiler_Workspace_Workspace.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
-return
-}
-}
-},
-async serializeUsing_$(serialization_, x_, $c) {
-{
-const serialization_a = serialization_;
-const x_a = x_;
-{
-const value_ = x_a;
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
-ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
-serialization_.offset_ += 1;
-ff_compiler_Workspace.ff_core_Serializable_Serializable$ff_compiler_Workspace_Workspace.serializeUsing_(serialization_, value_.workspace_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).serializeUsing_(serialization_, value_.packages_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).serializeUsing_(serialization_, value_.packagePaths_);
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).serializeUsing_(serialization_, value_.singleFilePackages_)
-return
-}
-}
-},
-async deserializeUsing_$(serialization_, $c) {
-const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
-serialization_.offset_ += 1;
-{
-const _1 = variantIndex_;
-{
-if(_1 == 0) {
-serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 37), 0);
-return ff_compiler_Dependencies.Dependencies(ff_compiler_Workspace.ff_core_Serializable_Serializable$ff_compiler_Workspace_Workspace.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackageInfo).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Set_Set(ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_PackagePair, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair).deserializeUsing_(serialization_))
-return
-}
-}
-{
-throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serializable.DeserializationChecksumException(), ff_core_Serializable.ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumException)})
 return
 }
 }

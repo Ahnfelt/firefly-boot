@@ -87,8 +87,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type Environment
-export function Environment(symbols_, imports_, effect_) {
-return {symbols_, imports_, effect_};
+export function Environment(modulePrefix_, symbols_, imports_, effect_) {
+return {modulePrefix_, symbols_, imports_, effect_};
 }
 
 // type Scheme
@@ -104,13 +104,17 @@ return {typeArguments_, scheme_};
 
 
 export function make_(module_, otherModules_, alreadyFlat_) {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true, alreadyFlat_).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1) => {
+return ff_compiler_Environment.Environment(ff_compiler_Environment.fullName_(module_, ""), ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true, alreadyFlat_).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false, false).symbols_
 })), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.List_map(module_.imports_, ((i_) => {
 return ff_core_Pair.Pair(i_.alias_, i_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty()))
+}
+
+export function fullName_(module_, name_) {
+return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
 }
 
 export function fail_(at_, message_) {
@@ -118,21 +122,18 @@ return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(
 }
 
 export function processModule_(module_, isCurrentModule_, alreadyFlat_) {
-function full_(module_, name_) {
-return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
-}
 const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
-return ff_core_Pair.Pair(full_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
 }));
 const lets_ = ff_core_List.List_map(module_.lets_, ((d_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(full_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), d_.variableType_, noEffect_)))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), d_.variableType_, noEffect_)))
 }));
 const traitMethods_ = ff_core_List.List_flatMap(module_.traits_, ((definition_) => {
 const generics_ = ff_core_List.List_map(definition_.generics_, ((name_) => {
 return ff_compiler_Syntax.TConstructor(definition_.at_, name_, ff_core_List.Empty())
 }));
-const constraint_ = ff_compiler_Syntax.Constraint(definition_.at_, full_(module_, definition_.name_), generics_);
+const constraint_ = ff_compiler_Syntax.Constraint(definition_.at_, ff_compiler_Environment.fullName_(module_, definition_.name_), generics_);
 const outerConstraints_ = (alreadyFlat_
 ? ff_core_List.Empty()
 : definition_.constraints_);
@@ -143,7 +144,7 @@ return (_w1 === "Q$")
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(ff_core_List.List_takeFirst(generics_.first_, 1), generics_.second_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(outerConstraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_, _c.effect_)
 }))(methodSignature_);
-return ff_core_Pair.Pair(full_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
 }))
 }));
 const extends_ = ff_core_List.List_flatMap(module_.extends_, ((d_) => {
@@ -188,24 +189,24 @@ return ff_compiler_Syntax.TConstructor(d_.at_, g_, ff_core_List.Empty())
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, t_, ff_core_Option.None());
 return ff_core_List.List_map(d_.commonFields_, ((f_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(full_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, d_.generics_, d_.constraints_, ff_core_List.Link(selfParameter_, ff_core_List.Empty()), f_.valueType_, noEffect_)))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, d_.generics_, d_.constraints_, ff_core_List.Link(selfParameter_, ff_core_List.Empty()), f_.valueType_, noEffect_)))
 }))
 }));
 const variants_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
-const returnType_ = ff_compiler_Syntax.TConstructor(d_.at_, full_(module_, d_.name_), ff_core_List.List_map(d_.generics_, ((typeParameter_) => {
+const returnType_ = ff_compiler_Syntax.TConstructor(d_.at_, ff_compiler_Environment.fullName_(module_, d_.name_), ff_core_List.List_map(d_.generics_, ((typeParameter_) => {
 return ff_compiler_Syntax.TConstructor(d_.at_, typeParameter_, ff_core_List.Empty())
 })));
 return ff_core_List.List_map(d_.variants_, ((variant_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(full_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, d_.generics_, d_.constraints_, ff_core_List.List_addAll(d_.commonFields_, variant_.fields_), returnType_, noEffect_)))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, d_.generics_, d_.constraints_, ff_core_List.List_addAll(d_.commonFields_, variant_.fields_), returnType_, noEffect_)))
 }))
 }));
 const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_)
+return ff_compiler_Environment.Environment("", ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_)
 }
 
 export async function make_$(module_, otherModules_, alreadyFlat_, $c) {
-return ff_compiler_Environment.Environment(ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true, alreadyFlat_).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1) => {
+return ff_compiler_Environment.Environment(ff_compiler_Environment.fullName_(module_, ""), ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true, alreadyFlat_).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false, false).symbols_
 })), ff_core_Map.empty_(), ((_w1, _w2) => {
 return ff_core_Map.Map_addAll(_w1, _w2, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
@@ -214,26 +215,27 @@ return ff_core_Pair.Pair(i_.alias_, i_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty()))
 }
 
+export async function fullName_$(module_, name_, $c) {
+return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
+}
+
 export async function fail_$(at_, message_, $c) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
 export async function processModule_$(module_, isCurrentModule_, alreadyFlat_, $c) {
-function full_(module_, name_) {
-return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
-}
 const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
-return ff_core_Pair.Pair(full_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
 }));
 const lets_ = ff_core_List.List_map(module_.lets_, ((d_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(full_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), d_.variableType_, noEffect_)))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.name_), ff_compiler_Environment.Scheme(true, false, false, false, ff_compiler_Syntax.Signature(d_.at_, d_.name_, ff_core_List.Empty(), ff_core_List.Empty(), ff_core_List.Empty(), d_.variableType_, noEffect_)))
 }));
 const traitMethods_ = ff_core_List.List_flatMap(module_.traits_, ((definition_) => {
 const generics_ = ff_core_List.List_map(definition_.generics_, ((name_) => {
 return ff_compiler_Syntax.TConstructor(definition_.at_, name_, ff_core_List.Empty())
 }));
-const constraint_ = ff_compiler_Syntax.Constraint(definition_.at_, full_(module_, definition_.name_), generics_);
+const constraint_ = ff_compiler_Syntax.Constraint(definition_.at_, ff_compiler_Environment.fullName_(module_, definition_.name_), generics_);
 const outerConstraints_ = (alreadyFlat_
 ? ff_core_List.Empty()
 : definition_.constraints_);
@@ -244,7 +246,7 @@ return (_w1 === "Q$")
 const signature_ = (((_c) => {
 return ff_compiler_Syntax.Signature(_c.at_, _c.name_, ff_core_List.List_addAll(ff_core_List.List_takeFirst(generics_.first_, 1), generics_.second_), ff_core_List.Link(constraint_, ff_core_List.List_addAll(outerConstraints_, methodSignature_.constraints_)), _c.parameters_, _c.returnType_, _c.effect_)
 }))(methodSignature_);
-return ff_core_Pair.Pair(full_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, signature_.name_), ff_compiler_Environment.Scheme(false, false, false, true, signature_))
 }))
 }));
 const extends_ = ff_core_List.List_flatMap(module_.extends_, ((d_) => {
@@ -289,20 +291,20 @@ return ff_compiler_Syntax.TConstructor(d_.at_, g_, ff_core_List.Empty())
 const selfParameter_ = ff_compiler_Syntax.Parameter(d_.at_, false, d_.name_, t_, ff_core_Option.None());
 return ff_core_List.List_map(d_.commonFields_, ((f_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(full_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, d_.generics_, d_.constraints_, ff_core_List.Link(selfParameter_, ff_core_List.Empty()), f_.valueType_, noEffect_)))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, (prefix_ + f_.name_)), ff_compiler_Environment.Scheme(true, f_.mutable_, d_.newtype_, false, ff_compiler_Syntax.Signature(f_.at_, f_.name_, d_.generics_, d_.constraints_, ff_core_List.Link(selfParameter_, ff_core_List.Empty()), f_.valueType_, noEffect_)))
 }))
 }));
 const variants_ = ff_core_List.List_flatMap(module_.types_, ((d_) => {
-const returnType_ = ff_compiler_Syntax.TConstructor(d_.at_, full_(module_, d_.name_), ff_core_List.List_map(d_.generics_, ((typeParameter_) => {
+const returnType_ = ff_compiler_Syntax.TConstructor(d_.at_, ff_compiler_Environment.fullName_(module_, d_.name_), ff_core_List.List_map(d_.generics_, ((typeParameter_) => {
 return ff_compiler_Syntax.TConstructor(d_.at_, typeParameter_, ff_core_List.Empty())
 })));
 return ff_core_List.List_map(d_.variants_, ((variant_) => {
 const noEffect_ = ff_compiler_Syntax.TConstructor(d_.at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_core_Pair.Pair(full_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, d_.generics_, d_.constraints_, ff_core_List.List_addAll(d_.commonFields_, variant_.fields_), returnType_, noEffect_)))
+return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, variant_.name_), ff_compiler_Environment.Scheme(false, false, d_.newtype_, false, ff_compiler_Syntax.Signature(variant_.at_, variant_.name_, d_.generics_, d_.constraints_, ff_core_List.List_addAll(d_.commonFields_, variant_.fields_), returnType_, noEffect_)))
 }))
 }));
 const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty());
-return ff_compiler_Environment.Environment(ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_)
+return ff_compiler_Environment.Environment("", ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_)
 }
 
 
@@ -340,7 +342,7 @@ show_(x_) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((("Environment" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Show_Show$ff_compiler_Environment_Scheme).show_(z_.symbols_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ")")
+return ((((((((("Environment" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.modulePrefix_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Show_Show$ff_compiler_Environment_Scheme).show_(z_.symbols_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ")")
 return
 }
 }
@@ -350,7 +352,7 @@ async show_$(x_, $c) {
 const x_a = x_;
 {
 const z_ = x_a;
-return ((((((("Environment" + "(") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Show_Show$ff_compiler_Environment_Scheme).show_(z_.symbols_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ")")
+return ((((((((("Environment" + "(") + ff_core_Show.ff_core_Show_Show$ff_core_String_String.show_(z_.modulePrefix_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Show_Show$ff_compiler_Environment_Scheme).show_(z_.symbols_)) + ", ") + ff_core_Map.ff_core_Show_Show$ff_core_Map_Map(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_DImport).show_(z_.imports_)) + ", ") + ff_compiler_Syntax.ff_core_Show_Show$ff_compiler_Syntax_Type.show_(z_.effect_)) + ")")
 return
 }
 }
@@ -416,7 +418,7 @@ return
 }
 }
 {
-return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Equal_Equal$ff_compiler_Environment_Scheme).equals_(x_.symbols_, y_.symbols_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_)))
+return ((x_.modulePrefix_ === y_.modulePrefix_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Equal_Equal$ff_compiler_Environment_Scheme).equals_(x_.symbols_, y_.symbols_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_))))
 return
 }
 }
@@ -433,7 +435,7 @@ return
 }
 }
 {
-return (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Equal_Equal$ff_compiler_Environment_Scheme).equals_(x_.symbols_, y_.symbols_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_)))
+return ((x_.modulePrefix_ === y_.modulePrefix_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Equal_Equal$ff_compiler_Environment_Scheme).equals_(x_.symbols_, y_.symbols_) && (ff_core_Map.ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DImport).equals_(x_.imports_, y_.imports_) && ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_Type.equals_(x_.effect_, y_.effect_))))
 return
 }
 }
@@ -527,6 +529,10 @@ return
 }
 }
 {
+const modulePrefixOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.modulePrefix_, y_.modulePrefix_);
+if((modulePrefixOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return modulePrefixOrdering_
+} else {
 const symbolsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Ordering_Order$ff_compiler_Environment_Scheme).compare_(x_.symbols_, y_.symbols_);
 if((symbolsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return symbolsOrdering_
@@ -540,6 +546,7 @@ if((effectOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return effectOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -559,6 +566,10 @@ return
 }
 }
 {
+const modulePrefixOrdering_ = ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String.compare_(x_.modulePrefix_, y_.modulePrefix_);
+if((modulePrefixOrdering_ !== ff_core_Ordering.OrderingSame())) {
+return modulePrefixOrdering_
+} else {
 const symbolsOrdering_ = ff_core_Map.ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Ordering_Order$ff_compiler_Environment_Scheme).compare_(x_.symbols_, y_.symbols_);
 if((symbolsOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return symbolsOrdering_
@@ -572,6 +583,7 @@ if((effectOrdering_ !== ff_core_Ordering.OrderingSame())) {
 return effectOrdering_
 } else {
 return ff_core_Ordering.OrderingSame()
+}
 }
 }
 }
@@ -735,6 +747,7 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.modulePrefix_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).serializeUsing_(serialization_, value_.symbols_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).serializeUsing_(serialization_, value_.imports_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, value_.effect_)
@@ -750,7 +763,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
-return ff_compiler_Environment.Environment(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_))
+return ff_compiler_Environment.Environment(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_))
 return
 }
 }
@@ -769,6 +782,7 @@ const value_ = x_a;
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, 0);
 serialization_.offset_ += 1;
+ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.serializeUsing_(serialization_, value_.modulePrefix_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).serializeUsing_(serialization_, value_.symbols_);
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).serializeUsing_(serialization_, value_.imports_);
 ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.serializeUsing_(serialization_, value_.effect_)
@@ -784,7 +798,7 @@ const _1 = variantIndex_;
 {
 if(_1 == 0) {
 serialization_.checksum_ = ff_core_Int.Int_bitOr(((31 * serialization_.checksum_) + 35), 0);
-return ff_compiler_Environment.Environment(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_))
+return ff_compiler_Environment.Environment(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String.deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Environment.ff_core_Serializable_Serializable$ff_compiler_Environment_Scheme).deserializeUsing_(serialization_), ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Map_Map(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_DImport).deserializeUsing_(serialization_), ff_compiler_Syntax.ff_core_Serializable_Serializable$ff_compiler_Syntax_Type.deserializeUsing_(serialization_))
 return
 }
 }

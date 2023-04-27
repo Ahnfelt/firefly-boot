@@ -24,7 +24,7 @@ extend self: Deriver {
                 ...self.makeEqualInstances(modulePrefix, module)
                 ...self.makeOrderingInstances(modulePrefix, module)
                 ...self.makeSerializableInstances(modulePrefix, module)
-            ],
+            ]
         )
     }
 
@@ -602,7 +602,7 @@ extend self: Deriver {
             (module.packagePair.groupName() != "ff:core" || coreWhitelist.contains(modulePrefix + "." + t.name)) &&
             !t.generics.first().any {_ == "Q$"} &&
             (allowGenerics || t.generics.isEmpty()) &&
-            !t.newtype &&
+            t.data && !t.newtype &&
             !typesWithInstance.contains(modulePrefix + "." + t.name)
         }
     }

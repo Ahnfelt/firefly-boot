@@ -2,12 +2,12 @@ import Syntax
 import Unification
 import Environment
 
-class LspHook( // TODO: Should be class, but causes a deriving error
-    targetAt: Location = Location("^lsp", -7, -7)
-    sourceAt: Location = Location("^lsp", -7, -7)
-    inferTypes: Bool = False
-    references: Stack[Location] = [].toStack()
-    inference: Stack[InferHook] = [].toStack()
+class LspHook(
+    targetAt: Location
+    sourceAt: Location
+    inferTypes: Bool
+    references: Stack[Location]
+    inference: Stack[InferHook]
 )
 
 disabled(): LspHook {
@@ -51,6 +51,9 @@ class ResolveHook {
     ResolveSymbolHook(
         symbol: SymbolHook
         annotation: Option[Type]
+    )
+    ResolveTypeHook(
+        symbol: SymbolHook
     )
 }
 
