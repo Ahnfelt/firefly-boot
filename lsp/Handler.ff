@@ -3,6 +3,7 @@ import Builder from ff:compiler
 import Syntax from ff:compiler
 import Tokenizer from ff:compiler
 import Token from ff:compiler
+import LspHook from ff:compiler
 
 class Handler(
     mutable rootUri: Option[String]
@@ -123,7 +124,7 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles, None, None, None, True)
+            Builder.check(system, ".", fixedPath, self.virtualFiles, LspHook.disabled(), None, None, None, True)
             []
         } catch {| CompileError(at, message), error =>
             let tokenLocation = self.findToken(system, at)
@@ -166,9 +167,10 @@ extend self: Handler {
     handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
         let hoverAt = self.grabFixedLocation(system, parameters)
         mutable hoverResult = HoverInfo(None, None, None)
+        let lspHook = LspHook.make(targetAt = Some(hoverAt), sourceAt = None, inferTypes = True)
         try {
             let hover = Some(Pair(hoverAt, {hoverResult = _}))
-            Builder.check(system, ".", hoverAt.file, self.virtualFiles, hover, None, None, True)
+            Builder.check(system, ".", hoverAt.file, self.virtualFiles, lspHook, hover, None, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -204,9 +206,10 @@ extend self: Handler {
     handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let completionAt = self.grabFixedLocation(system, parameters)
         mutable completionResult = []
+        let lspHook = LspHook.make(targetAt = Some(completionAt), sourceAt = None, inferTypes = True)
         try {
             let completion = Some(Pair(completionAt, {completionResult = _}))
-            Builder.check(system, ".", completionAt.file, self.virtualFiles, None, completion, None, True)
+            Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, None, completion, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -273,9 +276,10 @@ extend self: Handler {
     handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {
         let referencesAt = self.grabFixedLocation(system, parameters)
         mutable hoverResult = HoverInfo(None, None, None)
+        let temporaryLspHook = LspHook.make(targetAt = Some(referencesAt), sourceAt = None, inferTypes = True)
         try {
             let hover = Some(Pair(referencesAt, {hoverResult = _}))
-            Builder.check(system, ".", referencesAt.file, self.virtualFiles, hover, None, None, True)
+            Builder.check(system, ".", referencesAt.file, self.virtualFiles, temporaryLspHook, hover, None, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -288,6 +292,7 @@ extend self: Handler {
                 Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 // TODO search all files in workspace
                 let referencesResult = [definedAt].toStack()
+                let lspHook = LspHook.make(targetAt = None, sourceAt = Some(definedAt), inferTypes = True)
                 try {
                     let references = Some(Pair[Location, List[Location] => Unit](definedAt, {r => 
                         Log.trace("Set referencesResult: " + Show.show(r))
@@ -295,7 +300,7 @@ extend self: Handler {
                     }))
                     let path = if(local) {referencesAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
                     Log.trace("path: " + path)
-                    Builder.check(system, ".", path, self.virtualFiles, None, None, references, True)
+                    Builder.check(system, ".", path, self.virtualFiles, lspHook, None, None, references, True)
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()

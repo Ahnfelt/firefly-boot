@@ -7,6 +7,7 @@ import Inference
 import JsEmitter
 import Dictionaries
 import Dependencies
+import LspHook
 
 capability Compiler(
     emitTarget: EmitTarget
@@ -17,6 +18,7 @@ capability Compiler(
     packagePaths: Map[PackagePair, String]
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
+    lspHook: LspHook
     hoverAt: Option[Location]
     completionAt: Option[Location]
     referencesTo: Option[Location]
@@ -40,6 +42,7 @@ make(
     jsOutputPath: String
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
+    lspHook: LspHook
     hoverAt: Option[Location]
     completionAt: Option[Location]
     referencesTo: Option[Location]
@@ -53,6 +56,7 @@ make(
         packagePaths = resolvedDependencies.packagePaths
         singleFilePackages = resolvedDependencies.singleFilePackages
         virtualFiles = virtualFiles
+        lspHook = lspHook
         hoverAt = hoverAt
         completionAt = completionAt
         referencesTo = referencesTo
@@ -229,7 +233,7 @@ extend self: Compiler {
         let otherModules = self.imports(module).map {i =>
             self.derive(i.packagePair, FileSystem.prefixName(i.file))
         }
-        let inference = Inference.make([module, ...otherModules], self.hoverAt, self.completionAt)
+        let inference = Inference.make([module, ...otherModules], self.lspHook, self.hoverAt, self.completionAt)
         let inferredModule = try {
             inference.inferModule(module, otherModules)
         } finally {

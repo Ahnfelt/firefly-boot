@@ -2,18 +2,21 @@ import Syntax
 import Unification
 import Environment
 import Substitution
+import LspHook
 
 class Inference(
     unification: Unification
+    lspHook: LspHook
     hoverAt: Option[Location]
     completionAt: Option[Location]
     mutable hoverResult: HoverInfo
     mutable completionResult: List[CompletionInfo]
 )
 
-make(modules: List[Module], hoverAt: Option[Location], completionAt: Option[Location]): Inference {
+make(modules: List[Module], lspHook: LspHook, hoverAt: Option[Location], completionAt: Option[Location]): Inference {
     Inference(
-        unification = Unification.make(modules, !completionAt.isEmpty())
+        unification = Unification.make(modules, attemptFixes = lspHook.isEnabled() || !completionAt.isEmpty())
+        lspHook = lspHook
         hoverAt = hoverAt
         completionAt = completionAt
         hoverResult = HoverInfo(None, None, None)
@@ -134,6 +137,11 @@ extend self: Inference {
         let parameters = definition.signature.parameters.map {p =>
             let noEffect = TConstructor(p.at, "ff:core/Nothing.Nothing", [])
             let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType, noEffect))
+            if(self.lspHook.isTarget(p.at)) {
+                self.lspHook.inference.push(
+                    InferParameterHook(self.unification, environment, p)
+                )
+            }
             if(self.hoverAt.contains(p.at) && self.hoverResult.at.isEmpty()) {
                 self.hoverResult = self.hoverResult.HoverInfo(
                     at = Some(p.at)
@@ -213,6 +221,11 @@ extend self: Inference {
     }
 
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
+        if(self.lspHook.isTarget(pattern.at)) {
+            self.lspHook.inference.push(
+                InferPatternHook(self.unification, environment, expected, pattern)
+            )
+        }
         function literal(coreTypeName: String): Map[String, Type] {
             self.unification.unify(pattern.at, expected, TConstructor(pattern.at, core(coreTypeName), []))
             Map.empty()
@@ -272,7 +285,7 @@ extend self: Inference {
                     throw(CompileError(at, "No such variant: " + name))
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
-                if(patterns.size() != instantiated.scheme.signature.parameters.size() && self.completionAt.isEmpty()) {
+                if(patterns.size() != instantiated.scheme.signature.parameters.size() && !self.lspHook.isEnabled() && self.completionAt.isEmpty()) {
                     throw(CompileError(at, "Wrong number of subpatterns, expected " +
                         instantiated.scheme.signature.parameters.size() + ", got " + patterns.size() + "."
                     ))
@@ -284,6 +297,11 @@ extend self: Inference {
     }
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
+        if(self.lspHook.isTarget(term.at)) {
+            self.lspHook.inference.push(
+                InferTermHook(self.unification, environment, expected, term, None)
+            )
+        }
         function literal(coreTypeName: String): Term {
             if(self.completionAt.contains(term.at)) {self.completion(environment, "", False, expected)}
             self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), []))
@@ -314,6 +332,12 @@ extend self: Inference {
                 }
             | EField e =>
                 let recordType = self.unification.freshUnificationVariable(e.at)
+                if(self.lspHook.isTarget(term.at)) {
+                    self.lspHook.inference.pop()
+                    self.lspHook.inference.push(
+                        InferTermHook(self.unification, environment, expected, term, Some(recordType))
+                    )
+                }        
                 let record = self.inferTerm(environment, recordType, e.record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
@@ -336,7 +360,7 @@ extend self: Inference {
                                 )
                             }
                             e.EField(record = record)
-                        }.elseIf {!self.completionAt.isEmpty()} {
+                        }.elseIf {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} {
                             term
                         }.else {
                             throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
@@ -370,7 +394,7 @@ extend self: Inference {
                             | None =>
                                 throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
-                    | TVariable(_, _) {!self.completionAt.isEmpty()} =>
+                    | TVariable(_, _) {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
                         term
                     | TVariable(_, index) =>
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
@@ -477,6 +501,18 @@ extend self: Inference {
                     throw(CompileError(e.at, "Newtypes can't be copied"))
                 }
                 let signature = scheme.signature
+                if(self.lspHook.isEnabled()) {
+                    e.arguments.pairs().each {| Pair(i, a) => 
+                        if(self.lspHook.isTarget(a.at)) {
+                            self.lspHook.inference.push(
+                                InferArgumentHook( // TODO: Use e.arguments
+                                    self.unification, environment
+                                    True, term.at, e.name, signature.parameters, [], i
+                                )
+                            )
+                        }
+                    }
+                }
                 if(!self.completionAt.isEmpty()) {
                     e.arguments.each {a => 
                         if(self.completionAt.contains(a.at)) {
@@ -518,7 +554,7 @@ extend self: Inference {
                     function = function
                 )
             | ECall e =>
-                if(!self.completionAt.isEmpty() && e.target.{| StaticCall _ => True | _ => False}) {term} else:
+                if((self.lspHook.isEnabled() || !self.completionAt.isEmpty()) && e.target.{| StaticCall _ => True | _ => False}) {term} else:
                 let call = e.target.{
                     | DynamicCall call => call
                     | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in the Inference phase")
@@ -551,6 +587,12 @@ extend self: Inference {
                         }
                     | EField f =>
                         let recordType = self.unification.freshUnificationVariable(f.at)
+                        if(self.lspHook.isTarget(term.at)) {
+                            self.lspHook.inference.pop()
+                            self.lspHook.inference.push(
+                                InferTermHook(self.unification, environment, expected, term, Some(recordType))
+                            )
+                        }      
                         let record = self.inferTerm(environment, recordType, f.record)
                         let e2 = e.ECall(target = call.DynamicCall(function = f.EField(record = record)))
                         self.unification.substitute(recordType).{
@@ -579,7 +621,7 @@ extend self: Inference {
                                             "No such field " + f.field + " on type: " + t.show([])
                                         ))
                                 }
-                            | TVariable _ {!self.completionAt.isEmpty()} =>
+                            | TVariable _ {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
                                 self.inferLambdaCall(environment, expected, e2)
                             | TVariable(_, index) =>
                                 throw(CompileError(f.at
@@ -629,7 +671,7 @@ extend self: Inference {
                         e.EAssign(
                             value = value
                         )
-                    } elseIf {!self.completionAt.isEmpty()} {
+                    } elseIf {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} {
                         term
                     } else {
                         throw(CompileError(e.at, "Symbol is not mutable: " + e.variable))
@@ -670,7 +712,7 @@ extend self: Inference {
                             | None =>
                                 throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
-                    | TVariable(_, _) {!self.completionAt.isEmpty()} =>
+                    | TVariable(_, _) {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
                         term
                     | TVariable(_, index) =>
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
@@ -805,7 +847,7 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, t1)
                     | TConstructor(_, name, []) {name == core("Int")} =>
                         self.unification.unify(e.at, expected, t1)
-                    | _ {!self.completionAt.isEmpty()} =>
+                    | _ {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
                     | _ =>
                         throw(CompileError(e.at, "Operators on unknown types not currently supported"))
                 }
@@ -835,7 +877,7 @@ extend self: Inference {
                 let t2 = self.unification.freshUnificationVariable(e.at)
                 let e1 = self.inferTerm(environment, t1, a1.value)
                 let e2 = self.inferTerm(environment, t2, a2.value)
-                let magic: Type => Option[String] = { t =>
+                let magic: Type => Option[String] = {t =>
                     self.unification.substitute(t).{
                         | TConstructor(_, name, []) {name == core("Float")} => Some("Float")
                         | TConstructor(_, name, []) {name == core("Int")} => Some("Int")
@@ -856,7 +898,7 @@ extend self: Inference {
                     | None, Some(_) =>
                         self.unification.unify(e.at, t2, t1)
                         self.unification.unify(e.at, expected, t2)
-                    | _, _ {!self.completionAt.isEmpty()} =>
+                    | _, _ {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
                     | Some(_), Some(_) =>
                         throw(CompileError(e.at, "Operators on these types not currently supported"))
                     | None, None =>
@@ -864,7 +906,7 @@ extend self: Inference {
                 }
                 chooseType(magic(t1), magic(t2))
                 e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
-            | _ {!self.completionAt.isEmpty()} =>
+            | _ {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
                 term
             | _ =>
                 fail(e.at, "Unknown operator: " + operator)
@@ -902,6 +944,18 @@ extend self: Inference {
         parameters: List[Parameter]
         arguments: List[Argument]
     ): List[Argument] {
+        if(self.lspHook.isEnabled()) {
+            arguments.pairs().each {| Pair(i, a) => 
+                if(self.lspHook.isTarget(a.at)) {
+                    self.lspHook.inference.push(
+                        InferArgumentHook(
+                            self.unification, environment
+                            False, callAt, callName, parameters, arguments, i
+                        )
+                    )
+                }
+            }
+        }
         mutable remainingArguments = arguments
         let newArguments = parameters.map {p =>
             let t = p.valueType
@@ -910,7 +964,7 @@ extend self: Inference {
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(callAt, Some(p.name), e2)
                 }.else {
-                    if(self.completionAt.isEmpty()) {
+                    if(!self.lspHook.isEnabled() && self.completionAt.isEmpty()) {
                         fail(callAt, "Missing argument: " + p.name)
                     } else {
                         Argument(callAt, Some(p.name), EVariable(callAt, ""))
@@ -961,7 +1015,7 @@ extend self: Inference {
                     }
             }
         }
-        if(self.completionAt.isEmpty()) {
+        if(!self.lspHook.isEnabled() && self.completionAt.isEmpty()) {
             remainingArguments.first().each {
                 | Argument(callAt, None, _) => fail(callAt, "Too many arguments")
                 | Argument(callAt, Some(n), _) => fail(callAt, "Unknown argument: " + n)
@@ -971,7 +1025,7 @@ extend self: Inference {
     }
 
     lookup(environment: Environment, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
-        self.lookupOption(environment, at, symbol, typeArguments).elseIf {!self.completionAt.isEmpty()} {
+        self.lookupOption(environment, at, symbol, typeArguments).elseIf {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} {
             Instantiated([], Scheme(True, False, False, False, Signature(
                 at
                 symbol
@@ -995,7 +1049,7 @@ extend self: Inference {
                 } else {
                     typeArguments
                 }
-                if(scheme.signature.generics.size() != newTypeArguments.size() && self.completionAt.isEmpty()) {
+                if(scheme.signature.generics.size() != newTypeArguments.size() && !self.lspHook.isEnabled() && self.completionAt.isEmpty()) {
                     let extra = newTypeArguments.size() - typeArguments.size()
                     throw(CompileError(at
                         "Wrong number of type arguments for " + symbol +

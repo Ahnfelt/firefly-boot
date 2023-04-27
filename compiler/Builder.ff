@@ -6,6 +6,7 @@ import Compiler
 import Unification
 import Dependencies
 import JsEmitter
+import LspHook
 
 build(
     system: NodeSystem
@@ -36,6 +37,7 @@ build(
             jsPathFile
             resolvedDependencies
             Map.empty()
+            lspHook = LspHook.disabled()
             hoverAt = None
             completionAt = None
             referencesTo = None
@@ -94,6 +96,7 @@ check(
     fireflyPath: String, 
     path: String, 
     virtualFiles: Map[String, String], 
+    lspHook: LspHook
     hoverAt: Option[Pair[Location, HoverInfo => Unit]]
     completionAt: Option[Pair[Location, List[CompletionInfo] => Unit]]
     referencesTo: Option[Pair[Location, List[Location] => Unit]]
@@ -127,6 +130,7 @@ check(
             ".firefly/temporary"
             fixedResolvedDependencies
             virtualFiles
+            lspHook
             hoverAt.map {_.first}
             completionAt.map {_.first}
             referencesTo.map {_.first}
