@@ -1092,10 +1092,19 @@ extend self: Inference {
             )
         }
 
-        Instantiated(
+        let instantiated = Instantiated(
             typeArguments = instantiation
             scheme = scheme.Scheme(signature = signature)
         )
+
+        if(self.lspHook.isTarget(at)) {
+            let symbolHook = SymbolHook(symbol, at, scheme.signature.at)
+            self.lspHook.inference.push(
+                InferLookupHook(self.unification, environment, symbolHook, instantiated)
+            )
+        }
+
+        instantiated
 
     }
 

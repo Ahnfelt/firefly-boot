@@ -15,7 +15,7 @@ disabled(): LspHook {
 }
 
 make(targetAt: Option[Location], sourceAt: Option[Location], inferTypes: Bool): LspHook {
-    LspHook(
+    LspHook( // Default dummy values instead of Option[Location] to speed up location hit check
         targetAt = targetAt.else {Location("^lsp", -7, -7)}
         sourceAt = sourceAt.else {Location("^lsp", -7, -7)}
         inferTypes = inferTypes

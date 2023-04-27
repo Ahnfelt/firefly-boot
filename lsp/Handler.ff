@@ -3,6 +3,8 @@ import Builder from ff:compiler
 import Syntax from ff:compiler
 import Tokenizer from ff:compiler
 import Token from ff:compiler
+import Environment from ff:compiler
+import Unification from ff:compiler
 import LspHook from ff:compiler
 
 class Handler(
@@ -165,26 +167,29 @@ extend self: Handler {
     }
     
     handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
-        let hoverAt = self.grabFixedLocation(system, parameters)
-        mutable hoverResult = HoverInfo(None, None, None)
-        let lspHook = LspHook.make(targetAt = Some(hoverAt), sourceAt = None, inferTypes = True)
+        let targetAt = self.grabFixedLocation(system, parameters)
+        let lspHook = LspHook.make(targetAt = Some(targetAt), sourceAt = None, inferTypes = True)
         try {
-            let hover = Some(Pair(hoverAt, {hoverResult = _}))
-            Builder.check(system, ".", hoverAt.file, self.virtualFiles, lspHook, hover, None, None, True)
+            Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, None, None, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
         let js = system.js()
         let o = if(goToDefinition) {
-            hoverResult.at.map {at => 
-                let token = self.findToken(system, at)
-                self.tokenLocationToLspLocation(system, token)
+            lspHook.inference.pop().map {
+                | InferLookupHook h => 
+                    let token = self.findToken(system, h.symbol.definedAt)
+                    self.tokenLocationToLspLocation(system, token)
+                | _ =>
+                    js.null()
             }.else {js.null()}
         } else {
-            hoverResult.{
-                | HoverInfo(_, Some(t), q) => 
+            lspHook.inference.pop().map {
+                | InferLookupHook h => 
+                    let t = h.unification.substitute(h.instantiated.scheme.signature.returnType)
+                    let q = h.unification.substitute(h.instantiated.scheme.signature.effect)
                     let extra = q.{
-                        | Some(TConstructor(_, "Q$", _)) =>
+                        | TConstructor(_, "Q$", _) =>
                             "This call may be asynchronous."
                         | _ => 
                             ""
@@ -198,7 +203,7 @@ extend self: Handler {
                     )
                 | _ => 
                     js.null()
-            }
+            }.else {js.null()}
         }
         Result(o)
     }
