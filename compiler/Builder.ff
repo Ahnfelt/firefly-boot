@@ -38,7 +38,6 @@ build(
             resolvedDependencies
             Map.empty()
             lspHook = LspHook.disabled()
-            hoverAt = None
             completionAt = None
             referencesTo = None
         )
@@ -97,7 +96,6 @@ check(
     path: String, 
     virtualFiles: Map[String, String], 
     lspHook: LspHook
-    hoverAt: Option[Pair[Location, HoverInfo => Unit]]
     completionAt: Option[Pair[Location, List[CompletionInfo] => Unit]]
     referencesTo: Option[Pair[Location, List[Location] => Unit]]
     infer: Bool
@@ -131,7 +129,6 @@ check(
             fixedResolvedDependencies
             virtualFiles
             lspHook
-            hoverAt.map {_.first}
             completionAt.map {_.first}
             referencesTo.map {_.first}
         )
@@ -144,7 +141,6 @@ check(
                     compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
                 }
             } finally {
-                hoverAt.each {_.second(compiler.hoverResult)}
                 completionAt.each {_.second(compiler.completionResult)}
                 referencesTo.each {_.second(compiler.referencesResult)}
             } grab()

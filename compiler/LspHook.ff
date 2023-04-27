@@ -6,7 +6,7 @@ class LspHook(
     targetAt: Location
     sourceAt: Location
     inferTypes: Bool
-    references: Stack[Location]
+    resolver: Stack[ResolveHook]
     inference: Stack[InferHook]
 )
 
@@ -19,7 +19,7 @@ make(targetAt: Option[Location], sourceAt: Option[Location], inferTypes: Bool): 
         targetAt = targetAt.else {Location("^lsp", -7, -7)}
         sourceAt = sourceAt.else {Location("^lsp", -7, -7)}
         inferTypes = inferTypes
-        references = [].toStack()
+        resolver = [].toStack()
         inference = [].toStack()
     )
 }

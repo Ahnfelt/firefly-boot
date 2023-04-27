@@ -126,7 +126,7 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles, LspHook.disabled(), None, None, None, True)
+            Builder.check(system, ".", fixedPath, self.virtualFiles, LspHook.disabled(), None, None, True)
             []
         } catch {| CompileError(at, message), error =>
             let tokenLocation = self.findToken(system, at)
@@ -170,11 +170,12 @@ extend self: Handler {
         let targetAt = self.grabFixedLocation(system, parameters)
         let lspHook = LspHook.make(targetAt = Some(targetAt), sourceAt = None, inferTypes = True)
         try {
-            Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, None, None, None, True)
+            Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, None, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
         let js = system.js()
+        // TODO: Find the InferLookupHook instead of assuming it's the top one
         let o = if(goToDefinition) {
             lspHook.inference.pop().map {
                 | InferLookupHook h => 
@@ -214,7 +215,7 @@ extend self: Handler {
         let lspHook = LspHook.make(targetAt = Some(completionAt), sourceAt = None, inferTypes = True)
         try {
             let completion = Some(Pair(completionAt, {completionResult = _}))
-            Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, None, completion, None, True)
+            Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, completion, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -283,8 +284,8 @@ extend self: Handler {
         mutable hoverResult = HoverInfo(None, None, None)
         let temporaryLspHook = LspHook.make(targetAt = Some(referencesAt), sourceAt = None, inferTypes = True)
         try {
-            let hover = Some(Pair(referencesAt, {hoverResult = _}))
-            Builder.check(system, ".", referencesAt.file, self.virtualFiles, temporaryLspHook, hover, None, None, True)
+            let hover = Some(Pair(referencesAt, {hoverResult = _})) // TODO: Use lspHook
+            Builder.check(system, ".", referencesAt.file, self.virtualFiles, temporaryLspHook, None, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -305,7 +306,7 @@ extend self: Handler {
                     }))
                     let path = if(local) {referencesAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
                     Log.trace("path: " + path)
-                    Builder.check(system, ".", path, self.virtualFiles, lspHook, None, None, references, True)
+                    Builder.check(system, ".", path, self.virtualFiles, lspHook, None, references, True)
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()

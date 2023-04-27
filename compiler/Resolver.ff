@@ -1,4 +1,5 @@
 import Syntax
+import LspHook
 
 class Resolver(
     variables: Map[String, String]
@@ -12,19 +13,18 @@ class Resolver(
     traits: Map[String, String]
     traitLocations: Map[String, Location]
     state: ResolverState
-    hoverAt: Option[Location]
+    lspHook: LspHook
     referencesTo: Option[Location]
     completionAt: Option[Location]
 )
 
 class ResolverState(
     mutable nextUnificationVariableIndex: Int
-    mutable hoverResult: HoverInfo
     mutable referencesResult: List[Location]
     mutable completionResult: List[CompletionInfo]
 )
 
-make(hoverAt: Option[Location], referencesTo: Option[Location], completionAt: Option[Location]): Resolver {
+make(lspHook: LspHook, referencesTo: Option[Location], completionAt: Option[Location]): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()
@@ -38,11 +38,10 @@ make(hoverAt: Option[Location], referencesTo: Option[Location], completionAt: Op
         traitLocations = [].toMap()
         state = ResolverState(
             nextUnificationVariableIndex = 2
-            hoverResult = HoverInfo(None, None, None)
             referencesResult = []
             completionResult = []
         ) // To avoid collision with the parser and unification
-        hoverAt = hoverAt
+        lspHook = lspHook
         referencesTo = referencesTo
         completionAt = completionAt
     )
@@ -138,8 +137,10 @@ extend self: Resolver {
     }
 
     resolveTypeDefinition(definition: DType): DType {
-        if(self.hoverAt.contains(definition.at)) {
-            self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(definition.at))
+        if(self.lspHook.isTarget(definition.at)) {
+            self.lspHook.resolver.push(
+                ResolveTypeHook(SymbolHook(definition.name, definition.at, definition.at))
+            )
         }
         if(self.referencesTo.contains(definition.at)) {
             self.state.referencesResult = [...self.state.referencesResult, definition.at]
@@ -254,11 +255,6 @@ extend self: Resolver {
         | EFloat _, _ => term
         | EVariable e, _ =>
             let at = self.variableLocations.get(e.name)
-            if(self.hoverAt.contains(e.at)) {
-                at.each {at =>
-                    self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
-                }
-            }
             if(at.any {self.referencesTo.contains(_)}) {
                 self.state.referencesResult = [...self.state.referencesResult, e.at]
             }
@@ -370,9 +366,17 @@ extend self: Resolver {
             type
         | TConstructor constructor, _ =>
             if(self.completionAt.contains(type.at)) {self.typeCompletion()}
+            if(self.lspHook.isTarget(type.at)) {
+                self.lspHook.resolver.push(
+                    ResolveTypeHook(SymbolHook(constructor.name, type.at, type.at))
+                )
+            }
             self.typeLocations.get(constructor.name).each {at =>
-                if(self.hoverAt.contains(type.at)) {
-                    self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
+                if(self.lspHook.isTarget(type.at)) {
+                    self.lspHook.resolver.pop()
+                    self.lspHook.resolver.push(
+                        ResolveTypeHook(SymbolHook(constructor.name, type.at, at))
+                    )
                 }
                 if(self.referencesTo.contains(at)) {
                     self.state.referencesResult = [...self.state.referencesResult, constructor.at]
@@ -418,9 +422,17 @@ extend self: Resolver {
     }
 
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
+        if(self.lspHook.isTarget(constraint.at)) {
+            self.lspHook.resolver.push(
+                ResolveTypeHook(SymbolHook(constraint.name, constraint.at, constraint.at))
+            )
+        }
         self.traitLocations.get(constraint.name).each {at =>
-            if(self.hoverAt.contains(constraint.at)) {
-                self.state.hoverResult = self.state.hoverResult.HoverInfo(at = Some(at))
+            if(self.lspHook.isTarget(constraint.at)) {
+                self.lspHook.resolver.pop()
+                self.lspHook.resolver.push(
+                    ResolveTypeHook(SymbolHook(constraint.name, constraint.at, at))
+                )
             }
             if(self.referencesTo.contains(at)) {
                 self.state.referencesResult = [...self.state.referencesResult, at]

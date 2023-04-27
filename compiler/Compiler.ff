@@ -19,7 +19,6 @@ capability Compiler(
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
     lspHook: LspHook
-    hoverAt: Option[Location]
     completionAt: Option[Location]
     referencesTo: Option[Location]
     mutable parsedModules: Map[String, Module]
@@ -29,7 +28,6 @@ capability Compiler(
     mutable emittedModules: Set[String]
     mutable phaseDurations: List[Pair[String, Duration]]
     mutable phaseDurationDelta: Duration
-    mutable hoverResult: HoverInfo
     mutable completionResult: List[CompletionInfo]
     mutable referencesResult: List[Location]
 )
@@ -43,7 +41,6 @@ make(
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
     lspHook: LspHook
-    hoverAt: Option[Location]
     completionAt: Option[Location]
     referencesTo: Option[Location]
 ): Compiler {
@@ -57,7 +54,6 @@ make(
         singleFilePackages = resolvedDependencies.singleFilePackages
         virtualFiles = virtualFiles
         lspHook = lspHook
-        hoverAt = hoverAt
         completionAt = completionAt
         referencesTo = referencesTo
         parsedModules = Map.empty()
@@ -67,7 +63,6 @@ make(
         emittedModules = Set.empty()
         phaseDurations = []
         phaseDurationDelta = Duration(0.0)
-        hoverResult = HoverInfo(None, None, None)
         completionResult = []
         referencesResult = []
     )
@@ -162,7 +157,7 @@ extend self: Compiler {
         let fixedPath = path.replace("\\", "/")
         //Log.trace("moduleName: " + moduleName + ", path: " + path + ", fixedPath: " + fixedPath)
         let code = self.virtualFiles.get(fixedPath).else {self.files.readText(fixedPath)}
-        let attemptFixes = !self.hoverAt.isEmpty() || !self.completionAt.isEmpty()
+        let attemptFixes = self.lspHook.isEnabled() || !self.completionAt.isEmpty()
         let tokens = Tokenizer.tokenize(fixedPath, code, self.completionAt, attemptFixes)
         let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser, attemptFixes)
         let module = if(self.singleFilePackages.contains(packagePair)) {
@@ -195,13 +190,10 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName)
         let otherModules = self.imports(module)
-        let resolver = Resolver.make(self.hoverAt, self.referencesTo, self.completionAt)
+        let resolver = Resolver.make(self.lspHook, self.referencesTo, self.completionAt)
         let result = try {
             resolver.resolveModule(module, otherModules)
         } finally {
-            resolver.state.hoverResult.at.each {at => 
-                self.hoverResult = self.hoverResult.HoverInfo(at = Some(at))
-            }
             self.referencesResult = [...self.referencesResult, ...resolver.state.referencesResult]
             if(!resolver.state.completionResult.isEmpty()) {
                 self.completionResult = resolver.state.completionResult
@@ -233,13 +225,10 @@ extend self: Compiler {
         let otherModules = self.imports(module).map {i =>
             self.derive(i.packagePair, FileSystem.prefixName(i.file))
         }
-        let inference = Inference.make([module, ...otherModules], self.lspHook, self.hoverAt, self.completionAt)
+        let inference = Inference.make([module, ...otherModules], self.lspHook, self.completionAt)
         let inferredModule = try {
             inference.inferModule(module, otherModules)
         } finally {
-            if(!inference.hoverResult.at.isEmpty()) {
-                self.hoverResult = inference.hoverResult
-            }
             if(!inference.completionResult.isEmpty()) {
                 self.completionResult = inference.completionResult
             }
