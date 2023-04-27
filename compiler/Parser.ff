@@ -1041,8 +1041,12 @@ extend self: Parser {
         self.rawSkip(LBracketLeft, "(")
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
-            self.skip(LAssign)
-            fields.push(Field(fieldToken.at(), fieldToken.raw(), self.parseTerm()))
+            if(!self.attemptFixes || self.current().is(LAssign)) {
+                self.skip(LAssign)
+                fields.push(Field(fieldToken.at(), fieldToken.raw(), self.parseTerm()))
+            } else {
+                fields.push(Field(fieldToken.at(), fieldToken.raw(), EVariable(fieldToken.at(), fieldToken.raw())))
+            }
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")

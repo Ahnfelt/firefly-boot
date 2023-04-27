@@ -49,6 +49,7 @@ extend self: Handler {
             | "initialize" => self.handleInitialize(system.js(), parameters)
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
             | "textDocument/completion" => self.handleCompletion(system, parameters)
+            //| "textDocument/signatureHelp" => self.handleSignatureHelp(system, parameters)
             | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
             | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
             | "textDocument/references" => self.handleReferences(system, parameters, local = False)
@@ -82,7 +83,6 @@ extend self: Handler {
                 )
                 .with("hoverProvider", True)
                 .with("definitionProvider", True)
-                //.with("typeDefinitionProvider", True)
                 .with("documentHighlightProvider", True)
                 .with("diagnosticProvider", js.object()
                     .with("interFileDependencies", True)
@@ -92,6 +92,10 @@ extend self: Handler {
                     .with("triggerCharacters", js.array(["."].map {js.value(_)}))
                     .with("allCommitCharacters", js.array([";"].map {js.value(_)}))
                 )
+                /*.with("signatureHelpProvider", js.object()
+                    .with("triggerCharacters", js.array(["("].map {js.value(_)}))
+                    .with("retriggerCharacters", js.array([","].map {js.value(_)}))
+                )*/
                 .with("referencesProvider", True)
                 /*.with("workspace", js.object()
                     .with("workspaceFolders", js.object()
@@ -220,7 +224,7 @@ extend self: Handler {
                     isAlpha.toInt() + isLower.toInt()
                 )} + i.label.lower()
                 let preselect = Pair(i.type, i.expectedType).{
-                    | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2 && !isParameter
+                    | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2
                     | _ => False
                 }
                 js.object()
@@ -244,6 +248,25 @@ extend self: Handler {
                         .with("value", "```\n" + i.documentation + "\n```")
                     )
             })
+        Result(o)
+    }
+
+    handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let completionAt = self.grabFixedLocation(system, parameters)
+        mutable completionResult = []
+        // This happens when the cursor moves or a character is typed so it'd better be fast!
+        let js = system.js()
+        let label = "TODO(todo1: One, todo2: Two): Three"
+        let o = js.object()
+            .with("signatures", js.array([js.object()
+                .with("label", label)
+                .with("parameters", js.array([
+                    js.object().with("label", "todo1: One")
+                    js.object().with("label", "todo2: Two")
+                ]))
+                .with("activeParameter", 0)
+            ]))
+            .with("activeSignature", 0)
         Result(o)
     }
 

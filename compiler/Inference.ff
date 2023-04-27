@@ -285,6 +285,7 @@ extend self: Inference {
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
         function literal(coreTypeName: String): Term {
+            if(self.completionAt.contains(term.at)) {self.completion(environment, "", False, expected)}
             self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), []))
             term
         }
@@ -375,6 +376,7 @@ extend self: Inference {
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
             | EWildcard e =>
+                if(self.completionAt.contains(term.at)) {self.completion(environment, "", False, expected)}
                 self.lookup(environment, e.at, "_w" + e.index, []).map {instantiated =>
                     self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                     term
@@ -445,7 +447,7 @@ extend self: Inference {
                 }
                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                 let arguments = e.arguments.map {
-                    self.inferArguments(e.at, environment, instantiated.scheme.signature.parameters, _)
+                    self.inferArguments(e.at, e.name, environment, instantiated.scheme.signature.parameters, _)
                 }
                 e.EVariant(
                     typeArguments = instantiated.typeArguments.map {_.second}
@@ -475,6 +477,15 @@ extend self: Inference {
                     throw(CompileError(e.at, "Newtypes can't be copied"))
                 }
                 let signature = scheme.signature
+                if(!self.completionAt.isEmpty()) {
+                    e.arguments.each {a => 
+                        if(self.completionAt.contains(a.at)) {
+                            signature.parameters.filter {p => !e.arguments.any {_.name == p.name}}.each {p =>
+                                self.namedParameterCompletion(p, True)
+                            }
+                        }
+                    }
+                }
                 let parameterNames = signature.parameters.map {_.name}
                 e.arguments.find {a => !parameterNames.any {_ == a.name}}.each {
                     | Field(at, name, value) => throw(CompileError(at, "Unknown parameter: " + name))
@@ -514,6 +525,7 @@ extend self: Inference {
                 }
                 call.function.{
                     | EVariable(variableAt, x) =>
+                        if(self.completionAt.contains(variableAt)) {self.completion(environment, "", False, expected)}
                         if(x.first().any {c => c != '_' && !c.isAsciiLetter()}) {
                             self.inferOperator(environment, expected, x, term)
                         } else {
@@ -704,7 +716,7 @@ extend self: Inference {
         let selfArgument = Argument(record.at, Some(selfParameter.name), record) // Be careful not to infer again
         self.unification.unify(term.at, expected, signature.returnType)
         self.unification.unify(term.at, selfParameter.valueType, recordType)
-        let arguments = self.inferArguments(term.at, environment, signature.parameters.dropFirst(), e.arguments)
+        let arguments = self.inferArguments(term.at, name, environment, signature.parameters.dropFirst(), e.arguments)
         self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
             target = StaticCall(name, instanceCall = False, tailCall = call.tailCall)
@@ -729,7 +741,7 @@ extend self: Inference {
             | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in inferFunctionCall")
         }
         self.unification.unify(e.at, expected, signature.returnType)
-        let arguments = self.inferArguments(e.at, environment, signature.parameters, e.arguments)
+        let arguments = self.inferArguments(e.at, name, environment, signature.parameters, e.arguments)
         self.unification.affect(term.at, signature.effect, environment.effect)
         e.ECall(
             target = StaticCall(name, instanceCall = instanceCall, tailCall = call.tailCall)
@@ -884,7 +896,8 @@ extend self: Inference {
     }
 
     inferArguments(
-        at: Location
+        callAt: Location
+        callName: String
         environment: Environment
         parameters: List[Parameter]
         arguments: List[Argument]
@@ -895,12 +908,12 @@ extend self: Inference {
             function defaultArgument(): Argument {
                 p.default.map {e =>
                     let e2 = self.inferTerm(environment, t, e)
-                    Argument(at, Some(p.name), e2)
+                    Argument(callAt, Some(p.name), e2)
                 }.else {
                     if(self.completionAt.isEmpty()) {
-                        fail(at, "Missing argument: " + p.name)
+                        fail(callAt, "Missing argument: " + p.name)
                     } else {
-                        Argument(at, Some(p.name), EVariable(at, ""))
+                        Argument(callAt, Some(p.name), EVariable(callAt, ""))
                     }
                 }
             }
@@ -908,7 +921,27 @@ extend self: Inference {
                 | [] =>
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
-                    if(self.completionAt.contains(at)) {self.namedParameterCompletion(p)}
+                    if(self.completionAt.contains(at)) {
+                        if([
+                            "ff:core/Equal.equals", "ff:core/Equal.notEquals"
+                            "ff:core/Ordering.before", "ff:core/Ordering.notBefore"
+                            "ff:core/Ordering.after", "ff:core/Ordering.notAfter"
+                        ].any {_ == callName}) {} else:
+                        let preselect = arguments.any {!_.name.isEmpty()} || (
+                            callAt.line != at.line && 
+                            parameters.reverse().toStream().map {_.valueType}.dropWhile {
+                                | TConstructor(_, n, _) => n.startsWith("Function$")
+                                | _ => False
+                            }.toList().size() > 1
+                        )
+                        let precedingAnonymousArguments = 
+                            arguments.dropLast(remaining.size() + 1).filter {_.name.isEmpty()}.size()
+                        parameters.filter {p => 
+                            !arguments.any {_.name.contains(p.name)}
+                        }.dropFirst(precedingAnonymousArguments).each {p =>
+                            self.namedParameterCompletion(p, preselect)
+                        }
+                    }
                     remainingArguments = remaining
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
@@ -930,8 +963,8 @@ extend self: Inference {
         }
         if(self.completionAt.isEmpty()) {
             remainingArguments.first().each {
-                | Argument(at, None, _) => fail(at, "Too many arguments")
-                | Argument(at, Some(name), _) => fail(at, "Unknown argument: " + name)
+                | Argument(callAt, None, _) => fail(callAt, "Too many arguments")
+                | Argument(callAt, Some(n), _) => fail(callAt, "Unknown argument: " + n)
             }
         }
         newArguments
@@ -1052,11 +1085,7 @@ extend self: Inference {
                         "(${1|" + realParameters.map {_.name}.map {f => f + " = "}.join(",") + "|}$0)"
                     } else {
                         if(trailing.isEmpty() || !required.isEmpty()) {
-                            if(required.isEmpty()) {
-                                "(" + required.join(", ") + ")"
-                            } else {
-                                "(${0:" + required.join(", ") + "})"
-                            }
+                            if(required.isEmpty()) {"()"} else {"($0)"}
                         } else {
                             ""
                         } + if(trailing.isEmpty()) {""} else {trailing.map {_.second}.join()}
@@ -1111,7 +1140,11 @@ extend self: Inference {
                 | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} => 
                     Some(pair)
                 | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
-                    Some(pair.mapFirst {_.dropFirst("ff:core/Core.".size())})
+                    Some(pair.Pair(first = name.dropFirst("ff:core/Core.".size())))
+                | Pair(name, _)@pair {name.startsWith(environment.modulePrefix)} {
+                    name.dropFirst(environment.modulePrefix.size()) | n
+                } {n.all {_.isAsciiLetterOrDigit()}} => 
+                    Some(pair.Pair(first = n))
                 | Pair(name, scheme) {name.dropWhile {_ != '/'}.dropFirst() | short} {
                     short.reverse().takeWhile {_ != '.'}.reverse() | shorter
                 } {shorter.all {_.isAsciiLetterOrDigit()}} =>
@@ -1273,14 +1306,14 @@ extend self: Inference {
         self.completionResult = [...self.completionResult, ...completions]
     }
 
-    namedParameterCompletion(parameter: Parameter): Unit {
+    namedParameterCompletion(parameter: Parameter, preselect: Bool): Unit {
         self.completionResult = [...self.completionResult, CompletionInfo(
             label = parameter.name + " = ..."
             snippet = parameter.name + " = "
             member = False
             type = parameter.valueType
             documentation = self.showCompletionParameter("", parameter)
-            expectedType = None
+            expectedType = if(preselect) {parameter.valueType}
         )]
     }
 

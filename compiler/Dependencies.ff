@@ -142,11 +142,11 @@ findScriptPackageLocation(fs: FileSystem, path: String): String {
     let packageDirectory = if(fixedPath.endsWith(".ff")) {FileSystem.directoryName(fixedPath)} else {fixedPath}
     let fixedPackageDirectory = if(packageDirectory == "") {"."} else {packageDirectory}
     function go(directory: String): String {
-        let fireflyDirectory = directory + "/.firefly"
-        if(fs.exists(fireflyDirectory)) {
+        let packageFile = directory + "/.firefly/package.ff"
+        if(fs.exists(packageFile)) {
             directory
         } elseIf {fs.exists(directory + "/..")} {
-            findScriptPackageLocation(fs, directory + "/..")
+            go(directory + "/..")
         } else {
             fixedPackageDirectory
         }

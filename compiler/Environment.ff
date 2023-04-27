@@ -1,6 +1,7 @@
 import Syntax
 
 data Environment(
+    modulePrefix: String
     symbols: Map[String, Scheme]
     imports: Map[String, DImport]
     effect: Type
@@ -21,6 +22,7 @@ data Instantiated(
 
 make(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment {
     Environment(
+        modulePrefix = fullName(module, "")
         symbols = processModule(module, True, alreadyFlat).symbols.addAll(
             otherModules.map {processModule(_, False, False).symbols}.foldLeft(Map.empty()) {_.addAll(_)}
         )
@@ -29,20 +31,20 @@ make(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment
     )
 }
 
+fullName(module: Module, name: String): String {
+    module.packagePair.groupName() + "/" +
+    module.file.dropLast(3) + "." + name
+}
+
 fail[T](at: Location, message: String): T {
     panic(message + " " + at.show())
 }
 
 processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environment {
 
-    function full(module: Module, name: String): String {
-        module.packagePair.groupName() + "/" +
-        module.file.dropLast(3) + "." + name
-    }
-
     let functions =
         module.functions.map {d => Pair(
-            full(module, d.signature.name)
+            fullName(module, d.signature.name)
             Scheme(False, False, False, False, d.signature)
         )}
 
@@ -50,7 +52,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         module.lets.map {d =>
             let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
             Pair(
-                full(module, d.name)
+                fullName(module, d.name)
                 Scheme(True, False, False, False, Signature(d.at, d.name, [], [], [], d.variableType, noEffect))
             )
         }
@@ -58,7 +60,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
     let traitMethods =
         module.traits.flatMap {definition =>
             let generics = definition.generics.map {name => TConstructor(definition.at, name, [])}
-            let constraint = Constraint(definition.at, full(module, definition.name), generics)
+            let constraint = Constraint(definition.at, fullName(module, definition.name), generics)
             let outerConstraints = if(alreadyFlat) {[]} else {definition.constraints}
             definition.methods.map {methodSignature =>
                 let generics = [...definition.generics, ...methodSignature.generics].partition {_ == "Q$"}
@@ -67,7 +69,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
                     constraints = [constraint, ...outerConstraints, ...methodSignature.constraints]
                 )
                 Pair(
-                    full(module, signature.name)
+                    fullName(module, signature.name)
                     Scheme(False, False, False, True, signature)
                 )
             }
@@ -105,7 +107,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
             d.commonFields.map {f =>
                 let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
                 Pair(
-                    full(module, prefix + f.name)
+                    fullName(module, prefix + f.name)
                     Scheme(True, f.mutable, d.newtype, False, Signature(
                         at = f.at
                         name = f.name
@@ -121,13 +123,13 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
 
     let variants =
         module.types.flatMap {d =>
-            let returnType = TConstructor(d.at, full(module, d.name), d.generics.map {typeParameter =>
+            let returnType = TConstructor(d.at, fullName(module, d.name), d.generics.map {typeParameter =>
                 TConstructor(d.at, typeParameter, [])
             })
             d.variants.map {variant =>
                 let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
                 Pair(
-                    full(module, variant.name)
+                    fullName(module, variant.name)
                     Scheme(False, False, d.newtype, False, Signature(
                         variant.at
                         variant.name
@@ -142,5 +144,5 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         }
 
     let effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
-    Environment([...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap(), [].toMap(), effect)
+    Environment("", [...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap(), [].toMap(), effect)
 }
