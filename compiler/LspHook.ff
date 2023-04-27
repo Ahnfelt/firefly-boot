@@ -1,0 +1,82 @@
+import Syntax
+import Unification
+import Environment
+
+class LspHook( // TODO: Should be class, but causes a deriving error
+    targetAt: Location = Location("^lsp", -7, -7)
+    sourceAt: Location = Location("^lsp", -7, -7)
+    inferTypes: Bool = False
+    references: Stack[Location] = [].toStack()
+    inference: Stack[InferHook] = [].toStack()
+)
+
+disabled(): LspHook {
+    make(None, None, False)
+}
+
+make(targetAt: Option[Location], sourceAt: Option[Location], inferTypes: Bool): LspHook {
+    LspHook(
+        targetAt = targetAt.else {Location("^lsp", -7, -7)}
+        sourceAt = sourceAt.else {Location("^lsp", -7, -7)}
+        inferTypes = inferTypes
+        references = [].toStack()
+        inference = [].toStack()
+    )
+}
+
+extend self: LspHook {
+    isEnabled(): Bool {
+        self.targetAt.line != -7 || 
+        self.sourceAt.line != -7
+    }
+    isTarget(at: Location): Bool {
+        self.targetAt.line == at.line &&
+        self.targetAt.column == at.column &&
+        self.targetAt.file == at.file
+    }
+    isSource(at: Location): Bool {
+        self.sourceAt.line == at.line &&
+        self.sourceAt.column == at.column &&
+        self.sourceAt.file == at.file
+    }
+}
+
+data SymbolHook(
+    qualifiedName: String
+    usageAt: Location
+    definedAt: Location
+)
+
+class ResolveHook {
+    ResolveSymbolHook(
+        symbol: SymbolHook
+        annotation: Option[Type]
+    )
+}
+
+class InferHook(unification: Unification, environment: Environment) {
+    InferTermHook(
+        expected: Type
+        term: Term
+        recordType: Option[Type]
+    )
+    InferPatternHook(
+        expected: Type
+        pattern: MatchPattern
+    )
+    InferParameterHook(
+        parameter: Parameter
+    )
+    InferArgumentHook(
+        isCopy: Bool
+        callAt: Location
+        callName: String
+        parameters: List[Parameter]
+        arguments: List[Argument]
+        argumentIndex: Int
+    )
+    InferLookupHook(
+        symbol: SymbolHook
+        instantiated: Instantiated
+    )
+}
