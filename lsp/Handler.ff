@@ -178,15 +178,15 @@ extend self: Handler {
         // TODO: Find the InferLookupHook instead of assuming it's the top one
         // TODO: Use more of the hooks for hover
         let o = if(goToDefinition) {
-            lspHook.results().last().map {
+            lspHook.results().collectFirst {
                 | InferLookupHook h => 
                     let token = self.findToken(system, h.symbol.definedAt)
-                    self.tokenLocationToLspLocation(system, token)
+                    Some(self.tokenLocationToLspLocation(system, token))
                 | _ =>
-                    js.null()
+                    None
             }.else {js.null()}
         } else {
-            lspHook.results().last().map {
+            lspHook.results().collectFirst {
                 | InferLookupHook h => 
                     let t = h.unification.substitute(h.instantiated.scheme.signature.returnType)
                     let q = h.unification.substitute(h.instantiated.scheme.signature.effect)
@@ -196,15 +196,15 @@ extend self: Handler {
                         | _ => 
                             ""
                     }
-                    js.object().with("contents", 
+                    Some(js.object().with("contents", 
                         js.object()
                             .with("kind", "markdown")
                             .with("value", 
                                 "```\n" + t.show([]) + "\n```\n" + 
                                 if(extra == "") {""} else {"*" + extra + "*"})
-                    )
+                    ))
                 | _ => 
-                    js.null()
+                    None
             }.else {js.null()}
         }
         Result(o)

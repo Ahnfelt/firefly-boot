@@ -317,13 +317,16 @@ extend self: Inference {
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)
-                            /*if(self.hoverAt.contains(e.at) && self.hoverResult.type.isEmpty()) {
-                                self.hoverResult = self.hoverResult.HoverInfo(
-                                    at = Some(e.at) // TODO: If from a pattern match, use location of true field
-                                    type = Some(t1)
-                                    effect = None
+                            if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(t.at)) {
+                                let symbolHook = SymbolHook(e.field, e.at, e.at)
+                                let noEffect = self.unification.freshUnificationVariable(e.at)
+                                let signature = Signature(e.at, e.field, [], [], [], t1, noEffect)
+                                self.lspHook.emit(
+                                    InferLookupHook(self.unification, environment, symbolHook
+                                        Instantiated([], Scheme(False, False, False, False, signature))
+                                    )
                                 )
-                            }*/ // TODO: Get this hover via argument lspHook
+                            }
                             e.EField(record = record)
                         }.elseIf {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} {
                             term
