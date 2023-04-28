@@ -6,12 +6,23 @@ import Handler
 
 handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
     let js = system.js()
-    lspHook.results().collectFirst {
-        | InferLookupHook h => 
-            let token = handler.findToken(system, h.symbol.definedAt)
-            Some(handler.tokenLocationToLspLocation(system, token))
-        | _ =>
-            None
+    let definedAt = lspHook.results().collectFirst {
+        | ResolveSymbolHook h => Some(h.symbol.definedAt)
+        | ResolveTypeHook h => Some(h.symbol.definedAt)
+        | ResolveConstraintHook h => Some(h.symbol.definedAt)
+        | InferLookupHook h => Some(h.symbol.definedAt)
+        | InferParameterHook h => Some(h.parameter.at)
+        | InferArgumentHook h {h.arguments.dropFirst(h.argumentIndex).first() | Some(a)} =>
+            a.name.flatMap {name =>
+                h.parameters.find {_.name == name}.map {p =>
+                    p.at
+                }
+            }
+        | _ => None
+    }
+    definedAt.map {at =>
+        let token = handler.findToken(system, at)
+        handler.tokenLocationToLspLocation(system, token)
     }.else {js.null()}
 }
 
