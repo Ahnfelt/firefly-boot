@@ -1,0 +1,58 @@
+import LspHook from ff:compiler
+import Unification from ff:compiler
+import Environment from ff:compiler
+import Syntax from ff:compiler
+import Handler
+
+handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
+    let js = system.js()
+    lspHook.results().collectFirst {
+        | InferLookupHook h => 
+            let token = handler.findToken(system, h.symbol.definedAt)
+            Some(handler.tokenLocationToLspLocation(system, token))
+        | _ =>
+            None
+    }.else {js.null()}
+}
+
+handleHover(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
+    let js = system.js()
+    let typeAndEffect = lspHook.results().collectFirst {
+        | InferLookupHook h => 
+            let t = h.unification.substitute(h.instantiated.scheme.signature.returnType)
+            let q = h.unification.substitute(h.instantiated.scheme.signature.effect)
+            Some(Pair(t, q))
+        | InferParameterHook h =>
+            let t = h.unification.substitute(h.parameter.valueType)
+            let noEffect = TConstructor(h.parameter.at, "ff:core/Nothing.Nothing", [])
+            Some(Pair(t, noEffect))
+        | InferPatternHook h =>
+            let t = h.unification.substitute(h.expected)
+            let noEffect = TConstructor(h.pattern.at, "ff:core/Nothing.Nothing", [])
+            Some(Pair(t, noEffect))
+        | InferTermHook h {h.term | ELet e} =>
+            let t = h.unification.substitute(e.valueType)
+            let noEffect = TConstructor(e.at, "ff:core/Nothing.Nothing", [])
+            Some(Pair(t, noEffect))
+        | InferArgumentHook h {h.arguments.dropFirst(h.argumentIndex).first() | Some(a)} =>
+            let noEffect = TConstructor(h.callAt, "ff:core/Nothing.Nothing", [])
+            a.name.flatMap {name =>
+                h.parameters.find {_.name == name}.map {p =>
+                    Pair(h.unification.substitute(p.valueType), noEffect)
+                }
+            }
+        | _ => 
+            None
+    }
+    typeAndEffect.map {| Pair(t, q) =>
+        let extra = q.{
+            | TConstructor(_, "Q$", _) => "*This call may be asynchronous.*"
+            | _ => ""
+        }
+        js.object().with("contents", 
+            js.object()
+                .with("kind", "markdown")
+                .with("value", "```\n" + t.show([]) + "\n```\n" + extra)
+        )
+    }.else {js.null()}
+}
