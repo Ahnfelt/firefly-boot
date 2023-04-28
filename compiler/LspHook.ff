@@ -59,6 +59,11 @@ class ResultHook {
     )
     ResolveTypeHook(
         symbol: SymbolHook
+        explicitType: Type
+    )
+    ResolveConstraintHook(
+        symbol: SymbolHook
+        constrant: Constraint
     )
     InferTermHook(
         unification: Unification

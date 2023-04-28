@@ -41,6 +41,9 @@ handleHover(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
                     Pair(h.unification.substitute(p.valueType), noEffect)
                 }
             }
+        | ResolveTypeHook h =>
+            let noEffect = TConstructor(h.symbol.usageAt, "ff:core/Nothing.Nothing", [])
+            Some(Pair(h.explicitType, noEffect))
         | _ => 
             None
     }

@@ -135,7 +135,7 @@ extend self: Resolver {
     resolveTypeDefinition(definition: DType): DType {
         if(self.lspHook.isAt(definition.at)) {
             self.lspHook.emit(
-                ResolveTypeHook(SymbolHook(definition.name, definition.at, definition.at))
+                ResolveSymbolHook(SymbolHook(definition.name, definition.at, definition.at), None)
             )
         }
         let generics = definition.generics.map {g => Pair(g, g)}.toMap()
@@ -355,13 +355,13 @@ extend self: Resolver {
             if(self.completionAt.contains(type.at)) {self.typeCompletion()}
             if(self.lspHook.isAt(type.at)) {
                 self.lspHook.emit(
-                    ResolveTypeHook(SymbolHook(constructor.name, type.at, type.at))
+                    ResolveTypeHook(SymbolHook(constructor.name, type.at, type.at), type)
                 )
             }
             self.typeLocations.get(constructor.name).each {at =>
                 if(self.lspHook.isAt(type.at)) {
                     self.lspHook.emit(
-                        ResolveTypeHook(SymbolHook(constructor.name, type.at, at))
+                        ResolveTypeHook(SymbolHook(constructor.name, type.at, at), type)
                         replace = True
                     )
                 }
@@ -408,13 +408,13 @@ extend self: Resolver {
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
         if(self.lspHook.isAt(constraint.at)) {
             self.lspHook.emit(
-                ResolveTypeHook(SymbolHook(constraint.name, constraint.at, constraint.at))
+                ResolveConstraintHook(SymbolHook(constraint.name, constraint.at, constraint.at), constraint)
             )
         }
         self.traitLocations.get(constraint.name).each {at =>
             if(self.lspHook.isAt(constraint.at)) {
                 self.lspHook.emit(
-                    ResolveTypeHook(SymbolHook(constraint.name, constraint.at, at))
+                    ResolveConstraintHook(SymbolHook(constraint.name, constraint.at, at), constraint)
                     replace = True
                 )
             }

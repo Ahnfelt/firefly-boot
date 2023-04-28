@@ -263,14 +263,11 @@ extend self: Handler {
         } grab()
 
         let definedAtList = temporaryLspHook.results().collect {
-            | ResolveSymbolHook(symbol, annotation) => 
-                Some(symbol.definedAt)
-            | ResolveTypeHook(symbol) => 
-                Some(symbol.definedAt)
-            | InferLookupHook(_, _, symbol, _) => 
-                Some(symbol.definedAt)
-            | _ =>
-                None
+            | ResolveSymbolHook h => Some(h.symbol.definedAt)
+            | ResolveTypeHook h => Some(h.symbol.definedAt)
+            | ResolveConstraintHook h => Some(h.symbol.definedAt)
+            | InferLookupHook h => Some(h.symbol.definedAt)
+            | _ => None
         }
 
         Log.trace("definedAtList: ")
@@ -290,14 +287,11 @@ extend self: Handler {
                 } grab()
 
                 let referencesResult = lspHook.results().collect {
-                    | ResolveSymbolHook(symbol, annotation) => 
-                        Some(symbol.usageAt)
-                    | ResolveTypeHook(symbol) => 
-                        Some(symbol.usageAt)
-                    | InferLookupHook(_, _, symbol, _) => 
-                        Some(symbol.usageAt)
-                    | _ =>
-                        None
+                    | ResolveSymbolHook h => Some(h.symbol.usageAt)
+                    | ResolveTypeHook h => Some(h.symbol.usageAt)
+                    | ResolveConstraintHook h => Some(h.symbol.usageAt)
+                    | InferLookupHook h => Some(h.symbol.usageAt)
+                    | _ => None
                 }
 
                 Log.trace("referencesResult: ")
