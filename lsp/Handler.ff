@@ -289,7 +289,7 @@ extend self: Handler {
             Log.trace(message)
         } grab()
 
-        let definedAtOption = temporaryLspHook.result.toArray().map {
+        let definedAtList = temporaryLspHook.result.toList().collect {
             | ResolveSymbolHook(symbol, annotation) => 
                 Some(symbol.definedAt)
             | ResolveTypeHook(symbol) => 
@@ -298,27 +298,39 @@ extend self: Handler {
                 Some(symbol.definedAt)
             | _ =>
                 None
-        }.first().flatten()
+        }
+
+        Log.trace("definedAtList: ")
+        Log.show(definedAtList)
 
         let js = system.js()
-        let o = definedAtOption.{
+        let o = definedAtList.first().{
             | Some(definedAt) => 
                 Log.trace("handleReferences definedAt: " + Show.show(definedAt))
-                let referencesResult = [definedAt].toStack()
                 let lspHook = LspHook.make(targetAt = None, sourceAt = Some(definedAt), inferTypes = True)
                 try {
-                    let references = Some(Pair[Location, List[Location] => Unit](definedAt, {r => 
-                        Log.trace("Set referencesResult: " + Show.show(r))
-                        referencesResult.pushArray(r.toArray())
-                    }))
                     let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
                     Log.trace("path: " + path)
-                    Builder.check(system, ".", path, self.virtualFiles, lspHook, None, references, True)
+                    Builder.check(system, ".", path, self.virtualFiles, lspHook, None, None, True)
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()
-        
-                let clientLocations = referencesResult.toList().filter {
+
+                let referencesResult = lspHook.result.toList().collect {
+                    | ResolveSymbolHook(symbol, annotation) => 
+                        Some(symbol.usageAt)
+                    | ResolveTypeHook(symbol) => 
+                        Some(symbol.usageAt)
+                    | InferLookupHook(_, _, symbol, _) => 
+                        Some(symbol.usageAt)
+                    | _ =>
+                        None
+                }
+
+                Log.trace("referencesResult: ")
+                Log.show(referencesResult)
+    
+                let clientLocations = referencesResult.addAll([definedAt]).filter {
                     !local || _.file == targetAt.file
                 }.map {at => 
                     let token = self.findToken(system, at)

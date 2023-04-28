@@ -1042,7 +1042,7 @@ extend self: Inference {
             scheme = scheme.Scheme(signature = signature)
         )
 
-        if(self.lspHook.isTarget(at)) {
+        if(self.lspHook.isTarget(at) || self.lspHook.isSource(scheme.signature.at)) {
             let symbolHook = SymbolHook(symbol, at, scheme.signature.at)
             self.lspHook.result.push(
                 InferLookupHook(self.unification, environment, symbolHook, instantiated)
