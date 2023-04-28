@@ -466,10 +466,11 @@ extend self: Inference {
                 if(self.lspHook.isEnabled()) {
                     e.arguments.pairs().each {| Pair(i, a) => 
                         if(self.lspHook.isAt(a.at)) {
+                            let arguments = e.arguments.map {f => f.Argument(name = Some(f.name))}
                             self.lspHook.emit(
-                                InferArgumentHook( // TODO: Use e.arguments
+                                InferArgumentHook(
                                     self.unification, environment
-                                    True, term.at, e.name, signature.parameters, [], i
+                                    True, term.at, e.name, signature.parameters, arguments, i
                                 )
                             )
                         }
@@ -497,10 +498,10 @@ extend self: Inference {
                 }
                 let body = EVariant(e.at, e.name, [], Some(arguments))
                 let effect = self.unification.freshUnificationVariable(e.at)
-                let term = EPipe(e.at, e.record, effect
+                let e1 = EPipe(e.at, e.record, effect
                     ELambda(e.at, Lambda(e.at, effect, [MatchCase(e.at, [PVariable(e.at, Some("_c"))], [], body)]))
                 )
-                self.inferTerm(environment, expected, term)
+                self.inferTerm(environment, expected, e1)
             | EPipe e =>
                 let valueType = self.unification.freshUnificationVariable(e.at)
                 let functionType = TConstructor(e.at, "Function$1", [
