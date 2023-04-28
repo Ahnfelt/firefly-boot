@@ -126,7 +126,7 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let diagnostics = try {
-            Builder.check(system, ".", fixedPath, self.virtualFiles, LspHook.disabled(), None, None, True)
+            Builder.check(system, ".", fixedPath, self.virtualFiles, LspHook.disabled(), None, True)
             []
         } catch {| CompileError(at, message), error =>
             let tokenLocation = self.findToken(system, at)
@@ -170,7 +170,7 @@ extend self: Handler {
         let targetAt = self.grabFixedLocation(system, parameters)
         let lspHook = LspHook.make(targetAt = Some(targetAt), sourceAt = None, inferTypes = True)
         try {
-            Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, None, None, True)
+            Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -216,7 +216,7 @@ extend self: Handler {
         let lspHook = LspHook.make(targetAt = Some(completionAt), sourceAt = None, inferTypes = True)
         try {
             let completion = Some(Pair(completionAt, {completionResult = _}))
-            Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, completion, None, True)
+            Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, completion, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -284,7 +284,7 @@ extend self: Handler {
         let targetAt = self.grabFixedLocation(system, parameters)
         let temporaryLspHook = LspHook.make(targetAt = Some(targetAt), sourceAt = None, inferTypes = True)
         try {
-            Builder.check(system, ".", targetAt.file, self.virtualFiles, temporaryLspHook, None, None, True)
+            Builder.check(system, ".", targetAt.file, self.virtualFiles, temporaryLspHook, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
@@ -311,7 +311,7 @@ extend self: Handler {
                 try {
                     let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
                     Log.trace("path: " + path)
-                    Builder.check(system, ".", path, self.virtualFiles, lspHook, None, None, True)
+                    Builder.check(system, ".", path, self.virtualFiles, lspHook, None, True)
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()

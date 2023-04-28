@@ -14,17 +14,15 @@ class Resolver(
     traitLocations: Map[String, Location]
     state: ResolverState
     lspHook: LspHook
-    referencesTo: Option[Location]
     completionAt: Option[Location]
 )
 
 class ResolverState(
     mutable nextUnificationVariableIndex: Int
-    mutable referencesResult: List[Location]
     mutable completionResult: List[CompletionInfo]
 )
 
-make(lspHook: LspHook, referencesTo: Option[Location], completionAt: Option[Location]): Resolver {
+make(lspHook: LspHook, completionAt: Option[Location]): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()
@@ -38,11 +36,9 @@ make(lspHook: LspHook, referencesTo: Option[Location], completionAt: Option[Loca
         traitLocations = [].toMap()
         state = ResolverState(
             nextUnificationVariableIndex = 2
-            referencesResult = []
             completionResult = []
         ) // To avoid collision with the parser and unification
         lspHook = lspHook
-        referencesTo = referencesTo
         completionAt = completionAt
     )
 }
@@ -141,9 +137,6 @@ extend self: Resolver {
             self.lspHook.result.push(
                 ResolveTypeHook(SymbolHook(definition.name, definition.at, definition.at))
             )
-        }
-        if(self.referencesTo.contains(definition.at)) {
-            self.state.referencesResult = [...self.state.referencesResult, definition.at]
         }
         let generics = definition.generics.map {g => Pair(g, g)}.toMap()
         let self2 = self.Resolver(
@@ -255,9 +248,6 @@ extend self: Resolver {
         | EFloat _, _ => term
         | EVariable e, _ =>
             let at = self.variableLocations.get(e.name)
-            if(at.any {self.referencesTo.contains(_)}) {
-                self.state.referencesResult = [...self.state.referencesResult, e.at]
-            }
             self.variables.get(e.name).map {e.EVariable(name = _)}.else {term}
         | EList(at, t, items), _ =>
             EList(at, self.resolveType(t, topLevel), items.map {| Pair(item, spread) =>
@@ -339,9 +329,6 @@ extend self: Resolver {
                 after = self.resolveTerm(after, topLevel)
             )
         | EAssign(at, operator, variable, value), _ =>
-            if(self.referencesTo.any {r => self.variableLocations.get(variable).any {r == _}}) {
-                self.state.referencesResult = [...self.state.referencesResult, at]
-            }
             EAssign(
                 at = at
                 operator = operator
@@ -377,9 +364,6 @@ extend self: Resolver {
                     self.lspHook.result.push(
                         ResolveTypeHook(SymbolHook(constructor.name, type.at, at))
                     )
-                }
-                if(self.referencesTo.contains(at)) {
-                    self.state.referencesResult = [...self.state.referencesResult, constructor.at]
                 }
             }
             let name = if(constructor.name.contains("$")) {
@@ -434,9 +418,6 @@ extend self: Resolver {
                     ResolveTypeHook(SymbolHook(constraint.name, constraint.at, at))
                 )
             }
-            if(self.referencesTo.contains(at)) {
-                self.state.referencesResult = [...self.state.referencesResult, at]
-            }            
         }
         let name =
             self.traits.get(constraint.name).else {

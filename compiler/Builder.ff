@@ -39,7 +39,6 @@ build(
             Map.empty()
             lspHook = LspHook.disabled()
             completionAt = None
-            referencesTo = None
         )
         compiler.emit(mainPackage, mainModule, isMainModule = True)
         if(printMeasurements) {compiler.printMeasurements()}
@@ -97,7 +96,6 @@ check(
     virtualFiles: Map[String, String], 
     lspHook: LspHook
     completionAt: Option[Pair[Location, List[CompletionInfo] => Unit]]
-    referencesTo: Option[Pair[Location, List[Location] => Unit]]
     infer: Bool
 ) {
     let fs = system.files()
@@ -130,7 +128,6 @@ check(
             virtualFiles
             lspHook
             completionAt.map {_.first}
-            referencesTo.map {_.first}
         )
         package.files.each {file =>
             let localFile = FileSystem.baseName(file.replace("\\", "/"))
@@ -142,7 +139,6 @@ check(
                 }
             } finally {
                 completionAt.each {_.second(compiler.completionResult)}
-                referencesTo.each {_.second(compiler.referencesResult)}
             } grab()
         }
     }

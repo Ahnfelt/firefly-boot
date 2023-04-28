@@ -20,7 +20,6 @@ capability Compiler(
     virtualFiles: Map[String, String]
     lspHook: LspHook
     completionAt: Option[Location]
-    referencesTo: Option[Location]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable derivedModules: Map[String, Module]
@@ -29,7 +28,6 @@ capability Compiler(
     mutable phaseDurations: List[Pair[String, Duration]]
     mutable phaseDurationDelta: Duration
     mutable completionResult: List[CompletionInfo]
-    mutable referencesResult: List[Location]
 )
 
 make(
@@ -42,7 +40,6 @@ make(
     virtualFiles: Map[String, String]
     lspHook: LspHook
     completionAt: Option[Location]
-    referencesTo: Option[Location]
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
@@ -55,7 +52,6 @@ make(
         virtualFiles = virtualFiles
         lspHook = lspHook
         completionAt = completionAt
-        referencesTo = referencesTo
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
         derivedModules = Map.empty()
@@ -64,7 +60,6 @@ make(
         phaseDurations = []
         phaseDurationDelta = Duration(0.0)
         completionResult = []
-        referencesResult = []
     )
 }
 
@@ -190,11 +185,10 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName)
         let otherModules = self.imports(module)
-        let resolver = Resolver.make(self.lspHook, self.referencesTo, self.completionAt)
+        let resolver = Resolver.make(self.lspHook, self.completionAt)
         let result = try {
             resolver.resolveModule(module, otherModules)
         } finally {
-            self.referencesResult = [...self.referencesResult, ...resolver.state.referencesResult]
             if(!resolver.state.completionResult.isEmpty()) {
                 self.completionResult = resolver.state.completionResult
             }
