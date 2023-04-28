@@ -6,6 +6,7 @@ import Token from ff:compiler
 import Environment from ff:compiler
 import Unification from ff:compiler
 import LspHook from ff:compiler
+import HoverHandler
 
 class Handler(
     mutable rootUri: Option[String]
@@ -174,38 +175,10 @@ extend self: Handler {
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
-        let js = system.js()
-        // TODO: Find the InferLookupHook instead of assuming it's the top one
-        // TODO: Use more of the hooks for hover
         let o = if(goToDefinition) {
-            lspHook.results().collectFirst {
-                | InferLookupHook h => 
-                    let token = self.findToken(system, h.symbol.definedAt)
-                    Some(self.tokenLocationToLspLocation(system, token))
-                | _ =>
-                    None
-            }.else {js.null()}
+            HoverHandler.handleGoToDefinition(system, self, lspHook)
         } else {
-            lspHook.results().collectFirst {
-                | InferLookupHook h => 
-                    let t = h.unification.substitute(h.instantiated.scheme.signature.returnType)
-                    let q = h.unification.substitute(h.instantiated.scheme.signature.effect)
-                    let extra = q.{
-                        | TConstructor(_, "Q$", _) =>
-                            "This call may be asynchronous."
-                        | _ => 
-                            ""
-                    }
-                    Some(js.object().with("contents", 
-                        js.object()
-                            .with("kind", "markdown")
-                            .with("value", 
-                                "```\n" + t.show([]) + "\n```\n" + 
-                                if(extra == "") {""} else {"*" + extra + "*"})
-                    ))
-                | _ => 
-                    None
-            }.else {js.null()}
+            HoverHandler.handleHover(system, self, lspHook)
         }
         Result(o)
     }
