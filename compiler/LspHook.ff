@@ -3,39 +3,46 @@ import Unification
 import Environment
 
 class LspHook(
-    targetAt: Location
-    sourceAt: Location
+    at: Location
+    definedAt: Location
     inferTypes: Bool
-    result: Stack[ResultHook]
+    stackOfResults: Stack[ResultHook]
 )
 
 disabled(): LspHook {
     make(None, None, False)
 }
 
-make(targetAt: Option[Location], sourceAt: Option[Location], inferTypes: Bool): LspHook {
+make(at: Option[Location], definedAt: Option[Location], inferTypes: Bool): LspHook {
     LspHook( // Default dummy values instead of Option[Location] to speed up location hit check
-        targetAt = targetAt.else {Location("^lsp", -7, -7)}
-        sourceAt = sourceAt.else {Location("^lsp", -7, -7)}
+        at = at.else {Location("^lsp", -7, -7)}
+        definedAt = definedAt.else {Location("^lsp", -7, -7)}
         inferTypes = inferTypes
-        result = [].toStack()
+        stackOfResults = [].toStack()
     )
 }
 
 extend self: LspHook {
     isEnabled(): Bool {
-        self.targetAt.line != -7 || 
-        self.sourceAt.line != -7
+        self.at.line != -7 || 
+        self.definedAt.line != -7
     }
-    isTarget(at: Location): Bool {
-        self.targetAt.line == at.line &&
-        self.targetAt.column == at.column &&
-        self.targetAt.file == at.file
+    isAt(at: Location): Bool {
+        self.at.line == at.line &&
+        self.at.column == at.column &&
+        self.at.file == at.file
     }
-    isSource(at: Location): Bool {
-        self.sourceAt.line == at.line &&
-        self.sourceAt.column == at.column &&
-        self.sourceAt.file == at.file
+    isDefinedAt(at: Location): Bool {
+        self.definedAt.line == at.line &&
+        self.definedAt.column == at.column &&
+        self.definedAt.file == at.file
+    }
+    emit(result: ResultHook, replace: Bool = False) {
+        if(replace) {self.stackOfResults.pop()}
+        self.stackOfResults.push(result)
+    }
+    results(): List[ResultHook] {
+        self.stackOfResults.toList()
     }
 }
 

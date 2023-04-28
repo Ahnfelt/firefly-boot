@@ -168,7 +168,7 @@ extend self: Handler {
     
     handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
         let targetAt = self.grabFixedLocation(system, parameters)
-        let lspHook = LspHook.make(targetAt = Some(targetAt), sourceAt = None, inferTypes = True)
+        let lspHook = LspHook.make(at = Some(targetAt), definedAt = None, inferTypes = True)
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, None, True)
         } catch {| CompileError(at, message), error =>
@@ -178,7 +178,7 @@ extend self: Handler {
         // TODO: Find the InferLookupHook instead of assuming it's the top one
         // TODO: Use more of the hooks for hover
         let o = if(goToDefinition) {
-            lspHook.result.pop().map {
+            lspHook.results().last().map {
                 | InferLookupHook h => 
                     let token = self.findToken(system, h.symbol.definedAt)
                     self.tokenLocationToLspLocation(system, token)
@@ -186,7 +186,7 @@ extend self: Handler {
                     js.null()
             }.else {js.null()}
         } else {
-            lspHook.result.pop().map {
+            lspHook.results().last().map {
                 | InferLookupHook h => 
                     let t = h.unification.substitute(h.instantiated.scheme.signature.returnType)
                     let q = h.unification.substitute(h.instantiated.scheme.signature.effect)
@@ -213,7 +213,7 @@ extend self: Handler {
     handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let completionAt = self.grabFixedLocation(system, parameters)
         mutable completionResult = []
-        let lspHook = LspHook.make(targetAt = Some(completionAt), sourceAt = None, inferTypes = True)
+        let lspHook = LspHook.make(at = Some(completionAt), definedAt = None, inferTypes = True)
         try {
             let completion = Some(Pair(completionAt, {completionResult = _}))
             Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, completion, True)
@@ -282,14 +282,14 @@ extend self: Handler {
 
     handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {
         let targetAt = self.grabFixedLocation(system, parameters)
-        let temporaryLspHook = LspHook.make(targetAt = Some(targetAt), sourceAt = None, inferTypes = True)
+        let temporaryLspHook = LspHook.make(at = Some(targetAt), definedAt = None, inferTypes = True)
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, temporaryLspHook, None, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
 
-        let definedAtList = temporaryLspHook.result.toList().collect {
+        let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook(symbol, annotation) => 
                 Some(symbol.definedAt)
             | ResolveTypeHook(symbol) => 
@@ -307,7 +307,7 @@ extend self: Handler {
         let o = definedAtList.first().{
             | Some(definedAt) => 
                 Log.trace("handleReferences definedAt: " + Show.show(definedAt))
-                let lspHook = LspHook.make(targetAt = None, sourceAt = Some(definedAt), inferTypes = True)
+                let lspHook = LspHook.make(at = None, definedAt = Some(definedAt), inferTypes = True)
                 try {
                     let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
                     Log.trace("path: " + path)
@@ -316,7 +316,7 @@ extend self: Handler {
                     Log.trace(message)
                 } grab()
 
-                let referencesResult = lspHook.result.toList().collect {
+                let referencesResult = lspHook.results().collect {
                     | ResolveSymbolHook(symbol, annotation) => 
                         Some(symbol.usageAt)
                     | ResolveTypeHook(symbol) => 

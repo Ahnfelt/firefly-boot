@@ -133,8 +133,8 @@ extend self: Resolver {
     }
 
     resolveTypeDefinition(definition: DType): DType {
-        if(self.lspHook.isTarget(definition.at)) {
-            self.lspHook.result.push(
+        if(self.lspHook.isAt(definition.at)) {
+            self.lspHook.emit(
                 ResolveTypeHook(SymbolHook(definition.name, definition.at, definition.at))
             )
         }
@@ -353,16 +353,16 @@ extend self: Resolver {
             type
         | TConstructor constructor, _ =>
             if(self.completionAt.contains(type.at)) {self.typeCompletion()}
-            if(self.lspHook.isTarget(type.at)) {
-                self.lspHook.result.push(
+            if(self.lspHook.isAt(type.at)) {
+                self.lspHook.emit(
                     ResolveTypeHook(SymbolHook(constructor.name, type.at, type.at))
                 )
             }
             self.typeLocations.get(constructor.name).each {at =>
-                if(self.lspHook.isTarget(type.at)) {
-                    self.lspHook.result.pop()
-                    self.lspHook.result.push(
+                if(self.lspHook.isAt(type.at)) {
+                    self.lspHook.emit(
                         ResolveTypeHook(SymbolHook(constructor.name, type.at, at))
+                        replace = True
                     )
                 }
             }
@@ -406,16 +406,16 @@ extend self: Resolver {
     }
 
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
-        if(self.lspHook.isTarget(constraint.at)) {
-            self.lspHook.result.push(
+        if(self.lspHook.isAt(constraint.at)) {
+            self.lspHook.emit(
                 ResolveTypeHook(SymbolHook(constraint.name, constraint.at, constraint.at))
             )
         }
         self.traitLocations.get(constraint.name).each {at =>
-            if(self.lspHook.isTarget(constraint.at)) {
-                self.lspHook.result.pop()
-                self.lspHook.result.push(
+            if(self.lspHook.isAt(constraint.at)) {
+                self.lspHook.emit(
                     ResolveTypeHook(SymbolHook(constraint.name, constraint.at, at))
+                    replace = True
                 )
             }
         }
