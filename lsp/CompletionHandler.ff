@@ -50,7 +50,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 CompletionInfo(name, name, True, t2, name + ": " + t2.show([]), Some(h.expected))
             }
         | InferArgumentHook h {
-            ![ // Avoids doing it for operators that become trait method calls, such as ==
+            ![ // Avoids named argument suggestions for operators that become trait method calls, such as ==
                 "ff:core/Equal.equals", "ff:core/Equal.notEquals"
                 "ff:core/Ordering.before", "ff:core/Ordering.notBefore"
                 "ff:core/Ordering.after", "ff:core/Ordering.notAfter"
