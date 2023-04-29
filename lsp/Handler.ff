@@ -58,6 +58,7 @@ extend self: Handler {
             | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
             | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
             | "textDocument/references" => self.handleReferences(system, parameters, local = False)
+            | "textDocument/rename" => self.handleRename(system, parameters)
             | "textDocument/documentHighlight" => self.handleReferences(system, parameters, local = True)
             | "shutdown" => Result(system.js().null())
             | _ => self.handleUnsupported(system.js())
@@ -113,6 +114,7 @@ extend self: Handler {
                          .with("didDelete", anyFireflyFile)
                     )
                 )*/
+                .with("renameProvider", True)
             )
             .with("serverInfo", js.object()
                 .with("name", "Firefly Language Server")
@@ -217,13 +219,51 @@ extend self: Handler {
 
     handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {
         let targetAt = self.grabFixedLocation(system, parameters)
+        let tokens = self.findReferences(system, targetAt, local)
+        let js = system.js()
+        let o = tokens.{
+            | None => js.null()
+            | Some(tokens) => 
+                let lspTokens = tokens.map {self.tokenLocationToLspLocation(system, _)}
+                js.array(lspTokens)
+        }
+        Result(o)
+    }
+    
+    handleRename(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let newName = parameters.grab("newName").grabString()
+        let targetAt = self.grabFixedLocation(system, parameters)
+        let tokens = self.findReferences(system, targetAt, False)
+        let js = system.js()
+        tokens.{
+            | None => Error(-32602, "Token definition not found") // InvalidParams
+            | Some([]) => Result(js.null())
+            | Some([first, ..._] @ tokens) => 
+                let oldName = first.raw
+                Log.trace("Rename '" + oldName + "' to '" + newName + "'")
+                let byFile = tokens.map {t => Pair(t.file, t)}.group()
+                let allChanges = byFile.toList().foldLeft(js.object(), {| o, Pair(file, fileTokens) => 
+                    let uri = FileSystem.pathToUrl(system.files().absolutePath(file))
+                    let fileChanges = fileTokens.map {tokenLocation => 
+                        js.object()
+                            .with("range", self.tokenLocationToLspRange(js, tokenLocation))
+                            .with("newText", newName)
+                    }
+                    o.with(uri, js.array(fileChanges))
+                })
+                let o = js.object().with("changes", allChanges)
+                Result(o)
+        }
+    }
+
+    findReferences(system: NodeSystem, targetAt: Location, local: Bool): Option[List[TokenLocation]] {
         let temporaryLspHook = LspHook.make(at = Some(targetAt), definedAt = None)
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, temporaryLspHook, True)
         } catch {| CompileError(at, message), error =>
             Log.trace(message)
         } grab()
-
+    
         let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
             | ResolveTypeHook h => Some(h.symbol.definedAt)
@@ -231,12 +271,12 @@ extend self: Handler {
             | InferLookupHook h => Some(h.symbol.value.definedAt)
             | _ => None
         }
-
+    
         Log.trace("definedAtList: ")
         Log.show(definedAtList)
-
+    
         let js = system.js()
-        let o = definedAtList.first().{
+        definedAtList.first().{
             | Some(definedAt) => 
                 Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 let lspHook = LspHook.make(at = None, definedAt = Some(definedAt))
@@ -247,7 +287,7 @@ extend self: Handler {
                 } catch {| CompileError(at, message), error =>
                     Log.trace(message)
                 } grab()
-
+    
                 let referencesResult = lspHook.results().collect {
                     | ResolveSymbolHook h => Some(h.symbol.usageAt)
                     | ResolveTypeHook h => Some(h.symbol.usageAt)
@@ -255,21 +295,19 @@ extend self: Handler {
                     | InferLookupHook h => Some(h.symbol.value.usageAt)
                     | _ => None
                 }
-
+    
                 Log.trace("referencesResult: ")
                 Log.show(referencesResult)
     
                 let clientLocations = referencesResult.addAll([definedAt]).filter {
                     !local || _.file == targetAt.file
                 }.map {at => 
-                    let token = self.findToken(system, at)
-                    self.tokenLocationToLspLocation(system, token)
+                    self.findToken(system, at)
                 }
-                js.array(clientLocations)
+                Some(clientLocations)
             | None => 
-                js.null()
+                None
         }
-        Result(o)
     }    
     
     makeNotificationMessage(js: JsSystem, method: String, params: JsValue): JsValue {
