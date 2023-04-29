@@ -14,20 +14,22 @@ data CompletionInfo(
 )
 
 handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
-    mutable isPattern = False
-    let completions = lspHook.results().flatMap {
+    let patternCompletions = lspHook.results().collectFirst {
+        | InferPatternHook h =>
+            let expected = h.unification.substitute(h.expected)
+            Some(patternCompletion(h.unification, h.environment, expected))
+        | _ =>
+            None
+    }
+    let completions = patternCompletions.else {lspHook.results().flatMap {
         | ResolveTypeHook h => 
             typeCompletion(h.types, h.typeGenerics)
-        | InferPatternHook _ =>
-            isPattern = True
-            []
         | InferLookupHook h =>
             let typePrefix = if(h.symbol.value.qualifiedName.contains("_")) {
                 h.symbol.value.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
             } else {
                 ""
             }
-            Log.trace(h.symbol.value.qualifiedName + " -> " + typePrefix)
             let expected = h.unification.substitute(h.expected)
             completion(h.unification, h.environment, typePrefix, expected)
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
@@ -38,16 +40,8 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             }
         | _ =>
             []
-    }
-    let filteredCompletions = completions.filter {completion => !isPattern || (
-        completion.label.first().any {_.isAsciiUpper()} && 
-        completion.label.takeWhile {c => c != '[' && c != '(' && c != '{'}.all {_.isAsciiLetterOrDigit()} &&
-        Pair(completion.expectedType, completion.type).{
-            | Pair(Some(TConstructor(_, n1, _)), TConstructor(_, n2, _)) => n1 == n2
-            | _ => False
-        }
-    )}
-    completionsToJson(system.js(), filteredCompletions)
+    }}
+    completionsToJson(system.js(), completions)
 }
 
 completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
@@ -302,17 +296,20 @@ exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool
     )]
 }
 
-patternCompletion(unification: Unification, environment: Environment, expected: Type): Unit {
+patternCompletion(unification: Unification, environment: Environment, expected: Type): List[CompletionInfo] {
     let typeName = unification.substitute(expected).{
         | TConstructor(_, name, _) => name
         | _ => ""
     }
-    if(typeName == "") {} else:
+    if(typeName == "") {[]} else:
     if(typeName == "ff:core/List.List") {
-        [CompletionInfo("[...]", "[${0:first, ...rest}]", False, expected, "// List pattern", Some(expected))]
+        [CompletionInfo("[...]", "[$0]", False, expected, "// List pattern", Some(expected))]
     } else:
     if(typeName == "ff:core/String.String") {
         [CompletionInfo("\"...\"", "\"$0\"", False, expected, "// String pattern", Some(expected))]
+    } else:
+    if(typeName == "ff:core/Char.Char") {
+        [CompletionInfo("'...'", "'$0'", False, expected, "// Char pattern", Some(expected))]
     } else:
     if(typeName == "ff:core/Int.Int") {
         [CompletionInfo("0", "0", False, expected, "// Int pattern", Some(expected))]
@@ -329,10 +326,10 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
     }
     let completions = variants.map {| Pair(name, scheme) => 
         let shortName = name.reverse().takeWhile {_ != '.'}.reverse()
-        let snippet = 
+        let label = 
             shortName +
             if(scheme.signature.parameters.isEmpty()) {""} else {
-                "(${0:" + scheme.signature.parameters.map {_.name}.join(", ") + "})"
+                "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
             }
         let generics = scheme.signature.generics.filter {_ != "Q$"}
         let documentation = 
@@ -344,8 +341,8 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
                 }.join("\n") + "\n)"
             } + ": " + scheme.signature.returnType.show([])
         CompletionInfo(
-            label = snippet.replace("${0:", "").replace("}", "")
-            snippet = snippet
+            label = label
+            snippet = shortName + if(scheme.signature.parameters.isEmpty()) {""} else {"($0)"}
             member = False
             type = expected
             documentation = documentation
