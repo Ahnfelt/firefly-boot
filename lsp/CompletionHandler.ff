@@ -41,7 +41,6 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 ""
             }
             let expected = h.unification.substitute(h.expected)
-            Log.trace("expected: " + expected.show([]))
             completion(h.unification, h.environment, typePrefix, expected)
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
             let fieldNames = n.split('$').toList().dropFirst(1)
@@ -182,7 +181,7 @@ completion(unification: Unification, environment: Environment, prefix: String, e
 
     symbols.each {memberName, memberScheme =>
         if(memberName.startsWith(prefix)) {
-            makeCompletion(unification, expected, prefix, memberName, memberScheme, False, member)
+            members.push(makeCompletion(unification, expected, prefix, memberName, memberScheme, False, member))
         }
     }
     members.toList()
