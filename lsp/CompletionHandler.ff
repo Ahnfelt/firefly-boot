@@ -45,10 +45,11 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             completion(h.unification, h.environment, typePrefix, expected)
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
             let fieldNames = n.split('$').toList().dropFirst(1)
-            fieldNames.zip(ts).map {| Pair(name, t) =>
+            let fieldCompletions = fieldNames.zip(ts).map {| Pair(name, t) =>
                 let t2 = h.unification.substitute(t)
                 CompletionInfo(name, name, True, t2, name + ": " + t2.show([]), Some(h.expected))
             }
+            [...fieldCompletions, ...completion(h.unification, h.environment, n, h.expected)]
         | InferArgumentHook h {
             ![ // Avoids named argument suggestions for operators that become trait method calls, such as ==
                 "ff:core/Equal.equals", "ff:core/Equal.notEquals"
@@ -128,87 +129,6 @@ completion(unification: Unification, environment: Environment, prefix: String, e
 
     let members = Stack.make()
 
-    function makeCompletion(prefix: String, memberName: String, memberScheme: Scheme, copy: Bool) {
-        let shortName = memberName.dropFirst(prefix.size())
-        let unqualifiedName = shortName.reverse().takeWhile {_ != '.'}.reverse()
-        let upper = unqualifiedName.first().any {_.isAsciiUpper()}
-        let variantWithoutParameters = upper && memberScheme.signature.parameters.isEmpty()
-        let realParameters = memberScheme.signature.parameters.dropFirst(if(member && !copy) {1} else {0})
-        let pair = if(!memberScheme.isVariable && !variantWithoutParameters) {
-            let trailing = realParameters.pairs().reverse().map {| Pair(index, p) =>
-                p.valueType.{
-                    | TConstructor(_, name, _) {name.startsWith("Function$")} =>
-                        Some(Pair(
-                            " {...}"
-                            if(index == 0) {" {$0}"} else {" {}"}
-                        ))
-                    | _ => 
-                        None
-                }
-            }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
-            let allRequired = realParameters.filter {_.default.isEmpty()}
-            let required =  allRequired.dropLast(trailing.size()).map {_.name}
-            let optional = if(allRequired.size() != realParameters.size()) {"..."}
-            Pair(
-                if(trailing.isEmpty() || !required.isEmpty()) {
-                    "(" + [...required, ...optional.toList()].join(", ") + ")"
-                } else {
-                    ""
-                } + trailing.map {_.first}.join()
-                if(copy) {
-                    "(${1|" + realParameters.map {_.name}.map {f => f + " = "}.join(",") + "|}$0)"
-                } else {
-                    if(trailing.isEmpty() || !required.isEmpty()) {
-                        if(required.isEmpty()) {"()"} else {"($0)"}
-                    } else {
-                        ""
-                    } + if(trailing.isEmpty()) {""} else {trailing.map {_.second}.join()}
-                }
-            )
-        } else {Pair("", "")}
-        let returnType = unification.substitute(memberScheme.signature.returnType)
-        let documentation = if(memberScheme.isVariable || variantWithoutParameters) {
-            let methodGenerics = memberScheme.signature.generics
-            let generics = if(member || methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
-            if(memberScheme.isMutable) {"mutable "} else {""} +
-            unqualifiedName + generics +
-            ": " + returnType.show([])
-        } else {
-            let selfType = memberScheme.signature.parameters.first().filter {_ => member && !copy}.map {_.valueType}
-            let generics = selfType.map {
-                | TConstructor(_, _, gs) => 
-                    // TODO: Needs constraints as well
-                    // TODO: This drops the wrong number of type parameters - more environment needed
-                    let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
-                    if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
-                | _ =>
-                    ""
-            }.else {
-                let methodGenerics = memberScheme.signature.generics.filter {_ != "Q$"}
-                if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
-            }
-            let selfIndent = selfType.map {_ => "    "}.else {""}
-            let parameters = if(realParameters.isEmpty()) {""} else {
-                "\n" + realParameters.map {p =>
-                    showCompletionParameter(selfIndent + "    ", p)
-                }.join("\n") + "\n" + selfIndent
-            }
-            selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
-            selfIndent + unqualifiedName + 
-            generics + "(" + parameters + "): " + 
-            returnType.show([]) + 
-            selfType.map {_ => "\n}"}.else {""}
-        }
-        members.push(CompletionInfo(
-            label = shortName + pair.first
-            snippet = shortName + pair.second
-            member = member && !copy
-            type = returnType
-            documentation = documentation
-            expectedType = Some(expected)
-        ))
-    }
-
     let symbols = if(prefix == "") {
         environment.symbols.toList().collect {
             | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} => 
@@ -247,11 +167,11 @@ completion(unification: Unification, environment: Environment, prefix: String, e
                 scheme.signature.returnType.{
                     | _ {prefix.startsWith("Record$")} =>
                         if(scheme.signature.parameters.any {recordFields.contains(_.name)}) {
-                            makeCompletion("", shorter, scheme, True)
+                            members.push(makeCompletion(unification, expected, "", shorter, scheme, True, member))
                         }
                     | TConstructor(_, name, _) {name.startsWith(shorterPrefix)} =>
                         if(!scheme.signature.parameters.isEmpty()) {
-                            makeCompletion("", shorter, scheme, True)
+                            members.push(makeCompletion(unification, expected, "", shorter, scheme, True, member))
                         }
                     | _ =>
                 }
@@ -262,10 +182,99 @@ completion(unification: Unification, environment: Environment, prefix: String, e
 
     symbols.each {memberName, memberScheme =>
         if(memberName.startsWith(prefix)) {
-            makeCompletion(prefix, memberName, memberScheme, False)
+            makeCompletion(unification, expected, prefix, memberName, memberScheme, False, member)
         }
     }
     members.toList()
+}
+
+makeCompletion(
+    unification: Unification
+    expected: Type
+    prefix: String
+    memberName: String
+    memberScheme: Scheme
+    copy: Bool
+    member: Bool
+): CompletionInfo {
+    let shortName = memberName.dropFirst(prefix.size())
+    let unqualifiedName = shortName.reverse().takeWhile {_ != '.'}.reverse()
+    let upper = unqualifiedName.first().any {_.isAsciiUpper()}
+    let variantWithoutParameters = upper && memberScheme.signature.parameters.isEmpty()
+    let realParameters = memberScheme.signature.parameters.dropFirst(if(member && !copy) {1} else {0})
+    let pair = if(!memberScheme.isVariable && !variantWithoutParameters) {
+        let trailing = realParameters.pairs().reverse().map {| Pair(index, p) =>
+            p.valueType.{
+                | TConstructor(_, name, _) {name.startsWith("Function$")} =>
+                    Some(Pair(
+                        " {...}"
+                        if(index == 0) {" {$0}"} else {" {}"}
+                    ))
+                | _ => 
+                    None
+            }
+        }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
+        let allRequired = realParameters.filter {_.default.isEmpty()}
+        let required =  allRequired.dropLast(trailing.size()).map {_.name}
+        let optional = if(allRequired.size() != realParameters.size()) {"..."}
+        Pair(
+            if(trailing.isEmpty() || !required.isEmpty()) {
+                "(" + [...required, ...optional.toList()].join(", ") + ")"
+            } else {
+                ""
+            } + trailing.map {_.first}.join()
+            if(copy) {
+                "(${1|" + realParameters.map {_.name}.map {f => f + " = "}.join(",") + "|}$0)"
+            } else {
+                if(trailing.isEmpty() || !required.isEmpty()) {
+                    if(required.isEmpty()) {"()"} else {"($0)"}
+                } else {
+                    ""
+                } + if(trailing.isEmpty()) {""} else {trailing.map {_.second}.join()}
+            }
+        )
+    } else {Pair("", "")}
+    let returnType = unification.substitute(memberScheme.signature.returnType)
+    let documentation = if(memberScheme.isVariable || variantWithoutParameters) {
+        let methodGenerics = memberScheme.signature.generics
+        let generics = if(member || methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+        if(memberScheme.isMutable) {"mutable "} else {""} +
+        unqualifiedName + generics +
+        ": " + returnType.show([])
+    } else {
+        let selfType = memberScheme.signature.parameters.first().filter {_ => member && !copy}.map {_.valueType}
+        let generics = selfType.map {
+            | TConstructor(_, _, gs) => 
+                // TODO: Needs constraints as well
+                // TODO: This drops the wrong number of type parameters - more environment needed
+                let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
+                if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+            | _ =>
+                ""
+        }.else {
+            let methodGenerics = memberScheme.signature.generics.filter {_ != "Q$"}
+            if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+        }
+        let selfIndent = selfType.map {_ => "    "}.else {""}
+        let parameters = if(realParameters.isEmpty()) {""} else {
+            "\n" + realParameters.map {p =>
+                showCompletionParameter(selfIndent + "    ", p)
+            }.join("\n") + "\n" + selfIndent
+        }
+        selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
+        selfIndent + unqualifiedName + 
+        generics + "(" + parameters + "): " + 
+        returnType.show([]) + 
+        selfType.map {_ => "\n}"}.else {""}
+    }
+    CompletionInfo(
+        label = shortName + pair.first
+        snippet = shortName + pair.second
+        member = member && !copy
+        type = returnType
+        documentation = documentation
+        expectedType = Some(expected)
+    )
 }
 
 exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool): List[CompletionInfo] {
@@ -385,7 +394,7 @@ namedParameterCompletion(parameter: Parameter, index: Int, preselect: Bool): Com
         type = parameter.valueType
         documentation = showCompletionParameter("", parameter)
         expectedType = if(preselect) {parameter.valueType}
-        secondarySort = 1000 + index
+        secondarySort = (1000 + index).clamp(1000, 9999)
     )
 }
 
