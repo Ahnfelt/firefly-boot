@@ -1082,8 +1082,8 @@ extend self: Parser {
     parseListPattern(): MatchPattern {
         function convertListPattern(at: Location, items: List[Pair[MatchPattern, Bool]]): MatchPattern {
             | _, [] => PVariant(at, "ff:core/List.Empty", [])
-            | _, [Pair(p, False), ...ps] =>
-                PVariant(p.at, "ff:core/List.Link", [p, convertListPattern(p.at, ps)])
+            | _, [Pair(p, False), ...ps] => 
+                PVariant(at, "ff:core/List.Link", [p, convertListPattern(at, ps)])
             | _, [Pair(p, True)] => p
             | _, [Pair(p, True), ...] =>
                 throw(CompileError(p.at, "Invalid pattern: ... is only allowed for the last element in a list"))
