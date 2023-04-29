@@ -14,9 +14,13 @@ data CompletionInfo(
 )
 
 handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
+    mutable isPattern = False
     let completions = lspHook.results().flatMap {
         | ResolveTypeHook h => 
             typeCompletion(h.types, h.typeGenerics)
+        | InferPatternHook _ =>
+            isPattern = True
+            []
         | InferLookupHook h =>
             let typePrefix = if(h.symbol.value.qualifiedName.contains("_")) {
                 h.symbol.value.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
@@ -35,7 +39,15 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
         | _ =>
             []
     }
-    completionsToJson(system.js(), completions)
+    let filteredCompletions = completions.filter {completion => !isPattern || (
+        completion.label.first().any {_.isAsciiUpper()} && 
+        completion.label.takeWhile {c => c != '[' && c != '(' && c != '{'}.all {_.isAsciiLetterOrDigit()} &&
+        Pair(completion.expectedType, completion.type).{
+            | Pair(Some(TConstructor(_, n1, _)), TConstructor(_, n2, _)) => n1 == n2
+            | _ => False
+        }
+    )}
+    completionsToJson(system.js(), filteredCompletions)
 }
 
 completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
