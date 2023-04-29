@@ -32,8 +32,8 @@
                 ],
                 "configuration": "./language-configuration.json",
                 "icon": {
-                    "light": "./icons/firefly-icon.png",
-                    "dark": "./icons/firefly-icon.png"
+                    "light": "./icons/firefly-icon.svg",
+                    "dark": "./icons/firefly-icon.svg"
                 }
             }
         ],
