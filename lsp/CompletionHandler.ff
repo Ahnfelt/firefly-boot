@@ -22,7 +22,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
         | _ =>
             None
     }
-    mutable sawLookupHook = False
+    mutable sawLookupHook = False // Only consider the first lookup
     let completions = patternCompletions.else {lspHook.results().flatMap {
         | ResolveTypeHook h => 
             typeCompletion(h.types, h.typeGenerics)
