@@ -226,15 +226,6 @@ data Safety {
 
 data Version(at: Location, major: Int, minor: Int, patch: Int)
 
-data CompletionInfo(
-    label: String
-    snippet: String
-    member: Bool
-    type: Type
-    documentation: String
-    expectedType: Option[Type]
-)
-
 extend self: Type {
     show(shownTypes: List[Type]): String {
         mutable seenTypes = Map.empty()

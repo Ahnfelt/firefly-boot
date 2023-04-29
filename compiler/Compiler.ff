@@ -19,7 +19,6 @@ capability Compiler(
     singleFilePackages: Set[PackagePair]
     virtualFiles: Map[String, String]
     lspHook: LspHook
-    completionAt: Option[Location]
     mutable parsedModules: Map[String, Module]
     mutable resolvedModules: Map[String, Module]
     mutable derivedModules: Map[String, Module]
@@ -27,7 +26,6 @@ capability Compiler(
     mutable emittedModules: Set[String]
     mutable phaseDurations: List[Pair[String, Duration]]
     mutable phaseDurationDelta: Duration
-    mutable completionResult: List[CompletionInfo]
 )
 
 make(
@@ -39,7 +37,6 @@ make(
     resolvedDependencies: ResolvedDependencies
     virtualFiles: Map[String, String]
     lspHook: LspHook
-    completionAt: Option[Location]
 ): Compiler {
     Compiler(
         emitTarget = emitTarget
@@ -51,7 +48,6 @@ make(
         singleFilePackages = resolvedDependencies.singleFilePackages
         virtualFiles = virtualFiles
         lspHook = lspHook
-        completionAt = completionAt
         parsedModules = Map.empty()
         resolvedModules = Map.empty()
         derivedModules = Map.empty()
@@ -59,7 +55,6 @@ make(
         emittedModules = Set.empty()
         phaseDurations = []
         phaseDurationDelta = Duration(0.0)
-        completionResult = []
     )
 }
 
@@ -152,8 +147,8 @@ extend self: Compiler {
         let fixedPath = path.replace("\\", "/")
         //Log.trace("moduleName: " + moduleName + ", path: " + path + ", fixedPath: " + fixedPath)
         let code = self.virtualFiles.get(fixedPath).else {self.files.readText(fixedPath)}
-        let attemptFixes = self.lspHook.isEnabled() || !self.completionAt.isEmpty()
-        let tokens = Tokenizer.tokenize(fixedPath, code, self.completionAt, attemptFixes)
+        let attemptFixes = self.lspHook.isEnabled()
+        let tokens = Tokenizer.tokenize(fixedPath, code, if(self.lspHook.isEnabled()) {self.lspHook.at}, attemptFixes)
         let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser, attemptFixes)
         let module = if(self.singleFilePackages.contains(packagePair)) {
             parser.parseModuleWithPackageInfo().module
@@ -185,14 +180,8 @@ extend self: Compiler {
 
         let module = self.parse(packagePair, moduleName)
         let otherModules = self.imports(module)
-        let resolver = Resolver.make(self.lspHook, self.completionAt)
-        let result = try {
-            resolver.resolveModule(module, otherModules)
-        } finally {
-            if(!resolver.state.completionResult.isEmpty()) {
-                self.completionResult = resolver.state.completionResult
-            }
-        } grab() 
+        let resolver = Resolver.make(self.lspHook)
+        let result = resolver.resolveModule(module, otherModules)
 
         self.resolvedModules = self.resolvedModules.add(packageName + ":" + moduleName, result)
         result
@@ -219,14 +208,8 @@ extend self: Compiler {
         let otherModules = self.imports(module).map {i =>
             self.derive(i.packagePair, FileSystem.prefixName(i.file))
         }
-        let inference = Inference.make([module, ...otherModules], self.lspHook, self.completionAt)
-        let inferredModule = try {
-            inference.inferModule(module, otherModules)
-        } finally {
-            if(!inference.completionResult.isEmpty()) {
-                self.completionResult = inference.completionResult
-            }
-        } grab() 
+        let inference = Inference.make([module, ...otherModules], self.lspHook)
+        let inferredModule = inference.inferModule(module, otherModules)
         let result = Dictionaries.make([module, ...otherModules]).processModule(inferredModule, otherModules)
 
         self.inferredModules = self.inferredModules.add(packageName + ":" + moduleName, result)

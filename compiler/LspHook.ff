@@ -5,19 +5,17 @@ import Environment
 class LspHook(
     at: Location
     definedAt: Location
-    inferTypes: Bool
     stackOfResults: Stack[ResultHook]
 )
 
 disabled(): LspHook {
-    make(None, None, False)
+    make(None, None)
 }
 
-make(at: Option[Location], definedAt: Option[Location], inferTypes: Bool): LspHook {
+make(at: Option[Location], definedAt: Option[Location]): LspHook {
     LspHook( // Default dummy values instead of Option[Location] to speed up location hit check
         at = at.else {Location("^lsp", -7, -7)}
         definedAt = definedAt.else {Location("^lsp", -7, -7)}
-        inferTypes = inferTypes
         stackOfResults = [].toStack()
     )
 }
@@ -58,6 +56,8 @@ class ResultHook {
         annotation: Option[Type]
     )
     ResolveTypeHook(
+        types: Map[String, String]
+        typeGenerics: Map[String, List[String]]
         symbol: SymbolHook
         explicitType: Type
     )
@@ -96,6 +96,7 @@ class ResultHook {
     InferLookupHook(
         unification: Unification
         environment: Environment
+        expected: Type
         symbol: SymbolHook
         instantiated: Instantiated
     )

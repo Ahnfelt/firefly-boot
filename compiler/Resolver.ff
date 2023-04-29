@@ -14,15 +14,13 @@ class Resolver(
     traitLocations: Map[String, Location]
     state: ResolverState
     lspHook: LspHook
-    completionAt: Option[Location]
 )
 
 class ResolverState(
     mutable nextUnificationVariableIndex: Int
-    mutable completionResult: List[CompletionInfo]
 )
 
-make(lspHook: LspHook, completionAt: Option[Location]): Resolver {
+make(lspHook: LspHook): Resolver {
     Resolver(
         variables = [].toMap()
         variableLocations = [].toMap()
@@ -36,10 +34,8 @@ make(lspHook: LspHook, completionAt: Option[Location]): Resolver {
         traitLocations = [].toMap()
         state = ResolverState(
             nextUnificationVariableIndex = 2
-            completionResult = []
         ) // To avoid collision with the parser and unification
         lspHook = lspHook
-        completionAt = completionAt
     )
 }
 
@@ -349,19 +345,23 @@ extend self: Resolver {
 
     resolveType(type: Type, topLevel: Bool): Type {
         | TVariable _, _ =>
-            if(self.completionAt.contains(type.at)) {self.typeCompletion()}
             type
         | TConstructor constructor, _ =>
-            if(self.completionAt.contains(type.at)) {self.typeCompletion()}
             if(self.lspHook.isAt(type.at)) {
                 self.lspHook.emit(
-                    ResolveTypeHook(SymbolHook(constructor.name, type.at, type.at), type)
+                    ResolveTypeHook(
+                        self.types, self.typeGenerics
+                        SymbolHook(constructor.name, type.at, type.at), type
+                    )
                 )
             }
             self.typeLocations.get(constructor.name).each {at =>
                 if(self.lspHook.isAt(type.at)) {
                     self.lspHook.emit(
-                        ResolveTypeHook(SymbolHook(constructor.name, type.at, at), type)
+                        ResolveTypeHook(
+                            self.types, self.typeGenerics
+                            SymbolHook(constructor.name, type.at, at), type
+                        )
                         replace = True
                     )
                 }
@@ -559,19 +559,6 @@ extend self: Resolver {
             let isFunctionType = name.startsWith("Function$")
             isFunctionType || self.asyncTypes.contains(constructor.name) ||
             constructor.generics.any {self.containsAsyncType(_)}
-    }
-
-    typeCompletion(): Unit {
-        let completions = self.types.toList().filter {| Pair(n, full) => 
-            n.all {_.isAsciiLetterOrDigit()}
-        }.map {| Pair(typeName, full) =>
-            let generics = self.typeGenerics.find {k, _ => k == typeName}.toList().flatMap {_.second}
-            let realGenerics = generics.filter {_ != "Q$"}
-            let label = typeName + if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
-            let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[${0:" + realGenerics.join(", ") + "}]"}
-            CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), full, None)
-        }
-        self.state.completionResult = [...self.state.completionResult, ...completions]
     }
 
 }

@@ -38,7 +38,6 @@ build(
             resolvedDependencies
             Map.empty()
             lspHook = LspHook.disabled()
-            completionAt = None
         )
         compiler.emit(mainPackage, mainModule, isMainModule = True)
         if(printMeasurements) {compiler.printMeasurements()}
@@ -95,7 +94,6 @@ check(
     path: String, 
     virtualFiles: Map[String, String], 
     lspHook: LspHook
-    completionAt: Option[Pair[Location, List[CompletionInfo] => Unit]]
     infer: Bool
 ) {
     let fs = system.files()
@@ -127,19 +125,14 @@ check(
             fixedResolvedDependencies
             virtualFiles
             lspHook
-            completionAt.map {_.first}
         )
         package.files.each {file =>
             let localFile = FileSystem.baseName(file.replace("\\", "/"))
-            try {
-                if(infer) {
-                    compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
-                } else {
-                    compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
-                }
-            } finally {
-                completionAt.each {_.second(compiler.completionResult)}
-            } grab()
+            if(infer) {
+                compiler.infer(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+            } else {
+                compiler.resolve(resolvedDependencies.mainPackagePair, localFile.dropLast(".ff".size()))
+            }
         }
     }
 

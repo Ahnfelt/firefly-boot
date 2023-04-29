@@ -7,16 +7,12 @@ import LspHook
 class Inference(
     unification: Unification
     lspHook: LspHook
-    completionAt: Option[Location]
-    mutable completionResult: List[CompletionInfo]
 )
 
-make(modules: List[Module], lspHook: LspHook, completionAt: Option[Location]): Inference {
+make(modules: List[Module], lspHook: LspHook): Inference {
     Inference(
-        unification = Unification.make(modules, attemptFixes = lspHook.isEnabled() || !completionAt.isEmpty())
+        unification = Unification.make(modules, attemptFixes = lspHook.isEnabled())
         lspHook = lspHook
-        completionAt = completionAt
-        completionResult = []
     )
 }
 
@@ -46,12 +42,6 @@ extend self: Inference {
             functions = functions
         )
         let subsititution = Substitution(self.unification.substitution)
-        self.completionResult = self.completionResult.map {r => 
-            r.CompletionInfo(
-                type = subsititution.substituteType(r.type)
-                expectedType = r.expectedType.map {subsititution.substituteType(_)}
-            )
-        }.distinct()
         subsititution.substituteModule(result)
     }
 
@@ -224,16 +214,13 @@ extend self: Inference {
             | PChar _ =>
                 literal("Char")
             | PVariable(at, None) =>
-                if(self.completionAt.contains(at)) {self.patternCompletion(environment, expected)}
                 Map.empty()
             | PVariable(at, Some(name)) =>
-                if(self.completionAt.contains(at)) {self.patternCompletion(environment, expected)}
                 [Pair(name, expected)].toMap()
             | PAlias(at, pattern, variable) =>
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
             | PVariantAs(at, name, variableOption) =>
-                if(self.completionAt.contains(at)) {self.patternCompletion(environment, expected)}
-                let instantiated = self.lookup(environment, at, name, []).else {
+                let instantiated = self.lookup(environment, expected, at, name, []).else {
                     throw(CompileError(at, "No such variant: " + name))
                 }
                 if(instantiated.scheme.isNewtype) {
@@ -245,12 +232,11 @@ extend self: Inference {
                     TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
                 variableOption.toList().map {Pair(_, recordType)}.toMap()
             | PVariant(at, name, patterns) =>
-                if(self.completionAt.contains(at)) {self.patternCompletion(environment, expected)}
-                let instantiated = self.lookup(environment, at, name, []).else {
+                let instantiated = self.lookup(environment, expected, at, name, []).else {
                     throw(CompileError(at, "No such variant: " + name))
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
-                if(patterns.size() != instantiated.scheme.signature.parameters.size() && !self.lspHook.isEnabled() && self.completionAt.isEmpty()) {
+                if(patterns.size() != instantiated.scheme.signature.parameters.size() && !self.lspHook.isEnabled()) {
                     throw(CompileError(at, "Wrong number of subpatterns, expected " +
                         instantiated.scheme.signature.parameters.size() + ", got " + patterns.size() + "."
                     ))
@@ -268,7 +254,6 @@ extend self: Inference {
             )
         }
         function literal(coreTypeName: String): Term {
-            if(self.completionAt.contains(term.at)) {self.completion(environment, "", False, expected)}
             self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), []))
             term
         }
@@ -278,8 +263,7 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, expected)}
-                self.lookup(environment, e.at, e.name, []).map {instantiated =>
+                self.lookup(environment, expected, e.at, e.name, []).map {instantiated =>
                     if(instantiated.scheme.isVariable) {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                         term
@@ -307,6 +291,7 @@ extend self: Inference {
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
+                        /*
                         if(self.completionAt.contains(e.at)) {
                             self.completionResult = fieldNames.zip(typeArguments).map {
                                 | Pair(fieldName, typeArgument) => 
@@ -314,6 +299,7 @@ extend self: Inference {
                             }
                             self.completion(environment, name, True, expected)
                         }
+                        */
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)
@@ -322,24 +308,21 @@ extend self: Inference {
                                 let noEffect = self.unification.freshUnificationVariable(e.at)
                                 let signature = Signature(e.at, e.field, [], [], [], t1, noEffect)
                                 self.lspHook.emit(
-                                    InferLookupHook(self.unification, environment, symbolHook
+                                    InferLookupHook(self.unification, environment, expected, symbolHook
                                         Instantiated([], Scheme(False, False, False, False, signature))
                                     )
                                 )
                             }
                             e.EField(record = record)
-                        }.elseIf {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} {
+                        }.elseIf {self.lspHook.isEnabled()} {
                             term
                         }.else {
                             throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
                     | TConstructor(_, name, typeArguments)@t =>
                         let memberPrefix = name + "_"
-                        if(self.completionAt.contains(e.at)) {
-                            self.completion(environment, memberPrefix, True, expected)
-                        }
                         let memberName = memberPrefix + e.field
-                        self.lookup(environment, e.at, memberName, typeArguments).{
+                        self.lookup(environment, expected, e.at, memberName, typeArguments).{
                             | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                 let signature = instantiated.scheme.signature.Signature(
                                     // Drop self for eta expansion
@@ -362,14 +345,13 @@ extend self: Inference {
                             | None =>
                                 throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
-                    | TVariable(_, _) {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
+                    | TVariable(_, _) {self.lspHook.isEnabled()} =>
                         term
                     | TVariable(_, index) =>
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
             | EWildcard e =>
-                if(self.completionAt.contains(term.at)) {self.completion(environment, "", False, expected)}
-                self.lookup(environment, e.at, "_w" + e.index, []).map {instantiated =>
+                self.lookup(environment, expected, e.at, "_w" + e.index, []).map {instantiated =>
                     self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                     term
                 }.grab()
@@ -415,20 +397,10 @@ extend self: Inference {
                     body = self.inferTerm(environment2, expected, e.body)
                 )
             | ELambda(at, l) =>
-                if(!self.completionAt.isEmpty() && self.completionAt.contains(at.Location(column = at.column + 1))) {
-                    if(l.cases.size() == 1) {
-                        self.unification.substitute(expected).{
-                            | TConstructor(_, name, [_, TConstructor(_, n, _), _]) {name == "Function$1"} =>
-                                self.exhaustiveMatchCompletion(environment, n + "_", True)
-                            | _ =>
-                        }
-                    }
-                }
                 let lambda = self.inferLambda(environment, expected, l)
                 ELambda(at, lambda)
             | EVariant e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, expected)}
-                let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
+                let instantiated = self.lookup(environment, expected, e.at, e.name, e.typeArguments).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
@@ -440,7 +412,7 @@ extend self: Inference {
                     arguments = arguments
                 )
             | EVariantIs e =>
-                let instantiated = self.lookup(environment, e.at, e.name, e.typeArguments).else {
+                let instantiated = self.lookup(environment, expected, e.at, e.name, e.typeArguments).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
                 let parameters = instantiated.scheme.signature.parameters.sortBy {_.name}
@@ -456,7 +428,7 @@ extend self: Inference {
                     typeArguments = instantiated.typeArguments.map {_.second}
                 )
             | ECopy e =>
-                let scheme = self.lookup(environment, e.at, e.name, []).else {
+                let scheme = self.lookup(environment, expected, e.at, e.name, []).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }.scheme
                 if(scheme.isNewtype) {
@@ -476,6 +448,7 @@ extend self: Inference {
                         }
                     }
                 }
+                /*
                 if(!self.completionAt.isEmpty()) {
                     e.arguments.each {a => 
                         if(self.completionAt.contains(a.at)) {
@@ -485,6 +458,7 @@ extend self: Inference {
                         }
                     }
                 }
+                */
                 let parameterNames = signature.parameters.map {_.name}
                 e.arguments.find {a => !parameterNames.any {_ == a.name}}.each {
                     | Field(at, name, value) => throw(CompileError(at, "Unknown parameter: " + name))
@@ -517,18 +491,17 @@ extend self: Inference {
                     function = function
                 )
             | ECall e =>
-                if((self.lspHook.isEnabled() || !self.completionAt.isEmpty()) && e.target.{| StaticCall _ => True | _ => False}) {term} else:
+                if((self.lspHook.isEnabled()) && e.target.{| StaticCall _ => True | _ => False}) {term} else:
                 let call = e.target.{
                     | DynamicCall call => call
                     | StaticCall _ => fail(e.at, "Internal error: Static calls not expected in the Inference phase")
                 }
                 call.function.{
                     | EVariable(variableAt, x) =>
-                        if(self.completionAt.contains(variableAt)) {self.completion(environment, "", False, expected)}
                         if(x.first().any {c => c != '_' && !c.isAsciiLetter()}) {
                             self.inferOperator(environment, expected, x, term)
                         } else {
-                            self.lookup(environment, e.at, x, e.typeArguments).{
+                            self.lookup(environment, expected, e.at, x, e.typeArguments).{
                                 | Some(instantiated) =>
                                     if(instantiated.scheme.isVariable) {
                                         self.inferLambdaCall(environment, expected, term)
@@ -560,12 +533,8 @@ extend self: Inference {
                         let e2 = e.ECall(target = call.DynamicCall(function = f.EField(record = record)))
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, _)@t =>
-                                let memberPrefix = name + "_"
-                                if(self.completionAt.contains(f.at)) {
-                                    self.completion(environment, memberPrefix, True, expected)
-                                }
-                                let methodName = memberPrefix + f.field
-                                self.lookup(environment, f.at, methodName, []).{
+                                let methodName = name + "_" + f.field
+                                self.lookup(environment, expected, f.at, methodName, []).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                         self.inferMethodCall(
                                             environment
@@ -584,7 +553,7 @@ extend self: Inference {
                                             "No such field " + f.field + " on type: " + t.show([])
                                         ))
                                 }
-                            | TVariable _ {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
+                            | TVariable _ {self.lspHook.isEnabled()} =>
                                 self.inferLambdaCall(environment, expected, e2)
                             | TVariable(_, index) =>
                                 throw(CompileError(f.at
@@ -620,8 +589,7 @@ extend self: Inference {
                     body = newBody
                 )
             | EAssign e =>
-                if(self.completionAt.contains(e.at)) {self.completion(environment, "", False, expected)}
-                self.lookup(environment, e.at, e.variable, []).map {instantiated =>
+                self.lookup(environment, expected, e.at, e.variable, []).map {instantiated =>
                     if(instantiated.scheme.isMutable) {
                         let value = self.inferAssignment(
                             environment = environment
@@ -634,7 +602,7 @@ extend self: Inference {
                         e.EAssign(
                             value = value
                         )
-                    } elseIf {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} {
+                    } elseIf {self.lspHook.isEnabled()} {
                         term
                     } else {
                         throw(CompileError(e.at, "Symbol is not mutable: " + e.variable))
@@ -649,12 +617,8 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         throw(CompileError(e.at, "Can't assign fields of anonymous records: " + e.field))
                     | TConstructor(_, name, typeArguments)@t =>
-                        let memberPrefix = name + "_"
-                        if(self.completionAt.contains(e.at)) {
-                            self.completion(environment, memberPrefix, True, expected)
-                        }
-                        let methodName = memberPrefix + e.field
-                        self.lookup(environment, e.at, methodName, typeArguments).{
+                        let methodName = name + "_" + e.field
+                        self.lookup(environment, expected, e.at, methodName, typeArguments).{
                             | Some(instantiated) {instantiated.scheme.isMutable} =>
                                 let value = self.inferAssignment(
                                     environment = environment
@@ -675,7 +639,7 @@ extend self: Inference {
                             | None =>
                                 throw(CompileError(e.at, "No such field " + e.field + " on type: " + t.show([])))
                         }
-                    | TVariable(_, _) {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
+                    | TVariable(_, _) {self.lspHook.isEnabled()} =>
                         term
                     | TVariable(_, index) =>
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
@@ -810,7 +774,7 @@ extend self: Inference {
                         self.unification.unify(e.at, expected, t1)
                     | TConstructor(_, name, []) {name == core("Int")} =>
                         self.unification.unify(e.at, expected, t1)
-                    | _ {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
+                    | _ {self.lspHook.isEnabled()} =>
                     | _ =>
                         throw(CompileError(e.at, "Operators on unknown types not currently supported"))
                 }
@@ -861,7 +825,7 @@ extend self: Inference {
                     | None, Some(_) =>
                         self.unification.unify(e.at, t2, t1)
                         self.unification.unify(e.at, expected, t2)
-                    | _, _ {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
+                    | _, _ {self.lspHook.isEnabled()} =>
                     | Some(_), Some(_) =>
                         throw(CompileError(e.at, "Operators on these types not currently supported"))
                     | None, None =>
@@ -869,7 +833,7 @@ extend self: Inference {
                 }
                 chooseType(magic(t1), magic(t2))
                 e.ECall(target = target, arguments = [a1.Argument(value = e1), a2.Argument(value = e2)])
-            | _ {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} =>
+            | _ {self.lspHook.isEnabled()} =>
                 term
             | _ =>
                 fail(e.at, "Unknown operator: " + operator)
@@ -927,7 +891,7 @@ extend self: Inference {
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(callAt, Some(p.name), e2)
                 }.else {
-                    if(!self.lspHook.isEnabled() && self.completionAt.isEmpty()) {
+                    if(!self.lspHook.isEnabled()) {
                         fail(callAt, "Missing argument: " + p.name)
                     } else {
                         Argument(callAt, Some(p.name), EVariable(callAt, ""))
@@ -938,6 +902,7 @@ extend self: Inference {
                 | [] =>
                     defaultArgument()
                 | [Argument(at, None, e), ...remaining] =>
+                    /*
                     if(self.completionAt.contains(at)) {
                         if([
                             "ff:core/Equal.equals", "ff:core/Equal.notEquals"
@@ -959,6 +924,7 @@ extend self: Inference {
                             self.namedParameterCompletion(p, preselect)
                         }
                     }
+                    */
                     remainingArguments = remaining
                     let e2 = self.inferTerm(environment, t, e)
                     Argument(at, Some(p.name), e2)
@@ -972,7 +938,7 @@ extend self: Inference {
                     }
             }
         }
-        if(!self.lspHook.isEnabled() && self.completionAt.isEmpty()) {
+        if(!self.lspHook.isEnabled()) {
             remainingArguments.first().each {
                 | Argument(callAt, None, _) => fail(callAt, "Too many arguments")
                 | Argument(callAt, Some(n), _) => fail(callAt, "Unknown argument: " + n)
@@ -981,8 +947,8 @@ extend self: Inference {
         newArguments
     }
 
-    lookup(environment: Environment, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
-        self.lookupOption(environment, at, symbol, typeArguments).elseIf {self.lspHook.isEnabled() || !self.completionAt.isEmpty()} {
+    lookup(environment: Environment, expected: Type, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
+        self.lookupOption(environment, expected, at, symbol, typeArguments).elseIf {self.lspHook.isEnabled()} {
             Instantiated([], Scheme(True, False, False, False, Signature(
                 at
                 symbol
@@ -995,7 +961,7 @@ extend self: Inference {
         }
     }
 
-    lookupOption(environment: Environment, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
+    lookupOption(environment: Environment, expected: Type, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
 
         environment.symbols.get(symbol).map: scheme =>
 
@@ -1006,7 +972,7 @@ extend self: Inference {
                 } else {
                     typeArguments
                 }
-                if(scheme.signature.generics.size() != newTypeArguments.size() && !self.lspHook.isEnabled() && self.completionAt.isEmpty()) {
+                if(scheme.signature.generics.size() != newTypeArguments.size() && !self.lspHook.isEnabled()) {
                     let extra = newTypeArguments.size() - typeArguments.size()
                     throw(CompileError(at
                         "Wrong number of type arguments for " + symbol +
@@ -1049,305 +1015,12 @@ extend self: Inference {
         if(self.lspHook.isAt(at) || self.lspHook.isDefinedAt(scheme.signature.at)) {
             let symbolHook = SymbolHook(symbol, at, scheme.signature.at)
             self.lspHook.emit(
-                InferLookupHook(self.unification, environment, symbolHook, instantiated)
+                InferLookupHook(self.unification, environment, expected, symbolHook, instantiated)
             )
         }
 
         instantiated
 
-    }
-
-    completion(environment: Environment, prefix: String, member: Bool, expected: Type): Unit {
-
-        let expectedName = expected.{
-            | TConstructor(_, n, _) => n
-            | _ => "##"
-        }
-
-        let members = Stack.make()
-
-        function makeCompletion(prefix: String, memberName: String, memberScheme: Scheme, copy: Bool) {
-            let shortName = memberName.dropFirst(prefix.size())
-            let unqualifiedName = shortName.reverse().takeWhile {_ != '.'}.reverse()
-            let upper = unqualifiedName.first().any {_.isAsciiUpper()}
-            let variantWithoutParameters = upper && memberScheme.signature.parameters.isEmpty()
-            let realParameters = memberScheme.signature.parameters.dropFirst(if(member && !copy) {1} else {0})
-            let pair = if(!memberScheme.isVariable && !variantWithoutParameters) {
-                let trailing = realParameters.pairs().reverse().map {| Pair(index, p) =>
-                    p.valueType.{
-                        | TConstructor(_, name, _) {name.startsWith("Function$")} =>
-                            Some(Pair(
-                                " {...}"
-                                if(index == 0) {" {$0}"} else {" {}"}
-                            ))
-                        | _ => 
-                            None
-                    }
-                }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
-                let allRequired = realParameters.filter {_.default.isEmpty()}
-                let required =  allRequired.dropLast(trailing.size()).map {_.name}
-                let optional = if(allRequired.size() != realParameters.size()) {"..."}
-                Pair(
-                    if(trailing.isEmpty() || !required.isEmpty()) {
-                        "(" + [...required, ...optional.toList()].join(", ") + ")"
-                    } else {
-                        ""
-                    } + trailing.map {_.first}.join()
-                    if(copy) {
-                        "(${1|" + realParameters.map {_.name}.map {f => f + " = "}.join(",") + "|}$0)"
-                    } else {
-                        if(trailing.isEmpty() || !required.isEmpty()) {
-                            if(required.isEmpty()) {"()"} else {"($0)"}
-                        } else {
-                            ""
-                        } + if(trailing.isEmpty()) {""} else {trailing.map {_.second}.join()}
-                    }
-                )
-            } else {Pair("", "")}
-            let returnType = self.unification.substitute(memberScheme.signature.returnType)
-            let documentation = if(memberScheme.isVariable || variantWithoutParameters) {
-                let methodGenerics = memberScheme.signature.generics
-                let generics = if(member || methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
-                if(memberScheme.isMutable) {"mutable "} else {""} +
-                unqualifiedName + generics +
-                ": " + returnType.show([])
-            } else {
-                let selfType = memberScheme.signature.parameters.first().filter {_ => member && !copy}.map {_.valueType}
-                let generics = selfType.map {
-                    | TConstructor(_, _, gs) => 
-                        // TODO: Needs constraints as well
-                        // TODO: This drops the wrong number of type parameters - more environment needed
-                        let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
-                        if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
-                    | _ =>
-                        ""
-                }.else {
-                    let methodGenerics = memberScheme.signature.generics.filter {_ != "Q$"}
-                    if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
-                }
-                let selfIndent = selfType.map {_ => "    "}.else {""}
-                let parameters = if(realParameters.isEmpty()) {""} else {
-                    "\n" + realParameters.map {p =>
-                        self.showCompletionParameter(selfIndent + "    ", p)
-                    }.join("\n") + "\n" + selfIndent
-                }
-                selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
-                selfIndent + unqualifiedName + 
-                generics + "(" + parameters + "): " + 
-                returnType.show([]) + 
-                selfType.map {_ => "\n}"}.else {""}
-            }
-            members.push(CompletionInfo(
-                label = shortName + pair.first
-                snippet = shortName + pair.second
-                member = member && !copy
-                type = returnType
-                documentation = documentation
-                expectedType = Some(expected)
-            ))
-        }
-
-        let symbols = if(prefix == "") {
-            environment.symbols.toList().collect {
-                | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} => 
-                    Some(pair)
-                | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
-                    Some(pair.Pair(first = name.dropFirst("ff:core/Core.".size())))
-                | Pair(name, _)@pair {name.startsWith(environment.modulePrefix)} {
-                    name.dropFirst(environment.modulePrefix.size()) | n
-                } {n.all {_.isAsciiLetterOrDigit()}} => 
-                    Some(pair.Pair(first = n))
-                | Pair(name, scheme) {name.dropWhile {_ != '/'}.dropFirst() | short} {
-                    short.reverse().takeWhile {_ != '.'}.reverse() | shorter
-                } {shorter.all {_.isAsciiLetterOrDigit()}} =>
-                    if(shorter.first().any {_.isAsciiUpper()}) {
-                        Some(Pair(shorter, scheme))
-                    } else {
-                        let module = name.dropLast(shorter.size() + 1)
-                        let alias = environment.imports.find {_, i =>
-                            module == i.package.groupName() + "/" + i.directory.map {_ + "/"}.join() + i.file
-                        }
-                        alias.map {| Pair(alias, i) => 
-                            Pair(alias + short.dropFirst(i.file.size()), scheme)
-                        }
-                    }
-                | _ => 
-                    None
-            }.toMap()
-        } else {
-            self.exhaustiveMatchCompletion(environment, prefix, False)
-            let shorterPrefix = prefix.dropLast()
-            let recordFields = prefix.split('$').dropFirst().toSet()
-            environment.symbols.each {
-                | shortName, scheme {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
-                    short.reverse().takeWhile {_ != '.'}.reverse() | shorter
-                } {shorter.all {_.isAsciiLetterOrDigit()} && shorter.first().any {_.isAsciiUpper()}} => 
-                    scheme.signature.returnType.{
-                        | _ {prefix.startsWith("Record$")} =>
-                            if(scheme.signature.parameters.any {recordFields.contains(_.name)}) {
-                                makeCompletion("", shorter, scheme, True)
-                            }
-                        | TConstructor(_, name, _) {name.startsWith(shorterPrefix)} =>
-                            if(!scheme.signature.parameters.isEmpty()) {
-                                makeCompletion("", shorter, scheme, True)
-                            }
-                        | _ =>
-                    }
-                | _, _ => 
-            }
-            environment.symbols
-        }
-
-        symbols.each {memberName, memberScheme =>
-            if(memberName.startsWith(prefix)) {
-                makeCompletion(prefix, memberName, memberScheme, False)
-            }
-        }
-        self.completionResult = [...self.completionResult, ...members.toList()]
-    }
-
-    exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool): Unit {
-        if(prefix == "ff:core/List.List_") {
-            let curly = if(inside) {Pair("", "")} else {Pair("{", "}")}
-            self.completionResult = [...self.completionResult, CompletionInfo(
-                label = curly.first + "| [] => ... | [first, ...rest] => ..." + curly.second
-                snippet = curly.first + "\n    | [] => $0\n    | [first, ...rest] =>\n" + curly.second
-                member = True
-                type = TConstructor(Location("", 0, 0), "exhaustive match", [])
-                documentation = "// Exhaustive list match"
-                expectedType = None
-            )]
-        } else:
-        let shorterPrefix = prefix.dropLast()
-        let variants = environment.symbols.toList().filter {s => 
-            !s.first.contains("_") &&
-            s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
-            s.second.signature.returnType.{
-                | TConstructor(_, n, _) => n == shorterPrefix 
-                | _ => False
-            }
-        }
-        if(variants.isEmpty()) {} else:
-        let label = if(inside) {""} else {"{"} + 
-            variants.map {v =>
-                "| " + v.first.reverse().takeWhile {_ != '.'}.reverse() + 
-                if(v.second.signature.parameters.isEmpty()) {""} else {"(...)"} + " => ..."
-            }.join(" ") +
-            if(inside) {""} else {"}"}
-        let snippetParts = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
-            "| " + name.reverse().takeWhile {_ != '.'}.reverse() + 
-            if(scheme.signature.parameters.isEmpty()) {""} else {
-                "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
-            } +
-            " => " + if(index == 0) {"$0"} else {""}
-        }
-        let snippet = 
-            if(inside) {""} else {"{"} + 
-            if(snippetParts.size() != 1) {
-                "\n" + snippetParts.map {"    " + _}.join("\n") + "\n"
-            } else {
-                snippetParts.join(" ")
-            } + 
-            if(inside) {""} else {"}"}
-        self.completionResult = [...self.completionResult, CompletionInfo(
-            label = label
-            snippet = snippet
-            member = True
-            type = TConstructor(Location("", 0, 0), "exhaustive match", [])
-            documentation = "// Exhaustive match:\n" + snippetParts.join("\n").replace("$0", "")
-            expectedType = None
-        )]
-    }
-
-    patternCompletion(environment: Environment, expected: Type): Unit {
-        let typeName = self.unification.substitute(expected).{
-            | TConstructor(_, name, _) => name
-            | _ => ""
-        }
-        if(typeName == "") {} else:
-        if(typeName == "ff:core/List.List") {
-            self.completionResult = [...self.completionResult, 
-                CompletionInfo("[...]", "[${0:first, ...rest}]", False, expected, "// List pattern", Some(expected))
-            ]
-        } else:
-        if(typeName == "ff:core/String.String") {
-            self.completionResult = [...self.completionResult, 
-                CompletionInfo("\"...\"", "\"$0\"", False, expected, "// String pattern", Some(expected))
-            ]
-        } else:
-        if(typeName == "ff:core/Int.Int") {
-            self.completionResult = [...self.completionResult, 
-                CompletionInfo("0", "0", False, expected, "// Int pattern", Some(expected))
-            ]
-        } else:
-        let variants = do {
-            environment.symbols.toList().filter {s => 
-                !s.first.contains("_") &&
-                s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
-                s.second.signature.returnType.{
-                    | TConstructor(_, n, _) => n == typeName 
-                    | _ => False
-                }
-            }
-        }
-        let completions = variants.map {| Pair(name, scheme) => 
-            let shortName = name.reverse().takeWhile {_ != '.'}.reverse()
-            let snippet = 
-                shortName +
-                if(scheme.signature.parameters.isEmpty()) {""} else {
-                    "(${0:" + scheme.signature.parameters.map {_.name}.join(", ") + "})"
-                }
-            let generics = scheme.signature.generics.filter {_ != "Q$"}
-            let documentation = 
-                shortName + 
-                if(generics.isEmpty()) {""} else {"[" + generics.join(", ") + "]"} +
-                if(scheme.signature.parameters.isEmpty()) {""} else {
-                    "(\n" + scheme.signature.parameters.map {
-                        self.showCompletionParameter("    ", _)
-                    }.join("\n") + "\n)"
-                } + ": " + scheme.signature.returnType.show([])
-            CompletionInfo(
-                label = snippet.replace("${0:", "").replace("}", "")
-                snippet = snippet
-                member = False
-                type = expected
-                documentation = documentation
-                expectedType = Some(expected)
-            )
-        }
-        self.completionResult = [...self.completionResult, ...completions]
-    }
-
-    namedParameterCompletion(parameter: Parameter, preselect: Bool): Unit {
-        self.completionResult = [...self.completionResult, CompletionInfo(
-            label = parameter.name + " = ..."
-            snippet = parameter.name + " = "
-            member = False
-            type = parameter.valueType
-            documentation = self.showCompletionParameter("", parameter)
-            expectedType = if(preselect) {parameter.valueType}
-        )]
-    }
-
-    showCompletionParameter(indentation: String, parameter: Parameter): String {
-        if(parameter.mutable) {indentation + "mutable "} else {indentation} +
-        parameter.name + ": " + parameter.valueType.show([]) +
-        parameter.default.map {
-            | EVariant(_, n, _, None) =>
-                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-            | EVariant(_, n, _, Some([])) =>
-                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-            | EVariant(_, n, _, _) => 
-                n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse() + "(...)"
-            | EChar(_, v) => v
-            | EInt(_, v) => v
-            | EFloat(_, v) => v
-            | EString(_, v) => v.replace("```", "'''")
-            | ELambda(_, _) => "{...}"
-            | EList(_, _, []) => "[]"
-            | EList(_, _, _) => "[...]"
-            | _ => " = ..."
-        }.map {" = " + _}.else {""}
     }
 
 }

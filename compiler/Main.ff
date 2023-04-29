@@ -82,7 +82,7 @@ main(system: NodeSystem): Unit {
             importAndRun(system.files(), fireflyPath, "build", resolvedDependencies.mainPackagePair, localMainFile, [])
 
         | CheckCommand(filePath) => 
-            Builder.check(system, fireflyPath, filePath, Map.empty(), LspHook.disabled(), None, True)
+            Builder.check(system, fireflyPath, filePath, Map.empty(), LspHook.disabled(), True)
         
         | BootstrapCommand =>
             Builder.build(
