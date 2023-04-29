@@ -248,10 +248,12 @@ extend self: Inference {
     }
 
     inferTerm(environment: Environment, expected: Type, term: Term): Term {
-        if(self.lspHook.isAt(term.at)) {
+        let hookRecordTypeBox = if(self.lspHook.isAt(term.at)) {
+            let box = Box(None)
             self.lspHook.emit(
-                InferTermHook(self.unification, environment, expected, term, None)
+                InferTermHook(self.unification, environment, expected, term, box)
             )
+            box
         }
         function literal(coreTypeName: String): Term {
             self.unification.unify(term.at, expected, TConstructor(term.at, core(coreTypeName), []))
@@ -282,10 +284,7 @@ extend self: Inference {
             | EField e =>
                 let recordType = self.unification.freshUnificationVariable(e.at)
                 if(self.lspHook.isAt(term.at)) {
-                    self.lspHook.emit(
-                        InferTermHook(self.unification, environment, expected, term, Some(recordType))
-                        replace = True
-                    )
+                    hookRecordTypeBox.each {_.value = Some(recordType)}
                 }        
                 let record = self.inferTerm(environment, recordType, e.record)
                 self.unification.substitute(recordType).{
@@ -512,11 +511,8 @@ extend self: Inference {
                     | EField f =>
                         let recordType = self.unification.freshUnificationVariable(f.at)
                         if(self.lspHook.isAt(term.at)) {
-                            self.lspHook.emit(
-                                InferTermHook(self.unification, environment, expected, term, Some(recordType))
-                                replace = True
-                            )
-                        }      
+                            hookRecordTypeBox.each {_.value = Some(recordType)}
+                        }        
                         let record = self.inferTerm(environment, recordType, f.record)
                         let e2 = e.ECall(target = call.DynamicCall(function = f.EField(record = record)))
                         self.unification.substitute(recordType).{
@@ -951,10 +947,11 @@ extend self: Inference {
 
     lookupOption(environment: Environment, expected: Type, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
 
-        if(self.lspHook.isAt(at)) {
-            self.lspHook.emit(
-                InferBeforeLookupHook(self.unification, environment, expected, symbol)
-            )
+        let hook = if(self.lspHook.isAt(at)) {
+            let symbolHook = SymbolHook(symbol, at, at)
+            let h = InferLookupHook(self.unification, environment, expected, Box(symbolHook), Box(None))
+            self.lspHook.emit(h)
+            h
         }
 
         environment.symbols.get(symbol).map: scheme =>
@@ -1008,9 +1005,16 @@ extend self: Inference {
 
         if(self.lspHook.isAt(at) || self.lspHook.isDefinedAt(scheme.signature.at)) {
             let symbolHook = SymbolHook(symbol, at, scheme.signature.at)
-            self.lspHook.emit(
-                InferAfterLookupHook(self.unification, environment, expected, symbolHook, instantiated)
-            )
+            let emittedHook = hook.else {
+                let h = InferLookupHook(self.unification, environment, expected, Box(symbolHook), Box(None))
+                self.lspHook.emit(h)
+                h
+            }.{
+                | InferLookupHook h => 
+                    h.symbol.value = symbolHook
+                    h.instantiated.value = Some(instantiated)
+                | _ =>
+            }
         }
 
         instantiated

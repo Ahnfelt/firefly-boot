@@ -10,7 +10,7 @@ handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): Js
         | ResolveSymbolHook h => Some(h.symbol.definedAt)
         | ResolveTypeHook h => Some(h.symbol.definedAt)
         | ResolveConstraintHook h => Some(h.symbol.definedAt)
-        | InferAfterLookupHook h => Some(h.symbol.definedAt)
+        | InferLookupHook h => Some(h.symbol.value.definedAt)
         | InferParameterHook h => Some(h.parameter.at)
         | InferArgumentHook h {h.arguments.dropFirst(h.argumentIndex).first() | Some(a)} =>
             a.name.flatMap {name =>
@@ -29,9 +29,9 @@ handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): Js
 handleHover(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
     let js = system.js()
     let typeAndEffect = lspHook.results().collectFirst {
-        | InferAfterLookupHook h => 
-            let t = h.unification.substitute(h.instantiated.scheme.signature.returnType)
-            let q = h.unification.substitute(h.instantiated.scheme.signature.effect)
+        | InferLookupHook h {h.instantiated.value | Some(instantiated)} => 
+            let t = h.unification.substitute(instantiated.scheme.signature.returnType)
+            let q = h.unification.substitute(instantiated.scheme.signature.effect)
             Some(Pair(t, q))
         | InferPatternHook h =>
             let t = h.unification.substitute(h.expected)

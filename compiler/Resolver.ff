@@ -348,23 +348,13 @@ extend self: Resolver {
             type
         | TConstructor constructor, _ =>
             if(self.lspHook.isAt(type.at)) {
+                let at = self.typeLocations.get(constructor.name).else {type.at}
                 self.lspHook.emit(
                     ResolveTypeHook(
                         self.types, self.typeGenerics
-                        SymbolHook(constructor.name, type.at, type.at), type
+                        SymbolHook(constructor.name, type.at, at), type
                     )
                 )
-            }
-            self.typeLocations.get(constructor.name).each {at =>
-                if(self.lspHook.isAt(type.at)) {
-                    self.lspHook.emit(
-                        ResolveTypeHook(
-                            self.types, self.typeGenerics
-                            SymbolHook(constructor.name, type.at, at), type
-                        )
-                        replace = True
-                    )
-                }
             }
             let name = if(constructor.name.contains("$")) {
                 constructor.name
@@ -407,17 +397,10 @@ extend self: Resolver {
 
     resolveConstraint(constraint: Constraint, topLevel: Bool): Constraint {
         if(self.lspHook.isAt(constraint.at)) {
+            let at = self.traitLocations.get(constraint.name).else {constraint.at}
             self.lspHook.emit(
-                ResolveConstraintHook(SymbolHook(constraint.name, constraint.at, constraint.at), constraint)
+                ResolveConstraintHook(SymbolHook(constraint.name, constraint.at, at), constraint)
             )
-        }
-        self.traitLocations.get(constraint.name).each {at =>
-            if(self.lspHook.isAt(constraint.at)) {
-                self.lspHook.emit(
-                    ResolveConstraintHook(SymbolHook(constraint.name, constraint.at, at), constraint)
-                    replace = True
-                )
-            }
         }
         let name =
             self.traits.get(constraint.name).else {

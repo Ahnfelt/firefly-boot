@@ -35,8 +35,7 @@ extend self: LspHook {
         self.definedAt.column == at.column &&
         self.definedAt.file == at.file
     }
-    emit(result: ResultHook, replace: Bool = False) {
-        if(replace) {self.stackOfResults.pop()}
+    emit(result: ResultHook) {
         self.stackOfResults.push(result)
     }
     results(): List[ResultHook] {
@@ -49,6 +48,8 @@ data SymbolHook(
     usageAt: Location
     definedAt: Location
 )
+
+class Box[T](mutable value: T)
 
 class ResultHook {
     ResolveSymbolHook(
@@ -70,7 +71,7 @@ class ResultHook {
         environment: Environment
         expected: Type
         term: Term
-        recordType: Option[Type]
+        recordType: Box[Option[Type]]
     )
     InferPatternHook(
         unification: Unification
@@ -93,18 +94,12 @@ class ResultHook {
         arguments: List[Argument]
         argumentIndex: Int
     )
-    InferAfterLookupHook(
+    InferLookupHook(
         unification: Unification
         environment: Environment
         expected: Type
-        symbol: SymbolHook
-        instantiated: Instantiated
-    )
-    InferBeforeLookupHook(
-        unification: Unification
-        environment: Environment
-        expected: Type
-        qualifiedName: String
+        symbol: Box[SymbolHook]
+        instantiated: Box[Option[Instantiated]]
     )
     InferRecordFieldHook(
         unification: Unification

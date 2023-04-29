@@ -17,13 +17,13 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
     let completions = lspHook.results().flatMap {
         | ResolveTypeHook h => 
             typeCompletion(h.types, h.typeGenerics)
-        | InferBeforeLookupHook h =>
-            let typePrefix = if(h.qualifiedName.contains("_")) {
-                h.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
+        | InferLookupHook h =>
+            let typePrefix = if(h.symbol.value.qualifiedName.contains("_")) {
+                h.symbol.value.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
             } else {
                 ""
             }
-            Log.trace(h.qualifiedName + " -> " + typePrefix)
+            Log.trace(h.symbol.value.qualifiedName + " -> " + typePrefix)
             let expected = h.unification.substitute(h.expected)
             completion(h.unification, h.environment, typePrefix, expected)
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
