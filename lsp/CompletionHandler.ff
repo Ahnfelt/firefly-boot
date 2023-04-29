@@ -11,6 +11,7 @@ data CompletionInfo(
     type: Type
     documentation: String
     expectedType: Option[Type]
+    secondarySort: Int = 5
 )
 
 handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
@@ -45,6 +46,14 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 let t2 = h.unification.substitute(t)
                 CompletionInfo(name, name, True, t2, name + ": " + t2.show([]), Some(h.expected))
             }
+        | InferArgumentHook h =>
+            let usedNames = h.arguments.pairs().filter {| Pair(i, a) => i != h.argumentIndex}.collect {_.second.name}
+            let usedPlaces = h.arguments.takeFirst(h.argumentIndex).filter {_.name.isEmpty()}.size()
+            let remainingParameters = h.parameters.filter {p => !usedNames.any {_ == p.name}}.dropFirst(usedPlaces)
+            let preselect = h.isCopy || usedNames.size() != 0
+            remainingParameters.pairs().map {| Pair(i, p) =>
+                namedParameterCompletion(p, i, preselect)
+            }
         | _ =>
             []
     }}
@@ -63,7 +72,7 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
             let sortText = if(isParameter) {0} else {9 - (
                 isVariable.toInt() + isUnqualified.toInt() + 
                 isAlpha.toInt() + isLower.toInt()
-            )} + i.label.lower()
+            )} + "" + i.secondarySort + i.label.lower()
             let preselect = Pair(i.type, i.expectedType).{
                 | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2
                 | _ => False
@@ -359,15 +368,16 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
     completions
 }
 
-namedParameterCompletion(parameter: Parameter, preselect: Bool): Unit {
-    [CompletionInfo(
+namedParameterCompletion(parameter: Parameter, index: Int, preselect: Bool): CompletionInfo {
+    CompletionInfo(
         label = parameter.name + " = ..."
         snippet = parameter.name + " = "
         member = False
         type = parameter.valueType
         documentation = showCompletionParameter("", parameter)
         expectedType = if(preselect) {parameter.valueType}
-    )]
+        secondarySort = 1000 + index
+    )
 }
 
 showCompletionParameter(indentation: String, parameter: Parameter): String {
