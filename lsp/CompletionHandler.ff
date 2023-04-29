@@ -22,6 +22,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
         | _ =>
             None
     }
+    mutable sawLookupHook = False
     let completions = patternCompletions.else {lspHook.results().flatMap {
         | ResolveTypeHook h => 
             typeCompletion(h.types, h.typeGenerics)
@@ -32,13 +33,15 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 | _ => 
                     []
             }
-        | InferLookupHook h =>
+        | InferLookupHook h {!sawLookupHook} =>
+            sawLookupHook = True
             let typePrefix = if(h.symbol.value.qualifiedName.contains("_")) {
                 h.symbol.value.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
             } else {
                 ""
             }
             let expected = h.unification.substitute(h.expected)
+            Log.trace("expected: " + expected.show([]))
             completion(h.unification, h.environment, typePrefix, expected)
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
             let fieldNames = n.split('$').toList().dropFirst(1)
