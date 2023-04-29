@@ -171,7 +171,7 @@ extend self: Handler {
     }
     
     handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
-        let targetAt = self.grabFixedLocation(system, parameters)
+        let targetAt = self.parseAndFixedLocation(system, parameters)
         let lspHook = LspHook.make(at = Some(targetAt), definedAt = None)
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, True)
@@ -187,7 +187,7 @@ extend self: Handler {
     }
 
     handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let completionAt = self.grabFixedLocation(system, parameters)
+        let completionAt = self.parseAndFixedLocation(system, parameters)
         let lspHook = LspHook.make(at = Some(completionAt), definedAt = None)
         try {
             Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, True)
@@ -199,7 +199,7 @@ extend self: Handler {
     }
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let completionAt = self.grabFixedLocation(system, parameters)
+        let completionAt = self.parseAndFixedLocation(system, parameters)
         mutable completionResult = []
         // This happens when the cursor moves or a character is typed so it'd better be fast!
         let js = system.js()
@@ -218,7 +218,7 @@ extend self: Handler {
     }
 
     handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {
-        let targetAt = self.grabFixedLocation(system, parameters)
+        let targetAt = self.parseAndFixedLocation(system, parameters)
         let tokens = self.findReferences(system, targetAt, local)
         let js = system.js()
         let o = tokens.{
@@ -232,7 +232,7 @@ extend self: Handler {
     
     handleRename(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let newName = parameters.grab("newName").grabString()
-        let targetAt = self.grabFixedLocation(system, parameters)
+        let targetAt = self.parseAndFixedLocation(system, parameters)
         let tokens = self.findReferences(system, targetAt, False)
         let js = system.js()
         tokens.{
@@ -241,7 +241,13 @@ extend self: Handler {
             | Some([first, ..._] @ tokens) => 
                 let oldName = first.raw
                 Log.trace("Rename '" + oldName + "' to '" + newName + "'")
-                let byFile = tokens.map {t => Pair(t.file, t)}.group()
+
+                // TODO findReferences returns some bad tokens
+                let goodTokens = tokens.filter {_.raw == oldName}
+                let badTokens = tokens.filter {_.raw != oldName}
+                badTokens.each {t => Log.trace("Rename bad token: " + Show.show(t))} 
+
+                let byFile = goodTokens.map {t => Pair(t.file, t)}.group()
                 let allChanges = byFile.toList().foldLeft(js.object(), {| o, Pair(file, fileTokens) => 
                     let uri = FileSystem.pathToUrl(system.files().absolutePath(file))
                     let fileChanges = fileTokens.map {tokenLocation => 
@@ -351,7 +357,7 @@ extend self: Handler {
         } grab()
     }
 
-    grabFixedLocation(system: NodeSystem, parameters: Map[String, JsValue]): Location {
+    parseAndFixedLocation(system: NodeSystem, parameters: Map[String, JsValue]): Location {
         let uri = parameters.grab("textDocument").get("uri").grabString()
         let absolutePath = FileSystem.urlToPath(uri)
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
