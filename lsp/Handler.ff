@@ -228,7 +228,7 @@ extend self: Handler {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
             | ResolveTypeHook h => Some(h.symbol.definedAt)
             | ResolveConstraintHook h => Some(h.symbol.definedAt)
-            | InferLookupHook h => Some(h.symbol.definedAt)
+            | InferAfterLookupHook h => Some(h.symbol.definedAt)
             | _ => None
         }
 
@@ -252,7 +252,7 @@ extend self: Handler {
                     | ResolveSymbolHook h => Some(h.symbol.usageAt)
                     | ResolveTypeHook h => Some(h.symbol.usageAt)
                     | ResolveConstraintHook h => Some(h.symbol.usageAt)
-                    | InferLookupHook h => Some(h.symbol.usageAt)
+                    | InferAfterLookupHook h => Some(h.symbol.usageAt)
                     | _ => None
                 }
 

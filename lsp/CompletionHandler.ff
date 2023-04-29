@@ -17,15 +17,21 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
     let completions = lspHook.results().flatMap {
         | ResolveTypeHook h => 
             typeCompletion(h.types, h.typeGenerics)
-        | InferLookupHook h =>
-            let typePrefix = if(h.symbol.qualifiedName.contains("_")) {
-                h.symbol.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
+        | InferBeforeLookupHook h =>
+            let typePrefix = if(h.qualifiedName.contains("_")) {
+                h.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
             } else {
                 ""
             }
-            // Log.trace(h.symbol.qualifiedName + " -> " + typePrefix)
+            Log.trace(h.qualifiedName + " -> " + typePrefix)
             let expected = h.unification.substitute(h.expected)
-            completion(h.unification, h.environment, typePrefix, False, expected)
+            completion(h.unification, h.environment, typePrefix, expected)
+        | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
+            let fieldNames = n.split('$').toList().dropFirst(1)
+            fieldNames.zip(ts).map {| Pair(name, t) =>
+                let t2 = h.unification.substitute(t)
+                CompletionInfo(name, name, True, t2, name + ": " + t2.show([]), Some(h.expected))
+            }
         | _ =>
             []
     }
@@ -85,12 +91,9 @@ typeCompletion(types: Map[String, String], typeGenerics: Map[String, List[String
     completions
 }
 
-completion(unification: Unification, environment: Environment, prefix: String, member: Bool, expected: Type): List[CompletionInfo] {
+completion(unification: Unification, environment: Environment, prefix: String, expected: Type): List[CompletionInfo] {
 
-    let expectedName = expected.{
-        | TConstructor(_, n, _) => n
-        | _ => "##"
-    }
+    let member = prefix.contains("_")
 
     let members = Stack.make()
 
@@ -205,7 +208,7 @@ completion(unification: Unification, environment: Environment, prefix: String, m
     } else {
         members.pushAll(exhaustiveMatchCompletion(environment, prefix, False).toStack())
         let shorterPrefix = prefix.dropLast()
-        let recordFields = prefix.split('$').dropFirst().toSet()
+        let recordFields = shorterPrefix.split('$').dropFirst().toSet()
         environment.symbols.each {
             | shortName, scheme {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
                 short.reverse().takeWhile {_ != '.'}.reverse() | shorter

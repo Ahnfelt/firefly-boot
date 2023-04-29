@@ -291,26 +291,14 @@ extend self: Inference {
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
                         let fieldNames = name.split('$').toList().dropFirst(1)
-                        /*
-                        if(self.completionAt.contains(e.at)) {
-                            self.completionResult = fieldNames.zip(typeArguments).map {
-                                | Pair(fieldName, typeArgument) => 
-                                    CompletionInfo(fieldName, fieldName, True, typeArgument, "", Some(expected))
-                            }
-                            self.completion(environment, name, True, expected)
-                        }
-                        */
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)
-                            if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(t.at)) {
+                            if(self.lspHook.isAt(e.at)) {
                                 let symbolHook = SymbolHook(e.field, e.at, e.at)
                                 let noEffect = self.unification.freshUnificationVariable(e.at)
-                                let signature = Signature(e.at, e.field, [], [], [], t1, noEffect)
                                 self.lspHook.emit(
-                                    InferLookupHook(self.unification, environment, expected, symbolHook
-                                        Instantiated([], Scheme(False, False, False, False, signature))
-                                    )
+                                    InferRecordFieldHook(self.unification, environment, expected, t, e.field)
                                 )
                             }
                             e.EField(record = record)
@@ -963,6 +951,12 @@ extend self: Inference {
 
     lookupOption(environment: Environment, expected: Type, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
 
+        if(self.lspHook.isAt(at)) {
+            self.lspHook.emit(
+                InferBeforeLookupHook(self.unification, environment, expected, symbol)
+            )
+        }
+
         environment.symbols.get(symbol).map: scheme =>
 
         let instantiation =
@@ -1015,7 +1009,7 @@ extend self: Inference {
         if(self.lspHook.isAt(at) || self.lspHook.isDefinedAt(scheme.signature.at)) {
             let symbolHook = SymbolHook(symbol, at, scheme.signature.at)
             self.lspHook.emit(
-                InferLookupHook(self.unification, environment, expected, symbolHook, instantiated)
+                InferAfterLookupHook(self.unification, environment, expected, symbolHook, instantiated)
             )
         }
 

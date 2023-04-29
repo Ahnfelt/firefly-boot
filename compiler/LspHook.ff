@@ -93,11 +93,24 @@ class ResultHook {
         arguments: List[Argument]
         argumentIndex: Int
     )
-    InferLookupHook(
+    InferAfterLookupHook(
         unification: Unification
         environment: Environment
         expected: Type
         symbol: SymbolHook
         instantiated: Instantiated
+    )
+    InferBeforeLookupHook(
+        unification: Unification
+        environment: Environment
+        expected: Type
+        qualifiedName: String
+    )
+    InferRecordFieldHook(
+        unification: Unification
+        environment: Environment
+        expected: Type
+        recordType: Type
+        fieldName: String
     )
 }
