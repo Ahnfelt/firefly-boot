@@ -289,17 +289,17 @@ extend self: Inference {
                 let record = self.inferTerm(environment, recordType, e.record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
+                        if(self.lspHook.isAt(e.at)) {
+                            let symbolHook = SymbolHook(e.field, e.at, e.at)
+                            let noEffect = self.unification.freshUnificationVariable(e.at)
+                            self.lspHook.emit(
+                                InferRecordFieldHook(self.unification, environment, expected, t, e.field)
+                            )
+                        }
                         let fieldNames = name.split('$').toList().dropFirst(1)
                         fieldNames.pairs().find {_.second == e.field}.map {_.first}.map {index =>
                             let t1 = typeArguments.grab(index)
                             self.unification.unify(e.at, expected, t1)
-                            if(self.lspHook.isAt(e.at)) {
-                                let symbolHook = SymbolHook(e.field, e.at, e.at)
-                                let noEffect = self.unification.freshUnificationVariable(e.at)
-                                self.lspHook.emit(
-                                    InferRecordFieldHook(self.unification, environment, expected, t, e.field)
-                                )
-                            }
                             e.EField(record = record)
                         }.elseIf {self.lspHook.isEnabled()} {
                             term
