@@ -385,6 +385,13 @@ extend self: Inference {
                 )
             | ELambda(at, l) =>
                 let lambda = self.inferLambda(environment, expected, l)
+                l.cases.{
+                    | [MatchCase(_, [], [], EVariable(insideAt, ""))] {self.lspHook.isAt(insideAt)} => 
+                        self.lspHook.emit(
+                            InferLambdaStartHook(self.unification, environment, expected)
+                        )
+                    | _ =>
+                }
                 ELambda(at, lambda)
             | EVariant e =>
                 let instantiated = self.lookup(environment, expected, e.at, e.name, e.typeArguments).else {

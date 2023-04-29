@@ -73,6 +73,11 @@ class ResultHook {
         term: Term
         recordType: Box[Option[Type]]
     )
+    InferLambdaStartHook(
+        unification: Unification
+        environment: Environment
+        lambdaType: Type
+    )
     InferPatternHook(
         unification: Unification
         environment: Environment

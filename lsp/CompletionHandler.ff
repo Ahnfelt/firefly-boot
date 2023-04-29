@@ -24,8 +24,13 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
     let completions = patternCompletions.else {lspHook.results().flatMap {
         | ResolveTypeHook h => 
             typeCompletion(h.types, h.typeGenerics)
-        | InferTermHook h {h.term | ELambda(_, Lambda(_, _, [case]))} =>
-            [] // TODO: How to detect you're standing at the start of a lambda? Separate hook?
+        | InferLambdaStartHook h =>
+            h.unification.substitute(h.lambdaType).{
+                | TConstructor(_, "Function$1", [_, TConstructor(_, prefix, _), _]) =>
+                    exhaustiveMatchCompletion(h.environment, prefix + "_", True)
+                | _ => 
+                    []
+            }
         | InferLookupHook h =>
             let typePrefix = if(h.symbol.value.qualifiedName.contains("_")) {
                 h.symbol.value.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
