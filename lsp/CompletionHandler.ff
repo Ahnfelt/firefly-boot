@@ -46,7 +46,13 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 let t2 = h.unification.substitute(t)
                 CompletionInfo(name, name, True, t2, name + ": " + t2.show([]), Some(h.expected))
             }
-        | InferArgumentHook h =>
+        | InferArgumentHook h {
+            ![
+                "ff:core/Equal.equals", "ff:core/Equal.notEquals"
+                "ff:core/Ordering.before", "ff:core/Ordering.notBefore"
+                "ff:core/Ordering.after", "ff:core/Ordering.notAfter"
+            ].any {_ == h.callName}
+        } =>
             let usedNames = h.arguments.pairs().filter {| Pair(i, a) => i != h.argumentIndex}.collect {_.second.name}
             let usedPlaces = h.arguments.takeFirst(h.argumentIndex).filter {_.name.isEmpty()}.size()
             let remainingParameters = h.parameters.filter {p => !usedNames.any {_ == p.name}}.dropFirst(usedPlaces)
