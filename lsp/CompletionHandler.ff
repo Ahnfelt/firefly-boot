@@ -1,0 +1,373 @@
+import LspHook from ff:compiler
+import Unification from ff:compiler
+import Environment from ff:compiler
+import Syntax from ff:compiler
+import Handler
+
+data CompletionInfo(
+    label: String
+    snippet: String
+    member: Bool
+    type: Type
+    documentation: String
+    expectedType: Option[Type]
+)
+
+handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
+    let completions = lspHook.results().flatMap {
+        | ResolveTypeHook h => 
+            typeCompletion(h.types, h.typeGenerics)
+        | InferLookupHook h =>
+            let typePrefix = if(h.symbol.qualifiedName.contains("_")) {
+                h.symbol.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
+            } else {
+                ""
+            }
+            // Log.trace(h.symbol.qualifiedName + " -> " + typePrefix)
+            let expected = h.unification.substitute(h.expected)
+            completion(h.unification, h.environment, typePrefix, False, expected)
+        | _ =>
+            []
+    }
+    completionsToJson(system.js(), completions)
+}
+
+completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
+    js.object()
+        .with("isIncomplete", False)
+        .with("items", completions.distinct().toArray().map {| CompletionInfo i =>
+            let isAlpha = i.label.first().any {_.isAsciiLetter()}
+            let isLower = i.label.first().any {_.isAsciiLower()}
+            let isUnqualified = !i.label.takeWhile {c => c != '(' && c != '[' && c != '{'}.contains(".")
+            let isVariable = isLower && !i.label.contains("(") && !i.label.contains("{")
+            let isParameter = i.snippet.endsWith(" = ")
+            let sortText = if(isParameter) {0} else {9 - (
+                isVariable.toInt() + isUnqualified.toInt() + 
+                isAlpha.toInt() + isLower.toInt()
+            )} + i.label.lower()
+            let preselect = Pair(i.type, i.expectedType).{
+                | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2
+                | _ => False
+            }
+            js.object()
+                // Property or EnumMember or Constructor or Method/Function or Field/Variable
+                .with("kind", 
+                    if(isParameter) {10} else:
+                    if(i.label.first().any {c => c == '{' || c == '|'}) {22} else:
+                    if(i.label.first().any {_.isAsciiUpper()}) {4} else:
+                    if(i.label.any {c => c == '(' || c == '{'}) {2} else {5} + if(i.member) {0} else {1}
+                )
+                .with("sortText", sortText)
+                .with("preselect", preselect)
+                .with("label", i.label)
+                .with("labelDetails", js.object()
+                    .with("detail", ": " + i.type.show([]))
+                )
+                .with("insertText", i.snippet)
+                .with("insertTextFormat", 2 /* Snippet */)
+                .with("documentation", js.object()
+                    .with("kind", "markdown")
+                    .with("value", "```\n" + i.documentation + "\n```")
+                )
+        })    
+}
+
+typeCompletion(types: Map[String, String], typeGenerics: Map[String, List[String]]): List[CompletionInfo] {
+    let completions = types.toList().filter {| Pair(n, full) => 
+        n.all {_.isAsciiLetterOrDigit()}
+    }.map {| Pair(typeName, full) =>
+        let generics = typeGenerics.find {k, _ => k == typeName}.toList().flatMap {_.second}
+        let realGenerics = generics.filter {_ != "Q$"}
+        let label = typeName + if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
+        let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[${0:" + realGenerics.join(", ") + "}]"}
+        CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), full, None)
+    }
+    completions
+}
+
+completion(unification: Unification, environment: Environment, prefix: String, member: Bool, expected: Type): List[CompletionInfo] {
+
+    let expectedName = expected.{
+        | TConstructor(_, n, _) => n
+        | _ => "##"
+    }
+
+    let members = Stack.make()
+
+    function makeCompletion(prefix: String, memberName: String, memberScheme: Scheme, copy: Bool) {
+        let shortName = memberName.dropFirst(prefix.size())
+        let unqualifiedName = shortName.reverse().takeWhile {_ != '.'}.reverse()
+        let upper = unqualifiedName.first().any {_.isAsciiUpper()}
+        let variantWithoutParameters = upper && memberScheme.signature.parameters.isEmpty()
+        let realParameters = memberScheme.signature.parameters.dropFirst(if(member && !copy) {1} else {0})
+        let pair = if(!memberScheme.isVariable && !variantWithoutParameters) {
+            let trailing = realParameters.pairs().reverse().map {| Pair(index, p) =>
+                p.valueType.{
+                    | TConstructor(_, name, _) {name.startsWith("Function$")} =>
+                        Some(Pair(
+                            " {...}"
+                            if(index == 0) {" {$0}"} else {" {}"}
+                        ))
+                    | _ => 
+                        None
+                }
+            }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
+            let allRequired = realParameters.filter {_.default.isEmpty()}
+            let required =  allRequired.dropLast(trailing.size()).map {_.name}
+            let optional = if(allRequired.size() != realParameters.size()) {"..."}
+            Pair(
+                if(trailing.isEmpty() || !required.isEmpty()) {
+                    "(" + [...required, ...optional.toList()].join(", ") + ")"
+                } else {
+                    ""
+                } + trailing.map {_.first}.join()
+                if(copy) {
+                    "(${1|" + realParameters.map {_.name}.map {f => f + " = "}.join(",") + "|}$0)"
+                } else {
+                    if(trailing.isEmpty() || !required.isEmpty()) {
+                        if(required.isEmpty()) {"()"} else {"($0)"}
+                    } else {
+                        ""
+                    } + if(trailing.isEmpty()) {""} else {trailing.map {_.second}.join()}
+                }
+            )
+        } else {Pair("", "")}
+        let returnType = unification.substitute(memberScheme.signature.returnType)
+        let documentation = if(memberScheme.isVariable || variantWithoutParameters) {
+            let methodGenerics = memberScheme.signature.generics
+            let generics = if(member || methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+            if(memberScheme.isMutable) {"mutable "} else {""} +
+            unqualifiedName + generics +
+            ": " + returnType.show([])
+        } else {
+            let selfType = memberScheme.signature.parameters.first().filter {_ => member && !copy}.map {_.valueType}
+            let generics = selfType.map {
+                | TConstructor(_, _, gs) => 
+                    // TODO: Needs constraints as well
+                    // TODO: This drops the wrong number of type parameters - more environment needed
+                    let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
+                    if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+                | _ =>
+                    ""
+            }.else {
+                let methodGenerics = memberScheme.signature.generics.filter {_ != "Q$"}
+                if(methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+            }
+            let selfIndent = selfType.map {_ => "    "}.else {""}
+            let parameters = if(realParameters.isEmpty()) {""} else {
+                "\n" + realParameters.map {p =>
+                    showCompletionParameter(selfIndent + "    ", p)
+                }.join("\n") + "\n" + selfIndent
+            }
+            selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
+            selfIndent + unqualifiedName + 
+            generics + "(" + parameters + "): " + 
+            returnType.show([]) + 
+            selfType.map {_ => "\n}"}.else {""}
+        }
+        members.push(CompletionInfo(
+            label = shortName + pair.first
+            snippet = shortName + pair.second
+            member = member && !copy
+            type = returnType
+            documentation = documentation
+            expectedType = Some(expected)
+        ))
+    }
+
+    let symbols = if(prefix == "") {
+        environment.symbols.toList().collect {
+            | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} => 
+                Some(pair)
+            | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
+                Some(pair.Pair(first = name.dropFirst("ff:core/Core.".size())))
+            | Pair(name, _)@pair {name.startsWith(environment.modulePrefix)} {
+                name.dropFirst(environment.modulePrefix.size()) | n
+            } {n.all {_.isAsciiLetterOrDigit()}} => 
+                Some(pair.Pair(first = n))
+            | Pair(name, scheme) {name.dropWhile {_ != '/'}.dropFirst() | short} {
+                short.reverse().takeWhile {_ != '.'}.reverse() | shorter
+            } {shorter.all {_.isAsciiLetterOrDigit()}} =>
+                if(shorter.first().any {_.isAsciiUpper()}) {
+                    Some(Pair(shorter, scheme))
+                } else {
+                    let module = name.dropLast(shorter.size() + 1)
+                    let alias = environment.imports.find {_, i =>
+                        module == i.package.groupName() + "/" + i.directory.map {_ + "/"}.join() + i.file
+                    }
+                    alias.map {| Pair(alias, i) => 
+                        Pair(alias + short.dropFirst(i.file.size()), scheme)
+                    }
+                }
+            | _ => 
+                None
+        }.toMap()
+    } else {
+        members.pushAll(exhaustiveMatchCompletion(environment, prefix, False).toStack())
+        let shorterPrefix = prefix.dropLast()
+        let recordFields = prefix.split('$').dropFirst().toSet()
+        environment.symbols.each {
+            | shortName, scheme {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
+                short.reverse().takeWhile {_ != '.'}.reverse() | shorter
+            } {shorter.all {_.isAsciiLetterOrDigit()} && shorter.first().any {_.isAsciiUpper()}} => 
+                scheme.signature.returnType.{
+                    | _ {prefix.startsWith("Record$")} =>
+                        if(scheme.signature.parameters.any {recordFields.contains(_.name)}) {
+                            makeCompletion("", shorter, scheme, True)
+                        }
+                    | TConstructor(_, name, _) {name.startsWith(shorterPrefix)} =>
+                        if(!scheme.signature.parameters.isEmpty()) {
+                            makeCompletion("", shorter, scheme, True)
+                        }
+                    | _ =>
+                }
+            | _, _ => 
+        }
+        environment.symbols
+    }
+
+    symbols.each {memberName, memberScheme =>
+        if(memberName.startsWith(prefix)) {
+            makeCompletion(prefix, memberName, memberScheme, False)
+        }
+    }
+    members.toList()
+}
+
+exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool): List[CompletionInfo] {
+    if(prefix == "ff:core/List.List_") {
+        let curly = if(inside) {Pair("", "")} else {Pair("{", "}")}
+        [CompletionInfo(
+            label = curly.first + "| [] => ... | [first, ...rest] => ..." + curly.second
+            snippet = curly.first + "\n    | [] => $0\n    | [first, ...rest] =>\n" + curly.second
+            member = True
+            type = TConstructor(Location("", 0, 0), "exhaustive match", [])
+            documentation = "// Exhaustive list match"
+            expectedType = None
+        )]
+    } else:
+    let shorterPrefix = prefix.dropLast()
+    let variants = environment.symbols.toList().filter {s => 
+        !s.first.contains("_") &&
+        s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
+        s.second.signature.returnType.{
+            | TConstructor(_, n, _) => n == shorterPrefix 
+            | _ => False
+        }
+    }
+    if(variants.isEmpty()) {[]} else:
+    let label = if(inside) {""} else {"{"} + 
+        variants.map {v =>
+            "| " + v.first.reverse().takeWhile {_ != '.'}.reverse() + 
+            if(v.second.signature.parameters.isEmpty()) {""} else {"(...)"} + " => ..."
+        }.join(" ") +
+        if(inside) {""} else {"}"}
+    let snippetParts = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
+        "| " + name.reverse().takeWhile {_ != '.'}.reverse() + 
+        if(scheme.signature.parameters.isEmpty()) {""} else {
+            "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
+        } +
+        " => " + if(index == 0) {"$0"} else {""}
+    }
+    let snippet = 
+        if(inside) {""} else {"{"} + 
+        if(snippetParts.size() != 1) {
+            "\n" + snippetParts.map {"    " + _}.join("\n") + "\n"
+        } else {
+            snippetParts.join(" ")
+        } + 
+        if(inside) {""} else {"}"}
+    [CompletionInfo(
+        label = label
+        snippet = snippet
+        member = True
+        type = TConstructor(Location("", 0, 0), "exhaustive match", [])
+        documentation = "// Exhaustive match:\n" + snippetParts.join("\n").replace("$0", "")
+        expectedType = None
+    )]
+}
+
+patternCompletion(unification: Unification, environment: Environment, expected: Type): Unit {
+    let typeName = unification.substitute(expected).{
+        | TConstructor(_, name, _) => name
+        | _ => ""
+    }
+    if(typeName == "") {} else:
+    if(typeName == "ff:core/List.List") {
+        [CompletionInfo("[...]", "[${0:first, ...rest}]", False, expected, "// List pattern", Some(expected))]
+    } else:
+    if(typeName == "ff:core/String.String") {
+        [CompletionInfo("\"...\"", "\"$0\"", False, expected, "// String pattern", Some(expected))]
+    } else:
+    if(typeName == "ff:core/Int.Int") {
+        [CompletionInfo("0", "0", False, expected, "// Int pattern", Some(expected))]
+    } else:
+    let variants = do {
+        environment.symbols.toList().filter {s => 
+            !s.first.contains("_") &&
+            s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
+            s.second.signature.returnType.{
+                | TConstructor(_, n, _) => n == typeName 
+                | _ => False
+            }
+        }
+    }
+    let completions = variants.map {| Pair(name, scheme) => 
+        let shortName = name.reverse().takeWhile {_ != '.'}.reverse()
+        let snippet = 
+            shortName +
+            if(scheme.signature.parameters.isEmpty()) {""} else {
+                "(${0:" + scheme.signature.parameters.map {_.name}.join(", ") + "})"
+            }
+        let generics = scheme.signature.generics.filter {_ != "Q$"}
+        let documentation = 
+            shortName + 
+            if(generics.isEmpty()) {""} else {"[" + generics.join(", ") + "]"} +
+            if(scheme.signature.parameters.isEmpty()) {""} else {
+                "(\n" + scheme.signature.parameters.map {
+                    showCompletionParameter("    ", _)
+                }.join("\n") + "\n)"
+            } + ": " + scheme.signature.returnType.show([])
+        CompletionInfo(
+            label = snippet.replace("${0:", "").replace("}", "")
+            snippet = snippet
+            member = False
+            type = expected
+            documentation = documentation
+            expectedType = Some(expected)
+        )
+    }
+    completions
+}
+
+namedParameterCompletion(parameter: Parameter, preselect: Bool): Unit {
+    [CompletionInfo(
+        label = parameter.name + " = ..."
+        snippet = parameter.name + " = "
+        member = False
+        type = parameter.valueType
+        documentation = showCompletionParameter("", parameter)
+        expectedType = if(preselect) {parameter.valueType}
+    )]
+}
+
+showCompletionParameter(indentation: String, parameter: Parameter): String {
+    if(parameter.mutable) {indentation + "mutable "} else {indentation} +
+    parameter.name + ": " + parameter.valueType.show([]) +
+    parameter.default.map {
+        | EVariant(_, n, _, None) =>
+            n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+        | EVariant(_, n, _, Some([])) =>
+            n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+        | EVariant(_, n, _, _) => 
+            n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse() + "(...)"
+        | EChar(_, v) => v
+        | EInt(_, v) => v
+        | EFloat(_, v) => v
+        | EString(_, v) => v.replace("```", "'''")
+        | ELambda(_, _) => "{...}"
+        | EList(_, _, []) => "[]"
+        | EList(_, _, _) => "[...]"
+        | _ => " = ..."
+    }.map {" = " + _}.else {""}
+}
