@@ -176,7 +176,7 @@ extend self: Handler {
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, True)
         } catch {| CompileError(at, message), error =>
-            Log.trace(message)
+            Log.trace("handleHover check error: " + message)
         } grab()
         let o = if(goToDefinition) {
             HoverHandler.handleGoToDefinition(system, self, lspHook)
@@ -192,7 +192,7 @@ extend self: Handler {
         try {
             Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, True)
         } catch {| CompileError(at, message), error =>
-            Log.trace(message)
+            Log.trace("handleCompletion check error: " + message)
         } grab()
         let o = CompletionHandler.handleCompletion(system, lspHook)
         Result(o)
@@ -267,9 +267,13 @@ extend self: Handler {
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, temporaryLspHook, True)
         } catch {| CompileError(at, message), error =>
-            Log.trace(message)
+            Log.trace("findReferences first check error: " + message)
         } grab()
     
+        temporaryLspHook.results().map {r => 
+            Log.trace("findReferences: " + r.debugShow())
+        }
+
         let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
             | ResolveTypeHook h => Some(h.symbol.definedAt)
@@ -278,8 +282,7 @@ extend self: Handler {
             | _ => None
         }
     
-        Log.trace("definedAtList: ")
-        Log.show(definedAtList)
+        Log.trace("definedAtList: " + Show.show(definedAtList))
     
         let js = system.js()
         definedAtList.first().{
@@ -288,10 +291,9 @@ extend self: Handler {
                 let lspHook = LspHook.make(at = None, definedAt = Some(definedAt))
                 try {
                     let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
-                    Log.trace("path: " + path)
                     Builder.check(system, ".", path, self.virtualFiles, lspHook, True)
                 } catch {| CompileError(at, message), error =>
-                    Log.trace(message)
+                    Log.trace("findReferences second check error: " + message)
                 } grab()
     
                 let referencesResult = lspHook.results().collect {
@@ -302,8 +304,7 @@ extend self: Handler {
                     | _ => None
                 }
     
-                Log.trace("referencesResult: ")
-                Log.show(referencesResult)
+                Log.trace("referencesResult: " + Show.show(referencesResult))
     
                 let clientLocations = referencesResult.addAll([definedAt]).filter {
                     !local || _.file == targetAt.file

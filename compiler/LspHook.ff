@@ -114,3 +114,30 @@ class ResultHook {
         fieldName: String
     )
 }
+
+extend self: ResultHook {
+    debugShow(): String {
+        self.{
+            | InferArgumentHook(unification, environment, isCopy, callAt, callName, parameters, arguments, argumentIndex) => 
+                "InferArgumentHook(isCopy="+Show.show(isCopy)+", callAt="+Show.show(callAt)+", callName="+Show.show(callName)+", parameters="+Show.show(parameters)+", arguments="+Show.show(arguments)+", argumentIndex="+Show.show(argumentIndex)+")"
+            | InferLambdaStartHook(unification, environment, lambdaType) => 
+                "InferLambdaStartHook(unification, environment, lambdaType="+Show.show(lambdaType)+")"
+            | InferLookupHook(unification, environment, expected, symbol, instantiated) => 
+                "InferLookupHook(expected="+Show.show(expected)+", symbol="+Show.show(symbol.value)+", instantiated="+Show.show(instantiated.value)+")"
+            | InferParameterHook(unification, environment, parameter) => 
+                "InferParameterHook(unification, environment, parameter="+Show.show(parameter)+")"
+            | InferPatternHook(unification, environment, expected, pattern) => 
+                "InferPatternHook(unification, environment, expected="+Show.show(expected)+", pattern="+Show.show(pattern)+")"
+            | InferRecordFieldHook(unification, environment, expected, recordType, fieldName) => 
+                "InferRecordFieldHook(unification, environment, expected="+Show.show(expected)+", recordType="+Show.show(recordType)+", fieldName="+Show.show(fieldName)+")"
+            | InferTermHook(unification, environment, expected, term, recordType) => 
+                "InferTermHook(unification, environment, expected="+Show.show(expected)+", term="+Show.show(term)+", recordType="+Show.show(recordType.value)+")"
+            | ResolveConstraintHook(symbol, constrant) => 
+                "ResolveConstraintHook(symbol="+Show.show(symbol)+", constrant="+Show.show(constrant)+")"
+            | ResolveSymbolHook(symbol, annotation) => 
+                "ResolveSymbolHook(symbol="+Show.show(symbol)+", annotation="+Show.show(annotation)+")"
+            | ResolveTypeHook(types, typeGenerics, symbol, explicitType) => 
+                "ResolveTypeHook(types, typeGenerics, symbol="+Show.show(symbol)+", explicitType="+Show.show(explicitType)+")"
+        }
+    }
+}
