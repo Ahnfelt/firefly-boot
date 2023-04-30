@@ -98,16 +98,11 @@ check(
 ) {
     let fs = system.files()
     let packages = fs.isDirectory(path).{
-        | True => 
-            Log.trace("fs.isDirectory(path): True" )
-            findPackageFiles(fs, path)
-        | False => 
-            Log.trace("fs.isDirectory(path): False" )
-            [PackageFiles(FileSystem.directoryName(path), None, [path])] // TODO
+        | True => findPackageFiles(fs, path)
+        | False => [PackageFiles(FileSystem.directoryName(path), None, [path])] // TODO
     }
 
     packages.each {package => 
-        Log.show(package)
         let firstFile = package.files.grabFirst()
         let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), firstFile)
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
