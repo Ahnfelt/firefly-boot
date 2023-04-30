@@ -70,7 +70,9 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 CompletionInfo(snippet + "...", snippet, False, t1, "// Define missing variable", Some(t1))
             }
         | InferSequentialStartHook h {h.term | ESequential(_, EVariable _, _)} =>
-            h.missingVariables.toList().filter {_.first.all {_.isAsciiLetterOrDigit()}}.map {| Pair(x, t) =>
+            h.missingVariables.toList().filter {| Pair(x, _) =>
+                x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
+            }.map {| Pair(x, t) =>
                 let t1 = h.unification.substitute(t)
                 let snippet = "let " + x + " = "
                 CompletionInfo(snippet + "...", snippet, False, t1, "// Define missing variable", Some(t1))
