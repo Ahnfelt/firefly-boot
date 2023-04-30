@@ -351,6 +351,11 @@ extend self: Inference {
                     Pair(self.inferTerm(environment, if(spread) {listType} else {t}, item), spread)
                 })
             | ESequential(at, before, after) =>
+                if(self.lspHook.isAt(before.at)) {
+                    self.lspHook.emit(
+                        InferSequentialStartHook(self.unification, term, self.missingVariables)
+                    )
+                }
                 let newExpected = self.unification.freshUnificationVariable(at)
                 before.{
                     | EPipe(at1, value, effect1, ELambda(at2, Lambda(at3, effect3, cases))) =>

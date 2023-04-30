@@ -79,6 +79,11 @@ class ResultHook {
         environment: Environment
         lambdaType: Type
     )
+    InferSequentialStartHook(
+        unification: Unification
+        term: Term
+        missingVariables: StringMap[Type]
+    )
     InferPatternHook(
         unification: Unification
         environment: Environment
@@ -121,6 +126,8 @@ extend self: ResultHook {
         self.{
             | InferArgumentHook(unification, environment, isCopy, callAt, callName, parameters, arguments, argumentIndex) => 
                 "InferArgumentHook(isCopy="+Show.show(isCopy)+", callAt="+Show.show(callAt)+", callName="+Show.show(callName)+", parameters="+Show.show(parameters)+", arguments="+Show.show(arguments)+", argumentIndex="+Show.show(argumentIndex)+")"
+            | InferSequentialStartHook(unification, term, missingVariables) =>
+                "InferSequentialStartHook(unification, term, missingVariables)"
             | InferLambdaStartHook(unification, environment, lambdaType) => 
                 "InferLambdaStartHook(unification, environment, lambdaType="+Show.show(lambdaType)+")"
             | InferLookupHook(unification, environment, expected, symbol, instantiated) => 
@@ -132,7 +139,7 @@ extend self: ResultHook {
             | InferRecordFieldHook(unification, environment, expected, recordType, fieldName) => 
                 "InferRecordFieldHook(unification, environment, expected="+Show.show(expected)+", recordType="+Show.show(recordType)+", fieldName="+Show.show(fieldName)+")"
             | InferTermHook(unification, environment, expected, term, recordType, missingVariables) => 
-                "InferTermHook(unification, environment, expected="+Show.show(expected)+", term="+Show.show(term)+", recordType="+Show.show(recordType.value)+", missingVariables=...)"
+                "InferTermHook(unification, environment, expected="+Show.show(expected)+", term="+Show.show(term)+", recordType="+Show.show(recordType.value)+", missingVariables)"
             | ResolveConstraintHook(symbol, constrant) => 
                 "ResolveConstraintHook(symbol="+Show.show(symbol)+", constrant="+Show.show(constrant)+")"
             | ResolveSymbolHook(symbol, annotation) => 

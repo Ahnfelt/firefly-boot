@@ -35,7 +35,6 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             }
         | InferLookupHook h {!sawLookupHook && !h.symbol.value.qualifiedName.startsWith("_")} =>
             sawLookupHook = True
-            Log.show(h.symbol.value)
             let typePrefix = if(h.symbol.value.qualifiedName.contains("_")) {
                 h.symbol.value.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
             } else {
@@ -67,7 +66,14 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
         | InferTermHook h {h.term | ELet _} =>
             h.missingVariables.toList().filter {_.first.all {_.isAsciiLetterOrDigit()}}.map {| Pair(x, t) =>
                 let t1 = h.unification.substitute(t)
-                CompletionInfo(x + " = ...", x + " = ", False, t1, "// Define missing variable", Some(t1))
+                let snippet = x + " = "
+                CompletionInfo(snippet + "...", snippet, False, t1, "// Define missing variable", Some(t1))
+            }
+        | InferSequentialStartHook h {h.term | ESequential(_, EVariable _, _)} =>
+            h.missingVariables.toList().filter {_.first.all {_.isAsciiLetterOrDigit()}}.map {| Pair(x, t) =>
+                let t1 = h.unification.substitute(t)
+                let snippet = "let " + x + " = "
+                CompletionInfo(snippet + "...", snippet, False, t1, "// Define missing variable", Some(t1))
             }
         | _ =>
             []
