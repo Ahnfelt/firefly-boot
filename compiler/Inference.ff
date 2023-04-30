@@ -384,14 +384,16 @@ extend self: Inference {
                     body = self.inferTerm(environment2, expected, e.body)
                 )
             | ELambda(at, l) =>
-                let lambda = self.inferLambda(environment, expected, l)
                 l.cases.{
                     | [MatchCase(_, [], [], EVariable(insideAt, ""))] {self.lspHook.isAt(insideAt)} => 
-                        self.lspHook.emit(
-                            InferLambdaStartHook(self.unification, environment, expected)
-                        )
+                        self.lspHook.emit(InferLambdaStartHook(self.unification, environment, expected))
+                    | [MatchCase(_, [], [], 
+                        ESequential(_, EVariable(insideAt, ""), EVariant(_, "ff:core/Unit.Unit", _, _))
+                    )] {self.lspHook.isAt(insideAt)} => 
+                        self.lspHook.emit(InferLambdaStartHook(self.unification, environment, expected))
                     | _ =>
                 }
+                let lambda = self.inferLambda(environment, expected, l)
                 ELambda(at, lambda)
             | EVariant e =>
                 let instantiated = self.lookup(environment, expected, e.at, e.name, e.typeArguments).else {
