@@ -72,10 +72,12 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
         | InferSequentialStartHook h {h.term | ESequential(_, EVariable _, _)} =>
             h.missingVariables.toList().filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
-            }.map {| Pair(x, t) =>
+            }.flatMap {| Pair(x, t) =>
                 let t1 = h.unification.substitute(t)
-                let snippet = "let " + x + " = "
-                CompletionInfo(snippet + "...", snippet, False, t1, "// Define missing variable", Some(t1))
+                ["let", "mutable"].map {keyword =>
+                    let snippet = keyword + " " + x + " = "
+                    CompletionInfo(snippet + "...", snippet, False, t1, "// Define missing variable", Some(t1))
+                }
             }
         | _ =>
             []
