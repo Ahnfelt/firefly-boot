@@ -72,6 +72,7 @@ class ResultHook {
         expected: Type
         term: Term
         recordType: Box[Option[Type]]
+        missingVariables: StringMap[Type]
     )
     InferLambdaStartHook(
         unification: Unification
@@ -130,8 +131,8 @@ extend self: ResultHook {
                 "InferPatternHook(unification, environment, expected="+Show.show(expected)+", pattern="+Show.show(pattern)+")"
             | InferRecordFieldHook(unification, environment, expected, recordType, fieldName) => 
                 "InferRecordFieldHook(unification, environment, expected="+Show.show(expected)+", recordType="+Show.show(recordType)+", fieldName="+Show.show(fieldName)+")"
-            | InferTermHook(unification, environment, expected, term, recordType) => 
-                "InferTermHook(unification, environment, expected="+Show.show(expected)+", term="+Show.show(term)+", recordType="+Show.show(recordType.value)+")"
+            | InferTermHook(unification, environment, expected, term, recordType, missingVariables) => 
+                "InferTermHook(unification, environment, expected="+Show.show(expected)+", term="+Show.show(term)+", recordType="+Show.show(recordType.value)+", missingVariables=...)"
             | ResolveConstraintHook(symbol, constrant) => 
                 "ResolveConstraintHook(symbol="+Show.show(symbol)+", constrant="+Show.show(constrant)+")"
             | ResolveSymbolHook(symbol, annotation) => 

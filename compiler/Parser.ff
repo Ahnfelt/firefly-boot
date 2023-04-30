@@ -868,6 +868,9 @@ extend self: Parser {
             self.skip(LColon)
             self.parseType()
         }
+        if(self.attemptFixes && !self.currentIsSeparator(LAssign)) {
+            EVariant(keywordToken.at(), "Unit", [], None)
+        } else:
         self.skip(LAssign)
         let value = self.parseTerm()
         let body = if(self.currentIsSeparator(LSemicolon)) {

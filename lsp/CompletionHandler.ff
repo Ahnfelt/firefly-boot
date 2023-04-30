@@ -64,6 +64,11 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             remainingParameters.pairs().map {| Pair(i, p) =>
                 namedParameterCompletion(p, i, preselect)
             }
+        | InferTermHook h {h.term | ELet _} =>
+            h.missingVariables.toList().map {| Pair(x, t) =>
+                let t1 = h.unification.substitute(t)
+                CompletionInfo(x, x, False, t1, "// Missing variable", Some(t1))
+            }
         | _ =>
             []
     }}

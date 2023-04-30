@@ -6,12 +6,14 @@ import LspHook
 
 class Inference(
     unification: Unification
+    missingVariables: StringMap[Type]
     lspHook: LspHook
 )
 
 make(modules: List[Module], lspHook: LspHook): Inference {
     Inference(
         unification = Unification.make(modules, attemptFixes = lspHook.isEnabled())
+        missingVariables = StringMap.make()
         lspHook = lspHook
     )
 }
@@ -251,7 +253,7 @@ extend self: Inference {
         let hookRecordTypeBox = if(self.lspHook.isAt(term.at)) {
             let box = Box(None)
             self.lspHook.emit(
-                InferTermHook(self.unification, environment, expected, term, box)
+                InferTermHook(self.unification, environment, expected, term, box, self.missingVariables)
             )
             box
         }
@@ -908,14 +910,16 @@ extend self: Inference {
 
     lookup(environment: Environment, expected: Type, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
         self.lookupOption(environment, expected, at, symbol, typeArguments).elseIf {self.lspHook.isEnabled()} {
+            let t = self.unification.freshUnificationVariable(at)
+            self.missingVariables.set(symbol, expected)
             Instantiated([], Scheme(True, False, False, False, Signature(
-                at
-                symbol
-                []
-                []
-                []
-                self.unification.freshUnificationVariable(at)
-                self.unification.freshUnificationVariable(at)
+                at = at
+                name = symbol
+                generics = []
+                constraints = []
+                parameters = []
+                returnType = t
+                effect = self.unification.freshUnificationVariable(at)
             )))
         }
     }
