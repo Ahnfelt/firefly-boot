@@ -33,8 +33,9 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 | _ => 
                     []
             }
-        | InferLookupHook h {!sawLookupHook} =>
+        | InferLookupHook h {!sawLookupHook && !h.symbol.value.qualifiedName.startsWith("_")} =>
             sawLookupHook = True
+            Log.show(h.symbol.value)
             let typePrefix = if(h.symbol.value.qualifiedName.contains("_")) {
                 h.symbol.value.qualifiedName.reverse().dropWhile {_ != '_'}.reverse()
             } else {
