@@ -667,10 +667,20 @@ extend self: Parser {
         }
         mutable lastWasCurly = False
         if(trailing) {
-            while {self.current().rawIs("{") || self.current().is(LColon)} {
-                lastWasCurly = self.current().rawIs("{")
-                let lambda = self.parseLambda(allowColon = True)
-                arguments.push(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
+            if(self.attemptFixes && 
+                (self.current().is3(LLower, LUpper, LString) || self.current().is3(LInt, LChar, LFloat))
+            ) {
+                lastWasCurly = True
+                let term = self.parseTerm()
+                let temporaryEffect = TConstructor(term.at, "TemporaryEffect$", [])
+                let cases = [MatchCase(term.at, [], [], term)]
+                arguments.push(Argument(term.at, None, ELambda(term.at, Lambda(term.at, temporaryEffect, cases))))
+            } else {
+                while {self.current().rawIs("{") || self.current().is(LColon)} {
+                    lastWasCurly = self.current().rawIs("{")
+                    let lambda = self.parseLambda(allowColon = True)
+                    arguments.push(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
+                }
             }
         }
         Pair(arguments.toList(), lastWasCurly)
