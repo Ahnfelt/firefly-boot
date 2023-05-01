@@ -145,7 +145,7 @@ findScriptPackageLocation(fs: FileSystem, path: String): String {
         let packageFile = directory + "/.firefly/package.ff"
         if(fs.exists(packageFile)) {
             directory
-        } elseIf {fs.exists(directory + "/..")} {
+        } elseIf {fs.exists(directory + "/..") && fs.absolutePath(directory) != fs.absolutePath(directory + "/..")} {
             go(directory + "/..")
         } else {
             fixedPackageDirectory

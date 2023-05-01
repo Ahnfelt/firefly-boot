@@ -150,11 +150,11 @@ findPackageFiles(fs: FileSystem, rootUri: String): List[PackageFiles] {
         let files = codeFiles.filter {_.startsWith(projectRoot) }
         let filesSet = files.toSet()
         codeFiles = codeFiles.filter {file => !filesSet.contains(file)}
-            PackageFiles(
-                FileSystem.relative(fs.workingDirectory(), projectRoot), 
-                Some(FileSystem.relative(fs.workingDirectory(), packageFile)), 
-                files.map {FileSystem.relative(fs.workingDirectory(), _)}
-            )
+        PackageFiles(
+            FileSystem.relative(fs.workingDirectory(), projectRoot), 
+            Some(FileSystem.relative(fs.workingDirectory(), packageFile)), 
+            files.map {FileSystem.relative(fs.workingDirectory(), _)}
+        )
     }
     let singleFileProjects = codeFiles.map {file => 
         let projectRoot = file.reverse().dropWhile {_ != '/'}.reverse()
@@ -164,7 +164,12 @@ findPackageFiles(fs: FileSystem, rootUri: String): List[PackageFiles] {
             [FileSystem.relative(fs.workingDirectory(), file)]
         )
     }
-    [...multiFileProjects, ...singleFileProjects]
+    let unfixedProjects = [...multiFileProjects, ...singleFileProjects]
+    unfixedProjects.map {project => PackageFiles(
+        root = project.root.replace("\\", "/")
+        packageFile = project.packageFile.map {_.replace("\\", "/")}
+        files = project.files.map {_.replace("\\", "/")}
+    )}
 }
 
 findFireflyFiles(fs: FileSystem, rootUri: String): List[String] {
