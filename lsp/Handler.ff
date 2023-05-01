@@ -270,14 +270,11 @@ extend self: Handler {
             Log.trace("findReferences first check error: " + message)
         } grab()
     
-        temporaryLspHook.results().map {r => 
-            Log.trace("findReferences: " + r.debugShow())
-        }
-
         let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
             | ResolveTypeHook h => Some(h.symbol.definedAt)
             | ResolveConstraintHook h => Some(h.symbol.definedAt)
+            | ResolveSignatureHook h => Some(h.signature.at)
             | InferLookupHook h => Some(h.symbol.value.definedAt)
             | _ => None
         }
@@ -300,6 +297,7 @@ extend self: Handler {
                     | ResolveSymbolHook h => Some(h.symbol.usageAt)
                     | ResolveTypeHook h => Some(h.symbol.usageAt)
                     | ResolveConstraintHook h => Some(h.symbol.usageAt)
+                    | ResolveSignatureHook h => Some(h.signature.at)
                     | InferLookupHook h => Some(h.symbol.value.usageAt)
                     | _ => None
                 }

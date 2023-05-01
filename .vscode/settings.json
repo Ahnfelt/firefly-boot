@@ -1,3 +1,4 @@
 {
-    "editor.suggest.showWords": false
+    "editor.suggest.showWords": false,
+    "firefly.trace.server": "messages"
 }

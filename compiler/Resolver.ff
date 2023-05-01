@@ -347,14 +347,16 @@ extend self: Resolver {
         | TVariable _, _ =>
             type
         | TConstructor constructor, _ =>
-            if(self.lspHook.isAt(type.at)) {
+            if(self.lspHook.isEnabled()) {
                 let at = self.typeLocations.get(constructor.name).else {type.at}
-                self.lspHook.emit(
-                    ResolveTypeHook(
-                        self.types, self.typeGenerics
-                        SymbolHook(constructor.name, type.at, at), type
+                if(self.lspHook.isAt(type.at) || self.lspHook.isDefinedAt(at)) {
+                    self.lspHook.emit(
+                        ResolveTypeHook(
+                            self.types, self.typeGenerics
+                            SymbolHook(constructor.name, type.at, at), type
+                        )
                     )
-                )
+                }
             }
             let name = if(constructor.name.contains("$")) {
                 constructor.name
@@ -423,6 +425,11 @@ extend self: Resolver {
     }
 
     resolveSignature(signature: Signature, topLevel: Bool): Signature {
+        if(self.lspHook.isAt(signature.at) || self.lspHook.isDefinedAt(signature.at)) {
+            self.lspHook.emit(
+                ResolveSignatureHook(signature)
+            )
+        }
         let newSignature = if(topLevel) {
             signature.Signature(
                 generics = ["Q$", ...signature.generics]
