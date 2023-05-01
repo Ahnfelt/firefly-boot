@@ -1,4 +1,4 @@
 {
     "editor.suggest.showWords": false,
-    "firefly.trace.server": "messages"
+    "firefly.trace.server": "verbose"
 }
