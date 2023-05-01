@@ -156,6 +156,11 @@ extend self: Resolver {
                 )
             }
             variants = definition.variants.map {v =>
+                if(self.lspHook.isAt(v.at)) {
+                    self.lspHook.emit(
+                        ResolveSymbolHook(SymbolHook(v.name, v.at, v.at), None)
+                    )
+                }
                 v.Variant(fields = v.fields.map {f =>
                     f.Parameter(
                         valueType = self2.resolveType(f.valueType, True)
