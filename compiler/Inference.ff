@@ -54,6 +54,7 @@ extend self: Inference {
     }
 
     inferInstanceDefinition(environment: Environment, definition: DInstance): DInstance {
+        if(self.lspHook.isEnabled() && definition.derived) {definition} else:
         let instances = constraintsToInstances(definition.constraints)
         self.unification.withLocalInstances(instances) {
             definition.DInstance(
