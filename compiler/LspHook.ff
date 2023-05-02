@@ -75,7 +75,7 @@ class ResultHook {
         expected: Type
         term: Term
         recordType: Box[Option[Type]]
-        missingVariables: StringMap[Type]
+        missing: StringMap[Pair[Instantiated, Option[List[Argument]]]]
     )
     InferLambdaStartHook(
         unification: Unification
@@ -85,7 +85,7 @@ class ResultHook {
     InferSequentialStartHook(
         unification: Unification
         term: Term
-        missingVariables: StringMap[Type]
+        missing: StringMap[Pair[Instantiated, Option[List[Argument]]]]
     )
     InferPatternHook(
         unification: Unification

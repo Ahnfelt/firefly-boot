@@ -221,7 +221,7 @@ return
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-ff_compiler_Builder.check_(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), true)
+ff_compiler_Builder.check_(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true)
 return
 }
 }
@@ -594,7 +594,7 @@ return
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), true, $c))
+(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true, $c))
 return
 }
 }

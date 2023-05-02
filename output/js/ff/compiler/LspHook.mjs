@@ -91,8 +91,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type LspHook
-export function LspHook(targetAt_, sourceAt_, inferTypes_, references_, inference_) {
-return {targetAt_, sourceAt_, inferTypes_, references_, inference_};
+export function LspHook(at_, definedAt_, stackOfResults_) {
+return {at_, definedAt_, stackOfResults_};
 }
 
 // type SymbolHook
@@ -100,17 +100,32 @@ export function SymbolHook(qualifiedName_, usageAt_, definedAt_) {
 return {qualifiedName_, usageAt_, definedAt_};
 }
 
-// type ResolveHook
+// type Box
+export function Box(value_) {
+return {value_};
+}
+
+// type ResultHook
 export function ResolveSymbolHook(symbol_, annotation_) {
 return {ResolveSymbolHook: true, symbol_, annotation_};
 }
-export function ResolveTypeHook(symbol_) {
-return {ResolveTypeHook: true, symbol_};
+export function ResolveTypeHook(types_, typeGenerics_, symbol_, explicitType_) {
+return {ResolveTypeHook: true, types_, typeGenerics_, symbol_, explicitType_};
 }
-
-// type InferHook
-export function InferTermHook(unification_, environment_, expected_, term_, recordType_) {
-return {InferTermHook: true, unification_, environment_, expected_, term_, recordType_};
+export function ResolveConstraintHook(symbol_, constrant_) {
+return {ResolveConstraintHook: true, symbol_, constrant_};
+}
+export function ResolveSignatureHook(signature_) {
+return {ResolveSignatureHook: true, signature_};
+}
+export function InferTermHook(unification_, environment_, expected_, term_, recordType_, missing_) {
+return {InferTermHook: true, unification_, environment_, expected_, term_, recordType_, missing_};
+}
+export function InferLambdaStartHook(unification_, environment_, lambdaType_) {
+return {InferLambdaStartHook: true, unification_, environment_, lambdaType_};
+}
+export function InferSequentialStartHook(unification_, term_, missing_) {
+return {InferSequentialStartHook: true, unification_, term_, missing_};
 }
 export function InferPatternHook(unification_, environment_, expected_, pattern_) {
 return {InferPatternHook: true, unification_, environment_, expected_, pattern_};
@@ -121,58 +136,77 @@ return {InferParameterHook: true, unification_, environment_, parameter_};
 export function InferArgumentHook(unification_, environment_, isCopy_, callAt_, callName_, parameters_, arguments_, argumentIndex_) {
 return {InferArgumentHook: true, unification_, environment_, isCopy_, callAt_, callName_, parameters_, arguments_, argumentIndex_};
 }
-export function InferLookupHook(unification_, environment_, symbol_, instantiated_) {
-return {InferLookupHook: true, unification_, environment_, symbol_, instantiated_};
+export function InferLookupHook(unification_, environment_, expected_, symbol_, instantiated_) {
+return {InferLookupHook: true, unification_, environment_, expected_, symbol_, instantiated_};
+}
+export function InferRecordFieldHook(unification_, environment_, expected_, recordType_, fieldName_) {
+return {InferRecordFieldHook: true, unification_, environment_, expected_, recordType_, fieldName_};
 }
 
 
 
 export function disabled_() {
-return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false)
+return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None())
 }
 
-export function make_(targetAt_, sourceAt_, inferTypes_) {
-return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(targetAt_, (() => {
+export function make_(at_, definedAt_) {
+return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), ff_core_Option.Option_else(sourceAt_, (() => {
+})), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), inferTypes_, ff_core_List.List_toStack(ff_core_List.Empty()), ff_core_List.List_toStack(ff_core_List.Empty()))
+})), ff_core_List.List_toStack(ff_core_List.Empty()))
 }
 
 export async function disabled_$($c) {
-return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false)
+return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None())
 }
 
-export async function make_$(targetAt_, sourceAt_, inferTypes_, $c) {
-return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(targetAt_, (() => {
+export async function make_$(at_, definedAt_, $c) {
+return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), ff_core_Option.Option_else(sourceAt_, (() => {
+})), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), inferTypes_, ff_core_List.List_toStack(ff_core_List.Empty()), ff_core_List.List_toStack(ff_core_List.Empty()))
+})), ff_core_List.List_toStack(ff_core_List.Empty()))
 }
 
 export function LspHook_isEnabled(self_) {
-return ((self_.targetAt_.line_ !== (-7)) || (self_.sourceAt_.line_ !== (-7)))
+return ((self_.at_.line_ !== (-7)) || (self_.definedAt_.line_ !== (-7)))
 }
 
-export function LspHook_isTarget(self_, at_) {
-return (((self_.targetAt_.line_ === at_.line_) && (self_.targetAt_.column_ === at_.column_)) && (self_.targetAt_.file_ === at_.file_))
+export function LspHook_isAt(self_, at_) {
+return (((self_.at_.line_ === at_.line_) && (self_.at_.column_ === at_.column_)) && (self_.at_.file_ === at_.file_))
 }
 
-export function LspHook_isSource(self_, at_) {
-return (((self_.sourceAt_.line_ === at_.line_) && (self_.sourceAt_.column_ === at_.column_)) && (self_.sourceAt_.file_ === at_.file_))
+export function LspHook_isDefinedAt(self_, at_) {
+return (((self_.definedAt_.line_ === at_.line_) && (self_.definedAt_.column_ === at_.column_)) && (self_.definedAt_.file_ === at_.file_))
+}
+
+export function LspHook_emit(self_, result_) {
+ff_core_Stack.Stack_push(self_.stackOfResults_, result_)
+}
+
+export function LspHook_results(self_) {
+return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
 }
 
 export async function LspHook_isEnabled$(self_, $c) {
-return ((self_.targetAt_.line_ !== (-7)) || (self_.sourceAt_.line_ !== (-7)))
+return ((self_.at_.line_ !== (-7)) || (self_.definedAt_.line_ !== (-7)))
 }
 
-export async function LspHook_isTarget$(self_, at_, $c) {
-return (((self_.targetAt_.line_ === at_.line_) && (self_.targetAt_.column_ === at_.column_)) && (self_.targetAt_.file_ === at_.file_))
+export async function LspHook_isAt$(self_, at_, $c) {
+return (((self_.at_.line_ === at_.line_) && (self_.at_.column_ === at_.column_)) && (self_.at_.file_ === at_.file_))
 }
 
-export async function LspHook_isSource$(self_, at_, $c) {
-return (((self_.sourceAt_.line_ === at_.line_) && (self_.sourceAt_.column_ === at_.column_)) && (self_.sourceAt_.file_ === at_.file_))
+export async function LspHook_isDefinedAt$(self_, at_, $c) {
+return (((self_.definedAt_.line_ === at_.line_) && (self_.definedAt_.column_ === at_.column_)) && (self_.definedAt_.file_ === at_.file_))
+}
+
+export async function LspHook_emit$(self_, result_, $c) {
+ff_core_Stack.Stack_push(self_.stackOfResults_, result_)
+}
+
+export async function LspHook_results$(self_, $c) {
+return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
 }
 
 export const ff_core_Any_HasAnyTag$ff_compiler_LspHook_SymbolHook = {

@@ -248,7 +248,7 @@ const _1 = definition_;
 const _c = _1;
 return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self2_, functions_, _w1)
-})))
+})), _c.derived_)
 return
 }
 }
@@ -728,7 +728,7 @@ const _1 = definition_;
 const _c = _1;
 return ff_compiler_Syntax.DInstance(_c.at_, _c.generics_, _c.constraints_, _c.traitName_, _c.typeArguments_, _c.generatorArguments_, ff_core_List.List_map(definition_.methods_, ((_w1) => {
 return ff_compiler_Dictionaries.Dictionaries_processFunctionDefinition(self2_, functions_, _w1)
-})))
+})), _c.derived_)
 return
 }
 }

@@ -6,14 +6,14 @@ import LspHook
 
 class Inference(
     unification: Unification
-    missingVariables: StringMap[Type]
+    missing: StringMap[Pair[Instantiated, Option[List[Argument]]]]
     lspHook: LspHook
 )
 
 make(modules: List[Module], lspHook: LspHook): Inference {
     Inference(
         unification = Unification.make(modules, attemptFixes = lspHook.isEnabled())
-        missingVariables = StringMap.make()
+        missing = StringMap.make()
         lspHook = lspHook
     )
 }
@@ -223,7 +223,7 @@ extend self: Inference {
             | PAlias(at, pattern, variable) =>
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
             | PVariantAs(at, name, variableOption) =>
-                let instantiated = self.lookup(environment, expected, at, name, []).else {
+                let instantiated = self.lookup(environment, expected, at, name, [], None).else {
                     throw(CompileError(at, "No such variant: " + name))
                 }
                 if(instantiated.scheme.isNewtype) {
@@ -235,7 +235,7 @@ extend self: Inference {
                     TConstructor(at, "Record$" + parameters.map {_.name}.join("$"), parameters.map {_.valueType})
                 variableOption.toList().map {Pair(_, recordType)}.toMap()
             | PVariant(at, name, patterns) =>
-                let instantiated = self.lookup(environment, expected, at, name, []).else {
+                let instantiated = self.lookup(environment, expected, at, name, [], None).else {
                     throw(CompileError(at, "No such variant: " + name))
                 }
                 self.unification.unify(at, expected, instantiated.scheme.signature.returnType)
@@ -254,7 +254,7 @@ extend self: Inference {
         let hookRecordTypeBox = if(self.lspHook.isAt(term.at)) {
             let box = Box(None)
             self.lspHook.emit(
-                InferTermHook(self.unification, environment, expected, term, box, self.missingVariables)
+                InferTermHook(self.unification, environment, expected, term, box, self.missing)
             )
             box
         }
@@ -268,7 +268,7 @@ extend self: Inference {
             | EInt _ => literal("Int")
             | EFloat _ => literal("Float")
             | EVariable e =>
-                self.lookup(environment, expected, e.at, e.name, []).map {instantiated =>
+                self.lookup(environment, expected, e.at, e.name, [], None).map {instantiated =>
                     if(instantiated.scheme.isVariable) {
                         self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                         term
@@ -288,7 +288,7 @@ extend self: Inference {
                 let recordType = self.unification.freshUnificationVariable(e.at)
                 if(self.lspHook.isAt(term.at)) {
                     hookRecordTypeBox.each {_.value = Some(recordType)}
-                }        
+                }
                 let record = self.inferTerm(environment, recordType, e.record)
                 self.unification.substitute(recordType).{
                     | TConstructor(_, name, typeArguments)@t {name.startsWith("Record$")} =>
@@ -312,7 +312,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t =>
                         let memberPrefix = name + "_"
                         let memberName = memberPrefix + e.field
-                        self.lookup(environment, expected, e.at, memberName, typeArguments).{
+                        self.lookup(environment, expected, e.at, memberName, typeArguments, None).{
                             | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                 let signature = instantiated.scheme.signature.Signature(
                                     // Drop self for eta expansion
@@ -341,7 +341,7 @@ extend self: Inference {
                         throw(CompileError(e.at, "No such field " + e.field + " on unknown type: $" + index))
                 }
             | EWildcard e =>
-                self.lookup(environment, expected, e.at, "_w" + e.index, []).map {instantiated =>
+                self.lookup(environment, expected, e.at, "_w" + e.index, [], None).map {instantiated =>
                     self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
                     term
                 }.grab()
@@ -354,7 +354,7 @@ extend self: Inference {
             | ESequential(at, before, after) =>
                 if(self.lspHook.isAt(before.at)) {
                     self.lspHook.emit(
-                        InferSequentialStartHook(self.unification, term, self.missingVariables)
+                        InferSequentialStartHook(self.unification, term, self.missing)
                     )
                 }
                 let newExpected = self.unification.freshUnificationVariable(at)
@@ -393,18 +393,18 @@ extend self: Inference {
                 )
             | ELambda(at, l) =>
                 l.cases.{
-                    | [MatchCase(_, [], [], EVariable(insideAt, ""))] {self.lspHook.isAt(insideAt)} => 
+                    | [MatchCase(_, [], [], EVariable(insideAt, ""))] {self.lspHook.isAt(insideAt)} =>
                         self.lspHook.emit(InferLambdaStartHook(self.unification, environment, expected))
-                    | [MatchCase(_, [], [], 
+                    | [MatchCase(_, [], [],
                         ESequential(_, EVariable(insideAt, ""), EVariant(_, "ff:core/Unit.Unit", _, _))
-                    )] {self.lspHook.isAt(insideAt)} => 
+                    )] {self.lspHook.isAt(insideAt)} =>
                         self.lspHook.emit(InferLambdaStartHook(self.unification, environment, expected))
                     | _ =>
                 }
                 let lambda = self.inferLambda(environment, expected, l)
                 ELambda(at, lambda)
             | EVariant e =>
-                let instantiated = self.lookup(environment, expected, e.at, e.name, e.typeArguments).else {
+                let instantiated = self.lookup(environment, expected, e.at, e.name, e.typeArguments, e.arguments).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
                 self.unification.unify(e.at, expected, instantiated.scheme.signature.returnType)
@@ -416,7 +416,7 @@ extend self: Inference {
                     arguments = arguments
                 )
             | EVariantIs e =>
-                let instantiated = self.lookup(environment, expected, e.at, e.name, e.typeArguments).else {
+                let instantiated = self.lookup(environment, expected, e.at, e.name, e.typeArguments, None).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }
                 let parameters = instantiated.scheme.signature.parameters.sortBy {_.name}
@@ -432,7 +432,7 @@ extend self: Inference {
                     typeArguments = instantiated.typeArguments.map {_.second}
                 )
             | ECopy e =>
-                let scheme = self.lookup(environment, expected, e.at, e.name, []).else {
+                let scheme = self.lookup(environment, expected, e.at, e.name, [], None).else {
                     throw(CompileError(e.at, "Symbol not in scope: " + e.name))
                 }.scheme
                 if(scheme.isNewtype) {
@@ -440,7 +440,7 @@ extend self: Inference {
                 }
                 let signature = scheme.signature
                 if(self.lspHook.isEnabled()) {
-                    e.arguments.pairs().each {| Pair(i, a) => 
+                    e.arguments.pairs().each {| Pair(i, a) =>
                         if(self.lspHook.isAt(a.at)) {
                             let arguments = e.arguments.map {f => f.Argument(name = Some(f.name))}
                             self.lspHook.emit(
@@ -494,7 +494,7 @@ extend self: Inference {
                         if(x.first().any {c => c != '_' && !c.isAsciiLetter()}) {
                             self.inferOperator(environment, expected, x, term)
                         } else {
-                            self.lookup(environment, expected, e.at, x, e.typeArguments).{
+                            self.lookup(environment, expected, e.at, x, e.typeArguments, Some(e.arguments)).{
                                 | Some(instantiated) =>
                                     if(instantiated.scheme.isVariable) {
                                         self.inferLambdaCall(environment, expected, term)
@@ -518,13 +518,13 @@ extend self: Inference {
                         let recordType = self.unification.freshUnificationVariable(f.at)
                         if(self.lspHook.isAt(term.at)) {
                             hookRecordTypeBox.each {_.value = Some(recordType)}
-                        }        
+                        }
                         let record = self.inferTerm(environment, recordType, f.record)
                         let e2 = e.ECall(target = call.DynamicCall(function = f.EField(record = record)))
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, _)@t =>
                                 let methodName = name + "_" + f.field
-                                self.lookup(environment, expected, f.at, methodName, []).{
+                                self.lookup(environment, expected, f.at, methodName, [], None).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                         self.inferMethodCall(
                                             environment
@@ -579,7 +579,7 @@ extend self: Inference {
                     body = newBody
                 )
             | EAssign e =>
-                self.lookup(environment, expected, e.at, e.variable, []).map {instantiated =>
+                self.lookup(environment, expected, e.at, e.variable, [], None).map {instantiated =>
                     if(instantiated.scheme.isMutable) {
                         let value = self.inferAssignment(
                             environment = environment
@@ -608,7 +608,7 @@ extend self: Inference {
                         throw(CompileError(e.at, "Can't assign fields of anonymous records: " + e.field))
                     | TConstructor(_, name, typeArguments)@t =>
                         let methodName = name + "_" + e.field
-                        self.lookup(environment, expected, e.at, methodName, typeArguments).{
+                        self.lookup(environment, expected, e.at, methodName, typeArguments, None).{
                             | Some(instantiated) {instantiated.scheme.isMutable} =>
                                 let value = self.inferAssignment(
                                     environment = environment
@@ -862,7 +862,7 @@ extend self: Inference {
         arguments: List[Argument]
     ): List[Argument] {
         if(self.lspHook.isEnabled()) {
-            arguments.pairs().each {| Pair(i, a) => 
+            arguments.pairs().each {| Pair(i, a) =>
                 if(self.lspHook.isAt(a.at)) {
                     self.lspHook.emit(
                         InferArgumentHook(
@@ -914,21 +914,31 @@ extend self: Inference {
         newArguments
     }
 
-    lookup(environment: Environment, expected: Type, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
+    lookup(
+        environment: Environment
+        expected: Type
+        at: Location
+        symbol: String
+        typeArguments: List[Type]
+        arguments: Option[List[Argument]]
+    ): Option[Instantiated] {
         self.lookupOption(environment, expected, at, symbol, typeArguments).elseIf {self.lspHook.isEnabled()} {
-            let t = self.unification.freshUnificationVariable(at)
-            if(!self.lspHook.isAt(at)) {
-                self.missingVariables.set(symbol, expected)
-            }
-            Instantiated([], Scheme(True, False, False, False, Signature(
+            let instantiated = Instantiated([], Scheme(arguments.isEmpty(), False, False, False, Signature(
                 at = at
                 name = symbol
                 generics = []
                 constraints = []
-                parameters = []
-                returnType = t
+                parameters = arguments.toList().flatten().pairs().map {| Pair(i, a) =>
+                    let t = self.unification.freshUnificationVariable(at)
+                    Parameter(a.at, False, a.name.else {"_p" + i}, t, None)
+                }
+                returnType = self.unification.freshUnificationVariable(at)
                 effect = self.unification.freshUnificationVariable(at)
             )))
+            if(!self.lspHook.isAt(at) && !self.missing.has(symbol)) {
+                self.missing.set(symbol, Pair(instantiated, arguments))
+            }
+            instantiated
         }
     }
 
@@ -997,7 +1007,7 @@ extend self: Inference {
                 self.lspHook.emit(h)
                 h
             }.{
-                | InferLookupHook h => 
+                | InferLookupHook h =>
                     h.symbol.value = symbolHook
                     h.instantiated.value = Some(instantiated)
                 | _ =>

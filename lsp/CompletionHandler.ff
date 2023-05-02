@@ -24,13 +24,13 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
     }
     mutable sawLookupHook = False // Only consider the first lookup
     let completions = patternCompletions.else {lspHook.results().flatMap {
-        | ResolveTypeHook h => 
+        | ResolveTypeHook h =>
             typeCompletion(h.types, h.typeGenerics)
         | InferLambdaStartHook h =>
             h.unification.substitute(h.lambdaType).{
                 | TConstructor(_, "Function$1", [_, TConstructor(_, prefix, _), _]) =>
                     exhaustiveMatchCompletion(h.environment, prefix + "_", True)
-                | _ => 
+                | _ =>
                     []
             }
         | InferLookupHook h {!sawLookupHook && !h.symbol.value.qualifiedName.startsWith("_")} =>
@@ -64,20 +64,16 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 namedParameterCompletion(p, i, preselect)
             }
         | InferTermHook h {h.term | ELet _} =>
-            h.missingVariables.toList().filter {_.first.all {_.isAsciiLetterOrDigit()}}.map {| Pair(x, t) =>
-                let t1 = h.unification.substitute(t)
-                let snippet = x + " = "
-                CompletionInfo(snippet + "...", snippet, False, t1, "// Define missing variable", Some(t1))
+            h.missing.toList().filter {_.first.all {_.isAsciiLetterOrDigit()}}.flatMap {
+                | Pair(x, Pair(instantiated, arguments)) =>
+                    missingCompletion(False, h.unification, x, instantiated, arguments)
             }
-        | InferSequentialStartHook h {h.term | ESequential(_, EVariable _, _)} =>
-            h.missingVariables.toList().filter {| Pair(x, _) =>
+        | InferSequentialStartHook h {h.term | ESequential(_, EVariable _, _)} => // TODO: "before" part may be longer
+            Log.show(h.missing.keys())
+            h.missing.toList().filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
-            }.flatMap {| Pair(x, t) =>
-                let t1 = h.unification.substitute(t)
-                ["let", "mutable"].map {keyword =>
-                    let snippet = keyword + " " + x + " = "
-                    CompletionInfo(snippet + "...", snippet, False, t1, "// Define missing variable", Some(t1))
-                }
+            }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
+                missingCompletion(True, h.unification, x, instantiated, arguments)
             }
         | _ =>
             []
@@ -93,9 +89,9 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
             let isLower = i.label.first().any {_.isAsciiLower()}
             let isUnqualified = !i.label.takeWhile {c => c != '(' && c != '[' && c != '{'}.contains(".")
             let isVariable = isLower && !i.label.contains("(") && !i.label.contains("{")
-            let isParameter = i.snippet.endsWith(" = ")
+            let isParameter = i.snippet.endsWith(" = ") || i.snippet.startsWith("function ")
             let sortText = if(isParameter) {0} else {9 - (
-                isVariable.toInt() + isUnqualified.toInt() + 
+                isVariable.toInt() + isUnqualified.toInt() +
                 isAlpha.toInt() + isLower.toInt()
             )} + "" + i.secondarySort + i.label.lower()
             let preselect = Pair(i.type, i.expectedType).{
@@ -104,7 +100,7 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
             }
             js.object()
                 // Property or EnumMember or Constructor or Method/Function or Field/Variable
-                .with("kind", 
+                .with("kind",
                     if(isParameter) {10} else:
                     if(i.label.first().any {c => c == '{' || c == '|'}) {22} else:
                     if(i.label.first().any {_.isAsciiUpper()}) {4} else:
@@ -122,11 +118,11 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
                     .with("kind", "markdown")
                     .with("value", "```\n" + i.documentation + "\n```")
                 )
-        })    
+        })
 }
 
 typeCompletion(types: Map[String, String], typeGenerics: Map[String, List[String]]): List[CompletionInfo] {
-    let completions = types.toList().filter {| Pair(n, full) => 
+    let completions = types.toList().filter {| Pair(n, full) =>
         n.all {_.isAsciiLetterOrDigit()}
     }.map {| Pair(typeName, full) =>
         let generics = typeGenerics.find {k, _ => k == typeName}.toList().flatMap {_.second}
@@ -146,13 +142,13 @@ completion(unification: Unification, environment: Environment, prefix: String, e
 
     let symbols = if(prefix == "") {
         environment.symbols.toList().collect {
-            | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} => 
+            | Pair(name, _)@pair {name.all {_.isAsciiLetterOrDigit()}} =>
                 Some(pair)
-            | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} => 
+            | Pair(name, _)@pair {name.startsWith("ff:core/Core.")} =>
                 Some(pair.Pair(first = name.dropFirst("ff:core/Core.".size())))
             | Pair(name, _)@pair {name.startsWith(environment.modulePrefix)} {
                 name.dropFirst(environment.modulePrefix.size()) | n
-            } {n.all {_.isAsciiLetterOrDigit()}} => 
+            } {n.all {_.isAsciiLetterOrDigit()}} =>
                 Some(pair.Pair(first = n))
             | Pair(name, scheme) {name.dropWhile {_ != '/'}.dropFirst() | short} {
                 short.reverse().takeWhile {_ != '.'}.reverse() | shorter
@@ -164,11 +160,11 @@ completion(unification: Unification, environment: Environment, prefix: String, e
                     let alias = environment.imports.find {_, i =>
                         module == i.package.groupName() + "/" + i.directory.map {_ + "/"}.join() + i.file
                     }
-                    alias.map {| Pair(alias, i) => 
+                    alias.map {| Pair(alias, i) =>
                         Pair(alias + short.dropFirst(i.file.size()), scheme)
                     }
                 }
-            | _ => 
+            | _ =>
                 None
         }.toMap()
     } else {
@@ -178,7 +174,7 @@ completion(unification: Unification, environment: Environment, prefix: String, e
         environment.symbols.each {
             | shortName, scheme {shortName.dropWhile {_ != '/'}.dropFirst() | short} {
                 short.reverse().takeWhile {_ != '.'}.reverse() | shorter
-            } {shorter.all {_.isAsciiLetterOrDigit()} && shorter.first().any {_.isAsciiUpper()}} => 
+            } {shorter.all {_.isAsciiLetterOrDigit()} && shorter.first().any {_.isAsciiUpper()}} =>
                 scheme.signature.returnType.{
                     | _ {prefix.startsWith("Record$")} =>
                         if(scheme.signature.parameters.any {recordFields.contains(_.name)}) {
@@ -190,7 +186,7 @@ completion(unification: Unification, environment: Environment, prefix: String, e
                         }
                     | _ =>
                 }
-            | _, _ => 
+            | _, _ =>
         }
         environment.symbols
     }
@@ -225,7 +221,7 @@ makeCompletion(
                         " {...}"
                         if(index == 0) {" {$0}"} else {" {}"}
                     ))
-                | _ => 
+                | _ =>
                     None
             }
         }.toStream().takeWhile {_ != None}.collect {_}.toList().reverse()
@@ -259,7 +255,7 @@ makeCompletion(
     } else {
         let selfType = memberScheme.signature.parameters.first().filter {_ => member && !copy}.map {_.valueType}
         let generics = selfType.map {
-            | TConstructor(_, _, gs) => 
+            | TConstructor(_, _, gs) =>
                 // TODO: Needs constraints as well
                 // TODO: This drops the wrong number of type parameters - more environment needed
                 let methodGenerics = memberScheme.signature.generics.dropFirst(gs.size() + 1)
@@ -277,9 +273,9 @@ makeCompletion(
             }.join("\n") + "\n" + selfIndent
         }
         selfType.map {_.show([])}.map {"extend " + _ + " {\n"}.else {""} +
-        selfIndent + unqualifiedName + 
-        generics + "(" + parameters + "): " + 
-        returnType.show([]) + 
+        selfIndent + unqualifiedName +
+        generics + "(" + parameters + "): " +
+        returnType.show([]) +
         selfType.map {_ => "\n}"}.else {""}
     }
     CompletionInfo(
@@ -305,35 +301,35 @@ exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool
         )]
     } else:
     let shorterPrefix = prefix.dropLast()
-    let variants = environment.symbols.toList().filter {s => 
+    let variants = environment.symbols.toList().filter {s =>
         !s.first.contains("_") &&
         s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
         s.second.signature.returnType.{
-            | TConstructor(_, n, _) => n == shorterPrefix 
+            | TConstructor(_, n, _) => n == shorterPrefix
             | _ => False
         }
     }
     if(variants.isEmpty()) {[]} else:
-    let label = if(inside) {""} else {"{"} + 
+    let label = if(inside) {""} else {"{"} +
         variants.map {v =>
-            "| " + v.first.reverse().takeWhile {_ != '.'}.reverse() + 
+            "| " + v.first.reverse().takeWhile {_ != '.'}.reverse() +
             if(v.second.signature.parameters.isEmpty()) {""} else {"(...)"} + " => ..."
         }.join(" ") +
         if(inside) {""} else {"}"}
-    let snippetParts = variants.pairs().map {| Pair(index, Pair(name, scheme)) => 
-        "| " + name.reverse().takeWhile {_ != '.'}.reverse() + 
+    let snippetParts = variants.pairs().map {| Pair(index, Pair(name, scheme)) =>
+        "| " + name.reverse().takeWhile {_ != '.'}.reverse() +
         if(scheme.signature.parameters.isEmpty()) {""} else {
             "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
         } +
         " => " + if(index == 0) {"$0"} else {""}
     }
-    let snippet = 
-        if(inside) {""} else {"{"} + 
+    let snippet =
+        if(inside) {""} else {"{"} +
         if(snippetParts.size() != 1) {
             "\n" + snippetParts.map {"    " + _}.join("\n") + "\n"
         } else {
             snippetParts.join(" ")
-        } + 
+        } +
         if(inside) {""} else {"}"}
     [CompletionInfo(
         label = label
@@ -364,25 +360,25 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
         [CompletionInfo("0", "0", False, expected, "// Int pattern", Some(expected))]
     } else:
     let variants = do {
-        environment.symbols.toList().filter {s => 
+        environment.symbols.toList().filter {s =>
             !s.first.contains("_") &&
             s.first.reverse().takeWhile {_ != '.'}.reverse().first().any {_.isAsciiUpper()} &&
             s.second.signature.returnType.{
-                | TConstructor(_, n, _) => n == typeName 
+                | TConstructor(_, n, _) => n == typeName
                 | _ => False
             }
         }
     }
-    let completions = variants.map {| Pair(name, scheme) => 
+    let completions = variants.map {| Pair(name, scheme) =>
         let shortName = name.reverse().takeWhile {_ != '.'}.reverse()
-        let label = 
+        let label =
             shortName +
             if(scheme.signature.parameters.isEmpty()) {""} else {
                 "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
             }
         let generics = scheme.signature.generics.filter {_ != "Q$"}
-        let documentation = 
-            shortName + 
+        let documentation =
+            shortName +
             if(generics.isEmpty()) {""} else {"[" + generics.join(", ") + "]"} +
             if(scheme.signature.parameters.isEmpty()) {""} else {
                 "(\n" + scheme.signature.parameters.map {
@@ -399,6 +395,75 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
         )
     }
     completions
+}
+
+missingCompletion(
+    keyword: Bool
+    unification: Unification
+    name: String
+    instantiated: Instantiated
+    arguments: Option[List[Argument]]
+): List[CompletionInfo] {
+    function findTermName(term: Term): Option[String] {
+        | ECall e {e.target | DynamicCall c} => findTermName(c.function)
+        | ECopy e => Some(e.name.slice(0, 1).lower() + e.name.dropFirst())
+        | EField e => Some(e.field)
+        | ELambda e {e.lambda.cases | [MatchCase c]} => findTermName(c.body)
+        | EList e {e.items | []} => Some("list")
+        | EList e {e.items | [e1, ...]} => findTermName(e1.first)
+        | EPipe e => findTermName(e.function)
+        | ERecord _ => Some("record")
+        | EVariable e => Some(e.name)
+        | EVariant e => Some(e.name.slice(0, 1).lower() + e.name.dropFirst())
+        | EVariantIs e => Some(e.name.slice(0, 1).lower() + e.name.dropFirst())
+        | _ => None
+    }
+    function findTypeName(type: Type): String {
+        | TConstructor(_, name, _) =>
+            let n = name.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+            n.slice(0, 1).lower() + n.dropFirst()
+        | TVariable(_, index) => "p" + index
+    }
+    let completions = arguments.{
+        | None =>
+            let t = unification.substitute(instantiated.scheme.signature.returnType)
+            let snippet = name + " = "
+            [CompletionInfo(snippet + "...", snippet, False, t, "// Define missing variable", Some(t))]
+        | Some(as) =>
+            mutable remainingParameters = instantiated.scheme.signature.parameters
+            let parameters = as.collect {a =>
+                let found = a.name.{
+                    | Some(n) => remainingParameters.find {_.name == n}
+                    | None => remainingParameters.first()
+                }
+                found.map {p =>
+                    remainingParameters = remainingParameters.filter {_.name != p.name}
+                    let t = unification.substitute(p.valueType)
+                    let x = a.name.orElse {findTermName(a.value)}.else {findTypeName(t)}
+                    Pair(x, t)
+                }
+            }
+            let returnType = unification.substitute(instantiated.scheme.signature.returnType)
+            let types = [...parameters.map {_.second}, returnType]
+            let returnTypeCode = returnType.{| TVariable _ => "" | _ => ": " + returnType.show(types)}
+            let label = name + "(" + parameters.map {_.first}.join(", ") + ") {...}"
+            let snippet = name + "(" + parameters.map {| Pair(x, t) =>
+                x + ": " + t.show(types)
+            }.join(", ") + ")" + returnTypeCode + " {\n    $0\n}"
+            // TODO: Make names unique
+            [CompletionInfo(label, snippet, False, returnType, "// Define missing function", None)]
+    }
+    if(keyword && arguments.isEmpty()) {
+        ["let ", "mutable "].flatMap {k => completions.map {c =>
+            c.CompletionInfo(label = k + c.label, snippet = k + c.snippet)
+        }}
+    } elseIf {keyword} {
+        ["function "].flatMap {k => completions.map {c =>
+            c.CompletionInfo(label = k + c.label, snippet = k + c.snippet)
+        }}
+    } else {
+        completions
+    }
 }
 
 namedParameterCompletion(parameter: Parameter, index: Int, preselect: Bool): CompletionInfo {
@@ -421,7 +486,7 @@ showCompletionParameter(indentation: String, parameter: Parameter): String {
             n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
         | EVariant(_, n, _, Some([])) =>
             n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-        | EVariant(_, n, _, _) => 
+        | EVariant(_, n, _, _) =>
             n.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse() + "(...)"
         | EChar(_, v) => v
         | EInt(_, v) => v

@@ -127,7 +127,7 @@ function go_(directory_) {
 const packageFile_ = (directory_ + "/.firefly/package.ff");
 if(ff_core_FileSystem.FileSystem_exists(fs_, packageFile_)) {
 return directory_
-} else if(ff_core_FileSystem.FileSystem_exists(fs_, (directory_ + "/.."))) {
+} else if((ff_core_FileSystem.FileSystem_exists(fs_, (directory_ + "/..")) && (ff_core_FileSystem.FileSystem_absolutePath(fs_, directory_) !== ff_core_FileSystem.FileSystem_absolutePath(fs_, (directory_ + "/.."))))) {
 return go_((directory_ + "/.."))
 } else {
 return fixedPackageDirectory_
@@ -169,7 +169,7 @@ async function go_$(directory_, $c) {
 const packageFile_ = (directory_ + "/.firefly/package.ff");
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, packageFile_, $c))) {
 return directory_
-} else if((await ff_core_FileSystem.FileSystem_exists$(fs_, (directory_ + "/.."), $c))) {
+} else if(((await ff_core_FileSystem.FileSystem_exists$(fs_, (directory_ + "/.."), $c)) && ((await ff_core_FileSystem.FileSystem_absolutePath$(fs_, directory_, $c)) !== (await ff_core_FileSystem.FileSystem_absolutePath$(fs_, (directory_ + "/.."), $c))))) {
 return (await go_$((directory_ + "/.."), $c))
 } else {
 return fixedPackageDirectory_
