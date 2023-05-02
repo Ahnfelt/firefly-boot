@@ -409,6 +409,7 @@ extend self: Parser {
             typeArguments = typeArguments.toList()
             generatorArguments = generatorArguments
             methods = methods
+            derived = False
         )
     }
 

@@ -40,7 +40,7 @@ extend self: Deriver {
     }
 
     makeHasAnyTagInstance(modulePrefix: String, declaration: DType): DInstance {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let constraints = declaration.generics.map {t =>
             Constraint(at, "ff:core/Any.HasAnyTag", [TConstructor(at, t, [])])
         }
@@ -85,6 +85,7 @@ extend self: Deriver {
             typeArguments = [selfType]
             generatorArguments = []
             methods = [method]
+            derived = True
         )
     }
 
@@ -99,11 +100,11 @@ extend self: Deriver {
     }
 
     makeShowInstance(modulePrefix: String, declaration: DType): DInstance {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
-        let constraints = declaration.generics.map { t =>
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
+        let constraints = declaration.generics.map {t =>
             Constraint(at, "ff:core/Show.Show", [TConstructor(at, t, [])])
         }
-        let typeArguments = declaration.generics.map { t =>
+        let typeArguments = declaration.generics.map {t =>
             TConstructor(at, t, [])
         }
         let selfType = TConstructor(at, modulePrefix + "." + declaration.name, typeArguments)
@@ -129,11 +130,12 @@ extend self: Deriver {
             typeArguments = [selfType]
             generatorArguments = []
             methods = [showMethod]
+            derived = True
         )
     }
 
     makeShowCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         declaration.variants.{
@@ -173,7 +175,7 @@ extend self: Deriver {
     }
 
     makeOrderingInstance(modulePrefix: String, declaration: DType): DInstance {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let constraints = declaration.generics.map {t =>
             Constraint(at, "ff:core/Ordering.Order", [TConstructor(at, t, [])])
         }
@@ -206,11 +208,12 @@ extend self: Deriver {
             typeArguments = [selfType]
             generatorArguments = []
             methods = [compareMethod]
+            derived = True
         )
     }
 
     makeOrderingCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         let sameCase = MatchCase(
@@ -276,7 +279,7 @@ extend self: Deriver {
     }
 
     makeOrderingFields(modulePrefix: String, declaration: DType, fields: List[Parameter]): Term {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let orderingType = TConstructor(at, "ff:core/Ordering.Ordering", [])
         let orderingSame = EVariant(at, "ff:core/Ordering.OrderingSame", [], None)
         function go(fields: List[Parameter]): Term {
@@ -311,7 +314,7 @@ extend self: Deriver {
     }
 
     makeEqualInstance(modulePrefix: String, declaration: DType): DInstance {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let constraints = declaration.generics.map {t =>
             Constraint(at, "ff:core/Equal.Equal", [TConstructor(at, t, [])])
         }
@@ -344,11 +347,12 @@ extend self: Deriver {
             typeArguments = [selfType]
             generatorArguments = []
             methods = [equalsMethod]
+            derived = True
         )
     }
 
     makeEqualsCases(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         let sameCase = MatchCase(
@@ -395,7 +399,7 @@ extend self: Deriver {
     }
 
     makeEqualFields(modulePrefix: String, declaration: DType, fields: List[Parameter]): Term {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         function go(fields: List[Parameter]): Term {
             | [] =>
                 EVariant(at, "ff:core/Bool.True", [], None)
@@ -429,7 +433,7 @@ extend self: Deriver {
     }
 
     makeSerializableInstance(modulePrefix: String, declaration: DType): DInstance {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let constraints = declaration.generics.map { t =>
             Constraint(at, "ff:core/Serializable.Serializable", [TConstructor(at, t, [])])
         }
@@ -485,11 +489,12 @@ extend self: Deriver {
                 DFunction(at, serializeSignature, serializeBody)
                 DFunction(at, deserializeSignature, deserializeBody)
             ]
+            derived = True
         )
     }
 
     makeSerializeBody(modulePrefix: String, declaration: DType, selfType: Type): List[MatchCase] {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let wildcardPattern = PVariable(at, None)
         declaration.variants.pairs().map {| Pair(index, variant) =>
             let variantName = modulePrefix + "." + variant.name
@@ -521,7 +526,7 @@ extend self: Deriver {
     }
 
     makeDeserializeBody(modulePrefix: String, declaration: DType, selfType: Type): Term {
-        let at = declaration.at.Location(column = (declaration.at.column - 1).max(0))
+        let at = declaration.at.Location(file = declaration.at.file + "/<derived>")
         let noEffect = TConstructor(at, "ff:core/Nothing.Nothing", [])
         let wildcardPattern = PVariable(at, None)
         let grabVariantIndex = self.makeMethodCall(

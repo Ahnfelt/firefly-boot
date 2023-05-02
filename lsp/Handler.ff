@@ -278,7 +278,7 @@ extend self: Handler {
             | InferParameterHook h => Some(h.parameter.at)
             | InferLookupHook h => Some(h.symbol.value.definedAt)
             | _ => None
-        }
+        }.filter {at => !at.file.endsWith("/<derived>")}
     
         Log.trace("definedAtList: " + Show.show(definedAtList))
     
@@ -302,7 +302,7 @@ extend self: Handler {
                     | InferParameterHook h => Some(h.parameter.at)
                     | InferLookupHook h => Some(h.symbol.value.usageAt)
                     | _ => None
-                }
+                }.filter {at => !at.file.endsWith("/<derived>")}
     
                 Log.trace("referencesResult: " + Show.show(referencesResult))
     

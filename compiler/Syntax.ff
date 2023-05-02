@@ -119,6 +119,7 @@ data DInstance(
     typeArguments: List[Type]
     generatorArguments: List[Argument]
     methods: List[DFunction]
+    derived: Bool
 )
 
 data Term(at: Location) {
