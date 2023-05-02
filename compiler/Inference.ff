@@ -916,7 +916,9 @@ extend self: Inference {
     lookup(environment: Environment, expected: Type, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
         self.lookupOption(environment, expected, at, symbol, typeArguments).elseIf {self.lspHook.isEnabled()} {
             let t = self.unification.freshUnificationVariable(at)
-            self.missingVariables.set(symbol, expected)
+            if(!self.lspHook.isAt(at)) {
+                self.missingVariables.set(symbol, expected)
+            }
             Instantiated([], Scheme(True, False, False, False, Signature(
                 at = at
                 name = symbol
