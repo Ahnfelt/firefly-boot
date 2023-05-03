@@ -413,6 +413,10 @@ missingCompletion(
     arguments: Option[List[Argument]]
 ): List[CompletionInfo] {
     function findTermName(term: Term): Option[String] {
+        | ECall e {e.target | DynamicCall c} {
+            e.arguments.last() | Some(Argument(_, _, e2))
+        } {e2 | ELambda(_, Lambda(_, _, cases))} {cases.last() | Some(case)} =>
+            findTermName(case.body)
         | ECall e {e.target | DynamicCall c} => findTermName(c.function)
         | ECopy e => Some(e.name.slice(0, 1).lower() + e.name.dropFirst())
         | EField e => Some(e.field)
