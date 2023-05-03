@@ -70,7 +70,13 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 | _ =>
                     []
             }
-        | InferSequentialStartHook h =>
+        | InferSequentialStartHook h {h.term | ESequential(_, before, _)} =>
+            function lastIsVariable(term: Term): Bool {
+                | ESequential(_, _, e) => lastIsVariable(e)
+                | EVariable _ => True
+                | _ => False
+            }
+            if(!lastIsVariable(before)) {[]} else:
             h.missing.toList().filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
             }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
@@ -90,12 +96,13 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
             let isLower = i.label.first().any {_.isAsciiLower()}
             let isUnqualified = !i.label.takeWhile {c => c != '(' && c != '[' && c != '{'}.contains(".")
             let isVariable = isLower && !i.label.contains("(") && !i.label.contains("{")
-            let isParameter = i.snippet.endsWith(" = ") || i.snippet.startsWith("function ")
-            let sortText = if(isParameter) {0} else {9 - (
+            let isDefinition = ["let ", "mutable ", "function "].any {i.snippet.startsWith(_)}
+            let isParameter = i.snippet.endsWith(" = ")
+            let sortText = if(isParameter || isDefinition) {0} else {9 - (
                 isVariable.toInt() + isUnqualified.toInt() +
                 isAlpha.toInt() + isLower.toInt()
             )} + "" + i.secondarySort + i.label.lower()
-            let preselect = Pair(i.type, i.expectedType).{
+            let preselect = !isDefinition && Pair(i.type, i.expectedType).{
                 | Pair(TConstructor(_, n1, _), Some(TConstructor(_, n2, _))) => n1 == n2
                 | _ => False
             }
