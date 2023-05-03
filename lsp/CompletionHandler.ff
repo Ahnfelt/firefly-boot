@@ -433,8 +433,8 @@ missingCompletion(
     function findTypeName(type: Type): String {
         | TConstructor(_, name, _) =>
             let n = name.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-            n.slice(0, 1).lower() + n.dropFirst()
-        | TVariable(_, index) => "p" + index
+            if(n == "") {"p"} else {n.slice(0, 1).lower() + n.dropFirst()}
+        | TVariable(_, index) => "p"
     }
     let completions = arguments.{
         | None =>
@@ -443,6 +443,20 @@ missingCompletion(
             [CompletionInfo(snippet + "...", snippet, False, t, "// Define missing variable", Some(t))]
         | Some(as) =>
             mutable remainingParameters = instantiated.scheme.signature.parameters
+            mutable usedNames = [].toSet()
+            function uniqueName(name: String): String {
+                let alternativeName = name + (usedNames.size() + 1)
+                if(!usedNames.contains(name)) {
+                    usedNames = usedNames.add(name)
+                    name
+                } elseIf {!usedNames.contains(alternativeName)} {
+                    usedNames = usedNames.add(alternativeName)
+                    alternativeName
+                } else {
+                    usedNames = usedNames.add(alternativeName + "_" + (usedNames.size() + 1))
+                    uniqueName(name)
+                }
+            }
             let parameters = as.collect {a =>
                 let found = a.name.{
                     | Some(n) => remainingParameters.find {_.name == n}
@@ -452,7 +466,7 @@ missingCompletion(
                     remainingParameters = remainingParameters.filter {_.name != p.name}
                     let t = unification.substitute(p.valueType)
                     let x = a.name.orElse {findTermName(a.value)}.else {findTypeName(t)}
-                    Pair(x, t)
+                    Pair(uniqueName(x), t)
                 }
             }
             let returnType = unification.substitute(instantiated.scheme.signature.returnType)
