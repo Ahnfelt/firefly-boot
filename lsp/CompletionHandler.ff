@@ -65,11 +65,12 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             }
         | InferTermHook h {h.term | ELet _} =>
             h.missing.toList().filter {_.first.all {_.isAsciiLetterOrDigit()}}.flatMap {
-                | Pair(x, Pair(instantiated, arguments)) =>
-                    missingCompletion(False, h.unification, x, instantiated, arguments)
+                | Pair(x, Pair(instantiated, None)) =>
+                    missingCompletion(False, h.unification, x, instantiated, None)
+                | _ =>
+                    []
             }
-        | InferSequentialStartHook h {h.term | ESequential(_, EVariable _, _)} => // TODO: "before" part may be longer
-            Log.show(h.missing.keys())
+        | InferSequentialStartHook h {h.term | ESequential _} =>
             h.missing.toList().filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
             }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
