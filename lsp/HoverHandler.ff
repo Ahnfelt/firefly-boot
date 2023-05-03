@@ -21,6 +21,7 @@ handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): Js
         | _ => None
     }
     definedAt.map {at =>
+        Log.trace("handleGoToDefinition definedAt: " + Show.show(definedAt))
         let token = handler.findToken(system, at)
         handler.tokenLocationToLspLocation(system, token)
     }.else {js.null()}

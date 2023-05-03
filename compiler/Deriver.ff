@@ -154,7 +154,7 @@ extend self: Deriver {
                     ]}
                     MatchCase(
                         at = at,
-                        patterns = [PVariantAs(at, variantName, Some("z"))]
+                        patterns = [PVariantAs(at, variantName, at, Some("z"))]
                         guards = []
                         body = strings.foldLeft(EString(at, "\"" + variant.name + "\"")) {a, b =>
                             self.makeSimpleCall(at, "+", [a, b])
@@ -244,7 +244,7 @@ extend self: Deriver {
                     let fields = [...declaration.commonFields, ...variant.fields]
                     MatchCase(
                         at = at,
-                        patterns = [PVariantAs(at, variantName, Some("x")), PVariantAs(at, variantName, Some("y"))]
+                        patterns = [PVariantAs(at, variantName, at, Some("x")), PVariantAs(at, variantName, at, Some("y"))]
                         guards = []
                         body = self.makeOrderingFields(modulePrefix, declaration, fields)
                     )
@@ -256,7 +256,7 @@ extend self: Deriver {
                     let variantName = modulePrefix + "." + variant.name
                     MatchCase(
                         at = at
-                        patterns = [PVariantAs(at, variantName, None)]
+                        patterns = [PVariantAs(at, variantName, at, None)]
                         guards = []
                         body = EInt(at, "" + index)
                     )
@@ -383,7 +383,7 @@ extend self: Deriver {
                     let fields = [...declaration.commonFields, ...variant.fields]
                     MatchCase(
                         at = at
-                        patterns = [PVariantAs(at, variantName, Some("x")), PVariantAs(at, variantName, Some("y"))]
+                        patterns = [PVariantAs(at, variantName, at, Some("x")), PVariantAs(at, variantName, at, Some("y"))]
                         guards = []
                         body = self.makeEqualFields(modulePrefix, declaration, fields)
                     )
@@ -514,7 +514,7 @@ extend self: Deriver {
             }
             MatchCase(
                 at = at,
-                patterns = [wildcardPattern, PVariantAs(at, variantName, Some("value"))]
+                patterns = [wildcardPattern, PVariantAs(at, variantName, at, Some("value"))]
                 guards = []
                 body = [
                     setVariantIndex

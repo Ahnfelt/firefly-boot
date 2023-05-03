@@ -200,10 +200,15 @@ extend self: Inference {
     }
 
     inferPattern(environment: Environment, expected: Type, pattern: MatchPattern): Map[String, Type] {
-        if(self.lspHook.isAt(pattern.at)) {
-            self.lspHook.emit(
-                InferPatternHook(self.unification, environment, expected, pattern)
-            )
+        if(self.lspHook.isEnabled()) {
+            if(pattern.{
+                | PVariantAs(at, _, variableAt, _) => self.lspHook.isAt(at) || self.lspHook.isAt(variableAt)
+                | _ => self.lspHook.isAt(pattern.at)
+            }) {
+                self.lspHook.emit(
+                    InferPatternHook(self.unification, environment, expected, pattern)
+                )
+            }
         }
         function literal(coreTypeName: String): Map[String, Type] {
             self.unification.unify(pattern.at, expected, TConstructor(pattern.at, core(coreTypeName), []))
@@ -222,7 +227,7 @@ extend self: Inference {
                 [Pair(name, expected)].toMap()
             | PAlias(at, pattern, variable) =>
                 self.inferPattern(environment, expected, pattern).add(variable, expected)
-            | PVariantAs(at, name, variableOption) =>
+            | PVariantAs(at, name, variableAt, variableOption) =>
                 let instantiated = self.lookup(environment, expected, at, name, [], None).else {
                     throw(CompileError(at, "No such variant: " + name))
                 }
