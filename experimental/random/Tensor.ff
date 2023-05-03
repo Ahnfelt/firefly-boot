@@ -22,6 +22,14 @@ defaultProcessor(): TensorProcessor {
     throw(TensorException("Default tensor processor not yet implemented"))
 }
 
+f32(shape: List[Int], data: Array[Float]): Tensor {
+    TensorFloats("ff_f32", shape, data)
+}
+
+f64(shape: List[Int], data: Array[Float]): Tensor {
+    TensorFloats("ff_f64", shape, data)
+}
+
 extend this: Tensor {
 
     multiply(that: Tensor): Tensor {
@@ -37,12 +45,4 @@ extend this: Tensor {
         processor.toFloats(this)
     }
 
-}
-
-f32(shape: List[Int], data: Array[Float]): Tensor {
-    TensorFloats("ff_f32", shape, data)
-}
-
-f64(shape: List[Int], data: Array[Float]): Tensor {
-    TensorFloats("ff_f64", shape, data)
 }
