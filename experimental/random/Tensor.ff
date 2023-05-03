@@ -9,3 +9,40 @@ data Tensor(scalar: String, shape: List[Int]) {
     TensorBuffer(data: Buffer)
     TensorOperator(operator: String, operands: List[Tensor])
 }
+
+data TensorException(message: String)
+
+capability TensorProcessor(
+    toFloats: Tensor => Array[Float]
+    toInts: Tensor => Array[Int]
+    toBuffer: Tensor => Buffer
+)
+
+defaultProcessor(): TensorProcessor {
+    throw(TensorException("Default tensor processor not yet implemented"))
+}
+
+extend this: Tensor {
+
+    multiply(that: Tensor): Tensor {
+        if(this.scalar != that.scalar) {
+            throw(TensorException("Scalar type mismatch: " + this.scalar + " vs. " + that.scalar))
+        }
+        let scalar = this.scalar
+        let shape = [] // TODO: Check and compute
+        TensorOperator(scalar, shape, "ff_multiply", [this, that])
+    }
+
+    toFloats(processor: TensorProcessor = defaultProcessor()): Array[Float] {
+        processor.toFloats(this)
+    }
+
+}
+
+f32(shape: List[Int], data: Array[Float]): Tensor {
+    TensorFloats("ff_f32", shape, data)
+}
+
+f64(shape: List[Int], data: Array[Float]): Tensor {
+    TensorFloats("ff_f64", shape, data)
+}
