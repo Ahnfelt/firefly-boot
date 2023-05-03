@@ -1,0 +1,11 @@
+// Brainstorming representation for Tensors where the scalar types and operators are left open ended.
+// The purpose of this type is to build up a syntax tree of tensor operations that can then be
+// optimized and executed on CPU/GPU/TPU, enabling machine learning and other numerical applications.
+
+data Tensor(scalar: String, shape: List[Int]) {
+    TensorVariable(name: String)
+    TensorInts(data: Array[Int])
+    TensorFloats(data: Array[Float])
+    TensorBuffer(data: Buffer)
+    TensorOperator(operator: String, operands: List[Tensor])
+}
