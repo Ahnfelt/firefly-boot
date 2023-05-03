@@ -70,7 +70,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 | _ =>
                     []
             }
-        | InferSequentialStartHook h {h.term | ESequential _} =>
+        | InferSequentialStartHook h =>
             h.missing.toList().filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
             }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
