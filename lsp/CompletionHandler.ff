@@ -425,15 +425,17 @@ missingCompletion(
         | EList e {e.items | [e1, ...]} => findTermName(e1.first)
         | EPipe e => findTermName(e.function)
         | ERecord _ => Some("record")
-        | EVariable e => Some(e.name)
+        | EVariable e {e.name != "" && e.name.all {_.isAsciiLetterOrDigit()}} => Some(e.name)
         | EVariant e => Some(e.name.slice(0, 1).lower() + e.name.dropFirst())
         | EVariantIs e => Some(e.name.slice(0, 1).lower() + e.name.dropFirst())
         | _ => None
     }
     function findTypeName(type: Type): String {
+        | TConstructor(_, name, _) {name.startsWith("Function$")} =>
+            "lambda"
         | TConstructor(_, name, _) =>
             let n = name.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-            if(n == "") {"p"} else {n.slice(0, 1).lower() + n.dropFirst()}
+            if(!n.first().all {_.isAsciiLetter()}) {"p"} else {n.slice(0, 1).lower() + n.dropFirst()}
         | TVariable(_, index) => "p"
     }
     let completions = arguments.{
