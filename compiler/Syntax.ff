@@ -169,7 +169,7 @@ data MatchPattern(at: Location) {
     PChar(value: String)
     PVariable(name: Option[String])
     PVariant(name: String, patterns: List[MatchPattern])
-    PVariantAs(name: String, variable: Option[String])
+    PVariantAs(name: String, variableAt: Location, variable: Option[String])
     PAlias(pattern: MatchPattern, variable: String)
 }
 

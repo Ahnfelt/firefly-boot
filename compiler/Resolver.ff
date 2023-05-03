@@ -248,7 +248,16 @@ extend self: Resolver {
         | EInt _, _ => term
         | EFloat _, _ => term
         | EVariable e, _ =>
-            let at = self.variableLocations.get(e.name)
+            if(self.lspHook.isEnabled()) {
+                let at = self.variableLocations.get(e.name).else {e.at}
+                if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(at)) {
+                    self.lspHook.emit(
+                        ResolveSymbolHook(
+                            SymbolHook(e.name, e.at, at), None
+                        )
+                    )
+                }
+            }
             self.variables.get(e.name).map {e.EVariable(name = _)}.else {term}
         | EList(at, t, items), _ =>
             EList(at, self.resolveType(t, topLevel), items.map {| Pair(item, spread) =>
@@ -488,8 +497,8 @@ extend self: Resolver {
                 Map.empty()
             | PVariant(_, _, patterns) =>
                 patterns.map(findVariables).foldLeft(Map.empty()) {_.addAll(_)}
-            | PVariantAs(at, _, variable) =>
-                variable.toList().map {x => Pair(x, Pair(at, x))}.toMap()
+            | PVariantAs(at, _, variableAt, variable) =>
+                variable.toList().map {x => Pair(x, Pair(variableAt, x))}.toMap()
             | PAlias(at, pattern, variable) =>
                 [Pair(variable, Pair(at, variable))].toMap().addAll(findVariables(pattern))
         }
@@ -532,9 +541,9 @@ extend self: Resolver {
             let newName = self.variants.get(name).else {name}
             let newPatterns = patterns.map {self.resolvePattern(_)}
             PVariant(at, newName, newPatterns)
-        | PVariantAs(at, name, variable) =>
+        | PVariantAs(at, name, variableAt, variable) =>
             let newName = self.variants.get(name).else {name}
-            PVariantAs(at, newName, variable)
+            PVariantAs(at, newName, variableAt, variable)
         | PAlias(at, pattern, variable) =>
             let newPattern = self.resolvePattern(pattern)
             PAlias(at, newPattern, variable)

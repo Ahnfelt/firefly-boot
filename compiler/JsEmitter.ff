@@ -709,7 +709,7 @@ extend self: JsEmitter {
                 } +
                 self.emitCase([...processed.arguments, ...arguments], newMatchCase, jump, last, async) +
                 if(processed.loneVariant) { "" } else { "\n}" }
-            | PVariantAs(at, name, variable) =>
+            | PVariantAs(at, name, variableAt, variable) =>
                 let processed = self.processVariantCase(name, argument)
                 if(processed.loneVariant) { "" } else {
                     "if(" + argument + "." + processed.variantName + ") {\n"

@@ -797,10 +797,10 @@ extend self: Parser {
             } else {
                 if(self.current().is(LLower)) {
                     let asToken = self.skip(LLower)
-                    PVariantAs(asToken.at(), token.raw(), Some(asToken.raw()))
+                    PVariantAs(token.at(), token.raw(), asToken.at(), Some(asToken.raw()))
                 } elseIf {self.current().is(LWildcard)} {
                     let wildcardToken = self.skip(LWildcard)
-                    PVariantAs(wildcardToken.at(), token.raw(), None)
+                    PVariantAs(token.at(), token.raw(), wildcardToken.at(), None)
                 } else {
                     PVariant(token.at(), token.raw(), [])
                 }

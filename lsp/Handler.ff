@@ -277,6 +277,7 @@ extend self: Handler {
             | ResolveSignatureHook h => Some(h.signature.at)
             | InferParameterHook h => Some(h.parameter.at)
             | InferLookupHook h => Some(h.symbol.value.definedAt)
+            | InferPatternHook h {h.pattern | PVariantAs p} => Some(p.variableAt)
             | _ => None
         }.filter {at => !at.file.endsWith("/<derived>")}
     
