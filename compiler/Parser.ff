@@ -636,6 +636,10 @@ extend self: Parser {
             let mutable = allowMutable && self.current().is(LKeyword) && self.current().rawIs("mutable")
             if(mutable) {self.skip(LKeyword)}
             let parameterNameToken = self.skip(LLower)
+            if(self.attemptFixes && !self.current().is(LColon)) {
+                let t = TConstructor(parameterNameToken.at(), "ff:core/Nothing.Nothing", [])
+                parameters.push(Parameter(parameterNameToken.at(), mutable, parameterNameToken.raw(), t, None))
+            } else:
             self.skip(LColon)
             let parameterType = self.parseType()
             let default = if(!self.current().is(LAssign)) {None} else {

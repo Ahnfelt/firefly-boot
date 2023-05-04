@@ -124,7 +124,7 @@ extend self: Inference {
             let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType, noEffect))
             if(self.lspHook.isAt(p.at)) {
                 self.lspHook.emit(
-                    InferParameterHook(self.unification, environment, p)
+                    InferParameterHook(self.unification, environment, p, self.missing)
                 )
             }
             Pair(p.name, scheme)

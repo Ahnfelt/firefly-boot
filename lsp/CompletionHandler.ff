@@ -66,7 +66,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
         | InferTermHook h {h.term | ELet _} =>
             h.missing.toList().filter {_.first.all {_.isAsciiLetterOrDigit()}}.flatMap {
                 | Pair(x, Pair(instantiated, None)) =>
-                    missingCompletion(False, h.unification, x, instantiated, None)
+                    missingCompletion(False, False, h.unification, x, instantiated, None)
                 | _ =>
                     []
             }
@@ -80,7 +80,13 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             h.missing.toList().filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
             }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
-                missingCompletion(True, h.unification, x, instantiated, arguments)
+                missingCompletion(True, False, h.unification, x, instantiated, arguments)
+            }
+        | InferParameterHook h =>
+            h.missing.toList().filter {| Pair(x, _) =>
+                x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
+            }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
+                missingCompletion(False, True, h.unification, x, instantiated, arguments)
             }
         | _ =>
             []
@@ -407,6 +413,7 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
 
 missingCompletion(
     keyword: Bool
+    isParameter: Bool
     unification: Unification
     name: String
     instantiated: Instantiated
@@ -439,6 +446,21 @@ missingCompletion(
         | TVariable(_, index) => "p"
     }
     let completions = arguments.{
+        | None {isParameter} =>
+            let t = unification.substitute(instantiated.scheme.signature.returnType)
+            [CompletionInfo(name, name + ": " + t.show([]), False, t, "// Define missing parameter", Some(t))]
+        | Some(as) {isParameter} =>
+            let noEffect = TConstructor(instantiated.scheme.signature.at, "ff:core/Nothing.Nothing", [])
+            let t = unification.substitute(TConstructor(
+                instantiated.scheme.signature.at
+                "Function$" + instantiated.scheme.signature.parameters.size()
+                [
+                    noEffect
+                    ...instantiated.scheme.signature.parameters.map {_.valueType}
+                    instantiated.scheme.signature.returnType
+                ]
+            ))
+            [CompletionInfo(name, name + ": " + t.show([]), False, t, "// Define missing parameter", Some(t))]
         | None =>
             let t = unification.substitute(instantiated.scheme.signature.returnType)
             let snippet = name + " = "

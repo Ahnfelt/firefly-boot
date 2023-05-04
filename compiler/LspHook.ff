@@ -97,6 +97,7 @@ class ResultHook {
         unification: Unification
         environment: Environment
         parameter: Parameter
+        missing: StringMap[Pair[Instantiated, Option[List[Argument]]]]
     )
     InferArgumentHook(
         unification: Unification
