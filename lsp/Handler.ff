@@ -46,7 +46,7 @@ extend self: Handler {
             | "textDocument/didClose" => self.handleDidClose(system, parameters)
             | "exit" => system.exit(0)
             | _ =>
-        }   
+        }
     }
 
     handleRequest(system: NodeSystem, method: String, parameters: Map[String, JsValue]): ResultOrError {
@@ -64,11 +64,11 @@ extend self: Handler {
             | _ => self.handleUnsupported(system.js())
         }
     }
-    
+
     handleUnsupported(js: JsSystem): ResultOrError {
         Error(1234, "Unsupported method")
     }
-    
+
     handleInitialize(js: JsSystem, parameters: Map[String, JsValue]): ResultOrError {
         self.rootUri = Some(parameters.grab("rootUri").grabString())
 
@@ -80,7 +80,7 @@ extend self: Handler {
                         .with("matches", "file")
                     )
             ].toArray())
-    
+
         let o = js.object()
             .with("capabilities", js.object()
                 .with("textDocumentSync", js.object()
@@ -95,7 +95,7 @@ extend self: Handler {
                     .with("workspaceDiagnostics", False)
                 )
                 .with("completionProvider", js.object()
-                    .with("triggerCharacters", js.array(["."].map {js.value(_)}))
+                    .with("triggerCharacters", js.array([".", " "].map {js.value(_)}))
                     .with("allCommitCharacters", js.array([";"].map {js.value(_)}))
                 )
                 /*.with("signatureHelpProvider", js.object()
@@ -122,7 +122,7 @@ extend self: Handler {
             )
         Result(o)
     }
-    
+
     handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
@@ -140,7 +140,7 @@ extend self: Handler {
                 .with("message", message)
             [diagnostic]
         } grab()
-    
+
         let o = js.object()
             .with("kind", "full")
             .with("items", diagnostics.toArray())
@@ -154,7 +154,7 @@ extend self: Handler {
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let contentChanges = parameters.grab("contentChanges").grabArray()
-        if(contentChanges.size() != 1) {throw(LanguageServerException("Expected a single element in contentChanges"))} else: 
+        if(contentChanges.size() != 1) {throw(LanguageServerException("Expected a single element in contentChanges"))} else:
         let contentChange = contentChanges.grab(0)
         if(!contentChange.get("range").isNullOrUndefined()) {throw(LanguageServerException("Expected a complete contentChange"))} else:
         let content = contentChange.get("text").grabString()
@@ -169,7 +169,7 @@ extend self: Handler {
         let fixedPath = path.replace("\\", "/")
         self.virtualFiles = self.virtualFiles.remove(fixedPath)
     }
-    
+
     handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
         let targetAt = self.parseAndFixedLocation(system, parameters)
         let lspHook = LspHook.make(at = Some(targetAt), definedAt = None)
@@ -223,13 +223,13 @@ extend self: Handler {
         let js = system.js()
         let o = tokens.{
             | None => js.null()
-            | Some(tokens) => 
+            | Some(tokens) =>
                 let lspTokens = tokens.map {self.tokenLocationToLspLocation(system, _)}
                 js.array(lspTokens)
         }
         Result(o)
     }
-    
+
     handleRename(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let newName = parameters.grab("newName").grabString()
         let targetAt = self.parseAndFixedLocation(system, parameters)
@@ -238,19 +238,19 @@ extend self: Handler {
         tokens.{
             | None => Error(-32602, "Token definition not found") // InvalidParams
             | Some([]) => Result(js.null())
-            | Some([first, ..._] @ tokens) => 
+            | Some([first, ..._] @ tokens) =>
                 let oldName = first.raw
                 Log.trace("Rename '" + oldName + "' to '" + newName + "'")
 
                 // TODO findReferences returns some bad tokens
                 let goodTokens = tokens.filter {_.raw == oldName}
                 let badTokens = tokens.filter {_.raw != oldName}
-                badTokens.each {t => Log.trace("Rename bad token: " + Show.show(t))} 
+                badTokens.each {t => Log.trace("Rename bad token: " + Show.show(t))}
 
                 let byFile = goodTokens.map {t => Pair(t.file, t)}.group()
-                let allChanges = byFile.toList().foldLeft(js.object(), {| o, Pair(file, fileTokens) => 
+                let allChanges = byFile.toList().foldLeft(js.object(), {| o, Pair(file, fileTokens) =>
                     let uri = FileSystem.pathToUrl(system.files().absolutePath(file))
-                    let fileChanges = fileTokens.map {tokenLocation => 
+                    let fileChanges = fileTokens.map {tokenLocation =>
                         js.object()
                             .with("range", self.tokenLocationToLspRange(js, tokenLocation))
                             .with("newText", newName)
@@ -269,7 +269,7 @@ extend self: Handler {
         } catch {| CompileError(at, message), error =>
             Log.trace("findReferences first check error: " + message)
         } grab()
-    
+
         let definedAtList = temporaryLspHook.results().collect {
             | ResolveSymbolHook h => Some(h.symbol.definedAt)
             | ResolveTypeHook h => Some(h.symbol.definedAt)
@@ -280,12 +280,12 @@ extend self: Handler {
             | InferPatternHook h {h.pattern | PVariantAs p} => Some(p.variableAt)
             | _ => None
         }.filter {at => !at.file.endsWith("/<derived>")}
-    
+
         Log.trace("definedAtList: " + Show.show(definedAtList))
-    
+
         let js = system.js()
         definedAtList.first().{
-            | Some(definedAt) => 
+            | Some(definedAt) =>
                 Log.trace("handleReferences definedAt: " + Show.show(definedAt))
                 let lspHook = LspHook.make(at = None, definedAt = Some(definedAt))
                 try {
@@ -294,7 +294,7 @@ extend self: Handler {
                 } catch {| CompileError(at, message), error =>
                     Log.trace("findReferences second check error: " + message)
                 } grab()
-    
+
                 let referencesResult = lspHook.results().collect {
                     | ResolveSymbolHook h => Some(h.symbol.usageAt)
                     | ResolveTypeHook h => Some(h.symbol.usageAt)
@@ -304,20 +304,20 @@ extend self: Handler {
                     | InferLookupHook h => Some(h.symbol.value.usageAt)
                     | _ => None
                 }.filter {at => !at.file.endsWith("/<derived>")}
-    
+
                 Log.trace("referencesResult: " + Show.show(referencesResult))
-    
+
                 let clientLocations = referencesResult.addAll([definedAt]).distinct().filter {
                     !local || _.file == targetAt.file
-                }.map {at => 
+                }.map {at =>
                     self.findToken(system, at)
                 }
                 Some(clientLocations)
-            | None => 
+            | None =>
                 None
         }
-    }    
-    
+    }
+
     makeNotificationMessage(js: JsSystem, method: String, params: JsValue): JsValue {
         js.object()
             .with("jsonrpc", "2.0")
@@ -341,7 +341,7 @@ extend self: Handler {
                 at.line >= token.startLine && at.line <= token.stopLine && (
                     (at.line > token.startLine || at.column >= 1 + token.startOffset - token.startLineOffset) &&
                     (at.line < token.stopLine || at.column < 1 + token.stopOffset - token.stopLineOffset || (
-                        (token.kind == LLower || token.kind == LUpper) && 
+                        (token.kind == LLower || token.kind == LUpper) &&
                         at.column == 1 + token.stopOffset - token.stopLineOffset
                     ))
                 )
