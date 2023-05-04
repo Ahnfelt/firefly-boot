@@ -305,7 +305,7 @@ extend self: Handler {
                     | _ => None
                 }.filter {at => !at.file.endsWith("/<derived>")}
 
-                Log.trace("referencesResult: " + Show.show(referencesResult))
+                //Log.trace("referencesResult: " + Show.show(referencesResult))
 
                 let clientLocations = referencesResult.addAll([definedAt]).distinct().filter {
                     !local || _.file == targetAt.file

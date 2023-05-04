@@ -1003,7 +1003,7 @@ extend self: Parser {
         } elseIf {self.current().is(LNamespace)} {
             let namespaceToken = self.skip(LNamespace)
             let extraNamespace = if(!self.current().is(LNamespace)) {None} else {Some(self.skip(LNamespace).raw())}
-            let prefix = namespaceToken.raw() + extraNamespace.else{""}
+            let prefix = namespaceToken.raw() + extraNamespace.else {""}
             if(self.current().is(LLower)) {
                 let token = self.skip(LLower)
                 EVariable(token.at(), prefix + token.raw())
