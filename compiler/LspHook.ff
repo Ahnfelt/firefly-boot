@@ -87,6 +87,12 @@ class ResultHook {
         term: Term
         missing: StringMap[Pair[Instantiated, Option[List[Argument]]]]
     )
+    InferFunctionDefinitionHook(
+        unification: Unification
+        environment: Environment
+        definition: DFunction
+        missing: StringMap[Pair[Instantiated, Option[List[Argument]]]]
+    )
     InferPatternHook(
         unification: Unification
         environment: Environment

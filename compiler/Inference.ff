@@ -119,6 +119,11 @@ extend self: Inference {
     }
 
     inferFunctionDefinition(environment: Environment, definition: DFunction): DFunction {
+        if(self.lspHook.isAt(definition.at)) {
+            self.lspHook.emit(
+                InferFunctionDefinitionHook(self.unification, environment, definition, self.missing)
+            )
+        }
         let parameters = definition.signature.parameters.map {p =>
             let noEffect = TConstructor(p.at, "ff:core/Nothing.Nothing", [])
             let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType, noEffect))

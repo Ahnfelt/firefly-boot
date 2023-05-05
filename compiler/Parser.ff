@@ -290,7 +290,7 @@ extend self: Parser {
     parseSignature(): Signature {
         let nameToken = self.skip(LLower)
         let poly = if(self.current().rawIs("[")) {self.parseTypeParameters()} else {Poly([], [])}
-        let parameters = self.parseFunctionParameters()
+        let parameters = if(self.attemptFixes && !self.current().rawIs("(")) {[]} else {self.parseFunctionParameters()}
         let returnType = if(self.current().is(LColon)) {
             self.skip(LColon)
             self.parseType()
@@ -905,8 +905,13 @@ extend self: Parser {
         while {self.current().rawIs("function")} {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature()
-            let body = self.parseLambda(defaultParameterCount = signature.parameters.size())
-            functions.push(DFunction(functionAt, signature, FireflyTarget(body)))
+            let body = if(self.attemptFixes && !self.current().rawIs("{")) {
+                let temporaryEffect = TConstructor(functionAt, "TemporaryEffect$", [])
+                Lambda(functionAt, temporaryEffect, [])
+            } else {
+                self.parseLambda(defaultParameterCount = signature.parameters.size())
+            }
+            functions.push(DFunction(signature.at, signature, FireflyTarget(body)))
             self.skipSeparator(LSemicolon)
         }
         let body = self.parseStatements()

@@ -88,6 +88,14 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
                 missingCompletion(False, True, h.unification, x, instantiated, arguments)
             }
+        | InferFunctionDefinitionHook h =>
+            h.missing.toList().filter {| Pair(x, _) =>
+                x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
+            }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
+                arguments.toList().flatMap {as => 
+                    missingCompletion(False, False, h.unification, x, instantiated, Some(as))
+                }
+            }
         | _ =>
             []
     }}
