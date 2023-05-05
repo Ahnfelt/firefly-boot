@@ -448,7 +448,11 @@ missingCompletion(
     let completions = arguments.{
         | None {isParameter} =>
             let t = unification.substitute(instantiated.scheme.signature.returnType)
-            [CompletionInfo(name, name + ": " + t.show([]), False, t, "// Add missing parameter", Some(t))]
+            let snippet = t.{
+                | TConstructor _ => name + ": " + t.show([])
+                | TVariable _ => name + ": "
+            }
+            [CompletionInfo(name, snippet, False, t, "// Add missing parameter", Some(t))]
         | Some(as) {isParameter} =>
             let noEffect = TConstructor(instantiated.scheme.signature.at, "ff:core/Nothing.Nothing", [])
             let t = unification.substitute(TConstructor(
