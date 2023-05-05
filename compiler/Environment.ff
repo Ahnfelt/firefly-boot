@@ -53,7 +53,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
             let noEffect = TConstructor(d.at, "ff:core/Nothing.Nothing", [])
             Pair(
                 fullName(module, d.name)
-                Scheme(True, False, False, False, Signature(d.at, d.name, [], [], [], d.variableType, noEffect))
+                Scheme(True, False, False, False, Signature(d.at, d.name, False, [], [], [], d.variableType, noEffect))
             )
         }
 
@@ -111,6 +111,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
                     Scheme(True, f.mutable, d.newtype, False, Signature(
                         at = f.at
                         name = f.name
+                        member = True
                         generics = d.generics
                         constraints = d.constraints
                         parameters = [selfParameter]
@@ -133,6 +134,7 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
                     Scheme(False, False, d.newtype, False, Signature(
                         variant.at
                         variant.name
+                        member = False
                         generics = d.generics
                         constraints = d.constraints
                         parameters = [...d.commonFields, ...variant.fields]

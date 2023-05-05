@@ -53,6 +53,7 @@ extend self: Deriver {
         let signature = Signature(
             at = at
             name = "anyTag"
+            member = False
             generics = []
             constraints = []
             parameters = []
@@ -112,6 +113,7 @@ extend self: Deriver {
         let signature = Signature(
             at = at
             name = "show"
+            member = False
             generics = []
             constraints = []
             parameters = [Parameter(at, False, "x", selfType, None)]
@@ -187,6 +189,7 @@ extend self: Deriver {
         let signature = Signature(
             at = at
             name = "compare"
+            member = False
             generics = []
             constraints = []
             parameters = [
@@ -251,7 +254,7 @@ extend self: Deriver {
                 }
                 let intType = TConstructor(at, "ff:core/Int.Int", [])
                 let numberSignature =
-                    Signature(at, "number", [], [], [Parameter(at, False, "z", selfType, None)], intType, noEffect)
+                    Signature(at, "number", False, [], [], [Parameter(at, False, "z", selfType, None)], intType, noEffect)
                 let numberCases = declaration.variants.pairs().map {| Pair(index, variant) =>
                     let variantName = modulePrefix + "." + variant.name
                     MatchCase(
@@ -326,6 +329,7 @@ extend self: Deriver {
         let signature = Signature(
             at = at
             name = "equals"
+            member = False
             generics = []
             constraints = []
             parameters = [
@@ -446,6 +450,7 @@ extend self: Deriver {
         let serializeSignature = Signature(
             at = at
             name = "serializeUsing"
+            member = False
             generics = []
             constraints = []
             parameters = [
@@ -458,6 +463,7 @@ extend self: Deriver {
         let deserializeSignature = Signature(
             at = at
             name = "deserializeUsing"
+            member = False
             generics = []
             constraints = []
             parameters = [

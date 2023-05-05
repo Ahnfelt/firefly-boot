@@ -126,7 +126,9 @@ extend self: Inference {
         }
         let parameters = definition.signature.parameters.map {p =>
             let noEffect = TConstructor(p.at, "ff:core/Nothing.Nothing", [])
-            let scheme = Scheme(True, False, False, False, Signature(p.at, p.name, [], [], [], p.valueType, noEffect))
+            let scheme = Scheme(True, False, False, False
+                Signature(p.at, p.name, False, [], [], [], p.valueType, noEffect)
+            )
             if(self.lspHook.isAt(p.at)) {
                 self.lspHook.emit(
                     InferParameterHook(self.unification, environment, p, self.missing)
@@ -183,7 +185,7 @@ extend self: Inference {
         let environment1 = parameterTypes.zip(case.patterns).foldLeft(environment) {| environment1, Pair(t, c) =>
             let symbols = self.inferPattern(environment, t, c).mapValues {name, type =>
                 let noEffect = TConstructor(c.at, "ff:core/Nothing.Nothing", [])
-                Scheme(True, False, False, False, Signature(c.at, name, [], [], [], type, noEffect))
+                Scheme(True, False, False, False, Signature(c.at, name, False, [], [], [], type, noEffect))
             }
             environment.Environment(symbols = environment1.symbols.addAll(symbols))
         }
@@ -193,7 +195,7 @@ extend self: Inference {
             let guardTerm = self.inferTerm(environment2, guardType, g.term)
             let symbols = self.inferPattern(environment2, guardType, g.pattern).mapValues {name, type =>
                 let noEffect = TConstructor(g.at, "ff:core/Nothing.Nothing", [])
-                Scheme(True, False, False, False, Signature(g.at, name, [], [], [], type, noEffect))
+                Scheme(True, False, False, False, Signature(g.at, name, False, [], [], [], type, noEffect))
             }
             guards = [g.MatchGuard(term = guardTerm), ...guards]
             environment2.Environment(symbols = environment2.symbols.addAll(symbols))
@@ -394,8 +396,9 @@ extend self: Inference {
                 }
             | ELet e =>
                 let noEffect = TConstructor(e.at, "ff:core/Nothing.Nothing", [])
-                let scheme =
-                    Scheme(True, e.mutable, False, False, Signature(e.at, e.name, [], [], [], e.valueType, noEffect))
+                let scheme = Scheme(True, e.mutable, False, False
+                    Signature(e.at, e.name, False, [], [], [], e.valueType, noEffect)
+                )
                 let environment2 = environment.Environment(symbols = environment.symbols.add(e.name, scheme))
                 e.ELet(
                     value = self.inferTerm(environment, e.valueType, e.value)
@@ -936,6 +939,7 @@ extend self: Inference {
             let instantiated = Instantiated([], Scheme(arguments.isEmpty(), False, False, False, Signature(
                 at = at
                 name = symbol
+                member = False // Should be true when looking up a member or method
                 generics = []
                 constraints = []
                 parameters = arguments.toList().flatten().pairs().map {| Pair(i, a) =>

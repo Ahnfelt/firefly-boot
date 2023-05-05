@@ -190,6 +190,7 @@ data Dictionary(
 data Signature(
     at: Location
     name: String
+    member: Bool
     generics: List[String]
     constraints: List[Constraint]
     parameters: List[Parameter]

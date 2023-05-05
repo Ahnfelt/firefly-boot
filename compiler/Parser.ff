@@ -162,7 +162,7 @@ extend self: Parser {
             if(self.current().is(LLower) && (self.ahead().is(LAssign) || self.ahead().is(LColon))) {
                 lets.push(self.parseLetDefinition())
             } elseIf {self.current().is(LLower)} {
-                functions.push(self.parseFunctionDefinition())
+                functions.push(self.parseFunctionDefinition(member = False))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("extend")} {
                 extends.push(self.parseExtendDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("trait")} {
@@ -215,8 +215,8 @@ extend self: Parser {
         DLet(nameToken.at(), nameToken.raw(), variableType, value)
     }
 
-    parseFunctionDefinition(): DFunction {
-        let signature = self.parseSignature()
+    parseFunctionDefinition(member: Bool): DFunction {
+        let signature = self.parseSignature(member)
         let body = if(self.current().rawIs("{")) {self.parseLambda(signature.parameters.size())}
         let targets = self.parseTargets(signature.parameters.size())
         let bestTarget = findBestTarget(self.targetIsNode, body, targets)
@@ -287,7 +287,7 @@ extend self: Parser {
         targets
     }
 
-    parseSignature(): Signature {
+    parseSignature(member: Bool): Signature {
         let nameToken = self.skip(LLower)
         let poly = if(self.current().rawIs("[")) {self.parseTypeParameters()} else {Poly([], [])}
         let parameters = if(self.attemptFixes && !self.current().rawIs("(")) {[]} else {self.parseFunctionParameters()}
@@ -298,7 +298,7 @@ extend self: Parser {
             TConstructor(self.current().at(), "ff:core/Unit.Unit", [])
         }
         let temporaryEffect = TConstructor(nameToken.at(), "TemporaryEffect$", [])
-        Signature(nameToken.at(), nameToken.raw(), poly.generics, poly.constraints, parameters, returnType, temporaryEffect)
+        Signature(nameToken.at(), nameToken.raw(), member, poly.generics, poly.constraints, parameters, returnType, temporaryEffect)
     }
 
     parseExtendDefinition(): DExtend {
@@ -310,7 +310,7 @@ extend self: Parser {
         self.rawSkip(LBracketLeft, "{")
         let methods = Stack.make[DFunction]()
         while {!self.current().is(LBracketRight)} {
-            methods.push(self.parseFunctionDefinition())
+            methods.push(self.parseFunctionDefinition(member = True))
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
         }
         self.rawSkip(LBracketRight, "}")
@@ -346,7 +346,7 @@ extend self: Parser {
             let signatures = Stack.make[Signature]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current().is(LBracketRight)} {
-                let signature = self.parseSignature()
+                let signature = self.parseSignature(member = True)
                 signatures.push(signature)
                 if(self.current().rawIs("{")) {
                     let generator = self.ahead().is(LKeyword) && self.ahead().rawIs("generate")
@@ -395,7 +395,7 @@ extend self: Parser {
             let definitions = Stack.make[DFunction]()
             self.rawSkip(LBracketLeft, "{")
             while {!self.current().is(LBracketRight)} {
-                definitions.push(self.parseFunctionDefinition())
+                definitions.push(self.parseFunctionDefinition(member = False))
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
             }
             self.rawSkip(LBracketRight, "}")
@@ -904,7 +904,7 @@ extend self: Parser {
         let functions = Stack.make[DFunction]()
         while {self.current().rawIs("function")} {
             let functionAt = self.rawSkip(LKeyword, "function").at()
-            let signature = self.parseSignature()
+            let signature = self.parseSignature(member = False)
             let body = if(self.attemptFixes && !self.current().rawIs("{")) {
                 let temporaryEffect = TConstructor(functionAt, "TemporaryEffect$", [])
                 Lambda(functionAt, temporaryEffect, [])
