@@ -639,6 +639,7 @@ extend self: Parser {
             if(self.attemptFixes && !self.current().is(LColon)) {
                 let t = TConstructor(parameterNameToken.at(), "ff:core/Nothing.Nothing", [])
                 parameters.push(Parameter(parameterNameToken.at(), mutable, parameterNameToken.raw(), t, None))
+                if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
             } else:
             self.skip(LColon)
             let parameterType = self.parseType()
