@@ -161,7 +161,7 @@ extend self: Parser {
         while {!self.current().is(LEnd)} {
             if(self.current().is(LLower) && (self.ahead().is(LAssign) || self.ahead().is(LColon))) {
                 lets.push(self.parseLetDefinition())
-            } elseIf {self.current().is(LLower) && self.ahead().is(LBracketLeft)} {
+            } elseIf {self.current().is(LLower)} {
                 functions.push(self.parseFunctionDefinition())
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("extend")} {
                 extends.push(self.parseExtendDefinition())
