@@ -69,6 +69,11 @@ class ResultHook {
     ResolveSignatureHook(
         signature: Signature
     )
+    ResolveVariantFieldHook(
+        symbol: SymbolHook
+        type: Type
+        commonField: Bool
+    )
     InferTermHook(
         unification: Unification
         environment: Environment

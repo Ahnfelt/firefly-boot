@@ -23,11 +23,14 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             None
     }
     mutable sawLookupHook = False // Only consider the first lookup
-    mutable sawParameterHook = False // Rewrite the type completions to parameter completions
+    mutable sawParameterOrVariantFieldHook = False // Rewrite the type completions to parameter completions
     mutable typeCompletions = []
     let completions = patternCompletions.else {lspHook.results().flatMap {
         | ResolveTypeHook h =>
             typeCompletions = [...typeCompletions, ...typeCompletion(h.types, h.typeGenerics)]
+            []
+        | ResolveVariantFieldHook _ =>
+            sawParameterOrVariantFieldHook = True
             []
         | InferLambdaStartHook h =>
             h.unification.substitute(h.lambdaType).{
@@ -86,7 +89,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 missingCompletion(True, False, h.unification, x, instantiated, arguments)
             }
         | InferParameterHook h =>
-            sawParameterHook = True
+            sawParameterOrVariantFieldHook = True
             h.missing.toList().filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
             }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
@@ -118,7 +121,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
         | _ =>
             []
     }}
-    let fixedTypeCompletions = if(!sawParameterHook) {typeCompletions} else {
+    let fixedTypeCompletions = if(!sawParameterOrVariantFieldHook) {typeCompletions} else {
         typeCompletions.map {c => c.CompletionInfo(snippet = 
             (c.snippet.slice(0, 1).lower() + c.snippet.dropFirst()).takeWhile {_ != '['} + ": " + c.snippet
         )}

@@ -154,8 +154,14 @@ extend self: Resolver {
         definition.DType(
             constraints = definition.constraints.map {self2.resolveConstraint(_, True)}
             commonFields = definition.commonFields.map {f =>
+                let valueType = self2.resolveType(f.valueType, True)
+                if(self.lspHook.isAt(f.at) || self.lspHook.isDefinedAt(f.at)) {
+                    self.lspHook.emit(
+                        ResolveVariantFieldHook(SymbolHook(f.name, f.at, f.at), valueType, commonField = True)
+                    )
+                }
                 f.Parameter(
-                    valueType = self2.resolveType(f.valueType, True)
+                    valueType = valueType
                     default = f.default.map {self2.resolveTerm(_, True)}
                 )
             }
@@ -166,8 +172,14 @@ extend self: Resolver {
                     )
                 }
                 v.Variant(fields = v.fields.map {f =>
+                    let valueType = self2.resolveType(f.valueType, True)
+                    if(self.lspHook.isAt(f.at) || self.lspHook.isDefinedAt(f.at)) {
+                        self.lspHook.emit(
+                            ResolveVariantFieldHook(SymbolHook(f.name, f.at, f.at), valueType, commonField = False)
+                        )
+                    }
                     f.Parameter(
-                        valueType = self2.resolveType(f.valueType, True)
+                        valueType = valueType
                         default = f.default.map {self2.resolveTerm(_, True) }
                     )
                 })
