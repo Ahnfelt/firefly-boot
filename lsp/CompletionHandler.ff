@@ -543,7 +543,8 @@ missingCompletion(
             let shortSnippet = name + "(" + parameterSnippets.join(", ") + ")" + returnTypeCode
             let longSnippet = name + "(\n    " + parameterSnippets.join("\n    ") + "\n)" + returnTypeCode
             let snippet = if(shortSnippet.size() <= 100) {shortSnippet} else {longSnippet}
-            let documentation = "// Define missing function\n" + snippet
+            let documentation = "// Define missing function\n" + 
+                if(shortSnippet.size() < 30) {shortSnippet} else {longSnippet}
             [CompletionInfo(label, snippet + " {\n    $0\n}", False, returnType, documentation, None)]
     }
     if(keyword && arguments.isEmpty()) {
