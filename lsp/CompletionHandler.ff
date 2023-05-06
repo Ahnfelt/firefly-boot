@@ -23,9 +23,12 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             None
     }
     mutable sawLookupHook = False // Only consider the first lookup
+    mutable sawParameterHook = False // Rewrite the type completions to parameter completions
+    mutable typeCompletions = []
     let completions = patternCompletions.else {lspHook.results().flatMap {
         | ResolveTypeHook h =>
-            typeCompletion(h.types, h.typeGenerics)
+            typeCompletions = [...typeCompletions, ...typeCompletion(h.types, h.typeGenerics)]
+            []
         | InferLambdaStartHook h =>
             h.unification.substitute(h.lambdaType).{
                 | TConstructor(_, "Function$1", [_, TConstructor(_, prefix, _), _]) =>
@@ -83,6 +86,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 missingCompletion(True, False, h.unification, x, instantiated, arguments)
             }
         | InferParameterHook h =>
+            sawParameterHook = True
             h.missing.toList().filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
             }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
@@ -114,7 +118,12 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
         | _ =>
             []
     }}
-    completionsToJson(system.js(), completions)
+    let fixedTypeCompletions = if(!sawParameterHook) {typeCompletions} else {
+        typeCompletions.map {c => c.CompletionInfo(snippet = 
+            (c.snippet.slice(0, 1).lower() + c.snippet.dropFirst()).takeWhile {_ != '['} + ": " + c.snippet
+        )}
+    }
+    completionsToJson(system.js(), [...completions, ...fixedTypeCompletions])
 }
 
 completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
@@ -166,7 +175,7 @@ typeCompletion(types: Map[String, String], typeGenerics: Map[String, List[String
         let generics = typeGenerics.find {k, _ => k == typeName}.toList().flatMap {_.second}
         let realGenerics = generics.filter {_ != "Q$"}
         let label = typeName + if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
-        let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[${0:" + realGenerics.join(", ") + "}]"}
+        let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[$0]"}
         CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), full, None)
     }
     completions
@@ -461,14 +470,6 @@ missingCompletion(
         | EVariantIs e => Some(e.name.slice(0, 1).lower() + e.name.dropFirst())
         | _ => None
     }
-    function findTypeName(type: Type): String {
-        | TConstructor(_, name, _) {name.startsWith("Function$")} =>
-            "lambda"
-        | TConstructor(_, name, _) =>
-            let n = name.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-            if(!n.first().all {_.isAsciiLetter()}) {"p"} else {n.slice(0, 1).lower() + n.dropFirst()}
-        | TVariable(_, index) => "p"
-    }
     let completions = arguments.{
         | None {isParameter} =>
             let t = unification.substitute(instantiated.scheme.signature.returnType)
@@ -560,6 +561,15 @@ namedParameterCompletion(parameter: Parameter, index: Int, preselect: Bool): Com
         expectedType = if(preselect) {parameter.valueType}
         secondarySort = (1000 + index).clamp(1000, 9999)
     )
+}
+
+findTypeName(type: Type): String {
+    | TConstructor(_, name, _) {name.startsWith("Function$")} =>
+        "lambda"
+    | TConstructor(_, name, _) =>
+        let n = name.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+        if(!n.first().all {_.isAsciiLetter()}) {"p"} else {n.slice(0, 1).lower() + n.dropFirst()}
+    | TVariable(_, index) => "p"
 }
 
 showCompletionParameter(indentation: String, parameter: Parameter): String {
