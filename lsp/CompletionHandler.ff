@@ -524,11 +524,14 @@ missingCompletion(
             let types = [...parameters.map {_.second}, returnType]
             let returnTypeCode = returnType.{| TVariable _ => "" | _ => ": " + returnType.show(types)}
             let label = name + "(" + parameters.map {_.first}.join(", ") + ") {...}"
-            let snippet = name + "(" + parameters.map {| Pair(x, t) =>
+            let parameterSnippets = parameters.map {| Pair(x, t) =>
                 x + ": " + t.show(types)
-            }.join(", ") + ")" + returnTypeCode + " {\n    $0\n}"
-            // TODO: Make names unique
-            [CompletionInfo(label, snippet, False, returnType, "// Define missing function", None)]
+            }
+            let shortSnippet = name + "(" + parameterSnippets.join(", ") + ")" + returnTypeCode
+            let longSnippet = name + "(\n    " + parameterSnippets.join("\n    ") + "\n)" + returnTypeCode
+            let snippet = if(shortSnippet.size() <= 100) {shortSnippet} else {longSnippet}  + " {\n    $0\n}"
+            let documentation = "// Define missing function\n" + snippet.replace("$0", "...")
+            [CompletionInfo(label, snippet, False, returnType, documentation, None)]
     }
     if(keyword && arguments.isEmpty()) {
         ["let ", "mutable "].flatMap {k => completions.map {c =>
