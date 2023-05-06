@@ -18,6 +18,13 @@ handleGoToDefinition(system: NodeSystem, handler: Handler, lspHook: LspHook): Js
                     p.at
                 }
             }
+        | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} => 
+            let fieldNames = n.split('$').toList().dropFirst(1)
+            fieldNames.zip(ts).collectFirst {| Pair(name, t) =>
+                if(h.fieldName == name) {
+                    h.unification.substitute(t).at // TODO: This points to the field type rather than the field name
+                }
+            }
         | _ => None
     }
     Log.trace("handleGoToDefinition definedAt: " + Show.show(definedAt))
@@ -47,6 +54,15 @@ handleHover(system: NodeSystem, handler: Handler, lspHook: LspHook): JsValue {
             a.name.flatMap {name =>
                 h.parameters.find {_.name == name}.map {p =>
                     Pair(h.unification.substitute(p.valueType), noEffect)
+                }
+            }
+        | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} => 
+            let fieldNames = n.split('$').toList().dropFirst(1)
+            fieldNames.zip(ts).collectFirst {| Pair(name, t) =>
+                if(h.fieldName == name) {
+                    let noEffect = TConstructor(t.at, "ff:core/Nothing.Nothing", [])
+                    let t2 = h.unification.substitute(t)
+                    Pair(h.unification.substitute(t), noEffect)
                 }
             }
         | _ => 
