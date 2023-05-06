@@ -475,7 +475,8 @@ missingCompletion(
                 | TConstructor _ => name + ": " + t.show([])
                 | TVariable _ => name + ": "
             }
-            [CompletionInfo(name, snippet, False, t, "// Add missing parameter", Some(t))]
+            let documentation = "// Add missing parameter\n" + name + ": " + t.show([])
+            [CompletionInfo(name, snippet, False, t, documentation, Some(t))]
         | Some(as) {isParameter} =>
             let noEffect = TConstructor(instantiated.scheme.signature.at, "ff:core/Nothing.Nothing", [])
             let t = unification.substitute(TConstructor(
@@ -487,11 +488,13 @@ missingCompletion(
                     instantiated.scheme.signature.returnType
                 ]
             ))
-            [CompletionInfo(name, name + ": " + t.show([]), False, t, "// Add missing parameter", Some(t))]
+            let documentation = "// Add missing parameter\n" + name + ": " + t.show([])
+            [CompletionInfo(name, name + ": " + t.show([]), False, t, documentation, Some(t))]
         | None =>
             let t = unification.substitute(instantiated.scheme.signature.returnType)
             let snippet = name + " = "
-            [CompletionInfo(snippet + "...", snippet, False, t, "// Define missing variable", Some(t))]
+            let documentation = "// Define missing variable\n" + name + ": " + t.show([])
+            [CompletionInfo(snippet + "...", snippet, False, t, documentation, Some(t))]
         | Some(as) =>
             mutable remainingParameters = instantiated.scheme.signature.parameters
             mutable usedNames = [].toSet()
