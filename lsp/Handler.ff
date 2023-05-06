@@ -95,7 +95,7 @@ extend self: Handler {
                     .with("workspaceDiagnostics", False)
                 )
                 .with("completionProvider", js.object()
-                    .with("triggerCharacters", js.array([".", " "].map {js.value(_)}))
+                    .with("triggerCharacters", js.array([".", " ", "("].map {js.value(_)}))
                     .with("allCommitCharacters", js.array([";"].map {js.value(_)}))
                 )
                 /*.with("signatureHelpProvider", js.object()
