@@ -136,9 +136,10 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
                 | _ => False
             }
             js.object()
-                // Property or EnumMember or Constructor or Method/Function or Field/Variable
-                .with("kind",
+                // Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
+                .with("kind"
                     if(isParameter) {10} else:
+                    if(i.type.{| TConstructor(_, "type", _) => True | _ => False}) {9} else:
                     if(i.label.first().any {c => c == '{' || c == '|'}) {22} else:
                     if(i.label.first().any {_.isAsciiUpper()}) {4} else:
                     if(i.label.any {c => c == '(' || c == '{'}) {2} else {5} + if(i.member) {0} else {1}
