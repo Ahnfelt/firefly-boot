@@ -97,11 +97,18 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 }
             }
         | InferFunctionDefinitionHook h {h.definition.signature.member} =>
-            h.missing.toList().map {_.mapFirst {_.reverse().takeWhile {_ != '_'}.reverse()}}.filter {| Pair(x, _) =>
+            h.missing.toList().filter {_.first.contains("_")}.map {
+                _.mapFirst {_.reverse().takeWhile {_ != '_'}.reverse()}
+            }.filter {| Pair(x, _) =>
                 x.size() != 0 && x.all {_.isAsciiLetterOrDigit()}
             }.flatMap {| Pair(x, Pair(instantiated, arguments)) =>
                 arguments.toList().flatMap {as => 
-                    missingCompletion(False, False, h.unification, x, instantiated, Some(as.dropFirst()))
+                    let instantiated2 = instantiated.Instantiated(scheme = instantiated.scheme.Scheme(
+                        signature = instantiated.scheme.signature.Signature(
+                            parameters = instantiated.scheme.signature.parameters.dropFirst()
+                        )
+                    ))
+                    missingCompletion(False, False, h.unification, x, instantiated2, Some(as.dropFirst()))
                 }
             }
         | _ =>

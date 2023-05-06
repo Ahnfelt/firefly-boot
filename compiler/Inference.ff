@@ -537,7 +537,8 @@ extend self: Inference {
                         self.unification.substitute(recordType).{
                             | TConstructor(_, name, _)@t =>
                                 let methodName = name + "_" + f.field
-                                self.lookup(environment, expected, f.at, methodName, [], None).{
+                                let arguments = [Argument(f.record.at, None, f.record), ...e.arguments]
+                                self.lookup(environment, expected, f.at, methodName, [], Some(arguments)).{
                                     | Some(instantiated) {!instantiated.scheme.isVariable} =>
                                         self.inferMethodCall(
                                             environment
