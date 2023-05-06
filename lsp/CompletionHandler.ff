@@ -470,6 +470,14 @@ missingCompletion(
         | EVariantIs e => Some(e.name.slice(0, 1).lower() + e.name.dropFirst())
         | _ => None
     }
+    function findTypeName(type: Type): String {
+        | TConstructor(_, name, _) {name.startsWith("Function$")} =>
+            "lambda"
+        | TConstructor(_, name, _) =>
+            let n = name.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
+            if(!n.first().all {_.isAsciiLetter()}) {"p"} else {n.slice(0, 1).lower() + n.dropFirst()}
+        | TVariable(_, index) => "p"
+    }
     let completions = arguments.{
         | None {isParameter} =>
             let t = unification.substitute(instantiated.scheme.signature.returnType)
@@ -528,10 +536,10 @@ missingCompletion(
             let returnType = unification.substitute(instantiated.scheme.signature.returnType)
             let types = [...parameters.map {_.second}, returnType]
             let returnTypeCode = returnType.{| TVariable _ => "" | _ => ": " + returnType.show(types)}
-            let label = name + "(" + parameters.map {_.first}.join(", ") + ") {...}"
             let parameterSnippets = parameters.map {| Pair(x, t) =>
                 x + ": " + t.show(types)
             }
+            let label = name + "(" + parameterSnippets.join(", ") + ") {...}"
             let shortSnippet = name + "(" + parameterSnippets.join(", ") + ")" + returnTypeCode
             let longSnippet = name + "(\n    " + parameterSnippets.join("\n    ") + "\n)" + returnTypeCode
             let snippet = if(shortSnippet.size() <= 100) {shortSnippet} else {longSnippet}
@@ -561,15 +569,6 @@ namedParameterCompletion(parameter: Parameter, index: Int, preselect: Bool): Com
         expectedType = if(preselect) {parameter.valueType}
         secondarySort = (1000 + index).clamp(1000, 9999)
     )
-}
-
-findTypeName(type: Type): String {
-    | TConstructor(_, name, _) {name.startsWith("Function$")} =>
-        "lambda"
-    | TConstructor(_, name, _) =>
-        let n = name.reverse().takeWhile {_.isAsciiLetterOrDigit()}.reverse()
-        if(!n.first().all {_.isAsciiLetter()}) {"p"} else {n.slice(0, 1).lower() + n.dropFirst()}
-    | TVariable(_, index) => "p"
 }
 
 showCompletionParameter(indentation: String, parameter: Parameter): String {
