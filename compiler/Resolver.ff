@@ -569,6 +569,7 @@ extend self: Resolver {
                 constructor.name
             } else {
                 self.types.get(constructor.name).else {
+                    if(self.lspHook.isEnabled()) {constructor.name} else:
                     throw(CompileError(constructor.at, "No such type: " + constructor.name))
                 }
             }
