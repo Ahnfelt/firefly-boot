@@ -47,14 +47,17 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
                 ""
             }
             let expected = h.unification.substitute(h.expected)
-            completion(h.unification, h.environment, typePrefix, expected)
+            let qualifiedByAlias = h.symbol.value.qualifiedName.{n => 
+                if(n.contains(".") && !n.contains("/") && !n.contains(":")) {n.takeWhile {_ != '.'}}
+            }
+            completion(h.unification, h.environment, typePrefix, qualifiedByAlias, expected)
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
             let fieldNames = n.split('$').toList().dropFirst(1)
             let fieldCompletions = fieldNames.zip(ts).map {| Pair(name, t) =>
                 let t2 = h.unification.substitute(t)
                 CompletionInfo(name, name, True, t2, name + ": " + t2.show([]), Some(h.expected))
             }
-            [...fieldCompletions, ...completion(h.unification, h.environment, n, h.expected)]
+            [...fieldCompletions, ...completion(h.unification, h.environment, n, None, h.expected)]
         | InferArgumentHook h {
             ![ // Avoids named argument suggestions for operators that become trait method calls, such as ==
                 "ff:core/Equal.equals", "ff:core/Equal.notEquals"
@@ -184,7 +187,13 @@ typeCompletion(types: Map[String, String], typeGenerics: Map[String, List[String
     completions
 }
 
-completion(unification: Unification, environment: Environment, prefix: String, expected: Type): List[CompletionInfo] {
+completion(
+    unification: Unification
+    environment: Environment
+    prefix: String
+    qualifiedByAlias: Option[String]
+    expected: Type
+): List[CompletionInfo] {
 
     let member = prefix.contains("_")
 
@@ -241,7 +250,18 @@ completion(unification: Unification, environment: Environment, prefix: String, e
         environment.symbols
     }
 
-    symbols.each {memberName, memberScheme =>
+    let filteredSymbols = qualifiedByAlias.{
+        | None => symbols
+        | Some(alias) => 
+            let aliasPrefix = alias + "."
+            symbols.toList().filter {
+                _.first.startsWith(aliasPrefix)
+            }.map {
+                _.mapFirst {_.dropFirst(aliasPrefix.size())}
+            }.toMap()
+    }
+
+    filteredSymbols.each {memberName, memberScheme =>
         if(memberName.startsWith(prefix)) {
             members.push(makeCompletion(unification, expected, prefix, memberName, memberScheme, False, member))
         }
