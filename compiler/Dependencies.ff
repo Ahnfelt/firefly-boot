@@ -2,6 +2,7 @@ import Parser
 import Syntax
 import Tokenizer
 import Workspace
+import LspHook
 
 class Dependencies(
     workspace: Workspace
@@ -34,7 +35,7 @@ extend self: Dependencies {
         }
         let code = fs.readText(packageFile) // Crashes when file:///...
         let tokens = Tokenizer.tokenize(packageFile, code, None, True)
-        let parser = Parser.make(packagePair, packageFile, tokens, False, False)
+        let parser = Parser.make(packagePair, packageFile, tokens, False, LspHook.disabled())
         let info = parser.parsePackageInfo()
         self.addCoreDependencyIfMissing(info)
     }

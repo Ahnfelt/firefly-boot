@@ -28,8 +28,8 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
             if(last.stopLine != startLine && last.kind.beforeSeparator() && kind.afterSeparator()) {
                 tokens.push(Token(
                     file, code, LSeparator
-                    startLine, startLineOffset, startOffset
-                    startLine, startLineOffset, startOffset
+                    startLine, startLineOffset, startLineOffset
+                    startLine, startLineOffset, startLineOffset
                 ))
             }
         }

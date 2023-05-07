@@ -5,17 +5,19 @@ import Environment
 class LspHook(
     at: Location
     definedAt: Location
+    insertIdentifier: Bool
     stackOfResults: Stack[ResultHook]
 )
 
 disabled(): LspHook {
-    make(None, None)
+    make(None, None, False)
 }
 
-make(at: Option[Location], definedAt: Option[Location]): LspHook {
+make(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool): LspHook {
     LspHook( // Default dummy values instead of Option[Location] to speed up location hit check
         at = at.else {Location("^lsp", -7, -7)}
         definedAt = definedAt.else {Location("^lsp", -7, -7)}
+        insertIdentifier = insertIdentifier
         stackOfResults = [].toStack()
     )
 }
@@ -43,6 +45,16 @@ extend self: LspHook {
     }
 }
 
+strictlyBetween(afterAt: Location, beforeAt: Location, at: Location, extraColumns: Int): Bool {
+    at.file == afterAt.file && (
+        (at.line == afterAt.line && at.column > afterAt.column) ||
+        at.line > afterAt.line
+    ) && (
+        (at.line == beforeAt.line && at.column < beforeAt.column + extraColumns) ||
+        at.line < beforeAt.line
+    )
+}
+
 data SymbolHook(
     qualifiedName: String
     usageAt: Location
@@ -52,6 +64,10 @@ data SymbolHook(
 class Box[T](mutable value: T)
 
 class ResultHook {
+    ParseArgumentHook(
+        callAt: Location
+        argumentIndex: Int
+    )
     ResolveSymbolHook(
         symbol: SymbolHook
         annotation: Option[Type]

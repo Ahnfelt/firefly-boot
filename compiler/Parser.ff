@@ -1,6 +1,7 @@
 import Token
 import Wildcards
 import Syntax
+import LspHook
 
 class Parser(
     packagePair: PackagePair
@@ -8,7 +9,8 @@ class Parser(
     tokens: Array[Token]
     end: Token
     targetIsNode: Bool
-    attemptFixes: Bool
+    lspHook: LspHook
+    mutable lspEmittedArgumentHook: Bool
     mutable offset: Int
     mutable nextUnificationVariableIndex: Int
 )
@@ -27,14 +29,21 @@ data ParsedTargets(
     nodeAsync: Option[String]
 )
 
-make(packagePair: PackagePair, file: String, tokens: Array[Token], targetIsNode: Bool, attemptFixes: Bool): Parser {
+make(
+    packagePair: PackagePair 
+    file: String
+    tokens: Array[Token]
+    targetIsNode: Bool
+    lspHook: LspHook
+): Parser {
     Parser(
         packagePair = packagePair
         file = file
         tokens = tokens
         end = tokens.grabLast()
         targetIsNode = targetIsNode
-        attemptFixes = attemptFixes
+        lspHook = lspHook
+        lspEmittedArgumentHook = False
         offset = 0
         nextUnificationVariableIndex = 1 // To avoid collision with the unification and resolver
     )
@@ -61,7 +70,7 @@ extend self: Parser {
     skip(kind: TokenKind): Token {
         let c = self.current()
         if(c.kind != kind) {
-            if(self.attemptFixes && kind == LUpper && c.kind == LLower) {} else:
+            if(self.lspHook.isEnabled() && kind == LUpper && c.kind == LLower) {} else:
             throw(CompileError(c.at(), "Expected " + Show.show(kind) + ", got " + c.raw()))
         }
         self.offset += 1
@@ -71,11 +80,11 @@ extend self: Parser {
     rawSkip(kind: TokenKind, value: String): Token {
         let c = self.current()
         if(c.kind != kind) {
-            if(self.attemptFixes && (value == ")" || value == "]" || value == "}")) {} else:
+            if(self.lspHook.isEnabled() && (value == ")" || value == "]" || value == "}")) {} else:
             throw(CompileError(c.at(), "Expected " + Show.show(kind) + " " + value + ", got " + c.raw()))
         }
         if(!c.rawIs(value)) {
-            if(self.attemptFixes && (value == ")" || value == "]" || value == "}")) {self.offset -= 1} else:
+            if(self.lspHook.isEnabled() && (value == ")" || value == "]" || value == "}")) {self.offset -= 1} else:
             throw(CompileError(c.at(), "Expected " + value + " got " + c.raw()))
         }
         self.offset += 1
@@ -290,7 +299,7 @@ extend self: Parser {
     parseSignature(member: Bool): Signature {
         let nameToken = self.skip(LLower)
         let poly = if(self.current().rawIs("[")) {self.parseTypeParameters()} else {Poly([], [])}
-        let parameters = if(self.attemptFixes && !self.current().rawIs("(")) {[]} else {self.parseFunctionParameters()}
+        let parameters = if(self.lspHook.isEnabled() && !self.current().rawIs("(")) {[]} else {self.parseFunctionParameters()}
         let returnType = if(self.current().is(LColon)) {
             self.skip(LColon)
             self.parseType()
@@ -390,7 +399,7 @@ extend self: Parser {
             }
             self.rawSkip(LBracketRight, "]")
         }
-        let generatorArguments = self.parseFunctionArguments(False).first
+        let generatorArguments = self.parseFunctionArguments(nameToken.at(), False).first
         let methods = if(!self.current().rawIs("{")) {[]} else {
             let definitions = Stack.make[DFunction]()
             self.rawSkip(LBracketLeft, "{")
@@ -636,7 +645,7 @@ extend self: Parser {
             let mutable = allowMutable && self.current().is(LKeyword) && self.current().rawIs("mutable")
             if(mutable) {self.skip(LKeyword)}
             let parameterNameToken = self.skip(LLower)
-            if(self.attemptFixes && !self.current().is(LColon)) {
+            if(self.lspHook.isEnabled() && !self.current().is(LColon)) {
                 let t = TConstructor(parameterNameToken.at(), "ff:core/Nothing.Nothing", [])
                 parameters.push(Parameter(parameterNameToken.at(), mutable, parameterNameToken.raw(), t, None))
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
@@ -654,7 +663,7 @@ extend self: Parser {
         parameters.toList()
     }
 
-    parseFunctionArguments(trailing: Bool): Pair[List[Argument], Bool] {
+    parseFunctionArguments(callAt: Location, trailing: Bool): Pair[List[Argument], Bool] {
         let arguments = Stack.make[Argument]()
         if(self.current().rawIs("(")){
             self.rawSkip(LBracketLeft, "(")
@@ -666,6 +675,12 @@ extend self: Parser {
                     Some(token)
                 } else {None}
                 let value = self.parseTerm()
+                if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
+                    if(LspHook.strictlyBetween(callAt, self.current().at(), self.lspHook.at, 1)) {
+                        self.lspHook.emit(ParseArgumentHook(callAt, arguments.size()))
+                        self.lspEmittedArgumentHook = True
+                    }
+                }
                 arguments.push(Argument(argumentToken.at(), nameToken.map {_.raw()}, value))
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
             }
@@ -673,18 +688,30 @@ extend self: Parser {
         }
         mutable lastWasCurly = False
         if(trailing) {
-            if(self.attemptFixes &&
+            if(self.lspHook.isEnabled() &&
                 (self.current().is3(LLower, LUpper, LString) || self.current().is3(LInt, LChar, LFloat))
             ) {
                 lastWasCurly = True
                 let term = self.parseTerm()
                 let temporaryEffect = TConstructor(term.at, "TemporaryEffect$", [])
                 let cases = [MatchCase(term.at, [], [], term)]
+                if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
+                    if(LspHook.strictlyBetween(callAt, self.current().at(), self.lspHook.at, 1)) {
+                        self.lspHook.emit(ParseArgumentHook(callAt, arguments.size()))
+                        self.lspEmittedArgumentHook = True
+                    }
+                }
                 arguments.push(Argument(term.at, None, ELambda(term.at, Lambda(term.at, temporaryEffect, cases))))
             } else {
                 while {self.current().rawIs("{") || self.current().is(LColon)} {
                     lastWasCurly = self.current().rawIs("{")
                     let lambda = self.parseLambda(allowColon = True)
+                    if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
+                        if(LspHook.strictlyBetween(callAt, self.current().at(), self.lspHook.at, 1)) {
+                            self.lspHook.emit(ParseArgumentHook(callAt, arguments.size()))
+                            self.lspEmittedArgumentHook = True
+                        }
+                    }
                     arguments.push(Argument(lambda.at, None, ELambda(lambda.at, lambda)))
                 }
             }
@@ -746,7 +773,7 @@ extend self: Parser {
         while {self.current().rawIs("{")} {
             guards.push(self.parseCaseGuard())
         }
-        if(!self.attemptFixes || !self.current().is2(LPipe, LBracketRight)) {
+        if(!self.lspHook.isEnabled() || !self.current().is2(LPipe, LBracketRight)) {
             self.skip(LArrowThick)
         }
         let body = self.parseStatements()
@@ -884,7 +911,7 @@ extend self: Parser {
             self.skip(LColon)
             self.parseType()
         }
-        if(self.attemptFixes && !self.current().is(LAssign)) {
+        if(self.lspHook.isEnabled() && !self.current().is(LAssign)) {
             let unit = EVariant(keywordToken.at(), "Unit", [], None)
             ELet(nameToken.at(), mutable, nameToken.raw(), valueType, unit, unit)
         } else:
@@ -905,14 +932,14 @@ extend self: Parser {
         while {self.current().rawIs("function")} {
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature(member = False)
-            let body = if(self.attemptFixes && !self.current().rawIs("{")) {
+            let body = if(self.lspHook.isEnabled() && !self.current().rawIs("{")) {
                 let temporaryEffect = TConstructor(functionAt, "TemporaryEffect$", [])
                 Lambda(functionAt, temporaryEffect, [])
             } else {
                 self.parseLambda(defaultParameterCount = signature.parameters.size())
             }
             functions.push(DFunction(signature.at, signature, FireflyTarget(body)))
-            if(self.attemptFixes && !self.currentIsSeparator(LSemicolon)) {} else {self.skipSeparator(LSemicolon)}
+            if(self.lspHook.isEnabled() && !self.currentIsSeparator(LSemicolon)) {} else {self.skipSeparator(LSemicolon)}
         }
         let body = self.parseStatements()
         EFunctions(at, functions.toList(), body)
@@ -981,7 +1008,7 @@ extend self: Parser {
             } else {
                 let at = self.current().at()
                 let typeArguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
-                let arguments = self.parseFunctionArguments(True)
+                let arguments = self.parseFunctionArguments(result.at, True)
                 let effect = self.freshUnificationVariable(at)
                 let target = DynamicCall(result, tailCall)
                 result = ECall(result.at, target, effect, typeArguments, arguments.first, [])
@@ -1047,7 +1074,7 @@ extend self: Parser {
         let name = prefix + token.raw()
         let typeArguments = if(!self.current().rawIs("[")) {[]} else {self.parseTypeArguments()}
         if(self.current().rawIs("?")) {self.skip(LOperator); EVariantIs(token.at(), name, typeArguments)} else:
-        let arguments = Some(self.parseFunctionArguments(True))
+        let arguments = Some(self.parseFunctionArguments(token.at(), True))
         EVariant(token.at(), name, typeArguments, arguments.map {_.first})
     }
 
@@ -1057,7 +1084,7 @@ extend self: Parser {
         let prefix = namespace + extraNamespace
         let token = self.skip(LUpper)
         let name = prefix + token.raw()
-        let fields = if(self.attemptFixes && !self.current().rawIs("(")) {[]} else {self.parseRecord()}
+        let fields = if(self.lspHook.isEnabled() && !self.current().rawIs("(")) {[]} else {self.parseRecord()}
         ECopy(token.at(), name, record, fields)
     }
 
@@ -1066,7 +1093,7 @@ extend self: Parser {
         self.rawSkip(LBracketLeft, "(")
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
-            if(!self.attemptFixes || self.current().is(LAssign)) {
+            if(!self.lspHook.isEnabled() || self.current().is(LAssign)) {
                 self.skip(LAssign)
                 fields.push(Field(fieldToken.at(), fieldToken.raw(), self.parseTerm()))
             } else {
