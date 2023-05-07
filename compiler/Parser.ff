@@ -912,7 +912,7 @@ extend self: Parser {
                 self.parseLambda(defaultParameterCount = signature.parameters.size())
             }
             functions.push(DFunction(signature.at, signature, FireflyTarget(body)))
-            self.skipSeparator(LSemicolon)
+            if(self.attemptFixes && !self.currentIsSeparator(LSemicolon)) {} else {self.skipSeparator(LSemicolon)}
         }
         let body = self.parseStatements()
         EFunctions(at, functions.toList(), body)
