@@ -111,7 +111,7 @@ extend self: Inference {
                 signature = signature
                 body = body
             )
-            self.inferFunctionDefinition(environment, function)
+            self.inferFunctionDefinition(environment.Environment(selfVariable = Some(definition.name)), function)
         }
         definition.DExtend(
             methods = functions
@@ -958,10 +958,10 @@ extend self: Inference {
     }
 
     lookupOption(environment: Environment, expected: Type, at: Location, symbol: String, typeArguments: List[Type]): Option[Instantiated] {
-
         let hook = if(self.lspHook.isAt(at)) {
             let symbolHook = SymbolHook(symbol, at, at)
-            let h = InferLookupHook(self.unification, environment, expected, Box(symbolHook), Box(None))
+            let selfName = environment.selfVariable
+            let h = InferLookupHook(self.unification, environment, expected, selfName, Box(symbolHook), Box(None))
             self.lspHook.emit(h)
             h
         }
@@ -1018,7 +1018,8 @@ extend self: Inference {
         if(self.lspHook.isAt(at) || self.lspHook.isDefinedAt(scheme.signature.at)) {
             let symbolHook = SymbolHook(symbol, at, scheme.signature.at)
             let emittedHook = hook.else {
-                let h = InferLookupHook(self.unification, environment, expected, Box(symbolHook), Box(None))
+                let selfName = environment.selfVariable
+                let h = InferLookupHook(self.unification, environment, expected, selfName, Box(symbolHook), Box(None))
                 self.lspHook.emit(h)
                 h
             }.{

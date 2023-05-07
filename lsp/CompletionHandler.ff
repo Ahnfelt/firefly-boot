@@ -50,7 +50,23 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             let qualifiedByAlias = h.symbol.value.qualifiedName.{n => 
                 if(n.contains(".") && !n.contains("/") && !n.contains(":")) {n.takeWhile {_ != '.'}}
             }
-            completion(h.unification, h.environment, typePrefix, qualifiedByAlias, expected)
+            h.selfVariable.{
+                | Some(selfName) {typePrefix == "" && qualifiedByAlias == None} {
+                    h.environment.symbols.get(selfName) | Some(scheme)
+                } {
+                    scheme.signature.returnType | TConstructor(_, selfTypeName, _)
+                } => 
+                    let otherCompletions = completion(h.unification, h.environment, "", None, expected)
+                    let selfCompletions = h.environment.symbols.get(selfName).toList().flatMap {scheme =>
+                        let prefix = selfTypeName + "_"
+                        completion(h.unification, h.environment, prefix, None, expected).map {c =>
+                            c.CompletionInfo(label = selfName + "." + c.label, snippet = selfName + "." + c.snippet)
+                        }
+                    }
+                    [...otherCompletions, ...selfCompletions]
+                | _ => 
+                    completion(h.unification, h.environment, typePrefix, qualifiedByAlias, expected)
+            }
         | InferRecordFieldHook h {h.unification.substitute(h.recordType) | TConstructor(_, n, ts)} =>
             let fieldNames = n.split('$').toList().dropFirst(1)
             let fieldCompletions = fieldNames.zip(ts).map {| Pair(name, t) =>

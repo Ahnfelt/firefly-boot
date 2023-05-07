@@ -124,6 +124,7 @@ class ResultHook {
         unification: Unification
         environment: Environment
         expected: Type
+        selfVariable: Option[String]
         symbol: Box[SymbolHook]
         instantiated: Box[Option[Instantiated]]
     )

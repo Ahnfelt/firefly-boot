@@ -5,6 +5,7 @@ data Environment(
     symbols: Map[String, Scheme]
     imports: Map[String, DImport]
     effect: Type
+    selfVariable: Option[String]
 )
 
 data Scheme(
@@ -28,6 +29,7 @@ make(module: Module, otherModules: List[Module], alreadyFlat: Bool): Environment
         )
         imports = module.imports.map {i => Pair(i.alias, i)}.toMap()
         effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
+        selfVariable = None
     )
 }
 
@@ -146,5 +148,5 @@ processModule(module: Module, isCurrentModule: Bool, alreadyFlat: Bool): Environ
         }
 
     let effect = TConstructor(Location(module.file, 0, 0), "ff:core/Nothing.Nothing", [])
-    Environment("", [...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap(), [].toMap(), effect)
+    Environment("", [...functions, ...lets, ...fields, ...extends, ...variants, ...traitMethods].toMap(), [].toMap(), effect, None)
 }
