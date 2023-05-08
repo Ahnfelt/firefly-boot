@@ -4,7 +4,7 @@ import Environment from ff:compiler
 import Syntax from ff:compiler
 import Handler
 
-handleSignatureHelp(system: NodeSystem, lspHook: LspHook, argumentIndex: Int, parameterName: Option[String]): JsValue {
+handleSignatureHelp(system: NodeSystem, lspHook: LspHook): JsValue {
     let signatureAndUnification = lspHook.results().collectFirst {
         | InferLookupHook h => 
             let isMember = h.symbol.value.qualifiedName.contains("_")
@@ -28,13 +28,25 @@ handleSignatureHelp(system: NodeSystem, lspHook: LspHook, argumentIndex: Int, pa
         js.object()
             .with("signatures", js.array([js.object()
                 .with("label", label)
-                .with("parameters", js.array(
-                    parameters.map {p => 
+                .with("parameters", js.array([
+                    ...parameters.map {p => 
                         js.object().with("label", p)
                     }
-                ))
-                .with("activeParameter", argumentIndex)
+                    // Fake parameter to trick the client into remembering the call position
+                    js.object().with("label", "/* Call " + lspHook.at.show() + " */")
+                ]))
             ]))
             .with("activeSignature", 0)
     }.else {js.null()}
+}
+
+pickActiveParameter(help: JsValue, argumentIndex: Int, parameterName: Option[String]): JsValue {
+    parameterName.flatMap {name =>
+        let parameters = help.get("signatures").get(0).get("parameters").grabArray().toList()
+        parameters.pairs().collectFirst {| Pair(i, p) => 
+            if(name == p.get("label").grabString().takeWhile {_.isAsciiLetterOrDigit()}) {
+                help.with("activeParameter", i)
+            }
+        }
+    }.else {help.with("activeParameter", argumentIndex)}
 }

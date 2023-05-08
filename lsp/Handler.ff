@@ -201,13 +201,23 @@ extend self: Handler {
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let cursorAt = self.findTokenFromParameters(system, parameters)
-        let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = True)
+        let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False)
         try {
             Builder.check(system, ".", cursorAt.file, self.virtualFiles, lspHook, False) // TODO: Don't even resolve, just parse
         } catch {| CompileError(at, message), error =>
             Log.trace("handleSignatureHelp check error: " + message)
         } grab()
         let o = lspHook.results().collectFirst {
+            | ParseArgumentHook h {parameters.get("context") | Some(context)} {
+                context.get("activeSignatureHelp") | help
+            } {!help.isNullOrUndefined() && help.hasOwn("signatures")} {
+                help.get("signatures").get(0) | activeSignature
+            } {!activeSignature.isNullOrUndefined()} {
+                activeSignature.get("parameters").grabArray().last() | Some(fakeParameter)
+            } {
+                fakeParameter.get("label").grabString() == "/* Call " + h.callAt.show() + " */"
+            } => 
+                Some(SignatureHelpHandler.pickActiveParameter(help, h.argumentIndex, h.parameterName))
             | ParseArgumentHook h => 
                 let callLspHook = LspHook.make(at = Some(h.callAt), definedAt = None, insertIdentifier = False)
                 try {
@@ -215,8 +225,8 @@ extend self: Handler {
                 } catch {| CompileError(at, message), error =>
                     Log.trace("handleSignatureHelp check 2 error: " + message)
                 } grab()
-                let o = SignatureHelpHandler.handleSignatureHelp(system, callLspHook, h.argumentIndex, h.parameterName)
-                Some(o)
+                let help = SignatureHelpHandler.handleSignatureHelp(system, callLspHook)
+                Some(SignatureHelpHandler.pickActiveParameter(help, h.argumentIndex, h.parameterName))
             | _ => 
                 None
         }
