@@ -206,22 +206,22 @@ extend self: Handler {
         } catch {| CompileError(at, message), error =>
             Log.trace("handleCompletion check error: " + message)
         } grab()
-        let label = lspHook.results().collectFirst {
-            | ParseArgumentHook(callAt, argumentIndex, parameterName) => 
-                Some(Pair(callAt, argumentIndex))
+        let hook = lspHook.results().collectFirst {
+            | ParseArgumentHook h => 
+                Some(h)
             | _ => 
                 None
         }
         let js = system.js()
-        let o = label.map {| Pair(callAt, argumentIndex) => js.object()
+        let o = hook.map { h => js.object()
             .with("signatures", js.array([js.object()
-                .with("label", "TODO(todo1: One, todo2: Two, todo3: Three): Four " + "Argument " + argumentIndex + " " + callAt.show())
+                .with("label", "TODO(todo1: One, todo2: Two, todo3: Three): Four " + "Argument " + h.argumentIndex + " " + h.callAt.show() + ": " + Show.show(h.parameterName))
                 .with("parameters", js.array([
                     js.object().with("label", "todo1: One")
                     js.object().with("label", "todo2: Two")
                     js.object().with("label", "todo3: Three")
                 ]))
-                .with("activeParameter", argumentIndex)
+                .with("activeParameter", h.argumentIndex)
             ]))
             .with("activeSignature", 0)
         }.else {js.null()}
