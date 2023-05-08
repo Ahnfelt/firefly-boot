@@ -8,6 +8,7 @@ import Unification from ff:compiler
 import LspHook from ff:compiler
 import HoverHandler
 import CompletionHandler
+import SignatureHelpHandler
 
 class Handler(
     mutable rootUri: Option[String]
@@ -199,33 +200,27 @@ extend self: Handler {
     }
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let completionAt = self.findTokenFromParameters(system, parameters)
-        let lspHook = LspHook.make(at = Some(completionAt), definedAt = None, insertIdentifier = False)
+        let cursorAt = self.findTokenFromParameters(system, parameters)
+        let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False)
         try {
-            Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, False) // TODO: Don't even resolve, just parse
+            Builder.check(system, ".", cursorAt.file, self.virtualFiles, lspHook, False) // TODO: Don't even resolve, just parse
         } catch {| CompileError(at, message), error =>
-            Log.trace("handleCompletion check error: " + message)
+            Log.trace("handleSignatureHelp check error: " + message)
         } grab()
-        let hook = lspHook.results().collectFirst {
+        let o = lspHook.results().collectFirst {
             | ParseArgumentHook h => 
-                Some(h)
+                let callLspHook = LspHook.make(at = Some(h.callAt), definedAt = None, insertIdentifier = False)
+                try {
+                    Builder.check(system, ".", cursorAt.file, self.virtualFiles, callLspHook, True)
+                } catch {| CompileError(at, message), error =>
+                    Log.trace("handleSignatureHelp check 2 error: " + message)
+                } grab()
+                let o = SignatureHelpHandler.handleSignatureHelp(system, callLspHook, h.argumentIndex, h.parameterName)
+                Some(o)
             | _ => 
                 None
         }
-        let js = system.js()
-        let o = hook.map { h => js.object()
-            .with("signatures", js.array([js.object()
-                .with("label", "TODO(todo1: One, todo2: Two, todo3: Three): Four " + "Argument " + h.argumentIndex + " " + h.callAt.show() + ": " + Show.show(h.parameterName))
-                .with("parameters", js.array([
-                    js.object().with("label", "todo1: One")
-                    js.object().with("label", "todo2: Two")
-                    js.object().with("label", "todo3: Three")
-                ]))
-                .with("activeParameter", h.argumentIndex)
-            ]))
-            .with("activeSignature", 0)
-        }.else {js.null()}
-        Result(o)
+        Result(o.else {system.js().null()})
     }
 
     handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {

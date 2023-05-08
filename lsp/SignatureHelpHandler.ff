@@ -1,0 +1,39 @@
+import LspHook from ff:compiler
+import Unification from ff:compiler
+import Environment from ff:compiler
+import Syntax from ff:compiler
+import Handler
+
+handleSignatureHelp(system: NodeSystem, lspHook: LspHook, argumentIndex: Int, parameterName: Option[String]): JsValue {
+    let signatureAndUnification = lspHook.results().collectFirst {
+        | InferLookupHook h => 
+            let isMember = h.symbol.value.qualifiedName.contains("_")
+            h.instantiated.value.map {i =>
+                let signature = if(!isMember) {i.scheme.signature} else {
+                    i.scheme.signature.Signature(parameters = i.scheme.signature.parameters.dropFirst())
+                }
+                Pair(signature, h.unification)
+            }
+        | _ => None
+    }
+    let js = system.js()
+    signatureAndUnification.map {| Pair(s, unification) => 
+        let shownTypes = [...s.parameters.map {_.valueType}, s.returnType].map {unification.substitute(_)}
+        let realGenerics = s.generics.filter {_ != "Q$"}
+        let generics = if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
+        let parameters = s.parameters.map {p => p.name + ": " + unification.substitute(p.valueType).show(shownTypes)}
+        let label = 
+            s.name + generics + "(" + parameters.join(", ") + "): " + unification.substitute(s.returnType).show(shownTypes)
+        js.object()
+            .with("signatures", js.array([js.object()
+                .with("label", label)
+                .with("parameters", js.array(
+                    parameters.map {p => 
+                        js.object().with("label", p)
+                    }
+                ))
+                .with("activeParameter", argumentIndex)
+            ]))
+            .with("activeSignature", 0)
+    }.else {js.null()}
+}
