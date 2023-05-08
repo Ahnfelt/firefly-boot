@@ -677,7 +677,7 @@ extend self: Parser {
                 let value = self.parseTerm()
                 if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
                     if(LspHook.strictlyBetween(callAt, self.current().at(), self.lspHook.at, 1)) {
-                        self.lspHook.emit(ParseArgumentHook(callAt, arguments.size()))
+                        self.lspHook.emit(ParseArgumentHook(callAt, arguments.size(), nameToken.map {_.raw()}))
                         self.lspEmittedArgumentHook = True
                     }
                 }
@@ -697,7 +697,7 @@ extend self: Parser {
                 let cases = [MatchCase(term.at, [], [], term)]
                 if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
                     if(LspHook.strictlyBetween(callAt, self.current().at(), self.lspHook.at, 1)) {
-                        self.lspHook.emit(ParseArgumentHook(callAt, arguments.size()))
+                        self.lspHook.emit(ParseArgumentHook(callAt, arguments.size(), None))
                         self.lspEmittedArgumentHook = True
                     }
                 }
@@ -708,7 +708,7 @@ extend self: Parser {
                     let lambda = self.parseLambda(allowColon = True)
                     if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
                         if(LspHook.strictlyBetween(callAt, self.current().at(), self.lspHook.at, 1)) {
-                            self.lspHook.emit(ParseArgumentHook(callAt, arguments.size()))
+                            self.lspHook.emit(ParseArgumentHook(callAt, arguments.size(), None))
                             self.lspEmittedArgumentHook = True
                         }
                     }

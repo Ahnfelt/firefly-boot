@@ -67,6 +67,7 @@ class ResultHook {
     ParseArgumentHook(
         callAt: Location
         argumentIndex: Int
+        parameterName: Option[String]
     )
     ResolveSymbolHook(
         symbol: SymbolHook

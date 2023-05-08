@@ -207,7 +207,7 @@ extend self: Handler {
             Log.trace("handleCompletion check error: " + message)
         } grab()
         let label = lspHook.results().collectFirst {
-            | ParseArgumentHook(callAt, argumentIndex) => 
+            | ParseArgumentHook(callAt, argumentIndex, parameterName) => 
                 Some(Pair(callAt, argumentIndex))
             | _ => 
                 None
