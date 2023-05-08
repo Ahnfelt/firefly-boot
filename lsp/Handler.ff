@@ -2,6 +2,7 @@ import JsEmitter from ff:compiler
 import Builder from ff:compiler
 import Syntax from ff:compiler
 import Tokenizer from ff:compiler
+import Parser from ff:compiler
 import Token from ff:compiler
 import Environment from ff:compiler
 import Unification from ff:compiler
@@ -203,7 +204,11 @@ extend self: Handler {
         let cursorAt = self.findLocationFromParameters(system, parameters)
         let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False)
         try {
-            Builder.check(system, ".", cursorAt.file, self.virtualFiles, lspHook, False) // TODO: Don't even resolve, just parse
+            let code = self.virtualFiles.get(cursorAt.file).else {system.files().readText(cursorAt.file)}
+            let tokens = Tokenizer.tokenize(cursorAt.file, code, None, True)
+            let parser = Parser.make(PackagePair("script", "script"), cursorAt.file, tokens, False, lspHook)
+            parser.parseModule()
+            Unit // Think of a way to avoid writing this
         } catch {| CompileError(at, message), error =>
             Log.trace("handleSignatureHelp check error: " + message)
         } grab()
