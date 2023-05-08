@@ -201,7 +201,7 @@ extend self: Handler {
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let cursorAt = self.findTokenFromParameters(system, parameters)
-        let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False)
+        let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = True)
         try {
             Builder.check(system, ".", cursorAt.file, self.virtualFiles, lspHook, False) // TODO: Don't even resolve, just parse
         } catch {| CompileError(at, message), error =>

@@ -21,6 +21,7 @@ handleSignatureHelp(system: NodeSystem, lspHook: LspHook, argumentIndex: Int, pa
         let shownTypes = [...s.parameters.map {_.valueType}, s.returnType].map {unification.substitute(_)}
         let realGenerics = s.generics.filter {_ != "Q$"}
         let generics = if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
+        // TODO only instantiate acording to self. Eg. Some("foo").map {...}
         let parameters = s.parameters.map {p => p.name + ": " + unification.substitute(p.valueType).show(shownTypes)}
         let label = 
             s.name + generics + "(" + parameters.join(", ") + "): " + unification.substitute(s.returnType).show(shownTypes)
