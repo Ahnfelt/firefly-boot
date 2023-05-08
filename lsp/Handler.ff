@@ -200,7 +200,7 @@ extend self: Handler {
     }
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
-        let cursorAt = self.findTokenFromParameters(system, parameters)
+        let cursorAt = self.findLocationFromParameters(system, parameters)
         let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False)
         try {
             Builder.check(system, ".", cursorAt.file, self.virtualFiles, lspHook, False) // TODO: Don't even resolve, just parse
@@ -376,18 +376,23 @@ extend self: Handler {
     }
 
     findTokenFromParameters(system: NodeSystem, parameters: Map[String, JsValue]): Location {
+        let location = self.findLocationFromParameters(system, parameters)
+        let token = self.findToken(system, location)
+        Location(
+            file = location.file
+            line = token.startLine
+            column = token.startColumn
+        )
+    }
+
+    findLocationFromParameters(system: NodeSystem, parameters: Map[String, JsValue]): Location {
         let uri = parameters.grab("textDocument").get("uri").grabString()
         let absolutePath = FileSystem.urlToPath(uri)
         let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
         let fixedPath = path.replace("\\", "/")
         let line = parameters.grab("position").get("line").grabInt() + 1
         let column = parameters.grab("position").get("character").grabInt() + 1
-        let token = self.findToken(system, Location(fixedPath, line, column))
-        Location(
-            file = fixedPath
-            line = token.startLine
-            column = token.startColumn
-        )
+        Location(fixedPath, line, column)
     }
 
     tokenLocationToLspLocation(system: NodeSystem, tokenLocation: TokenLocation): JsValue {
