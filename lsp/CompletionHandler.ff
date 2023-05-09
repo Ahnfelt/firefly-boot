@@ -6,6 +6,7 @@ import Handler
 
 data CompletionInfo(
     label: String
+    extra: String
     snippet: String
     member: Bool
     type: Type
@@ -73,7 +74,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             let fieldNames = n.split('$').toList().dropFirst(1)
             let fieldCompletions = fieldNames.zip(ts).map {| Pair(name, t) =>
                 let t2 = h.unification.substitute(t)
-                CompletionInfo(name, name, True, t2, name + ": " + t2.show([]), Some(h.expected))
+                CompletionInfo(name, "", name, True, t2, name + ": " + t2.show([]), Some(h.expected))
             }
             [...fieldCompletions, ...completion(h.unification, h.environment, n, None, h.expected)]
         | InferArgumentHook h {
@@ -156,9 +157,9 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
         .with("items", completions.distinct().toArray().map {| CompletionInfo i =>
             let isAlpha = i.label.first().any {_.isAsciiLetter()}
             let isLower = i.label.first().any {_.isAsciiLower()}
-            let isUnqualified = !i.label.takeWhile {c => c != '(' && c != '[' && c != '{'}.contains(".")
+            let isUnqualified = !i.label.contains(".")
             let isMember = isLower && !isUnqualified
-            let isVariable = isLower && !i.label.contains("(") && !i.label.contains("{")
+            let isVariable = isLower && !i.extra.contains("(") && !i.extra.contains("{")
             let isDefinition = ["let ", "mutable ", "function "].any {i.snippet.startsWith(_)}
             let isParameter = i.snippet.endsWith(" = ")
             let sortText = if(isParameter || isDefinition) {0} else {9 - (
@@ -176,13 +177,13 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
                     if(i.type.{| TConstructor(_, "type", _) => True | _ => False}) {9} else:
                     if(i.label.first().any {c => c == '{' || c == '|'}) {22} else:
                     if(i.label.first().any {_.isAsciiUpper()}) {4} else:
-                    if(i.label.any {c => c == '(' || c == '{'}) {2} else {5} + if(i.member) {0} else {1}
+                    if(i.extra.any {c => c == '(' || c == '{'}) {2} else {5} + if(i.member) {0} else {1}
                 )
                 .with("sortText", sortText)
                 .with("preselect", preselect)
                 .with("label", i.label)
                 .with("labelDetails", js.object()
-                    .with("detail", ": " + i.type.show([]))
+                    .with("detail", i.extra + ": " + i.type.show([]))
                 )
                 .with("insertText", i.snippet)
                 .with("insertTextFormat", 2 /* Snippet */)
@@ -199,9 +200,10 @@ typeCompletion(types: Map[String, String], typeGenerics: Map[String, List[String
     }.map {| Pair(typeName, full) =>
         let generics = typeGenerics.find {k, _ => k == typeName}.toList().flatMap {_.second}
         let realGenerics = generics.filter {_ != "Q$"}
-        let label = typeName + if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
+        let label = typeName 
+        let extra = if(realGenerics.isEmpty()) {""} else {"[" + realGenerics.join(", ") + "]"}
         let snippet = typeName + if(realGenerics.isEmpty()) {""} else {"[$0]"}
-        CompletionInfo(label, snippet, False, TConstructor(Location("", 0, 0), "type", []), full, None)
+        CompletionInfo(label, extra, snippet, False, TConstructor(Location("", 0, 0), "type", []), full, None)
     }
     completions
 }
@@ -368,7 +370,8 @@ makeCompletion(
         selfType.map {_ => "\n}"}.else {""}
     }
     CompletionInfo(
-        label = shortName + pair.first
+        label = shortName
+        extra = pair.first
         snippet = shortName + pair.second
         member = member && !copy
         type = returnType
@@ -381,7 +384,8 @@ exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool
     if(prefix == "ff:core/List.List_") {
         let curly = if(inside) {Pair("", "")} else {Pair("{", "}")}
         [CompletionInfo(
-            label = curly.first + "| [] => ... | [first, ...rest] => ..." + curly.second
+            label = curly.first + "| "
+            extra = "[] => ... | [first, ...rest] => ..." + curly.second
             snippet = curly.first + "\n    | [] => $0\n    | [first, ...rest] =>\n" + curly.second
             member = True
             type = TConstructor(Location("", 0, 0), "exhaustive match", [])
@@ -421,7 +425,8 @@ exhaustiveMatchCompletion(environment: Environment, prefix: String, inside: Bool
         } +
         if(inside) {""} else {"}"}
     [CompletionInfo(
-        label = label
+        label = label.slice(0, 2)
+        extra = label.dropFirst(2)
         snippet = snippet
         member = True
         type = TConstructor(Location("", 0, 0), "exhaustive match", [])
@@ -437,16 +442,16 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
     }
     if(typeName == "") {[]} else:
     if(typeName == "ff:core/List.List") {
-        [CompletionInfo("[...]", "[$0]", False, expected, "// List pattern", Some(expected))]
+        [CompletionInfo("[...]", "", "[$0]", False, expected, "// List pattern", Some(expected))]
     } else:
     if(typeName == "ff:core/String.String") {
-        [CompletionInfo("\"...\"", "\"$0\"", False, expected, "// String pattern", Some(expected))]
+        [CompletionInfo("\"...\"", "", "\"$0\"", False, expected, "// String pattern", Some(expected))]
     } else:
     if(typeName == "ff:core/Char.Char") {
-        [CompletionInfo("'...'", "'$0'", False, expected, "// Char pattern", Some(expected))]
+        [CompletionInfo("'...'", "", "'$0'", False, expected, "// Char pattern", Some(expected))]
     } else:
     if(typeName == "ff:core/Int.Int") {
-        [CompletionInfo("0", "0", False, expected, "// Int pattern", Some(expected))]
+        [CompletionInfo("0", "", "0", False, expected, "// Int pattern", Some(expected))]
     } else:
     let variants = do {
         environment.symbols.toList().filter {s =>
@@ -460,11 +465,9 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
     }
     let completions = variants.map {| Pair(name, scheme) =>
         let shortName = name.reverse().takeWhile {_ != '.'}.reverse()
-        let label =
-            shortName +
-            if(scheme.signature.parameters.isEmpty()) {""} else {
-                "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
-            }
+        let extra = if(scheme.signature.parameters.isEmpty()) {""} else {
+            "(" + scheme.signature.parameters.map {_.name}.join(", ") + ")"
+        }
         let generics = scheme.signature.generics.filter {_ != "Q$"}
         let documentation =
             shortName +
@@ -475,7 +478,8 @@ patternCompletion(unification: Unification, environment: Environment, expected: 
                 }.join("\n") + "\n)"
             } + ": " + scheme.signature.returnType.show([])
         CompletionInfo(
-            label = label
+            label = shortName
+            extra = extra
             snippet = shortName + if(scheme.signature.parameters.isEmpty()) {""} else {"($0)"}
             member = False
             type = expected
@@ -528,7 +532,7 @@ missingCompletion(
                 | TVariable _ => name + ": "
             }
             let documentation = "// Add missing parameter\n" + name + ": " + t.show([])
-            [CompletionInfo(name, snippet, False, t, documentation, Some(t))]
+            [CompletionInfo(name, "", snippet, False, t, documentation, Some(t))]
         | Some(as) {isParameter} =>
             let noEffect = TConstructor(instantiated.scheme.signature.at, "ff:core/Nothing.Nothing", [])
             let t = unification.substitute(TConstructor(
@@ -541,12 +545,12 @@ missingCompletion(
                 ]
             ))
             let documentation = "// Add missing parameter\n" + name + ": " + t.show([])
-            [CompletionInfo(name, name + ": " + t.show([]), False, t, documentation, Some(t))]
+            [CompletionInfo(name, "", name + ": " + t.show([]), False, t, documentation, Some(t))]
         | None =>
             let t = unification.substitute(instantiated.scheme.signature.returnType)
             let snippet = name + " = "
             let documentation = "// Define missing variable\n" + name + ": " + t.show([])
-            [CompletionInfo(snippet + "...", snippet, False, t, documentation, Some(t))]
+            [CompletionInfo(snippet, "...", snippet, False, t, documentation, Some(t))]
         | Some(as) =>
             mutable remainingParameters = instantiated.scheme.signature.parameters
             mutable usedNames = [].toSet()
@@ -581,13 +585,13 @@ missingCompletion(
             let parameterSnippets = parameters.map {| Pair(x, t) =>
                 x + ": " + t.show(types)
             }
-            let label = name + "(" + parameterSnippets.join(", ") + ") {...}"
+            let extra = "(" + parameterSnippets.join(", ") + ") {...}"
             let shortSnippet = name + "(" + parameterSnippets.join(", ") + ")" + returnTypeCode
             let longSnippet = name + "(\n    " + parameterSnippets.join("\n    ") + "\n)" + returnTypeCode
             let snippet = if(shortSnippet.size() <= 100) {shortSnippet} else {longSnippet}
             let documentation = "// Define missing function\n" + 
                 if(shortSnippet.size() < 30) {shortSnippet} else {longSnippet}
-            [CompletionInfo(label, snippet + " {\n    $0\n}", False, returnType, documentation, None)]
+            [CompletionInfo(name, extra, snippet + " {\n    $0\n}", False, returnType, documentation, None)]
     }
     if(keyword && arguments.isEmpty()) {
         ["let ", "mutable "].flatMap {k => completions.map {c =>
@@ -604,7 +608,8 @@ missingCompletion(
 
 namedParameterCompletion(parameter: Parameter, index: Int, preselect: Bool): CompletionInfo {
     CompletionInfo(
-        label = parameter.name + " = ..."
+        label = parameter.name + " = "
+        extra = "..."
         snippet = parameter.name + " = "
         member = False
         type = parameter.valueType
