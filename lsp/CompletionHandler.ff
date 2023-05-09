@@ -74,7 +74,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             let fieldNames = n.split('$').toList().dropFirst(1)
             let fieldCompletions = fieldNames.zip(ts).map {| Pair(name, t) =>
                 let t2 = h.unification.substitute(t)
-                CompletionInfo(name, "", name, True, t2, name + ": " + t2.show([]), Some(h.expected))
+                CompletionInfo(name, "", name, True, t2, "(\n    ...\n    " + name + ": " + t2.show([]) + "\n    ...\n)", Some(h.expected))
             }
             [...fieldCompletions, ...completion(h.unification, h.environment, n, None, h.expected)]
         | InferArgumentHook h {
@@ -340,9 +340,14 @@ makeCompletion(
     let documentation = if(memberScheme.isVariable || variantWithoutParameters) {
         let methodGenerics = memberScheme.signature.generics
         let generics = if(member || methodGenerics.isEmpty()) {""} else {"[" + methodGenerics.join(", ") + "]"}
+        let beforeAfter = memberScheme.signature.parameters.first().map {
+            Pair(unification.substitute(_.valueType).show([]) + "(\n    ...\n    ", "\n    ...\n)")
+        }.else {Pair("", "")}
+        beforeAfter.first +
         if(memberScheme.isMutable) {"mutable "} else {""} +
         unqualifiedName + generics +
-        ": " + returnType.show([])
+        ": " + returnType.show([]) +
+        beforeAfter.second
     } else {
         let selfType = memberScheme.signature.parameters.first().filter {_ => member && !copy}.map {_.valueType}
         let generics = selfType.map {
