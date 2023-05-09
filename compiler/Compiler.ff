@@ -135,7 +135,7 @@ extend self: Compiler {
         }
     }
 
-    parse(packagePair: PackagePair, moduleName: String): Module {
+    parse(packagePair: PackagePair, moduleName: String, importedAt: Option[Location]): Module {
         let packageName = packagePair.groupName()
         self.parsedModules.get(packageName + ":" + moduleName).else:
         self.measure("Parse", packagePair, moduleName):
@@ -145,8 +145,12 @@ extend self: Compiler {
         let file = moduleName + ".ff"
         let path = FileSystem.relative(self.files.workingDirectory(), packagePath + "/" + file)
         let fixedPath = path.replace("\\", "/")
-        //Log.trace("moduleName: " + moduleName + ", path: " + path + ", fixedPath: " + fixedPath)
-        let code = self.virtualFiles.get(fixedPath).else {self.files.readText(fixedPath)}
+        let code = self.virtualFiles.get(fixedPath).else {
+            importedAt.each {at => if(!self.files.exists(fixedPath)) {
+                throw(CompileError(at, "Imported module not found: " + packageName + "/" + moduleName))
+            }}
+            self.files.readText(fixedPath)
+        }
         let completionAt = if(self.lspHook.isEnabled() && self.lspHook.insertIdentifier) {self.lspHook.at}
         let tokens = Tokenizer.tokenize(fixedPath, code, completionAt, self.lspHook.isEnabled())
         let parser = Parser.make(packagePair, file, tokens, self.emitTarget != EmitBrowser, self.lspHook)
@@ -169,7 +173,7 @@ extend self: Compiler {
             if(!self.packagePaths.contains(newPackagePair)) {
                 throw(CompileError(import.at, "Missing dependency declaration for: " + newPackagePair.groupName()))
             }
-            self.parse(newPackagePair, newModuleName)
+            self.parse(newPackagePair, newModuleName, Some(import.at))
         }
     }
 
@@ -178,7 +182,7 @@ extend self: Compiler {
         self.resolvedModules.get(packageName + ":" + moduleName).else:
         self.measure("Resolve", packagePair, moduleName):
 
-        let module = self.parse(packagePair, moduleName)
+        let module = self.parse(packagePair, moduleName, None)
         let otherModules = self.imports(module)
         let resolver = Resolver.make(self.lspHook)
         let result = resolver.resolveModule(module, otherModules)

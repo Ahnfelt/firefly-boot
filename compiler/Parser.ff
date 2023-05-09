@@ -481,11 +481,11 @@ extend self: Parser {
             path.push(self.parseDashedName())
             self.skip(LDot)
         }
-        let file = self.skip(LUpper).raw()
+        let fileToken = self.skip(LUpper)
         let alias = if(self.current().rawIs("as")) {
             self.rawSkip(LKeyword, "as")
             self.skip(LUpper).raw()
-        } else {file}
+        } else {fileToken.raw()}
         let packagePair = if(self.current().rawIs("from")) {
             self.rawSkip(LKeyword, "from")
             let userName = self.parseDashedName()
@@ -495,7 +495,7 @@ extend self: Parser {
         } else {
             currentPackagePair
         }
-        DImport(importToken.at(), alias, packagePair, path.toList(), file)
+        DImport(fileToken.at(), alias, packagePair, path.toList(), fileToken.raw())
     }
 
     parsePackageDefinition(): DPackage {
