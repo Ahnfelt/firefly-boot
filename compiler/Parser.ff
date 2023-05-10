@@ -188,8 +188,8 @@ extend self: Parser {
                 ))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("dependency")} {
                 throw(CompileError(self.current().at()
-                "Dependencies must be at the top of the file or below 'package'"
-            ))
+                    "Dependencies must be at the top of the file or below 'package'"
+                ))
             } elseIf {self.current().is(LKeyword) && self.current().rawIs("package")} {
                 throw(CompileError(self.current().at()
                     "Package definition must be at the top of the file"
