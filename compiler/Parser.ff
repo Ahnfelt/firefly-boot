@@ -827,8 +827,21 @@ extend self: Parser {
                 let patterns = Stack.make[MatchPattern]()
                 self.rawSkip(LBracketLeft, "(")
                 while {!self.current().is(LBracketRight)} {
-                    patterns.push(self.parsePattern())
+                    let pattern = self.parsePattern()
+                    if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
+                        if(LspHook.strictlyBetween(token.at(), self.current().at(), self.lspHook.at, 1)) {
+                            self.lspHook.emit(ParseArgumentHook(token.at(), patterns.size(), None))
+                            self.lspEmittedArgumentHook = True
+                        }
+                    }
+                    patterns.push(pattern)
                     if(!self.current().is(LBracketRight)) {self.skip(LComma)}
+                }
+                if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
+                    if(LspHook.strictlyBetween(token.at(), self.current().at(), self.lspHook.at, 1)) {
+                        self.lspHook.emit(ParseArgumentHook(token.at(), patterns.size(), None))
+                        self.lspEmittedArgumentHook = True
+                    }
                 }
                 self.rawSkip(LBracketRight, ")")
                 PVariant(token.at(), token.raw(), patterns.toList())
@@ -1061,7 +1074,7 @@ extend self: Parser {
         } elseIf {self.current().rawIs("[")} {
             self.parseList()
         } elseIf {self.current().rawIs("(") && self.ahead().is(LLower) && self.aheadAhead().is(LAssign)} {
-            ERecord(self.current().at(), self.parseRecord())
+            ERecord(self.current().at(), self.parseRecord(None))
         } elseIf {self.current().rawIs("(")} {
             self.rawSkip(LBracketLeft, "(")
             let result = self.parseTerm()
@@ -1090,22 +1103,36 @@ extend self: Parser {
         let prefix = namespace + extraNamespace
         let token = self.skip(LUpper)
         let name = prefix + token.raw()
-        let fields = if(self.lspHook.isEnabled() && !self.current().rawIs("(")) {[]} else {self.parseRecord()}
+        let fields = if(self.lspHook.isEnabled() && !self.current().rawIs("(")) {[]} else {self.parseRecord(Some(token.at()))}
         ECopy(token.at(), name, record, fields)
     }
 
-    parseRecord(): List[Field] {
+    parseRecord(copyAt: Option[Location]): List[Field] {
         let fields = Stack.make[Field]()
-        self.rawSkip(LBracketLeft, "(")
+        let startBracketAt = self.rawSkip(LBracketLeft, "(").at()
+        let startAt = copyAt.else {startBracketAt}
         while {!self.current().is(LBracketRight)} {
             let fieldToken = self.skip(LLower)
-            if(!self.lspHook.isEnabled() || self.current().is(LAssign)) {
+            let field = if(!self.lspHook.isEnabled() || self.current().is(LAssign)) {
                 self.skip(LAssign)
-                fields.push(Field(fieldToken.at(), fieldToken.raw(), self.parseTerm()))
+                Field(fieldToken.at(), fieldToken.raw(), self.parseTerm())
             } else {
-                fields.push(Field(fieldToken.at(), fieldToken.raw(), EVariable(fieldToken.at(), fieldToken.raw())))
+                Field(fieldToken.at(), fieldToken.raw(), EVariable(fieldToken.at(), fieldToken.raw()))
             }
+            if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
+                if(LspHook.strictlyBetween(startAt, self.current().at(), self.lspHook.at, 1)) {
+                    self.lspHook.emit(ParseArgumentHook(startAt, fields.size(), Some(field.name).filter {_ != ""}))
+                    self.lspEmittedArgumentHook = True
+                }
+            }
+            fields.push(field)
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
+        }
+        if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
+            if(LspHook.strictlyBetween(startAt, self.current().at(), self.lspHook.at, 1)) {
+                self.lspHook.emit(ParseArgumentHook(startAt, fields.size(), None))
+                self.lspEmittedArgumentHook = True
+            }
         }
         self.rawSkip(LBracketRight, ")")
         fields.toList()
