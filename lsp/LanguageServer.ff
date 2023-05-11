@@ -22,15 +22,26 @@ main(system: NodeSystem) {
     let handler = Handler(None, Map.empty(), [].toSet())
     try {
         mutable input = system.readStream()
-        while {True} {
-            let requestPair = parseRequest(system, input)
-            input = requestPair.second
-            let request = requestPair.first
-            let message = parseRequestMessage(request.object)
-            handleRequestMessage(system, handler, message).each {body =>
-                let json = body.toJson(Some("    ")).toBuffer()
-                system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
-                system.writeBuffer(json)
+        let channel: Channel[JsValue] = system.tasks().channel()
+        system.tasks().scope {scope => 
+            scope.spawn {
+                while {True} {
+                    let body = channel.read()
+                    let json = body.toJson(Some("    ")).toBuffer()
+                    system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
+                    system.writeBuffer(json)
+                }
+            }
+            while {True} {
+                let requestPair = parseRequest(system, input)
+                input = requestPair.second
+                let request = requestPair.first
+                let message = parseRequestMessage(request.object)
+                scope.spawn {
+                    handleRequestMessage(system, handler, message).each {body =>
+                        channel.write(body)
+                    }
+                }
             }
         }
     } catch {| BadRequestException(reason), error =>
