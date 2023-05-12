@@ -154,7 +154,7 @@ return
 }))
 }
 
-export function Compiler_parse(self_, packagePair_, moduleName_) {
+export function Compiler_parse(self_, packagePair_, moduleName_, importedAt_) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_compiler_Compiler.Compiler_measure(self_, "Parse", packagePair_, moduleName_, (() => {
@@ -165,13 +165,18 @@ const file_ = (moduleName_ + ".ff");
 const path_ = ff_core_FileSystem.relative_(ff_core_FileSystem.FileSystem_workingDirectory(self_.files_), ((packagePath_ + "/") + file_));
 const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
 const code_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.virtualFiles_, fixedPath_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+ff_core_Option.Option_each(importedAt_, ((at_) => {
+if((!ff_core_FileSystem.FileSystem_exists(self_.files_, fixedPath_))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Imported module not found: " + packageName_) + "/") + moduleName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+}));
 return ff_core_FileSystem.FileSystem_readText(self_.files_, fixedPath_)
 }));
-const attemptFixes_ = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_, (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
+const completionAt_ = ((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && self_.lspHook_.insertIdentifier_)
 ? ff_core_Option.Some(self_.lspHook_.at_)
-: ff_core_Option.None()), attemptFixes_);
-const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), attemptFixes_);
+: ff_core_Option.None());
+const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_, completionAt_, ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_));
+const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), self_.lspHook_);
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
 : ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(parser_));
@@ -193,7 +198,7 @@ return (_w1 + "/")
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-return ff_compiler_Compiler.Compiler_parse(self_, newPackagePair_, newModuleName_)
+return ff_compiler_Compiler.Compiler_parse(self_, newPackagePair_, newModuleName_, ff_core_Option.Some(import_.at_))
 }))
 }
 
@@ -201,7 +206,7 @@ export function Compiler_resolve(self_, packagePair_, moduleName_) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return ff_core_Option.Option_else(ff_core_Map.Map_get(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_compiler_Compiler.Compiler_measure(self_, "Resolve", packagePair_, moduleName_, (() => {
-const module_ = ff_compiler_Compiler.Compiler_parse(self_, packagePair_, moduleName_);
+const module_ = ff_compiler_Compiler.Compiler_parse(self_, packagePair_, moduleName_, ff_core_Option.None());
 const otherModules_ = ff_compiler_Compiler.Compiler_imports(self_, module_);
 const resolver_ = ff_compiler_Resolver.make_(self_.lspHook_);
 const result_ = ff_compiler_Resolver.Resolver_resolveModule(resolver_, module_, otherModules_);
@@ -287,7 +292,7 @@ return
 }))
 }
 
-export async function Compiler_parse$(self_, packagePair_, moduleName_, $c) {
+export async function Compiler_parse$(self_, packagePair_, moduleName_, importedAt_, $c) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.parsedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Parse", packagePair_, moduleName_, (async ($c) => {
@@ -298,13 +303,18 @@ const file_ = (moduleName_ + ".ff");
 const path_ = ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(self_.files_, $c)), ((packagePath_ + "/") + file_));
 const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
 const code_ = (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.virtualFiles_, fixedPath_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
+(await ff_core_Option.Option_each$(importedAt_, (async (at_, $c) => {
+if((!(await ff_core_FileSystem.FileSystem_exists$(self_.files_, fixedPath_, $c)))) {
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Imported module not found: " + packageName_) + "/") + moduleName_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+}
+}), $c));
 return (await ff_core_FileSystem.FileSystem_readText$(self_.files_, fixedPath_, $c))
 }), $c));
-const attemptFixes_ = ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_);
-const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_, (ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
+const completionAt_ = ((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && self_.lspHook_.insertIdentifier_)
 ? ff_core_Option.Some(self_.lspHook_.at_)
-: ff_core_Option.None()), attemptFixes_);
-const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), attemptFixes_);
+: ff_core_Option.None());
+const tokens_ = ff_compiler_Tokenizer.tokenize_(fixedPath_, code_, completionAt_, ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_));
+const parser_ = ff_compiler_Parser.make_(packagePair_, file_, tokens_, ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBrowser(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget), self_.lspHook_);
 const module_ = (ff_core_Set.Set_contains(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_
 : ff_compiler_Parser.Parser_parseModuleWithoutPackageInfo(parser_));
@@ -326,7 +336,7 @@ return (_w1 + "/")
 if((!ff_core_Map.Map_contains(self_.packagePaths_, newPackagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(import_.at_, ("Missing dependency declaration for: " + ff_compiler_Syntax.PackagePair_groupName(newPackagePair_, ":"))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
-return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackagePair_, newModuleName_, $c))
+return (await ff_compiler_Compiler.Compiler_parse$(self_, newPackagePair_, newModuleName_, ff_core_Option.Some(import_.at_), $c))
 }), $c))
 }
 
@@ -334,7 +344,7 @@ export async function Compiler_resolve$(self_, packagePair_, moduleName_, $c) {
 const packageName_ = ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":");
 return (await ff_core_Option.Option_else$(ff_core_Map.Map_get(self_.resolvedModules_, ((packageName_ + ":") + moduleName_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async ($c) => {
 return (await ff_compiler_Compiler.Compiler_measure$(self_, "Resolve", packagePair_, moduleName_, (async ($c) => {
-const module_ = (await ff_compiler_Compiler.Compiler_parse$(self_, packagePair_, moduleName_, $c));
+const module_ = (await ff_compiler_Compiler.Compiler_parse$(self_, packagePair_, moduleName_, ff_core_Option.None(), $c));
 const otherModules_ = (await ff_compiler_Compiler.Compiler_imports$(self_, module_, $c));
 const resolver_ = ff_compiler_Resolver.make_(self_.lspHook_);
 const result_ = ff_compiler_Resolver.Resolver_resolveModule(resolver_, module_, otherModules_);

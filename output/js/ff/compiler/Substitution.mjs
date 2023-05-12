@@ -166,7 +166,7 @@ export function Substitution_substituteSignature(self_, signature_) {
 const _1 = signature_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((_w1) => {
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteConstraint(self_, _w1)
 })), ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteParameter(self_, _w1)
@@ -685,7 +685,7 @@ export async function Substitution_substituteSignature$(self_, signature_, $c) {
 const _1 = signature_;
 {
 const _c = _1;
-return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((_w1) => {
+return ff_compiler_Syntax.Signature(_c.at_, _c.name_, _c.member_, _c.generics_, ff_core_List.List_map(signature_.constraints_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteConstraint(self_, _w1)
 })), ff_core_List.List_map(signature_.parameters_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteParameter(self_, _w1)

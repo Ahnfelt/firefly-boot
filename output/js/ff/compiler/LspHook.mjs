@@ -91,8 +91,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type LspHook
-export function LspHook(at_, definedAt_, stackOfResults_) {
-return {at_, definedAt_, stackOfResults_};
+export function LspHook(at_, definedAt_, insertIdentifier_, stackOfResults_) {
+return {at_, definedAt_, insertIdentifier_, stackOfResults_};
 }
 
 // type SymbolHook
@@ -106,6 +106,9 @@ return {value_};
 }
 
 // type ResultHook
+export function ParseArgumentHook(callAt_, argumentIndex_, parameterName_) {
+return {ParseArgumentHook: true, callAt_, argumentIndex_, parameterName_};
+}
 export function ResolveSymbolHook(symbol_, annotation_) {
 return {ResolveSymbolHook: true, symbol_, annotation_};
 }
@@ -118,6 +121,9 @@ return {ResolveConstraintHook: true, symbol_, constrant_};
 export function ResolveSignatureHook(signature_) {
 return {ResolveSignatureHook: true, signature_};
 }
+export function ResolveVariantFieldHook(symbol_, type_, commonField_) {
+return {ResolveVariantFieldHook: true, symbol_, type_, commonField_};
+}
 export function InferTermHook(unification_, environment_, expected_, term_, recordType_, missing_) {
 return {InferTermHook: true, unification_, environment_, expected_, term_, recordType_, missing_};
 }
@@ -127,17 +133,20 @@ return {InferLambdaStartHook: true, unification_, environment_, lambdaType_};
 export function InferSequentialStartHook(unification_, term_, missing_) {
 return {InferSequentialStartHook: true, unification_, term_, missing_};
 }
+export function InferFunctionDefinitionHook(unification_, environment_, definition_, missing_) {
+return {InferFunctionDefinitionHook: true, unification_, environment_, definition_, missing_};
+}
 export function InferPatternHook(unification_, environment_, expected_, pattern_) {
 return {InferPatternHook: true, unification_, environment_, expected_, pattern_};
 }
-export function InferParameterHook(unification_, environment_, parameter_) {
-return {InferParameterHook: true, unification_, environment_, parameter_};
+export function InferParameterHook(unification_, environment_, parameter_, missing_) {
+return {InferParameterHook: true, unification_, environment_, parameter_, missing_};
 }
 export function InferArgumentHook(unification_, environment_, isCopy_, callAt_, callName_, parameters_, arguments_, argumentIndex_) {
 return {InferArgumentHook: true, unification_, environment_, isCopy_, callAt_, callName_, parameters_, arguments_, argumentIndex_};
 }
-export function InferLookupHook(unification_, environment_, expected_, symbol_, instantiated_) {
-return {InferLookupHook: true, unification_, environment_, expected_, symbol_, instantiated_};
+export function InferLookupHook(unification_, environment_, expected_, selfVariable_, symbol_, instantiated_) {
+return {InferLookupHook: true, unification_, environment_, expected_, selfVariable_, symbol_, instantiated_};
 }
 export function InferRecordFieldHook(unification_, environment_, expected_, recordType_, fieldName_) {
 return {InferRecordFieldHook: true, unification_, environment_, expected_, recordType_, fieldName_};
@@ -146,27 +155,35 @@ return {InferRecordFieldHook: true, unification_, environment_, expected_, recor
 
 
 export function disabled_() {
-return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None())
+return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false)
 }
 
-export function make_(at_, definedAt_) {
+export function make_(at_, definedAt_, insertIdentifier_) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), ff_core_List.List_toStack(ff_core_List.Empty()))
+})), insertIdentifier_, ff_core_List.List_toStack(ff_core_List.Empty()))
+}
+
+export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
+return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (at_.column_ > afterAt_.column_)) || (at_.line_ > afterAt_.line_))) && (((at_.line_ === beforeAt_.line_) && (at_.column_ < (beforeAt_.column_ + extraColumns_))) || (at_.line_ < beforeAt_.line_)))
 }
 
 export async function disabled_$($c) {
-return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None())
+return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false)
 }
 
-export async function make_$(at_, definedAt_, $c) {
+export async function make_$(at_, definedAt_, insertIdentifier_, $c) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), ff_core_List.List_toStack(ff_core_List.Empty()))
+})), insertIdentifier_, ff_core_List.List_toStack(ff_core_List.Empty()))
+}
+
+export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $c) {
+return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (at_.column_ > afterAt_.column_)) || (at_.line_ > afterAt_.line_))) && (((at_.line_ === beforeAt_.line_) && (at_.column_ < (beforeAt_.column_ + extraColumns_))) || (at_.line_ < beforeAt_.line_)))
 }
 
 export function LspHook_isEnabled(self_) {

@@ -730,7 +730,7 @@ const _1 = method_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.member_, _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, _c.effect_)
 }))(method_.signature_), _c.body_)
 return
 }
@@ -2543,6 +2543,7 @@ return
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
+const variableAt_ = _1.variableAt_;
 const variable_ = _1.variable_;
 const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, name_, argument_);
 return ((((processed_.loneVariant_
@@ -2803,7 +2804,7 @@ const _1 = method_;
 {
 const _c = _1;
 return ff_compiler_Syntax.DFunction(_c.at_, (((_c) => {
-return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, _c.effect_)
+return ff_compiler_Syntax.Signature(_c.at_, ((typeName_ + "_") + method_.signature_.name_), _c.member_, _c.generics_, _c.constraints_, _c.parameters_, _c.returnType_, _c.effect_)
 }))(method_.signature_), _c.body_)
 return
 }
@@ -4616,6 +4617,7 @@ return
 if(_1.PVariantAs) {
 const at_ = _1.at_;
 const name_ = _1.name_;
+const variableAt_ = _1.variableAt_;
 const variable_ = _1.variable_;
 const processed_ = ff_compiler_JsEmitter.JsEmitter_processVariantCase(self_, name_, argument_);
 return ((((processed_.loneVariant_

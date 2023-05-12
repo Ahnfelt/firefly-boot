@@ -121,6 +121,9 @@ function emitToken_(kind_, startOffset_, stopOffset_) {
 if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
 const last_ = ff_core_Stack.Stack_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
+if((attemptFixes_ && ff_compiler_Token.Token_rawIs(last_, ""))) {
+ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+} else {
 ff_core_Stack.Stack_modify(tokens_, (ff_core_Stack.Stack_size(tokens_) - 1), ((_w1) => {
 {
 const _1 = _w1;
@@ -131,9 +134,10 @@ return
 }
 }
 }))
+}
 };
 if((((last_.stopLine_ !== startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
+ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 }
 };
 ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))
@@ -351,6 +355,9 @@ function emitToken_(kind_, startOffset_, stopOffset_) {
 if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
 const last_ = ff_core_Stack.Stack_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
+if((attemptFixes_ && ff_compiler_Token.Token_rawIs(last_, ""))) {
+ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
+} else {
 ff_core_Stack.Stack_modify(tokens_, (ff_core_Stack.Stack_size(tokens_) - 1), ((_w1) => {
 {
 const _1 = _w1;
@@ -361,9 +368,10 @@ return
 }
 }
 }))
+}
 };
 if((((last_.stopLine_ !== startLine_) && ff_compiler_Token.TokenKind_beforeSeparator(last_.kind_)) && ff_compiler_Token.TokenKind_afterSeparator(kind_))) {
-ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startOffset_, startLine_, startLineOffset_, startOffset_))
+ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 }
 };
 ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, kind_, startLine_, startLineOffset_, startOffset_, line_, lineOffset_, stopOffset_))

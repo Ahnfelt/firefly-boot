@@ -2,6 +2,8 @@ import * as import$0 from 'tar';
 
 import * as ff_compiler_Dependencies from "../../ff/compiler/Dependencies.mjs"
 
+import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
+
 import * as ff_compiler_Parser from "../../ff/compiler/Parser.mjs"
 
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
@@ -204,7 +206,7 @@ return path_
 })());
 const code_ = ff_core_FileSystem.FileSystem_readText(fs_, packageFile_);
 const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, false);
+const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
 }
@@ -296,7 +298,7 @@ return path_
 })()));
 const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, packageFile_, $c));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, false);
+const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
 }
