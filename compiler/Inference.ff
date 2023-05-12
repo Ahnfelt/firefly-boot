@@ -924,8 +924,12 @@ extend self: Inference {
                 | Argument(callAt, None, _) => fail(callAt, "Too many arguments")
                 | Argument(callAt, Some(n), _) => fail(callAt, "Unknown argument: " + n)
             }
+            newArguments
+        } else {
+            [...newArguments, ...remainingArguments.map {a => a.Argument(
+                value = self.inferTerm(environment, self.unification.freshUnificationVariable(a.at), a.value)
+            )}]
         }
-        newArguments
     }
 
     lookup(
