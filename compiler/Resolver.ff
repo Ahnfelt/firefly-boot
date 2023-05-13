@@ -388,7 +388,11 @@ extend self: Resolver {
                 constructor.name
             } else {
                 self.types.get(constructor.name).else {
-                    throw(CompileError(constructor.at, "No such type: " + constructor.name))
+                    if(!self.lspHook.isEnabled()) {
+                        throw(CompileError(constructor.at, "No such type: " + constructor.name))
+                    } else {
+                        constructor.name
+                    }
                 }
             }
             let isFunctionType = name.startsWith("Function$")
