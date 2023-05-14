@@ -1078,6 +1078,10 @@ extend self: Parser {
         } elseIf {self.current().rawIs("(")} {
             self.rawSkip(LBracketLeft, "(")
             let result = self.parseTerm()
+            while {self.lspHook.isEnabled() && self.currentIsSeparator(LComma)} {
+                self.skipSeparator(LComma)
+                if(!self.current().is(LBracketRight)) {self.parseTerm()}
+            }
             self.rawSkip(LBracketRight, ")")
             result
         } elseIf {self.current().is(LWildcard)} {
