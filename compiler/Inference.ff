@@ -594,7 +594,7 @@ extend self: Inference {
                 )
             | EAssign e =>
                 self.lookup(environment, expected, e.at, e.variable, [], None).map {instantiated =>
-                    if(instantiated.scheme.isMutable) {
+                    if(instantiated.scheme.isMutable || self.lspHook.isEnabled()) {
                         let value = self.inferAssignment(
                             environment = environment
                             expected = expected
@@ -606,8 +606,6 @@ extend self: Inference {
                         e.EAssign(
                             value = value
                         )
-                    } elseIf {self.lspHook.isEnabled()} {
-                        term
                     } else {
                         throw(CompileError(e.at, "Symbol is not mutable: " + e.variable))
                     }
@@ -623,7 +621,7 @@ extend self: Inference {
                     | TConstructor(_, name, typeArguments)@t =>
                         let methodName = name + "_" + e.field
                         self.lookup(environment, expected, e.at, methodName, typeArguments, None).{
-                            | Some(instantiated) {instantiated.scheme.isMutable} =>
+                            | Some(instantiated) {instantiated.scheme.isMutable || self.lspHook.isEnabled()} =>
                                 let value = self.inferAssignment(
                                     environment = environment
                                     expected = expected
