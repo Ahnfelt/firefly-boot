@@ -1,5 +1,6 @@
 import Token
 import Syntax
+import LspHook
 
 tokenize(file: String, code: String, completionAt: Option[Location], attemptFixes: Bool): Array[Token] {
 
@@ -23,7 +24,11 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
         if(!tokens.isEmpty()) {
             let last = tokens.grabLast()
             if(last.stopLine == startLine && last.kind == LLower && kind.afterKeyword()) {
-                if(attemptFixes && last.rawIs("")) {
+                if(
+                    completionLine == last.startLine && 
+                    completionColumn >= 1 + last.startOffset - last.startLineOffset &&
+                    completionColumn <= 1 + last.stopOffset - last.stopLineOffset
+                ) {
                     tokens.push(Token(
                         file, code, LSeparator
                         startLine, startLineOffset, startLineOffset
