@@ -15,6 +15,7 @@ class Handler(
     mutable rootUri: Option[String]
     mutable virtualFiles: Map[String, String]
     mutable cancelledRequests: Set[MessageId]
+    mutable responseCache: Map[String, ResultOrError]
 )
 
 data MessageId {
@@ -22,8 +23,8 @@ data MessageId {
     MessageIdString(id: String)
 }
 
-capability ResultOrError {
-    Result(result: JsValue)
+data ResultOrError {
+    Result(result: String)
     Error(code: Int, message: String)
 }
 
@@ -44,7 +45,9 @@ extend self: Handler {
     handleNotification(system: NodeSystem, method: String, parameters: Map[String, JsValue]): Unit {
         method.{
             | "initialized" =>
-            | "textDocument/didChange" => self.handleDidChange(system, parameters)
+            | "textDocument/didChange" => 
+                self.responseCache = Map.empty()
+                self.handleDidChange(system, parameters)
             | "textDocument/didClose" => self.handleDidClose(system, parameters)
             | "exit" => system.exit(0)
             | _ =>
@@ -62,8 +65,19 @@ extend self: Handler {
             | "textDocument/references" => self.handleReferences(system, parameters, local = False)
             | "textDocument/rename" => self.handleRename(system, parameters)
             | "textDocument/documentHighlight" => self.handleReferences(system, parameters, local = True)
-            | "shutdown" => Result(system.js().null())
+            | "shutdown" => Result(system.js().null().toJson())
             | _ => self.handleUnsupported(system.js())
+        }
+    }
+
+    handleRequestCached(system: NodeSystem, method: String, parameters: Map[String, JsValue]): ResultOrError {
+        let cacheKey = Show.show(Pair(method, parameters.mapValues {k, v => v.toJson()}))
+        self.responseCache.get(cacheKey).{
+            | Some(hit) => hit
+            | None => 
+                let result = self.handleRequest(system, method, parameters)
+                self.responseCache = self.responseCache.add(cacheKey, result)
+                result
         }
     }
 
@@ -122,7 +136,7 @@ extend self: Handler {
                 .with("name", "Firefly Language Server")
                 .with("version", "0.0.0")
             )
-        Result(o)
+        Result(o.toJson())
     }
 
     handleDiagnostic(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
@@ -146,7 +160,7 @@ extend self: Handler {
         let o = js.object()
             .with("kind", "full")
             .with("items", diagnostics.toArray())
-        Result(o)
+        Result(o.toJson())
     }
 
     handleDidChange(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
@@ -185,7 +199,7 @@ extend self: Handler {
         } else {
             HoverHandler.handleHover(system, self, lspHook)
         }
-        Result(o)
+        Result(o.toJson())
     }
 
     handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
@@ -197,7 +211,7 @@ extend self: Handler {
             Log.trace("handleCompletion check error: " + message)
         } grab()
         let o = CompletionHandler.handleCompletion(system, lspHook)
-        Result(o)
+        Result(o.toJson())
     }
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
@@ -235,7 +249,7 @@ extend self: Handler {
             | _ => 
                 None
         }
-        Result(o.else {system.js().null()})
+        Result((o.else {system.js().null()}).toJson())
     }
 
     handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {
@@ -248,7 +262,7 @@ extend self: Handler {
                 let lspTokens = tokens.map {self.tokenLocationToLspLocation(system, _)}
                 js.array(lspTokens)
         }
-        Result(o)
+        Result(o.toJson())
     }
 
     handleRename(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
@@ -258,7 +272,7 @@ extend self: Handler {
         let js = system.js()
         tokens.{
             | None => Error(-32602, "Token definition not found") // InvalidParams
-            | Some([]) => Result(js.null())
+            | Some([]) => Result(js.null().toJson())
             | Some([first, ..._] @ tokens) =>
                 let oldName = first.raw
                 Log.trace("Rename '" + oldName + "' to '" + newName + "'")
@@ -279,7 +293,7 @@ extend self: Handler {
                     o.with(uri, js.array(fileChanges))
                 })
                 let o = js.object().with("changes", allChanges)
-                Result(o)
+                Result(o.toJson())
         }
     }
 
