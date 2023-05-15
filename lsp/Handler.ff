@@ -15,7 +15,7 @@ class Handler(
     mutable rootUri: Option[String]
     mutable virtualFiles: Map[String, String]
     mutable cancelledRequests: Set[MessageId]
-    mutable responseCache: Map[String, ResultOrError]
+    mutable responseCache: Map[Pair[String, Location], ResultOrError]
 )
 
 data MessageId {
@@ -60,25 +60,45 @@ extend self: Handler {
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
             | "textDocument/completion" => self.handleCompletion(system, parameters)
             | "textDocument/signatureHelp" => self.handleSignatureHelp(system, parameters)
-            | "textDocument/hover" => self.handleHover(system, parameters, goToDefinition = False)
-            | "textDocument/definition" => self.handleHover(system, parameters, goToDefinition = True)
-            | "textDocument/references" => self.handleReferences(system, parameters, local = False)
+            | "textDocument/hover" => 
+                self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
+                    self.handleHover(system, targetAt, goToDefinition = False)
+                }
+            | "textDocument/definition" => 
+                self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
+                    self.handleHover(system, targetAt, goToDefinition = True)
+                }
+            | "textDocument/references" => 
+                self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
+                    self.handleReferences(system, targetAt, local = False)
+                }
             | "textDocument/rename" => self.handleRename(system, parameters)
-            | "textDocument/documentHighlight" => self.handleReferences(system, parameters, local = True)
+            | "textDocument/documentHighlight" => 
+                self.handleTokenRequestWithCache(system, method, parameters) {targetAt => 
+                    self.handleReferences(system, targetAt, local = True)
+                }
             | "shutdown" => Result(system.js().null().toJson())
             | _ => self.handleUnsupported(system.js())
         }
     }
 
-    handleRequestCached(system: NodeSystem, method: String, parameters: Map[String, JsValue]): ResultOrError {
-        let cacheKey = Show.show(Pair(method, parameters.mapValues {k, v => v.toJson()}))
-        self.responseCache.get(cacheKey).{
-            | Some(hit) => hit
-            | None => 
-                let result = self.handleRequest(system, method, parameters)
-                self.responseCache = self.responseCache.add(cacheKey, result)
-                result
-        }
+    handleTokenRequestWithCache(
+        system: NodeSystem
+        method: String
+        parameters: Map[String, JsValue]
+        handle: Location => ResultOrError
+    ): ResultOrError {
+        let targetAt = self.findTokenFromParameters(system, parameters)
+        let cacheKey = Pair(method, targetAt)
+            self.responseCache.get(cacheKey).{
+                | Some(hit) => 
+                    Log.trace("Cache hit: " + method)
+                    hit
+                | None => 
+                    let result = handle(targetAt)
+                    self.responseCache = self.responseCache.add(cacheKey, result)
+                    result
+            }
     }
 
     handleUnsupported(js: JsSystem): ResultOrError {
@@ -186,8 +206,7 @@ extend self: Handler {
         self.virtualFiles = self.virtualFiles.remove(fixedPath)
     }
 
-    handleHover(system: NodeSystem, parameters: Map[String, JsValue], goToDefinition: Bool): ResultOrError {
-        let targetAt = self.findTokenFromParameters(system, parameters)
+    handleHover(system: NodeSystem, targetAt: Location, goToDefinition: Bool): ResultOrError {
         let lspHook = LspHook.make(at = Some(targetAt), definedAt = None, insertIdentifier = False)
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, True)
@@ -252,8 +271,7 @@ extend self: Handler {
         Result((o.else {system.js().null()}).toJson())
     }
 
-    handleReferences(system: NodeSystem, parameters: Map[String, JsValue], local: Bool): ResultOrError {
-        let targetAt = self.findTokenFromParameters(system, parameters)
+    handleReferences(system: NodeSystem, targetAt: Location, local: Bool): ResultOrError {
         let tokens = self.findReferences(system, targetAt, local)
         let js = system.js()
         let o = tokens.{

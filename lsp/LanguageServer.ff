@@ -160,7 +160,7 @@ handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessa
                 handler.cancelledRequests = handler.cancelledRequests.remove(id)
                 Some(makeResponseMessage(system.js(), id, Error(-32800, "Request cancelled")))
             | Some(id) =>
-                let result = handler.handleRequestCached(system, message.method, message.parameters)
+                let result = handler.handleRequest(system, message.method, message.parameters)
                 Some(makeResponseMessage(system.js(), id, result))
         }
     } catchAny {error =>
