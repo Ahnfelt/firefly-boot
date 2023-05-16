@@ -22,11 +22,11 @@ main(system: NodeSystem) {
     let handler = Handler(None, Map.empty(), [].toSet(), Map.empty())
     try {
         mutable input = system.readStream()
-        let channel: Channel[JsValue] = system.tasks().channel()
+        let responseChannel: Channel[JsValue] = system.tasks().channel()
         system.tasks().scope {scope => 
             scope.spawn {
                 while {True} {
-                    let body = channel.read()
+                    let body = responseChannel.read()
                     let json = body.toJson(Some("    ")).toBuffer()
                     system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
                     system.writeBuffer(json)
@@ -39,7 +39,7 @@ main(system: NodeSystem) {
                 let message = parseRequestMessage(request.object)
                 scope.spawn {
                     handleRequestMessage(system, handler, message).each {body =>
-                        channel.write(body)
+                        responseChannel.write(body)
                     }
                 }
             }

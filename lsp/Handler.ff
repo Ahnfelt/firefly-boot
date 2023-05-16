@@ -331,6 +331,8 @@ extend self: Handler {
             | InferParameterHook h => Some(h.parameter.at)
             | InferLookupHook h => Some(h.symbol.value.definedAt)
             | InferPatternHook h {h.pattern | PVariantAs p} => Some(p.variableAt)
+            | InferPatternHook h {h.pattern | PVariable p} => Some(p.at)
+            | InferPatternHook h {h.pattern | PAlias p} => Some(p.at)
             | _ => None
         }.filter {at => !at.file.endsWith("/<derived>")}
 

@@ -328,7 +328,11 @@ extend self: Resolver {
             e.EWildcard()
         | EFunctions(at, functions, body), _ =>
             let functionMap = functions.map {_.signature.name}.map {name => Pair(name, name)}.toMap()
-            let self2 = self.Resolver(variables = self.variables.addAll(functionMap))
+            let locationMap = functions.map {_.signature}.map {s => Pair(s.name, s.at)}.toMap()
+            let self2 = self.Resolver(
+                variables = self.variables.addAll(functionMap)
+                variableLocations = self.variableLocations.addAll(locationMap)
+            )
             EFunctions(
                 at = at
                 functions = functions.map {self2.resolveFunctionDefinition(_, topLevel)}
@@ -339,6 +343,15 @@ extend self: Resolver {
                 variables = self.variables.add(e.name, e.name)
                 variableLocations = self.variableLocations.add(e.name, e.at)
             )
+            if(self.lspHook.isEnabled()) {
+                if(self.lspHook.isAt(e.at) || self.lspHook.isDefinedAt(e.at)) {
+                    self.lspHook.emit(
+                        ResolveSymbolHook(
+                            SymbolHook(e.name, e.at, e.at), None
+                        )
+                    )
+                }
+            }
             e.ELet(
                 valueType = self.resolveType(e.valueType, topLevel)
                 value = self.resolveTerm(e.value, topLevel)
