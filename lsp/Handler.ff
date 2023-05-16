@@ -329,6 +329,8 @@ extend self: Handler {
             | ResolveConstraintHook h => Some(h.symbol.definedAt)
             | ResolveSignatureHook h => Some(h.signature.at)
             | InferParameterHook h => Some(h.parameter.at)
+            | InferArgumentHook h {h.arguments.dropFirst(h.argumentIndex).first() | Some(a)} {a.name | Some(n)} => 
+                h.parameters.find {_.name == n}.map {_.at}
             | InferLookupHook h => Some(h.symbol.value.definedAt)
             | InferPatternHook h {h.pattern | PVariantAs p} => Some(p.variableAt)
             | InferPatternHook h {h.pattern | PVariable p} => Some(p.at)
@@ -356,6 +358,8 @@ extend self: Handler {
                     | ResolveConstraintHook h => Some(h.symbol.usageAt)
                     | ResolveSignatureHook h => Some(h.signature.at)
                     | InferParameterHook h => Some(h.parameter.at)
+                    | InferArgumentHook h {h.arguments.dropFirst(h.argumentIndex).first() | Some(a)} {a.name | Some(n)} => 
+                        h.parameters.find {_.name == n}.map {_ => a.at}
                     | InferLookupHook h => Some(h.symbol.value.usageAt)
                     | _ => None
                 }.filter {at => !at.file.endsWith("/<derived>")}
