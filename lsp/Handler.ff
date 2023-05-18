@@ -11,10 +11,9 @@ import HoverHandler
 import CompletionHandler
 import SignatureHelpHandler
 
-class Handler(
+capability Handler(
     mutable rootUri: Option[String]
     mutable virtualFiles: Map[String, String]
-    mutable cancelledRequests: Set[MessageId]
     mutable responseCache: Map[Pair[String, Location], ResultOrError]
 )
 

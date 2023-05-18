@@ -18,7 +18,7 @@ capability RequestMessage(
 )
 
 main(system: NodeSystem) {
-    let handler = Handler(None, Map.empty(), [].toSet(), Map.empty())
+    let handler = Handler(None, Map.empty(), Map.empty())
     try {
         mutable input = system.readStream()
         mutable subscopes: Map[MessageId, TaskScope] = [].toMap()
@@ -40,13 +40,18 @@ main(system: NodeSystem) {
                 let subscope = scope.subscope()
                 message.id.each {id => subscopes = subscopes.add(id, subscope)}
                 subscope.spawn {
-                    // message.cancellationId.each {id => subscopes.get(id).each {_.close()}}
                     try {
-                        handleRequestMessage(system, handler, message).each {body =>
-                            responseChannel.write(body)
+                        if(message.method == "$/cancelRequest") {
+                            let cancellationId = parseMessageId(message.parameters.grab("id"))
+                            subscopes.get(cancellationId).each {_.close(rethrow = False)}
+                        } else {
+                            handleRequestMessage(system, handler, message).each {body =>
+                                responseChannel.write(body)
+                            }
                         }
                     } finally {
                         message.id.each {id => subscopes = subscopes.remove(id)}
+                        subscope.close()
                     } grab()
                 }
             }
@@ -155,17 +160,9 @@ parseMessageId(id: JsValue): MessageId {
 handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): Option[JsValue] {
     try {
         message.id.{
-            | None {message.method == "$/cancelRequest"} => // TODO: Needs to read ahead to cancel anything
-                handler.cancelledRequests = handler.cancelledRequests.add(
-                    parseMessageId(message.parameters.grab("id"))
-                )
-                None
             | None => 
                 handler.handleNotification(system, message.method, message.parameters)
                 None
-            | Some(id) {handler.cancelledRequests.contains(id)} =>
-                handler.cancelledRequests = handler.cancelledRequests.remove(id)
-                Some(makeResponseMessage(system.js(), id, Error(-32800, "Request cancelled")))
             | Some(id) =>
                 let result = handler.handleRequest(system, message.method, message.parameters)
                 Some(makeResponseMessage(system.js(), id, result))
