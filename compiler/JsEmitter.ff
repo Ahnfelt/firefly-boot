@@ -93,6 +93,7 @@ extend self: JsEmitter {
             functions.find { _.signature.name == targetMain }.orElse { functions.find { _.signature.name == "main" } }
         mainFunction.map {_.signature.name}.map { mainName => [[
             "export async function $run$(fireflyPath_, arguments_) {"
+            "Error.stackTraceLimit = 50"
             "const controller = new AbortController()"
             "controller.promises = new Set()"
             "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
