@@ -49,6 +49,13 @@ main(system: NodeSystem) {
                                 responseChannel.write(body)
                             }
                         }
+                    } catchAny {error =>
+                        if(error.name() == "AbortError") {
+                            message.id.each {id => 
+                                let body = makeResponseMessage(system.js(), id, Error(-32800, "Request cancelled"))
+                                responseChannel.write(body)
+                            }
+                        }
                     } finally {
                         message.id.each {id => subscopes = subscopes.remove(id)}
                         subscope.close()

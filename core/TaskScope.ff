@@ -44,10 +44,9 @@ extend self: TaskScope {
             if(self_.ffClosed) throw new Error("Spawn outside scope")
             async function spawn() {
                 try {
-                    await Promise.resolve(self_).then(controller => {
-                        if(self_.signal.aborted) throw new Error("Cancelled", {cause: self_.ffReason})
-                        task_(controller)
-                    })
+                    let controller = await Promise.resolve(self_)
+                    if(self_.signal.aborted) throw new Error("Cancelled", {cause: self_.ffReason})
+                    await task_(controller)
                 } catch(e) {
                     if(!self_.signal.aborted) {
                         self_.ffReason = e
