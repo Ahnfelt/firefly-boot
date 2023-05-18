@@ -17,13 +17,13 @@ capability RequestMessage(
     parameters: Map[String, JsValue]
 )
 
-
 main(system: NodeSystem) {
     let handler = Handler(None, Map.empty(), [].toSet(), Map.empty())
     try {
         mutable input = system.readStream()
         let responseChannel: Channel[JsValue] = system.tasks().channel()
-        system.tasks().scope {scope => 
+        let subscopes: Map[MessageId, TaskScope] = [].toMap()
+        system.withScope {scope => 
             scope.spawn {
                 while {True} {
                     let body = responseChannel.read()
@@ -37,10 +37,17 @@ main(system: NodeSystem) {
                 input = requestPair.second
                 let request = requestPair.first
                 let message = parseRequestMessage(request.object)
-                scope.spawn {
-                    handleRequestMessage(system, handler, message).each {body =>
-                        responseChannel.write(body)
-                    }
+                let subscope = scope.subscope()
+                message.id.each {id => subscopes = subscopes.add(id, subscope)}
+                subscope.spawn {
+                    // message.cancellationId.each {id => subscopes.get(id).each {_.close()}}
+                    try {
+                        handleRequestMessage(system, handler, message).each {body =>
+                            responseChannel.write(body)
+                        }
+                    } finally {
+                        message.id.each {id => subscopes = subscopes.remove(id)}
+                    } grab()
                 }
             }
         }
