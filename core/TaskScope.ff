@@ -64,6 +64,7 @@ extend self: TaskScope {
         target js async """
             return {scope: self_, capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
         """
+        // TODO: Abort if the scope that created it aborts, because the parent may be waiting for the channel.
 
     sleep(duration: Duration): Unit {
         Channel.
