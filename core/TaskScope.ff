@@ -2,8 +2,8 @@ capability TaskScope {}
 
 extend self: TaskScope {
 
-    withSubscope[T](body: TaskScope => T, shielded: Bool = False, rethrow: Bool = True): T {
-        let subscope = self.subscope(shielded)
+    subscope[T](body: TaskScope => T, shielded: Bool = False, rethrow: Bool = True): T {
+        let subscope = self.openSubscope(shielded)
         try {
             body(subscope)
         } finally {
@@ -11,7 +11,7 @@ extend self: TaskScope {
         } grab()
     }
 
-    subscope[T](shielded: Bool = False): TaskScope
+    openSubscope[T](shielded: Bool = False): TaskScope
         target js async """
             if(!shielded_ && $c.signal.aborted) throw new Error("Cancelled", {cause: $c.ffReason})
             let scope = new AbortController()
@@ -73,7 +73,7 @@ extend self: TaskScope {
 
     all[T](tasks: List[() => T]): List[T] {
         let channel = self.channel()
-        self.withSubscope {scope =>
+        self.subscope {scope =>
             tasks.pairs().each {| Pair(i, task) =>
                 scope.spawn {
                     channel.write(Pair(i, task()))
@@ -89,7 +89,7 @@ extend self: TaskScope {
         let successChannel = self.channel()
         let failureChannel = self.channel()
         mutable live = tasks.size()
-        self.withSubscope {scope =>
+        self.subscope {scope =>
             tasks.each {task =>
                 scope.spawn {
                     try {

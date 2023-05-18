@@ -5,8 +5,8 @@ extend self: BrowserSystem {
     fetch(): FetchSystem
         target js async "return null"
 
-    withScope[T](body: TaskScope => T, shielded: Bool = False, rethrow: Bool = True): T {
-        let scope = self.scope(shielded)
+    scope[T](body: TaskScope => T, shielded: Bool = False, rethrow: Bool = True): T {
+        let scope = self.openScope(shielded)
         try {
             body(scope)
         } finally {
@@ -14,9 +14,9 @@ extend self: BrowserSystem {
         } grab()
     }
 
-    scope[T](shielded: Bool = False): TaskScope
+    openScope[T](shielded: Bool = False): TaskScope
         target js async """
-            return await ff_core_TaskScope.TaskScope_subscope$($c, shielded_, $c)
+            return await ff_core_TaskScope.TaskScope_openSubscope$($c, shielded_, $c)
         """
     
     time(): TimeSystem
