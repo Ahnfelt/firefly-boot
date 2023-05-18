@@ -101,7 +101,7 @@ coreImports: List[DImport] =
         "Stream"
         "String"
         "StringMap"
-        "TaskSystem"
+        "TaskScope"
         "TimeSystem"
         "Try"
         "Unit"

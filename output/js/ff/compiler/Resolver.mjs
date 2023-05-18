@@ -80,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -734,8 +734,13 @@ return _w1.signature_.name_
 })), ((name_) => {
 return ff_core_Pair.Pair(name_, name_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const locationMap_ = ff_core_List.List_toMap(ff_core_List.List_map(ff_core_List.List_map(functions_, ((_w1) => {
+return _w1.signature_
+})), ((s_) => {
+return ff_core_Pair.Pair(s_.name_, s_.at_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const self2_ = (((_c) => {
-return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variableLocations_, _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
+return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variableLocations_, locationMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 return ff_compiler_Syntax.EFunctions(at_, ff_core_List.List_map(functions_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, topLevel_)
@@ -749,6 +754,11 @@ const e_ = term_a;
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, e_.name_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_add(self_.variableLocations_, e_.name_, e_.at_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, e_.at_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, e_.at_), ff_core_Option.None()))
+}
+};
 {
 const _1 = e_;
 {
@@ -820,7 +830,11 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveType
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+if((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+} else {
+return constructor_.name_
+}
 })));
 const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0);
 const effect_ = ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
@@ -1802,8 +1816,13 @@ return _w1.signature_.name_
 })), ((name_) => {
 return ff_core_Pair.Pair(name_, name_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
+const locationMap_ = ff_core_List.List_toMap(ff_core_List.List_map(ff_core_List.List_map(functions_, ((_w1) => {
+return _w1.signature_
+})), ((s_) => {
+return ff_core_Pair.Pair(s_.name_, s_.at_)
+})), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const self2_ = (((_c) => {
-return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variableLocations_, _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
+return ff_compiler_Resolver.Resolver(ff_core_Map.Map_addAll(self_.variables_, functionMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_addAll(self_.variableLocations_, locationMap_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
 return ff_compiler_Syntax.EFunctions(at_, ff_core_List.List_map(functions_, ((_w1) => {
 return ff_compiler_Resolver.Resolver_resolveFunctionDefinition(self2_, _w1, topLevel_)
@@ -1817,6 +1836,11 @@ const e_ = term_a;
 const self2_ = (((_c) => {
 return ff_compiler_Resolver.Resolver(ff_core_Map.Map_add(self_.variables_, e_.name_, e_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Map.Map_add(self_.variableLocations_, e_.name_, e_.at_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), _c.variants_, _c.types_, _c.typeGenerics_, _c.typeLocations_, _c.asyncTypes_, _c.typeParameters_, _c.traits_, _c.traitLocations_, _c.state_, _c.lspHook_)
 }))(self_);
+if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
+if((ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, e_.at_) || ff_compiler_LspHook.LspHook_isDefinedAt(self_.lspHook_, e_.at_))) {
+ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveSymbolHook(ff_compiler_LspHook.SymbolHook(e_.name_, e_.at_, e_.at_), ff_core_Option.None()))
+}
+};
 {
 const _1 = e_;
 {
@@ -1888,7 +1912,11 @@ ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.ResolveType
 const name_ = (ff_core_String.String_contains(constructor_.name_, "$")
 ? constructor_.name_
 : ff_core_Option.Option_else(ff_core_Map.Map_get(self_.types_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
+if((!ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(constructor_.at_, ("No such type: " + constructor_.name_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
+} else {
+return constructor_.name_
+}
 })));
 const isFunctionType_ = ff_core_String.String_startsWith(name_, "Function$", 0);
 const effect_ = ((isFunctionType_ || ff_core_Set.Set_contains(self_.asyncTypes_, constructor_.name_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))

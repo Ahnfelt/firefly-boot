@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -95,8 +95,17 @@ export function BrowserSystem_fetch(self_) {
 throw new Error('Function BrowserSystem_fetch is missing on this target in sync context.');
 }
 
-export function BrowserSystem_tasks(self_) {
-throw new Error('Function BrowserSystem_tasks is missing on this target in sync context.');
+export function BrowserSystem_withScope(self_, body_, shielded_ = false, rethrow_ = true) {
+const scope_ = ff_core_BrowserSystem.BrowserSystem_scope(self_, shielded_);
+try {
+return body_(scope_)
+} finally {
+ff_core_TaskScope.TaskScope_close(scope_, rethrow_)
+}
+}
+
+export function BrowserSystem_scope(self_, shielded_ = false) {
+throw new Error('Function BrowserSystem_scope is missing on this target in sync context.');
 }
 
 export function BrowserSystem_time(self_) {
@@ -111,8 +120,19 @@ export async function BrowserSystem_fetch$(self_, $c) {
 return null
 }
 
-export async function BrowserSystem_tasks$(self_, $c) {
-return null
+export async function BrowserSystem_withScope$(self_, body_, shielded_ = false, rethrow_ = true, $c) {
+const scope_ = (await ff_core_BrowserSystem.BrowserSystem_scope$(self_, shielded_, $c));
+try {
+return (await body_(scope_, $c))
+} finally {
+(await ff_core_TaskScope.TaskScope_close$(scope_, rethrow_, $c))
+}
+}
+
+export async function BrowserSystem_scope$(self_, shielded_ = false, $c) {
+
+            return await ff_core_TaskScope.TaskScope_subscope$($c, shielded_, $c)
+        
 }
 
 export async function BrowserSystem_time$(self_, $c) {

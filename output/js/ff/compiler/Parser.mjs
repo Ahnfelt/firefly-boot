@@ -84,7 +84,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -1587,6 +1587,12 @@ return ff_compiler_Syntax.ERecord(ff_compiler_Token.Token_at(ff_compiler_Parser.
 } else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
 const result_ = ff_compiler_Parser.Parser_parseTerm(self_);
+while((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LComma()))) {
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma());
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
+ff_compiler_Parser.Parser_parseTerm(self_)
+}
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
 return result_
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LWildcard())) {
@@ -3108,6 +3114,12 @@ return ff_compiler_Syntax.ERecord(ff_compiler_Token.Token_at(ff_compiler_Parser.
 } else if(ff_compiler_Token.Token_rawIs(ff_compiler_Parser.Parser_current(self_), "(")) {
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketLeft(), "(");
 const result_ = ff_compiler_Parser.Parser_parseTerm(self_);
+while((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && ff_compiler_Parser.Parser_currentIsSeparator(self_, ff_compiler_Token.LComma()))) {
+ff_compiler_Parser.Parser_skipSeparator(self_, ff_compiler_Token.LComma());
+if((!ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LBracketRight()))) {
+ff_compiler_Parser.Parser_parseTerm(self_)
+}
+};
 ff_compiler_Parser.Parser_rawSkip(self_, ff_compiler_Token.LBracketRight(), ")");
 return result_
 } else if(ff_compiler_Token.Token_is(ff_compiler_Parser.Parser_current(self_), ff_compiler_Token.LWildcard())) {

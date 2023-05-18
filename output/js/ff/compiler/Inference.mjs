@@ -86,7 +86,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -1269,7 +1269,7 @@ return
 if(_1.EAssign) {
 const e_ = _1;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.variable_, ff_core_List.Empty(), ff_core_Option.None()), ((instantiated_) => {
-if(instantiated_.scheme_.isMutable_) {
+if((instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {
 const _1 = e_;
@@ -1279,8 +1279,6 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 return
 }
 }
-} else if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-return term_
 } else {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -1320,7 +1318,7 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-const _guard1 = instantiated_.scheme_.isMutable_;
+const _guard1 = (instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_));
 if(_guard1) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {
@@ -3232,7 +3230,7 @@ return
 if(_1.EAssign) {
 const e_ = _1;
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_compiler_Inference.Inference_lookup(self_, environment_, expected_, e_.at_, e_.variable_, ff_core_List.Empty(), ff_core_Option.None()), ((instantiated_) => {
-if(instantiated_.scheme_.isMutable_) {
+if((instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_))) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {
 const _1 = e_;
@@ -3242,8 +3240,6 @@ return ff_compiler_Syntax.EAssign(_c.at_, _c.operator_, _c.variable_, value_)
 return
 }
 }
-} else if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
-return term_
 } else {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(e_.at_, ("Symbol is not mutable: " + e_.variable_)), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
@@ -3283,7 +3279,7 @@ const _1 = ff_compiler_Inference.Inference_lookup(self_, environment_, expected_
 {
 if(_1.Some) {
 const instantiated_ = _1.value_;
-const _guard1 = instantiated_.scheme_.isMutable_;
+const _guard1 = (instantiated_.scheme_.isMutable_ || ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_));
 if(_guard1) {
 const value_ = ff_compiler_Inference.Inference_inferAssignment(self_, environment_, expected_, e_.at_, e_.operator_, e_.value_, instantiated_.scheme_.signature_);
 {

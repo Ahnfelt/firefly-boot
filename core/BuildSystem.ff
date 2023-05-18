@@ -37,9 +37,20 @@ extend self: BuildSystem {
     arguments(): Array[String]
         target node async "return self_.array_"
 
-    tasks(): TaskSystem
-        target js async "return null"
+    withScope[T](body: TaskScope => T, shielded: Bool = False, rethrow: Bool = True): T {
+        let scope = self.scope(shielded)
+        try {
+            body(scope)
+        } finally {
+            scope.close(rethrow)
+        } grab()
+    }
 
+    scope[T](shielded: Bool = False): TaskScope
+        target js async """
+            return await ff_core_TaskScope.TaskScope_subscope$($c, shielded_, $c)
+        """
+    
 }
 
 extend self: BrowserCode {

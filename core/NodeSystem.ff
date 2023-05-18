@@ -31,15 +31,26 @@ extend self: NodeSystem {
     fetch(): FetchSystem
         target js async "return null"
 
-    tasks(): TaskSystem
-        target js async "return null"
-
     time(): TimeSystem
         target js async "return null"
 
     js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
 
+    withScope[T](body: TaskScope => T, shielded: Bool = False, rethrow: Bool = True): T {
+        let scope = self.scope(shielded)
+        try {
+            body(scope)
+        } finally {
+            scope.close(rethrow)
+        } grab()
+    }
+
+    scope[T](shielded: Bool = False): TaskScope
+        target js async """
+            return await ff_core_TaskScope.TaskScope_subscope$($c, shielded_, $c)
+        """
+    
     exit[T](exitCode: Int = 0): T
         target js async "process.exit(exitCode_)"
 
