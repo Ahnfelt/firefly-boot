@@ -50,9 +50,14 @@ main(system: NodeSystem) {
                             }
                         }
                     } catchAny {error =>
-                        if(error.name() == "AbortError") {
+                        let problem = if(error.name() == "AbortError") {
+                            Error(-32800, "Request cancelled")
+                        } else {
+                            Error(-32603, "Internal error")
+                        }
+                        scope.spawn {
                             message.id.each {id => 
-                                let body = makeResponseMessage(system.js(), id, Error(-32800, "Request cancelled"))
+                                let body = makeResponseMessage(system.js(), id, problem)
                                 responseChannel.write(body)
                             }
                         }
