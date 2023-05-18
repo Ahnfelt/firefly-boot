@@ -137,8 +137,8 @@ export function NodeSystem_js(self_) {
 throw new Error('Function NodeSystem_js is missing on this target in sync context.');
 }
 
-export function NodeSystem_withScope(self_, body_, shielded_ = false, rethrow_ = true) {
-const scope_ = ff_core_NodeSystem.NodeSystem_scope(self_, shielded_);
+export function NodeSystem_scope(self_, body_, shielded_ = false, rethrow_ = true) {
+const scope_ = ff_core_NodeSystem.NodeSystem_openScope(self_, shielded_);
 try {
 return body_(scope_)
 } finally {
@@ -146,8 +146,8 @@ ff_core_TaskScope.TaskScope_close(scope_, rethrow_)
 }
 }
 
-export function NodeSystem_scope(self_, shielded_ = false) {
-throw new Error('Function NodeSystem_scope is missing on this target in sync context.');
+export function NodeSystem_openScope(self_, shielded_ = false) {
+throw new Error('Function NodeSystem_openScope is missing on this target in sync context.');
 }
 
 export function NodeSystem_exit(self_, exitCode_ = 0) {
@@ -236,8 +236,8 @@ export async function NodeSystem_js$(self_, $c) {
 return typeof globalThis !== 'undefined' ? globalThis : window
 }
 
-export async function NodeSystem_withScope$(self_, body_, shielded_ = false, rethrow_ = true, $c) {
-const scope_ = (await ff_core_NodeSystem.NodeSystem_scope$(self_, shielded_, $c));
+export async function NodeSystem_scope$(self_, body_, shielded_ = false, rethrow_ = true, $c) {
+const scope_ = (await ff_core_NodeSystem.NodeSystem_openScope$(self_, shielded_, $c));
 try {
 return (await body_(scope_, $c))
 } finally {
@@ -245,9 +245,9 @@ return (await body_(scope_, $c))
 }
 }
 
-export async function NodeSystem_scope$(self_, shielded_ = false, $c) {
+export async function NodeSystem_openScope$(self_, shielded_ = false, $c) {
 
-            return await ff_core_TaskScope.TaskScope_subscope$($c, shielded_, $c)
+            return await ff_core_TaskScope.TaskScope_openSubscope$($c, shielded_, $c)
         
 }
 

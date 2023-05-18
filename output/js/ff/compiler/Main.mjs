@@ -1725,7 +1725,7 @@ return
 };
 
 export async function $run$(fireflyPath_, arguments_) {
-Error.stackTraceLimit = 100
+Error.stackTraceLimit = 50
 const controller = new AbortController()
 controller.promises = new Set()
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)

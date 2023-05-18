@@ -247,8 +247,8 @@ export function BuildSystem_arguments(self_) {
 throw new Error('Function BuildSystem_arguments is missing on this target in sync context.');
 }
 
-export function BuildSystem_withScope(self_, body_, shielded_ = false, rethrow_ = true) {
-const scope_ = ff_core_BuildSystem.BuildSystem_scope(self_, shielded_);
+export function BuildSystem_scope(self_, body_, shielded_ = false, rethrow_ = true) {
+const scope_ = ff_core_BuildSystem.BuildSystem_openScope(self_, shielded_);
 try {
 return body_(scope_)
 } finally {
@@ -256,8 +256,8 @@ ff_core_TaskScope.TaskScope_close(scope_, rethrow_)
 }
 }
 
-export function BuildSystem_scope(self_, shielded_ = false) {
-throw new Error('Function BuildSystem_scope is missing on this target in sync context.');
+export function BuildSystem_openScope(self_, shielded_ = false) {
+throw new Error('Function BuildSystem_openScope is missing on this target in sync context.');
 }
 
 export async function BuildSystem_compileForBrowser$(self_, mainFile_, $c) {
@@ -290,8 +290,8 @@ export async function BuildSystem_arguments$(self_, $c) {
 return self_.array_
 }
 
-export async function BuildSystem_withScope$(self_, body_, shielded_ = false, rethrow_ = true, $c) {
-const scope_ = (await ff_core_BuildSystem.BuildSystem_scope$(self_, shielded_, $c));
+export async function BuildSystem_scope$(self_, body_, shielded_ = false, rethrow_ = true, $c) {
+const scope_ = (await ff_core_BuildSystem.BuildSystem_openScope$(self_, shielded_, $c));
 try {
 return (await body_(scope_, $c))
 } finally {
@@ -299,9 +299,9 @@ return (await body_(scope_, $c))
 }
 }
 
-export async function BuildSystem_scope$(self_, shielded_ = false, $c) {
+export async function BuildSystem_openScope$(self_, shielded_ = false, $c) {
 
-            return await ff_core_TaskScope.TaskScope_subscope$($c, shielded_, $c)
+            return await ff_core_TaskScope.TaskScope_openSubscope$($c, shielded_, $c)
         
 }
 

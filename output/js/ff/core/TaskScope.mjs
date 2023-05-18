@@ -91,8 +91,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function TaskScope_withSubscope(self_, body_, shielded_ = false, rethrow_ = true) {
-const subscope_ = ff_core_TaskScope.TaskScope_subscope(self_, shielded_);
+export function TaskScope_subscope(self_, body_, shielded_ = false, rethrow_ = true) {
+const subscope_ = ff_core_TaskScope.TaskScope_openSubscope(self_, shielded_);
 try {
 return body_(subscope_)
 } finally {
@@ -100,8 +100,8 @@ ff_core_TaskScope.TaskScope_close(subscope_, rethrow_)
 }
 }
 
-export function TaskScope_subscope(self_, shielded_ = false) {
-throw new Error('Function TaskScope_subscope is missing on this target in sync context.');
+export function TaskScope_openSubscope(self_, shielded_ = false) {
+throw new Error('Function TaskScope_openSubscope is missing on this target in sync context.');
 }
 
 export function TaskScope_close(self_, rethrow_ = true) {
@@ -126,7 +126,7 @@ ff_core_Channel.ChannelAction_timeout(ff_core_Channel.readOr_(ff_core_TaskScope.
 
 export function TaskScope_all(self_, tasks_) {
 const channel_ = ff_core_TaskScope.TaskScope_channel(self_, 0);
-return ff_core_TaskScope.TaskScope_withSubscope(self_, ((scope_) => {
+return ff_core_TaskScope.TaskScope_subscope(self_, ((scope_) => {
 ff_core_List.List_each(ff_core_List.List_pairs(tasks_), ((_1) => {
 {
 const i_ = _1.first_;
@@ -151,7 +151,7 @@ export function TaskScope_race(self_, tasks_) {
 const successChannel_ = ff_core_TaskScope.TaskScope_channel(self_, 0);
 const failureChannel_ = ff_core_TaskScope.TaskScope_channel(self_, 0);
 let live_ = ff_core_List.List_size(tasks_);
-return ff_core_TaskScope.TaskScope_withSubscope(self_, ((scope_) => {
+return ff_core_TaskScope.TaskScope_subscope(self_, ((scope_) => {
 ff_core_List.List_each(tasks_, ((task_) => {
 ff_core_TaskScope.TaskScope_spawn(scope_, (() => {
 ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
@@ -172,8 +172,8 @@ return ff_core_Error.Error_rethrow(_w1)
 }), false, true)
 }
 
-export async function TaskScope_withSubscope$(self_, body_, shielded_ = false, rethrow_ = true, $c) {
-const subscope_ = (await ff_core_TaskScope.TaskScope_subscope$(self_, shielded_, $c));
+export async function TaskScope_subscope$(self_, body_, shielded_ = false, rethrow_ = true, $c) {
+const subscope_ = (await ff_core_TaskScope.TaskScope_openSubscope$(self_, shielded_, $c));
 try {
 return (await body_(subscope_, $c))
 } finally {
@@ -181,7 +181,7 @@ return (await body_(subscope_, $c))
 }
 }
 
-export async function TaskScope_subscope$(self_, shielded_ = false, $c) {
+export async function TaskScope_openSubscope$(self_, shielded_ = false, $c) {
 
             if(!shielded_ && $c.signal.aborted) throw new Error("Cancelled", {cause: $c.ffReason})
             let scope = new AbortController()
@@ -216,10 +216,9 @@ export async function TaskScope_spawn$(self_, task_, $c) {
             if(self_.ffClosed) throw new Error("Spawn outside scope")
             async function spawn() {
                 try {
-                    await Promise.resolve(self_).then(controller => {
-                        if(self_.signal.aborted) throw new Error("Cancelled", {cause: self_.ffReason})
-                        task_(controller)
-                    })
+                    let controller = await Promise.resolve(self_)
+                    if(self_.signal.aborted) throw new Error("Cancelled", {cause: self_.ffReason})
+                    await task_(controller)
                 } catch(e) {
                     if(!self_.signal.aborted) {
                         self_.ffReason = e
@@ -250,7 +249,7 @@ export async function TaskScope_sleep$(self_, duration_, $c) {
 
 export async function TaskScope_all$(self_, tasks_, $c) {
 const channel_ = (await ff_core_TaskScope.TaskScope_channel$(self_, 0, $c));
-return (await ff_core_TaskScope.TaskScope_withSubscope$(self_, (async (scope_, $c) => {
+return (await ff_core_TaskScope.TaskScope_subscope$(self_, (async (scope_, $c) => {
 (await ff_core_List.List_each$(ff_core_List.List_pairs(tasks_), (async (_1, $c) => {
 {
 const i_ = _1.first_;
@@ -275,7 +274,7 @@ export async function TaskScope_race$(self_, tasks_, $c) {
 const successChannel_ = (await ff_core_TaskScope.TaskScope_channel$(self_, 0, $c));
 const failureChannel_ = (await ff_core_TaskScope.TaskScope_channel$(self_, 0, $c));
 let live_ = ff_core_List.List_size(tasks_);
-return (await ff_core_TaskScope.TaskScope_withSubscope$(self_, (async (scope_, $c) => {
+return (await ff_core_TaskScope.TaskScope_subscope$(self_, (async (scope_, $c) => {
 (await ff_core_List.List_each$(tasks_, (async (task_, $c) => {
 (await ff_core_TaskScope.TaskScope_spawn$(scope_, (async ($c) => {
 ff_core_Try.Try_grab((await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($c) => {
