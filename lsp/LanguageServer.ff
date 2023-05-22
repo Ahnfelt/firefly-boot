@@ -55,8 +55,8 @@ main(system: NodeSystem) {
                         system.tasks().synchronized {writeResponse(jsValue)}
                     }
                 } finally {
-                    system.tasks().synchronized {
-                        message.id.each {id => 
+                    message.id.each {id => 
+                        system.tasks().synchronized {
                             tasks.get(id).each {_.close()}
                             tasks = tasks.remove(id)
                         }
