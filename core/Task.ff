@@ -5,6 +5,8 @@ extend TaskSystem {
     spawn[I, O](body: (O => Unit, () => I) => R): Task[I, O]
     // If the aborted flag is set for the current task, clears it and throws TaskAbortedException.
     throwIfAborted(): Unit
+    // Sleeps for the duration
+    sleep(duration: Duration): Unit
 }
 
 extend Task[I, O] {
