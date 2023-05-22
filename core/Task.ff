@@ -13,7 +13,7 @@ extend Task[T] {
     // Sets the aborted flag, which causes ongoing/next async call to throw TaskAbortedException
     abort(): Unit
     // Waits until the task is no longer running (returns True), or the duration passes (returns False)
-    join(duration: Option[Duration]): Boolean
+    join(duration: Option[Duration] = None): Boolean
 }
 
 data TaskAbortedException(dueToSubtask: Boolean)
