@@ -35,8 +35,8 @@ main(system: NodeSystem) {
             let task = system.tasks().spawn {
                 try {
                     if(message.method == "$/cancelRequest") {
+                        let cancellationId = parseMessageId(message.parameters.grab("id"))
                         system.tasks().synchronized {
-                            let cancellationId = parseMessageId(message.parameters.grab("id"))
                             tasks.get(cancellationId).each {_.close()}
                         }
                     } else {
@@ -56,8 +56,10 @@ main(system: NodeSystem) {
                     }
                 } finally {
                     system.tasks().synchronized {
-                        message.id.each {id => tasks = tasks.remove(id)}
-                        tasks.close()
+                        message.id.each {id => 
+                            tasks.get(id).each {_.close()}
+                            tasks = tasks.remove(id)
+                        }
                     }
                 } grab()
             }
