@@ -41,7 +41,7 @@ main(system: NodeSystem) {
                         }
                     } else {
                         handleRequestMessage(system, handler, message).each {jsValue =>
-                            system.tasks().synchronized {writeResponse(jsValue)}
+                            system.tasks().synchronized(shield = True) {writeResponse(jsValue)}
                         }
                     }
                 } catchAny {error =>
@@ -52,7 +52,7 @@ main(system: NodeSystem) {
                             Error(-32603, "Internal error")
                         }
                         let jsValue = makeResponseMessage(system.js(), id, problem)
-                        system.tasks().synchronized {writeResponse(jsValue)}
+                        system.tasks().synchronized(shield = True) {writeResponse(jsValue)}
                     }
                 } finally {
                     message.id.each {id => 
