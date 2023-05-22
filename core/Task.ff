@@ -16,7 +16,7 @@ extend Task[I, O] {
     receive(): O
     // Sets the aborted flag, which causes ongoing/next async call to throw TaskAbortedException.
     // Returns once the has stopped running.
-    abort(): Unit
+    abort(after: Duration = Duration(0.0)): Unit
 }
 
 data TaskAbortedException(dueToSubtask: Boolean)
