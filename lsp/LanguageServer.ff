@@ -67,7 +67,7 @@ main(system: NodeSystem) {
                     }
                 } grab()
             }
-            sequencerTask.send {
+            sequencerTask.send { // How to ensure this happens before tasks.remove?
                 message.id.each {id => tasks = tasks.add(id, tasks)}
             }
         }
