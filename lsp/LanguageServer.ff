@@ -27,9 +27,9 @@ main(system: NodeSystem) {
             system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
             system.writeBuffer(json)
         }
-        let sequentialTask = system.tasks().spawn {read =>
+        let sequentialTask = system.tasks().spawn {receive =>
             while {True} {
-                let body = read()
+                let body = receive()
                 body()
             }
         }
@@ -42,10 +42,10 @@ main(system: NodeSystem) {
                 try {
                     if(message.method == "$/cancelRequest") {
                         let cancellationId = parseMessageId(message.parameters.grab("id"))
-                        sequentialTask.write {tasks.get(cancellationId).each {_.close()}}
+                        sequentialTask.send {tasks.get(cancellationId).each {_.close()}}
                     } else {
                         handleRequestMessage(system, handler, message).each {jsValue =>
-                            sequentialTask.write {writeResponse(jsValue)}
+                            sequentialTask.send {writeResponse(jsValue)}
                         }
                     }
                 } catchAny {error =>
@@ -56,18 +56,18 @@ main(system: NodeSystem) {
                             Error(-32603, "Internal error")
                         }
                         let jsValue = makeResponseMessage(system.js(), id, problem)
-                        sequentialTask.write {writeResponse(jsValue)}
+                        sequentialTask.send {writeResponse(jsValue)}
                     }
                 } finally {
                     message.id.each {id => 
-                        sequentialTask.write {
+                        sequentialTask.send {
                             tasks.get(id).each {_.close()}
                             tasks = tasks.remove(id)
                         }
                     }
                 } grab()
             }
-            sequentialTask.write {
+            sequentialTask.send {
                 message.id.each {id => tasks = tasks.add(id, tasks)}
             }
         }
