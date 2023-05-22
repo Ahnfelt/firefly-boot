@@ -5,8 +5,6 @@ extend TaskSystem {
     spawn[I, O](body: (O => Unit, () => I) => R): Task[I, O]
     // If the aborted flag is set for the current task, clears it and throws TaskAbortedException.
     throwIfAborted(): Unit
-    // Sleeps for the duration
-    sleep(duration: Duration): Unit
 }
 
 extend Task[I, O] {
@@ -14,8 +12,9 @@ extend Task[I, O] {
     send(message: I): Unit
     // Synchronously receives a message from the task, waiting until the tasks sends it.
     receive(): O
-    // Sets the aborted flag, which causes ongoing/next async call to throw TaskAbortedException.
-    // Returns once the has stopped running.
+    // After the specified duration, sets the tasks aborted flag, which causes the
+    // ongoing/next async call to throw TaskAbortedException.
+    // Returns once the task has stopped running.
     abort(after: Duration = Duration(0.0)): Unit
 }
 
