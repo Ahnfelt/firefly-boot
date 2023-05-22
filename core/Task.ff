@@ -9,8 +9,10 @@ extend TaskSystem {
 
 extend Task[I, O] {
     // Synchronously sends a message to the task, waiting until the tasks recieves it.
+    // Trying to send to a task that's no longer running aborts the sending task.
     send(message: I): Unit
     // Synchronously receives a message from the task, waiting until the tasks sends it.
+    // Trying to receive from a task that's no longer running aborts the sending task.
     receive(): O
     // After the specified duration, sets the tasks aborted flag, which causes the
     // ongoing/next async call to throw TaskAbortedException.
