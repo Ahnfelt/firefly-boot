@@ -1,8 +1,8 @@
 extend TaskSystem {
-    // Spawns a task running body, which takes in functions to synchronously receive and send messages.
+    // Spawns a task running body, which takes in functions to synchronously send and receive messages.
     // Automatically aborts and then joins subtasks when body returns or throws an unhandled exception.
     // If body throws, the parent task is also aborted with the dueToSubtask flag set to true.
-    spawn[I, O](body: (() => I, O => Unit) => R): Task[I, O]
+    spawn[I, O](body: (O => Unit, () => I) => R): Task[I, O]
     // If the aborted flag is set for the current task, clears it and throws TaskAbortedException.
     throwIfAborted(): Unit
 }
