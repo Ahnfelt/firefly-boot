@@ -1,7 +1,7 @@
 extend TaskSystem {
     // Spawn takes in a synchronous function to receive messages
     spawn[T](body: (() => T) => Unit): Task[T]
-    // If the aborted flag is set for this task, clears it and throws TaskAbortedException
+    // If the aborted flag is set for the current task, clears it and throws TaskAbortedException
     throwIfAborted(): Unit
 }
 
