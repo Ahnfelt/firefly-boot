@@ -4,6 +4,6 @@ extend TaskSystem {
 
 extend Task[T] {
     send(message: T): Unit
-    close(): Unit
+    abort(): Unit
 }
 

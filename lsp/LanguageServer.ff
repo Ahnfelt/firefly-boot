@@ -26,7 +26,7 @@ main(system: NodeSystem) {
             system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
             system.writeBuffer(json)
         }
-        let sequentialTask = system.tasks().spawn {receive =>
+        let sequencerTask = system.tasks().spawn {receive =>
             while {True} {
                 let body = receive()
                 body()
@@ -42,10 +42,10 @@ main(system: NodeSystem) {
                 try {
                     if(message.method == "$/cancelRequest") {
                         let cancellationId = parseMessageId(message.parameters.grab("id"))
-                        sequentialTask.send {tasks.get(cancellationId).each {_.close()}}
+                        sequencerTask.send {tasks.get(cancellationId).each {_.abort()}}
                     } else {
                         handleRequestMessage(system, handler, message).each {jsValue =>
-                            sequentialTask.send {writeResponse(jsValue)}
+                            sequencerTask.send {writeResponse(jsValue)}
                         }
                     }
                 } catchAny {error =>
@@ -56,18 +56,18 @@ main(system: NodeSystem) {
                             Error(-32603, "Internal error")
                         }
                         let jsValue = makeResponseMessage(system.js(), id, problem)
-                        sequentialTask.send {writeResponse(jsValue)}
+                        sequencerTask.send {writeResponse(jsValue)}
                     }
                 } finally {
                     message.id.each {id => 
-                        sequentialTask.send {
-                            tasks.get(id).each {_.close()}
+                        sequencerTask.send {
+                            tasks.get(id).each {_.abort()}
                             tasks = tasks.remove(id)
                         }
                     }
                 } grab()
             }
-            sequentialTask.send {
+            sequencerTask.send {
                 message.id.each {id => tasks = tasks.add(id, tasks)}
             }
         }
