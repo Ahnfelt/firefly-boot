@@ -20,8 +20,7 @@ capability RequestMessage(
 main(system: NodeSystem) {
     let handler = Handler(None, Map.empty(), Map.empty())
     try {
-        mutable input = system.readStream()
-        mutable tasks: Map[MessageId, Task[JsValue]] = [].toMap()
+        mutable tasks: Map[MessageId, Task[() => Unit]] = [].toMap()
         function writeResponse(jsValue: JsValue) {
             let json = jsValue.toJson(Some("    ")).toBuffer()
             system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
@@ -33,6 +32,7 @@ main(system: NodeSystem) {
                 body()
             }
         }
+        mutable input = system.readStream()
         while {True} {
             let requestPair = parseRequest(system, input)
             input = requestPair.second
