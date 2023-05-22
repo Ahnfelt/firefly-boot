@@ -26,7 +26,7 @@ main(system: NodeSystem) {
             system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
             system.writeBuffer(json)
         }
-        let sequencerTask = system.tasks().spawn {receive =>
+        let sequencerTask = system.tasks().spawn {_, receive =>
             while {True} {
                 let body = receive()
                 body()
@@ -38,7 +38,7 @@ main(system: NodeSystem) {
             input = requestPair.second
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
-            let task = system.tasks().spawn {_ =>
+            let task = system.tasks().spawn {_, _ =>
                 try {
                     if(message.method == "$/cancelRequest") {
                         let cancellationId = parseMessageId(message.parameters.grab("id"))
