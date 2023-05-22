@@ -24,9 +24,13 @@ main(system: NodeSystem) {
         mutable tasks: Map[MessageId, Task[JsValue]] = [].toMap()
         function writeResponse(jsValue: JsValue) {
             let json = jsValue.toJson(Some("    ")).toBuffer()
-            system.tasks().shield {
-                system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
-                system.writeBuffer(json)
+            system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
+            system.writeBuffer(json)
+        }
+        let sequentialTask = system.tasks().spawn {read =>
+            while {True} {
+                let body = read()
+                body()
             }
         }
         while {True} {
@@ -34,16 +38,14 @@ main(system: NodeSystem) {
             input = requestPair.second
             let request = requestPair.first
             let message = parseRequestMessage(request.object)
-            let task = system.tasks().spawn {
+            let task = system.tasks().spawn {_ =>
                 try {
                     if(message.method == "$/cancelRequest") {
                         let cancellationId = parseMessageId(message.parameters.grab("id"))
-                        system.tasks().synchronized {
-                            tasks.get(cancellationId).each {_.close()}
-                        }
+                        sequentialTask.write {tasks.get(cancellationId).each {_.close()}}
                     } else {
                         handleRequestMessage(system, handler, message).each {jsValue =>
-                            system.tasks().synchronized {writeResponse(jsValue)}
+                            sequentialTask.write {writeResponse(jsValue)}
                         }
                     }
                 } catchAny {error =>
@@ -54,18 +56,18 @@ main(system: NodeSystem) {
                             Error(-32603, "Internal error")
                         }
                         let jsValue = makeResponseMessage(system.js(), id, problem)
-                        system.tasks().synchronized {writeResponse(jsValue)}
+                        sequentialTask.write {writeResponse(jsValue)}
                     }
                 } finally {
                     message.id.each {id => 
-                        system.tasks().synchronized {
+                        sequentialTask.write {
                             tasks.get(id).each {_.close()}
                             tasks = tasks.remove(id)
                         }
                     }
                 } grab()
             }
-            system.tasks().synchronized {
+            sequentialTask.write {
                 message.id.each {id => tasks = tasks.add(id, tasks)}
             }
         }

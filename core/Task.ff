@@ -1,9 +1,9 @@
 extend TaskSystem {
-    spawn(body: () => Unit): Task
-    synchronized[T](body: () => T): T
+    spawn[T](body: (() => T) => Unit): Task[T]
 }
 
-extend Task {
+extend Task[T] {
+    send(message: T): Unit
     close(): Unit
 }
 
