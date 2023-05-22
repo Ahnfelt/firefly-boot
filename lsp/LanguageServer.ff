@@ -20,7 +20,7 @@ capability RequestMessage(
 main(system: NodeSystem) {
     let handler = Handler(None, Map.empty(), Map.empty())
     try {
-        mutable tasks: Map[MessageId, Task[() => Unit]] = [].toMap()
+        mutable tasks: Map[MessageId, Task[() => Unit, Nothing]] = [].toMap()
         function writeResponse(jsValue: JsValue) {
             let json = jsValue.toJson(Some("    ")).toBuffer()
             system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
