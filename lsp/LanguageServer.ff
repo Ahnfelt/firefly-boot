@@ -24,8 +24,10 @@ main(system: NodeSystem) {
         mutable tasks: Map[MessageId, Task[JsValue]] = [].toMap()
         function writeResponse(jsValue: JsValue) {
             let json = jsValue.toJson(Some("    ")).toBuffer()
-            system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
-            system.writeBuffer(json)
+            system.tasks().shield {
+                system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
+                system.writeBuffer(json)
+            }
         }
         while {True} {
             let requestPair = parseRequest(system, input)
@@ -41,7 +43,7 @@ main(system: NodeSystem) {
                         }
                     } else {
                         handleRequestMessage(system, handler, message).each {jsValue =>
-                            system.tasks().synchronized(shield = True) {writeResponse(jsValue)}
+                            system.tasks().synchronized {writeResponse(jsValue)}
                         }
                     }
                 } catchAny {error =>
@@ -52,7 +54,7 @@ main(system: NodeSystem) {
                             Error(-32603, "Internal error")
                         }
                         let jsValue = makeResponseMessage(system.js(), id, problem)
-                        system.tasks().synchronized(shield = True) {writeResponse(jsValue)}
+                        system.tasks().synchronized {writeResponse(jsValue)}
                     }
                 } finally {
                     message.id.each {id => 
