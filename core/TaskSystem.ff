@@ -7,7 +7,7 @@ extend self: TaskSystem {
     spawn(body: Task => Unit): Task
         target js async """
             await ff_core_TaskSystem.TaskSystem_throwIfAborted$(null, $task)
-            const subtask = {aborted: false, controller: null, subtasks: new Set()}
+            const subtask = {controller: new AbortController(), subtasks: new Set()}
             $task.subtasks.add(subtask)
             subtask.promise = Promise.resolve(subtask).then(async () => {
                 try {
@@ -16,7 +16,7 @@ extend self: TaskSystem {
                     await ff_core_TaskSystem.Task_abort$($task)
                     throw e
                 } finally {
-                    for(const t of subtask.subtasks) await ff_core_TaskSystem.Task_abort$(t)
+                    for(const t of subtask.subtasks) t.controller.abort()
                     await Promise.allSettled([...subtask.subtasks].map(t => t.promise))
                     $task.subtasks.delete(subtask)
                 }
@@ -27,10 +27,7 @@ extend self: TaskSystem {
     // You don't normally need to call this, but you might want to before doing an expensive computation.
     throwIfAborted(): Unit
         target js async """
-            if($task.aborted) {
-                $task.aborted = false
-                ff_core_TaskSystem.internalThrowAbortedException_$()
-            }
+            $task.controller.throwIfAborted()
         """
 }
 
@@ -40,13 +37,6 @@ extend self: Task {
     // Sets the tasks aborted flag, which causes the ongoing/next async call to throw TaskAbortedException.
     abort(): Unit
         target js async """
-            if(self_.controller) self_.controller.abort()
-            else self_.aborted = true
+            self_.controller.abort()
         """
-}
-
-data TaskAbortedException()
-
-internalThrowAbortedException() {
-    throw(TaskAbortedException)
 }

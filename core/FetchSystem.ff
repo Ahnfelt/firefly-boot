@@ -24,9 +24,8 @@ extend self: FetchSystem {
         throw: Bool = True
     ): FetchResponse
         target js async """
-            await ff_core_TaskSystem.TaskSystem_throwIfAborted$(null, $task)
             try {
-                $task.controller = new AbortController()
+                $task.controller.throwIfAborted()
                 const options = {headers: {}, signal: $task.controller.signal}
                 options.method = method_
                 ff_core_List.List_each(headers_, pair => {options.headers[pair.key_] = pair.value_})
@@ -42,7 +41,7 @@ extend self: FetchSystem {
                 if(throw_ && !result.ok) throw new Error("Unexpected HTTP status code: " + result.status)
                 return result
             } finally {
-                $task.controller = null
+                if($task.controller.signal.aborted) $task.controller = new AbortController()                
             }
         """
 
