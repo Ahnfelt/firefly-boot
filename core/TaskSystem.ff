@@ -6,8 +6,8 @@ extend self: TaskSystem {
     // If body throws, the parent task is also aborted with the dueToSubtask flag set to true.
     spawn(body: Task => Unit): Task
         target js async """
-            await ff_core_TaskSystem.TaskSystem_throwIfAborted$(self_)
-            const subtask = {aborted: false, onAbort: null, subtasks: new Set()}
+            await ff_core_TaskSystem.TaskSystem_throwIfAborted$(null, $task)
+            const subtask = {aborted: false, controller: null, subtasks: new Set()}
             $task.subtasks.add(subtask)
             subtask.promise = Promise.resolve(subtask).then(async () => {
                 try {
@@ -40,7 +40,7 @@ extend self: Task {
     // Sets the tasks aborted flag, which causes the ongoing/next async call to throw TaskAbortedException.
     abort(): Unit
         target js async """
-            if(self_.onAbort) self_.onAbort()
+            if(self_.controller) self_.controller.abort()
             else self_.aborted = true
         """
 }

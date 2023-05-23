@@ -24,20 +24,26 @@ extend self: FetchSystem {
         throw: Bool = True
     ): FetchResponse
         target js async """
-            const options = {headers: {}, signal: $c.signal}
-            options.method = method_
-            ff_core_List.List_each(headers_, pair => {options.headers[pair.key_] = pair.value_})
-            if(body_.value_) options.body = body_.value_
-            if(redirect_.RedirectError) options.redirect = "error"
-            else if(redirect_.RedirectManual) options.redirect = "manual"
-            if(referrer_.value_) options.referrer = referrer_.value_
-            if(integrity_.value_) options.integrity = integrity_.value_
-            if(mode_.value_) options.mode = mode_.value_
-            if(credentials_.value_) options.credentials = credentials_.value_
-            if(cache_.value_) options.cache = cache_.value_
-            let result = await fetch(url_, options)
-            if(throw_ && !result.ok) throw new Error("Unexpected HTTP status code: " + result.status)
-            return result
+            await ff_core_TaskSystem.TaskSystem_throwIfAborted$(null, $task)
+            try {
+                $task.controller = new AbortController()
+                const options = {headers: {}, signal: $task.controller.signal}
+                options.method = method_
+                ff_core_List.List_each(headers_, pair => {options.headers[pair.key_] = pair.value_})
+                if(body_.value_) options.body = body_.value_
+                if(redirect_.RedirectError) options.redirect = "error"
+                else if(redirect_.RedirectManual) options.redirect = "manual"
+                if(referrer_.value_) options.referrer = referrer_.value_
+                if(integrity_.value_) options.integrity = integrity_.value_
+                if(mode_.value_) options.mode = mode_.value_
+                if(credentials_.value_) options.credentials = credentials_.value_
+                if(cache_.value_) options.cache = cache_.value_
+                let result = await fetch(url_, options)
+                if(throw_ && !result.ok) throw new Error("Unexpected HTTP status code: " + result.status)
+                return result
+            } finally {
+                $task.controller = null
+            }
         """
 
 }
