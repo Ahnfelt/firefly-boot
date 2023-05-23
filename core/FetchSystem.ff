@@ -25,7 +25,6 @@ extend self: FetchSystem {
     ): FetchResponse
         target js async """
             try {
-                $task.controller.throwIfAborted()
                 const options = {headers: {}, signal: $task.controller.signal}
                 options.method = method_
                 ff_core_List.List_each(headers_, pair => {options.headers[pair.key_] = pair.value_})
