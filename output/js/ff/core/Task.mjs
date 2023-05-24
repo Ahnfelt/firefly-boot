@@ -197,9 +197,8 @@ export function Task_race(self_, tasks_) {
 const successChannel_ = ff_core_Task.Task_channel(self_, 0);
 const failureChannel_ = ff_core_Task.Task_channel(self_, 0);
 let live_ = ff_core_List.List_size(tasks_);
-const t_ = ff_core_Task.Task_spawn(self_, ((_) => {
-ff_core_List.List_each(tasks_, ((task_) => {
-ff_core_Task.Task_spawn(self_, ((_) => {
+const started_ = ff_core_List.List_map(tasks_, ((task_) => {
+return ff_core_Task.Task_spawn(self_, ((_) => {
 ff_core_Try.Try_grab(ff_core_Try.Try_catchAny(ff_core_Core.try_((() => {
 return ff_core_Channel.Channel_write(successChannel_, task_())
 })), ((e_) => {
@@ -209,7 +208,6 @@ ff_core_Channel.Channel_write(failureChannel_, e_)
 }
 })))
 }))
-}))
 }));
 try {
 return ff_core_Channel.ChannelAction_wait(ff_core_Channel.ChannelAction_readOr(ff_core_Channel.readOr_(successChannel_, ((_w1) => {
@@ -218,7 +216,9 @@ return _w1
 return ff_core_Error.Error_rethrow(_w1)
 })))
 } finally {
-ff_core_Task.Task_abort(t_)
+ff_core_List.List_each(started_, ((_w1) => {
+ff_core_Task.Task_abort(_w1)
+}))
 }
 }
 
@@ -270,9 +270,8 @@ export async function Task_race$(self_, tasks_, $task) {
 const successChannel_ = (await ff_core_Task.Task_channel$(self_, 0, $task));
 const failureChannel_ = (await ff_core_Task.Task_channel$(self_, 0, $task));
 let live_ = ff_core_List.List_size(tasks_);
-const t_ = (await ff_core_Task.Task_spawn$(self_, (async (_, $task) => {
-(await ff_core_List.List_each$(tasks_, (async (task_, $task) => {
-(await ff_core_Task.Task_spawn$(self_, (async (_, $task) => {
+const started_ = (await ff_core_List.List_map$(tasks_, (async (task_, $task) => {
+return (await ff_core_Task.Task_spawn$(self_, (async (_, $task) => {
 ff_core_Try.Try_grab((await ff_core_Try.Try_catchAny$((await ff_core_Core.try_$((async ($task) => {
 return (await ff_core_Channel.Channel_write$(successChannel_, (await task_($task)), $task))
 }), $task)), (async (e_, $task) => {
@@ -282,7 +281,6 @@ if((live_ === 0)) {
 }
 }), $task)))
 }), $task))
-}), $task))
 }), $task));
 try {
 return (await ff_core_Channel.ChannelAction_wait$((await ff_core_Channel.ChannelAction_readOr$((await ff_core_Channel.readOr_$(successChannel_, (async (_w1, $task) => {
@@ -291,7 +289,9 @@ return _w1
 return ff_core_Error.Error_rethrow(_w1)
 }), $task)), $task))
 } finally {
-(await ff_core_Task.Task_abort$(t_, $task))
+(await ff_core_List.List_each$(started_, (async (_w1, $task) => {
+(await ff_core_Task.Task_abort$(_w1, $task))
+}), $task))
 }
 }
 
