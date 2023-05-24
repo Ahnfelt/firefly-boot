@@ -1,24 +1,24 @@
-capability TaskSystem {}
+capability Task {}
 
-extend self: TaskSystem {
+extend self: Task {
     // Spawns a task running body. The return value as well as the argument to body is the task handle.
     // Automatically aborts and then joins subtasks when body returns or throws an unhandled exception.
     // If body throws, the parent task is also aborted with the dueToSubtask flag set to true.
     spawn(body: Task => Unit): Task
         target js async """
-            await ff_core_TaskSystem.TaskSystem_throwIfAborted$(null, $task)
-            const subtask = {controller: new AbortController(), subtasks: new Set()}
-            $task.subtasks.add(subtask)
-            subtask.promise = Promise.resolve(subtask).then(async () => {
+            await ff_core_TaskSystem.TaskSystem_throwIfAborted$(self_)
+            const task = {controller: new AbortController(), subtasks: new Set()}
+            self_.subtasks.add(task)
+            task.promise = Promise.resolve(task).then(async () => {
                 try {
-                    await body_(subtask)
+                    await body_(task)
                 } catch(e) {
-                    await ff_core_TaskSystem.Task_abort$($task)
+                    await ff_core_TaskSystem.Task_abort$(self_)
                     throw e
                 } finally {
-                    for(const t of subtask.subtasks) t.controller.abort()
-                    await Promise.allSettled([...subtask.subtasks].map(t => t.promise))
-                    $task.subtasks.delete(subtask)
+                    for(const subtask of task.subtasks) subtask.controller.abort()
+                    await Promise.allSettled([...task.subtasks].map(subtask => subtask.promise))
+                    self_.subtasks.delete(task)
                 }
             })
         """
@@ -27,13 +27,9 @@ extend self: TaskSystem {
     // You don't normally need to call this, but you might want to before doing an expensive computation.
     throwIfAborted(): Unit
         target js async """
-            $task.controller.throwIfAborted()
+            self_.controller.throwIfAborted()
         """
-}
 
-capability Task {}
-
-extend self: Task {
     // Sets the tasks aborted flag, which causes the ongoing/next async call to throw TaskAbortedException.
     abort(): Unit
         target js async """

@@ -23,29 +23,62 @@ main(system: NodeSystem) {
     try {
         mutable input = system.readStream()
         let responseChannel: Channel[JsValue] = system.tasks().channel()
-        system.tasks().scope {scope => 
-            scope.spawn {
-                while {True} {
-                    let body = responseChannel.read()
-                    let json = body.toJson(Some("    ")).toBuffer()
-                    system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
-                    system.writeBuffer(json)
-                }
+        system.task().spawn {
+            while {True} {
+                let body = responseChannel.read()
+                let json = body.toJson(Some("    ")).toBuffer()
+                system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
+                system.writeBuffer(json)
             }
+        }
+        taskGroup(system.task()) {spawn, abort =>
             while {True} {
                 let requestPair = parseRequest(system, input)
                 input = requestPair.second
                 let request = requestPair.first
                 let message = parseRequestMessage(request.object)
-                scope.spawn {
-                    handleRequestMessage(system, handler, message).each {body =>
-                        responseChannel.write(body)
+                taskGroup.spawn(message.id) {
+                    message.cancelTaskId.each {taskGroup.abort(_)}
+                    try {
+                        handleRequestMessage(system, handler, message).each {body =>
+                            responseChannel.write(body)
+                        }
+                    } catch {| AbortedException, error =>
+                        message.id.each {id => 
+                            responseChannel.write(makeCancelResponse(id))
+                        }
                     }
                 }
             }
         }
     } catch {| BadRequestException(reason), error =>
         Log.trace(reason)
+    } grab()
+}
+
+taskGroup[K, R](
+    parentTask: Task, 
+    groupBody: (((K, Task) => Unit) => Task, K => Unit) => R
+): R {
+    mutable tasks = [].toMap()
+    function spawn(key: K, body: Task => Unit): Task {
+        let body2 = {task =>
+            tasks = tasks.add(key, task)
+            try {
+                body(task)
+            } finally {
+                tasks = tasks.remove(key)
+            } grab()
+        }
+        parentTask.spawn(body2)
+    }
+    function abort(key: K): Unit {
+        tasks.get(key).each {_.abort()}
+    }
+    try {
+        groupBody(spawn, abort)
+    } finally {
+
     } grab()
 }
 
