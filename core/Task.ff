@@ -48,3 +48,62 @@ extend self: Task {
         target js async """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
 }
+
+// Convenience methods
+extend self: Task {
+
+    sleep(duration: Duration): Unit {
+        Channel.
+            readOr(self.channel()) {_ => }.
+            timeout(duration) {}
+    }
+
+    all[T](tasks: List[() => T]): List[T] {
+        let successChannel = self.channel()
+        let failureChannel = self.channel()
+        self.spawn {t =>
+            let channel = t.channel()
+            try {
+                tasks.pairs().each {| Pair(i, task) =>
+                    t.spawn {_ =>
+                        channel.write(Pair(i, task()))
+                    }
+                }
+                let result = tasks.map {_ =>
+                    channel.read()
+                }.sortBy {_.first}.map {_.second}
+                successChannel.write(result)
+            } catchAny {error =>
+                failureChannel.write(error)
+                t.abort()
+            } grab()
+        }
+        Channel.
+            readOr(successChannel, {_}).
+            readOr(failureChannel, {_.rethrow()}).
+            wait()
+    }
+
+    race[T](tasks: List[() => T]): T {
+        let successChannel = self.channel()
+        let failureChannel = self.channel()
+        mutable live = tasks.size()
+        tasks.each {task =>
+            self.spawn {_ =>
+                try {
+                    successChannel.write(task())
+                } catchAny {e =>
+                    live -= 1
+                    if(live == 0) {
+                        failureChannel.write(e)
+                    }
+                } grab()
+            }
+        }
+        Channel.
+            readOr(successChannel, {_}).
+            readOr(failureChannel, {_.rethrow()}).
+            wait()
+    }
+            
+}
