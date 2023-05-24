@@ -93,7 +93,7 @@ extend self: Task {
                 try {
                     successChannel.write(task())
                 } catchAny {e =>
-                    live -= 1 // TODO: Not thread safe
+                    live -= 1 // Not thread safe (but OK in JS)
                     if(live == 0) {
                         failureChannel.write(e)
                     }
