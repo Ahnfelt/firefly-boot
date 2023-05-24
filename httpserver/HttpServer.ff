@@ -21,12 +21,12 @@ listen(system: NodeSystem, host: String, port: Int, handler: (HttpRequest, HttpR
         })
         await new Promise((resolve, reject) => {
             const abort = () => {
-                $task.signal.removeEventListener('abort', abort)
+                $task.controller.signal.removeEventListener('abort', abort)
                 const reason = $task.controller.signal.reason
                 $task.controller = new AbortController()
                 server.close(() => reject(reason))
             }
-            $task.signal.addEventListener('abort', abort)
+            $task.controller.signal.addEventListener('abort', abort)
         })
     """
 
