@@ -40,7 +40,7 @@ extend self: FetchSystem {
                 if(throw_ && !result.ok) throw new Error("Unexpected HTTP status code: " + result.status)
                 return result
             } finally {
-                if($task.controller.signal.aborted) $task.controller = new AbortController()                
+                if($task.controller.signal.aborted) $task.controller = new AbortController()
             }
         """
 

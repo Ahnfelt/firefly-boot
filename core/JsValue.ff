@@ -93,11 +93,11 @@ extend self: JsValue {
 
     each(body: JsValue => Unit): Unit
         target js sync "for(const value of self_) body_(value)"
-        target js async "for(const value of self_) await body_(value, $c)"
+        target js async "for(const value of self_) await body_(value, $task)"
 
     eachWhile(body: JsValue => Bool): Unit
         target js sync "for(const value of self_) if(!body_(value)) break"
-        target js async "for(const value of self_) if(!await body_(value, $c)) break"
+        target js async "for(const value of self_) if(!await body_(value, $task)) break"
 
 
     call(name: String, arguments: List[JsValue]): JsValue

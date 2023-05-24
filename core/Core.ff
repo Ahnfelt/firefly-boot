@@ -39,7 +39,7 @@ try[T](body: () => T): Try[T]
     """
     target js async """
         try {
-            return {Success: true, value_: await body_($c)}
+            return {Success: true, value_: await body_($task)}
         } catch(e) {
             return {Failure: true, error_: e}
         }

@@ -144,7 +144,7 @@ internalBrowserCodeFileSystem(dummy: BrowserCode): FileSystem
 
 internalCompile(buildSystem: BuildSystem, mainFile: String, target: String): Unit
     target node async """
-        return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $c)
+        return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $task)
     """
 
 internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String]
