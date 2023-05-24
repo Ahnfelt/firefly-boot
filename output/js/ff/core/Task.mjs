@@ -109,6 +109,10 @@ export function Task_abort(self_) {
 throw new Error('Function Task_abort is missing on this target in sync context.');
 }
 
+export function Task_channel(self_, capacity_ = 0) {
+throw new Error('Function Task_channel is missing on this target in sync context.');
+}
+
 export async function Task_spawn$(self_, body_, $task) {
 
             ff_core_Task.Task_throwIfAborted(self_)
@@ -116,7 +120,7 @@ export async function Task_spawn$(self_, body_, $task) {
             self_.subtasks.add(task)
             task.promise = Promise.resolve(task).then(async () => {
                 try {
-                    await body_(task)
+                    await body_(task, task)
                 } catch(e) {
                     await ff_core_Task.Task_abort$(self_)
                     throw e
@@ -139,6 +143,10 @@ export async function Task_abort$(self_, $task) {
 
             self_.controller.abort()
         
+}
+
+export async function Task_channel$(self_, capacity_ = 0, $task) {
+return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
 }
 
 

@@ -22,8 +22,8 @@ main(system: NodeSystem) {
     let handler = Handler(None, Map.empty(), [].toSet(), Map.empty())
     try {
         mutable input = system.readStream()
-        let responseChannel: Channel[JsValue] = system.tasks().channel()
-        system.task().spawn {
+        let responseChannel: Channel[JsValue] = system.mainTask().channel()
+        system.mainTask().spawn {_ =>
             while {True} {
                 let body = responseChannel.read()
                 let json = body.toJson(Some("    ")).toBuffer()
@@ -31,23 +31,30 @@ main(system: NodeSystem) {
                 system.writeBuffer(json)
             }
         }
-        taskGroup(system.task()) {spawn, abort =>
+        taskGroup(system.mainTask()) {spawn, abort =>
             while {True} {
                 let requestPair = parseRequest(system, input)
                 input = requestPair.second
                 let request = requestPair.first
                 let message = parseRequestMessage(request.object)
-                taskGroup.spawn(message.id) {
-                    message.cancelTaskId.each {taskGroup.abort(_)}
+                spawn(message.id) {_ =>
+                    if(message.method == "$/cancelRequest") {
+                        abort(Some(parseMessageId(message.parameters.grab("id"))))
+                    }
                     try {
                         handleRequestMessage(system, handler, message).each {body =>
                             responseChannel.write(body)
                         }
-                    } catch {| AbortedException, error =>
-                        message.id.each {id => 
-                            responseChannel.write(makeCancelResponse(id))
+                    } catchAny {error =>
+                        let problem = if(error.name() == "AbortError") {
+                            Error(-32800, "Request cancelled")
+                        } else {
+                            Error(-32603, "Internal error")
                         }
-                    }
+                        message.id.each {id => 
+                            responseChannel.write(makeResponseMessage(system.js(), id, problem))
+                        }
+                    } grab()
                 }
             }
         }
@@ -56,9 +63,9 @@ main(system: NodeSystem) {
     } grab()
 }
 
-taskGroup[K, R](
+taskGroup[K: Order, R](
     parentTask: Task, 
-    groupBody: (((K, Task) => Unit) => Task, K => Unit) => R
+    groupBody: ((K, Task => Unit) => Task, K => Unit) => R
 ): R {
     mutable tasks = [].toMap()
     function spawn(key: K, body: Task => Unit): Task {

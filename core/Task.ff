@@ -11,7 +11,7 @@ extend self: Task {
             self_.subtasks.add(task)
             task.promise = Promise.resolve(task).then(async () => {
                 try {
-                    await body_(task)
+                    await body_(task, task)
                 } catch(e) {
                     await ff_core_Task.Task_abort$(self_)
                     throw e
@@ -42,4 +42,9 @@ extend self: Task {
         target js async """
             self_.controller.abort()
         """
+
+    // Create a channel (TODO: Should this be tied to the task?)
+    channel[T](capacity: Int = 0): Channel[T]
+        target js async """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
+
 }
