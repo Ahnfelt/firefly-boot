@@ -89,7 +89,7 @@ extend self: HttpRequest {
             let seenError = null
             const abort = () => {
                 if(task != null) {
-                    task.signal.removeEventListener('abort', abort)
+                    task.controller.signal.removeEventListener('abort', abort)
                     readable.destroy()
                 }
             }
@@ -102,12 +102,12 @@ extend self: HttpRequest {
                     if(doResolve != null) doResolve()
                 })
                 readable.on('error', error => {
-                    task.signal.removeEventListener('abort', abort)
+                    task.controller.signal.removeEventListener('abort', abort)
                     seenError = error
                     if(doReject != null) doReject(error)
                 })
                 readable.on('close', () => {
-                    task.signal.removeEventListener('abort', abort)
+                    task.controller.signal.removeEventListener('abort', abort)
                     if(doResolve != null) doResolve()
                 })
                 $task.controller.signal.addEventListener('abort', abort)

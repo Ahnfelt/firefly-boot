@@ -17,19 +17,31 @@ extend self: FileSystem {
     readText(file: String): String
         target node async """
             import * as fsPromises from 'fs/promises'
-            return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $c.signal})
+            try {
+                return await fsPromises.readFile(file_, {encoding: 'UTF-8', signal: $task.controller.signal})
+            } finally {
+                if($task.controller.signal.aborted) $task.controller = new AbortController()
+            }
         """
 
     writeText(file: String, text: String): Unit
         target node async """
             import * as fsPromises from 'fs/promises'
-            await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
+            try {
+                await fsPromises.writeFile(file_, text_, {encoding: 'UTF-8', signal: $task.controller.signal})
+            } finally {
+                if($task.controller.signal.aborted) $task.controller = new AbortController()
+            }
         """
 
     appendText(file: String, text: String): Unit
         target node async """
             import * as fsPromises from 'fs/promises'
-            await fsPromises.appendFile(file_, text_, {encoding: 'UTF-8', signal: $c.signal})
+            try {
+                await fsPromises.appendFile(file_, text_, {encoding: 'UTF-8', signal: $task.controller.signal})
+            } finally {
+                if($task.controller.signal.aborted) $task.controller = new AbortController()
+            }
         """
 
     list(path: String): List[String]
@@ -103,14 +115,14 @@ extend self: FileSystem {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
                     if(!writeable.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))) {
                         await new Promise((resolve, reject) => {
-                            $c.signal.addEventListener('abort', reject)
+                            $task.controller.signal.addEventListener('abort', reject)
                             writeable.once('drain', () => {
-                                $c.signal.removeEventListener('abort', reject)
+                                $task.controller.signal.removeEventListener('abort', reject)
                                 resolve()
                             })
                         })
                     }
-                }, $c)
+                }, $task)
             } finally {
                 writeable.close()
             }
@@ -124,67 +136,17 @@ extend self: FileSystem {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
                     if(!writeable.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))) {
                         await new Promise((resolve, reject) => {
-                            $c.signal.addEventListener('abort', reject)
+                            $task.controller.signal.addEventListener('abort', reject)
                             writeable.once('drain', () => {
-                                $c.signal.removeEventListener('abort', reject)
+                                $task.controller.signal.removeEventListener('abort', reject)
                                 resolve()
                             })
                         })
                     }
-                }, $c)
+                }, $task)
             } finally {
                 writeable.close()
             }
-        """
-
-    decompressGzipStream(stream: Stream[Buffer]): Stream[Buffer]
-        target node async """
-            import * as zlib from 'zlib'
-            let c = null
-            let decompress = null
-            let doResolve = null
-            let doReject = null
-            let seenError = null
-            const abort = () => {
-                if(c != null) {
-                    c.signal.removeEventListener('abort', abort)
-                    decompress.destroy()
-                }
-            }
-            function open($c) {
-                c = $c
-                decompress = zlib.createGunzip()
-                decompress.on('readable', () => {
-                    if(doResolve != null) doResolve()
-                })
-                decompress.on('error', error => {
-                    seenError = error
-                    if(doReject != null) doReject(error)
-                })
-                decompress.on('close', () => {
-                    if(doResolve != null) doResolve()
-                })
-                $c.signal.addEventListener('abort', abort)
-            }
-            return ff_core_Stream.Stream(async function go($c) {
-                if(c == null) open($c)
-                if(seenError != null) throw seenError
-                if(!decompress.readable) return ff_core_Option.None()
-                let buffer = decompress.read()
-                if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer, buffer.byteOffset, buffer.length))
-                buffer = (await stream_.next_($c)).value_
-                if(buffer == null) decompress.end()
-                let wait = buffer == null || !decompress.write(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength))
-                if(seenError != null) throw seenError
-                if(!wait) return go($c)
-                let promise = new Promise((resolve, reject) => {
-                    function reset() { decompress.off('drain', doResolve); doResolve = null; doReject = null }
-                    doResolve = () => {reset(); resolve()}
-                    doReject = error => {reset(); reject(error)}
-                }).then(() => go($c))
-                decompress.on('drain', doResolve)
-                return await promise
-            }, abort)
         """
 
     open(file: String, flags: String): FileHandle
@@ -225,35 +187,37 @@ suffixName(path: String): String {
 
 internalReadStream(createReadStream: () => JsValue): Stream[Buffer]
     target node async """
-        let c = null
+        let task = null
         let readable = null
         let doResolve = null
         let doReject = null
         let seenError = null
         const abort = () => {
-            if(c != null) {
-                c.signal.removeEventListener('abort', abort)
+            if(task != null) {
+                task.controller.signal.removeEventListener('abort', abort)
                 readable.destroy()
             }
         }
-        function open($c) {
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
-            c = $c
+        function open($task) {
+            ff_core_Task.Task_throwIfAborted($task)
+            task = $task
             readable = createReadStream_()
             readable.on('readable', () => {
                 if(doResolve != null) doResolve()
             })
             readable.on('error', error => {
+                task.controller.signal.removeEventListener('abort', abort)
                 seenError = error
                 if(doReject != null) doReject(error)
             })
             readable.on('close', () => {
+                task.controller.signal.removeEventListener('abort', abort)
                 if(doResolve != null) doResolve()
             })
-            $c.signal.addEventListener('abort', abort)
+            $task.controller.signal.addEventListener('abort', abort)
         }
-        return ff_core_Stream.Stream(async function go($c) {
-            if(c == null) open($c)
+        return ff_core_Stream.Stream(async function go($task) {
+            if(task == null) open($task)
             let buffer = readable.read()
             if(buffer != null) return ff_core_Option.Some(new DataView(buffer.buffer, buffer.byteOffset, buffer.length))
             if(seenError != null) throw seenError
@@ -261,7 +225,7 @@ internalReadStream(createReadStream: () => JsValue): Stream[Buffer]
             let promise = new Promise((resolve, reject) => {
                 doResolve = () => {doResolve = null; doReject = null; resolve()}
                 doReject = error => {doResolve = null; doReject = null; reject(error)}
-            }).then(() => go($c))
+            }).then(() => go($task))
             return await promise
         }, abort)
     """
