@@ -88,18 +88,16 @@ extend self: Task {
         let successChannel = self.channel()
         let failureChannel = self.channel()
         mutable live = tasks.size()
-        let t = self.spawn {_ =>
-            tasks.each {task =>
-                self.spawn {_ =>
-                    try {
-                        successChannel.write(task())
-                    } catchAny {e =>
-                        live -= 1
-                        if(live == 0) {
-                            failureChannel.write(e)
-                        }
-                    } grab()
-                }
+        let started = tasks.map {task =>
+            self.spawn {_ =>
+                try {
+                    successChannel.write(task())
+                } catchAny {e =>
+                    live -= 1 // TODO: Not thread safe
+                    if(live == 0) {
+                        failureChannel.write(e)
+                    }
+                } grab()
             }
         }
         try {
@@ -108,7 +106,7 @@ extend self: Task {
                 readOr(failureChannel, {_.rethrow()}).
                 wait()
         } finally {
-            t.abort()
+            started.each {_.abort()}
         } grab()
     }
             
