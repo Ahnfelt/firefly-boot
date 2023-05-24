@@ -43,7 +43,7 @@ extend self: Task {
             self_.controller.abort()
         """
 
-    // Create a channel (TODO: Should this be tied to the task?)
+    // Create a channel
     channel[T](capacity: Int = 0): Channel[T]
         target js async """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
