@@ -6,6 +6,9 @@ extend self: Task {
     // If body throws, the parent task is also aborted with the dueToSubtask flag set to true.
     spawn(body: Task => Unit): Task
         target js async """
+            return ff_core_Task.Task_spawn(self_)
+        """
+        target js sync """
             ff_core_Task.Task_throwIfAborted(self_)
             const task = {controller: new AbortController(), subtasks: new Set()}
             self_.subtasks.add(task)
@@ -21,6 +24,7 @@ extend self: Task {
                     self_.subtasks.delete(task)
                 }
             })
+            return task
         """
 
     // If the aborted flag is set for the current task, clears it and throws TaskAbortedException.
@@ -45,7 +49,8 @@ extend self: Task {
 
     // Create a channel
     channel[T](capacity: Int = 0): Channel[T]
-        target js async """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
+        target js async """return ff_core_Task.Task_channel(capacity_)"""
+        target js sync """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
 }
 

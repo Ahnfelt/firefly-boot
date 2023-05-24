@@ -92,7 +92,24 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 export function Task_spawn(self_, body_) {
-throw new Error('Function Task_spawn is missing on this target in sync context.');
+
+            ff_core_Task.Task_throwIfAborted(self_)
+            const task = {controller: new AbortController(), subtasks: new Set()}
+            self_.subtasks.add(task)
+            task.promise = Promise.resolve(task).then(async () => {
+                try {
+                    await body_(task, task)
+                } catch(e) {
+                    await ff_core_Task.Task_abort$(self_)
+                    throw e
+                } finally {
+                    for(const subtask of task.subtasks) subtask.controller.abort()
+                    await Promise.allSettled([...task.subtasks].map(subtask => subtask.promise))
+                    self_.subtasks.delete(task)
+                }
+            })
+            return task
+        
 }
 
 export function Task_throwIfAborted(self_) {
@@ -110,26 +127,12 @@ throw new Error('Function Task_abort is missing on this target in sync context.'
 }
 
 export function Task_channel(self_, capacity_ = 0) {
-throw new Error('Function Task_channel is missing on this target in sync context.');
+return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
 }
 
 export async function Task_spawn$(self_, body_, $task) {
 
-            ff_core_Task.Task_throwIfAborted(self_)
-            const task = {controller: new AbortController(), subtasks: new Set()}
-            self_.subtasks.add(task)
-            task.promise = Promise.resolve(task).then(async () => {
-                try {
-                    await body_(task, task)
-                } catch(e) {
-                    await ff_core_Task.Task_abort$(self_)
-                    throw e
-                } finally {
-                    for(const subtask of task.subtasks) subtask.controller.abort()
-                    await Promise.allSettled([...task.subtasks].map(subtask => subtask.promise))
-                    self_.subtasks.delete(task)
-                }
-            })
+            return ff_core_Task.Task_spawn(self_)
         
 }
 
@@ -146,7 +149,7 @@ export async function Task_abort$(self_, $task) {
 }
 
 export async function Task_channel$(self_, capacity_ = 0, $task) {
-return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
+return ff_core_Task.Task_channel(capacity_)
 }
 
 export function Task_sleep(self_, duration_) {

@@ -7,9 +7,15 @@ listen(system: NodeSystem, host: String, port: Int, handler: (HttpRequest, HttpR
         ff_core_Task.Task_throwIfAborted($task)
         const server = http.createServer(async (req, res) => {
             try {
-                await ff_core_TaskSystem.TaskSystem_scope$(null, async (scope, $task) => {
-                    await handler_(req, res, $task)
-                }, false, $task)
+                const channel = ff_core_Task.Task_channel($task)
+                ff_core_Task.Task_spawn($task, async task => {
+                    try {
+                        await handler_(req, res, task)
+                    } finally {
+                        await ff_core_Channel.Channel_write$(channel, null, task)
+                    }
+                })
+                await ff_core_Channel.Channel_read$(channel, $task)
                 if(!res.headersSent) res.writeHead(200, 'OK')
             } finally {
                 if(!res.headersSent) res.writeHead(500, 'Internal Server Error')
