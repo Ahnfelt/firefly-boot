@@ -78,7 +78,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -306,7 +306,7 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function check_$(variants_, fields_, cases_, success_, guard_, $c) {
+export async function check_$(variants_, fields_, cases_, success_, guard_, $task) {
 {
 const _1 = ff_core_Pair.Pair(fields_, cases_);
 {
@@ -377,7 +377,7 @@ return
 }
 }
 
-export async function convert_$(modules_, cases_, $c) {
+export async function convert_$(modules_, cases_, $task) {
 function unqualifiedName_(name_) {
 return ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(name_), ((_w1) => {
 return (_w1 !== 46)
@@ -501,7 +501,7 @@ return
 }))
 }
 
-export async function convertAndCheck_$(modules_, cases_, $c) {
+export async function convertAndCheck_$(modules_, cases_, $task) {
 const converted_ = ff_compiler_Patterns.convert_(modules_, cases_);
 ff_core_Try.Try_else(ff_core_Core.try_((() => {
 return ff_compiler_Patterns.check_(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.Empty(), converted_, false, false)
@@ -510,7 +510,7 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Sy
 }))
 }
 
-export async function fail_$(at_, message_, $c) {
+export async function fail_$(at_, message_, $task) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
@@ -520,7 +520,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Patterns_PatternInfo = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Patterns.PatternInfo" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Patterns.PatternInfo" + "[") + "]"))
 }
 };
@@ -529,7 +529,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Patterns_PatternCaseInfo = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Patterns.PatternCaseInfo" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Patterns.PatternCaseInfo" + "[") + "]"))
 }
 };
@@ -545,7 +545,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -568,7 +568,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -598,7 +598,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -635,7 +635,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -687,7 +687,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -749,7 +749,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -813,7 +813,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -829,7 +829,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
@@ -883,7 +883,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -898,7 +898,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

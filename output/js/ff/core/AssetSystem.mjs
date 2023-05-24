@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -93,7 +93,7 @@ export function create_() {
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function create_$($c) {
+export async function create_$($task) {
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
@@ -180,7 +180,7 @@ export function AssetSystem_readText(self_, file_) {
 return ff_core_Stream.Stream_toString(ff_core_AssetSystem.AssetSystem_readStream(self_, file_), "utf8")
 }
 
-export async function AssetSystem_addAssets$(self_, path_, assets_, $c) {
+export async function AssetSystem_addAssets$(self_, path_, assets_, $task) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? ff_core_String.String_dropLast(path_, 1)
 : path_);
@@ -189,7 +189,7 @@ return ff_core_Pair.Pair((prefix_ + p_), stream_)
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function AssetSystem_assets$(self_, path_, $c) {
+export async function AssetSystem_assets$(self_, path_, $task) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? path_
 : (path_ + "/"));
@@ -211,7 +211,7 @@ return
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function AssetSystem_asset$(self_, path_, $c) {
+export async function AssetSystem_asset$(self_, path_, $task) {
 const name_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 !== 47)
 })));
@@ -221,7 +221,7 @@ return ff_core_Pair.Pair(("/" + name_), s_)
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function AssetSystem_list$(self_, path_, $c) {
+export async function AssetSystem_list$(self_, path_, $task) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? path_
 : (path_ + "/"));
@@ -243,7 +243,7 @@ return
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
-export async function AssetSystem_exists$(self_, path_, $c) {
+export async function AssetSystem_exists$(self_, path_, $task) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? path_
 : (path_ + "/"));
@@ -252,15 +252,15 @@ return ff_core_String.String_startsWith(_w1.first_, prefix_, 0)
 })))
 }
 
-export async function AssetSystem_readStream$(self_, file_, $c) {
+export async function AssetSystem_readStream$(self_, file_, $task) {
 const makeStream_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.files_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_core_Core.panic_(("Asset not found for readStream: " + file_))
 }));
-return (await makeStream_($c))
+return (await makeStream_($task))
 }
 
-export async function AssetSystem_readText$(self_, file_, $c) {
-return (await ff_core_Stream.Stream_toString$((await ff_core_AssetSystem.AssetSystem_readStream$(self_, file_, $c)), "utf8", $c))
+export async function AssetSystem_readText$(self_, file_, $task) {
+return (await ff_core_Stream.Stream_toString$((await ff_core_AssetSystem.AssetSystem_readStream$(self_, file_, $task)), "utf8", $task))
 }
 
 

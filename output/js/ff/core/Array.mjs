@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -115,23 +115,23 @@ export function internalSame_(left_, right_) {
 return left_ === right_
 }
 
-export async function empty_$($c) {
+export async function empty_$($task) {
 throw new Error('Function empty is missing on this target in async context.');
 }
 
-export async function fill_$(size_, value_, $c) {
+export async function fill_$(size_, value_, $task) {
 throw new Error('Function fill is missing on this target in async context.');
 }
 
-export async function fillBy_$(size_, body_, $c) {
+export async function fillBy_$(size_, body_, $task) {
 throw new Error('Function fillBy is missing on this target in async context.');
 }
 
-export async function range_$(size_, $c) {
+export async function range_$(size_, $task) {
 throw new Error('Function range is missing on this target in async context.');
 }
 
-export async function internalSame_$(left_, right_, $c) {
+export async function internalSame_$(left_, right_, $task) {
 throw new Error('Function internalSame is missing on this target in async context.');
 }
 
@@ -299,62 +299,62 @@ ff_core_Stack.Stack_sortWith(stack_, ordering_);
 return ff_core_Stack.Stack_drain(stack_)
 }
 
-export async function Array_addAll$(self_, that_, $c) {
+export async function Array_addAll$(self_, that_, $task) {
 throw new Error('Function Array_addAll is missing on this target in async context.');
 }
 
-export async function Array_isEmpty$(self_, $c) {
+export async function Array_isEmpty$(self_, $task) {
 throw new Error('Function Array_isEmpty is missing on this target in async context.');
 }
 
-export async function Array_size$(self_, $c) {
+export async function Array_size$(self_, $task) {
 throw new Error('Function Array_size is missing on this target in async context.');
 }
 
-export async function Array_get$(self_, index_, $c) {
+export async function Array_get$(self_, index_, $task) {
 throw new Error('Function Array_get is missing on this target in async context.');
 }
 
-export async function Array_grab$(self_, index_, $c) {
+export async function Array_grab$(self_, index_, $task) {
 throw new Error('Function Array_grab is missing on this target in async context.');
 }
 
-export async function Array_first$(self_, $c) {
+export async function Array_first$(self_, $task) {
 return ff_core_Array.Array_get(self_, 0)
 }
 
-export async function Array_last$(self_, $c) {
+export async function Array_last$(self_, $task) {
 return ff_core_Array.Array_get(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
-export async function Array_grabFirst$(self_, $c) {
+export async function Array_grabFirst$(self_, $task) {
 return ff_core_Array.Array_grab(self_, 0)
 }
 
-export async function Array_grabLast$(self_, $c) {
+export async function Array_grabLast$(self_, $task) {
 return ff_core_Array.Array_grab(self_, (ff_core_Array.Array_size(self_) - 1))
 }
 
-export async function Array_dropFirst$(self_, count_ = 1, $c) {
+export async function Array_dropFirst$(self_, count_ = 1, $task) {
 throw new Error('Function Array_dropFirst is missing on this target in async context.');
 }
 
-export async function Array_dropLast$(self_, count_ = 1, $c) {
+export async function Array_dropLast$(self_, count_ = 1, $task) {
 throw new Error('Function Array_dropLast is missing on this target in async context.');
 }
 
-export async function Array_update$(self_, index_, body_, $c) {
+export async function Array_update$(self_, index_, body_, $task) {
 
             if(index_ < 0 || index_ >= self_.length) {
                 ff_core_Try.internalThrowGrabException_()
             }
             let result = self_.slice();
-            result[index_] = await body_(result[index_], $c);
+            result[index_] = await body_(result[index_], $task);
             return result;
         
 }
 
-export async function Array_chunk$(self_, chunkSize_, $c) {
+export async function Array_chunk$(self_, chunkSize_, $task) {
 const results_ = ff_core_Stack.make_();
 const result_ = ff_core_Stack.make_();
 let added_ = 0;
@@ -373,13 +373,13 @@ ff_core_Stack.Stack_push(results_, ff_core_Stack.Stack_drain(result_))
 return ff_core_Stack.Stack_drain(results_)
 }
 
-export async function Array_toList$(self_, $c) {
+export async function Array_toList$(self_, $task) {
 throw new Error('Function Array_toList is missing on this target in async context.');
 }
 
-export async function Array_toStream$(self_, cycle_ = false, $c) {
+export async function Array_toStream$(self_, cycle_ = false, $task) {
 let index_ = 0;
-return (await ff_core_Stream.make_$((async ($c) => {
+return (await ff_core_Stream.make_$((async ($task) => {
 if((index_ < ff_core_Array.Array_size(self_))) {
 return ff_core_Option.Some((await (async function() {
 const result_ = ff_core_Array.Array_grab(self_, index_);
@@ -393,64 +393,64 @@ index_ = 1;
 return result_
 })()))
 } else return ff_core_Option.None()
-}), (async ($c) => {
+}), (async ($task) => {
 
-}), $c))
+}), $task))
 }
 
-export async function Array_toStack$(self_, $c) {
+export async function Array_toStack$(self_, $task) {
 throw new Error('Function Array_toStack is missing on this target in async context.');
 }
 
-export async function Array_each$(self_, body_, $c) {
+export async function Array_each$(self_, body_, $task) {
 
             for(let i = 0; i < self_.length; i++) {
-                await body_(self_[i], $c)
+                await body_(self_[i], $task)
             }
         
 }
 
-export async function Array_eachWhile$(self_, body_, $c) {
-for(const value of self_) if(!await body_(value, $c)) break
+export async function Array_eachWhile$(self_, body_, $task) {
+for(const value of self_) if(!await body_(value, $task)) break
 }
 
-export async function Array_all$(self_, body_, $c) {
+export async function Array_all$(self_, body_, $task) {
 let result_ = true;
-(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $c) => {
-result_ = (result_ && (await body_(x_, $c)));
+(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
+result_ = (result_ && (await body_(x_, $task)));
 return result_
-}), $c));
+}), $task));
 return result_
 }
 
-export async function Array_any$(self_, body_, $c) {
+export async function Array_any$(self_, body_, $task) {
 let result_ = false;
-(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $c) => {
-result_ = (result_ || (await body_(x_, $c)));
+(await ff_core_Array.Array_eachWhile$(self_, (async (x_, $task) => {
+result_ = (result_ || (await body_(x_, $task)));
 return (!result_)
-}), $c));
+}), $task));
 return result_
 }
 
-export async function Array_map$(self_, body_, $c) {
+export async function Array_map$(self_, body_, $task) {
 
             let result = [];
             for(let i = self_.length - 1; i >= 0; i--) {
-                result.push(await body_(self_[i], $c));
+                result.push(await body_(self_[i], $task));
             }
             return result;
         
 }
 
-export async function Array_sortBy$(self_, body_, ff_core_Ordering_Order$S, $c) {
-return (await ff_core_Array.Array_sortWith$(self_, (async (_w1, _w2, $c) => {
-return ff_core_Ordering_Order$S.compare_((await body_(_w1, $c)), (await body_(_w2, $c)))
-}), $c))
+export async function Array_sortBy$(self_, body_, ff_core_Ordering_Order$S, $task) {
+return (await ff_core_Array.Array_sortWith$(self_, (async (_w1, _w2, $task) => {
+return ff_core_Ordering_Order$S.compare_((await body_(_w1, $task)), (await body_(_w2, $task)))
+}), $task))
 }
 
-export async function Array_sortWith$(self_, ordering_, $c) {
+export async function Array_sortWith$(self_, ordering_, $task) {
 const stack_ = ff_core_Array.Array_toStack(self_);
-(await ff_core_Stack.Stack_sortWith$(stack_, ordering_, $c));
+(await ff_core_Stack.Stack_sortWith$(stack_, ordering_, $task));
 return ff_core_Stack.Stack_drain(stack_)
 }
 
@@ -464,13 +464,13 @@ export function Array_toSet(self_, ff_core_Ordering_Order$T) {
 return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
 }
 
-export async function Array_sort$(self_, ff_core_Ordering_Order$T, $c) {
+export async function Array_sort$(self_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Array.Array_sortWith(self_, ((x_, y_) => {
 return ff_core_Ordering_Order$T.compare_(x_, y_)
 }))
 }
 
-export async function Array_toSet$(self_, ff_core_Ordering_Order$T, $c) {
+export async function Array_toSet$(self_, ff_core_Ordering_Order$T, $task) {
 return ff_core_List.List_toSet(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$T)
 }
 
@@ -478,7 +478,7 @@ export function Array_toMap(self_, ff_core_Ordering_Order$K) {
 return ff_core_List.List_toMap(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$K)
 }
 
-export async function Array_toMap$(self_, ff_core_Ordering_Order$K, $c) {
+export async function Array_toMap$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_List.List_toMap(ff_core_Array.Array_toList(self_), ff_core_Ordering_Order$K)
 }
 
@@ -486,7 +486,7 @@ export function Array_join(self_, separator_ = "") {
 return self_.join(separator_)
 }
 
-export async function Array_join$(self_, separator_ = "", $c) {
+export async function Array_join$(self_, separator_ = "", $task) {
 throw new Error('Function Array_join is missing on this target in async context.');
 }
 
@@ -503,7 +503,7 @@ ff_core_Stack.Stack_push(stack_, ff_core_Show_Show$T.show_(x_))
 ff_core_Stack.Stack_push(stack_, "].toArray()");
 return ff_core_Stack.Stack_join(stack_, "")
 },
-async show_$(array_, $c) {
+async show_$(array_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
 ff_core_Array.Array_each(array_, ((x_) => {
@@ -533,7 +533,7 @@ return ff_core_Equal_Equal$T.equals_(x_, ff_core_Array.Array_grab(right_, i_))
 }
 }
 },
-async equals_$(left_, right_, $c) {
+async equals_$(left_, right_, $task) {
 if(ff_core_Array.internalSame_(left_, right_)) {
 return true
 } else {
@@ -569,7 +569,7 @@ return ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int.compare_(ff_core_
 }
 }
 },
-async compare_$(left_, right_, $c) {
+async compare_$(left_, right_, $task) {
 if(ff_core_Array.internalSame_(left_, right_)) {
 return ff_core_Ordering.OrderingSame()
 } else {

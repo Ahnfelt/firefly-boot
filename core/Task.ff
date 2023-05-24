@@ -13,7 +13,7 @@ extend self: Task {
                 try {
                     await body_(task)
                 } catch(e) {
-                    await ff_core_TaskSystem.Task_abort$(self_)
+                    await ff_core_Task.Task_abort$(self_)
                     throw e
                 } finally {
                     for(const subtask of task.subtasks) subtask.controller.abort()

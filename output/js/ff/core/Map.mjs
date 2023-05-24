@@ -76,7 +76,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -92,7 +92,7 @@ export function empty_() {
 return ff_core_RbMap.E()
 }
 
-export async function empty_$($c) {
+export async function empty_$($task) {
 return ff_core_RbMap.E()
 }
 
@@ -203,11 +203,11 @@ export function Map_find(self_, body_, ff_core_Ordering_Order$K) {
 return ff_core_RbMap.RB_find(self_, body_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_add$(self_, key_, value_, ff_core_Ordering_Order$K, $c) {
+export async function Map_add$(self_, key_, value_, ff_core_Ordering_Order$K, $task) {
 return ff_core_RbMap.insert_(key_, value_, self_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_addAll$(self_, that_, ff_core_Ordering_Order$K, $c) {
+export async function Map_addAll$(self_, that_, ff_core_Ordering_Order$K, $task) {
 let result_ = self_;
 ff_core_RbMap.RB_each(that_, ((k_, v_) => {
 result_ = ff_core_RbMap.insert_(k_, v_, result_, ff_core_Ordering_Order$K)
@@ -215,15 +215,15 @@ result_ = ff_core_RbMap.insert_(k_, v_, result_, ff_core_Ordering_Order$K)
 return result_
 }
 
-export async function Map_get$(self_, key_, ff_core_Ordering_Order$K, $c) {
+export async function Map_get$(self_, key_, ff_core_Ordering_Order$K, $task) {
 return ff_core_RbMap.RB_get(self_, key_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_remove$(self_, key_, ff_core_Ordering_Order$K, $c) {
+export async function Map_remove$(self_, key_, ff_core_Ordering_Order$K, $task) {
 return ff_core_RbMap.delete_(key_, self_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_removeAll$(self_, that_, ff_core_Ordering_Order$K, $c) {
+export async function Map_removeAll$(self_, that_, ff_core_Ordering_Order$K, $task) {
 let result_ = self_;
 ff_core_RbMap.RB_each(that_, ((k_, _) => {
 result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
@@ -231,83 +231,83 @@ result_ = ff_core_RbMap.delete_(k_, result_, ff_core_Ordering_Order$K)
 return result_
 }
 
-export async function Map_pairs$(self_, ff_core_Ordering_Order$K, $c) {
+export async function Map_pairs$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_Map.Map_toList(self_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_toList$(self_, ff_core_Ordering_Order$K, $c) {
+export async function Map_toList$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_toArray$(self_, ff_core_Ordering_Order$K, $c) {
+export async function Map_toArray$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_List.List_toArray(ff_core_RbMap.RB_pairs(self_, ff_core_Ordering_Order$K))
 }
 
-export async function Map_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$K, $c) {
-return (await ff_core_RbMap.RB_toStream$(self_, cycle_, ff_core_Ordering_Order$K, $c))
+export async function Map_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$K, $task) {
+return (await ff_core_RbMap.RB_toStream$(self_, cycle_, ff_core_Ordering_Order$K, $task))
 }
 
-export async function Map_keys$(self_, ff_core_Ordering_Order$K, $c) {
+export async function Map_keys$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_List.List_toSet(ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), ((_w1) => {
 return _w1.first_
 })), ff_core_Ordering_Order$K)
 }
 
-export async function Map_values$(self_, ff_core_Ordering_Order$K, $c) {
+export async function Map_values$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_List.List_map(ff_core_Map.Map_pairs(self_, ff_core_Ordering_Order$K), ((_w1) => {
 return _w1.second_
 }))
 }
 
-export async function Map_size$(self_, ff_core_Ordering_Order$K, $c) {
+export async function Map_size$(self_, ff_core_Ordering_Order$K, $task) {
 return ff_core_RbMap.RB_size(self_, ff_core_Ordering_Order$K)
 }
 
-export async function Map_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1, $c) {
-return (await ff_core_RbMap.RB_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1, $c))
+export async function Map_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1, $task) {
+return (await ff_core_RbMap.RB_map$(self_, body_, ff_core_Ordering_Order$K, ff_core_Ordering_Order$K1, $task))
 }
 
-export async function Map_mapValues$(self_, body_, ff_core_Ordering_Order$K, $c) {
-return (await ff_core_RbMap.RB_mapValues$(self_, body_, ff_core_Ordering_Order$K, $c))
+export async function Map_mapValues$(self_, body_, ff_core_Ordering_Order$K, $task) {
+return (await ff_core_RbMap.RB_mapValues$(self_, body_, ff_core_Ordering_Order$K, $task))
 }
 
-export async function Map_contains$(self_, key_, ff_core_Ordering_Order$K, $c) {
+export async function Map_contains$(self_, key_, ff_core_Ordering_Order$K, $task) {
 return (!ff_core_Option.Option_isEmpty(ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K)))
 }
 
-export async function Map_grab$(self_, key_, ff_core_Ordering_Order$K, $c) {
+export async function Map_grab$(self_, key_, ff_core_Ordering_Order$K, $task) {
 return ff_core_Option.Option_grab(ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K))
 }
 
-export async function Map_updateOrInsert$(self_, key_, update_, default_, ff_core_Ordering_Order$K, $c) {
+export async function Map_updateOrInsert$(self_, key_, update_, default_, ff_core_Ordering_Order$K, $task) {
 {
 const _1 = ff_core_Map.Map_get(self_, key_, ff_core_Ordering_Order$K);
 {
 if(_1.None) {
-return ff_core_Map.Map_add(self_, key_, (await default_($c)), ff_core_Ordering_Order$K)
+return ff_core_Map.Map_add(self_, key_, (await default_($task)), ff_core_Ordering_Order$K)
 return
 }
 }
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return ff_core_Map.Map_add(self_, key_, (await update_(v_, $c)), ff_core_Ordering_Order$K)
+return ff_core_Map.Map_add(self_, key_, (await update_(v_, $task)), ff_core_Ordering_Order$K)
 return
 }
 }
 }
 }
 
-export async function Map_each$(self_, body_, ff_core_Ordering_Order$K, $c) {
-(await ff_core_RbMap.RB_each$(self_, body_, ff_core_Ordering_Order$K, $c))
+export async function Map_each$(self_, body_, ff_core_Ordering_Order$K, $task) {
+(await ff_core_RbMap.RB_each$(self_, body_, ff_core_Ordering_Order$K, $task))
 }
 
-export async function Map_eachWhile$(self_, body_, ff_core_Ordering_Order$K, $c) {
-return (await ff_core_RbMap.RB_eachWhile$(self_, body_, ff_core_Ordering_Order$K, $c))
+export async function Map_eachWhile$(self_, body_, ff_core_Ordering_Order$K, $task) {
+return (await ff_core_RbMap.RB_eachWhile$(self_, body_, ff_core_Ordering_Order$K, $task))
 }
 
-export async function Map_find$(self_, body_, ff_core_Ordering_Order$K, $c) {
-return (await ff_core_RbMap.RB_find$(self_, body_, ff_core_Ordering_Order$K, $c))
+export async function Map_find$(self_, body_, ff_core_Ordering_Order$K, $task) {
+return (await ff_core_RbMap.RB_find$(self_, body_, ff_core_Ordering_Order$K, $task))
 }
 
 export function Map_addToList(self_, key_, value_, ff_core_Ordering_Order$K) {
@@ -318,7 +318,7 @@ return ff_core_List.Link(value_, ff_core_List.Empty())
 }), ff_core_Ordering_Order$K)
 }
 
-export async function Map_addToList$(self_, key_, value_, ff_core_Ordering_Order$K, $c) {
+export async function Map_addToList$(self_, key_, value_, ff_core_Ordering_Order$K, $task) {
 return ff_core_Map.Map_updateOrInsert(self_, key_, ((_w1) => {
 return ff_core_List.Link(value_, _w1)
 }), (() => {
@@ -330,7 +330,7 @@ export function ff_core_Equal_Equal$ff_core_Map_Map(ff_core_Equal_Equal$K, ff_co
 equals_(x_, y_) {
 return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal_Equal$K, ff_core_Equal_Equal$V)).equals_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K), ff_core_Map.Map_pairs(y_, ff_core_Ordering_Order$K))
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal_Equal$K, ff_core_Equal_Equal$V)).equals_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K), ff_core_Map.Map_pairs(y_, ff_core_Ordering_Order$K))
 }
 }}
@@ -339,7 +339,7 @@ export function ff_core_Ordering_Order$ff_core_Map_Map(ff_core_Ordering_Order$K,
 compare_(x_, y_) {
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering_Order$K, ff_core_Ordering_Order$V)).compare_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K), ff_core_Map.Map_pairs(y_, ff_core_Ordering_Order$K))
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering_Order$K, ff_core_Ordering_Order$V)).compare_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K), ff_core_Map.Map_pairs(y_, ff_core_Ordering_Order$K))
 }
 }}
@@ -348,7 +348,7 @@ export function ff_core_Show_Show$ff_core_Map_Map(ff_core_Show_Show$K, ff_core_O
 show_(x_) {
 return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show_Show$K, ff_core_Show_Show$V)).show_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K)) + ".toMap()")
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show_Show$K, ff_core_Show_Show$V)).show_(ff_core_Map.Map_pairs(x_, ff_core_Ordering_Order$K)) + ".toMap()")
 }
 }}

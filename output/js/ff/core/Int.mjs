@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -169,39 +169,39 @@ return self_
 }
 }
 
-export async function Int_abs$(self_, $c) {
+export async function Int_abs$(self_, $task) {
 throw new Error('Function Int_abs is missing on this target in async context.');
 }
 
-export async function Int_toFloat$(self_, $c) {
+export async function Int_toFloat$(self_, $task) {
 throw new Error('Function Int_toFloat is missing on this target in async context.');
 }
 
-export async function Int_bitNot$(self_, $c) {
+export async function Int_bitNot$(self_, $task) {
 throw new Error('Function Int_bitNot is missing on this target in async context.');
 }
 
-export async function Int_bitOr$(self_, that_, $c) {
+export async function Int_bitOr$(self_, that_, $task) {
 throw new Error('Function Int_bitOr is missing on this target in async context.');
 }
 
-export async function Int_bitAnd$(self_, that_, $c) {
+export async function Int_bitAnd$(self_, that_, $task) {
 throw new Error('Function Int_bitAnd is missing on this target in async context.');
 }
 
-export async function Int_bitXor$(self_, that_, $c) {
+export async function Int_bitXor$(self_, that_, $task) {
 throw new Error('Function Int_bitXor is missing on this target in async context.');
 }
 
-export async function Int_bitLeft$(self_, bits_ = 1, $c) {
+export async function Int_bitLeft$(self_, bits_ = 1, $task) {
 throw new Error('Function Int_bitLeft is missing on this target in async context.');
 }
 
-export async function Int_bitRight$(self_, bits_ = 1, signed_ = true, $c) {
+export async function Int_bitRight$(self_, bits_ = 1, signed_ = true, $task) {
 throw new Error('Function Int_bitRight is missing on this target in async context.');
 }
 
-export async function Int_to$(self_, inclusiveEnd_, $c) {
+export async function Int_to$(self_, inclusiveEnd_, $task) {
 let result_ = ff_core_List.Empty();
 let n_ = inclusiveEnd_;
 while((self_ <= n_)) {
@@ -211,7 +211,7 @@ n_ -= 1
 return result_
 }
 
-export async function Int_until$(self_, exclusiveEnd_, $c) {
+export async function Int_until$(self_, exclusiveEnd_, $task) {
 let result_ = ff_core_List.Empty();
 let n_ = exclusiveEnd_;
 while((self_ < n_)) {
@@ -221,7 +221,7 @@ n_ -= 1
 return result_
 }
 
-export async function Int_min$(self_, that_, $c) {
+export async function Int_min$(self_, that_, $task) {
 if((self_ < that_)) {
 return self_
 } else {
@@ -229,7 +229,7 @@ return that_
 }
 }
 
-export async function Int_max$(self_, that_, $c) {
+export async function Int_max$(self_, that_, $task) {
 if((self_ > that_)) {
 return self_
 } else {
@@ -237,7 +237,7 @@ return that_
 }
 }
 
-export async function Int_clamp$(self_, from_, to_, $c) {
+export async function Int_clamp$(self_, from_, to_, $task) {
 if((self_ <= from_)) {
 return from_
 } else if((self_ >= to_)) {

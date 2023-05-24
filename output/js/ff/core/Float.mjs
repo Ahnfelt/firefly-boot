@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -149,39 +149,39 @@ return self_
 }
 }
 
-export async function Float_toInt$(self_, $c) {
+export async function Float_toInt$(self_, $task) {
 throw new Error('Function Float_toInt is missing on this target in async context.');
 }
 
-export async function Float_round$(self_, $c) {
+export async function Float_round$(self_, $task) {
 throw new Error('Function Float_round is missing on this target in async context.');
 }
 
-export async function Float_floor$(self_, $c) {
+export async function Float_floor$(self_, $task) {
 throw new Error('Function Float_floor is missing on this target in async context.');
 }
 
-export async function Float_ceil$(self_, $c) {
+export async function Float_ceil$(self_, $task) {
 throw new Error('Function Float_ceil is missing on this target in async context.');
 }
 
-export async function Float_truncate$(self_, $c) {
+export async function Float_truncate$(self_, $task) {
 throw new Error('Function Float_truncate is missing on this target in async context.');
 }
 
-export async function Float_sign$(self_, $c) {
+export async function Float_sign$(self_, $task) {
 throw new Error('Function Float_sign is missing on this target in async context.');
 }
 
-export async function Float_abs$(self_, $c) {
+export async function Float_abs$(self_, $task) {
 throw new Error('Function Float_abs is missing on this target in async context.');
 }
 
-export async function Float_toFixed$(self_, digits_, $c) {
+export async function Float_toFixed$(self_, digits_, $task) {
 throw new Error('Function Float_toFixed is missing on this target in async context.');
 }
 
-export async function Float_min$(self_, that_, $c) {
+export async function Float_min$(self_, that_, $task) {
 if((self_ < that_)) {
 return self_
 } else {
@@ -189,7 +189,7 @@ return that_
 }
 }
 
-export async function Float_max$(self_, that_, $c) {
+export async function Float_max$(self_, that_, $task) {
 if((self_ > that_)) {
 return self_
 } else {
@@ -197,7 +197,7 @@ return that_
 }
 }
 
-export async function Float_clamp$(self_, from_, to_, $c) {
+export async function Float_clamp$(self_, from_, to_, $task) {
 if((self_ <= from_)) {
 return from_
 } else if((self_ >= to_)) {

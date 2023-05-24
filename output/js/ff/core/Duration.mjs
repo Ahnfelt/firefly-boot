@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -94,7 +94,7 @@ export function Duration_show(self_, digits_ = 3) {
 return (ff_core_Float.Float_toFixed(self_, digits_) + " s")
 }
 
-export async function Duration_show$(self_, digits_ = 3, $c) {
+export async function Duration_show$(self_, digits_ = 3, $task) {
 return (ff_core_Float.Float_toFixed(self_, digits_) + " s")
 }
 
@@ -102,7 +102,7 @@ export const ff_core_Show_Show$ff_core_Duration_Duration = {
 show_(value_) {
 return ff_core_Duration.Duration_show(value_, 3)
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 return ff_core_Duration.Duration_show(value_, 3)
 }
 };

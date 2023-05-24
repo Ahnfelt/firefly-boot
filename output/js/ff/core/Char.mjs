@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -114,27 +114,27 @@ export function Char_toString(self_) {
 return String.fromCharCode(self_)
 }
 
-export async function Char_isAsciiLetter$(self_, $c) {
+export async function Char_isAsciiLetter$(self_, $task) {
 return (ff_core_Char.Char_isAsciiUpper(self_) || ff_core_Char.Char_isAsciiLower(self_))
 }
 
-export async function Char_isAsciiLetterOrDigit$(self_, $c) {
+export async function Char_isAsciiLetterOrDigit$(self_, $task) {
 return (ff_core_Char.Char_isAsciiLetter(self_) || ff_core_Char.Char_isAsciiDigit(self_))
 }
 
-export async function Char_isAsciiUpper$(self_, $c) {
+export async function Char_isAsciiUpper$(self_, $task) {
 return ((self_ >= 65) && (self_ <= 90))
 }
 
-export async function Char_isAsciiLower$(self_, $c) {
+export async function Char_isAsciiLower$(self_, $task) {
 return ((self_ >= 97) && (self_ <= 122))
 }
 
-export async function Char_isAsciiDigit$(self_, $c) {
+export async function Char_isAsciiDigit$(self_, $task) {
 return ((self_ >= 48) && (self_ <= 57))
 }
 
-export async function Char_toString$(self_, $c) {
+export async function Char_toString$(self_, $task) {
 throw new Error('Function Char_toString is missing on this target in async context.');
 }
 

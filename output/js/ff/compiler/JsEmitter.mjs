@@ -82,7 +82,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -666,17 +666,17 @@ return (_w1.signature_.name_ === "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("Error.stackTraceLimit = 50", ff_core_List.Link("const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {})}", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("task_: $task,", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
 : "false")) + ","), ff_core_List.Link(("buildMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? "true"
 : "false")), ff_core_List.Link("}", ff_core_List.Link("try {", ff_core_List.List_addAll(((!ff_core_Option.Option_isEmpty(buildMainFunction_))
-? ff_core_List.Link("await buildMain_$(system, controller)", ff_core_List.Empty())
+? ff_core_List.Link("await buildMain_$(system, $task)", ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.List_addAll((ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
-? ff_core_List.Link((("await " + mainName_) + "_$(system, controller)"), ff_core_List.Empty())
+? ff_core_List.Link((("await " + mainName_) + "_$(system, $task)"), ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.List_addAll((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
-? ff_core_List.Link("await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, controller)", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("}", (((_1) => {
+? ff_core_List.Link("await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)", ff_core_List.Empty())
+: ff_core_List.Empty()), ff_core_List.Link("} finally {", ff_core_List.Link("ff_core_Task.Task_abort$($task)", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("}", (((_1) => {
 {
 if(_1.EmitBrowser) {
 return ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("await $run$(null, [])", ff_core_List.Link("})", ff_core_List.Empty())))
@@ -702,7 +702,7 @@ return
 return ff_core_List.Empty()
 return
 }
-}))(self_.emitTarget_))))))))))))))))))))), "\n"), ff_core_List.Empty())
+}))(self_.emitTarget_)))))))))))))))))))))), "\n"), ff_core_List.Empty())
 })), (() => {
 return ff_core_List.Empty()
 }))
@@ -2740,17 +2740,17 @@ return (_w1.signature_.name_ === "main")
 return ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_map(mainFunction_, ((_w1) => {
 return _w1.signature_.name_
 })), ((mainName_) => {
-return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("const controller = new AbortController()", ff_core_List.Link("controller.promises = new Set()", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
+return ff_core_List.Link(ff_core_List.List_join(ff_core_List.Link("export async function $run$(fireflyPath_, arguments_) {", ff_core_List.Link("Error.stackTraceLimit = 50", ff_core_List.Link("const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {})}", ff_core_List.Link("let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)", ff_core_List.Link("let system = {", ff_core_List.Link("task_: $task,", ff_core_List.Link("array_: arguments_,", ff_core_List.Link("fireflyPath_: fireflyPath_,", ff_core_List.Link((((("mainPackagePair_: {group_: \"" + mainPackagePair_.group_) + "\", name_: \"") + mainPackagePair_.name_) + "\"},"), ff_core_List.Link((("executableMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitExecutable())
 ? "true"
 : "false")) + ","), ff_core_List.Link(("buildMode_: " + (ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
 ? "true"
 : "false")), ff_core_List.Link("}", ff_core_List.Link("try {", ff_core_List.List_addAll(((!ff_core_Option.Option_isEmpty(buildMainFunction_))
-? ff_core_List.Link("await buildMain_$(system, controller)", ff_core_List.Empty())
+? ff_core_List.Link("await buildMain_$(system, $task)", ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.List_addAll((ff_core_Equal.notEquals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild(), ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget)
-? ff_core_List.Link((("await " + mainName_) + "_$(system, controller)"), ff_core_List.Empty())
+? ff_core_List.Link((("await " + mainName_) + "_$(system, $task)"), ff_core_List.Empty())
 : ff_core_List.Empty()), ff_core_List.List_addAll((ff_compiler_JsEmitter.ff_core_Equal_Equal$ff_compiler_JsEmitter_EmitTarget.equals_(self_.emitTarget_, ff_compiler_JsEmitter.EmitBuild())
-? ff_core_List.Link("await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, controller)", ff_core_List.Empty())
-: ff_core_List.Empty()), ff_core_List.Link("} finally {", ff_core_List.Link("controller.abort()", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("}", (((_1) => {
+? ff_core_List.Link("await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)", ff_core_List.Empty())
+: ff_core_List.Empty()), ff_core_List.Link("} finally {", ff_core_List.Link("ff_core_Task.Task_abort$($task)", ff_core_List.Link("clearInterval(interval)", ff_core_List.Link("}", ff_core_List.Link("}", (((_1) => {
 {
 if(_1.EmitBrowser) {
 return ff_core_List.Link("queueMicrotask(async () => {", ff_core_List.Link("await $run$(null, [])", ff_core_List.Link("})", ff_core_List.Empty())))
@@ -2776,7 +2776,7 @@ return
 return ff_core_List.Empty()
 return
 }
-}))(self_.emitTarget_))))))))))))))))))))), "\n"), ff_core_List.Empty())
+}))(self_.emitTarget_)))))))))))))))))))))), "\n"), ff_core_List.Empty())
 })), (() => {
 return ff_core_List.Empty()
 }))

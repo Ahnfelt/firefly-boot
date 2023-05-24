@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -91,7 +91,7 @@ export function internalAssets_(system_) {
 throw new Error('Function internalAssets is missing on this target in sync context.');
 }
 
-export async function internalAssets_$(system_, $c) {
+export async function internalAssets_$(system_, $task) {
 return system_.assets_
 }
 
@@ -129,8 +129,8 @@ export function NodeSystem_fetch(self_) {
 throw new Error('Function NodeSystem_fetch is missing on this target in sync context.');
 }
 
-export function NodeSystem_tasks(self_) {
-throw new Error('Function NodeSystem_tasks is missing on this target in sync context.');
+export function NodeSystem_mainTask(self_) {
+throw new Error('Function NodeSystem_mainTask is missing on this target in sync context.');
 }
 
 export function NodeSystem_time(self_) {
@@ -185,96 +185,96 @@ export function NodeSystem_writeErrorLine(self_, text_) {
 ff_core_NodeSystem.NodeSystem_writeErrorText(self_, (text_ + "\n"))
 }
 
-export async function NodeSystem_arguments$(self_, $c) {
+export async function NodeSystem_arguments$(self_, $task) {
 return self_.array_
 }
 
-export async function NodeSystem_assets$(self_, $c) {
+export async function NodeSystem_assets$(self_, $task) {
 const assetPkgSnapshotPath_ = "/snapshot/output/assets";
-if((await ff_core_FileSystem.FileSystem_isDirectory$((await ff_core_NodeSystem.NodeSystem_files$(self_, $c)), assetPkgSnapshotPath_, $c))) {
-const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(self_, $c));
-async function streams_$(path_, $c) {
-const files_ = (await ff_core_FileSystem.FileSystem_list$(fs_, path_, $c));
-return (await ff_core_List.List_flatMap$(files_, (async (file_, $c) => {
-if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $c))) {
-return (await streams_$(file_, $c))
+if((await ff_core_FileSystem.FileSystem_isDirectory$((await ff_core_NodeSystem.NodeSystem_files$(self_, $task)), assetPkgSnapshotPath_, $task))) {
+const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(self_, $task));
+async function streams_$(path_, $task) {
+const files_ = (await ff_core_FileSystem.FileSystem_list$(fs_, path_, $task));
+return (await ff_core_List.List_flatMap$(files_, (async (file_, $task) => {
+if((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, file_, $task))) {
+return (await streams_$(file_, $task))
 } else {
-return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (async ($c) => {
-return (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $c))
+return ff_core_List.Link(ff_core_Pair.Pair(ff_core_String.String_dropFirst(file_, ff_core_String.String_size(assetPkgSnapshotPath_)), (async ($task) => {
+return (await ff_core_FileSystem.FileSystem_readStream$(fs_, file_, $task))
 })), ff_core_List.Empty())
 }
-}), $c))
+}), $task))
 }
-return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await streams_$(assetPkgSnapshotPath_, $c)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
+return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap((await streams_$(assetPkgSnapshotPath_, $task)), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 } else {
-return (await ff_core_NodeSystem.internalAssets_$(self_, $c))
+return (await ff_core_NodeSystem.internalAssets_$(self_, $task))
 }
 }
 
-export async function NodeSystem_files$(self_, $c) {
+export async function NodeSystem_files$(self_, $task) {
 return null
 }
 
-export async function NodeSystem_fetch$(self_, $c) {
+export async function NodeSystem_fetch$(self_, $task) {
 return null
 }
 
-export async function NodeSystem_tasks$(self_, $c) {
+export async function NodeSystem_mainTask$(self_, $task) {
+return self_.task_
+}
+
+export async function NodeSystem_time$(self_, $task) {
 return null
 }
 
-export async function NodeSystem_time$(self_, $c) {
-return null
-}
-
-export async function NodeSystem_js$(self_, $c) {
+export async function NodeSystem_js$(self_, $task) {
 return typeof globalThis !== 'undefined' ? globalThis : window
 }
 
-export async function NodeSystem_exit$(self_, exitCode_ = 0, $c) {
+export async function NodeSystem_exit$(self_, exitCode_ = 0, $task) {
 process.exit(exitCode_)
 }
 
-export async function NodeSystem_readStream$(self_, $c) {
+export async function NodeSystem_readStream$(self_, $task) {
 
             return ff_core_FileSystem.internalReadStream_$(() => process.stdin)
         
 }
 
-export async function NodeSystem_writeBuffer$(self_, buffer_, $c) {
+export async function NodeSystem_writeBuffer$(self_, buffer_, $task) {
 process.stdout.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))
 }
 
-export async function NodeSystem_writeStream$(self_, stream_, $c) {
-(await ff_core_Stream.Stream_each$(stream_, (async (_w1, $c) => {
-(await ff_core_NodeSystem.NodeSystem_writeBuffer$(self_, _w1, $c))
-}), $c))
+export async function NodeSystem_writeStream$(self_, stream_, $task) {
+(await ff_core_Stream.Stream_each$(stream_, (async (_w1, $task) => {
+(await ff_core_NodeSystem.NodeSystem_writeBuffer$(self_, _w1, $task))
+}), $task))
 }
 
-export async function NodeSystem_writeText$(self_, text_, $c) {
-(await ff_core_NodeSystem.NodeSystem_writeBuffer$(self_, ff_core_String.String_toBuffer(text_), $c))
+export async function NodeSystem_writeText$(self_, text_, $task) {
+(await ff_core_NodeSystem.NodeSystem_writeBuffer$(self_, ff_core_String.String_toBuffer(text_), $task))
 }
 
-export async function NodeSystem_writeLine$(self_, text_, $c) {
-(await ff_core_NodeSystem.NodeSystem_writeText$(self_, (text_ + "\n"), $c))
+export async function NodeSystem_writeLine$(self_, text_, $task) {
+(await ff_core_NodeSystem.NodeSystem_writeText$(self_, (text_ + "\n"), $task))
 }
 
-export async function NodeSystem_writeErrorBuffer$(self_, buffer_, $c) {
+export async function NodeSystem_writeErrorBuffer$(self_, buffer_, $task) {
 process.stderr.write(new Uint8Array(buffer_.buffer, buffer_.byteOffset, buffer_.byteLength))
 }
 
-export async function NodeSystem_writeErrorStream$(self_, stream_, $c) {
-(await ff_core_Stream.Stream_each$(stream_, (async (_w1, $c) => {
-(await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(self_, _w1, $c))
-}), $c))
+export async function NodeSystem_writeErrorStream$(self_, stream_, $task) {
+(await ff_core_Stream.Stream_each$(stream_, (async (_w1, $task) => {
+(await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(self_, _w1, $task))
+}), $task))
 }
 
-export async function NodeSystem_writeErrorText$(self_, text_, $c) {
-(await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(self_, ff_core_String.String_toBuffer(text_), $c))
+export async function NodeSystem_writeErrorText$(self_, text_, $task) {
+(await ff_core_NodeSystem.NodeSystem_writeErrorBuffer$(self_, ff_core_String.String_toBuffer(text_), $task))
 }
 
-export async function NodeSystem_writeErrorLine$(self_, text_, $c) {
-(await ff_core_NodeSystem.NodeSystem_writeErrorText$(self_, (text_ + "\n"), $c))
+export async function NodeSystem_writeErrorLine$(self_, text_, $task) {
+(await ff_core_NodeSystem.NodeSystem_writeErrorText$(self_, (text_ + "\n"), $task))
 }
 
 

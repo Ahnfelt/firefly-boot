@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -110,7 +110,7 @@ return
 }
 }
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 {
 const value_a = value_;
 {
@@ -133,7 +133,7 @@ export const ff_core_Show_Show$ff_core_Nothing_Nothing = {
 show_(value_) {
 return ""
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 return ""
 }
 };
@@ -142,7 +142,7 @@ export const ff_core_Show_Show$ff_core_Char_Char = {
 show_(value_) {
 return ff_core_Char.Char_toString(value_)
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 return ff_core_Char.Char_toString(value_)
 }
 };
@@ -151,7 +151,7 @@ export const ff_core_Show_Show$ff_core_Int_Int = {
 show_(value_) {
 return ("" + value_)
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 return ("" + value_)
 }
 };
@@ -160,7 +160,7 @@ export const ff_core_Show_Show$ff_core_Float_Float = {
 show_(value_) {
 return ("" + value_)
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 return ("" + value_)
 }
 };
@@ -169,7 +169,7 @@ export const ff_core_Show_Show$ff_core_String_String = {
 show_(value_) {
 return JSON.stringify(value_);
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 throw new Error('Function show is missing on this target in async context.');
 }
 };
@@ -180,7 +180,7 @@ return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) =>
 return ff_core_Show_Show$T.show_(value_)
 })), ", ")) + "]")
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 return (("[" + ff_core_List.List_join(ff_core_List.List_map(value_, ((value_) => {
 return ff_core_Show_Show$T.show_(value_)
 })), ", ")) + "]")
@@ -191,7 +191,7 @@ export function ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show_Show$A, ff_core
 show_(value_) {
 return (((("Pair(" + ff_core_Show_Show$A.show_(value_.first_)) + ", ") + ff_core_Show_Show$B.show_(value_.second_)) + ")")
 },
-async show_$(value_, $c) {
+async show_$(value_, $task) {
 return (((("Pair(" + ff_core_Show_Show$A.show_(value_.first_)) + ", ") + ff_core_Show_Show$B.show_(value_.second_)) + ")")
 }
 }}

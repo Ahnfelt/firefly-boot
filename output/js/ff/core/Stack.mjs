@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -137,33 +137,33 @@ j_ += 1
 }
 }
 
-export async function make_$($c) {
+export async function make_$($task) {
 throw new Error('Function make is missing on this target in async context.');
 }
 
-export async function fill_$(size_, value_, $c) {
+export async function fill_$(size_, value_, $task) {
 throw new Error('Function fill is missing on this target in async context.');
 }
 
-export async function fillBy_$(size_, body_, $c) {
+export async function fillBy_$(size_, body_, $task) {
 throw new Error('Function fillBy is missing on this target in async context.');
 }
 
-export async function range_$(size_, $c) {
+export async function range_$(size_, $task) {
 throw new Error('Function range is missing on this target in async context.');
 }
 
-export async function sortRange_$(stack_, compare_, start_, end_, $c) {
+export async function sortRange_$(stack_, compare_, start_, end_, $task) {
 if(((end_ - start_) < 2)) {
 
 } else {
 let middle_ = (start_ + ((end_ - start_) / 2));
-(await ff_core_Stack.sortRange_$(stack_, compare_, start_, middle_, $c));
-(await ff_core_Stack.sortRange_$(stack_, compare_, middle_, end_, $c));
+(await ff_core_Stack.sortRange_$(stack_, compare_, start_, middle_, $task));
+(await ff_core_Stack.sortRange_$(stack_, compare_, middle_, end_, $task));
 let i_ = start_;
 let j_ = middle_;
 while(((i_ < middle_) && (j_ < end_))) {
-if(((await compare_(ff_core_Stack.Stack_grab(stack_, i_), ff_core_Stack.Stack_grab(stack_, j_), $c)) !== ff_core_Ordering.OrderingAfter())) {
+if(((await compare_(ff_core_Stack.Stack_grab(stack_, i_), ff_core_Stack.Stack_grab(stack_, j_), $task)) !== ff_core_Ordering.OrderingAfter())) {
 i_ += 1
 } else {
 const value_ = ff_core_Stack.Stack_grab(stack_, j_);
@@ -385,161 +385,161 @@ export function Stack_sortWith(self_, ordering_) {
 self_.array.sort((x, y) => ff_core_Ordering.Ordering_toInt(ordering_(x, y)))
 }
 
-export async function Stack_isEmpty$(self_, $c) {
+export async function Stack_isEmpty$(self_, $task) {
 throw new Error('Function Stack_isEmpty is missing on this target in async context.');
 }
 
-export async function Stack_size$(self_, $c) {
+export async function Stack_size$(self_, $task) {
 throw new Error('Function Stack_size is missing on this target in async context.');
 }
 
-export async function Stack_get$(self_, index_, $c) {
+export async function Stack_get$(self_, index_, $task) {
 throw new Error('Function Stack_get is missing on this target in async context.');
 }
 
-export async function Stack_grab$(self_, index_, $c) {
+export async function Stack_grab$(self_, index_, $task) {
 throw new Error('Function Stack_grab is missing on this target in async context.');
 }
 
-export async function Stack_grabFirst$(self_, $c) {
+export async function Stack_grabFirst$(self_, $task) {
 return ff_core_Stack.Stack_grab(self_, 0)
 }
 
-export async function Stack_grabLast$(self_, $c) {
+export async function Stack_grabLast$(self_, $task) {
 return ff_core_Stack.Stack_grab(self_, (ff_core_Stack.Stack_size(self_) - 1))
 }
 
-export async function Stack_first$(self_, $c) {
+export async function Stack_first$(self_, $task) {
 throw new Error('Function Stack_first is missing on this target in async context.');
 }
 
-export async function Stack_last$(self_, $c) {
+export async function Stack_last$(self_, $task) {
 throw new Error('Function Stack_last is missing on this target in async context.');
 }
 
-export async function Stack_push$(self_, value_, $c) {
+export async function Stack_push$(self_, value_, $task) {
 throw new Error('Function Stack_push is missing on this target in async context.');
 }
 
-export async function Stack_pushAll$(self_, value_, $c) {
+export async function Stack_pushAll$(self_, value_, $task) {
 throw new Error('Function Stack_pushAll is missing on this target in async context.');
 }
 
-export async function Stack_pushArray$(self_, value_, $c) {
+export async function Stack_pushArray$(self_, value_, $task) {
 throw new Error('Function Stack_pushArray is missing on this target in async context.');
 }
 
-export async function Stack_pop$(self_, $c) {
+export async function Stack_pop$(self_, $task) {
 throw new Error('Function Stack_pop is missing on this target in async context.');
 }
 
-export async function Stack_set$(self_, index_, value_, $c) {
+export async function Stack_set$(self_, index_, value_, $task) {
 throw new Error('Function Stack_set is missing on this target in async context.');
 }
 
-export async function Stack_modify$(self_, index_, body_, $c) {
+export async function Stack_modify$(self_, index_, body_, $task) {
 
             if(index_ < 0 || index_ >= self_.array.length) {
                 ff_core_Try.internalThrowGrabException_()
             }
-            self_.array[index_] = await body_(self_.array[index_], $c)
+            self_.array[index_] = await body_(self_.array[index_], $task)
         
 }
 
-export async function Stack_fill$(self_, value_, start_ = 0, end_ = 9007199254740991, $c) {
+export async function Stack_fill$(self_, value_, start_ = 0, end_ = 9007199254740991, $task) {
 throw new Error('Function Stack_fill is missing on this target in async context.');
 }
 
-export async function Stack_copy$(self_, target_, start_, end_, $c) {
+export async function Stack_copy$(self_, target_, start_, end_, $task) {
 throw new Error('Function Stack_copy is missing on this target in async context.');
 }
 
-export async function Stack_delete$(self_, start_, deleteCount_, $c) {
+export async function Stack_delete$(self_, start_, deleteCount_, $task) {
 throw new Error('Function Stack_delete is missing on this target in async context.');
 }
 
-export async function Stack_insert$(self_, start_, value_, deleteCount_ = 0, $c) {
+export async function Stack_insert$(self_, start_, value_, deleteCount_ = 0, $task) {
 throw new Error('Function Stack_insert is missing on this target in async context.');
 }
 
-export async function Stack_insertAll$(self_, start_, value_, deleteCount_ = 0, $c) {
+export async function Stack_insertAll$(self_, start_, value_, deleteCount_ = 0, $task) {
 throw new Error('Function Stack_insertAll is missing on this target in async context.');
 }
 
-export async function Stack_insertArray$(self_, start_, value_, deleteCount_ = 0, $c) {
+export async function Stack_insertArray$(self_, start_, value_, deleteCount_ = 0, $task) {
 throw new Error('Function Stack_insertArray is missing on this target in async context.');
 }
 
-export async function Stack_each$(self_, body_, $c) {
+export async function Stack_each$(self_, body_, $task) {
 
             for(let i = 0; i < self_.array.length; i++) {
-                await body_(self_.array[i], $c)
+                await body_(self_.array[i], $task)
             }
         
 }
 
-export async function Stack_eachWhile$(self_, body_, $c) {
-for(const value of self_.array) if(!await body_(value, $c)) break
+export async function Stack_eachWhile$(self_, body_, $task) {
+for(const value of self_.array) if(!await body_(value, $task)) break
 }
 
-export async function Stack_all$(self_, body_, $c) {
+export async function Stack_all$(self_, body_, $task) {
 let result_ = true;
-(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $c) => {
-result_ = (await body_(x_, $c));
+(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $task) => {
+result_ = (await body_(x_, $task));
 return result_
-}), $c));
+}), $task));
 return result_
 }
 
-export async function Stack_any$(self_, body_, $c) {
+export async function Stack_any$(self_, body_, $task) {
 let result_ = false;
-(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $c) => {
-result_ = (await body_(x_, $c));
+(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $task) => {
+result_ = (await body_(x_, $task));
 return (!result_)
-}), $c));
+}), $task));
 return result_
 }
 
-export async function Stack_indexWhere$(self_, body_, $c) {
+export async function Stack_indexWhere$(self_, body_, $task) {
 let i_ = (-1);
 let result_ = false;
-(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $c) => {
+(await ff_core_Stack.Stack_eachWhile$(self_, (async (x_, $task) => {
 i_ += 1;
-result_ = (await body_(x_, $c));
+result_ = (await body_(x_, $task));
 return (!result_)
-}), $c));
+}), $task));
 if(result_) {
 return ff_core_Option.Some(i_)
 } else return ff_core_Option.None()
 }
 
-export async function Stack_drain$(self_, $c) {
+export async function Stack_drain$(self_, $task) {
 throw new Error('Function Stack_drain is missing on this target in async context.');
 }
 
-export async function Stack_toArray$(self_, start_ = 0, end_ = 9007199254740991, $c) {
+export async function Stack_toArray$(self_, start_ = 0, end_ = 9007199254740991, $task) {
 throw new Error('Function Stack_toArray is missing on this target in async context.');
 }
 
-export async function Stack_toList$(self_, start_ = 0, end_ = 9007199254740991, $c) {
+export async function Stack_toList$(self_, start_ = 0, end_ = 9007199254740991, $task) {
 throw new Error('Function Stack_toList is missing on this target in async context.');
 }
 
-export async function Stack_toStream$(self_, start_ = 0, end_ = 9007199254740991, $c) {
-return (await ff_core_Array.Array_toStream$(ff_core_Stack.Stack_toArray(self_, start_, end_), false, $c))
+export async function Stack_toStream$(self_, start_ = 0, end_ = 9007199254740991, $task) {
+return (await ff_core_Array.Array_toStream$(ff_core_Stack.Stack_toArray(self_, start_, end_), false, $task))
 }
 
-export async function Stack_reverse$(self_, $c) {
+export async function Stack_reverse$(self_, $task) {
 throw new Error('Function Stack_reverse is missing on this target in async context.');
 }
 
-export async function Stack_sortBy$(self_, body_, ff_core_Ordering_Order$S, $c) {
-(await ff_core_Stack.Stack_sortWith$(self_, (async (_w1, _w2, $c) => {
-return ff_core_Ordering_Order$S.compare_((await body_(_w1, $c)), (await body_(_w2, $c)))
-}), $c))
+export async function Stack_sortBy$(self_, body_, ff_core_Ordering_Order$S, $task) {
+(await ff_core_Stack.Stack_sortWith$(self_, (async (_w1, _w2, $task) => {
+return ff_core_Ordering_Order$S.compare_((await body_(_w1, $task)), (await body_(_w2, $task)))
+}), $task))
 }
 
-export async function Stack_sortWith$(self_, ordering_, $c) {
+export async function Stack_sortWith$(self_, ordering_, $task) {
 throw new Error('Function Stack_sortWith is missing on this target in async context.');
 }
 
@@ -549,7 +549,7 @@ return ff_core_Ordering_Order$T.compare_(x_, y_)
 }))
 }
 
-export async function Stack_sort$(self_, ff_core_Ordering_Order$T, $c) {
+export async function Stack_sort$(self_, ff_core_Ordering_Order$T, $task) {
 ff_core_Stack.Stack_sortWith(self_, ((x_, y_) => {
 return ff_core_Ordering_Order$T.compare_(x_, y_)
 }))
@@ -559,7 +559,7 @@ export function Stack_join(self_, separator_ = "") {
 return self_.array.join(separator_)
 }
 
-export async function Stack_join$(self_, separator_ = "", $c) {
+export async function Stack_join$(self_, separator_ = "", $task) {
 throw new Error('Function Stack_join is missing on this target in async context.');
 }
 
@@ -576,7 +576,7 @@ ff_core_Stack.Stack_push(stack_, ff_core_Show_Show$T.show_(x_))
 ff_core_Stack.Stack_push(stack_, "].toStack()");
 return ff_core_Stack.Stack_join(stack_, "")
 },
-async show_$(array_, $c) {
+async show_$(array_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_Stack.Stack_push(stack_, "[");
 ff_core_Array.Array_each(array_, ((x_) => {

@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -91,7 +91,7 @@ export function make_() {
 return new Map()
 }
 
-export async function make_$($c) {
+export async function make_$($task) {
 throw new Error('Function make is missing on this target in async context.');
 }
 
@@ -181,43 +181,43 @@ export function StringMap_copy(self_) {
 return new Map(self_)
 }
 
-export async function StringMap_get$(self_, key_, $c) {
+export async function StringMap_get$(self_, key_, $task) {
 throw new Error('Function StringMap_get is missing on this target in async context.');
 }
 
-export async function StringMap_grab$(self_, key_, $c) {
+export async function StringMap_grab$(self_, key_, $task) {
 throw new Error('Function StringMap_grab is missing on this target in async context.');
 }
 
-export async function StringMap_set$(self_, key_, value_, $c) {
+export async function StringMap_set$(self_, key_, value_, $task) {
 throw new Error('Function StringMap_set is missing on this target in async context.');
 }
 
-export async function StringMap_has$(self_, key_, $c) {
+export async function StringMap_has$(self_, key_, $task) {
 throw new Error('Function StringMap_has is missing on this target in async context.');
 }
 
-export async function StringMap_remove$(self_, key_, $c) {
+export async function StringMap_remove$(self_, key_, $task) {
 throw new Error('Function StringMap_remove is missing on this target in async context.');
 }
 
-export async function StringMap_clear$(self_, $c) {
+export async function StringMap_clear$(self_, $task) {
 throw new Error('Function StringMap_clear is missing on this target in async context.');
 }
 
-export async function StringMap_size$(self_, $c) {
+export async function StringMap_size$(self_, $task) {
 throw new Error('Function StringMap_size is missing on this target in async context.');
 }
 
-export async function StringMap_each$(self_, body_, $c) {
+export async function StringMap_each$(self_, body_, $task) {
 for(const [k, v] of self_) await body_(k, v)
 }
 
-export async function StringMap_eachWhile$(self_, body_, $c) {
+export async function StringMap_eachWhile$(self_, body_, $task) {
 for(const [k, v] of self_) if(!await body_(k, v)) break
 }
 
-export async function StringMap_toStack$(self_, $c) {
+export async function StringMap_toStack$(self_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 ff_core_Stack.Stack_push(stack_, ff_core_Pair.Pair(k_, v_))
@@ -225,23 +225,23 @@ ff_core_Stack.Stack_push(stack_, ff_core_Pair.Pair(k_, v_))
 return stack_
 }
 
-export async function StringMap_toArray$(self_, $c) {
+export async function StringMap_toArray$(self_, $task) {
 return ff_core_Stack.Stack_drain(ff_core_StringMap.StringMap_toStack(self_))
 }
 
-export async function StringMap_toList$(self_, $c) {
+export async function StringMap_toList$(self_, $task) {
 return ff_core_Array.Array_toList(ff_core_StringMap.StringMap_toArray(self_))
 }
 
-export async function StringMap_toStream$(self_, $c) {
-return (await ff_core_Array.Array_toStream$(ff_core_StringMap.StringMap_toArray(self_), false, $c))
+export async function StringMap_toStream$(self_, $task) {
+return (await ff_core_Array.Array_toStream$(ff_core_StringMap.StringMap_toArray(self_), false, $task))
 }
 
-export async function StringMap_toMap$(self_, $c) {
+export async function StringMap_toMap$(self_, $task) {
 return ff_core_Array.Array_toMap(ff_core_StringMap.StringMap_toArray(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
-export async function StringMap_keys$(self_, $c) {
+export async function StringMap_keys$(self_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 ff_core_Stack.Stack_push(stack_, k_)
@@ -249,7 +249,7 @@ ff_core_Stack.Stack_push(stack_, k_)
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
-export async function StringMap_values$(self_, $c) {
+export async function StringMap_values$(self_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_StringMap.StringMap_each(self_, ((k_, v_) => {
 ff_core_Stack.Stack_push(stack_, v_)
@@ -257,7 +257,7 @@ ff_core_Stack.Stack_push(stack_, v_)
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
-export async function StringMap_copy$(self_, $c) {
+export async function StringMap_copy$(self_, $task) {
 throw new Error('Function StringMap_copy is missing on this target in async context.');
 }
 
@@ -265,7 +265,7 @@ export function StringMap_show(self_, ff_core_Show_Show$V) {
 return (ff_core_List.List_show(ff_core_StringMap.StringMap_toList(self_), ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Show_Show$V)) + ".toStringMap()")
 }
 
-export async function StringMap_show$(self_, ff_core_Show_Show$V, $c) {
+export async function StringMap_show$(self_, ff_core_Show_Show$V, $task) {
 return (ff_core_List.List_show(ff_core_StringMap.StringMap_toList(self_), ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_String_String, ff_core_Show_Show$V)) + ".toStringMap()")
 }
 
@@ -273,7 +273,7 @@ export function ff_core_Show_Show$ff_core_StringMap_StringMap(ff_core_Show_Show$
 show_(self_) {
 return ff_core_StringMap.StringMap_show(self_, ff_core_Show_Show$V)
 },
-async show_$(self_, $c) {
+async show_$(self_, $task) {
 return ff_core_StringMap.StringMap_show(self_, ff_core_Show_Show$V)
 }
 }}
@@ -282,7 +282,7 @@ export function ff_core_Equal_Equal$ff_core_StringMap_StringMap(ff_core_Equal_Eq
 equals_(self_, that_) {
 return ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Equal_Equal$V)).equals_(ff_core_StringMap.StringMap_toArray(self_), ff_core_StringMap.StringMap_toArray(that_))
 },
-async equals_$(self_, that_, $c) {
+async equals_$(self_, that_, $task) {
 return ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_String_String, ff_core_Equal_Equal$V)).equals_(ff_core_StringMap.StringMap_toArray(self_), ff_core_StringMap.StringMap_toArray(that_))
 }
 }}
@@ -291,7 +291,7 @@ export function ff_core_Ordering_Order$ff_core_StringMap_StringMap(ff_core_Order
 compare_(self_, that_) {
 return ff_core_Array.ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering_Order$V)).compare_(ff_core_StringMap.StringMap_toArray(self_), ff_core_StringMap.StringMap_toArray(that_))
 },
-async compare_$(self_, that_, $c) {
+async compare_$(self_, that_, $task) {
 return ff_core_Array.ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering_Order$V)).compare_(ff_core_StringMap.StringMap_toArray(self_), ff_core_StringMap.StringMap_toArray(that_))
 }
 }}
@@ -312,10 +312,10 @@ return
 }));
 return result_
 },
-async serializeUsing_$(serialization_, self_, $c) {
+async serializeUsing_$(serialization_, self_, $task) {
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_StringMap.StringMap_toArray(self_))
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const result_ = ff_core_StringMap.make_();
 ff_core_Array.Array_each(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_String_String, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ((_1) => {
 {

@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -358,12 +358,12 @@ return
 }
 }
 
-export async function Option_else$(self_, body_, $c) {
+export async function Option_else$(self_, body_, $task) {
 {
 const _1 = self_;
 {
 if(_1.None) {
-return (await body_($c))
+return (await body_($task))
 return
 }
 }
@@ -377,16 +377,16 @@ return
 }
 }
 
-export async function Option_elseIf$(self_, condition_, body_, $c) {
+export async function Option_elseIf$(self_, condition_, body_, $task) {
 {
 const _1 = self_;
 {
 if(_1.None) {
 {
-const _1 = (await condition_($c));
+const _1 = (await condition_($task));
 {
 if(_1) {
-return ff_core_Option.Some((await body_($c)))
+return ff_core_Option.Some((await body_($task)))
 return
 }
 }
@@ -409,12 +409,12 @@ return
 }
 }
 
-export async function Option_orElse$(self_, body_, $c) {
+export async function Option_orElse$(self_, body_, $task) {
 {
 const _1 = self_;
 {
 if(_1.None) {
-return (await body_($c))
+return (await body_($task))
 return
 }
 }
@@ -427,7 +427,7 @@ return
 }
 }
 
-export async function Option_isEmpty$(self_, $c) {
+export async function Option_isEmpty$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -445,7 +445,7 @@ return
 }
 }
 
-export async function Option_toList$(self_, $c) {
+export async function Option_toList$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -464,34 +464,34 @@ return
 }
 }
 
-export async function Option_toStack$(self_, $c) {
+export async function Option_toStack$(self_, $task) {
 return ff_core_List.List_toStack(ff_core_Option.Option_toList(self_))
 }
 
-export async function Option_toArray$(self_, $c) {
+export async function Option_toArray$(self_, $task) {
 return ff_core_List.List_toArray(ff_core_Option.Option_toList(self_))
 }
 
-export async function Option_toStream$(self_, cycle_ = false, $c) {
+export async function Option_toStream$(self_, cycle_ = false, $task) {
 let next_ = self_;
-return (await ff_core_Stream.make_$((async ($c) => {
+return (await ff_core_Stream.make_$((async ($task) => {
 const result_ = next_;
 if((!cycle_)) {
 next_ = ff_core_Option.None()
 };
 return result_
-}), (async ($c) => {
+}), (async ($task) => {
 
-}), $c))
+}), $task))
 }
 
-export async function Option_filter$(self_, body_, $c) {
+export async function Option_filter$(self_, body_, $task) {
 {
 const _1 = self_;
 {
 if(_1.Some) {
 const v_ = _1.value_;
-const _guard1 = (await body_(v_, $c));
+const _guard1 = (await body_(v_, $task));
 if(_guard1) {
 return ff_core_Option.Some(v_)
 return
@@ -505,7 +505,7 @@ return
 }
 }
 
-export async function Option_map$(self_, body_, $c) {
+export async function Option_map$(self_, body_, $task) {
 {
 const _1 = self_;
 {
@@ -517,14 +517,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return ff_core_Option.Some((await body_(v_, $c)))
+return ff_core_Option.Some((await body_(v_, $task)))
 return
 }
 }
 }
 }
 
-export async function Option_flatMap$(self_, body_, $c) {
+export async function Option_flatMap$(self_, body_, $task) {
 {
 const _1 = self_;
 {
@@ -536,14 +536,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return (await body_(v_, $c))
+return (await body_(v_, $task))
 return
 }
 }
 }
 }
 
-export async function Option_each$(self_, body_, $c) {
+export async function Option_each$(self_, body_, $task) {
 {
 const _1 = self_;
 {
@@ -555,14 +555,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-(await body_(v_, $c))
+(await body_(v_, $task))
 return
 }
 }
 }
 }
 
-export async function Option_all$(self_, body_, $c) {
+export async function Option_all$(self_, body_, $task) {
 {
 const _1 = self_;
 {
@@ -574,14 +574,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return (await body_(v_, $c))
+return (await body_(v_, $task))
 return
 }
 }
 }
 }
 
-export async function Option_any$(self_, body_, $c) {
+export async function Option_any$(self_, body_, $task) {
 {
 const _1 = self_;
 {
@@ -593,14 +593,14 @@ return
 {
 if(_1.Some) {
 const v_ = _1.value_;
-return (await body_(v_, $c))
+return (await body_(v_, $task))
 return
 }
 }
 }
 }
 
-export async function Option_grab$(self_, $c) {
+export async function Option_grab$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -638,7 +638,7 @@ return
 }
 }
 
-export async function Option_contains$(self_, value_, ff_core_Equal_Equal$T, $c) {
+export async function Option_contains$(self_, value_, ff_core_Equal_Equal$T, $task) {
 {
 const _1 = self_;
 {
@@ -676,7 +676,7 @@ return
 }
 }
 
-export async function Option_flatten$(self_, $c) {
+export async function Option_flatten$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -715,7 +715,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -764,7 +764,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -843,7 +843,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -945,7 +945,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -970,7 +970,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

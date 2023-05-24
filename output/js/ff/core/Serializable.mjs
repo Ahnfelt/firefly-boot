@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -132,7 +132,7 @@ export function internalGrabLatin1_(self_, byteOffset_, size_) {
     
 }
 
-export async function serialize_$(value_, initialBufferSize_ = 1024, ff_core_Serializable_Serializable$T, $c) {
+export async function serialize_$(value_, initialBufferSize_ = 1024, ff_core_Serializable_Serializable$T, $task) {
 const serialization_ = ff_core_Serializable.Serialization(ff_core_Buffer.make_(initialBufferSize_, false), 0, 0);
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, value_);
 ff_core_Serializable.Serialization_autoResize(serialization_, 4);
@@ -141,7 +141,7 @@ serialization_.offset_ += 4;
 return ff_core_Buffer.Buffer_view(serialization_.buffer_, 0, serialization_.offset_)
 }
 
-export async function deserialize_$(buffer_, ff_core_Serializable_Serializable$T, $c) {
+export async function deserialize_$(buffer_, ff_core_Serializable_Serializable$T, $task) {
 const serialization_ = ff_core_Serializable.Serialization(buffer_, 0, 0);
 const result_ = ff_core_Serializable_Serializable$T.deserializeUsing_(serialization_);
 const checksum_ = ff_core_Buffer.Buffer_grabInt32(serialization_.buffer_, serialization_.offset_, true);
@@ -151,11 +151,11 @@ throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_core_Serial
 return result_
 }
 
-export async function internalSetLatin1_$(self_, byteOffset_, value_, $c) {
+export async function internalSetLatin1_$(self_, byteOffset_, value_, $task) {
 throw new Error('Function internalSetLatin1 is missing on this target in async context.');
 }
 
-export async function internalGrabLatin1_$(self_, byteOffset_, size_, $c) {
+export async function internalGrabLatin1_$(self_, byteOffset_, size_, $task) {
 throw new Error('Function internalGrabLatin1 is missing on this target in async context.');
 }
 
@@ -168,7 +168,7 @@ self_.buffer_ = newBuffer_
 }
 }
 
-export async function Serialization_autoResize$(self_, minSpareCapacity_, $c) {
+export async function Serialization_autoResize$(self_, minSpareCapacity_, $task) {
 if(((self_.offset_ + minSpareCapacity_) > ff_core_Buffer.Buffer_size(self_.buffer_))) {
 const minSize_ = (ff_core_Buffer.Buffer_size(self_.buffer_) + minSpareCapacity_);
 const newBuffer_ = ff_core_Buffer.make_(ff_core_Int.Int_max((ff_core_Buffer.Buffer_size(self_.buffer_) * 2), minSize_), false);
@@ -188,12 +188,12 @@ const result_ = ff_core_Buffer.Buffer_grabInt64(serialization_.buffer_, serializ
 serialization_.offset_ += 8;
 return result_
 },
-async serializeUsing_$(serialization_, value_, $c) {
+async serializeUsing_$(serialization_, value_, $task) {
 ff_core_Serializable.Serialization_autoResize(serialization_, 8);
 ff_core_Buffer.Buffer_setInt64(serialization_.buffer_, serialization_.offset_, value_, true);
 serialization_.offset_ += 8
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const result_ = ff_core_Buffer.Buffer_grabInt64(serialization_.buffer_, serialization_.offset_, true);
 serialization_.offset_ += 8;
 return result_
@@ -213,14 +213,14 @@ const result_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serializ
 serialization_.offset_ += 1;
 return (result_ === 1)
 },
-async serializeUsing_$(serialization_, value_, $c) {
+async serializeUsing_$(serialization_, value_, $task) {
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, (value_
 ? 1
 : 0));
 serialization_.offset_ += 1
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const result_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 return (result_ === 1)
@@ -270,7 +270,7 @@ return result;
 })())
 }
 },
-async serializeUsing_$(serialization_, value_, $c) {
+async serializeUsing_$(serialization_, value_, $task) {
 if((ff_core_Array.Array_size(value_) < 255)) {
 ff_core_Serializable.Serialization_autoResize(serialization_, 1);
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_Array.Array_size(value_));
@@ -287,7 +287,7 @@ ff_core_Array.Array_each(value_, ((_w1) => {
 ff_core_Serializable_Serializable$T.serializeUsing_(serialization_, _w1)
 }))
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 if((smallSize_ !== 255)) {
 serialization_.offset_ += 1;
@@ -321,10 +321,10 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_co
 deserializeUsing_(serialization_) {
 return ff_core_Array.Array_toList(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_))
 },
-async serializeUsing_$(serialization_, value_, $c) {
+async serializeUsing_$(serialization_, value_, $task) {
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_List.List_toArray(value_))
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 return ff_core_Array.Array_toList(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_))
 }
 }}
@@ -336,10 +336,10 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_co
 deserializeUsing_(serialization_) {
 return ff_core_Array.Array_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
 },
-async serializeUsing_$(serialization_, value_, $c) {
+async serializeUsing_$(serialization_, value_, $task) {
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).serializeUsing_(serialization_, ff_core_Set.Set_toArray(value_, ff_core_Ordering_Order$T))
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 return ff_core_Array.Array_toSet(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Serializable_Serializable$T).deserializeUsing_(serialization_), ff_core_Ordering_Order$T)
 }
 }}
@@ -351,10 +351,10 @@ ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_co
 deserializeUsing_(serialization_) {
 return ff_core_Array.Array_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
 },
-async serializeUsing_$(serialization_, value_, $c) {
+async serializeUsing_$(serialization_, value_, $task) {
 ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_Map.Map_toArray(value_, ff_core_Ordering_Order$K))
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 return ff_core_Array.Array_toMap(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable_Serializable$K, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ff_core_Ordering_Order$K)
 }
 }}
@@ -389,7 +389,7 @@ serialization_.offset_ += (5 + size_);
 return ff_core_Buffer.Buffer_toString(stringBuffer_, "utf8")
 }
 },
-async serializeUsing_$(serialization_, value_, $c) {
+async serializeUsing_$(serialization_, value_, $task) {
 ff_core_Serializable.Serialization_autoResize(serialization_, (1 + ff_core_String.String_size(value_)));
 ff_core_Buffer.Buffer_setUint8(serialization_.buffer_, serialization_.offset_, ff_core_String.String_size(value_));
 if(((ff_core_String.String_size(value_) < 255) && ff_core_Serializable.internalSetLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), value_))) {
@@ -405,7 +405,7 @@ serialization_.offset_ += (5 + ff_core_Buffer.Buffer_size(stringBuffer_))
 ff_core_Core.panic_("Can't serialize strings where size() >= 1073741824")
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const smallSize_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 if((smallSize_ !== 255)) {
 const result_ = ff_core_Serializable.internalGrabLatin1_(serialization_.buffer_, (serialization_.offset_ + 1), smallSize_);
@@ -424,7 +424,7 @@ export const ff_core_Any_HasAnyTag$ff_core_Serializable_DeserializationChecksumE
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:core/Serializable.DeserializationChecksumException" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/Serializable.DeserializationChecksumException" + "[") + "]"))
 }
 };

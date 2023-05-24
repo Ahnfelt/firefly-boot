@@ -78,7 +78,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -97,7 +97,7 @@ export function core_(name_) {
 return ((("ff:core/" + name_) + ".") + name_)
 }
 
-export async function core_$(name_, $c) {
+export async function core_$(name_, $task) {
 return ((("ff:core/" + name_) + ".") + name_)
 }
 
@@ -620,7 +620,7 @@ export function Substitution_has(self_, index_) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
-export async function Substitution_substituteModule$(self_, module_, $c) {
+export async function Substitution_substituteModule$(self_, module_, $task) {
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteLetDefinition(self_, _w1)
 }));
@@ -643,7 +643,7 @@ return
 }
 }
 
-export async function Substitution_substituteLetDefinition$(self_, definition_, $c) {
+export async function Substitution_substituteLetDefinition$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -654,7 +654,7 @@ return
 }
 }
 
-export async function Substitution_substituteExtendDefinition$(self_, definition_, $c) {
+export async function Substitution_substituteExtendDefinition$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -667,7 +667,7 @@ return
 }
 }
 
-export async function Substitution_substituteFunctionDefinition$(self_, definition_, $c) {
+export async function Substitution_substituteFunctionDefinition$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -680,7 +680,7 @@ return
 }
 }
 
-export async function Substitution_substituteSignature$(self_, signature_, $c) {
+export async function Substitution_substituteSignature$(self_, signature_, $task) {
 {
 const _1 = signature_;
 {
@@ -695,7 +695,7 @@ return
 }
 }
 
-export async function Substitution_substituteConstraint$(self_, constraint_, $c) {
+export async function Substitution_substituteConstraint$(self_, constraint_, $task) {
 {
 const _1 = constraint_;
 {
@@ -708,7 +708,7 @@ return
 }
 }
 
-export async function Substitution_substituteParameter$(self_, parameter_, $c) {
+export async function Substitution_substituteParameter$(self_, parameter_, $task) {
 {
 const _1 = parameter_;
 {
@@ -721,7 +721,7 @@ return
 }
 }
 
-export async function Substitution_substituteInstanceDefinition$(self_, definition_, $c) {
+export async function Substitution_substituteInstanceDefinition$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -734,7 +734,7 @@ return
 }
 }
 
-export async function Substitution_substituteLambda$(self_, definition_, $c) {
+export async function Substitution_substituteLambda$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -763,7 +763,7 @@ return
 }
 }
 
-export async function Substitution_substituteTerm$(self_, term_, $c) {
+export async function Substitution_substituteTerm$(self_, term_, $task) {
 {
 const _1 = term_;
 {
@@ -1048,7 +1048,7 @@ return
 }
 }
 
-export async function Substitution_substituteArgument$(self_, argument_, $c) {
+export async function Substitution_substituteArgument$(self_, argument_, $task) {
 {
 const _1 = argument_;
 {
@@ -1059,7 +1059,7 @@ return
 }
 }
 
-export async function Substitution_substituteField$(self_, field_, $c) {
+export async function Substitution_substituteField$(self_, field_, $task) {
 {
 const _1 = field_;
 {
@@ -1070,7 +1070,7 @@ return
 }
 }
 
-export async function Substitution_substituteType$(self_, type_, $c) {
+export async function Substitution_substituteType$(self_, type_, $task) {
 {
 const self_a = self_;
 const type_a = type_;
@@ -1105,7 +1105,7 @@ return
 }
 }
 
-export async function Substitution_get$(self_, index_, $c) {
+export async function Substitution_get$(self_, index_, $task) {
 {
 const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
@@ -1135,7 +1135,7 @@ return
 }
 }
 
-export async function Substitution_has$(self_, index_, $c) {
+export async function Substitution_has$(self_, index_, $task) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 

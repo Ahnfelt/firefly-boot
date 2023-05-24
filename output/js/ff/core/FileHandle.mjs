@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -111,36 +111,36 @@ export function FileHandle_sync(self_, dataOnly_ = false) {
 throw new Error('Function FileHandle_sync is missing on this target in sync context.');
 }
 
-export async function FileHandle_close$(self_, $c) {
+export async function FileHandle_close$(self_, $task) {
 
             await self_.close()
         
 }
 
-export async function FileHandle_read$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
+export async function FileHandle_read$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $task) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            ff_core_Task.Task_throwIfAborted($task)
             await self_.read(buffer_, {offset: offset_, length: length.value_, position: position.value_})
         
 }
 
-export async function FileHandle_write$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
+export async function FileHandle_write$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $task) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            ff_core_Task.Task_throwIfAborted($task)
             await self_.write(buffer_, offset_, length.value_, position.value_)
         
 }
 
-export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $c) {
+export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $task) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            ff_core_Task.Task_throwIfAborted($task)
             await self_.write(text, position.value_, encoding_)
         
 }
 
-export async function FileHandle_sync$(self_, dataOnly_ = false, $c) {
+export async function FileHandle_sync$(self_, dataOnly_ = false, $task) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            ff_core_Task.Task_throwIfAborted($task)
             if(dataOnly_) await self_.datasync()
             else await self_.sync()
         

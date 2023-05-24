@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -116,7 +116,7 @@ return
 }
 }
 
-export async function Bool_toInt$(self_, $c) {
+export async function Bool_toInt$(self_, $task) {
 {
 const _1 = self_;
 {

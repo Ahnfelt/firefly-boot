@@ -82,7 +82,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -170,11 +170,11 @@ export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
 return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (at_.column_ > afterAt_.column_)) || (at_.line_ > afterAt_.line_))) && (((at_.line_ === beforeAt_.line_) && (at_.column_ < (beforeAt_.column_ + extraColumns_))) || (at_.line_ < beforeAt_.line_)))
 }
 
-export async function disabled_$($c) {
+export async function disabled_$($task) {
 return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false)
 }
 
-export async function make_$(at_, definedAt_, insertIdentifier_, $c) {
+export async function make_$(at_, definedAt_, insertIdentifier_, $task) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
@@ -182,7 +182,7 @@ return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), insertIdentifier_, ff_core_List.List_toStack(ff_core_List.Empty()))
 }
 
-export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $c) {
+export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $task) {
 return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (at_.column_ > afterAt_.column_)) || (at_.line_ > afterAt_.line_))) && (((at_.line_ === beforeAt_.line_) && (at_.column_ < (beforeAt_.column_ + extraColumns_))) || (at_.line_ < beforeAt_.line_)))
 }
 
@@ -206,23 +206,23 @@ export function LspHook_results(self_) {
 return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
 }
 
-export async function LspHook_isEnabled$(self_, $c) {
+export async function LspHook_isEnabled$(self_, $task) {
 return ((self_.at_.line_ !== (-7)) || (self_.definedAt_.line_ !== (-7)))
 }
 
-export async function LspHook_isAt$(self_, at_, $c) {
+export async function LspHook_isAt$(self_, at_, $task) {
 return (((self_.at_.line_ === at_.line_) && (self_.at_.column_ === at_.column_)) && (self_.at_.file_ === at_.file_))
 }
 
-export async function LspHook_isDefinedAt$(self_, at_, $c) {
+export async function LspHook_isDefinedAt$(self_, at_, $task) {
 return (((self_.definedAt_.line_ === at_.line_) && (self_.definedAt_.column_ === at_.column_)) && (self_.definedAt_.file_ === at_.file_))
 }
 
-export async function LspHook_emit$(self_, result_, $c) {
+export async function LspHook_emit$(self_, result_, $task) {
 ff_core_Stack.Stack_push(self_.stackOfResults_, result_)
 }
 
-export async function LspHook_results$(self_, $c) {
+export async function LspHook_results$(self_, $task) {
 return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
 }
 
@@ -230,7 +230,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_LspHook_SymbolHook = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.SymbolHook" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.SymbolHook" + "[") + "]"))
 }
 };
@@ -246,7 +246,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -276,7 +276,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -328,7 +328,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -397,7 +397,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -413,7 +413,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

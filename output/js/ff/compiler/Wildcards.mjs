@@ -78,7 +78,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -101,11 +101,11 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$($c) {
+export async function make_$($task) {
 return ff_compiler_Wildcards.Wildcards(0)
 }
 
-export async function fail_$(at_, message_, $c) {
+export async function fail_$(at_, message_, $task) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
@@ -353,7 +353,7 @@ return
 }
 }
 
-export async function Wildcards_fixWildcards$(self_, term_, $c) {
+export async function Wildcards_fixWildcards$(self_, term_, $task) {
 {
 const self_a = self_;
 const term_a = term_;

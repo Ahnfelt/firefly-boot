@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -107,17 +107,17 @@ const duration_ = (stop_ - start_);
 return ff_core_Pair.Pair(result_, duration_)
 }
 
-export async function TimeSystem_now$(self_, $c) {
+export async function TimeSystem_now$(self_, $task) {
 throw new Error('Function TimeSystem_now is missing on this target in async context.');
 }
 
-export async function TimeSystem_elapsed$(self_, $c) {
+export async function TimeSystem_elapsed$(self_, $task) {
 throw new Error('Function TimeSystem_elapsed is missing on this target in async context.');
 }
 
-export async function TimeSystem_measure$(self_, body_, $c) {
+export async function TimeSystem_measure$(self_, body_, $task) {
 const start_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
-const result_ = (await body_($c));
+const result_ = (await body_($task));
 const stop_ = ff_core_TimeSystem.TimeSystem_elapsed(self_);
 const duration_ = (stop_ - start_);
 return ff_core_Pair.Pair(result_, duration_)

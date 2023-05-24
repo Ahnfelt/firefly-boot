@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -163,35 +163,35 @@ export function JsSystem_function9(self_, body_) {
 return body_
 }
 
-export async function JsSystem_global$(self_, $c) {
+export async function JsSystem_global$(self_, $task) {
 throw new Error('Function JsSystem_global is missing on this target in async context.');
 }
 
-export async function JsSystem_parseJson$(self_, json_, $c) {
+export async function JsSystem_parseJson$(self_, json_, $task) {
 throw new Error('Function JsSystem_parseJson is missing on this target in async context.');
 }
 
-export async function JsSystem_null$(self_, $c) {
+export async function JsSystem_null$(self_, $task) {
 throw new Error('Function JsSystem_null is missing on this target in async context.');
 }
 
-export async function JsSystem_undefined$(self_, $c) {
+export async function JsSystem_undefined$(self_, $task) {
 throw new Error('Function JsSystem_undefined is missing on this target in async context.');
 }
 
-export async function JsSystem_value$(self_, jsValue_, ff_core_JsValue_IsJsValue$T, $c) {
+export async function JsSystem_value$(self_, jsValue_, ff_core_JsValue_IsJsValue$T, $task) {
 throw new Error('Function JsSystem_value is missing on this target in async context.');
 }
 
-export async function JsSystem_object$(self_, $c) {
+export async function JsSystem_object$(self_, $task) {
 throw new Error('Function JsSystem_object is missing on this target in async context.');
 }
 
-export async function JsSystem_array$(self_, values_, $c) {
+export async function JsSystem_array$(self_, values_, $task) {
 throw new Error('Function JsSystem_array is missing on this target in async context.');
 }
 
-export async function JsSystem_shield$(self_, body_, $c) {
+export async function JsSystem_shield$(self_, body_, $task) {
 
             const controller = new AbortController()
             controller.closed = false
@@ -200,44 +200,44 @@ export async function JsSystem_shield$(self_, body_, $c) {
         
 }
 
-export async function JsSystem_function0$(self_, body_, $c) {
-return () => body_($c)
+export async function JsSystem_function0$(self_, body_, $task) {
+return () => body_($task)
 }
 
-export async function JsSystem_function1$(self_, body_, $c) {
-return a1 => body_(a1, $c)
+export async function JsSystem_function1$(self_, body_, $task) {
+return a1 => body_(a1, $task)
 }
 
-export async function JsSystem_function2$(self_, body_, $c) {
-return (a1, a2) => body_(a1, a2, $c)
+export async function JsSystem_function2$(self_, body_, $task) {
+return (a1, a2) => body_(a1, a2, $task)
 }
 
-export async function JsSystem_function3$(self_, body_, $c) {
-return (a1, a2, a3) => body_(a1, a2, a3, $c)
+export async function JsSystem_function3$(self_, body_, $task) {
+return (a1, a2, a3) => body_(a1, a2, a3, $task)
 }
 
-export async function JsSystem_function4$(self_, body_, $c) {
-return (a1, a2, a3, a4) => body_(a1, a2, a3, a4, $c)
+export async function JsSystem_function4$(self_, body_, $task) {
+return (a1, a2, a3, a4) => body_(a1, a2, a3, a4, $task)
 }
 
-export async function JsSystem_function5$(self_, body_, $c) {
-return (a1, a2, a3, a4, a5) => body_(a1, a2, a3, a4, a5, $c)
+export async function JsSystem_function5$(self_, body_, $task) {
+return (a1, a2, a3, a4, a5) => body_(a1, a2, a3, a4, a5, $task)
 }
 
-export async function JsSystem_function6$(self_, body_, $c) {
-return (a1, a2, a3, a4, a5, a6) => body_(a1, a2, a3, a4, a5, a6, $c)
+export async function JsSystem_function6$(self_, body_, $task) {
+return (a1, a2, a3, a4, a5, a6) => body_(a1, a2, a3, a4, a5, a6, $task)
 }
 
-export async function JsSystem_function7$(self_, body_, $c) {
-return (a1, a2, a3, a4, a5, a6, a7) => body_(a1, a2, a3, a4, a5, a6, a7, $c)
+export async function JsSystem_function7$(self_, body_, $task) {
+return (a1, a2, a3, a4, a5, a6, a7) => body_(a1, a2, a3, a4, a5, a6, a7, $task)
 }
 
-export async function JsSystem_function8$(self_, body_, $c) {
-return (a1, a2, a3, a4, a5, a6, a7, a8) => body_(a1, a2, a3, a4, a5, a6, a7, a8, $c)
+export async function JsSystem_function8$(self_, body_, $task) {
+return (a1, a2, a3, a4, a5, a6, a7, a8) => body_(a1, a2, a3, a4, a5, a6, a7, a8, $task)
 }
 
-export async function JsSystem_function9$(self_, body_, $c) {
-return (a1, a2, a3, a4, a5, a6, a7, a8, a9) => body_(a1, a2, a3, a4, a5, a6, a7, a8, a9, $c)
+export async function JsSystem_function9$(self_, body_, $task) {
+return (a1, a2, a3, a4, a5, a6, a7, a8, a9) => body_(a1, a2, a3, a4, a5, a6, a7, a8, a9, $task)
 }
 
 

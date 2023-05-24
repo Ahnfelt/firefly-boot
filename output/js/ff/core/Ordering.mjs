@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -206,26 +206,26 @@ return
 })
 }
 
-export async function before_$(x_, y_, ff_core_Ordering_Order$T, $c) {
+export async function before_$(x_, y_, ff_core_Ordering_Order$T, $task) {
 return (ff_core_Ordering_Order$T.compare_(x_, y_) === ff_core_Ordering.OrderingBefore())
 }
 
-export async function notBefore_$(x_, y_, ff_core_Ordering_Order$T, $c) {
+export async function notBefore_$(x_, y_, ff_core_Ordering_Order$T, $task) {
 return (ff_core_Ordering_Order$T.compare_(x_, y_) !== ff_core_Ordering.OrderingBefore())
 }
 
-export async function after_$(x_, y_, ff_core_Ordering_Order$T, $c) {
+export async function after_$(x_, y_, ff_core_Ordering_Order$T, $task) {
 return (ff_core_Ordering_Order$T.compare_(x_, y_) === ff_core_Ordering.OrderingAfter())
 }
 
-export async function notAfter_$(x_, y_, ff_core_Ordering_Order$T, $c) {
+export async function notAfter_$(x_, y_, ff_core_Ordering_Order$T, $task) {
 return (ff_core_Ordering_Order$T.compare_(x_, y_) !== ff_core_Ordering.OrderingAfter())
 }
 
-export async function reverse_$(compare_, $c) {
-return (async (x_, y_, $c) => {
+export async function reverse_$(compare_, $task) {
+return (async (x_, y_, $task) => {
 {
-const _1 = (await compare_(x_, y_, $c));
+const _1 = (await compare_(x_, y_, $task));
 {
 if(_1.OrderingBefore) {
 return ff_core_Ordering.OrderingAfter()
@@ -248,13 +248,13 @@ return
 })
 }
 
-export async function pair_$(compareFirst_, compareSecond_, $c) {
-return (async (x_, y_, $c) => {
+export async function pair_$(compareFirst_, compareSecond_, $task) {
+return (async (x_, y_, $task) => {
 {
-const _1 = (await compareFirst_(x_.first_, y_.first_, $c));
+const _1 = (await compareFirst_(x_.first_, y_.first_, $task));
 {
 if(_1.OrderingSame) {
-return (await compareSecond_(x_.second_, y_.second_, $c))
+return (await compareSecond_(x_.second_, y_.second_, $task))
 return
 }
 }
@@ -267,7 +267,7 @@ return
 })
 }
 
-export async function fromInt_$(order_, $c) {
+export async function fromInt_$(order_, $task) {
 if((order_ < 0)) {
 return ff_core_Ordering.OrderingBefore()
 } else if((order_ === 0)) {
@@ -277,7 +277,7 @@ return ff_core_Ordering.OrderingAfter()
 }
 }
 
-export async function fromFloat_$(order_, $c) {
+export async function fromFloat_$(order_, $task) {
 if((order_ < 0.0)) {
 return ff_core_Ordering.OrderingBefore()
 } else if((order_ === 0.0)) {
@@ -287,12 +287,12 @@ return ff_core_Ordering.OrderingAfter()
 }
 }
 
-export async function fromLessThan_$(lessThan_, $c) {
-return (async (_1, _2, $c) => {
+export async function fromLessThan_$(lessThan_, $task) {
+return (async (_1, _2, $task) => {
 {
 const x_ = _1;
 const y_ = _2;
-const _guard1 = (await lessThan_(x_, y_, $c));
+const _guard1 = (await lessThan_(x_, y_, $task));
 if(_guard1) {
 return ff_core_Ordering.OrderingBefore()
 return
@@ -301,7 +301,7 @@ return
 {
 const x_ = _1;
 const y_ = _2;
-const _guard1 = (await lessThan_(y_, x_, $c));
+const _guard1 = (await lessThan_(y_, x_, $task));
 if(_guard1) {
 return ff_core_Ordering.OrderingAfter()
 return
@@ -362,7 +362,7 @@ return
 }
 }
 
-export async function Ordering_toInt$(self_, $c) {
+export async function Ordering_toInt$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -386,7 +386,7 @@ return
 }
 }
 
-export async function Ordering_reverse$(self_, $c) {
+export async function Ordering_reverse$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -414,7 +414,7 @@ export const ff_core_Ordering_Order$ff_core_Nothing_Nothing = {
 compare_(x_, y_) {
 return ff_core_Ordering.OrderingSame()
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 return ff_core_Ordering.OrderingSame()
 }
 };
@@ -446,7 +446,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -478,7 +478,7 @@ export const ff_core_Ordering_Order$ff_core_Char_Char = {
 compare_(x_, y_) {
 return ff_core_Ordering.fromInt_((x_ - y_))
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 return ff_core_Ordering.fromInt_((x_ - y_))
 }
 };
@@ -487,7 +487,7 @@ export const ff_core_Ordering_Order$ff_core_Int_Int = {
 compare_(x_, y_) {
 return ff_core_Ordering.fromInt_((x_ - y_))
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 return ff_core_Ordering.fromInt_((x_ - y_))
 }
 };
@@ -496,7 +496,7 @@ export const ff_core_Ordering_Order$ff_core_Float_Float = {
 compare_(x_, y_) {
 return ff_core_Ordering.fromFloat_((x_ - y_))
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 return ff_core_Ordering.fromFloat_((x_ - y_))
 }
 };
@@ -513,7 +513,7 @@ compare_(x_, y_) {
             }
         
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 throw new Error('Function compare is missing on this target in async context.');
 }
 };
@@ -535,7 +535,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const _1 = ff_core_Ordering_Order$A.compare_(x_.first_, y_.first_);
 {
@@ -605,7 +605,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -693,7 +693,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;

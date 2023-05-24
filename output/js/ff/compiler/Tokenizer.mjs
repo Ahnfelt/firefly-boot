@@ -2,6 +2,8 @@
 
 import * as ff_compiler_Tokenizer from "../../ff/compiler/Tokenizer.mjs"
 
+import * as ff_compiler_LspHook from "../../ff/compiler/LspHook.mjs"
+
 import * as ff_compiler_Syntax from "../../ff/compiler/Syntax.mjs"
 
 import * as ff_compiler_Token from "../../ff/compiler/Token.mjs"
@@ -80,7 +82,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -121,7 +123,7 @@ function emitToken_(kind_, startOffset_, stopOffset_) {
 if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
 const last_ = ff_core_Stack.Stack_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
-if((attemptFixes_ && ff_compiler_Token.Token_rawIs(last_, ""))) {
+if((((completionLine_ === last_.startLine_) && (completionColumn_ >= ((1 + last_.startOffset_) - last_.startLineOffset_))) && (completionColumn_ <= ((1 + last_.stopOffset_) - last_.stopLineOffset_)))) {
 ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 } else {
 ff_core_Stack.Stack_modify(tokens_, (ff_core_Stack.Stack_size(tokens_) - 1), ((_w1) => {
@@ -326,7 +328,7 @@ emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 return ff_core_Stack.Stack_drain(tokens_)
 }
 
-export async function tokenize_$(file_, code_, completionAt_, attemptFixes_, $c) {
+export async function tokenize_$(file_, code_, completionAt_, attemptFixes_, $task) {
 const completionLine_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(completionAt_, ((_w1) => {
 return (_w1.file_ === file_)
 })), ((_w1) => {
@@ -355,7 +357,7 @@ function emitToken_(kind_, startOffset_, stopOffset_) {
 if((!ff_core_Stack.Stack_isEmpty(tokens_))) {
 const last_ = ff_core_Stack.Stack_grabLast(tokens_);
 if((((last_.stopLine_ === startLine_) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(last_.kind_, ff_compiler_Token.LLower())) && ff_compiler_Token.TokenKind_afterKeyword(kind_))) {
-if((attemptFixes_ && ff_compiler_Token.Token_rawIs(last_, ""))) {
+if((((completionLine_ === last_.startLine_) && (completionColumn_ >= ((1 + last_.startOffset_) - last_.startLineOffset_))) && (completionColumn_ <= ((1 + last_.stopOffset_) - last_.stopLineOffset_)))) {
 ff_core_Stack.Stack_push(tokens_, ff_compiler_Token.Token(file_, code_, ff_compiler_Token.LSeparator(), startLine_, startLineOffset_, startLineOffset_, startLine_, startLineOffset_, startLineOffset_))
 } else {
 ff_core_Stack.Stack_modify(tokens_, (ff_core_Stack.Stack_size(tokens_) - 1), ((_w1) => {

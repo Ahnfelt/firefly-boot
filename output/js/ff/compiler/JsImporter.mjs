@@ -78,7 +78,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -101,11 +101,11 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$($c) {
+export async function make_$($task) {
 return ff_compiler_JsImporter.JsImporter(ff_core_Map.empty_())
 }
 
-export async function fail_$(at_, message_, $c) {
+export async function fail_$(at_, message_, $task) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
@@ -182,7 +182,7 @@ return
 }))
 }
 
-export async function JsImporter_add$(self_, url_, $c) {
+export async function JsImporter_add$(self_, url_, $task) {
 const importName_ = (((_1) => {
 {
 if(_1.None) {
@@ -203,7 +203,7 @@ return
 return importName_
 }
 
-export async function JsImporter_process$(self_, at_, code_, $c) {
+export async function JsImporter_process$(self_, at_, code_, $task) {
 const space_ = ff_core_String.String_takeWhile(code_, ((c_) => {
 return (((((c_ === 32) || (c_ === 9)) || (c_ === 13)) || (c_ === 10)) || (c_ === 59))
 }));
@@ -240,7 +240,7 @@ return (((((space_ + "const ") + name_) + " = ") + importName_) + ff_compiler_Js
 }
 }
 
-export async function JsImporter_generateImports$(self_, ignoreModules_, $c) {
+export async function JsImporter_generateImports$(self_, ignoreModules_, $task) {
 return ff_core_List.List_map(ff_core_Map.Map_pairs(self_.imports_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
 const moduleName_ = _1.first_;

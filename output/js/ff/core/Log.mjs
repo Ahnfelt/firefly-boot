@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -118,35 +118,35 @@ export function trace_(value_) {
 process.stderr.write(value_ + String.fromCharCode(10))
 }
 
-export async function show_$(value_, ff_core_Show_Show$T, $c) {
+export async function show_$(value_, ff_core_Show_Show$T, $task) {
 ff_core_Log.trace_(ff_core_Show_Show$T.show_(value_))
 }
 
-export async function debugDynamic_$(value_, $c) {
+export async function debugDynamic_$(value_, $task) {
 throw new Error('Function debugDynamic is missing on this target in async context.');
 }
 
-export async function debug_$(value_, $c) {
+export async function debug_$(value_, $task) {
 throw new Error('Function debug is missing on this target in async context.');
 }
 
-export async function verbose_$(value_, $c) {
+export async function verbose_$(value_, $task) {
 throw new Error('Function verbose is missing on this target in async context.');
 }
 
-export async function info_$(value_, $c) {
+export async function info_$(value_, $task) {
 throw new Error('Function info is missing on this target in async context.');
 }
 
-export async function warn_$(value_, $c) {
+export async function warn_$(value_, $task) {
 throw new Error('Function warn is missing on this target in async context.');
 }
 
-export async function error_$(value_, $c) {
+export async function error_$(value_, $task) {
 throw new Error('Function error is missing on this target in async context.');
 }
 
-export async function trace_$(value_, $c) {
+export async function trace_$(value_, $task) {
 throw new Error('Function trace is missing on this target in async context.');
 }
 

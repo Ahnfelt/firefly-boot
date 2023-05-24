@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -94,7 +94,7 @@ export function Instant_add(self_, duration_) {
 return (self_ + duration_)
 }
 
-export async function Instant_add$(self_, duration_, $c) {
+export async function Instant_add$(self_, duration_, $task) {
 return (self_ + duration_)
 }
 

@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -187,7 +187,7 @@ export function panic_(message_) {
 throw new Error(message_)
 }
 
-export async function if_$(condition_, body_, $c) {
+export async function if_$(condition_, body_, $task) {
 {
 const _1 = condition_;
 {
@@ -198,16 +198,16 @@ return
 }
 {
 if(_1) {
-return ff_core_Option.Some((await body_($c)))
+return ff_core_Option.Some((await body_($task)))
 return
 }
 }
 }
 }
 
-export async function while_$(condition_, body_, $c) {
+export async function while_$(condition_, body_, $task) {
 {
-const _1 = (await condition_($c));
+const _1 = (await condition_($task));
 {
 if(!_1) {
 
@@ -216,9 +216,9 @@ return
 }
 {
 if(_1) {
-(await body_($c));
-while((await condition_($c))) {
-(await body_($c))
+(await body_($task));
+while((await condition_($task))) {
+(await body_($task))
 }
 return
 }
@@ -226,16 +226,16 @@ return
 }
 }
 
-export async function doWhile_$(body_, $c) {
-while((await body_($c))) {
+export async function doWhile_$(body_, $task) {
+while((await body_($task))) {
 
 }
 }
 
-export async function doUntil_$(body_, $c) {
+export async function doUntil_$(body_, $task) {
 _tailcall: for(;;) {
 {
-const _1 = (await body_($c));
+const _1 = (await body_($task));
 {
 if(_1.Some) {
 const v_ = _1.value_;
@@ -258,29 +258,29 @@ return
 }
 }
 
-export async function do_$(body_, $c) {
-return (await body_($c))
+export async function do_$(body_, $task) {
+return (await body_($task))
 }
 
-export async function try_$(body_, $c) {
+export async function try_$(body_, $task) {
 
         try {
-            return {Success: true, value_: await body_($c)}
+            return {Success: true, value_: await body_($task)}
         } catch(e) {
             return {Failure: true, error_: e}
         }
     
 }
 
-export async function throw_$(exception_, ff_core_Any_HasAnyTag$E, $c) {
+export async function throw_$(exception_, ff_core_Any_HasAnyTag$E, $task) {
 return ff_core_Core.throwAny_(ff_core_Any.toAny_(exception_, ff_core_Any_HasAnyTag$E))
 }
 
-export async function throwAny_$(exception_, $c) {
+export async function throwAny_$(exception_, $task) {
 throw new Error('Function throwAny is missing on this target in async context.');
 }
 
-export async function panic_$(message_, $c) {
+export async function panic_$(message_, $task) {
 throw new Error('Function panic is missing on this target in async context.');
 }
 
@@ -290,7 +290,7 @@ export const ff_core_Any_HasAnyTag$ff_core_Core_GrabException = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:core/Core.GrabException" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:core/Core.GrabException" + "[") + "]"))
 }
 };

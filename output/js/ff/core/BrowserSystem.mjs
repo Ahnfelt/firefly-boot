@@ -74,7 +74,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -95,8 +95,8 @@ export function BrowserSystem_fetch(self_) {
 throw new Error('Function BrowserSystem_fetch is missing on this target in sync context.');
 }
 
-export function BrowserSystem_tasks(self_) {
-throw new Error('Function BrowserSystem_tasks is missing on this target in sync context.');
+export function BrowserSystem_mainTask(self_) {
+throw new Error('Function BrowserSystem_mainTask is missing on this target in sync context.');
 }
 
 export function BrowserSystem_time(self_) {
@@ -107,19 +107,19 @@ export function BrowserSystem_js(self_) {
 throw new Error('Function BrowserSystem_js is missing on this target in sync context.');
 }
 
-export async function BrowserSystem_fetch$(self_, $c) {
+export async function BrowserSystem_fetch$(self_, $task) {
 return null
 }
 
-export async function BrowserSystem_tasks$(self_, $c) {
+export async function BrowserSystem_mainTask$(self_, $task) {
+return self_.task_
+}
+
+export async function BrowserSystem_time$(self_, $task) {
 return null
 }
 
-export async function BrowserSystem_time$(self_, $c) {
-return null
-}
-
-export async function BrowserSystem_js$(self_, $c) {
+export async function BrowserSystem_js$(self_, $task) {
 return typeof globalThis !== 'undefined' ? globalThis : window
 }
 

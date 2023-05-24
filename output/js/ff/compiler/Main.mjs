@@ -98,7 +98,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -513,9 +513,9 @@ export function detectFireflyPath_() {
     
 }
 
-export async function main_$(system_, $c) {
+export async function main_$(system_, $task) {
 const fireflyPath_ = ff_compiler_Main.detectFireflyPath_();
-async function buildScript_$(mainFile_, mainPackagePair_, emitTarget_, resolvedDependencies_, $c) {
+async function buildScript_$(mainFile_, mainPackagePair_, emitTarget_, resolvedDependencies_, $task) {
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
@@ -550,66 +550,66 @@ return
 }))(emitTarget_);
 (await ff_compiler_Builder.build_$(system_, emitTarget_, mainPackagePair_, mainFile_, (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false, $c))
+}))(resolvedDependencies_), compilerModulePath_, ".firefly/temporary", (".firefly/output/" + targetName_), false, $task))
 }
-async function runCommand_$(command_, $c) {
+async function runCommand_$(command_, $task) {
 {
 const command_a = command_;
 {
 if(command_a.RunCommand) {
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), (mainFile_ + ".ff"), $c));
-(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $task)), (mainFile_ + ".ff"), $task));
+(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), $task));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
-(await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $c));
-(await ff_compiler_Main.importAndRun_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_, $c))
+(await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $task));
+(await ff_compiler_Main.importAndRun_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), fireflyPath_, "node", resolvedDependencies_.mainPackagePair_, localMainFile_, arguments_, $task))
 return
 }
 }
 {
 if(command_a.BrowserCommand) {
 const mainFile_ = command_a.mainPath_;
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), (mainFile_ + ".ff"), $c));
-(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $task)), (mainFile_ + ".ff"), $task));
+(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), $task));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
-(await buildScript_$(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, $c));
-(await ff_compiler_Main.bundleForBrowser_$(system_, resolvedDependencies_.mainPackagePair_, localMainFile_, $c))
+(await buildScript_$(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, $task));
+(await ff_compiler_Main.bundleForBrowser_$(system_, resolvedDependencies_.mainPackagePair_, localMainFile_, $task))
 return
 }
 }
 {
 if(command_a.BuildCommand) {
 const mainFile_ = command_a.mainPath_;
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), (mainFile_ + ".ff"), $c));
-(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), $c));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $task)), (mainFile_ + ".ff"), $task));
+(await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), $task));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
-(await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, $c));
-(await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, $c));
-(await ff_compiler_Main.bundleForPkg_$(system_, resolvedDependencies_.mainPackagePair_, localMainFile_, $c));
-(await ff_compiler_Main.importAndRun_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, localMainFile_, ff_core_List.Empty(), $c))
+(await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, $task));
+(await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitExecutable(), resolvedDependencies_, $task));
+(await ff_compiler_Main.bundleForPkg_$(system_, resolvedDependencies_.mainPackagePair_, localMainFile_, $task));
+(await ff_compiler_Main.importAndRun_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), fireflyPath_, "build", resolvedDependencies_.mainPackagePair_, localMainFile_, ff_core_List.Empty(), $task))
 return
 }
 }
 {
 if(command_a.CheckCommand) {
 const filePath_ = command_a.filePath_;
-(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true, $c))
+(await ff_compiler_Builder.check_$(system_, fireflyPath_, filePath_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), true, $task))
 return
 }
 }
 {
 if(command_a.BootstrapCommand) {
-(await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), "compiler"), ff_core_List.Link(ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), "core"), ff_core_List.Empty())), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), "output/temporary", "output/js", true, $c))
+(await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitNode(), ff_compiler_Syntax.PackagePair("ff", "compiler"), "Main", ff_compiler_Dependencies.ResolvedDependencies(ff_compiler_Syntax.PackagePair("ff", "compiler"), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "compiler"), "compiler"), ff_core_List.Link(ff_core_Pair.Pair(ff_compiler_Syntax.PackagePair("ff", "core"), "core"), ff_core_List.Empty())), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)), ff_core_Option.None(), "output/temporary", "output/js", true, $task))
 return
 }
 }
 }
 }
-ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($c) => {
-const command_ = ff_compiler_Main.parseCommandLine_(ff_core_Array.Array_toList((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $c))));
-return (await runCommand_$(command_, $c))
-}), $c)), ((_1, _2) => {
+ff_core_Try.Try_grab(ff_core_Try.Try_catch(ff_core_Try.Try_catch((await ff_core_Core.try_$((async ($task) => {
+const command_ = ff_compiler_Main.parseCommandLine_(ff_core_Array.Array_toList((await ff_core_NodeSystem.NodeSystem_arguments$(system_, $task))));
+return (await runCommand_$(command_, $task))
+}), $task)), ((_1, _2) => {
 {
 const message_ = _1.problem_;
 const error_ = _2;
@@ -628,7 +628,7 @@ return
 }), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError))
 }
 
-export async function parseCommandLine_$(arguments_, $c) {
+export async function parseCommandLine_$(arguments_, $task) {
 {
 const arguments_a = arguments_;
 {
@@ -815,24 +815,24 @@ return
 }
 }
 
-export async function bundleForPkg_$(system_, packagePair_, mainFile_, $c) {
+export async function bundleForPkg_$(system_, packagePair_, mainFile_, $task) {
 const prefix_ = ".firefly/output/executable/";
 const mainJsFile_ = ((((prefix_ + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + mainFile_) + ".mjs");
 const file_ = (prefix_ + "Main.bundle.js");
-(await ff_core_BuildSystem.internalNodeCallEsBuild_$(system_, mainJsFile_, file_, false, $c))
+(await ff_core_BuildSystem.internalNodeCallEsBuild_$(system_, mainJsFile_, file_, false, $task))
 }
 
-export async function bundleForBrowser_$(system_, packagePair_, mainFile_, $c) {
+export async function bundleForBrowser_$(system_, packagePair_, mainFile_, $task) {
 const prefix_ = ".firefly/output/browser/";
 const mainJsFile_ = ((((prefix_ + ff_compiler_Syntax.PackagePair_groupName(packagePair_, "/")) + "/") + mainFile_) + ".mjs");
 const file_ = (prefix_ + "Main.bundle.js");
-const browserCode_ = ff_core_BuildSystem.BrowserCode(packagePair_.group_, packagePair_.name_, mainFile_, ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("/", (async ($c) => {
-return (await ff_core_FileSystem.FileSystem_readStream$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), "", $c))
+const browserCode_ = ff_core_BuildSystem.BrowserCode(packagePair_.group_, packagePair_.name_, mainFile_, ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Link(ff_core_Pair.Pair("/", (async ($task) => {
+return (await ff_core_FileSystem.FileSystem_readStream$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), "", $task))
 })), ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)));
-(await ff_core_BuildSystem.internalCallEsBuild_$(browserCode_, mainJsFile_, file_, true, true, $c))
+(await ff_core_BuildSystem.internalCallEsBuild_$(browserCode_, mainJsFile_, file_, true, true, $task))
 }
 
-export async function importAndRun_$(fs_, fireflyPath_, target_, packagePair_, mainFile_, arguments_, $c) {
+export async function importAndRun_$(fs_, fireflyPath_, target_, packagePair_, mainFile_, arguments_, $task) {
 
         const process = await import('process');
         const cwd = process.cwd();
@@ -843,18 +843,18 @@ export async function importAndRun_$(fs_, fireflyPath_, target_, packagePair_, m
     
 }
 
-export async function prepareFireflyDirectory_$(fs_, $c) {
-if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output", $c)))) {
-if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly", $c)))) {
-(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly", $c))
+export async function prepareFireflyDirectory_$(fs_, $task) {
+if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly/output", $task)))) {
+if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly", $task)))) {
+(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly", $task))
 };
-(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly/output", $c))
+(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly/output", $task))
 }
 }
 
-export async function detectBuildMain_$(fs_, packagePair_, mainFile_, $c) {
+export async function detectBuildMain_$(fs_, packagePair_, mainFile_, $task) {
 const file_ = (mainFile_ + ".ff");
-const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, file_, $c));
+const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, file_, $task));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_, ff_core_Option.None(), true);
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false, ff_compiler_LspHook.disabled_());
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
@@ -882,7 +882,7 @@ return
 }))
 }
 
-export async function detectFireflyPath_$($c) {
+export async function detectFireflyPath_$($task) {
 throw new Error('Function detectFireflyPath is missing on this target in async context.');
 }
 
@@ -892,7 +892,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Main_MainCommand = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Main.MainCommand" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Main.MainCommand" + "[") + "]"))
 }
 };
@@ -901,7 +901,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Main_CommandLineError = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Main.CommandLineError" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Main.CommandLineError" + "[") + "]"))
 }
 };
@@ -947,7 +947,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1000,7 +1000,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1070,7 +1070,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1147,7 +1147,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1284,7 +1284,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1426,7 +1426,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1553,7 +1553,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -1609,7 +1609,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
@@ -1690,7 +1690,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -1704,7 +1704,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
@@ -1725,10 +1725,11 @@ return
 };
 
 export async function $run$(fireflyPath_, arguments_) {
-const controller = new AbortController()
-controller.promises = new Set()
+Error.stackTraceLimit = 50
+const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {})}
 let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)
 let system = {
+task_: $task,
 array_: arguments_,
 fireflyPath_: fireflyPath_,
 mainPackagePair_: {group_: "ff", name_: "compiler"},
@@ -1736,9 +1737,9 @@ executableMode_: false,
 buildMode_: false
 }
 try {
-await main_$(system, controller)
+await main_$(system, $task)
 } finally {
-controller.abort()
+ff_core_Task.Task_abort$($task)
 clearInterval(interval)
 }
 }

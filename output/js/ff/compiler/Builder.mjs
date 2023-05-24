@@ -94,7 +94,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskSystem from "../../ff/core/TaskSystem.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -293,43 +293,43 @@ export function internalFileSystem_(dummy_) {
 throw new Error('Function internalFileSystem is missing on this target in sync context.');
 }
 
-export async function build_$(system_, emitTarget_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, $c) {
-const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $c))) {
-(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, tempPath_, $c))
+export async function build_$(system_, emitTarget_, mainPackage_, mainModule_, resolvedDependencies_, compilerModulePath_, tempPath_, jsOutputPath_, printMeasurements_, $task) {
+const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $task));
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, tempPath_, $task))) {
+(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, tempPath_, $task))
 };
-(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, tempPath_, $c));
+(await ff_core_FileSystem.FileSystem_createDirectory$(fs_, tempPath_, $task));
 const jsPathFile_ = (tempPath_ + "/js");
-(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $c));
-const success_ = (await ff_core_Core.do_$((async ($c) => {
-const compiler_ = (await ff_compiler_Compiler.make_$(emitTarget_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), compilerModulePath_, jsPathFile_, resolvedDependencies_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), $c));
-(await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, true, $c));
+(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, jsPathFile_, $task));
+const success_ = (await ff_core_Core.do_$((async ($task) => {
+const compiler_ = (await ff_compiler_Compiler.make_$(emitTarget_, fs_, (await ff_core_NodeSystem.NodeSystem_time$(system_, $task)), compilerModulePath_, jsPathFile_, resolvedDependencies_, ff_core_Map.empty_(), ff_compiler_LspHook.disabled_(), $task));
+(await ff_compiler_Compiler.Compiler_emit$(compiler_, mainPackage_, mainModule_, true, $task));
 if(printMeasurements_) {
-(await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $c))
+(await ff_compiler_Compiler.Compiler_printMeasurements$(compiler_, $task))
 };
-(await ff_core_Map.Map_each$(resolvedDependencies_.packagePaths_, (async (packagePair_, packagePath_, $c) => {
-(await ff_core_Option.Option_each$(ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (async (packageInfo_, $c) => {
-(await ff_compiler_Builder.processIncludes_$(fs_, jsPathFile_, packagePath_, packageInfo_, $c))
-}), $c))
-}), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, $c));
+(await ff_core_Map.Map_each$(resolvedDependencies_.packagePaths_, (async (packagePair_, packagePath_, $task) => {
+(await ff_core_Option.Option_each$(ff_core_Map.Map_get(resolvedDependencies_.packages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), (async (packageInfo_, $task) => {
+(await ff_compiler_Builder.processIncludes_$(fs_, jsPathFile_, packagePath_, packageInfo_, $task))
+}), $task))
+}), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair, $task));
 return true
-}), $c));
+}), $task));
 if(success_) {
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_, $c))) {
-(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, jsOutputPath_, $c))
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, jsOutputPath_, $task))) {
+(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, jsOutputPath_, $task))
 };
-(await ff_core_FileSystem.FileSystem_rename$(fs_, jsPathFile_, jsOutputPath_, $c))
+(await ff_core_FileSystem.FileSystem_rename$(fs_, jsPathFile_, jsOutputPath_, $task))
 }
 }
 
-export async function processIncludes_$(fs_, jsPathFile_, packagePath_, info_, $c) {
-(await ff_core_List.List_each$(info_.includes_, (async (include_, $c) => {
-(await ff_core_FileSystem.FileSystem_copy$(fs_, ((packagePath_ + "/.firefly/include/") + include_.path_), ((((jsPathFile_ + "/") + ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/")) + "/") + include_.path_), $c))
-}), $c))
+export async function processIncludes_$(fs_, jsPathFile_, packagePath_, info_, $task) {
+(await ff_core_List.List_each$(info_.includes_, (async (include_, $task) => {
+(await ff_core_FileSystem.FileSystem_copy$(fs_, ((packagePath_ + "/.firefly/include/") + include_.path_), ((((jsPathFile_ + "/") + ff_compiler_Syntax.PackagePair_groupName(info_.package_.packagePair_, "/")) + "/") + include_.path_), $task))
+}), $task))
 }
 
-export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, target_, $c) {
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), mainFile_, $c));
+export async function buildViaBuildSystem_$(system_, fireflyPath_, mainFile_, target_, $task) {
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $task)), mainFile_, $task));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
@@ -338,15 +338,15 @@ ff_core_Core.panic_("buildViaBuildSystem is currently limited to browser target 
 };
 (await ff_compiler_Builder.build_$(system_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(mainFile_, ff_core_String.String_size(".ff")), (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
-}))(resolvedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false, $c))
+}))(resolvedDependencies_), ff_core_Option.None(), ".firefly/temporary", (".firefly/output/" + target_), false, $task))
 }
 
-export async function check_$(system_, fireflyPath_, path_, virtualFiles_, lspHook_, infer_, $c) {
-const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $c));
-const packages_ = (await ((async (_1, $c) => {
+export async function check_$(system_, fireflyPath_, path_, virtualFiles_, lspHook_, infer_, $task) {
+const fs_ = (await ff_core_NodeSystem.NodeSystem_files$(system_, $task));
+const packages_ = (await ((async (_1, $task) => {
 {
 if(_1) {
-return (await ff_compiler_Builder.findPackageFiles_$(fs_, path_, $c))
+return (await ff_compiler_Builder.findPackageFiles_$(fs_, path_, $task))
 return
 }
 }
@@ -356,36 +356,36 @@ return ff_core_List.Link(ff_compiler_Builder.PackageFiles(ff_core_FileSystem.dir
 return
 }
 }
-}))((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, path_, $c)), $c));
-(await ff_core_List.List_each$(packages_, (async (package_, $c) => {
+}))((await ff_core_FileSystem.FileSystem_isDirectory$(fs_, path_, $task)), $task));
+(await ff_core_List.List_each$(packages_, (async (package_, $task) => {
 const firstFile_ = ff_core_List.List_grabFirst(package_.files_);
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $c)), firstFile_, $c));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $task)), firstFile_, $task));
 const fixedPackagePaths_ = (ff_core_Map.Map_contains(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair)
 ? resolvedDependencies_.packagePaths_
 : ff_core_Map.Map_add(resolvedDependencies_.packagePaths_, ff_compiler_Syntax.PackagePair("ff", "core"), (fireflyPath_ + "/core"), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
 const fixedResolvedDependencies_ = (((_c) => {
 return ff_compiler_Dependencies.ResolvedDependencies(_c.mainPackagePair_, _c.packages_, fixedPackagePaths_, _c.singleFilePackages_)
 }))(resolvedDependencies_);
-const compiler_ = (await ff_compiler_Compiler.make_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_files$(system_, $c)), (await ff_core_NodeSystem.NodeSystem_time$(system_, $c)), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, lspHook_, $c));
-(await ff_core_List.List_each$(package_.files_, (async (file_, $c) => {
+const compiler_ = (await ff_compiler_Compiler.make_$(ff_compiler_JsEmitter.EmitBuild(), (await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_time$(system_, $task)), ff_core_Option.None(), ".firefly/temporary", fixedResolvedDependencies_, virtualFiles_, lspHook_, $task));
+(await ff_core_List.List_each$(package_.files_, (async (file_, $task) => {
 const localFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(file_, "\\", "/"));
 if(infer_) {
-(await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $c))
+(await ff_compiler_Compiler.Compiler_infer$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $task))
 } else {
-(await ff_compiler_Compiler.Compiler_resolve$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $c))
+(await ff_compiler_Compiler.Compiler_resolve$(compiler_, resolvedDependencies_.mainPackagePair_, ff_core_String.String_dropLast(localFile_, ff_core_String.String_size(".ff")), $task))
 }
-}), $c))
-}), $c))
+}), $task))
+}), $task))
 }
 
-export async function findPackageFiles_$(fs_, rootUri_, $c) {
-const files_ = (await ff_compiler_Builder.findFireflyFiles_$(fs_, rootUri_, $c));
+export async function findPackageFiles_$(fs_, rootUri_, $task) {
+const files_ = (await ff_compiler_Builder.findFireflyFiles_$(fs_, rootUri_, $task));
 const split_ = ff_core_List.List_partition(files_, ((_w1) => {
 return ff_core_String.String_endsWith(_w1, ".firefly/package.ff")
 }));
 const packageFiles_ = split_.first_;
 let codeFiles_ = split_.second_;
-const multiFileProjects_ = (await ff_core_List.List_map$(packageFiles_, (async (packageFile_, $c) => {
+const multiFileProjects_ = (await ff_core_List.List_map$(packageFiles_, (async (packageFile_, $task) => {
 const projectRoot_ = ff_core_Option.Option_grab(ff_core_String.String_removeLast(packageFile_, ".firefly/package.ff"));
 const files_ = ff_core_List.List_filter(codeFiles_, ((_w1) => {
 return ff_core_String.String_startsWith(_w1, projectRoot_, 0)
@@ -394,16 +394,16 @@ const filesSet_ = ff_core_List.List_toSet(files_, ff_core_Ordering.ff_core_Order
 codeFiles_ = ff_core_List.List_filter(codeFiles_, ((file_) => {
 return (!ff_core_Set.Set_contains(filesSet_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }));
-return ff_compiler_Builder.PackageFiles(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), projectRoot_), ff_core_Option.Some(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), packageFile_)), (await ff_core_List.List_map$(files_, (async (_w1, $c) => {
-return ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), _w1)
-}), $c)))
-}), $c));
-const singleFileProjects_ = (await ff_core_List.List_map$(codeFiles_, (async (file_, $c) => {
+return ff_compiler_Builder.PackageFiles(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $task)), projectRoot_), ff_core_Option.Some(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $task)), packageFile_)), (await ff_core_List.List_map$(files_, (async (_w1, $task) => {
+return ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $task)), _w1)
+}), $task)))
+}), $task));
+const singleFileProjects_ = (await ff_core_List.List_map$(codeFiles_, (async (file_, $task) => {
 const projectRoot_ = ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(file_), ((_w1) => {
 return (_w1 !== 47)
 })));
-return ff_compiler_Builder.PackageFiles(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), projectRoot_), ff_core_Option.None(), ff_core_List.Link(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $c)), file_), ff_core_List.Empty()))
-}), $c));
+return ff_compiler_Builder.PackageFiles(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $task)), projectRoot_), ff_core_Option.None(), ff_core_List.Link(ff_core_FileSystem.relative_((await ff_core_FileSystem.FileSystem_workingDirectory$(fs_, $task)), file_), ff_core_List.Empty()))
+}), $task));
 const unfixedProjects_ = ff_core_List.List_addAll(multiFileProjects_, singleFileProjects_);
 return ff_core_List.List_map(unfixedProjects_, ((project_) => {
 return ff_compiler_Builder.PackageFiles(ff_core_String.String_replace(project_.root_, "\\", "/"), ff_core_Option.Option_map(project_.packageFile_, ((_w1) => {
@@ -414,10 +414,10 @@ return ff_core_String.String_replace(_w1, "\\", "/")
 }))
 }
 
-export async function findFireflyFiles_$(fs_, rootUri_, $c) {
-const split_ = (await ff_core_List.List_partition$((await ff_core_FileSystem.FileSystem_list$(fs_, rootUri_, $c)), (async (_w1, $c) => {
-return (await ff_core_FileSystem.FileSystem_isDirectory$(fs_, _w1, $c))
-}), $c));
+export async function findFireflyFiles_$(fs_, rootUri_, $task) {
+const split_ = (await ff_core_List.List_partition$((await ff_core_FileSystem.FileSystem_list$(fs_, rootUri_, $task)), (async (_w1, $task) => {
+return (await ff_core_FileSystem.FileSystem_isDirectory$(fs_, _w1, $task))
+}), $task));
 const directories_ = split_.first_;
 const fireflyFiles_ = ff_core_List.List_filter(split_.second_, ((_w1) => {
 return ff_core_String.String_endsWith(_w1, ".ff")
@@ -425,26 +425,26 @@ return ff_core_String.String_endsWith(_w1, ".ff")
 const fixedFiles_ = ff_core_List.List_map(fireflyFiles_, ((_w1) => {
 return ff_core_String.String_replace(_w1, "\\", "/")
 }));
-return ff_core_List.List_addAll(fixedFiles_, (await ff_core_List.List_flatMap$(directories_, (async (_w1, $c) => {
-return (await ff_compiler_Builder.findFireflyFiles_$(fs_, _w1, $c))
-}), $c)))
+return ff_core_List.List_addAll(fixedFiles_, (await ff_core_List.List_flatMap$(directories_, (async (_w1, $task) => {
+return (await ff_compiler_Builder.findFireflyFiles_$(fs_, _w1, $task))
+}), $task)))
 }
 
-export async function internalCreateExecutable_$(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_(), $c) {
-const fs_ = (await ff_compiler_Builder.internalFileSystem_$(self_, $c));
+export async function internalCreateExecutable_$(self_, mainJsFile_ = ".firefly/output/executable/Main.bundle.js", outputPath_ = ".firefly/output", targets_ = ff_core_List.Link("host", ff_core_List.Empty()), assets_ = ff_core_AssetSystem.create_(), $task) {
+const fs_ = (await ff_compiler_Builder.internalFileSystem_$(self_, $task));
 const assetOutputPath_ = (outputPath_ + "/assets");
-(await ff_core_List.List_each$(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async (_1, $c) => {
+(await ff_core_List.List_each$(ff_core_Map.Map_pairs(assets_.files_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (async (_1, $task) => {
 {
 const path_ = _1.first_;
 const makeStream_ = _1.second_;
 const p_ = (assetOutputPath_ + path_);
 (await ff_core_FileSystem.FileSystem_createDirectories$(fs_, ff_core_String.String_reverse(ff_core_String.String_dropWhile(ff_core_String.String_reverse(p_), ((_w1) => {
 return (_w1 !== 47)
-}))), $c));
-(await ff_core_FileSystem.FileSystem_writeStream$(fs_, p_, (await makeStream_($c)), false, $c))
+}))), $task));
+(await ff_core_FileSystem.FileSystem_writeStream$(fs_, p_, (await makeStream_($task)), false, $task))
 return
 }
-}), $c));
+}), $task));
 const json_ = `{
             "name": "main",
             "bin": {
@@ -465,11 +465,11 @@ const json_ = `{
             }
         }`;
 const packageFile_ = (outputPath_ + "/executable/package.json");
-(await ff_core_FileSystem.FileSystem_writeText$(fs_, packageFile_, json_, $c));
-(await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $c))
+(await ff_core_FileSystem.FileSystem_writeText$(fs_, packageFile_, json_, $task));
+(await ff_compiler_Builder.internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task))
 }
 
-export async function internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $c) {
+export async function internalCallPkg_$(self_, packageFile_, outputPath_, targets_, $task) {
 
         const pkg = import$0
         return await pkg.exec([
@@ -480,7 +480,7 @@ export async function internalCallPkg_$(self_, packageFile_, outputPath_, target
     
 }
 
-export async function internalFileSystem_$(dummy_, $c) {
+export async function internalFileSystem_$(dummy_, $task) {
 
         return null;
     
@@ -492,7 +492,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Builder_PackageFiles = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Builder.PackageFiles" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Builder.PackageFiles" + "[") + "]"))
 }
 };
@@ -508,7 +508,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -538,7 +538,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -590,7 +590,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -659,7 +659,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -675,7 +675,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
