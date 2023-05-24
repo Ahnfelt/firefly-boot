@@ -5,8 +5,8 @@ extend self: BrowserSystem {
     fetch(): FetchSystem
         target js async "return null"
 
-    tasks(): TaskSystem
-        target js async "return null"
+    mainTask(): Task
+        target js async "return self_.task_"
 
     time(): TimeSystem
         target js async "return null"

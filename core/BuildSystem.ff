@@ -37,8 +37,8 @@ extend self: BuildSystem {
     arguments(): Array[String]
         target node async "return self_.array_"
 
-    tasks(): TaskSystem
-        target js async "return null"
+    mainTask(): Task
+        target js async "return self_.task_"
 
 }
 
