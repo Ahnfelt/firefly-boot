@@ -84,54 +84,69 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// type Any
-
-
-// type AnyTag
+// type Atomic
 
 
 
 
-export function toAny_(value_, ff_core_Any_HasAnyTag$T) {
+export function make_(value_) {
 
-        const anyTag = ff_core_Any_HasAnyTag$T.anyTag_()
-        return {anyTag: anyTag, value: value_}
+        return {value: value_}
     
 }
 
-export function fromAny_(any_, ff_core_Any_HasAnyTag$T) {
-
-        const anyTag = ff_core_Any_HasAnyTag$T.anyTag_()
-        return any_.anyTag === anyTag ? ff_core_Option.Some(any_.value) : ff_core_Option.None()
-    
+export async function make_$(value_, $task) {
+throw new Error('Function make is missing on this target in async context.');
 }
 
-export function internalAnyTag_(tag_) {
+export function Atomic_modify(self_, body_) {
 
-        return tag_
-    
-}
-
-export async function toAny_$(value_, ff_core_Any_HasAnyTag$T, $task) {
-throw new Error('Function toAny is missing on this target in async context.');
-}
-
-export async function fromAny_$(any_, ff_core_Any_HasAnyTag$T, $task) {
-throw new Error('Function fromAny is missing on this target in async context.');
-}
-
-export async function internalAnyTag_$(tag_, $task) {
-throw new Error('Function internalAnyTag is missing on this target in async context.');
-}
-
-export function AnyTag_show(self_) {
-
-            return self_
+            return self_.value = body_(self_.value)
         
 }
 
-export async function AnyTag_show$(self_, $task) {
-throw new Error('Function AnyTag_show is missing on this target in async context.');
+export function Atomic_get(self_) {
+
+            return self_.value
+        
+}
+
+export function Atomic_set(self_, value_) {
+
+            self_.value = value
+        
+}
+
+export function Atomic_setIf(self_, currentValue_, newValue_) {
+
+            if(self_.value !== currentValue) return false
+            self_.value = newValue
+            return true
+        
+}
+
+export async function Atomic_modify$(self_, body_, $task) {
+
+            let currentValue, newValue
+            do {
+                currentValue = self_.value
+                newValue = await body_(currentValue)
+            } while(currentValue !== self_.value)
+            self_.value = newValue
+            return newValue
+        
+}
+
+export async function Atomic_get$(self_, $task) {
+throw new Error('Function Atomic_get is missing on this target in async context.');
+}
+
+export async function Atomic_set$(self_, value_, $task) {
+throw new Error('Function Atomic_set is missing on this target in async context.');
+}
+
+export async function Atomic_setIf$(self_, currentValue_, newValue_, $task) {
+throw new Error('Function Atomic_setIf is missing on this target in async context.');
 }
 
 
