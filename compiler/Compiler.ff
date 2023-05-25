@@ -67,6 +67,7 @@ coreImports: List[DImport] =
         "Any"
         "Array"
         "AssetSystem"
+        "Atomic"
         "Bool"
         "BrowserSystem"
         "Buffer"

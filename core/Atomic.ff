@@ -1,24 +1,24 @@
 class Atomic[T] {}
 
 make[T](value: T): Atomic[T]
-    target js async """
+    target js sync """
         return {value: value_}
     """
 
 extend self[T]: Atomic[T] {
-    
+
     modify(body: T => T): T
         target js sync """
             return self_.value = body_(self_.value)
         """
         target js async """
-            let old, new
+            let currentValue, newValue
             do {
-                old = self_.value
-                new = await body_(old)
-            } while(old !== self_.value)
-            self_.value = new
-            return new
+                currentValue = self_.value
+                newValue = await body_(currentValue)
+            } while(currentValue !== self_.value)
+            self_.value = newValue
+            return newValue
         """
 
     get(): T
@@ -31,10 +31,11 @@ extend self[T]: Atomic[T] {
             self_.value = value
         """
 
-}
+    setIf(currentValue: T, newValue: T): Bool
+        target js sync """
+            if(self_.value !== currentValue) return false
+            self_.value = newValue
+            return true
+        """
 
-extend self: Atomic[Int] {
-    add(value: Int) {
-        self.modify {_ + value}
-    }
 }
