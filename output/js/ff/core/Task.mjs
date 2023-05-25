@@ -132,7 +132,7 @@ return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
 
 export async function Task_spawn$(self_, body_, $task) {
 
-            return ff_core_Task.Task_spawn(self_)
+            return ff_core_Task.Task_spawn(self_, body_)
         
 }
 

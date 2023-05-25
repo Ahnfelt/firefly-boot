@@ -6,7 +6,7 @@ extend self: Task {
     // If body throws, the parent task is also aborted with the dueToSubtask flag set to true.
     spawn(body: Task => Unit): Task
         target js async """
-            return ff_core_Task.Task_spawn(self_)
+            return ff_core_Task.Task_spawn(self_, body_)
         """
         target js sync """
             ff_core_Task.Task_throwIfAborted(self_)
