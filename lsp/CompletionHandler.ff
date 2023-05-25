@@ -641,6 +641,6 @@ showCompletionParameter(indentation: String, parameter: Parameter): String {
         | ELambda(_, _) => "{...}"
         | EList(_, _, []) => "[]"
         | EList(_, _, _) => "[...]"
-        | _ => " ..."
+        | _ => "..."
     }.map {" = " + _}.else {""}
 }
