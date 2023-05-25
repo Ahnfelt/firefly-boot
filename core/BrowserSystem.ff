@@ -2,7 +2,7 @@ capability BrowserSystem {}
 
 extend self: BrowserSystem {
 
-    fetch(): FetchSystem
+    httpClient(): HttpClient
         target js async "return null"
 
     mainTask(): Task

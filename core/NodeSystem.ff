@@ -28,7 +28,7 @@ extend self: NodeSystem {
     files(): FileSystem
         target node async "return null"
 
-    fetch(): FetchSystem
+    httpClient(): HttpClient
         target js async "return null"
 
     mainTask(): Task

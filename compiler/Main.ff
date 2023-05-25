@@ -59,21 +59,21 @@ main(system: NodeSystem): Unit {
 
     function runCommand(command: MainCommand) {
         | RunCommand(mainFile, arguments) =>
-            let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), mainFile + ".ff")
             prepareFireflyDirectory(system.files())
             let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitNode, resolvedDependencies)
             importAndRun(system.files(), fireflyPath, "node", resolvedDependencies.mainPackagePair, localMainFile, arguments)
 
         | BrowserCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), mainFile + ".ff")
             prepareFireflyDirectory(system.files())
             let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
             buildScript(mainFile, resolvedDependencies.mainPackagePair, EmitBrowser, resolvedDependencies)
             bundleForBrowser(system, resolvedDependencies.mainPackagePair, localMainFile)
 
         | BuildCommand(mainFile) =>
-            let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile + ".ff")
+            let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), mainFile + ".ff")
             prepareFireflyDirectory(system.files())
             let localMainFile = FileSystem.baseName(mainFile.replace("\\", "/"))
             buildScript(localMainFile, resolvedDependencies.mainPackagePair, EmitBuild, resolvedDependencies)

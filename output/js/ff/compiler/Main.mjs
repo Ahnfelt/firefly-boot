@@ -50,13 +50,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -186,7 +186,7 @@ const command_a = command_;
 if(command_a.RunCommand) {
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
-const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_fetch(system_), (mainFile_ + ".ff"));
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_httpClient(system_), (mainFile_ + ".ff"));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
 buildScript_(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_);
@@ -197,7 +197,7 @@ return
 {
 if(command_a.BrowserCommand) {
 const mainFile_ = command_a.mainPath_;
-const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_fetch(system_), (mainFile_ + ".ff"));
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_httpClient(system_), (mainFile_ + ".ff"));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
 buildScript_(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_);
@@ -208,7 +208,7 @@ return
 {
 if(command_a.BuildCommand) {
 const mainFile_ = command_a.mainPath_;
-const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_fetch(system_), (mainFile_ + ".ff"));
+const resolvedDependencies_ = ff_compiler_Dependencies.process_(ff_core_NodeSystem.NodeSystem_files(system_), ff_core_NodeSystem.NodeSystem_httpClient(system_), (mainFile_ + ".ff"));
 ff_compiler_Main.prepareFireflyDirectory_(ff_core_NodeSystem.NodeSystem_files(system_));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
 buildScript_(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_);
@@ -559,7 +559,7 @@ const command_a = command_;
 if(command_a.RunCommand) {
 const mainFile_ = command_a.mainPath_;
 const arguments_ = command_a.argument_;
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $task)), (mainFile_ + ".ff"), $task));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (mainFile_ + ".ff"), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), $task));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
 (await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitNode(), resolvedDependencies_, $task));
@@ -570,7 +570,7 @@ return
 {
 if(command_a.BrowserCommand) {
 const mainFile_ = command_a.mainPath_;
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $task)), (mainFile_ + ".ff"), $task));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (mainFile_ + ".ff"), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), $task));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
 (await buildScript_$(mainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBrowser(), resolvedDependencies_, $task));
@@ -581,7 +581,7 @@ return
 {
 if(command_a.BuildCommand) {
 const mainFile_ = command_a.mainPath_;
-const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_fetch$(system_, $task)), (mainFile_ + ".ff"), $task));
+const resolvedDependencies_ = (await ff_compiler_Dependencies.process_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), (await ff_core_NodeSystem.NodeSystem_httpClient$(system_, $task)), (mainFile_ + ".ff"), $task));
 (await ff_compiler_Main.prepareFireflyDirectory_$((await ff_core_NodeSystem.NodeSystem_files$(system_, $task)), $task));
 const localMainFile_ = ff_core_FileSystem.baseName_(ff_core_String.String_replace(mainFile_, "\\", "/"));
 (await buildScript_$(localMainFile_, resolvedDependencies_.mainPackagePair_, ff_compiler_JsEmitter.EmitBuild(), resolvedDependencies_, $task));

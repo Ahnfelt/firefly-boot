@@ -11,10 +11,10 @@ browserMain(system: BrowserSystem): Unit {
     let handler = system.js().function1 {event =>
         let text = input.get("value").grabString()
         let serialized = Serializable.serialize(text)
-        let result = system.fetch().fetch(
+        let result = system.httpClient().fetch(
             url = "http://localhost:8080/rhyme"
             method = "POST"
-            body = Some(FetchSystem.bodyBuffer(serialized))
+            body = Some(HttpClient.bodyBuffer(serialized))
         )
         output.set("innerText", result.readText())
     }
@@ -41,7 +41,7 @@ nodeMain(system: NodeSystem): Unit {
 
             let buffer = request.readBuffer()
             let deserialized = Serializable.deserialize(buffer)
-            let result = system.fetch().fetch("https://api.datamuse.com/words?rel_rhy=" + deserialized)
+            let result = system.httpClient().fetch("https://api.datamuse.com/words?rel_rhy=" + deserialized)
             let json = system.js().parseJson(result.readText())
             let rhyme = json.get(0).get("word").grabString()
             response.setHeader("Access-Control-Allow-Origin", ["*"])

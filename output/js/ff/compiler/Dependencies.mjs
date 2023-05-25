@@ -38,13 +38,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -236,7 +236,7 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 }))
 }
 
-export function Dependencies_fetchDependency(self_, fs_, fetch_, dependency_) {
+export function Dependencies_fetchDependency(self_, fs_, httpClient_, dependency_) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
@@ -247,11 +247,11 @@ const tarGzPath_ = ((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_
 const donePath_ = (((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_)) + ".done");
 if((!ff_core_FileSystem.FileSystem_exists(fs_, donePath_))) {
 ff_core_Log.debug_(("Fetching " + location_));
-const response_ = ff_core_FetchSystem.FetchSystem_fetch(fetch_, location_, "GET", ff_core_FetchSystem.emptyList_, ff_core_Option.None(), ff_core_FetchSystem.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
-if((!ff_core_FetchSystem.FetchResponse_ok(response_))) {
+const response_ = ff_core_HttpClient.HttpClient_fetch(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
+if((!ff_core_HttpClient.FetchResponse_ok(response_))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
-const buffer_ = ff_core_FetchSystem.FetchResponse_readBuffer(response_);
+const buffer_ = ff_core_HttpClient.FetchResponse_readBuffer(response_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, dependencyPath_)) {
 ff_core_FileSystem.FileSystem_deleteDirectory(fs_, dependencyPath_)
 };
@@ -269,9 +269,9 @@ return location_
 }
 }
 
-export function Dependencies_processDependencies(self_, fs_, fetch_, dependencies_) {
+export function Dependencies_processDependencies(self_, fs_, httpClient_, dependencies_) {
 const packageInfos_ = ff_core_List.List_map(dependencies_, ((dependency_) => {
-const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, fetch_, dependency_);
+const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, httpClient_, dependency_);
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, dependency_.packagePair_, path_);
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
@@ -281,7 +281,7 @@ const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
 if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
-ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_)
+ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, httpClient_, newDependencies_)
 }
 }
 
@@ -328,7 +328,7 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 }))
 }
 
-export async function Dependencies_fetchDependency$(self_, fs_, fetch_, dependency_, $task) {
+export async function Dependencies_fetchDependency$(self_, fs_, httpClient_, dependency_, $task) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
@@ -339,11 +339,11 @@ const tarGzPath_ = ((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_
 const donePath_ = (((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_)) + ".done");
 if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, donePath_, $task)))) {
 ff_core_Log.debug_(("Fetching " + location_));
-const response_ = (await ff_core_FetchSystem.FetchSystem_fetch$(fetch_, location_, "GET", ff_core_FetchSystem.emptyList_, ff_core_Option.None(), ff_core_FetchSystem.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $task));
-if((!(await ff_core_FetchSystem.FetchResponse_ok$(response_, $task)))) {
+const response_ = (await ff_core_HttpClient.HttpClient_fetch$(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $task));
+if((!(await ff_core_HttpClient.FetchResponse_ok$(response_, $task)))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
-const buffer_ = (await ff_core_FetchSystem.FetchResponse_readBuffer$(response_, $task));
+const buffer_ = (await ff_core_HttpClient.FetchResponse_readBuffer$(response_, $task));
 if((await ff_core_FileSystem.FileSystem_exists$(fs_, dependencyPath_, $task))) {
 (await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, dependencyPath_, $task))
 };
@@ -361,9 +361,9 @@ return location_
 }
 }
 
-export async function Dependencies_processDependencies$(self_, fs_, fetch_, dependencies_, $task) {
+export async function Dependencies_processDependencies$(self_, fs_, httpClient_, dependencies_, $task) {
 const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (dependency_, $task) => {
-const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, fetch_, dependency_, $task));
+const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, httpClient_, dependency_, $task));
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, dependency_.packagePair_, path_, $task));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
@@ -373,7 +373,7 @@ const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
 if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
-(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $task))
+(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, httpClient_, newDependencies_, $task))
 }
 }
 

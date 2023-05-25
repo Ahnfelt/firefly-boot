@@ -66,7 +66,7 @@ extend self: Dependencies {
 
     fetchDependency(
         fs: FileSystem
-        fetch: FetchSystem
+        httpClient: HttpClient
         dependency: DDependency
     ): String {
         let location = self.workspace.findPackageLocation(dependency.packagePair, dependency.version)
@@ -79,7 +79,7 @@ extend self: Dependencies {
                 let donePath = dependenciesPath + "/" + Workspace.tarGzName(packagePair, dependency.version) + ".done"
                 if(!fs.exists(donePath)) {
                     Log.debug("Fetching " + location)
-                    let response = fetch.fetch(location, throw = False)
+                    let response = httpClient.fetch(location, throw = False)
                     if(!response.ok()) {
                         panic("Could not download dependency: " + location)
                     }
@@ -103,12 +103,12 @@ extend self: Dependencies {
 
     processDependencies(
         fs: FileSystem
-        fetch: FetchSystem
+        httpClient: HttpClient
         dependencies: List[DDependency]
     ): Unit {
         // Remember to check for cycles
         let packageInfos = dependencies.map {dependency =>
-            let path = self.fetchDependency(fs, fetch, dependency)
+            let path = self.fetchDependency(fs, httpClient, dependency)
             self.packagePaths = self.packagePaths.add(dependency.packagePair, path)
             let packageInfo = self.loadPackageInfo(fs, dependency.packagePair, path)
             checkPackagePairs(dependency.packagePair, packageInfo.package.packagePair)
@@ -116,13 +116,13 @@ extend self: Dependencies {
         }
         let newDependencies = packageInfos.flatMap {self.processPackageInfo(_)}
         if(newDependencies != []) {
-            self.processDependencies(fs, fetch, newDependencies)
+            self.processDependencies(fs, httpClient, newDependencies)
         }
     }
 
 }
 
-process(fs: FileSystem, fetch: FetchSystem, path: String): ResolvedDependencies {
+process(fs: FileSystem, fetch: HttpClient, path: String): ResolvedDependencies {
     let fixedPath = path.replace("\\", "/")
     let workspace = Workspace.loadWorkspace(fs, fixedPath)
     let self = Dependencies(workspace, [].toMap(), [].toMap(), [].toSet())

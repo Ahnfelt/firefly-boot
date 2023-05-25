@@ -26,13 +26,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -125,8 +125,8 @@ export function NodeSystem_files(self_) {
 throw new Error('Function NodeSystem_files is missing on this target in sync context.');
 }
 
-export function NodeSystem_fetch(self_) {
-throw new Error('Function NodeSystem_fetch is missing on this target in sync context.');
+export function NodeSystem_httpClient(self_) {
+throw new Error('Function NodeSystem_httpClient is missing on this target in sync context.');
 }
 
 export function NodeSystem_mainTask(self_) {
@@ -215,7 +215,7 @@ export async function NodeSystem_files$(self_, $task) {
 return null
 }
 
-export async function NodeSystem_fetch$(self_, $task) {
+export async function NodeSystem_httpClient$(self_, $task) {
 return null
 }
 
