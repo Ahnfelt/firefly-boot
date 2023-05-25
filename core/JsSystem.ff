@@ -23,15 +23,6 @@ extend self: JsSystem {
     array(values: List[JsValue]): JsValue
         target js sync "return ff_core_List.List_toArray(values_)"
 
-    shield(body: () => JsValue): JsValue
-        target js sync "return body_"
-        target js async """
-            const controller = new AbortController()
-            controller.closed = false
-            controller.promises = new Set()
-            return await body_(controller)
-        """
-
     function0[R](body: () => R): JsValue
         target js sync "return body_"
         target js async "return () => body_($task)"

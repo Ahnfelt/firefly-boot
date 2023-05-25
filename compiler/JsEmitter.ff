@@ -95,7 +95,9 @@ extend self: JsEmitter {
             "export async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
             "const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {})}"
-            "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
+            ...if(self.emitTarget != EmitBrowser) {[
+                "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
+            ]} else {[]}
             "let system = {"
             "task_: $task,"
             "array_: arguments_,"
@@ -115,8 +117,10 @@ extend self: JsEmitter {
                 "await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)"
             ]} else {[]}
             "} finally {"
-            "ff_core_Task.Task_abort$($task)"
-            "clearInterval(interval)"
+            ...if(self.emitTarget != EmitBrowser) {[
+                "ff_core_Task.Task_abort$($task)"
+                "clearInterval(interval)"
+            ]} else {[]}
             "}"
             "}"
             ...self.emitTarget.{

@@ -119,10 +119,6 @@ export function JsSystem_array(self_, values_) {
 return ff_core_List.List_toArray(values_)
 }
 
-export function JsSystem_shield(self_, body_) {
-return body_
-}
-
 export function JsSystem_function0(self_, body_) {
 return body_
 }
@@ -189,15 +185,6 @@ throw new Error('Function JsSystem_object is missing on this target in async con
 
 export async function JsSystem_array$(self_, values_, $task) {
 throw new Error('Function JsSystem_array is missing on this target in async context.');
-}
-
-export async function JsSystem_shield$(self_, body_, $task) {
-
-            const controller = new AbortController()
-            controller.closed = false
-            controller.promises = new Set()
-            return await body_(controller)
-        
 }
 
 export async function JsSystem_function0$(self_, body_, $task) {
