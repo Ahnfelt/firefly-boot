@@ -21,6 +21,22 @@ extend self[T]: Atomic[T] {
             return newValue
         """
 
+    getAndModify(body: T => T): T
+        target js sync """
+            const currentValue = self_.value
+            self_.value = body(currentValue)
+            return currentValue
+        """
+        target js async """
+            let currentValue, newValue
+            do {
+                currentValue = self_.value
+                newValue = await body_(currentValue)
+            } while(currentValue !== self_.value)
+            self_.value = newValue
+            return currentValue
+        """
+
     get(): T
         target js sync """
             return self_.value
@@ -31,7 +47,14 @@ extend self[T]: Atomic[T] {
             self_.value = value
         """
 
-    setIf(currentValue: T, newValue: T): Bool
+    getAndSet(newValue: T): T
+        target js sync """
+            const currentValue = self_.value
+            self_.value = newValue
+            return currentValue
+        """
+
+    compareAndSet(currentValue: T, newValue: T): Bool
         target js sync """
             if(self_.value !== currentValue) return false
             self_.value = newValue
