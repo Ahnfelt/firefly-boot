@@ -24,7 +24,7 @@ extend self[T]: Atomic[T] {
     getAndModify(body: T => T): T
         target js sync """
             const currentValue = self_.value
-            self_.value = body(currentValue)
+            self_.value = body_(currentValue)
             return currentValue
         """
         target js async """
