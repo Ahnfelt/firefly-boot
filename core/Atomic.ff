@@ -1,3 +1,4 @@
+// Experimental
 class Atomic[T] {}
 
 make[T](value: T): Atomic[T]
