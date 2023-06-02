@@ -48,6 +48,8 @@ import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
 
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
+
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
 import * as ff_core_Map from "../../ff/core/Map.mjs"
@@ -105,6 +107,14 @@ export function Atomic_modify(self_, body_) {
         
 }
 
+export function Atomic_getAndModify(self_, body_) {
+
+            const currentValue = self_.value
+            self_.value = body_(currentValue)
+            return currentValue
+        
+}
+
 export function Atomic_get(self_) {
 
             return self_.value
@@ -117,7 +127,15 @@ export function Atomic_set(self_, value_) {
         
 }
 
-export function Atomic_setIf(self_, currentValue_, newValue_) {
+export function Atomic_getAndSet(self_, newValue_) {
+
+            const currentValue = self_.value
+            self_.value = newValue
+            return currentValue
+        
+}
+
+export function Atomic_compareAndSet(self_, currentValue_, newValue_) {
 
             if(self_.value !== currentValue) return false
             self_.value = newValue
@@ -137,6 +155,18 @@ export async function Atomic_modify$(self_, body_, $task) {
         
 }
 
+export async function Atomic_getAndModify$(self_, body_, $task) {
+
+            let currentValue, newValue
+            do {
+                currentValue = self_.value
+                newValue = await body_(currentValue)
+            } while(currentValue !== self_.value)
+            self_.value = newValue
+            return currentValue
+        
+}
+
 export async function Atomic_get$(self_, $task) {
 throw new Error('Function Atomic_get is missing on this target in async context.');
 }
@@ -145,8 +175,12 @@ export async function Atomic_set$(self_, value_, $task) {
 throw new Error('Function Atomic_set is missing on this target in async context.');
 }
 
-export async function Atomic_setIf$(self_, currentValue_, newValue_, $task) {
-throw new Error('Function Atomic_setIf is missing on this target in async context.');
+export async function Atomic_getAndSet$(self_, newValue_, $task) {
+throw new Error('Function Atomic_getAndSet is missing on this target in async context.');
+}
+
+export async function Atomic_compareAndSet$(self_, currentValue_, newValue_, $task) {
+throw new Error('Function Atomic_compareAndSet is missing on this target in async context.');
 }
 
 
