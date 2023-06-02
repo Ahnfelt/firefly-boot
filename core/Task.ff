@@ -52,6 +52,10 @@ extend self: Task {
         target js async """return ff_core_Task.Task_channel(capacity_)"""
         target js sync """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
+    // Create a lock
+    lock(): Lock
+        target js async """return {owner: null, level: 0, stack: [], queue: []}"""
+    
 }
 
 // Convenience methods

@@ -67,26 +67,23 @@ taskGroup[K: Order, R](
     parentTask: Task, 
     groupBody: ((K, Task => Unit) => Task, K => Unit) => R
 ): R {
+    let lock = parentTask.lock()
     mutable tasks = [].toMap()
     function spawn(key: K, body: Task => Unit): Task {
         let body2 = {task =>
-            tasks = tasks.add(key, task)
+            lock.lock {tasks = tasks.add(key, task)}
             try {
                 body(task)
             } finally {
-                tasks = tasks.remove(key)
+                lock.lock {tasks = tasks.remove(key)}
             } grab()
         }
         parentTask.spawn(body2)
     }
     function abort(key: K): Unit {
-        tasks.get(key).each {_.abort()}
+        lock.lock {tasks.get(key).each {_.abort()}}
     }
-    try {
-        groupBody(spawn, abort)
-    } finally {
-
-    } grab()
+    groupBody(spawn, abort)
 }
 
 parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
