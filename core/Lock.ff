@@ -36,7 +36,7 @@ extend self: Lock {
     release(): Unit
         target js async """
             if(self_.owner !== $task) {
-                throw new Error("Tried to release a lock without acquiring it first.");
+                throw new Error("Tried to release a lock without acquiring it first.")
             } else if(self_.level > 1) {
                 self_.level -= 1
             } else {
@@ -71,6 +71,11 @@ extend self: LockCondition {
 
     sleep(): Unit
         target js async """
+            if(self_.lock.owner !== $task) {
+                throw new Error("Tried to sleep on a condition without acquiring it first.")
+            }
+            const level = self_.lock.level
+            self_.lock.level = 1
             await ff_core.Lock_release$(self_.lock)
             try {
                 await new Promise((resolve, reject) => {
@@ -79,10 +84,22 @@ extend self: LockCondition {
                         self_.queue.push(resolve)
                     } finally {
                         $task.controller.signal.removeEventListener('abort', reject)
+                        if($task.controller.signal.aborted) $task.controller = new AbortController()
                     }
                 })
             } finally {
-                await ff_core.Lock_acquire$(self_.lock)
+                let exception = null
+                let acquired = false
+                while(!acquired) {
+                    try {
+                        await ff_core.Lock_acquire$(self_.lock)
+                        self_.lock.level = level
+                        acquired = true
+                    } catch(e) {
+                        exception = e
+                    }
+                }
+                if(e !== null) throw e;
             }
         """
 
