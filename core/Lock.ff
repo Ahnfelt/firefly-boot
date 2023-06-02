@@ -56,7 +56,7 @@ extend self: Lock {
             }
         """
     
-    lock[T](body: () => T): T {
+    exclusive[T](body: () => T): T {
         self.acquire()
         try {
             body()
