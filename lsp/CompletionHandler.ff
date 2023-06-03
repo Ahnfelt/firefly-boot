@@ -16,7 +16,7 @@ data CompletionInfo(
 )
 
 handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool): JsValue {
-    let topLevelCompletions = if(toplevel) {toplevelCompletion(lspHook)}
+    let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
             let expected = h.unification.substitute(h.expected)
@@ -27,7 +27,7 @@ handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool): JsValue 
     mutable sawLookupHook = False // Only consider the first lookup
     mutable sawParameterOrVariantFieldHook = False // Rewrite the type completions to parameter completions
     mutable typeCompletions = []
-    let completions = topLevelCompletions.else {patternCompletions.else {lspHook.results().flatMap {
+    let completions = patternCompletions.else {lspHook.results().flatMap {
         | ResolveTypeHook h =>
             typeCompletions = [...typeCompletions, ...typeCompletion(h.types, h.typeGenerics)]
             []
@@ -143,13 +143,13 @@ handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool): JsValue 
             }
         | _ =>
             []
-    }}}
+    }}
     let fixedTypeCompletions = if(!sawParameterOrVariantFieldHook) {typeCompletions} else {
         typeCompletions.map {c => c.CompletionInfo(snippet = 
             (c.snippet.slice(0, 1).lower() + c.snippet.dropFirst()).takeWhile {_ != '['} + ": " + c.snippet
         )}
     }
-    completionsToJson(system.js(), [...completions, ...fixedTypeCompletions])
+    completionsToJson(system.js(), [...completions, ...fixedTypeCompletions, ...topLevelCompletions])
 }
 
 completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
@@ -739,7 +739,7 @@ toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
         )
         CompletionInfo(
             label = "webapp", 
-            extra = " ...", 
+            extra = " with frontend and backend", 
             snippet = [
                 "dependency ff:httpserver:0.0.0"
                 "import HttpServer from ff:httpserver"
