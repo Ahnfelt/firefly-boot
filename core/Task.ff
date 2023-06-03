@@ -47,12 +47,12 @@ extend self: Task {
             self_.controller.abort()
         """
 
-    // Create a channel
+    // Create a blocking channel with the specified capacity. The channel is not tied to the task.
     channel[T](capacity: Int = 0): Channel[T]
         target js async """return ff_core_Task.Task_channel(capacity_)"""
         target js sync """return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}"""
 
-    // Create a lock
+    // Create a mutex. The mutex is not tied to the task.
     lock(): Lock
         target js async """return {owner: null, level: 0, stack: [], queue: []}"""
     
