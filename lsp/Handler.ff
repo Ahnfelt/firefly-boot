@@ -229,7 +229,7 @@ extend self: Handler {
         } catch {| CompileError(at, message), error =>
             Log.trace("handleCompletion check error: " + message)
         } grab()
-        let o = CompletionHandler.handleCompletion(system, lspHook)
+        let o = CompletionHandler.handleCompletion(system, lspHook, completionAt.column == 1)
         Result(o.toJson())
     }
 
