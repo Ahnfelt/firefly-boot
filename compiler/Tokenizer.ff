@@ -63,209 +63,213 @@ tokenize(file: String, code: String, completionAt: Option[Location], attemptFixe
         ))
     }
 
-    while {i < code.size()} {
+    try {
+        while {i < code.size()} {
 
-        startLine = line
-        startLineOffset = lineOffset
+            startLine = line
+            startLineOffset = lineOffset
 
-        if(completionLine == line) {
-            while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {
-                if(completionColumn == 1 + i - lineOffset) {
-                    emitToken(LLower, i, i)
+            if(completionLine == line) {
+                while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {
+                    if(completionColumn == 1 + i - lineOffset) {
+                        emitToken(LLower, i, i)
+                    }
+                    i += 1
                 }
-                i += 1
-            }
-            if(i < code.size() && completionColumn == 1 + i - lineOffset) {
-                let c = code.grab(i)
-                if(!c.isAsciiLetterOrDigit() && c != '_' && c != '\'' && c != '"') {
-                    emitToken(LLower, i, i)
-                    if(i + 1 < code.size() && code.grab(i) == '_') {i += 1}
-                }
-            }
-            Unit // Think about how to avoid requiring this
-        } else {
-            while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {i += 1}
-        }
-        
-        if(i < code.size()):
-
-        let start = i
-
-        if(code.grab(i) == '\n') {
-
-            i += 1
-            line += 1
-            lineOffset = i
-
-        } elseIf {code.grab(i) == '/' && code.grab(i + 1) == '/'} {
-
-            i += 2
-            while {i < code.size() && code.grab(i) != '\n'} {i += 1}
-
-        } elseIf {code.grab(i) == '/' && code.grab(i + 1) == '*'} {
-
-            i += 2
-            while {i < code.size() && (code.grab(i) != '*' || code.grab(i + 1) != '/')} {
-                if(i >= code.size()) {
-                    throwError(
-                        "Expected end of comment started on line " + startLine + ", got end of file."
-                    )
-                }
-                if(code.grab(i) == '\n') {
-                    line += 1
-                    lineOffset = i + 1
-                }
-                i += 1
-            }
-            i += 2
-
-        } elseIf {code.grab(i) == '"' || code.grab(i) == '\''} {
-
-            let endSign = code.grab(i)
-
-            mutable multiLine = i + 2 < code.size() &&
-                code.grab(i) == '"' && code.grab(i + 1) == '"' && code.grab(i + 2) == '"'
-
-            i += if(multiLine) {3} else {1}
-            while {i < code.size() && (multiLine || code.grab(i) != endSign)} {
-                if(code.grab(i) == '\n') {
-                    if(multiLine) {
-                        line += 1
-                        lineOffset = i + 1
-                    } else {
-                        throwError(
-                            "Unexpected end of line in string."
-                        )
+                if(i < code.size() && completionColumn == 1 + i - lineOffset) {
+                    let c = code.grab(i)
+                    if(!c.isAsciiLetterOrDigit() && c != '_' && c != '\'' && c != '"') {
+                        emitToken(LLower, i, i)
+                        if(i + 1 < code.size() && code.grab(i) == '_') {i += 1}
                     }
                 }
-                if(i >= code.size()) {
-                    throwError(
-                        "Expected end of string started on line " + startLine + ", got end of file."
-                    )
-                }
-                if(code.grab(i) == '\\' && code.grab(i + 1) != '\n') {i += 1}
-                if(multiLine &&
-                    i + 2 < code.size() && (i + 3 >= code.size() || code.grab(i + 3) != '"') &&
-                    code.grab(i) == '"' && code.grab(i + 1) == '"' && code.grab(i + 2) == '"'
-                ) {
-                    multiLine = False
-                    i += 2
-                } else {
-                    i += 1
-                }
-            }
-            i += 1
-            emitToken(if(endSign == '"') {LString} else {LChar}, start, i)
-
-        } elseIf {code.grab(i).isAsciiLetter()} {
-
-            let kind = if(code.grab(i) >= 'a') {LLower} else {LUpper}
-            i += 1
-            while {i < code.size() && code.grab(i).isAsciiLetterOrDigit()} {i += 1}
-            if(kind == LUpper && code.grab(i) == '.') {
-                i += 1
-                emitToken(LNamespace, start, i)
+                Unit // Think about how to avoid requiring this
             } else {
-                emitToken(kind, start, i)
+                while {i < code.size() && (code.grab(i) == ' ' || code.grab(i) == '\t' || code.grab(i) == '\r')} {i += 1}
             }
-
-        } elseIf {code.grab(i).isAsciiDigit()} {
-
-            mutable dot = False
-            mutable exponent = False
-            while {i < code.size() && code.grab(i).isAsciiDigit()} {
-                i += 1
-                if((code.grab(i) == 'e' || code.grab(i) == 'E') && !exponent) {
-                    i += 1
-                    dot = True
-                    exponent = True
-                    if(code.grab(i) == '+' || code.grab(i) == '-') {i += 1}
-                }
-                if(
-                    i + 1 < code.size() && code.grab(i) == '.' &&
-                    code.grab(i + 1).isAsciiDigit() &&
-                    !dot && !exponent
-                ) {
-                    i += 1
-                    dot = True
-                }
-            }
-            emitToken(if(dot || exponent) {LFloat} else {LInt}, start, i)
-
-        } elseIf {code.grab(i) == '_'} {
-
-            i += 1
-            emitToken(LWildcard, start, i)
-
-        } elseIf {code.grab(i) == ','} {
-
-            i += 1
-            emitToken(LComma, start, i)
-
-        } elseIf {operatorCharacters.contains(code.grab(i))} {
-
-            i += 1
             
-            if(code.grab(i - 1) == '.' && i + 1 < code.size() && code.grab(i) == '.' && code.grab(i + 1) != '.') {
-                emitToken(LDot, start, i)
-                let newStart = i
-                if(!completionAt.isEmpty()) {emitToken(LLower, newStart, newStart)}
-                i += 1
-                emitToken(LDot, newStart, i)
-            } else:
+            if(i < code.size()):
 
-            while {i < code.size() && operatorCharacters.contains(code.grab(i))} {i += 1}
-            let o =
-                if(i - start == 1 && code.grab(i - 1) == '.') {
-                    LDot
-                } elseIf {i - start == 1 && code.grab(i - 1) == ';'} {
-                    LSemicolon
-                } elseIf {i - start == 1 && code.grab(i - 1) == '|'} {
-                    LPipe
-                } elseIf {i - start == 1 && code.grab(i - 1) == ':'} {
-                    LColon
-                } elseIf {i - start == 3 && code.grab(i - 3) == '.' && code.grab(i - 2) == '.' && code.grab(i - 1) == '.'} {
-                    LDotDotDot
-                } elseIf {i - start == 2 && code.grab(i - 2) == '=' && code.grab(i - 1) == '>'} {
-                    LArrowThick
-                } elseIf {i - start == 1 && code.grab(i - 1) == '='} {
-                    LAssign
-                } elseIf {i - start == 2 && code.grab(i - 2) == '+' && code.grab(i - 1) == '='} {
-                    LAssignPlus
-                } elseIf {i - start == 2 && code.grab(i - 2) == '-' && code.grab(i - 1) == '='} {
-                    LAssignMinus
-                } elseIf {i - start == 3 && code.grab(i - 3) == ':' && code.grab(i - 2) == ':' && code.grab(i - 1) == '='} {
-                    LAssignLink
+            let start = i
+
+            if(code.grab(i) == '\n') {
+
+                i += 1
+                line += 1
+                lineOffset = i
+
+            } elseIf {code.grab(i) == '/' && code.grab(i + 1) == '/'} {
+
+                i += 2
+                while {i < code.size() && code.grab(i) != '\n'} {i += 1}
+
+            } elseIf {code.grab(i) == '/' && code.grab(i + 1) == '*'} {
+
+                i += 2
+                while {i < code.size() && (code.grab(i) != '*' || code.grab(i + 1) != '/')} {
+                    if(i >= code.size()) {
+                        throwError(
+                            "Expected end of comment started on line " + startLine + ", got end of file."
+                        )
+                    }
+                    if(code.grab(i) == '\n') {
+                        line += 1
+                        lineOffset = i + 1
+                    }
+                    i += 1
+                }
+                i += 2
+
+            } elseIf {code.grab(i) == '"' || code.grab(i) == '\''} {
+
+                let endSign = code.grab(i)
+
+                mutable multiLine = i + 2 < code.size() &&
+                    code.grab(i) == '"' && code.grab(i + 1) == '"' && code.grab(i + 2) == '"'
+
+                i += if(multiLine) {3} else {1}
+                while {i < code.size() && (multiLine || code.grab(i) != endSign)} {
+                    if(code.grab(i) == '\n') {
+                        if(multiLine) {
+                            line += 1
+                            lineOffset = i + 1
+                        } else {
+                            throwError(
+                                "Unexpected end of line in string."
+                            )
+                        }
+                    }
+                    if(i >= code.size()) {
+                        throwError(
+                            "Expected end of string started on line " + startLine + ", got end of file."
+                        )
+                    }
+                    if(code.grab(i) == '\\' && code.grab(i + 1) != '\n') {i += 1}
+                    if(multiLine &&
+                        i + 2 < code.size() && (i + 3 >= code.size() || code.grab(i + 3) != '"') &&
+                        code.grab(i) == '"' && code.grab(i + 1) == '"' && code.grab(i + 2) == '"'
+                    ) {
+                        multiLine = False
+                        i += 2
+                    } else {
+                        i += 1
+                    }
+                }
+                i += 1
+                emitToken(if(endSign == '"') {LString} else {LChar}, start, i)
+
+            } elseIf {code.grab(i).isAsciiLetter()} {
+
+                let kind = if(code.grab(i) >= 'a') {LLower} else {LUpper}
+                i += 1
+                while {i < code.size() && code.grab(i).isAsciiLetterOrDigit()} {i += 1}
+                if(i < code.size() && kind == LUpper && code.grab(i) == '.') {
+                    i += 1
+                    emitToken(LNamespace, start, i)
                 } else {
-                    LOperator
+                    emitToken(kind, start, i)
                 }
 
-            emitToken(o, start, i)
+            } elseIf {code.grab(i).isAsciiDigit()} {
 
-        } elseIf {
-            code.grab(i) == '(' || code.grab(i) == '[' || code.grab(i) == '{'
-        } {
+                mutable dot = False
+                mutable exponent = False
+                while {i < code.size() && code.grab(i).isAsciiDigit()} {
+                    i += 1
+                    if((code.grab(i) == 'e' || code.grab(i) == 'E') && !exponent) {
+                        i += 1
+                        dot = True
+                        exponent = True
+                        if(code.grab(i) == '+' || code.grab(i) == '-') {i += 1}
+                    }
+                    if(
+                        i + 1 < code.size() && code.grab(i) == '.' &&
+                        code.grab(i + 1).isAsciiDigit() &&
+                        !dot && !exponent
+                    ) {
+                        i += 1
+                        dot = True
+                    }
+                }
+                emitToken(if(dot || exponent) {LFloat} else {LInt}, start, i)
 
-            i += 1
-            emitToken(LBracketLeft, start, i)
+            } elseIf {code.grab(i) == '_'} {
 
-        } elseIf {
-            code.grab(i) == ')' || code.grab(i) == ']' || code.grab(i) == '}'
-        } {
+                i += 1
+                emitToken(LWildcard, start, i)
 
-            i += 1
-            emitToken(LBracketRight, start, i)
+            } elseIf {code.grab(i) == ','} {
 
-        } elseIf {
-            i < code.size()
-        } {
+                i += 1
+                emitToken(LComma, start, i)
 
-            if(attemptFixes) {i += 1} else:
-            throwError("Unexpected character: " + Show.show(code.grab(i)))
+            } elseIf {operatorCharacters.contains(code.grab(i))} {
+
+                i += 1
+                
+                if(code.grab(i - 1) == '.' && i + 1 < code.size() && code.grab(i) == '.' && code.grab(i + 1) != '.') {
+                    emitToken(LDot, start, i)
+                    let newStart = i
+                    if(!completionAt.isEmpty()) {emitToken(LLower, newStart, newStart)}
+                    i += 1
+                    emitToken(LDot, newStart, i)
+                } else:
+
+                while {i < code.size() && operatorCharacters.contains(code.grab(i))} {i += 1}
+                let o =
+                    if(i - start == 1 && code.grab(i - 1) == '.') {
+                        LDot
+                    } elseIf {i - start == 1 && code.grab(i - 1) == ';'} {
+                        LSemicolon
+                    } elseIf {i - start == 1 && code.grab(i - 1) == '|'} {
+                        LPipe
+                    } elseIf {i - start == 1 && code.grab(i - 1) == ':'} {
+                        LColon
+                    } elseIf {i - start == 3 && code.grab(i - 3) == '.' && code.grab(i - 2) == '.' && code.grab(i - 1) == '.'} {
+                        LDotDotDot
+                    } elseIf {i - start == 2 && code.grab(i - 2) == '=' && code.grab(i - 1) == '>'} {
+                        LArrowThick
+                    } elseIf {i - start == 1 && code.grab(i - 1) == '='} {
+                        LAssign
+                    } elseIf {i - start == 2 && code.grab(i - 2) == '+' && code.grab(i - 1) == '='} {
+                        LAssignPlus
+                    } elseIf {i - start == 2 && code.grab(i - 2) == '-' && code.grab(i - 1) == '='} {
+                        LAssignMinus
+                    } elseIf {i - start == 3 && code.grab(i - 3) == ':' && code.grab(i - 2) == ':' && code.grab(i - 1) == '='} {
+                        LAssignLink
+                    } else {
+                        LOperator
+                    }
+
+                emitToken(o, start, i)
+
+            } elseIf {
+                code.grab(i) == '(' || code.grab(i) == '[' || code.grab(i) == '{'
+            } {
+
+                i += 1
+                emitToken(LBracketLeft, start, i)
+
+            } elseIf {
+                code.grab(i) == ')' || code.grab(i) == ']' || code.grab(i) == '}'
+            } {
+
+                i += 1
+                emitToken(LBracketRight, start, i)
+
+            } elseIf {
+                i < code.size()
+            } {
+
+                if(attemptFixes) {i += 1} else:
+                throwError("Unexpected character: " + Show.show(code.grab(i)))
+
+            }
 
         }
-
-    }
+    } catch {| GrabException e, error =>
+        throw(CompileError(Location(file, line, i - lineOffset), "Unexpected end of file"))
+    } grab()
 
     List.range(5).each {_ => emitToken(LEnd, i, i) }
 
