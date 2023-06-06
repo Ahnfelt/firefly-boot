@@ -153,6 +153,7 @@ function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
+try {
 while((i_ < ff_core_String.String_size(code_))) {
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
@@ -241,7 +242,7 @@ i_ += 1;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1
 };
-if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper()) && (ff_core_String.String_grab(code_, i_) === 46))) {
+if((((i_ < ff_core_String.String_size(code_)) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && (ff_core_String.String_grab(code_, i_) === 46))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {
@@ -325,6 +326,14 @@ throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_C
 }
 } else {}
 }
+}
+} catch(_error) {
+if(!_error.ffException) throw _error
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)
+if(!_exception.Some) throw _error
+const e_ = _exception.value_;
+const error_ = _error;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
@@ -387,6 +396,7 @@ function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
+try {
 while((i_ < ff_core_String.String_size(code_))) {
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
@@ -475,7 +485,7 @@ i_ += 1;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1
 };
-if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper()) && (ff_core_String.String_grab(code_, i_) === 46))) {
+if((((i_ < ff_core_String.String_size(code_)) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && (ff_core_String.String_grab(code_, i_) === 46))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {
@@ -559,6 +569,14 @@ throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_C
 }
 } else {}
 }
+}
+} catch(_error) {
+if(!_error.ffException) throw _error
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)
+if(!_exception.Some) throw _error
+const e_ = _exception.value_;
+const error_ = _error;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)

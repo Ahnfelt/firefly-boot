@@ -110,7 +110,7 @@ export function Lock_release(self_) {
 throw new Error('Function Lock_release is missing on this target in sync context.');
 }
 
-export function Lock_lock(self_, body_) {
+export function Lock_do(self_, body_) {
 ff_core_Lock.Lock_acquire(self_);
 try {
 return body_()
@@ -154,7 +154,7 @@ export async function Lock_acquire$(self_, $task) {
 export async function Lock_release$(self_, $task) {
 
             if(self_.owner !== $task) {
-                throw new Error("Tried to release a lock without acquiring it first.");
+                throw new Error("Tried to release a lock without acquiring it first.")
             } else if(self_.level > 1) {
                 self_.level -= 1
             } else {
@@ -175,7 +175,7 @@ export async function Lock_release$(self_, $task) {
         
 }
 
-export async function Lock_lock$(self_, body_, $task) {
+export async function Lock_do$(self_, body_, $task) {
 (await ff_core_Lock.Lock_acquire$(self_, $task));
 try {
 return (await body_($task))
@@ -227,6 +227,11 @@ throw new Error('Function LockCondition_wakeAll is missing on this target in syn
 
 export async function LockCondition_sleep$(self_, $task) {
 
+            if(self_.lock.owner !== $task) {
+                throw new Error("Tried to sleep on a condition without acquiring it first.")
+            }
+            const level = self_.lock.level
+            self_.lock.level = 1
             await ff_core.Lock_release$(self_.lock)
             try {
                 await new Promise((resolve, reject) => {
@@ -235,10 +240,22 @@ export async function LockCondition_sleep$(self_, $task) {
                         self_.queue.push(resolve)
                     } finally {
                         $task.controller.signal.removeEventListener('abort', reject)
+                        if($task.controller.signal.aborted) $task.controller = new AbortController()
                     }
                 })
             } finally {
-                await ff_core.Lock_acquire$(self_.lock)
+                let exception = null
+                let acquired = false
+                while(!acquired) {
+                    try {
+                        await ff_core.Lock_acquire$(self_.lock)
+                        self_.lock.level = level
+                        acquired = true
+                    } catch(e) {
+                        exception = e
+                    }
+                }
+                if(e !== null) throw e;
             }
         
 }

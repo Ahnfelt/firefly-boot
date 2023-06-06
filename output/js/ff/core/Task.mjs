@@ -134,6 +134,10 @@ export function Task_channel(self_, capacity_ = 0) {
 return {capacity: capacity_, buffer: [], readers: new Set(), writers: new Set()}
 }
 
+export function Task_lock(self_) {
+throw new Error('Function Task_lock is missing on this target in sync context.');
+}
+
 export async function Task_spawn$(self_, body_, $task) {
 
             return ff_core_Task.Task_spawn(self_, body_)
@@ -154,6 +158,10 @@ export async function Task_abort$(self_, $task) {
 
 export async function Task_channel$(self_, capacity_ = 0, $task) {
 return ff_core_Task.Task_channel(capacity_)
+}
+
+export async function Task_lock$(self_, $task) {
+return {owner: null, level: 0, stack: [], queue: []}
 }
 
 export function Task_sleep(self_, duration_) {
