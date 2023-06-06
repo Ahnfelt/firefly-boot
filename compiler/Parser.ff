@@ -684,7 +684,7 @@ extend self: Parser {
                 arguments.push(Argument(argumentToken.at(), nameToken.map {_.raw()}, value))
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
             }
-            if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook && arguments.isEmpty()) {
+            if(self.lspHook.isEnabled() && !self.lspEmittedArgumentHook) {
                 if(LspHook.strictlyBetween(callAt, self.current().at(), self.lspHook.at, 1)) {
                     self.lspHook.emit(ParseArgumentHook(callAt, arguments.size(), None))
                     self.lspEmittedArgumentHook = True
