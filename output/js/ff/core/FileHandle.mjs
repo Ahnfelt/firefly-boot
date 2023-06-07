@@ -64,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -111,6 +113,10 @@ export function FileHandle_writeText(self_, text_, position_ = ff_core_Option.No
 throw new Error('Function FileHandle_writeText is missing on this target in sync context.');
 }
 
+export function FileHandle_truncate(self_, length_ = 0) {
+throw new Error('Function FileHandle_truncate is missing on this target in sync context.');
+}
+
 export function FileHandle_sync(self_, dataOnly_ = false) {
 throw new Error('Function FileHandle_sync is missing on this target in sync context.');
 }
@@ -139,6 +145,13 @@ export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Op
 
             ff_core_Task.Task_throwIfAborted($task)
             await self_.write(text, position.value_, encoding_)
+        
+}
+
+export async function FileHandle_truncate$(self_, length_ = 0, $task) {
+
+            ff_core_Task.Task_throwIfAborted($task)
+            await self_.truncate(length_)
         
 }
 

@@ -1,4 +1,4 @@
-
+import * as import$0 from 'path';
 
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
@@ -64,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -127,6 +129,10 @@ return ff_core_NodeSystem.internalAssets_(self_)
 
 export function NodeSystem_files(self_) {
 throw new Error('Function NodeSystem_files is missing on this target in sync context.');
+}
+
+export function NodeSystem_path(self_, relativePath_) {
+throw new Error('Function NodeSystem_path is missing on this target in sync context.');
 }
 
 export function NodeSystem_httpClient(self_) {
@@ -217,6 +223,13 @@ return (await ff_core_NodeSystem.internalAssets_$(self_, $task))
 
 export async function NodeSystem_files$(self_, $task) {
 return null
+}
+
+export async function NodeSystem_path$(self_, relativePath_, $task) {
+
+            const path = import$0
+            return path.resolve(relativePath_)
+        
 }
 
 export async function NodeSystem_httpClient$(self_, $task) {

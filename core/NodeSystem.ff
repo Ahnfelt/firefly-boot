@@ -28,6 +28,12 @@ extend self: NodeSystem {
     files(): FileSystem
         target node async "return null"
 
+    path(relativePath: String): Path
+        target node async """
+            import * as path from 'path'
+            return path.resolve(relativePath_)
+        """
+
     httpClient(): HttpClient
         target js async "return null"
 
