@@ -1,5 +1,7 @@
 import * as import$0 from 'path';
 
+import * as import$1 from 'url';
+
 import * as ff_core_Any from "../../ff/core/Any.mjs"
 
 import * as ff_core_Array from "../../ff/core/Array.mjs"
@@ -135,6 +137,10 @@ export function NodeSystem_path(self_, relativePath_) {
 throw new Error('Function NodeSystem_path is missing on this target in sync context.');
 }
 
+export function NodeSystem_pathFromUrl(self_, url_) {
+throw new Error('Function NodeSystem_pathFromUrl is missing on this target in sync context.');
+}
+
 export function NodeSystem_httpClient(self_) {
 throw new Error('Function NodeSystem_httpClient is missing on this target in sync context.');
 }
@@ -229,6 +235,13 @@ export async function NodeSystem_path$(self_, relativePath_, $task) {
 
             const path = import$0
             return path.resolve(relativePath_)
+        
+}
+
+export async function NodeSystem_pathFromUrl$(self_, url_, $task) {
+
+            const url = import$1;
+            return url.fileURLToPath(new URL(url_));
         
 }
 
