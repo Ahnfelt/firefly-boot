@@ -34,7 +34,7 @@ extend self: NodeSystem {
             return path.resolve(relativePath_)
         """
 
-    pathUrl(url: String): Path
+    pathFromUrl(url: String): Path
         target node async """
             import * as url from 'url';
             return url.fileURLToPath(new URL(url_));
