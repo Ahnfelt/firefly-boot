@@ -68,8 +68,11 @@ extend self: Path {
                 : ff_core_Option.None()
         """
 
-    drive(): Option[String]
-    fileUri(): String
+    toUrl(): String
+        target node sync """
+            import * as url from 'url';
+            return '' + url.pathToFileURL(self_);
+        """
 
     delimiter(): String
         target node sync """

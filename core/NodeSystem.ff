@@ -34,6 +34,12 @@ extend self: NodeSystem {
             return path.resolve(relativePath_)
         """
 
+    pathUrl(url: String): Path
+        target node async """
+            import * as url from 'url';
+            return url.fileURLToPath(new URL(url_));
+        """
+
     httpClient(): HttpClient
         target js async "return null"
 
