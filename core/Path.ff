@@ -27,13 +27,17 @@ extend self: Path {
                 return false;
             }
         """
-            
-    isAbsolute(): Bool
+
+    isSymbolicLink(): Bool
         target node async """
-            import * as path from 'path'
-            return path.isAbsolute(self_)
+            import * as fsPromises from 'fs/promises'
+            try {
+                return (await fsPromises.lstat(self_)).isSymbolicLink();
+            } catch(e) {
+                return false;
+            }
         """
-            
+
     list(): List[Path]
         target node async """
             import * as fsPromises from 'fs/promises'
