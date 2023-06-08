@@ -72,7 +72,7 @@ extend self: Path {
                 : ff_core_Option.None()
         """
 
-    toUrl(): String
+    url(): String
         target node sync """
             import * as url from 'url';
             return '' + url.pathToFileURL(self_);
@@ -99,7 +99,7 @@ extend self: Path {
                 : ff_core_Option.None()
         """
 
-    add(relativePath: String): Path
+    slash(relativePath: String): Path
         target node sync """
             import * as path from 'path'
             return path.join(self_, relativePath_)
@@ -122,7 +122,7 @@ extend self: Path {
             if(path.exists()) {path.delete()}
             path.createDirectory()
             self.list().each {file =>
-                self.copyTo(path.add(file.relativeTo(self)))
+                self.copyTo(path.slash(file.relativeTo(self)))
             }
         } else {
             path.writeStream(self.readStream())
@@ -268,3 +268,6 @@ extend self: Path {
         """
 
 }
+
+// TODO: stat, chown, chmod
+// Also see these suggestions: https://chat.openai.com/share/c0f63c0f-bd12-4a33-ac55-69e1cfb6a545
