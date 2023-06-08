@@ -478,9 +478,9 @@ ff_core_FileSystem.FileSystem_createDirectory(fs_, ".firefly/output")
 }
 }
 
-export function detectBuildMain_(fs_, packagePair_, mainFile_) {
+export function detectBuildMain_(path_, packagePair_, mainFile_) {
 const file_ = (mainFile_ + ".ff");
-const code_ = ff_core_FileSystem.FileSystem_readText(fs_, file_);
+const code_ = ff_core_Path.Path_readText(ff_core_Path.Path_add(path_, file_));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_, ff_core_Option.None(), true);
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false, ff_compiler_LspHook.disabled_());
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
@@ -858,9 +858,9 @@ if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly", $task)))) {
 }
 }
 
-export async function detectBuildMain_$(fs_, packagePair_, mainFile_, $task) {
+export async function detectBuildMain_$(path_, packagePair_, mainFile_, $task) {
 const file_ = (mainFile_ + ".ff");
-const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, file_, $task));
+const code_ = (await ff_core_Path.Path_readText$((await ff_core_Path.Path_add$(path_, file_, $task)), $task));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_, ff_core_Option.None(), true);
 const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false, ff_compiler_LspHook.disabled_());
 const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
