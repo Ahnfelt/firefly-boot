@@ -7,9 +7,9 @@ extend self: Path {
             import * as fs from 'fs'
             import * as fsPromises from 'fs/promises'
             const flags = 
-                (fs.constants.R_OK * checkRead) | 
-                (fs.constants.W_OK * checkWrite) | 
-                (fs.constants.X_OK * checkExecute)
+                (fs.constants.R_OK * checkRead_) | 
+                (fs.constants.W_OK * checkWrite_) | 
+                (fs.constants.X_OK * checkExecute_)
             try {
                 await fsPromises.access(self_, flags === 0 ? fs.constants.F_OK : flags)
                 return true
