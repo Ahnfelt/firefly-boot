@@ -2,7 +2,7 @@ capability Path {}
 
 extend self: Path {
 
-    canAccess(checkRead: Bool = False, checkWrite: Bool = False, checkExecute: Bool = False): Bool
+    checkAccess(checkRead: Bool = False, checkWrite: Bool = False, checkExecute: Bool = False): Bool
         target node async """
             import * as fs from 'fs'
             import * as fsPromises from 'fs/promises'
