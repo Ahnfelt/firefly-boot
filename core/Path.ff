@@ -2,10 +2,20 @@ capability Path {}
 
 extend self: Path {
 
-    exists(): Bool
+    canAccess(checkRead: Bool = False, checkWrite: Bool = False, checkExecute: Bool = False): Bool
         target node async """
+            import * as fs from 'fs'
             import * as fsPromises from 'fs/promises'
-            return await fsPromises.access(self_).then(() => true).catch(() => false)
+            const flags = 
+                (fs.constants.R_OK * checkRead) | 
+                (fs.constants.W_OK * checkWrite) | 
+                (fs.constants.X_OK * checkExecute)
+            try {
+                await fsPromises.access(self_, flags === 0 ? fs.constants.F_OK : flags)
+                return true
+            } catch(e) {
+                return false
+            }
         """
     
     isDirectory(): Bool
