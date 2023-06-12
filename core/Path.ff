@@ -59,7 +59,7 @@ extend self: Path {
                 return false;
             }
         """
-                
+
     isInside(path: Path): Bool
         target node async """
             import * as path from 'path'
