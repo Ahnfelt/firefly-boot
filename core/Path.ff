@@ -285,6 +285,3 @@ extend self: Path {
         """
 
 }
-
-// TODO: stat, chown, chmod
-// Also see these suggestions: https://chat.openai.com/share/c0f63c0f-bd12-4a33-ac55-69e1cfb6a545
