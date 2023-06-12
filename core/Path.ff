@@ -73,13 +73,10 @@ extend self: Path {
             return path.basename(self_)
         """
 
-    extension(): Option[String]
+    extension(): String
         target node sync """
             import * as path from 'path'
-            const result = path.extname(self_)
-            return result !== ''
-                ? ff_core_Option.Some(result) 
-                : ff_core_Option.None()
+            return path.extname(self_)
         """
 
     url(): String
