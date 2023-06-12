@@ -131,6 +131,14 @@ export function Path_isSymbolicLink(self_) {
 throw new Error('Function Path_isSymbolicLink is missing on this target in sync context.');
 }
 
+export function Path_size(self_) {
+throw new Error('Function Path_size is missing on this target in sync context.');
+}
+
+export function Path_modified(self_) {
+throw new Error('Function Path_modified is missing on this target in sync context.');
+}
+
 export function Path_list(self_) {
 throw new Error('Function Path_list is missing on this target in sync context.');
 }
@@ -339,6 +347,18 @@ export async function Path_isSymbolicLink$(self_, $task) {
             } catch(e) {
                 return false;
             }
+        
+}
+
+export async function Path_size$(self_, $task) {
+
+            return (await fs.promises.stat(file)).size
+        
+}
+
+export async function Path_modified$(self_, $task) {
+
+            return (await fs.promises.stat(file)).mtimeMs * 0.001
         
 }
 
