@@ -112,7 +112,7 @@ extend self: Path {
             return path.join(self_, relativePath_)
         """
 
-    copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100): Unit {
+    copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100) {
         if(self.isDirectory()) {
             if(path.exists()) {path.delete(retries, retryDelay)}
             path.createDirectory()
@@ -142,7 +142,7 @@ extend self: Path {
             await fsPromises.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
         """
     
-    truncate(length: Int = 0): Unit
+    truncate(length: Int = 0)
         target js async """
             import * as fsPromises from 'fs/promises'
             await fsPromises.truncate(self_, length_)
@@ -164,7 +164,7 @@ extend self: Path {
             }
         """
 
-    writeText(text: String): Unit
+    writeText(text: String)
         target node async """
             import * as fsPromises from 'fs/promises'
             try {
@@ -174,7 +174,7 @@ extend self: Path {
             }
         """
 
-    appendText(text: String): Unit
+    appendText(text: String)
         target node async """
             import * as fsPromises from 'fs/promises'
             try {
@@ -188,11 +188,11 @@ extend self: Path {
         self.readStream().toBuffer()
     }
     
-    writeBuffer(buffer: Buffer): Unit {
+    writeBuffer(buffer: Buffer) {
         self.writeStream([buffer].toStream())
     }
     
-    appendBuffer(buffer: Buffer): Unit {
+    appendBuffer(buffer: Buffer) {
         self.appendStream([buffer].toStream())
     }
 
@@ -202,7 +202,7 @@ extend self: Path {
             return ff_core_FileSystem.internalReadStream_$(() => fs.createReadStream(self_))
         """
 
-    writeStream(stream: Stream[Buffer], createOnly: Bool = False): Unit
+    writeStream(stream: Stream[Buffer], createOnly: Bool = False)
         target node async """
             import * as fs from 'fs'
             let writeable = fs.createWriteStream(self_, {flags: createOnly_ ? 'wx' : 'w'})
@@ -223,7 +223,7 @@ extend self: Path {
             }
         """
 
-    appendStream(stream: Stream[Buffer]): Unit
+    appendStream(stream: Stream[Buffer])
         target node async """
             import * as fs from 'fs'
             let writeable = fs.createWriteStream(self_, {flags: 'a'})
