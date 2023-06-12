@@ -114,7 +114,7 @@ extend self: Path {
 
     copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100) {
         if(self.isDirectory()) {
-            if(path.exists()) {path.delete(retries, retryDelay)}
+            if(path.checkAccess()) {path.delete(retries, retryDelay)}
             path.createDirectory()
             self.list().each {file =>
                 self.copyTo(path.slash(file.relativeTo(self)), retries, retryDelay)

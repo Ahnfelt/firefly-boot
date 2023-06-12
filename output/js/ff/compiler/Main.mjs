@@ -478,36 +478,6 @@ ff_core_FileSystem.FileSystem_createDirectory(fs_, ".firefly/output")
 }
 }
 
-export function detectBuildMain_(path_, packagePair_, mainFile_) {
-const file_ = (mainFile_ + ".ff");
-const code_ = ff_core_Path.Path_readText(ff_core_Path.Path_add(path_, file_));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false, ff_compiler_LspHook.disabled_());
-const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
-return ff_core_List.List_any(module_.functions_, ((definition_) => {
-return (((definition_.signature_.name_ === "buildMain") || (definition_.signature_.name_ === "main")) && (((_1) => {
-{
-if(_1.Link) {
-const p_ = _1.head_;
-if(_1.tail_.Empty) {
-const _guard1 = p_.valueType_;
-if(_guard1.TConstructor) {
-if(_guard1.name_ == "BuildSystem") {
-return true
-return
-}
-}
-}
-}
-}
-{
-return false
-return
-}
-}))(definition_.signature_.parameters_))
-}))
-}
-
 export function detectFireflyPath_() {
 
         const suffix = '/output/js/ff/compiler/Main.mjs';
@@ -856,36 +826,6 @@ if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, ".firefly", $task)))) {
 };
 (await ff_core_FileSystem.FileSystem_createDirectory$(fs_, ".firefly/output", $task))
 }
-}
-
-export async function detectBuildMain_$(path_, packagePair_, mainFile_, $task) {
-const file_ = (mainFile_ + ".ff");
-const code_ = (await ff_core_Path.Path_readText$((await ff_core_Path.Path_add$(path_, file_, $task)), $task));
-const tokens_ = ff_compiler_Tokenizer.tokenize_(file_, code_, ff_core_Option.None(), true);
-const parser_ = ff_compiler_Parser.make_(ff_compiler_Syntax.PackagePair("script", "script"), file_, tokens_, false, ff_compiler_LspHook.disabled_());
-const module_ = ff_compiler_Parser.Parser_parseModuleWithPackageInfo(parser_).module_;
-return ff_core_List.List_any(module_.functions_, ((definition_) => {
-return (((definition_.signature_.name_ === "buildMain") || (definition_.signature_.name_ === "main")) && (((_1) => {
-{
-if(_1.Link) {
-const p_ = _1.head_;
-if(_1.tail_.Empty) {
-const _guard1 = p_.valueType_;
-if(_guard1.TConstructor) {
-if(_guard1.name_ == "BuildSystem") {
-return true
-return
-}
-}
-}
-}
-}
-{
-return false
-return
-}
-}))(definition_.signature_.parameters_))
-}))
 }
 
 export async function detectFireflyPath_$($task) {

@@ -1,6 +1,6 @@
-import * as import$3 from 'fs';
+import * as import$2 from 'fs';
 
-import * as import$2 from 'fs/promises';
+import * as import$3 from 'fs/promises';
 
 import * as import$0 from 'path';
 
@@ -103,8 +103,8 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function Path_exists(self_) {
-throw new Error('Function Path_exists is missing on this target in sync context.');
+export function Path_checkAccess(self_, checkRead_ = false, checkWrite_ = false, checkExecute_ = false) {
+throw new Error('Function Path_checkAccess is missing on this target in sync context.');
 }
 
 export function Path_isDirectory(self_) {
@@ -144,14 +144,11 @@ export function Path_base(self_) {
 export function Path_extension(self_) {
 
             const path = import$0
-            const result = path.extname(self_)
-            return result !== ''
-                ? ff_core_Option.Some(result) 
-                : ff_core_Option.None()
+            return path.extname(self_)
         
 }
 
-export function Path_toUrl(self_) {
+export function Path_url(self_) {
 
             const url = import$1;
             return '' + url.pathToFileURL(self_);
@@ -182,42 +179,28 @@ export function Path_parent(self_) {
         
 }
 
-export function Path_add(self_, relativePath_) {
+export function Path_slash(self_, relativePath_) {
 
             const path = import$0
             return path.join(self_, relativePath_)
         
 }
 
-export function Path_normalize(self_) {
-
-            const path = import$0
-            return path.normalize(self_)
-        
-}
-
-export function Path_namespaced(self_) {
-
-            const path = import$0
-            return path.toNamespacedPath(self_)
-        
-}
-
-export function Path_copyTo(self_, path_) {
+export function Path_copyTo(self_, path_, retries_ = 0, retryDelay_ = 100) {
 if(ff_core_Path.Path_isDirectory(self_)) {
-if(ff_core_Path.Path_exists(path_)) {
-ff_core_Path.Path_delete(path_, false, 0, 100)
+if(ff_core_Path.Path_checkAccess(path_, false, false, false)) {
+ff_core_Path.Path_delete(path_, retries_, retryDelay_)
 };
 ff_core_Path.Path_createDirectory(path_, false);
 ff_core_List.List_each(ff_core_Path.Path_list(self_), ((file_) => {
-ff_core_Path.Path_copyTo(self_, ff_core_Path.Path_add(path_, ff_core_Path.Path_relativeTo(file_, self_)))
+ff_core_Path.Path_copyTo(self_, ff_core_Path.Path_slash(path_, ff_core_Path.Path_relativeTo(file_, self_)), retries_, retryDelay_)
 }))
 } else {
 ff_core_Path.Path_writeStream(path_, ff_core_Path.Path_readStream(self_), false)
 }
 }
 
-export function Path_createDirectory(self_, recursive_ = false) {
+export function Path_createDirectory(self_, createParentDirectories_ = false) {
 throw new Error('Function Path_createDirectory is missing on this target in sync context.');
 }
 
@@ -225,7 +208,7 @@ export function Path_createSymlinkTo(self_, path_) {
 throw new Error('Function Path_createSymlinkTo is missing on this target in sync context.');
 }
 
-export function Path_delete(self_, recursive_ = false, retries_ = 0, retryDelay_ = 100) {
+export function Path_delete(self_, retries_ = 0, retryDelay_ = 100) {
 throw new Error('Function Path_delete is missing on this target in sync context.');
 }
 
@@ -285,16 +268,26 @@ export function Path_appendHandle(self_, alsoRead_ = false, mustCreate_ = false)
 throw new Error('Function Path_appendHandle is missing on this target in sync context.');
 }
 
-export async function Path_exists$(self_, $task) {
+export async function Path_checkAccess$(self_, checkRead_ = false, checkWrite_ = false, checkExecute_ = false, $task) {
 
-            const fsPromises = import$2
-            return await fsPromises.access(self_).then(() => true).catch(() => false)
+            const fs = import$2
+            const fsPromises = import$3
+            const flags = 
+                (fs.constants.R_OK * checkRead_) | 
+                (fs.constants.W_OK * checkWrite_) | 
+                (fs.constants.X_OK * checkExecute_)
+            try {
+                await fsPromises.access(self_, flags === 0 ? fs.constants.F_OK : flags)
+                return true
+            } catch(e) {
+                return false
+            }
         
 }
 
 export async function Path_isDirectory$(self_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             try {
                 return (await fsPromises.lstat(self_)).isDirectory();
             } catch(e) {
@@ -305,7 +298,7 @@ export async function Path_isDirectory$(self_, $task) {
 
 export async function Path_isFile$(self_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             try {
                 return (await fsPromises.lstat(self_)).isFile();
             } catch(e) {
@@ -316,7 +309,7 @@ export async function Path_isFile$(self_, $task) {
 
 export async function Path_isSymbolicLink$(self_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             try {
                 return (await fsPromises.lstat(self_)).isSymbolicLink();
             } catch(e) {
@@ -327,7 +320,7 @@ export async function Path_isSymbolicLink$(self_, $task) {
 
 export async function Path_list$(self_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             const path = import$0
             return ff_core_Array.Array_toList((await fsPromises.readdir(self_)).map(f => path.join(self_, f)))
         
@@ -352,8 +345,8 @@ export async function Path_extension$(self_, $task) {
 throw new Error('Function Path_extension is missing on this target in async context.');
 }
 
-export async function Path_toUrl$(self_, $task) {
-throw new Error('Function Path_toUrl is missing on this target in async context.');
+export async function Path_url$(self_, $task) {
+throw new Error('Function Path_url is missing on this target in async context.');
 }
 
 export async function Path_delimiter$(self_, $task) {
@@ -368,70 +361,62 @@ export async function Path_parent$(self_, $task) {
 throw new Error('Function Path_parent is missing on this target in async context.');
 }
 
-export async function Path_add$(self_, relativePath_, $task) {
-throw new Error('Function Path_add is missing on this target in async context.');
+export async function Path_slash$(self_, relativePath_, $task) {
+throw new Error('Function Path_slash is missing on this target in async context.');
 }
 
-export async function Path_normalize$(self_, $task) {
-throw new Error('Function Path_normalize is missing on this target in async context.');
-}
-
-export async function Path_namespaced$(self_, $task) {
-throw new Error('Function Path_namespaced is missing on this target in async context.');
-}
-
-export async function Path_copyTo$(self_, path_, $task) {
+export async function Path_copyTo$(self_, path_, retries_ = 0, retryDelay_ = 100, $task) {
 if((await ff_core_Path.Path_isDirectory$(self_, $task))) {
-if((await ff_core_Path.Path_exists$(path_, $task))) {
-(await ff_core_Path.Path_delete$(path_, false, 0, 100, $task))
+if((await ff_core_Path.Path_checkAccess$(path_, false, false, false, $task))) {
+(await ff_core_Path.Path_delete$(path_, retries_, retryDelay_, $task))
 };
 (await ff_core_Path.Path_createDirectory$(path_, false, $task));
 (await ff_core_List.List_each$((await ff_core_Path.Path_list$(self_, $task)), (async (file_, $task) => {
-(await ff_core_Path.Path_copyTo$(self_, (await ff_core_Path.Path_add$(path_, (await ff_core_Path.Path_relativeTo$(file_, self_, $task)), $task)), $task))
+(await ff_core_Path.Path_copyTo$(self_, (await ff_core_Path.Path_slash$(path_, (await ff_core_Path.Path_relativeTo$(file_, self_, $task)), $task)), retries_, retryDelay_, $task))
 }), $task))
 } else {
 (await ff_core_Path.Path_writeStream$(path_, (await ff_core_Path.Path_readStream$(self_, $task)), false, $task))
 }
 }
 
-export async function Path_createDirectory$(self_, recursive_ = false, $task) {
+export async function Path_createDirectory$(self_, createParentDirectories_ = false, $task) {
 
-            const fsPromises = import$2
-            await fsPromises.mkdir(self_, {recursive: recursive_})
+            const fsPromises = import$3
+            await fsPromises.mkdir(self_, {recursive: createParentDirectories_})
         
 }
 
 export async function Path_createSymlinkTo$(self_, path_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             await fsPromises.symlink(path_, self_)
         
 }
 
-export async function Path_delete$(self_, recursive_ = false, retries_ = 0, retryDelay_ = 100, $task) {
+export async function Path_delete$(self_, retries_ = 0, retryDelay_ = 100, $task) {
 
-            const fsPromises = import$2
-            await fsPromises.rm(self_, {recursive: recursive_, retries: retries_, retryDelay: retryDelay_})
+            const fsPromises = import$3
+            await fsPromises.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
         
 }
 
 export async function Path_truncate$(self_, length_ = 0, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             await fsPromises.truncate(self_, length_)
         
 }
 
 export async function Path_renameTo$(self_, path_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             await fsPromises.rename(self_, path_)
         
 }
 
 export async function Path_readText$(self_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             try {
                 return await fsPromises.readFile(self_, {encoding: 'UTF-8', signal: $task.controller.signal})
             } finally {
@@ -442,7 +427,7 @@ export async function Path_readText$(self_, $task) {
 
 export async function Path_writeText$(self_, text_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             try {
                 await fsPromises.writeFile(self_, text_, {encoding: 'UTF-8', signal: $task.controller.signal})
             } finally {
@@ -453,7 +438,7 @@ export async function Path_writeText$(self_, text_, $task) {
 
 export async function Path_appendText$(self_, text_, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             try {
                 await fsPromises.appendFile(self_, text_, {encoding: 'UTF-8', signal: $task.controller.signal})
             } finally {
@@ -476,14 +461,14 @@ export async function Path_appendBuffer$(self_, buffer_, $task) {
 
 export async function Path_readStream$(self_, $task) {
 
-            const fs = import$3
+            const fs = import$2
             return ff_core_FileSystem.internalReadStream_$(() => fs.createReadStream(self_))
         
 }
 
 export async function Path_writeStream$(self_, stream_, createOnly_ = false, $task) {
 
-            const fs = import$3
+            const fs = import$2
             let writeable = fs.createWriteStream(self_, {flags: createOnly_ ? 'wx' : 'w'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
@@ -505,7 +490,7 @@ export async function Path_writeStream$(self_, stream_, createOnly_ = false, $ta
 
 export async function Path_appendStream$(self_, stream_, $task) {
 
-            const fs = import$3
+            const fs = import$2
             let writeable = fs.createWriteStream(self_, {flags: 'a'})
             try {
                 await ff_core_Stream.Stream_each$(stream_, async buffer => {
@@ -527,21 +512,21 @@ export async function Path_appendStream$(self_, stream_, $task) {
 
 export async function Path_readHandle$(self_, alsoWrite_ = false, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             return await fsPromises.open(self_, alsoWrite_ ? 'r+' : 'r')
         
 }
 
 export async function Path_writeHandle$(self_, alsoRead_ = false, mustCreate_ = false, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             return await fsPromises.open(self_, (mustCreate_ ? 'wx' : 'w') + (alsoRead_ ? '+' : ''))
         
 }
 
 export async function Path_appendHandle$(self_, alsoRead_ = false, mustCreate_ = false, $task) {
 
-            const fsPromises = import$2
+            const fsPromises = import$3
             return await fsPromises.open(self_, (mustCreate_ ? 'wx' : 'w') + (alsoRead_ ? '+' : ''))
         
 }
