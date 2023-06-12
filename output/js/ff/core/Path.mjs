@@ -357,6 +357,7 @@ export async function Path_isSymbolicLink$(self_, $task) {
 export async function Path_isInside$(self_, path_, $task) {
 
             const path = import$0
+            if(path_ === '/') return true
             const childPath = path.resolve(self_)
             const parentPath = path.resolve(path_)
             return childPath.startsWith(parentPath + path.sep) || childPath === parentPath
