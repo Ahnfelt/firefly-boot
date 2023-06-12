@@ -59,7 +59,15 @@ extend self: Path {
                 return false;
             }
         """
-        
+                
+    isInside(path: Path): Bool
+        target node async """
+            import * as path from 'path'
+            const childPath = path.resolve(self_)
+            const parentPath = path.resolve(path_)
+            return childPath.startsWith(parentPath + path.sep) || childPath === parentPath
+        """
+
     size(): Int
         target node async """
             return (await fs.promises.stat(file)).size

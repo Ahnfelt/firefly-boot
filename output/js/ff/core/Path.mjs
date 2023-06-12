@@ -131,6 +131,10 @@ export function Path_isSymbolicLink(self_) {
 throw new Error('Function Path_isSymbolicLink is missing on this target in sync context.');
 }
 
+export function Path_isInside(self_, path_) {
+throw new Error('Function Path_isInside is missing on this target in sync context.');
+}
+
 export function Path_size(self_) {
 throw new Error('Function Path_size is missing on this target in sync context.');
 }
@@ -347,6 +351,15 @@ export async function Path_isSymbolicLink$(self_, $task) {
             } catch(e) {
                 return false;
             }
+        
+}
+
+export async function Path_isInside$(self_, path_, $task) {
+
+            const path = import$0
+            const childPath = path.resolve(self_)
+            const parentPath = path.resolve(path_)
+            return childPath.startsWith(parentPath + path.sep) || childPath === parentPath
         
 }
 
