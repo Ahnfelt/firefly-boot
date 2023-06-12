@@ -112,18 +112,6 @@ extend self: Path {
             return path.join(self_, relativePath_)
         """
 
-    normalize(): Path
-        target node sync """
-            import * as path from 'path'
-            return path.normalize(self_)
-        """
-
-    namespaced(): Path
-        target node sync """
-            import * as path from 'path'
-            return path.toNamespacedPath(self_)
-        """
-
     copyTo(path: Path): Unit {
         if(self.isDirectory()) {
             if(path.exists()) {path.delete()}
