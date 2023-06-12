@@ -63,6 +63,7 @@ extend self: Path {
     isInside(path: Path): Bool
         target node async """
             import * as path from 'path'
+            if(path_ === '/') return true
             const childPath = path.resolve(self_)
             const parentPath = path.resolve(path_)
             return childPath.startsWith(parentPath + path.sep) || childPath === parentPath
