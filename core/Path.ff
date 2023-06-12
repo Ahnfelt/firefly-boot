@@ -112,22 +112,22 @@ extend self: Path {
             return path.join(self_, relativePath_)
         """
 
-    copyTo(path: Path): Unit {
+    copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100): Unit {
         if(self.isDirectory()) {
-            if(path.exists()) {path.delete()}
+            if(path.exists()) {path.delete(retries, retryDelay)}
             path.createDirectory()
             self.list().each {file =>
-                self.copyTo(path.slash(file.relativeTo(self)))
+                self.copyTo(path.slash(file.relativeTo(self)), retries, retryDelay)
             }
         } else {
             path.writeStream(self.readStream())
         }
     }
 
-    createDirectory(recursive: Bool = False)
+    createDirectory(parentDirectories: Bool = False)
         target node async """
             import * as fsPromises from 'fs/promises'
-            await fsPromises.mkdir(self_, {recursive: recursive_})
+            await fsPromises.mkdir(self_, {recursive: parentDirectories_})
         """
 
     createSymlinkTo(path: Path)
@@ -136,10 +136,10 @@ extend self: Path {
             await fsPromises.symlink(path_, self_)
         """
 
-    delete(recursive: Bool = False, retries: Int = 0, retryDelay: Int = 100)
+    delete(retries: Int = 0, retryDelay: Int = 100)
         target node async """
             import * as fsPromises from 'fs/promises'
-            await fsPromises.rm(self_, {recursive: recursive_, retries: retries_, retryDelay: retryDelay_})
+            await fsPromises.rm(self_, {recursive: true, retries: retries_, retryDelay: retryDelay_})
         """
     
     truncate(length: Int = 0): Unit
