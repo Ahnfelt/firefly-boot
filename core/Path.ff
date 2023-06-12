@@ -124,10 +124,10 @@ extend self: Path {
         }
     }
 
-    createDirectory(parentDirectories: Bool = False)
+    createDirectory(createParentDirectories: Bool = False)
         target node async """
             import * as fsPromises from 'fs/promises'
-            await fsPromises.mkdir(self_, {recursive: parentDirectories_})
+            await fsPromises.mkdir(self_, {recursive: createParentDirectories_})
         """
 
     createSymlinkTo(path: Path)
