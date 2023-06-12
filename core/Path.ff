@@ -165,6 +165,16 @@ extend self: Path {
             import * as fsPromises from 'fs/promises'
             await fsPromises.rename(self_, path_)
         """
+        
+    size(): Int
+        target node async """
+            return (await fs.promises.stat(file)).size
+        """
+        
+    modified(): Instant
+        target node async """
+            return (await fs.promises.stat(file)).mtimeMs * 0.001
+        """
 
     readText(): String
         target node async """
