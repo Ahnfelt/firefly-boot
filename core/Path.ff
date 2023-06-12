@@ -2,14 +2,14 @@ capability Path {}
 
 extend self: Path {
 
-    checkAccess(checkRead: Bool = False, checkWrite: Bool = False, checkExecute: Bool = False): Bool
+    exists(checkReadable: Bool = False, checkWritable: Bool = False, checkExecutable: Bool = False): Bool
         target node async """
             import * as fs from 'fs'
             import * as fsPromises from 'fs/promises'
             const flags = 
-                (fs.constants.R_OK * checkRead_) | 
-                (fs.constants.W_OK * checkWrite_) | 
-                (fs.constants.X_OK * checkExecute_)
+                (fs.constants.R_OK * checkReadable_) | 
+                (fs.constants.W_OK * checkWritable_) | 
+                (fs.constants.X_OK * checkExecutable_)
             try {
                 await fsPromises.access(self_, flags === 0 ? fs.constants.F_OK : flags)
                 return true
@@ -17,7 +17,19 @@ extend self: Path {
                 return false
             }
         """
-    
+        
+    isReadable(): Bool {
+        self.exists(checkReadable = True)
+    }
+        
+    isWritable(): Bool {
+        self.exists(checkWritable = True)
+    }
+
+    isExecutable(): Bool {
+        self.exists(checkExecutable = True)
+    }
+
     isDirectory(): Bool
         target node async """
             import * as fsPromises from 'fs/promises'
@@ -114,7 +126,7 @@ extend self: Path {
 
     copyTo(path: Path, retries: Int = 0, retryDelay: Int = 100) {
         if(self.isDirectory()) {
-            if(path.checkAccess()) {path.delete(retries, retryDelay)}
+            if(path.exists()) {path.delete(retries, retryDelay)}
             path.createDirectory()
             self.list().each {file =>
                 self.copyTo(path.slash(file.relativeTo(self)), retries, retryDelay)

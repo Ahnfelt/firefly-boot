@@ -103,8 +103,20 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function Path_checkAccess(self_, checkRead_ = false, checkWrite_ = false, checkExecute_ = false) {
-throw new Error('Function Path_checkAccess is missing on this target in sync context.');
+export function Path_exists(self_, checkReadable_ = false, checkWritable_ = false, checkExecutable_ = false) {
+throw new Error('Function Path_exists is missing on this target in sync context.');
+}
+
+export function Path_isReadable(self_) {
+return ff_core_Path.Path_exists(self_, true, false, false)
+}
+
+export function Path_isWritable(self_) {
+return ff_core_Path.Path_exists(self_, false, true, false)
+}
+
+export function Path_isExecutable(self_) {
+return ff_core_Path.Path_exists(self_, false, false, true)
 }
 
 export function Path_isDirectory(self_) {
@@ -188,7 +200,7 @@ export function Path_slash(self_, relativePath_) {
 
 export function Path_copyTo(self_, path_, retries_ = 0, retryDelay_ = 100) {
 if(ff_core_Path.Path_isDirectory(self_)) {
-if(ff_core_Path.Path_checkAccess(path_, false, false, false)) {
+if(ff_core_Path.Path_exists(path_, false, false, false)) {
 ff_core_Path.Path_delete(path_, retries_, retryDelay_)
 };
 ff_core_Path.Path_createDirectory(path_, false);
@@ -268,14 +280,14 @@ export function Path_appendHandle(self_, alsoRead_ = false, mustCreate_ = false)
 throw new Error('Function Path_appendHandle is missing on this target in sync context.');
 }
 
-export async function Path_checkAccess$(self_, checkRead_ = false, checkWrite_ = false, checkExecute_ = false, $task) {
+export async function Path_exists$(self_, checkReadable_ = false, checkWritable_ = false, checkExecutable_ = false, $task) {
 
             const fs = import$2
             const fsPromises = import$3
             const flags = 
-                (fs.constants.R_OK * checkRead_) | 
-                (fs.constants.W_OK * checkWrite_) | 
-                (fs.constants.X_OK * checkExecute_)
+                (fs.constants.R_OK * checkReadable_) | 
+                (fs.constants.W_OK * checkWritable_) | 
+                (fs.constants.X_OK * checkExecutable_)
             try {
                 await fsPromises.access(self_, flags === 0 ? fs.constants.F_OK : flags)
                 return true
@@ -283,6 +295,18 @@ export async function Path_checkAccess$(self_, checkRead_ = false, checkWrite_ =
                 return false
             }
         
+}
+
+export async function Path_isReadable$(self_, $task) {
+return (await ff_core_Path.Path_exists$(self_, true, false, false, $task))
+}
+
+export async function Path_isWritable$(self_, $task) {
+return (await ff_core_Path.Path_exists$(self_, false, true, false, $task))
+}
+
+export async function Path_isExecutable$(self_, $task) {
+return (await ff_core_Path.Path_exists$(self_, false, false, true, $task))
 }
 
 export async function Path_isDirectory$(self_, $task) {
@@ -367,7 +391,7 @@ throw new Error('Function Path_slash is missing on this target in async context.
 
 export async function Path_copyTo$(self_, path_, retries_ = 0, retryDelay_ = 100, $task) {
 if((await ff_core_Path.Path_isDirectory$(self_, $task))) {
-if((await ff_core_Path.Path_checkAccess$(path_, false, false, false, $task))) {
+if((await ff_core_Path.Path_exists$(path_, false, false, false, $task))) {
 (await ff_core_Path.Path_delete$(path_, retries_, retryDelay_, $task))
 };
 (await ff_core_Path.Path_createDirectory$(path_, false, $task));
