@@ -55,7 +55,7 @@ extend self: Parser {
         panic(message + " " + at.show())
     }
 
-    previous(): Token {
+    behind(): Token {
         if(self.offset == 0) {self.current()} else {
             if(self.offset - 1 < self.tokens.size()) {self.tokens.grab(self.offset - 1)} else {self.end}
         }
@@ -220,10 +220,8 @@ extend self: Parser {
     }
 
     parseLetDefinition(): DLet {
+        if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
         let nameToken = self.skip(LLower)
-        if(self.lspHook.trackSymbols) {
-            self.lspHook.emit(ParseSymbolBegin)
-        }
         let variableType = if(self.current().is(LColon)) {
             self.skip(LColon)
             self.parseType()
@@ -237,22 +235,33 @@ extend self: Parser {
                 kind = 14
                 selectionStart = nameToken.at()
                 start = nameToken.at()
-                end = self.previous().end()
+                end = self.behind().end()
             ))
         }
         retult
     }
 
     parseFunctionDefinition(member: Bool): DFunction {
+        if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
         let signature = self.parseSignature(member)
         let body = if(self.current().rawIs("{")) {self.parseLambda(signature.parameters.size())}
         let targets = self.parseTargets(signature.parameters.size())
         let bestTarget = findBestTarget(self.targetIsNode, body, targets)
-        DFunction(
+        let result = DFunction(
             signature.at
             signature
             bestTarget
         )
+        if(self.lspHook.trackSymbols) {
+            self.lspHook.emit(ParseSymbolEnd(
+                name = signature.name
+                kind = 12
+                selectionStart = signature.at
+                start = signature.at
+                end = self.behind().end()
+            ))
+        }
+        result
     }
 
     parseTargets(parameterCount: Int): ParsedTargets {
@@ -964,7 +973,7 @@ extend self: Parser {
                 kind = kind
                 selectionStart = nameToken.at()
                 start = mutableToken.at()
-                end = self.previous().end()                
+                end = self.behind().end()                
             ))
         }
         let body = if(self.currentIsSeparator(LSemicolon)) {
@@ -980,6 +989,7 @@ extend self: Parser {
         let at = self.current().at()
         let functions = Stack.make[DFunction]()
         while {self.current().rawIs("function")} {
+            if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
             let functionAt = self.rawSkip(LKeyword, "function").at()
             let signature = self.parseSignature(member = False)
             let body = if(self.lspHook.isEnabled() && !self.current().rawIs("{")) {
@@ -989,6 +999,15 @@ extend self: Parser {
                 self.parseLambda(defaultParameterCount = signature.parameters.size())
             }
             functions.push(DFunction(signature.at, signature, FireflyTarget(body)))
+            if(self.lspHook.trackSymbols) {
+                self.lspHook.emit(ParseSymbolEnd(
+                    name = signature.name
+                    kind = 12
+                    selectionStart = signature.at
+                    start = functionAt
+                    end = self.behind().end()                
+                ))
+            }            
             if(self.lspHook.isEnabled() && !self.currentIsSeparator(LSemicolon)) {} else {self.skipSeparator(LSemicolon)}
         }
         let body = self.parseStatements()
