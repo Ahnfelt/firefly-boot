@@ -74,6 +74,7 @@ class ResultHook {
     )
     ParseSymbolEnd(
         at: Location
+        name: String
     )
     ParseArgumentHook(
         callAt: Location

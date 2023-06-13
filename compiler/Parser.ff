@@ -55,6 +55,12 @@ extend self: Parser {
         panic(message + " " + at.show())
     }
 
+    previous(): Token {
+        if(self.offset == 0) {self.current()} else {
+            if(self.offset - 1 < self.tokens.size()) {self.tokens.grab(self.offset - 1)} else {self.end}
+        }
+    }
+
     current(): Token {
         if(self.offset < self.tokens.size()) {self.tokens.grab(self.offset)} else {self.end}
     }
@@ -226,7 +232,7 @@ extend self: Parser {
         let value = self.parseTerm()
         let retult = DLet(nameToken.at(), nameToken.raw(), variableType, value)
         if(self.lspHook.trackSymbols) {
-            self.lspHook.emit(ParseSymbolEnd(self.current().at()))
+            self.lspHook.emit(ParseSymbolEnd(self.previous().end(), nameToken.raw()))
         }
         retult
     }
@@ -948,17 +954,16 @@ extend self: Parser {
         } else:
         self.skip(LAssign)
         let value = self.parseTerm()
+        if(self.lspHook.trackSymbols) {
+            self.lspHook.emit(ParseSymbolEnd(self.previous().end(), nameToken.raw()))
+        }
         let body = if(self.currentIsSeparator(LSemicolon)) {
             self.skipSeparator(LSemicolon)
             self.parseStatements()
         } else {
             EVariant(keywordToken.at(), "Unit", [], None)
         }
-        let result = ELet(nameToken.at(), mutable, nameToken.raw(), valueType, value, body)
-        if(self.lspHook.trackSymbols) {
-            self.lspHook.emit(ParseSymbolEnd(self.current().at()))
-        }
-        result
+        ELet(nameToken.at(), mutable, nameToken.raw(), valueType, value, body)
     }
 
     parseFunctions(): Term {

@@ -18,6 +18,10 @@ extend token: Token {
         Location(token.file, token.startLine, (token.startOffset - token.startLineOffset) + 1)
     }
 
+    end(): Location {
+        Location(token.file, token.startLine, (token.stopOffset - token.startLineOffset) + 1)
+    }
+
     raw(): String {
         token.code.slice(token.startOffset, token.stopOffset)
     }

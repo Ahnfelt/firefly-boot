@@ -45,33 +45,23 @@ handleDocumentSymbol(system: NodeSystem, lspHook: LspHook): JsValue {
 }
 
 showHook(lspHook: ResultHook): String {
-    | ParseSymbolBegin(at, name, kind) => "ParseSymbolBegin("+Show.show(at)+", "+Show.show(name)+", "+Show.show(kind)+")"
-    | ParseSymbolEnd(at) => "ParseSymbolEnd("+Show.show(at)+")"
-    | InferArgumentHook(unification, environment, isCopy, callAt, callName, parameters, arguments, argumentIndex) => "InferArgumentHook"
-    | InferFunctionDefinitionHook(unification, environment, definition, missing) => "InferFunctionDefinitionHook"
-    | InferLambdaStartHook(unification, environment, lambdaType) => "InferLambdaStartHook"
-    | InferLookupHook(unification, environment, expected, selfVariable, symbol, instantiated) => "InferLookupHook"
-    | InferParameterHook(unification, environment, parameter, missing) => "InferParameterHook"
-    | InferPatternHook(unification, environment, expected, pattern) => "InferPatternHook"
-    | InferRecordFieldHook(unification, environment, expected, recordType, fieldName) => "InferRecordFieldHook"
-    | InferSequentialStartHook(unification, term, missing) => "InferSequentialStartHook"
-    | InferTermHook(unification, environment, expected, term, recordType, missing) => "InferTermHook"
-    | ParseArgumentHook(callAt, argumentIndex, parameterName) => "ParseArgumentHook"
-    | ParseSymbolBegin(at, name, kind) => "ParseSymbolBegin"
-    | ParseSymbolEnd(at) => "ParseSymbolDone"
-    | ResolveConstraintHook(symbol, constrant) => "ResolveConstraintHook"
-    | ResolveSignatureHook(signature) => "ResolveSignatureHook"
-    | ResolveSymbolHook(symbol, annotation) => "ResolveSymbolHook"
-    | ResolveTypeHook(types, typeGenerics, symbol, explicitType) => "ResolveTypeHook"
-    | ResolveVariantFieldHook(symbol, type, commonField) => "ResolveVariantFieldHook"
+    //| ParseSymbolBegin(at, name, kind) => "ParseSymbolBegin("+Show.show(at)+", "+Show.show(name)+", "+Show.show(kind)+")"
+    //| ParseSymbolEnd(at, name) => "ParseSymbolEnd("+Show.show(at)+", "+Show.show(name)+")"
+    | ParseSymbolBegin(at, name, kind) => at.file + " " + at.line + ":" + at.column + " " + name + "-( "
+    | ParseSymbolEnd(at, name) => at.file + " " + at.line + ":" + at.column + " )-" + name
+    | _ => "other"
 }
+
+a = 42
 
 x = do {
     let y1 = do {
-        1
+        let z1 = 1
+        z1
     }
-    let y2 = do {
-        2
+    mutable y2 = do {
+        let z2 = 2
+        z2
     }
     y1 + y2
 }
