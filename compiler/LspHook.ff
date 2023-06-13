@@ -6,18 +6,20 @@ class LspHook(
     at: Location
     definedAt: Location
     insertIdentifier: Bool
+    trackSymbols: Bool
     stackOfResults: Stack[ResultHook]
 )
 
 disabled(): LspHook {
-    make(None, None, False)
+    make(None, None, False, False)
 }
 
-make(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool): LspHook {
+make(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool, trackSymbols: Bool): LspHook {
     LspHook( // Default dummy values instead of Option[Location] to speed up location hit check
         at = at.else {Location("^lsp", -7, -7)}
         definedAt = definedAt.else {Location("^lsp", -7, -7)}
         insertIdentifier = insertIdentifier
+        trackSymbols = trackSymbols
         stackOfResults = [].toStack()
     )
 }
@@ -25,7 +27,8 @@ make(at: Option[Location], definedAt: Option[Location], insertIdentifier: Bool):
 extend self: LspHook {
     isEnabled(): Bool {
         self.at.line != -7 || 
-        self.definedAt.line != -7
+        self.definedAt.line != -7 ||
+        self.trackSymbols
     }
     isAt(at: Location): Bool {
         self.at.line == at.line &&
@@ -64,6 +67,14 @@ data SymbolHook(
 class Box[T](mutable value: T)
 
 class ResultHook {
+    ParseSymbolBegin(
+        at: Location
+        name: String
+        kind: Int
+    )
+    ParseSymbolEnd(
+        at: Location
+    )
     ParseArgumentHook(
         callAt: Location
         argumentIndex: Int

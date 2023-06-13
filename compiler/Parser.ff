@@ -215,13 +215,20 @@ extend self: Parser {
 
     parseLetDefinition(): DLet {
         let nameToken = self.skip(LLower)
+        if(self.lspHook.trackSymbols) {
+            self.lspHook.emit(ParseSymbolBegin(nameToken.at(), nameToken.raw(), 14))
+        }
         let variableType = if(self.current().is(LColon)) {
             self.skip(LColon)
             self.parseType()
         } else {self.freshUnificationVariable(nameToken.at())}
         self.skip(LAssign)
         let value = self.parseTerm()
-        DLet(nameToken.at(), nameToken.raw(), variableType, value)
+        let retult = DLet(nameToken.at(), nameToken.raw(), variableType, value)
+        if(self.lspHook.trackSymbols) {
+            self.lspHook.emit(ParseSymbolEnd(self.current().at()))
+        }
+        retult
     }
 
     parseFunctionDefinition(member: Bool): DFunction {
@@ -923,9 +930,14 @@ extend self: Parser {
     }
 
     parseLet(): Term {
-        let mutable = self.current().rawIs("mutable")
+        let mutableToken = self.current()
+        let mutable = mutableToken.rawIs("mutable")
         let keywordToken = if(mutable) {self.rawSkip(LKeyword, "mutable")} else {self.rawSkip(LKeyword, "let")}
         let nameToken = self.skip(LLower)
+        if(self.lspHook.trackSymbols) {
+            let kind = if(mutable) {13} else {14}
+            self.lspHook.emit(ParseSymbolBegin(mutableToken.at(), nameToken.raw(), kind))
+        }
         let valueType = if(!self.current().is(LColon)) {self.freshUnificationVariable(nameToken.at())} else {
             self.skip(LColon)
             self.parseType()
@@ -942,7 +954,11 @@ extend self: Parser {
         } else {
             EVariant(keywordToken.at(), "Unit", [], None)
         }
-        ELet(nameToken.at(), mutable, nameToken.raw(), valueType, value, body)
+        let result = ELet(nameToken.at(), mutable, nameToken.raw(), valueType, value, body)
+        if(self.lspHook.trackSymbols) {
+            self.lspHook.emit(ParseSymbolEnd(self.current().at()))
+        }
+        result
     }
 
     parseFunctions(): Term {

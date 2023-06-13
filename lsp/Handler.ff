@@ -10,6 +10,7 @@ import LspHook from ff:compiler
 import HoverHandler
 import CompletionHandler
 import SignatureHelpHandler
+import SymbolHandler
 
 capability Handler(
     mutable rootUri: Option[String]
@@ -57,6 +58,7 @@ extend self: Handler {
         method.{
             | "initialize" => self.handleInitialize(system.js(), parameters)
             | "textDocument/diagnostic" => self.handleDiagnostic(system, parameters)
+            | "textDocument/documentSymbol" => self.handleDocumentSymbol(system, parameters)
             | "textDocument/completion" => self.handleCompletion(system, parameters)
             | "textDocument/signatureHelp" => self.handleSignatureHelp(system, parameters)
             | "textDocument/hover" => 
@@ -129,6 +131,7 @@ extend self: Handler {
                     .with("interFileDependencies", True)
                     .with("workspaceDiagnostics", False)
                 )
+                .with("documentSymbolProvider", True)
                 .with("completionProvider", js.object()
                     .with("triggerCharacters", js.array([".", " ", "("].map {js.value(_)}))
                     .with("allCommitCharacters", js.array([";"].map {js.value(_)}))
@@ -182,6 +185,27 @@ extend self: Handler {
         Result(o.toJson())
     }
 
+    handleDocumentSymbol(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
+        let js = system.js()
+        let uri = parameters.grab("textDocument").get("uri").grabString()
+        let absolutePath = FileSystem.urlToPath(uri)
+        let path = FileSystem.relative(system.files().workingDirectory(), absolutePath)
+        let fixedPath = path.replace("\\", "/")
+        let lspHook = LspHook.make(at = None, definedAt = None, insertIdentifier = False, trackSymbols = True)
+        try {
+            let code = self.virtualFiles.get(fixedPath).else {system.files().readText(fixedPath)}
+            let tokens = Tokenizer.tokenize(fixedPath, code, None, True)
+            let parser = Parser.make(PackagePair("script", "script"), fixedPath, tokens, False, lspHook)
+            parser.parseModuleWithPackageInfo()
+            Unit // Think of a way to avoid writing this
+        } catch {| CompileError(at, message), error =>
+            Log.trace("handleDocumentSymbol parse error: " + message)
+        } grab()
+
+        let o = SymbolHandler.handleDocumentSymbol(system, lspHook)
+        Result(o.toJson())        
+    }
+
     handleDidChange(system: NodeSystem, parameters: Map[String, JsValue]): Unit {
         let js = system.js()
         let uri = parameters.grab("textDocument").get("uri").grabString()
@@ -206,7 +230,7 @@ extend self: Handler {
     }
 
     handleHover(system: NodeSystem, targetAt: Location, goToDefinition: Bool): ResultOrError {
-        let lspHook = LspHook.make(at = Some(targetAt), definedAt = None, insertIdentifier = False)
+        let lspHook = LspHook.make(at = Some(targetAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, lspHook, True)
         } catch {| CompileError(at, message), error =>
@@ -222,7 +246,7 @@ extend self: Handler {
 
     handleCompletion(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let completionAt = self.findTokenFromParameters(system, parameters)
-        let lspHook = LspHook.make(at = Some(completionAt), definedAt = None, insertIdentifier = True)
+        let lspHook = LspHook.make(at = Some(completionAt), definedAt = None, insertIdentifier = True, trackSymbols = False)
         try {
             Builder.check(system, ".", completionAt.file, self.virtualFiles, lspHook, True)
         } catch {| CompileError(at, message), error =>
@@ -234,7 +258,7 @@ extend self: Handler {
 
     handleSignatureHelp(system: NodeSystem, parameters: Map[String, JsValue]): ResultOrError {
         let cursorAt = self.findLocationFromParameters(system, parameters)
-        let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False)
+        let lspHook = LspHook.make(at = Some(cursorAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         try {
             let code = self.virtualFiles.get(cursorAt.file).else {system.files().readText(cursorAt.file)}
             let tokens = Tokenizer.tokenize(cursorAt.file, code, None, True)
@@ -256,7 +280,7 @@ extend self: Handler {
             } => 
                 Some(SignatureHelpHandler.pickActiveParameter(help, h.argumentIndex, h.parameterName))
             | ParseArgumentHook h => 
-                let callLspHook = LspHook.make(at = Some(h.callAt), definedAt = None, insertIdentifier = False)
+                let callLspHook = LspHook.make(at = Some(h.callAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
                 try {
                     Builder.check(system, ".", cursorAt.file, self.virtualFiles, callLspHook, True)
                 } catch {| CompileError(at, message), error =>
@@ -315,7 +339,7 @@ extend self: Handler {
     }
 
     findReferences(system: NodeSystem, targetAt: Location, local: Bool): Option[List[TokenLocation]] {
-        let temporaryLspHook = LspHook.make(at = Some(targetAt), definedAt = None, insertIdentifier = False)
+        let temporaryLspHook = LspHook.make(at = Some(targetAt), definedAt = None, insertIdentifier = False, trackSymbols = False)
         try {
             Builder.check(system, ".", targetAt.file, self.virtualFiles, temporaryLspHook, True)
         } catch {| CompileError(at, message), error =>
@@ -343,7 +367,7 @@ extend self: Handler {
         definedAtList.first().{
             | Some(definedAt) =>
                 Log.trace("handleReferences definedAt: " + Show.show(definedAt))
-                let lspHook = LspHook.make(at = None, definedAt = Some(definedAt), insertIdentifier = False)
+                let lspHook = LspHook.make(at = None, definedAt = Some(definedAt), insertIdentifier = False, trackSymbols = False)
                 try {
                     let path = if(local) {targetAt.file} else {FileSystem.urlToPath(self.rootUri.grab())}
                     Builder.check(system, ".", path, self.virtualFiles, lspHook, True)

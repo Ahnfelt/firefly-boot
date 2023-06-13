@@ -1,0 +1,77 @@
+import LspHook from ff:compiler
+import Syntax from ff:compiler
+
+class Symbol(
+    at: Location
+    name: String
+    kind: Int
+    end: Option[Location]
+    children: List[Symbol]
+)
+
+/*
+readSymbols(hooks: List[ResultHook]): List[Symbol] {
+    hooks.{
+        | [] => []
+        | [ParseSymbolBegin(at, name, kind), rest] => 
+            let first = readSymbol(hooks)
+            let rest = readSymbols(first.second)
+            [first.first, ...rest]
+        | [ParseSymbolEnd(_), ...rest] => throw("readSymbols, unexpected ParseSymbolEnd")
+        | [_, ...rest] => throw("readSymbols, unexpected symbol")
+        }
+}
+
+readSymbol(
+    at: Location
+    name: String
+    kind: Int    
+    hooks: List[ResultHook]
+): Pair[Symbol, List[ResultHook]] {
+    hooks.{
+        | [] throw("readSymbol empty list")
+        | [ParseSymbolBegin(_, _, _), ...rest] => 
+        | [ParseSymbolEnd(at, name, kind), ...rest] => 
+    }
+
+}
+*/
+
+handleDocumentSymbol(system: NodeSystem, lspHook: LspHook): JsValue {
+    lspHook.results().each {hook =>
+        Log.trace(showHook(hook))
+    }
+    system.js().array([])
+}
+
+showHook(lspHook: ResultHook): String {
+    | ParseSymbolBegin(at, name, kind) => "ParseSymbolBegin("+Show.show(at)+", "+Show.show(name)+", "+Show.show(kind)+")"
+    | ParseSymbolEnd(at) => "ParseSymbolEnd("+Show.show(at)+")"
+    | InferArgumentHook(unification, environment, isCopy, callAt, callName, parameters, arguments, argumentIndex) => "InferArgumentHook"
+    | InferFunctionDefinitionHook(unification, environment, definition, missing) => "InferFunctionDefinitionHook"
+    | InferLambdaStartHook(unification, environment, lambdaType) => "InferLambdaStartHook"
+    | InferLookupHook(unification, environment, expected, selfVariable, symbol, instantiated) => "InferLookupHook"
+    | InferParameterHook(unification, environment, parameter, missing) => "InferParameterHook"
+    | InferPatternHook(unification, environment, expected, pattern) => "InferPatternHook"
+    | InferRecordFieldHook(unification, environment, expected, recordType, fieldName) => "InferRecordFieldHook"
+    | InferSequentialStartHook(unification, term, missing) => "InferSequentialStartHook"
+    | InferTermHook(unification, environment, expected, term, recordType, missing) => "InferTermHook"
+    | ParseArgumentHook(callAt, argumentIndex, parameterName) => "ParseArgumentHook"
+    | ParseSymbolBegin(at, name, kind) => "ParseSymbolBegin"
+    | ParseSymbolEnd(at) => "ParseSymbolDone"
+    | ResolveConstraintHook(symbol, constrant) => "ResolveConstraintHook"
+    | ResolveSignatureHook(signature) => "ResolveSignatureHook"
+    | ResolveSymbolHook(symbol, annotation) => "ResolveSymbolHook"
+    | ResolveTypeHook(types, typeGenerics, symbol, explicitType) => "ResolveTypeHook"
+    | ResolveVariantFieldHook(symbol, type, commonField) => "ResolveVariantFieldHook"
+}
+
+x = do {
+    let y1 = do {
+        1
+    }
+    let y2 = do {
+        2
+    }
+    y1 + y2
+}
