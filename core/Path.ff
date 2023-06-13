@@ -60,7 +60,7 @@ extend self: Path {
             }
         """
 
-    isInside(path: Path): Bool
+    isInsideOf(path: Path): Bool
         target node async """
             import * as path from 'path'
             if(path_ === '/') return true
