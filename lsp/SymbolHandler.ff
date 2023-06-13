@@ -64,34 +64,20 @@ locationsToLspRange(js: JsSystem, start: Location, end: Location): JsValue {
 }
 
 handleDocumentSymbol(system: NodeSystem, lspHook: LspHook): JsValue {
-    lspHook.results().each {Log.trace(showHook(_))}
+    //lspHook.results().each {Log.trace(showHook(_))}
     let symbols = readAllSymbols(lspHook.results())
-    symbols.each {Log.show(_)}
+    //symbols.each {Log.show(_)}
     system.js().array(symbols.map {symbolToLsp(system.js(), _)})
 }
 
 showHook(lspHook: ResultHook): String {
-    //| ParseSymbolBegin(at, name, kind) => "ParseSymbolBegin("+Show.show(at)+", "+Show.show(name)+", "+Show.show(kind)+")"
-    //| ParseSymbolEnd(at, name) => "ParseSymbolEnd("+Show.show(at)+", "+Show.show(name)+")"
-    | ParseSymbolBegin => "("
-    | ParseSymbolEnd(name, kind, symbolStart, selectionStart, selectionEnd) => ") " + name + " " + showPosition(selectionStart) + " - " + showPosition(selectionEnd)
+    | ParseSymbolBegin => "ParseSymbolBegin"
+    | ParseSymbolEnd(name, kind, symbolStart, selectionStart, selectionEnd) => "ParseSymbolEnd("+Show.show(name)+", "+Show.show(kind)+")"
+    //| ParseSymbolBegin => "("
+    //| ParseSymbolEnd(name, kind, symbolStart, selectionStart, selectionEnd) => ") " + name + " " + showPosition(selectionStart) + " - " + showPosition(selectionEnd)
     | _ => "other"
 }
 
 showPosition(at: Location): String {
     at.line + ":" + at.column
-}
-
-a = 42
-
-x = do {
-    let y1 = do {
-        let z1 = 1
-        z1
-    }
-    mutable y2 = do {
-        let z2 = 2
-        z2
-    }
-    y1 + y2
 }
