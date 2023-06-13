@@ -2,15 +2,15 @@ newtype Char(codeUnit: Int)
 
 extend self: Char {
 
-    isAsciiLetter(): Bool { self.isAsciiUpper() || self.isAsciiLower() }
+    isAsciiLetter(): Bool {self.isAsciiUpper() || self.isAsciiLower()}
 
-    isAsciiLetterOrDigit(): Bool { self.isAsciiLetter() || self.isAsciiDigit() }
+    isAsciiLetterOrDigit(): Bool {self.isAsciiLetter() || self.isAsciiDigit()}
 
-    isAsciiUpper(): Bool { self >= 'A' && self <= 'Z' }
+    isAsciiUpper(): Bool {self >= 'A' && self <= 'Z'}
 
-    isAsciiLower(): Bool { self >= 'a' && self <= 'z' }
+    isAsciiLower(): Bool {self >= 'a' && self <= 'z'}
 
-    isAsciiDigit(): Bool { self >= '0' && self <= '9' }
+    isAsciiDigit(): Bool {self >= '0' && self <= '9'}
 
     toString(): String
         target js sync "return String.fromCharCode(self_)"
