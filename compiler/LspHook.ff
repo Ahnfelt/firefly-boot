@@ -67,14 +67,13 @@ data SymbolHook(
 class Box[T](mutable value: T)
 
 class ResultHook {
-    ParseSymbolBegin(
-        at: Location
+    ParseSymbolBegin
+    ParseSymbolEnd(
         name: String
         kind: Int
-    )
-    ParseSymbolEnd(
-        at: Location
-        name: String
+        selectionStart: Location
+        start: Location
+        end: Location
     )
     ParseArgumentHook(
         callAt: Location

@@ -1,55 +1,85 @@
 import LspHook from ff:compiler
 import Syntax from ff:compiler
 
-class Symbol(
-    at: Location
+data Symbol(
     name: String
     kind: Int
-    end: Option[Location]
+    selectionStart: Location
+    start: Location
+    end: Location
     children: List[Symbol]
 )
 
-/*
-readSymbols(hooks: List[ResultHook]): List[Symbol] {
-    hooks.{
-        | [] => []
-        | [ParseSymbolBegin(at, name, kind), rest] => 
-            let first = readSymbol(hooks)
-            let rest = readSymbols(first.second)
-            [first.first, ...rest]
-        | [ParseSymbolEnd(_), ...rest] => throw("readSymbols, unexpected ParseSymbolEnd")
-        | [_, ...rest] => throw("readSymbols, unexpected symbol")
+class Result[T](
+    result: T
+    remaining: List[ResultHook]
+)
+
+data ReadSymbolsError()
+
+readAllSymbols(hooks: List[ResultHook]): List[Symbol]  {
+    let result = readSymbols(hooks)
+    if(!result.remaining.isEmpty()) {throw(ReadSymbolsError())}
+    result.result
+}
+
+readSymbols(hooks: List[ResultHook]): Result[List[Symbol]]  {
+    | [ParseSymbolBegin, ...rest] => 
+        let symbol = readSymbol(rest)
+        let symbols = readSymbols(symbol.remaining)
+        Result([symbol.result, ...symbols.result], symbols.remaining)
+    | _ => Result([], hooks)
+}
+
+readSymbol(hooks: List[ResultHook]): Result[Symbol] {
+    let children = readSymbols(hooks)
+    children.remaining.{
+        | [ParseSymbolEnd(name, kind, selectionStart, start, end), ...rest] => 
+            let symbol = Symbol(name, kind, selectionStart, start, end, children.result)
+            Result(symbol, rest)
+        | _ => throw(ReadSymbolsError())
         }
 }
 
-readSymbol(
-    at: Location
-    name: String
-    kind: Int    
-    hooks: List[ResultHook]
-): Pair[Symbol, List[ResultHook]] {
-    hooks.{
-        | [] throw("readSymbol empty list")
-        | [ParseSymbolBegin(_, _, _), ...rest] => 
-        | [ParseSymbolEnd(at, name, kind), ...rest] => 
-    }
-
+symbolToLsp(js: JsSystem, symbol: Symbol): JsValue {
+    let symbolEnd = symbol.selectionStart.Location(column = symbol.selectionStart.column + symbol.name.size())
+    js.object()
+        .with("name", symbol.name)
+        .with("kind", symbol.kind)
+        .with("range", locationsToLspRange(js, symbol.start, symbol.end))
+        .with("selectionRange", locationsToLspRange(js, symbol.selectionStart, symbolEnd))
+        .with("children", js.array(symbol.children.map {symbolToLsp(js, _)}))
 }
-*/
+
+locationsToLspRange(js: JsSystem, start: Location, end: Location): JsValue {
+    js.object()
+        .with("start", js.object()
+            .with("line", start.line - 1)
+            .with("character", start.column - 1)
+        )
+        .with("end", js.object()
+            .with("line", end.line - 1)
+            .with("character", end.column - 1)
+        )
+}
 
 handleDocumentSymbol(system: NodeSystem, lspHook: LspHook): JsValue {
-    lspHook.results().each {hook =>
-        Log.trace(showHook(hook))
-    }
-    system.js().array([])
+    lspHook.results().each {Log.trace(showHook(_))}
+    let symbols = readAllSymbols(lspHook.results())
+    symbols.each {Log.show(_)}
+    system.js().array(symbols.map {symbolToLsp(system.js(), _)})
 }
 
 showHook(lspHook: ResultHook): String {
     //| ParseSymbolBegin(at, name, kind) => "ParseSymbolBegin("+Show.show(at)+", "+Show.show(name)+", "+Show.show(kind)+")"
     //| ParseSymbolEnd(at, name) => "ParseSymbolEnd("+Show.show(at)+", "+Show.show(name)+")"
-    | ParseSymbolBegin(at, name, kind) => at.file + " " + at.line + ":" + at.column + " " + name + "-( "
-    | ParseSymbolEnd(at, name) => at.file + " " + at.line + ":" + at.column + " )-" + name
+    | ParseSymbolBegin => "("
+    | ParseSymbolEnd(name, kind, symbolStart, selectionStart, selectionEnd) => ") " + name + " " + showPosition(selectionStart) + " - " + showPosition(selectionEnd)
     | _ => "other"
+}
+
+showPosition(at: Location): String {
+    at.line + ":" + at.column
 }
 
 a = 42

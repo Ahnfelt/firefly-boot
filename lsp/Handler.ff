@@ -479,5 +479,4 @@ extend self: Handler {
                 .with("character", tokenLocation.endColumn - 1)
             )
     }
-
 }

@@ -222,7 +222,7 @@ extend self: Parser {
     parseLetDefinition(): DLet {
         let nameToken = self.skip(LLower)
         if(self.lspHook.trackSymbols) {
-            self.lspHook.emit(ParseSymbolBegin(nameToken.at(), nameToken.raw(), 14))
+            self.lspHook.emit(ParseSymbolBegin)
         }
         let variableType = if(self.current().is(LColon)) {
             self.skip(LColon)
@@ -232,7 +232,13 @@ extend self: Parser {
         let value = self.parseTerm()
         let retult = DLet(nameToken.at(), nameToken.raw(), variableType, value)
         if(self.lspHook.trackSymbols) {
-            self.lspHook.emit(ParseSymbolEnd(self.previous().end(), nameToken.raw()))
+            self.lspHook.emit(ParseSymbolEnd(
+                name = nameToken.raw()
+                kind = 14
+                selectionStart = nameToken.at()
+                start = nameToken.at()
+                end = self.previous().end()
+            ))
         }
         retult
     }
@@ -936,14 +942,11 @@ extend self: Parser {
     }
 
     parseLet(): Term {
+        if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
         let mutableToken = self.current()
         let mutable = mutableToken.rawIs("mutable")
         let keywordToken = if(mutable) {self.rawSkip(LKeyword, "mutable")} else {self.rawSkip(LKeyword, "let")}
         let nameToken = self.skip(LLower)
-        if(self.lspHook.trackSymbols) {
-            let kind = if(mutable) {13} else {14}
-            self.lspHook.emit(ParseSymbolBegin(mutableToken.at(), nameToken.raw(), kind))
-        }
         let valueType = if(!self.current().is(LColon)) {self.freshUnificationVariable(nameToken.at())} else {
             self.skip(LColon)
             self.parseType()
@@ -955,7 +958,14 @@ extend self: Parser {
         self.skip(LAssign)
         let value = self.parseTerm()
         if(self.lspHook.trackSymbols) {
-            self.lspHook.emit(ParseSymbolEnd(self.previous().end(), nameToken.raw()))
+            let kind = if(mutable) {13} else {14}
+            self.lspHook.emit(ParseSymbolEnd(
+                name = nameToken.raw()
+                kind = kind
+                selectionStart = nameToken.at()
+                start = mutableToken.at()
+                end = self.previous().end()                
+            ))
         }
         let body = if(self.currentIsSeparator(LSemicolon)) {
             self.skipSeparator(LSemicolon)
