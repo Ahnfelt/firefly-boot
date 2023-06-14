@@ -91,8 +91,8 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 // type LspHook
-export function LspHook(at_, definedAt_, insertIdentifier_, stackOfResults_) {
-return {at_, definedAt_, insertIdentifier_, stackOfResults_};
+export function LspHook(at_, definedAt_, insertIdentifier_, trackSymbols_, stackOfResults_) {
+return {at_, definedAt_, insertIdentifier_, trackSymbols_, stackOfResults_};
 }
 
 // type SymbolHook
@@ -106,6 +106,13 @@ return {value_};
 }
 
 // type ResultHook
+const ParseSymbolBegin$ = {ParseSymbolBegin: true};
+export function ParseSymbolBegin() {
+return ParseSymbolBegin$;
+}
+export function ParseSymbolEnd(name_, kind_, selectionStart_, start_, end_) {
+return {ParseSymbolEnd: true, name_, kind_, selectionStart_, start_, end_};
+}
 export function ParseArgumentHook(callAt_, argumentIndex_, parameterName_) {
 return {ParseArgumentHook: true, callAt_, argumentIndex_, parameterName_};
 }
@@ -155,15 +162,15 @@ return {InferRecordFieldHook: true, unification_, environment_, expected_, recor
 
 
 export function disabled_() {
-return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false)
+return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false, false)
 }
 
-export function make_(at_, definedAt_, insertIdentifier_) {
+export function make_(at_, definedAt_, insertIdentifier_, trackSymbols_) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, ff_core_List.List_toStack(ff_core_List.Empty()))
+})), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack(ff_core_List.Empty()))
 }
 
 export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
@@ -171,15 +178,15 @@ return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (
 }
 
 export async function disabled_$($c) {
-return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false)
+return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false, false)
 }
 
-export async function make_$(at_, definedAt_, insertIdentifier_, $c) {
+export async function make_$(at_, definedAt_, insertIdentifier_, trackSymbols_, $c) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
-})), insertIdentifier_, ff_core_List.List_toStack(ff_core_List.Empty()))
+})), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack(ff_core_List.Empty()))
 }
 
 export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $c) {
@@ -187,7 +194,7 @@ return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (
 }
 
 export function LspHook_isEnabled(self_) {
-return ((self_.at_.line_ !== (-7)) || (self_.definedAt_.line_ !== (-7)))
+return (((self_.at_.line_ !== (-7)) || (self_.definedAt_.line_ !== (-7))) || self_.trackSymbols_)
 }
 
 export function LspHook_isAt(self_, at_) {
@@ -207,7 +214,7 @@ return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
 }
 
 export async function LspHook_isEnabled$(self_, $c) {
-return ((self_.at_.line_ !== (-7)) || (self_.definedAt_.line_ !== (-7)))
+return (((self_.at_.line_ !== (-7)) || (self_.definedAt_.line_ !== (-7))) || self_.trackSymbols_)
 }
 
 export async function LspHook_isAt$(self_, at_, $c) {

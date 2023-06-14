@@ -203,6 +203,10 @@ export function Token_at(token_) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
 }
 
+export function Token_end(token_) {
+return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.stopOffset_ - token_.startLineOffset_) + 1))
+}
+
 export function Token_raw(token_) {
 return ff_core_String.String_slice(token_.code_, token_.startOffset_, token_.stopOffset_)
 }
@@ -237,6 +241,10 @@ return (((ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.To
 
 export async function Token_at$(token_, $c) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
+}
+
+export async function Token_end$(token_, $c) {
+return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.stopOffset_ - token_.startLineOffset_) + 1))
 }
 
 export async function Token_raw$(token_, $c) {
