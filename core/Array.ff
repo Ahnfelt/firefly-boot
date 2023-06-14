@@ -74,7 +74,7 @@ extend self[T]: Array[T] {
                 ff_core_Try.internalThrowGrabException_()
             }
             let result = self_.slice();
-            result[index_] = await body_(result[index_], $c);
+            result[index_] = await body_(result[index_], $task);
             return result;
         """
 
@@ -130,13 +130,13 @@ extend self[T]: Array[T] {
         """
         target js async """
             for(let i = 0; i < self_.length; i++) {
-                await body_(self_[i], $c)
+                await body_(self_[i], $task)
             }
         """
 
     eachWhile(body: T => Bool): Unit
         target js sync "for(const value of self_) if(!body_(value)) break"
-        target js async "for(const value of self_) if(!await body_(value, $c)) break"
+        target js async "for(const value of self_) if(!await body_(value, $task)) break"
 
     all(body: T => Bool): Bool {
         mutable result = True
@@ -163,7 +163,7 @@ extend self[T]: Array[T] {
         target js async """
             let result = [];
             for(let i = self_.length - 1; i >= 0; i--) {
-                result.push(await body_(self_[i], $c));
+                result.push(await body_(self_[i], $task));
             }
             return result;
         """

@@ -36,7 +36,7 @@ extend self: String {
         """
         target js async """
             let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $c); i++);
+            for(; i < self_.length && await p_(self_.codePointAt(i), $task); i++);
             return self_.slice(i)
         """
 
@@ -48,7 +48,7 @@ extend self: String {
         """
         target js async """
             let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $c); i++);
+            for(; i < self_.length && await p_(self_.codePointAt(i), $task); i++);
             return self_.slice(0, i)
         """
 
@@ -147,7 +147,7 @@ extend self: String {
         """
         target js async """
             for(let i = 0; i < self_.length; i++) {
-                if(await body_(self_.charCodeAt(i), $c)) return true;
+                if(await body_(self_.charCodeAt(i), $task)) return true;
             }
             return false;
         """
@@ -161,7 +161,7 @@ extend self: String {
         """
         target js async """
             for(let i = 0; i < self_.length; i++) {
-                if(!await body_(self_.charCodeAt(i), $c)) return false;
+                if(!await body_(self_.charCodeAt(i), $task)) return false;
             }
             return true;
         """

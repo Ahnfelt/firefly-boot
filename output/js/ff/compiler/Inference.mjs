@@ -18,6 +18,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -38,13 +40,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -57,6 +59,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -72,6 +76,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -86,7 +92,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -136,19 +142,19 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function make_$(modules_, lspHook_, $c) {
+export async function make_$(modules_, lspHook_, $task) {
 return ff_compiler_Inference.Inference(ff_compiler_Unification.make_(modules_, ff_compiler_LspHook.LspHook_isEnabled(lspHook_)), ff_core_StringMap.make_(), lspHook_)
 }
 
-export async function fail_$(at_, message_, $c) {
+export async function fail_$(at_, message_, $task) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 
-export async function core_$(name_, $c) {
+export async function core_$(name_, $task) {
 return ((("ff:core/" + name_) + ".") + name_)
 }
 
-export async function constraintsToInstances_$(constraints_, $c) {
+export async function constraintsToInstances_$(constraints_, $task) {
 return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
 const typeName_ = (((_1) => {
 {
@@ -2132,7 +2138,7 @@ return instantiated_
 }))
 }
 
-export async function Inference_inferModule$(self_, module_, otherModules_, $c) {
+export async function Inference_inferModule$(self_, module_, otherModules_, $task) {
 const environment_ = ff_compiler_Environment.make_(module_, otherModules_, false);
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Inference.Inference_inferLetDefinition(self_, environment_, _w1)
@@ -2156,7 +2162,7 @@ const subsititution_ = ff_compiler_Substitution.Substitution(self_.unification_.
 return ff_compiler_Substitution.Substitution_substituteModule(subsititution_, result_)
 }
 
-export async function Inference_inferTraitDefinition$(self_, environment_, definition_, $c) {
+export async function Inference_inferTraitDefinition$(self_, environment_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -2167,7 +2173,7 @@ return
 }
 }
 
-export async function Inference_inferInstanceDefinition$(self_, environment_, definition_, $c) {
+export async function Inference_inferInstanceDefinition$(self_, environment_, definition_, $task) {
 if((ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_) && definition_.derived_)) {
 return definition_
 } else {
@@ -2196,7 +2202,7 @@ return
 }
 }
 
-export async function Inference_inferLetDefinition$(self_, environment_, definition_, $c) {
+export async function Inference_inferLetDefinition$(self_, environment_, definition_, $task) {
 const value_ = ff_compiler_Inference.Inference_inferTerm(self_, environment_, definition_.variableType_, definition_.value_);
 {
 const _1 = definition_;
@@ -2208,7 +2214,7 @@ return
 }
 }
 
-export async function Inference_inferExtendDefinition$(self_, environment_, definition_, $c) {
+export async function Inference_inferExtendDefinition$(self_, environment_, definition_, $task) {
 const selfParameter_ = ff_compiler_Syntax.Parameter(definition_.at_, false, definition_.name_, definition_.type_, ff_core_Option.None());
 const functions_ = ff_core_List.List_map(definition_.methods_, ((method_) => {
 const signature_ = (((_c) => {
@@ -2250,7 +2256,7 @@ return
 }
 }
 
-export async function Inference_inferFunctionDefinition$(self_, environment_, definition_, $c) {
+export async function Inference_inferFunctionDefinition$(self_, environment_, definition_, $task) {
 if(ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, definition_.at_)) {
 ff_compiler_LspHook.LspHook_emit(self_.lspHook_, ff_compiler_LspHook.InferFunctionDefinitionHook(self_.unification_, environment_, definition_, self_.missing_))
 };
@@ -2285,7 +2291,7 @@ return
 }))
 }
 
-export async function Inference_inferLambda$(self_, environment_, expected_, lambda_, $c) {
+export async function Inference_inferLambda$(self_, environment_, expected_, lambda_, $task) {
 const unitName_ = ff_compiler_Inference.core_("Unit");
 const returnsUnit_ = (((_1) => {
 {
@@ -2346,7 +2352,7 @@ return
 }
 }
 
-export async function Inference_inferMatchCase$(self_, environment_, expected_, case_, $c) {
+export async function Inference_inferMatchCase$(self_, environment_, expected_, case_, $task) {
 const parameterTypes_ = ff_core_List.List_map(case_.patterns_, ((_w1) => {
 return ff_compiler_Unification.Unification_freshUnificationVariable(self_.unification_, _w1.at_)
 }));
@@ -2403,7 +2409,7 @@ return
 }
 }
 
-export async function Inference_inferPattern$(self_, environment_, expected_, pattern_, $c) {
+export async function Inference_inferPattern$(self_, environment_, expected_, pattern_, $task) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 if((((_1) => {
 {
@@ -2529,7 +2535,7 @@ return
 }
 }
 
-export async function Inference_inferTerm$(self_, environment_, expected_, term_, $c) {
+export async function Inference_inferTerm$(self_, environment_, expected_, term_, $task) {
 const hookRecordTypeBox_ = (ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, term_.at_)
 ? ff_core_Option.Some((await (async function() {
 const box_ = ff_compiler_LspHook.Box(ff_core_Option.None());
@@ -3334,7 +3340,7 @@ return
 }
 }
 
-export async function Inference_inferAssignment$(self_, environment_, expected_, at_, operator_, value_, signature_, $c) {
+export async function Inference_inferAssignment$(self_, environment_, expected_, at_, operator_, value_, signature_, $task) {
 const t_ = signature_.returnType_;
 if(((operator_ === "+") || (operator_ === "-"))) {
 ff_compiler_Unification.Unification_unify(self_.unification_, at_, t_, ff_compiler_Syntax.TConstructor(at_, ff_compiler_Inference.core_("Int"), ff_core_List.Empty()))
@@ -3346,7 +3352,7 @@ ff_compiler_Unification.Unification_unify(self_.unification_, at_, expected_, ff
 return newValue_
 }
 
-export async function Inference_inferMethodCall$(self_, environment_, expected_, signature_, instantiation_, term_, record_, recordType_, name_, $c) {
+export async function Inference_inferMethodCall$(self_, environment_, expected_, signature_, instantiation_, term_, record_, recordType_, name_, $task) {
 const e_ = (((_1) => {
 {
 if(_1.ECall) {
@@ -3393,7 +3399,7 @@ return
 }
 }
 
-export async function Inference_inferFunctionCall$(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_, $c) {
+export async function Inference_inferFunctionCall$(self_, environment_, expected_, signature_, instanceCall_, instantiation_, term_, name_, $task) {
 const e_ = (((_1) => {
 {
 if(_1.ECall) {
@@ -3437,7 +3443,7 @@ return
 }
 }
 
-export async function Inference_inferLambdaCall$(self_, environment_, expected_, term_, $c) {
+export async function Inference_inferLambdaCall$(self_, environment_, expected_, term_, $task) {
 const e_ = (((_1) => {
 {
 if(_1.ECall) {
@@ -3515,7 +3521,7 @@ return
 }
 }
 
-export async function Inference_inferOperator$(self_, environment_, expected_, operator_, term_, $c) {
+export async function Inference_inferOperator$(self_, environment_, expected_, operator_, term_, $task) {
 const e_ = (((_1) => {
 {
 if(_1.ECall) {
@@ -3870,7 +3876,7 @@ return
 }
 }
 
-export async function Inference_inferEtaExpansion$(self_, environment_, expected_, at_, signature_, term_, $c) {
+export async function Inference_inferEtaExpansion$(self_, environment_, expected_, at_, signature_, term_, $task) {
 const parameters_ = ff_core_List.List_map(ff_core_List.List_filter(signature_.parameters_, ((_w1) => {
 return ff_core_Option.Option_isEmpty(_w1.default_)
 })), ((p_) => {
@@ -3889,7 +3895,7 @@ return ff_compiler_Environment.Environment(_c.modulePrefix_, _c.symbols_, _c.imp
 }))(environment_), expected_, lambda_)
 }
 
-export async function Inference_inferArguments$(self_, callAt_, callName_, environment_, parameters_, arguments_, $c) {
+export async function Inference_inferArguments$(self_, callAt_, callName_, environment_, parameters_, arguments_, $task) {
 if(ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)) {
 ff_core_List.List_each(ff_core_List.List_pairs(arguments_), ((_1) => {
 {
@@ -3992,7 +3998,7 @@ return
 }
 }
 
-export async function Inference_lookup$(self_, environment_, expected_, at_, symbol_, typeArguments_, arguments_, $c) {
+export async function Inference_lookup$(self_, environment_, expected_, at_, symbol_, typeArguments_, arguments_, $task) {
 return ff_core_Option.Option_elseIf(ff_compiler_Inference.Inference_lookupOption(self_, environment_, expected_, at_, symbol_, typeArguments_), (() => {
 return ff_compiler_LspHook.LspHook_isEnabled(self_.lspHook_)
 }), (() => {
@@ -4014,7 +4020,7 @@ return instantiated_
 }))
 }
 
-export async function Inference_lookupOption$(self_, environment_, expected_, at_, symbol_, typeArguments_, $c) {
+export async function Inference_lookupOption$(self_, environment_, expected_, at_, symbol_, typeArguments_, $task) {
 const hook_ = (ff_compiler_LspHook.LspHook_isAt(self_.lspHook_, at_)
 ? ff_core_Option.Some((await (async function() {
 const symbolHook_ = ff_compiler_LspHook.SymbolHook(symbol_, at_, at_);

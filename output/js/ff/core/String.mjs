@@ -6,6 +6,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -26,13 +28,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -45,6 +47,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -60,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -74,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -280,115 +286,115 @@ export function String_toBuffer(self_) {
         
 }
 
-export async function String_size$(self_, $c) {
+export async function String_size$(self_, $task) {
 throw new Error('Function String_size is missing on this target in async context.');
 }
 
-export async function String_grab$(self_, index_, $c) {
+export async function String_grab$(self_, index_, $task) {
 throw new Error('Function String_grab is missing on this target in async context.');
 }
 
-export async function String_replace$(self_, needle_, replacement_, $c) {
+export async function String_replace$(self_, needle_, replacement_, $task) {
 throw new Error('Function String_replace is missing on this target in async context.');
 }
 
-export async function String_replaceFirst$(self_, needle_, replacement_, $c) {
+export async function String_replaceFirst$(self_, needle_, replacement_, $task) {
 throw new Error('Function String_replaceFirst is missing on this target in async context.');
 }
 
-export async function String_reverse$(self_, $c) {
+export async function String_reverse$(self_, $task) {
 throw new Error('Function String_reverse is missing on this target in async context.');
 }
 
-export async function String_lower$(self_, $c) {
+export async function String_lower$(self_, $task) {
 throw new Error('Function String_lower is missing on this target in async context.');
 }
 
-export async function String_upper$(self_, $c) {
+export async function String_upper$(self_, $task) {
 throw new Error('Function String_upper is missing on this target in async context.');
 }
 
-export async function String_dropWhile$(self_, p_, $c) {
+export async function String_dropWhile$(self_, p_, $task) {
 
             let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $c); i++);
+            for(; i < self_.length && await p_(self_.codePointAt(i), $task); i++);
             return self_.slice(i)
         
 }
 
-export async function String_takeWhile$(self_, p_, $c) {
+export async function String_takeWhile$(self_, p_, $task) {
 
             let i = 0
-            for(; i < self_.length && await p_(self_.codePointAt(i), $c); i++);
+            for(; i < self_.length && await p_(self_.codePointAt(i), $task); i++);
             return self_.slice(0, i)
         
 }
 
-export async function String_slice$(self_, from_, until_, $c) {
+export async function String_slice$(self_, from_, until_, $task) {
 throw new Error('Function String_slice is missing on this target in async context.');
 }
 
-export async function String_split$(self_, char_, $c) {
+export async function String_split$(self_, char_, $task) {
 throw new Error('Function String_split is missing on this target in async context.');
 }
 
-export async function String_splitFirst$(self_, char_, $c) {
+export async function String_splitFirst$(self_, char_, $task) {
 throw new Error('Function String_splitFirst is missing on this target in async context.');
 }
 
-export async function String_lines$(self_, $c) {
+export async function String_lines$(self_, $task) {
 throw new Error('Function String_lines is missing on this target in async context.');
 }
 
-export async function String_dropFirst$(self_, count_ = 1, $c) {
+export async function String_dropFirst$(self_, count_ = 1, $task) {
 throw new Error('Function String_dropFirst is missing on this target in async context.');
 }
 
-export async function String_dropLast$(self_, count_ = 1, $c) {
+export async function String_dropLast$(self_, count_ = 1, $task) {
 throw new Error('Function String_dropLast is missing on this target in async context.');
 }
 
-export async function String_getInt$(self_, $c) {
+export async function String_getInt$(self_, $task) {
 throw new Error('Function String_getInt is missing on this target in async context.');
 }
 
-export async function String_grabInt$(self_, $c) {
+export async function String_grabInt$(self_, $task) {
 throw new Error('Function String_grabInt is missing on this target in async context.');
 }
 
-export async function String_first$(self_, $c) {
+export async function String_first$(self_, $task) {
 throw new Error('Function String_first is missing on this target in async context.');
 }
 
-export async function String_last$(self_, $c) {
+export async function String_last$(self_, $task) {
 throw new Error('Function String_last is missing on this target in async context.');
 }
 
-export async function String_grabFirst$(self_, $c) {
+export async function String_grabFirst$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_String.String_first(self_), (() => {
 return ff_core_Try.internalThrowGrabException_()
 }))
 }
 
-export async function String_grabLast$(self_, $c) {
+export async function String_grabLast$(self_, $task) {
 return ff_core_Option.Option_else(ff_core_String.String_last(self_), (() => {
 return ff_core_Try.internalThrowGrabException_()
 }))
 }
 
-export async function String_contains$(self_, substring_, $c) {
+export async function String_contains$(self_, substring_, $task) {
 throw new Error('Function String_contains is missing on this target in async context.');
 }
 
-export async function String_startsWith$(self_, prefix_, offset_ = 0, $c) {
+export async function String_startsWith$(self_, prefix_, offset_ = 0, $task) {
 throw new Error('Function String_startsWith is missing on this target in async context.');
 }
 
-export async function String_endsWith$(self_, prefix_, $c) {
+export async function String_endsWith$(self_, prefix_, $task) {
 throw new Error('Function String_endsWith is missing on this target in async context.');
 }
 
-export async function String_removeFirst$(self_, prefix_, $c) {
+export async function String_removeFirst$(self_, prefix_, $task) {
 if(ff_core_String.String_startsWith(self_, prefix_, 0)) {
 return ff_core_Option.Some(ff_core_String.String_dropFirst(self_, ff_core_String.String_size(prefix_)))
 } else {
@@ -396,7 +402,7 @@ return ff_core_Option.None()
 }
 }
 
-export async function String_removeLast$(self_, suffix_, $c) {
+export async function String_removeLast$(self_, suffix_, $task) {
 if(ff_core_String.String_endsWith(self_, suffix_)) {
 return ff_core_Option.Some(ff_core_String.String_dropLast(self_, ff_core_String.String_size(suffix_)))
 } else {
@@ -404,25 +410,25 @@ return ff_core_Option.None()
 }
 }
 
-export async function String_any$(self_, body_, $c) {
+export async function String_any$(self_, body_, $task) {
 
             for(let i = 0; i < self_.length; i++) {
-                if(await body_(self_.charCodeAt(i), $c)) return true;
+                if(await body_(self_.charCodeAt(i), $task)) return true;
             }
             return false;
         
 }
 
-export async function String_all$(self_, body_, $c) {
+export async function String_all$(self_, body_, $task) {
 
             for(let i = 0; i < self_.length; i++) {
-                if(!await body_(self_.charCodeAt(i), $c)) return false;
+                if(!await body_(self_.charCodeAt(i), $task)) return false;
             }
             return true;
         
 }
 
-export async function String_toBuffer$(self_, $c) {
+export async function String_toBuffer$(self_, $task) {
 throw new Error('Function String_toBuffer is missing on this target in async context.');
 }
 

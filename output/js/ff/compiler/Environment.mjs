@@ -10,6 +10,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -30,13 +32,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -49,6 +51,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -64,6 +68,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -78,7 +84,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -205,7 +211,7 @@ const effect_ = ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(modu
 return ff_compiler_Environment.Environment("", ff_core_List.List_toMap(ff_core_List.List_addAll(functions_, ff_core_List.List_addAll(lets_, ff_core_List.List_addAll(fields_, ff_core_List.List_addAll(extends_, ff_core_List.List_addAll(variants_, traitMethods_))))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), effect_, ff_core_Option.None())
 }
 
-export async function make_$(module_, otherModules_, alreadyFlat_, $c) {
+export async function make_$(module_, otherModules_, alreadyFlat_, $task) {
 return ff_compiler_Environment.Environment(ff_compiler_Environment.fullName_(module_, ""), ff_core_Map.Map_addAll(ff_compiler_Environment.processModule_(module_, true, alreadyFlat_).symbols_, ff_core_List.List_foldLeft(ff_core_List.List_map(otherModules_, ((_w1) => {
 return ff_compiler_Environment.processModule_(_w1, false, false).symbols_
 })), ff_core_Map.empty_(), ((_w1, _w2) => {
@@ -215,15 +221,15 @@ return ff_core_Pair.Pair(i_.alias_, i_)
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_compiler_Syntax.TConstructor(ff_compiler_Syntax.Location(module_.file_, 0, 0), "ff:core/Nothing.Nothing", ff_core_List.Empty()), ff_core_Option.None())
 }
 
-export async function fullName_$(module_, name_, $c) {
+export async function fullName_$(module_, name_, $task) {
 return ((((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3)) + ".") + name_)
 }
 
-export async function fail_$(at_, message_, $c) {
+export async function fail_$(at_, message_, $task) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function processModule_$(module_, isCurrentModule_, alreadyFlat_, $c) {
+export async function processModule_$(module_, isCurrentModule_, alreadyFlat_, $task) {
 const functions_ = ff_core_List.List_map(module_.functions_, ((d_) => {
 return ff_core_Pair.Pair(ff_compiler_Environment.fullName_(module_, d_.signature_.name_), ff_compiler_Environment.Scheme(false, false, false, false, d_.signature_))
 }));
@@ -313,7 +319,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Environment_Environment = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Environment" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Environment" + "[") + "]"))
 }
 };
@@ -322,7 +328,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Environment_Scheme = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Scheme" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Scheme" + "[") + "]"))
 }
 };
@@ -331,7 +337,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Environment_Instantiated = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Instantiated" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Environment.Instantiated" + "[") + "]"))
 }
 };
@@ -347,7 +353,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -370,7 +376,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -393,7 +399,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -423,7 +429,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -460,7 +466,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -497,7 +503,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -559,7 +565,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -646,7 +652,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -718,7 +724,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -784,7 +790,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -802,7 +808,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
@@ -859,7 +865,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -877,7 +883,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
@@ -931,7 +937,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -946,7 +952,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

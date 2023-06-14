@@ -10,6 +10,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -30,13 +32,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -49,6 +51,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -64,6 +68,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -78,7 +84,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -97,7 +103,7 @@ export function core_(name_) {
 return ((("ff:core/" + name_) + ".") + name_)
 }
 
-export async function core_$(name_, $c) {
+export async function core_$(name_, $task) {
 return ((("ff:core/" + name_) + ".") + name_)
 }
 
@@ -620,7 +626,7 @@ export function Substitution_has(self_, index_) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
-export async function Substitution_substituteModule$(self_, module_, $c) {
+export async function Substitution_substituteModule$(self_, module_, $task) {
 const lets_ = ff_core_List.List_map(module_.lets_, ((_w1) => {
 return ff_compiler_Substitution.Substitution_substituteLetDefinition(self_, _w1)
 }));
@@ -643,7 +649,7 @@ return
 }
 }
 
-export async function Substitution_substituteLetDefinition$(self_, definition_, $c) {
+export async function Substitution_substituteLetDefinition$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -654,7 +660,7 @@ return
 }
 }
 
-export async function Substitution_substituteExtendDefinition$(self_, definition_, $c) {
+export async function Substitution_substituteExtendDefinition$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -667,7 +673,7 @@ return
 }
 }
 
-export async function Substitution_substituteFunctionDefinition$(self_, definition_, $c) {
+export async function Substitution_substituteFunctionDefinition$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -680,7 +686,7 @@ return
 }
 }
 
-export async function Substitution_substituteSignature$(self_, signature_, $c) {
+export async function Substitution_substituteSignature$(self_, signature_, $task) {
 {
 const _1 = signature_;
 {
@@ -695,7 +701,7 @@ return
 }
 }
 
-export async function Substitution_substituteConstraint$(self_, constraint_, $c) {
+export async function Substitution_substituteConstraint$(self_, constraint_, $task) {
 {
 const _1 = constraint_;
 {
@@ -708,7 +714,7 @@ return
 }
 }
 
-export async function Substitution_substituteParameter$(self_, parameter_, $c) {
+export async function Substitution_substituteParameter$(self_, parameter_, $task) {
 {
 const _1 = parameter_;
 {
@@ -721,7 +727,7 @@ return
 }
 }
 
-export async function Substitution_substituteInstanceDefinition$(self_, definition_, $c) {
+export async function Substitution_substituteInstanceDefinition$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -734,7 +740,7 @@ return
 }
 }
 
-export async function Substitution_substituteLambda$(self_, definition_, $c) {
+export async function Substitution_substituteLambda$(self_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -763,7 +769,7 @@ return
 }
 }
 
-export async function Substitution_substituteTerm$(self_, term_, $c) {
+export async function Substitution_substituteTerm$(self_, term_, $task) {
 {
 const _1 = term_;
 {
@@ -1048,7 +1054,7 @@ return
 }
 }
 
-export async function Substitution_substituteArgument$(self_, argument_, $c) {
+export async function Substitution_substituteArgument$(self_, argument_, $task) {
 {
 const _1 = argument_;
 {
@@ -1059,7 +1065,7 @@ return
 }
 }
 
-export async function Substitution_substituteField$(self_, field_, $c) {
+export async function Substitution_substituteField$(self_, field_, $task) {
 {
 const _1 = field_;
 {
@@ -1070,7 +1076,7 @@ return
 }
 }
 
-export async function Substitution_substituteType$(self_, type_, $c) {
+export async function Substitution_substituteType$(self_, type_, $task) {
 {
 const self_a = self_;
 const type_a = type_;
@@ -1105,7 +1111,7 @@ return
 }
 }
 
-export async function Substitution_get$(self_, index_, $c) {
+export async function Substitution_get$(self_, index_, $task) {
 {
 const _1 = ff_core_Map.Map_grab(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int);
 {
@@ -1135,7 +1141,7 @@ return
 }
 }
 
-export async function Substitution_has$(self_, index_, $c) {
+export async function Substitution_has$(self_, index_, $task) {
 return ff_core_Map.Map_contains(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 

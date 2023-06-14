@@ -94,7 +94,7 @@ extend self[T]: Stack[T] {
             if(index_ < 0 || index_ >= self_.array.length) {
                 ff_core_Try.internalThrowGrabException_()
             }
-            self_.array[index_] = await body_(self_.array[index_], $c)
+            self_.array[index_] = await body_(self_.array[index_], $task)
         """
 
     fill(value: T, start: Int = 0, end: Int = 9007199254740991): Unit
@@ -133,13 +133,13 @@ extend self[T]: Stack[T] {
         """
         target js async """
             for(let i = 0; i < self_.array.length; i++) {
-                await body_(self_.array[i], $c)
+                await body_(self_.array[i], $task)
             }
         """
 
     eachWhile(body: T => Bool): Unit
         target js sync "for(const value of self_.array) if(!body_(value)) break"
-        target js async "for(const value of self_.array) if(!await body_(value, $c)) break"
+        target js async "for(const value of self_.array) if(!await body_(value, $task)) break"
 
     all(body: T => Bool): Bool {
         mutable result = True

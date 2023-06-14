@@ -14,6 +14,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -34,13 +36,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -53,6 +55,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -68,6 +72,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -82,7 +88,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -177,11 +183,11 @@ export function strictlyBetween_(afterAt_, beforeAt_, at_, extraColumns_) {
 return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (at_.column_ > afterAt_.column_)) || (at_.line_ > afterAt_.line_))) && (((at_.line_ === beforeAt_.line_) && (at_.column_ < (beforeAt_.column_ + extraColumns_))) || (at_.line_ < beforeAt_.line_)))
 }
 
-export async function disabled_$($c) {
+export async function disabled_$($task) {
 return ff_compiler_LspHook.make_(ff_core_Option.None(), ff_core_Option.None(), false, false)
 }
 
-export async function make_$(at_, definedAt_, insertIdentifier_, trackSymbols_, $c) {
+export async function make_$(at_, definedAt_, insertIdentifier_, trackSymbols_, $task) {
 return ff_compiler_LspHook.LspHook(ff_core_Option.Option_else(at_, (() => {
 return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), ff_core_Option.Option_else(definedAt_, (() => {
@@ -189,7 +195,7 @@ return ff_compiler_Syntax.Location("^lsp", (-7), (-7))
 })), insertIdentifier_, trackSymbols_, ff_core_List.List_toStack(ff_core_List.Empty()))
 }
 
-export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $c) {
+export async function strictlyBetween_$(afterAt_, beforeAt_, at_, extraColumns_, $task) {
 return (((at_.file_ === afterAt_.file_) && (((at_.line_ === afterAt_.line_) && (at_.column_ > afterAt_.column_)) || (at_.line_ > afterAt_.line_))) && (((at_.line_ === beforeAt_.line_) && (at_.column_ < (beforeAt_.column_ + extraColumns_))) || (at_.line_ < beforeAt_.line_)))
 }
 
@@ -213,23 +219,23 @@ export function LspHook_results(self_) {
 return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
 }
 
-export async function LspHook_isEnabled$(self_, $c) {
+export async function LspHook_isEnabled$(self_, $task) {
 return (((self_.at_.line_ !== (-7)) || (self_.definedAt_.line_ !== (-7))) || self_.trackSymbols_)
 }
 
-export async function LspHook_isAt$(self_, at_, $c) {
+export async function LspHook_isAt$(self_, at_, $task) {
 return (((self_.at_.line_ === at_.line_) && (self_.at_.column_ === at_.column_)) && (self_.at_.file_ === at_.file_))
 }
 
-export async function LspHook_isDefinedAt$(self_, at_, $c) {
+export async function LspHook_isDefinedAt$(self_, at_, $task) {
 return (((self_.definedAt_.line_ === at_.line_) && (self_.definedAt_.column_ === at_.column_)) && (self_.definedAt_.file_ === at_.file_))
 }
 
-export async function LspHook_emit$(self_, result_, $c) {
+export async function LspHook_emit$(self_, result_, $task) {
 ff_core_Stack.Stack_push(self_.stackOfResults_, result_)
 }
 
-export async function LspHook_results$(self_, $c) {
+export async function LspHook_results$(self_, $task) {
 return ff_core_Stack.Stack_toList(self_.stackOfResults_, 0, 9007199254740991)
 }
 
@@ -237,7 +243,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_LspHook_SymbolHook = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.SymbolHook" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/LspHook.SymbolHook" + "[") + "]"))
 }
 };
@@ -253,7 +259,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -283,7 +289,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -335,7 +341,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -404,7 +410,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -420,7 +426,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

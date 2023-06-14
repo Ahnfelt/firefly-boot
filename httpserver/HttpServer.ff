@@ -4,12 +4,18 @@ capability HttpResponse {}
 listen(system: NodeSystem, host: String, port: Int, handler: (HttpRequest, HttpResponse) => Unit): Unit
     target node async """
         import * as http from 'http'
-        if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+        ff_core_Task.Task_throwIfAborted($task)
         const server = http.createServer(async (req, res) => {
             try {
-                await ff_core_NodeSystem.NodeSystem_withScope$(null, async (scope, $c) => {
-                    await handler_(req, res, $c)
-                }, false, $c)
+                const channel = ff_core_Task.Task_channel($task)
+                ff_core_Task.Task_spawn($task, async task => {
+                    try {
+                        await handler_(req, res, task)
+                    } finally {
+                        await ff_core_Channel.Channel_write$(channel, null, task)
+                    }
+                })
+                await ff_core_Channel.Channel_read$(channel, $task)
                 if(!res.headersSent) res.writeHead(200, 'OK')
             } finally {
                 if(!res.headersSent) res.writeHead(500, 'Internal Server Error')
@@ -21,10 +27,12 @@ listen(system: NodeSystem, host: String, port: Int, handler: (HttpRequest, HttpR
         })
         await new Promise((resolve, reject) => {
             const abort = () => {
-                $c.signal.removeEventListener('abort', abort)
-                server.close(() => reject(new Error("Cancelled", {cause: $c.reasonWorkaround})))
+                $task.controller.signal.removeEventListener('abort', abort)
+                const reason = $task.controller.signal.reason
+                $task.controller = new AbortController()
+                server.close(() => reject(reason))
             }
-            $c.signal.addEventListener('abort', abort)
+            $task.controller.signal.addEventListener('abort', abort)
         })
     """
 
@@ -80,36 +88,38 @@ extend self: HttpRequest {
     readStream(): Stream[Buffer]
         target node async """
             import * as http from 'http'
-            let c = null
+            let task = null
             let readable = self_
             let doResolve = null
             let doReject = null
             let seenError = null
             const abort = () => {
-                if(c != null) {
-                    c.signal.removeEventListener('abort', abort)
+                if(task != null) {
+                    task.controller.signal.removeEventListener('abort', abort)
                     readable.destroy()
                 }
             }
-            function open($c) {
-                if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            function open($task) {
+                ff_core_Task.Task_throwIfAborted($task)
                 if(self_.streamWorkaround != null) throw new Error("Can't open HttpRequest body stream twice")
-                c = $c
+                task = $task
                 self_.streamWorkaround = true
                 readable.on('readable', () => {
                     if(doResolve != null) doResolve()
                 })
                 readable.on('error', error => {
+                    task.controller.signal.removeEventListener('abort', abort)
                     seenError = error
                     if(doReject != null) doReject(error)
                 })
                 readable.on('close', () => {
+                    task.controller.signal.removeEventListener('abort', abort)
                     if(doResolve != null) doResolve()
                 })
-                $c.signal.addEventListener('abort', abort)
+                $task.controller.signal.addEventListener('abort', abort)
             }
-            return ff_core_Stream.Stream(async function go($c) {
-                if(c == null) open($c)
+            return ff_core_Stream.Stream(async function go($task) {
+                if(task == null) open($task)
                 let buffer = readable.read()
                 if(buffer != null) return ff_core_Option.Some(buffer)
                 if(seenError != null) throw seenError
@@ -117,7 +127,7 @@ extend self: HttpRequest {
                 let promise = new Promise((resolve, reject) => {
                     doResolve = () => {doResolve = null; doReject = null; resolve()}
                     doReject = error => {doResolve = null; doReject = null; reject(error)}
-                }).then(() => go($c))
+                }).then(() => go($task))
                 return await promise
             }, abort)
         """
@@ -135,15 +145,17 @@ extend self: HttpResponse {
     write(buffer: Buffer): Unit
         target node async """
             import * as http from 'http'
+            ff_core_Task.Task_throwIfAborted($task)
             if(!self_.write(buffer_)) {
-                const abort = () => {
-                    $c.signal.addEventListener('abort', abort())
-                    reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))
-                }
+                let reject = null;
                 await new Promise((resolve, reject) => {
-                    $c.signal.addEventListener('abort', abort)
+                    const abort = () => {
+                        $task.controller.signal.removeEventListener('abort', abort)
+                        reject($task.controller.signal.reason)
+                    }
+                    $task.controller.signal.addEventListener('abort', abort)
                     self_.once('drain', () => {
-                        $c.signal.removeEventListener('abort', abort)
+                        $task.controller.signal.removeEventListener('abort', abort)
                         resolve()
                     })
                 })
@@ -153,15 +165,16 @@ extend self: HttpResponse {
     writeText(text: String, encoding: String = "utf8"): Unit
         target node async """
             import * as http from 'http'
+            ff_core_Task.Task_throwIfAborted($task)
             if(!self_.write(text_, encoding_)) {
-                const abort = () => {
-                    $c.signal.addEventListener('abort', abort())
-                    reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))
-                }
                 await new Promise((resolve, reject) => {
-                    $c.signal.addEventListener('abort', abort)
+                    const abort = () => {
+                        $task.controller.signal.removeEventListener('abort', abort)
+                        reject($task.controller.signal.reason)
+                    }
+                    $task.controller.signal.addEventListener('abort', abort)
                     self_.once('drain', () => {
-                        $c.signal.removeEventListener('abort', abort)
+                        $task.controller.signal.removeEventListener('abort', abort)
                         resolve()
                     })
                 })

@@ -28,8 +28,23 @@ extend self: NodeSystem {
     files(): FileSystem
         target node async "return null"
 
-    fetch(): FetchSystem
+    path(relativePath: String): Path
+        target node async """
+            import * as path from 'path'
+            return path.resolve(relativePath_)
+        """
+
+    pathFromUrl(url: String): Path
+        target node async """
+            import * as url from 'url';
+            return url.fileURLToPath(new URL(url_));
+        """
+
+    httpClient(): HttpClient
         target js async "return null"
+
+    mainTask(): Task
+        target js async "return self_.task_"
 
     time(): TimeSystem
         target js async "return null"
@@ -37,20 +52,6 @@ extend self: NodeSystem {
     js(): JsSystem
         target js async "return typeof globalThis !== 'undefined' ? globalThis : window"
 
-    scope[T](body: TaskScope => T, shielded: Bool = False, rethrow: Bool = True): T {
-        let scope = self.openScope(shielded)
-        try {
-            body(scope)
-        } finally {
-            scope.close(rethrow)
-        } grab()
-    }
-
-    openScope[T](shielded: Bool = False): TaskScope
-        target js async """
-            return await ff_core_TaskScope.TaskScope_openSubscope$($c, shielded_, $c)
-        """
-    
     exit[T](exitCode: Int = 0): T
         target js async "process.exit(exitCode_)"
 

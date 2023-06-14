@@ -6,6 +6,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -26,13 +28,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -45,6 +47,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -60,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -74,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -365,91 +371,91 @@ export function JsValue_grabMap(self_) {
 return ff_core_List.List_toMap(ff_core_JsValue.JsValue_grabPairs(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
-export async function JsValue_grabString$(self_, $c) {
+export async function JsValue_grabString$(self_, $task) {
 throw new Error('Function JsValue_grabString is missing on this target in async context.');
 }
 
-export async function JsValue_grabChar$(self_, $c) {
+export async function JsValue_grabChar$(self_, $task) {
 throw new Error('Function JsValue_grabChar is missing on this target in async context.');
 }
 
-export async function JsValue_grabInt$(self_, $c) {
+export async function JsValue_grabInt$(self_, $task) {
 throw new Error('Function JsValue_grabInt is missing on this target in async context.');
 }
 
-export async function JsValue_grabFloat$(self_, $c) {
+export async function JsValue_grabFloat$(self_, $task) {
 throw new Error('Function JsValue_grabFloat is missing on this target in async context.');
 }
 
-export async function JsValue_grabBool$(self_, $c) {
+export async function JsValue_grabBool$(self_, $task) {
 throw new Error('Function JsValue_grabBool is missing on this target in async context.');
 }
 
-export async function JsValue_grabArray$(self_, $c) {
+export async function JsValue_grabArray$(self_, $task) {
 throw new Error('Function JsValue_grabArray is missing on this target in async context.');
 }
 
-export async function JsValue_grabBuffer$(self_, $c) {
+export async function JsValue_grabBuffer$(self_, $task) {
 throw new Error('Function JsValue_grabBuffer is missing on this target in async context.');
 }
 
-export async function JsValue_isString$(self_, $c) {
+export async function JsValue_isString$(self_, $task) {
 throw new Error('Function JsValue_isString is missing on this target in async context.');
 }
 
-export async function JsValue_isChar$(self_, $c) {
+export async function JsValue_isChar$(self_, $task) {
 throw new Error('Function JsValue_isChar is missing on this target in async context.');
 }
 
-export async function JsValue_isInt$(self_, $c) {
+export async function JsValue_isInt$(self_, $task) {
 throw new Error('Function JsValue_isInt is missing on this target in async context.');
 }
 
-export async function JsValue_isFloat$(self_, $c) {
+export async function JsValue_isFloat$(self_, $task) {
 throw new Error('Function JsValue_isFloat is missing on this target in async context.');
 }
 
-export async function JsValue_isBool$(self_, $c) {
+export async function JsValue_isBool$(self_, $task) {
 throw new Error('Function JsValue_isBool is missing on this target in async context.');
 }
 
-export async function JsValue_isArray$(self_, $c) {
+export async function JsValue_isArray$(self_, $task) {
 throw new Error('Function JsValue_isArray is missing on this target in async context.');
 }
 
-export async function JsValue_isObject$(self_, $c) {
+export async function JsValue_isObject$(self_, $task) {
 throw new Error('Function JsValue_isObject is missing on this target in async context.');
 }
 
-export async function JsValue_isFunction$(self_, $c) {
+export async function JsValue_isFunction$(self_, $task) {
 throw new Error('Function JsValue_isFunction is missing on this target in async context.');
 }
 
-export async function JsValue_isNull$(self_, $c) {
+export async function JsValue_isNull$(self_, $task) {
 throw new Error('Function JsValue_isNull is missing on this target in async context.');
 }
 
-export async function JsValue_isUndefined$(self_, $c) {
+export async function JsValue_isUndefined$(self_, $task) {
 throw new Error('Function JsValue_isUndefined is missing on this target in async context.');
 }
 
-export async function JsValue_isNullOrUndefined$(self_, $c) {
+export async function JsValue_isNullOrUndefined$(self_, $task) {
 throw new Error('Function JsValue_isNullOrUndefined is missing on this target in async context.');
 }
 
-export async function JsValue_isNan$(self_, $c) {
+export async function JsValue_isNan$(self_, $task) {
 throw new Error('Function JsValue_isNan is missing on this target in async context.');
 }
 
-export async function JsValue_isFinite$(self_, $c) {
+export async function JsValue_isFinite$(self_, $task) {
 throw new Error('Function JsValue_isFinite is missing on this target in async context.');
 }
 
-export async function JsValue_get$(self_, key_, ff_core_JsValue_IsJsValue$K, $c) {
+export async function JsValue_get$(self_, key_, ff_core_JsValue_IsJsValue$K, $task) {
 throw new Error('Function JsValue_get is missing on this target in async context.');
 }
 
-export async function JsValue_getOwn$(self_, key_, $c) {
+export async function JsValue_getOwn$(self_, key_, $task) {
 if(ff_core_JsValue.JsValue_hasOwn(self_, key_)) {
 return ff_core_Option.Some(ff_core_JsValue.JsValue_get(self_, key_, ff_core_JsValue.ff_core_JsValue_IsJsValue$ff_core_String_String))
 } else {
@@ -457,171 +463,171 @@ return ff_core_Option.None()
 }
 }
 
-export async function JsValue_set$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $c) {
+export async function JsValue_set$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $task) {
 throw new Error('Function JsValue_set is missing on this target in async context.');
 }
 
-export async function JsValue_with$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $c) {
+export async function JsValue_with$(self_, key_, value_, ff_core_JsValue_IsJsValue$K, ff_core_JsValue_IsJsValue$V, $task) {
 throw new Error('Function JsValue_with is missing on this target in async context.');
 }
 
-export async function JsValue_hasOwn$(self_, name_, $c) {
+export async function JsValue_hasOwn$(self_, name_, $task) {
 throw new Error('Function JsValue_hasOwn is missing on this target in async context.');
 }
 
-export async function JsValue_assign$(self_, source_, source2_ = source_, $c) {
+export async function JsValue_assign$(self_, source_, source2_ = source_, $task) {
 throw new Error('Function JsValue_assign is missing on this target in async context.');
 }
 
-export async function JsValue_each$(self_, body_, $c) {
-for(const value of self_) await body_(value, $c)
+export async function JsValue_each$(self_, body_, $task) {
+for(const value of self_) await body_(value, $task)
 }
 
-export async function JsValue_eachWhile$(self_, body_, $c) {
-for(const value of self_) if(!await body_(value, $c)) break
+export async function JsValue_eachWhile$(self_, body_, $task) {
+for(const value of self_) if(!await body_(value, $task)) break
 }
 
-export async function JsValue_call$(self_, name_, arguments_, $c) {
+export async function JsValue_call$(self_, name_, arguments_, $task) {
 throw new Error('Function JsValue_call is missing on this target in async context.');
 }
 
-export async function JsValue_call0$(self_, name_, $c) {
+export async function JsValue_call0$(self_, name_, $task) {
 throw new Error('Function JsValue_call0 is missing on this target in async context.');
 }
 
-export async function JsValue_call1$(self_, name_, a1_, ff_core_JsValue_IsJsValue$A1, $c) {
+export async function JsValue_call1$(self_, name_, a1_, ff_core_JsValue_IsJsValue$A1, $task) {
 throw new Error('Function JsValue_call1 is missing on this target in async context.');
 }
 
-export async function JsValue_call2$(self_, name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, $c) {
+export async function JsValue_call2$(self_, name_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, $task) {
 throw new Error('Function JsValue_call2 is missing on this target in async context.');
 }
 
-export async function JsValue_call3$(self_, name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, $c) {
+export async function JsValue_call3$(self_, name_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, $task) {
 throw new Error('Function JsValue_call3 is missing on this target in async context.');
 }
 
-export async function JsValue_call4$(self_, name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, $c) {
+export async function JsValue_call4$(self_, name_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, $task) {
 throw new Error('Function JsValue_call4 is missing on this target in async context.');
 }
 
-export async function JsValue_call5$(self_, name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, $c) {
+export async function JsValue_call5$(self_, name_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, $task) {
 throw new Error('Function JsValue_call5 is missing on this target in async context.');
 }
 
-export async function JsValue_call6$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, $c) {
+export async function JsValue_call6$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, $task) {
 throw new Error('Function JsValue_call6 is missing on this target in async context.');
 }
 
-export async function JsValue_call7$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, $c) {
+export async function JsValue_call7$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, $task) {
 throw new Error('Function JsValue_call7 is missing on this target in async context.');
 }
 
-export async function JsValue_call8$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, $c) {
+export async function JsValue_call8$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, $task) {
 throw new Error('Function JsValue_call8 is missing on this target in async context.');
 }
 
-export async function JsValue_call9$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $c) {
+export async function JsValue_call9$(self_, name_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $task) {
 throw new Error('Function JsValue_call9 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue$(self_, this_, arguments_, $c) {
+export async function JsValue_callValue$(self_, this_, arguments_, $task) {
 throw new Error('Function JsValue_callValue is missing on this target in async context.');
 }
 
-export async function JsValue_callValue0$(self_, $c) {
+export async function JsValue_callValue0$(self_, $task) {
 throw new Error('Function JsValue_callValue0 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue1$(self_, a1_, ff_core_JsValue_IsJsValue$A1, $c) {
+export async function JsValue_callValue1$(self_, a1_, ff_core_JsValue_IsJsValue$A1, $task) {
 throw new Error('Function JsValue_callValue1 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue2$(self_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, $c) {
+export async function JsValue_callValue2$(self_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, $task) {
 throw new Error('Function JsValue_callValue2 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue3$(self_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, $c) {
+export async function JsValue_callValue3$(self_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, $task) {
 throw new Error('Function JsValue_callValue3 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue4$(self_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, $c) {
+export async function JsValue_callValue4$(self_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, $task) {
 throw new Error('Function JsValue_callValue4 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue5$(self_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, $c) {
+export async function JsValue_callValue5$(self_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, $task) {
 throw new Error('Function JsValue_callValue5 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue6$(self_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, $c) {
+export async function JsValue_callValue6$(self_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, $task) {
 throw new Error('Function JsValue_callValue6 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue7$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, $c) {
+export async function JsValue_callValue7$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, $task) {
 throw new Error('Function JsValue_callValue7 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue8$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, $c) {
+export async function JsValue_callValue8$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, $task) {
 throw new Error('Function JsValue_callValue8 is missing on this target in async context.');
 }
 
-export async function JsValue_callValue9$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $c) {
+export async function JsValue_callValue9$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $task) {
 throw new Error('Function JsValue_callValue9 is missing on this target in async context.');
 }
 
-export async function JsValue_new$(self_, this_, arguments_, $c) {
+export async function JsValue_new$(self_, this_, arguments_, $task) {
 throw new Error('Function JsValue_new is missing on this target in async context.');
 }
 
-export async function JsValue_new0$(self_, $c) {
+export async function JsValue_new0$(self_, $task) {
 throw new Error('Function JsValue_new0 is missing on this target in async context.');
 }
 
-export async function JsValue_new1$(self_, a1_, ff_core_JsValue_IsJsValue$A1, $c) {
+export async function JsValue_new1$(self_, a1_, ff_core_JsValue_IsJsValue$A1, $task) {
 throw new Error('Function JsValue_new1 is missing on this target in async context.');
 }
 
-export async function JsValue_new2$(self_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, $c) {
+export async function JsValue_new2$(self_, a1_, a2_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, $task) {
 throw new Error('Function JsValue_new2 is missing on this target in async context.');
 }
 
-export async function JsValue_new3$(self_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, $c) {
+export async function JsValue_new3$(self_, a1_, a2_, a3_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, $task) {
 throw new Error('Function JsValue_new3 is missing on this target in async context.');
 }
 
-export async function JsValue_new4$(self_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, $c) {
+export async function JsValue_new4$(self_, a1_, a2_, a3_, a4_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, $task) {
 throw new Error('Function JsValue_new4 is missing on this target in async context.');
 }
 
-export async function JsValue_new5$(self_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, $c) {
+export async function JsValue_new5$(self_, a1_, a2_, a3_, a4_, a5_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, $task) {
 throw new Error('Function JsValue_new5 is missing on this target in async context.');
 }
 
-export async function JsValue_new6$(self_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, $c) {
+export async function JsValue_new6$(self_, a1_, a2_, a3_, a4_, a5_, a6_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, $task) {
 throw new Error('Function JsValue_new6 is missing on this target in async context.');
 }
 
-export async function JsValue_new7$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, $c) {
+export async function JsValue_new7$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, $task) {
 throw new Error('Function JsValue_new7 is missing on this target in async context.');
 }
 
-export async function JsValue_new8$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, $c) {
+export async function JsValue_new8$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, $task) {
 throw new Error('Function JsValue_new8 is missing on this target in async context.');
 }
 
-export async function JsValue_new9$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $c) {
+export async function JsValue_new9$(self_, a1_, a2_, a3_, a4_, a5_, a6_, a7_, a8_, a9_, ff_core_JsValue_IsJsValue$A1, ff_core_JsValue_IsJsValue$A2, ff_core_JsValue_IsJsValue$A3, ff_core_JsValue_IsJsValue$A4, ff_core_JsValue_IsJsValue$A5, ff_core_JsValue_IsJsValue$A6, ff_core_JsValue_IsJsValue$A7, ff_core_JsValue_IsJsValue$A8, ff_core_JsValue_IsJsValue$A9, $task) {
 throw new Error('Function JsValue_new9 is missing on this target in async context.');
 }
 
-export async function JsValue_toJson$(self_, space_ = ff_core_Option.None(), $c) {
+export async function JsValue_toJson$(self_, space_ = ff_core_Option.None(), $task) {
 throw new Error('Function JsValue_toJson is missing on this target in async context.');
 }
 
-export async function JsValue_grabPairs$(self_, $c) {
+export async function JsValue_grabPairs$(self_, $task) {
 throw new Error('Function JsValue_grabPairs is missing on this target in async context.');
 }
 
-export async function JsValue_grabMap$(self_, $c) {
+export async function JsValue_grabMap$(self_, $task) {
 return ff_core_List.List_toMap(ff_core_JsValue.JsValue_grabPairs(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 

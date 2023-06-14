@@ -18,6 +18,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -38,13 +40,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -57,6 +59,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -72,6 +76,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -86,7 +92,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -148,18 +154,18 @@ export function internalExtractTarGz_(fs_, tarGzPath_, path_) {
 throw new Error('Function internalExtractTarGz is missing on this target in sync context.');
 }
 
-export async function process_$(fs_, fetch_, path_, $c) {
+export async function process_$(fs_, fetch_, path_, $task) {
 const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
-const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, fixedPath_, $c));
+const workspace_ = (await ff_compiler_Workspace.loadWorkspace_$(fs_, fixedPath_, $task));
 const self_ = ff_compiler_Dependencies.Dependencies(workspace_, ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toMap(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair), ff_core_List.List_toSet(ff_core_List.Empty(), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair));
-const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), fixedPath_, $c));
+const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, ff_compiler_Syntax.PackagePair("script", "script"), fixedPath_, $task));
 const newDependencies_ = ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, packageInfo_);
-(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c));
-const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, (await ff_compiler_Dependencies.findScriptPackageLocation_$(fs_, fixedPath_, $c)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
+(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $task));
+const packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, packageInfo_.package_.packagePair_, (await ff_compiler_Dependencies.findScriptPackageLocation_$(fs_, fixedPath_, $task)), ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return ff_compiler_Dependencies.ResolvedDependencies(packageInfo_.package_.packagePair_, self_.packages_, packagePaths_, self_.singleFilePackages_)
 }
 
-export async function findScriptPackageLocation_$(fs_, path_, $c) {
+export async function findScriptPackageLocation_$(fs_, path_, $task) {
 const fixedPath_ = ff_core_String.String_replace(path_, "\\", "/");
 const packageDirectory_ = (ff_core_String.String_endsWith(fixedPath_, ".ff")
 ? ff_core_FileSystem.directoryName_(fixedPath_)
@@ -167,26 +173,26 @@ const packageDirectory_ = (ff_core_String.String_endsWith(fixedPath_, ".ff")
 const fixedPackageDirectory_ = ((packageDirectory_ === "")
 ? "."
 : packageDirectory_);
-async function go_$(directory_, $c) {
+async function go_$(directory_, $task) {
 const packageFile_ = (directory_ + "/.firefly/package.ff");
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, packageFile_, $c))) {
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, packageFile_, $task))) {
 return directory_
-} else if(((await ff_core_FileSystem.FileSystem_exists$(fs_, (directory_ + "/.."), $c)) && ((await ff_core_FileSystem.FileSystem_absolutePath$(fs_, directory_, $c)) !== (await ff_core_FileSystem.FileSystem_absolutePath$(fs_, (directory_ + "/.."), $c))))) {
-return (await go_$((directory_ + "/.."), $c))
+} else if(((await ff_core_FileSystem.FileSystem_exists$(fs_, (directory_ + "/.."), $task)) && ((await ff_core_FileSystem.FileSystem_absolutePath$(fs_, directory_, $task)) !== (await ff_core_FileSystem.FileSystem_absolutePath$(fs_, (directory_ + "/.."), $task))))) {
+return (await go_$((directory_ + "/.."), $task))
 } else {
 return fixedPackageDirectory_
 }
 }
-return (await go_$(fixedPackageDirectory_, $c))
+return (await go_$(fixedPackageDirectory_, $task))
 }
 
-export async function checkPackagePairs_$(dependencyPair_, packagePair_, $c) {
+export async function checkPackagePairs_$(dependencyPair_, packagePair_, $task) {
 if(((packagePair_.group_ !== dependencyPair_.group_) || (packagePair_.name_ !== dependencyPair_.name_))) {
 ff_core_Core.panic_(((("Dependency declaration and package declaration disagree on package name: " + ff_compiler_Syntax.PackagePair_groupName(dependencyPair_, ":")) + " vs. ") + ff_compiler_Syntax.PackagePair_groupName(packagePair_, ":")))
 }
 }
 
-export async function internalExtractTarGz_$(fs_, tarGzPath_, path_, $c) {
+export async function internalExtractTarGz_$(fs_, tarGzPath_, path_, $task) {
 
         const tar = import$0
         await tar.extract({file: tarGzPath_, cwd: path_, strict: true})
@@ -236,7 +242,7 @@ return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler
 }))
 }
 
-export function Dependencies_fetchDependency(self_, fs_, fetch_, dependency_) {
+export function Dependencies_fetchDependency(self_, fs_, httpClient_, dependency_) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
@@ -247,11 +253,11 @@ const tarGzPath_ = ((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_
 const donePath_ = (((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_)) + ".done");
 if((!ff_core_FileSystem.FileSystem_exists(fs_, donePath_))) {
 ff_core_Log.debug_(("Fetching " + location_));
-const response_ = ff_core_FetchSystem.FetchSystem_fetch(fetch_, location_, "GET", ff_core_FetchSystem.emptyList_, ff_core_Option.None(), ff_core_FetchSystem.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
-if((!ff_core_FetchSystem.FetchResponse_ok(response_))) {
+const response_ = ff_core_HttpClient.HttpClient_fetch(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false);
+if((!ff_core_HttpClient.FetchResponse_ok(response_))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
-const buffer_ = ff_core_FetchSystem.FetchResponse_readBuffer(response_);
+const buffer_ = ff_core_HttpClient.FetchResponse_readBuffer(response_);
 if(ff_core_FileSystem.FileSystem_exists(fs_, dependencyPath_)) {
 ff_core_FileSystem.FileSystem_deleteDirectory(fs_, dependencyPath_)
 };
@@ -269,9 +275,9 @@ return location_
 }
 }
 
-export function Dependencies_processDependencies(self_, fs_, fetch_, dependencies_) {
+export function Dependencies_processDependencies(self_, fs_, httpClient_, dependencies_) {
 const packageInfos_ = ff_core_List.List_map(dependencies_, ((dependency_) => {
-const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, fetch_, dependency_);
+const path_ = ff_compiler_Dependencies.Dependencies_fetchDependency(self_, fs_, httpClient_, dependency_);
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 const packageInfo_ = ff_compiler_Dependencies.Dependencies_loadPackageInfo(self_, fs_, dependency_.packagePair_, path_);
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
@@ -281,29 +287,29 @@ const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
 if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
-ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, fetch_, newDependencies_)
+ff_compiler_Dependencies.Dependencies_processDependencies(self_, fs_, httpClient_, newDependencies_)
 }
 }
 
-export async function Dependencies_loadPackageInfo$(self_, fs_, packagePair_, path_, $c) {
+export async function Dependencies_loadPackageInfo$(self_, fs_, packagePair_, path_, $task) {
 const packageDirectory_ = (ff_core_String.String_endsWith(path_, ".ff")
 ? (ff_core_FileSystem.directoryName_(path_) + "/")
 : path_);
 const sharedPackageFile_ = (packageDirectory_ + "/.firefly/package.ff");
-const packageFile_ = ((await ff_core_FileSystem.FileSystem_exists$(fs_, sharedPackageFile_, $c))
+const packageFile_ = ((await ff_core_FileSystem.FileSystem_exists$(fs_, sharedPackageFile_, $task))
 ? sharedPackageFile_
 : (await (async function() {
 self_.singleFilePackages_ = ff_core_Set.Set_add(self_.singleFilePackages_, packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return path_
 })()));
-const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, packageFile_, $c));
+const code_ = (await ff_core_FileSystem.FileSystem_readText$(fs_, packageFile_, $task));
 const tokens_ = ff_compiler_Tokenizer.tokenize_(packageFile_, code_, ff_core_Option.None(), true);
 const parser_ = ff_compiler_Parser.make_(packagePair_, packageFile_, tokens_, false, ff_compiler_LspHook.disabled_());
 const info_ = ff_compiler_Parser.Parser_parsePackageInfo(parser_);
 return ff_compiler_Dependencies.Dependencies_addCoreDependencyIfMissing(self_, info_)
 }
 
-export async function Dependencies_addCoreDependencyIfMissing$(self_, info_, $c) {
+export async function Dependencies_addCoreDependencyIfMissing$(self_, info_, $task) {
 if(ff_core_List.List_any(info_.dependencies_, ((d_) => {
 return ((d_.packagePair_.group_ === "ff") && (d_.packagePair_.name_ === "core"))
 }))) {
@@ -321,14 +327,14 @@ return
 }
 }
 
-export async function Dependencies_processPackageInfo$(self_, packageInfo_, $c) {
+export async function Dependencies_processPackageInfo$(self_, packageInfo_, $task) {
 self_.packages_ = ff_core_Map.Map_add(self_.packages_, packageInfo_.package_.packagePair_, packageInfo_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
 return ff_core_List.List_filter(packageInfo_.dependencies_, ((_w1) => {
 return (!ff_core_Map.Map_contains(self_.packages_, _w1.packagePair_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair))
 }))
 }
 
-export async function Dependencies_fetchDependency$(self_, fs_, fetch_, dependency_, $c) {
+export async function Dependencies_fetchDependency$(self_, fs_, httpClient_, dependency_, $task) {
 const location_ = ff_compiler_Workspace.Workspace_findPackageLocation(self_.workspace_, dependency_.packagePair_, dependency_.version_);
 if((ff_core_String.String_contains(location_, ":") && (!ff_core_String.String_startsWith(ff_core_String.String_dropFirst(location_, 1), ":", 0)))) {
 if((ff_core_String.String_startsWith(location_, "http://", 0) || ff_core_String.String_startsWith(location_, "https://", 0))) {
@@ -337,20 +343,20 @@ const dependenciesPath_ = ".firefly/dependencies";
 const dependencyPath_ = ((((dependenciesPath_ + "/") + packagePair_.group_) + "/") + packagePair_.name_);
 const tarGzPath_ = ((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_));
 const donePath_ = (((dependenciesPath_ + "/") + ff_compiler_Workspace.tarGzName_(packagePair_, dependency_.version_)) + ".done");
-if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, donePath_, $c)))) {
+if((!(await ff_core_FileSystem.FileSystem_exists$(fs_, donePath_, $task)))) {
 ff_core_Log.debug_(("Fetching " + location_));
-const response_ = (await ff_core_FetchSystem.FetchSystem_fetch$(fetch_, location_, "GET", ff_core_FetchSystem.emptyList_, ff_core_Option.None(), ff_core_FetchSystem.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $c));
-if((!(await ff_core_FetchSystem.FetchResponse_ok$(response_, $c)))) {
+const response_ = (await ff_core_HttpClient.HttpClient_fetch$(httpClient_, location_, "GET", ff_core_HttpClient.emptyList_, ff_core_Option.None(), ff_core_HttpClient.RedirectFollow(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), ff_core_Option.None(), false, $task));
+if((!(await ff_core_HttpClient.FetchResponse_ok$(response_, $task)))) {
 ff_core_Core.panic_(("Could not download dependency: " + location_))
 };
-const buffer_ = (await ff_core_FetchSystem.FetchResponse_readBuffer$(response_, $c));
-if((await ff_core_FileSystem.FileSystem_exists$(fs_, dependencyPath_, $c))) {
-(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, dependencyPath_, $c))
+const buffer_ = (await ff_core_HttpClient.FetchResponse_readBuffer$(response_, $task));
+if((await ff_core_FileSystem.FileSystem_exists$(fs_, dependencyPath_, $task))) {
+(await ff_core_FileSystem.FileSystem_deleteDirectory$(fs_, dependencyPath_, $task))
 };
-(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, dependencyPath_, $c));
-(await ff_core_FileSystem.FileSystem_writeStream$(fs_, tarGzPath_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), false, $c)), false, $c));
-(await ff_compiler_Dependencies.internalExtractTarGz_$(fs_, tarGzPath_, dependencyPath_, $c));
-(await ff_core_FileSystem.FileSystem_rename$(fs_, tarGzPath_, donePath_, $c))
+(await ff_core_FileSystem.FileSystem_createDirectories$(fs_, dependencyPath_, $task));
+(await ff_core_FileSystem.FileSystem_writeStream$(fs_, tarGzPath_, (await ff_core_List.List_toStream$(ff_core_List.Link(buffer_, ff_core_List.Empty()), false, $task)), false, $task));
+(await ff_compiler_Dependencies.internalExtractTarGz_$(fs_, tarGzPath_, dependencyPath_, $task));
+(await ff_core_FileSystem.FileSystem_rename$(fs_, tarGzPath_, donePath_, $task))
 };
 return dependencyPath_
 } else {
@@ -361,19 +367,19 @@ return location_
 }
 }
 
-export async function Dependencies_processDependencies$(self_, fs_, fetch_, dependencies_, $c) {
-const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (dependency_, $c) => {
-const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, fetch_, dependency_, $c));
+export async function Dependencies_processDependencies$(self_, fs_, httpClient_, dependencies_, $task) {
+const packageInfos_ = (await ff_core_List.List_map$(dependencies_, (async (dependency_, $task) => {
+const path_ = (await ff_compiler_Dependencies.Dependencies_fetchDependency$(self_, fs_, httpClient_, dependency_, $task));
 self_.packagePaths_ = ff_core_Map.Map_add(self_.packagePaths_, dependency_.packagePair_, path_, ff_compiler_Syntax.ff_core_Ordering_Order$ff_compiler_Syntax_PackagePair);
-const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, dependency_.packagePair_, path_, $c));
+const packageInfo_ = (await ff_compiler_Dependencies.Dependencies_loadPackageInfo$(self_, fs_, dependency_.packagePair_, path_, $task));
 ff_compiler_Dependencies.checkPackagePairs_(dependency_.packagePair_, packageInfo_.package_.packagePair_);
 return packageInfo_
-}), $c));
+}), $task));
 const newDependencies_ = ff_core_List.List_flatMap(packageInfos_, ((_w1) => {
 return ff_compiler_Dependencies.Dependencies_processPackageInfo(self_, _w1)
 }));
 if(ff_core_Equal.notEquals_(newDependencies_, ff_core_List.Empty(), ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_compiler_Syntax.ff_core_Equal_Equal$ff_compiler_Syntax_DDependency))) {
-(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, fetch_, newDependencies_, $c))
+(await ff_compiler_Dependencies.Dependencies_processDependencies$(self_, fs_, httpClient_, newDependencies_, $task))
 }
 }
 
@@ -381,7 +387,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Dependencies_ResolvedDependencies
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependencies" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Dependencies.ResolvedDependencies" + "[") + "]"))
 }
 };
@@ -397,7 +403,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -427,7 +433,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -484,7 +490,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -559,7 +565,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -576,7 +582,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

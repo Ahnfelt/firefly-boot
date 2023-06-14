@@ -6,6 +6,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -26,13 +28,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -45,6 +47,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -60,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -74,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -91,7 +97,7 @@ export function make_() {
 return new Map()
 }
 
-export async function make_$($c) {
+export async function make_$($task) {
 throw new Error('Function make is missing on this target in async context.');
 }
 
@@ -181,43 +187,43 @@ export function IntMap_copy(self_) {
 return new Map(self_)
 }
 
-export async function IntMap_get$(self_, key_, $c) {
+export async function IntMap_get$(self_, key_, $task) {
 throw new Error('Function IntMap_get is missing on this target in async context.');
 }
 
-export async function IntMap_grab$(self_, key_, $c) {
+export async function IntMap_grab$(self_, key_, $task) {
 throw new Error('Function IntMap_grab is missing on this target in async context.');
 }
 
-export async function IntMap_set$(self_, key_, value_, $c) {
+export async function IntMap_set$(self_, key_, value_, $task) {
 throw new Error('Function IntMap_set is missing on this target in async context.');
 }
 
-export async function IntMap_has$(self_, key_, $c) {
+export async function IntMap_has$(self_, key_, $task) {
 throw new Error('Function IntMap_has is missing on this target in async context.');
 }
 
-export async function IntMap_remove$(self_, key_, $c) {
+export async function IntMap_remove$(self_, key_, $task) {
 throw new Error('Function IntMap_remove is missing on this target in async context.');
 }
 
-export async function IntMap_clear$(self_, $c) {
+export async function IntMap_clear$(self_, $task) {
 throw new Error('Function IntMap_clear is missing on this target in async context.');
 }
 
-export async function IntMap_size$(self_, $c) {
+export async function IntMap_size$(self_, $task) {
 throw new Error('Function IntMap_size is missing on this target in async context.');
 }
 
-export async function IntMap_each$(self_, body_, $c) {
+export async function IntMap_each$(self_, body_, $task) {
 for(const [k, v] of self_) await body_(k, v)
 }
 
-export async function IntMap_eachWhile$(self_, body_, $c) {
+export async function IntMap_eachWhile$(self_, body_, $task) {
 for(const [k, v] of self_) if(!await body_(k, v)) break
 }
 
-export async function IntMap_toStack$(self_, $c) {
+export async function IntMap_toStack$(self_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Stack.Stack_push(stack_, ff_core_Pair.Pair(k_, v_))
@@ -225,23 +231,23 @@ ff_core_Stack.Stack_push(stack_, ff_core_Pair.Pair(k_, v_))
 return stack_
 }
 
-export async function IntMap_toArray$(self_, $c) {
+export async function IntMap_toArray$(self_, $task) {
 return ff_core_Stack.Stack_drain(ff_core_IntMap.IntMap_toStack(self_))
 }
 
-export async function IntMap_toList$(self_, $c) {
+export async function IntMap_toList$(self_, $task) {
 return ff_core_Array.Array_toList(ff_core_IntMap.IntMap_toArray(self_))
 }
 
-export async function IntMap_toStream$(self_, $c) {
-return (await ff_core_Array.Array_toStream$(ff_core_IntMap.IntMap_toArray(self_), false, $c))
+export async function IntMap_toStream$(self_, $task) {
+return (await ff_core_Array.Array_toStream$(ff_core_IntMap.IntMap_toArray(self_), false, $task))
 }
 
-export async function IntMap_toMap$(self_, $c) {
+export async function IntMap_toMap$(self_, $task) {
 return ff_core_Array.Array_toMap(ff_core_IntMap.IntMap_toArray(self_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int)
 }
 
-export async function IntMap_keys$(self_, $c) {
+export async function IntMap_keys$(self_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Stack.Stack_push(stack_, k_)
@@ -249,7 +255,7 @@ ff_core_Stack.Stack_push(stack_, k_)
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
-export async function IntMap_values$(self_, $c) {
+export async function IntMap_values$(self_, $task) {
 const stack_ = ff_core_Stack.make_();
 ff_core_IntMap.IntMap_each(self_, ((k_, v_) => {
 ff_core_Stack.Stack_push(stack_, v_)
@@ -257,76 +263,10 @@ ff_core_Stack.Stack_push(stack_, v_)
 return ff_core_Stack.Stack_toList(stack_, 0, 9007199254740991)
 }
 
-export async function IntMap_copy$(self_, $c) {
+export async function IntMap_copy$(self_, $task) {
 throw new Error('Function IntMap_copy is missing on this target in async context.');
 }
 
-export function IntMap_show(self_, ff_core_Show_Show$V) {
-return (ff_core_List.List_show(ff_core_IntMap.IntMap_toList(self_), ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Show_Show$V)) + ".toIntMap()")
-}
 
-export async function IntMap_show$(self_, ff_core_Show_Show$V, $c) {
-return (ff_core_List.List_show(ff_core_IntMap.IntMap_toList(self_), ff_core_Show.ff_core_Show_Show$ff_core_Pair_Pair(ff_core_Show.ff_core_Show_Show$ff_core_Int_Int, ff_core_Show_Show$V)) + ".toIntMap()")
-}
-
-export function ff_core_Show_Show$ff_core_IntMap_IntMap(ff_core_Show_Show$V) { return {
-show_(self_) {
-return ff_core_IntMap.IntMap_show(self_, ff_core_Show_Show$V)
-},
-async show_$(self_, $c) {
-return ff_core_IntMap.IntMap_show(self_, ff_core_Show_Show$V)
-}
-}}
-
-export function ff_core_Equal_Equal$ff_core_IntMap_IntMap(ff_core_Equal_Equal$V) { return {
-equals_(self_, that_) {
-return ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Equal_Equal$V)).equals_(ff_core_IntMap.IntMap_toArray(self_), ff_core_IntMap.IntMap_toArray(that_))
-},
-async equals_$(self_, that_, $c) {
-return ff_core_Array.ff_core_Equal_Equal$ff_core_Array_Array(ff_core_Pair.ff_core_Equal_Equal$ff_core_Pair_Pair(ff_core_Equal.ff_core_Equal_Equal$ff_core_Int_Int, ff_core_Equal_Equal$V)).equals_(ff_core_IntMap.IntMap_toArray(self_), ff_core_IntMap.IntMap_toArray(that_))
-}
-}}
-
-export function ff_core_Ordering_Order$ff_core_IntMap_IntMap(ff_core_Ordering_Order$V) { return {
-compare_(self_, that_) {
-return ff_core_Array.ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Ordering_Order$V)).compare_(ff_core_IntMap.IntMap_toArray(self_), ff_core_IntMap.IntMap_toArray(that_))
-},
-async compare_$(self_, that_, $c) {
-return ff_core_Array.ff_core_Ordering_Order$ff_core_Array_Array(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Pair_Pair(ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int, ff_core_Ordering_Order$V)).compare_(ff_core_IntMap.IntMap_toArray(self_), ff_core_IntMap.IntMap_toArray(that_))
-}
-}}
-
-export function ff_core_Serializable_Serializable$ff_core_IntMap_IntMap(ff_core_Serializable_Serializable$V) { return {
-serializeUsing_(serialization_, self_) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_IntMap.IntMap_toArray(self_))
-},
-deserializeUsing_(serialization_) {
-const result_ = ff_core_IntMap.make_();
-ff_core_Array.Array_each(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ((_1) => {
-{
-const k_ = _1.first_;
-const v_ = _1.second_;
-ff_core_IntMap.IntMap_set(result_, k_, v_)
-return
-}
-}));
-return result_
-},
-async serializeUsing_$(serialization_, self_, $c) {
-ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Serializable_Serializable$V)).serializeUsing_(serialization_, ff_core_IntMap.IntMap_toArray(self_))
-},
-async deserializeUsing_$(serialization_, $c) {
-const result_ = ff_core_IntMap.make_();
-ff_core_Array.Array_each(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Array_Array(ff_core_Pair.ff_core_Serializable_Serializable$ff_core_Pair_Pair(ff_core_Serializable.ff_core_Serializable_Serializable$ff_core_Int_Int, ff_core_Serializable_Serializable$V)).deserializeUsing_(serialization_), ((_1) => {
-{
-const k_ = _1.first_;
-const v_ = _1.second_;
-ff_core_IntMap.IntMap_set(result_, k_, v_)
-return
-}
-}));
-return result_
-}
-}}
 
 

@@ -6,6 +6,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -26,13 +28,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -45,6 +47,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -60,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -74,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -116,30 +122,30 @@ stream_.close_()
 }))
 }
 
-export async function make_$(next_, close_ = (async ($c) => {
+export async function make_$(next_, close_ = (async ($task) => {
 
-}), $c) {
+}), $task) {
 return ff_core_Stream.Stream(next_, close_)
 }
 
-export async function init_$(body_, $c) {
+export async function init_$(body_, $task) {
 let initialized_ = false;
-let stream_ = ff_core_Stream.Stream((async ($c) => {
+let stream_ = ff_core_Stream.Stream((async ($task) => {
 return ff_core_Option.None()
-}), (async ($c) => {
+}), (async ($task) => {
 
 }));
-return ff_core_Stream.Stream((async ($c) => {
+return ff_core_Stream.Stream((async ($task) => {
 if(initialized_) {
-return (await stream_.next_($c))
+return (await stream_.next_($task))
 } else {
 initialized_ = true;
-stream_ = (await body_($c));
-return (await stream_.next_($c))
+stream_ = (await body_($task));
+return (await stream_.next_($task))
 }
-}), (async ($c) => {
+}), (async ($task) => {
 initialized_ = true;
-(await stream_.close_($c))
+(await stream_.close_($task))
 }))
 }
 
@@ -668,45 +674,45 @@ export function Stream_toList(self_) {
 return ff_core_Stack.Stack_toList(ff_core_Stream.Stream_toStack(self_), 0, 9007199254740991)
 }
 
-export async function Stream_addAll$(self_, that_, $c) {
+export async function Stream_addAll$(self_, that_, $task) {
 let firstDone_ = false;
-return ff_core_Stream.Stream((async ($c) => {
+return ff_core_Stream.Stream((async ($task) => {
 if(firstDone_) {
-return (await that_.next_($c))
+return (await that_.next_($task))
 } else {
-return (await ff_core_Option.Option_orElse$((await self_.next_($c)), (async ($c) => {
+return (await ff_core_Option.Option_orElse$((await self_.next_($task)), (async ($task) => {
 firstDone_ = true;
-return (await that_.next_($c))
-}), $c))
+return (await that_.next_($task))
+}), $task))
 }
-}), (async ($c) => {
+}), (async ($task) => {
 try {
-(await self_.close_($c))
+(await self_.close_($task))
 } finally {
-(await that_.close_($c))
+(await that_.close_($task))
 }
 }))
 }
 
-export async function Stream_map$(self_, body_, $c) {
-return ff_core_Stream.Stream((async ($c) => {
-return (await ff_core_Option.Option_map$((await self_.next_($c)), body_, $c))
-}), (async ($c) => {
-(await self_.close_($c))
+export async function Stream_map$(self_, body_, $task) {
+return ff_core_Stream.Stream((async ($task) => {
+return (await ff_core_Option.Option_map$((await self_.next_($task)), body_, $task))
+}), (async ($task) => {
+(await self_.close_($task))
 }))
 }
 
-export async function Stream_flatMap$(self_, body_, $c) {
-let inner_ = ff_core_Stream.Stream((async ($c) => {
+export async function Stream_flatMap$(self_, body_, $task) {
+let inner_ = ff_core_Stream.Stream((async ($task) => {
 return ff_core_Option.None()
-}), (async ($c) => {
+}), (async ($task) => {
 
 }));
-return ff_core_Stream.Stream((async ($c) => {
+return ff_core_Stream.Stream((async ($task) => {
 let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
 do {
-const _1 = (await inner_.next_($c));
+const _1 = (await inner_.next_($task));
 {
 const i_ = _1;
 if(_1.Some) {
@@ -717,7 +723,7 @@ break
 {
 if(_1.None) {
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 result_ = ff_core_Option.Some(ff_core_Option.None())
@@ -727,7 +733,7 @@ break
 {
 if(_1.Some) {
 const o_ = _1.value_;
-inner_ = (await body_(o_, $c))
+inner_ = (await body_(o_, $task))
 break
 }
 }
@@ -738,31 +744,31 @@ break
 } while(false)
 };
 return ff_core_Option.Option_grab(result_)
-}), (async ($c) => {
+}), (async ($task) => {
 try {
-(await inner_.close_($c))
+(await inner_.close_($task))
 } finally {
-(await self_.close_($c))
+(await self_.close_($task))
 }
 }))
 }
 
-export async function Stream_collect$(self_, body_, $c) {
-return (await ff_core_Stream.Stream_flatMap$(self_, (async (_w1, $c) => {
-return (await ff_core_Option.Option_toStream$((await body_(_w1, $c)), false, $c))
-}), $c))
+export async function Stream_collect$(self_, body_, $task) {
+return (await ff_core_Stream.Stream_flatMap$(self_, (async (_w1, $task) => {
+return (await ff_core_Option.Option_toStream$((await body_(_w1, $task)), false, $task))
+}), $task))
 }
 
-export async function Stream_filter$(self_, body_, $c) {
-return ff_core_Stream.Stream((async ($c) => {
+export async function Stream_filter$(self_, body_, $task) {
+return ff_core_Stream.Stream((async ($task) => {
 let result_ = ff_core_Option.None();
 while(ff_core_Option.Option_isEmpty(result_)) {
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.Some) {
 const x_ = _1.value_;
-const _guard1 = (await body_(x_, $c));
+const _guard1 = (await body_(x_, $task));
 if(_guard1) {
 result_ = ff_core_Option.Some(ff_core_Option.Some(x_))
 break
@@ -784,15 +790,15 @@ break
 } while(false)
 };
 return ff_core_Option.Option_grab(result_)
-}), (async ($c) => {
-(await self_.close_($c))
+}), (async ($task) => {
+(await self_.close_($task))
 }))
 }
 
-export async function Stream_zip$(self_, that_, $c) {
-return ff_core_Stream.Stream((async ($c) => {
+export async function Stream_zip$(self_, that_, $task) {
+return ff_core_Stream.Stream((async ($task) => {
 {
-const _1 = ff_core_Pair.Pair((await self_.next_($c)), (await that_.next_($c)));
+const _1 = ff_core_Pair.Pair((await self_.next_($task)), (await that_.next_($task)));
 {
 if(_1.first_.Some) {
 const x_ = _1.first_.value_;
@@ -808,33 +814,33 @@ return ff_core_Option.None()
 return
 }
 }
-}), (async ($c) => {
+}), (async ($task) => {
 try {
-(await self_.close_($c))
+(await self_.close_($task))
 } finally {
-(await that_.close_($c))
+(await that_.close_($task))
 }
 }))
 }
 
-export async function Stream_takeFirst$(self_, count_ = 1, $c) {
+export async function Stream_takeFirst$(self_, count_ = 1, $task) {
 let remaining_ = count_;
-return ff_core_Stream.Stream((async ($c) => {
-return ff_core_Option.Option_filter((await self_.next_($c)), ((_) => {
+return ff_core_Stream.Stream((async ($task) => {
+return ff_core_Option.Option_filter((await self_.next_($task)), ((_) => {
 remaining_ -= 1;
 return (remaining_ >= 0)
 }))
-}), (async ($c) => {
-(await self_.close_($c))
+}), (async ($task) => {
+(await self_.close_($task))
 }))
 }
 
-export async function Stream_dropFirst$(self_, count_ = 1, $c) {
+export async function Stream_dropFirst$(self_, count_ = 1, $task) {
 let remaining_ = count_;
-return ff_core_Stream.Stream((async ($c) => {
+return ff_core_Stream.Stream((async ($task) => {
 while((remaining_ >= 1)) {
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 remaining_ = 0
@@ -849,20 +855,20 @@ break
 }
 } while(false)
 };
-return (await self_.next_($c))
-}), (async ($c) => {
-(await self_.close_($c))
+return (await self_.next_($task))
+}), (async ($task) => {
+(await self_.close_($task))
 }))
 }
 
-export async function Stream_takeWhile$(self_, body_, $c) {
+export async function Stream_takeWhile$(self_, body_, $task) {
 let done_ = false;
-return ff_core_Stream.Stream((async ($c) => {
+return ff_core_Stream.Stream((async ($task) => {
 if(done_) {
 return ff_core_Option.None()
 } else {
 {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 done_ = true;
@@ -874,7 +880,7 @@ return
 const o_ = _1;
 if(_1.Some) {
 const x_ = _1.value_;
-done_ = (!(await body_(x_, $c)));
+done_ = (!(await body_(x_, $task)));
 if(done_) {
 return ff_core_Option.None()
 } else {
@@ -885,19 +891,19 @@ return
 }
 }
 }
-}), (async ($c) => {
-(await self_.close_($c))
+}), (async ($task) => {
+(await self_.close_($task))
 }))
 }
 
-export async function Stream_dropWhile$(self_, body_, $c) {
+export async function Stream_dropWhile$(self_, body_, $task) {
 let done_ = false;
-return ff_core_Stream.Stream((async ($c) => {
+return ff_core_Stream.Stream((async ($task) => {
 if((!done_)) {
 let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 done_ = true
@@ -907,7 +913,7 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-const _guard1 = (await body_(x_, $c));
+const _guard1 = (await body_(x_, $task));
 if(_guard1) {
 
 break
@@ -927,30 +933,30 @@ break
 };
 return result_
 } else {
-return (await self_.next_($c))
+return (await self_.next_($task))
 }
-}), (async ($c) => {
-(await self_.close_($c))
+}), (async ($task) => {
+(await self_.close_($task))
 }))
 }
 
-export async function Stream_pairs$(self_, $c) {
+export async function Stream_pairs$(self_, $task) {
 let i_ = 0;
-return (await ff_core_Stream.Stream_map$(self_, (async (x_, $c) => {
+return (await ff_core_Stream.Stream_map$(self_, (async (x_, $task) => {
 const r_ = ff_core_Pair.Pair(i_, x_);
 i_ += 1;
 return r_
-}), $c))
+}), $task))
 }
 
-export async function Stream_chunked$(self_, size_, $c) {
+export async function Stream_chunked$(self_, size_, $task) {
 let remaining_ = size_;
-return ff_core_Stream.Stream((async ($c) => {
+return ff_core_Stream.Stream((async ($task) => {
 if((remaining_ <= 0)) {
 return ff_core_Option.None()
 } else {
 {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 remaining_ = (-1);
@@ -966,7 +972,7 @@ remaining_ -= 1;
 while((remaining_ > 0)) {
 remaining_ -= 1;
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 remaining_ = (-1)
@@ -991,25 +997,25 @@ return
 }
 }
 }
-}), (async ($c) => {
-(await self_.close_($c))
+}), (async ($task) => {
+(await self_.close_($task))
 }))
 }
 
-export async function Stream_use$(self_, body_, $c) {
+export async function Stream_use$(self_, body_, $task) {
 try {
-return (await body_(self_, $c))
+return (await body_(self_, $task))
 } finally {
-(await self_.close_($c))
+(await self_.close_($task))
 }
 }
 
-export async function Stream_each$(self_, body_, $c) {
+export async function Stream_each$(self_, body_, $task) {
 try {
 let done_ = false;
 while((!done_)) {
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 done_ = true
@@ -1019,23 +1025,23 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-(await body_(x_, $c))
+(await body_(x_, $task))
 break
 }
 }
 } while(false)
 }
 } finally {
-(await self_.close_($c))
+(await self_.close_($task))
 }
 }
 
-export async function Stream_eachWhile$(self_, body_, $c) {
+export async function Stream_eachWhile$(self_, body_, $task) {
 try {
 let done_ = false;
 while((!done_)) {
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 done_ = true
@@ -1045,50 +1051,50 @@ break
 {
 if(_1.Some) {
 const x_ = _1.value_;
-done_ = (!(await body_(x_, $c)))
+done_ = (!(await body_(x_, $task)))
 break
 }
 }
 } while(false)
 }
 } finally {
-(await self_.close_($c))
+(await self_.close_($task))
 }
 }
 
-export async function Stream_all$(self_, body_, $c) {
+export async function Stream_all$(self_, body_, $task) {
 let result_ = true;
-(await ff_core_Stream.Stream_eachWhile$(self_, (async (x_, $c) => {
-result_ = (result_ && (await body_(x_, $c)));
+(await ff_core_Stream.Stream_eachWhile$(self_, (async (x_, $task) => {
+result_ = (result_ && (await body_(x_, $task)));
 return result_
-}), $c));
+}), $task));
 return result_
 }
 
-export async function Stream_any$(self_, body_, $c) {
+export async function Stream_any$(self_, body_, $task) {
 let result_ = false;
-(await ff_core_Stream.Stream_eachWhile$(self_, (async (x_, $c) => {
-result_ = (result_ || (await body_(x_, $c)));
+(await ff_core_Stream.Stream_eachWhile$(self_, (async (x_, $task) => {
+result_ = (result_ || (await body_(x_, $task)));
 return (!result_)
-}), $c));
+}), $task));
 return result_
 }
 
-export async function Stream_first$(self_, $c) {
+export async function Stream_first$(self_, $task) {
 try {
-return (await self_.next_($c))
+return (await self_.next_($task))
 } finally {
-(await self_.close_($c))
+(await self_.close_($task))
 }
 }
 
-export async function Stream_last$(self_, $c) {
+export async function Stream_last$(self_, $task) {
 try {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 done_ = true
@@ -1107,29 +1113,29 @@ break
 };
 return result_
 } finally {
-(await self_.close_($c))
+(await self_.close_($task))
 }
 }
 
-export async function Stream_grabFirst$(self_, $c) {
-return ff_core_Option.Option_else((await ff_core_Stream.Stream_first$(self_, $c)), (() => {
+export async function Stream_grabFirst$(self_, $task) {
+return ff_core_Option.Option_else((await ff_core_Stream.Stream_first$(self_, $task)), (() => {
 return ff_core_Core.panic_("grabFirst() on empty iterator")
 }))
 }
 
-export async function Stream_grabLast$(self_, $c) {
-return ff_core_Option.Option_else((await ff_core_Stream.Stream_last$(self_, $c)), (() => {
+export async function Stream_grabLast$(self_, $task) {
+return ff_core_Option.Option_else((await ff_core_Stream.Stream_last$(self_, $task)), (() => {
 return ff_core_Core.panic_("grabLast() on empty iterator")
 }))
 }
 
-export async function Stream_collectFirst$(self_, body_, $c) {
+export async function Stream_collectFirst$(self_, body_, $task) {
 try {
 let done_ = false;
 let result_ = ff_core_Option.None();
 while((!done_)) {
 do {
-const _1 = (await self_.next_($c));
+const _1 = (await self_.next_($task));
 {
 if(_1.None) {
 done_ = true
@@ -1140,7 +1146,7 @@ break
 if(_1.Some) {
 const x_ = _1.value_;
 do {
-const _1 = (await body_(x_, $c));
+const _1 = (await body_(x_, $task));
 {
 if(_1.None) {
 
@@ -1161,36 +1167,36 @@ break
 };
 return result_
 } finally {
-(await self_.close_($c))
+(await self_.close_($task))
 }
 }
 
-export async function Stream_find$(self_, body_, $c) {
-return (await ff_core_Stream.Stream_first$((await ff_core_Stream.Stream_filter$(self_, body_, $c)), $c))
+export async function Stream_find$(self_, body_, $task) {
+return (await ff_core_Stream.Stream_first$((await ff_core_Stream.Stream_filter$(self_, body_, $task)), $task))
 }
 
-export async function Stream_foldLeft$(self_, initial_, body_, $c) {
+export async function Stream_foldLeft$(self_, initial_, body_, $task) {
 let result_ = initial_;
-(await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
-result_ = (await body_(result_, _w1, $c))
-}), $c));
+(await ff_core_Stream.Stream_each$(self_, (async (_w1, $task) => {
+result_ = (await body_(result_, _w1, $task))
+}), $task));
 return result_
 }
 
-export async function Stream_toStack$(self_, $c) {
+export async function Stream_toStack$(self_, $task) {
 const stack_ = ff_core_Stack.make_();
-(await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
+(await ff_core_Stream.Stream_each$(self_, (async (_w1, $task) => {
 ff_core_Stack.Stack_push(stack_, _w1)
-}), $c));
+}), $task));
 return stack_
 }
 
-export async function Stream_toArray$(self_, $c) {
-return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $c)))
+export async function Stream_toArray$(self_, $task) {
+return ff_core_Stack.Stack_drain((await ff_core_Stream.Stream_toStack$(self_, $task)))
 }
 
-export async function Stream_toList$(self_, $c) {
-return ff_core_Stack.Stack_toList((await ff_core_Stream.Stream_toStack$(self_, $c)), 0, 9007199254740991)
+export async function Stream_toList$(self_, $task) {
+return ff_core_Stack.Stack_toList((await ff_core_Stream.Stream_toStack$(self_, $task)), 0, 9007199254740991)
 }
 
 export function Stream_flatten(self_) {
@@ -1199,26 +1205,26 @@ return _w1
 }))
 }
 
-export async function Stream_flatten$(self_, $c) {
-return (await ff_core_Stream.Stream_flatMap$(self_, (async (_w1, $c) => {
+export async function Stream_flatten$(self_, $task) {
+return (await ff_core_Stream.Stream_flatMap$(self_, (async (_w1, $task) => {
 return _w1
-}), $c))
+}), $task))
 }
 
 export function Stream_toSet(self_, ff_core_Ordering_Order$T) {
 return ff_core_Array.Array_toSet(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$T)
 }
 
-export async function Stream_toSet$(self_, ff_core_Ordering_Order$T, $c) {
-return ff_core_Array.Array_toSet((await ff_core_Stream.Stream_toArray$(self_, $c)), ff_core_Ordering_Order$T)
+export async function Stream_toSet$(self_, ff_core_Ordering_Order$T, $task) {
+return ff_core_Array.Array_toSet((await ff_core_Stream.Stream_toArray$(self_, $task)), ff_core_Ordering_Order$T)
 }
 
 export function Stream_toMap(self_, ff_core_Ordering_Order$K) {
 return ff_core_Array.Array_toMap(ff_core_Stream.Stream_toArray(self_), ff_core_Ordering_Order$K)
 }
 
-export async function Stream_toMap$(self_, ff_core_Ordering_Order$K, $c) {
-return ff_core_Array.Array_toMap((await ff_core_Stream.Stream_toArray$(self_, $c)), ff_core_Ordering_Order$K)
+export async function Stream_toMap$(self_, ff_core_Ordering_Order$K, $task) {
+return ff_core_Array.Array_toMap((await ff_core_Stream.Stream_toArray$(self_, $task)), ff_core_Ordering_Order$K)
 }
 
 export function Stream_toBuffer(self_) {
@@ -1256,24 +1262,24 @@ return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(buffers_), ff_core_Stream.Str
 }
 }
 
-export async function Stream_toBuffer$(self_, $c) {
+export async function Stream_toBuffer$(self_, $task) {
 const builder_ = ff_core_Stack.make_();
-(await ff_core_Stream.Stream_each$(self_, (async (_w1, $c) => {
+(await ff_core_Stream.Stream_each$(self_, (async (_w1, $task) => {
 ff_core_Stack.Stack_push(builder_, _w1)
-}), $c));
+}), $task));
 return ff_core_Buffer.fromBufferArray_(ff_core_Stack.Stack_drain(builder_))
 }
 
-export async function Stream_toString$(self_, encoding_ = "utf8", $c) {
-return ff_core_Buffer.Buffer_toString((await ff_core_Stream.Stream_toBuffer$(self_, $c)), encoding_)
+export async function Stream_toString$(self_, encoding_ = "utf8", $task) {
+return ff_core_Buffer.Buffer_toString((await ff_core_Stream.Stream_toBuffer$(self_, $task)), encoding_)
 }
 
-export async function Stream_readBytes$(self_, bytes_, $c) {
+export async function Stream_readBytes$(self_, bytes_, $task) {
 if((bytes_ <= 0)) {
 return ff_core_Pair.Pair(ff_core_List.List_toArray(ff_core_List.Empty()), self_)
 } else {
 const buffers_ = ff_core_Stack.make_();
-let buffer_ = ff_core_Option.Option_grab((await self_.next_($c)));
+let buffer_ = ff_core_Option.Option_grab((await self_.next_($task)));
 let taken_ = 0;
 let remainder_ = ff_core_Option.None();
 while(ff_core_Option.ff_core_Equal_Equal$ff_core_Option_Option(ff_core_Buffer.ff_core_Equal_Equal$ff_core_Buffer_Buffer).equals_(remainder_, ff_core_Option.None())) {
@@ -1281,13 +1287,13 @@ const needed_ = (bytes_ - taken_);
 if((needed_ > ff_core_Buffer.Buffer_size(buffer_))) {
 ff_core_Stack.Stack_push(buffers_, buffer_);
 taken_ += ff_core_Buffer.Buffer_size(buffer_);
-buffer_ = ff_core_Option.Option_grab((await self_.next_($c)))
+buffer_ = ff_core_Option.Option_grab((await self_.next_($task)))
 } else {
 ff_core_Stack.Stack_push(buffers_, ff_core_Buffer.Buffer_view(buffer_, 0, needed_));
 remainder_ = ff_core_Option.Some(ff_core_Buffer.Buffer_view(buffer_, needed_, ff_core_Buffer.Buffer_size(buffer_)))
 }
 };
-return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(buffers_), (await ff_core_Stream.Stream_addAll$((await ff_core_Option.Option_toStream$(remainder_, false, $c)), self_, $c)))
+return ff_core_Pair.Pair(ff_core_Stack.Stack_drain(buffers_), (await ff_core_Stream.Stream_addAll$((await ff_core_Option.Option_toStream$(remainder_, false, $task)), self_, $task)))
 }
 }
 

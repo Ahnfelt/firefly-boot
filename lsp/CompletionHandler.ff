@@ -15,7 +15,8 @@ data CompletionInfo(
     secondarySort: Int = 5
 )
 
-handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
+handleCompletion(system: NodeSystem, lspHook: LspHook, toplevel: Bool): JsValue {
+    let topLevelCompletions = if(!toplevel) {[]} else {toplevelCompletion(lspHook)}
     let patternCompletions = lspHook.results().collectFirst {
         | InferPatternHook h =>
             let expected = h.unification.substitute(h.expected)
@@ -148,13 +149,14 @@ handleCompletion(system: NodeSystem, lspHook: LspHook): JsValue {
             (c.snippet.slice(0, 1).lower() + c.snippet.dropFirst()).takeWhile {_ != '['} + ": " + c.snippet
         )}
     }
-    completionsToJson(system.js(), [...completions, ...fixedTypeCompletions])
+    completionsToJson(system.js(), [...completions, ...fixedTypeCompletions, ...topLevelCompletions])
 }
 
 completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
     js.object()
         .with("isIncomplete", False)
         .with("items", completions.distinct().toArray().map {| CompletionInfo i =>
+            let shownType = i.type.show([])
             let isAlpha = i.label.first().any {_.isAsciiLetter()}
             let isLower = i.label.first().any {_.isAsciiLower()}
             let isUnqualified = !i.label.contains(".")
@@ -171,8 +173,9 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
                 | _ => False
             }
             js.object()
-                // Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
+                // Namespace or Property or Constructor or EnumMember or Constructor or Method/Function or Field/Variable
                 .with("kind"
+                    if(shownType == "") {3} else:
                     if(isParameter) {10} else:
                     if(i.type.{| TConstructor(_, "type", _) => True | _ => False}) {9} else:
                     if(i.label.first().any {c => c == '{' || c == '|'}) {22} else:
@@ -183,7 +186,7 @@ completionsToJson(js: JsSystem, completions: List[CompletionInfo]): JsValue {
                 .with("preselect", preselect)
                 .with("label", i.label)
                 .with("labelDetails", js.object()
-                    .with("detail", i.extra + ": " + i.type.show([]))
+                    .with("detail", i.extra + if(shownType == "") {""} else {": " + shownType})
                 )
                 .with("insertText", i.snippet)
                 .with("insertTextFormat", 2 /* Snippet */)
@@ -624,6 +627,164 @@ namedParameterCompletion(parameter: Parameter, index: Int, preselect: Bool): Com
     )
 }
 
+toplevelCompletion(lspHook: LspHook): List[CompletionInfo] {
+    [
+        CompletionInfo(
+            label = "package", 
+            extra = " some:package:0.0.0", 
+            snippet = "package ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Declares the group, name and version of this package", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "dependency", 
+            extra = " some:package:0.0.0", 
+            snippet = "dependency ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Declares a dependency on the specified version of the package", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "import", 
+            extra = " Module from some:package", 
+            snippet = "import ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Imports a module from a package", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "extend", 
+            extra = " self[T]: SomeType[T] {...}", 
+            snippet = "extend ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Add methods to a type defined in this module", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "data", 
+            extra = " SomeType[T](...) {...}", 
+            snippet = "data ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Defines an immutable type", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "class", 
+            extra = " SomeType[T](...) {...}", 
+            snippet = "class ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Defines a mutable type", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "capability", 
+            extra = " SomeType[T](...) {...}", 
+            snippet = "capability ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Defines a type with capabilities and functions", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "trait", 
+            extra = " T: SomeTrait {...}", 
+            snippet = "trait ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Defines a trait", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "instance", 
+            extra = " SomeType: SomeTrait {...}", 
+            snippet = "instance ", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Defines an instance of a trait", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "nodeMain", 
+            extra = "(system: NodeSystem) {...}", 
+            snippet = "nodeMain(system: NodeSystem) {\n    $0\n}", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Main function for targetting Node.js", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "browserMain", 
+            extra = "(system: BrowserSystem) {...}", 
+            snippet = "browserMain(system: BrowserSystem) {\n    $0\n}", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Main function for targetting the browser", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "buildMain", 
+            extra = "(system: BuildSystem) {...}", 
+            snippet = "buildMain(system: NodeSystem) {\n    $0\n}", 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Main function for building assets", 
+            expectedType = None
+        )
+        CompletionInfo(
+            label = "webapp", 
+            extra = " with frontend and backend", 
+            snippet = [
+                "dependency ff:httpserver:0.0.0"
+                "import HttpServer from ff:httpserver"
+                ""
+                "browserMain(system: BrowserSystem): Unit {"
+                "    let response = system.httpClient().fetch(\"http://localhost:8080/hello\")"
+                "    let window = system.js().global().get(\"window\")"
+                "    window.call1(\"alert\", response.readText())"
+                "}"
+                ""
+                "nodeMain(system: NodeSystem): Unit {"
+                "    HttpServer.listen(system, \"localhost\", 8080) {request, response =>"
+                "        if(request.path() == \"/\") {"
+                "            response.setHeader(\"Content-Type\", [\"text/html; charset=UTF-8\"])"
+                "            response.writeText(\"<!doctype html>\")"
+                "            response.writeText(\"<script type='module' src='/js/script/script/WebApp.mjs'></script>\")"
+                "        } elseIf {request.path() == \"/hello\"} {"
+                "            response.setHeader(\"Content-Type\", [\"text/plain; charset=UTF-8\"])"
+                "            response.writeText(\"Hello from server!\")"
+                "        } elseIf {request.path().startsWith(\"/js/\") && !request.path().contains(\"..\")} {"
+                "            response.setHeader(\"Content-Type\", [\"text/javascript; charset=UTF-8\"])"
+                "            response.writeText(system.assets().readText(request.path()))"
+                "        } else {"
+                "            response.writeStatus(404, Some(\"Not found\"))"
+                "        }"
+                "    }"
+                "}"
+                ""
+                "buildMain(system: BuildSystem) {"
+                "    let browser = system.compileForBrowser(\"WebApp.ff\")"
+                "    let assets = AssetSystem.create().addAssets(\"/js\", browser.assets())"
+                "    system.setAssets(assets)"
+                "}"
+                ""
+                "// To run this, name your file WebApp.ff and type:"
+                "// firefly WebApp.ff"
+            ].join("\n"), 
+            member = False, 
+            type = TConstructor(lspHook.at, "", []), 
+            documentation = "// Example webapp with frontend and backend", 
+            expectedType = None
+        )
+    ]
+}
+
 showCompletionParameter(indentation: String, parameter: Parameter): String {
     if(parameter.mutable) {indentation + "mutable "} else {indentation} +
     parameter.name + ": " + parameter.valueType.show([]) +
@@ -641,6 +802,6 @@ showCompletionParameter(indentation: String, parameter: Parameter): String {
         | ELambda(_, _) => "{...}"
         | EList(_, _, []) => "[]"
         | EList(_, _, _) => "[...]"
-        | _ => " = ..."
+        | _ => "..."
     }.map {" = " + _}.else {""}
 }

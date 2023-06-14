@@ -12,6 +12,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -32,13 +34,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -51,6 +53,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -66,6 +70,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -80,7 +86,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -139,11 +145,11 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(definition_.traitNa
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey), ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), attemptFixes_)
 }
 
-export async function fail_$(at_, message_, $c) {
+export async function fail_$(at_, message_, $task) {
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
 
-export async function make_$(modules_, attemptFixes_, $c) {
+export async function make_$(modules_, attemptFixes_, $task) {
 return ff_compiler_Unification.Unification(ff_core_Map.empty_(), ff_core_Map.empty_(), 3, ff_core_List.List_toMap(ff_core_List.List_flatMap(modules_, ((module_) => {
 const moduleName_ = ff_core_String.String_dropLast(module_.file_, ff_core_String.String_size(".ff"));
 return ff_core_List.List_map(module_.instances_, ((definition_) => {
@@ -639,23 +645,23 @@ return
 }
 }
 
-export async function Unification_withLocalInstances$(self_, instances_, body_, $c) {
+export async function Unification_withLocalInstances$(self_, instances_, body_, $task) {
 const oldInstances_ = self_.instances_;
 self_.instances_ = ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey);
 try {
-return (await body_($c))
+return (await body_($task))
 } finally {
 self_.instances_ = oldInstances_
 }
 }
 
-export async function Unification_freshUnificationVariable$(self_, at_, $c) {
+export async function Unification_freshUnificationVariable$(self_, at_, $task) {
 const result_ = ff_compiler_Syntax.TVariable(at_, self_.nextUnificationVariableIndex_);
 self_.nextUnificationVariableIndex_ += 3;
 return result_
 }
 
-export async function Unification_instantiate$(self_, instantiation_, type_, $c) {
+export async function Unification_instantiate$(self_, instantiation_, type_, $task) {
 {
 const self_a = self_;
 const instantiation_a = instantiation_;
@@ -717,7 +723,7 @@ return
 }
 }
 
-export async function Unification_instantiateConstraint$(self_, instantiation_, constraint_, $c) {
+export async function Unification_instantiateConstraint$(self_, instantiation_, constraint_, $task) {
 {
 const self_a = self_;
 const instantiation_a = instantiation_;
@@ -734,7 +740,7 @@ return
 }
 }
 
-export async function Unification_constrain$(self_, at_, type_, constraintName_, generics_, $c) {
+export async function Unification_constrain$(self_, at_, type_, constraintName_, generics_, $task) {
 {
 const _1 = type_;
 {
@@ -844,7 +850,7 @@ return
 }
 }
 
-export async function Unification_get$(self_, index_, $c) {
+export async function Unification_get$(self_, index_, $task) {
 return ff_core_Option.Option_map(ff_core_Map.Map_get(self_.substitution_, index_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_Int_Int), ((_1) => {
 {
 if(_1.TVariable) {
@@ -866,7 +872,7 @@ return
 }))
 }
 
-export async function Unification_substitute$(self_, type_, $c) {
+export async function Unification_substitute$(self_, type_, $task) {
 {
 const self_a = self_;
 const type_a = type_;
@@ -906,7 +912,7 @@ return
 }
 }
 
-export async function Unification_unify$(self_, at_, t1_, t2_, $c) {
+export async function Unification_unify$(self_, at_, t1_, t2_, $task) {
 {
 const self_a = self_;
 const at_a = at_;
@@ -1008,7 +1014,7 @@ return
 }
 }
 
-export async function Unification_bind$(self_, at_, index_, type_, $c) {
+export async function Unification_bind$(self_, at_, index_, type_, $task) {
 if(ff_compiler_Unification.Unification_occursIn(self_, index_, type_)) {
 const t_ = ff_compiler_Unification.Unification_substitute(self_, type_);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(at_, ((("Infinite type: " + ff_compiler_Syntax.Type_show(ff_compiler_Syntax.TVariable(at_, index_), ff_core_List.Link(t_, ff_core_List.Empty()))) + " = ") + ff_compiler_Syntax.Type_show(t_, ff_core_List.Empty()))), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
@@ -1034,7 +1040,7 @@ ff_compiler_Unification.Unification_affect(self_, at_, type_, ff_compiler_Syntax
 }))
 }
 
-export async function Unification_affect$(self_, at_, source_, target_, $c) {
+export async function Unification_affect$(self_, at_, source_, target_, $task) {
 {
 const _1 = ff_core_Pair.Pair(ff_compiler_Unification.Unification_substitute(self_, source_), ff_compiler_Unification.Unification_substitute(self_, target_));
 {
@@ -1075,7 +1081,7 @@ return
 }
 }
 
-export async function Unification_occursIn$(self_, index_, t_, $c) {
+export async function Unification_occursIn$(self_, index_, t_, $task) {
 {
 const self_a = self_;
 const index_a = index_;
@@ -1114,7 +1120,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Unification_ConstraintGenerics = 
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.ConstraintGenerics" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.ConstraintGenerics" + "[") + "]"))
 }
 };
@@ -1123,7 +1129,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Unification_InstanceKey = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.InstanceKey" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.InstanceKey" + "[") + "]"))
 }
 };
@@ -1132,7 +1138,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Unification_InstanceValue = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.InstanceValue" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Unification.InstanceValue" + "[") + "]"))
 }
 };
@@ -1148,7 +1154,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1171,7 +1177,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1194,7 +1200,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1224,7 +1230,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1261,7 +1267,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1298,7 +1304,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1345,7 +1351,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1402,7 +1408,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1479,7 +1485,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1562,7 +1568,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -1577,7 +1583,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
@@ -1631,7 +1637,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -1646,7 +1652,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
@@ -1704,7 +1710,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -1723,7 +1729,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

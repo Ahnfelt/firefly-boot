@@ -6,6 +6,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -26,13 +28,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -45,6 +47,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -60,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -74,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -93,7 +99,7 @@ export function create_() {
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function create_$($c) {
+export async function create_$($task) {
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(ff_core_List.Empty(), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
@@ -180,7 +186,7 @@ export function AssetSystem_readText(self_, file_) {
 return ff_core_Stream.Stream_toString(ff_core_AssetSystem.AssetSystem_readStream(self_, file_), "utf8")
 }
 
-export async function AssetSystem_addAssets$(self_, path_, assets_, $c) {
+export async function AssetSystem_addAssets$(self_, path_, assets_, $task) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? ff_core_String.String_dropLast(path_, 1)
 : path_);
@@ -189,7 +195,7 @@ return ff_core_Pair.Pair((prefix_ + p_), stream_)
 }), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function AssetSystem_assets$(self_, path_, $c) {
+export async function AssetSystem_assets$(self_, path_, $task) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? path_
 : (path_ + "/"));
@@ -211,7 +217,7 @@ return
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function AssetSystem_asset$(self_, path_, $c) {
+export async function AssetSystem_asset$(self_, path_, $task) {
 const name_ = ff_core_String.String_reverse(ff_core_String.String_takeWhile(ff_core_String.String_reverse(path_), ((_w1) => {
 return (_w1 !== 47)
 })));
@@ -221,7 +227,7 @@ return ff_core_Pair.Pair(("/" + name_), s_)
 return ff_core_AssetSystem.AssetSystem(ff_core_List.List_toMap(streams_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String))
 }
 
-export async function AssetSystem_list$(self_, path_, $c) {
+export async function AssetSystem_list$(self_, path_, $task) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? path_
 : (path_ + "/"));
@@ -243,7 +249,7 @@ return
 })), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String)
 }
 
-export async function AssetSystem_exists$(self_, path_, $c) {
+export async function AssetSystem_exists$(self_, path_, $task) {
 const prefix_ = (ff_core_String.String_endsWith(path_, "/")
 ? path_
 : (path_ + "/"));
@@ -252,15 +258,15 @@ return ff_core_String.String_startsWith(_w1.first_, prefix_, 0)
 })))
 }
 
-export async function AssetSystem_readStream$(self_, file_, $c) {
+export async function AssetSystem_readStream$(self_, file_, $task) {
 const makeStream_ = ff_core_Option.Option_else(ff_core_Map.Map_get(self_.files_, file_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), (() => {
 return ff_core_Core.panic_(("Asset not found for readStream: " + file_))
 }));
-return (await makeStream_($c))
+return (await makeStream_($task))
 }
 
-export async function AssetSystem_readText$(self_, file_, $c) {
-return (await ff_core_Stream.Stream_toString$((await ff_core_AssetSystem.AssetSystem_readStream$(self_, file_, $c)), "utf8", $c))
+export async function AssetSystem_readText$(self_, file_, $task) {
+return (await ff_core_Stream.Stream_toString$((await ff_core_AssetSystem.AssetSystem_readStream$(self_, file_, $task)), "utf8", $task))
 }
 
 

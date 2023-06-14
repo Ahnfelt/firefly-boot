@@ -17,37 +17,33 @@ capability RequestMessage(
     parameters: Map[String, JsValue]
 )
 
+
 main(system: NodeSystem) {
-    let handler = Handler(None, Map.empty(), Map.empty())
+    let handler = Handler(None, Map.empty(), [].toSet(), Map.empty())
     try {
         mutable input = system.readStream()
-        mutable subscopes: Map[MessageId, TaskScope] = [].toMap()
-        system.scope {scope => 
-            let responseChannel: Channel[JsValue] = scope.channel()
-            scope.spawn {
-                while {True} {
-                    let body = responseChannel.read()
-                    let json = body.toJson(Some("    ")).toBuffer()
-                    system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
-                    system.writeBuffer(json)
-                }
+        let responseChannel: Channel[JsValue] = system.mainTask().channel()
+        system.mainTask().spawn {_ =>
+            while {True} {
+                let body = responseChannel.read()
+                let json = body.toJson(Some("    ")).toBuffer()
+                system.writeText("Content-Length: " + json.size() + "\r\n\r\n")
+                system.writeBuffer(json)
             }
+        }
+        taskGroup(system.mainTask()) {spawn, abort =>
             while {True} {
                 let requestPair = parseRequest(system, input)
                 input = requestPair.second
                 let request = requestPair.first
                 let message = parseRequestMessage(request.object)
-                let subscope = scope.openSubscope()
-                message.id.each {id => subscopes = subscopes.add(id, subscope)}
-                subscope.spawn {
+                spawn(message.id) {_ =>
+                    if(message.method == "$/cancelRequest") {
+                        abort(Some(parseMessageId(message.parameters.grab("id"))))
+                    }
                     try {
-                        if(message.method == "$/cancelRequest") {
-                            let cancellationId = parseMessageId(message.parameters.grab("id"))
-                            subscopes.get(cancellationId).each {_.close(rethrow = False)}
-                        } else {
-                            handleRequestMessage(system, handler, message).each {body =>
-                                responseChannel.write(body)
-                            }
+                        handleRequestMessage(system, handler, message).each {body =>
+                            responseChannel.write(body)
                         }
                     } catchAny {error =>
                         let problem = if(error.name() == "AbortError") {
@@ -55,15 +51,9 @@ main(system: NodeSystem) {
                         } else {
                             Error(-32603, "Internal error")
                         }
-                        scope.spawn {
-                            message.id.each {id => 
-                                let body = makeResponseMessage(system.js(), id, problem)
-                                responseChannel.write(body)
-                            }
+                        message.id.each {id => 
+                            responseChannel.write(makeResponseMessage(system.js(), id, problem))
                         }
-                    } finally {
-                        message.id.each {id => subscopes = subscopes.remove(id)}
-                        subscope.close()
                     } grab()
                 }
             }
@@ -71,6 +61,29 @@ main(system: NodeSystem) {
     } catch {| BadRequestException(reason), error =>
         Log.trace(reason)
     } grab()
+}
+
+taskGroup[K: Order, R](
+    parentTask: Task, 
+    groupBody: ((K, Task => Unit) => Task, K => Unit) => R
+): R {
+    let lock = parentTask.lock()
+    mutable tasks = [].toMap()
+    function spawn(key: K, body: Task => Unit): Task {
+        let body2 = {task =>
+            lock.do {tasks = tasks.add(key, task)}
+            try {
+                body(task)
+            } finally {
+                lock.do {tasks = tasks.remove(key)}
+            } grab()
+        }
+        parentTask.spawn(body2)
+    }
+    function abort(key: K): Unit {
+        lock.do {tasks.get(key).each {_.abort()}}
+    }
+    groupBody(spawn, abort)
 }
 
 parseRequest(system: NodeSystem, input: Stream[Buffer]): Pair[Request, Stream[Buffer]] {
@@ -172,9 +185,17 @@ parseMessageId(id: JsValue): MessageId {
 handleRequestMessage(system: NodeSystem, handler: Handler, message: RequestMessage): Option[JsValue] {
     try {
         message.id.{
+            | None {message.method == "$/cancelRequest"} => // TODO: Needs to read ahead to cancel anything
+                handler.cancelledRequests = handler.cancelledRequests.add(
+                    parseMessageId(message.parameters.grab("id"))
+                )
+                None
             | None => 
                 handler.handleNotification(system, message.method, message.parameters)
                 None
+            | Some(id) {handler.cancelledRequests.contains(id)} =>
+                handler.cancelledRequests = handler.cancelledRequests.remove(id)
+                Some(makeResponseMessage(system.js(), id, Error(-32800, "Request cancelled")))
             | Some(id) =>
                 let result = handler.handleRequest(system, message.method, message.parameters)
                 Some(makeResponseMessage(system.js(), id, result))

@@ -1,0 +1,64 @@
+class Atomic[T] {}
+
+make[T](value: T): Atomic[T]
+    target js sync """
+        return {value: value_}
+    """
+
+extend self[T]: Atomic[T] {
+
+    modify(body: T => T): T
+        target js sync """
+            return self_.value = body_(self_.value)
+        """
+        target js async """
+            let currentValue, newValue
+            do {
+                currentValue = self_.value
+                newValue = await body_(currentValue)
+            } while(currentValue !== self_.value)
+            self_.value = newValue
+            return newValue
+        """
+
+    getAndModify(body: T => T): T
+        target js sync """
+            const currentValue = self_.value
+            self_.value = body_(currentValue)
+            return currentValue
+        """
+        target js async """
+            let currentValue, newValue
+            do {
+                currentValue = self_.value
+                newValue = await body_(currentValue)
+            } while(currentValue !== self_.value)
+            self_.value = newValue
+            return currentValue
+        """
+
+    get(): T
+        target js sync """
+            return self_.value
+        """
+
+    set(value: T): Unit
+        target js sync """
+            self_.value = value
+        """
+
+    getAndSet(newValue: T): T
+        target js sync """
+            const currentValue = self_.value
+            self_.value = newValue
+            return currentValue
+        """
+
+    compareAndSet(currentValue: T, newValue: T): Bool
+        target js sync """
+            if(self_.value !== currentValue) return false
+            self_.value = newValue
+            return true
+        """
+
+}

@@ -94,10 +94,12 @@ extend self: JsEmitter {
         mainFunction.map {_.signature.name}.map { mainName => [[
             "export async function $run$(fireflyPath_, arguments_) {"
             "Error.stackTraceLimit = 50"
-            "const controller = new AbortController()"
-            "controller.promises = new Set()"
-            "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
+            "const $task = {controller: new AbortController(), subtasks: new Set(), promise: new Promise(() => {})}"
+            ...if(self.emitTarget != EmitBrowser) {[
+                "let interval = setInterval(() => {}, 24 * 60 * 60 * 1000)" // To prevent deadlocks from exiting node
+            ]} else {[]}
             "let system = {"
+            "task_: $task,"
             "array_: arguments_,"
             "fireflyPath_: fireflyPath_,"
             "mainPackagePair_: {group_: \"" + mainPackagePair.group + "\", name_: \"" + mainPackagePair.name + "\"},"
@@ -106,17 +108,19 @@ extend self: JsEmitter {
             "}"
             "try {"
             ...if(!buildMainFunction.isEmpty()) {[
-                "await buildMain_$(system, controller)"]
+                "await buildMain_$(system, $task)"]
             } else {[]}
             ...if(self.emitTarget != EmitBuild) {[
-                "await " + mainName + "_$(system, controller)"
+                "await " + mainName + "_$(system, $task)"
             ]} else {[]}
             ...if(self.emitTarget == EmitBuild) {[
-                "await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, controller)"
+                "await $firefly_compiler.internalCreateExecutable_$(system, '.firefly/output/executable/Main.bundle.js', '.firefly/output', ['host'], system.assets_, $task)"
             ]} else {[]}
             "} finally {"
-            "controller.abort()"
-            "clearInterval(interval)"
+            ...if(self.emitTarget != EmitBrowser) {[
+                "ff_core_Task.Task_abort$($task)"
+                "clearInterval(interval)"
+            ]} else {[]}
             "}"
             "}"
             ...self.emitTarget.{
@@ -240,7 +244,7 @@ extend self: JsEmitter {
         let dictionaryStrings = signature.constraints.map { c =>
             makeDictionaryName(c.name, firstTypeName(c.generics))
         }
-        let controller = if(async) {["$c"]} else {[]}
+        let controller = if(async) {["$task"]} else {[]}
         let parameters = "(" + [...parameterStrings, ...dictionaryStrings, ...controller].join(", ") + ")"
         let prefix = if(async) {"async "} else {""}
         let asyncSuffix = if(async) {"$"} else {""}
@@ -323,13 +327,13 @@ extend self: JsEmitter {
                 | PVariable p => p.name.map(escapeKeyword).else{"_"}
                 | _ => panic("!")
             }
-            let controller = if(newAsync) {["$c"]} else {[]}
+            let controller = if(newAsync) {["$task"]} else {[]}
             let parameters = [...patternParameters, ...controller].join(", ")
             let prefix = if(newAsync) {"async "} else {""}
             "(" + prefix + "(" + parameters + ") => {\n" + self.emitStatements(body, True, newAsync) + "\n})"
         | ELambda(at, Lambda(_, effect, cases)) =>
             let newAsync = self.emittingAsync && effectTypeIsAsync(effect)
-            let controller = if(newAsync) {["$c"]} else {[]}
+            let controller = if(newAsync) {["$task"]} else {[]}
             Patterns.convertAndCheck(self.otherModules, cases)
             let arguments = cases.grab(0).patterns.pairs().map { "_" + (_.first + 1) }
             let escapedArguments = arguments.map(escapeKeyword) // emitCase arguments must be preescaped
@@ -339,7 +343,7 @@ extend self: JsEmitter {
             "{\n" + caseStrings.join("\n") + "\n})"
         | EPipe(at, value, effect, function) =>
             let await = async && effectTypeIsAsync(effect)
-            let c = if(await) {", $c"} else {""}
+            let c = if(await) {", $task"} else {""}
             let call = "(" + self.emitTerm(function, async) + ")(" + self.emitTerm(value, async) + c + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ECall(at, StaticCall(operator, _, _), _, [], [value], _) {!operator.grabFirst().isAsciiLetter()} =>
@@ -350,13 +354,11 @@ extend self: JsEmitter {
             self.jsImporter.add(url.replace("\"", ""))
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.await", _, _), _, _, [Argument(_, _, body)], _) =>
             let emittedBody = self.emitTerm(body, async)
-            if(async) {"(await " + emittedBody + "($c))"} else {"(" + emittedBody + "())"}
+            if(async) {"(await " + emittedBody + "($task))"} else {"(" + emittedBody + "())"}
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.cancelled", _, _), _, _, [], _) =>
-            if(async) {"$c.signal.aborted"} else {"false"}
+            if(async) {"$task.controller.signal.aborted"} else {"false"}
         | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
-            if(async) {
-                "((() => if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround}))())"
-            } else {""}
+            if(async) {"((() => ff_core_Task.Task_throwIfAborted($task))())"} else {""}
         | ECall(at, StaticCall("ff:core/Equal.equals", _, _), _, _, [left, right], [Dictionary(_, _, _, typeName, [])]) {
             primitiveTypes.contains(typeName) || typeName == "ff:core/Ordering.Ordering"
         } =>
@@ -403,7 +405,7 @@ extend self: JsEmitter {
             let asyncSuffix = if(await) {"$"} else {""}
             let n = escapeKeyword(name.reverse().takeWhile { _ != '.' }.reverse()) + asyncSuffix
             let emittedArguments = arguments.map{self.emitArgument(_, async)}
-            let controller = if(await) {["$c"]} else {[]}
+            let controller = if(await) {["$task"]} else {[]}
             let call = d + "." + n + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ECall(at, StaticCall(name, _, _), effect, typeArguments, arguments, dictionaries) =>
@@ -413,7 +415,7 @@ extend self: JsEmitter {
                     let ds = dictionaries.map {self.emitDictionary(_)}
                     let functionCode = escapeResolved(name) + if(await) {"$"} else {""}
                     let emittedArguments = arguments.map {self.emitArgument(_, async)}
-                    let controller = if(await) {["$c"]} else {[]}
+                    let controller = if(await) {["$task"]} else {[]}
                     let call = functionCode + "(" + [...emittedArguments, ...ds, ...controller].join(", ") + ")"
                     if(await) {"(await " + call + ")"} else {call}
                 | [Pair(EVariant(_, "ff:core/Bool.True", _, _), elseBody), ...list] =>
@@ -432,7 +434,7 @@ extend self: JsEmitter {
             if(!dictionaries.isEmpty()) {fail(at, "Internal error: Dictionaries in lambda call")}
             let functionCode = self.emitTerm(function, async)
             let emittedArguments = arguments.map {self.emitArgument(_, async)}
-            let controller = if(await) {["$c"]} else {[]}
+            let controller = if(await) {["$task"]} else {[]}
             let call = functionCode + "(" + [...emittedArguments, ...controller].join(", ") + ")"
             if(await) {"(await " + call + ")"} else {call}
         | ERecord(at, fields) =>
@@ -530,9 +532,7 @@ extend self: JsEmitter {
             } =>
                 code
             | ECall(at, StaticCall("ff:unsafejs/UnsafeJs.throwIfCancelled", _, _), _, _, [], _) =>
-                if(async) {
-                    "if($c.signal.aborted) throw new Error(\"Cancelled\", {cause: $c.reasonWorkaround})"
-                } else {""}
+                if(async) {"ff_core_Task.Task_throwIfAborted($task)"} else {""}
             | ECall(at, StaticCall(name, True, instanceCall), effect, _, arguments, _) =>
                 if(instanceCall) {throw(CompileError(at, "Not yet implemented: Tail calls on trait methods."))}
                 self.tailCallUsed = True

@@ -6,6 +6,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -26,13 +28,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -45,6 +47,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -60,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -74,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -107,40 +113,51 @@ export function FileHandle_writeText(self_, text_, position_ = ff_core_Option.No
 throw new Error('Function FileHandle_writeText is missing on this target in sync context.');
 }
 
+export function FileHandle_truncate(self_, length_ = 0) {
+throw new Error('Function FileHandle_truncate is missing on this target in sync context.');
+}
+
 export function FileHandle_sync(self_, dataOnly_ = false) {
 throw new Error('Function FileHandle_sync is missing on this target in sync context.');
 }
 
-export async function FileHandle_close$(self_, $c) {
+export async function FileHandle_close$(self_, $task) {
 
             await self_.close()
         
 }
 
-export async function FileHandle_read$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
+export async function FileHandle_read$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $task) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            ff_core_Task.Task_throwIfAborted($task)
             await self_.read(buffer_, {offset: offset_, length: length.value_, position: position.value_})
         
 }
 
-export async function FileHandle_write$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $c) {
+export async function FileHandle_write$(self_, buffer_, offset_ = 0, length_ = ff_core_Option.None(), position_ = ff_core_Option.None(), $task) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            ff_core_Task.Task_throwIfAborted($task)
             await self_.write(buffer_, offset_, length.value_, position.value_)
         
 }
 
-export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $c) {
+export async function FileHandle_writeText$(self_, text_, position_ = ff_core_Option.None(), encoding_ = "utf8", $task) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            ff_core_Task.Task_throwIfAborted($task)
             await self_.write(text, position.value_, encoding_)
         
 }
 
-export async function FileHandle_sync$(self_, dataOnly_ = false, $c) {
+export async function FileHandle_truncate$(self_, length_ = 0, $task) {
 
-            if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+            ff_core_Task.Task_throwIfAborted($task)
+            await self_.truncate(length_)
+        
+}
+
+export async function FileHandle_sync$(self_, dataOnly_ = false, $task) {
+
+            ff_core_Task.Task_throwIfAborted($task)
             if(dataOnly_) await self_.datasync()
             else await self_.sync()
         

@@ -14,6 +14,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -34,13 +36,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -53,6 +55,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -68,6 +72,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -82,7 +88,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -127,15 +133,15 @@ return ff_core_Pair.Pair(ff_compiler_Unification.InstanceKey(c_.name_, typeName_
 })), ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey)
 }
 
-export async function make_$(modules_, $c) {
+export async function make_$(modules_, $task) {
 return ff_compiler_Dictionaries.Dictionaries(ff_compiler_Unification.make_(modules_, false).instances_)
 }
 
-export async function fail_$(at_, message_, $c) {
+export async function fail_$(at_, message_, $task) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function constraintsToInstances_$(constraints_, $c) {
+export async function constraintsToInstances_$(constraints_, $task) {
 return ff_core_List.List_toMap(ff_core_List.List_map(constraints_, ((c_) => {
 const typeName_ = (((_1) => {
 {
@@ -637,7 +643,7 @@ return ff_compiler_Dictionaries.Dictionaries_makeDictionary(self_, at_, instance
 return ff_compiler_Syntax.Dictionary(instance_.packagePair_, instance_.moduleName_, constraint_.name_, firstType_.name_, dictionaries_)
 }
 
-export async function Dictionaries_processModule$(self_, module_, otherModules_, $c) {
+export async function Dictionaries_processModule$(self_, module_, otherModules_, $task) {
 const environment_ = ff_compiler_Environment.make_(module_, otherModules_, true);
 const functionSignatures_ = ff_core_List.List_toMap(ff_core_List.List_collect(ff_core_Map.Map_pairs(environment_.symbols_, ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String), ((_1) => {
 {
@@ -676,7 +682,7 @@ return
 }
 }
 
-export async function Dictionaries_processLetDefinition$(self_, functions_, definition_, $c) {
+export async function Dictionaries_processLetDefinition$(self_, functions_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -687,7 +693,7 @@ return
 }
 }
 
-export async function Dictionaries_processExtendDefinition$(self_, functions_, definition_, $c) {
+export async function Dictionaries_processExtendDefinition$(self_, functions_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -700,7 +706,7 @@ return
 }
 }
 
-export async function Dictionaries_processFunctionDefinition$(self_, functions_, definition_, $c) {
+export async function Dictionaries_processFunctionDefinition$(self_, functions_, definition_, $task) {
 const instances_ = ff_compiler_Dictionaries.constraintsToInstances_(definition_.signature_.constraints_);
 const self2_ = (((_c) => {
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey))
@@ -717,7 +723,7 @@ return
 }
 }
 
-export async function Dictionaries_processInstanceDefinition$(self_, functions_, definition_, $c) {
+export async function Dictionaries_processInstanceDefinition$(self_, functions_, definition_, $task) {
 const instances_ = ff_compiler_Dictionaries.constraintsToInstances_(definition_.constraints_);
 const self2_ = (((_c) => {
 return ff_compiler_Dictionaries.Dictionaries(ff_core_Map.Map_addAll(self_.instances_, instances_, ff_compiler_Unification.ff_core_Ordering_Order$ff_compiler_Unification_InstanceKey))
@@ -734,7 +740,7 @@ return
 }
 }
 
-export async function Dictionaries_processLambda$(self_, functions_, definition_, $c) {
+export async function Dictionaries_processLambda$(self_, functions_, definition_, $task) {
 {
 const _1 = definition_;
 {
@@ -763,7 +769,7 @@ return
 }
 }
 
-export async function Dictionaries_processTerm$(self_, functions_, term_, $c) {
+export async function Dictionaries_processTerm$(self_, functions_, term_, $task) {
 {
 const _1 = term_;
 {
@@ -1064,7 +1070,7 @@ return
 }
 }
 
-export async function Dictionaries_processArgument$(self_, functions_, argument_, $c) {
+export async function Dictionaries_processArgument$(self_, functions_, argument_, $task) {
 {
 const _1 = argument_;
 {
@@ -1075,7 +1081,7 @@ return
 }
 }
 
-export async function Dictionaries_processField$(self_, functions_, field_, $c) {
+export async function Dictionaries_processField$(self_, functions_, field_, $task) {
 {
 const _1 = field_;
 {
@@ -1086,7 +1092,7 @@ return
 }
 }
 
-export async function Dictionaries_makeDictionary$(self_, at_, typeParameters_, typeArguments_, constraint_, $c) {
+export async function Dictionaries_makeDictionary$(self_, at_, typeParameters_, typeArguments_, constraint_, $task) {
 const instantiationMap_ = ff_core_List.List_toMap(ff_core_List.List_zip(typeParameters_, typeArguments_), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const unification_ = ff_compiler_Unification.make_(ff_core_List.Empty(), false);
 const newGenerics_ = ff_core_List.List_map(constraint_.generics_, ((_w1) => {
@@ -1121,7 +1127,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Dictionaries_Dictionaries = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Dictionaries.Dictionaries" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Dictionaries.Dictionaries" + "[") + "]"))
 }
 };
@@ -1137,7 +1143,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1167,7 +1173,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1209,7 +1215,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1266,7 +1272,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -1280,7 +1286,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

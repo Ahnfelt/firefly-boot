@@ -46,8 +46,7 @@ writeOr[M, T](channel: Channel[M], message: M, body: () => T): ChannelAction[T]
 
 internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T, Option[Duration]]]): T
     target js async """
-        // If already aborted, throw.
-        if($c.signal.aborted) throw new Error("Cancelled", {cause: $c.reasonWorkaround})
+        ff_core_Task.Task_throwIfAborted($task)
 
         // Convert the linked actions into an array.
         let actions = []
@@ -64,25 +63,25 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                     let reader = action.channel.readers.values().next().value
                     action.channel.readers.delete(reader)
                     reader.resolve(action.message)
-                    return await action.body($c)
+                    return await action.body($task)
                 } else if(action.channel.buffer.length < action.channel.capacity) {
                     action.channel.buffer.push(action.message)
-                    return await action.body($c)
+                    return await action.body($task)
                 }
             } else {
                 if(action.channel.buffer.length != 0) {
-                    return await action.body(action.channel.buffer.shift(), $c)
+                    return await action.body(action.channel.buffer.shift(), $task)
                 } else if(action.channel.writers.size != 0) {
                     let writer = action.channel.writers.values().next().value
                     action.channel.writers.delete(writer)
                     writer.resolve()
-                    return await action.body(writer.message, $c)
+                    return await action.body(writer.message, $task)
                 }
             }
         }
 
         // If there's an "immediately(body)" action, do that now.
-        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($c)
+        if(mode_.value_ && mode_.value_.second_.value_ == null) return await mode_.value_.first_($task)
 
         // Otherwise, start waiting for one of the readers or writers (or timeout(body), or cancellation) to happen.
         let abort = null
@@ -92,14 +91,14 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
             for(let cleanup of cleanups) cleanup()
         }
         let promise = new Promise((resolve, reject) => {
-            if(mode_.value_) finish = () => {doCleanup(); resolve(() => mode_.value_.first_($c))}
-            abort = () => {doCleanup(); reject(new Error("Cancelled", {cause: $c.reasonWorkaround}))}
+            if(mode_.value_) finish = () => {doCleanup(); resolve(() => mode_.value_.first_($task))}
+            abort = () => {doCleanup(); reject($task.controller.signal.reason)}
             for(let action of actions) {
                 if(action.hasOwnProperty("message")) {
                     let writer = {
                         resolve: () => {
                             doCleanup()
-                            resolve(() => action.body($c))
+                            resolve(() => action.body($task))
                         },
                         message: action.message
                     }
@@ -109,7 +108,7 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
                     let reader = {
                         resolve: m => {
                             doCleanup()
-                            resolve(() => action.body(m, $c))
+                            resolve(() => action.body(m, $task))
                         }
                     }
                     cleanups.push(() => action.channel.readers.delete(reader))
@@ -119,13 +118,14 @@ internalRunChannelAction[T](action: ChannelAction[T], mode: Option[Pair[() => T,
         })
         let timeout = null
         try {
-            $c.signal.addEventListener('abort', abort)
+            $task.controller.signal.addEventListener('abort', abort)
             if(finish != null) timeout = setTimeout(finish, mode_.value_.second_.value_ * 1000)
             let body = await promise
             if(timeout != null) { clearTimeout(timeout); timeout = null }
             return await body()
         } finally {
             if(timeout != null) clearTimeout(timeout)
-            $c.signal.removeEventListener('abort', abort)
+            $task.controller.signal.removeEventListener('abort', abort)
+            if($task.controller.signal.aborted) $task.controller = new AbortController()
         }
     """

@@ -66,7 +66,7 @@ processIncludes(fs: FileSystem, jsPathFile: String, packagePath: String, info: P
 }
 
 buildViaBuildSystem(system: NodeSystem, fireflyPath: String, mainFile: String, target: String) {
-    let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), mainFile)
+    let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), mainFile)
     let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
         resolvedDependencies.packagePaths
     } else {
@@ -104,7 +104,7 @@ check(
 
     packages.each {package => 
         let firstFile = package.files.grabFirst()
-        let resolvedDependencies = Dependencies.process(system.files(), system.fetch(), firstFile)
+        let resolvedDependencies = Dependencies.process(system.files(), system.httpClient(), firstFile)
         let fixedPackagePaths = if(resolvedDependencies.packagePaths.contains(PackagePair("ff", "core"))) {
             resolvedDependencies.packagePaths
         } else {

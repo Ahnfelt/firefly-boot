@@ -12,9 +12,10 @@ import CompletionHandler
 import SignatureHelpHandler
 import SymbolHandler
 
-capability Handler(
+class Handler(
     mutable rootUri: Option[String]
     mutable virtualFiles: Map[String, String]
+    mutable cancelledRequests: Set[MessageId]
     mutable responseCache: Map[Pair[String, Location], ResultOrError]
 )
 
@@ -252,7 +253,7 @@ extend self: Handler {
         } catch {| CompileError(at, message), error =>
             Log.trace("handleCompletion check error: " + message)
         } grab()
-        let o = CompletionHandler.handleCompletion(system, lspHook)
+        let o = CompletionHandler.handleCompletion(system, lspHook, completionAt.column == 1)
         Result(o.toJson())
     }
 
@@ -479,4 +480,5 @@ extend self: Handler {
                 .with("character", tokenLocation.endColumn - 1)
             )
     }
+
 }

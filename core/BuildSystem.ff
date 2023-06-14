@@ -37,20 +37,9 @@ extend self: BuildSystem {
     arguments(): Array[String]
         target node async "return self_.array_"
 
-    scope[T](body: TaskScope => T, shielded: Bool = False, rethrow: Bool = True): T {
-        let scope = self.openScope(shielded)
-        try {
-            body(scope)
-        } finally {
-            scope.close(rethrow)
-        } grab()
-    }
+    mainTask(): Task
+        target js async "return self_.task_"
 
-    openScope[T](shielded: Bool = False): TaskScope
-        target js async """
-            return await ff_core_TaskScope.TaskScope_openSubscope$($c, shielded_, $c)
-        """
-    
 }
 
 extend self: BrowserCode {
@@ -155,7 +144,7 @@ internalBrowserCodeFileSystem(dummy: BrowserCode): FileSystem
 
 internalCompile(buildSystem: BuildSystem, mainFile: String, target: String): Unit
     target node async """
-        return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $c)
+        return await $firefly_compiler.buildViaBuildSystem_$(buildSystem_, buildSystem_.fireflyPath_, mainFile_, target_, $task)
     """
 
 internalMainPackagePair(buildSystem: BuildSystem): Pair[String, String]

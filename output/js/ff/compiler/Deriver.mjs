@@ -10,6 +10,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -30,13 +32,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -49,6 +51,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -64,6 +68,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -78,7 +84,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -102,11 +108,11 @@ export function fail_(at_, message_) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
-export async function make_$($c) {
+export async function make_$($task) {
 return ff_compiler_Deriver.Deriver()
 }
 
-export async function fail_$(at_, message_, $c) {
+export async function fail_$(at_, message_, $task) {
 return ff_core_Core.panic_(((message_ + " ") + ff_compiler_Syntax.Location_show(at_)))
 }
 
@@ -550,7 +556,7 @@ const option_ = ff_compiler_Syntax.ECall(at_, target_, noEffect_, ff_core_List.E
 return ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EField(at_, false, option_, "else"), false), noEffect_, ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, noEffect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Empty(), ff_core_List.Empty(), else_), ff_core_List.Empty())))), ff_core_List.Empty()), ff_core_List.Empty())
 }
 
-export async function Deriver_deriveModule$(self_, module_, $c) {
+export async function Deriver_deriveModule$(self_, module_, $task) {
 const modulePrefix_ = ((ff_compiler_Syntax.PackagePair_groupName(module_.packagePair_, ":") + "/") + ff_core_String.String_dropLast(module_.file_, 3));
 {
 const _1 = module_;
@@ -562,7 +568,7 @@ return
 }
 }
 
-export async function Deriver_makeHasAnyTagInstances$(self_, modulePrefix_, module_, $c) {
+export async function Deriver_makeHasAnyTagInstances$(self_, modulePrefix_, module_, $task) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Serializable.DeserializationChecksumException", ff_core_List.Link("ff:core/Core.GrabException", ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Any.HasAnyTag", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
@@ -570,7 +576,7 @@ return ff_compiler_Deriver.Deriver_makeHasAnyTagInstance(self_, modulePrefix_, _
 }))
 }
 
-export async function Deriver_makeHasAnyTagInstance$(self_, modulePrefix_, declaration_, $c) {
+export async function Deriver_makeHasAnyTagInstance$(self_, modulePrefix_, declaration_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -595,7 +601,7 @@ const method_ = ff_compiler_Syntax.DFunction(at_, signature_, body_);
 return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Any.HasAnyTag", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(method_, ff_core_List.Empty()), true)
 }
 
-export async function Deriver_makeShowInstances$(self_, modulePrefix_, module_, $c) {
+export async function Deriver_makeShowInstances$(self_, modulePrefix_, module_, $task) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Show.Show", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
@@ -603,7 +609,7 @@ return ff_compiler_Deriver.Deriver_makeShowInstance(self_, modulePrefix_, _w1)
 }))
 }
 
-export async function Deriver_makeShowInstance$(self_, modulePrefix_, declaration_, $c) {
+export async function Deriver_makeShowInstance$(self_, modulePrefix_, declaration_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -621,7 +627,7 @@ const showMethod_ = ff_compiler_Syntax.DFunction(at_, signature_, body_);
 return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Show.Show", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(showMethod_, ff_core_List.Empty()), true)
 }
 
-export async function Deriver_makeShowCases$(self_, modulePrefix_, declaration_, selfType_, $c) {
+export async function Deriver_makeShowCases$(self_, modulePrefix_, declaration_, selfType_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -648,7 +654,7 @@ return
 }
 }
 
-export async function Deriver_makeOrderingInstances$(self_, modulePrefix_, module_, $c) {
+export async function Deriver_makeOrderingInstances$(self_, modulePrefix_, module_, $task) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Empty()), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Ordering.Order", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
@@ -656,7 +662,7 @@ return ff_compiler_Deriver.Deriver_makeOrderingInstance(self_, modulePrefix_, _w
 }))
 }
 
-export async function Deriver_makeOrderingInstance$(self_, modulePrefix_, declaration_, $c) {
+export async function Deriver_makeOrderingInstance$(self_, modulePrefix_, declaration_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -674,7 +680,7 @@ const compareMethod_ = ff_compiler_Syntax.DFunction(at_, signature_, body_);
 return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Ordering.Order", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(compareMethod_, ff_core_List.Empty()), true)
 }
 
-export async function Deriver_makeOrderingCases$(self_, modulePrefix_, declaration_, selfType_, $c) {
+export async function Deriver_makeOrderingCases$(self_, modulePrefix_, declaration_, selfType_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -721,7 +727,7 @@ return
 }
 }
 
-export async function Deriver_makeOrderingFields$(self_, modulePrefix_, declaration_, fields_, $c) {
+export async function Deriver_makeOrderingFields$(self_, modulePrefix_, declaration_, fields_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -753,7 +759,7 @@ return
 return go_(fields_)
 }
 
-export async function Deriver_makeEqualInstances$(self_, modulePrefix_, module_, $c) {
+export async function Deriver_makeEqualInstances$(self_, modulePrefix_, module_, $task) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/List.List", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Empty()))), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Equal.Equal", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
@@ -761,7 +767,7 @@ return ff_compiler_Deriver.Deriver_makeEqualInstance(self_, modulePrefix_, _w1)
 }))
 }
 
-export async function Deriver_makeEqualInstance$(self_, modulePrefix_, declaration_, $c) {
+export async function Deriver_makeEqualInstance$(self_, modulePrefix_, declaration_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -779,7 +785,7 @@ const equalsMethod_ = ff_compiler_Syntax.DFunction(at_, signature_, body_);
 return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Equal.Equal", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(equalsMethod_, ff_core_List.Empty()), true)
 }
 
-export async function Deriver_makeEqualsCases$(self_, modulePrefix_, declaration_, selfType_, $c) {
+export async function Deriver_makeEqualsCases$(self_, modulePrefix_, declaration_, selfType_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -815,7 +821,7 @@ return
 }
 }
 
-export async function Deriver_makeEqualFields$(self_, modulePrefix_, declaration_, fields_, $c) {
+export async function Deriver_makeEqualFields$(self_, modulePrefix_, declaration_, fields_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -851,7 +857,7 @@ return
 return go_(fields_)
 }
 
-export async function Deriver_makeSerializableInstances$(self_, modulePrefix_, module_, $c) {
+export async function Deriver_makeSerializableInstances$(self_, modulePrefix_, module_, $task) {
 const coreWhitelist_ = ff_core_List.List_toSet(ff_core_List.Link("ff:core/Option.Option", ff_core_List.Link("ff:core/Pair.Pair", ff_core_List.Empty())), ff_core_Ordering.ff_core_Ordering_Order$ff_core_String_String);
 const missingInstance_ = ff_compiler_Deriver.Deriver_findTypesThatNeedInstances(self_, "ff:core/Serializable.Serializable", modulePrefix_, coreWhitelist_, true, module_);
 return ff_core_List.List_map(missingInstance_, ((_w1) => {
@@ -859,7 +865,7 @@ return ff_compiler_Deriver.Deriver_makeSerializableInstance(self_, modulePrefix_
 }))
 }
 
-export async function Deriver_makeSerializableInstance$(self_, modulePrefix_, declaration_, $c) {
+export async function Deriver_makeSerializableInstance$(self_, modulePrefix_, declaration_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -880,7 +886,7 @@ const deserializeBody_ = ff_compiler_Syntax.FireflyTarget(ff_compiler_Syntax.Lam
 return ff_compiler_Syntax.DInstance(at_, declaration_.generics_, constraints_, "ff:core/Serializable.Serializable", ff_core_List.Link(selfType_, ff_core_List.Empty()), ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.DFunction(at_, serializeSignature_, serializeBody_), ff_core_List.Link(ff_compiler_Syntax.DFunction(at_, deserializeSignature_, deserializeBody_), ff_core_List.Empty())), true)
 }
 
-export async function Deriver_makeSerializeBody$(self_, modulePrefix_, declaration_, selfType_, $c) {
+export async function Deriver_makeSerializeBody$(self_, modulePrefix_, declaration_, selfType_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -904,7 +910,7 @@ return
 }))
 }
 
-export async function Deriver_makeDeserializeBody$(self_, modulePrefix_, declaration_, selfType_, $c) {
+export async function Deriver_makeDeserializeBody$(self_, modulePrefix_, declaration_, selfType_, $task) {
 const at_ = (((_c) => {
 return ff_compiler_Syntax.Location((declaration_.at_.file_ + "/<derived>"), _c.line_, _c.column_)
 }))(declaration_.at_);
@@ -934,13 +940,13 @@ const match_ = ff_compiler_Syntax.EPipe(at_, ff_compiler_Syntax.EVariable(at_, "
 return ff_compiler_Syntax.ELet(at_, false, "variantIndex", intType_, grabVariantIndex_, ff_compiler_Syntax.ESequential(at_, incrementOffset_, match_))
 }
 
-export async function Deriver_makeUpdateChecksum$(self_, at_, variantName_, declaration_, variant_, $c) {
+export async function Deriver_makeUpdateChecksum$(self_, at_, variantName_, declaration_, variant_, $task) {
 const fields_ = ff_core_List.List_addAll(declaration_.commonFields_, variant_.fields_);
 const variantChecksum_ = ff_core_String.String_size(variantName_);
 return ff_compiler_Syntax.EAssignField(at_, "", ff_compiler_Syntax.EVariable(at_, "serialization"), "checksum", ff_compiler_Deriver.Deriver_makeMethodCall(self_, at_, ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "+", ff_core_List.Link(ff_compiler_Deriver.Deriver_makeSimpleCall(self_, at_, "*", ff_core_List.Link(ff_compiler_Syntax.EInt(at_, "31"), ff_core_List.Link(ff_compiler_Syntax.EField(at_, false, ff_compiler_Syntax.EVariable(at_, "serialization"), "checksum"), ff_core_List.Empty())), ff_core_List.Empty()), ff_core_List.Link(ff_compiler_Syntax.EInt(at_, ("" + variantChecksum_)), ff_core_List.Empty())), ff_core_List.Empty()), "bitOr", ff_core_List.Link(ff_compiler_Syntax.EInt(at_, "0"), ff_core_List.Empty())))
 }
 
-export async function Deriver_findTypesThatNeedInstances$(self_, traitName_, modulePrefix_, coreWhitelist_, allowGenerics_, module_, $c) {
+export async function Deriver_findTypesThatNeedInstances$(self_, traitName_, modulePrefix_, coreWhitelist_, allowGenerics_, module_, $task) {
 const typesWithInstance_ = ff_core_List.List_toSet(ff_core_List.List_collect(module_.instances_, ((_1) => {
 {
 const instance_ = _1;
@@ -967,7 +973,7 @@ return (_w1 === "Q$")
 }))
 }
 
-export async function Deriver_makeSimpleCall$(self_, at_, name_, arguments_, typeArguments_ = ff_core_List.Empty(), $c) {
+export async function Deriver_makeSimpleCall$(self_, at_, name_, arguments_, typeArguments_ = ff_core_List.Empty(), $task) {
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const callTarget_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(at_, name_), false);
 return ff_compiler_Syntax.ECall(at_, callTarget_, noEffect_, typeArguments_, ff_core_List.List_map(arguments_, ((e_) => {
@@ -975,7 +981,7 @@ return ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), e_)
 })), ff_core_List.Empty())
 }
 
-export async function Deriver_makeMethodCall$(self_, at_, target_, methodName_, arguments_, $c) {
+export async function Deriver_makeMethodCall$(self_, at_, target_, methodName_, arguments_, $task) {
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const method_ = ff_compiler_Syntax.EField(at_, false, target_, methodName_);
 return ff_compiler_Syntax.ECall(at_, ff_compiler_Syntax.DynamicCall(method_, false), noEffect_, ff_core_List.Empty(), ff_core_List.List_map(arguments_, ((_w1) => {
@@ -983,7 +989,7 @@ return ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), _w1)
 })), ff_core_List.Empty())
 }
 
-export async function Deriver_makeIf$(self_, at_, condition_, then_, else_, $c) {
+export async function Deriver_makeIf$(self_, at_, condition_, then_, else_, $task) {
 const noEffect_ = ff_compiler_Syntax.TConstructor(at_, "ff:core/Nothing.Nothing", ff_core_List.Empty());
 const target_ = ff_compiler_Syntax.DynamicCall(ff_compiler_Syntax.EVariable(at_, "ff:core/Core.if"), false);
 const option_ = ff_compiler_Syntax.ECall(at_, target_, noEffect_, ff_core_List.Empty(), ff_core_List.Link(ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), condition_), ff_core_List.Link(ff_compiler_Syntax.Argument(at_, ff_core_Option.None(), ff_compiler_Syntax.ELambda(at_, ff_compiler_Syntax.Lambda(at_, noEffect_, ff_core_List.Link(ff_compiler_Syntax.MatchCase(at_, ff_core_List.Empty(), ff_core_List.Empty(), then_), ff_core_List.Empty())))), ff_core_List.Empty())), ff_core_List.Empty());
@@ -994,7 +1000,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Deriver_Deriver = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Deriver.Deriver" + "[") + "]"))
 }
 };
@@ -1010,7 +1016,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1040,7 +1046,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1077,7 +1083,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1128,7 +1134,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -1141,7 +1147,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

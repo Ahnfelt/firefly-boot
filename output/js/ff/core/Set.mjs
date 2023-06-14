@@ -6,6 +6,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -26,13 +28,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -45,6 +47,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -60,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -74,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -90,7 +96,7 @@ export function empty_() {
 return ff_core_Map.empty_()
 }
 
-export async function empty_$($c) {
+export async function empty_$($task) {
 return ff_core_Map.empty_()
 }
 
@@ -156,64 +162,64 @@ return _w1.first_
 }))
 }
 
-export async function Set_add$(self_, value_, ff_core_Ordering_Order$T, $c) {
+export async function Set_add$(self_, value_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_add(self_, value_, (void 0), ff_core_Ordering_Order$T)
 }
 
-export async function Set_addAll$(self_, that_, ff_core_Ordering_Order$T, $c) {
+export async function Set_addAll$(self_, that_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_addAll(self_, that_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_remove$(self_, value_, ff_core_Ordering_Order$T, $c) {
+export async function Set_remove$(self_, value_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_remove(self_, value_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_removeAll$(self_, that_, ff_core_Ordering_Order$T, $c) {
+export async function Set_removeAll$(self_, that_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_removeAll(self_, that_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_contains$(self_, value_, ff_core_Ordering_Order$T, $c) {
+export async function Set_contains$(self_, value_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_contains(self_, value_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_size$(self_, ff_core_Ordering_Order$T, $c) {
+export async function Set_size$(self_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Map.Map_size(self_, ff_core_Ordering_Order$T)
 }
 
-export async function Set_toList$(self_, ff_core_Ordering_Order$T, $c) {
+export async function Set_toList$(self_, ff_core_Ordering_Order$T, $task) {
 return ff_core_List.List_map(ff_core_Map.Map_toList(self_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
 }
 
-export async function Set_toArray$(self_, ff_core_Ordering_Order$T, $c) {
+export async function Set_toArray$(self_, ff_core_Ordering_Order$T, $task) {
 return ff_core_Array.Array_map(ff_core_Map.Map_toArray(self_, ff_core_Ordering_Order$T), ((_w1) => {
 return _w1.first_
 }))
 }
 
-export async function Set_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$T, $c) {
-return (await ff_core_Stream.Stream_map$((await ff_core_Map.Map_toStream$(self_, cycle_, ff_core_Ordering_Order$T, $c)), (async (_w1, $c) => {
+export async function Set_toStream$(self_, cycle_ = false, ff_core_Ordering_Order$T, $task) {
+return (await ff_core_Stream.Stream_map$((await ff_core_Map.Map_toStream$(self_, cycle_, ff_core_Ordering_Order$T, $task)), (async (_w1, $task) => {
 return _w1.first_
-}), $c))
+}), $task))
 }
 
-export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $c) {
-(await ff_core_Map.Map_each$(self_, (async (k_, _, $c) => {
-(await body_(k_, $c))
-}), ff_core_Ordering_Order$T, $c))
+export async function Set_each$(self_, body_, ff_core_Ordering_Order$T, $task) {
+(await ff_core_Map.Map_each$(self_, (async (k_, _, $task) => {
+(await body_(k_, $task))
+}), ff_core_Ordering_Order$T, $task))
 }
 
-export async function Set_eachWhile$(self_, body_, ff_core_Ordering_Order$T, $c) {
-return (await ff_core_Map.Map_eachWhile$(self_, (async (k_, _, $c) => {
-return (await body_(k_, $c))
-}), ff_core_Ordering_Order$T, $c))
+export async function Set_eachWhile$(self_, body_, ff_core_Ordering_Order$T, $task) {
+return (await ff_core_Map.Map_eachWhile$(self_, (async (k_, _, $task) => {
+return (await body_(k_, $task))
+}), ff_core_Ordering_Order$T, $task))
 }
 
-export async function Set_find$(self_, body_, ff_core_Ordering_Order$T, $c) {
-return ff_core_Option.Option_map((await ff_core_Map.Map_find$(self_, (async (k_, _, $c) => {
-return (await body_(k_, $c))
-}), ff_core_Ordering_Order$T, $c)), ((_w1) => {
+export async function Set_find$(self_, body_, ff_core_Ordering_Order$T, $task) {
+return ff_core_Option.Option_map((await ff_core_Map.Map_find$(self_, (async (k_, _, $task) => {
+return (await body_(k_, $task))
+}), ff_core_Ordering_Order$T, $task)), ((_w1) => {
 return _w1.first_
 }))
 }
@@ -222,7 +228,7 @@ export function ff_core_Equal_Equal$ff_core_Set_Set(ff_core_Equal_Equal$A, ff_co
 equals_(x_, y_) {
 return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$A).equals_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 return ff_core_List.ff_core_Equal_Equal$ff_core_List_List(ff_core_Equal_Equal$A).equals_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
 }
 }}
@@ -231,7 +237,7 @@ export function ff_core_Ordering_Order$ff_core_Set_Set(ff_core_Ordering_Order$A)
 compare_(x_, y_) {
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$A).compare_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 return ff_core_Ordering.ff_core_Ordering_Order$ff_core_List_List(ff_core_Ordering_Order$A).compare_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A), ff_core_Set.Set_toList(y_, ff_core_Ordering_Order$A))
 }
 }}
@@ -240,7 +246,7 @@ export function ff_core_Show_Show$ff_core_Set_Set(ff_core_Show_Show$A, ff_core_O
 show_(x_) {
 return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$A).show_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A)) + ".toSet()")
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 return (ff_core_Show.ff_core_Show_Show$ff_core_List_List(ff_core_Show_Show$A).show_(ff_core_Set.Set_toList(x_, ff_core_Ordering_Order$A)) + ".toSet()")
 }
 }}

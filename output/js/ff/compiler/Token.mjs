@@ -10,6 +10,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -30,13 +32,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -49,6 +51,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -64,6 +68,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -78,7 +84,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -239,43 +245,43 @@ export function Token_rawIs4(token_, value1_, value2_, value3_, value4_) {
 return (((ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_)) || ff_compiler_Token.Token_rawIs(token_, value3_)) || ff_compiler_Token.Token_rawIs(token_, value4_))
 }
 
-export async function Token_at$(token_, $c) {
+export async function Token_at$(token_, $task) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.startOffset_ - token_.startLineOffset_) + 1))
 }
 
-export async function Token_end$(token_, $c) {
+export async function Token_end$(token_, $task) {
 return ff_compiler_Syntax.Location(token_.file_, token_.startLine_, ((token_.stopOffset_ - token_.startLineOffset_) + 1))
 }
 
-export async function Token_raw$(token_, $c) {
+export async function Token_raw$(token_, $task) {
 return ff_core_String.String_slice(token_.code_, token_.startOffset_, token_.stopOffset_)
 }
 
-export async function Token_is$(token_, kind1_, $c) {
+export async function Token_is$(token_, kind1_, $task) {
 return ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_)
 }
 
-export async function Token_is2$(token_, kind1_, kind2_, $c) {
+export async function Token_is2$(token_, kind1_, kind2_, $task) {
 return (ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_))
 }
 
-export async function Token_is3$(token_, kind1_, kind2_, kind3_, $c) {
+export async function Token_is3$(token_, kind1_, kind2_, kind3_, $task) {
 return ((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind1_) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind2_)) || ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(token_.kind_, kind3_))
 }
 
-export async function Token_rawIs$(token_, value_, $c) {
+export async function Token_rawIs$(token_, value_, $task) {
 return (((token_.stopOffset_ - token_.startOffset_) === ff_core_String.String_size(value_)) && ff_core_String.String_startsWith(token_.code_, value_, token_.startOffset_))
 }
 
-export async function Token_rawIs2$(token_, value1_, value2_, $c) {
+export async function Token_rawIs2$(token_, value1_, value2_, $task) {
 return (ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_))
 }
 
-export async function Token_rawIs3$(token_, value1_, value2_, value3_, $c) {
+export async function Token_rawIs3$(token_, value1_, value2_, value3_, $task) {
 return ((ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_)) || ff_compiler_Token.Token_rawIs(token_, value3_))
 }
 
-export async function Token_rawIs4$(token_, value1_, value2_, value3_, value4_, $c) {
+export async function Token_rawIs4$(token_, value1_, value2_, value3_, value4_, $task) {
 return (((ff_compiler_Token.Token_rawIs(token_, value1_) || ff_compiler_Token.Token_rawIs(token_, value2_)) || ff_compiler_Token.Token_rawIs(token_, value3_)) || ff_compiler_Token.Token_rawIs(token_, value4_))
 }
 
@@ -747,7 +753,7 @@ return
 }
 }
 
-export async function TokenKind_beforeSeparator$(self_, $c) {
+export async function TokenKind_beforeSeparator$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -903,7 +909,7 @@ return
 }
 }
 
-export async function TokenKind_afterSeparator$(self_, $c) {
+export async function TokenKind_afterSeparator$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -1059,7 +1065,7 @@ return
 }
 }
 
-export async function TokenKind_afterKeyword$(self_, $c) {
+export async function TokenKind_afterKeyword$(self_, $task) {
 {
 const _1 = self_;
 {
@@ -1219,7 +1225,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Token_Token = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Token.Token" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Token.Token" + "[") + "]"))
 }
 };
@@ -1228,7 +1234,7 @@ export const ff_core_Any_HasAnyTag$ff_compiler_Token_TokenKind = {
 anyTag_() {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Token.TokenKind" + "[") + "]"))
 },
-async anyTag_$($c) {
+async anyTag_$($task) {
 return ff_core_Any.internalAnyTag_((("ff:compiler/Token.TokenKind" + "[") + "]"))
 }
 };
@@ -1244,7 +1250,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1437,7 +1443,7 @@ return
 }
 }
 },
-async show_$(x_, $c) {
+async show_$(x_, $task) {
 {
 const x_a = x_;
 {
@@ -1637,7 +1643,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1674,7 +1680,7 @@ return
 }
 }
 },
-async equals_$(x_, y_, $c) {
+async equals_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1756,7 +1762,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -1993,7 +1999,7 @@ return
 }
 }
 },
-async compare_$(x_, y_, $c) {
+async compare_$(x_, y_, $task) {
 {
 const x_a = x_;
 const y_a = y_;
@@ -2208,7 +2214,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -2230,7 +2236,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {
@@ -2668,7 +2674,7 @@ return
 }
 }
 },
-async serializeUsing_$(serialization_, x_, $c) {
+async serializeUsing_$(serialization_, x_, $task) {
 {
 const serialization_a = serialization_;
 const x_a = x_;
@@ -2899,7 +2905,7 @@ return
 }
 }
 },
-async deserializeUsing_$(serialization_, $c) {
+async deserializeUsing_$(serialization_, $task) {
 const variantIndex_ = ff_core_Buffer.Buffer_grabUint8(serialization_.buffer_, serialization_.offset_);
 serialization_.offset_ += 1;
 {

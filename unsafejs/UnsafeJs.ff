@@ -7,13 +7,13 @@ import(module: String): JsValue
     target js sync "throw Error('Dynamic JS imports are not currently supported.')"
 
 await[T](body: () => T): T // This is never actually called async, but will be rewitten by the compiler
-    // Replaced by the compiler ~ return await body_($c)
+    // Replaced by the compiler
     target js sync "return body_()"
 
 throwIfCancelled(): Unit
-    // Replaced by the compiler ~ if($c.signal.aborted) throw new Error('Cancelled', {cause: $c.reasonWorkaround})
+    // Replaced by the compiler
     target js sync ""
 
 cancelled(): Bool
-    // Replaced by the compiler ~ return $c.signal.aborted
+    // Replaced by the compiler
     target js sync "return false"

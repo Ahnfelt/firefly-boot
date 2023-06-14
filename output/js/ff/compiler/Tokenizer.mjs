@@ -14,6 +14,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -34,13 +36,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -53,6 +55,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -68,6 +72,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -82,7 +88,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -149,6 +155,7 @@ function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
+try {
 while((i_ < ff_core_String.String_size(code_))) {
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
@@ -237,7 +244,7 @@ i_ += 1;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1
 };
-if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper()) && (ff_core_String.String_grab(code_, i_) === 46))) {
+if((((i_ < ff_core_String.String_size(code_)) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && (ff_core_String.String_grab(code_, i_) === 46))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {
@@ -321,6 +328,14 @@ throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_C
 }
 } else {}
 }
+}
+} catch(_error) {
+if(!_error.ffException) throw _error
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)
+if(!_exception.Some) throw _error
+const e_ = _exception.value_;
+const error_ = _error;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)
@@ -328,7 +343,7 @@ emitToken_(ff_compiler_Token.LEnd(), i_, i_)
 return ff_core_Stack.Stack_drain(tokens_)
 }
 
-export async function tokenize_$(file_, code_, completionAt_, attemptFixes_, $c) {
+export async function tokenize_$(file_, code_, completionAt_, attemptFixes_, $task) {
 const completionLine_ = ff_core_Option.Option_else(ff_core_Option.Option_map(ff_core_Option.Option_filter(completionAt_, ((_w1) => {
 return (_w1.file_ === file_)
 })), ((_w1) => {
@@ -383,6 +398,7 @@ function throwError_(message_) {
 const column_ = ((i_ - startLineOffset_) + 1);
 throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, column_), message_), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 }
+try {
 while((i_ < ff_core_String.String_size(code_))) {
 startLine_ = line_;
 startLineOffset_ = lineOffset_;
@@ -471,7 +487,7 @@ i_ += 1;
 while(((i_ < ff_core_String.String_size(code_)) && ff_core_Char.Char_isAsciiLetterOrDigit(ff_core_String.String_grab(code_, i_)))) {
 i_ += 1
 };
-if((ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper()) && (ff_core_String.String_grab(code_, i_) === 46))) {
+if((((i_ < ff_core_String.String_size(code_)) && ff_compiler_Token.ff_core_Equal_Equal$ff_compiler_Token_TokenKind.equals_(kind_, ff_compiler_Token.LUpper())) && (ff_core_String.String_grab(code_, i_) === 46))) {
 i_ += 1;
 emitToken_(ff_compiler_Token.LNamespace(), start_, i_)
 } else {
@@ -555,6 +571,14 @@ throwError_(("Unexpected character: " + ff_core_Show.ff_core_Show_Show$ff_core_C
 }
 } else {}
 }
+}
+} catch(_error) {
+if(!_error.ffException) throw _error
+const _exception = ff_core_Any.fromAny_(_error.ffException, ff_core_Core.ff_core_Any_HasAnyTag$ff_core_Core_GrabException)
+if(!_exception.Some) throw _error
+const e_ = _exception.value_;
+const error_ = _error;
+throw Object.assign(new Error(), {ffException: ff_core_Any.toAny_(ff_compiler_Syntax.CompileError(ff_compiler_Syntax.Location(file_, line_, (i_ - lineOffset_)), "Unexpected end of file"), ff_compiler_Syntax.ff_core_Any_HasAnyTag$ff_compiler_Syntax_CompileError)})
 };
 ff_core_List.List_each(ff_core_List.range_(5), ((_) => {
 emitToken_(ff_compiler_Token.LEnd(), i_, i_)

@@ -6,6 +6,8 @@ import * as ff_core_Array from "../../ff/core/Array.mjs"
 
 import * as ff_core_AssetSystem from "../../ff/core/AssetSystem.mjs"
 
+import * as ff_core_Atomic from "../../ff/core/Atomic.mjs"
+
 import * as ff_core_Bool from "../../ff/core/Bool.mjs"
 
 import * as ff_core_BrowserSystem from "../../ff/core/BrowserSystem.mjs"
@@ -26,13 +28,13 @@ import * as ff_core_Equal from "../../ff/core/Equal.mjs"
 
 import * as ff_core_Error from "../../ff/core/Error.mjs"
 
-import * as ff_core_FetchSystem from "../../ff/core/FetchSystem.mjs"
-
 import * as ff_core_FileHandle from "../../ff/core/FileHandle.mjs"
 
 import * as ff_core_FileSystem from "../../ff/core/FileSystem.mjs"
 
 import * as ff_core_Float from "../../ff/core/Float.mjs"
+
+import * as ff_core_HttpClient from "../../ff/core/HttpClient.mjs"
 
 import * as ff_core_Instant from "../../ff/core/Instant.mjs"
 
@@ -45,6 +47,8 @@ import * as ff_core_JsSystem from "../../ff/core/JsSystem.mjs"
 import * as ff_core_JsValue from "../../ff/core/JsValue.mjs"
 
 import * as ff_core_List from "../../ff/core/List.mjs"
+
+import * as ff_core_Lock from "../../ff/core/Lock.mjs"
 
 import * as ff_core_Log from "../../ff/core/Log.mjs"
 
@@ -60,6 +64,8 @@ import * as ff_core_Ordering from "../../ff/core/Ordering.mjs"
 
 import * as ff_core_Pair from "../../ff/core/Pair.mjs"
 
+import * as ff_core_Path from "../../ff/core/Path.mjs"
+
 import * as ff_core_Serializable from "../../ff/core/Serializable.mjs"
 
 import * as ff_core_Set from "../../ff/core/Set.mjs"
@@ -74,7 +80,7 @@ import * as ff_core_String from "../../ff/core/String.mjs"
 
 import * as ff_core_StringMap from "../../ff/core/StringMap.mjs"
 
-import * as ff_core_TaskScope from "../../ff/core/TaskScope.mjs"
+import * as ff_core_Task from "../../ff/core/Task.mjs"
 
 import * as ff_core_TimeSystem from "../../ff/core/TimeSystem.mjs"
 
@@ -91,21 +97,12 @@ import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
 
 
-export function BrowserSystem_fetch(self_) {
-throw new Error('Function BrowserSystem_fetch is missing on this target in sync context.');
+export function BrowserSystem_httpClient(self_) {
+throw new Error('Function BrowserSystem_httpClient is missing on this target in sync context.');
 }
 
-export function BrowserSystem_scope(self_, body_, shielded_ = false, rethrow_ = true) {
-const scope_ = ff_core_BrowserSystem.BrowserSystem_openScope(self_, shielded_);
-try {
-return body_(scope_)
-} finally {
-ff_core_TaskScope.TaskScope_close(scope_, rethrow_)
-}
-}
-
-export function BrowserSystem_openScope(self_, shielded_ = false) {
-throw new Error('Function BrowserSystem_openScope is missing on this target in sync context.');
+export function BrowserSystem_mainTask(self_) {
+throw new Error('Function BrowserSystem_mainTask is missing on this target in sync context.');
 }
 
 export function BrowserSystem_time(self_) {
@@ -116,30 +113,19 @@ export function BrowserSystem_js(self_) {
 throw new Error('Function BrowserSystem_js is missing on this target in sync context.');
 }
 
-export async function BrowserSystem_fetch$(self_, $c) {
+export async function BrowserSystem_httpClient$(self_, $task) {
 return null
 }
 
-export async function BrowserSystem_scope$(self_, body_, shielded_ = false, rethrow_ = true, $c) {
-const scope_ = (await ff_core_BrowserSystem.BrowserSystem_openScope$(self_, shielded_, $c));
-try {
-return (await body_(scope_, $c))
-} finally {
-(await ff_core_TaskScope.TaskScope_close$(scope_, rethrow_, $c))
-}
+export async function BrowserSystem_mainTask$(self_, $task) {
+return self_.task_
 }
 
-export async function BrowserSystem_openScope$(self_, shielded_ = false, $c) {
-
-            return await ff_core_TaskScope.TaskScope_openSubscope$($c, shielded_, $c)
-        
-}
-
-export async function BrowserSystem_time$(self_, $c) {
+export async function BrowserSystem_time$(self_, $task) {
 return null
 }
 
-export async function BrowserSystem_js$(self_, $c) {
+export async function BrowserSystem_js$(self_, $task) {
 return typeof globalThis !== 'undefined' ? globalThis : window
 }
 

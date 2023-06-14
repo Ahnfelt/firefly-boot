@@ -88,20 +88,101 @@ import * as ff_core_Try from "../../ff/core/Try.mjs"
 
 import * as ff_core_Unit from "../../ff/core/Unit.mjs"
 
-// newtype Instant
+// type Atomic
 
 
 
 
+export function make_(value_) {
 
-
-
-export function Instant_add(self_, duration_) {
-return (self_ + duration_)
+        return {value: value_}
+    
 }
 
-export async function Instant_add$(self_, duration_, $task) {
-return (self_ + duration_)
+export async function make_$(value_, $task) {
+throw new Error('Function make is missing on this target in async context.');
+}
+
+export function Atomic_modify(self_, body_) {
+
+            return self_.value = body_(self_.value)
+        
+}
+
+export function Atomic_getAndModify(self_, body_) {
+
+            const currentValue = self_.value
+            self_.value = body_(currentValue)
+            return currentValue
+        
+}
+
+export function Atomic_get(self_) {
+
+            return self_.value
+        
+}
+
+export function Atomic_set(self_, value_) {
+
+            self_.value = value
+        
+}
+
+export function Atomic_getAndSet(self_, newValue_) {
+
+            const currentValue = self_.value
+            self_.value = newValue
+            return currentValue
+        
+}
+
+export function Atomic_compareAndSet(self_, currentValue_, newValue_) {
+
+            if(self_.value !== currentValue) return false
+            self_.value = newValue
+            return true
+        
+}
+
+export async function Atomic_modify$(self_, body_, $task) {
+
+            let currentValue, newValue
+            do {
+                currentValue = self_.value
+                newValue = await body_(currentValue)
+            } while(currentValue !== self_.value)
+            self_.value = newValue
+            return newValue
+        
+}
+
+export async function Atomic_getAndModify$(self_, body_, $task) {
+
+            let currentValue, newValue
+            do {
+                currentValue = self_.value
+                newValue = await body_(currentValue)
+            } while(currentValue !== self_.value)
+            self_.value = newValue
+            return currentValue
+        
+}
+
+export async function Atomic_get$(self_, $task) {
+throw new Error('Function Atomic_get is missing on this target in async context.');
+}
+
+export async function Atomic_set$(self_, value_, $task) {
+throw new Error('Function Atomic_set is missing on this target in async context.');
+}
+
+export async function Atomic_getAndSet$(self_, newValue_, $task) {
+throw new Error('Function Atomic_getAndSet is missing on this target in async context.');
+}
+
+export async function Atomic_compareAndSet$(self_, currentValue_, newValue_, $task) {
+throw new Error('Function Atomic_compareAndSet is missing on this target in async context.');
 }
 
 
