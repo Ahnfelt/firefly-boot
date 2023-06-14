@@ -5,6 +5,7 @@ data Symbol(
     name: String
     kind: Int
     selectionStart: Location
+    selectionEnd: Location
     start: Location
     end: Location
     children: List[Symbol]
@@ -34,20 +35,19 @@ readSymbols(hooks: List[ResultHook]): Result[List[Symbol]]  {
 readSymbol(hooks: List[ResultHook]): Result[Symbol] {
     let children = readSymbols(hooks)
     children.remaining.{
-        | [ParseSymbolEnd(name, kind, selectionStart, start, end), ...rest] => 
-            let symbol = Symbol(name, kind, selectionStart, start, end, children.result)
+        | [ParseSymbolEnd(name, kind, selectionStart, selectionEnd, start, end), ...rest] => 
+            let symbol = Symbol(name, kind, selectionStart, selectionEnd, start, end, children.result)
             Result(symbol, rest)
         | _ => throw(ReadSymbolsError())
         }
 }
 
 symbolToLsp(js: JsSystem, symbol: Symbol): JsValue {
-    let symbolEnd = symbol.selectionStart.Location(column = symbol.selectionStart.column + symbol.name.size())
     js.object()
         .with("name", symbol.name)
         .with("kind", symbol.kind)
         .with("range", locationsToLspRange(js, symbol.start, symbol.end))
-        .with("selectionRange", locationsToLspRange(js, symbol.selectionStart, symbolEnd))
+        .with("selectionRange", locationsToLspRange(js, symbol.selectionStart, symbol.selectionEnd))
         .with("children", js.array(symbol.children.map {symbolToLsp(js, _)}))
 }
 
@@ -72,7 +72,7 @@ handleDocumentSymbol(system: NodeSystem, lspHook: LspHook): JsValue {
 
 showHook(lspHook: ResultHook): String {
     | ParseSymbolBegin => "ParseSymbolBegin"
-    | ParseSymbolEnd(name, kind, symbolStart, selectionStart, selectionEnd) => "ParseSymbolEnd("+Show.show(name)+", "+Show.show(kind)+")"
+    | ParseSymbolEnd(name, kind, _, _, _, _) => "ParseSymbolEnd("+Show.show(name)+", "+Show.show(kind)+")"
     //| ParseSymbolBegin => "("
     //| ParseSymbolEnd(name, kind, symbolStart, selectionStart, selectionEnd) => ") " + name + " " + showPosition(selectionStart) + " - " + showPosition(selectionEnd)
     | _ => "other"

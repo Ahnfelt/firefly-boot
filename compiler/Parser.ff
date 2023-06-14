@@ -234,6 +234,7 @@ extend self: Parser {
                 name = nameToken.raw()
                 kind = 14
                 selectionStart = nameToken.at()
+                selectionEnd = nameToken.end()
                 start = nameToken.at()
                 end = self.behind().end()
             ))
@@ -253,10 +254,12 @@ extend self: Parser {
             bestTarget
         )
         if(self.lspHook.trackSymbols) {
+            let kind = if(member) {6} else {12}
             self.lspHook.emit(ParseSymbolEnd(
                 name = signature.name
-                kind = 12
+                kind = kind
                 selectionStart = signature.at
+                selectionEnd = signature.at.Location(column = signature.at.column + signature.name.size())
                 start = signature.at
                 end = self.behind().end()
             ))
@@ -339,7 +342,8 @@ extend self: Parser {
     }
 
     parseExtendDefinition(): DExtend {
-        self.rawSkip(LKeyword, "extend")
+        if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
+        let extendToken = self.rawSkip(LKeyword, "extend")
         let nameToken = self.skip(LLower)
         let poly = if(self.current().rawIs("[")) {self.parseTypeParameters()} else {Poly([], [])}
         self.skip(LColon)
@@ -351,6 +355,16 @@ extend self: Parser {
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
         }
         self.rawSkip(LBracketRight, "}")
+        if(self.lspHook.trackSymbols) {
+            self.lspHook.emit(ParseSymbolEnd(
+                name = type.show([]) // TODO how do we show constraints, eg. extends self[T: Show]: MyType[T, T]
+                kind = 3 // Namespace
+                selectionStart = nameToken.at()
+                selectionEnd = nameToken.end()
+                start = extendToken.at()
+                end = self.behind().end()
+            ))
+        }        
         DExtend(
             nameToken.at()
             nameToken.raw()
@@ -451,10 +465,11 @@ extend self: Parser {
     }
 
     parseTypeDefinition(): DType {
+        if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
         let newtype = self.current().rawIs("newtype")
         let effectParameter = if(self.current().rawIs("capability")) {["Q$"]} else {[]}
         let allowMutable = self.current().rawIs2("class", "capability")
-        if(self.current().rawIs("newtype")) {
+        let kindToken = if(self.current().rawIs("newtype")) {
             self.rawSkip(LKeyword, "newtype")
         } elseIf {self.current().rawIs("data")} {
             self.rawSkip(LKeyword, "data")
@@ -473,6 +488,7 @@ extend self: Parser {
             self.rawSkip(LBracketLeft, "{")
             let variantsBuilder = Stack.make[Variant]()
             while {!self.current().is(LBracketRight)} {
+                if(self.lspHook.trackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
                 let variantNameToken = self.skip(LUpper)
                 let variantFields = if(!self.current().rawIs("(")) {[]} else {self.parseFunctionParameters(allowMutable = True)}
                 if(!allowMutable && variantFields.any {_.mutable}) {
@@ -484,6 +500,16 @@ extend self: Parser {
                     Variant(variantNameToken.at(), variantNameToken.raw(), variantFields)
                 )
                 if(!self.current().is(LBracketRight)) {self.skipSeparator(LSemicolon)}
+                if(self.lspHook.trackSymbols) {
+                    self.lspHook.emit(ParseSymbolEnd(
+                        name = variantNameToken.raw()
+                        kind = 10 // Enum
+                        selectionStart = variantNameToken.at()
+                        selectionEnd = variantNameToken.end()
+                        start = variantNameToken.at()
+                        end = self.behind().end()
+                    ))
+                }                     
             }
             self.rawSkip(LBracketRight, "}")
             variantsBuilder.toList()
@@ -499,7 +525,18 @@ extend self: Parser {
             ))
         }
         let generics = [...effectParameter, ...poly.generics]
-        DType(nameToken.at(), newtype, !allowMutable, nameToken.raw(), generics, poly.constraints, commonFields, variants)
+        let result = DType(nameToken.at(), newtype, !allowMutable, nameToken.raw(), generics, poly.constraints, commonFields, variants)
+        if(self.lspHook.trackSymbols) {
+            self.lspHook.emit(ParseSymbolEnd(
+                name = nameToken.raw()
+                kind = 5
+                selectionStart = nameToken.at()
+                selectionEnd = nameToken.end()
+                start = kindToken.at()
+                end = self.behind().end()
+            ))
+        }        
+        result
     }
 
     parseImportDefinition(currentPackagePair: PackagePair): DImport {
@@ -972,6 +1009,7 @@ extend self: Parser {
                 name = nameToken.raw()
                 kind = kind
                 selectionStart = nameToken.at()
+                selectionEnd = nameToken.end()
                 start = mutableToken.at()
                 end = self.behind().end()                
             ))
@@ -1004,6 +1042,7 @@ extend self: Parser {
                     name = signature.name
                     kind = 12
                     selectionStart = signature.at
+                    selectionEnd = signature.at.Location(column = signature.at.column + signature.name.size())
                     start = functionAt
                     end = self.behind().end()                
                 ))

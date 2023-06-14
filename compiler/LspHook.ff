@@ -72,6 +72,7 @@ class ResultHook {
         name: String
         kind: Int
         selectionStart: Location
+        selectionEnd: Location
         start: Location
         end: Location
     )
