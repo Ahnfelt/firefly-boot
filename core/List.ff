@@ -352,6 +352,13 @@ extend self[T]: List[T] {
 
 extend self[T: Order]: List[T] {
 
+    sort(): List[T] {
+        if(self.size() <= 1) {self} else:
+        let stack = self.toStack()
+        stack.sort()
+        stack.toList()
+    }
+    
     toSet(): Set[T] {
         self.foldLeft(Set.empty[T]()) {set, value => set.add(value)}
     }
@@ -393,17 +400,6 @@ extend self[T]: List[List[T]] {
             }
         }
         go(self, [])
-    }
-
-}
-
-extend self[T: Order]: List[T] {
-
-    sort(): List[T] {
-        if(self.size() <= 1) {self} else:
-        let stack = self.toStack()
-        stack.sort()
-        stack.toList()
     }
 
 }
