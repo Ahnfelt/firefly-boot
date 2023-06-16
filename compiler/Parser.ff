@@ -356,8 +356,15 @@ extend self: Parser {
         }
         self.rawSkip(LBracketRight, "}")
         if(self.lspHook.trackSymbols) {
+            mutable name = type.show([])
+            poly.generics.zip(poly.constraints).each {| Pair(generic, constraint) => 
+                name = name.replace("[" + generic + "]",  "[" + generic + ": " + constraint.name + "]")
+                name = name.replace("[" + generic + ",",  "[" + generic + ": " + constraint.name + ",")
+                name = name.replace(", " + generic + ",", ", " + generic + ": " + constraint.name + ",")
+                name = name.replace(", " + generic + "]", ", " + generic + ": " + constraint.name + "]")
+            }
             self.lspHook.emit(ParseSymbolEnd(
-                name = type.show([]) // TODO how do we show constraints, eg. extends self[T: Show]: MyType[T, T]
+                name = name // TODO how do we show constraints, eg. extends self[T: Show]: MyType[T, T]
                 kind = 3 // Namespace
                 selectionStart = nameToken.at()
                 selectionEnd = nameToken.end()
@@ -707,6 +714,9 @@ extend self: Parser {
         let parameters = Stack.make[Parameter]()
         self.rawSkip(LBracketLeft, "(")
         while {!self.current().is(LBracketRight)} {
+            let lspTrackSymbols = self.lspHook.trackSymbols && allowMutable
+            if(lspTrackSymbols) {self.lspHook.emit(ParseSymbolBegin)}
+            let lspFirst = self.current()
             let mutable = allowMutable && self.current().is(LKeyword) && self.current().rawIs("mutable")
             if(mutable) {self.skip(LKeyword)}
             let parameterNameToken = self.skip(LLower)
@@ -722,6 +732,16 @@ extend self: Parser {
                 Some(self.parseTerm())
             }
             parameters.push(Parameter(parameterNameToken.at(), mutable, parameterNameToken.raw(), parameterType, default))
+            if(lspTrackSymbols) {
+                self.lspHook.emit(ParseSymbolEnd(
+                    name = parameterNameToken.raw()
+                    kind = 7 // Property
+                    selectionStart = parameterNameToken.at()
+                    selectionEnd = parameterNameToken.end()
+                    start = lspFirst.at()
+                    end = self.behind().end()
+                ))
+            }                       
             if(!self.current().is(LBracketRight)) {self.skipSeparator(LComma)}
         }
         self.rawSkip(LBracketRight, ")")
